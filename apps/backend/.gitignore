@@ -19,3 +19,6 @@ testDb.properties
 
 **/application-t*.properties
 **/application-q*.properties
+
+data-catalog-backend-app/src/main/resources/
+test/
