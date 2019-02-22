@@ -7,7 +7,7 @@
 	<parent>
 		<artifactId>data-catalog-backend-test</artifactId>
 		<groupId>no.nav.data.catalog.backend</groupId>
-		<version>1.0-SNAPSHOT</version>
+		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>data-catalog-backend-test-component</artifactId>
@@ -18,6 +18,11 @@
 			<artifactId>spring-context</artifactId>
 			<version>5.1.4.RELEASE</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>no.nav.data.catalog.backend</groupId>
+			<artifactId>data-catalog-backend-app</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 
