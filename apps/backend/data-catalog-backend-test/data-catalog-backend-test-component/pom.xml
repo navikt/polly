@@ -12,18 +12,14 @@
 
 	<artifactId>data-catalog-backend-test-component</artifactId>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>5.1.4.RELEASE</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>no.nav.data.catalog.backend</groupId>
-			<artifactId>data-catalog-backend-app</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>
