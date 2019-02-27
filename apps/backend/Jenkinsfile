@@ -1,8 +1,3 @@
-@Library('deploy')
-import deploy
-
-def deployLib = new deploy()
-
 node {
     def commitHash, commitHashShort, commitUrl
     def repo = "navikt"
