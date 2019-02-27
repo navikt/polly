@@ -4,8 +4,7 @@ jdk:
 - openjdk11
 before_install:
 - openssl aes-256-cbc -K $encrypted_a715cafdf4ab_key -iv $encrypted_a715cafdf4ab_iv
-  -in travis/datajegerne-private-key.enc -out travis/datajegerne-private-key.pem
-  -d
+  -in travis/datajegerne-private-key.enc -out travis/datajegerne-private-key.pem -d
 - git clone https://github.com/navikt/github-apps-support.git
 - export PATH=`pwd`/github-apps-support/bin:$PATH
 - export INSTALLATION_TOKEN=$(generate-installation-token.sh `generate-jwt.sh ./travis/datajegerne-private-key.pem
