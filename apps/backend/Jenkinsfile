@@ -4,7 +4,7 @@ def repoName="data-catalog-backend"
 def repoBranch="master"
 def organization="navikt"
 def appId="26100" // Defined in the GitHub App "datajegerne"
-def checkedOutLibraryScriptsRoot = "/var/lib/jenkins/scripts/pull.via.github.app"
+def checkedOutLibraryScriptsRoot = "/var/lib/jenkins/scripts"
 //
 // =============================================================================
 // Set when explicitly loading groovy snippets from SCM:
@@ -26,7 +26,7 @@ def checkOutLibrary(final String scriptDir, final String organization, final Str
 }
 
 def loadLibraryScript(final String checkedOutLibraryScriptRoot, final String libraryScriptName) {
-	return load(checkedOutLibraryScriptRoot + '/vars/' + libraryScriptName + '.groovy')
+	return load(checkedOutLibraryScriptRoot + '/pull.via.github.app/vars/' + libraryScriptName + '.groovy')
 }
 
 pipeline {
@@ -38,16 +38,6 @@ pipeline {
     }
 
     stages {
-        stage("Checkout application") {
-            steps {
-                script {
-                   gitCommit = sh (
-                       script      : scriptDir + '/pull.via.github.app/pull-app-repo-using-GitHub-App.sh \'' + organization + '\' \'' + repoName + '\' \'' + repoBranch + '\' \'' + appId + '\'',
-                       returnStdout: true
-                   ).trim()
-                }
-            }
-        }
         stage("Load libraries") {
             steps {
                 script {
@@ -57,6 +47,17 @@ pipeline {
                     naisScript        = loadLibraryScript(checkedOutLibraryScriptRoot, 'nais'       )
                     slackScript       = loadLibraryScript(checkedOutLibraryScriptRoot, 'slack'      )
                     versionScript     = loadLibraryScript(checkedOutLibraryScriptRoot, 'version'    )
+                }
+            }
+        }
+
+        stage("Checkout application") {
+            steps {
+                script {
+                   gitCommit = sh (
+                       script      : scriptDir + '/pull.via.github.app/pull-app-repo-using-GitHub-App.sh \'' + organization + '\' \'' + repoName + '\' \'' + repoBranch + '\' \'' + appId + '\'',
+                       returnStdout: true
+                   ).trim()
                 }
             }
         }
