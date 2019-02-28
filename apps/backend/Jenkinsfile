@@ -38,19 +38,6 @@ pipeline {
     }
 
     stages {
-        stage("Load libraries") {
-            steps {
-                script {
-					def checkedOutLibraryScriptRoot = checkOutLibrary(scriptDir, organization, 'jenkins-datajegerne-pipeline', 'master', 'pipeline-lib', appId)
-                    echo "About to load libraries..."
-                    dockerUtilsScript = loadLibraryScript(checkedOutLibraryScriptRoot, 'dockerUtils')
-                    naisScript        = loadLibraryScript(checkedOutLibraryScriptRoot, 'nais'       )
-                    slackScript       = loadLibraryScript(checkedOutLibraryScriptRoot, 'slack'      )
-                    versionScript     = loadLibraryScript(checkedOutLibraryScriptRoot, 'version'    )
-                }
-            }
-        }
-
         stage("Checkout application") {
             steps {
                 script {
@@ -61,5 +48,19 @@ pipeline {
                 }
             }
         }
+
+        stage("Load libraries") {
+            steps {
+                script {
+//					def checkedOutLibraryScriptRoot = checkOutLibrary(scriptDir, organization, 'jenkins-datajegerne-pipeline', 'master', 'pipeline-lib', appId)
+                    echo "About to load libraries..."
+                    dockerUtilsScript = loadLibraryScript(checkedOutLibraryScriptRoot, 'dockerUtils')
+                    naisScript        = loadLibraryScript(checkedOutLibraryScriptRoot, 'nais'       )
+                    slackScript       = loadLibraryScript(checkedOutLibraryScriptRoot, 'slack'      )
+                    versionScript     = loadLibraryScript(checkedOutLibraryScriptRoot, 'version'    )
+                }
+            }
+        }
+
     }
 }
