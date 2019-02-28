@@ -1,26 +1,60 @@
-node {
-    def commitHash, commitHashShort, commitUrl
-    def repo = "navikt"
-    def application = "data-catalog-backend"
-    def committer, committerEmail, releaseVersion
-    def mvnHome = tool "maven-3.3.9"
-    def mvn = "${mvnHome}/bin/mvn"
-    def groupId = "nais"
-    def zone = 'fss'
-    def namespace = 'default'
+def gitCommit
+def scriptDir="/var/lib/jenkins/scripts"
+def repoName="data-catalog-backend"
+def repoBranch="master"
+def organization="navikt"
+def appId="26100" // Defined in the GitHub App "datajegerne"
+def checkedOutLibraryScriptsRoot = "/var/lib/jenkins/jenkins-datajegerne-pipeline/"
+//
+// =============================================================================
+// Set when explicitly loading groovy snippets from SCM:
+//
+def dockerUtilsScript
+def naisScript
+def slackScript
+def versionScript
+//
+// =============================================================================
+//
+def checkOutLibrary(final String scriptDir, final String organization, final String repoName, final String repoBranch, final String libraryName, final String appId) {
+	def checkedOutLibraryScriptRoot =
+		sh (
+		   script      : scriptDir + '/pull-shared-pipeline-scripts-repo-using-GitHub-App.sh \'' + organization + '\' \'' + repoName + '\' \'' + repoBranch + '\' \'' + appId + '\' \'' + libraryName + '\'',
+		   returnStdout: true
+		).trim()
+	return checkedOutLibraryScriptRoot;
+}
 
-    stage("Checkout") {
-        cleanWs()
-        withEnv(['HTTPS_PROXY=http://webproxy-internett.nav.no:8088']) {
-            sh(script: "git clone https://github.com/${repo}/${application}.git .")
+def loadLibraryScript(final String checkedOutLibraryScriptRoot, final String libraryScriptName) {
+	return load(checkedOutLibraryScriptRoot + '/vars/' + libraryScriptName + '.groovy')
+}
+
+pipeline {
+    agent any
+
+    tools {
+        maven "maven3"
+        jdk "java8"
+    }
+
+    stages {
+        stage("Checkout application") {
+            cleanWs()
+            script {
+               gitCommit = sh (
+                   script      : scriptDir + '/pull-app-repo-using-GitHub-App.sh \'' + organization + '\' \'' + repoName + '\' \'' + repoBranch + '\' \'' + appId + '\'',
+                   returnStdout: true
+               ).trim()
+            }
         }
-
-        commitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
-        commitHashShort = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
-        commitUrl = "https://github.com/${repo}/${application}/commit/${commitHash}"
-        committer = sh(script: 'git log -1 --pretty=format:"%an"', returnStdout: true).trim()
-        committerEmail = sh(script: 'git log -1 --pretty=format:"%ae"', returnStdout: true).trim()
-
-        releaseVersion = "${env.major_version}.${env.BUILD_NUMBER}-${commitHashShort}"
+        stage("Load libraries") {
+            script {
+                echo "About to load libraries..."
+                dockerUtilsScript = loadLibraryScript(checkedOutLibraryScriptRoot, 'dockerUtils')
+                naisScript        = loadLibraryScript(checkedOutLibraryScriptRoot, 'nais'       )
+                slackScript       = loadLibraryScript(checkedOutLibraryScriptRoot, 'slack'      )
+                versionScript     = loadLibraryScript(checkedOutLibraryScriptRoot, 'version'    )
+            }
+        }
     }
 }
