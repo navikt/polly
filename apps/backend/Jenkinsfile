@@ -33,8 +33,8 @@ pipeline {
     agent any
 
     tools {
-        maven "maven3"
-        jdk "java8"
+        maven "maven-3.3.9"
+        jdk "java11"
     }
 
     stages {
