@@ -1,5 +1,5 @@
 def gitCommit
-def scriptDir="/var/lib/jenkins/scripts"
+def scriptDir="/var/lib/jenkins/scripts/pull.via.github.app"
 def repoName="data-catalog-backend"
 def repoBranch="master"
 def organization="navikt"
