@@ -1,10 +1,10 @@
 def gitCommit
-def scriptDir="/var/lib/jenkins/scripts/pull.via.github.app"
+def scriptDir="/var/lib/jenkins/scripts"
 def repoName="data-catalog-backend"
 def repoBranch="master"
 def organization="navikt"
 def appId="26100" // Defined in the GitHub App "datajegerne"
-def checkedOutLibraryScriptsRoot = "/var/lib/jenkins/jenkins-datajegerne-pipeline/"
+def checkedOutLibraryScriptsRoot = "/var/lib/jenkins/scripts/pull.via.github.app"
 //
 // =============================================================================
 // Set when explicitly loading groovy snippets from SCM:
@@ -19,7 +19,7 @@ def versionScript
 def checkOutLibrary(final String scriptDir, final String organization, final String repoName, final String repoBranch, final String libraryName, final String appId) {
 	def checkedOutLibraryScriptRoot =
 		sh (
-		   script      : scriptDir + '/pull-shared-pipeline-scripts-repo-using-GitHub-App.sh \'' + organization + '\' \'' + repoName + '\' \'' + repoBranch + '\' \'' + appId + '\' \'' + libraryName + '\'',
+		   script      : scriptDir + '/pull.via.github.app/pull-shared-pipeline-scripts-repo-using-GitHub-App.sh \'' + organization + '\' \'' + repoName + '\' \'' + repoBranch + '\' \'' + appId + '\' \'' + libraryName + '\'',
 		   returnStdout: true
 		).trim()
 	return checkedOutLibraryScriptRoot;
@@ -42,7 +42,7 @@ pipeline {
             steps {
                 script {
                    gitCommit = sh (
-                       script      : scriptDir + '/pull-app-repo-using-GitHub-App.sh \'' + organization + '\' \'' + repoName + '\' \'' + repoBranch + '\' \'' + appId + '\'',
+                       script      : scriptDir + '/pull.via.github.app/pull-app-repo-using-GitHub-App.sh \'' + organization + '\' \'' + repoName + '\' \'' + repoBranch + '\' \'' + appId + '\'',
                        returnStdout: true
                    ).trim()
                 }
