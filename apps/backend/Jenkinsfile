@@ -40,7 +40,6 @@ pipeline {
     stages {
         stage("Checkout application") {
             steps {
-                cleanWs()
                 script {
                    gitCommit = sh (
                        script      : scriptDir + '/pull-app-repo-using-GitHub-App.sh \'' + organization + '\' \'' + repoName + '\' \'' + repoBranch + '\' \'' + appId + '\'',
