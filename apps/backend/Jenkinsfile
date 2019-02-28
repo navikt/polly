@@ -39,21 +39,25 @@ pipeline {
 
     stages {
         stage("Checkout application") {
-            cleanWs()
-            script {
-               gitCommit = sh (
-                   script      : scriptDir + '/pull-app-repo-using-GitHub-App.sh \'' + organization + '\' \'' + repoName + '\' \'' + repoBranch + '\' \'' + appId + '\'',
-                   returnStdout: true
-               ).trim()
+            steps {
+                cleanWs()
+                script {
+                   gitCommit = sh (
+                       script      : scriptDir + '/pull-app-repo-using-GitHub-App.sh \'' + organization + '\' \'' + repoName + '\' \'' + repoBranch + '\' \'' + appId + '\'',
+                       returnStdout: true
+                   ).trim()
+                }
             }
         }
         stage("Load libraries") {
-            script {
-                echo "About to load libraries..."
-                dockerUtilsScript = loadLibraryScript(checkedOutLibraryScriptRoot, 'dockerUtils')
-                naisScript        = loadLibraryScript(checkedOutLibraryScriptRoot, 'nais'       )
-                slackScript       = loadLibraryScript(checkedOutLibraryScriptRoot, 'slack'      )
-                versionScript     = loadLibraryScript(checkedOutLibraryScriptRoot, 'version'    )
+            steps {
+                script {
+                    echo "About to load libraries..."
+                    dockerUtilsScript = loadLibraryScript(checkedOutLibraryScriptRoot, 'dockerUtils')
+                    naisScript        = loadLibraryScript(checkedOutLibraryScriptRoot, 'nais'       )
+                    slackScript       = loadLibraryScript(checkedOutLibraryScriptRoot, 'slack'      )
+                    versionScript     = loadLibraryScript(checkedOutLibraryScriptRoot, 'version'    )
+                }
             }
         }
     }
