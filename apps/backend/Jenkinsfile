@@ -4,7 +4,6 @@ def repoName="data-catalog-backend"
 def repoBranch="master"
 def organization="navikt"
 def appId="26100" // Defined in the GitHub App "datajegerne"
-def checkedOutLibraryScriptsRoot = "/var/lib/jenkins/scripts"
 //
 // =============================================================================
 // Set when explicitly loading groovy snippets from SCM:
@@ -52,7 +51,7 @@ pipeline {
         stage("Load libraries") {
             steps {
                 script {
-//					def checkedOutLibraryScriptRoot = checkOutLibrary(scriptDir, organization, 'jenkins-datajegerne-pipeline', 'master', 'pipeline-lib', appId)
+					def checkedOutLibraryScriptRoot = checkOutLibrary(scriptDir, organization, 'jenkins-datajegerne-pipeline', 'master', 'pipeline-lib', appId)
                     echo "About to load libraries..."
                     dockerUtilsScript = loadLibraryScript(checkedOutLibraryScriptRoot, 'dockerUtils')
                     naisScript        = loadLibraryScript(checkedOutLibraryScriptRoot, 'nais'       )
