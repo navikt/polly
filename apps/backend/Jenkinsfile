@@ -4,6 +4,7 @@ def repoName="data-catalog-backend"
 def repoBranch="master"
 def organization="navikt"
 def appId="26100" // Defined in the GitHub App "datajegerne"
+def checkedOutLibraryScriptsRoot = "./../data-catalog-backend@libs/"
 //
 // =============================================================================
 // Set when explicitly loading groovy snippets from SCM:
