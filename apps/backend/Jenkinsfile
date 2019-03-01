@@ -26,7 +26,7 @@ def checkOutLibrary(final String scriptDir, final String organization, final Str
 }
 
 def loadLibraryScript(final String checkedOutLibraryScriptRoot, final String libraryScriptName) {
-	return load(checkedOutLibraryScriptRoot + '/pull.via.github.app/vars/' + libraryScriptName + '.groovy')
+	return load(checkedOutLibraryScriptRoot + '/vars/' + libraryScriptName + '.groovy')
 }
 
 pipeline {
