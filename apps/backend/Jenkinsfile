@@ -38,17 +38,6 @@ pipeline {
     }
 
     stages {
-        stage("Checkout application") {
-            steps {
-                script {
-                   gitCommit = sh (
-                       script      : scriptDir + '/pull.via.github.app/pull-app-repo-using-GitHub-App.sh \'' + organization + '\' \'' + repoName + '\' \'' + repoBranch + '\' \'' + appId + '\'',
-                       returnStdout: true
-                   ).trim()
-                }
-            }
-        }
-
         stage("Load libraries") {
             steps {
                 script {
@@ -58,6 +47,17 @@ pipeline {
                     naisScript        = loadLibraryScript(checkedOutLibraryScriptRoot, 'nais'       )
                     slackScript       = loadLibraryScript(checkedOutLibraryScriptRoot, 'slack'      )
                     versionScript     = loadLibraryScript(checkedOutLibraryScriptRoot, 'version'    )
+                }
+            }
+        }
+
+        stage("Checkout application") {
+            steps {
+                script {
+                   gitCommit = sh (
+                       script      : scriptDir + '/pull.via.github.app/pull-app-repo-using-GitHub-App.sh \'' + organization + '\' \'' + repoName + '\' \'' + repoBranch + '\' \'' + appId + '\'',
+                       returnStdout: true
+                   ).trim()
                 }
             }
         }
