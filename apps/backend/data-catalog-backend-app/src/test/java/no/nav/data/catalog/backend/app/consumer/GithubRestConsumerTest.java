@@ -1,5 +1,6 @@
 package no.nav.data.catalog.backend.app.consumer;
 
+import no.nav.data.catalog.backend.app.common.tokensupport.JwtTokenGenerator;
 import no.nav.data.catalog.backend.app.domain.GithubFileInfo;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.Test;
@@ -14,12 +15,31 @@ public class GithubRestConsumerTest {
 
     private GithubRestConsumer githubRestConsumer = new GithubRestConsumer(restTemplate);
 
+    private JwtTokenGenerator tokenGenerator = new JwtTokenGenerator();
 
     @Test
     public void getFileInfo() {
-        GithubFileInfo fileInfo = githubRestConsumer.getFileInfo("nyttDatasett.json");
+        String jwtToken = tokenGenerator.generateToken("C:\\Visma\\projects\\nav\\data-catalog-backend\\travis\\datajegerne-private-key.pem");
+        String installationId = githubRestConsumer.getInstallationId(jwtToken);
+        String token = githubRestConsumer.getInstallationToken(installationId, jwtToken);
+        GithubFileInfo fileInfo = githubRestConsumer.getFileInfo("nyttDatasett.json", token);
         byte[] content = fileInfo.getContent().getBytes();
         byte[] decodeCntent = Base64.decodeBase64(content);
         assertThat(fileInfo.getName(), is("nyttDatasett.json"));
     }
+
+    @Test
+    public void getInstallationId() {
+        String jwtToken = tokenGenerator.generateToken("C:\\Visma\\projects\\nav\\data-catalog-backend\\travis\\datajegerne-private-key.pem");
+        String installationId = githubRestConsumer.getInstallationId(jwtToken);
+    }
+
+    @Test
+    public void getInstallationToken() {
+        String jwtToken = tokenGenerator.generateToken("C:\\Visma\\projects\\nav\\data-catalog-backend\\travis\\datajegerne-private-key.pem");
+        String installationId = githubRestConsumer.getInstallationId(jwtToken);
+        String token = githubRestConsumer.getInstallationToken(installationId, jwtToken);
+    }
+
+
 }

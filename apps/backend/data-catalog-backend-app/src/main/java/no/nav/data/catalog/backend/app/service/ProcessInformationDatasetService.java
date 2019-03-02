@@ -16,7 +16,7 @@ public class ProcessInformationDatasetService {
     }
 
     public void retrieveAndSaveDataset(String filename) {
-        GithubFileInfo fileInfo = restConsumer.getFileInfo(filename);
+        GithubFileInfo fileInfo = restConsumer.getFileInfo(filename, "");
         byte[] content = null;
         if (fileInfo != null && "file".equals(fileInfo.getType())) {
             if ("base64".equals(fileInfo.getEncoding())) {
