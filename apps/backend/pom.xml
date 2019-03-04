@@ -10,7 +10,7 @@
 		<version>2.1.3.RELEASE</version>
 	</parent>
 
-	<groupId>no.nav.data.catalog.backend</groupId>
+	<groupId>no.nav.data</groupId>
 	<artifactId>data-catalog-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
@@ -23,6 +23,7 @@
 	<properties>
 		<java.version>11</java.version>
 		<start-class>no.nav.data.catalog.backend.app.AppStarter</start-class>
+		<junit.version>4.12</junit.version>
 	</properties>
 
 	<dependencies>

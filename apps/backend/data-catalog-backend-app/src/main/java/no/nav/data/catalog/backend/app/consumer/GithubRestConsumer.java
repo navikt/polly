@@ -1,59 +1,75 @@
 package no.nav.data.catalog.backend.app.consumer;
 
+import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import no.nav.data.catalog.backend.app.domain.GithubFileInfo;
 import no.nav.data.catalog.backend.app.domain.GithubInstallation;
 import no.nav.data.catalog.backend.app.domain.GithubInstallationToken;
-import no.nav.data.catalog.backend.app.domain.InstallationList;
-import org.springframework.boot.autoconfigure.info.ProjectInfoProperties;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Base64;
-import java.util.List;
-
+import static no.nav.data.catalog.backend.app.common.utils.ConverterUtils.convertJsonStringToJsonObject;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Component
 public class GithubRestConsumer {
     private RestTemplate restTemplate;
 
-    public GithubRestConsumer (RestTemplate restTemplate) {
+    public GithubRestConsumer(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-        public String getInstallationToken(String installationId, String jwtToken) {
-        ResponseEntity responseEntity = restTemplate.exchange("https://api.github.com/app/installations/" + installationId + "/access_tokens", HttpMethod.POST, new HttpEntity<>(createBearerHeader(jwtToken)), GithubInstallationToken.class);
-        GithubInstallationToken token = (GithubInstallationToken) responseEntity.getBody();
-        return token.getToken();
-    }
-
-    public String getInstallationId (String jwtToken) {
-        ResponseEntity responseEntity = restTemplate.exchange("https://api.github.com/app/installations", HttpMethod.GET, new HttpEntity<>(createBearerHeader(jwtToken)), GithubInstallation[].class);
-        GithubInstallation[] installations = (GithubInstallation[]) responseEntity.getBody();
-        String installationId = "";
-        for (GithubInstallation installation:installations) {
-            if ("navikt".equals(installation.getAccount().getLogin())) {
-                installationId = installation.getId();
-            }
+    public String getInstallationToken(String installationId, String jwtToken) {
+        try {
+            ResponseEntity responseEntity = restTemplate.exchange("https://api.github.com/app/installations/" + installationId + "/access_tokens", HttpMethod.POST, new HttpEntity<>(createBearerHeader(jwtToken)), GithubInstallationToken.class);
+            GithubInstallationToken token = (GithubInstallationToken) responseEntity.getBody();
+            return token.getToken();
+        } catch (
+                HttpClientErrorException e) {
+            throw new DataCatalogBackendTechnicalException(String.format("Calling Github to get installation token failed with status=%s message=%s", e.getStatusCode(), convertJsonStringToJsonObject(e.getResponseBodyAsString())), e, e.getStatusCode());
+        } catch (
+                HttpServerErrorException e) {
+            throw new DataCatalogBackendTechnicalException(String.format("Service getting Github installation token failed with status=%s message=%s", e.getStatusCode(), convertJsonStringToJsonObject(e.getResponseBodyAsString())), e, e.getStatusCode());
         }
-        return installationId;
     }
 
-    public GithubFileInfo getFileInfo (String filename, String token) {
-        ResponseEntity responseEntity = restTemplate.exchange("https://api.github.com/repos/navikt/pol-datasett/contents/" + filename, HttpMethod.GET, new HttpEntity<>(createTokenHeaders(token)), GithubFileInfo.class);
-        GithubFileInfo fileInfo = (GithubFileInfo) responseEntity.getBody();
-        return fileInfo;
+    public String getInstallationId(String jwtToken) {
+        try {
+            ResponseEntity responseEntity = restTemplate.exchange("https://api.github.com/app/installations", HttpMethod.GET, new HttpEntity<>(createBearerHeader(jwtToken)), GithubInstallation[].class);
+            GithubInstallation[] installations = (GithubInstallation[]) responseEntity.getBody();
+            String installationId = "";
+            for (GithubInstallation installation : installations) {
+                if ("navikt".equals(installation.getAccount().getLogin())) {
+                    installationId = installation.getId();
+                }
+            }
+            return installationId;
+        } catch (
+                HttpClientErrorException e) {
+            throw new DataCatalogBackendTechnicalException(String.format("Calling Github to get installation id failed with status=%s message=%s", e.getStatusCode(), convertJsonStringToJsonObject(e.getResponseBodyAsString())), e, e.getStatusCode());
+        } catch (
+                HttpServerErrorException e) {
+            throw new DataCatalogBackendTechnicalException(String.format("Service getting Github installation id failed with status=%s message=%s", e.getStatusCode(), convertJsonStringToJsonObject(e.getResponseBodyAsString())), e, e.getStatusCode());
+        }
     }
 
-    private HttpHeaders createHttpHeaders(String user, String password)
-    {
-        String notEncoded = user + ":" + password;
-        String encodedAuth = Base64.getEncoder().encodeToString(notEncoded.getBytes());
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add(HttpHeaders.AUTHORIZATION, "Basic " + encodedAuth);
-        return headers;
+    public GithubFileInfo getFileInfo(String filename, String token) {
+        try {
+            ResponseEntity responseEntity = restTemplate.exchange("https://api.github.com/repos/navikt/pol-datasett/contents/" + filename, HttpMethod.GET, new HttpEntity<>(createTokenHeaders(token)), GithubFileInfo.class);
+            GithubFileInfo fileInfo = (GithubFileInfo) responseEntity.getBody();
+            return fileInfo;
+        } catch (
+                HttpClientErrorException e) {
+            throw new DataCatalogBackendTechnicalException(String.format("Calling Github to download file failed with status=%s message=%s", e.getStatusCode(), convertJsonStringToJsonObject(e.getResponseBodyAsString())), e, e.getStatusCode());
+        } catch (
+                HttpServerErrorException e) {
+            throw new DataCatalogBackendTechnicalException(String.format("Service getting file from Github failed with status=%s message=%s", e.getStatusCode(), convertJsonStringToJsonObject(e.getResponseBodyAsString())), e, e.getStatusCode());
+        }
     }
 
     private HttpHeaders createTokenHeaders(String token) {
@@ -64,7 +80,7 @@ public class GithubRestConsumer {
 
     private static HttpHeaders createBearerHeader(String token) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add ("accept", "application/vnd.github.machine-man-preview+json");
+        headers.add("accept", "application/vnd.github.machine-man-preview+json");
         headers.add(AUTHORIZATION, "Bearer " + token);
         return headers;
     }
