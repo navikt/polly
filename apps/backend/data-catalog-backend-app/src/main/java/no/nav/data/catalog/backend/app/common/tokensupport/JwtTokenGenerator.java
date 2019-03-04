@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class JwtTokenGenerator {
 
-    public String generateToken(String filePath) {
+    public static String generateToken(String filePath) {
         java.security.Security.addProvider(
                 new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
@@ -48,7 +48,7 @@ public class JwtTokenGenerator {
         return token;
     }
 
-    private PrivateKey loadKey(String filepath) {
+    private static PrivateKey loadKey(String filepath) {
         PrivateKey key = null;
         try {
             key = readPrivateKeyFromFile(filepath, "RSA");
@@ -58,7 +58,7 @@ public class JwtTokenGenerator {
         return key;
     }
 
-    private byte[] parsePEMFile(File pemFile) throws IOException {
+    private static byte[] parsePEMFile(File pemFile) throws IOException {
         if (!pemFile.isFile() || !pemFile.exists()) {
             throw new FileNotFoundException(String.format("The file '%s' doesn't exist.", pemFile.getAbsolutePath()));
         }
@@ -69,7 +69,7 @@ public class JwtTokenGenerator {
         return content;
     }
 
-    private PrivateKey getPrivateKey(byte[] keyBytes, String algorithm) {
+    private static PrivateKey getPrivateKey(byte[] keyBytes, String algorithm) {
         PrivateKey privateKey = null;
         try {
             KeyFactory kf = KeyFactory.getInstance(algorithm);
@@ -83,7 +83,7 @@ public class JwtTokenGenerator {
         return privateKey;
     }
 
-    private PrivateKey readPrivateKeyFromFile(String filepath, String algorithm) throws IOException {
+    private static PrivateKey readPrivateKeyFromFile(String filepath, String algorithm) throws IOException {
         byte[] bytes = parsePEMFile(new File(filepath));
         return getPrivateKey(bytes, algorithm);
     }
