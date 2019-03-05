@@ -8,8 +8,7 @@ node {
         cleanWs()
 
         stage("checkout") {
-            gitCommitNo = sh(script: 'git rev-list --count HEAD', returnStdout: true).trim()
-            releaseVersion = "${gitCommitNo}.latest"
+            releaseVersion = "0.0.1"
             appToken = github.generateAppToken()
 
             sh "git init"
