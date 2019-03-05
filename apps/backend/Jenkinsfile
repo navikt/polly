@@ -1,3 +1,4 @@
+@Library('nais') _
 def gitCommit
 def scriptDir="/var/lib/jenkins/scripts"
 def repoName="data-catalog-backend"
@@ -9,10 +10,10 @@ def checkedOutLibraryScriptsRoot = "./../data-catalog-backend@libs/"
 // =============================================================================
 // Set when explicitly loading groovy snippets from SCM:
 //
-def dockerUtilsScript
-def naisScript
-def slackScript
-def versionScript
+//def dockerUtilsScript
+//def naisScript
+//def slackScript
+//def versionScript
 //
 // =============================================================================
 //
@@ -41,12 +42,12 @@ pipeline {
         stage("Load libraries") {
             steps {
                 script {
-					def checkedOutLibraryScriptRoot = checkOutLibrary(scriptDir, organization, 'jenkins-datajegerne-pipeline', 'master', 'pipeline-lib', appId)
-                    echo "About to load libraries..."
-                    dockerUtilsScript = loadLibraryScript(checkedOutLibraryScriptRoot, 'dockerUtils')
-                    naisScript        = loadLibraryScript(checkedOutLibraryScriptRoot, 'nais'       )
-                    slackScript       = loadLibraryScript(checkedOutLibraryScriptRoot, 'slack'      )
-                    versionScript     = loadLibraryScript(checkedOutLibraryScriptRoot, 'version'    )
+//					def checkedOutLibraryScriptRoot = checkOutLibrary(scriptDir, organization, 'jenkins-datajegerne-pipeline', 'master', 'pipeline-lib', appId)
+//                    echo "About to load libraries..."
+//                    dockerUtilsScript = loadLibraryScript(checkedOutLibraryScriptRoot, 'dockerUtils')
+//                    naisScript        = loadLibraryScript(checkedOutLibraryScriptRoot, 'nais'       )
+//                    slackScript       = loadLibraryScript(checkedOutLibraryScriptRoot, 'slack'      )
+//                    versionScript     = loadLibraryScript(checkedOutLibraryScriptRoot, 'version'    )
                 }
             }
         }
