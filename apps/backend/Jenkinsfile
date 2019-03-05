@@ -13,6 +13,7 @@ node {
 
             sh "git init"
             sh "git pull https://x-access-token:$appToken@github.com/navikt/data-catalog-backend.git"
+            sh "mvn clean install"
 //            sh "make bump-version"
 
 //            commitHash = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
