@@ -49,5 +49,11 @@ pipeline {
                 }
             }
         }
+
+        stage('Build and push docker image') {
+            steps {
+                dockerUtils 'buildAndPush'
+            }
+        }
     }
 }
