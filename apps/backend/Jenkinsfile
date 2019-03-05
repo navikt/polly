@@ -2,18 +2,28 @@
 node {
     def appToken
     def commitHash
+    def dockerRepo = "repo.adeo.no:5443"
+    def application = "data-catalog-backend"
     try {
         cleanWs()
 
         stage("checkout") {
+            gitCommitNo = sh(script: 'git rev-list --count HEAD', returnStdout: true).trim()
+            releaseVersion = "${gitCommitNo}.latest"
             appToken = github.generateAppToken()
 
             sh "git init"
             sh "git pull https://x-access-token:$appToken@github.com/navikt/data-catalog-backend.git"
-            sh "make bump-version"
+//            sh "make bump-version"
 
 //            commitHash = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
 //            github.commitStatus("pending", "navikt/data-catalog-backend", appToken, commitHash)
+        }
+        stage("build and publish docker image") {
+            withCredentials([usernamePassword(credentialsId: 'nexusUploader', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
+                sh "docker build -t ${dockerRepo}/${application}:${releaseVersion} ."
+                sh "docker login -u ${env.NEXUS_USERNAME} -p ${env.NEXUS_PASSWORD} ${dockerRepo} && docker push ${dockerRepo}/${application}:${releaseVersion}"
+            }
         }
     } catch (err) {
 //        github.commitStatus("failure", "navikt/data-catalog-backend", appToken, commitHash)
