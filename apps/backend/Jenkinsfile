@@ -16,6 +16,7 @@ node {
 
             sh "git init"
             sh "git pull https://x-access-token:$appToken@github.com/navikt/data-catalog-backend.git"
+            sh "mvn --version"
             sh "mvn clean install"
 //            sh "make bump-version"
 

@@ -22,7 +22,7 @@
 	</modules>
 
 	<properties>
-		<java.version>11</java.version>
+<!--		<java.version>11</java.version>-->
 		<start-class>no.nav.data.catalog.backend.app.AppStarter</start-class>
 	</properties>
 
