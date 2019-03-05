@@ -4,6 +4,8 @@ node {
     def commitHash
     def dockerRepo = "repo.adeo.no:5443"
     def application = "data-catalog-backend"
+    def mvnHome = tool "maven-3.3.9"
+    def mvn = "${mvnHome}/bin/mvn"
     try {
         cleanWs()
 
