@@ -17,19 +17,6 @@ def checkedOutLibraryScriptsRoot = "./../data-catalog-backend@libs/"
 //
 // =============================================================================
 //
-def checkOutLibrary(final String scriptDir, final String organization, final String repoName, final String repoBranch, final String libraryName, final String appId) {
-	def checkedOutLibraryScriptRoot =
-		sh (
-		   script      : scriptDir + '/pull.via.github.app/pull-shared-pipeline-scripts-repo-using-GitHub-App.sh \'' + organization + '\' \'' + repoName + '\' \'' + repoBranch + '\' \'' + appId + '\' \'' + libraryName + '\'',
-		   returnStdout: true
-		).trim()
-	return checkedOutLibraryScriptRoot;
-}
-
-def loadLibraryScript(final String checkedOutLibraryScriptRoot, final String libraryScriptName) {
-	return load(checkedOutLibraryScriptRoot + '/vars/' + libraryScriptName + '.groovy')
-}
-
 pipeline {
     agent any
 
