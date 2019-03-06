@@ -9,10 +9,10 @@ prometheus:
   enabled: false
 healthcheck:
   liveness:
-    path: /isAlive
+    path: /internal/isAlive
     initialDelay: 15
     timeout: 5
   readiness:
-    path: /isReady
+    path: /internal/isReady
     initialDelay: 15
     timeout: 5
