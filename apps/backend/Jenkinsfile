@@ -38,9 +38,8 @@ node {
         }
        stage('Deploy to nais preprod') {
             script {
-                def deployIssueId = nais action: 'jiraDeploy'
+                def deployIssueId = nais.jiraDeploy(${env.BUILD_URL}, "t5", "t5", ${application}, ${releaseVersion})
                 nais action: 'waitForCallback'
-                slack status: 'deployed', jiraIssueId: "${deployIssueId}"
             }
        }
     } catch (err) {
