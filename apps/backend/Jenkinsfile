@@ -14,7 +14,7 @@ node {
             appToken = github.generateAppToken()
 
             sh "git init"
-            sh "git pull --tags https://x-access-token:$appToken@github.com/navikt/data-catalog-backend.git"
+            sh "git pull --all https://x-access-token:$appToken@github.com/navikt/data-catalog-backend.git"
             releaseVersion = sh(script: "git describe --always --abbrev=0 --tags", returnStdout:true).trim()
             sh "mvn clean install"
 //            sh "make bump-version"
