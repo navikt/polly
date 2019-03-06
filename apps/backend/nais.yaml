@@ -1,0 +1,18 @@
+name: data-catalog-backend
+image: repo.adeo.no:5443/data-catalog-backend
+replicas:
+  min: 2
+  max: 4
+  cpuThresholdPercentage: 50
+port: 80
+prometheus:
+  enabled: false
+healthcheck:
+  liveness:
+    path: /isAlive
+    initialDelay: 15
+    timeout: 5
+  readiness:
+    path: /isReady
+    initialDelay: 15
+    timeout: 5
