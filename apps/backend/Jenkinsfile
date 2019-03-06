@@ -11,12 +11,11 @@ node {
         cleanWs()
 
         stage("checkout") {
-            releaseVersion = "0.0.1"
+            releaseVersion = sh(returnStdout: true, script: "git tag --contains").trim()
             appToken = github.generateAppToken()
 
             sh "git init"
             sh "git pull https://x-access-token:$appToken@github.com/navikt/data-catalog-backend.git"
-            sh "mvn --version"
             sh "mvn clean install"
 //            sh "make bump-version"
 
