@@ -35,6 +35,19 @@ node {
               sh "curl --user ${env.NEXUS_USERNAME}:${env.NEXUS_PASSWORD} --upload-file ${appConfig} https://repo.adeo.no/repository/raw/nais/${application}/${releaseVersion}/nais.yaml"
           }
         }
+       stage('Deploy to nais preprod') {
+            environment {
+                CURRENT_STAGE = "${env.STAGE_NAME}"
+            }
+            steps {
+                script {
+                    def deployIssueId = nais action: 'jiraDeploy'
+                    nais action: 'waitForCallback'
+                    slack status: 'deployed', jiraIssueId: "${deployIssueId}"
+                }
+            }
+        }
+
     } catch (err) {
 //        github.commitStatus("failure", "navikt/data-catalog-backend", appToken, commitHash)
         throw err
