@@ -11,7 +11,7 @@ node {
         cleanWs()
 
         stage("checkout") {
-            releaseVersion = sh(returnStdout: true, script: "git tag --contains").trim()
+            releaseVersion = sh(script: "git tag --contains", returnStdout:true).trim()
             appToken = github.generateAppToken()
 
             sh "git init"
