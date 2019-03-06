@@ -36,18 +36,12 @@ node {
           }
         }
        stage('Deploy to nais preprod') {
-            environment {
-                CURRENT_STAGE = "${env.STAGE_NAME}"
+            script {
+                def deployIssueId = nais action: 'jiraDeploy'
+                nais action: 'waitForCallback'
+                slack status: 'deployed', jiraIssueId: "${deployIssueId}"
             }
-            steps {
-                script {
-                    def deployIssueId = nais action: 'jiraDeploy'
-                    nais action: 'waitForCallback'
-                    slack status: 'deployed', jiraIssueId: "${deployIssueId}"
-                }
-            }
-        }
-
+       }
     } catch (err) {
 //        github.commitStatus("failure", "navikt/data-catalog-backend", appToken, commitHash)
         throw err
