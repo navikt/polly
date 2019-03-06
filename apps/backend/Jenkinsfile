@@ -8,6 +8,7 @@ node {
     def mvnHome = tool "maven-3.3.9"
     def jdk = tool "11"
     def mvn = "${mvnHome}/bin/mvn"
+    def FASIT_ENV = "t5"
     try {
         cleanWs()
 
