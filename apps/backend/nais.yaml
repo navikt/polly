@@ -1,4 +1,4 @@
-team: datajegerne
+team: Teamdatajegerne
 image: "repo.adeo.no:5443/data-catalog-backend"
 replicas:
   min: 2

@@ -38,8 +38,9 @@ node {
         }
        stage('Deploy to nais preprod') {
             script {
-                def deployIssueId = nais.jiraDeploy(env.BUILD_URL, "t5", "t5", application, releaseVersion)
-                nais.waitForCallback();
+                sh "printenv"
+                def deployIssueId = nais.jiraDeploy(env.BUILD_URL, "default", "t5", application, releaseVersion)
+                nais.waitForCallback()
             }
        }
     } catch (err) {
