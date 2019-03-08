@@ -22,7 +22,6 @@
 	</modules>
 
 	<properties>
-<!--		<java.version>11</java.version>-->
 		<start-class>no.nav.data.catalog.backend.app.AppStarter</start-class>
 	</properties>
 
@@ -30,6 +29,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
 		</dependency>
 
 		<dependency>
