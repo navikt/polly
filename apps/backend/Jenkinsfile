@@ -18,11 +18,11 @@ node {
 
         stage("checkout") {
             appToken = github.generateAppToken()
-
             sh "git init"
             sh "git pull https://x-access-token:$appToken@github.com/navikt/data-catalog-backend.git"
             sh "git fetch --tags https://x-access-token:$appToken@github.com/navikt/data-catalog-backend.git"
             releaseVersion = sh(script: "git describe --always --abbrev=0 --tags", returnStdout:true).trim()
+            committer = sh(script: 'git log -1 --pretty=format:"%an"', returnStdout: true).trim()
             sh "mvn clean install"
         }
         stage("build and publish docker image") {
@@ -38,8 +38,8 @@ node {
         }
        stage('Deploy to nais preprod') {
             script {
-                def deployIssueId = nais.jiraDeploy(env.BUILD_URL, "q1", "default", application, releaseVersion)
-                nais.waitForCallback()
+//                def deployIssueId = nais.jiraDeploy(env.BUILD_URL, "q1", "default", application, releaseVersion)
+                deployToPreprod(application, releaseVersion, "q1", "fss", "default", committer)
             }
        }
     } catch (err) {
