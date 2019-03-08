@@ -38,7 +38,6 @@ node {
         }
        stage('Deploy to nais preprod') {
             script {
-//                def deployIssueId = nais.jiraDeploy(env.BUILD_URL, "q1", "default", application, releaseVersion)
                 deployToPreprod(application, releaseVersion, "q1", "fss", "default", committer)
             }
        }
