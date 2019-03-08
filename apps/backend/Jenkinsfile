@@ -1,4 +1,8 @@
-@Library('nais') _
+@Library('nais')
+@Library('deploy')
+import deploy
+import com.jenkinsci.plugins.badge.action.BadgeAction
+deployLib = new deploy()
 node {
     def appToken
     def commitHash
@@ -41,4 +45,22 @@ node {
     } catch (err) {
         throw err
     }
+}
+def deployToPreprod(app, releaseVersion, environment, zone, namespace, committer) {
+   callback = "${env.BUILD_URL}input/Deploy/"
+
+   def deploy = deployLib.deployNaisApp(app, releaseVersion, environment, zone, namespace, callback, committer).key
+
+   try {
+       timeout(time: 15, unit: 'MINUTES') {
+           input id: 'deploy', message: "Check status here:  https://jira.adeo.no/browse/${deploy}"
+       }
+       currentBuild.rawBuild.getActions().add(BadgeAction.createShortText("Preprod: ${releaseVersion}", 'black', '#b4d455', '1px', 'green'))
+   }
+   catch (Exception e) {
+       color = 'warning'
+       GString message = "Build ${releaseVersion} of ${app} could not be deployed to pre-prod"
+       slackSend color: color, channel: '#team-tuan-ci', message: message, teamDomain: 'nav-it', tokenCredentialId: 'pam-slack'
+       throw new Exception("Deploy feilet :( \n Se https://jira.adeo.no/browse/" + deploy + " for detaljer", e)
+   }
 }
