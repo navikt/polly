@@ -21,7 +21,6 @@ node {
             sh "git pull https://x-access-token:$appToken@github.com/navikt/data-catalog-backend.git"
             sh "git fetch --tags https://x-access-token:$appToken@github.com/navikt/data-catalog-backend.git"
             releaseVersion = sh(script: "git describe --always --abbrev=0 --tags", returnStdout:true).trim()
-            committer = sh(script: 'git log -1 --pretty=format:"%an"', returnStdout: true).trim()
             sh "mvn clean install"
         }
         stage("build and publish docker image") {
