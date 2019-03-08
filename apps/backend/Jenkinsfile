@@ -36,8 +36,8 @@ node {
             }
         }
        stage('Deploy to nais preprod') {
-            script {
-                deployToPreprod(application, releaseVersion, "q1", "fss", "default", committer)
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jiraServiceUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                sh "curl -k -d \'{\"application\": \"${application}\", \"version\": \"${releaseVersion}\", \"environment\": \"q1\", \"zone\": \"fss\", \"username\": \"${env.USERNAME}\", \"password\": \"${env.PASSWORD}\", \"namespace\": \"default\""}\'"
             }
        }
     } catch (err) {
