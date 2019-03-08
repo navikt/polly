@@ -15,7 +15,6 @@ node {
     def FASIT_ENV = "t5"
     try {
         cleanWs()
-
         stage("checkout") {
             appToken = github.generateAppToken()
             sh "git init"
