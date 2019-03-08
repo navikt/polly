@@ -20,8 +20,8 @@ public class RecordController {
 	}
 
 	@PostMapping
-	public Record insertRecord(@RequestBody Record record) {
-		return recordService.insertRecord(record);
+	public RecordResponse insertRecord(@RequestBody String jsonString) {
+		return recordService.insertRecord(jsonString);
 	}
 
 	@GetMapping("/{id}")
@@ -30,12 +30,12 @@ public class RecordController {
 	}
 
 	@PutMapping("/{id}")
-	public void updateFieldsById(@PathVariable String id, @RequestBody String jsonString) {
-		recordService.updateFieldsById(id, jsonString);
+	public RecordResponse updateFieldsById(@PathVariable String id, @RequestBody String jsonString) {
+		return recordService.updateFieldsById(id, jsonString);
 	}
 
 	@DeleteMapping("/{id}")
-	public void deleteRecordById(@PathVariable String id) {
-		recordService.deleteRecordById(id);
+	public RecordResponse deleteRecordById(@PathVariable String id) {
+		return recordService.deleteRecordById(id);
 	}
 }

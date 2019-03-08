@@ -27,12 +27,23 @@ public class RecordService {
 	}
 
 	// -------- CRUD operations on records -----------------
-	public Record insertRecord(Record record) {
-		record.setId(base64UUID());
-		record.setRecordCreationDate(LocalDate.now());
-
-		elasticsearchService.insertRecord(record);
-		return record;
+	public RecordResponse insertRecord(String jsonString) {
+		String id = base64UUID();
+		try {
+			Map<String, Object> jsonMap = getMapFromString(jsonString);
+			jsonMap.put("id", id);
+			jsonMap.put("recordCreationDate", LocalDate.now());
+			objectMapper.convertValue(jsonMap, Record.class);  //Validation in constructor for class Record
+			elasticsearchService.insertRecord(jsonMap);
+		} catch (JsonMappingException jme) {
+			jme.getMessage();
+		} catch (IOException ioe) {
+			ioe.getLocalizedMessage();
+		}
+		return RecordResponse.builder()
+				.id(id)
+				.status(String.format("Created a new record with id=%s", id))
+				.build();
 	}
 
 	public Record getRecordById(String id) {
@@ -40,22 +51,33 @@ public class RecordService {
 		return objectMapper.convertValue(dataMap, Record.class);
 	}
 
-	public void updateFieldsById(String id, String jsonString) {
+	public RecordResponse updateFieldsById(String id, String jsonString) {
 		try {
-			Map<String, Object> jsonMap = objectMapper.readValue(jsonString, new TypeReference<Map<String, String>>() {
-			});
+			Map<String, Object> jsonMap = getMapFromString(jsonString);
 			jsonMap.put("recordLastUpdatedDate", LocalDate.now().toString());
-
 			elasticsearchService.updateFieldsById(id, jsonMap);
 		} catch (JsonGenerationException | JsonMappingException je) {
 			je.getMessage();
 		} catch (IOException ioe) {
 			ioe.getLocalizedMessage();
 		}
+		return RecordResponse.builder()
+				.id(id)
+				.status(String.format("Updated record with id=%s", id))
+				.build();
 	}
 
-	public void deleteRecordById(String id) {
+	public RecordResponse deleteRecordById(String id) {
 		elasticsearchService.deleteRecordById(id);
+		return RecordResponse.builder()
+				.id(id)
+				.status(String.format("Deleted record with id=%s", id))
+				.build();
+	}
+
+	private Map<String, Object> getMapFromString(String jsonString) throws IOException {
+		return objectMapper.readValue(jsonString, new TypeReference<Map<String, Object>>() {
+		});
 	}
 
 	// ------- Search -----------

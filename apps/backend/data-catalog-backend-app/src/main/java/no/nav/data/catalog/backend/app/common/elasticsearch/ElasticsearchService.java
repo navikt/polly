@@ -3,9 +3,6 @@ package no.nav.data.catalog.backend.app.common.elasticsearch;
 import static no.nav.data.catalog.backend.app.common.utils.Constants.INDEX;
 import static no.nav.data.catalog.backend.app.common.utils.Constants.TYPE;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import no.nav.data.catalog.backend.app.record.Record;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.get.GetRequest;
@@ -28,19 +25,16 @@ public class ElasticsearchService {
 
 	private RestHighLevelClient restHighLevelClient;
 	private RequestOptions requestOptions;
-	private ObjectMapper objectMapper;
 
-	public ElasticsearchService(RestHighLevelClient restHighLevelClient, ObjectMapper objectMapper) {
+	public ElasticsearchService(RestHighLevelClient restHighLevelClient) {
 		this.restHighLevelClient = restHighLevelClient;
-		this.objectMapper = objectMapper.registerModule(new JavaTimeModule());
 		this.requestOptions = RequestOptions.DEFAULT.toBuilder().build();
 	}
 
 	// -------------- CRUD -----------------
-	public void insertRecord(Record record) {
-		IndexRequest indexRequest = new IndexRequest(INDEX, TYPE, record.getId());
-		Map dataMap = objectMapper.convertValue(record, Map.class);
-		indexRequest.source(dataMap);
+	public void insertRecord(Map<String, Object> jsonMap) {
+		IndexRequest indexRequest = new IndexRequest(INDEX, TYPE, jsonMap.get("id").toString());
+		indexRequest.source(jsonMap);
 
 		try {
 			restHighLevelClient.index(indexRequest, requestOptions);
