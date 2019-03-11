@@ -36,7 +36,7 @@ node {
         }
        stage('Deploy to nais preprod') {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jiraServiceUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                sh "curl -x http://webproxy-internett.nav.no:8088 -k -d \'{\"application\": \"${application}\", \"version\": \"${releaseVersion}\", \"environment\": \"q1\", \"zone\": \"fss\", \"username\": \"${env.USERNAME}\", \"password\": \"${env.PASSWORD}\", \"namespace\": \"default\"}\' https://daemon.nais.preprod.local/deploy"
+                sh "curl -x http://webproxy-internett.nav.no:8088 -k -d \'{\"application\": \"${application}\", \"version\": \"${releaseVersion}\", \"environment\": \"q1\", \"zone\": \"fss\", \"username\": \"${env.USERNAME}\", \"password\": \"${env.PASSWORD}\", \"namespace\": \"q1\"}\' https://daemon.nais.preprod.local/deploy"
             }
        }
     } catch (err) {
