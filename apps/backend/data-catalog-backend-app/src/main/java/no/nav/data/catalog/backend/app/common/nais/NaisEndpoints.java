@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RestController
 @RequestMapping(("internal/"))
 public class NaisEndpoints {
-	public static final String APPLICATION_ALIVE = "Application is alive and kicking!";
+	public static final String APPLICATION_ALIVE = "Application is alive!";
 	public static final String APPLICATION_READY = "Application is ready for traffic!";
 	private static AtomicInteger isReady = new AtomicInteger(1);
 
