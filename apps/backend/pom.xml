@@ -14,6 +14,7 @@
 	<artifactId>data-catalog-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
+	<name>data-catalog-backend</name>
 
 	<modules>
 		<module>data-catalog-backend-app</module>
@@ -21,16 +22,26 @@
 	</modules>
 
 	<properties>
-		<java.version>11</java.version>
 		<start-class>no.nav.data.catalog.backend.app.AppStarter</start-class>
 		<junit.version>4.12</junit.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<scope>provided</scope>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

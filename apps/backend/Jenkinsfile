@@ -1,65 +1,45 @@
-def gitCommit
-def scriptDir="/var/lib/jenkins/scripts"
-def repoName="data-catalog-backend"
-def repoBranch="master"
-def organization="navikt"
-def appId="26100" // Defined in the GitHub App "datajegerne"
-def checkedOutLibraryScriptsRoot = "./../data-catalog-backend@libs/"
-//
-// =============================================================================
-// Set when explicitly loading groovy snippets from SCM:
-//
-def dockerUtilsScript
-def naisScript
-def slackScript
-def versionScript
-//
-// =============================================================================
-//
-def checkOutLibrary(final String scriptDir, final String organization, final String repoName, final String repoBranch, final String libraryName, final String appId) {
-	def checkedOutLibraryScriptRoot =
-		sh (
-		   script      : scriptDir + '/pull.via.github.app/pull-shared-pipeline-scripts-repo-using-GitHub-App.sh \'' + organization + '\' \'' + repoName + '\' \'' + repoBranch + '\' \'' + appId + '\' \'' + libraryName + '\'',
-		   returnStdout: true
-		).trim()
-	return checkedOutLibraryScriptRoot;
-}
-
-def loadLibraryScript(final String checkedOutLibraryScriptRoot, final String libraryScriptName) {
-	return load(checkedOutLibraryScriptRoot + '/vars/' + libraryScriptName + '.groovy')
-}
-
-pipeline {
-    agent any
-
-    tools {
-        maven "maven-3.3.9"
-        jdk "java11"
-    }
-
-    stages {
-        stage("Load libraries") {
-            steps {
-                script {
-					def checkedOutLibraryScriptRoot = checkOutLibrary(scriptDir, organization, 'jenkins-datajegerne-pipeline', 'master', 'pipeline-lib', appId)
-                    echo "About to load libraries..."
-                    dockerUtilsScript = loadLibraryScript(checkedOutLibraryScriptRoot, 'dockerUtils')
-                    naisScript        = loadLibraryScript(checkedOutLibraryScriptRoot, 'nais'       )
-                    slackScript       = loadLibraryScript(checkedOutLibraryScriptRoot, 'slack'      )
-                    versionScript     = loadLibraryScript(checkedOutLibraryScriptRoot, 'version'    )
-                }
+@Library('nais')
+@Library('deploy')
+import deploy
+import com.jenkinsci.plugins.badge.action.BadgeAction
+deployLib = new deploy()
+node {
+    def appToken
+    def commitHash
+    def appConfig = "nais.yaml"
+    def dockerRepo = "repo.adeo.no:5443"
+    def application = "data-catalog-backend"
+    def mvnHome = tool "maven-3.3.9"
+    def jdk = tool "11"
+    def mvn = "${mvnHome}/bin/mvn"
+    def FASIT_ENV = "t5"
+    try {
+        cleanWs()
+        stage("checkout") {
+            appToken = github.generateAppToken()
+            sh "git init"
+            sh "git pull https://x-access-token:$appToken@github.com/navikt/data-catalog-backend.git"
+            sh "git fetch --tags https://x-access-token:$appToken@github.com/navikt/data-catalog-backend.git"
+            releaseVersion = sh(script: "git describe --always --abbrev=0 --tags", returnStdout:true).trim()
+            sh "mvn clean install"
+        }
+        stage("build and publish docker image") {
+            withCredentials([usernamePassword(credentialsId: 'nexusUploader', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
+                sh "docker build -t ${dockerRepo}/${application}:${releaseVersion} ."
+                sh "docker login -u ${env.NEXUS_USERNAME} -p ${env.NEXUS_PASSWORD} ${dockerRepo} && docker push ${dockerRepo}/${application}:${releaseVersion}"
             }
         }
-
-        stage("Checkout application") {
-            steps {
-                script {
-                   gitCommit = sh (
-                       script      : scriptDir + '/pull.via.github.app/pull-app-repo-using-GitHub-App.sh \'' + organization + '\' \'' + repoName + '\' \'' + repoBranch + '\' \'' + appId + '\'',
-                       returnStdout: true
-                   ).trim()
-                }
+        stage("publish yaml") {
+            withCredentials([usernamePassword(credentialsId: 'nexusUploader', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
+              sh "curl --user ${env.NEXUS_USERNAME}:${env.NEXUS_PASSWORD} --upload-file ${appConfig} https://repo.adeo.no/repository/raw/nais/${application}/${releaseVersion}/nais.yaml"
             }
         }
+       stage('Deploy to nais preprod') {
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jiraServiceUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                sh "curl -k -d \'{\"application\": \"${application}\", \"version\": \"${releaseVersion}\", \"fasitEnvironment\": \"q1\", \"zone\": \"fss\", \"skipFasit\": true, \"namespace\": \"q1\"}\' https://daemon.nais.preprod.local/deploy"
+            }
+       }
+    } catch (err) {
+        throw err
     }
 }

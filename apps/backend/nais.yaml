@@ -1,0 +1,18 @@
+team: Teamdatajegerne
+image: "repo.adeo.no:5443/data-catalog-backend"
+replicas:
+  min: 2
+  max: 4
+  cpuThresholdPercentage: 50
+port: 8080
+prometheus:
+  enabled: false
+healthcheck:
+  liveness:
+    path: /internal/isAlive
+    initialDelay: 15
+    timeout: 5
+  readiness:
+    path: /internal/isReady
+    initialDelay: 15
+    timeout: 5
