@@ -43,7 +43,7 @@ public class ElasticsearchConfiguration extends AbstractFactoryBean {
 		try {
 			restHighLevelClient = new RestHighLevelClient(
 					RestClient.builder(
-							new HttpHost("10.47.242.187", 9200, "http")));
+							new HttpHost("35.228.12.206", 9200, "http")));
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
