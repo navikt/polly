@@ -1,13 +1,11 @@
 package no.nav.data.catalog.backend.app.service;
 
-import no.nav.data.catalog.backend.app.common.tokensupport.JwtTokenGenerator;
 import no.nav.data.catalog.backend.app.consumer.GithubRestConsumer;
 import no.nav.data.catalog.backend.app.domain.GithubFileInfo;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
-import java.security.PrivateKey;
 
 import static no.nav.data.catalog.backend.app.common.tokensupport.JwtTokenGenerator.generateToken;
 
@@ -20,7 +18,8 @@ public class ProcessInformationDatasetService {
     }
 
     public void retrieveAndSaveDataset(String filename) {
-        String installationToken = getInstallationToken("C:\\Visma\\projects\\nav\\data-catalog-backend\\travis\\datajegerne-private-key.pem");
+        System.out.println(System.getenv("GITHUB_PRIVATE_KEY"));
+        String installationToken = getInstallationToken(System.getenv("GITHUB_PRIVATE_KEY"));
         GithubFileInfo fileInfo = restConsumer.getFileInfo(filename, installationToken);
         byte[] content = null;
         if (fileInfo != null && "file".equals(fileInfo.getType())) {
@@ -40,4 +39,5 @@ public class ProcessInformationDatasetService {
         String installationToken = restConsumer.getInstallationToken(installationId, jwtToken);
         return installationToken;
     }
+
 }

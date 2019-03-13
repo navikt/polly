@@ -2,7 +2,6 @@ version: '3.7'
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
-    container_name: elasticsearch
     environment:
       - cluster.name=docker-cluster
       - bootstrap.memory_lock=true
@@ -18,13 +17,24 @@ services:
       - 9300:9300
     networks:
       - esnet
-
+  data-catalog-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      GITHUB_PRIVATE_KEY: /run/secrets/githubAppKey
+    secrets:
+      - githubAppKey
 volumes:
   esdata:
     driver: local
-
 networks:
   esnet:
+secrets:
+  githubAppKey:
+    external: true
 
 #  elasticsearch2:
 #    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1

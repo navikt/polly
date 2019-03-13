@@ -1,6 +1,5 @@
 package no.nav.data.catalog.backend.app.rest;
 
-import no.nav.data.catalog.backend.app.domain.GithubCommitInfo;
 import no.nav.data.catalog.backend.app.domain.GithubPushEventPayloadRequest;
 import no.nav.data.catalog.backend.app.service.ProcessInformationDatasetService;
 import org.apache.catalina.filters.AddDefaultCharsetFilter;
@@ -26,4 +25,12 @@ public class WebhooksRestController {
         payload.getGithubCommitList().forEach(commit -> commit.getAdded().forEach(fileAdded -> datasetService.retrieveAndSaveDataset(fileAdded)));
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PostMapping(value = "/test")
+    @ResponseBody
+    public ResponseEntity<AddDefaultCharsetFilter.ResponseWrapper> test(@RequestParam(value="filename") String filename) {
+        datasetService.retrieveAndSaveDataset(filename);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
