@@ -3,6 +3,7 @@ package no.nav.data.catalog.backend.app.common.elasticsearch;
 import static no.nav.data.catalog.backend.app.common.utils.Constants.INDEX;
 import static no.nav.data.catalog.backend.app.common.utils.Constants.TYPE;
 
+import org.apache.http.HttpHost;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.get.GetRequest;
@@ -12,6 +13,7 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -23,13 +25,15 @@ import java.util.Map;
 @Component
 public class ElasticsearchService {
 
-	private RestHighLevelClient restHighLevelClient;
-	private RequestOptions requestOptions;
+	private RestHighLevelClient restHighLevelClient = new RestHighLevelClient(
+            RestClient.builder(
+            new HttpHost("35.228.12.206", 9200, "http")));
+	private RequestOptions requestOptions = RequestOptions.DEFAULT.toBuilder().build();
 
-	public ElasticsearchService(RestHighLevelClient restHighLevelClient) {
-		this.restHighLevelClient = restHighLevelClient;
-		this.requestOptions = RequestOptions.DEFAULT.toBuilder().build();
-	}
+//	public ElasticsearchService(RestHighLevelClient restHighLevelClient) {
+//		this.restHighLevelClient = restHighLevelClient;
+//		this.requestOptions = RequestOptions.DEFAULT.toBuilder().build();
+//	}
 
 	// -------------- CRUD -----------------
 	public void insertRecord(Map<String, Object> jsonMap) {

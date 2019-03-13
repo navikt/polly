@@ -8,7 +8,7 @@ import org.springframework.beans.factory.config.AbstractFactoryBean;
 import org.springframework.context.annotation.Configuration;
 
 @Slf4j
-@Configuration
+//@Configuration
 public class ElasticsearchConfiguration extends AbstractFactoryBean {
 
 	private RestHighLevelClient restHighLevelClient;
