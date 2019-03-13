@@ -15,6 +15,8 @@ import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.AbstractQueryBuilder;
+import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Component;
@@ -26,8 +28,8 @@ import java.util.Map;
 public class ElasticsearchService {
 
 	private RestHighLevelClient restHighLevelClient = new RestHighLevelClient(
-            RestClient.builder(
-            new HttpHost("35.228.12.206", 9200, "http")));
+			RestClient.builder(
+					new HttpHost("35.228.12.206", 9200, "http")));
 	private RequestOptions requestOptions = RequestOptions.DEFAULT.toBuilder().build();
 
 //	public ElasticsearchService(RestHighLevelClient restHighLevelClient) {
@@ -88,11 +90,21 @@ public class ElasticsearchService {
 
 	// ------------- SEARCH ----------------------
 	public SearchResponse searchByField(String fieldName, String fieldValue) {
+		AbstractQueryBuilder query = new MatchQueryBuilder(fieldName, fieldValue);
+		return searchByQuery(query);
+	}
+
+	public SearchResponse getAllRecords() {
+		AbstractQueryBuilder query = new MatchAllQueryBuilder();
+		return searchByQuery(query);
+	}
+
+	private SearchResponse searchByQuery(AbstractQueryBuilder query) {
 		SearchRequest searchRequest = new SearchRequest();
 		searchRequest.indices(INDEX);
 
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.query(new MatchQueryBuilder(fieldName, fieldValue));
+		searchSourceBuilder.query(query);
 		searchRequest.source(searchSourceBuilder);
 
 		try {

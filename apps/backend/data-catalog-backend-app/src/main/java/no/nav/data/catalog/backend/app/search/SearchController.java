@@ -32,4 +32,20 @@ public class SearchController {
 				.totalTimeInMillis(searchResponse.getTook().getMillis())
 				.build();
 	}
+
+
+	@PostMapping(value = "/allRecords", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public SearchResult getAllRecords() {
+
+		SearchResponse searchResponse = recordService.getAllRecords();
+
+		return SearchResult.builder()
+				.searchResponse(searchResponse)
+				.totalElements(searchResponse.getHits().getTotalHits())
+				.results(searchResponse.getHits())
+				.totalTimeInMillis(searchResponse.getTook().getMillis())
+				.build();
+
+	}
+
 }

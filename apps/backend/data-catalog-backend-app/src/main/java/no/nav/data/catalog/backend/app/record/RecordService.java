@@ -84,4 +84,8 @@ public class RecordService {
 	public SearchResponse searchByField(String fieldName, String fieldValue) {
 		return elasticsearchService.searchByField(fieldName, fieldValue);
 	}
+
+	public SearchResponse getAllRecords() {
+		return elasticsearchService.getAllRecords();
+	}
 }
