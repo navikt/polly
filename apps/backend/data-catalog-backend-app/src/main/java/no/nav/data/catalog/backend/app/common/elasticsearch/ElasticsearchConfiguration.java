@@ -8,7 +8,7 @@ import org.springframework.beans.factory.config.AbstractFactoryBean;
 import org.springframework.context.annotation.Configuration;
 
 @Slf4j
-@Configuration
+//@Configuration
 public class ElasticsearchConfiguration extends AbstractFactoryBean {
 
 	private RestHighLevelClient restHighLevelClient;
@@ -43,7 +43,7 @@ public class ElasticsearchConfiguration extends AbstractFactoryBean {
 		try {
 			restHighLevelClient = new RestHighLevelClient(
 					RestClient.builder(
-							new HttpHost("localhost", 9200, "http")));
+							new HttpHost("35.228.12.206", 9200, "http")));
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
