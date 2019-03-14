@@ -3,12 +3,10 @@ package no.nav.data.catalog.backend.app.search;
 import no.nav.data.catalog.backend.app.record.RecordService;
 import org.elasticsearch.action.search.SearchResponse;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/records/search")
 public class SearchController {
 
@@ -33,7 +31,6 @@ public class SearchController {
 				.build();
 	}
 
-
 	@PostMapping(value = "/allRecords", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public SearchResult getAllRecords() {
 
@@ -47,5 +44,4 @@ public class SearchController {
 				.build();
 
 	}
-
 }
