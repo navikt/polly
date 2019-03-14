@@ -9,10 +9,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import no.nav.data.catalog.backend.app.common.elasticsearch.ElasticsearchService;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -75,6 +79,20 @@ public class RecordService {
 				.build();
 	}
 
+	public List<Record> getAllRecords() {
+		SearchResponse searchResponse = elasticsearchService.getAllRecords();
+		SearchHits hits = searchResponse.getHits();
+		SearchHit[] searchHits = hits.getHits();
+
+		List<Record> listOfRecords = new ArrayList<>();
+
+		for (SearchHit hit : searchHits) {
+			Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+			listOfRecords.add(objectMapper.convertValue(sourceAsMap, Record.class));
+		}
+		return listOfRecords;
+	}
+
 	private Map<String, Object> getMapFromString(String jsonString) throws IOException {
 		return objectMapper.readValue(jsonString, new TypeReference<Map<String, Object>>() {
 		});
@@ -85,7 +103,4 @@ public class RecordService {
 		return elasticsearchService.searchByField(fieldName, fieldValue);
 	}
 
-	public SearchResponse getAllRecords() {
-		return elasticsearchService.getAllRecords();
-	}
 }

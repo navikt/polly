@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/records")
 public class RecordController {
@@ -37,5 +39,10 @@ public class RecordController {
 	@DeleteMapping("/{id}")
 	public RecordResponse deleteRecordById(@PathVariable String id) {
 		return recordService.deleteRecordById(id);
+	}
+
+	@GetMapping("/allRecords")
+	public List<Record> getAllRecords() {
+		return recordService.getAllRecords();
 	}
 }
