@@ -18,6 +18,7 @@ services:
     networks:
       - esnet
   data-catalog-backend:
+    image: navikt/data-catalog-backend:119
     build:
       context: .
       dockerfile: Dockerfile
