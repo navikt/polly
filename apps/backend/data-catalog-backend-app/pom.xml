@@ -86,7 +86,6 @@
 						<id>repackage</id>
 						<configuration>
 							<finalName>app</finalName>
-							<classifier>exec</classifier>
 						</configuration>
 					</execution>
 				</executions>
