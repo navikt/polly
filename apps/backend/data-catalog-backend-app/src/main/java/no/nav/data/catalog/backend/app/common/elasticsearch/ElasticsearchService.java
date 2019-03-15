@@ -19,25 +19,20 @@ import org.elasticsearch.index.query.AbstractQueryBuilder;
 import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Map;
 
-@Component
+@Service
 public class ElasticsearchService {
 
 	private RestHighLevelClient restHighLevelClient = new RestHighLevelClient(
 			RestClient.builder(
-					new HttpHost("35.228.12.206", 9200, "http")));
+//					new HttpHost("35.228.12.206", 9200, "http")));
+					new HttpHost("localhost", 9200, "http")));
 	private RequestOptions requestOptions = RequestOptions.DEFAULT.toBuilder().build();
 
-//	public ElasticsearchService(RestHighLevelClient restHighLevelClient) {
-//		this.restHighLevelClient = restHighLevelClient;
-//		this.requestOptions = RequestOptions.DEFAULT.toBuilder().build();
-//	}
-
-	// -------------- CRUD -----------------
 	public void insertRecord(Map<String, Object> jsonMap) {
 		IndexRequest indexRequest = new IndexRequest(INDEX, TYPE, jsonMap.get("id").toString());
 		indexRequest.source(jsonMap);
@@ -88,7 +83,6 @@ public class ElasticsearchService {
 		}
 	}
 
-	// ------------- SEARCH ----------------------
 	public SearchResponse searchByField(String fieldName, String fieldValue) {
 		AbstractQueryBuilder query = new MatchQueryBuilder(fieldName, fieldValue);
 		return searchByQuery(query);

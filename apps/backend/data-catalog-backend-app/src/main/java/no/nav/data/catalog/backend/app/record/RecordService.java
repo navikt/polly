@@ -11,7 +11,8 @@ import no.nav.data.catalog.backend.app.common.elasticsearch.ElasticsearchService
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
-import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -19,18 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Repository
+@Service
 public class RecordService {
 
+	@Autowired
 	private ElasticsearchService elasticsearchService;
-	private ObjectMapper objectMapper;
+	private ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
-	public RecordService(ElasticsearchService elasticsearchService, ObjectMapper objectMapper) {
-		this.elasticsearchService = elasticsearchService;
-		this.objectMapper = objectMapper.registerModule(new JavaTimeModule());
-	}
-
-	// -------- CRUD operations on records -----------------
 	public RecordResponse insertRecord(String jsonString) {
 		String id = base64UUID();
 		try {
@@ -98,7 +94,6 @@ public class RecordService {
 		});
 	}
 
-	// ------- Search -----------
 	public SearchResponse searchByField(String fieldName, String fieldValue) {
 		return elasticsearchService.searchByField(fieldName, fieldValue);
 	}
