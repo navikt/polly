@@ -30,6 +30,12 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <version>1.10.6</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

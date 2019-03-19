@@ -40,7 +40,10 @@ public class ProcessInformationDatasetService {
         }
         if (content != null && content.length > 0) {
             ObjectMapper mapper = new ObjectMapper();
-            String jsonString = new String(content, StandardCharsets.UTF_8);
+            String jsonString = new String(content, StandardCharsets.UTF_8).trim();
+            if (!jsonString.startsWith("[")) {
+                jsonString = "[" + jsonString + "]";
+            }
             try {
                 List<GithubInformationType> recordList = mapper.readValue(jsonString, new TypeReference<List<GithubInformationType>>() {});
                 recordList.forEach(row -> recordService.insertRecord(row.toString()));
