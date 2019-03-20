@@ -6,12 +6,45 @@
 
 	<parent>
 		<artifactId>data-catalog-backend-test</artifactId>
-		<groupId>no.nav.data.catalog.backend</groupId>
+		<groupId>no.nav.data</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>data-catalog-backend-test-component</artifactId>
 
+	<dependencies>
+		<dependency>
+			<groupId>no.nav.data</groupId>
+			<artifactId>data-catalog-backend-app</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<plugins>

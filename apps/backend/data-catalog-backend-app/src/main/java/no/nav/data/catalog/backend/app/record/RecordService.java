@@ -6,7 +6,6 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import no.nav.data.catalog.backend.app.common.elasticsearch.ElasticsearchService;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
@@ -25,7 +24,9 @@ public class RecordService {
 
 	@Autowired
 	private ElasticsearchService elasticsearchService;
-	private ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	public RecordResponse insertRecord(String jsonString) {
 		String id = base64UUID();
