@@ -13,7 +13,7 @@ import javax.inject.Inject;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
-@RequestMapping(("internal/"))
+@RequestMapping(("/backend/internal/"))
 public class NaisEndpoints {
 	private static AtomicInteger isReady = new AtomicInteger(1);
 
