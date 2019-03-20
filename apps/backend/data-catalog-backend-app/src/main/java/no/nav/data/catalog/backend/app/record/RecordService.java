@@ -6,27 +6,28 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import no.nav.data.catalog.backend.app.common.elasticsearch.ElasticsearchService;
 import org.elasticsearch.action.search.SearchResponse;
-import org.springframework.stereotype.Repository;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-@Repository
+@Service
 public class RecordService {
 
+	@Autowired
 	private ElasticsearchService elasticsearchService;
+
+	@Autowired
 	private ObjectMapper objectMapper;
 
-	public RecordService(ElasticsearchService elasticsearchService, ObjectMapper objectMapper) {
-		this.elasticsearchService = elasticsearchService;
-		this.objectMapper = objectMapper.registerModule(new JavaTimeModule());
-	}
-
-	// -------- CRUD operations on records -----------------
 	public RecordResponse insertRecord(String jsonString) {
 		String id = base64UUID();
 		try {
@@ -75,13 +76,27 @@ public class RecordService {
 				.build();
 	}
 
+	public List<Record> getAllRecords() {
+		SearchResponse searchResponse = elasticsearchService.getAllRecords();
+		SearchHits hits = searchResponse.getHits();
+		SearchHit[] searchHits = hits.getHits();
+
+		List<Record> listOfRecords = new ArrayList<>();
+
+		for (SearchHit hit : searchHits) {
+			Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+			listOfRecords.add(objectMapper.convertValue(sourceAsMap, Record.class));
+		}
+		return listOfRecords;
+	}
+
 	private Map<String, Object> getMapFromString(String jsonString) throws IOException {
 		return objectMapper.readValue(jsonString, new TypeReference<Map<String, Object>>() {
 		});
 	}
 
-	// ------- Search -----------
 	public SearchResponse searchByField(String fieldName, String fieldValue) {
 		return elasticsearchService.searchByField(fieldName, fieldValue);
 	}
+
 }
