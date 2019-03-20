@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/records")
+@RequestMapping("/backend/records")
 public class RecordController {
 
 	@Autowired
