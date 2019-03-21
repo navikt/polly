@@ -31,7 +31,7 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ComponentTestConfig.class)
-public class RecordServiceSpringComponentTest {
+public class RecordServiceComponentTest {
 
 	@MockBean
 	private RecordService recordServiceMock;
@@ -48,7 +48,7 @@ public class RecordServiceSpringComponentTest {
 	}
 
 	@Test
-	public void shouldFailToInsertRecord_givenFaultyJsonString() {
+	public void shouldFailTo_InsertRecord_givenFaultyJsonString() {
 		expectedException.expect(IllegalArgumentException.class);
 
 		when(recordServiceMock.insertRecord(getFaltyJsonString())).thenThrow(new IllegalArgumentException());

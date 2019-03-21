@@ -1,35 +1,22 @@
 package no.nav.data.catalog.backend.app.common.nais;
 
-import io.micrometer.core.instrument.Gauge;
-import io.micrometer.core.instrument.MeterRegistry;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.inject.Inject;
-import java.util.concurrent.atomic.AtomicInteger;
-
 @RestController
-@RequestMapping(("/backend/internal/"))
+@RequestMapping(value = "/backend/internal/", produces = MediaType.APPLICATION_JSON_VALUE)
 public class NaisEndpoints {
-	private static AtomicInteger isReady = new AtomicInteger(1);
 
-	@Inject
-	public NaisEndpoints(MeterRegistry meterRegistry) {
-		Gauge.builder("dok_app_is_ready", isReady, AtomicInteger::get).register(meterRegistry);
+	@GetMapping("/isAlive")
+	ResponseEntity alive() {
+		return ResponseEntity.ok("Up and running!");
 	}
 
-	@GetMapping("isAlive")
-	public ResponseEntity<String> isAlive() {
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
-
-	@ResponseBody
-	@RequestMapping(value = "isReady")
-	public ResponseEntity<String> isReady() {
-		return new ResponseEntity<>(HttpStatus.OK);
+	@GetMapping("/isReady")
+	ResponseEntity ready() {
+		return ResponseEntity.ok("Ready to receive!");
 	}
 }
