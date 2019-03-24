@@ -1,0 +1,39 @@
+package no.nav.data.catalog.backend.test.component;
+
+import org.testcontainers.containers.FixedHostPortGenericContainer;
+import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
+import org.testcontainers.utility.Base58;
+
+import java.net.InetSocketAddress;
+import java.time.Duration;
+
+public class FixedElasticsearchContainer extends FixedHostPortGenericContainer<no.nav.data.catalog.backend.test.component.FixedElasticsearchContainer> {
+    private static final int ELASTICSEARCH_DEFAULT_PORT = 9200;
+    private static final int ELASTICSEARCH_DEFAULT_TCP_PORT = 9300;
+    private static final String ELASTICSEARCH_DEFAULT_IMAGE = "docker.elastic.co/elasticsearch/elasticsearch";
+    protected static final String ELASTICSEARCH_DEFAULT_VERSION = "6.4.1";
+
+    public FixedElasticsearchContainer() {
+        this(ELASTICSEARCH_DEFAULT_IMAGE+":" + ELASTICSEARCH_DEFAULT_VERSION);
+    }
+
+    public FixedElasticsearchContainer(String dockerImageName) {
+        super(dockerImageName);
+        this.logger().info("Starting an elasticsearch container using [{}]", dockerImageName);
+        this.withNetworkAliases(new String[]{"elasticsearch-" + Base58.randomString(6)});
+        this.withEnv("discovery.type", "single-node");
+        this.addExposedPorts(new int[]{ELASTICSEARCH_DEFAULT_PORT, ELASTICSEARCH_DEFAULT_TCP_PORT});
+        this.addFixedExposedPort(ELASTICSEARCH_DEFAULT_PORT, ELASTICSEARCH_DEFAULT_PORT);
+        this.setWaitStrategy((new HttpWaitStrategy()).forPort(ELASTICSEARCH_DEFAULT_PORT).forStatusCodeMatching((response) -> {
+            return response == 200 || response == 401;
+        }).withStartupTimeout(Duration.ofMinutes(2L)));
+    }
+
+    public String getHttpHostAddress() {
+        return this.getContainerIpAddress() + ":" + this.getMappedPort(ELASTICSEARCH_DEFAULT_PORT);
+    }
+
+    public InetSocketAddress getTcpHost() {
+        return new InetSocketAddress(this.getContainerIpAddress(), this.getMappedPort(ELASTICSEARCH_DEFAULT_TCP_PORT));
+    }
+}

@@ -1,40 +1,51 @@
 package no.nav.data.catalog.backend.test.component;
 
 import no.nav.data.catalog.backend.app.consumer.GithubRestConsumer;
-import no.nav.data.catalog.backend.app.domain.GithubFileInfo;
+import no.nav.data.catalog.backend.app.record.Record;
 import no.nav.data.catalog.backend.app.record.RecordService;
 import no.nav.data.catalog.backend.app.service.ProcessInformationDatasetService;
-import org.apache.tomcat.util.codec.binary.Base64;
+import org.apache.http.HttpHost;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.elasticsearch.client.RestClient;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.testcontainers.elasticsearch.ElasticsearchContainer;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertEquals;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = ComponentTestConfig.class)
 public class ProcessInformationDatasetServiceTest {
     private final String MULTIPLE_RECORDS_FILENAME = "files/InformationTypes.json";
     private final String SINGLE_RECORD_FILENAME = "files/InformationType.json";
 
-    private GithubRestConsumer githubRestConsumer = mock(GithubRestConsumer.class);
+    @Autowired
+    private GithubRestConsumer githubRestConsumer;
 
-    private RecordService recordService = mock(RecordService.class);
+    @Autowired
+    private ProcessInformationDatasetService service;
 
-    private ProcessInformationDatasetService service = new ProcessInformationDatasetService(githubRestConsumer, recordService);
+    @Autowired
+    private RecordService recordService;
+
     String jsonMultipleRecords, jsonSingleRecord;
 
+    private RestClient restClient;
+
     @ClassRule
-    public static ElasticsearchContainer container = new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch-oss:6.4.1");
+    public static FixedElasticsearchContainer container = new FixedElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch-oss:6.4.1");
 
     // Do whatever you want with the rest client ...
     @Before
@@ -46,21 +57,30 @@ public class ProcessInformationDatasetServiceTest {
         jsonSingleRecord = Files.lines(Paths.get(loader.getResource(SINGLE_RECORD_FILENAME).toURI()))
                 .parallel()
                 .collect(Collectors.joining());
+
+        final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+//        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials("elastic", "changeme"));
+        restClient = RestClient.builder(HttpHost.create(container.getHttpHostAddress()))
+                .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider))
+                .build();
     }
 
     @Test
     public void retriveAndSaveMultipleDataset() throws Exception {
-        GithubFileInfo inputFileInfo = new GithubFileInfo(MULTIPLE_RECORDS_FILENAME, "filpath", "sha", 1L, "url", "html_url", "git_url", "download_url", "file", new String(Base64.encodeBase64(jsonMultipleRecords.getBytes()), StandardCharsets.UTF_8), "base64");
-        when(githubRestConsumer.getFileInfo(anyString(), anyString())).thenReturn(inputFileInfo);
-        service.retrieveAndSaveDataset(MULTIPLE_RECORDS_FILENAME);
-        container.getHttpHostAddress();
+        service.retrieveAndSaveDataset("testdataIkkeSlett/multipleRows.json");
+        //Give elasticsearch a few seconds to index documents
+        Thread.sleep(5000L);
+        List<Record> recordList = recordService.getAllRecords();
+        assertEquals(6, recordList.size());
     }
 
     @Test
-    public void retriveAndSaveSingleDataset() {
-        GithubFileInfo inputFileInfo = new GithubFileInfo(SINGLE_RECORD_FILENAME, "filpath", "sha", 1L, "url", "html_url", "git_url", "download_url", "file", new String(Base64.encodeBase64(jsonSingleRecord.getBytes()), StandardCharsets.UTF_8), "base64");
-        when(githubRestConsumer.getFileInfo(anyString(), anyString())).thenReturn(inputFileInfo);
-        service.retrieveAndSaveDataset(SINGLE_RECORD_FILENAME);
+    public void retriveAndSaveSingleDataset()  throws Exception{
+        service.retrieveAndSaveDataset("testdataIkkeSlett/singleRow.json");
+        //Give elasticsearch a few seconds to index documents
+        Thread.sleep(5000L);
+        List<Record> recordList = recordService.getAllRecords();
+        assertEquals(7, recordList.size());
     }
 
 }

@@ -60,7 +60,7 @@ public class GithubRestConsumer {
 
     public GithubFileInfo getFileInfo(String filename, String token) {
         try {
-            ResponseEntity responseEntity = restTemplate.exchange("https://api.github.com/repos/navikt/pol-datasett/contents/" + filename, HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), GithubFileInfo.class);
+            ResponseEntity responseEntity = restTemplate.exchange("https://api.github.com/repos/navikt/pol-datasett/contents/" + filename, HttpMethod.GET, new HttpEntity<>(createTokenHeaders(token)), GithubFileInfo.class);
             GithubFileInfo fileInfo = (GithubFileInfo) responseEntity.getBody();
             return fileInfo;
         } catch (

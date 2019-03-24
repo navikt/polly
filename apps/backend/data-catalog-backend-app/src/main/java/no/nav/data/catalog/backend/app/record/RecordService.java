@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.data.catalog.backend.app.common.elasticsearch.ElasticsearchService;
+import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -37,9 +38,9 @@ public class RecordService {
 			objectMapper.convertValue(jsonMap, Record.class);  //Validation in constructor for class Record
 			elasticsearchService.insertRecord(jsonMap);
 		} catch (JsonMappingException jme) {
-			jme.getMessage();
+			throw new DataCatalogBackendTechnicalException(jme.getMessage(), jme);
 		} catch (IOException ioe) {
-			ioe.getLocalizedMessage();
+			throw new DataCatalogBackendTechnicalException(ioe.getLocalizedMessage(), ioe);
 		}
 		return RecordResponse.builder()
 				.id(id)

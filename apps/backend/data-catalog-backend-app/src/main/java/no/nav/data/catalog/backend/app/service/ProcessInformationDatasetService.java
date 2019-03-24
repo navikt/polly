@@ -1,5 +1,6 @@
 package no.nav.data.catalog.backend.app.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
@@ -21,6 +22,7 @@ public class ProcessInformationDatasetService {
     private GithubRestConsumer restConsumer;
     private RecordService recordService;
 
+
     public ProcessInformationDatasetService(GithubRestConsumer restConsumer,
                                             RecordService recordService) {
         this.restConsumer = restConsumer;
@@ -28,10 +30,9 @@ public class ProcessInformationDatasetService {
     }
 
     public void retrieveAndSaveDataset(String filename) {
-//        System.out.println(System.getenv("GITHUB_PRIVATE_KEY"));
-//        String installationToken = getInstallationToken(System.getenv("GITHUB_PRIVATE_KEY"));
+        String installationToken = getInstallationToken("C:\\Visma\\projects\\nav\\data-catalog-backend\\travis\\datajegerne-private-key.pem");
         //TODO Running withour token only works as long as pol-datasett repo is public
-        GithubFileInfo fileInfo = restConsumer.getFileInfo(filename, "");
+        GithubFileInfo fileInfo = restConsumer.getFileInfo(filename, installationToken);
         byte[] content = null;
         if (fileInfo != null && "file".equals(fileInfo.getType())) {
             if ("base64".equals(fileInfo.getEncoding())) {
@@ -45,8 +46,17 @@ public class ProcessInformationDatasetService {
                 jsonString = "[" + jsonString + "]";
             }
             try {
-                List<GithubInformationType> recordList = mapper.readValue(jsonString, new TypeReference<List<GithubInformationType>>() {});
-                recordList.forEach(row -> recordService.insertRecord(row.toString()));
+                List<GithubInformationType> recordList = mapper.readValue(jsonString, new TypeReference<List<GithubInformationType>>() {
+                });
+                recordList.forEach(row -> {
+                    try {
+                        recordService.insertRecord(mapper.writeValueAsString(row));
+                    } catch (JsonProcessingException e) {
+                        throw new DataCatalogBackendTechnicalException(String.format("Error occurred during parse of Json in file %s from github", fileInfo.getName()), e);
+                    }
+                });
+            } catch (JsonProcessingException e) {
+                throw new DataCatalogBackendTechnicalException(String.format("Error occurred during parse of Json in file %s from github", fileInfo.getName()), e);
             } catch (IOException e) {
                 throw new DataCatalogBackendTechnicalException(String.format("Error occurred during parse of Json in file %s from github", fileInfo.getName()), e);
             }
