@@ -3,20 +3,15 @@ package no.nav.data.catalog.backend.app.rest;
 import no.nav.data.catalog.backend.app.domain.GithubPushEventPayloadRequest;
 import no.nav.data.catalog.backend.app.service.ProcessInformationDatasetService;
 import org.apache.catalina.filters.AddDefaultCharsetFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class WebhooksRestController {
-    private static final String SUCCESS = "Success";
-    private static final String ERROR = "Error";
-
+    @Autowired
     private ProcessInformationDatasetService datasetService;
-
-    public WebhooksRestController(ProcessInformationDatasetService datasetService) {
-        this.datasetService = datasetService;
-    }
 
     @RequestMapping(value = "/webhooks", method = RequestMethod.POST)
     @ResponseBody

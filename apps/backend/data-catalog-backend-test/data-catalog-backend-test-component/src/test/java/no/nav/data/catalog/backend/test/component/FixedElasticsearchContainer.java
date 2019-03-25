@@ -4,18 +4,11 @@ import org.testcontainers.containers.FixedHostPortGenericContainer;
 import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
 import org.testcontainers.utility.Base58;
 
-import java.net.InetSocketAddress;
 import java.time.Duration;
 
 public class FixedElasticsearchContainer extends FixedHostPortGenericContainer<no.nav.data.catalog.backend.test.component.FixedElasticsearchContainer> {
     private static final int ELASTICSEARCH_DEFAULT_PORT = 9200;
     private static final int ELASTICSEARCH_DEFAULT_TCP_PORT = 9300;
-    private static final String ELASTICSEARCH_DEFAULT_IMAGE = "docker.elastic.co/elasticsearch/elasticsearch";
-    protected static final String ELASTICSEARCH_DEFAULT_VERSION = "6.4.1";
-
-    public FixedElasticsearchContainer() {
-        this(ELASTICSEARCH_DEFAULT_IMAGE+":" + ELASTICSEARCH_DEFAULT_VERSION);
-    }
 
     public FixedElasticsearchContainer(String dockerImageName) {
         super(dockerImageName);
@@ -31,9 +24,5 @@ public class FixedElasticsearchContainer extends FixedHostPortGenericContainer<n
 
     public String getHttpHostAddress() {
         return this.getContainerIpAddress() + ":" + this.getMappedPort(ELASTICSEARCH_DEFAULT_PORT);
-    }
-
-    public InetSocketAddress getTcpHost() {
-        return new InetSocketAddress(this.getContainerIpAddress(), this.getMappedPort(ELASTICSEARCH_DEFAULT_TCP_PORT));
     }
 }

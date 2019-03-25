@@ -4,10 +4,8 @@ import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechn
 import no.nav.data.catalog.backend.app.domain.GithubFileInfo;
 import no.nav.data.catalog.backend.app.domain.GithubInstallation;
 import no.nav.data.catalog.backend.app.domain.GithubInstallationToken;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -18,11 +16,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Component
 public class GithubRestConsumer {
+    @Autowired
     private RestTemplate restTemplate;
-
-    public GithubRestConsumer(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
 
     public String getInstallationToken(String installationId, String jwtToken) {
         try {
@@ -59,13 +54,18 @@ public class GithubRestConsumer {
     }
 
     public GithubFileInfo getFileInfo(String filename, String token) {
+        ResponseEntity responseEntity = null;
         try {
-            ResponseEntity responseEntity = restTemplate.exchange("https://api.github.com/repos/navikt/pol-datasett/contents/" + filename, HttpMethod.GET, new HttpEntity<>(createTokenHeaders(token)), GithubFileInfo.class);
+            responseEntity = restTemplate.exchange("https://api.github.com/repos/navikt/pol-datasett/contents/" + filename, HttpMethod.GET, new HttpEntity<>(createTokenHeaders(token)), GithubFileInfo.class);
             GithubFileInfo fileInfo = (GithubFileInfo) responseEntity.getBody();
             return fileInfo;
         } catch (
                 HttpClientErrorException e) {
-            throw new DataCatalogBackendTechnicalException(String.format("Calling Github to download file failed with status=%s message=%s", e.getStatusCode(), convertJsonStringToJsonObject(e.getResponseBodyAsString())), e, e.getStatusCode());
+            if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
+                throw new IllegalArgumentException(String.format("Calling Github to download file failed with status=%s. The file does not exist", HttpStatus.NOT_FOUND));
+            } else {
+                throw new DataCatalogBackendTechnicalException(String.format("Calling Github to download file failed with status=%s message=%s", e.getStatusCode(), convertJsonStringToJsonObject(e.getResponseBodyAsString())), e, e.getStatusCode());
+            }
         } catch (
                 HttpServerErrorException e) {
             throw new DataCatalogBackendTechnicalException(String.format("Service getting file from Github failed with status=%s message=%s", e.getStatusCode(), convertJsonStringToJsonObject(e.getResponseBodyAsString())), e, e.getStatusCode());

@@ -1,6 +1,5 @@
 package no.nav.data.catalog.backend.test.component;
 
-import no.nav.data.catalog.backend.app.common.tokensupport.JwtTokenGenerator;
 import no.nav.data.catalog.backend.app.consumer.GithubRestConsumer;
 import no.nav.data.catalog.backend.app.domain.GithubAccount;
 import no.nav.data.catalog.backend.app.domain.GithubFileInfo;
@@ -10,7 +9,9 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -24,9 +25,11 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class GithubRestConsumerTest {
 
+    @MockBean
     private RestTemplate restTemplate = mock(RestTemplate.class);
 
-    private GithubRestConsumer githubRestConsumer = new GithubRestConsumer(restTemplate);
+    @InjectMocks
+    private GithubRestConsumer githubRestConsumer;
 
     @Test
     public void getFileInfo() {
