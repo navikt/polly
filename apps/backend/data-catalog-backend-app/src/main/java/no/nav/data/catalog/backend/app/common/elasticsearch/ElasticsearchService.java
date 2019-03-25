@@ -2,7 +2,6 @@ package no.nav.data.catalog.backend.app.common.elasticsearch;
 
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import no.nav.data.catalog.backend.app.common.exceptions.DocumentNotFoundException;
-import org.apache.http.HttpHost;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -14,13 +13,13 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.AbstractQueryBuilder;
 import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -32,11 +31,10 @@ import static no.nav.data.catalog.backend.app.common.utils.Constants.TYPE;
 @Service
 public class ElasticsearchService {
 
-	private RestHighLevelClient restHighLevelClient = new RestHighLevelClient(
-			RestClient.builder(
-//					new HttpHost("35.228.12.206", 9200, "http")));
-					new HttpHost("localhost", 9200, "http")));
 	private RequestOptions requestOptions = RequestOptions.DEFAULT.toBuilder().build();
+
+	@Autowired
+	RestHighLevelClient restHighLevelClient;
 
 	public void insertRecord(Map<String, Object> jsonMap) {
 		IndexRequest indexRequest = new IndexRequest(INDEX, TYPE, jsonMap.get("id").toString());

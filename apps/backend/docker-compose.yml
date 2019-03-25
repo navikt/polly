@@ -24,10 +24,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8080:8080
-    environment:
-      GITHUB_PRIVATE_KEY: /run/secrets/githubAppKey
-    secrets:
-      - githubAppKey
+    volumes:
+      - ./travis/datajegerne-private-key.pem:/etc/travis/datajegerne-private-key.pem
 volumes:
   esdata:
     driver: local

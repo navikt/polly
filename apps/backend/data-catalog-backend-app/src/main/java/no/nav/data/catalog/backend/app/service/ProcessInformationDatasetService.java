@@ -9,6 +9,8 @@ import no.nav.data.catalog.backend.app.domain.GithubFileInfo;
 import no.nav.data.catalog.backend.app.domain.GithubInformationType;
 import no.nav.data.catalog.backend.app.record.RecordService;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -19,18 +21,17 @@ import static no.nav.data.catalog.backend.app.common.tokensupport.JwtTokenGenera
 
 @Component
 public class ProcessInformationDatasetService {
+
+    @Autowired
     private GithubRestConsumer restConsumer;
+    @Autowired
     private RecordService recordService;
 
-
-    public ProcessInformationDatasetService(GithubRestConsumer restConsumer,
-                                            RecordService recordService) {
-        this.restConsumer = restConsumer;
-        this.recordService = recordService;
-    }
+    @Value("${keyPath}")
+    private String keyPath;
 
     public void retrieveAndSaveDataset(String filename) {
-        String installationToken = getInstallationToken("C:\\Visma\\projects\\nav\\data-catalog-backend\\travis\\datajegerne-private-key.pem");
+        String installationToken = getInstallationToken(keyPath);
         //TODO Running withour token only works as long as pol-datasett repo is public
         GithubFileInfo fileInfo = restConsumer.getFileInfo(filename, installationToken);
         byte[] content = null;
@@ -42,6 +43,7 @@ public class ProcessInformationDatasetService {
         if (content != null && content.length > 0) {
             ObjectMapper mapper = new ObjectMapper();
             String jsonString = new String(content, StandardCharsets.UTF_8).trim();
+            // make array
             if (!jsonString.startsWith("[")) {
                 jsonString = "[" + jsonString + "]";
             }
