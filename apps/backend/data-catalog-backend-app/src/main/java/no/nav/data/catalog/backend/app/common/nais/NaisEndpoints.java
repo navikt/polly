@@ -3,7 +3,6 @@ package no.nav.data.catalog.backend.app.common.nais;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,8 +15,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RestController
 @RequestMapping(("/backend/internal/"))
 public class NaisEndpoints {
-	public static final String APPLICATION_ALIVE = "Application is alive!";
-	public static final String APPLICATION_READY = "Application is ready for traffic!";
 	private static AtomicInteger isReady = new AtomicInteger(1);
 
 	@Inject
@@ -26,13 +23,13 @@ public class NaisEndpoints {
 	}
 
 	@GetMapping("isAlive")
-	public String isAlive() {
-		return APPLICATION_ALIVE;
+	public ResponseEntity<String> isAlive() {
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "isReady", produces = MediaType.TEXT_HTML_VALUE)
+	@RequestMapping(value = "isReady")
 	public ResponseEntity<String> isReady() {
-		return new ResponseEntity<>(APPLICATION_READY, HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
