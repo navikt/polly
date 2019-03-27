@@ -35,6 +35,8 @@ import java.util.List;
 @ActiveProfiles("test")
 public class RecordServiceSpringComponentTest {
 
+	private static final String idToNonExistingDocument = "6543";
+
 	@MockBean
 	private RecordService recordServiceMock;
 
@@ -68,8 +70,6 @@ public class RecordServiceSpringComponentTest {
 
 	@Test
 	public void shouldNot_getRecordById_givenIdToNonExistingDocument() {
-		String idToNonExistingDocument = "6543";
-
 		expectedException.expect(DocumentNotFoundException.class);
 		expectedException.expectMessage(String.format("Could not find a document to retrieve, document id=%s", idToNonExistingDocument));
 
@@ -117,8 +117,6 @@ public class RecordServiceSpringComponentTest {
 
 	@Test
 	public void shouldNot_deleteRecordById_givenIdToNonExistingDocument() {
-		String idToNonExistingDocument = "6543";
-
 		expectedException.expect(DocumentNotFoundException.class);
 		expectedException.expectMessage(String.format("Could not find a document to delete, document id=%s", idToNonExistingDocument));
 

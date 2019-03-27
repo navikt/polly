@@ -4,11 +4,6 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-/**
- * Generell exception for tekniske feil i DataCataogBackend.
- *
- * @author Ketill Fenne, Visma Consulting AS
- */
 @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 @Getter
 public class DataCatalogBackendTechnicalException extends RuntimeException {
