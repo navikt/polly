@@ -23,6 +23,9 @@
 	<properties>
 		<start-class>no.nav.data.catalog.backend.app.AppStarter</start-class>
 		<junit.version>4.12</junit.version>
+		<jwt.version>0.9.1</jwt.version>
+		<json.version>20180813</json.version>
+		<elasticsearch.testcontainer.version>1.10.6</elasticsearch.testcontainer.version>
 	</properties>
 
 	<dependencies>
