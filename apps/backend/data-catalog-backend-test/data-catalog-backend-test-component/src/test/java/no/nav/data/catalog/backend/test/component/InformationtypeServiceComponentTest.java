@@ -1,52 +1,41 @@
 //package no.nav.data.catalog.backend.test.component;
 //
-//import static no.nav.data.catalog.backend.test.component.testData.RecordServiceProvider.getAllRecords;
-//import static no.nav.data.catalog.backend.test.component.testData.RecordServiceProvider.getDeleteResponse;
-//import static no.nav.data.catalog.backend.test.component.testData.RecordServiceProvider.getFaltyJsonString;
-//import static no.nav.data.catalog.backend.test.component.testData.RecordServiceProvider.getInntektId;
-//import static no.nav.data.catalog.backend.test.component.testData.RecordServiceProvider.getInntektJsonString;
-//import static no.nav.data.catalog.backend.test.component.testData.RecordServiceProvider.getInntektRecord;
-//import static no.nav.data.catalog.backend.test.component.testData.RecordServiceProvider.getInntektResponse;
-//import static no.nav.data.catalog.backend.test.component.testData.RecordServiceProvider.getSivilstandRecord;
-//import static no.nav.data.catalog.backend.test.component.testData.RecordServiceProvider.getUpdateJsonString;
-//import static no.nav.data.catalog.backend.test.component.testData.RecordServiceProvider.getUpdatedResponse;
-//import static org.hamcrest.CoreMatchers.is;
-//import static org.junit.Assert.assertEquals;
+//import static no.nav.data.catalog.backend.test.component.testData.InformationtypeProvider.getSivilstandJsonString;
+//import static org.hamcrest.CoreMatchers.containsString;
 //import static org.junit.Assert.assertThat;
 //import static org.mockito.Mockito.when;
 //
-//import no.nav.data.catalog.backend.app.common.exceptions.DocumentNotFoundException;
-//import no.nav.data.catalog.backend.app.record.Record;
-//import no.nav.data.catalog.backend.app.record.RecordResponse;
-//import no.nav.data.catalog.backend.app.record.RecordService;
+//import no.nav.data.catalog.backend.app.service.InformationtypeService;
 //import org.junit.Rule;
 //import org.junit.Test;
 //import org.junit.rules.ExpectedException;
 //import org.junit.runner.RunWith;
 //import org.springframework.boot.test.context.SpringBootTest;
 //import org.springframework.boot.test.mock.mockito.MockBean;
+//import org.springframework.test.context.ActiveProfiles;
 //import org.springframework.test.context.junit4.SpringRunner;
-//
-//import java.util.List;
 //
 //@RunWith(SpringRunner.class)
 //@SpringBootTest(classes = ComponentTestConfig.class)
-//public class RecordServiceComponentTest {
+//@ActiveProfiles("test")
+//public class InformationtypeServiceComponentTest {
 //
 //	@MockBean
-//	private RecordService recordServiceMock;
+//	private InformationtypeService informationtypeService;
 //
 //	@Rule
 //	public ExpectedException expectedException = ExpectedException.none();
 //
 //	@Test
-//	public void should_insertRecord_givenCorrectJsonString() {
-//		when(recordServiceMock.insertRecord(getInntektJsonString())).thenReturn(getInntektResponse());
+//	public void should_insertInformationtype_givenCorrectJsonString() {
+//		when(informationtypeService.createInformationtype(getSivilstandJsonString()))
+//				.thenReturn("Created a new service with id=1");
 //
-//		RecordResponse recordResponse = recordServiceMock.insertRecord(getInntektJsonString());
-//		assertEquals(recordResponse.getStatus(), String.format("Created a new record with id=%s", getInntektId()));
+//		String response = informationtypeService.createInformationtype(getSivilstandJsonString());
+//		assertThat(response, containsString("Created a new service"));
 //	}
 //
+//	/**
 //	@Test
 //	public void shouldFailTo_InsertRecord_givenFaultyJsonString() {
 //		expectedException.expect(IllegalArgumentException.class);
@@ -138,5 +127,5 @@
 //		assertThat(records.get(1), is(getInntektRecord()));
 //	}
 //
-//
+//	*/
 //}

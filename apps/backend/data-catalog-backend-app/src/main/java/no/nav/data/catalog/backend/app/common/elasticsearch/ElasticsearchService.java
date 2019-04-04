@@ -1,6 +1,6 @@
 package no.nav.data.catalog.backend.app.common.elasticsearch;
 
-import static no.nav.data.catalog.backend.app.common.utils.Constants.INDEX;
+import static no.nav.data.catalog.backend.app.common.utils.Constants.OLD_INDEX;
 import static no.nav.data.catalog.backend.app.common.utils.Constants.TYPE;
 
 import no.nav.data.catalog.backend.app.common.exceptions.DocumentNotFoundException;
@@ -38,7 +38,7 @@ public class ElasticsearchService {
 	private RequestOptions requestOptions = RequestOptions.DEFAULT.toBuilder().build();
 
 	public void insertRecord(Map<String, Object> jsonMap) {
-		IndexRequest indexRequest = new IndexRequest(INDEX, TYPE, jsonMap.get("id").toString());
+		IndexRequest indexRequest = new IndexRequest(OLD_INDEX, TYPE, jsonMap.get("id").toString());
 		indexRequest.source(jsonMap);
 
 		try {
@@ -51,7 +51,7 @@ public class ElasticsearchService {
 	}
 
 	public Map<String, Object> getRecordById(String id) {
-		GetRequest getRequest = new GetRequest(INDEX, TYPE, id);
+		GetRequest getRequest = new GetRequest(OLD_INDEX, TYPE, id);
 		GetResponse getResponse = null;
 
 		try {
@@ -66,7 +66,7 @@ public class ElasticsearchService {
 	}
 
 	public void updateFieldsById(String id, Map<String, Object> jsonMap) {
-		UpdateRequest updateRequest = new UpdateRequest(INDEX, TYPE, id);
+		UpdateRequest updateRequest = new UpdateRequest(OLD_INDEX, TYPE, id);
 		updateRequest.fetchSource(true);
 		updateRequest.doc(jsonMap);
 
@@ -83,7 +83,7 @@ public class ElasticsearchService {
 	}
 
 	public void deleteRecordById(String id) {
-		DeleteRequest deleteRequest = new DeleteRequest(INDEX, TYPE, id);
+		DeleteRequest deleteRequest = new DeleteRequest(OLD_INDEX, TYPE, id);
 
 		try {
 			DeleteResponse deleteResponse = restHighLevelClient.delete(deleteRequest, requestOptions);
@@ -107,7 +107,7 @@ public class ElasticsearchService {
 
 	private SearchResponse searchByQuery(AbstractQueryBuilder query) {
 		SearchRequest searchRequest = new SearchRequest();
-		searchRequest.indices(INDEX);
+		searchRequest.indices(OLD_INDEX);
 
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder.query(query);
