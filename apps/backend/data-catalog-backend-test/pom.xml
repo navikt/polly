@@ -6,11 +6,12 @@
 
 	<parent>
 		<artifactId>data-catalog-backend</artifactId>
-		<groupId>no.nav.data.catalog.backend</groupId>
+		<groupId>no.nav.data</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>data-catalog-backend-test</artifactId>
+
 	<packaging>pom</packaging>
 
 	<modules>

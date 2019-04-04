@@ -1,11 +1,14 @@
 package no.nav.data.catalog.backend.app.common.elasticsearch;
 
-import static no.nav.data.catalog.backend.app.common.utils.Constants.INDEX;
+import static no.nav.data.catalog.backend.app.common.utils.Constants.OLD_INDEX;
 import static no.nav.data.catalog.backend.app.common.utils.Constants.TYPE;
 
+import no.nav.data.catalog.backend.app.common.exceptions.DocumentNotFoundException;
 import org.apache.http.HttpHost;
 import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
@@ -18,6 +21,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.AbstractQueryBuilder;
 import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +38,7 @@ public class ElasticsearchService {
 	private RequestOptions requestOptions = RequestOptions.DEFAULT.toBuilder().build();
 
 	public void insertRecord(Map<String, Object> jsonMap) {
-		IndexRequest indexRequest = new IndexRequest(INDEX, TYPE, jsonMap.get("id").toString());
+		IndexRequest indexRequest = new IndexRequest(OLD_INDEX, TYPE, jsonMap.get("id").toString());
 		indexRequest.source(jsonMap);
 
 		try {
@@ -47,13 +51,14 @@ public class ElasticsearchService {
 	}
 
 	public Map<String, Object> getRecordById(String id) {
-		GetRequest getRequest = new GetRequest(INDEX, TYPE, id);
+		GetRequest getRequest = new GetRequest(OLD_INDEX, TYPE, id);
 		GetResponse getResponse = null;
 
 		try {
 			getResponse = restHighLevelClient.get(getRequest, requestOptions);
-		} catch (ElasticsearchException e) {
-			e.getDetailedMessage();
+			if (getResponse.isSourceEmpty()) {
+				throw new DocumentNotFoundException(String.format("Could not find a document to retrieve, document id=%s", id));
+			}
 		} catch (IOException ex) {
 			ex.getLocalizedMessage();
 		}
@@ -61,12 +66,16 @@ public class ElasticsearchService {
 	}
 
 	public void updateFieldsById(String id, Map<String, Object> jsonMap) {
-		UpdateRequest updateRequest = new UpdateRequest(INDEX, TYPE, id);
+		UpdateRequest updateRequest = new UpdateRequest(OLD_INDEX, TYPE, id);
+		updateRequest.fetchSource(true);
 		updateRequest.doc(jsonMap);
 
 		try {
 			restHighLevelClient.update(updateRequest, requestOptions);
 		} catch (ElasticsearchException e) {
+			if (e.status() == RestStatus.NOT_FOUND) {
+				throw new DocumentNotFoundException(String.format("Could not find a document to update, document id=%s", id));
+			}
 			e.getDetailedMessage();
 		} catch (IOException ex) {
 			ex.getLocalizedMessage();
@@ -74,10 +83,13 @@ public class ElasticsearchService {
 	}
 
 	public void deleteRecordById(String id) {
-		DeleteRequest deleteRequest = new DeleteRequest(INDEX, TYPE, id);
+		DeleteRequest deleteRequest = new DeleteRequest(OLD_INDEX, TYPE, id);
 
 		try {
-			restHighLevelClient.delete(deleteRequest, requestOptions);
+			DeleteResponse deleteResponse = restHighLevelClient.delete(deleteRequest, requestOptions);
+			if (deleteResponse.getResult() == DocWriteResponse.Result.NOT_FOUND) {
+				throw new DocumentNotFoundException(String.format("Could not find a document to delete, document id=%s", id));
+			}
 		} catch (IOException ex) {
 			ex.getLocalizedMessage();
 		}
@@ -95,7 +107,7 @@ public class ElasticsearchService {
 
 	private SearchResponse searchByQuery(AbstractQueryBuilder query) {
 		SearchRequest searchRequest = new SearchRequest();
-		searchRequest.indices(INDEX);
+		searchRequest.indices(OLD_INDEX);
 
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder.query(query);
