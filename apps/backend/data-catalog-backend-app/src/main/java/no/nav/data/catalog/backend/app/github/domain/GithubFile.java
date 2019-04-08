@@ -1,13 +1,15 @@
-package no.nav.data.catalog.backend.app.domain;
+package no.nav.data.catalog.backend.app.github.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GithubFileInfo {
+public class GithubFile {
     private final String name;
     private final String path;
     private final String sha;
@@ -21,7 +23,7 @@ public class GithubFileInfo {
     private final String encoding;
 
     @JsonCreator
-    public GithubFileInfo (
+    public GithubFile(
             @JsonProperty("name") String name,
             @JsonProperty("path") String path,
             @JsonProperty("sha") String sha,

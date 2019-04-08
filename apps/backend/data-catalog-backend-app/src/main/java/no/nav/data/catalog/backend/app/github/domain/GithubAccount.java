@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.app.domain;
+package no.nav.data.catalog.backend.app.github.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -7,12 +7,12 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GithubInstallationToken {
-    private final String token;
+public class GithubAccount {
+    private final String login;
 
     @JsonCreator
-    public GithubInstallationToken(
-            @JsonProperty("token") String token) {
-        this.token = token;
+    public GithubAccount(
+            @JsonProperty("login") String login) {
+        this.login = login;
     }
 }

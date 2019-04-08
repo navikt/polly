@@ -13,16 +13,11 @@ public class FixedElasticsearchContainer extends FixedHostPortGenericContainer<n
     public FixedElasticsearchContainer(String dockerImageName) {
         super(dockerImageName);
         this.logger().info("Starting an elasticsearch container using [{}]", dockerImageName);
-        this.withNetworkAliases(new String[]{"elasticsearch-" + Base58.randomString(6)});
+        this.withNetworkAliases("elasticsearch-" + Base58.randomString(6));
         this.withEnv("discovery.type", "single-node");
-        this.addExposedPorts(new int[]{ELASTICSEARCH_DEFAULT_PORT, ELASTICSEARCH_DEFAULT_TCP_PORT});
+        this.addExposedPorts(ELASTICSEARCH_DEFAULT_PORT, ELASTICSEARCH_DEFAULT_TCP_PORT);
         this.addFixedExposedPort(ELASTICSEARCH_DEFAULT_PORT, ELASTICSEARCH_DEFAULT_PORT);
-        this.setWaitStrategy((new HttpWaitStrategy()).forPort(ELASTICSEARCH_DEFAULT_PORT).forStatusCodeMatching((response) -> {
-            return response == 200 || response == 401;
-        }).withStartupTimeout(Duration.ofMinutes(2L)));
+        this.setWaitStrategy((new HttpWaitStrategy()).forPort(ELASTICSEARCH_DEFAULT_PORT).forStatusCodeMatching((response) -> response == 200 || response == 401).withStartupTimeout(Duration.ofMinutes(2L)));
     }
 
-    public String getHttpHostAddress() {
-        return this.getContainerIpAddress() + ":" + this.getMappedPort(ELASTICSEARCH_DEFAULT_PORT);
-    }
 }

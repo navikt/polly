@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.app.domain;
+package no.nav.data.catalog.backend.app.github.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.app.domain;
+package no.nav.data.catalog.backend.app.github.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import no.nav.data.catalog.backend.app.record.Category;
 import no.nav.data.catalog.backend.app.record.StorageTime;
-
-import java.time.LocalDate;
 
 @Data
 @Builder

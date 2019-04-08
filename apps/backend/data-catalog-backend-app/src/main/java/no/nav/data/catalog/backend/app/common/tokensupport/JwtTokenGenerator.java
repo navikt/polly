@@ -4,10 +4,14 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import org.apache.commons.codec.binary.Base64;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
@@ -18,16 +22,23 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class JwtTokenGenerator {
 
     private static final String PKCS_1_PEM_HEADER = "-----BEGIN RSA PRIVATE KEY-----";
     private static final String PKCS_1_PEM_FOOTER = "-----END RSA PRIVATE KEY-----";
 
-    public static String generateToken(String filePath)  {
+    private static Path keyFilePath; // TODO: Use @Value if methods doesn't have to be static and remove constructor.
+
+    public JwtTokenGenerator() throws URISyntaxException, NullPointerException {
+        keyFilePath = Paths.get(getClass().getClassLoader().getResource("datajegerne-private-key.pem").toURI());
+    }
+
+    public static String generateToken()  {
         PrivateKey privateKey;
         String token;
         try {
-            privateKey = loadKey(filePath);
+            privateKey = loadKey();
             Map<String, Object> claims = new HashMap<String, Object>();
             Date now = new Date();
             //seconds
@@ -42,15 +53,15 @@ public class JwtTokenGenerator {
 
             token = Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.RS256, privateKey).compact();
         } catch (GeneralSecurityException e) {
-            throw new DataCatalogBackendTechnicalException("General security exception occured reading private key file: " + filePath, e);
-        } catch (IOException e) {
-            throw new DataCatalogBackendTechnicalException("Error occured reading private key file: " + filePath, e);
+            throw new DataCatalogBackendTechnicalException(String.format("General security exception occured reading private key file ", e));
+        } catch (IOException | URISyntaxException e) {
+            throw new DataCatalogBackendTechnicalException(String.format("Error occured reading private key file ", e));
         }
         return token;
     }
 
-    private static PrivateKey loadKey(String keyFilePath) throws GeneralSecurityException, IOException {
-        byte[] keyDataBytes = Files.readAllBytes(Paths.get(keyFilePath));
+    private static PrivateKey loadKey() throws GeneralSecurityException, IOException, URISyntaxException {
+        byte[] keyDataBytes = Files.readAllBytes(keyFilePath);
         String keyDataString = new String(keyDataBytes, StandardCharsets.UTF_8);
 
         if (keyDataString.contains(PKCS_1_PEM_HEADER)) {
@@ -61,7 +72,7 @@ public class JwtTokenGenerator {
         }
 
         // We assume it's a PKCS#8 DER encoded binary file
-        return readPkcs8PrivateKey(Files.readAllBytes(Paths.get(keyFilePath)));
+        return readPkcs8PrivateKey(Files.readAllBytes(keyFilePath));
     }
 
     private static PrivateKey readPkcs8PrivateKey(byte[] pkcs8Bytes) throws GeneralSecurityException {

@@ -1,7 +1,7 @@
-package no.nav.data.catalog.backend.app.rest;
+package no.nav.data.catalog.backend.app.github;
 
-import no.nav.data.catalog.backend.app.domain.GithubPushEventPayloadRequest;
-import no.nav.data.catalog.backend.app.service.ProcessInformationDatasetService;
+import no.nav.data.catalog.backend.app.github.domain.GithubPushEventPayloadRequest;
+import no.nav.data.catalog.backend.app.github.GithubService;
 import org.apache.catalina.filters.AddDefaultCharsetFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,22 +9,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-public class WebhooksRestController {
-    @Autowired
-    private ProcessInformationDatasetService datasetService;
+public class GithubWebhooksController {
 
-    @RequestMapping(value = "/webhooks", method = RequestMethod.POST)
+    @Autowired
+    private GithubService service;
+
+    @RequestMapping(value = "/backend/webhooks", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<AddDefaultCharsetFilter.ResponseWrapper> webhooks(@RequestBody GithubPushEventPayloadRequest payload) {
-        // if payload is empty, don't do anything
-        payload.getGithubCommitList().forEach(commit -> commit.getAdded().forEach(fileAdded -> datasetService.retrieveAndSaveDataset(fileAdded)));
+        payload.getGithubCommitList().forEach(commit -> commit.getAdded().forEach(fileAdded -> service.handle(fileAdded)));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping(value = "/test")
+    // TODO: Remove this
+    @GetMapping(value = "/test")
     @ResponseBody
     public ResponseEntity<AddDefaultCharsetFilter.ResponseWrapper> test(@RequestParam(value="filename") String filename) {
-        datasetService.retrieveAndSaveDataset(filename);
+        service.handle(filename);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

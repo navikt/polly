@@ -1,20 +1,20 @@
 package no.nav.data.catalog.backend.test.component;
 
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
+import no.nav.data.catalog.backend.app.github.GithubConsumer;
+import no.nav.data.catalog.backend.app.github.domain.GithubFile;
 import no.nav.data.catalog.backend.app.record.Record;
 import no.nav.data.catalog.backend.app.record.RecordService;
-import no.nav.data.catalog.backend.app.service.ProcessInformationDatasetService;
-import org.apache.http.HttpHost;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.impl.client.BasicCredentialsProvider;
+import no.nav.data.catalog.backend.app.github.GithubService;
 import org.elasticsearch.ElasticsearchStatusException;
-import org.elasticsearch.client.RestClient;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -24,15 +24,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ComponentTestConfig.class)
 @ActiveProfiles("test")
-public class ProcessInformationDatasetServiceTest {
-    private RestClient restClient;
+public class GithubServiceTest {
 
-    @Autowired
-    private ProcessInformationDatasetService service;
+    @Mock
+    private GithubConsumer consumerMock;
+
+    @InjectMocks
+    private GithubService service;
 
     @Autowired
     private RecordService recordService;
@@ -43,19 +46,10 @@ public class ProcessInformationDatasetServiceTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
-
-    @Before
-    public void before() {
-        final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        restClient = RestClient.builder(HttpHost.create(container.getHttpHostAddress()))
-                .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider))
-                .build();
-    }
-
     @Test
     public void retriveAndSaveMultipleDataset() throws Exception {
         deleteAllFromElasticsearch();
-        service.retrieveAndSaveDataset("testdataIkkeSlett/multipleRows.json");
+        service.handle("testdataIkkeSlett/multipleRows.json");
         //Give elasticsearch a few seconds to index documents
         Thread.sleep(2000L);
         List<Record> recordList = recordService.getAllRecords();
@@ -65,7 +59,7 @@ public class ProcessInformationDatasetServiceTest {
     @Test
     public void retriveAndSaveSingleDataset()  throws Exception{
         deleteAllFromElasticsearch();
-        service.retrieveAndSaveDataset("testdataIkkeSlett/singleRow.json");
+        service.handle("testdataIkkeSlett/singleRow.json");
         //Give elasticsearch a few seconds to index documents
         Thread.sleep(2000L);
         List<Record> recordList = recordService.getAllRecords();
@@ -76,14 +70,14 @@ public class ProcessInformationDatasetServiceTest {
     public void retriveAndSaveNotExistingFile() {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("The file does not exist");
-        service.retrieveAndSaveDataset("notExisting.json");
+        service.handle("notExisting.json");
     }
 
     @Test
     public void retriveAndSaveFileNotValid() {
         expectedException.expect(DataCatalogBackendTechnicalException.class);
         expectedException.expectMessage("Error occurred during parse of Json in file");
-        service.retrieveAndSaveDataset("testdataIkkeSlett/invalidFile.json");
+        service.handle("testdataIkkeSlett/invalidFile.json");
     }
 
 
