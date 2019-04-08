@@ -29,7 +29,7 @@ public class ElasticsearchService {
 
 	private RestHighLevelClient restHighLevelClient = new RestHighLevelClient(
 			RestClient.builder(
-					new HttpHost("35.228.23.84", 9200, "http")));
+					new HttpHost("35.228.12.206", 9200, "http")));
 //					new HttpHost("localhost", 9200, "http")));
 	private RequestOptions requestOptions = RequestOptions.DEFAULT.toBuilder().build();
 
