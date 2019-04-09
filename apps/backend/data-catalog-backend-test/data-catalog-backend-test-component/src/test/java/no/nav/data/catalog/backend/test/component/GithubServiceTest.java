@@ -7,10 +7,7 @@ import no.nav.data.catalog.backend.app.record.Record;
 import no.nav.data.catalog.backend.app.record.RecordService;
 import no.nav.data.catalog.backend.app.github.GithubService;
 import org.elasticsearch.ElasticsearchStatusException;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -29,6 +26,7 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ComponentTestConfig.class)
 @ActiveProfiles("test")
+@Ignore
 public class GithubServiceTest {
 
     @Mock

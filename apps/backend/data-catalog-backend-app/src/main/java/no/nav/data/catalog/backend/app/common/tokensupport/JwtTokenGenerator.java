@@ -4,15 +4,15 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import org.apache.commons.codec.binary.Base64;
-import org.springframework.core.io.ClassPathResource;
+import org.elasticsearch.core.internal.io.IOUtils;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -28,10 +28,16 @@ public class JwtTokenGenerator {
     private static final String PKCS_1_PEM_HEADER = "-----BEGIN RSA PRIVATE KEY-----";
     private static final String PKCS_1_PEM_FOOTER = "-----END RSA PRIVATE KEY-----";
 
-    private static Path keyFilePath; // TODO: Use @Value if methods doesn't have to be static and remove constructor.
+    private static URL keyFilePath; // TODO: Use @Value if methods doesn't have to be static and remove constructor.
+    private static byte[] keyContent;
 
     public JwtTokenGenerator() throws URISyntaxException, NullPointerException {
-        keyFilePath = Paths.get(getClass().getClassLoader().getResource("datajegerne-private-key.pem").toURI());
+        try (InputStream in = getClass().getResourceAsStream("/datajegerne-private-key.pem")) {
+            keyContent = in.readAllBytes();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        keyFilePath = Paths.get(getClass().getClassLoader().getResource("datajegerne-private-key.pem").toURI());
     }
 
     public static String generateToken()  {
@@ -61,8 +67,8 @@ public class JwtTokenGenerator {
     }
 
     private static PrivateKey loadKey() throws GeneralSecurityException, IOException, URISyntaxException {
-        byte[] keyDataBytes = Files.readAllBytes(keyFilePath);
-        String keyDataString = new String(keyDataBytes, StandardCharsets.UTF_8);
+//        byte[] keyDataBytes = keyContent;
+        String keyDataString = new String(keyContent, StandardCharsets.UTF_8);
 
         if (keyDataString.contains(PKCS_1_PEM_HEADER)) {
             // OpenSSL / PKCS#1 Base64 PEM encoded file
@@ -72,7 +78,7 @@ public class JwtTokenGenerator {
         }
 
         // We assume it's a PKCS#8 DER encoded binary file
-        return readPkcs8PrivateKey(Files.readAllBytes(keyFilePath));
+        return readPkcs8PrivateKey(keyContent);
     }
 
     private static PrivateKey readPkcs8PrivateKey(byte[] pkcs8Bytes) throws GeneralSecurityException {

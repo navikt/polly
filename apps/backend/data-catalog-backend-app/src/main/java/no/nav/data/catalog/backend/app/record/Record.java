@@ -1,14 +1,17 @@
 package no.nav.data.catalog.backend.app.record;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
+import org.json.JSONPropertyIgnore;
 
 import java.time.LocalDate;
 
 @Data
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Record {
 
 	private String id;
@@ -18,26 +21,26 @@ public class Record {
 	private String sensitivity;
 	private String ownership;
 	private String sourceOfRecord;
-	private StorageTime storageTime;
+//	private StorageTime storageTime;
 	private String qualityOfData;
 	private Boolean personalData;
 	private LocalDate recordCreationDate;
-	private LocalDate recordLastUpdatedDate;
+//	private LocalDate recordLastUpdatedDate;
 
 	@JsonCreator
 	public Record(
-			@JsonProperty(value = "id", required = true) String id,
+			@JsonProperty(value = "id") String id,
 			@JsonProperty(value = "name", required = true) String name,
 			@JsonProperty(value = "description", required = true) String description,
 			@JsonProperty(value = "category") Category category,
 			@JsonProperty(value = "sensitivity") String sensitivity,
 			@JsonProperty(value = "ownership") String ownership,
 			@JsonProperty(value = "sourceOfRecord") String sourceOfRecord,
-			@JsonProperty(value = "storageTime") StorageTime storageTime,
+//			@JsonProperty(value = "storageTime") StorageTime storageTime,
 			@JsonProperty(value = "qualityOfData") String qualityOfData,
 			@JsonProperty(value = "personalData", required = true) Boolean personalData,
-			@JsonProperty(value = "recordCreationDate", required = true) LocalDate recordCreationDate,
-			@JsonProperty(value = "recordLastUpdatedDate") LocalDate recordLastUpdatedDate) {
+			@JsonProperty(value = "recordCreationDate", required = true) LocalDate recordCreationDate) {
+//			@JsonProperty(value = "recordLastUpdatedDate") LocalDate recordLastUpdatedDate) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -45,10 +48,10 @@ public class Record {
 		this.sensitivity = sensitivity;
 		this.ownership = ownership;
 		this.sourceOfRecord = sourceOfRecord;
-		this.storageTime = storageTime;
+//		this.storageTime = storageTime;
 		this.qualityOfData = qualityOfData;
 		this.personalData = personalData;
 		this.recordCreationDate = recordCreationDate;
-		this.recordLastUpdatedDate = recordLastUpdatedDate;
+//		this.recordLastUpdatedDate = recordLastUpdatedDate;
 	}
 }
