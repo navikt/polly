@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
-import org.json.JSONPropertyIgnore;
 
 import java.time.LocalDate;
 
@@ -21,11 +20,11 @@ public class Record {
 	private String sensitivity;
 	private String ownership;
 	private String sourceOfRecord;
-//	private StorageTime storageTime;
+	private StorageTime storageTime;
 	private String qualityOfData;
 	private Boolean personalData;
 	private LocalDate recordCreationDate;
-//	private LocalDate recordLastUpdatedDate;
+	private LocalDate recordLastUpdatedDate;
 
 	@JsonCreator
 	public Record(
@@ -36,11 +35,11 @@ public class Record {
 			@JsonProperty(value = "sensitivity") String sensitivity,
 			@JsonProperty(value = "ownership") String ownership,
 			@JsonProperty(value = "sourceOfRecord") String sourceOfRecord,
-//			@JsonProperty(value = "storageTime") StorageTime storageTime,
+			@JsonProperty(value = "storageTime") StorageTime storageTime,
 			@JsonProperty(value = "qualityOfData") String qualityOfData,
 			@JsonProperty(value = "personalData", required = true) Boolean personalData,
-			@JsonProperty(value = "recordCreationDate", required = true) LocalDate recordCreationDate) {
-//			@JsonProperty(value = "recordLastUpdatedDate") LocalDate recordLastUpdatedDate) {
+			@JsonProperty(value = "recordCreationDate") LocalDate recordCreationDate,
+			@JsonProperty(value = "recordLastUpdatedDate") LocalDate recordLastUpdatedDate) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -48,10 +47,10 @@ public class Record {
 		this.sensitivity = sensitivity;
 		this.ownership = ownership;
 		this.sourceOfRecord = sourceOfRecord;
-//		this.storageTime = storageTime;
+		this.storageTime = storageTime;
 		this.qualityOfData = qualityOfData;
 		this.personalData = personalData;
 		this.recordCreationDate = recordCreationDate;
-//		this.recordLastUpdatedDate = recordLastUpdatedDate;
+		this.recordLastUpdatedDate = recordLastUpdatedDate;
 	}
 }

@@ -12,7 +12,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import static no.nav.data.catalog.backend.app.common.utils.ConverterUtils.convertJsonStringToJsonObject;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Component
@@ -37,11 +36,11 @@ public class GithubConsumer {
             if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
                 throw new IllegalArgumentException(String.format("Calling Github to download file failed with status=%s. The file does not exist", HttpStatus.NOT_FOUND));
             } else {
-                throw new DataCatalogBackendTechnicalException(String.format("Calling Github to download file failed with status=%s message=%s", e.getStatusCode(), convertJsonStringToJsonObject(e.getResponseBodyAsString())), e, e.getStatusCode());
+                throw new DataCatalogBackendTechnicalException(String.format("Calling Github to download file failed with status=%s message=%s", e.getStatusCode(), e.getResponseBodyAsString()), e, e.getStatusCode());
             }
         } catch (
                 HttpServerErrorException e) {
-            throw new DataCatalogBackendTechnicalException(String.format("Service getting file from Github failed with status=%s message=%s", e.getStatusCode(), convertJsonStringToJsonObject(e.getResponseBodyAsString())), e, e.getStatusCode());
+            throw new DataCatalogBackendTechnicalException(String.format("Service getting file from Github failed with status=%s message=%s", e.getStatusCode(), e.getResponseBodyAsString()), e, e.getStatusCode());
         }
     }
 
@@ -58,10 +57,10 @@ public class GithubConsumer {
             return installationId;
         } catch (
                 HttpClientErrorException e) {
-            throw new DataCatalogBackendTechnicalException(String.format("Calling Github to get installation id failed with status=%s message=%s", e.getStatusCode(), convertJsonStringToJsonObject(e.getResponseBodyAsString())), e, e.getStatusCode());
+            throw new DataCatalogBackendTechnicalException(String.format("Calling Github to get installation id failed with status=%s message=%s", e.getStatusCode(), e.getResponseBodyAsString()), e, e.getStatusCode());
         } catch (
                 HttpServerErrorException e) {
-            throw new DataCatalogBackendTechnicalException(String.format("Service getting Github installation id failed with status=%s message=%s", e.getStatusCode(), convertJsonStringToJsonObject(e.getResponseBodyAsString())), e, e.getStatusCode());
+            throw new DataCatalogBackendTechnicalException(String.format("Service getting Github installation id failed with status=%s message=%s", e.getStatusCode(), e.getResponseBodyAsString()), e, e.getStatusCode());
         }
     }
 
@@ -75,10 +74,10 @@ public class GithubConsumer {
                 throw new DataCatalogBackendTechnicalException("GitHub returned null for installation token value!");
             }
         } catch (HttpClientErrorException e) {
-            throw new DataCatalogBackendTechnicalException(String.format("Calling Github to get installation token failed with status=%s message=%s", e.getStatusCode(), convertJsonStringToJsonObject(e.getResponseBodyAsString())), e, e.getStatusCode());
+            throw new DataCatalogBackendTechnicalException(String.format("Calling Github to get installation token failed with status=%s message=%s", e.getStatusCode(), e.getResponseBodyAsString()), e, e.getStatusCode());
         } catch (
                 HttpServerErrorException e) {
-            throw new DataCatalogBackendTechnicalException(String.format("Service getting Github installation token failed with status=%s message=%s", e.getStatusCode(), convertJsonStringToJsonObject(e.getResponseBodyAsString())), e, e.getStatusCode());
+            throw new DataCatalogBackendTechnicalException(String.format("Service getting Github installation token failed with status=%s message=%s", e.getStatusCode(), e.getResponseBodyAsString()), e, e.getStatusCode());
         }
     }
 

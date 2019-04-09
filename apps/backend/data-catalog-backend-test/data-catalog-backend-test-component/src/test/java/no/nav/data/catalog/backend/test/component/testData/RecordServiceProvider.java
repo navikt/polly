@@ -22,7 +22,7 @@ public class RecordServiceProvider {
 			.sourceOfRecord("Folkeregisteret")
 			.qualityOfData("God")
 			.personalData(true)
-//			.recordCreationDate(LocalDate.now())
+			.recordCreationDate(LocalDate.now())
 			.build();
 	private static final Record inntekt = Record.builder()
 			.id(ID)
@@ -34,7 +34,7 @@ public class RecordServiceProvider {
 			.sourceOfRecord("Folkeregisteret")
 			.qualityOfData("God")
 			.personalData(true)
-//			.recordCreationDate(LocalDate.now())
+			.recordCreationDate(LocalDate.now())
 			.build();
 
 	public static String getInntektId() {

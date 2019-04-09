@@ -1,95 +1,86 @@
 package no.nav.data.catalog.backend.test.component;
 
-import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import no.nav.data.catalog.backend.app.github.GithubConsumer;
-import no.nav.data.catalog.backend.app.github.domain.GithubFile;
-import no.nav.data.catalog.backend.app.record.Record;
-import no.nav.data.catalog.backend.app.record.RecordService;
 import no.nav.data.catalog.backend.app.github.GithubService;
-import org.elasticsearch.ElasticsearchStatusException;
-import org.junit.*;
+import no.nav.data.catalog.backend.app.github.domain.GithubFile;
+import no.nav.data.catalog.backend.app.record.RecordService;
+import org.apache.commons.codec.binary.Base64;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.InputStream;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ComponentTestConfig.class)
 @ActiveProfiles("test")
-@Ignore
 public class GithubServiceTest {
 
     @Mock
     private GithubConsumer consumerMock;
 
-    @InjectMocks
-    private GithubService service;
-
-    @Autowired
+    @Mock
     private RecordService recordService;
 
-    @ClassRule
-    public static FixedElasticsearchContainer container = new FixedElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch-oss:6.4.1");
+    @InjectMocks
+    private GithubService service;
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
     @Test
-    public void retriveAndSaveMultipleDataset() throws Exception {
-        deleteAllFromElasticsearch();
-        service.handle("testdataIkkeSlett/multipleRows.json");
-        //Give elasticsearch a few seconds to index documents
-        Thread.sleep(2000L);
-        List<Record> recordList = recordService.getAllRecords();
-        assertEquals(6, recordList.size());
-    }
+    public void getSingleRecords()  throws Exception{
+        byte[] content;
+        InputStream in = getClass().getResourceAsStream("/files/InformationType.json");
+        content = in.readAllBytes();
 
-    @Test
-    public void retriveAndSaveSingleDataset()  throws Exception{
-        deleteAllFromElasticsearch();
+        when(consumerMock.getFile(anyString())).thenReturn(new GithubFile("filename.json", "filpath", "sha", 1L, "url", "html_url", "git_url", "download_url", "file", Base64.encodeBase64String(content), "base64"));
         service.handle("testdataIkkeSlett/singleRow.json");
         //Give elasticsearch a few seconds to index documents
-        Thread.sleep(2000L);
-        List<Record> recordList = recordService.getAllRecords();
-        assertEquals(1, recordList.size());
+        verify(recordService, times(1)).insertRecord(anyString());
     }
 
     @Test
-    public void retriveAndSaveNotExistingFile() {
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("The file does not exist");
-        service.handle("notExisting.json");
+    public void getMultipleRecords() throws Exception {
+        byte[] content;
+        InputStream in = getClass().getResourceAsStream("/files/InformationTypes.json");
+        content = in.readAllBytes();
+
+        when(consumerMock.getFile(anyString())).thenReturn(new GithubFile("filename.json", "filpath", "sha", 1L, "url", "html_url", "git_url", "download_url", "file", Base64.encodeBase64String(content), "base64"));
+        service.handle("testdataIkkeSlett/multipleRows.json");
+        verify(recordService, times(6)).insertRecord(anyString());
     }
 
     @Test
-    public void retriveAndSaveFileNotValid() {
-        expectedException.expect(DataCatalogBackendTechnicalException.class);
-        expectedException.expectMessage("Error occurred during parse of Json in file");
-        service.handle("testdataIkkeSlett/invalidFile.json");
+    public void getRecordNotAFile()  throws Exception{
+        byte[] content;
+        InputStream in = getClass().getResourceAsStream("/files/InformationTypes.json");
+        content = in.readAllBytes();
+
+        when(consumerMock.getFile(anyString())).thenReturn(new GithubFile("filename.json", "filpath", "sha", 1L, "url", "html_url", "git_url", "download_url", "directory", Base64.encodeBase64String(content), "base64"));
+        service.handle("testdataIkkeSlett/singleRow.json");
+        //Give elasticsearch a few seconds to index documents
+        verify(recordService, times(0)).insertRecord(anyString());
     }
 
+    @Test
+    public void getRecordNotBase64Encoded()  throws Exception{
+        byte[] content;
+        InputStream in = getClass().getResourceAsStream("/files/InformationTypes.json");
+        content = in.readAllBytes();
 
-    private void deleteAllFromElasticsearch() {
-        List<Record> recordList = new ArrayList<>();
-        try {
-            recordList = recordService.getAllRecords();
-        } catch (ElasticsearchStatusException e) {
-            if (!e.getMessage().contains("no such index")) {
-                throw e;
-            }
-        }
-        if (!recordList.isEmpty()) {
-            recordList.forEach(record -> recordService.deleteRecordById(record.getId()));
-        }
+        when(consumerMock.getFile(anyString())).thenReturn(new GithubFile("filename.json", "filpath", "sha", 1L, "url", "html_url", "git_url", "download_url", "file", Base64.encodeBase64String(content), "whaat"));
+        service.handle("testdataIkkeSlett/singleRow.json");
+        //Give elasticsearch a few seconds to index documents
+        verify(recordService, times(0)).insertRecord(anyString());
     }
 }
