@@ -1,7 +1,7 @@
 //package no.nav.data.catalog.backend.test.component.testData;
 //
 //
-//import no.nav.data.catalog.backend.app.model.Informationtype;
+//import no.nav.data.catalog.backend.app.model.InformationType;
 //
 //import java.time.LocalDate;
 //
@@ -15,7 +15,7 @@
 //	}
 //
 //
-//	private static Informationtype sivilstand = Informationtype.builder()
+//	private static InformationType sivilstand = InformationType.builder()
 //			.id(1L)
 //			.functionalId("gTkIxmkBJh6v6nYA9I_r")
 //			.name("sivilstand")
@@ -24,7 +24,7 @@
 //			.synchedToElasticsearch(false)
 //			.build();
 //
-//	public static Informationtype getSivilstand(){
+//	public static InformationType getSivilstand(){
 //		return sivilstand;
 //	}
 //}
