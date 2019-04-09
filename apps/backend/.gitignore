@@ -78,3 +78,4 @@ buildNumber.properties
 !/.mvn/wrapper/maven-wrapper.jar
 
 /travis/datajegerne-private-key.pem
+/data-catalog-backend-app/src/main/resources/datajegerne-private-key.pem
