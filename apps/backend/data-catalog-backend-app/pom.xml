@@ -6,7 +6,7 @@
 
 	<parent>
 		<artifactId>data-catalog-backend</artifactId>
-		<groupId>no.nav.data.catalog.backend</groupId>
+		<groupId>no.nav.data</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
@@ -14,22 +14,20 @@
 
 	<dependencies>
 
-		<!-- Spring Depandancies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
-
-		<!-- Lombok Dependancies -->
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.6</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<!-- Elasticsearch Dependencies -->
@@ -51,26 +49,50 @@
 			<version>${elasticsearch.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>${jwt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>${json.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>${jaxb.version}</version>
+		</dependency>
 	</dependencies>
 
+	<packaging>jar</packaging>
+
 	<build>
+		<finalName>app</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<goals>
-							<goal>repackage</goal>
-						</goals>
+						<id>repackage</id>
 						<configuration>
-							<finalName>app</finalName>
+							<file>app.jar</file>
+							<classifier>exec</classifier>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-		</plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
+            </plugin>
+        </plugins>
 	</build>
-
 
 </project>
