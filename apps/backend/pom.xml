@@ -26,6 +26,7 @@
 		<jwt.version>0.9.1</jwt.version>
 		<json.version>20180813</json.version>
 		<jaxb.version>2.3.1</jaxb.version>
+		<elasticsearch.version>6.4.1</elasticsearch.version>
 		<elasticsearch.testcontainer.version>1.11.1</elasticsearch.testcontainer.version>
 	</properties>
 
