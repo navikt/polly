@@ -1,5 +1,8 @@
 package no.nav.data.catalog.backend.app.controller;
 
+import no.nav.data.catalog.backend.app.model.InformationCategory;
+import no.nav.data.catalog.backend.app.model.InformationProducer;
+import no.nav.data.catalog.backend.app.model.InformationSystem;
 import no.nav.data.catalog.backend.app.model.InformationType;
 import no.nav.data.catalog.backend.app.model.request.InformationTypeRequest;
 import no.nav.data.catalog.backend.app.service.InformationTypeService;
@@ -21,35 +24,51 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/backend/informationtype")
+@RequestMapping("/backend")
 public class InformationTypeController {
 
 	@Autowired
 	private InformationTypeService informationTypeService;
 
-	@PostMapping
+	@PostMapping("/informationtype")
 	@ResponseStatus(HttpStatus.CREATED)
 	public InformationType createInformationType(@Valid @RequestBody InformationTypeRequest informationTypeRequest) {
 		return informationTypeService.createInformationType(informationTypeRequest);
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping("/informationtype/{id}")
 	public InformationType getInformationTypeById(@PathVariable Long id) {
 		return informationTypeService.getInformationType(id);
 	}
 
-	@GetMapping("/all")
+	@GetMapping("/informationtype")
 	public List<InformationType> getAllInformationTypes() {
 		return informationTypeService.getAllInformationTypes();
 	}
 
-	@PutMapping("/{id}")
+	@PutMapping("/informationtype/{id}")
 	public InformationType updateInformationType(@PathVariable Long id, @Valid @RequestBody InformationTypeRequest informationTypeRequest) {
 		return informationTypeService.updateInformationType(id, informationTypeRequest);
 	}
 
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/informationtype/{id}")
 	public void deleteInformationTypeById(@PathVariable Long id) {
 		informationTypeService.deleteInformationTypeById(id);
 	}
+
+	@GetMapping("/informationcategory")
+	public List<InformationCategory> getInformationCategories() {
+		return informationTypeService.getInformationCategories();
+	}
+
+	@GetMapping("/informationproducer")
+	public List<InformationProducer> getInformationProducers() {
+		return informationTypeService.getInformationProducers();
+	}
+
+	@GetMapping("/informationsystem")
+	public List<InformationSystem> getInformationSystems() {
+		return informationTypeService.getInformationSystems();
+	}
+
 }

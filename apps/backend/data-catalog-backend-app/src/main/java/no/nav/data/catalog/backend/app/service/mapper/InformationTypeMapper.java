@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.app.model.mapper;
+package no.nav.data.catalog.backend.app.service.mapper;
 
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
 import no.nav.data.catalog.backend.app.model.InformationCategory;
