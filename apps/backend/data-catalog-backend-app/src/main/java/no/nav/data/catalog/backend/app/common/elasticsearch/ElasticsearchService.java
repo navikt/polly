@@ -30,7 +30,7 @@ import static no.nav.data.catalog.backend.app.common.utils.Constants.TYPE;
 
 @Service
 public class ElasticsearchService {
-
+  
 	private RequestOptions requestOptions = RequestOptions.DEFAULT.toBuilder().build();
 
 	@Autowired
