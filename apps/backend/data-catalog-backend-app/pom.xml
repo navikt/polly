@@ -43,7 +43,6 @@
 			<version>${h2.version}</version>
 		</dependency>
 
-		<!-- legger er først men skal inn i test modulen-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
