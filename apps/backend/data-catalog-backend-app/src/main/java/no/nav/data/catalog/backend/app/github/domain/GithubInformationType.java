@@ -1,23 +1,16 @@
-package no.nav.data.catalog.backend.app.record;
+package no.nav.data.catalog.backend.app.github.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.Builder;
 import lombok.Data;
-
-import java.time.LocalDate;
+import no.nav.data.catalog.backend.app.record.Category;
+import no.nav.data.catalog.backend.app.record.StorageTime;
 
 @Data
 @Builder
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Record {
+public class GithubInformationType {
 
-	private String id;
 	private String name;
 	private String description;
 	private Category category;
@@ -27,16 +20,9 @@ public class Record {
 	private StorageTime storageTime;
 	private String qualityOfData;
 	private Boolean personalData;
-	@JsonDeserialize(using = LocalDateDeserializer.class)
-	@JsonSerialize(using = LocalDateSerializer.class)
-	private LocalDate recordCreationDate;
-	@JsonDeserialize(using = LocalDateDeserializer.class)
-	@JsonSerialize(using = LocalDateSerializer.class)
-	private LocalDate recordLastUpdatedDate;
 
 	@JsonCreator
-	public Record(
-			@JsonProperty(value = "id") String id,
+	public GithubInformationType(
 			@JsonProperty(value = "name", required = true) String name,
 			@JsonProperty(value = "description", required = true) String description,
 			@JsonProperty(value = "category") Category category,
@@ -45,10 +31,7 @@ public class Record {
 			@JsonProperty(value = "sourceOfRecord") String sourceOfRecord,
 			@JsonProperty(value = "storageTime") StorageTime storageTime,
 			@JsonProperty(value = "qualityOfData") String qualityOfData,
-			@JsonProperty(value = "personalData", required = true) Boolean personalData,
-			@JsonProperty(value = "recordCreationDate") LocalDate recordCreationDate,
-			@JsonProperty(value = "recordLastUpdatedDate") LocalDate recordLastUpdatedDate) {
-		this.id = id;
+			@JsonProperty(value = "personalData", required = true) Boolean personalData) {
 		this.name = name;
 		this.description = description;
 		this.category = category;
@@ -58,7 +41,5 @@ public class Record {
 		this.storageTime = storageTime;
 		this.qualityOfData = qualityOfData;
 		this.personalData = personalData;
-		this.recordCreationDate = recordCreationDate;
-		this.recordLastUpdatedDate = recordLastUpdatedDate;
 	}
 }
