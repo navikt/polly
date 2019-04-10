@@ -4,15 +4,11 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import org.apache.commons.codec.binary.Base64;
-import org.elasticsearch.core.internal.io.IOUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -28,19 +24,10 @@ public class JwtTokenGenerator {
     private static final String PKCS_1_PEM_HEADER = "-----BEGIN RSA PRIVATE KEY-----";
     private static final String PKCS_1_PEM_FOOTER = "-----END RSA PRIVATE KEY-----";
 
-    private static URL keyFilePath; // TODO: Use @Value if methods doesn't have to be static and remove constructor.
-    private static byte[] keyContent;
+    @Value("${github.keyPath}")
+    private String keypath;
 
-    public JwtTokenGenerator() throws URISyntaxException, NullPointerException {
-        try (InputStream in = getClass().getResourceAsStream("/datajegerne-private-key.pem")) {
-            keyContent = in.readAllBytes();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-//        keyFilePath = Paths.get(getClass().getClassLoader().getResource("datajegerne-private-key.pem").toURI());
-    }
-
-    public static String generateToken()  {
+    public String generateToken()  {
         PrivateKey privateKey;
         String token;
         try {
@@ -60,15 +47,15 @@ public class JwtTokenGenerator {
             token = Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.RS256, privateKey).compact();
         } catch (GeneralSecurityException e) {
             throw new DataCatalogBackendTechnicalException(String.format("General security exception occured reading private key file ", e));
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException e) {
             throw new DataCatalogBackendTechnicalException(String.format("Error occured reading private key file ", e));
         }
         return token;
     }
 
-    private static PrivateKey loadKey() throws GeneralSecurityException, IOException, URISyntaxException {
-//        byte[] keyDataBytes = keyContent;
-        String keyDataString = new String(keyContent, StandardCharsets.UTF_8);
+    private PrivateKey loadKey() throws GeneralSecurityException, IOException {
+        byte[] keyDataBytes = getClass().getResourceAsStream(keypath).readAllBytes();
+        String keyDataString = new String(keyDataBytes, StandardCharsets.UTF_8);
 
         if (keyDataString.contains(PKCS_1_PEM_HEADER)) {
             // OpenSSL / PKCS#1 Base64 PEM encoded file
@@ -78,10 +65,10 @@ public class JwtTokenGenerator {
         }
 
         // We assume it's a PKCS#8 DER encoded binary file
-        return readPkcs8PrivateKey(keyContent);
+        return readPkcs8PrivateKey(keyDataBytes);
     }
 
-    private static PrivateKey readPkcs8PrivateKey(byte[] pkcs8Bytes) throws GeneralSecurityException {
+    private PrivateKey readPkcs8PrivateKey(byte[] pkcs8Bytes) throws GeneralSecurityException {
         KeyFactory keyFactory = KeyFactory.getInstance("RSA", "SunRsaSign");
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(pkcs8Bytes);
         try {
@@ -91,7 +78,7 @@ public class JwtTokenGenerator {
         }
     }
 
-    private static PrivateKey readPkcs1PrivateKey(byte[] pkcs1Bytes) throws GeneralSecurityException {
+    private PrivateKey readPkcs1PrivateKey(byte[] pkcs1Bytes) throws GeneralSecurityException {
         // We can't use Java internal APIs to parse ASN.1 structures, so we build a PKCS#8 key Java can understand
         int pkcs1Length = pkcs1Bytes.length;
         int totalLength = pkcs1Length + 22;
@@ -105,7 +92,7 @@ public class JwtTokenGenerator {
         return readPkcs8PrivateKey(pkcs8bytes);
     }
 
-    private static byte[] join(byte[] byteArray1, byte[] byteArray2){
+    private byte[] join(byte[] byteArray1, byte[] byteArray2){
         byte[] bytes = new byte[byteArray1.length + byteArray2.length];
         System.arraycopy(byteArray1, 0, bytes, 0, byteArray1.length);
         System.arraycopy(byteArray2, 0, bytes, byteArray1.length, byteArray2.length);

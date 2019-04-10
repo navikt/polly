@@ -7,7 +7,6 @@ import no.nav.data.catalog.backend.app.github.domain.GithubAccount;
 import no.nav.data.catalog.backend.app.github.domain.GithubFile;
 import no.nav.data.catalog.backend.app.github.domain.GithubInstallation;
 import no.nav.data.catalog.backend.app.github.domain.GithubInstallationToken;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -37,7 +36,8 @@ public class GithubConsumerTest {
     @MockBean
     private RestTemplate restTemplate = mock(RestTemplate.class);
 
-    private JwtTokenGenerator jwtTokenGenerator;
+    @MockBean
+    private JwtTokenGenerator jwtTokenGenerator = mock(JwtTokenGenerator.class);
 
     @InjectMocks
     private GithubConsumer githubConsumer;
@@ -45,12 +45,7 @@ public class GithubConsumerTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
-    @Before
-    public void setUp() throws Exception {
-        jwtTokenGenerator = new JwtTokenGenerator();
-    }
-
-    @Test
+   @Test
     public void getFileInfo() {
         GithubFile inputFileInfo = new GithubFile("filename.json", "filpath", "sha", 1L, "url", "html_url", "git_url", "download_url", "file", "content", "encoding");
         GithubInstallation installation = new GithubInstallation("1", new GithubAccount("navikt"));

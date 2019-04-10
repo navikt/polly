@@ -14,10 +14,10 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class CommonConfig {
-	@Value("${docker.host}")
+	@Value("${elasticsearch.host}")
 	private String dockerHost;
 
-	@Value("${docker.port}")
+	@Value("${elasticsearch.port}")
 	private int dockerPort;
 
 	@Primary
