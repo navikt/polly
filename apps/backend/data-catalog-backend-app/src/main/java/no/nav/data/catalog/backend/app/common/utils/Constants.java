@@ -6,7 +6,6 @@ public final class Constants {
 		throw new IllegalStateException("Utility class");
 	}
 
-	public static final String OLD_INDEX = "records";
 	public static final String INDEX = "informationtypes";
 	public static final String TYPE = "_doc";
 }
