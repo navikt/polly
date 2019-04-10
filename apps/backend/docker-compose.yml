@@ -2,7 +2,6 @@ version: '3.7'
 services:
   postgres:
     image: postgres
-    container_name: postgres
     restart: always
     environment:
       - POSTGRES_USER=postgres
@@ -28,6 +27,7 @@ services:
       - 9300:9300
     networks:
       - esnet
+
   data-catalog-backend:
     image: navikt/data-catalog-backend:latest
     build:
@@ -37,6 +37,7 @@ services:
       - 8080:8080
     volumes:
       - ./travis/datajegerne-private-key.pem:/etc/travis/datajegerne-private-key.pem
+
 volumes:
   esdata:
     driver: local
