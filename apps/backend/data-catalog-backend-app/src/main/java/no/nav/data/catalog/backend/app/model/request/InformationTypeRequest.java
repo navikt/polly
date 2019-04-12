@@ -10,25 +10,28 @@ import lombok.Data;
 public class InformationTypeRequest {
 
 	private String informationTypeName;
-	private Long informationCategoryId;
-	private Long informationProducerId;
-	private Long informationSystemId;
+	private String informationCategory;
+	private String informationProducer;
+	private String informationSystem;
 	private String description;
-	private String createdBy;
+	private Boolean personalData;
+	private String createdBy;    //TODO: Retrieve from token, authorized user
 
 	@JsonCreator
 	public InformationTypeRequest(
 			@JsonProperty(value = "informationTypeName", required = true) String informationTypeName,
-			@JsonProperty(value = "informationCategoryId", required = true) Long informationCategoryId,
-			@JsonProperty(value = "informationProducerId", required = true) Long informationProducerId,
-			@JsonProperty(value = "informationSystemId", required = true) Long informationSystemId,
+			@JsonProperty(value = "informationCategory", required = true) String informationCategory,
+			@JsonProperty(value = "informationProducer", required = true) String informationProducer,
+			@JsonProperty(value = "informationSystem", required = true) String informationSystem,
 			@JsonProperty(value = "description", required = true) String description,
+			@JsonProperty(value = "personalData", required = true) Boolean personalData,
 			@JsonProperty(value = "createdBy") String createdBy) {
 		this.informationTypeName = informationTypeName;
-		this.informationCategoryId = informationCategoryId;
-		this.informationProducerId = informationProducerId;
-		this.informationSystemId = informationSystemId;
+		this.informationCategory = informationCategory;
+		this.informationProducer = informationProducer;
+		this.informationSystem = informationSystem;
 		this.description = description;
+		this.personalData = personalData;
 		this.createdBy = createdBy;
 	}
 

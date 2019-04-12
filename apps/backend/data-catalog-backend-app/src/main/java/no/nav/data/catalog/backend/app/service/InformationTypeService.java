@@ -1,15 +1,11 @@
 package no.nav.data.catalog.backend.app.service;
 
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
-import no.nav.data.catalog.backend.app.model.InformationCategory;
-import no.nav.data.catalog.backend.app.model.InformationProducer;
-import no.nav.data.catalog.backend.app.model.InformationSystem;
 import no.nav.data.catalog.backend.app.model.InformationType;
+import no.nav.data.catalog.backend.app.model.LookupEntity;
 import no.nav.data.catalog.backend.app.model.request.InformationTypeRequest;
-import no.nav.data.catalog.backend.app.repository.InformationCategoryRepository;
-import no.nav.data.catalog.backend.app.repository.InformationProducerRepository;
-import no.nav.data.catalog.backend.app.repository.InformationSystemRepository;
 import no.nav.data.catalog.backend.app.repository.InformationTypeRepository;
+import no.nav.data.catalog.backend.app.repository.LookupEntityRepository;
 import no.nav.data.catalog.backend.app.service.mapper.InformationTypeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,11 +21,8 @@ public class InformationTypeService {
 	@Autowired
 	private InformationTypeRepository informationTypeRepository;
 	@Autowired
-	private InformationCategoryRepository informationCategoryRepository;
-	@Autowired
-	private InformationProducerRepository informationProducerRepository;
-	@Autowired
-	private InformationSystemRepository informationSystemRepository;
+	private LookupEntityRepository lookupEntityRepository;
+
 
 	public InformationType createInformationType(InformationTypeRequest request) {
 		InformationType informationType = informationTypeMapper.mapRequestToInformationType(request, null);
@@ -38,7 +31,7 @@ public class InformationTypeService {
 
 	public InformationType getInformationType(Long id) {
 		Optional<InformationType> optionalInformationType = informationTypeRepository.findById(id);
-		if (!optionalInformationType.isPresent()) {
+		if (optionalInformationType.isEmpty()) {
 			throw new DataCatalogBackendNotFoundException(String.format("Cannot find Information type with id: %s", id));
 		}
 		return optionalInformationType.get();
@@ -49,24 +42,28 @@ public class InformationTypeService {
 	}
 
 	public InformationType updateInformationType(Long id, InformationTypeRequest informationTypeRequest) {
-		InformationType informationType = informationTypeMapper.mapRequestToInformationType(informationTypeRequest, id);
-		return informationTypeRepository.save(informationType);
+		InformationType informationTypeToBeUpdated = getInformationType(id);
+		InformationType updatedInformationType = informationTypeMapper.mapRequestToInformationType(informationTypeRequest, informationTypeToBeUpdated);
+		return informationTypeRepository.save(updatedInformationType);
 	}
 
 	public void deleteInformationTypeById(Long id) {
 		informationTypeRepository.deleteById(id);
 	}
 
-
-	public List<InformationCategory> getInformationCategories() {
-		return informationCategoryRepository.findAll();
+	public List<LookupEntity> getDecodeTable() {
+		return lookupEntityRepository.findAll();
 	}
 
-	public List<InformationProducer> getInformationProducers() {
-		return informationProducerRepository.findAll();
+	public List<LookupEntity> getAllForEntityOfDecodedTable(String entity) {
+		return lookupEntityRepository.findAllByEntity(entity);
 	}
 
-	public List<InformationSystem> getInformationSystems() {
-		return informationSystemRepository.findAll();
+	public LookupEntity getDescriptionForEntityAndCode(String entity, String code) {
+		Optional<LookupEntity> optionalLookupEntity = lookupEntityRepository.findByEntityAndCode(entity, code);
+		if (optionalLookupEntity.isEmpty()) {
+			throw new DataCatalogBackendNotFoundException(String.format("Cannot find description for entity: %s with code: %s", entity, code));
+		}
+		return optionalLookupEntity.get();
 	}
 }

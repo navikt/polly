@@ -1,9 +1,7 @@
 package no.nav.data.catalog.backend.app.controller;
 
-import no.nav.data.catalog.backend.app.model.InformationCategory;
-import no.nav.data.catalog.backend.app.model.InformationProducer;
-import no.nav.data.catalog.backend.app.model.InformationSystem;
 import no.nav.data.catalog.backend.app.model.InformationType;
+import no.nav.data.catalog.backend.app.model.LookupEntity;
 import no.nav.data.catalog.backend.app.model.request.InformationTypeRequest;
 import no.nav.data.catalog.backend.app.service.InformationTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,19 +54,18 @@ public class InformationTypeController {
 		informationTypeService.deleteInformationTypeById(id);
 	}
 
-	@GetMapping("/informationcategory")
-	public List<InformationCategory> getInformationCategories() {
-		return informationTypeService.getInformationCategories();
+	@GetMapping("/lookup")
+	public List<LookupEntity> getFullDecodedTable() {
+		return informationTypeService.getDecodeTable();
 	}
 
-	@GetMapping("/informationproducer")
-	public List<InformationProducer> getInformationProducers() {
-		return informationTypeService.getInformationProducers();
+	@GetMapping("/lookup/{entity}")
+	public List<LookupEntity> getAllForEntityOfDecodedTable(@PathVariable String entity) {
+		return informationTypeService.getAllForEntityOfDecodedTable(entity);
 	}
 
-	@GetMapping("/informationsystem")
-	public List<InformationSystem> getInformationSystems() {
-		return informationTypeService.getInformationSystems();
+	@GetMapping("/lookup/{entity}/{code}")
+	public LookupEntity getDescriptionForEntityAndCode(@PathVariable String entity, @PathVariable String code) {
+		return informationTypeService.getDescriptionForEntityAndCode(entity, code);
 	}
-
 }
