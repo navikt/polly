@@ -31,6 +31,7 @@ public class InformationTypeMapper {
 		} else {                                // update InformationType
 			informationType.setUpdatedBy(request.getCreatedBy());
 			informationType.setDateLastUpdated(LocalDate.now().toString());
+			informationType.setSynchedToElasticsearch(false);
 		}
 
 		informationType.setInformationTypeName(request.getInformationTypeName());
@@ -54,7 +55,7 @@ public class InformationTypeMapper {
 		return optionalEntity.get();
 	}
 
-	public Map<String, Object> mapInformationTypeToElasticsearch(InformationType informationType) {
+	public String mapInformationTypeToElasticsearchString(InformationType informationType) {
 		Map<String, Object> jsonMap = new HashMap<>();
 		jsonMap.put("id", informationType.getInformationTypeId());
 		jsonMap.put("name", informationType.getInformationTypeName());
@@ -64,7 +65,7 @@ public class InformationTypeMapper {
 		jsonMap.put("informationSystem", findByEntityAndCode(INFORMATION_SYSTEM, informationType.getInformationSystem()).getDecode());
 		jsonMap.put("personalData", informationType.isPersonalData());
 
-		return jsonMap;
+		return jsonMap.toString();
 	}
 
 }

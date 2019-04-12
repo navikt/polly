@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface InformationTypeRepository extends JpaRepository<InformationType, Long> {
 	List<InformationType> findAllByOrderByInformationTypeIdAsc();
+
+	List<InformationType> findBySynchedToElasticsearchFalse();
 }

@@ -68,4 +68,9 @@ public class InformationTypeController {
 	public LookupEntity getDescriptionForEntityAndCode(@PathVariable String entity, @PathVariable String code) {
 		return informationTypeService.getDescriptionForEntityAndCode(entity, code);
 	}
+
+	@GetMapping("/synch")
+	public void synchToElasticsearch() {
+		informationTypeService.synchToElasticsearch();
+	}
 }

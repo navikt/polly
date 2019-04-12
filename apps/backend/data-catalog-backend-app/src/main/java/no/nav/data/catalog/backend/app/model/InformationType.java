@@ -64,5 +64,11 @@ public class InformationType implements Serializable {
 
 	@Column(name = "personal_data", nullable = false)
 	private boolean personalData;
+
+	@Column(name = "json_string")
+	private String jsonString;
+
+	@Column(name = "synched_to_elasticsearch", nullable = false)
+	private boolean synchedToElasticsearch;
 }
 
