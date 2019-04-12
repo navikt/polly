@@ -25,8 +25,6 @@ public class GithubConsumer {
     @Autowired
     private JwtTokenGenerator tokenGenerator;
 
-    private static String jwtToken = null;
-
     public GithubFile getFile(String filename) {
         try {
             ResponseEntity responseEntity = restTemplate.exchange("https://api.github.com/repos/navikt/pol-datasett/contents/" + filename, HttpMethod.GET, new HttpEntity<>(createTokenHeaders(getInstallationToken(getInstallationId()))), GithubFile.class);
@@ -82,11 +80,8 @@ public class GithubConsumer {
     }
 
     private String getJwtToken() {
-        if (jwtToken == null) {
-            jwtToken = tokenGenerator.generateToken();
-        }
-
-        return jwtToken;
+        //TODO: Cache tokene i 9 minutter?
+        return tokenGenerator.generateToken();
     }
 
     private HttpHeaders createTokenHeaders(String token) {
