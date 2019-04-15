@@ -3,7 +3,9 @@ package no.nav.data.catalog.backend.app.service.mapper;
 import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION_CATEGORY;
 import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION_PRODUCER;
 import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION_SYSTEM;
+import static org.elasticsearch.common.UUIDs.base64UUID;
 
+import no.nav.data.catalog.backend.app.common.elasticsearch.ElasticsearchStatus;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
 import no.nav.data.catalog.backend.app.model.InformationType;
 import no.nav.data.catalog.backend.app.model.LookupEntity;
@@ -28,10 +30,12 @@ public class InformationTypeMapper {
 			informationType = new InformationType();
 			informationType.setCreatedBy(request.getCreatedBy());
 			informationType.setDateCreated(LocalDate.now().toString());
+			informationType.setElasticsearchId(base64UUID());
+			informationType.setElasticsearchStatus(ElasticsearchStatus.TO_BE_CREATED.toString());
 		} else {                                // update InformationType
 			informationType.setUpdatedBy(request.getCreatedBy());
 			informationType.setDateLastUpdated(LocalDate.now().toString());
-			informationType.setSynchedToElasticsearch(false);
+			informationType.setElasticsearchStatus(ElasticsearchStatus.TO_BE_UPDATED.toString());
 		}
 
 		informationType.setInformationTypeName(request.getInformationTypeName());
@@ -44,7 +48,6 @@ public class InformationTypeMapper {
 		informationType.setInformationSystem(findByEntityAndCode(INFORMATION_SYSTEM, request.getInformationSystem()).getCode());
 
 		return informationType;
-
 	}
 
 	private LookupEntity findByEntityAndCode(String entity, String code) {
@@ -55,9 +58,10 @@ public class InformationTypeMapper {
 		return optionalEntity.get();
 	}
 
-	public String mapInformationTypeToElasticsearchString(InformationType informationType) {
+	public Map<String, Object> mapInformationTypeToElasticsearchString(InformationType informationType) {
 		Map<String, Object> jsonMap = new HashMap<>();
-		jsonMap.put("id", informationType.getInformationTypeId());
+		jsonMap.put("id", informationType.getElasticsearchId());
+		jsonMap.put("informationTypeId", informationType.getInformationTypeId());
 		jsonMap.put("name", informationType.getInformationTypeName());
 		jsonMap.put("description", informationType.getDescription());
 		jsonMap.put("informationCategory", findByEntityAndCode(INFORMATION_CATEGORY, informationType.getInformationCategory()).getDecode());
@@ -65,7 +69,7 @@ public class InformationTypeMapper {
 		jsonMap.put("informationSystem", findByEntityAndCode(INFORMATION_SYSTEM, informationType.getInformationSystem()).getDecode());
 		jsonMap.put("personalData", informationType.isPersonalData());
 
-		return jsonMap.toString();
+		return jsonMap;
 	}
 
 }

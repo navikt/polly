@@ -41,9 +41,9 @@
 //
 //	@Test
 //	public void should_insertRecord_givenCorrectJsonString() {
-//		when(recordServiceMock.insertRecord(getInntektJsonString())).thenReturn(getInntektResponse());
+//		when(recordServiceMock.insertInformationType(getInntektJsonString())).thenReturn(getInntektResponse());
 //
-//		RecordResponse recordResponse = recordServiceMock.insertRecord(getInntektJsonString());
+//		RecordResponse recordResponse = recordServiceMock.insertInformationType(getInntektJsonString());
 //		assertEquals(recordResponse.getStatus(), String.format("Created a new record with id=%s", getInntektId()));
 //	}
 //
@@ -51,16 +51,16 @@
 //	public void shouldFailTo_InsertRecord_givenFaultyJsonString() {
 //		expectedException.expect(IllegalArgumentException.class);
 //
-//		when(recordServiceMock.insertRecord(getFaltyJsonString())).thenThrow(new IllegalArgumentException());
+//		when(recordServiceMock.insertInformationType(getFaltyJsonString())).thenThrow(new IllegalArgumentException());
 //
-//		recordServiceMock.insertRecord(getFaltyJsonString());
+//		recordServiceMock.insertInformationType(getFaltyJsonString());
 //	}
 //
 //	@Test
 //	public void should_getRecordById_givenIdToExistingDocument() {
-//		when(recordServiceMock.getRecordById(getInntektId())).thenReturn(getSivilstandRecord());
+//		when(recordServiceMock.getInformationTypeById(getInntektId())).thenReturn(getSivilstandRecord());
 //
-//		Record record = recordServiceMock.getRecordById(getInntektId());
+//		Record record = recordServiceMock.getInformationTypeById(getInntektId());
 //		assertEquals(record, getSivilstandRecord());
 //	}
 //
@@ -71,20 +71,20 @@
 //		expectedException.expect(DocumentNotFoundException.class);
 //		expectedException.expectMessage(String.format("Could not find a document to retrieve, document id=%s", idToNonExistingDocument));
 //
-//		when(recordServiceMock.getRecordById(idToNonExistingDocument)).thenThrow(
+//		when(recordServiceMock.getInformationTypeById(idToNonExistingDocument)).thenThrow(
 //				new DocumentNotFoundException(String.format(
 //						"Could not find a document to retrieve, document id=%s",
 //						idToNonExistingDocument)));
 //
-//		recordServiceMock.getRecordById(idToNonExistingDocument);
+//		recordServiceMock.getInformationTypeById(idToNonExistingDocument);
 //	}
 //
 //	@Test
 //	public void should_updateFieldsById_givenIdToExistingDocument() {
 //		String updateString = getUpdateJsonString();
-//		when(recordServiceMock.updateFieldsById(getInntektId(), updateString)).thenReturn(getUpdatedResponse());
+//		when(recordServiceMock.updateInformationTypeById(getInntektId(), updateString)).thenReturn(getUpdatedResponse());
 //
-//		RecordResponse recordResponse = recordServiceMock.updateFieldsById(getInntektId(), updateString);
+//		RecordResponse recordResponse = recordServiceMock.updateInformationTypeById(getInntektId(), updateString);
 //		assertEquals(recordResponse, getUpdatedResponse());
 //		assertEquals(recordResponse.getStatus(), String.format("Updated record with id=%s", getInntektId()));
 //	}
@@ -96,19 +96,19 @@
 //		expectedException.expect(DocumentNotFoundException.class);
 //		expectedException.expectMessage(String.format("Could not find a document to update, document id=%s", idToNonExistingDocument));
 //
-//		when(recordServiceMock.updateFieldsById(idToNonExistingDocument, getUpdateJsonString())).thenThrow(
+//		when(recordServiceMock.updateInformationTypeById(idToNonExistingDocument, getUpdateJsonString())).thenThrow(
 //				new DocumentNotFoundException(String.format(
 //						"Could not find a document to update, document id=%s",
 //						idToNonExistingDocument)));
 //
-//		recordServiceMock.updateFieldsById(idToNonExistingDocument, getUpdateJsonString());
+//		recordServiceMock.updateInformationTypeById(idToNonExistingDocument, getUpdateJsonString());
 //	}
 //
 //	@Test
 //	public void should_deleteRecordById_givenIdToExistingDocument() {
-//		when(recordServiceMock.deleteRecordById(getInntektId())).thenReturn(getDeleteResponse());
+//		when(recordServiceMock.deleteInformationTypeById(getInntektId())).thenReturn(getDeleteResponse());
 //
-//		RecordResponse recordResponse = recordServiceMock.deleteRecordById(getInntektId());
+//		RecordResponse recordResponse = recordServiceMock.deleteInformationTypeById(getInntektId());
 //		assertEquals(recordResponse, getDeleteResponse());
 //		assertEquals(recordResponse.getStatus(), String.format("Deleted record with id=%s", getInntektId()));
 //	}
@@ -120,12 +120,12 @@
 //		expectedException.expect(DocumentNotFoundException.class);
 //		expectedException.expectMessage(String.format("Could not find a document to delete, document id=%s", idToNonExistingDocument));
 //
-//		when(recordServiceMock.deleteRecordById(idToNonExistingDocument)).thenThrow(
+//		when(recordServiceMock.deleteInformationTypeById(idToNonExistingDocument)).thenThrow(
 //				new DocumentNotFoundException(String.format(
 //						"Could not find a document to delete, document id=%s",
 //						idToNonExistingDocument)));
 //
-//		recordServiceMock.deleteRecordById(idToNonExistingDocument);
+//		recordServiceMock.deleteInformationTypeById(idToNonExistingDocument);
 //	}
 //
 //	@Test

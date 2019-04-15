@@ -51,7 +51,7 @@ public class InformationTypeController {
 
 	@DeleteMapping("/informationtype/{id}")
 	public void deleteInformationTypeById(@PathVariable Long id) {
-		informationTypeService.deleteInformationTypeById(id);
+		informationTypeService.setInformationTypeToBeDeletedById(id);
 	}
 
 	@GetMapping("/lookup")
