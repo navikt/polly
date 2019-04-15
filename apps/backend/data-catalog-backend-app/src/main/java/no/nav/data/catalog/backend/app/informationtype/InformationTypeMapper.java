@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.app.service.mapper;
+package no.nav.data.catalog.backend.app.informationtype;
 
 import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION_CATEGORY;
 import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION_PRODUCER;
@@ -7,10 +7,8 @@ import static org.elasticsearch.common.UUIDs.base64UUID;
 
 import no.nav.data.catalog.backend.app.common.elasticsearch.ElasticsearchStatus;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
-import no.nav.data.catalog.backend.app.model.InformationType;
-import no.nav.data.catalog.backend.app.model.LookupEntity;
-import no.nav.data.catalog.backend.app.model.request.InformationTypeRequest;
-import no.nav.data.catalog.backend.app.repository.LookupEntityRepository;
+import no.nav.data.catalog.backend.app.lookup.LookupEntity;
+import no.nav.data.catalog.backend.app.lookup.LookupEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -64,9 +62,9 @@ public class InformationTypeMapper {
 		jsonMap.put("informationTypeId", informationType.getInformationTypeId());
 		jsonMap.put("name", informationType.getInformationTypeName());
 		jsonMap.put("description", informationType.getDescription());
-		jsonMap.put("informationCategory", findByEntityAndCode(INFORMATION_CATEGORY, informationType.getInformationCategory()).getDecode());
-		jsonMap.put("informationProducer", findByEntityAndCode(INFORMATION_PRODUCER, informationType.getInformationProducer()).getDecode());
-		jsonMap.put("informationSystem", findByEntityAndCode(INFORMATION_SYSTEM, informationType.getInformationSystem()).getDecode());
+		jsonMap.put("informationCategory", findByEntityAndCode(INFORMATION_CATEGORY, informationType.getInformationCategory()).getDescription());
+		jsonMap.put("informationProducer", findByEntityAndCode(INFORMATION_PRODUCER, informationType.getInformationProducer()).getDescription());
+		jsonMap.put("informationSystem", findByEntityAndCode(INFORMATION_SYSTEM, informationType.getInformationSystem()).getDescription());
 		jsonMap.put("personalData", informationType.isPersonalData());
 
 		return jsonMap;

@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.app.model;
+package no.nav.data.catalog.backend.app.informationtype;
 
 import static no.nav.data.catalog.backend.app.common.utils.Constants.SERIAL_VERSION_UID;
 

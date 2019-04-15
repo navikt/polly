@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.app.model;
+package no.nav.data.catalog.backend.app.lookup.domain;
 
 
 public enum InformationSystemCode {

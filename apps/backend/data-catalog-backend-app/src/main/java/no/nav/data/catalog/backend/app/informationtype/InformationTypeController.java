@@ -1,9 +1,5 @@
-package no.nav.data.catalog.backend.app.controller;
+package no.nav.data.catalog.backend.app.informationtype;
 
-import no.nav.data.catalog.backend.app.model.InformationType;
-import no.nav.data.catalog.backend.app.model.LookupEntity;
-import no.nav.data.catalog.backend.app.model.request.InformationTypeRequest;
-import no.nav.data.catalog.backend.app.service.InformationTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,51 +18,36 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/backend")
+@RequestMapping("/backend/informationtype")
 public class InformationTypeController {
 
 	@Autowired
 	private InformationTypeService informationTypeService;
 
-	@PostMapping("/informationtype")
+	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public InformationType createInformationType(@Valid @RequestBody InformationTypeRequest informationTypeRequest) {
 		return informationTypeService.createInformationType(informationTypeRequest);
 	}
 
-	@GetMapping("/informationtype/{id}")
+	@GetMapping("/{id}")
 	public InformationType getInformationTypeById(@PathVariable Long id) {
 		return informationTypeService.getInformationType(id);
 	}
 
-	@GetMapping("/informationtype")
+	@GetMapping
 	public List<InformationType> getAllInformationTypes() {
 		return informationTypeService.getAllInformationTypes();
 	}
 
-	@PutMapping("/informationtype/{id}")
+	@PutMapping("/{id}")
 	public InformationType updateInformationType(@PathVariable Long id, @Valid @RequestBody InformationTypeRequest informationTypeRequest) {
 		return informationTypeService.updateInformationType(id, informationTypeRequest);
 	}
 
-	@DeleteMapping("/informationtype/{id}")
+	@DeleteMapping("/{id}")
 	public void deleteInformationTypeById(@PathVariable Long id) {
 		informationTypeService.setInformationTypeToBeDeletedById(id);
-	}
-
-	@GetMapping("/lookup")
-	public List<LookupEntity> getFullDecodedTable() {
-		return informationTypeService.getDecodeTable();
-	}
-
-	@GetMapping("/lookup/{entity}")
-	public List<LookupEntity> getAllForEntityOfDecodedTable(@PathVariable String entity) {
-		return informationTypeService.getAllForEntityOfDecodedTable(entity);
-	}
-
-	@GetMapping("/lookup/{entity}/{code}")
-	public LookupEntity getDescriptionForEntityAndCode(@PathVariable String entity, @PathVariable String code) {
-		return informationTypeService.getDescriptionForEntityAndCode(entity, code);
 	}
 
 	@GetMapping("/synch")

@@ -1,7 +1,7 @@
 //package no.nav.data.catalog.backend.test.component.testData;
 //
 //
-//import no.nav.data.catalog.backend.app.model.InformationType;
+//import no.nav.data.catalog.backend.app.informationtype.InformationType;
 //
 //import java.time.LocalDate;
 //

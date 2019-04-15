@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.app.service;
+package no.nav.data.catalog.backend.app.informationtype;
 
 import static no.nav.data.catalog.backend.app.common.elasticsearch.ElasticsearchStatus.SYNCHED;
 import static no.nav.data.catalog.backend.app.common.elasticsearch.ElasticsearchStatus.TO_BE_CREATED;
@@ -9,12 +9,6 @@ import no.nav.data.catalog.backend.app.common.elasticsearch.ElasticsearchService
 import no.nav.data.catalog.backend.app.common.elasticsearch.ElasticsearchStatus;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
-import no.nav.data.catalog.backend.app.model.InformationType;
-import no.nav.data.catalog.backend.app.model.LookupEntity;
-import no.nav.data.catalog.backend.app.model.request.InformationTypeRequest;
-import no.nav.data.catalog.backend.app.repository.InformationTypeRepository;
-import no.nav.data.catalog.backend.app.repository.LookupEntityRepository;
-import no.nav.data.catalog.backend.app.service.mapper.InformationTypeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +23,6 @@ public class InformationTypeService {
 	private InformationTypeMapper informationTypeMapper;
 	@Autowired
 	private InformationTypeRepository informationTypeRepository;
-	@Autowired
-	private LookupEntityRepository lookupEntityRepository;
 	@Autowired
 	private ElasticsearchService elasticsearchService;
 
@@ -73,23 +65,6 @@ public class InformationTypeService {
 		InformationType informationTypeToBeDeleted = optionalInformationType.get();
 		informationTypeToBeDeleted.setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED.toString());
 		informationTypeRepository.save(informationTypeToBeDeleted);
-	}
-
-
-	public List<LookupEntity> getDecodeTable() {
-		return lookupEntityRepository.findAll();
-	}
-
-	public List<LookupEntity> getAllForEntityOfDecodedTable(String entity) {
-		return lookupEntityRepository.findAllByEntity(entity);
-	}
-
-	public LookupEntity getDescriptionForEntityAndCode(String entity, String code) {
-		Optional<LookupEntity> optionalLookupEntity = lookupEntityRepository.findByEntityAndCode(entity, code);
-		if (optionalLookupEntity.isEmpty()) {
-			throw new DataCatalogBackendNotFoundException(String.format("Cannot find description for entity: %s with code: %s", entity, code));
-		}
-		return optionalLookupEntity.get();
 	}
 
 	public void synchToElasticsearch() {

@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.app.model.request;
+package no.nav.data.catalog.backend.app.informationtype;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
