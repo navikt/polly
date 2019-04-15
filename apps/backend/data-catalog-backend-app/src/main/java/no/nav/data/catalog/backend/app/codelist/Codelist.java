@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.app.lookup;
+package no.nav.data.catalog.backend.app.codelist;
 
 import static no.nav.data.catalog.backend.app.common.utils.Constants.SERIAL_VERSION_UID;
 
@@ -15,13 +15,13 @@ import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "LOOKUP_TABLE")
+@Table(name = "CODELIST")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@IdClass(LookupEntity.IdClass.class)
-public class LookupEntity implements Serializable {
+@IdClass(Codelist.IdClass.class)
+public class Codelist implements Serializable {
 
 	private static final long serialVersionUID = SERIAL_VERSION_UID;
 

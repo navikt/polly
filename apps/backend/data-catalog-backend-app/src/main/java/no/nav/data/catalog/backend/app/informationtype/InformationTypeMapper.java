@@ -5,10 +5,10 @@ import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION
 import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION_SYSTEM;
 import static org.elasticsearch.common.UUIDs.base64UUID;
 
+import no.nav.data.catalog.backend.app.codelist.Codelist;
+import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
 import no.nav.data.catalog.backend.app.common.elasticsearch.ElasticsearchStatus;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
-import no.nav.data.catalog.backend.app.lookup.LookupEntity;
-import no.nav.data.catalog.backend.app.lookup.LookupEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +21,7 @@ import java.util.Optional;
 public class InformationTypeMapper {
 
 	@Autowired
-	private LookupEntityRepository lookupEntityRepository;
+	private CodelistRepository codelistRepository;
 
 	public InformationType mapRequestToInformationType(InformationTypeRequest request, InformationType informationType) {
 		if (informationType == null) {    //create new InformationType
@@ -48,8 +48,8 @@ public class InformationTypeMapper {
 		return informationType;
 	}
 
-	private LookupEntity findByEntityAndCode(String entity, String code) {
-		Optional<LookupEntity> optionalEntity = lookupEntityRepository.findByEntityAndCode(entity, code);
+	private Codelist findByEntityAndCode(String entity, String code) {
+		Optional<Codelist> optionalEntity = codelistRepository.findByEntityAndCode(entity, code);
 		if (optionalEntity.isEmpty()) {
 			throw new DataCatalogBackendNotFoundException(String.format("Cannot find description for entity: %s and code: %s", entity, code));
 		}

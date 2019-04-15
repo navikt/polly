@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.app.lookup;
+package no.nav.data.catalog.backend.app.codelist;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,39 +19,39 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @RequestMapping("/backend/lookup")
-public class LookupEntityController {
+public class CodelistController {
 
 	@Autowired
-	private LookupEntityService lookupEntityService;
+	private CodelistService codelistService;
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public LookupEntity createLookupEntity(@Valid @RequestBody LookupEntityRequest request) {
-		return lookupEntityService.createLookupEntity(request);
+	public Codelist createLookupEntity(@Valid @RequestBody CodelistRequest request) {
+		return codelistService.createLookupEntity(request);
 	}
 
 	@GetMapping
-	public List<LookupEntity> getLookupTable() {
-		return lookupEntityService.getLookupTable();
+	public List<Codelist> getLookupTable() {
+		return codelistService.getLookupTable();
 	}
 
 	@GetMapping("/{entity}")
-	public List<LookupEntity> lookupEntityType(@PathVariable String entity) {
-		return lookupEntityService.lookupEntityType(entity);
+	public List<Codelist> lookupEntityType(@PathVariable String entity) {
+		return codelistService.lookupEntityType(entity);
 	}
 
 	@GetMapping("/{entity}/{code}")
-	public LookupEntity lookupCodeOfEntityType(@PathVariable String entity, @PathVariable String code) {
-		return lookupEntityService.lookupCodeOfEntityType(entity, code);
+	public Codelist lookupCodeOfEntityType(@PathVariable String entity, @PathVariable String code) {
+		return codelistService.lookupCodeOfEntityType(entity, code);
 	}
 
 	@PutMapping
-	public LookupEntity updateLookupEntity(@Valid @RequestBody LookupEntityRequest request) {
-		return lookupEntityService.updateLookupEntity(request);
+	public Codelist updateLookupEntity(@Valid @RequestBody CodelistRequest request) {
+		return codelistService.updateLookupEntity(request);
 	}
 
 	@DeleteMapping
-	public void deleteLookupEntity(@Valid @RequestBody LookupEntityRequest request) {
-		lookupEntityService.deleteLookupEntity(request);
+	public void deleteLookupEntity(@Valid @RequestBody CodelistRequest request) {
+		codelistService.deleteLookupEntity(request);
 	}
 }
