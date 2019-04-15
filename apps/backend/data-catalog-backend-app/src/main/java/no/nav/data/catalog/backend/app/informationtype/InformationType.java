@@ -1,4 +1,6 @@
-package no.nav.data.catalog.backend.app.model;
+package no.nav.data.catalog.backend.app.informationtype;
+
+import static no.nav.data.catalog.backend.app.common.utils.Constants.SERIAL_VERSION_UID;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,10 +14,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.time.LocalDate;
+import java.io.Serializable;
 
 
 @Entity
@@ -24,7 +24,9 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class InformationType {
+public class InformationType implements Serializable {
+
+	private static final long serialVersionUID = SERIAL_VERSION_UID;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_informationType")
@@ -33,41 +35,43 @@ public class InformationType {
 	@Column(name = "information_type_id", nullable = false, updatable = false, unique = true)
 	private Long informationTypeId;
 
-	@Column(name = "information_type_name", nullable = false)
+	@Column(name = "information_type_name", nullable = false, unique = true)
 	private String informationTypeName;
 
-	@ManyToOne
-	@JoinColumn(name = "information_category_id")
-	private InformationCategory informationCategory;
-
-	@ManyToOne
-	@JoinColumn(name = "information_producer_id", nullable = false)
-	private InformationProducer informationProducer;
-
-	@ManyToOne
-	@JoinColumn(name = "information_system_id")
-	private InformationSystem informationSystem;
-
-	@Column(name = "description")
+	@Column(name = "description", nullable = false)
 	private String description;
 
+	@Column(name = "information_category")
+	private String informationCategory;
+
+	@Column(name = "information_producer")
+	private String informationProducer;
+
+	@Column(name = "information_system")
+	private String informationSystem;
+
 	@Column(name = "date_created")
-	private LocalDate dateCreated;
+	private String dateCreated;
 
 	@Column(name = "created_by", nullable = false)
 	private String createdBy;
 
 	@Column(name = "date_last_updated")
-	private LocalDate dateLastUpdated;
+	private String dateLastUpdated;
 
 	@Column(name = "updated_by")
 	private String updatedBy;
 
-	@Column(name = "synched_to_elasticsearch", nullable = false)
-	private boolean synchedToElasticsearch = false;
+	@Column(name = "personal_data", nullable = false)
+	private boolean personalData;
 
-//	@Lob
-//	@Column(name = "information_json_object")
-//	private HashMap<String, String> informationJsonObject;
+	@Column(name = "json_string")
+	private String jsonString;
+
+	@Column(name = "elasticsearch_id", nullable = false)
+	private String elasticsearchId;
+
+	@Column(name = "elasticsearch_status", nullable = false)
+	private String elasticsearchStatus;
 }
 

@@ -1,50 +1,29 @@
 CREATE SCHEMA IF NOT EXISTS BACKEND_SCHEMA;
 
-CREATE SEQUENCE BACKEND_SCHEMA.SEQ_INFORMATION_PRODUCER;
-
-CREATE SEQUENCE BACKEND_SCHEMA.SEQ_INFORMATION_CATEGORY;
-
-CREATE SEQUENCE BACKEND_SCHEMA.SEQ_INFORMATION_SYSTEM;
-
 CREATE SEQUENCE BACKEND_SCHEMA.SEQ_INFORMATION_TYPE;
 
-
-CREATE TABLE BACKEND_SCHEMA.INFORMATION_PRODUCER
+CREATE TABLE BACKEND_SCHEMA.CODELIST
 (
-  information_producer_id INTEGER DEFAULT nextval('BACKEND_SCHEMA.SEQ_INFORMATION_PRODUCER') PRIMARY KEY,
-  code                    TEXT NOT NULL,
-  decode                  TEXT
-);
-
-CREATE TABLE BACKEND_SCHEMA.INFORMATION_CATEGORY
-(
-  information_category_id INTEGER DEFAULT nextval('BACKEND_SCHEMA.SEQ_INFORMATION_CATEGORY') PRIMARY KEY,
-  code                    TEXT NOT NULL,
-  decode                  TEXT NOT NULL
-);
-
-CREATE TABLE BACKEND_SCHEMA.INFORMATION_SYSTEM
-(
-  information_system_id INTEGER DEFAULT nextval('BACKEND_SCHEMA.SEQ_INFORMATION_SYSTEM') PRIMARY KEY,
-  code                  TEXT NOT NULL,
-  decode                TEXT NOT NULL
+  entity      TEXT NOT NULL,
+  code        TEXT NOT NULL,
+  description TEXT NOT NULL,
+  PRIMARY KEY (entity, code)
 );
 
 CREATE TABLE BACKEND_SCHEMA.INFORMATION_TYPE
 (
-  information_type_id      INTEGER DEFAULT nextval('BACKEND_SCHEMA.SEQ_INFORMATION_TYPE') PRIMARY KEY,
-  information_type_name    TEXT    NOT NULL,
-  information_producer_id  INTEGER NOT NULL,
-  information_category_id  INTEGER NOT NULL,
-  information_system_id    INTEGER NOT NULL,
-  description              TEXT,
-  date_created             DATE,
-  created_by               TEXT,
-  date_last_updated        DATE,
-  updated_by               TEXT,
-  synched_to_elasticsearch BOOLEAN NOT NULL,
-  information_blob         TEXT,
-  CONSTRAINT FK_INFORMATION_PRODUCER FOREIGN KEY (information_producer_id) REFERENCES BACKEND_SCHEMA.INFORMATION_PRODUCER (information_producer_id),
-  CONSTRAINT FK_INFORMATION_CATEGORY FOREIGN KEY (information_category_id) REFERENCES BACKEND_SCHEMA.INFORMATION_CATEGORY (information_category_id),
-  CONSTRAINT FK_INFORMATION_SYSTEM FOREIGN KEY (information_system_id) REFERENCES BACKEND_SCHEMA.INFORMATION_SYSTEM (information_system_id)
+  information_type_id   INTEGER DEFAULT nextval('BACKEND_SCHEMA.SEQ_INFORMATION_TYPE') PRIMARY KEY,
+  information_type_name TEXT UNIQUE NOT NULL,
+  description           TEXT        NOT NULL,
+  information_category  TEXT        NOT NULL,
+  information_producer  TEXT        NOT NULL,
+  information_system    TEXT        NOT NULL,
+  date_created          TEXT,
+  created_by            TEXT,
+  date_last_updated     TEXT,
+  updated_by            TEXT,
+  personal_data         BOOLEAN     NOT NULL,
+  json_string           TEXT,
+  elasticsearch_id      TEXT        NOT NULL,
+  elasticsearch_status  TEXT        NOT NULL
 );

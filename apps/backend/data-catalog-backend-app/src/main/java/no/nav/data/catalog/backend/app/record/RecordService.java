@@ -13,7 +13,6 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -37,7 +36,7 @@ public class RecordService {
 			jsonMap.put("id", id);
 			jsonMap.put("recordCreationDate", LocalDate.now());
 			objectMapper.convertValue(jsonMap, Record.class);  //Validation in constructor for class Record
-			elasticsearchService.insertRecord(jsonMap);
+			elasticsearchService.insertInformationType(jsonMap);
 		} catch (JsonMappingException jme) {
 			throw new DataCatalogBackendTechnicalException(jme.getMessage(), jme);
 		} catch (IOException ioe) {
@@ -50,7 +49,7 @@ public class RecordService {
 	}
 
 	public Record getRecordById(String id) {
-		Map<String, Object> dataMap = elasticsearchService.getRecordById(id);
+		Map<String, Object> dataMap = elasticsearchService.getInformationTypeById(id);
 		return objectMapper.convertValue(dataMap, Record.class);
 	}
 
@@ -58,7 +57,7 @@ public class RecordService {
 		try {
 			Map<String, Object> jsonMap = getMapFromString(jsonString);
 			jsonMap.put("recordLastUpdatedDate", LocalDate.now().toString());
-			elasticsearchService.updateFieldsById(id, jsonMap);
+			elasticsearchService.updateInformationTypeById(id, jsonMap);
 		} catch (JsonGenerationException | JsonMappingException je) {
 			je.getMessage();
 		} catch (IOException ioe) {
@@ -71,7 +70,7 @@ public class RecordService {
 	}
 
 	public RecordResponse deleteRecordById(String id) {
-		elasticsearchService.deleteRecordById(id);
+		elasticsearchService.deleteInformationTypeById(id);
 		return RecordResponse.builder()
 				.id(id)
 				.status(String.format("Deleted record with id=%s", id))
