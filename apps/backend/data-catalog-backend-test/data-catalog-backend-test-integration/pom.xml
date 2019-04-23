@@ -10,6 +10,10 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
+	<properties>
+		<skipTests>true</skipTests>
+	</properties>
+
 	<artifactId>data-catalog-backend-test-integration</artifactId>
 
 	<dependencies>
