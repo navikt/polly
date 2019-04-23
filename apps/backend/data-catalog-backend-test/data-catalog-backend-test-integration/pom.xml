@@ -28,6 +28,14 @@
 			<groupId>no.nav.data</groupId>
 			<artifactId>data-catalog-backend-test-component</artifactId>
 			<version>${project.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>elasticsearch</artifactId>
+			<version>${elasticsearch.testcontainer.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
