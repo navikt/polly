@@ -2,7 +2,6 @@ package no.nav.data.catalog.backend.app.github;
 
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.github.domain.GithubPushEventPayloadRequest;
-import no.nav.data.catalog.backend.app.github.GithubService;
 import no.nav.data.catalog.backend.app.informationtype.InformationType;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
@@ -13,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -37,12 +35,12 @@ public class GithubWebhooksController {
                 try {
                     service.validateRequest(i, false); // TODO: What if this is an update?
                 } catch (ValidationException e) {
-                    return new ResponseEntity<>(e.get(), HttpStatus.BAD_REQUEST); // TODO: Here's trouble!
-                }
+                    String message = e.getMessage();
+                    new ResponseEntity<>(message, HttpStatus.OK);           }
             });
         }));
-
-        return new ResponseEntity<InformationType>(repository.saveAll());
+//        return new ResponseEntity<InformationType>(repository.saveAll());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // TODO: Remove this
