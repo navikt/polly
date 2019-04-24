@@ -36,11 +36,9 @@ services:
     ports:
       - 8081:8080
     volumes:
-      - ./travis/datajegerne-private-key.pem:/etc/travis/datajegerne-private-key.pem
-
-#volumes:
-#  esdata:
-#    driver: local
-
+      - ./travis/datajegerne-private-key.pem:/etc/secret/datajegerne
+volumes:
+  esdata:
+    driver: local
 networks:
   esnet:

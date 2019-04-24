@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -56,7 +58,7 @@ public class JwtTokenGenerator {
     }
 
     private PrivateKey loadKey() throws GeneralSecurityException, IOException {
-        byte[] keyDataBytes = getClass().getResourceAsStream(keypath).readAllBytes();
+        byte[] keyDataBytes = Files.readAllBytes(Paths.get(keypath));
         String keyDataString = new String(keyDataBytes, StandardCharsets.UTF_8);
 
         if (keyDataString.contains(PKCS_1_PEM_HEADER)) {
