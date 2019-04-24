@@ -21,6 +21,8 @@ import java.util.Map;
 @Component
 public class JwtTokenGenerator {
 
+    // TODO: Replace with https://stormpath.com/blog/jwt-java-create-verify?
+
     private static final String PKCS_1_PEM_HEADER = "-----BEGIN RSA PRIVATE KEY-----";
     private static final String PKCS_1_PEM_FOOTER = "-----END RSA PRIVATE KEY-----";
 

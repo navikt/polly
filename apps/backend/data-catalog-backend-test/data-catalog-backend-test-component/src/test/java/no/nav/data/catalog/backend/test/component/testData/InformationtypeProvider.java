@@ -19,7 +19,7 @@
 //			.id(1L)
 //			.functionalId("gTkIxmkBJh6v6nYA9I_r")
 //			.name("sivilstand")
-//			.dateCreated(LocalDate.of(2019, 3, 28))
+//			.createdTime(LocalDate.of(2019, 3, 28))
 //			.createdBy("Mårten Elmgren")
 //			.synchedToElasticsearch(false)
 //			.build();

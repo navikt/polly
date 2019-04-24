@@ -6,12 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.type.ListType;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -21,24 +18,23 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @IdClass(Codelist.IdClass.class)
-public class Codelist implements Serializable {
-
-	private static final long serialVersionUID = SERIAL_VERSION_UID;
+public class Codelist {
 
 	@Id
-	@Column(name = "entity")
-	private String entity;
+	@Column(name = "LIST_NAME")
+	@Enumerated(EnumType.STRING)
+	private ListName list;
 
 	@Id
-	@Column(name = "code")
+	@Column(name = "CODE")
 	private String code;
 
-	@Column(name = "description")
+	@Column(name = "DESCRIPTION")
 	private String description;
 
 	@Data
 	static class IdClass implements Serializable {
-		private String entity;
+		private ListName list;
 		private String code;
 	}
 

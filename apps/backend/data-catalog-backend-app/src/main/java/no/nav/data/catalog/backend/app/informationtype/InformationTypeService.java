@@ -1,71 +1,33 @@
 package no.nav.data.catalog.backend.app.informationtype;
 
-import static no.nav.data.catalog.backend.app.common.elasticsearch.ElasticsearchStatus.SYNCHED;
-import static no.nav.data.catalog.backend.app.common.elasticsearch.ElasticsearchStatus.TO_BE_CREATED;
-import static no.nav.data.catalog.backend.app.common.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
-import static no.nav.data.catalog.backend.app.common.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCHED;
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_CREATED;
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
 
-import no.nav.data.catalog.backend.app.common.elasticsearch.ElasticsearchService;
-import no.nav.data.catalog.backend.app.common.elasticsearch.ElasticsearchStatus;
+import no.nav.data.catalog.backend.app.codelist.CodelistService;
+import no.nav.data.catalog.backend.app.codelist.ListName;
+import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchRepository;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
-import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
+import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
 
 @Service
 public class InformationTypeService {
 
 	@Autowired
-	private InformationTypeMapper informationTypeMapper;
+	private InformationTypeRepository repository;
+
 	@Autowired
-	private InformationTypeRepository informationTypeRepository;
-	@Autowired
-	private ElasticsearchService elasticsearchService;
-
-
-	public InformationType createInformationType(InformationTypeRequest request) {
-		InformationType informationType = informationTypeMapper.mapRequestToInformationType(request, null);
-		return informationTypeRepository.save(informationType);
-	}
-
-	public InformationType getInformationType(Long id) {
-		Optional<InformationType> optionalInformationType = informationTypeRepository.findById(id);
-		if (optionalInformationType.isEmpty()) {
-			throw new DataCatalogBackendNotFoundException(String.format("Cannot find Information type with id: %s", id));
-		}
-		return optionalInformationType.get();
-	}
-
-	public List<InformationType> getAllInformationTypes() {
-		return informationTypeRepository.findAllByOrderByInformationTypeIdAsc();
-	}
-
-	public InformationType updateInformationType(Long id, InformationTypeRequest informationTypeRequest) {
-		InformationType informationTypeToBeUpdated = getInformationType(id);
-		if (!informationTypeToBeUpdated.getInformationTypeName().equals(informationTypeRequest.getInformationTypeName())) {
-			throw new DataCatalogBackendTechnicalException(
-					String.format("Cannot update the name of an existing information type. " +
-									"Information type with id: %s has the name: %s. Requested to be udated to name: %s",
-							id, informationTypeToBeUpdated.getInformationTypeName(), informationTypeRequest.getInformationTypeName()));
-		}
-		InformationType updatedInformationType = informationTypeMapper.mapRequestToInformationType(informationTypeRequest, informationTypeToBeUpdated);
-		return informationTypeRepository.save(updatedInformationType);
-	}
-
-	public void setInformationTypeToBeDeletedById(Long id) {
-		Optional<InformationType> optionalInformationType = informationTypeRepository.findById(id);
-		if (optionalInformationType.isEmpty()) {
-			throw new DataCatalogBackendNotFoundException(String.format("Cannot delete information type because information type with id: %s does not exist", id));
-		}
-
-		InformationType informationTypeToBeDeleted = optionalInformationType.get();
-		informationTypeToBeDeleted.setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED.toString());
-		informationTypeRepository.save(informationTypeToBeDeleted);
-	}
+	private ElasticsearchRepository elasticsearch;
 
 	public void synchToElasticsearch() {
 		createInformationTypesInElasticsearch();
@@ -74,54 +36,68 @@ public class InformationTypeService {
 	}
 
 	private void createInformationTypesInElasticsearch() {
-		Optional<List<InformationType>> optinalInformationTypes = informationTypeRepository.findByElasticsearchStatus(TO_BE_CREATED
+		Optional<List<InformationType>> optinalInformationTypes = repository.findByElasticsearchStatus(TO_BE_CREATED
 				.toString());
 		if (optinalInformationTypes.isPresent()) {
 			Map<String, Object> jsonMap = null;
 
 			for (InformationType informationType : optinalInformationTypes.get()) {
-				jsonMap = informationTypeMapper.mapInformationTypeToElasticsearchString(informationType);
+				jsonMap = informationType.convertToMap();
 
-				elasticsearchService.insertInformationType(jsonMap);
+				elasticsearch.insertInformationType(jsonMap);
 
-				informationType.setJsonString(jsonMap.toString());
-				informationType.setElasticsearchStatus(SYNCHED.toString());
-				informationTypeRepository.save(informationType);
+				// informationType.setJsonString(jsonMap.toString());
+				informationType.setElasticsearchStatus(SYNCHED);
+				repository.save(informationType);
 			}
 		}
 	}
 
 	private void updateInformationTypesInElasticsearch() {
-		Optional<List<InformationType>> optinalInformationTypes = informationTypeRepository.findByElasticsearchStatus(TO_BE_UPDATED
+		Optional<List<InformationType>> optinalInformationTypes = repository.findByElasticsearchStatus(TO_BE_UPDATED
 				.toString());
 		if (optinalInformationTypes.isPresent()) {
 			Map<String, Object> jsonMap = null;
 
 			for (InformationType informationType : optinalInformationTypes.get()) {
-				jsonMap = informationTypeMapper.mapInformationTypeToElasticsearchString(informationType);
+				jsonMap = informationType.convertToMap();
 
-				elasticsearchService.updateInformationTypeById(informationType.getElasticsearchId(), jsonMap);
+				elasticsearch.updateInformationTypeById(informationType.getElasticsearchId(), jsonMap);
 
-				informationType.setJsonString(jsonMap.toString());
-				informationType.setElasticsearchStatus(SYNCHED.toString());
-				informationTypeRepository.save(informationType);
+				// informationType.setJsonString(jsonMap.toString());
+				informationType.setElasticsearchStatus(SYNCHED);
+				repository.save(informationType);
 			}
 		}
 	}
 
 	private void deleteInformationTypesInElasticsearchAndInPostgres() {
-		Optional<List<InformationType>> optinalInformationTypes = informationTypeRepository.findByElasticsearchStatus(TO_BE_DELETED
+		Optional<List<InformationType>> optinalInformationTypes = repository.findByElasticsearchStatus(TO_BE_DELETED
 				.toString());
 		if (optinalInformationTypes.isPresent()) {
 			Map<String, Object> jsonMap = null;
 
 			for (InformationType informationType : optinalInformationTypes.get()) {
-				elasticsearchService.deleteInformationTypeById(informationType.getElasticsearchId());
+				elasticsearch.deleteInformationTypeById(informationType.getElasticsearchId());
 
-				informationTypeRepository.deleteById(informationType.getInformationTypeId());
+				repository.deleteById(informationType.getId());
 			}
 		}
 	}
 
 	//TODO: resendToElasticsearch()
+
+	public void validateRequest(InformationTypeRequest request, boolean isUpdate) throws ValidationException {
+		HashMap<String, String> validationErrors = new HashMap<>();
+
+			if(!isUpdate && repository.findByName(request.getName().toLowerCase()).isPresent()) { validationErrors.put("name", "This name is used for an existing information type.."); }
+			if(!codelists.get(ListName.PRODUCER).containsKey(request.getProducer())) { validationErrors.put("producer", "The producer was null or not found in the producer codelist."); }
+			if(!codelists.get(ListName.CATEGORY).containsKey(request.getCategory())) { validationErrors.put("category", "The category was null or not found in the category codelist."); }
+			if(!codelists.get(ListName.SYSTEM).containsKey(request.getSystem())) { validationErrors.put("system", "The system was null or not found in the system codelist."); }
+			if(request.getCreatedBy() == null || request.getCreatedBy().equals("")) { validationErrors.put("createdBy", "Created by cannot be null or empty."); }
+
+		if(!validationErrors.isEmpty()) {
+			throw new ValidationException(validationErrors);
+		}
+	}
 }

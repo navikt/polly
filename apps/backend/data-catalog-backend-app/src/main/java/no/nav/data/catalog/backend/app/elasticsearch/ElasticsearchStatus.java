@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.app.common.elasticsearch;
+package no.nav.data.catalog.backend.app.elasticsearch;
 
 public enum ElasticsearchStatus {
 	TO_BE_CREATED,

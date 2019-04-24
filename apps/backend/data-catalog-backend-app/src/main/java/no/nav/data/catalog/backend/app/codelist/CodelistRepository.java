@@ -9,7 +9,8 @@ import java.util.Optional;
 
 @Repository
 public interface CodelistRepository extends JpaRepository<Codelist, Integer> {
-	List<Codelist> findAllByEntity(@Param("entity") String entity);
+	List<Codelist> findAllByList(@Param("list") String listName);
 
-	Optional<Codelist> findByEntityAndCode(@Param("entity") String entity, @Param("code") String code);
+	Optional<Codelist> findByListAndCode(@Param("list") ListName list, @Param("code") String code);
+
 }

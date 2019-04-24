@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.app.common.elasticsearch;
+package no.nav.data.catalog.backend.app.elasticsearch;
 
 import static no.nav.data.catalog.backend.app.common.utils.Constants.INDEX;
 import static no.nav.data.catalog.backend.app.common.utils.Constants.TYPE;
@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.util.Map;
 
 @Service
-public class ElasticsearchService {
+public class ElasticsearchRepository {
   
 	private RequestOptions requestOptions = RequestOptions.DEFAULT.toBuilder().build();
 
