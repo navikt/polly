@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class GithubWebhooksController {
@@ -35,9 +36,10 @@ public class GithubWebhooksController {
                 try {
                     service.validateRequest(i, false); // TODO: What if this is an update?
                 } catch (ValidationException e) {
-                    String message = e.getMessage();
-                    new ResponseEntity<>(message, HttpStatus.OK);           }
+                    // TODO må få fikset return
+                    new ResponseEntity<>(e.get(), HttpStatus.BAD_REQUEST);           }
             });
+            repository.saveAll(requests.stream().map(request -> new InformationType().convertFromRequest(request)).collect(Collectors.toList()));
         }));
 //        return new ResponseEntity<InformationType>(repository.saveAll());
         return new ResponseEntity<>(HttpStatus.OK);
