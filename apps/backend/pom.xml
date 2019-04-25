@@ -29,6 +29,7 @@
 		<elasticsearch.version>6.4.1</elasticsearch.version>
 		<elasticsearch.testcontainer.version>1.11.1</elasticsearch.testcontainer.version>
 		<springfox.version>2.9.2</springfox.version>
+		<postgres.version>42.2.5</postgres.version>
 	</properties>
 
 	<dependencies>
