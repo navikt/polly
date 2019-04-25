@@ -1,4 +1,7 @@
-package no.nav.data.catalog.backend.app.common.elasticsearch;
+package no.nav.data.catalog.backend.app.elasticsearch;
+
+import static no.nav.data.catalog.backend.app.common.utils.Constants.INDEX;
+import static no.nav.data.catalog.backend.app.common.utils.Constants.TYPE;
 
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import no.nav.data.catalog.backend.app.common.exceptions.DocumentNotFoundException;
@@ -25,18 +28,15 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.Map;
 
-import static no.nav.data.catalog.backend.app.common.utils.Constants.INDEX;
-import static no.nav.data.catalog.backend.app.common.utils.Constants.TYPE;
-
 @Service
-public class ElasticsearchService {
+public class ElasticsearchRepository {
   
 	private RequestOptions requestOptions = RequestOptions.DEFAULT.toBuilder().build();
 
 	@Autowired
 	RestHighLevelClient restHighLevelClient;
 
-	public void insertRecord(Map<String, Object> jsonMap) {
+	public void insertInformationType(Map<String, Object> jsonMap) {
 		IndexRequest indexRequest = new IndexRequest(INDEX, TYPE, jsonMap.get("id").toString());
 		indexRequest.source(jsonMap);
 
@@ -49,7 +49,7 @@ public class ElasticsearchService {
 		}
 	}
 
-	public Map<String, Object> getRecordById(String id) {
+	public Map<String, Object> getInformationTypeById(String id) {
 		GetRequest getRequest = new GetRequest(INDEX, TYPE, id);
 		GetResponse getResponse = null;
 
@@ -64,7 +64,7 @@ public class ElasticsearchService {
 		return (getResponse != null) ? getResponse.getSourceAsMap() : null;
 	}
 
-	public void updateFieldsById(String id, Map<String, Object> jsonMap) {
+	public void updateInformationTypeById(String id, Map<String, Object> jsonMap) {
 		UpdateRequest updateRequest = new UpdateRequest(INDEX, TYPE, id);
 		updateRequest.fetchSource(true);
 		updateRequest.doc(jsonMap);
@@ -81,7 +81,7 @@ public class ElasticsearchService {
 		}
 	}
 
-	public void deleteRecordById(String id) {
+	public void deleteInformationTypeById(String id) {
 		DeleteRequest deleteRequest = new DeleteRequest(INDEX, TYPE, id);
 
 		try {
