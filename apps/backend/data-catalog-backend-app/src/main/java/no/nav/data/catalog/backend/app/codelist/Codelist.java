@@ -1,18 +1,15 @@
 package no.nav.data.catalog.backend.app.codelist;
 
-import static no.nav.data.catalog.backend.app.common.utils.Constants.SERIAL_VERSION_UID;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.type.ListType;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "CODELIST")
+@Table(name = "CODELIST", schema = "BACKEND_SCHEMA")
 @Data
 @Builder
 @NoArgsConstructor
