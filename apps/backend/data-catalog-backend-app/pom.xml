@@ -47,12 +47,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.elasticsearch.client</groupId>
-			<artifactId>elasticsearch-rest-client</artifactId>
-			<version>${elasticsearch.version}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>
 			<version>${jwt.version}</version>
@@ -79,20 +73,6 @@
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
 			<version>${flyway.version}</version>
-		</dependency>
-
-		<!--Trenger vi disse?-->
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>${h2.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>elasticsearch</artifactId>
-			<version>1.10.6</version>
-			<scope>test</scope>
 		</dependency>
 
 		<!-- Swagger -->
