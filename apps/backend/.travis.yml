@@ -4,6 +4,12 @@ services:
 language: java
 jdk:
 - openjdk11
+addons:
+  postgresql: "10"
+  apt:
+    packages:
+      - postgresql-10
+      - postgresql-client-10
 env:
   global:
   - TZ='Europe/Oslo'
