@@ -33,7 +33,7 @@ import java.util.Optional;
 @SpringBootTest(classes = ComponentTestConfig.class)
 @ActiveProfiles("test")
 @EnableJpaRepositories(repositoryBaseClass = CodelistRepository.class)
-public class InformationTypeServiceComponentTest {
+public class InformationTypeServiceTest {
 
     @Mock
     private InformationTypeRepository informationTypeRepository;
