@@ -2,10 +2,12 @@ package no.nav.data.catalog.backend.test.component;
 
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.*;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
 import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
+import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchRepository;
 import no.nav.data.catalog.backend.app.informationtype.InformationType;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
@@ -91,9 +93,54 @@ public class InformationTypeServiceComponentTest {
     }
 
     @Test
-    @Ignore
     public void shouldValidateInsertRequest() {
-	    InformationTypeRequest request = InformationTypeRequest.builder().category("PERSONALIA").name("Name").system("TPS").producer("SKATTEETATEN").build();
+	    InformationTypeRequest request = InformationTypeRequest.builder().category("PERSONALIA").name("Name").system("TPS").producer("SKATTEETATEN").createdBy("TEST").build();
 	    informationTypeService.validateRequest(request, false);
+    }
+
+    @Test
+    public void shouldThrowValidationExceptionOnInsert() {
+        InformationTypeRequest request = InformationTypeRequest.builder().build();
+        try {
+            informationTypeService.validateRequest(request, false);
+        } catch (ValidationException e) {
+            assertThat(e.get().size(), is(5));
+            assertThat(e.get().get("system"), is("The system was null or not found in the system codelist."));
+            assertThat(e.get().get("createdBy"), is("Created by cannot be null or empty."));
+            assertThat(e.get().get("name"), is("Name must have value"));
+            assertThat(e.get().get("producer"), is("The producer was null or not found in the producer codelist."));
+            assertThat(e.get().get("category"), is("The category was null or not found in the category codelist."));
+        }
+    }
+
+    @Test
+    public void shouldThrowValidationExceptionOnUpdate() {
+        InformationTypeRequest request = InformationTypeRequest.builder().build();
+        try {
+            informationTypeService.validateRequest(request, true);
+        } catch (ValidationException e) {
+            assertThat(e.get().size(), is(5));
+            assertThat(e.get().get("system"), is("The system was null or not found in the system codelist."));
+            assertThat(e.get().get("createdBy"), is("Created by cannot be null or empty."));
+            assertThat(e.get().get("name"), is("Name must have value"));
+            assertThat(e.get().get("producer"), is("The producer was null or not found in the producer codelist."));
+            assertThat(e.get().get("category"), is("The category was null or not found in the category codelist."));
+        }
+    }
+
+    @Test
+    public void shouldThrowValidationExceptionOnInsertNameExists() {
+	    when(informationTypeRepository.findByName(anyString())).thenReturn(Optional.of(new InformationType()));
+        InformationTypeRequest request = InformationTypeRequest.builder().name("NotFound").build();
+        try {
+            informationTypeService.validateRequest(request, false);
+        } catch (ValidationException e) {
+            assertThat(e.get().size(), is(5));
+            assertThat(e.get().get("name"), is("This name is used for an existing information type."));
+            assertThat(e.get().get("system"), is("The system was null or not found in the system codelist."));
+            assertThat(e.get().get("createdBy"), is("Created by cannot be null or empty."));
+            assertThat(e.get().get("producer"), is("The producer was null or not found in the producer codelist."));
+            assertThat(e.get().get("category"), is("The category was null or not found in the category codelist."));
+        }
     }
 }
