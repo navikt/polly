@@ -1,7 +1,11 @@
 package no.nav.data.catalog.backend.app.codelist;
 
+import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
-import no.nav.data.catalog.backend.app.informationtype.InformationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,14 +17,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.HashMap;
-import java.util.Optional;
-
-import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
 
 @RestController
 @CrossOrigin
@@ -30,12 +31,20 @@ public class CodelistController {
 	@Autowired
 	private CodelistService service;
 
+	@ApiOperation(value = "Get the entire Codelist", tags = {"Codelist"})
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Entire Codelist fetched", response = HashMap.class, responseContainer = "Map"),
+			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping
 	public HashMap<ListName, HashMap<String, String>> findAll() {
 		return codelists;
 	}
 
-
+	@ApiOperation(value = "Get code and description for listName", tags = {"Codelist"})
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Fetched codes with description for listName", response = HashMap.class, responseContainer = "Map"),
+			@ApiResponse(code = 404, message = "ListName not found"),
+			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping("/{listName}")
 	public ResponseEntity<HashMap<String, String>> findByListName(@PathVariable String listName) {
 		if(!codelists.containsKey(ListName.valueOf(listName.toUpperCase()))) {
@@ -45,6 +54,11 @@ public class CodelistController {
 		return new ResponseEntity<>(codelists.get(ListName.valueOf(listName.toUpperCase())), HttpStatus.OK);
 	}
 
+	@ApiOperation(value = "Get description for code in listName", tags = {"Codelist"})
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Description fetched", response = String.class),
+			@ApiResponse(code = 404, message = "Code or listName not found"),
+			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping("/{listName}/{code}")
 	public ResponseEntity<String> findByListNameAndCode(@PathVariable String listName, @PathVariable String code) {
 		if(!codelists.get(ListName.valueOf(listName.toUpperCase())).containsKey(code.toUpperCase())) {
@@ -54,27 +68,45 @@ public class CodelistController {
 		return new ResponseEntity<>(codelists.get(ListName.valueOf(listName.toUpperCase())).get(code.toUpperCase()), HttpStatus.OK);
 	}
 
+	@ApiOperation(value = "Create Codelist", tags = {"Codelist"})
+	@ApiResponses(value = {
+			@ApiResponse(code = 202, message = "Codelist successfully created", response = Codelist.class),
+			@ApiResponse(code = 400, message = "Illegal arguments"),
+			@ApiResponse(code = 500, message = "Internal server error")})
 	@PostMapping
 	public ResponseEntity<?> save(@Valid @RequestBody CodelistRequest request) {
-		try { service.validateRequest(request,false); }
-		catch (ValidationException e) { return new ResponseEntity<>(e.get(), HttpStatus.BAD_REQUEST); }
+		try { service.validateRequest(request,false); } catch (ValidationException e) { return new ResponseEntity<>(e.get(), HttpStatus.BAD_REQUEST); }
 
 		return new ResponseEntity<>(service.save(request), HttpStatus.ACCEPTED);
 	}
 
+	@ApiOperation(value = "Update Codelist", tags = {"Codelist"})
+	@ApiResponses(value = {
+			@ApiResponse(code = 202, message = "Codelist updated", response = Codelist.class),
+			@ApiResponse(code = 400, message = "Illegal arguments"),
+			@ApiResponse(code = 500, message = "Internal server error")})
 	@PutMapping
-	public ResponseEntity<?> updateLookupEntity(@Valid @RequestBody CodelistRequest request) {
-		try { service.validateRequest(request,true); }
-		catch (ValidationException e) { return new ResponseEntity<>(e.get(), HttpStatus.BAD_REQUEST); }
+	public ResponseEntity<?> update(@Valid @RequestBody CodelistRequest request) {
+		try { service.validateRequest(request,true); } catch (ValidationException e) { return new ResponseEntity<>(e.get(), HttpStatus.BAD_REQUEST); }
 
 		return new ResponseEntity<>(service.save(request), HttpStatus.ACCEPTED);
 	}
 
+	@ApiOperation(value = "Delete Codelist", tags = {"Codelist"})
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Codelist deleted"),
+			@ApiResponse(code = 400, message = "Illegal arguments"),
+			@ApiResponse(code = 500, message = "Internal server error")})
 	@DeleteMapping("/{listName}/{code}")
-	public void deleteLookupEntity(@PathVariable String listName, @PathVariable String code) {
+	@Transactional
+	public void delete(@PathVariable String listName, @PathVariable String code) {
 		service.delete(ListName.valueOf(listName), code);
 	}
 
+	@ApiOperation(value = "Refresh Codelist", tags = {"Codelist"})
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Codelist refreshed"),
+			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping("/refresh")
 	public ResponseEntity refresh() {
 		service.refreshCache();

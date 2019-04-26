@@ -41,13 +41,14 @@ public class CodelistServiceTest {
 	public void shouldSaveCreateRequest() {
 		CodelistRequest request = CodelistRequest.builder()
 				.list(ListName.CATEGORY)
-				.code("TEST")
-				.description("Test av kategorien TEST")
+				.code("TEST_CREATE")
+				.description("Test av kategorien TEST_CREATE")
 				.build();
 		codelistService.save(request);
 		verify(repository, times(1)).save(any(Codelist.class));
 		assertFalse(codelistService.codelists.get(request.getList()).get(request.getCode()).isEmpty());
-		assertThat(codelistService.codelists.get(request.getList()).get(request.getCode()), is("Test av kategorien TEST"));
+		assertThat(codelistService.codelists.get(request.getList())
+				.get(request.getCode()), is("Test av kategorien TEST_CREATE"));
 	}
 
 	@Test
@@ -70,11 +71,11 @@ public class CodelistServiceTest {
 	@Test
 	public void shouldDelete() {
 		ListName listName = ListName.CATEGORY;
-		String code = "TEST";
+		String code = "TEST_DELETE";
 		Codelist codelist = Codelist.builder()
 				.list(listName)
 				.code(code)
-				.description("Test av kategorien TEST")
+				.description("Test av kategorien TEST_DELETE")
 				.build();
 		when(repository.findByListAndCode(listName, code)).thenReturn(Optional.of(codelist));
 		repository.save(codelist);
@@ -89,7 +90,7 @@ public class CodelistServiceTest {
 	public void shouldValidateCodelistRequest() {
 		CodelistRequest request = CodelistRequest.builder()
 				.list(ListName.PRODUCER)
-				.code("TEST")
+				.code("TEST_VALIDATEREQUEST")
 				.description("Informasjon oppgitt av tester")
 				.build();
 		codelistService.validateRequest(request, false);
