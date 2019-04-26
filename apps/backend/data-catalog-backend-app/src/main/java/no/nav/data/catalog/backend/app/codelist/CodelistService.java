@@ -1,14 +1,14 @@
 package no.nav.data.catalog.backend.app.codelist;
 
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import javax.swing.text.html.Option;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,8 +51,18 @@ public class CodelistService {
 	public void validateRequest(CodelistRequest request, boolean isUpdate) throws ValidationException {
 		HashMap<String, String> validationErrors = new HashMap<>();
 
-		if(!isUpdate && codelists.get(request.getList()).containsKey(request.getCode())) { validationErrors.put("code", "The code " + request.getCode() + " already exists in " + request.getList()); }
-		if(request.getCode().isEmpty() || request.getDescription().isEmpty()) { validationErrors.put("code description", "The code or description seems to be missing."); }
+		if (request.getList() == null) {
+			validationErrors.put("list", "The codelist must have a list name");
+		}
+		if (!isUpdate && request.getList() != null && codelists.get(request.getList()).containsKey(request.getCode())) {
+			validationErrors.put("code", "The code " + request.getCode() + " already exists in " + request.getList());
+		}
+		if (request.getCode() == null || request.getCode().isEmpty()) {
+			validationErrors.put("code", "The code was null or missing");
+		}
+		if (request.getDescription() == null || request.getDescription().isEmpty()) {
+			validationErrors.put("description", "The description was null or missing");
+		}
 
 		if(!validationErrors.isEmpty()) {
 			throw new ValidationException(validationErrors);
