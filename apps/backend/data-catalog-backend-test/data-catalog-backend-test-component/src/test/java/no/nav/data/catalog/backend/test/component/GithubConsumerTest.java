@@ -1,6 +1,7 @@
 package no.nav.data.catalog.backend.test.component;
 
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
+import no.nav.data.catalog.backend.app.common.exceptions.InformationTypeNotFoundException;
 import no.nav.data.catalog.backend.app.common.tokensupport.JwtTokenGenerator;
 import no.nav.data.catalog.backend.app.github.GithubConsumer;
 import no.nav.data.catalog.backend.app.github.domain.GithubAccount;
@@ -45,7 +46,7 @@ public class GithubConsumerTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
-   @Test
+    @Test
     public void getFileInfo() {
         GithubFile inputFileInfo = new GithubFile("filename.json", "filpath", "sha", 1L, "url", "html_url", "git_url", "download_url", "file", "content", "encoding");
         GithubInstallation installation = new GithubInstallation("1", new GithubAccount("navikt"));
@@ -65,7 +66,7 @@ public class GithubConsumerTest {
 
     @Test
     public void getNotExistingFile() {
-        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expect(InformationTypeNotFoundException.class);
         expectedException.expectMessage("The file does not exist");
 
         GithubInstallation installation = new GithubInstallation("1", new GithubAccount("navikt"));
