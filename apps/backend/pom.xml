@@ -30,6 +30,7 @@
 		<elasticsearch.testcontainer.version>1.11.1</elasticsearch.testcontainer.version>
 		<springfox.version>2.9.2</springfox.version>
 		<postgres.version>42.2.5</postgres.version>
+		<spring.cloud.wiremock.version>2.1.1.RELEASE</spring.cloud.wiremock.version>
 	</properties>
 
 	<dependencies>

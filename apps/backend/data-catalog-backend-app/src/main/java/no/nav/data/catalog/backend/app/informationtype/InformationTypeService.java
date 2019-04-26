@@ -1,15 +1,11 @@
 package no.nav.data.catalog.backend.app.informationtype;
 
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCHED;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_CREATED;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
-
-import no.nav.data.catalog.backend.app.codelist.CodelistService;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.codelist.ListName;
-import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchRepository;
-import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
+import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +15,13 @@ import java.util.Map;
 import java.util.Optional;
 
 import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.*;
 
+@Slf4j
 @Service
 public class InformationTypeService {
+
+	public static final Logger logger = LoggerFactory.getLogger(InformationTypeService.class);
 
 	@Autowired
 	private InformationTypeRepository repository;
@@ -97,7 +97,8 @@ public class InformationTypeService {
 		if(request.getCreatedBy() == null || request.getCreatedBy().equals("")) { validationErrors.put("createdBy", "Created by cannot be null or empty."); }
 
 		if(!validationErrors.isEmpty()) {
-			throw new ValidationException(validationErrors);
+			logger.error("Validation errors occured when validating input file from Github: " + validationErrors.toString());
+			throw new ValidationException(validationErrors, "Validation errors occured when validating input file from Github.");
 		}
 	}
 }

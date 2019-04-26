@@ -104,6 +104,9 @@ public class InformationType {
 		this.description = request.getDescription();
 		this.personalData = request.getPersonalData();
 		this.createdBy = request.getCreatedBy();
+		// TODO er dette alltid riktig:
+		this.elasticsearchStatus = ElasticsearchStatus.TO_BE_CREATED;
+		this.createdTime = LocalDateTime.now();
 
 		return this;
 	}
