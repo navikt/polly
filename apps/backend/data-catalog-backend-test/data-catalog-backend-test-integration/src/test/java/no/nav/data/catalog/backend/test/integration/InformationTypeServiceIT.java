@@ -23,7 +23,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.Objects;
 
+import static no.nav.data.catalog.backend.app.common.utils.Constants.*;
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCHED;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -65,6 +69,10 @@ public class InformationTypeServiceIT {
         // Let indexing finish
         Thread.sleep(1000L);
         assertThat(esRepository.getAllRecords().getHits().totalHits, is(1L));
+        Map<String, Object> esMap = esRepository.getInformationTypeById("elasticSearchId");
+        assertInformationType(esMap);
+        InformationType informationType = repository.findAll().get(0);
+        assertThat(informationType.getElasticsearchStatus(), is(SYNCHED));
     }
 
     @Test
@@ -83,6 +91,11 @@ public class InformationTypeServiceIT {
 
         Thread.sleep(1000L);
         assertThat(esRepository.getAllRecords().getHits().totalHits, is(1L));
+        Map<String, Object> esMap = esRepository.getInformationTypeById("elasticSearchId");
+        assertInformationType(esMap);
+        assertThat(repository.findAll().size(), is(1));
+        informationType = repository.findAll().get(0);
+        assertThat(informationType.getElasticsearchStatus(), is(SYNCHED));
     }
 
     @Test
@@ -97,22 +110,26 @@ public class InformationTypeServiceIT {
         InformationType informationType = repository.findAll().get(0);
         informationType.setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED);
         repository.save(informationType);
+        Map<String, Object> esMap = esRepository.getInformationTypeById("elasticSearchId");
+        assertInformationType(esMap);
+
         service.synchToElasticsearch();
 
         Thread.sleep(1000L);
         assertThat(esRepository.getAllRecords().getHits().totalHits, is(0L));
+        assertThat(repository.findAll().size(), is(0));
     }
 
     private void createTestData(ElasticsearchStatus esStatus) {
         InformationType informationType = InformationType.builder()
                 .elasticsearchId("elasticSearchId")
-                .category("category")
+                .category(INFORMATION_CATEGORY)
                 .createdBy("createdBy")
-                .system("System")
+                .system(INFORMATION_SYSTEM)
                 .elasticsearchStatus(esStatus)
-                .name("name")
-                .description("description")
-                .producer("producer")
+                .name(INFORMATION_NAME)
+                .description(INFORMATION_DESCRIPTION)
+                .producer(INFORMATION_PRODUCER)
                 .personalData(true)
                 .createdTime(LocalDateTime.now()).build();
         repository.save(informationType);
@@ -127,5 +144,14 @@ public class InformationTypeServiceIT {
                     "spring.datasource.password=" + postgreSQLContainer.getPassword()
             ).applyTo(configurableApplicationContext.getEnvironment());
         }
+    }
+
+    private void assertInformationType(Map<String, Object> esMap) {
+        assertThat(esMap.get("informationProducer"), is(INFORMATION_PRODUCER));
+        assertThat(esMap.get("informationSystem"), is(INFORMATION_SYSTEM));
+        assertThat(esMap.get("personalData"), is(true));
+        assertThat(esMap.get("name"), is(INFORMATION_NAME));
+        assertThat(esMap.get("description"), is(INFORMATION_DESCRIPTION));
+        assertThat(esMap.get("informationCategory"), is(INFORMATION_CATEGORY));
     }
 }

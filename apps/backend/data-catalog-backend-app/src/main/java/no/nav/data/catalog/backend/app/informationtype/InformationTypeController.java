@@ -96,7 +96,7 @@ public class InformationTypeController {
 
 	}
 
-	@ApiOperation(value = "Dekete InformationType", tags = { "InformationType" })
+	@ApiOperation(value = "Delete InformationType", tags = { "InformationType" })
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "InformationType deleted"),
 			@ApiResponse(code = 404, message = "InformationType not found"),
@@ -104,14 +104,12 @@ public class InformationTypeController {
 	@DeleteMapping("/{id}")
 	@Transactional
 	public ResponseEntity<?> deleteInformationTypeById(@PathVariable Long id) {
-		Optional<InformationType> informationType = repository.findById(id);
-		if(informationType.isEmpty()) {
+		Optional<InformationType> fromRepository = repository.findById(id);
+		if(fromRepository.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-
-		elasticsearch.deleteInformationTypeById(informationType.get().getElasticsearchId());
-		repository.delete(informationType.get());
-
-		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+		InformationType informationType = fromRepository.get();
+		informationType.setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED);
+		return new ResponseEntity<>(repository.save(informationType), HttpStatus.ACCEPTED);
 	}
 }
