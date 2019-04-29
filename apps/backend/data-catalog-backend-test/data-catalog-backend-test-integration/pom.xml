@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>elasticsearch</artifactId>
-			<version>${elasticsearch.testcontainer.version}</version>
+			<version>${testcontainer.version}</version>
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
@@ -52,6 +52,12 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-contract-wiremock</artifactId>
 			<version>${spring.cloud.wiremock.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${testcontainer.version}</version>
 			<scope>test</scope>
 		</dependency>
 

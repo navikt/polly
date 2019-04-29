@@ -46,6 +46,7 @@ public class GithubConsumerTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
+
     @Test
     public void getFileInfo() {
         GithubFile inputFileInfo = new GithubFile("filename.json", "filpath", "sha", 1L, "url", "html_url", "git_url", "download_url", "file", "content", "encoding");

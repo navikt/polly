@@ -54,7 +54,7 @@
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>elasticsearch</artifactId>
-			<version>${elasticsearch.testcontainer.version}</version>
+			<version>${testcontainer.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

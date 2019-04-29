@@ -5,21 +5,28 @@ import no.nav.data.catalog.backend.app.github.domain.GithubCommitInfo;
 import no.nav.data.catalog.backend.app.github.domain.GithubPushEventPayloadRequest;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.testcontainers.containers.PostgreSQLContainer;
 
+import java.time.Duration;
 import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.containsString;
@@ -30,8 +37,9 @@ import static org.junit.Assert.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         classes = {IntegrationTestConfig.class, AppStarter.class})
-@ActiveProfiles("test")
+@ActiveProfiles("itest")
 @AutoConfigureWireMock(port = 0)
+@ContextConfiguration(initializers = {GithubWebhooksControllerIT.Initializer.class})
 public class GithubWebhooksControllerIT {
 
     @Autowired
@@ -42,6 +50,14 @@ public class GithubWebhooksControllerIT {
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
+
+    @ClassRule
+    public static PostgreSQLContainer postgreSQLContainer =
+            (PostgreSQLContainer) new PostgreSQLContainer("postgres:10.4")
+                    .withDatabaseName("sampledb")
+                    .withUsername("sampleuser")
+                    .withPassword("samplepwd")
+                    .withStartupTimeout(Duration.ofSeconds(600));
 
     @Before
     public void setUp() {
@@ -92,5 +108,16 @@ public class GithubWebhooksControllerIT {
                 "/backend/webhooks", HttpMethod.POST, new HttpEntity<>(request), String.class);
         assertThat(responseEntity.getStatusCode(), is (HttpStatus.NOT_FOUND));
         assertThat(responseEntity.getBody(), containsString ("Calling Github to download file failed with status=404 NOT_FOUND. The file does not exist"));
+    }
+
+    static class Initializer
+            implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+        public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
+            TestPropertyValues.of(
+                    "spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
+                    "spring.datasource.username=" + postgreSQLContainer.getUsername(),
+                    "spring.datasource.password=" + postgreSQLContainer.getPassword()
+            ).applyTo(configurableApplicationContext.getEnvironment());
+        }
     }
 }

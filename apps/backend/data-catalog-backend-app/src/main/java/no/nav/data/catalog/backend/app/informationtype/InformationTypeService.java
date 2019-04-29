@@ -36,8 +36,7 @@ public class InformationTypeService {
 	}
 
 	private void createInformationTypesInElasticsearch() {
-		Optional<List<InformationType>> optinalInformationTypes = repository.findByElasticsearchStatus(TO_BE_CREATED
-				.toString());
+		Optional<List<InformationType>> optinalInformationTypes = repository.findByElasticsearchStatus(TO_BE_CREATED);
 		if (optinalInformationTypes.isPresent()) {
 			Map<String, Object> jsonMap = null;
 
@@ -54,8 +53,7 @@ public class InformationTypeService {
 	}
 
 	private void updateInformationTypesInElasticsearch() {
-		Optional<List<InformationType>> optinalInformationTypes = repository.findByElasticsearchStatus(TO_BE_UPDATED
-				.toString());
+		Optional<List<InformationType>> optinalInformationTypes = repository.findByElasticsearchStatus(TO_BE_UPDATED);
 		if (optinalInformationTypes.isPresent()) {
 			Map<String, Object> jsonMap = null;
 
@@ -72,8 +70,7 @@ public class InformationTypeService {
 	}
 
 	private void deleteInformationTypesInElasticsearchAndInPostgres() {
-		Optional<List<InformationType>> optinalInformationTypes = repository.findByElasticsearchStatus(TO_BE_DELETED
-				.toString());
+		Optional<List<InformationType>> optinalInformationTypes = repository.findByElasticsearchStatus(TO_BE_DELETED);
 		if (optinalInformationTypes.isPresent()) {
 			Map<String, Object> jsonMap = null;
 
