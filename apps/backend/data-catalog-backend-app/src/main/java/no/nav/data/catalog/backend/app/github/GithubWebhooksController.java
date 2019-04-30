@@ -1,17 +1,17 @@
 package no.nav.data.catalog.backend.app.github;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.github.domain.GithubPushEventPayloadRequest;
 import no.nav.data.catalog.backend.app.informationtype.InformationType;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import no.nav.data.catalog.backend.app.github.domain.GithubPushEventPayloadRequest;
-import org.apache.catalina.filters.AddDefaultCharsetFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 @RestController
 @Api(value = "Github Webhook", description = "Webhook called from github when push to navikt/pol-dataset is done", tags = { "webhook" })
 public class GithubWebhooksController {
+
+    private final static Logger log = LoggerFactory.getLogger(GithubWebhooksController.class);
 
     @Autowired
     private InformationTypeService service;
@@ -48,7 +50,9 @@ public class GithubWebhooksController {
                     service.validateRequest(i, false); // TODO: What if this is an update?
                 } catch (ValidationException e) {
                     // TODO må få fikset return
-                    new ResponseEntity<>(e.get(), HttpStatus.BAD_REQUEST);           }
+                    log.error("Validation error occurred validating file downloaded from Github", e);
+                    throw e;
+                }
             });
             repository.saveAll(requests.stream().map(request -> new InformationType().convertFromRequest(request)).collect(Collectors.toList()));
         }));
