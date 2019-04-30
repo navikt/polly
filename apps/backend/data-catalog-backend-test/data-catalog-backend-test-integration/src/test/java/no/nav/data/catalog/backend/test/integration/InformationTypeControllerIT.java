@@ -27,9 +27,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static no.nav.data.catalog.backend.app.common.utils.Constants.*;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
@@ -90,7 +88,6 @@ public class InformationTypeControllerIT {
         assertThat(response.getBody().size(), is(1));
         assertInformationType(response.getBody().get(0));
     }
-
 
     @Test
     public void updateInformationType() {
