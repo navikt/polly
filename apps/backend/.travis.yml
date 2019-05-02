@@ -23,8 +23,7 @@ script:
 - mvn install
 - git config user.name datajegerne[bot]
 - git config user.email datajegerne[bot]@users.noreply.github.com
-- docker build --build-arg app_name="$APPLICATION_NAME" -t "$DOCKER_IMAGE_FULL_NAME"
-  .
+- docker build --build-arg app_name="$APPLICATION_NAME" -t "$DOCKER_IMAGE_FULL_NAME" .
 deploy:
   provider: script
   skip_cleanup: true
@@ -32,6 +31,8 @@ deploy:
   on:
     branch: master
 after_deploy:
+  on:
+    branch: master
 - git remote add auth-origin "https://x-access-token:${INSTALLATION_TOKEN}@github.com/${TRAVIS_REPO_SLUG}"
 - git tag $RELEASE_VERSION
 - git push auth-origin --tags

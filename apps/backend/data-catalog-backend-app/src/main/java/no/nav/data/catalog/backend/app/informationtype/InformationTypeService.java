@@ -20,8 +20,7 @@ import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.
 @Slf4j
 @Service
 public class InformationTypeService {
-
-	public static final Logger logger = LoggerFactory.getLogger(InformationTypeService.class);
+	private static final Logger logger = LoggerFactory.getLogger(InformationTypeService.class);
 
 	@Autowired
 	private InformationTypeRepository repository;
@@ -30,9 +29,11 @@ public class InformationTypeService {
 	private ElasticsearchRepository elasticsearch;
 
 	public void synchToElasticsearch() {
+		logger.info("Starting sync to ElasticSearch");
 		createInformationTypesInElasticsearch();
 		updateInformationTypesInElasticsearch();
 		deleteInformationTypesInElasticsearchAndInPostgres();
+		logger.info("Finished sync to ElasticSearch");
 	}
 
 	private void createInformationTypesInElasticsearch() {
