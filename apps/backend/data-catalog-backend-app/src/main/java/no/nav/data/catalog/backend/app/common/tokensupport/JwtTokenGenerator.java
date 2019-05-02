@@ -59,7 +59,7 @@ public class JwtTokenGenerator {
      * Load private pkcs8 pem file to get the private key
      *
      * @param key String of the Pkcs8 file
-     * @return Key to construct YfyEnterpriseAuth and used in signature
+     * @return PrivateKey
      * @throws Exception
      */
     public static PrivateKey loadPrivateKey(String key) {
