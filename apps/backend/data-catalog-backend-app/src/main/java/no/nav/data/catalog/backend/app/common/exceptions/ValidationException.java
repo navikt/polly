@@ -9,6 +9,11 @@ public class ValidationException extends RuntimeException {
         this.validationErrors = validationErrors;
     }
 
+    public ValidationException(HashMap<String, String> validationErrors, String message) {
+        super(message);
+        this.validationErrors = validationErrors;
+    }
+
     public HashMap<String, String> get() {
         return validationErrors;
     }

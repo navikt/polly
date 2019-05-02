@@ -1,6 +1,7 @@
 package no.nav.data.catalog.backend.app.github;
 
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
+import no.nav.data.catalog.backend.app.common.exceptions.InformationTypeNotFoundException;
 import no.nav.data.catalog.backend.app.common.tokensupport.JwtTokenGenerator;
 import no.nav.data.catalog.backend.app.github.domain.GithubFile;
 import no.nav.data.catalog.backend.app.github.domain.GithubInstallation;
@@ -32,7 +33,7 @@ public class GithubConsumer {
         } catch (
                 HttpClientErrorException e) {
             if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
-                throw new IllegalArgumentException(String.format("Calling Github to download file failed with status=%s. The file does not exist", HttpStatus.NOT_FOUND));
+                throw new InformationTypeNotFoundException(String.format("Calling Github to download file failed with status=%s. The file does not exist", HttpStatus.NOT_FOUND));
             } else {
                 throw new DataCatalogBackendTechnicalException(String.format("Calling Github to download file failed with status=%s message=%s", e.getStatusCode(), e.getResponseBodyAsString()), e, e.getStatusCode());
             }

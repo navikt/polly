@@ -1,18 +1,5 @@
 package no.nav.data.catalog.backend.test.component;
 
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_CREATED;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.anyMap;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchRepository;
@@ -34,6 +21,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ComponentTestConfig.class)
@@ -58,7 +50,7 @@ public class InformationTypeServiceTest {
 	    InformationType informationType = InformationType.builder().build();
         List<InformationType> informationTypes = new ArrayList<>();
         informationTypes.add(informationType);
-		when(informationTypeRepository.findByElasticsearchStatus(TO_BE_CREATED.toString())).thenReturn(Optional.of(informationTypes));
+		when(informationTypeRepository.findByElasticsearchStatus(TO_BE_CREATED)).thenReturn(Optional.of(informationTypes));
 
 		informationTypeService.synchToElasticsearch();
 		verify(elasticsearchRepository, times(1)).insertInformationType(anyMap());
@@ -73,7 +65,7 @@ public class InformationTypeServiceTest {
         InformationType informationType = InformationType.builder().build();
         List<InformationType> informationTypes = new ArrayList<>();
         informationTypes.add(informationType);
-        when(informationTypeRepository.findByElasticsearchStatus(TO_BE_UPDATED.toString())).thenReturn(Optional.of(informationTypes));
+        when(informationTypeRepository.findByElasticsearchStatus(TO_BE_UPDATED)).thenReturn(Optional.of(informationTypes));
 
         informationTypeService.synchToElasticsearch();
         verify(elasticsearchRepository, times(0)).insertInformationType(anyMap());
@@ -88,7 +80,7 @@ public class InformationTypeServiceTest {
         InformationType informationType = InformationType.builder().build();
         List<InformationType> informationTypes = new ArrayList<>();
         informationTypes.add(informationType);
-        when(informationTypeRepository.findByElasticsearchStatus(TO_BE_DELETED.toString())).thenReturn(Optional.of(informationTypes));
+        when(informationTypeRepository.findByElasticsearchStatus(TO_BE_DELETED)).thenReturn(Optional.of(informationTypes));
 
         informationTypeService.synchToElasticsearch();
         verify(elasticsearchRepository, times(0)).insertInformationType(anyMap());
