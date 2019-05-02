@@ -6,21 +6,25 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
-import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import no.nav.data.catalog.backend.app.github.domain.GithubFile;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class InformationTypeRequest {
+
+	private static final Logger logger = LoggerFactory.getLogger(InformationTypeRequest.class);
 
 	private String name;
 	private String category;
@@ -49,6 +53,7 @@ public class InformationTypeRequest {
 			try {
 				return mapper.readValue(jsonString, new TypeReference<List<InformationTypeRequest>>() {});
 			} catch (IOException e) {
+				log.error(String.format("Error occurred during parse of Json in file %s from github ", file.getName()), e);
 				throw new DataCatalogBackendTechnicalException(String.format("Error occurred during parse of Json in file %s from github ", file.getName()), e);
 			}
 		}

@@ -1,32 +1,19 @@
 package no.nav.data.catalog.backend.app.informationtype;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.data.catalog.backend.app.codelist.CodelistService;
-import no.nav.data.catalog.backend.app.codelist.ListName;
-import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
-import no.nav.data.catalog.backend.app.github.domain.GithubFile;
-import no.nav.data.catalog.backend.app.record.Record;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
 
 @Entity
 @Data
@@ -117,6 +104,9 @@ public class InformationType {
 		this.description = request.getDescription();
 		this.personalData = request.getPersonalData();
 		this.createdBy = request.getCreatedBy();
+		// TODO er dette alltid riktig:
+		this.elasticsearchStatus = ElasticsearchStatus.TO_BE_CREATED;
+		this.createdTime = LocalDateTime.now();
 
 		return this;
 	}

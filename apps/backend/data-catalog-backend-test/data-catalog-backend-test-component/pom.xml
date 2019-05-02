@@ -54,7 +54,7 @@
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>elasticsearch</artifactId>
-			<version>${elasticsearch.testcontainer.version}</version>
+			<version>${testcontainer.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -73,7 +73,19 @@
                     <target>11</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>Jar Tests Package</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
 	</build>
-
 </project>
