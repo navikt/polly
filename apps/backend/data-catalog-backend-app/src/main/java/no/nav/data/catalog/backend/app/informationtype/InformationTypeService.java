@@ -46,7 +46,7 @@ public class InformationTypeService {
 				elasticsearch.insertInformationType(jsonMap);
 
 				// informationType.setJsonString(jsonMap.toString());
-				informationType.setElasticsearchStatus(SYNCHED);
+				informationType.setElasticsearchStatus(SYNCED);
 				repository.save(informationType);
 			}
 		}
@@ -63,7 +63,7 @@ public class InformationTypeService {
 				elasticsearch.updateInformationTypeById(informationType.getElasticsearchId(), jsonMap);
 
 				// informationType.setJsonString(jsonMap.toString());
-				informationType.setElasticsearchStatus(SYNCHED);
+				informationType.setElasticsearchStatus(SYNCED);
 				repository.save(informationType);
 			}
 		}
@@ -82,7 +82,9 @@ public class InformationTypeService {
 		}
 	}
 
-	//TODO: resendToElasticsearch()
+	public void resendToElasticsearch() {
+		repository.updateStatusAllRows(TO_BE_UPDATED);
+	}
 
 	public void validateRequest(InformationTypeRequest request, boolean isUpdate) throws ValidationException {
 		HashMap<String, String> validationErrors = new HashMap<>();

@@ -8,26 +8,25 @@ import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
 import no.nav.data.catalog.backend.test.component.FixedElasticsearchContainer;
 import org.junit.Before;
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.testcontainers.containers.PostgreSQLContainer;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.util.TestPropertyValues;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.Objects;
 
 import static no.nav.data.catalog.backend.app.common.utils.Constants.*;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCHED;
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCED;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -72,7 +71,7 @@ public class InformationTypeServiceIT {
         Map<String, Object> esMap = esRepository.getInformationTypeById("elasticSearchId");
         assertInformationType(esMap);
         InformationType informationType = repository.findAll().get(0);
-        assertThat(informationType.getElasticsearchStatus(), is(SYNCHED));
+        assertThat(informationType.getElasticsearchStatus(), is(SYNCED));
     }
 
     @Test
@@ -95,8 +94,23 @@ public class InformationTypeServiceIT {
         assertInformationType(esMap);
         assertThat(repository.findAll().size(), is(1));
         informationType = repository.findAll().get(0);
-        assertThat(informationType.getElasticsearchStatus(), is(SYNCHED));
+        assertThat(informationType.getElasticsearchStatus(), is(SYNCED));
     }
+
+    @Test
+    public void syncNotExistingUpdatedInformationTypesToES() throws Exception {
+        createTestData(ElasticsearchStatus.TO_BE_UPDATED);
+        service.synchToElasticsearch();
+
+        Thread.sleep(1000L);
+        assertThat(esRepository.getAllRecords().getHits().totalHits, is(1L));
+        Map<String, Object> esMap = esRepository.getInformationTypeById("elasticSearchId");
+        assertInformationType(esMap);
+        assertThat(repository.findAll().size(), is(1));
+        InformationType informationType = repository.findAll().get(0);
+        assertThat(informationType.getElasticsearchStatus(), is(SYNCED));
+    }
+
 
     @Test
     public void syncDeletedInformationTypesToES() throws Exception {

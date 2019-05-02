@@ -7,6 +7,7 @@ import no.nav.data.catalog.backend.app.informationtype.InformationType;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -38,6 +39,9 @@ public class InformationTypeServiceTest {
 
     @Mock
     private ElasticsearchRepository elasticsearchRepository;
+
+    @Mock
+    private RestHighLevelClient highLevelClient;
 
 	@InjectMocks
 	private InformationTypeService informationTypeService;
