@@ -97,13 +97,13 @@
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-root</artifactId>
-			<version>0.10.6</version>
+			<version>${jjwt.version}</version>
 			<type>pom</type>
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-extensions</artifactId>
-			<version>0.10.6</version>
+			<version>${jjwt.version}</version>
 			<type>pom</type>
 		</dependency>
 	</dependencies>
