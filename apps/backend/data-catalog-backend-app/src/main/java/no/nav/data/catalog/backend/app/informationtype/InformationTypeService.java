@@ -91,7 +91,6 @@ public class InformationTypeService {
 		if(!codelists.get(ListName.PRODUCER).containsKey(request.getProducer())) { validationErrors.put("producer", "The producer was null or not found in the producer codelist."); }
 		if(!codelists.get(ListName.CATEGORY).containsKey(request.getCategory())) { validationErrors.put("category", "The category was null or not found in the category codelist."); }
 		if(!codelists.get(ListName.SYSTEM).containsKey(request.getSystem())) { validationErrors.put("system", "The system was null or not found in the system codelist."); }
-		if(request.getCreatedBy() == null || request.getCreatedBy().equals("")) { validationErrors.put("createdBy", "Created by cannot be null or empty."); }
 
 		if(!validationErrors.isEmpty()) {
 			logger.error("Validation errors occured when validating input file from Github: " + validationErrors.toString());

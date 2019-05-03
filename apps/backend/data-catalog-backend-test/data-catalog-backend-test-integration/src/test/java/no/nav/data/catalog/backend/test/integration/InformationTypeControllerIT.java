@@ -148,7 +148,6 @@ public class InformationTypeControllerIT {
     private InformationTypeRequest createRequest() {
         return InformationTypeRequest.builder()
                 .category(INFORMATION_CATEGORY)
-                .createdBy("createdBy")
                 .description(INFORMATION_DESCRIPTION)
                 .name(INFORMATION_NAME)
                 .personalData(true)

@@ -32,7 +32,6 @@ public class InformationTypeRequest {
 	private String system;
 	private String description;
 	private Boolean personalData;
-	private String createdBy;    //TODO: Retrieve from token, authorized user
 
 	public List<InformationTypeRequest> convertFromGithubFile(GithubFile file) {
 		byte[] content = null;
