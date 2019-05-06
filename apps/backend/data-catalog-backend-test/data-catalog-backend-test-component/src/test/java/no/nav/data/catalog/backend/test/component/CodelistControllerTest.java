@@ -1,143 +1,248 @@
 package no.nav.data.catalog.backend.test.component;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.codelist.CodelistRequest;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.mockito.InjectMocks;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.HashMap;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = ComponentTestConfig.class)
+@SpringBootTest(classes = AppStarter.class)
+@WebAppConfiguration
 @ActiveProfiles("test")
-public class CodelistControllerTest extends AbstractControllerTest {
+public class CodelistControllerTest {
 
 	private final String BASE_URI = "/backend/codelist";
+	private MockMvc mvc;
+	private ObjectMapper objectMapper;
+	private HashMap<ListName, HashMap<String, String>> codelists;
 
-	@Mock
-	private CodelistService codelistService;
+	@Autowired
+	WebApplicationContext webApplicationContext;
 
-	@Mock
-	private CodelistRepository repository;
+	@InjectMocks
+	private CodelistService service;
 
-	@Override
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
+
 	@Before
 	public void setUp() {
-		super.setUp();
+		mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+		objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+		codelists = service.codelists;
 	}
 
 	@Test
-	public void shouldFindAll() throws Exception {
-		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(BASE_URI)).andReturn();
+	public void findAll_shouldReturnCodelists() throws Exception {
+		// when
+		MockHttpServletResponse response = mvc.perform(MockMvcRequestBuilders.get(BASE_URI))
+				.andReturn().getResponse();
 
-		int status = mvcResult.getResponse().getStatus();
-		assertEquals(200, status);
-		String content = mvcResult.getResponse().getContentAsString();
-		HashMap<ListName, HashMap<String, String>> codelists = super.mapFromJson(content, HashMap.class);
-		assertThat(codelists.values().size(), is(3));
-		assertThat(codelists.size(), is(codelistService.codelists.size()));
+		// then
+		HashMap<ListName, HashMap<String, String>> returnedCodelist = objectMapper.readValue(response.getContentAsString(), HashMap.class);
+
+		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+		assertThat(returnedCodelist.values().size()).isEqualTo(3);
+		assertThat(returnedCodelist.size()).isEqualTo(codelists.size());
 	}
 
 	@Test
-	public void shouldFindByListName() throws Exception {
+	public void findByListName_shouldReturnList() throws Exception {
 		String uri = BASE_URI + "/" + ListName.PRODUCER;
-		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)).andReturn();
 
-		int status = mvcResult.getResponse().getStatus();
-		assertEquals(200, status);
-		String content = mvcResult.getResponse().getContentAsString();
-		HashMap<String, String> producerList = super.mapFromJson(content, HashMap.class);
-		assertFalse(producerList.isEmpty());
-		assertThat(producerList.size(), is(codelistService.codelists.get(ListName.PRODUCER).size()));
+		// when
+		MockHttpServletResponse response = mvc.perform(MockMvcRequestBuilders.get(uri))
+				.andReturn().getResponse();
+
+		HashMap<String, String> producerList = objectMapper.readValue(response.getContentAsString(), HashMap.class);
+
+		// then
+		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+		assertThat(producerList).isEqualTo(codelists.get(ListName.PRODUCER));
 	}
 
 	@Test
-	public void shouldFindByListNameAndCode() throws Exception {
+	public void findByListNameAndCode_shouldReturnCodelistItem() throws Exception {
 		String code = "REVISOR";
 		String uri = BASE_URI + "/" + ListName.PRODUCER + "/" + code;
-		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)).andReturn();
 
-		int status = mvcResult.getResponse().getStatus();
-		assertEquals(200, status);
-		String content = mvcResult.getResponse().getContentAsString();
-		assertFalse(content.isEmpty());
-		assertThat(content, is(codelistService.codelists.get(ListName.PRODUCER).get(code)));
+		// when
+		MockHttpServletResponse response = mvc.perform(MockMvcRequestBuilders.get(uri))
+				.andReturn().getResponse();
+
+		// then
+		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+		assertThat(response.getContentAsString()).isEqualTo(codelists.get(ListName.PRODUCER).get(code));
 	}
 
+	@Test
+	public void findByListNameAndCode_shouldReturnNotFound() throws Exception {
+		String uri = BASE_URI + "/" + ListName.PRODUCER + "/UNKNOWN_CODE";
+
+		// when
+		MockHttpServletResponse response = mvc.perform(MockMvcRequestBuilders.get(uri))
+				.andReturn().getResponse();
+
+		// then
+		assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
+		assertThat(response.getContentAsString()).isEmpty();
+	}
 
 	@Test
-	public void shouldSaveNewCodelist() throws Exception {
+	public void save_shouldSaveNewCodelist() throws Exception {
 		CodelistRequest request = CodelistRequest.builder()
 				.list(ListName.PRODUCER)
 				.code("TEST")
-				.description("Test av producer TEST")
+				.description("Test save")
 				.build();
-		String inputJson = super.mapToJson(request);
-		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(BASE_URI)
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.content(inputJson)).andReturn();
+		String inputJson = objectMapper.writeValueAsString(request);
 
-		int status = mvcResult.getResponse().getStatus();
-		assertEquals(202, status);
-		assertFalse(codelistService.codelists.get(request.getList()).get(request.getCode()).isEmpty());
-		assertThat(codelistService.codelists.get(request.getList()).get(request.getCode()), is("Test av producer TEST"));
+		// when
+		MockHttpServletResponse response = mvc.perform(
+				MockMvcRequestBuilders.post(BASE_URI)
+						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+						.content(inputJson))
+				.andReturn().getResponse();
+
+		// then
+		assertThat(response.getStatus()).isEqualTo(HttpStatus.ACCEPTED.value());
+		assertThat(response.getContentAsString()).isEqualTo(inputJson);
+		assertThat(codelists.get(request.getList()).get(request.getCode())).isNotEmpty();
 	}
 
 	@Test
-	public void shouldSaveUpdatedCodelist() throws Exception {
+	public void save_shouldReturnBadRequest() throws Exception {
+		HashMap<String, String> validationErrors = new HashMap<>();
+		validationErrors.put("list", "The codelist must have a list name");
+		validationErrors.put("code", "The code was null or missing");
+		validationErrors.put("description", "The description was null or missing");
+
+		CodelistRequest request = CodelistRequest.builder().build();
+		String inputJson = objectMapper.writeValueAsString(request);
+
+		// when
+		MockHttpServletResponse response = mvc.perform(
+				MockMvcRequestBuilders.post(BASE_URI)
+						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+						.content(inputJson))
+				.andReturn().getResponse();
+
+		// then
+		assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+		assertThat(response.getContentAsString()).isEqualTo(objectMapper.writeValueAsString(validationErrors));
+	}
+
+	@Test
+	public void update_shouldUpdateCodelist() throws Exception {
+		// initialize
 		CodelistRequest request = CodelistRequest.builder()
 				.list(ListName.PRODUCER)
-				.code("REVISOR")
-				.description("Updated producer Revisor")
+				.code("TEST_SAVE")
+				.description("Test save")
 				.build();
-		String inputJson = super.mapToJson(request);
-		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(BASE_URI)
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.content(inputJson)).andReturn();
+		String inputJson = objectMapper.writeValueAsString(request);
+		mvc.perform(MockMvcRequestBuilders.post(BASE_URI)
+				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+				.content(inputJson))
+				.andExpect(status().isAccepted());
+		assertThat(codelists.get(ListName.PRODUCER).get("TEST_SAVE")).isNotEmpty();
+		assertThat(codelists.get(ListName.PRODUCER).get("TEST_SAVE")).isEqualTo("Test save");
 
-		int status = mvcResult.getResponse().getStatus();
-		assertEquals(202, status);
-		assertFalse(codelistService.codelists.get(request.getList()).get(request.getCode()).isEmpty());
-		assertThat(codelistService.codelists.get(request.getList()).get(request.getCode()), is("Updated producer Revisor"));
+		// given
+		request = CodelistRequest.builder()
+				.list(ListName.PRODUCER)
+				.code("TEST_SAVE")
+				.description("UPDATED!")
+				.build();
+		inputJson = objectMapper.writeValueAsString(request);
+
+		// when
+		MockHttpServletResponse response = mvc.perform(
+				MockMvcRequestBuilders.put(BASE_URI)
+						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+						.content(inputJson))
+				.andReturn().getResponse();
+
+		// then
+		assertThat(response.getStatus()).isEqualTo(HttpStatus.ACCEPTED.value());
+		assertThat(response.getContentAsString()).isEqualTo(inputJson);
+		assertThat(codelists.get(ListName.PRODUCER).get("TEST_SAVE")).isEqualTo("UPDATED!");
 	}
 
 	@Test
-	public void shouldDeleteCodelist() throws Exception {
-		String code = "REVISOR";
-		assertFalse(codelistService.codelists.get(ListName.PRODUCER).get(code).isEmpty());
+	public void update_shouldReturnBadRequest() throws Exception {
+		HashMap<String, String> validationErrors = new HashMap<>();
+		validationErrors.put("list", "The codelist must have a list name");
+		validationErrors.put("code", "The code was null or missing");
+		validationErrors.put("description", "The description was null or missing");
 
-		String uri = BASE_URI + "/" + ListName.PRODUCER + "/" + code;
-		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(uri)).andReturn();
+		// given
+		CodelistRequest request = CodelistRequest.builder().build();
+		String inputJson = objectMapper.writeValueAsString(request);
 
-		int status = mvcResult.getResponse().getStatus();
-		assertEquals(200, status);
-		assertNull(codelistService.codelists.get(ListName.PRODUCER).get(code));
+		// when
+		MockHttpServletResponse response = mvc.perform(
+				MockMvcRequestBuilders.put(BASE_URI)
+						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+						.content(inputJson))
+				.andReturn().getResponse();
+
+		// then
+		assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+		assertThat(response.getContentAsString()).isEqualTo(objectMapper.writeValueAsString(validationErrors));
 	}
 
 	@Test
-	public void shouldRefresh() throws Exception {
-		String uri = BASE_URI + "/refresh";
+	public void delete_shouldDeleteCodelistItem() throws Exception {
+		// initialize
+		String code = "TEST_DELETE";
+		String uri = BASE_URI + "/" + ListName.PRODUCER + "/TEST_DELETE";
 
-		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)).andReturn();
+		CodelistRequest request = CodelistRequest.builder()
+				.list(ListName.PRODUCER)
+				.code(code)
+				.description("Test delete")
+				.build();
+		String inputJson = objectMapper.writeValueAsString(request);
 
-		int status = mvcResult.getResponse().getStatus();
-		assertEquals(200, status);
+		mvc.perform(MockMvcRequestBuilders.post(BASE_URI)
+				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+				.content(inputJson))
+				.andExpect(status().isAccepted());
+		assertThat(codelists.get(ListName.PRODUCER).get("TEST_DELETE")).isNotEmpty();
+
+		// when
+		MockHttpServletResponse response = mvc.perform(
+				MockMvcRequestBuilders.delete(uri))
+				.andReturn().getResponse();
+
+		// then
+		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+		assertThat(codelists.get(ListName.PRODUCER).get(code)).isNull();
 	}
-
 }
