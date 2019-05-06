@@ -10,7 +10,15 @@ import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -50,6 +58,7 @@ public class InformationTypeController {
 	@ApiOperation(value = "Get all InformationTypes", tags = { "InformationType" })
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "All informationTypes fetched", response = InformationType.class, responseContainer = "List"),
+			@ApiResponse(code = 404, message = "No InformationTypes found in repository"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping
 	public ResponseEntity<List<InformationType>> getAllInformationTypes() {
@@ -71,12 +80,16 @@ public class InformationTypeController {
 		try { service.validateRequest(request, false); }
 		catch (ValidationException e) { return new ResponseEntity<>(e.get(), HttpStatus.BAD_REQUEST); }
 
-		return new ResponseEntity<>(repository.save(new InformationType().convertFromRequest(request)), HttpStatus.ACCEPTED);
+		InformationType informationType = new InformationType().convertFromRequest(request, false);
+		informationType.setElasticsearchStatus(ElasticsearchStatus.TO_BE_CREATED);
+
+		return new ResponseEntity<>(repository.save(informationType), HttpStatus.ACCEPTED);
 	}
 
 	@ApiOperation(value = "Update InformationType", tags = { "InformationType" })
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "InformationType updated", response = InformationType.class),
+			@ApiResponse(code = 400, message = "Illegal arguments"),
 			@ApiResponse(code = 404, message = "InformationType not found"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@PutMapping("/{id}")

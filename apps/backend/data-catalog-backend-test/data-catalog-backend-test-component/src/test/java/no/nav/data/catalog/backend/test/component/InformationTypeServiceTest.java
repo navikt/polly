@@ -1,5 +1,18 @@
 package no.nav.data.catalog.backend.test.component;
 
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_CREATED;
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.anyMap;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchRepository;
@@ -21,11 +34,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.*;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ComponentTestConfig.class)
@@ -92,7 +100,15 @@ public class InformationTypeServiceTest {
 
     @Test
     public void shouldValidateInsertRequest() {
-	    InformationTypeRequest request = InformationTypeRequest.builder().category("PERSONALIA").name("Name").system("TPS").producer("SKATTEETATEN").createdBy("TEST").build();
+        InformationTypeRequest request =
+                InformationTypeRequest.builder()
+                        .category("PERSONALIA")
+                        .name("Name")
+                        .system("TPS")
+                        .producer("SKATTEETATEN")
+                        .createdBy("TEST")
+                        .personalData(true)
+                        .build();
 	    informationTypeService.validateRequest(request, false);
     }
 
@@ -102,10 +118,11 @@ public class InformationTypeServiceTest {
         try {
             informationTypeService.validateRequest(request, false);
         } catch (ValidationException e) {
-            assertThat(e.get().size(), is(5));
+            assertThat(e.get().size(), is(6));
             assertThat(e.get().get("system"), is("The system was null or not found in the system codelist."));
             assertThat(e.get().get("createdBy"), is("Created by cannot be null or empty."));
             assertThat(e.get().get("name"), is("Name must have value"));
+            assertThat(e.get().get("personalData"), is("PersonalData cannot be null"));
             assertThat(e.get().get("producer"), is("The producer was null or not found in the producer codelist."));
             assertThat(e.get().get("category"), is("The category was null or not found in the category codelist."));
         }
@@ -117,10 +134,11 @@ public class InformationTypeServiceTest {
         try {
             informationTypeService.validateRequest(request, true);
         } catch (ValidationException e) {
-            assertThat(e.get().size(), is(5));
+            assertThat(e.get().size(), is(6));
             assertThat(e.get().get("system"), is("The system was null or not found in the system codelist."));
             assertThat(e.get().get("createdBy"), is("Created by cannot be null or empty."));
             assertThat(e.get().get("name"), is("Name must have value"));
+            assertThat(e.get().get("personalData"), is("PersonalData cannot be null"));
             assertThat(e.get().get("producer"), is("The producer was null or not found in the producer codelist."));
             assertThat(e.get().get("category"), is("The category was null or not found in the category codelist."));
         }
@@ -133,10 +151,11 @@ public class InformationTypeServiceTest {
         try {
             informationTypeService.validateRequest(request, false);
         } catch (ValidationException e) {
-            assertThat(e.get().size(), is(5));
+            assertThat(e.get().size(), is(6));
             assertThat(e.get().get("name"), is("This name is used for an existing information type."));
             assertThat(e.get().get("system"), is("The system was null or not found in the system codelist."));
             assertThat(e.get().get("createdBy"), is("Created by cannot be null or empty."));
+            assertThat(e.get().get("personalData"), is("PersonalData cannot be null"));
             assertThat(e.get().get("producer"), is("The producer was null or not found in the producer codelist."));
             assertThat(e.get().get("category"), is("The category was null or not found in the category codelist."));
         }
