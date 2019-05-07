@@ -1,8 +1,6 @@
 package no.nav.data.catalog.backend.app.elasticsearch;
 
-import static no.nav.data.catalog.backend.app.common.utils.Constants.INDEX;
-import static no.nav.data.catalog.backend.app.common.utils.Constants.TYPE;
-
+import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import no.nav.data.catalog.backend.app.common.exceptions.DocumentNotFoundException;
 import org.elasticsearch.ElasticsearchException;
@@ -22,15 +20,22 @@ import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Map;
 
+import static no.nav.data.catalog.backend.app.common.utils.Constants.INDEX;
+import static no.nav.data.catalog.backend.app.common.utils.Constants.TYPE;
+
+@Slf4j
 @Service
 public class ElasticsearchRepository {
-  
+
+	private static final Logger logger = LoggerFactory.getLogger(ElasticsearchRepository.class);
 	private RequestOptions requestOptions = RequestOptions.DEFAULT.toBuilder().build();
 
 	@Autowired
@@ -43,8 +48,10 @@ public class ElasticsearchRepository {
 		try {
 			restHighLevelClient.index(indexRequest, requestOptions);
 		} catch (ElasticsearchException e) {
+			logger.error("Elasticsearch-error occurred during insertInformationType", e);
 			throw new DataCatalogBackendTechnicalException(e.getDetailedMessage(), e);
 		} catch (IOException ex) {
+			logger.error("Error occurred during insertInformationType", ex);
 			throw new DataCatalogBackendTechnicalException(ex.getLocalizedMessage(), ex);
 		}
 	}
@@ -56,10 +63,12 @@ public class ElasticsearchRepository {
 		try {
 			getResponse = restHighLevelClient.get(getRequest, requestOptions);
 			if (getResponse.isSourceEmpty()) {
+				logger.error(String.format("getInformationTypeById: Could not find a document to retrieve, document id=%s", id));
 				throw new DocumentNotFoundException(String.format("Could not find a document to retrieve, document id=%s", id));
 			}
 		} catch (IOException ex) {
-			ex.getLocalizedMessage();
+			logger.error(String.format("Error occurred during getInformationTypeById, document id=%s", id), ex);
+			throw new DataCatalogBackendTechnicalException(ex.getLocalizedMessage(), ex);
 		}
 		return (getResponse != null) ? getResponse.getSourceAsMap() : null;
 	}
@@ -73,11 +82,21 @@ public class ElasticsearchRepository {
 			restHighLevelClient.update(updateRequest, requestOptions);
 		} catch (ElasticsearchException e) {
 			if (e.status() == RestStatus.NOT_FOUND) {
-				throw new DocumentNotFoundException(String.format("Could not find a document to update, document id=%s", id));
+				IndexRequest indexRequest = new IndexRequest(INDEX, TYPE, jsonMap.get("id").toString());
+				indexRequest.source(jsonMap);
+				try {
+					restHighLevelClient.index(indexRequest, requestOptions);
+				} catch (IOException ex) {
+					logger.error(String.format("Error occurred during indexing, documentId=%s", jsonMap.get("id").toString()), ex);
+					throw new DataCatalogBackendTechnicalException(ex.getLocalizedMessage(), ex);
+				}
+			} else {
+				logger.error(String.format("Error occurred during updateInformationTypeById, document id=%s", id), e);
+				throw new DataCatalogBackendTechnicalException(e.getLocalizedMessage(), e);
 			}
-			e.getDetailedMessage();
 		} catch (IOException ex) {
-			ex.getLocalizedMessage();
+			logger.error(String.format("IOException occurred during updateInformationTypeById, document id=%s", id), ex);
+			throw new DataCatalogBackendTechnicalException(ex.getLocalizedMessage(), ex);
 		}
 	}
 
