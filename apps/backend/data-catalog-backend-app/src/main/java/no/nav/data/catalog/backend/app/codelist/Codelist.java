@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.data.catalog.backend.app.common.auditing.Auditable;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,7 +16,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @IdClass(Codelist.IdClass.class)
-public class Codelist {
+public class Codelist extends Auditable<String> {
 
 	@Id
 	@Column(name = "LIST_NAME")

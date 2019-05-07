@@ -8,23 +8,21 @@ import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
 import no.nav.data.catalog.backend.test.component.FixedElasticsearchContainer;
 import org.junit.Before;
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.testcontainers.containers.PostgreSQLContainer;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.util.TestPropertyValues;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.Objects;
 
 import static no.nav.data.catalog.backend.app.common.utils.Constants.*;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCHED;
@@ -124,14 +122,12 @@ public class InformationTypeServiceIT {
         InformationType informationType = InformationType.builder()
                 .elasticsearchId("elasticSearchId")
                 .category(INFORMATION_CATEGORY)
-                .createdBy("createdBy")
                 .system(INFORMATION_SYSTEM)
                 .elasticsearchStatus(esStatus)
                 .name(INFORMATION_NAME)
                 .description(INFORMATION_DESCRIPTION)
                 .producer(INFORMATION_PRODUCER)
-                .personalData(true)
-                .createdTime(LocalDateTime.now()).build();
+                .personalData(true).build();
         repository.save(informationType);
     }
 
