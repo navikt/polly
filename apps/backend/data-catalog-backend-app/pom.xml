@@ -93,6 +93,19 @@
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>${springfox.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-root</artifactId>
+			<version>${jjwt.version}</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-extensions</artifactId>
+			<version>${jjwt.version}</version>
+			<type>pom</type>
+		</dependency>
 	</dependencies>
 
 	<packaging>jar</packaging>

@@ -31,6 +31,7 @@
 		<springfox.version>2.9.2</springfox.version>
 		<postgres.version>42.2.5</postgres.version>
 		<spring.cloud.wiremock.version>2.1.1.RELEASE</spring.cloud.wiremock.version>
+		<jjwt.version>0.10.6</jjwt.version>
 	</properties>
 
 	<dependencies>
