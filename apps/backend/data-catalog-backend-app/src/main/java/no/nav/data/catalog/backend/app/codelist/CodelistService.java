@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class CodelistService {
@@ -67,5 +68,12 @@ public class CodelistService {
 		if(!validationErrors.isEmpty()) {
 			throw new ValidationException(validationErrors);
 		}
+	}
+
+	public Optional<ListName> listNameInCodelist(String listName) {
+		Stream<ListName> streamOfListNames = Arrays.stream(ListName.values());
+		return streamOfListNames
+				.filter(x -> x.toString().equals(listName.toUpperCase()))
+				.findFirst();
 	}
 }

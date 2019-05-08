@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin
@@ -47,7 +48,8 @@ public class CodelistController {
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping("/{listName}")
 	public ResponseEntity<HashMap<String, String>> findByListName(@PathVariable String listName) {
-		if(!codelists.containsKey(ListName.valueOf(listName.toUpperCase()))) {
+		Optional<ListName> optionalListName = service.listNameInCodelist(listName);
+		if (optionalListName.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 
@@ -61,7 +63,9 @@ public class CodelistController {
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping("/{listName}/{code}")
 	public ResponseEntity<String> findByListNameAndCode(@PathVariable String listName, @PathVariable String code) {
-		if(!codelists.get(ListName.valueOf(listName.toUpperCase())).containsKey(code.toUpperCase())) {
+		Optional<ListName> optionalListName = service.listNameInCodelist(listName);
+		if (optionalListName.isEmpty() || !codelists.get(ListName.valueOf(listName.toUpperCase()))
+				.containsKey(code.toUpperCase())) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 

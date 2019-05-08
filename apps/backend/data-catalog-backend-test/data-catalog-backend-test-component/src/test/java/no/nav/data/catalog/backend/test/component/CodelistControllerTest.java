@@ -87,6 +87,19 @@ public class CodelistControllerTest {
 	}
 
 	@Test
+	public void findByListName_shouldReturnNotFound_whenUnknownListName() throws Exception {
+		String uri = BASE_URI + "/UNKNOWN_LISTNAME";
+
+		// when
+		MockHttpServletResponse response = mvc.perform(MockMvcRequestBuilders.get(uri))
+				.andReturn().getResponse();
+
+		// then
+		assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
+		assertThat(response.getContentAsString()).isEmpty();
+	}
+
+	@Test
 	public void findByListNameAndCode_shouldReturnCodelistItem() throws Exception {
 		String code = "REVISOR";
 		String uri = BASE_URI + "/" + ListName.PRODUCER + "/" + code;
@@ -101,8 +114,21 @@ public class CodelistControllerTest {
 	}
 
 	@Test
-	public void findByListNameAndCode_shouldReturnNotFound() throws Exception {
+	public void findByListNameAndCode_shouldReturnNotFound_whenUnknownCode() throws Exception {
 		String uri = BASE_URI + "/" + ListName.PRODUCER + "/UNKNOWN_CODE";
+
+		// when
+		MockHttpServletResponse response = mvc.perform(MockMvcRequestBuilders.get(uri))
+				.andReturn().getResponse();
+
+		// then
+		assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
+		assertThat(response.getContentAsString()).isEmpty();
+	}
+
+	@Test
+	public void findByListNameAndCode_shouldReturnNotFound_whenUnknownListName() throws Exception {
+		String uri = BASE_URI + "/UNKNOWN_LISTNAME" + "/IRRELEVANT_CODE";
 
 		// when
 		MockHttpServletResponse response = mvc.perform(MockMvcRequestBuilders.get(uri))
