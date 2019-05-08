@@ -1,5 +1,7 @@
 package no.nav.data.catalog.backend.app.informationtype;
 
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCED;
+
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -8,10 +10,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCED;
-
 public interface InformationTypeRepository extends JpaRepository<InformationType, Long> {
-	ElasticsearchStatus synchedStatus = SYNCED;
+	ElasticsearchStatus syncedStatus = SYNCED;
 	List<InformationType> findAllByOrderByIdAsc();
 
 	Optional<List<InformationType>> findByElasticsearchStatus(@Param("status") ElasticsearchStatus status);

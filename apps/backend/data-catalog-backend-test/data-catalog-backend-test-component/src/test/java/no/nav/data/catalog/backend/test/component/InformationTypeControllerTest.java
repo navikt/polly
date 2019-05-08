@@ -32,7 +32,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -71,8 +70,6 @@ public class InformationTypeControllerTest {
 				.personalData(true)
 				.elasticsearchId(base64UUID())
 				.elasticsearchStatus(ElasticsearchStatus.TO_BE_CREATED)
-				.createdTime(LocalDateTime.now())
-				.createdBy("TESTBRUKER")
 				.build();
 	}
 
@@ -165,11 +162,9 @@ public class InformationTypeControllerTest {
 				.system("TPS")
 				.description("Informasjon til test hentet av bruker")
 				.personalData(true)
-				.createdBy("TestUser")
 				.build();
 		InformationType createdInformationType = new InformationType().convertFromRequest(request, false);
 		createdInformationType.setId(10L);
-		createdInformationType.setElasticsearchStatus(ElasticsearchStatus.TO_BE_CREATED);
 
 		// given
 		given(informationTypeRepository.save(any(InformationType.class)))
@@ -229,7 +224,6 @@ public class InformationTypeControllerTest {
 				.system("TPS")
 				.description("Duplicates of InformationTypes aren't allowed")
 				.personalData(true)
-				.createdBy("TestUser")
 				.build();
 		InformationType createdInformationType = new InformationType().convertFromRequest(request, false);
 		HashMap<String, String> validationErrors = new HashMap<>();
@@ -264,10 +258,9 @@ public class InformationTypeControllerTest {
 				.system("TPS")
 				.description("Test of updateInformationType")
 				.personalData(true)
-				.createdBy("TestUser")
 				.build();
+		assertThat(informationType.getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_CREATED);
 		InformationType informationTypeToBeUpdated = informationType.convertFromRequest(request, true);
-		assertThat(informationTypeToBeUpdated.getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_CREATED);
 
 		// given
 		given(informationTypeRepository.findById(id))
@@ -302,7 +295,6 @@ public class InformationTypeControllerTest {
 				.system("TPS")
 				.description("Test of updateInformationType")
 				.personalData(true)
-				.createdBy("TestUser")
 				.build();
 		// given
 		given(informationTypeRepository.findById(id))
@@ -394,8 +386,6 @@ public class InformationTypeControllerTest {
 				.personalData(true)
 				.elasticsearchId(base64UUID())
 				.elasticsearchStatus(ElasticsearchStatus.TO_BE_CREATED)
-				.createdTime(LocalDateTime.now())
-				.createdBy("TESTBRUKER")
 				.build();
 
 		InformationType informationType_3 = InformationType.builder()
@@ -408,8 +398,6 @@ public class InformationTypeControllerTest {
 				.personalData(true)
 				.elasticsearchId(base64UUID())
 				.elasticsearchStatus(ElasticsearchStatus.TO_BE_CREATED)
-				.createdTime(LocalDateTime.now())
-				.createdBy("TESTBRUKER")
 				.build();
 
 		List<InformationType> list = new ArrayList<>();
