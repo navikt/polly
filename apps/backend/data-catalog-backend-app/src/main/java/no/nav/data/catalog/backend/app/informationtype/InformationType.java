@@ -7,20 +7,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.data.catalog.backend.app.common.auditing.Auditable;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,9 +23,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "INFORMATION_TYPE")
-public class InformationType {
-
-	// TODO: Add Spring Audit
+public class InformationType extends Auditable<String> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_informationType")
@@ -76,20 +67,6 @@ public class InformationType {
 	@NotNull
 	private ElasticsearchStatus elasticsearchStatus;
 
-	@NotNull
-	@Column(name = "CREATED_TIME", nullable = false)
-	private LocalDateTime createdTime;
-
-	@NotNull
-	@Column(name = "CREATED_BY", nullable = false)
-	private String createdBy;
-
-	@Column(name = "UPDATED_TIME")
-	private LocalDateTime updatedTime;
-
-	@Column(name = "UPDATED_BY")
-	private String updatedBy;
-
 	public Map<String, Object> convertToMap() {
 		Map<String, Object> jsonMap = new HashMap<>();
 		jsonMap.put("id", elasticsearchId);
@@ -112,14 +89,13 @@ public class InformationType {
 		this.system = request.getSystem();
 		this.description = request.getDescription();
 		this.personalData = request.getPersonalData();
-//		this.createdBy = request.getCreatedBy();
-		// TODO er dette alltid riktig: Nei, erstatt med overloaded versjon under.
-//		this.elasticsearchStatus = ElasticsearchStatus.TO_BE_CREATED;
-//		this.createdTime = LocalDateTime.now();
+		// TODO er dette alltid riktig:
+		this.elasticsearchStatus = ElasticsearchStatus.TO_BE_CREATED;
 
 		return this;
 	}
 
+	//TODO: Kontrollere dette med audit og ny kode
 	public InformationType convertFromRequest(InformationTypeRequest request, Boolean isUpdate) {
 		if (isUpdate) {
 			this.updatedBy = request.getCreatedBy();

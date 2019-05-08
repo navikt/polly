@@ -2,8 +2,10 @@ package no.nav.data.catalog.backend.app.common.tokensupport;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -11,8 +13,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -21,21 +23,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@Slf4j
 public class JwtTokenGenerator {
-
-    // TODO: Replace with https://stormpath.com/blog/jwt-java-create-verify?
-
-    private static final String PKCS_1_PEM_HEADER = "-----BEGIN RSA PRIVATE KEY-----";
-    private static final String PKCS_1_PEM_FOOTER = "-----END RSA PRIVATE KEY-----";
+    private static final Logger logger = LoggerFactory.getLogger(JwtTokenGenerator.class);
 
     @Value("${github.keyPath}")
     private String keypath;
 
-    public String generateToken()  {
-        PrivateKey privateKey;
-        String token;
+    public String generateToken() {
         try {
-            privateKey = loadKey();
+            byte[] keyDataBytes = Files.readAllBytes(Paths.get(keypath));
+            String keyDataString = new String(keyDataBytes, StandardCharsets.UTF_8);
+            PrivateKey key = loadPrivateKey(keyDataString);
+
             Map<String, Object> claims = new HashMap<String, Object>();
             Date now = new Date();
             //seconds
@@ -48,58 +48,36 @@ public class JwtTokenGenerator {
             claims.put("exp", exp);
             claims.put("iss", "26100");
 
-            token = Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.RS256, privateKey).compact();
-        } catch (GeneralSecurityException e) {
-            throw new DataCatalogBackendTechnicalException(String.format("General security exception occured reading private key file ", e));
-        } catch (IOException e) {
-            throw new DataCatalogBackendTechnicalException(String.format("Error occured reading private key file ", e));
+            return Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.RS256, key).compact();
+        } catch (IOException ex) {
+            logger.error(String.format("Error occurred when reading key file from %s.", keypath), ex);
+            throw new IllegalArgumentException(String.format("Error occurred when reading key file from %s.", keypath), ex);
         }
-        return token;
     }
 
-    private PrivateKey loadKey() throws GeneralSecurityException, IOException {
-        byte[] keyDataBytes = Files.readAllBytes(Paths.get(keypath));
-        String keyDataString = new String(keyDataBytes, StandardCharsets.UTF_8);
+    /**
+     * Load private pkcs8 pem file to get the private key
+     *
+     * @param key String of the Pkcs8 file
+     * @return PrivateKey
+     * @throws Exception
+     */
+    public static PrivateKey loadPrivateKey(String key) {
+        String privateKeyPEM = key
+                .replace("-----BEGIN PRIVATE KEY-----", "")
+                .replace("-----END PRIVATE KEY-----", "")
+                .replaceAll("\\s", "");
 
-        if (keyDataString.contains(PKCS_1_PEM_HEADER)) {
-            // OpenSSL / PKCS#1 Base64 PEM encoded file
-            keyDataString = keyDataString.replace(PKCS_1_PEM_HEADER, "");
-            keyDataString = keyDataString.replace(PKCS_1_PEM_FOOTER, "");
-            return readPkcs1PrivateKey(Base64.decodeBase64(keyDataString));
-        }
+        // decode to get the binary DER representation
+        byte[] privateKeyDER = Base64.decodeBase64(privateKeyPEM);
 
-        // We assume it's a PKCS#8 DER encoded binary file
-        return readPkcs8PrivateKey(keyDataBytes);
-    }
-
-    private PrivateKey readPkcs8PrivateKey(byte[] pkcs8Bytes) throws GeneralSecurityException {
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA", "SunRsaSign");
-        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(pkcs8Bytes);
         try {
-            return keyFactory.generatePrivate(keySpec);
-        } catch (InvalidKeySpecException e) {
-            throw new IllegalArgumentException("Unexpected key format!", e);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            PrivateKey privateKey = keyFactory.generatePrivate(new PKCS8EncodedKeySpec(privateKeyDER));
+            return privateKey;
+        } catch (NoSuchAlgorithmException |InvalidKeySpecException e) {
+            logger.error("Error occurred when generating private key.", e);
+            throw new IllegalArgumentException("Error occurred when reading key.", e);
         }
-    }
-
-    private PrivateKey readPkcs1PrivateKey(byte[] pkcs1Bytes) throws GeneralSecurityException {
-        // We can't use Java internal APIs to parse ASN.1 structures, so we build a PKCS#8 key Java can understand
-        int pkcs1Length = pkcs1Bytes.length;
-        int totalLength = pkcs1Length + 22;
-        byte[] pkcs8Header = new byte[] {
-                0x30, (byte) 0x82, (byte) ((totalLength >> 8) & 0xff), (byte) (totalLength & 0xff), // Sequence + total length
-                0x2, 0x1, 0x0, // Integer (0)
-                0x30, 0xD, 0x6, 0x9, 0x2A, (byte) 0x86, 0x48, (byte) 0x86, (byte) 0xF7, 0xD, 0x1, 0x1, 0x1, 0x5, 0x0, // Sequence: 1.2.840.113549.1.1.1, NULL
-                0x4, (byte) 0x82, (byte) ((pkcs1Length >> 8) & 0xff), (byte) (pkcs1Length & 0xff) // Octet string + length
-        };
-        byte[] pkcs8bytes = join(pkcs8Header, pkcs1Bytes);
-        return readPkcs8PrivateKey(pkcs8bytes);
-    }
-
-    private byte[] join(byte[] byteArray1, byte[] byteArray2){
-        byte[] bytes = new byte[byteArray1.length + byteArray2.length];
-        System.arraycopy(byteArray1, 0, bytes, 0, byteArray1.length);
-        System.arraycopy(byteArray2, 0, bytes, byteArray1.length, byteArray2.length);
-        return bytes;
     }
 }

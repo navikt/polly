@@ -49,7 +49,7 @@ public class InformationTypeService {
 				elasticsearch.insertInformationType(jsonMap);
 
 				// informationType.setJsonString(jsonMap.toString());
-				informationType.setElasticsearchStatus(SYNCHED);
+				informationType.setElasticsearchStatus(SYNCED);
 				repository.save(informationType);
 			}
 		}
@@ -66,7 +66,7 @@ public class InformationTypeService {
 				elasticsearch.updateInformationTypeById(informationType.getElasticsearchId(), jsonMap);
 
 				// informationType.setJsonString(jsonMap.toString());
-				informationType.setElasticsearchStatus(SYNCHED);
+				informationType.setElasticsearchStatus(SYNCED);
 				repository.save(informationType);
 			}
 		}
@@ -85,7 +85,9 @@ public class InformationTypeService {
 		}
 	}
 
-	//TODO: resendToElasticsearch()
+	public void resendToElasticsearch() {
+		repository.updateStatusAllRows(TO_BE_UPDATED);
+	}
 
 	public void validateRequest(InformationTypeRequest request, boolean isUpdate) throws ValidationException {
 		HashMap<String, String> validationErrors = new HashMap<>();
@@ -97,7 +99,6 @@ public class InformationTypeService {
 		if(!codelists.get(ListName.PRODUCER).containsKey(request.getProducer())) { validationErrors.put("producer", "The producer was null or not found in the producer codelist."); }
 		if(!codelists.get(ListName.CATEGORY).containsKey(request.getCategory())) { validationErrors.put("category", "The category was null or not found in the category codelist."); }
 		if(!codelists.get(ListName.SYSTEM).containsKey(request.getSystem())) { validationErrors.put("system", "The system was null or not found in the system codelist."); }
-		if(request.getCreatedBy() == null || request.getCreatedBy().equals("")) { validationErrors.put("createdBy", "Created by cannot be null or empty."); }
 
 		//TODO: seperate validations of requests from Git and frontend? Otherwise change error message
 		if(!validationErrors.isEmpty()) {
