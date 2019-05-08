@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
-import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchRepository;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,9 +29,6 @@ import java.util.Optional;
 @RequestMapping("/backend/informationtype")
 @Api(value = "InformationTypes", description = "REST API for InformationTypes", tags = { "InformationType" })
 public class InformationTypeController {
-
-	@Autowired
-	private ElasticsearchRepository elasticsearch;
 
 	@Autowired
 	private InformationTypeRepository repository;
@@ -81,7 +77,6 @@ public class InformationTypeController {
 		catch (ValidationException e) { return new ResponseEntity<>(e.get(), HttpStatus.BAD_REQUEST); }
 
 		InformationType informationType = new InformationType().convertFromRequest(request, false);
-		informationType.setElasticsearchStatus(ElasticsearchStatus.TO_BE_CREATED);
 
 		return new ResponseEntity<>(repository.save(informationType), HttpStatus.ACCEPTED);
 	}
@@ -102,8 +97,7 @@ public class InformationTypeController {
 		try { service.validateRequest(request, true); }
 		catch (ValidationException e) { return new ResponseEntity<>(e.get(), HttpStatus.BAD_REQUEST); }
 
-		InformationType informationType = fromRepository.get().convertFromRequest(request);
-		informationType.setElasticsearchStatus(ElasticsearchStatus.TO_BE_UPDATED);
+		InformationType informationType = fromRepository.get().convertFromRequest(request, true);
 
 		return new ResponseEntity<>(repository.save(informationType), HttpStatus.ACCEPTED);
 

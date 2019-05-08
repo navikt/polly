@@ -77,7 +77,5 @@ buildNumber.properties
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
 
-/travis/datajegerne-private-key.pem
-/data-catalog-backend-app/src/main/resources/datajegerne-private-key.pem
 /travis/datajegerne-private-key.enc
 /travis/datajegerne-private-key.pk8

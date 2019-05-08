@@ -157,8 +157,7 @@ public class CodelistControllerTest {
 
 		// then
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.ACCEPTED.value());
-		assertThat(response.getContentAsString()).isEqualTo(inputJson);
-		assertThat(codelists.get(request.getList()).get(request.getCode())).isNotEmpty();
+		assertThat(codelists.get(request.getList()).get(request.getCode())).isEqualTo(request.getDescription());
 	}
 
 	@Test
@@ -216,7 +215,6 @@ public class CodelistControllerTest {
 
 		// then
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.ACCEPTED.value());
-		assertThat(response.getContentAsString()).isEqualTo(inputJson);
 		assertThat(codelists.get(ListName.PRODUCER).get("TEST_SAVE")).isEqualTo("UPDATED!");
 	}
 

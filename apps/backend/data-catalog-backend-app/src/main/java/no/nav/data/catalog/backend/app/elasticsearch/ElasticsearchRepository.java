@@ -1,5 +1,8 @@
 package no.nav.data.catalog.backend.app.elasticsearch;
 
+import static no.nav.data.catalog.backend.app.common.utils.Constants.INDEX;
+import static no.nav.data.catalog.backend.app.common.utils.Constants.TYPE;
+
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import no.nav.data.catalog.backend.app.common.exceptions.DocumentNotFoundException;
@@ -28,9 +31,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.Map;
 
-import static no.nav.data.catalog.backend.app.common.utils.Constants.INDEX;
-import static no.nav.data.catalog.backend.app.common.utils.Constants.TYPE;
-
 @Slf4j
 @Service
 public class ElasticsearchRepository {
@@ -58,7 +58,7 @@ public class ElasticsearchRepository {
 
 	public Map<String, Object> getInformationTypeById(String id) {
 		GetRequest getRequest = new GetRequest(INDEX, TYPE, id);
-		GetResponse getResponse = null;
+		GetResponse getResponse;
 
 		try {
 			getResponse = restHighLevelClient.get(getRequest, requestOptions);
@@ -70,7 +70,7 @@ public class ElasticsearchRepository {
 			logger.error(String.format("Error occurred during getInformationTypeById, document id=%s", id), ex);
 			throw new DataCatalogBackendTechnicalException(ex.getLocalizedMessage(), ex);
 		}
-		return (getResponse != null) ? getResponse.getSourceAsMap() : null;
+		return getResponse.getSourceAsMap();
 	}
 
 	public void updateInformationTypeById(String id, Map<String, Object> jsonMap) {
@@ -118,7 +118,7 @@ public class ElasticsearchRepository {
 		return searchByQuery(query);
 	}
 
-	public SearchResponse getAllRecords() {
+	public SearchResponse getAllInformationTypes() {
 		AbstractQueryBuilder query = new MatchAllQueryBuilder();
 		return searchByQuery(query);
 	}

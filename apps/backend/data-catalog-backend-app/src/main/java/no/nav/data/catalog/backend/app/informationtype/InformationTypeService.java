@@ -1,7 +1,7 @@
 package no.nav.data.catalog.backend.app.informationtype;
 
 import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCHED;
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCED;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_CREATED;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
@@ -24,7 +24,7 @@ import java.util.Optional;
 @Service
 public class InformationTypeService {
 
-	public static final Logger logger = LoggerFactory.getLogger(InformationTypeService.class);
+	private static final Logger logger = LoggerFactory.getLogger(InformationTypeService.class);
 
 	@Autowired
 	private InformationTypeRepository repository;
@@ -41,14 +41,13 @@ public class InformationTypeService {
 	private void createInformationTypesInElasticsearch() {
 		Optional<List<InformationType>> optinalInformationTypes = repository.findByElasticsearchStatus(TO_BE_CREATED);
 		if (optinalInformationTypes.isPresent()) {
-			Map<String, Object> jsonMap = null;
+			Map<String, Object> jsonMap;
 
 			for (InformationType informationType : optinalInformationTypes.get()) {
 				jsonMap = informationType.convertToMap();
 
 				elasticsearch.insertInformationType(jsonMap);
 
-				// informationType.setJsonString(jsonMap.toString());
 				informationType.setElasticsearchStatus(SYNCED);
 				repository.save(informationType);
 			}
@@ -58,14 +57,13 @@ public class InformationTypeService {
 	private void updateInformationTypesInElasticsearch() {
 		Optional<List<InformationType>> optinalInformationTypes = repository.findByElasticsearchStatus(TO_BE_UPDATED);
 		if (optinalInformationTypes.isPresent()) {
-			Map<String, Object> jsonMap = null;
+			Map<String, Object> jsonMap;
 
 			for (InformationType informationType : optinalInformationTypes.get()) {
 				jsonMap = informationType.convertToMap();
 
 				elasticsearch.updateInformationTypeById(informationType.getElasticsearchId(), jsonMap);
 
-				// informationType.setJsonString(jsonMap.toString());
 				informationType.setElasticsearchStatus(SYNCED);
 				repository.save(informationType);
 			}
@@ -75,7 +73,6 @@ public class InformationTypeService {
 	private void deleteInformationTypesInElasticsearchAndInPostgres() {
 		Optional<List<InformationType>> optinalInformationTypes = repository.findByElasticsearchStatus(TO_BE_DELETED);
 		if (optinalInformationTypes.isPresent()) {
-			Map<String, Object> jsonMap = null;
 
 			for (InformationType informationType : optinalInformationTypes.get()) {
 				elasticsearch.deleteInformationTypeById(informationType.getElasticsearchId());

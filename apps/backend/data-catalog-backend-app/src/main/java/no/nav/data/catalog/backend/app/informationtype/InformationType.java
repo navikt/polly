@@ -12,7 +12,14 @@ import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
@@ -81,36 +88,20 @@ public class InformationType extends Auditable<String> {
 		return jsonMap;
 	}
 
-
-	public InformationType convertFromRequest(InformationTypeRequest request) {
+	public InformationType convertFromRequest(InformationTypeRequest request, Boolean isUpdate) {
+		if (isUpdate) {
+			this.elasticsearchStatus = ElasticsearchStatus.TO_BE_UPDATED;
+		} else {
+			this.elasticsearchStatus = ElasticsearchStatus.TO_BE_CREATED;
+			this.elasticsearchId = base64UUID();
+		}
 		this.name = request.getName();
 		this.category = request.getCategory();
 		this.producer = request.getProducer();
 		this.system = request.getSystem();
 		this.description = request.getDescription();
 		this.personalData = request.getPersonalData();
-		// TODO er dette alltid riktig:
-		this.elasticsearchStatus = ElasticsearchStatus.TO_BE_CREATED;
-
 		return this;
-	}
-
-	//TODO: Kontrollere dette med audit og ny kode
-	public InformationType convertFromRequest(InformationTypeRequest request, Boolean isUpdate) {
-		if (isUpdate) {
-			this.updatedBy = request.getCreatedBy();
-			this.updatedTime = LocalDateTime.now();
-//			this.elasticsearchStatus = ElasticsearchStatus.TO_BE_UPDATED;
-		} else {
-			this.createdBy = request.getCreatedBy();
-			this.createdTime = LocalDateTime.now();
-//			this.elasticsearchStatus = ElasticsearchStatus.TO_BE_CREATED;
-			this.elasticsearchId = base64UUID();
-		}
-		convertFromRequest(request);
-
-		return this;
-
 	}
 }
 
