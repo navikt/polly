@@ -1,6 +1,9 @@
 package no.nav.data.catalog.backend.app.codelist;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +15,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Slf4j
 @Service
 public class CodelistService {
+
+	private static final Logger logger = LoggerFactory.getLogger(CodelistService.class);
 
 	@Autowired
 	private CodelistRepository repository;
@@ -45,6 +51,7 @@ public class CodelistService {
 			repository.delete(toDelete.get());
 			codelists.get(name).remove(code);
 		} else {
+			logger.error("Cannot find a codelist to delete with code:{} and listName:{}", code, name);
 			throw new IllegalArgumentException();
 		}
 	}
@@ -66,6 +73,7 @@ public class CodelistService {
 		}
 
 		if(!validationErrors.isEmpty()) {
+			logger.error("Validation errors occured when validating CodelistRequest: {}", validationErrors);
 			throw new ValidationException(validationErrors);
 		}
 	}
