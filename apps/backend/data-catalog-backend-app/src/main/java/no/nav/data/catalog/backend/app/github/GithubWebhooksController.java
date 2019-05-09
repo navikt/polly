@@ -48,6 +48,7 @@ public class GithubWebhooksController {
     @PostMapping
     @ResponseBody
     public ResponseEntity<?> webhooks(@RequestBody GithubPushEventPayloadRequest payload) {
+        logger.info("webhooks: Received request to process InformationTypeRequests from Github");
         payload.getGithubCommitList().forEach(commit -> commit.getAdded().forEach(fileAdded -> {
             List<InformationTypeRequest> requests = new InformationTypeRequest().convertFromGithubFile(restConsumer.getFile(fileAdded));
             requests.forEach(i -> {
