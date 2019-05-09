@@ -39,11 +39,11 @@ public class InformationTypeService {
 	}
 
 	private void createInformationTypesInElasticsearch() {
-		Optional<List<InformationType>> optinalInformationTypes = repository.findByElasticsearchStatus(TO_BE_CREATED);
-		if (optinalInformationTypes.isPresent()) {
+		Optional<List<InformationType>> optionalInformationTypes = repository.findByElasticsearchStatus(TO_BE_CREATED);
+		if (optionalInformationTypes.isPresent()) {
 			Map<String, Object> jsonMap;
 
-			for (InformationType informationType : optinalInformationTypes.get()) {
+			for (InformationType informationType : optionalInformationTypes.get()) {
 				jsonMap = informationType.convertToMap();
 
 				elasticsearch.insertInformationType(jsonMap);
@@ -97,10 +97,9 @@ public class InformationTypeService {
 		if(!codelists.get(ListName.CATEGORY).containsKey(request.getCategory())) { validationErrors.put("category", "The category was null or not found in the category codelist."); }
 		if(!codelists.get(ListName.SYSTEM).containsKey(request.getSystem())) { validationErrors.put("system", "The system was null or not found in the system codelist."); }
 
-		//TODO: seperate validations of requests from Git and frontend? Otherwise change error message
 		if(!validationErrors.isEmpty()) {
-			logger.error("Validation errors occured when validating input file from Github: " + validationErrors.toString());
-			throw new ValidationException(validationErrors, "Validation errors occured when validating input file from Github.");
+			logger.error("Validation errors occurred when validating InformationTypeRequest: {}", validationErrors);
+			throw new ValidationException(validationErrors, "Validation errors occurred when validating InformationTypeRequest.");
 		}
 	}
 }

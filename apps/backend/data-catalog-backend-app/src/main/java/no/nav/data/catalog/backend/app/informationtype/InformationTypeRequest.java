@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -35,10 +36,8 @@ public class InformationTypeRequest {
 
 	public List<InformationTypeRequest> convertFromGithubFile(GithubFile file) {
 		byte[] content = null;
-		if (file != null && "file".equals(file.getType())) {
-			if ("base64".equals(file.getEncoding())) {
-				content = Base64.decodeBase64(file.getContent().getBytes());
-			}
+		if (file != null && "file".equals(file.getType()) && "base64".equals(file.getEncoding())) {
+			content = Base64.decodeBase64(file.getContent().getBytes());
 		}
 
 		if (content != null && content.length > 0) {
@@ -50,14 +49,16 @@ public class InformationTypeRequest {
 				jsonString = "[" + jsonString + "]";
 			}
 			try {
-				return mapper.readValue(jsonString, new TypeReference<List<InformationTypeRequest>>() {});
+				return mapper.readValue(jsonString, new TypeReference<List<InformationTypeRequest>>() {
+				});
 			} catch (IOException e) {
-				log.error(String.format("Error occurred during parse of Json in file %s from github ", file.getName()), e);
-				throw new DataCatalogBackendTechnicalException(String.format("Error occurred during parse of Json in file %s from github ", file.getName()), e);
+				logger.error(String.format("Error occurred during parse of Json in file %s from github ", file.getName()), e);
+				throw new DataCatalogBackendTechnicalException(String.format("Error occurred during parse of Json in file %s from github ", file
+						.getName()), e);
 			}
 		}
 
-		return null;
+		return Collections.emptyList();
 	}
 
 }

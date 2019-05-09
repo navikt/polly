@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Api(value = "Github Webhook", description = "Webhook called from github when push to navikt/pol-dataset is done", tags = { "webhook" })
 public class GithubWebhooksController {
 
-    private static final Logger log = LoggerFactory.getLogger(GithubWebhooksController.class);
+    private static final Logger logger = LoggerFactory.getLogger(GithubWebhooksController.class);
 
     @Autowired
     private InformationTypeService service;
@@ -55,7 +55,7 @@ public class GithubWebhooksController {
                     service.validateRequest(i, false); // TODO: What if this is an update?
                 } catch (ValidationException e) {
                     // TODO må få fikset return
-                    log.error("Validation error occurred validating file downloaded from Github", e);
+                    logger.error("Validation error occurred validating file downloaded from Github", e);
                     throw e;
                 }
             });
