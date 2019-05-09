@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.HashMap;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -44,7 +43,7 @@ public class CodelistController {
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping
 	public HashMap<ListName, HashMap<String, String>> findAll() {
-		logger.info("CodelistController, received a request for and returned the entire Codelist");
+		logger.info("Received a request for and returned the entire Codelist");
 		return codelists;
 	}
 
@@ -54,14 +53,13 @@ public class CodelistController {
 			@ApiResponse(code = 404, message = "ListName not found"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping("/{listName}")
-	public ResponseEntity<HashMap<String, String>> findByListName(@PathVariable String listName) {
-		logger.info("CodelistController, received a request for the codelist with listName:{}", listName);
-		Optional<ListName> optionalListName = service.listNameInCodelist(listName);
-		if (optionalListName.isEmpty()) {
-			logger.info("CodelistController, couldn't find codelist with listName:{}", listName);
+	public ResponseEntity<HashMap<String, String>> getCodelistByListName(@PathVariable String listName) {
+		logger.info("Received a request for the codelist with listName={}", listName);
+		if(!service.isListNamePresentInCodelist(listName)){
+			logger.info("Could not find codelist with listName={}", listName);
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		logger.info("CodelistController, returned codelist");
+		logger.info("Returned codelist");
 		return new ResponseEntity<>(codelists.get(ListName.valueOf(listName.toUpperCase())), HttpStatus.OK);
 	}
 
@@ -71,17 +69,17 @@ public class CodelistController {
 			@ApiResponse(code = 404, message = "Code or listName not found"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping("/{listName}/{code}")
-	public ResponseEntity<String> findByListNameAndCode(@PathVariable String listName, @PathVariable String code) {
-		logger.info("CodelistController, received a request for the description of code:{} in list:{}",
-				code, listName);
-		Optional<ListName> optionalListName = service.listNameInCodelist(listName);
-		if (optionalListName.isEmpty() || !codelists.get(ListName.valueOf(listName.toUpperCase()))
-				.containsKey(code.toUpperCase())) {
-			logger.info("CodelistController, couldn't find description for code:{} in list:{}",
-					code, listName);
+	public ResponseEntity<String> getDescriptionByListNameAndCode(@PathVariable String listName, @PathVariable String code) {
+		logger.info("Received a request for the description of code={} in list={}", code, listName);
+		if(!service.isListNamePresentInCodelist(listName)){
+			logger.info("Could not find codelist with listName={}", listName);
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		logger.info("CodelistController, returned description");
+		if (!codelists.get(ListName.valueOf(listName.toUpperCase())).containsKey(code.toUpperCase())) {
+			logger.info("Could not find description for code={} in list={}", code, listName);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		logger.info("Returned description");
 		return new ResponseEntity<>(codelists.get(ListName.valueOf(listName.toUpperCase())).get(code.toUpperCase()), HttpStatus.OK);
 	}
 
@@ -92,16 +90,16 @@ public class CodelistController {
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@PostMapping
 	public ResponseEntity<?> save(@Valid @RequestBody CodelistRequest request) {
-		logger.info("CodelistController, received a request to create code:{} in the list:{}",
+		logger.info("Received a request to create code={} in the list={}",
 				request.getCode(), request.getList());
 		try {
 			service.validateRequest(request,false);
 		}
 		catch (ValidationException e) {
-			logger.info("CodelistController, couldn't create a codelist due to invalid request");
+			logger.info("Could not create a codelist due to invalid request");
 			return new ResponseEntity<>(e.get(), HttpStatus.BAD_REQUEST);
 		}
-		logger.info("CodelistController, created and saved new Codelist");
+		logger.info("Created and saved new Codelist");
 		return new ResponseEntity<>(service.save(request), HttpStatus.ACCEPTED);
 	}
 
@@ -112,15 +110,15 @@ public class CodelistController {
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@PutMapping
 	public ResponseEntity<?> update(@Valid @RequestBody CodelistRequest request) {
-		logger.info("CodelistController, received a request to update code:{} in the list:{}", request.getCode(), request.getList());
+		logger.info("Received a request to update code={} in the list={}", request.getCode(), request.getList());
 		try {
 			service.validateRequest(request,true);
 		}
 		catch (ValidationException e) {
-			logger.info("CodelistController, couldn't update the codelist due to invalid request");
+			logger.info("Could not update the codelist due to invalid request");
 			return new ResponseEntity<>(e.get(), HttpStatus.BAD_REQUEST);
 		}
-		logger.info("CodelistController, updated the Codelist");
+		logger.info("Updated the Codelist");
 		return new ResponseEntity<>(service.save(request), HttpStatus.ACCEPTED);
 	}
 
@@ -132,15 +130,13 @@ public class CodelistController {
 	@DeleteMapping("/{listName}/{code}")
 	@Transactional
 	public void delete(@PathVariable String listName, @PathVariable String code) {
-		logger.info("CodelistController, received a request to delete code:{} in the list:{}", code, listName);
-
-		Optional<ListName> optionalListName = service.listNameInCodelist(listName);
-		if (optionalListName.isEmpty()) {
-			logger.error("CodelistController, cannot delete codelist because the listName:{} doesn't exist", listName);
+		logger.info("Received a request to delete code={} in the list={}", code, listName);
+		if (!service.isListNamePresentInCodelist(listName)){
+			logger.error("Cannot delete because codelist with listName={} does not exist", listName);
 			throw new IllegalArgumentException();
 		}
 		service.delete(ListName.valueOf(listName), code);
-		logger.info("CodelistController, code:{} in the list:{} has been deleted", code, listName);
+		logger.info("Deleted code={} in the list={}", code, listName);
 	}
 
 	@ApiOperation(value = "Refresh Codelist", tags = {"Codelist"})
@@ -149,7 +145,7 @@ public class CodelistController {
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping("/refresh")
 	public ResponseEntity refresh() {
-		logger.info("CodelistController, refreshed the codelists");
+		logger.info("Refreshed the codelists");
 		service.refreshCache();
 		return new ResponseEntity(HttpStatus.OK);
 	}

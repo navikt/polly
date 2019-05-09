@@ -72,7 +72,7 @@ public class CodelistControllerTest {
 	}
 
 	@Test
-	public void findByListName_shouldReturnList() throws Exception {
+	public void getCodelistByListName_shouldReturnList() throws Exception {
 		String uri = BASE_URI + "/" + ListName.PRODUCER;
 
 		// when
@@ -87,7 +87,7 @@ public class CodelistControllerTest {
 	}
 
 	@Test
-	public void findByListName_shouldReturnNotFound_whenUnknownListName() throws Exception {
+	public void getCodelistByListName_shouldReturnNotFound_whenUnknownListName() throws Exception {
 		String uri = BASE_URI + "/UNKNOWN_LISTNAME";
 
 		// when
@@ -100,7 +100,7 @@ public class CodelistControllerTest {
 	}
 
 	@Test
-	public void findByListNameAndCode_shouldReturnCodelistItem() throws Exception {
+	public void getDescriptionByListNameAndCode_shouldReturnCodelistItem() throws Exception {
 		String code = "REVISOR";
 		String uri = BASE_URI + "/" + ListName.PRODUCER + "/" + code;
 
@@ -114,7 +114,7 @@ public class CodelistControllerTest {
 	}
 
 	@Test
-	public void findByListNameAndCode_shouldReturnNotFound_whenUnknownCode() throws Exception {
+	public void getDescriptionByListNameAndCode_shouldReturnNotFound_whenUnknownCode() throws Exception {
 		String uri = BASE_URI + "/" + ListName.PRODUCER + "/UNKNOWN_CODE";
 
 		// when
@@ -127,7 +127,7 @@ public class CodelistControllerTest {
 	}
 
 	@Test
-	public void findByListNameAndCode_shouldReturnNotFound_whenUnknownListName() throws Exception {
+	public void getDescriptionByListNameAndCode_shouldReturnNotFound_whenUnknownListName() throws Exception {
 		String uri = BASE_URI + "/UNKNOWN_LISTNAME" + "/IRRELEVANT_CODE";
 
 		// when

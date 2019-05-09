@@ -51,7 +51,7 @@ public class CodelistService {
 			repository.delete(toDelete.get());
 			codelists.get(name).remove(code);
 		} else {
-			logger.error("Cannot find a codelist to delete with code:{} and listName:{}", code, name);
+			logger.error("Cannot find a codelist to delete with code={} and listName={}", code, name);
 			throw new IllegalArgumentException();
 		}
 	}
@@ -78,10 +78,15 @@ public class CodelistService {
 		}
 	}
 
-	public Optional<ListName> listNameInCodelist(String listName) {
+	private Optional<ListName> listNameInCodelist(String listName){
 		Stream<ListName> streamOfListNames = Arrays.stream(ListName.values());
 		return streamOfListNames
 				.filter(x -> x.toString().equals(listName.toUpperCase()))
 				.findFirst();
+	}
+
+	public boolean isListNamePresentInCodelist(String listName) {
+		Optional<ListName> optionalListName = listNameInCodelist(listName);
+		return optionalListName.isPresent();
 	}
 }

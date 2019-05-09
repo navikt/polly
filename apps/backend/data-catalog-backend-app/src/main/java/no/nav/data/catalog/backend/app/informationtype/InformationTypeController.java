@@ -49,13 +49,13 @@ public class InformationTypeController {
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping("/{id}")
 	public ResponseEntity<InformationType> getInformationTypeById(@PathVariable Long id) {
-		logger.info("InformationTypeController, received request for InformationType with the id:{}", id);
+		logger.info("Received request for InformationType with the id={}", id);
 		Optional<InformationType> informationType = repository.findById(id);
 		if(informationType.isEmpty()) {
-			logger.info("InformationTypeController, couldn't find the InformationType with id:{}", id);
+			logger.info("Cannot find the InformationType with id={}", id);
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		logger.info("InformationTypeController, returned InformationType");
+		logger.info("Returned InformationType");
 		return new ResponseEntity<>(informationType.get(), HttpStatus.OK);
 	}
 
@@ -66,13 +66,13 @@ public class InformationTypeController {
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping
 	public ResponseEntity<List<InformationType>> getAllInformationTypes() {
-		logger.info("InformationTypeController, received request for all InformationTypes");
+		logger.info("Received request for all InformationTypes");
 		List<InformationType> informationTypes = repository.findAllByOrderByIdAsc();
 		if(informationTypes.isEmpty()) {
-			logger.info("InformationTypeController, the repository for InformationTypes is empty");
+			logger.info("Cannot return any InformationTypes due to empty repository");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		logger.info("InformationTypeController, returned all InformationTypes");
+		logger.info("Returned all InformationTypes");
 		return new ResponseEntity<>(informationTypes, HttpStatus.OK);
 	}
 
@@ -83,17 +83,17 @@ public class InformationTypeController {
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@PostMapping
 	public ResponseEntity<?> createInformationType(@RequestBody InformationTypeRequest request) {
-		logger.info("InformationTypeController, received a request to create InformationType");
+		logger.info("Received a request to create InformationType");
 		try {
 			service.validateRequest(request, false);
 		}
 		catch (ValidationException e) {
-			logger.info("InformationTypeController, couldn't create an InformationType due to invalid request");
+			logger.info("Cannot create an InformationType due to invalid request");
 			return new ResponseEntity<>(e.get(), HttpStatus.BAD_REQUEST);
 		}
 		InformationType informationType = new InformationType().convertFromRequest(request, false);
 
-		logger.info("InformationTypeController, created and saved new InformationType");
+		logger.info("Created and saved new InformationType");
 		return new ResponseEntity<>(repository.save(informationType), HttpStatus.ACCEPTED);
 	}
 
@@ -105,22 +105,22 @@ public class InformationTypeController {
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@PutMapping("/{id}")
 	public ResponseEntity<?> updateInformationType(@PathVariable Long id, @Valid @RequestBody InformationTypeRequest request) {
-		logger.info("InformationTypeController, received a request to update InformationType with id:{}", id);
+		logger.info("Received a request to update InformationType with id={}", id);
 		Optional<InformationType> fromRepository = repository.findById(id);
 		if(fromRepository.isEmpty()) {
-			logger.info("InformationTypeController, couldn't find InformationType with id:{}", id);
+			logger.info("Cannot find InformationType with id={}", id);
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		try {
 			service.validateRequest(request, true);
 		}
 		catch (ValidationException e) {
-			logger.info("InformationTypeController, couldn't create an InformationType due to invalid request");
+			logger.info("Cannot create an InformationType due to invalid request");
 			return new ResponseEntity<>(e.get(), HttpStatus.BAD_REQUEST);
 		}
 		InformationType informationType = fromRepository.get().convertFromRequest(request, true);
 
-		logger.info("InformationTypeController, updated the InformationType");
+		logger.info("Updated the InformationType");
 		return new ResponseEntity<>(repository.save(informationType), HttpStatus.ACCEPTED);
 	}
 
@@ -132,15 +132,15 @@ public class InformationTypeController {
 	@DeleteMapping("/{id}")
 	@Transactional
 	public ResponseEntity<?> deleteInformationTypeById(@PathVariable Long id) {
-		logger.info("InformationTypeController, received a request to delete InformationType with id:{}", id);
+		logger.info("Received a request to delete InformationType with id={}", id);
 		Optional<InformationType> fromRepository = repository.findById(id);
 		if(fromRepository.isEmpty()) {
-			logger.info("InformationTypeController, couldn't find InformationType with id:{}", id);
+			logger.info("Cannot find InformationType with id={}", id);
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		InformationType informationType = fromRepository.get();
 		informationType.setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED);
-		logger.info("InformationTypeController, InformationType with id:{} has been set to be deleted on next schedulated task", id);
+		logger.info("InformationType with id={} has been set to be deleted during the next scheduled task", id);
 		return new ResponseEntity<>(repository.save(informationType), HttpStatus.ACCEPTED);
 	}
 }
