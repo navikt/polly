@@ -1,5 +1,14 @@
 package no.nav.data.catalog.backend.test.integration;
 
+import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION_CATEGORY;
+import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION_DESCRIPTION;
+import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION_NAME;
+import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION_PRODUCER;
+import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION_SYSTEM;
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCED;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchRepository;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
@@ -23,11 +32,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.Duration;
 import java.util.Map;
-
-import static no.nav.data.catalog.backend.app.common.utils.Constants.*;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCED;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
@@ -66,7 +70,7 @@ public class InformationTypeServiceIT {
         service.synchToElasticsearch();
         // Let indexing finish
         Thread.sleep(1000L);
-        assertThat(esRepository.getAllRecords().getHits().totalHits, is(1L));
+        assertThat(esRepository.getAllInformationTypes().getHits().totalHits, is(1L));
         Map<String, Object> esMap = esRepository.getInformationTypeById("elasticSearchId");
         assertInformationType(esMap);
         InformationType informationType = repository.findAll().get(0);
@@ -79,7 +83,7 @@ public class InformationTypeServiceIT {
         service.synchToElasticsearch();
         // Let indexing finish
         Thread.sleep(1000L);
-        assertThat(esRepository.getAllRecords().getHits().totalHits, is(1L));
+        assertThat(esRepository.getAllInformationTypes().getHits().totalHits, is(1L));
 
         assertThat(repository.findAll().size(), is(1));
         InformationType informationType = repository.findAll().get(0);
@@ -88,7 +92,7 @@ public class InformationTypeServiceIT {
         service.synchToElasticsearch();
 
         Thread.sleep(1000L);
-        assertThat(esRepository.getAllRecords().getHits().totalHits, is(1L));
+        assertThat(esRepository.getAllInformationTypes().getHits().totalHits, is(1L));
         Map<String, Object> esMap = esRepository.getInformationTypeById("elasticSearchId");
         assertInformationType(esMap);
         assertThat(repository.findAll().size(), is(1));
@@ -102,7 +106,7 @@ public class InformationTypeServiceIT {
         service.synchToElasticsearch();
 
         Thread.sleep(1000L);
-        assertThat(esRepository.getAllRecords().getHits().totalHits, is(1L));
+        assertThat(esRepository.getAllInformationTypes().getHits().totalHits, is(1L));
         Map<String, Object> esMap = esRepository.getInformationTypeById("elasticSearchId");
         assertInformationType(esMap);
         assertThat(repository.findAll().size(), is(1));
@@ -117,7 +121,7 @@ public class InformationTypeServiceIT {
         service.synchToElasticsearch();
         // Let indexing finish
         Thread.sleep(1000L);
-        assertThat(esRepository.getAllRecords().getHits().totalHits, is(1L));
+        assertThat(esRepository.getAllInformationTypes().getHits().totalHits, is(1L));
 
         assertThat(repository.findAll().size(), is(1));
         InformationType informationType = repository.findAll().get(0);
@@ -129,7 +133,7 @@ public class InformationTypeServiceIT {
         service.synchToElasticsearch();
 
         Thread.sleep(1000L);
-        assertThat(esRepository.getAllRecords().getHits().totalHits, is(0L));
+        assertThat(esRepository.getAllInformationTypes().getHits().totalHits, is(0L));
         assertThat(repository.findAll().size(), is(0));
     }
 
