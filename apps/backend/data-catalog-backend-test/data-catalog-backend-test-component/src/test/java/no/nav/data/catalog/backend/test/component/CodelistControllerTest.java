@@ -182,7 +182,7 @@ public class CodelistControllerTest {
 		assertThat(response.getContentAsString()).isEqualTo(objectMapper.writeValueAsString(validationErrors));
 	}
 
-	@Test
+	/*@Test
 	public void update_shouldUpdateCodelist() throws Exception {
 		// initialize
 		CodelistRequest request = CodelistRequest.builder()
@@ -216,7 +216,7 @@ public class CodelistControllerTest {
 		// then
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.ACCEPTED.value());
 		assertThat(codelists.get(ListName.PRODUCER).get("TEST_SAVE")).isEqualTo("UPDATED!");
-	}
+	}*/
 
 	@Test
 	public void update_shouldReturnBadRequest() throws Exception {
