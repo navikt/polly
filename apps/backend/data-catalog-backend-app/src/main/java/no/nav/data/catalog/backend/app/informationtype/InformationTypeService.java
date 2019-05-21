@@ -33,9 +33,11 @@ public class InformationTypeService {
 	private ElasticsearchRepository elasticsearch;
 
 	public void synchToElasticsearch() {
+		logger.info("Starting sync to ElasticSearch");
 		createInformationTypesInElasticsearch();
 		updateInformationTypesInElasticsearch();
 		deleteInformationTypesInElasticsearchAndInPostgres();
+		logger.info("Finished sync to ElasticSearch");
 	}
 
 	private void createInformationTypesInElasticsearch() {

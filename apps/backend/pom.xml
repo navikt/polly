@@ -32,6 +32,7 @@
 		<postgres.version>42.2.5</postgres.version>
 		<spring.cloud.wiremock.version>2.1.1.RELEASE</spring.cloud.wiremock.version>
 		<jjwt.version>0.10.6</jjwt.version>
+		<awaitability.version>3.1.6</awaitability.version>
 	</properties>
 
 	<dependencies>
