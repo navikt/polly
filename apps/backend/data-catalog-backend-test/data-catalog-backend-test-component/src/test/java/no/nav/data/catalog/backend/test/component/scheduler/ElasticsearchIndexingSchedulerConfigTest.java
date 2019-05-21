@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.awaitility.Awaitility.await;
@@ -15,13 +16,14 @@ import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ComponentTestConfig.class)
+@ActiveProfiles("test")
 public class ElasticsearchIndexingSchedulerConfigTest {
     @SpyBean
     private InformationTypeService service;
 
     @Test
     public void jobRuns() {
-        await().atMost(Duration.TEN_SECONDS)
+        await().atMost(Duration.ONE_MINUTE)
                 .untilAsserted(() -> verify(service, times(1)).synchToElasticsearch());
     }
 }
