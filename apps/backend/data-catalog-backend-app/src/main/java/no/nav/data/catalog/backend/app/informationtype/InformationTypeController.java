@@ -49,7 +49,7 @@ public class InformationTypeController {
 			@ApiResponse(code = 404, message = "InformationType not found"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping("/{id}")
-	public ResponseEntity<InformationType> getInformationTypeById(@PathVariable Long id) {
+	public ResponseEntity getInformationTypeById(@PathVariable Long id) {
 		logger.info("Received request for InformationType with the id={}", id);
 		Optional<InformationType> informationType = repository.findById(id);
 		if(informationType.isEmpty()) {
@@ -57,10 +57,7 @@ public class InformationTypeController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		logger.info("Returned InformationType");
-		return new ResponseEntity<>(informationType.get(), HttpStatus.OK);
-//		return new ResponseEntity<>(
-//				InformationTypeResponseEntity.builder().content(getContent(informationType.get())).build(),
-//				HttpStatus.OK);
+		return new ResponseEntity<>(informationType.get().convertToResponse(), HttpStatus.OK);
 	}
 
 	@ApiOperation(value = "Get all InformationTypes", tags = { "InformationType" })
@@ -69,7 +66,7 @@ public class InformationTypeController {
 			@ApiResponse(code = 404, message = "No InformationTypes found in repository"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping
-	public ResponseEntity<List<InformationType>> getAllInformationTypes() {
+	public ResponseEntity<InformationTypeResponseEntity> getAllInformationTypes() {
 		logger.info("Received request for all InformationTypes");
 		List<InformationType> informationTypes = repository.findAllByOrderByIdAsc();
 		if(informationTypes.isEmpty()) {
@@ -77,9 +74,8 @@ public class InformationTypeController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		logger.info("Returned all InformationTypes");
-		return new ResponseEntity<>(informationTypes, HttpStatus.OK);
-//		return new ResponseEntity<>(
-//				InformationTypeResponseEntity.builder().content(getContent(informationTypes)).build(), HttpStatus.OK);
+		return new ResponseEntity<>(
+				InformationTypeResponseEntity.builder().content(getContent(informationTypes)).build(), HttpStatus.OK);
 	}
 
 	@ApiOperation(value = "Create InformationType", tags = { "InformationType" })
@@ -88,7 +84,7 @@ public class InformationTypeController {
 			@ApiResponse(code = 400, message = "Illegal arguments"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@PostMapping
-	public ResponseEntity<?> createInformationType(@RequestBody InformationTypeRequest request) {
+	public ResponseEntity createInformationType(@RequestBody InformationTypeRequest request) {
 		logger.info("Received a request to create InformationType");
 		try {
 			service.validateRequest(request, false);
@@ -101,8 +97,6 @@ public class InformationTypeController {
 
 		logger.info("Created and saved new InformationType");
 		return new ResponseEntity<>(repository.save(informationType), HttpStatus.ACCEPTED);
-//				InformationTypeResponseEntity.builder().content(getContent(repository.save(informationType))).build(),
-//				HttpStatus.ACCEPTED);
 	}
 
 	@ApiOperation(value = "Update InformationType", tags = { "InformationType" })
@@ -130,8 +124,6 @@ public class InformationTypeController {
 
 		logger.info("Updated the InformationType");
 		return new ResponseEntity<>(repository.save(informationType), HttpStatus.ACCEPTED);
-//				InformationTypeResponseEntity.builder().content(getContent(repository.save(informationType))),
-//				HttpStatus.ACCEPTED);
 	}
 
 	@ApiOperation(value = "Delete InformationType", tags = { "InformationType" })
@@ -152,19 +144,13 @@ public class InformationTypeController {
 		informationType.setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED);
 		logger.info("InformationType with id={} has been set to be deleted during the next scheduled task", id);
 		return new ResponseEntity<>(repository.save(informationType), HttpStatus.OK);
-//				InformationTypeResponseEntity.builder().content(getContent(repository.save(informationType))),
-//				HttpStatus.OK);
 	}
 
-//	private List<InformationTypeResponse> getContent(InformationType informationType) {
-//		return List.of(new InformationTypeResponse(informationType));
-//	}
-//
-//	private List<InformationTypeResponse> getContent(List<InformationType> informationTypes) {
-//		List<InformationTypeResponse> responses = new ArrayList<>();
-//		informationTypes.forEach(informationType -> responses.add(new InformationTypeResponse(informationType)));
-//
-//		return responses;
-//	}
+	private List<InformationTypeResponse> getContent(List<InformationType> informationTypes) {
+		List<InformationTypeResponse> responses = new ArrayList<>();
+		informationTypes.forEach(informationType -> responses.add(informationType.convertToResponse()));
+
+		return responses;
+	}
 
 }

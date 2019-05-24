@@ -3,19 +3,23 @@ package no.nav.data.catalog.backend.app.informationtype;
 import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
 
 import lombok.Data;
-import no.nav.data.catalog.backend.app.codelist.CodelistResponse;
+import lombok.NoArgsConstructor;
 import no.nav.data.catalog.backend.app.codelist.ListName;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Data
+@NoArgsConstructor
 public class InformationTypeResponse {
 
-	private String elasticsearchId;  //TODO: Do we need this?
+	private String elasticsearchId;
 	private Long informationTypeId;
 	private String name;
 	private String description;
-	private CodelistResponse category;
-	private CodelistResponse producer;
-	private CodelistResponse system;
+	private Map category;
+	private Map producer;
+	private Map system;
 	private Boolean personalData;
 	private String createdBy;
 	private String createdDate;
@@ -28,22 +32,37 @@ public class InformationTypeResponse {
 		this.informationTypeId = informationType.getId();
 		this.name = informationType.getName();
 		this.description = informationType.getDescription();
-		this.category = CodelistResponse.builder()
-				.code(informationType.getCategory())
-				.description(codelists.get(ListName.CATEGORY).get(informationType.getCategory()))
-				.build();
-		this.producer = CodelistResponse.builder()
-				.code(informationType.getProducer())
-				.description(codelists.get(ListName.PRODUCER).get(informationType.getProducer()))
-				.build();
-		this.system = CodelistResponse.builder()
-				.code(informationType.getSystem())
-				.description(codelists.get(ListName.SYSTEM).get(informationType.getSystem()))
-				.build();
+		this.category = getMapForCodelistItem(ListName.CATEGORY, informationType.getCategory());
+		this.producer = getMapForCodelistItem(ListName.PRODUCER, informationType.getProducer());
+		this.system = getMapForCodelistItem(ListName.SYSTEM, informationType.getSystem());
 		this.personalData = informationType.isPersonalData();
 		this.createdBy = informationType.getCreatedBy();
 		this.createdDate = informationType.getCreatedDate().toString();
 		this.lastModifiedBy = informationType.getLastModifiedBy();
-		this.lastModifiedDate = informationType.getLastModifiedDate().toString();
+		this.lastModifiedDate = informationType.getLastModifiedDate() == null ? null : informationType.getLastModifiedDate()
+				.toString();
+	}
+
+	private Map<String, String> getMapForCodelistItem(ListName listName, String code) {
+		return Map.of("code", code,
+				"description", codelists.get(listName).get(code));
+	}
+
+	public Map<String, Object> convertToMap() {
+		Map<String, Object> jsonMap = new HashMap<>();
+		jsonMap.put("id", elasticsearchId);
+		jsonMap.put("informationTypeId", informationTypeId);
+		jsonMap.put("name", name);
+		jsonMap.put("description", description);
+		jsonMap.put("category", category);
+		jsonMap.put("producer", producer);
+		jsonMap.put("system", system);
+		jsonMap.put("personalData", personalData);
+		jsonMap.put("createdBy", createdBy);
+		jsonMap.put("createdDate", createdDate);
+		jsonMap.put("lastModifiedBy", lastModifiedBy);
+		jsonMap.put("lastModifiedDate", lastModifiedDate);
+
+		return jsonMap;
 	}
 }

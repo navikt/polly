@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -42,7 +43,7 @@ public class CodelistController {
 			@ApiResponse(code = 200, message = "Entire Codelist fetched", response = HashMap.class, responseContainer = "Map"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping
-	public HashMap<ListName, HashMap<String, String>> findAll() {
+	public Map findAll() {
 		logger.info("Received a request for and returned the entire Codelist");
 		return codelists;
 	}

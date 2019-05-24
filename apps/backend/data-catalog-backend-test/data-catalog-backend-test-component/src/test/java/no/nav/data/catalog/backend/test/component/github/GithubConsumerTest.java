@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.test.component;
+package no.nav.data.catalog.backend.test.component.github;
 
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import no.nav.data.catalog.backend.app.common.exceptions.InformationTypeNotFoundException;

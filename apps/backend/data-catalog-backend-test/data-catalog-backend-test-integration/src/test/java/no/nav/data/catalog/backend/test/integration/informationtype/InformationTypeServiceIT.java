@@ -1,21 +1,20 @@
-package no.nav.data.catalog.backend.test.integration;
+package no.nav.data.catalog.backend.test.integration.informationtype;
 
-import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION_CATEGORY;
-import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION_DESCRIPTION;
-import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION_NAME;
-import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION_PRODUCER;
-import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION_SYSTEM;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.*;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCED;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import no.nav.data.catalog.backend.app.AppStarter;
+import no.nav.data.catalog.backend.app.codelist.CodelistService;
+import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchRepository;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import no.nav.data.catalog.backend.app.informationtype.InformationType;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
-import no.nav.data.catalog.backend.test.component.FixedElasticsearchContainer;
+import no.nav.data.catalog.backend.test.component.elasticsearch.FixedElasticsearchContainer;
+import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -31,6 +30,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.Map;
 
 @RunWith(SpringRunner.class)
@@ -48,6 +48,11 @@ public class InformationTypeServiceIT {
     @Autowired
     private ElasticsearchRepository esRepository;
 
+    @Autowired
+    protected CodelistService codelistService;
+
+    private static HashMap<ListName, HashMap<String, String>> codelists;
+
     @ClassRule
     public static PostgreSQLContainer postgreSQLContainer =
             (PostgreSQLContainer) new PostgreSQLContainer("postgres:10.4")
@@ -57,11 +62,19 @@ public class InformationTypeServiceIT {
                     .withStartupTimeout(Duration.ofSeconds(600));
 
     @ClassRule
-    public static FixedElasticsearchContainer container = new FixedElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch-oss:6.4.1");
+    public static FixedElasticsearchContainer container = new FixedElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch-oss:6.6.1");
 
     @Before
     public void init() {
         repository.deleteAll();
+        initializeCodelists();
+    }
+
+    private void initializeCodelists() {
+        codelists = codelistService.codelists;
+        codelists.get(ListName.CATEGORY).put(CATEGORY, CATEGORY_DESCRIPTION);
+        codelists.get(ListName.PRODUCER).put(PRODUCER, PRODUCER_DESCRIPTION);
+        codelists.get(ListName.SYSTEM).put(SYSTEM, SYSTEM_DESCRIPTION);
     }
 
     @Test
@@ -140,12 +153,12 @@ public class InformationTypeServiceIT {
     private void createTestData(ElasticsearchStatus esStatus) {
         InformationType informationType = InformationType.builder()
                 .elasticsearchId("elasticSearchId")
-                .category(INFORMATION_CATEGORY)
-                .system(INFORMATION_SYSTEM)
+                .category(CATEGORY)
+                .system(SYSTEM)
                 .elasticsearchStatus(esStatus)
-                .name(INFORMATION_NAME)
-                .description(INFORMATION_DESCRIPTION)
-                .producer(INFORMATION_PRODUCER)
+                .name(NAME)
+                .description(DESCRIPTION)
+                .producer(PRODUCER)
                 .personalData(true).build();
         repository.save(informationType);
     }
@@ -162,11 +175,11 @@ public class InformationTypeServiceIT {
     }
 
     private void assertInformationType(Map<String, Object> esMap) {
-        assertThat(esMap.get("informationProducer"), is(INFORMATION_PRODUCER));
-        assertThat(esMap.get("informationSystem"), is(INFORMATION_SYSTEM));
+        assertThat(esMap.get("producer"), is(PRODUCER_MAP));
+        assertThat(esMap.get("system"), is(SYSTEM_MAP));
         assertThat(esMap.get("personalData"), is(true));
-        assertThat(esMap.get("name"), is(INFORMATION_NAME));
-        assertThat(esMap.get("description"), is(INFORMATION_DESCRIPTION));
-        assertThat(esMap.get("informationCategory"), is(INFORMATION_CATEGORY));
+        assertThat(esMap.get("name"), is(NAME));
+        assertThat(esMap.get("description"), is(DESCRIPTION));
+        assertThat(esMap.get("category"), is(CATEGORY_MAP));
     }
 }

@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.test.component;
+package no.nav.data.catalog.backend.test.component.informationtype;
 
 import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
@@ -7,6 +7,7 @@ import no.nav.data.catalog.backend.app.informationtype.InformationType;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
+import no.nav.data.catalog.backend.test.component.ComponentTestConfig;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.junit.Rule;
 import org.junit.Test;

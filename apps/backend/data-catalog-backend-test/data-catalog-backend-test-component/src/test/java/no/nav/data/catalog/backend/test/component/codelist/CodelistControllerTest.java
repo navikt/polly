@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.test.component;
+package no.nav.data.catalog.backend.test.component.codelist;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,6 +29,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = AppStarter.class)
@@ -54,7 +55,17 @@ public class CodelistControllerTest {
 	public void setUp() {
 		mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+		initializeCodelist();
+	}
+
+	private void initializeCodelist() {
 		codelists = service.codelists;
+		codelists.get(ListName.PRODUCER).put("ARBEIDSGIVER", "Arbeidsgiver");
+		codelists.get(ListName.PRODUCER).put("SKATTEETATEN", "Skatteetaten");
+		codelists.get(ListName.CATEGORY).put("PERSONALIA", "Personalia");
+		codelists.get(ListName.CATEGORY).put("ARBEIDSFORHOLD", "Arbeidsforhold");
+		codelists.get(ListName.CATEGORY).put("UTDANNING", "Utdanning");
+		codelists.get(ListName.SYSTEM).put("TPS", "Tjenestebasert PersondataSystem");
 	}
 
 	@Test
@@ -67,8 +78,10 @@ public class CodelistControllerTest {
 		HashMap<ListName, HashMap<String, String>> returnedCodelist = objectMapper.readValue(response.getContentAsString(), HashMap.class);
 
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-		assertThat(returnedCodelist.values().size()).isEqualTo(3);
 		assertThat(returnedCodelist.size()).isEqualTo(codelists.size());
+		assertThat(returnedCodelist.get(ListName.PRODUCER).size()).isEqualTo(2L);
+		assertThat(returnedCodelist.get(ListName.CATEGORY).size()).isEqualTo(3L);
+		assertThat(returnedCodelist.get(ListName.SYSTEM).size()).isEqualTo(1L);
 	}
 
 	@Test
@@ -101,7 +114,7 @@ public class CodelistControllerTest {
 
 	@Test
 	public void getDescriptionByListNameAndCode_shouldReturnCodelistItem() throws Exception {
-		String code = "REVISOR";
+		String code = "ARBEIDSGIVER";
 		String uri = BASE_URI + "/" + ListName.PRODUCER + "/" + code;
 
 		// when
@@ -110,7 +123,7 @@ public class CodelistControllerTest {
 
 		// then
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-		assertThat(response.getContentAsString()).isEqualTo(codelists.get(ListName.PRODUCER).get(code));
+		assertThat(response.getContentAsString()).isEqualTo("Arbeidsgiver");
 	}
 
 	@Test
@@ -157,6 +170,7 @@ public class CodelistControllerTest {
 
 		// then
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.ACCEPTED.value());
+		assertThat(codelists.get(ListName.PRODUCER).size()).isEqualTo(3L);
 		assertThat(codelists.get(request.getList()).get(request.getCode())).isEqualTo(request.getDescription());
 	}
 
@@ -182,29 +196,18 @@ public class CodelistControllerTest {
 		assertThat(response.getContentAsString()).isEqualTo(objectMapper.writeValueAsString(validationErrors));
 	}
 
-	/*@Test
+	@Test
 	public void update_shouldUpdateCodelist() throws Exception {
 		// initialize
-		CodelistRequest request = CodelistRequest.builder()
-				.list(ListName.PRODUCER)
-				.code("TEST_SAVE")
-				.description("Test save")
-				.build();
-		String inputJson = objectMapper.writeValueAsString(request);
-		mvc.perform(MockMvcRequestBuilders.post(BASE_URI)
-				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.content(inputJson))
-				.andExpect(status().isAccepted());
-		assertThat(codelists.get(ListName.PRODUCER).get("TEST_SAVE")).isNotEmpty();
-		assertThat(codelists.get(ListName.PRODUCER).get("TEST_SAVE")).isEqualTo("Test save");
+		codelists.get(ListName.SYSTEM).put("TO_UPDATE", "Original description");
 
 		// given
-		request = CodelistRequest.builder()
-				.list(ListName.PRODUCER)
-				.code("TEST_SAVE")
-				.description("UPDATED!")
+		CodelistRequest request = CodelistRequest.builder()
+				.list(ListName.SYSTEM)
+				.code("TO_UPDATE")
+				.description("Updated description")
 				.build();
-		inputJson = objectMapper.writeValueAsString(request);
+		String inputJson = objectMapper.writeValueAsString(request);
 
 		// when
 		MockHttpServletResponse response = mvc.perform(
@@ -215,8 +218,8 @@ public class CodelistControllerTest {
 
 		// then
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.ACCEPTED.value());
-		assertThat(codelists.get(ListName.PRODUCER).get("TEST_SAVE")).isEqualTo("UPDATED!");
-	}*/
+		assertThat(codelists.get(ListName.SYSTEM).get("TO_UPDATE")).isEqualTo("Updated description");
+	}
 
 	@Test
 	public void update_shouldReturnBadRequest() throws Exception {

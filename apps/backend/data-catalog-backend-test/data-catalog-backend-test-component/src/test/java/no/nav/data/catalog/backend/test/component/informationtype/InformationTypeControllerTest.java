@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.test.component;
+package no.nav.data.catalog.backend.test.component.informationtype;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.elasticsearch.common.UUIDs.base64UUID;
@@ -12,12 +12,14 @@ import static org.mockito.Mockito.times;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import no.nav.data.catalog.backend.app.informationtype.InformationType;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeController;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
+import no.nav.data.catalog.backend.app.informationtype.InformationTypeResponse;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,20 +35,29 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
+//@RunWith(SpringRunner.class)
+//@SpringBootTest(classes = AppStarter.class)
+//@WebAppConfiguration
+//@ActiveProfiles("test")
 public class InformationTypeControllerTest {
 
 	private static final String BASE_URI = "/backend/informationtype";
-	private static InformationType informationType;
-	private ObjectMapper objectMapper;
 	private MockMvc mvc;
+	private ObjectMapper objectMapper;
+	private HashMap<ListName, HashMap<String, String>> codelists = new HashMap<>();
+	private static InformationType informationType;
+	private static InformationTypeResponse informationTypeResponse;
 
 	@InjectMocks
 	private InformationTypeController informationTypeController;
+//	@Autowired
+//	WebApplicationContext webApplicationContext;
 
 	@Mock
 	private InformationTypeRepository informationTypeRepository;
@@ -54,25 +65,51 @@ public class InformationTypeControllerTest {
 	@Mock
 	private InformationTypeService service;
 
+//	@InjectMocks
+//	private CodelistService codelistService;
 
 	@Before
 	public void setup() {
 		objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 		mvc = MockMvcBuilders.standaloneSetup(informationTypeController).build();
+//		mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+
 
 		informationType = InformationType.builder()
 				.id(1L)
 				.name("Test")
-				.description("Test av brukerinput")
+				.description("Test description")
 				.category("PERSONALIA")
-				.producer("BRUKER")
+				.producer("SKATTEETATEN")
 				.system("TPS")
 				.personalData(true)
 				.elasticsearchId(base64UUID())
 				.elasticsearchStatus(ElasticsearchStatus.TO_BE_CREATED)
 				.build();
-	}
+		informationType.setCreatedBy("Mr Melk");
+		informationType.setCreatedDate(new Date());
 
+//		informationTypeResponse = InformationTypeResponse.builder()
+//				.elasticsearchId(informationType.getElasticsearchId())
+//				.informationTypeId(1L)
+//				.name("Test")
+//				.description("Test description")
+//				.category(CodelistDTO.builder()
+//						.code("PERSONALIA")
+//						.description("Personalia")
+//						.build())
+//				.producer(CodelistDTO.builder()
+//						.code("SKATTEETATEN")
+//						.description("Skatteetaten")
+//						.build())
+//				.system(CodelistDTO.builder()
+//						.code("TPS").description("Tjenestebasert PersondataSystem")
+//						.build())
+//				.personalData(true)
+//				.createdBy("Mr Melk")
+//				.createdDate(informationType.getCreatedDate().toString())
+//				.build();
+	}
 
 	@Test
 	public void getInformationTypeById_shouldGetInformationType_WhenIdExists() throws Exception {
@@ -102,6 +139,7 @@ public class InformationTypeControllerTest {
 		// given
 		given(informationTypeRepository.findById(id))
 				.willReturn(Optional.empty());
+//		given(informationTypeController.getContent(informationType)).willReturn(List.of(informationTypeResponse));
 
 		// when
 		MockHttpServletResponse response = mvc.perform(
