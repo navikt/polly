@@ -29,7 +29,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.HashMap;
-import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = AppStarter.class)
@@ -79,9 +78,9 @@ public class CodelistControllerTest {
 
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
 		assertThat(returnedCodelist.size()).isEqualTo(codelists.size());
-		assertThat(returnedCodelist.get(ListName.PRODUCER).size()).isEqualTo(2L);
-		assertThat(returnedCodelist.get(ListName.CATEGORY).size()).isEqualTo(3L);
-		assertThat(returnedCodelist.get(ListName.SYSTEM).size()).isEqualTo(1L);
+		assertThat(returnedCodelist.get(ListName.PRODUCER.toString()).size()).isEqualTo(2L);
+		assertThat(returnedCodelist.get(ListName.CATEGORY.toString()).size()).isEqualTo(3L);
+		assertThat(returnedCodelist.get(ListName.SYSTEM.toString()).size()).isEqualTo(1L);
 	}
 
 	@Test
