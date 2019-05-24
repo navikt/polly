@@ -21,10 +21,6 @@ public class InformationTypeResponse {
 	private Map producer;
 	private Map system;
 	private Boolean personalData;
-	private String createdBy;
-	private String createdDate;
-	private String lastModifiedBy;
-	private String lastModifiedDate;
 
 
 	public InformationTypeResponse(InformationType informationType) {
@@ -36,11 +32,6 @@ public class InformationTypeResponse {
 		this.producer = getMapForCodelistItem(ListName.PRODUCER, informationType.getProducer());
 		this.system = getMapForCodelistItem(ListName.SYSTEM, informationType.getSystem());
 		this.personalData = informationType.isPersonalData();
-		this.createdBy = informationType.getCreatedBy();
-		this.createdDate = informationType.getCreatedDate().toString();
-		this.lastModifiedBy = informationType.getLastModifiedBy();
-		this.lastModifiedDate = informationType.getLastModifiedDate() == null ? null : informationType.getLastModifiedDate()
-				.toString();
 	}
 
 	private Map<String, String> getMapForCodelistItem(ListName listName, String code) {
@@ -58,10 +49,6 @@ public class InformationTypeResponse {
 		jsonMap.put("producer", producer);
 		jsonMap.put("system", system);
 		jsonMap.put("personalData", personalData);
-		jsonMap.put("createdBy", createdBy);
-		jsonMap.put("createdDate", createdDate);
-		jsonMap.put("lastModifiedBy", lastModifiedBy);
-		jsonMap.put("lastModifiedDate", lastModifiedDate);
 
 		return jsonMap;
 	}
