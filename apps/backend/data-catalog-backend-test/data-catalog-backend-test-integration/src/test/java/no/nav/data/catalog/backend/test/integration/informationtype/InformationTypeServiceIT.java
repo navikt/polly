@@ -153,12 +153,12 @@ public class InformationTypeServiceIT {
     private void createTestData(ElasticsearchStatus esStatus) {
         InformationType informationType = InformationType.builder()
                 .elasticsearchId("elasticSearchId")
-                .category(CATEGORY)
-                .system(SYSTEM)
+                .categoryCode(CATEGORY)
+                .systemCode(SYSTEM)
                 .elasticsearchStatus(esStatus)
                 .name(NAME)
                 .description(DESCRIPTION)
-                .producer(PRODUCER)
+                .producerCode(PRODUCER)
                 .personalData(true).build();
         repository.save(informationType);
     }
@@ -175,11 +175,11 @@ public class InformationTypeServiceIT {
     }
 
     private void assertInformationType(Map<String, Object> esMap) {
-        assertThat(esMap.get("producer"), is(PRODUCER_MAP));
-        assertThat(esMap.get("system"), is(SYSTEM_MAP));
+        assertThat(esMap.get("producerCode"), is(PRODUCER_MAP));
+        assertThat(esMap.get("systemCode"), is(SYSTEM_MAP));
         assertThat(esMap.get("personalData"), is(true));
         assertThat(esMap.get("name"), is(NAME));
         assertThat(esMap.get("description"), is(DESCRIPTION));
-        assertThat(esMap.get("category"), is(CATEGORY_MAP));
+        assertThat(esMap.get("categoryCode"), is(CATEGORY_MAP));
     }
 }

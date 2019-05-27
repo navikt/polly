@@ -178,12 +178,12 @@ public class InformationTypeControllerIT {
 	}
 
 	private void assertInformationType(InformationType informationType) {
-		assertThat(informationType.getProducer(), is(PRODUCER));
-		assertThat(informationType.getSystem(), is(SYSTEM));
+		assertThat(informationType.getProducerCode(), is(PRODUCER));
+		assertThat(informationType.getSystemCode(), is(SYSTEM));
 		assertThat(informationType.isPersonalData(), is(true));
 		assertThat(informationType.getName(), is(NAME));
 		assertThat(informationType.getDescription(), is(DESCRIPTION));
-		assertThat(informationType.getCategory(), is(CATEGORY));
+		assertThat(informationType.getCategoryCode(), is(CATEGORY));
 	}
 
 	private void assertInformationTypeResponse(InformationTypeResponse response) {
@@ -201,9 +201,9 @@ public class InformationTypeControllerIT {
 		return InformationTypeRequest.builder()
 				.name(name)
 				.description(DESCRIPTION)
-				.category(CATEGORY)
-				.producer(PRODUCER)
-				.system(SYSTEM)
+				.categoryCode(CATEGORY)
+				.producerCode(PRODUCER)
+				.systemCode(SYSTEM)
 				.personalData(true)
 				.build();
 	}

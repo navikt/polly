@@ -28,9 +28,9 @@ public class InformationTypeResponse {
 		this.informationTypeId = informationType.getId();
 		this.name = informationType.getName();
 		this.description = informationType.getDescription();
-		this.category = getMapForCodelistItem(ListName.CATEGORY, informationType.getCategory());
-		this.producer = getMapForCodelistItem(ListName.PRODUCER, informationType.getProducer());
-		this.system = getMapForCodelistItem(ListName.SYSTEM, informationType.getSystem());
+		this.category = getMapForCodelistItem(ListName.CATEGORY, informationType.getCategoryCode());
+		this.producer = getMapForCodelistItem(ListName.PRODUCER, informationType.getProducerCode());
+		this.system = getMapForCodelistItem(ListName.SYSTEM, informationType.getSystemCode());
 		this.personalData = informationType.isPersonalData();
 	}
 

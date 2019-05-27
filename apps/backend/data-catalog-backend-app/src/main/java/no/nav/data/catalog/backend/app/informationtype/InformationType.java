@@ -48,16 +48,16 @@ public class InformationType extends Auditable<String> {
 	private String description;
 
 	@NotNull
-	@Column(name = "CATEGORY", nullable = false)
-	private String category;
+	@Column(name = "CATEGORY_CODE", nullable = false)
+	private String categoryCode;
 
 	@NotNull
-	@Column(name = "PRODUCER")
-	private String producer;
+	@Column(name = "PRODUCER_CODE")
+	private String producerCode;
 
 	@NotNull
-	@Column(name = "SYSTEM")
-	private String system;
+	@Column(name = "SYSTEM_CODE")
+	private String systemCode;
 
 	@NotNull
 	@Column(name = "PERSONAL_DATA", nullable = false)
@@ -85,9 +85,9 @@ public class InformationType extends Auditable<String> {
 			this.elasticsearchId = base64UUID();
 		}
 		this.name = request.getName();
-		this.category = request.getCategory();
-		this.producer = request.getProducer();
-		this.system = request.getSystem();
+		this.categoryCode = request.getCategoryCode();
+		this.producerCode = request.getProducerCode();
+		this.systemCode = request.getSystemCode();
 		this.description = request.getDescription();
 		this.personalData = request.getPersonalData();
 		return this;

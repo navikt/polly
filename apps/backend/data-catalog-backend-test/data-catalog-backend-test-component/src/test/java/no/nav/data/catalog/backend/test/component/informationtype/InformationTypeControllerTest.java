@@ -70,9 +70,9 @@ public class InformationTypeControllerTest {
 				.id(1L)
 				.name("Test")
 				.description("Test description")
-				.category("PERSONALIA")
-				.producer("SKATTEETATEN")
-				.system("TPS")
+				.categoryCode("PERSONALIA")
+				.producerCode("SKATTEETATEN")
+				.systemCode("TPS")
 				.personalData(true)
 				.elasticsearchId(base64UUID())
 				.elasticsearchStatus(ElasticsearchStatus.TO_BE_CREATED)
@@ -87,15 +87,15 @@ public class InformationTypeControllerTest {
 //				.informationTypeId(1L)
 //				.name("Test")
 //				.description("Test description")
-//				.category(CodelistDTO.builder()
+//				.categoryCode(CodelistDTO.builder()
 //						.code("PERSONALIA")
 //						.description("Personalia")
 //						.build())
-//				.producer(CodelistDTO.builder()
+//				.producerCode(CodelistDTO.builder()
 //						.code("SKATTEETATEN")
 //						.description("Skatteetaten")
 //						.build())
-//				.system(CodelistDTO.builder()
+//				.systemCode(CodelistDTO.builder()
 //						.code("TPS").description("Tjenestebasert PersondataSystem")
 //						.build())
 //				.personalData(true)
@@ -190,9 +190,9 @@ public class InformationTypeControllerTest {
 	public void createInformationType_shouldCreateNewInformationType_WithValidRequest() throws Exception {
 		InformationTypeRequest request = InformationTypeRequest.builder()
 				.name("Test createInformationType")
-				.category("PERSONALIA")
-				.producer("BRUKER")
-				.system("TPS")
+				.categoryCode("PERSONALIA")
+				.producerCode("BRUKER")
+				.systemCode("TPS")
 				.description("Informasjon til test hentet av bruker")
 				.personalData(true)
 				.build();
@@ -225,9 +225,9 @@ public class InformationTypeControllerTest {
 		InformationTypeRequest request = InformationTypeRequest.builder().build();
 		HashMap<String, String> validationErrors = new HashMap<>();
 		validationErrors.put("name", "Name must have value");
-		validationErrors.put("producer", "The producer was null or not found in the producer codelist.");
-		validationErrors.put("category", "The category was null or not found in the category codelist.");
-		validationErrors.put("system", "The system was null or not found in the system codelist.");
+		validationErrors.put("producerCode", "The producerCode was null or not found in the producerCode codelist.");
+		validationErrors.put("categoryCode", "The categoryCode was null or not found in the categoryCode codelist.");
+		validationErrors.put("systemCode", "The systemCode was null or not found in the systemCode codelist.");
 		validationErrors.put("createdBy", "Created by cannot be null or empty.");
 
 		// given
@@ -252,9 +252,9 @@ public class InformationTypeControllerTest {
 	public void createInformationType_shouldFailToCreateNewInformationType_WhenNameAlreadyExists() throws Exception {
 		InformationTypeRequest request = InformationTypeRequest.builder()
 				.name("Test")
-				.category("PERSONALIA")
-				.producer("BRUKER")
-				.system("TPS")
+				.categoryCode("PERSONALIA")
+				.producerCode("BRUKER")
+				.systemCode("TPS")
 				.description("Duplicates of InformationTypes aren't allowed")
 				.personalData(true)
 				.build();
@@ -286,9 +286,9 @@ public class InformationTypeControllerTest {
 		Long id = 1L;
 		InformationTypeRequest request = InformationTypeRequest.builder()
 				.name("Test updateInformationType")
-				.category("PERSONALIA")
-				.producer("BRUKER")
-				.system("TPS")
+				.categoryCode("PERSONALIA")
+				.producerCode("BRUKER")
+				.systemCode("TPS")
 				.description("Test of updateInformationType")
 				.personalData(true)
 				.build();
@@ -323,9 +323,9 @@ public class InformationTypeControllerTest {
 		Long id = 1L;
 		InformationTypeRequest request = InformationTypeRequest.builder()
 				.name("Test updateInformationType")
-				.category("PERSONALIA")
-				.producer("BRUKER")
-				.system("TPS")
+				.categoryCode("PERSONALIA")
+				.producerCode("BRUKER")
+				.systemCode("TPS")
 				.description("Test of updateInformationType")
 				.personalData(true)
 				.build();
@@ -359,9 +359,9 @@ public class InformationTypeControllerTest {
 
 		HashMap<String, String> validationErrors = new HashMap<>();
 		validationErrors.put("name", "Name must have value");
-		validationErrors.put("producer", "The producer was null or not found in the producer codelist.");
-		validationErrors.put("category", "The category was null or not found in the category codelist.");
-		validationErrors.put("system", "The system was null or not found in the system codelist.");
+		validationErrors.put("producerCode", "The producerCode was null or not found in the producerCode codelist.");
+		validationErrors.put("categoryCode", "The categoryCode was null or not found in the categoryCode codelist.");
+		validationErrors.put("systemCode", "The systemCode was null or not found in the systemCode codelist.");
 		validationErrors.put("createdBy", "Created by cannot be null or empty.");
 
 		// given
@@ -413,9 +413,9 @@ public class InformationTypeControllerTest {
 				.id(2L)
 				.name("Test_2")
 				.description("Test av addresse")
-				.category("KONTAKTOPPLYSNINGER")
-				.producer("SKATTEETATEN")
-				.system("TPS")
+				.categoryCode("KONTAKTOPPLYSNINGER")
+				.producerCode("SKATTEETATEN")
+				.systemCode("TPS")
 				.personalData(true)
 				.elasticsearchId(base64UUID())
 				.elasticsearchStatus(ElasticsearchStatus.TO_BE_CREATED)
@@ -425,9 +425,9 @@ public class InformationTypeControllerTest {
 				.id(3L)
 				.name("Test_3")
 				.description("Test av arbeidsgiver")
-				.category("ARBEIDSFORHOLD")
-				.producer("ARBEIDSGIVER")
-				.system("AA_REG")
+				.categoryCode("ARBEIDSFORHOLD")
+				.producerCode("ARBEIDSGIVER")
+				.systemCode("AA_REG")
 				.personalData(true)
 				.elasticsearchId(base64UUID())
 				.elasticsearchStatus(ElasticsearchStatus.TO_BE_CREATED)

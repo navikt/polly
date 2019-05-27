@@ -83,9 +83,9 @@ public class InformationTypeServiceTest {
                 .id(1L)
                 .name(NAME)
                 .description(DESCRIPTION)
-                .category(CATEGORY)
-                .producer(PRODUCER)
-                .system(SYSTEM)
+                .categoryCode(CATEGORY)
+                .producerCode(PRODUCER)
+                .systemCode(SYSTEM)
                 .personalData(true)
                 .elasticsearchId("esId")
                 .elasticsearchStatus(TO_BE_CREATED)
@@ -141,10 +141,10 @@ public class InformationTypeServiceTest {
     @Test
     public void shouldValidateInsertRequest() {
 	    InformationTypeRequest request = InformationTypeRequest.builder()
-                .category(CATEGORY)
+                .categoryCode(CATEGORY)
 				.name("Name")
-                .system(SYSTEM)
-                .producer(PRODUCER)
+                .systemCode(SYSTEM)
+                .producerCode(PRODUCER)
 				.personalData(true)
 				.build();
 	    informationTypeService.validateRequest(request, false);
@@ -157,11 +157,11 @@ public class InformationTypeServiceTest {
             informationTypeService.validateRequest(request, false);
         } catch (ValidationException e) {
             assertThat(e.get().size(), is(5));
-            assertThat(e.get().get("system"), is("The system was null or not found in the system codelist."));
+            assertThat(e.get().get("systemCode"), is("The systemCode was null or not found in the systemCode codelist."));
             assertThat(e.get().get("name"), is("Name must have value"));
             assertThat(e.get().get("personalData"), is("PersonalData cannot be null"));
-            assertThat(e.get().get("producer"), is("The producer was null or not found in the producer codelist."));
-            assertThat(e.get().get("category"), is("The category was null or not found in the category codelist."));
+            assertThat(e.get().get("producerCode"), is("The producerCode was null or not found in the producerCode codelist."));
+            assertThat(e.get().get("categoryCode"), is("The categoryCode was null or not found in the categoryCode codelist."));
         }
     }
 
@@ -172,11 +172,11 @@ public class InformationTypeServiceTest {
             informationTypeService.validateRequest(request, true);
         } catch (ValidationException e) {
             assertThat(e.get().size(), is(5));
-            assertThat(e.get().get("system"), is("The system was null or not found in the system codelist."));
+            assertThat(e.get().get("systemCode"), is("The systemCode was null or not found in the systemCode codelist."));
             assertThat(e.get().get("name"), is("Name must have value"));
             assertThat(e.get().get("personalData"), is("PersonalData cannot be null"));
-            assertThat(e.get().get("producer"), is("The producer was null or not found in the producer codelist."));
-            assertThat(e.get().get("category"), is("The category was null or not found in the category codelist."));
+            assertThat(e.get().get("producerCode"), is("The producerCode was null or not found in the producerCode codelist."));
+            assertThat(e.get().get("categoryCode"), is("The categoryCode was null or not found in the categoryCode codelist."));
         }
     }
 
@@ -189,10 +189,10 @@ public class InformationTypeServiceTest {
         } catch (ValidationException e) {
             assertThat(e.get().size(), is(5));
             assertThat(e.get().get("name"), is("This name is used for an existing information type."));
-            assertThat(e.get().get("system"), is("The system was null or not found in the system codelist."));
+            assertThat(e.get().get("systemCode"), is("The systemCode was null or not found in the systemCode codelist."));
             assertThat(e.get().get("personalData"), is("PersonalData cannot be null"));
-            assertThat(e.get().get("producer"), is("The producer was null or not found in the producer codelist."));
-            assertThat(e.get().get("category"), is("The category was null or not found in the category codelist."));
+            assertThat(e.get().get("producerCode"), is("The producerCode was null or not found in the producerCode codelist."));
+            assertThat(e.get().get("categoryCode"), is("The categoryCode was null or not found in the categoryCode codelist."));
         }
     }
 }

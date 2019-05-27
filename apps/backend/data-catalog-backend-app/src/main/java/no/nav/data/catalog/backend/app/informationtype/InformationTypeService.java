@@ -95,9 +95,15 @@ public class InformationTypeService {
 			validationErrors.put("personalData", "PersonalData cannot be null");
 		}
 		if(!isUpdate && request.getName() != null && repository.findByName(request.getName().toLowerCase()).isPresent()) { validationErrors.put("name", "This name is used for an existing information type."); }
-		if(!codelists.get(ListName.PRODUCER).containsKey(request.getProducer())) { validationErrors.put("producer", "The producer was null or not found in the producer codelist."); }
-		if(!codelists.get(ListName.CATEGORY).containsKey(request.getCategory())) { validationErrors.put("category", "The category was null or not found in the category codelist."); }
-		if(!codelists.get(ListName.SYSTEM).containsKey(request.getSystem())) { validationErrors.put("system", "The system was null or not found in the system codelist."); }
+		if (!codelists.get(ListName.PRODUCER).containsKey(request.getProducerCode())) {
+			validationErrors.put("producerCode", "The producerCode was null or not found in the producerCode codelist.");
+		}
+		if (!codelists.get(ListName.CATEGORY).containsKey(request.getCategoryCode())) {
+			validationErrors.put("categoryCode", "The categoryCode was null or not found in the categoryCode codelist.");
+		}
+		if (!codelists.get(ListName.SYSTEM).containsKey(request.getSystemCode())) {
+			validationErrors.put("systemCode", "The systemCode was null or not found in the systemCode codelist.");
+		}
 
 		if(!validationErrors.isEmpty()) {
 			logger.error("Validation errors occurred when validating InformationTypeRequest: {}", validationErrors);
