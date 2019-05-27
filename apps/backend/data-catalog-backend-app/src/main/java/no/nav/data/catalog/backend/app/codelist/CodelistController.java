@@ -120,7 +120,7 @@ public class CodelistController {
 			return new ResponseEntity<>(e.get(), HttpStatus.BAD_REQUEST);
 		}
 		logger.info("Updated the Codelist");
-		return new ResponseEntity<>(service.save(request), HttpStatus.ACCEPTED);
+		return new ResponseEntity<>(service.update(request), HttpStatus.ACCEPTED);
 	}
 
 	@ApiOperation(value = "Delete Codelist", tags = {"Codelist"})

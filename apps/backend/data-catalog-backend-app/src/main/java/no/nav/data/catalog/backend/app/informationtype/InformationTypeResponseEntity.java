@@ -15,7 +15,7 @@ import java.util.List;
 public class InformationTypeResponseEntity {
 
 	private List<InformationTypeResponse> content = new ArrayList<>();
-	private Long currentPageSize = 0L;  //TODO: Implement pagination
+	private Long currentPage = 0L;  //TODO: Implement pagination
 	private Long pageSize= 0L;
 	private Long totalElements= 0L;
 }
