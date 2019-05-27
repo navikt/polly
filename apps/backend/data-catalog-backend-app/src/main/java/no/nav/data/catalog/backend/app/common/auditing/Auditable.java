@@ -2,6 +2,7 @@ package no.nav.data.catalog.backend.app.common.auditing;
 
 import static javax.persistence.TemporalType.TIMESTAMP;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
@@ -21,20 +22,24 @@ import java.util.Date;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class Auditable<U> {
-    @CreatedBy
+	@JsonIgnore
+	@CreatedBy
 	@Column(name = "CREATED_BY")
     protected U createdBy;
 
-    @CreatedDate
-    @Temporal(TIMESTAMP)
+	@JsonIgnore
+	@CreatedDate
+	@Temporal(TIMESTAMP)
 	@Column(name = "CREATED_DATE")
-    protected Date createdDate;
+	protected Date createdDate;
 
-    @LastModifiedBy
+	@JsonIgnore
+	@LastModifiedBy
 	@Column(name = "LAST_MODIFIED_BY")
     protected U lastModifiedBy;
 
-    @LastModifiedDate
+	@JsonIgnore
+	@LastModifiedDate
     @Temporal(TIMESTAMP)
 	@Column(name = "LAST_MODIFIED_DATE")
     protected Date lastModifiedDate;

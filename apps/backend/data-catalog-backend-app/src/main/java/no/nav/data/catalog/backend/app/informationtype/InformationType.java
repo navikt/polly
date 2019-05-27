@@ -21,7 +21,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.util.HashMap;
 import java.util.Map;
 
 @Entity
@@ -49,16 +48,16 @@ public class InformationType extends Auditable<String> {
 	private String description;
 
 	@NotNull
-	@Column(name = "CATEGORY", nullable = false)
-	private String category;
+	@Column(name = "CATEGORY_CODE", nullable = false)
+	private String categoryCode;
 
 	@NotNull
-	@Column(name = "PRODUCER")
-	private String producer;
+	@Column(name = "PRODUCER_CODE")
+	private String producerCode;
 
 	@NotNull
-	@Column(name = "SYSTEM")
-	private String system;
+	@Column(name = "SYSTEM_CODE")
+	private String systemCode;
 
 	@NotNull
 	@Column(name = "PERSONAL_DATA", nullable = false)
@@ -75,17 +74,7 @@ public class InformationType extends Auditable<String> {
 	private ElasticsearchStatus elasticsearchStatus;
 
 	public Map<String, Object> convertToMap() {
-		Map<String, Object> jsonMap = new HashMap<>();
-		jsonMap.put("id", elasticsearchId);
-		jsonMap.put("informationTypeId", id);
-		jsonMap.put("name", name);
-		jsonMap.put("description", description);
-		jsonMap.put("informationCategory", category);
-		jsonMap.put("informationProducer", producer);
-		jsonMap.put("informationSystem", system);
-		jsonMap.put("personalData", personalData);
-
-		return jsonMap;
+		return this.convertToResponse().convertToMap();
 	}
 
 	public InformationType convertFromRequest(InformationTypeRequest request, Boolean isUpdate) {
@@ -96,12 +85,16 @@ public class InformationType extends Auditable<String> {
 			this.elasticsearchId = base64UUID();
 		}
 		this.name = request.getName();
-		this.category = request.getCategory();
-		this.producer = request.getProducer();
-		this.system = request.getSystem();
+		this.categoryCode = request.getCategoryCode();
+		this.producerCode = request.getProducerCode();
+		this.systemCode = request.getSystemCode();
 		this.description = request.getDescription();
 		this.personalData = request.getPersonalData();
 		return this;
+	}
+
+	public InformationTypeResponse convertToResponse() {
+		return new InformationTypeResponse(this);
 	}
 }
 

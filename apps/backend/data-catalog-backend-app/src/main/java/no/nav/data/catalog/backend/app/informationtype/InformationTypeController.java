@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,7 +49,7 @@ public class InformationTypeController {
 			@ApiResponse(code = 404, message = "InformationType not found"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping("/{id}")
-	public ResponseEntity<InformationType> getInformationTypeById(@PathVariable Long id) {
+	public ResponseEntity getInformationTypeById(@PathVariable Long id) {
 		logger.info("Received request for InformationType with the id={}", id);
 		Optional<InformationType> informationType = repository.findById(id);
 		if(informationType.isEmpty()) {
@@ -56,7 +57,7 @@ public class InformationTypeController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		logger.info("Returned InformationType");
-		return new ResponseEntity<>(informationType.get(), HttpStatus.OK);
+		return new ResponseEntity<>(informationType.get().convertToResponse(), HttpStatus.OK);
 	}
 
 	@ApiOperation(value = "Get all InformationTypes", tags = { "InformationType" })
@@ -65,7 +66,7 @@ public class InformationTypeController {
 			@ApiResponse(code = 404, message = "No InformationTypes found in repository"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping
-	public ResponseEntity<List<InformationType>> getAllInformationTypes() {
+	public ResponseEntity<InformationTypeResponseEntity> getAllInformationTypes() {
 		logger.info("Received request for all InformationTypes");
 		List<InformationType> informationTypes = repository.findAllByOrderByIdAsc();
 		if(informationTypes.isEmpty()) {
@@ -73,7 +74,8 @@ public class InformationTypeController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		logger.info("Returned all InformationTypes");
-		return new ResponseEntity<>(informationTypes, HttpStatus.OK);
+		return new ResponseEntity<>(
+				InformationTypeResponseEntity.builder().content(getContent(informationTypes)).build(), HttpStatus.OK);
 	}
 
 	@ApiOperation(value = "Create InformationType", tags = { "InformationType" })
@@ -82,7 +84,7 @@ public class InformationTypeController {
 			@ApiResponse(code = 400, message = "Illegal arguments"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@PostMapping
-	public ResponseEntity<?> createInformationType(@RequestBody InformationTypeRequest request) {
+	public ResponseEntity createInformationType(@RequestBody InformationTypeRequest request) {
 		logger.info("Received a request to create InformationType");
 		try {
 			service.validateRequest(request, false);
@@ -104,7 +106,7 @@ public class InformationTypeController {
 			@ApiResponse(code = 404, message = "InformationType not found"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@PutMapping("/{id}")
-	public ResponseEntity<?> updateInformationType(@PathVariable Long id, @Valid @RequestBody InformationTypeRequest request) {
+	public ResponseEntity updateInformationType(@PathVariable Long id, @Valid @RequestBody InformationTypeRequest request) {
 		logger.info("Received a request to update InformationType with id={}", id);
 		Optional<InformationType> fromRepository = repository.findById(id);
 		if(fromRepository.isEmpty()) {
@@ -131,7 +133,7 @@ public class InformationTypeController {
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@DeleteMapping("/{id}")
 	@Transactional
-	public ResponseEntity<?> deleteInformationTypeById(@PathVariable Long id) {
+	public ResponseEntity deleteInformationTypeById(@PathVariable Long id) {
 		logger.info("Received a request to delete InformationType with id={}", id);
 		Optional<InformationType> fromRepository = repository.findById(id);
 		if(fromRepository.isEmpty()) {
@@ -141,6 +143,14 @@ public class InformationTypeController {
 		InformationType informationType = fromRepository.get();
 		informationType.setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED);
 		logger.info("InformationType with id={} has been set to be deleted during the next scheduled task", id);
-		return new ResponseEntity<>(repository.save(informationType), HttpStatus.ACCEPTED);
+		return new ResponseEntity<>(repository.save(informationType), HttpStatus.OK);
 	}
+
+	private List<InformationTypeResponse> getContent(List<InformationType> informationTypes) {
+		List<InformationTypeResponse> responses = new ArrayList<>();
+		informationTypes.forEach(informationType -> responses.add(informationType.convertToResponse()));
+
+		return responses;
+	}
+
 }

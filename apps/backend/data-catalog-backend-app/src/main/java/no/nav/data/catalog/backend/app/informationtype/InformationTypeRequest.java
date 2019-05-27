@@ -28,9 +28,9 @@ public class InformationTypeRequest {
 	private static final Logger logger = LoggerFactory.getLogger(InformationTypeRequest.class);
 
 	private String name;
-	private String category;
-	private String producer;
-	private String system;
+	private String categoryCode;
+	private String producerCode;
+	private String systemCode;
 	private String description;
 	private Boolean personalData;
 

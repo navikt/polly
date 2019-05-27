@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.test.component;
+package no.nav.data.catalog.backend.test.component.elasticsearch;
 
 import org.testcontainers.containers.FixedHostPortGenericContainer;
 import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
@@ -6,7 +6,7 @@ import org.testcontainers.utility.Base58;
 
 import java.time.Duration;
 
-public class FixedElasticsearchContainer extends FixedHostPortGenericContainer<no.nav.data.catalog.backend.test.component.FixedElasticsearchContainer> {
+public class FixedElasticsearchContainer extends FixedHostPortGenericContainer<FixedElasticsearchContainer> {
     private static final int ELASTICSEARCH_DEFAULT_PORT = 9200;
     private static final int ELASTICSEARCH_DEFAULT_TCP_PORT = 9300;
 

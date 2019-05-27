@@ -1,5 +1,6 @@
-package no.nav.data.catalog.backend.test.component;
+package no.nav.data.catalog.backend.test.component.codelist;
 
+import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -16,6 +17,7 @@ import no.nav.data.catalog.backend.app.codelist.CodelistRequest;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
+import no.nav.data.catalog.backend.test.component.ComponentTestConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -46,44 +48,46 @@ public class CodelistServiceTest {
 				.build();
 		codelistService.save(request);
 		verify(repository, times(1)).save(any(Codelist.class));
-		assertFalse(codelistService.codelists.get(request.getList()).get(request.getCode()).isEmpty());
-		assertThat(codelistService.codelists.get(request.getList())
+		assertFalse(codelists.get(request.getList()).get(request.getCode()).isEmpty());
+		assertThat(codelists.get(request.getList())
 				.get(request.getCode()), is("Test av kategorien TEST_CREATE"));
 	}
 
 	@Test
 	public void shouldSaveUpdateRequest() {
+		codelists.get(ListName.PRODUCER).put("TEST", "Original description");
+
 		CodelistRequest request = CodelistRequest.builder()
 				.list(ListName.PRODUCER)
-				.code("BRUKER")
-				.description("Update av kategorien BRUKER")
+				.code("TEST")
+				.description("Updated description")
 				.build();
-		assertFalse(codelistService.codelists.get(request.getList()).get(request.getCode()).isEmpty());
-		assertThat(codelistService.codelists.get(request.getList())
-				.get(request.getCode()), is("Informasjon oppgitt av bruker"));
 
 		codelistService.save(request);
 
 		verify(repository, times(1)).save(any(Codelist.class));
-		assertThat(codelistService.codelists.get(request.getList()).get(request.getCode()), is("Update av kategorien BRUKER"));
+		assertThat(codelists.get(request.getList()).get(request.getCode()), is("Updated description"));
 	}
 
 	@Test
 	public void shouldDelete() {
 		ListName listName = ListName.CATEGORY;
 		String code = "TEST_DELETE";
+		String description = "Test delete description";
+
+		codelists.get(listName).put(code, description);
 		Codelist codelist = Codelist.builder()
 				.list(listName)
 				.code(code)
-				.description("Test av kategorien TEST_DELETE")
+				.description(description)
 				.build();
 		when(repository.findByListAndCode(listName, code)).thenReturn(Optional.of(codelist));
-		repository.save(codelist);
 
 		codelistService.delete(listName, code);
+
 		verify(repository, times(1)).findByListAndCode(any(ListName.class), anyString());
 		verify(repository, times(1)).delete(any(Codelist.class));
-		assertNull(codelistService.codelists.get(listName).get(code));
+		assertNull(codelists.get(listName).get(code));
 	}
 
 	@Test
