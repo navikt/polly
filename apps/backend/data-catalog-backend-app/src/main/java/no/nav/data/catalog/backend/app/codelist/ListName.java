@@ -4,6 +4,5 @@ public enum ListName {
     PRODUCER,
     PURPOSE,
     CATEGORY,
-    SYSTEM,
-    PURPOSE
+    SYSTEM
 }
