@@ -73,7 +73,7 @@ public class InformationTypeController {
 
 	@ApiOperation(value = "Create InformationType", tags = { "InformationType" })
 	@ApiResponses(value = {
-			@ApiResponse(code = 201, message = "InformationType successfully created", response = InformationType.class),
+			@ApiResponse(code = 201, message = "InformationType to be created successfully accepted", response = InformationType.class),
 			@ApiResponse(code = 400, message = "Illegal arguments"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@PostMapping
@@ -136,7 +136,7 @@ public class InformationTypeController {
 		InformationType informationType = fromRepository.get();
 		informationType.setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED);
 		logger.info("InformationType with id={} has been set to be deleted during the next scheduled task", id);
-		return new ResponseEntity<>(repository.save(informationType), HttpStatus.OK);
+		return new ResponseEntity<>(repository.save(informationType), HttpStatus.ACCEPTED);
 	}
 
 }
