@@ -10,6 +10,8 @@ import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,8 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -66,16 +66,9 @@ public class InformationTypeController {
 			@ApiResponse(code = 404, message = "No InformationTypes found in repository"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping
-	public ResponseEntity<InformationTypeResponseEntity> getAllInformationTypes() {
+	public Page<InformationTypeResponse> getAllInformationTypes(Pageable pageable) {
 		logger.info("Received request for all InformationTypes");
-		List<InformationType> informationTypes = repository.findAllByOrderByIdAsc();
-		if(informationTypes.isEmpty()) {
-			logger.info("Cannot return any InformationTypes due to empty repository");
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-		logger.info("Returned all InformationTypes");
-		return new ResponseEntity<>(
-				InformationTypeResponseEntity.builder().content(getContent(informationTypes)).build(), HttpStatus.OK);
+		return repository.findAll(pageable).map(InformationType::convertToResponse);
 	}
 
 	@ApiOperation(value = "Create InformationType", tags = { "InformationType" })
@@ -144,13 +137,6 @@ public class InformationTypeController {
 		informationType.setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED);
 		logger.info("InformationType with id={} has been set to be deleted during the next scheduled task", id);
 		return new ResponseEntity<>(repository.save(informationType), HttpStatus.OK);
-	}
-
-	private List<InformationTypeResponse> getContent(List<InformationType> informationTypes) {
-		List<InformationTypeResponse> responses = new ArrayList<>();
-		informationTypes.forEach(informationType -> responses.add(informationType.convertToResponse()));
-
-		return responses;
 	}
 
 }
