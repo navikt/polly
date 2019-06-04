@@ -22,7 +22,6 @@ import no.nav.data.catalog.backend.app.informationtype.InformationType;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeResponse;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeResponseEntity;
 import no.nav.data.catalog.backend.test.component.elasticsearch.FixedElasticsearchContainer;
 import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
 import org.junit.After;
@@ -37,6 +36,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -67,6 +68,8 @@ public class InformationTypeControllerIT {
 	protected CodelistService codelistService;
 
 	private static HashMap<ListName, HashMap<String, String>> codelists;
+	private ParameterizedTypeReference<PagedResources<InformationTypeResponse>> responseType = new ParameterizedTypeReference<PagedResources<InformationTypeResponse>>() {
+	};
 
 	@ClassRule
 	public static PostgreSQLContainer postgreSQLContainer =
@@ -118,8 +121,9 @@ public class InformationTypeControllerIT {
 		saveAnInformationType(createRequest("First InformationTypeName"));
 		saveAnInformationType(createRequest("Second InformationTypeName"));
 
-		ResponseEntity<InformationTypeResponseEntity> responseEntity = restTemplate.exchange(
-				URL, HttpMethod.GET, HttpEntity.EMPTY, InformationTypeResponseEntity.class);
+		ResponseEntity<PagedResources<InformationTypeResponse>> responseEntity = restTemplate.exchange(
+				URL, HttpMethod.GET, HttpEntity.EMPTY, new ParameterizedTypeReference<>() {
+				});
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 		assertThat(responseEntity.getBody().getContent().size(), is(repository.findAll().size()));
@@ -167,7 +171,7 @@ public class InformationTypeControllerIT {
 		responseEntity = restTemplate.exchange(
 				URL + "/" + storedInformationType.getId(), HttpMethod.DELETE, new HttpEntity<>(request), String.class);
 		assertThat(repository.findAll().size(), is(1));
-		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
 		storedInformationType = repository.findByName(NAME).get();
 		assertThat(storedInformationType.getElasticsearchStatus(), is(TO_BE_DELETED));
 	}

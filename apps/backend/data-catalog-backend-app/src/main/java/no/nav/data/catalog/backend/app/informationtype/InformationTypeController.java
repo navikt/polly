@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.Transactional;
@@ -94,7 +95,7 @@ public class InformationTypeController {
 
 	@ApiOperation(value = "Update InformationType", tags = { "InformationType" })
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "InformationType updated", response = InformationType.class),
+			@ApiResponse(code = 201, message = "InformationType updated", response = InformationType.class),
 			@ApiResponse(code = 400, message = "Illegal arguments"),
 			@ApiResponse(code = 404, message = "InformationType not found"),
 			@ApiResponse(code = 500, message = "Internal server error")})
@@ -121,7 +122,7 @@ public class InformationTypeController {
 
 	@ApiOperation(value = "Delete InformationType", tags = { "InformationType" })
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "InformationType deleted"),
+			@ApiResponse(code = 201, message = "InformationType deleted"),
 			@ApiResponse(code = 404, message = "InformationType not found"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@DeleteMapping("/{id}")
