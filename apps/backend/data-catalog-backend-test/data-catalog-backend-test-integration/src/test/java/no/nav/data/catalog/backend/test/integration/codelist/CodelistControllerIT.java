@@ -6,9 +6,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import no.nav.data.catalog.backend.app.AppStarter;
+import no.nav.data.catalog.backend.app.codelist.Codelist;
 import no.nav.data.catalog.backend.app.codelist.CodelistRequest;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
@@ -24,6 +24,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -35,7 +36,10 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -60,12 +64,13 @@ public class CodelistControllerIT extends TestdataCodelists {
 					.withStartupTimeout(Duration.ofSeconds(600));
 
 	@Before
-	public void initCodelists() {
-		codelists.get(LIST).put(CODE, DESCRIPTION);
+	public void setUp() {
+		service.refreshCache();
+		codelists.get(LIST_NAME).put(CODE, DESCRIPTION);
 	}
 
 	@Test
-	public void findAll_shouldReturnCodelists() {
+	public void findAll_shouldReturnOneCodelists() {
 		ResponseEntity<Map> responseEntity = restTemplate.exchange(
 				URL, HttpMethod.GET, HttpEntity.EMPTY, Map.class);
 
@@ -79,18 +84,18 @@ public class CodelistControllerIT extends TestdataCodelists {
 
 	@Test
 	public void getCodelistByListName_shouldReturnCodesAndDescriptionForListName() {
-		String url = URL + "/" + LIST;
+		String url = URL + "/" + LIST_NAME;
 
 		ResponseEntity<Map> responseEntity = restTemplate.exchange(
 				url, HttpMethod.GET, HttpEntity.EMPTY, Map.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-		assertThat(responseEntity.getBody(), is(codelists.get(LIST)));
+		assertThat(responseEntity.getBody(), is(codelists.get(LIST_NAME)));
 	}
 
 	@Test
 	public void getDescriptionByListNameAndCode_shouldReturnDescriptionForCodeAndListName() {
-		String url = URL + "/" + LIST + "/" + CODE;
+		String url = URL + "/" + LIST_NAME + "/" + CODE;
 
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
 				url, HttpMethod.GET, HttpEntity.EMPTY, String.class);
@@ -101,45 +106,79 @@ public class CodelistControllerIT extends TestdataCodelists {
 
 	@Test
 	public void save_shouldSaveNewCodelist() {
-		CodelistRequest request = createRequest(LIST, "SAVE_CODE", DESCRIPTION);
-		int currentCodelistSize = codelists.get(request.getList()).size();
-		assertNull(codelists.get(request.getList()).get(request.getCode()));
+		String code = "SAVE_CODE";
+		String description = "Description of a new Codelist";
+		List<CodelistRequest> requests = createRequest(LIST_NAME, code, DESCRIPTION);
+		assertNull(codelists.get(LIST_NAME).get(code));
 
-		ResponseEntity<String> responseEntity = restTemplate.exchange(
-				URL, HttpMethod.POST, new HttpEntity<>(request), String.class);
+		ResponseEntity<List<Codelist>> responseEntity = restTemplate.exchange(
+				URL, HttpMethod.POST, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
+				});
 
-		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
-		assertThat(codelists.get(request.getList()).size(), is(currentCodelistSize + 1));
-		assertFalse(codelists.get(request.getList()).get(request.getCode()).isEmpty());
-		assertTrue(responseEntity.getBody().contains(codelists.get(request.getList()).get(request.getCode())));
+		assertThat(responseEntity.getStatusCode(), is(HttpStatus.CREATED));
+		assertFalse(codelists.get(LIST_NAME).get(code).isEmpty());
+		assertThat(responseEntity.getBody().get(0).getDescription(), is(codelists.get(LIST_NAME).get(code)));
+	}
+
+	@Test
+	public void save_shouldSave20Codelist() {
+		List<CodelistRequest> requests = createNrOfRequests("shouldSave20Codelists_nr_", 20);
+
+		ResponseEntity<List<Codelist>> responseEntity = restTemplate.exchange(
+				URL, HttpMethod.POST, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
+				});
+
+		assertThat(responseEntity.getStatusCode(), is(HttpStatus.CREATED));
+		assertThat(codelists.get(ListName.SYSTEM).size(), is(20));
 	}
 
 	@Test
 	public void update_shouldUpdateCodelist() {
-		service.save(createRequest(LIST, "UPDATE_CODE", DESCRIPTION));
+		String code = "UPDATE_CODE";
+		service.save(createRequest(LIST_NAME, code, DESCRIPTION));
 
-		CodelistRequest updateRequest = createRequest(LIST, "UPDATE_CODE", "Updated codelists");
+		List<CodelistRequest> updatedCodelists = createRequest(LIST_NAME, code, "Updated codelists");
 
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
-				URL, HttpMethod.PUT, new HttpEntity<>(updateRequest), String.class);
+				URL, HttpMethod.PUT, new HttpEntity<>(updatedCodelists), String.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
-		assertThat(codelists.get(LIST).get("UPDATE_CODE"), is(updateRequest.getDescription()));
+		assertThat(codelists.get(LIST_NAME).get(code), is(updatedCodelists.get(0).getDescription()));
 	}
 
 
 	@Test
 	public void delete_shouldDeleteCodelist() {
-		CodelistRequest request = createRequest(LIST, "DELETE_CODE", DESCRIPTION);
-		service.save(request);
-		assertNotNull(codelists.get(LIST).get("DELETE_CODE"));
+		String code = "DELETE_CODE";
+		List<CodelistRequest> requests = createRequest(LIST_NAME, code, DESCRIPTION);
+		service.save(requests);
+		assertNotNull(codelists.get(LIST_NAME).get(code));
 
-		String url = URL + "/" + LIST + "/" + "DELETE_CODE";
+		String url = URL + "/" + LIST_NAME + "/" + code;
 
 		ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-		assertNull(codelists.get(LIST).get("DELETE_CODE"));
+		assertNull(codelists.get(LIST_NAME).get(code));
+	}
+
+	private List<CodelistRequest> createNrOfRequests(String code, int nrOfRequests) {
+		return IntStream.rangeClosed(1, nrOfRequests)
+				.mapToObj(i -> createOneRequest(ListName.SYSTEM, code + "_nr_" + i, DESCRIPTION))
+				.collect(Collectors.toList());
+
+	}
+
+	private CodelistRequest createOneRequest(ListName listName, String code, String description) {
+		return CodelistRequest.builder()
+				.list(listName)
+				.code(code)
+				.description(description)
+				.build();
+	}
+
+	private List<CodelistRequest> createRequest(ListName listName, String code, String description) {
+		return List.of(createOneRequest(listName, code, description));
 	}
 
 	static class Initializer

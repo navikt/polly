@@ -1,6 +1,7 @@
 package no.nav.data.catalog.backend.app.codelist;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.catalog.backend.app.common.exceptions.CodelistNotFoundException;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,18 +41,31 @@ public class CodelistService {
 		});
 	}
 
-	public Codelist save(CodelistRequest request) {
-		codelists.get(request.getList()).put(request.getCode(), request.getDescription());
-		return repository.save(request.convert());
+	public List<Codelist> save(List<CodelistRequest> requests) {
+		requests.forEach(request -> codelists.get(request.getList()).put(request.getCode(), request.getDescription()));
+		return repository.saveAll(requests.stream()
+				.map(CodelistRequest::convert)
+				.collect(Collectors.toList()));
 	}
 
-	public Codelist update(CodelistRequest request) {
-		codelists.get(request.getList()).put(request.getCode(), request.getDescription());
+	public List<Codelist> update(List<CodelistRequest> requests) {
+		requests.forEach(request -> codelists.get(request.getList()).put(request.getCode(), request.getDescription()));
 
-		Codelist toBeUpdatedCodelist = repository.findByListAndCode(request.getList(), request.getCode()).get();
-		toBeUpdatedCodelist.setDescription(request.getDescription());
+		return repository.saveAll(requests.stream()
+				.map(this::setDescriptionByCodelistRequest)
+				.collect(Collectors.toList()));
+	}
 
-		return repository.save(toBeUpdatedCodelist);
+	private Codelist setDescriptionByCodelistRequest(CodelistRequest request) {
+		Optional<Codelist> optionalCodelist = repository.findByListAndCode(request.getList(), request.getCode());
+		if (optionalCodelist.isPresent()) {
+			Codelist codelist = optionalCodelist.get();
+			codelist.setDescription(request.getDescription());
+			return codelist;
+		}
+		logger.error("Cannot find codelist with code={} in list={}", request.getCode(), request.getList());
+		throw new CodelistNotFoundException(String.format(
+				"Cannot find codelist with code=%s in list=%s", request.getCode(), request.getDescription()));
 	}
 
 	public void delete(ListName name, String code) {
@@ -94,9 +108,12 @@ public class CodelistService {
 				.findFirst();
 	}
 
-	public boolean isListNamePresentInCodelist(String listName) {
+	void isListNamePresentInCodelist(String listName) {
 		Optional<ListName> optionalListName = listNameInCodelist(listName);
-		return optionalListName.isPresent();
+		if (optionalListName.isEmpty()) {
+			logger.error("Codelist with listName={} does not exits", listName);
+			throw new CodelistNotFoundException(String.format("Codelist with ListName=%s does not exist", listName));
+		}
 	}
 
 
