@@ -15,6 +15,7 @@ import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
 import no.nav.data.catalog.backend.test.component.elasticsearch.FixedElasticsearchContainer;
 import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -65,16 +66,21 @@ public class InformationTypeServiceIT {
     public static FixedElasticsearchContainer container = new FixedElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch-oss:6.6.1");
 
     @Before
-    public void init() {
+    public void setUp() {
         repository.deleteAll();
         initializeCodelists();
     }
 
+    @After
+    public void cleanUp() {
+        repository.deleteAll();
+    }
+
     private void initializeCodelists() {
-        codelists = codelistService.codelists;
-        codelists.get(ListName.CATEGORY).put(CATEGORY, CATEGORY_DESCRIPTION);
-        codelists.get(ListName.PRODUCER).put(PRODUCER, PRODUCER_DESCRIPTION);
-        codelists.get(ListName.SYSTEM).put(SYSTEM, SYSTEM_DESCRIPTION);
+        codelists = CodelistService.codelists;
+        codelists.get(ListName.CATEGORY).put(CATEGORY_CODE, CATEGORY_DESCRIPTION);
+        codelists.get(ListName.PRODUCER).put(PRODUCER_CODE, PRODUCER_DESCRIPTION);
+        codelists.get(ListName.SYSTEM).put(SYSTEM_CODE, SYSTEM_DESCRIPTION);
     }
 
     @Test
@@ -153,12 +159,12 @@ public class InformationTypeServiceIT {
     private void createTestData(ElasticsearchStatus esStatus) {
         InformationType informationType = InformationType.builder()
                 .elasticsearchId("elasticSearchId")
-                .categoryCode(CATEGORY)
-                .systemCode(SYSTEM)
+                .categoryCode(CATEGORY_CODE)
+                .systemCode(SYSTEM_CODE)
                 .elasticsearchStatus(esStatus)
                 .name(NAME)
                 .description(DESCRIPTION)
-                .producerCode(PRODUCER)
+                .producerCode(PRODUCER_CODE)
                 .personalData(true).build();
         repository.save(informationType);
     }
@@ -175,11 +181,11 @@ public class InformationTypeServiceIT {
     }
 
     private void assertInformationType(Map<String, Object> esMap) {
-        assertThat(esMap.get("producerCode"), is(PRODUCER_MAP));
-        assertThat(esMap.get("systemCode"), is(SYSTEM_MAP));
-        assertThat(esMap.get("personalData"), is(true));
         assertThat(esMap.get("name"), is(NAME));
         assertThat(esMap.get("description"), is(DESCRIPTION));
-        assertThat(esMap.get("categoryCode"), is(CATEGORY_MAP));
+        assertThat(esMap.get("personalData"), is(true));
+        assertThat((Map) esMap.get("category"), is(CATEGORY_MAP));
+        assertThat((Map) esMap.get("producer"), is(PRODUCER_MAP));
+        assertThat((Map) esMap.get("system"), is(SYSTEM_MAP));
     }
 }
