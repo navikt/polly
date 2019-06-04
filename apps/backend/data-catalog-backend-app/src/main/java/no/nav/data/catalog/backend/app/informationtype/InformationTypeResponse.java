@@ -27,7 +27,7 @@ public class InformationTypeResponse {
 	private Boolean personalData;
 
 
-	public InformationTypeResponse(InformationType informationType) {
+	InformationTypeResponse(InformationType informationType) {
 		this.elasticsearchId = informationType.getElasticsearchId();
 		this.informationTypeId = informationType.getId();
 		this.name = informationType.getName();
@@ -43,7 +43,7 @@ public class InformationTypeResponse {
 				"description", codelists.get(listName).get(code));
 	}
 
-	public Map<String, Object> convertToMap() {
+	Map<String, Object> convertToMap() {
 		Map<String, Object> jsonMap = new HashMap<>();
 		jsonMap.put("id", elasticsearchId);
 		jsonMap.put("informationTypeId", informationTypeId);

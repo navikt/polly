@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.Transactional;
@@ -61,9 +60,9 @@ public class InformationTypeController {
 		return new ResponseEntity<>(informationType.get().convertToResponse(), HttpStatus.OK);
 	}
 
-	@ApiOperation(value = "Get all InformationTypes", tags = { "InformationType" })
+	@ApiOperation(value = "Get all InformationTypes", tags = {"InformationTypes"})
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "All informationTypes fetched", response = InformationType.class, responseContainer = "List"),
+			@ApiResponse(code = 200, message = "All informationTypes fetched", response = InformationTypeResponse.class, responseContainer = "Page"),
 			@ApiResponse(code = 404, message = "No InformationTypes found in repository"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping

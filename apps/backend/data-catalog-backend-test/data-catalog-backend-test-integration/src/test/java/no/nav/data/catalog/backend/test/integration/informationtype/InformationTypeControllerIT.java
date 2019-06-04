@@ -22,6 +22,7 @@ import no.nav.data.catalog.backend.app.informationtype.InformationType;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeResponse;
+import no.nav.data.catalog.backend.app.informationtype.RestResponsePage;
 import no.nav.data.catalog.backend.test.component.elasticsearch.FixedElasticsearchContainer;
 import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
 import org.junit.After;
@@ -68,8 +69,6 @@ public class InformationTypeControllerIT {
 	protected CodelistService codelistService;
 
 	private static HashMap<ListName, HashMap<String, String>> codelists;
-	private ParameterizedTypeReference<PagedResources<InformationTypeResponse>> responseType = new ParameterizedTypeReference<PagedResources<InformationTypeResponse>>() {
-	};
 
 	@ClassRule
 	public static PostgreSQLContainer postgreSQLContainer =
@@ -121,8 +120,8 @@ public class InformationTypeControllerIT {
 		saveAnInformationType(createRequest("First InformationTypeName"));
 		saveAnInformationType(createRequest("Second InformationTypeName"));
 
-		ResponseEntity<PagedResources<InformationTypeResponse>> responseEntity = restTemplate.exchange(
-				URL, HttpMethod.GET, HttpEntity.EMPTY, new ParameterizedTypeReference<>() {
+		ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange(URL,
+				HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
 				});
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
