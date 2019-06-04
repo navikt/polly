@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.slf4j.Logger;
@@ -22,11 +23,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -71,38 +76,70 @@ public class InformationTypeController {
 		return repository.findAll(pageable).map(InformationType::convertToResponse);
 	}
 
-	@ApiOperation(value = "Create InformationType", tags = { "InformationType" })
+	@ApiOperation(value = "Create InformationType", tags = {"InformationTypes"})
 	@ApiResponses(value = {
-			@ApiResponse(code = 201, message = "InformationType to be created successfully accepted", response = InformationType.class),
+			@ApiResponse(code = 202, message = "InformationTypes to be created successfully accepted", response = InformationTypeResponse.class, responseContainer = "List"),
 			@ApiResponse(code = 400, message = "Illegal arguments"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@PostMapping
-	public ResponseEntity createInformationType(@RequestBody InformationTypeRequest request) {
-		logger.info("Received a request to create InformationType");
-		try {
-			service.validateRequest(request, false);
-		}
-		catch (ValidationException e) {
-			logger.info("Cannot create an InformationType due to invalid request");
-			return new ResponseEntity<>(e.get(), HttpStatus.BAD_REQUEST);
-		}
-		InformationType informationType = new InformationType().convertFromRequest(request, false);
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	public List<InformationTypeResponse> createInformationTypes(@RequestBody List<InformationTypeRequest> requests) {
+		logger.info("Received requests to create InformationTypes");
+//		try {
+//			service.validateRequest(request, false);
+//		}
+//		catch (ValidationException e) {
+//			logger.info("Cannot create an InformationType due to invalid request");
+//			return new ResponseEntity<>(e.get(), HttpStatus.BAD_REQUEST);
+//		}
 
-		logger.info("Created and saved new InformationType");
-		return new ResponseEntity<>(repository.save(informationType), HttpStatus.ACCEPTED);
+		List<InformationType> informationTypes = requests.stream()
+				.map(request -> new InformationType().convertFromRequest(request, false))
+				.collect(Collectors.toList());
+
+		return repository.saveAll(informationTypes).stream()
+				.map(InformationType::convertToResponse)
+				.collect(Collectors.toList());
+	}
+
+	@ApiOperation(value = "Update InformationType", tags = {"InformationTypes"})
+	@ApiResponses(value = {
+			@ApiResponse(code = 202, message = "InformationTypes to be updated successfully accepted", response = InformationTypeResponse.class, responseContainer = "List"),
+			@ApiResponse(code = 400, message = "Illegal arguments"),
+			@ApiResponse(code = 500, message = "Internal server error")})
+	@PutMapping
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	public List<InformationTypeResponse> updateInformationTypes(@RequestBody List<InformationTypeRequest> requests) {
+		logger.info("Received requests to update InformationTypes");
+		//TODO: Validation
+
+		List<InformationType> informationTypes = new ArrayList<>();
+		requests.forEach(request -> {
+			Optional<InformationType> optionalInformationType = repository.findByName(request.getName());
+			if (!optionalInformationType.isPresent()) {
+				throw new DataCatalogBackendNotFoundException(String.format("Cannot find informationType with name: %s", request
+						.getName()));
+			}
+			informationTypes.add(optionalInformationType.get().convertFromRequest(request, true));
+		});
+
+		return repository.saveAll(informationTypes).stream()
+				.map(InformationType::convertToResponse)
+				.collect(Collectors.toList());
+
 	}
 
 	@ApiOperation(value = "Update InformationType", tags = { "InformationType" })
 	@ApiResponses(value = {
-			@ApiResponse(code = 201, message = "InformationType updated", response = InformationType.class),
+			@ApiResponse(code = 201, message = "Accepted one InformationType to be updated", response = InformationType.class),
 			@ApiResponse(code = 400, message = "Illegal arguments"),
 			@ApiResponse(code = 404, message = "InformationType not found"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@PutMapping("/{id}")
-	public ResponseEntity updateInformationType(@PathVariable Long id, @Valid @RequestBody InformationTypeRequest request) {
+	public ResponseEntity updateOneInformationType(@PathVariable Long id, @Valid @RequestBody InformationTypeRequest request) {
 		logger.info("Received a request to update InformationType with id={}", id);
 		Optional<InformationType> fromRepository = repository.findById(id);
-		if(fromRepository.isEmpty()) {
+		if (!fromRepository.isPresent()) {
 			logger.info("Cannot find InformationType with id={}", id);
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}

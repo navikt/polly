@@ -50,6 +50,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -131,25 +132,47 @@ public class InformationTypeControllerIT {
 
 	@Test
 	public void createInformationType() {
-		InformationTypeRequest request = createRequest();
+		List<InformationTypeRequest> requests = List.of(createRequest());
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
-				URL, HttpMethod.POST, new HttpEntity<>(request), String.class);
+				URL, HttpMethod.POST, new HttpEntity<>(requests), String.class);
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
 		assertThat(repository.findAll().size(), is(1));
 		assertInformationType(repository.findByName(NAME).get());
 	}
 
 	@Test
-	public void updateInformationType() {
-		InformationTypeRequest request = createRequest();
+	public void updateInformationTypes() {
+		List<InformationTypeRequest> requests = List.of(createRequest("UPDATE_1"), createRequest("UPDATE_2"));
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
-				URL, HttpMethod.POST, new HttpEntity<>(request), String.class);
+				URL, HttpMethod.POST, new HttpEntity<>(requests), String.class);
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
+		assertThat(repository.findAll().size(), is(2));
+
+		requests.forEach(request -> request.setDescription("Updated description"));
+		ResponseEntity<List<InformationTypeResponse>> updatedResponseEntity = restTemplate.exchange(
+				URL, HttpMethod.PUT, new HttpEntity<>(requests), new ParameterizedTypeReference<List<InformationTypeResponse>>() {
+				});
+
+		assertThat(updatedResponseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
+		assertThat(repository.findAll().size(), is(2));
+		assertThat(repository.findAll().get(0).getDescription(), is("Updated description"));
+		assertThat(repository.findAll().get(1).getDescription(), is("Updated description"));
+
+
+	}
+
+	@Test
+	public void updateOneInformationType() {
+		InformationTypeRequest request = createRequest();
+		repository.save(new InformationType().convertFromRequest(request, false));
+//		ResponseEntity<String> responseEntity = restTemplate.exchange(
+//				URL, HttpMethod.POST, new HttpEntity<>(request), String.class);
+//		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
 		assertThat(repository.findAll().size(), is(1));
 
 		InformationType storedInformationType = repository.findByName(NAME).get();
 		request.setDescription(DESCRIPTION + "UPDATED");
-		responseEntity = restTemplate.exchange(
+		ResponseEntity responseEntity = restTemplate.exchange(
 				URL + "/" + storedInformationType.getId(), HttpMethod.PUT, new HttpEntity<>(request), String.class);
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
 		assertThat(repository.findAll().size(), is(1));
@@ -160,15 +183,15 @@ public class InformationTypeControllerIT {
 
 	@Test
 	public void deleteInformationType() {
-		InformationTypeRequest request = createRequest();
+		List<InformationTypeRequest> requests = List.of(createRequest());
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
-				URL, HttpMethod.POST, new HttpEntity<>(request), String.class);
+				URL, HttpMethod.POST, new HttpEntity<>(requests), String.class);
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
 		assertThat(repository.findAll().size(), is(1));
 
 		InformationType storedInformationType = repository.findByName(NAME).get();
 		responseEntity = restTemplate.exchange(
-				URL + "/" + storedInformationType.getId(), HttpMethod.DELETE, new HttpEntity<>(request), String.class);
+				URL + "/" + storedInformationType.getId(), HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
 		assertThat(repository.findAll().size(), is(1));
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
 		storedInformationType = repository.findByName(NAME).get();
