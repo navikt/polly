@@ -14,7 +14,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -28,14 +27,13 @@ import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
-import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import no.nav.data.catalog.backend.app.informationtype.InformationType;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeController;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeResponse;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
+import no.nav.data.catalog.backend.app.informationtype.RestResponsePage;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,8 +41,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -58,6 +57,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(InformationTypeController.class)
@@ -81,7 +82,7 @@ public class InformationTypeControllerTest {
 
 	@Before
 	public void initCodelists() {
-		codelists = codelistService.codelists;
+		codelists = CodelistService.codelists;
 		codelists.put(ListName.CATEGORY, new HashMap<>());
 		codelists.put(ListName.PRODUCER, new HashMap<>());
 		codelists.put(ListName.SYSTEM, new HashMap<>());
@@ -94,7 +95,6 @@ public class InformationTypeControllerTest {
 	@Test
 	public void getInformationTypeById_shouldGetInformationType_whenIdExists() throws Exception {
 		InformationType informationType = createInformationtTypeTestData(1L, "infoType1");
-		InformationTypeResponse response = informationType.convertToResponse();
 
 		given(repository.findById(1L)).willReturn(Optional.of(informationType));
 
@@ -114,24 +114,21 @@ public class InformationTypeControllerTest {
 	}
 
 	@Test
-	public void getAllInformationTypes_shouldGetTwoInformationTypes() throws Exception {
-		InformationType infoType1 = createInformationtTypeTestData(1L, "infoType1");
-		InformationType infoType2 = createInformationtTypeTestData(2L, "infoType2");
+	public void get20InformationTypes() throws Exception {
+		List<InformationType> informationTypes = createTestdataInformationType(20);
+		Page<InformationType> informationTypePage = new RestResponsePage<>(informationTypes);
 
-		List<InformationType> informationTypes = Arrays.asList(infoType1, infoType1);
-		Page<InformationType> informationTypePage = new PageImpl<>(informationTypes);
+		given(repository.findAll(PageRequest.of(0, 20))).willReturn(informationTypePage);
 
-		given(repository.findAll(PageRequest.of(0, 100))).willReturn(informationTypePage);
-
-		mvc.perform(get("/backend/informationtype?page=0&size=100")
+		mvc.perform(get("/backend/informationtype")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.content", hasSize(2)));
+				.andExpect(jsonPath("$.content", hasSize(20)));
 	}
 
 	@Test
 	public void getAllInformationTypes_shouldGetEmptyList_whenRepositoryIsEmpty() throws Exception {
-		Page<InformationType> informationTypePage = new PageImpl<>(Collections.emptyList());
+		Page<InformationType> informationTypePage = new RestResponsePage<>(Collections.emptyList());
 
 		given(repository.findAll(PageRequest.of(0, 100))).willReturn(informationTypePage);
 
@@ -242,6 +239,12 @@ public class InformationTypeControllerTest {
 
 		then(repository).should(times(1)).findById(1L);
 		then(repository).should(never()).save(any(InformationType.class));
+	}
+
+	private List<InformationType> createTestdataInformationType(int nrOfRows) {
+		return LongStream.rangeClosed(1, nrOfRows)
+				.mapToObj(i -> createInformationtTypeTestData(i, "infoType_" + i))
+				.collect(Collectors.toList());
 	}
 
 

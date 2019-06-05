@@ -136,7 +136,7 @@ public class InformationTypeController {
 			@ApiResponse(code = 404, message = "InformationType not found"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@PutMapping("/{id}")
-	public ResponseEntity updateOneInformationType(@PathVariable Long id, @Valid @RequestBody InformationTypeRequest request) {
+	public ResponseEntity updateOneInformationTypeById(@PathVariable Long id, @Valid @RequestBody InformationTypeRequest request) {
 		logger.info("Received a request to update InformationType with id={}", id);
 		Optional<InformationType> fromRepository = repository.findById(id);
 		if (!fromRepository.isPresent()) {
