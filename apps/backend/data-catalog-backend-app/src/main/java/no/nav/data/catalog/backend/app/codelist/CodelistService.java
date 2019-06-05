@@ -42,14 +42,16 @@ public class CodelistService {
 	}
 
 	public List<Codelist> save(List<CodelistRequest> requests) {
-		requests.forEach(request -> codelists.get(request.getList()).put(request.getCode(), request.getDescription()));
+		requests.forEach(request -> codelists.get(request.getList())
+				.put(request.getCode().toUpperCase(), request.getDescription()));
 		return repository.saveAll(requests.stream()
 				.map(CodelistRequest::convert)
 				.collect(Collectors.toList()));
 	}
 
 	public List<Codelist> update(List<CodelistRequest> requests) {
-		requests.forEach(request -> codelists.get(request.getList()).put(request.getCode(), request.getDescription()));
+		requests.forEach(request -> codelists.get(request.getList())
+				.put(request.getCode().toUpperCase(), request.getDescription()));
 
 		return repository.saveAll(requests.stream()
 				.map(this::setDescriptionByCodelistRequest)
@@ -57,7 +59,7 @@ public class CodelistService {
 	}
 
 	private Codelist setDescriptionByCodelistRequest(CodelistRequest request) {
-		Optional<Codelist> optionalCodelist = repository.findByListAndCode(request.getList(), request.getCode());
+		Optional<Codelist> optionalCodelist = repository.findByListAndCode(request.getList(), request.getCode().toUpperCase());
 		if (optionalCodelist.isPresent()) {
 			Codelist codelist = optionalCodelist.get();
 			codelist.setDescription(request.getDescription());
