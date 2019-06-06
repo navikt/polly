@@ -32,6 +32,7 @@ import no.nav.data.catalog.backend.app.informationtype.InformationType;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeController;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
+import no.nav.data.catalog.backend.app.informationtype.InformationTypeResponse;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
 import no.nav.data.catalog.backend.app.informationtype.RestResponsePage;
 import org.junit.Before;
@@ -42,8 +43,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -51,13 +50,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
 @RunWith(SpringRunner.class)
@@ -116,13 +113,17 @@ public class InformationTypeControllerTest {
 	@Test
 	public void get20InformationTypes() throws Exception {
 		List<InformationType> informationTypes = createTestdataInformationType(20);
-		Page<InformationType> informationTypePage = new RestResponsePage<>(informationTypes);
+		List<InformationTypeResponse> informationTypesResponses = informationTypes.stream()
+				.map(InformationType::convertToResponse)
+				.collect(Collectors.toList());
+		RestResponsePage<InformationTypeResponse> informationTypePage = new RestResponsePage<>(informationTypesResponses);
 
-		given(repository.findAll(PageRequest.of(0, 20))).willReturn(informationTypePage);
+		given(repository.findAllByOrderByIdAsc(PageRequest.of(0, 20))).willReturn(informationTypes);
 
 		mvc.perform(get("/backend/informationtype")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.totalElements", is(20)))
 				.andExpect(jsonPath("$.content", hasSize(20)));
 	}
 
