@@ -9,10 +9,12 @@ import static org.junit.Assert.assertThat;
 
 import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.codelist.Codelist;
+import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
 import no.nav.data.catalog.backend.app.codelist.CodelistRequest;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -36,6 +38,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -55,6 +59,9 @@ public class CodelistControllerIT extends TestdataCodelists {
 	@Autowired
 	private CodelistService service;
 
+	@Autowired
+	private CodelistRepository repository;
+
 	@ClassRule
 	public static PostgreSQLContainer postgreSQLContainer =
 			(PostgreSQLContainer) new PostgreSQLContainer("postgres:10.4")
@@ -67,6 +74,12 @@ public class CodelistControllerIT extends TestdataCodelists {
 	public void setUp() {
 		service.refreshCache();
 		codelists.get(LIST_NAME).put(CODE, DESCRIPTION);
+	}
+
+	@After
+	public void cleanUp() {
+		codelists.clear();
+		repository.deleteAll();
 	}
 
 	@Test
@@ -133,7 +146,7 @@ public class CodelistControllerIT extends TestdataCodelists {
 	}
 
 	@Test
-	public void update_shouldUpdateCodelist() {
+	public void update_shouldUpdateOneCodelist() {
 		String code = "UPDATE_CODE";
 		service.save(createRequest(LIST_NAME, code, DESCRIPTION));
 
@@ -144,6 +157,23 @@ public class CodelistControllerIT extends TestdataCodelists {
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
 		assertThat(codelists.get(LIST_NAME).get(code), is(updatedCodelists.get(0).getDescription()));
+	}
+
+	@Test
+	public void update_shouldUpdate20Codelists() {
+		List<CodelistRequest> requests = createNrOfRequests("shouldUpdate20Codelists_nr_", 20);
+		service.save(requests);
+
+		requests.forEach(request -> request.setDescription("Updated codelists"));
+		ResponseEntity<List<Codelist>> responseEntity = restTemplate.exchange(
+				URL, HttpMethod.PUT, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
+				});
+
+		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
+		assertThat(codelists.get(ListName.SYSTEM).size(), is(20));
+		codelists.get(ListName.SYSTEM);
+		Collection<String> descriptionList = codelists.get(ListName.SYSTEM).values();
+		descriptionList.forEach(description -> assertThat(description, is("Updated codelists")));
 	}
 
 

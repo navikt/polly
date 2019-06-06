@@ -40,6 +40,8 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = AppStarter.class)
@@ -188,6 +190,30 @@ public class CodelistControllerTest {
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
 		assertThat(codelists.get(ListName.PRODUCER).size()).isEqualTo(currentProducerListSize + 1);
 		assertThat(codelists.get(request.getList()).get(request.getCode())).isEqualTo(request.getDescription());
+	}
+
+	@Test
+	public void save_shouldSave10Codelists() throws Exception {
+		int currentProducerListSize = codelists.get(ListName.PRODUCER).size();
+
+		List<CodelistRequest> requests = IntStream.rangeClosed(1, 10)
+				.mapToObj(i -> CodelistRequest.builder()
+						.list(ListName.PRODUCER)
+						.code("CODE_nr:" + i)
+						.description("Description")
+						.build())
+				.collect(Collectors.toList());
+
+		String inputJson = objectMapper.writeValueAsString(requests);
+
+		MockHttpServletResponse response = mvc.perform(post(BASE_URI)
+				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+				.content(inputJson))
+				.andReturn().getResponse();
+
+		assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
+		assertThat(codelists.get(ListName.PRODUCER).size()).isEqualTo(currentProducerListSize + 10);
+
 	}
 
 	@Ignore // fix after service.validateRequest is fixed
