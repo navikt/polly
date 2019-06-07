@@ -43,7 +43,7 @@ public class CodelistService {
 
 	public List<Codelist> save(List<CodelistRequest> requests) {
 		requests.forEach(request -> codelists.get(request.getList())
-				.put(request.getCode().toUpperCase(), request.getDescription()));
+				.put(request.getCode().toUpperCase().trim(), request.getDescription()));
 		return repository.saveAll(requests.stream()
 				.map(CodelistRequest::convert)
 				.collect(Collectors.toList()));
@@ -51,7 +51,7 @@ public class CodelistService {
 
 	public List<Codelist> update(List<CodelistRequest> requests) {
 		requests.forEach(request -> codelists.get(request.getList())
-				.put(request.getCode().toUpperCase(), request.getDescription()));
+				.put(request.getCode().toUpperCase().trim(), request.getDescription()));
 
 		return repository.saveAll(requests.stream()
 				.map(this::setDescriptionByCodelistRequest)
@@ -106,7 +106,7 @@ public class CodelistService {
 	private Optional<ListName> listNameInCodelist(String listName){
 		Stream<ListName> streamOfListNames = Arrays.stream(ListName.values());
 		return streamOfListNames
-				.filter(x -> x.toString().equals(listName.toUpperCase()))
+				.filter(x -> x.toString().equalsIgnoreCase(listName))
 				.findFirst();
 	}
 
