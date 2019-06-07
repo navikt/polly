@@ -8,6 +8,8 @@ import static no.nav.data.catalog.backend.test.component.informationtype.Testdat
 import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.SYSTEM_CODE;
 import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.SYSTEM_DESCRIPTION;
 import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.URL;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,6 +42,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -74,7 +77,7 @@ public class InformationTypeControllerTest {
 
 	@Before
 	public void initCodelists() {
-		codelists = codelistService.codelists;
+		codelists = CodelistService.codelists;
 		codelists.put(ListName.CATEGORY, new HashMap<>());
 		codelists.put(ListName.PRODUCER, new HashMap<>());
 		codelists.put(ListName.SYSTEM, new HashMap<>());
@@ -106,6 +109,18 @@ public class InformationTypeControllerTest {
 				.andExpect(status().isNotFound());
 	}
 
+	@Test
+	public void getInformationTypeByName_shouldGetInformationType_WhenNameExists() throws Exception {
+		String name = "Test";
+		InformationType informationType = createInformationtTypeTestData(1L, name);
+		InformationTypeResponse informationTypeResponse = informationType.convertToResponse();
+
+		given(repository.findByName(name))
+				.willReturn(Optional.of(informationType));
+
+		mvc.perform(get(URL + "/name/" + name))
+				.andExpect(status().isOk());
+	}
 
 
 	@Test
