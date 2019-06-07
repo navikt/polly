@@ -1,28 +1,12 @@
 package no.nav.data.catalog.backend.test.component.informationtype;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.common.UUIDs.base64UUID;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.BDDMockito.willThrow;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
-import no.nav.data.catalog.backend.app.informationtype.InformationType;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeController;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeResponse;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
+import no.nav.data.catalog.backend.app.informationtype.*;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -35,11 +19,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.common.UUIDs.base64UUID;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InformationTypeControllerTest {
@@ -47,9 +37,7 @@ public class InformationTypeControllerTest {
 	private static final String BASE_URI = "/backend/informationtype";
 	private MockMvc mvc;
 	private ObjectMapper objectMapper;
-	private HashMap<ListName, HashMap<String, String>> codelists = new HashMap<>();
 	private static InformationType informationType;
-	private static InformationTypeResponse informationTypeResponse;
 
 	@InjectMocks
 	private InformationTypeController informationTypeController;
@@ -80,6 +68,13 @@ public class InformationTypeControllerTest {
 		informationType.setCreatedBy("Mr Melk");
 		informationType.setCreatedDate(new Date());
 
+		codelists.put(ListName.CATEGORY, new HashMap<>(
+				Map.of("PERSONALIA", "PERSONALIA", "KONTAKTOPPLYSNINGER", "KONTAKTOPPLYSNINGER", "ARBEIDSFORHOLD","ARBEIDSFORHOLD")));
+		codelists.put(ListName.PRODUCER, new HashMap<>(
+				Map.of("SKATTEETATEN", "SKATTEETATEN", "ARBEIDSGIVER", "ARBEIDSGIVER")));
+		codelists.put(ListName.SYSTEM, new HashMap<>(
+				Map.of("TPS", "TPS", "AA_REG", "AA_REG")));
+
 //		informationTypeResponse = informationType.convertToResponse();
 
 //		informationTypeResponse = InformationTypeResponse.builder()
@@ -104,7 +99,6 @@ public class InformationTypeControllerTest {
 //				.build();
 	}
 
-	@Ignore //Doesn't work because of dependancy to codelists
 	@Test
 	public void getInformationTypeById_shouldGetInformationType_WhenIdExists() throws Exception {
 		Long id = 1L;
@@ -122,8 +116,27 @@ public class InformationTypeControllerTest {
 		then(informationTypeRepository).should(times(1)).findById(id);
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
 		assertThat(response.getContentAsString())
-				.isEqualTo(objectMapper.writeValueAsString(informationType));
+				.isEqualTo(objectMapper.writeValueAsString(informationType.convertToResponse()));
+	}
 
+	@Test
+	public void getInformationTypeByName_shouldGetInformationType_WhenNameExists() throws Exception {
+		String name = "Test";
+
+		// given
+		given(informationTypeRepository.findByName(name))
+				.willReturn(Optional.of(informationType));
+
+		// when
+		MockHttpServletResponse response = mvc.perform(
+				MockMvcRequestBuilders.get(BASE_URI + "/name/" + name))
+				.andReturn().getResponse();
+
+		// then
+		then(informationTypeRepository).should(times(1)).findByName(name);
+		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+		assertThat(response.getContentAsString())
+				.isEqualTo(objectMapper.writeValueAsString(informationType.convertToResponse()));
 	}
 
 	@Test
@@ -146,7 +159,6 @@ public class InformationTypeControllerTest {
 		assertThat(response.getContentAsString()).isEmpty();
 	}
 
-	@Ignore //Doesn't work because of dependancy to codelists
 	@Test
 	public void getAllInformationTypes_shouldGetAllInformationTypes() throws Exception {
 		List<InformationType> informationTypes = getInformationTypeList();
@@ -164,7 +176,7 @@ public class InformationTypeControllerTest {
 		then(informationTypeRepository).should(times(1)).findAllByOrderByIdAsc();
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
 		assertThat(response.getContentAsString())
-				.isEqualTo(objectMapper.writeValueAsString(informationTypes));
+				.isEqualTo(objectMapper.writeValueAsString(InformationTypeResponseEntity.builder().content(getContent(informationTypes)).build()));
 	}
 
 	@Test
@@ -441,5 +453,11 @@ public class InformationTypeControllerTest {
 		return list;
 	}
 
+	private List<InformationTypeResponse> getContent(List<InformationType> informationTypes) {
+		List<InformationTypeResponse> responses = new ArrayList<>();
+		informationTypes.forEach(informationType -> responses.add(informationType.convertToResponse()));
+
+		return responses;
+	}
 }
 
