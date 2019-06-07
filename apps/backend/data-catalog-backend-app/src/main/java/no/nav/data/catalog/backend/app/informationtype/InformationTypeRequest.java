@@ -29,7 +29,7 @@ public class InformationTypeRequest {
 
 	private String name;
 	private String categoryCode;
-	private String producerCode;
+	private List<String> producerCode;
 	private String systemCode;
 	private String description;
 	private Boolean personalData;

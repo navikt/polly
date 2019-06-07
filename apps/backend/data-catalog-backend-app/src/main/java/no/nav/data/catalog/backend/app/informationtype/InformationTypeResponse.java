@@ -8,8 +8,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.catalog.backend.app.codelist.ListName;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -22,7 +25,7 @@ public class InformationTypeResponse {
 	private String name;
 	private String description;
 	private Map category;
-	private Map producer;
+	private List<Map> producer;
 	private Map system;
 	private Boolean personalData;
 
@@ -33,9 +36,16 @@ public class InformationTypeResponse {
 		this.name = informationType.getName();
 		this.description = informationType.getDescription();
 		this.category = getMapForCodelistItem(ListName.CATEGORY, informationType.getCategoryCode());
-		this.producer = getMapForCodelistItem(ListName.PRODUCER, informationType.getProducerCode());
+		this.producer = getListOfMappedProducers(informationType.getProducerCode());
 		this.system = getMapForCodelistItem(ListName.SYSTEM, informationType.getSystemCode());
 		this.personalData = informationType.isPersonalData();
+	}
+
+	private List<Map> getListOfMappedProducers(String commaSeparatedStringOfProducerCodes) {
+		List<String> listOfProducerCodes = Arrays.asList(commaSeparatedStringOfProducerCodes.split("\\s*,\\s*"));
+		return listOfProducerCodes.stream()
+				.map(producerCode -> getMapForCodelistItem(ListName.PRODUCER, producerCode))
+				.collect(Collectors.toList());
 	}
 
 	private Map<String, String> getMapForCodelistItem(ListName listName, String code) {

@@ -25,6 +25,7 @@ import java.util.Optional;
 public class InformationTypeService {
 
 	private static final Logger logger = LoggerFactory.getLogger(InformationTypeService.class);
+	private HashMap<String, String> validationErrors = new HashMap<>();
 
 	@Autowired
 	private InformationTypeRepository repository;
@@ -88,26 +89,37 @@ public class InformationTypeService {
 		repository.updateStatusAllRows(TO_BE_UPDATED);
 	}
 
-	public void validateRequest(InformationTypeRequest request, boolean isUpdate) throws ValidationException {
-		HashMap<String, String> validationErrors = new HashMap<>();
+	public void validateRequest(InformationTypeRequest request, boolean isUpdate) {
+		validationErrors.clear();
 		if (request.getName() == null ){ validationErrors.put("name", "Name must have value"); }
 		if (request.getPersonalData() == null) {
 			validationErrors.put("personalData", "PersonalData cannot be null");
 		}
-		if(!isUpdate && request.getName() != null && repository.findByName(request.getName().toLowerCase()).isPresent()) { validationErrors.put("name", "This name is used for an existing information type."); }
-		if (!codelists.get(ListName.PRODUCER).containsKey(request.getProducerCode())) {
-			validationErrors.put("producerCode", "The producerCode was null or not found in the producerCode codelist.");
+		if (!isUpdate && request.getName() != null && repository.findByName(request.getName().toLowerCase()).isPresent()) {
+			validationErrors.put("name", "This name is used for an existing information type");
 		}
-		if (!codelists.get(ListName.CATEGORY).containsKey(request.getCategoryCode())) {
-			validationErrors.put("categoryCode", "The categoryCode was null or not found in the categoryCode codelist.");
-		}
-		if (!codelists.get(ListName.SYSTEM).containsKey(request.getSystemCode())) {
-			validationErrors.put("systemCode", "The systemCode was null or not found in the systemCode codelist.");
+
+		doesListContainTheCode(ListName.CATEGORY, request.getCategoryCode());
+		doesListContainTheCode(ListName.SYSTEM, request.getSystemCode());
+
+		if (request.getProducerCode() == null) {
+			validationErrors.put("producerCode", "The list of producerCodes was null");
+		} else {
+			request.getProducerCode().forEach(code -> doesListContainTheCode(ListName.PRODUCER, code));
 		}
 
 		if(!validationErrors.isEmpty()) {
 			logger.error("Validation errors occurred when validating InformationTypeRequest: {}", validationErrors);
 			throw new ValidationException(validationErrors, "Validation errors occurred when validating InformationTypeRequest.");
+		}
+	}
+
+	private void doesListContainTheCode(ListName listName, String code) {
+		String codeType = listName.toString().toLowerCase() + "Code";
+		if (code == null) {
+			validationErrors.put(codeType, String.format("The %s was null", codeType));
+		} else if (!codelists.get(listName).containsKey(code)) {
+			validationErrors.put(codeType, String.format("The code:%s was not found in the codelist:%s", code, listName));
 		}
 	}
 }

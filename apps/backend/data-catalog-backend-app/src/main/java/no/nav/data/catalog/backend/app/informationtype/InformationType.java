@@ -23,6 +23,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -88,7 +89,7 @@ public class InformationType extends Auditable<String> {
 		}
 		this.name = request.getName();
 		this.categoryCode = request.getCategoryCode().toUpperCase();
-		this.producerCode = request.getProducerCode().toUpperCase();
+		this.producerCode = request.getProducerCode().stream().map(String::toUpperCase).collect(Collectors.joining(", "));
 		this.systemCode = request.getSystemCode().toUpperCase();
 		this.description = request.getDescription();
 		this.personalData = request.getPersonalData();
