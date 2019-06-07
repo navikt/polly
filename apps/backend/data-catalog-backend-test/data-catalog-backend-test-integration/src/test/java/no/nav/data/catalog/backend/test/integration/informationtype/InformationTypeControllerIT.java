@@ -93,11 +93,21 @@ public class InformationTypeControllerIT {
 
 	@Test
 	public void getInformationTypeById() {
-//		String name = "getInformationTypeById";
 		InformationType informationType = saveAnInformationType(createRequest());
 
 		ResponseEntity<InformationTypeResponse> responseEntity = restTemplate.exchange(
 				URL + "/" + informationType.getId(), HttpMethod.GET, HttpEntity.EMPTY, InformationTypeResponse.class);
+
+		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+		assertInformationTypeResponse(responseEntity.getBody());
+	}
+
+	@Test
+	public void getInformationTypeByName() {
+		InformationType informationType = saveAnInformationType(createRequest());
+
+		ResponseEntity<InformationTypeResponse> responseEntity = restTemplate.exchange(
+				URL + "/name/" + informationType.getName(), HttpMethod.GET, HttpEntity.EMPTY, InformationTypeResponse.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 		assertInformationTypeResponse(responseEntity.getBody());
