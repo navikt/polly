@@ -5,9 +5,11 @@ import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.
 import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.CATEGORY_CODE;
 import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.CATEGORY_DESCRIPTION;
 import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.DESCRIPTION;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.LIST_PRODUCER_MAP;
 import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.NAME;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.PRODUCER_CODE;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.PRODUCER_DESCRIPTION;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.PRODUCER_CODE_LIST;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.PRODUCER_CODE_STRING;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.PRODUCER_DESCRIPTION_LIST;
 import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.SYSTEM_CODE;
 import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.SYSTEM_DESCRIPTION;
 import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.URL;
@@ -17,7 +19,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 import no.nav.data.catalog.backend.app.AppStarter;
-import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.informationtype.InformationType;
@@ -40,8 +41,6 @@ import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -101,7 +100,8 @@ public class InformationTypeControllerIT {
 	private void initializeCodelists() {
 		codelists = CodelistService.codelists;
 		codelists.get(ListName.CATEGORY).put(CATEGORY_CODE, CATEGORY_DESCRIPTION);
-		codelists.get(ListName.PRODUCER).put(PRODUCER_CODE, PRODUCER_DESCRIPTION);
+		codelists.get(ListName.PRODUCER).put(PRODUCER_CODE_LIST.get(0), PRODUCER_DESCRIPTION_LIST.get(0));
+		codelists.get(ListName.PRODUCER).put(PRODUCER_CODE_LIST.get(1), PRODUCER_DESCRIPTION_LIST.get(1));
 		codelists.get(ListName.SYSTEM).put(SYSTEM_CODE, SYSTEM_DESCRIPTION);
 	}
 
@@ -255,7 +255,7 @@ public class InformationTypeControllerIT {
 	}
 
 	private void assertInformationType(InformationType informationType) {
-		assertThat(informationType.getProducerCode(), is(PRODUCER_CODE));
+		assertThat(informationType.getProducerCode(), is(PRODUCER_CODE_STRING));
 		assertThat(informationType.getSystemCode(), is(SYSTEM_CODE));
 		assertThat(informationType.isPersonalData(), is(true));
 		assertThat(informationType.getName(), is(NAME));
@@ -268,8 +268,7 @@ public class InformationTypeControllerIT {
 		assertThat(response.getDescription(), equalTo(DESCRIPTION));
 		assertThat(response.getCategory().get("code"), equalTo(CATEGORY_CODE));
 		assertThat(response.getCategory().get("description"), equalTo(CATEGORY_DESCRIPTION));
-		assertThat(response.getProducer().get("code"), equalTo(PRODUCER_CODE));
-		assertThat(response.getProducer().get("description"), equalTo(PRODUCER_DESCRIPTION));
+		assertThat(response.getProducer(), equalTo(LIST_PRODUCER_MAP));
 		assertThat(response.getSystem().get("code"), equalTo(SYSTEM_CODE));
 		assertThat(response.getSystem().get("description"), equalTo(SYSTEM_DESCRIPTION));
 	}
@@ -286,7 +285,7 @@ public class InformationTypeControllerIT {
 				.name(name)
 				.description(DESCRIPTION)
 				.categoryCode(CATEGORY_CODE)
-				.producerCode(PRODUCER_CODE)
+				.producerCode(PRODUCER_CODE_LIST)
 				.systemCode(SYSTEM_CODE)
 				.personalData(true)
 				.build();

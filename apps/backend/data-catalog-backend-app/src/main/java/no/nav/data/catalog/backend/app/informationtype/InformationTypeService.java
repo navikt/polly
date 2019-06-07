@@ -118,8 +118,8 @@ public class InformationTypeService {
 		String codeType = listName.toString().toLowerCase() + "Code";
 		if (code == null) {
 			validationErrors.put(codeType, String.format("The %s was null", codeType));
-		} else if (!codelists.get(listName).containsKey(code)) {
-			validationErrors.put(codeType, String.format("The code:%s was not found in the codelist:%s", code, listName));
+		} else if (!codelists.get(listName).containsKey(code.toUpperCase())) {
+			validationErrors.put(codeType, String.format("The code:%s was not found in the codelist:%s", code.toUpperCase(), listName));
 		}
 	}
 }

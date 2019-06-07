@@ -1,7 +1,18 @@
 package no.nav.data.catalog.backend.test.integration.informationtype;
 
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.*;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCED;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.CATEGORY_CODE;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.CATEGORY_DESCRIPTION;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.CATEGORY_MAP;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.DESCRIPTION;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.LIST_PRODUCER_MAP;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.NAME;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.PRODUCER_CODE_LIST;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.PRODUCER_CODE_STRING;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.PRODUCER_DESCRIPTION_LIST;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.SYSTEM_CODE;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.SYSTEM_DESCRIPTION;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.SYSTEM_MAP;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -79,7 +90,8 @@ public class InformationTypeServiceIT {
     private void initializeCodelists() {
         codelists = CodelistService.codelists;
         codelists.get(ListName.CATEGORY).put(CATEGORY_CODE, CATEGORY_DESCRIPTION);
-        codelists.get(ListName.PRODUCER).put(PRODUCER_CODE, PRODUCER_DESCRIPTION);
+        codelists.get(ListName.PRODUCER).put(PRODUCER_CODE_LIST.get(0), PRODUCER_DESCRIPTION_LIST.get(0));
+        codelists.get(ListName.PRODUCER).put(PRODUCER_CODE_LIST.get(1), PRODUCER_DESCRIPTION_LIST.get(1));
         codelists.get(ListName.SYSTEM).put(SYSTEM_CODE, SYSTEM_DESCRIPTION);
     }
 
@@ -164,7 +176,7 @@ public class InformationTypeServiceIT {
                 .elasticsearchStatus(esStatus)
                 .name(NAME)
                 .description(DESCRIPTION)
-                .producerCode(PRODUCER_CODE)
+                .producerCode(PRODUCER_CODE_STRING)
                 .personalData(true).build();
         repository.save(informationType);
     }
@@ -184,8 +196,8 @@ public class InformationTypeServiceIT {
         assertThat(esMap.get("name"), is(NAME));
         assertThat(esMap.get("description"), is(DESCRIPTION));
         assertThat(esMap.get("personalData"), is(true));
-        assertThat((Map) esMap.get("category"), is(CATEGORY_MAP));
-        assertThat((Map) esMap.get("producer"), is(PRODUCER_MAP));
-        assertThat((Map) esMap.get("system"), is(SYSTEM_MAP));
+        assertThat(esMap.get("category"), is(CATEGORY_MAP));
+        assertThat(esMap.get("producer"), is(LIST_PRODUCER_MAP));
+        assertThat(esMap.get("system"), is(SYSTEM_MAP));
     }
 }

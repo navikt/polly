@@ -75,10 +75,11 @@ public class GithubWebhooksControllerIT {
     }
 
     private void intializeCodelists() {
-        codelists = codelistService.codelists;
+		codelists = CodelistService.codelists;
         codelists.get(ListName.CATEGORY).put("PERSONALIA", "Personalia");
         codelists.get(ListName.CATEGORY).put("INNTEKT_YTELSER", "Inntekt, trygde- og pensjonsytelser");
         codelists.get(ListName.PRODUCER).put("SKATTEETATEN", "Skatteetaten");
+		codelists.get(ListName.PRODUCER).put("BRUKER", "Bruker");
         codelists.get(ListName.PRODUCER).put("UTLENDINGSDIREKTORATET", "Utlendingsdirektoratet");
         codelists.get(ListName.SYSTEM).put("TPS", "Tjenestebasert PersondataSystem");
         codelists.get(ListName.SYSTEM).put("PESYS", "Pensjonssystem");
