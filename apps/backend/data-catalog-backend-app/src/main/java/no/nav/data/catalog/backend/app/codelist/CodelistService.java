@@ -59,7 +59,9 @@ public class CodelistService {
 	}
 
 	private Codelist setDescriptionByCodelistRequest(CodelistRequest request) {
-		Optional<Codelist> optionalCodelist = repository.findByListAndCode(request.getList(), request.getCode().toUpperCase());
+		Optional<Codelist> optionalCodelist = repository.findByListAndCode(request.getList(), request.getCode()
+				.toUpperCase()
+				.trim());
 		if (optionalCodelist.isPresent()) {
 			Codelist codelist = optionalCodelist.get();
 			codelist.setDescription(request.getDescription());
@@ -71,6 +73,7 @@ public class CodelistService {
 	}
 
 	public void delete(ListName name, String code) {
+		code = code.toUpperCase().trim();
 		Optional<Codelist> toDelete = repository.findByListAndCode(name, code);
 		if(toDelete.isPresent()) {
 			repository.delete(toDelete.get());
@@ -81,13 +84,14 @@ public class CodelistService {
 		}
 	}
 
-	public void validateRequest(CodelistRequest request, boolean isUpdate) throws ValidationException {
+	public void validateRequest(CodelistRequest request, boolean isUpdate) {
 		HashMap<String, String> validationErrors = new HashMap<>();
 
 		if (request.getList() == null) {
 			validationErrors.put("list", "The codelist must have a list name");
 		}
-		if (!isUpdate && request.getList() != null && codelists.get(request.getList()).containsKey(request.getCode())) {
+		if (!isUpdate && request.getList() != null && codelists.get(request.getList())
+				.containsKey(request.getCode().toUpperCase().trim())) {
 			validationErrors.put("code", "The code " + request.getCode() + " already exists in " + request.getList());
 		}
 		if (request.getCode() == null || request.getCode().isEmpty()) {
