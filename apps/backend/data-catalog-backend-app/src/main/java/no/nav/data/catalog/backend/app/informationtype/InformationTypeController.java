@@ -65,7 +65,24 @@ public class InformationTypeController {
 		return new ResponseEntity<>(informationType.get().convertToResponse(), HttpStatus.OK);
 	}
 
-	@ApiOperation(value = "Get all InformationTypes", tags = {"InformationTypes"})
+	@ApiOperation(value = "Get InformationTypeByName", tags = { "InformationType" })
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "InformationType fetched", response = InformationType.class),
+			@ApiResponse(code = 404, message = "InformationType not found"),
+			@ApiResponse(code = 500, message = "Internal server error")})
+	@GetMapping("/name/{name}")
+	public ResponseEntity getInformationTypeByName(@PathVariable String name) {
+		logger.info("Received request for InformationType with the name={}", name);
+		Optional<InformationType> informationType = repository.findByName(name);
+		if(informationType.isEmpty()) {
+			logger.info("Cannot find the InformationType with name={}", name);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		logger.info("Returned InformationType");
+		return new ResponseEntity<>(informationType.get().convertToResponse(), HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "Get all InformationTypes", tags = { "InformationType" })
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "All informationTypes fetched", response = InformationTypeResponse.class, responseContainer = "Page"),
 			@ApiResponse(code = 404, message = "No InformationTypes found in repository"),
