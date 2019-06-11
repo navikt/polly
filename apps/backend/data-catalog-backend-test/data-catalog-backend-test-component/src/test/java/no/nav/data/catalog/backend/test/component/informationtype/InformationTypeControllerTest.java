@@ -29,13 +29,7 @@ import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
-import no.nav.data.catalog.backend.app.informationtype.InformationType;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeController;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeResponse;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
-import no.nav.data.catalog.backend.app.informationtype.RestResponsePage;
+import no.nav.data.catalog.backend.app.informationtype.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -146,6 +140,20 @@ public class InformationTypeControllerTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
 	}
+
+	@Test
+	public void getInformationTypeByName_shouldGetInformationType_WhenNameExists() throws Exception {
+		String name = "Test";
+		InformationType informationType = createInformationtTypeTestData(1L, name);
+		InformationTypeResponse informationTypeResponse = informationType.convertToResponse();
+
+		given(repository.findByName(name))
+				.willReturn(Optional.of(informationType));
+
+		mvc.perform(get(URL + "/name/" + name))
+				.andExpect(status().isOk());
+	}
+
 
 	@Test
 	public void get20InformationTypes() throws Exception {

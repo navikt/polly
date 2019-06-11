@@ -116,6 +116,17 @@ public class InformationTypeControllerIT {
 		assertInformationTypeResponse(responseEntity.getBody());
 	}
 
+	@Test
+	public void getInformationTypeByName() {
+		InformationType informationType = saveAnInformationType(createRequest());
+
+		ResponseEntity<InformationTypeResponse> responseEntity = restTemplate.exchange(
+				URL + "/name/" + informationType.getName(), HttpMethod.GET, HttpEntity.EMPTY, InformationTypeResponse.class);
+
+		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+		assertInformationTypeResponse(responseEntity.getBody());
+	}
+
 	private InformationType saveAnInformationType(InformationTypeRequest request) {
 		return repository.save(new InformationType().convertFromRequest(request, false));
 	}
