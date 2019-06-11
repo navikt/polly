@@ -1,7 +1,33 @@
 package no.nav.data.catalog.backend.test.component.informationtype;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.CATEGORY_CODE;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.CATEGORY_DESCRIPTION;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.DESCRIPTION;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.PRODUCER_CODE;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.PRODUCER_DESCRIPTION;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.SYSTEM_CODE;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.SYSTEM_DESCRIPTION;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.URL;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import no.nav.data.catalog.backend.app.AppStarter;
+import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
+import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
@@ -9,455 +35,254 @@ import no.nav.data.catalog.backend.app.informationtype.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
-import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.common.UUIDs.base64UUID;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
+@WebMvcTest(InformationTypeController.class)
+@ContextConfiguration(classes = AppStarter.class)
+@ActiveProfiles("test")
 public class InformationTypeControllerTest {
 
-	private static final String BASE_URI = "/backend/informationtype";
+	private HashMap<ListName, HashMap<String, String>> codelists = new HashMap<>();
+
+	@Autowired
 	private MockMvc mvc;
-	private ObjectMapper objectMapper;
-	private static InformationType informationType;
 
-	@InjectMocks
-	private InformationTypeController informationTypeController;
-
-	@Mock
-	private InformationTypeRepository informationTypeRepository;
-
-	@Mock
+	@MockBean
+	private InformationTypeRepository repository;
+	@MockBean
 	private InformationTypeService service;
-
+	@MockBean
+	private CodelistService codelistService;
+	@MockBean
+	private CodelistRepository codelistRepository;
 
 	@Before
-	public void setup() {
-		objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
-		mvc = MockMvcBuilders.standaloneSetup(informationTypeController).build();
+	public void initCodelists() {
+		codelists = CodelistService.codelists;
+		codelists.put(ListName.CATEGORY, new HashMap<>());
+		codelists.put(ListName.PRODUCER, new HashMap<>());
+		codelists.put(ListName.SYSTEM, new HashMap<>());
 
-		informationType = InformationType.builder()
-				.id(1L)
-				.name("Test")
-				.description("Test description")
-				.categoryCode("PERSONALIA")
-				.producerCode("SKATTEETATEN")
-				.systemCode("TPS")
-				.personalData(true)
-				.elasticsearchId(base64UUID())
-				.elasticsearchStatus(ElasticsearchStatus.TO_BE_CREATED)
-				.build();
-		informationType.setCreatedBy("Mr Melk");
-		informationType.setCreatedDate(new Date());
-
-		codelists.put(ListName.CATEGORY, new HashMap<>(
-				Map.of("PERSONALIA", "PERSONALIA", "KONTAKTOPPLYSNINGER", "KONTAKTOPPLYSNINGER", "ARBEIDSFORHOLD","ARBEIDSFORHOLD")));
-		codelists.put(ListName.PRODUCER, new HashMap<>(
-				Map.of("SKATTEETATEN", "SKATTEETATEN", "ARBEIDSGIVER", "ARBEIDSGIVER")));
-		codelists.put(ListName.SYSTEM, new HashMap<>(
-				Map.of("TPS", "TPS", "AA_REG", "AA_REG")));
-
-//		informationTypeResponse = informationType.convertToResponse();
-
-//		informationTypeResponse = InformationTypeResponse.builder()
-//				.elasticsearchId(informationType.getElasticsearchId())
-//				.informationTypeId(1L)
-//				.name("Test")
-//				.description("Test description")
-//				.categoryCode(CodelistDTO.builder()
-//						.code("PERSONALIA")
-//						.description("Personalia")
-//						.build())
-//				.producerCode(CodelistDTO.builder()
-//						.code("SKATTEETATEN")
-//						.description("Skatteetaten")
-//						.build())
-//				.systemCode(CodelistDTO.builder()
-//						.code("TPS").description("Tjenestebasert PersondataSystem")
-//						.build())
-//				.personalData(true)
-//				.createdBy("Mr Melk")
-//				.createdDate(informationType.getCreatedDate().toString())
-//				.build();
+		codelists.get(ListName.CATEGORY).put(CATEGORY_CODE, CATEGORY_DESCRIPTION);
+		codelists.get(ListName.PRODUCER).put(PRODUCER_CODE, PRODUCER_DESCRIPTION);
+		codelists.get(ListName.SYSTEM).put(SYSTEM_CODE, SYSTEM_DESCRIPTION);
 	}
 
 	@Test
-	public void getInformationTypeById_shouldGetInformationType_WhenIdExists() throws Exception {
-		Long id = 1L;
+	public void getInformationTypeById_shouldGetInformationType_whenIdExists() throws Exception {
+		InformationType informationType = createInformationtTypeTestData(1L, "infoType1");
+		InformationTypeResponse response = informationType.convertToResponse();
 
-		// given
-		given(informationTypeRepository.findById(id))
-				.willReturn(Optional.of(informationType));
+		given(repository.findById(1L)).willReturn(Optional.of(informationType));
 
-		// when
-		MockHttpServletResponse response = mvc.perform(
-				MockMvcRequestBuilders.get(BASE_URI + "/" + id))
-				.andReturn().getResponse();
+		mvc.perform(get(URL + "/1")
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.name", is("infoType1")));
+	}
 
-		// then
-		then(informationTypeRepository).should(times(1)).findById(id);
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-		assertThat(response.getContentAsString())
-				.isEqualTo(objectMapper.writeValueAsString(informationType.convertToResponse()));
+	@Test
+	public void getInformationTypeById_shouldGetNotFound_WhenIdDoesNotExist() throws Exception {
+		given(repository.findById(1L)).willReturn(Optional.empty());
+
+		mvc.perform(get(URL + "/1")
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void getInformationTypeByName_shouldGetInformationType_WhenNameExists() throws Exception {
 		String name = "Test";
+		InformationType informationType = createInformationtTypeTestData(1L, name);
+		InformationTypeResponse informationTypeResponse = informationType.convertToResponse();
 
-		// given
-		given(informationTypeRepository.findByName(name))
+		given(repository.findByName(name))
 				.willReturn(Optional.of(informationType));
 
-		// when
-		MockHttpServletResponse response = mvc.perform(
-				MockMvcRequestBuilders.get(BASE_URI + "/name/" + name))
-				.andReturn().getResponse();
+		mvc.perform(get(URL + "/name/" + name))
+				.andExpect(status().isOk());
+	}
 
-		// then
-		then(informationTypeRepository).should(times(1)).findByName(name);
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-		assertThat(response.getContentAsString())
-				.isEqualTo(objectMapper.writeValueAsString(informationType.convertToResponse()));
+
+	@Test
+	public void getAllInformationTypes_shouldGetTwoInformationTypes() throws Exception {
+		InformationType infoType1 = createInformationtTypeTestData(1L, "infoType1");
+		InformationType infoType2 = createInformationtTypeTestData(2L, "infoType2");
+
+		List<InformationType> informationTypes = Arrays.asList(infoType1, infoType1);
+		Page<InformationType> informationTypePage = new PageImpl<>(informationTypes);
+
+		given(repository.findAll(PageRequest.of(0, 100))).willReturn(informationTypePage);
+
+		mvc.perform(get("/backend/informationtype?page=0&size=100")
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.content", hasSize(2)));
 	}
 
 	@Test
-	public void getInformationTypeById_shouldGetNotFound_WhenIdDoesNotExist() throws Exception {
-		Long id = 1L;
+	public void getAllInformationTypes_shouldGetEmptyList_whenRepositoryIsEmpty() throws Exception {
+		Page<InformationType> informationTypePage = new PageImpl<>(Collections.emptyList());
 
-		// given
-		given(informationTypeRepository.findById(id))
-				.willReturn(Optional.empty());
-//		given(informationTypeController.getContent(informationType)).willReturn(List.of(informationTypeResponse));
+		given(repository.findAll(PageRequest.of(0, 100))).willReturn(informationTypePage);
 
-		// when
-		MockHttpServletResponse response = mvc.perform(
-				MockMvcRequestBuilders.get(BASE_URI + "/" + id))
-				.andReturn().getResponse();
-
-		// then
-		then(informationTypeRepository).should(times(1)).findById(id);
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
-		assertThat(response.getContentAsString()).isEmpty();
-	}
-
-	@Test
-	public void getAllInformationTypes_shouldGetAllInformationTypes() throws Exception {
-		List<InformationType> informationTypes = getInformationTypeList();
-
-		// given
-		given(informationTypeRepository.findAllByOrderByIdAsc())
-				.willReturn(informationTypes);
-
-		// when
-		MockHttpServletResponse response = mvc.perform(
-				MockMvcRequestBuilders.get(BASE_URI))
-				.andReturn().getResponse();
-
-		// then
-		then(informationTypeRepository).should(times(1)).findAllByOrderByIdAsc();
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-		assertThat(response.getContentAsString())
-				.isEqualTo(objectMapper.writeValueAsString(InformationTypeResponseEntity.builder().content(getContent(informationTypes)).build()));
-	}
-
-	@Test
-	public void getAllInformationTypes_shouldReturnEmptyList_WhenRepositoryIsEmpty() throws Exception {
-		List<InformationType> emptyList = new ArrayList<>();
-
-		// given
-		given(informationTypeRepository.findAllByOrderByIdAsc())
-				.willReturn(emptyList);
-
-		// when
-		MockHttpServletResponse response = mvc.perform(
-				MockMvcRequestBuilders.get(BASE_URI))
-				.andReturn().getResponse();
-
-		// then
-		then(informationTypeRepository).should(times(1)).findAllByOrderByIdAsc();
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
-		assertThat(response.getContentAsString()).isEmpty();
+		mvc.perform(get("/backend/informationtype?page=0&size=100")
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.content", hasSize(0)));
 	}
 
 	@Test
 	public void createInformationType_shouldCreateNewInformationType_WithValidRequest() throws Exception {
-		InformationTypeRequest request = InformationTypeRequest.builder()
-				.name("Test createInformationType")
-				.categoryCode("PERSONALIA")
-				.producerCode("BRUKER")
-				.systemCode("TPS")
-				.description("Informasjon til test hentet av bruker")
-				.personalData(true)
-				.build();
+		InformationTypeRequest request = createInformationTypeRequestTestData("Test createInformationType");
 		InformationType createdInformationType = new InformationType().convertFromRequest(request, false);
-		createdInformationType.setId(10L);
+		createdInformationType.setId(1L);
 
-		// given
-		given(informationTypeRepository.save(any(InformationType.class)))
-				.willReturn(createdInformationType);
+		given(repository.save(createdInformationType)).willReturn(createdInformationType);
 
+		mvc.perform(post(URL).contentType(MediaType.APPLICATION_JSON)
+				.content(asJsonString(request)))
+				.andExpect(status().isAccepted());
 
-		// when
-		MockHttpServletResponse response = mvc.perform(
-				MockMvcRequestBuilders.post(BASE_URI)
-						.contentType(MediaType.APPLICATION_JSON_UTF8)
-						.content(objectMapper.writeValueAsString(request)))
-				.andReturn().getResponse();
-
-		// then
-		then(service).should(times(1)).validateRequest(any(InformationTypeRequest.class), anyBoolean());
-		then(informationTypeRepository).should(times(1)).save(any(InformationType.class));
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.ACCEPTED.value());
-		assertThat(response.getContentAsString())
-				.isEqualTo(objectMapper.writeValueAsString(createdInformationType));
-		assertThat(createdInformationType.getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_CREATED);
+		then(service).should(times(1)).validateRequest(request, false);
+		then(repository).should(times(1)).save(any(InformationType.class));
 	}
 
 	@Test
 	public void createInformationType_shouldFailToCreateNewInformationType_WithInvalidValidRequest() throws Exception {
 		InformationTypeRequest request = InformationTypeRequest.builder().build();
 		HashMap<String, String> validationErrors = new HashMap<>();
-		validationErrors.put("name", "Name must have value");
-		validationErrors.put("producerCode", "The producerCode was null or not found in the producerCode codelist.");
-		validationErrors.put("categoryCode", "The categoryCode was null or not found in the categoryCode codelist.");
-		validationErrors.put("systemCode", "The systemCode was null or not found in the systemCode codelist.");
-		validationErrors.put("createdBy", "Created by cannot be null or empty.");
 
-		// given
 		willThrow(new ValidationException(validationErrors, "Validation errors occured when validating input file from Github."))
 				.given(service).validateRequest(request, false);
 
-		// when
-		MockHttpServletResponse response = mvc.perform(
-				MockMvcRequestBuilders.post(BASE_URI)
-						.contentType(MediaType.APPLICATION_JSON_UTF8)
-						.content(objectMapper.writeValueAsString(request)))
-				.andReturn().getResponse();
+		mvc.perform(post(URL)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(asJsonString(request)))
+				.andExpect(status().isBadRequest());
 
-		// then
 		then(service).should(times(1)).validateRequest(request, false);
-		then(informationTypeRepository).should(never()).save(any(InformationType.class));
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-		assertThat(response.getContentAsString()).isEqualTo(objectMapper.writeValueAsString(validationErrors));
+		then(repository).should(never()).save(any(InformationType.class));
 	}
-
-	@Test
-	public void createInformationType_shouldFailToCreateNewInformationType_WhenNameAlreadyExists() throws Exception {
-		InformationTypeRequest request = InformationTypeRequest.builder()
-				.name("Test")
-				.categoryCode("PERSONALIA")
-				.producerCode("BRUKER")
-				.systemCode("TPS")
-				.description("Duplicates of InformationTypes aren't allowed")
-				.personalData(true)
-				.build();
-		InformationType createdInformationType = new InformationType().convertFromRequest(request, false);
-		HashMap<String, String> validationErrors = new HashMap<>();
-		validationErrors.put("name", "This name is used for an existing information type.");
-
-		// given
-		willThrow(new ValidationException(validationErrors, "Validation errors occured when validating input file from Github."))
-				.given(service).validateRequest(request, false);
-
-		// when
-		MockHttpServletResponse response = mvc.perform(
-				MockMvcRequestBuilders.post(BASE_URI)
-						.contentType(MediaType.APPLICATION_JSON_UTF8)
-						.content(objectMapper.writeValueAsString(request)))
-				.andReturn().getResponse();
-
-		// then
-		then(service).should(times(1)).validateRequest(request, false);
-		then(informationTypeRepository).should(never()).save(any(InformationType.class));
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-		assertThat(response.getContentAsString()).isEqualTo(objectMapper.writeValueAsString(validationErrors));
-	}
-
 
 	@Test
 	public void updateInformationType_shouldUpdateInformationType_WithValidRequest() throws Exception {
-		Long id = 1L;
-		InformationTypeRequest request = InformationTypeRequest.builder()
-				.name("Test updateInformationType")
-				.categoryCode("PERSONALIA")
-				.producerCode("BRUKER")
-				.systemCode("TPS")
-				.description("Test of updateInformationType")
-				.personalData(true)
-				.build();
-		assertThat(informationType.getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_CREATED);
-		InformationType informationTypeToBeUpdated = informationType.convertFromRequest(request, true);
+		InformationTypeRequest request = createInformationTypeRequestTestData("Test updateInformationType");
+		InformationType informationTypeToBeUpdated = new InformationType().convertFromRequest(request, false);
+		request.setDescription("UPDATED");
+		InformationType updatedInformationType = new InformationType().convertFromRequest(request, true);
 
-		// given
-		given(informationTypeRepository.findById(id))
-				.willReturn(Optional.of(informationType));
-		given(informationTypeRepository.save(informationTypeToBeUpdated))
-				.willReturn(informationTypeToBeUpdated);
+		given(repository.findById(1L)).willReturn(Optional.of(informationTypeToBeUpdated));
+		given(repository.save(updatedInformationType)).willReturn(updatedInformationType);
 
-		// when
-		MockHttpServletResponse response = mvc.perform(
-				MockMvcRequestBuilders.put(BASE_URI + "/" + id)
-						.contentType(MediaType.APPLICATION_JSON_UTF8)
-						.content(objectMapper.writeValueAsString(request)))
-				.andReturn().getResponse();
+		mvc.perform(put(URL + "/1")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(asJsonString(request)))
+				.andExpect(status().isAccepted());
 
-		// then
-		then(informationTypeRepository).should(times(1)).findById(id);
+		then(repository).should(times(1)).findById(1L);
 		then(service).should(times(1)).validateRequest(request, true);
-		then(informationTypeRepository).should(times(1)).save(any(InformationType.class));
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.ACCEPTED.value());
-		assertThat(response.getContentAsString())
-				.isEqualTo(objectMapper.writeValueAsString(informationTypeToBeUpdated));
-		assertThat(informationTypeToBeUpdated.getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_UPDATED);
+		then(repository).should(times(1)).save(any(InformationType.class));
 	}
 
 	@Test
 	public void updateInformationType_shouldFailToUpdateInformationType_WhenIdDoesNotExist() throws Exception {
-		Long id = 1L;
-		InformationTypeRequest request = InformationTypeRequest.builder()
-				.name("Test updateInformationType")
-				.categoryCode("PERSONALIA")
-				.producerCode("BRUKER")
-				.systemCode("TPS")
-				.description("Test of updateInformationType")
-				.personalData(true)
-				.build();
-		// given
-		given(informationTypeRepository.findById(id))
-				.willReturn(Optional.empty());
-
-		// when
-		MockHttpServletResponse response = mvc.perform(
-				MockMvcRequestBuilders.put(BASE_URI + "/" + id)
-						.contentType(MediaType.APPLICATION_JSON_UTF8)
-						.content(objectMapper.writeValueAsString(request)))
-				.andReturn().getResponse();
-
-		// then
-		then(informationTypeRepository).should(times(1)).findById(id);
-		then(service).should(never()).validateRequest(request, true);
-		then(informationTypeRepository).should(never()).save(any(InformationType.class));
-
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
-		assertThat(response.getContentAsString()).isEmpty();
-
-	}
-
-
-	@Test
-	public void updateInformationType_shouldFailToUpdateInformationType_WithInvalidRequest() throws Exception {
-		Long id = 1L;
-
 		InformationTypeRequest request = InformationTypeRequest.builder().build();
 
-		HashMap<String, String> validationErrors = new HashMap<>();
-		validationErrors.put("name", "Name must have value");
-		validationErrors.put("producerCode", "The producerCode was null or not found in the producerCode codelist.");
-		validationErrors.put("categoryCode", "The categoryCode was null or not found in the categoryCode codelist.");
-		validationErrors.put("systemCode", "The systemCode was null or not found in the systemCode codelist.");
-		validationErrors.put("createdBy", "Created by cannot be null or empty.");
+		given(repository.findById(1L)).willReturn(Optional.empty());
 
-		// given
-		given(informationTypeRepository.findById(id))
-				.willReturn(Optional.of(informationType));
-		willThrow(new ValidationException(validationErrors, "Validation errors occured when validating input file from Github."))
-				.given(service).validateRequest(request, true);
+		mvc.perform(put(URL + "/1")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(asJsonString(request)))
+				.andExpect(status().isNotFound());
 
-		// when
-		MockHttpServletResponse response = mvc.perform(
-				MockMvcRequestBuilders.put(BASE_URI + "/" + id)
-						.contentType(MediaType.APPLICATION_JSON_UTF8)
-						.content(objectMapper.writeValueAsString(request)))
-				.andReturn().getResponse();
-
-		// then
-		then(informationTypeRepository).should(times(1)).findById(id);
-		then(service).should(times(1)).validateRequest(request, true);
-		then(informationTypeRepository).should(never()).save(any(InformationType.class));
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-		assertThat(response.getContentAsString()).isEqualTo(objectMapper.writeValueAsString(validationErrors));
+		then(repository).should(times(1)).findById(1L);
+		then(service).should(never()).validateRequest(request, true);
+		then(repository).should(never()).save(any(InformationType.class));
 	}
 
 	@Test
 	public void deleteInformationTypeById_shouldSetElasticsearchStatusToBeDeleted() throws Exception {
-		List<InformationType> informationTypeList = getInformationTypeList();
-		Long id = informationTypeList.get(1).getId();
-		assertThat(informationTypeList.get(1).getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_CREATED);
+		InformationType infoType = createInformationtTypeTestData(1L, "infoType");
+		InformationType infoTypeToBeDeleted = createInformationtTypeTestData(1L, "infoType");
+		infoTypeToBeDeleted.setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED);
 
-		// given
-		given(informationTypeRepository.findById(id))
-				.willReturn(Optional.of(informationTypeList.get(1)));
+		given(repository.findById(1L)).willReturn(Optional.of(infoType));
+		given(repository.save(infoType)).willReturn(infoTypeToBeDeleted);
 
 
-		// when
-		MockHttpServletResponse response = mvc.perform(
-				MockMvcRequestBuilders.delete(BASE_URI + "/" + id))
-				.andReturn().getResponse();
+		mvc.perform(delete(URL + "/1"))
+				.andExpect(status().isAccepted());
 
-		// then
-		then(informationTypeRepository).should(times(1)).findById(id);
-		then(informationTypeRepository).should(times(1)).save(informationTypeList.get(1));
-		assertThat(informationTypeList.get(1).getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_DELETED);
+		then(repository).should(times(1)).findById(1L);
+		then(repository).should(times(1)).save(infoType);
+	}
+
+	@Test
+	public void deleteInformationTypeById_shouldFailToDeleteInformationType_whenIdDOesNotExist() throws Exception {
+		InformationTypeRequest request = InformationTypeRequest.builder().build();
+
+		given(repository.findById(1L)).willReturn(Optional.empty());
+
+		mvc.perform(delete(URL + "/1")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(asJsonString(request)))
+				.andExpect(status().isNotFound());
+
+		then(repository).should(times(1)).findById(1L);
+		then(repository).should(never()).save(any(InformationType.class));
 	}
 
 
-	private List<InformationType> getInformationTypeList() {
-		InformationType informationType_2 = InformationType.builder()
-				.id(2L)
-				.name("Test_2")
-				.description("Test av addresse")
-				.categoryCode("KONTAKTOPPLYSNINGER")
-				.producerCode("SKATTEETATEN")
-				.systemCode("TPS")
+	private InformationType createInformationtTypeTestData(Long id, String name) {
+		return InformationType.builder()
+				.id(id)
+				.name(name)
+				.description(DESCRIPTION)
+				.categoryCode(CATEGORY_CODE)
+				.producerCode(PRODUCER_CODE)
+				.systemCode(SYSTEM_CODE)
 				.personalData(true)
-				.elasticsearchId(base64UUID())
+				.elasticsearchId("esId")
 				.elasticsearchStatus(ElasticsearchStatus.TO_BE_CREATED)
 				.build();
-
-		InformationType informationType_3 = InformationType.builder()
-				.id(3L)
-				.name("Test_3")
-				.description("Test av arbeidsgiver")
-				.categoryCode("ARBEIDSFORHOLD")
-				.producerCode("ARBEIDSGIVER")
-				.systemCode("AA_REG")
-				.personalData(true)
-				.elasticsearchId(base64UUID())
-				.elasticsearchStatus(ElasticsearchStatus.TO_BE_CREATED)
-				.build();
-
-		List<InformationType> list = new ArrayList<>();
-		list.add(informationType);
-		list.add(informationType_2);
-		list.add(informationType_3);
-
-		return list;
 	}
 
-	private List<InformationTypeResponse> getContent(List<InformationType> informationTypes) {
-		List<InformationTypeResponse> responses = new ArrayList<>();
-		informationTypes.forEach(informationType -> responses.add(informationType.convertToResponse()));
+	private InformationTypeRequest createInformationTypeRequestTestData(String name) {
+		return InformationTypeRequest.builder()
+				.name(name)
+				.categoryCode(CATEGORY_CODE)
+				.producerCode(PRODUCER_CODE)
+				.systemCode(SYSTEM_CODE)
+				.description(DESCRIPTION)
+				.personalData(true)
+				.build();
+	}
 
-		return responses;
+	private String asJsonString(Object obj) {
+		try {
+			return new ObjectMapper().writeValueAsString(obj);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
-

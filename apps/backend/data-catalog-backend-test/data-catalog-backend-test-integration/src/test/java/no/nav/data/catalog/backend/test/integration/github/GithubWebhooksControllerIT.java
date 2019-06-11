@@ -9,6 +9,7 @@ import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository
 import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -75,7 +76,7 @@ public class GithubWebhooksControllerIT {
     }
 
     private void intializeCodelists() {
-        codelists = codelistService.codelists;
+        codelists = CodelistService.codelists;
         codelists.get(ListName.CATEGORY).put("PERSONALIA", "Personalia");
         codelists.get(ListName.CATEGORY).put("INNTEKT_YTELSER", "Inntekt, trygde- og pensjonsytelser");
         codelists.get(ListName.PRODUCER).put("SKATTEETATEN", "Skatteetaten");
@@ -87,6 +88,7 @@ public class GithubWebhooksControllerIT {
         codelists.get(ListName.SYSTEM).put("ARENA", "Arbeidsrelatert saksbehandlingsystem");
     }
 
+    @Ignore // Ignore until branch informationTypeSeveralSources is merged in
     @Test
     public void retriveAndSaveSingleDataset() {
         assertThat(repository.findAll().size(), is(0));
@@ -100,6 +102,7 @@ public class GithubWebhooksControllerIT {
         assertThat(repository.findAll().size(), is(1));
     }
 
+    @Ignore // Ignore until branch informationTypeSeveralSources is merged in
     @Test
     public void retriveAndSaveMultipleDataset() {
         assertThat(repository.findAll().size(), is(0));

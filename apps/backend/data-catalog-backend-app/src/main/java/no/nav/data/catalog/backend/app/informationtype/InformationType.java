@@ -3,6 +3,7 @@ package no.nav.data.catalog.backend.app.informationtype;
 import static org.elasticsearch.common.UUIDs.base64UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,6 +30,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "INFORMATION_TYPE")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class InformationType extends Auditable<String> {
 
 	@Id
@@ -73,7 +75,7 @@ public class InformationType extends Auditable<String> {
 	@NotNull
 	private ElasticsearchStatus elasticsearchStatus;
 
-	public Map<String, Object> convertToMap() {
+	Map<String, Object> convertToMap() {
 		return this.convertToResponse().convertToMap();
 	}
 

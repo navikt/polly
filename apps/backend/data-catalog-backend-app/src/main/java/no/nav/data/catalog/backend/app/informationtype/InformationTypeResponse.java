@@ -2,6 +2,8 @@ package no.nav.data.catalog.backend.app.informationtype;
 
 import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.catalog.backend.app.codelist.ListName;
@@ -11,6 +13,8 @@ import java.util.Map;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class InformationTypeResponse {
 
 	private String elasticsearchId;
@@ -23,7 +27,7 @@ public class InformationTypeResponse {
 	private Boolean personalData;
 
 
-	public InformationTypeResponse(InformationType informationType) {
+	InformationTypeResponse(InformationType informationType) {
 		this.elasticsearchId = informationType.getElasticsearchId();
 		this.informationTypeId = informationType.getId();
 		this.name = informationType.getName();
@@ -39,7 +43,7 @@ public class InformationTypeResponse {
 				"description", codelists.get(listName).get(code));
 	}
 
-	public Map<String, Object> convertToMap() {
+	Map<String, Object> convertToMap() {
 		Map<String, Object> jsonMap = new HashMap<>();
 		jsonMap.put("id", elasticsearchId);
 		jsonMap.put("informationTypeId", informationTypeId);

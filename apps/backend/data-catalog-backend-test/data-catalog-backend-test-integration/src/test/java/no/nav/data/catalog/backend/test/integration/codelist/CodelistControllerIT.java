@@ -70,7 +70,7 @@ public class CodelistControllerIT extends TestdataCodelists {
 				URL, HttpMethod.GET, HttpEntity.EMPTY, Map.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-		assertThat(responseEntity.getBody().size(), is(3));
+		assertThat(responseEntity.getBody().size(), is(4));
 
 		Arrays.stream(ListName.values())
 				.forEach(listName -> assertThat(responseEntity.getBody()

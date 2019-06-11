@@ -2,13 +2,13 @@ package no.nav.data.catalog.backend.test.integration.informationtype;
 
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.CATEGORY;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.CATEGORY_CODE;
 import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.CATEGORY_DESCRIPTION;
 import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.DESCRIPTION;
 import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.NAME;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.PRODUCER;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.PRODUCER_CODE;
 import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.PRODUCER_DESCRIPTION;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.SYSTEM;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.SYSTEM_CODE;
 import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.SYSTEM_DESCRIPTION;
 import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.URL;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -22,9 +22,10 @@ import no.nav.data.catalog.backend.app.informationtype.InformationType;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeResponse;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeResponseEntity;
+import no.nav.data.catalog.backend.app.informationtype.RestResponsePage;
 import no.nav.data.catalog.backend.test.component.elasticsearch.FixedElasticsearchContainer;
 import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -36,6 +37,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -79,16 +82,21 @@ public class InformationTypeControllerIT {
 	public static FixedElasticsearchContainer container = new FixedElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch-oss:6.4.1");
 
 	@Before
-	public void init() {
+	public void setUp() {
 		repository.deleteAll();
 		initializeCodelists();
 	}
 
+	@After
+	public void cleanUp() {
+		repository.deleteAll();
+	}
+
 	private void initializeCodelists() {
-		codelists = codelistService.codelists;
-		codelists.get(ListName.CATEGORY).put(CATEGORY, CATEGORY_DESCRIPTION);
-		codelists.get(ListName.PRODUCER).put(PRODUCER, PRODUCER_DESCRIPTION);
-		codelists.get(ListName.SYSTEM).put(SYSTEM, SYSTEM_DESCRIPTION);
+		codelists = CodelistService.codelists;
+		codelists.get(ListName.CATEGORY).put(CATEGORY_CODE, CATEGORY_DESCRIPTION);
+		codelists.get(ListName.PRODUCER).put(PRODUCER_CODE, PRODUCER_DESCRIPTION);
+		codelists.get(ListName.SYSTEM).put(SYSTEM_CODE, SYSTEM_DESCRIPTION);
 	}
 
 	@Test
@@ -122,8 +130,9 @@ public class InformationTypeControllerIT {
 		saveAnInformationType(createRequest("First InformationTypeName"));
 		saveAnInformationType(createRequest("Second InformationTypeName"));
 
-		ResponseEntity<InformationTypeResponseEntity> responseEntity = restTemplate.exchange(
-				URL, HttpMethod.GET, HttpEntity.EMPTY, InformationTypeResponseEntity.class);
+		ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange(URL,
+				HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
+				});
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 		assertThat(responseEntity.getBody().getContent().size(), is(repository.findAll().size()));
@@ -171,7 +180,7 @@ public class InformationTypeControllerIT {
 		responseEntity = restTemplate.exchange(
 				URL + "/" + storedInformationType.getId(), HttpMethod.DELETE, new HttpEntity<>(request), String.class);
 		assertThat(repository.findAll().size(), is(1));
-		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
 		storedInformationType = repository.findByName(NAME).get();
 		assertThat(storedInformationType.getElasticsearchStatus(), is(TO_BE_DELETED));
 	}
@@ -188,22 +197,22 @@ public class InformationTypeControllerIT {
 	}
 
 	private void assertInformationType(InformationType informationType) {
-		assertThat(informationType.getProducerCode(), is(PRODUCER));
-		assertThat(informationType.getSystemCode(), is(SYSTEM));
+		assertThat(informationType.getProducerCode(), is(PRODUCER_CODE));
+		assertThat(informationType.getSystemCode(), is(SYSTEM_CODE));
 		assertThat(informationType.isPersonalData(), is(true));
 		assertThat(informationType.getName(), is(NAME));
 		assertThat(informationType.getDescription(), is(DESCRIPTION));
-		assertThat(informationType.getCategoryCode(), is(CATEGORY));
+		assertThat(informationType.getCategoryCode(), is(CATEGORY_CODE));
 	}
 
 	private void assertInformationTypeResponse(InformationTypeResponse response) {
 		assertThat(response.getName(), equalTo(NAME));
 		assertThat(response.getDescription(), equalTo(DESCRIPTION));
-		assertThat(response.getCategory().get("code"), equalTo(CATEGORY));
+		assertThat(response.getCategory().get("code"), equalTo(CATEGORY_CODE));
 		assertThat(response.getCategory().get("description"), equalTo(CATEGORY_DESCRIPTION));
-		assertThat(response.getProducer().get("code"), equalTo(PRODUCER));
+		assertThat(response.getProducer().get("code"), equalTo(PRODUCER_CODE));
 		assertThat(response.getProducer().get("description"), equalTo(PRODUCER_DESCRIPTION));
-		assertThat(response.getSystem().get("code"), equalTo(SYSTEM));
+		assertThat(response.getSystem().get("code"), equalTo(SYSTEM_CODE));
 		assertThat(response.getSystem().get("description"), equalTo(SYSTEM_DESCRIPTION));
 	}
 
@@ -211,9 +220,9 @@ public class InformationTypeControllerIT {
 		return InformationTypeRequest.builder()
 				.name(name)
 				.description(DESCRIPTION)
-				.categoryCode(CATEGORY)
-				.producerCode(PRODUCER)
-				.systemCode(SYSTEM)
+				.categoryCode(CATEGORY_CODE)
+				.producerCode(PRODUCER_CODE)
+				.systemCode(SYSTEM_CODE)
 				.personalData(true)
 				.build();
 	}

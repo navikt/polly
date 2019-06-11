@@ -75,17 +75,17 @@ public class InformationTypeServiceTest {
     @Before
     public void init() {
         codelists = codelistService.codelists;
-        codelists.get(ListName.CATEGORY).put(CATEGORY, CATEGORY_DESCRIPTION);
-        codelists.get(ListName.PRODUCER).put(PRODUCER, PRODUCER_DESCRIPTION);
-        codelists.get(ListName.SYSTEM).put(SYSTEM, SYSTEM_DESCRIPTION);
+        codelists.get(ListName.CATEGORY).put(CATEGORY_CODE, CATEGORY_DESCRIPTION);
+        codelists.get(ListName.PRODUCER).put(PRODUCER_CODE, PRODUCER_DESCRIPTION);
+        codelists.get(ListName.SYSTEM).put(SYSTEM_CODE, SYSTEM_DESCRIPTION);
 
         informationType = InformationType.builder()
                 .id(1L)
                 .name(NAME)
                 .description(DESCRIPTION)
-                .categoryCode(CATEGORY)
-                .producerCode(PRODUCER)
-                .systemCode(SYSTEM)
+                .categoryCode(CATEGORY_CODE)
+                .producerCode(PRODUCER_CODE)
+                .systemCode(SYSTEM_CODE)
                 .personalData(true)
                 .elasticsearchId("esId")
                 .elasticsearchStatus(TO_BE_CREATED)
@@ -141,10 +141,10 @@ public class InformationTypeServiceTest {
     @Test
     public void shouldValidateInsertRequest() {
 	    InformationTypeRequest request = InformationTypeRequest.builder()
-                .categoryCode(CATEGORY)
+                .categoryCode(CATEGORY_CODE)
 				.name("Name")
-                .systemCode(SYSTEM)
-                .producerCode(PRODUCER)
+                .systemCode(SYSTEM_CODE)
+                .producerCode(PRODUCER_CODE)
 				.personalData(true)
 				.build();
 	    informationTypeService.validateRequest(request, false);
