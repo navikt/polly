@@ -2,6 +2,9 @@ package no.nav.data.catalog.backend.test.integration.codelist;
 
 
 import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
+import static no.nav.data.catalog.backend.test.integration.codelist.TestdataCodelists.CODE;
+import static no.nav.data.catalog.backend.test.integration.codelist.TestdataCodelists.DESCRIPTION;
+import static no.nav.data.catalog.backend.test.integration.codelist.TestdataCodelists.LIST_NAME;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -12,7 +15,10 @@ import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
 import no.nav.data.catalog.backend.app.codelist.CodelistRequest;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
+import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,13 +33,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.Duration;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
 		classes = {IntegrationTestConfig.class, AppStarter.class})
 @ActiveProfiles("itest")
 @ContextConfiguration(initializers = {CodelistServiceIT.Initializer.class})
-public class CodelistServiceIT extends TestdataCodelists {
+public class CodelistServiceIT {
 
 	@Autowired
 	private CodelistService service;
@@ -49,50 +56,63 @@ public class CodelistServiceIT extends TestdataCodelists {
 					.withPassword("samplepwd")
 					.withStartupTimeout(Duration.ofSeconds(600));
 
+	@Before
+	public void setUp() {
+		repository.deleteAll();
+	}
+
+	@After
+	public void cleanUp() {
+		repository.deleteAll();
+	}
+
 	@Test
 	public void save_shouldSaveNewCodelist() {
-		CodelistRequest request = createRequest();
 		service.save(createRequest());
 
 		assertThat(repository.findAll().size(), is(1));
-		assertTrue(repository.findByListAndCode(LIST, CODE).isPresent());
-		assertThat(codelists.get(LIST).size(), is(1));
-		assertFalse(codelists.get(LIST).get(CODE).isEmpty());
-
-		resetRepository(request);
+		assertTrue(repository.findByListAndCode(LIST_NAME, CODE).isPresent());
+		assertThat(codelists.get(LIST_NAME).size(), is(1));
+		assertFalse(codelists.get(LIST_NAME).get(CODE).isEmpty());
 	}
 
 	@Test
 	public void update_shouldUpdateCodelist() {
 		service.save(createRequest());
 
-		CodelistRequest updatedRequest = createRequest(LIST, CODE, "Updated codelist");
+		List<CodelistRequest> updatedRequest = createRequest(LIST_NAME, CODE, "Updated codelist");
 		service.update(updatedRequest);
 
-		assertThat(codelists.get(LIST).get(CODE), is(updatedRequest.getDescription()));
-		assertThat(repository.findByListAndCode(LIST, CODE).get().getDescription(), is(updatedRequest.getDescription()));
-
-		resetRepository(updatedRequest);
+		assertThat(codelists.get(LIST_NAME).get(CODE), is(updatedRequest.get(0).getDescription()));
+		assertThat(repository.findByListAndCode(LIST_NAME, CODE).get().getDescription(), is(updatedRequest.get(0)
+				.getDescription()));
 	}
 
 	@Test
 	public void delete_shouldDeleteCodelist() {
-		CodelistRequest request = createRequest();
-
+		List<CodelistRequest> request = createRequest();
 		service.save(request);
 		assertThat(repository.findAll().size(), is(1));
-		assertThat(codelists.get(request.getList()).size(), is(1));
+		assertThat(codelists.get(LIST_NAME).size(), is(1));
 
-		service.delete(request.getList(), request.getCode());
+		service.delete(LIST_NAME, CODE);
 
 		assertThat(repository.findAll().size(), is(0));
-		assertFalse(repository.findByListAndCode(LIST, CODE).isPresent());
-		assertThat(codelists.get(LIST).size(), is(0));
-		assertNull(codelists.get(LIST).get(CODE));
+		assertFalse(repository.findByListAndCode(LIST_NAME, CODE).isPresent());
+		assertThat(codelists.get(LIST_NAME).size(), is(0));
+		assertNull(codelists.get(LIST_NAME).get(CODE));
 	}
 
-	private void resetRepository(CodelistRequest request) {
-		service.delete(request.getList(), request.getCode());
+	private List<CodelistRequest> createRequest(ListName listName, String code, String description) {
+		return List.of(CodelistRequest.builder()
+				.list(listName)
+				.code(code)
+				.description(description)
+				.build());
+	}
+
+	private List<CodelistRequest> createRequest() {
+		return createRequest(LIST_NAME, CODE, DESCRIPTION);
 	}
 
 	static class Initializer

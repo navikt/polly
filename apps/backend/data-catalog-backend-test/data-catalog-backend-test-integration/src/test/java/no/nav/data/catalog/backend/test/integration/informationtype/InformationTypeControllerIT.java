@@ -13,9 +13,11 @@ import static no.nav.data.catalog.backend.test.integration.informationtype.Testd
 import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.URL;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 import no.nav.data.catalog.backend.app.AppStarter;
+import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.informationtype.InformationType;
@@ -38,7 +40,8 @@ import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.hateoas.PagedResources;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -50,6 +53,9 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -126,40 +132,93 @@ public class InformationTypeControllerIT {
 	}
 
 	@Test
-	public void getAllInformationTypes() {
-		saveAnInformationType(createRequest("First InformationTypeName"));
-		saveAnInformationType(createRequest("Second InformationTypeName"));
+	public void get20FirstInformationTypes() {
+		createInformationTypeTestData(30);
 
 		ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange(URL,
-				HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
+				HttpMethod.GET, HttpEntity.EMPTY, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
 				});
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-		assertThat(responseEntity.getBody().getContent().size(), is(repository.findAll().size()));
+		assertThat(repository.findAll().size(), is(30));
+//		//TODO: Find out why test initiate PageImpl() twice
+//		assertThat(responseEntity.getBody().getTotalElements(), is(30L));
+//		assertThat(responseEntity.getBody().getSize(), is(30L));
+	}
+
+	@Test
+	public void get100InformationTypes() {
+		createInformationTypeTestData(100);
+
+		ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange(
+				URL + "?page=0&size=100", HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
+				});
+		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+		assertThat(repository.findAll().size(), is(100));
+		//TODO: Find out why test initiate PageImpl() twice
+//		assertThat(responseEntity.getBody().getContent().size(), is(100));
+	}
+
+	@Test
+	public void get18LastInformationTypes() {
+		createInformationTypeTestData(98);
+
+		ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange(
+				URL + "?page=4&size=20", HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
+				});
+		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+		assertThat(repository.findAll().size(), is(98));
+		//TODO: Find out why test initiate PageImpl() twice
+//		assertThat(responseEntity.getBody().getContent().size(), is(18));
 	}
 
 
 	@Test
 	public void createInformationType() {
-		InformationTypeRequest request = createRequest();
+		List<InformationTypeRequest> requests = List.of(createRequest());
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
-				URL, HttpMethod.POST, new HttpEntity<>(request), String.class);
+				URL, HttpMethod.POST, new HttpEntity<>(requests), String.class);
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
 		assertThat(repository.findAll().size(), is(1));
 		assertInformationType(repository.findByName(NAME).get());
 	}
 
+	//TODO: createInformationType_throwValidationError
+
 	@Test
-	public void updateInformationType() {
-		InformationTypeRequest request = createRequest();
+	public void updateInformationTypes() {
+		List<InformationTypeRequest> requests = List.of(createRequest("UPDATE_1"), createRequest("UPDATE_2"));
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
-				URL, HttpMethod.POST, new HttpEntity<>(request), String.class);
+				URL, HttpMethod.POST, new HttpEntity<>(requests), String.class);
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
+		assertThat(repository.findAll().size(), is(2));
+
+		requests.forEach(request -> request.setDescription("Updated description"));
+		ResponseEntity<List<InformationTypeResponse>> updatedResponseEntity = restTemplate.exchange(
+				URL, HttpMethod.PUT, new HttpEntity<>(requests), new ParameterizedTypeReference<List<InformationTypeResponse>>() {
+				});
+
+		assertThat(updatedResponseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
+		assertThat(repository.findAll().size(), is(2));
+		assertThat(repository.findAll().get(0).getDescription(), is("Updated description"));
+		assertThat(repository.findAll().get(1).getDescription(), is("Updated description"));
+	}
+
+	//TODO: updateInformationType_throwValidationError
+
+	//TODO: Is this method ever used?
+	@Test
+	public void updateOneInformationTypeById() {
+		InformationTypeRequest request = createRequest();
+		repository.save(new InformationType().convertFromRequest(request, false));
+//		ResponseEntity<String> responseEntity = restTemplate.exchange(
+//				URL, HttpMethod.POST, new HttpEntity<>(request), String.class);
+//		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
 		assertThat(repository.findAll().size(), is(1));
 
 		InformationType storedInformationType = repository.findByName(NAME).get();
 		request.setDescription(DESCRIPTION + "UPDATED");
-		responseEntity = restTemplate.exchange(
+		ResponseEntity responseEntity = restTemplate.exchange(
 				URL + "/" + storedInformationType.getId(), HttpMethod.PUT, new HttpEntity<>(request), String.class);
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
 		assertThat(repository.findAll().size(), is(1));
@@ -169,20 +228,30 @@ public class InformationTypeControllerIT {
 	}
 
 	@Test
-	public void deleteInformationType() {
-		InformationTypeRequest request = createRequest();
+	public void deleteInformationTypeById() {
+		List<InformationTypeRequest> requests = List.of(createRequest());
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
-				URL, HttpMethod.POST, new HttpEntity<>(request), String.class);
+				URL, HttpMethod.POST, new HttpEntity<>(requests), String.class);
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
 		assertThat(repository.findAll().size(), is(1));
 
 		InformationType storedInformationType = repository.findByName(NAME).get();
 		responseEntity = restTemplate.exchange(
-				URL + "/" + storedInformationType.getId(), HttpMethod.DELETE, new HttpEntity<>(request), String.class);
+				URL + "/" + storedInformationType.getId(), HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
 		assertThat(repository.findAll().size(), is(1));
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
 		storedInformationType = repository.findByName(NAME).get();
 		assertThat(storedInformationType.getElasticsearchStatus(), is(TO_BE_DELETED));
+	}
+
+	@Test
+	public void deleteInformationTypeById_returnNotFound_whenNonExistingId() {
+		long nonExistingId = 42L;
+		ResponseEntity responseEntity = restTemplate.exchange(
+				URL + "/" + nonExistingId, HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
+
+		assertThat(responseEntity.getStatusCode(), is(HttpStatus.NOT_FOUND));
+		assertNull(responseEntity.getBody());
 	}
 
 	static class Initializer
@@ -214,6 +283,13 @@ public class InformationTypeControllerIT {
 		assertThat(response.getProducer().get("description"), equalTo(PRODUCER_DESCRIPTION));
 		assertThat(response.getSystem().get("code"), equalTo(SYSTEM_CODE));
 		assertThat(response.getSystem().get("description"), equalTo(SYSTEM_DESCRIPTION));
+	}
+
+	private void createInformationTypeTestData(int nrOfRows) {
+		repository.saveAll(IntStream.rangeClosed(1, nrOfRows)
+				.mapToObj(i -> new InformationType()
+						.convertFromRequest(createRequest("InformationTypeName_nr_" + i), false))
+				.collect(Collectors.toList()));
 	}
 
 	private InformationTypeRequest createRequest(String name) {

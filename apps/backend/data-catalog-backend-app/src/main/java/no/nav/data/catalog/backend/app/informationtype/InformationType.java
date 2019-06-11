@@ -87,9 +87,9 @@ public class InformationType extends Auditable<String> {
 			this.elasticsearchId = base64UUID();
 		}
 		this.name = request.getName();
-		this.categoryCode = request.getCategoryCode();
-		this.producerCode = request.getProducerCode();
-		this.systemCode = request.getSystemCode();
+		this.categoryCode = request.getCategoryCode().toUpperCase().trim();
+		this.producerCode = request.getProducerCode().toUpperCase().trim();
+		this.systemCode = request.getSystemCode().toUpperCase().trim();
 		this.description = request.getDescription();
 		this.personalData = request.getPersonalData();
 		return this;

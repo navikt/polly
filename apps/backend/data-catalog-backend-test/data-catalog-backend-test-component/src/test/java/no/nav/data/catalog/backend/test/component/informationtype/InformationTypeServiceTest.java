@@ -74,7 +74,7 @@ public class InformationTypeServiceTest {
 
     @Before
     public void init() {
-        codelists = codelistService.codelists;
+        codelists = CodelistService.codelists;
         codelists.get(ListName.CATEGORY).put(CATEGORY_CODE, CATEGORY_DESCRIPTION);
         codelists.get(ListName.PRODUCER).put(PRODUCER_CODE, PRODUCER_DESCRIPTION);
         codelists.get(ListName.SYSTEM).put(SYSTEM_CODE, SYSTEM_DESCRIPTION);
