@@ -3,8 +3,9 @@ package no.nav.data.catalog.backend.test.component.informationtype;
 import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.CATEGORY_CODE;
 import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.CATEGORY_DESCRIPTION;
 import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.DESCRIPTION;
-import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.PRODUCER_CODE;
-import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.PRODUCER_DESCRIPTION;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.PRODUCER_CODE_LIST;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.PRODUCER_CODE_STRING;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.PRODUCER_DESCRIPTION_LIST;
 import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.SYSTEM_CODE;
 import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.SYSTEM_DESCRIPTION;
 import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.URL;
@@ -79,8 +80,44 @@ public class InformationTypeControllerTest {
 		codelists.put(ListName.SYSTEM, new HashMap<>());
 
 		codelists.get(ListName.CATEGORY).put(CATEGORY_CODE, CATEGORY_DESCRIPTION);
-		codelists.get(ListName.PRODUCER).put(PRODUCER_CODE, PRODUCER_DESCRIPTION);
+		codelists.get(ListName.PRODUCER).put(PRODUCER_CODE_LIST.get(0), PRODUCER_DESCRIPTION_LIST.get(0));
+		codelists.get(ListName.PRODUCER).put(PRODUCER_CODE_LIST.get(1), PRODUCER_DESCRIPTION_LIST.get(1));
 		codelists.get(ListName.SYSTEM).put(SYSTEM_CODE, SYSTEM_DESCRIPTION);
+	}
+
+	@Test
+	public void test() {
+		InformationTypeRequest request = InformationTypeRequest.builder()
+				.name("testProducerList")
+				.categoryCode(CATEGORY_CODE)
+				.producerCode(List.of("Skatteetaten", "bruker"))
+				.systemCode(SYSTEM_CODE)
+				.description(DESCRIPTION)
+				.personalData(true)
+				.build();
+		InformationType informationType = new InformationType().convertFromRequest(request, false);
+
+		InformationTypeResponse response = informationType.convertToResponse();
+
+
+//
+//		List<InformationType> informationTypes = createTestdataInformationType(20);
+//		List<InformationTypeResponse> informationTypesResponses = informationTypes.stream()
+//				.map(InformationType::convertToResponse)
+//				.collect(Collectors.toList());
+//		RestResponsePage<InformationTypeResponse> informationTypePage = new RestResponsePage<>(informationTypesResponses);
+//
+//		given(repository.findAllByOrderByIdAsc(PageRequest.of(0, 20))).willReturn(informationTypes);
+//
+//		mvc.perform(get("/backend/informationtype")
+//				.contentType(MediaType.APPLICATION_JSON))
+//				.andExpect(status().isOk())
+//				.andExpect(jsonPath("$.totalElements", is(20)))
+//				.andExpect(jsonPath("$.content", hasSize(20)));
+//
+//
+//				createInformationTypeRequestTestData("testProducerList");
+
 	}
 
 	@Test
@@ -165,7 +202,7 @@ public class InformationTypeControllerTest {
 	}
 
 	@Test
-	public void createInformationType_shouldFailToCreateNewInformationType_WithInvalidValidRequest() throws Exception {
+	public void createInformationType_shouldFailToCreateNewInformationType_WithInvalidValidRequest() {
 		List<InformationTypeRequest> requests = List.of(InformationTypeRequest.builder().build());
 		HashMap<String, String> validationErrors = new HashMap<>();
 
@@ -263,7 +300,7 @@ public class InformationTypeControllerTest {
 				.name(name)
 				.description(DESCRIPTION)
 				.categoryCode(CATEGORY_CODE)
-				.producerCode(PRODUCER_CODE)
+				.producerCode(PRODUCER_CODE_STRING)
 				.systemCode(SYSTEM_CODE)
 				.personalData(true)
 				.elasticsearchId("esId")
@@ -275,7 +312,7 @@ public class InformationTypeControllerTest {
 		return InformationTypeRequest.builder()
 				.name(name)
 				.categoryCode(CATEGORY_CODE)
-				.producerCode(PRODUCER_CODE)
+				.producerCode(PRODUCER_CODE_LIST)
 				.systemCode(SYSTEM_CODE)
 				.description(DESCRIPTION)
 				.personalData(true)

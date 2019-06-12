@@ -3,7 +3,15 @@ package no.nav.data.catalog.backend.test.component.informationtype;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_CREATED;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
-import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.*;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.CATEGORY_CODE;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.CATEGORY_DESCRIPTION;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.DESCRIPTION;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.NAME;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.PRODUCER_CODE_LIST;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.PRODUCER_CODE_STRING;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.PRODUCER_DESCRIPTION_LIST;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.SYSTEM_CODE;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.SYSTEM_DESCRIPTION;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.any;
@@ -24,7 +32,6 @@ import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
 import no.nav.data.catalog.backend.test.component.ComponentTestConfig;
-import org.elasticsearch.client.RestHighLevelClient;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -32,7 +39,6 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
@@ -56,17 +62,11 @@ public class InformationTypeServiceTest {
     @Mock
     private ElasticsearchRepository elasticsearchRepository;
 
-    @Mock
-    private RestHighLevelClient highLevelClient;
-
 	@InjectMocks
 	private InformationTypeService informationTypeService;
 
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
-
-    @Autowired
-    private CodelistService codelistService;
 
     private static HashMap<ListName, HashMap<String, String>> codelists;
     private static InformationType informationType;
@@ -76,7 +76,8 @@ public class InformationTypeServiceTest {
     public void init() {
         codelists = CodelistService.codelists;
         codelists.get(ListName.CATEGORY).put(CATEGORY_CODE, CATEGORY_DESCRIPTION);
-        codelists.get(ListName.PRODUCER).put(PRODUCER_CODE, PRODUCER_DESCRIPTION);
+        codelists.get(ListName.PRODUCER).put(PRODUCER_CODE_LIST.get(0), PRODUCER_DESCRIPTION_LIST.get(0));
+        codelists.get(ListName.PRODUCER).put(PRODUCER_CODE_LIST.get(1), PRODUCER_DESCRIPTION_LIST.get(1));
         codelists.get(ListName.SYSTEM).put(SYSTEM_CODE, SYSTEM_DESCRIPTION);
 
         informationType = InformationType.builder()
@@ -84,7 +85,7 @@ public class InformationTypeServiceTest {
                 .name(NAME)
                 .description(DESCRIPTION)
                 .categoryCode(CATEGORY_CODE)
-                .producerCode(PRODUCER_CODE)
+                .producerCode(PRODUCER_CODE_STRING)
                 .systemCode(SYSTEM_CODE)
                 .personalData(true)
                 .elasticsearchId("esId")
@@ -139,60 +140,95 @@ public class InformationTypeServiceTest {
     }
 
     @Test
-    public void shouldValidateInsertRequest() {
+    public void validateRequestCreate_shouldValidateInsertRequest() {
 	    InformationTypeRequest request = InformationTypeRequest.builder()
                 .categoryCode(CATEGORY_CODE)
 				.name("Name")
                 .systemCode(SYSTEM_CODE)
-                .producerCode(PRODUCER_CODE)
+                .producerCode(PRODUCER_CODE_LIST)
 				.personalData(true)
 				.build();
 	    informationTypeService.validateRequest(request, false);
     }
 
     @Test
-    public void shouldThrowValidationExceptionOnInsert() {
+    public void validateRequestCreate_shouldThrowValidationException_becauseRequestIsEmpty() {
         InformationTypeRequest request = InformationTypeRequest.builder().build();
         try {
             informationTypeService.validateRequest(request, false);
         } catch (ValidationException e) {
             assertThat(e.get().size(), is(5));
-            assertThat(e.get().get("systemCode"), is("The systemCode was null or not found in the systemCode codelist."));
             assertThat(e.get().get("name"), is("Name must have value"));
             assertThat(e.get().get("personalData"), is("PersonalData cannot be null"));
-            assertThat(e.get().get("producerCode"), is("The producerCode was null or not found in the producerCode codelist."));
-            assertThat(e.get().get("categoryCode"), is("The categoryCode was null or not found in the categoryCode codelist."));
+            assertThat(e.get().get("producerCode"), is("The list of producerCodes was null"));
+            assertThat(e.get().get("categoryCode"), is("The categoryCode was null"));
+            assertThat(e.get().get("systemCode"), is("The systemCode was null"));
         }
     }
 
     @Test
-    public void shouldThrowValidationExceptionOnUpdate() {
+    public void validateRequestCreate_shouldThrowValidationException_becauseProducerListContainsUnknownCode() {
+        InformationTypeRequest request = InformationTypeRequest.builder()
+                .categoryCode(CATEGORY_CODE)
+                .name("Name")
+                .systemCode(SYSTEM_CODE)
+                .producerCode(List.of("UnknownProducerCode"))
+                .personalData(true)
+                .build();
+        try {
+            informationTypeService.validateRequest(request, false);
+        } catch (ValidationException e) {
+            assertThat(e.get().size(), is(1));
+			assertThat(e.get().get("producerCode"), is("The code:UNKNOWNPRODUCERCODE was not found in the codelist:PRODUCER"));
+        }
+    }
+
+    @Test
+    public void validateRequestCreate_shouldThrowValidationException_becauseNamedIsNotUnique() {
+        InformationTypeRequest request = InformationTypeRequest.builder()
+                .categoryCode(CATEGORY_CODE)
+                .name("NotUniqueName")
+                .systemCode(SYSTEM_CODE)
+                .producerCode(PRODUCER_CODE_LIST)
+                .personalData(true)
+                .build();
+        when(informationTypeRepository.findByName(anyString())).thenReturn(Optional.of(new InformationType()));
+        try {
+            informationTypeService.validateRequest(request, false);
+        } catch (ValidationException e) {
+            assertThat(e.get().size(), is(1));
+            assertThat(e.get().get("name"), is("This name is used for an existing information type"));
+        }
+    }
+
+    @Test
+    public void validateRequestUpdate_shouldValidateRequest() {
+        InformationTypeRequest request = InformationTypeRequest.builder()
+                .categoryCode(CATEGORY_CODE)
+                .name("name")
+                .systemCode(SYSTEM_CODE)
+                .producerCode(PRODUCER_CODE_LIST)
+                .personalData(true)
+                .build();
+        InformationType informationType = new InformationType().convertFromRequest(request, false);
+
+        when(informationTypeRepository.findByName("Name")).thenReturn(Optional.of(informationType));
+
+        informationTypeService.validateRequest(request, true);
+    }
+
+    @Test
+    public void validateRequestUpdate_shouldThrowValidationException_becauseRequestIsEmpty() {
         InformationTypeRequest request = InformationTypeRequest.builder().build();
         try {
             informationTypeService.validateRequest(request, true);
         } catch (ValidationException e) {
             assertThat(e.get().size(), is(5));
-            assertThat(e.get().get("systemCode"), is("The systemCode was null or not found in the systemCode codelist."));
             assertThat(e.get().get("name"), is("Name must have value"));
             assertThat(e.get().get("personalData"), is("PersonalData cannot be null"));
-            assertThat(e.get().get("producerCode"), is("The producerCode was null or not found in the producerCode codelist."));
-            assertThat(e.get().get("categoryCode"), is("The categoryCode was null or not found in the categoryCode codelist."));
-        }
-    }
-
-    @Test
-    public void shouldThrowValidationExceptionOnInsertNameExists() {
-	    when(informationTypeRepository.findByName(anyString())).thenReturn(Optional.of(new InformationType()));
-        InformationTypeRequest request = InformationTypeRequest.builder().name("NotFound").build();
-        try {
-            informationTypeService.validateRequest(request, false);
-        } catch (ValidationException e) {
-            assertThat(e.get().size(), is(5));
-            assertThat(e.get().get("name"), is("This name is used for an existing information type."));
-            assertThat(e.get().get("systemCode"), is("The systemCode was null or not found in the systemCode codelist."));
-            assertThat(e.get().get("personalData"), is("PersonalData cannot be null"));
-            assertThat(e.get().get("producerCode"), is("The producerCode was null or not found in the producerCode codelist."));
-            assertThat(e.get().get("categoryCode"), is("The categoryCode was null or not found in the categoryCode codelist."));
+            assertThat(e.get().get("producerCode"), is("The list of producerCodes was null"));
+            assertThat(e.get().get("categoryCode"), is("The categoryCode was null"));
+            assertThat(e.get().get("systemCode"), is("The systemCode was null"));
         }
     }
 }
