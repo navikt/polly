@@ -23,4 +23,9 @@ public class CodelistRequest {
 				.build();
 	}
 
+	void toUpperCaseAndTrim() {
+		setCode(this.code.toUpperCase().trim());
+		setDescription(this.description.trim());
+	}
+
 }

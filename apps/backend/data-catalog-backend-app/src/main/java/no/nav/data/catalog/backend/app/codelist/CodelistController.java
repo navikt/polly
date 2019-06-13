@@ -86,13 +86,8 @@ public class CodelistController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public List<Codelist> save(@Valid @RequestBody List<CodelistRequest> requests) {
 		logger.info("Received a requests to create codelists");
-//		try {
-//			service.validateRequest(request,false);
-//		}
-//		catch (ValidationException e) {
-//			logger.info("Could not create a codelist due to invalid request");
-//			return new ResponseEntity<>(e.get(), HttpStatus.BAD_REQUEST);
-//		}
+		service.validateRequests(requests, false);
+
 		return service.save(requests);
 	}
 
@@ -105,13 +100,8 @@ public class CodelistController {
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	public List<Codelist> update(@Valid @RequestBody List<CodelistRequest> requests) {
 		logger.info("Received a request to update codelists");
-//		try {
-//			service.validateRequest(request,true);
-//		}
-//		catch (ValidationException e) {
-//			logger.info("Could not update the codelist due to invalid request");
-//			return new ResponseEntity<>(e.get(), HttpStatus.BAD_REQUEST);
-//		}
+		service.validateRequests(requests, true);
+
 		return service.update(requests);
 	}
 
@@ -123,6 +113,8 @@ public class CodelistController {
 	@DeleteMapping("/{listName}/{code}")
 	@Transactional
 	public void delete(@PathVariable String listName, @PathVariable String code) {
+		listName = listName.toUpperCase().trim();
+		code = code.toUpperCase().trim();
 		logger.info("Received a request to delete code={} in the list={}", code, listName);
 		service.isListNamePresentInCodelist(listName);
 		service.delete(ListName.valueOf(listName), code);
