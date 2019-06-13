@@ -36,13 +36,13 @@ public class InformationTypeResponse {
 		this.name = informationType.getName();
 		this.description = informationType.getDescription();
 		this.category = getMapForCodelistItem(ListName.CATEGORY, informationType.getCategoryCode());
-		this.producer = getListOfMappedProducers(informationType.getProducerCode());
 		this.system = getMapForCodelistItem(ListName.SYSTEM, informationType.getSystemCode());
+		this.producer = getListOfMappedProducers(informationType.getProducerCode());
 		this.personalData = informationType.isPersonalData();
 	}
 
 	private List<Map> getListOfMappedProducers(String commaSeparatedStringOfProducerCodes) {
-		List<String> listOfProducerCodes = Arrays.asList(commaSeparatedStringOfProducerCodes.split("\\s*,\\s*"));
+		List<String> listOfProducerCodes = Arrays.asList(commaSeparatedStringOfProducerCodes.split("\\s*, \\s*"));
 		return listOfProducerCodes.stream()
 				.map(producerCode -> getMapForCodelistItem(ListName.PRODUCER, producerCode))
 				.collect(Collectors.toList());

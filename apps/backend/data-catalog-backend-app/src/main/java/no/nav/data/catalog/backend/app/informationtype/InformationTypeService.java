@@ -8,6 +8,7 @@ import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.codelist.ListName;
+import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchRepository;
 import org.slf4j.Logger;
@@ -15,17 +16,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Service
 public class InformationTypeService {
 
 	private static final Logger logger = LoggerFactory.getLogger(InformationTypeService.class);
-	private HashMap<String, String> validationErrors = new HashMap<>();
+	private HashMap<String, String> classScopedTemporaryMap = new HashMap<>();
 
 	@Autowired
 	private InformationTypeRepository repository;
@@ -89,37 +92,78 @@ public class InformationTypeService {
 		repository.updateStatusAllRows(TO_BE_UPDATED);
 	}
 
-	public void validateRequest(InformationTypeRequest request, boolean isUpdate) {
-		validationErrors.clear();
-		if (request.getName() == null ){ validationErrors.put("name", "Name must have value"); }
+	public void validateRequests(List<InformationTypeRequest> requests, boolean isUpdate) {
+		HashMap<String, HashMap> validationMap = new HashMap<>();
+		HashMap<String, Integer> namesUsedInRequest = new HashMap<>();
+
+		final AtomicInteger i = new AtomicInteger(1);
+		requests.forEach(request -> {
+			HashMap<String, String> requestMap = validateRequest(request, isUpdate);
+
+			if (namesUsedInRequest.containsKey(request.getName())) {
+				requestMap.put("nameNotUniqueInThisRequest", String.format("The name %s is not unique because it is already used in this request (see request nr:%s)", request
+						.getName(), namesUsedInRequest.get(request.getName())));
+			} else if (request.getName() != null) {
+				namesUsedInRequest.put(request.getName(), i.intValue());
+			}
+
+			if (!requestMap.isEmpty()) {
+				validationMap.put(String.format("Request nr:%s", i.intValue()), requestMap);
+			}
+			i.getAndIncrement();
+		});
+
+		if (!validationMap.isEmpty()) {
+			logger.error("The request was not accepted. The following errors occurred during validation: {}", validationMap);
+			throw new ValidationException(validationMap, "The request was not accepted. The following errors occurred during validation: ");
+		}
+	}
+
+	private HashMap validateRequest(InformationTypeRequest request, boolean isUpdate) {
+		HashMap<String, String> validationErrors = new HashMap<>();
+		if (request.getName() == null || request.getName().isEmpty()) {
+			validationErrors.put("name", "Name must have a non-empty value");
+		} else if (!isUpdate && repository.findByName(request.getName().trim()).isPresent()) {
+			validationErrors.put("name", String.format("The name %s is already used by an existing Informationtype", request.getName()));
+		}
+
 		if (request.getPersonalData() == null) {
 			validationErrors.put("personalData", "PersonalData cannot be null");
 		}
-		if (!isUpdate && request.getName() != null && repository.findByName(request.getName().toLowerCase()).isPresent()) {
-			validationErrors.put("name", "This name is used for an existing information type");
-		}
-
+		classScopedTemporaryMap.clear();
 		doesListContainTheCode(ListName.CATEGORY, request.getCategoryCode());
 		doesListContainTheCode(ListName.SYSTEM, request.getSystemCode());
-
 		if (request.getProducerCode() == null) {
 			validationErrors.put("producerCode", "The list of producerCodes was null");
 		} else {
 			request.getProducerCode().forEach(code -> doesListContainTheCode(ListName.PRODUCER, code));
 		}
-
-		if(!validationErrors.isEmpty()) {
-			logger.error("Validation errors occurred when validating InformationTypeRequest: {}", validationErrors);
-			throw new ValidationException(validationErrors, "Validation errors occurred when validating InformationTypeRequest.");
+		if (!classScopedTemporaryMap.isEmpty()) {
+			validationErrors.putAll(classScopedTemporaryMap);
 		}
+		return validationErrors;
+
 	}
 
 	private void doesListContainTheCode(ListName listName, String code) {
 		String codeType = listName.toString().toLowerCase() + "Code";
 		if (code == null) {
-			validationErrors.put(codeType, String.format("The %s was null", codeType));
+			classScopedTemporaryMap.put(codeType, String.format("The %s was null", codeType));
 		} else if (!codelists.get(listName).containsKey(code.toUpperCase())) {
-			validationErrors.put(codeType, String.format("The code:%s was not found in the codelist:%s", code.toUpperCase(), listName));
+			classScopedTemporaryMap.put(codeType, String.format("The code %s was not found in the codelist(%s)", code.toUpperCase(), listName));
 		}
+	}
+
+	public List<InformationType> returnUpdatedInformationTypesIfAllArePresent(List<InformationTypeRequest> requests) {
+		List<InformationType> informationTypes = new ArrayList<>();
+		requests.forEach(request -> {
+			Optional<InformationType> optionalInformationType = repository.findByName(request.getName().trim());
+			if (optionalInformationType.isEmpty()) {
+				throw new DataCatalogBackendNotFoundException(String.format("Cannot find informationType with name: %s", request
+						.getName()));
+			}
+			informationTypes.add(optionalInformationType.get().convertFromRequest(request, true));
+		});
+		return informationTypes;
 	}
 }

@@ -87,10 +87,12 @@ public class InformationType extends Auditable<String> {
 			this.elasticsearchStatus = ElasticsearchStatus.TO_BE_CREATED;
 			this.elasticsearchId = base64UUID();
 		}
-		this.name = request.getName();
+		this.name = request.getName().trim();
 		this.categoryCode = request.getCategoryCode().toUpperCase().trim();
-		this.producerCode = request.getProducerCode().stream().map(s -> s.toUpperCase().trim()).collect(Collectors.joining(", "));
 		this.systemCode = request.getSystemCode().toUpperCase().trim();
+		this.producerCode = request.getProducerCode().stream()
+				.map(producerCode -> producerCode.toUpperCase().trim())
+				.collect(Collectors.joining(", "));
 		this.description = request.getDescription();
 		this.personalData = request.getPersonalData();
 		return this;

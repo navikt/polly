@@ -5,8 +5,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
-import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -104,13 +101,7 @@ public class InformationTypeController {
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	public List<InformationTypeResponse> createInformationTypes(@RequestBody List<InformationTypeRequest> requests) {
 		logger.info("Received requests to create InformationTypes");
-//		try {
-//			service.validateRequest(request, false);
-//		}
-//		catch (ValidationException e) {
-//			logger.info("Cannot create an InformationType due to invalid request");
-//			return new ResponseEntity<>(e.get(), HttpStatus.BAD_REQUEST);
-//		}
+		service.validateRequests(requests, false);
 
 		List<InformationType> informationTypes = requests.stream()
 				.map(request -> new InformationType().convertFromRequest(request, false))
@@ -130,19 +121,10 @@ public class InformationTypeController {
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	public List<InformationTypeResponse> updateInformationTypes(@RequestBody List<InformationTypeRequest> requests) {
 		logger.info("Received requests to update InformationTypes");
-		//TODO: Validation
+		service.validateRequests(requests, true);
+		List<InformationType> updatedInformationTypes = service.returnUpdatedInformationTypesIfAllArePresent(requests);
 
-		List<InformationType> informationTypes = new ArrayList<>();
-		requests.forEach(request -> {
-			Optional<InformationType> optionalInformationType = repository.findByName(request.getName());
-			if (!optionalInformationType.isPresent()) {
-				throw new DataCatalogBackendNotFoundException(String.format("Cannot find informationType with name: %s", request
-						.getName()));
-			}
-			informationTypes.add(optionalInformationType.get().convertFromRequest(request, true));
-		});
-
-		return repository.saveAll(informationTypes).stream()
+		return repository.saveAll(updatedInformationTypes).stream()
 				.map(InformationType::convertToResponse)
 				.collect(Collectors.toList());
 
@@ -158,17 +140,12 @@ public class InformationTypeController {
 	public ResponseEntity updateOneInformationTypeById(@PathVariable Long id, @Valid @RequestBody InformationTypeRequest request) {
 		logger.info("Received a request to update InformationType with id={}", id);
 		Optional<InformationType> fromRepository = repository.findById(id);
-		if (!fromRepository.isPresent()) {
+		if (fromRepository.isEmpty()) {
 			logger.info("Cannot find InformationType with id={}", id);
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		try {
-			service.validateRequest(request, true);
-		}
-		catch (ValidationException e) {
-			logger.info("Cannot create an InformationType due to invalid request");
-			return new ResponseEntity<>(e.get(), HttpStatus.BAD_REQUEST);
-		}
+		service.validateRequests(List.of(request), true);
+
 		InformationType informationType = fromRepository.get().convertFromRequest(request, true);
 
 		logger.info("Updated the InformationType");
