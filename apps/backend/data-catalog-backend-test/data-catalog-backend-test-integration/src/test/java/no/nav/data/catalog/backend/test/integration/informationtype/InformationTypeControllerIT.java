@@ -183,7 +183,19 @@ public class InformationTypeControllerIT {
 		assertInformationType(repository.findByName(NAME).get());
 	}
 
-	//TODO: createInformationType_throwValidationError
+	@Test
+	public void createInformationTypes_shouldThrowValidationErrors_withInvalidRequests() {
+		List<InformationTypeRequest> requestsListWithEmtpyAndDuplicate = List.of(
+				createRequest("Request_1"),
+				createRequest("Request_2"),
+				InformationTypeRequest.builder().build(),
+				createRequest("Request_2"));
+
+		ResponseEntity<String> responseEntity = restTemplate.exchange(
+				URL, HttpMethod.POST, new HttpEntity<>(requestsListWithEmtpyAndDuplicate), String.class);
+		assertThat(responseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+		assertThat(repository.findAll().size(), is(0));
+	}
 
 	@Test
 	public void updateInformationTypes() {
@@ -204,7 +216,36 @@ public class InformationTypeControllerIT {
 		assertThat(repository.findAll().get(1).getDescription(), is("Updated description"));
 	}
 
-	//TODO: updateInformationType_throwValidationError
+	@Test
+	public void updateInformationTypes_shouldReturnNotFound_withNonExistingInformationType() {
+		createInformationTypeTestData(2);
+
+		List<InformationTypeRequest> requests = List.of(
+				createRequest("InformationTypeName_nr_1"),
+				createRequest("InformationTypeName_nr_3"));
+
+		ResponseEntity<String> responseEntity = restTemplate.exchange(
+				URL, HttpMethod.PUT, new HttpEntity<>(requests), String.class);
+
+		assertThat(responseEntity.getStatusCode(), is(HttpStatus.NOT_FOUND));
+	}
+
+	@Test
+	public void updateInformationTypes_shouldReturnBadRequest_withInvalidRequests() {
+		createInformationTypeTestData(2);
+		assertThat(repository.findAll().size(), is(2));
+
+		List<InformationTypeRequest> updateRequestsWithEmptyRequest = List.of(
+				createRequest("InformationTypeName_nr_2"),
+				InformationTypeRequest.builder().build(),
+				createRequest("InformationTypeName_nr_1"));
+
+		ResponseEntity<String> responseEntity = restTemplate.exchange(
+				URL, HttpMethod.PUT, new HttpEntity<>(updateRequestsWithEmptyRequest), String.class);
+
+		assertThat(responseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+		assertThat(repository.findAll().size(), is(2));
+	}
 
 	//TODO: Is this method ever used?
 	@Test
