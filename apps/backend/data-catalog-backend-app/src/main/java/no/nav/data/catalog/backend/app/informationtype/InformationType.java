@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "INFORMATION_TYPE")
+@Table(name = "INFORMATION_TYPE", schema = "BACKEND_SCHEMA")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InformationType extends Auditable<String> {
 

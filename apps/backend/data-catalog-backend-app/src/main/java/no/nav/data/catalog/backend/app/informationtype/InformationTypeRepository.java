@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface InformationTypeRepository extends JpaRepository<InformationType, Long> {
-	ElasticsearchStatus syncedStatus = SYNCED;
-
 	List<InformationType> findAllByOrderByIdAsc(Pageable pageable);
 
 	Optional<List<InformationType>> findByElasticsearchStatus(@Param("status") ElasticsearchStatus status);
+
+	@Query(value = "SELECT * FROM BACKEND_SCHEMA.INFORMATION_TYPE WHERE UPPER(name) = UPPER(:name)", nativeQuery = true)
 	Optional<InformationType> findByName(@Param("name") String name);
 
 	@Query("UPDATE InformationType SET elasticsearchStatus = :status WHERE status = SYNCED")
