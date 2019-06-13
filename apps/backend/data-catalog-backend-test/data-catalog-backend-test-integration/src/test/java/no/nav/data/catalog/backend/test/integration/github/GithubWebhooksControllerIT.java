@@ -9,6 +9,7 @@ import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository
 import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -88,41 +89,43 @@ public class GithubWebhooksControllerIT {
         codelists.get(ListName.SYSTEM).put("ARENA", "Arbeidsrelatert saksbehandlingsystem");
     }
 
-    @Test
-    public void retriveAndSaveSingleDataset() {
-        assertThat(repository.findAll().size(), is(0));
+	@Test
+	public void retriveAndSaveSingleDataset() {
+		assertThat(repository.findAll().size(), is(0));
 
-        GithubCommitInfo commitInfo = new GithubCommitInfo(Arrays.asList("testdataIkkeSlett/singleRow.json"), null, null);
-        GithubPushEventPayloadRequest request = new GithubPushEventPayloadRequest(Arrays.asList(commitInfo));
-        ResponseEntity<String> responseEntity = restTemplate.exchange(
-                "/backend/webhooks", HttpMethod.POST, new HttpEntity<>(request), String.class);
+		GithubCommitInfo commitInfo = new GithubCommitInfo(Arrays.asList("testdataIkkeSlett/singleRow.json"), null, null);
+		GithubPushEventPayloadRequest request = new GithubPushEventPayloadRequest(Arrays.asList(commitInfo));
+		ResponseEntity<String> responseEntity = restTemplate.exchange(
+				"/backend/webhooks", HttpMethod.POST, new HttpEntity<>(request), String.class);
 
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(repository.findAll().size(), is(1));
-    }
+		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+		assertThat(repository.findAll().size(), is(1));
+	}
 
-    @Test
-    public void retriveAndSaveMultipleDataset() {
-        assertThat(repository.findAll().size(), is(0));
+	@Test
+	public void retriveAndSaveMultipleDataset() {
+		assertThat(repository.findAll().size(), is(0));
 
-        GithubCommitInfo commitInfo = new GithubCommitInfo(Arrays.asList("testdataIkkeSlett/multipleRows.json"), null, null);
-        GithubPushEventPayloadRequest request = new GithubPushEventPayloadRequest(Arrays.asList(commitInfo));
-        ResponseEntity<String> responseEntity = restTemplate.exchange(
-                "/backend/webhooks", HttpMethod.POST, new HttpEntity<>(request), String.class);
+		GithubCommitInfo commitInfo = new GithubCommitInfo(Arrays.asList("testdataIkkeSlett/multipleRows.json"), null, null);
+		GithubPushEventPayloadRequest request = new GithubPushEventPayloadRequest(Arrays.asList(commitInfo));
+		ResponseEntity<String> responseEntity = restTemplate.exchange(
+				"/backend/webhooks", HttpMethod.POST, new HttpEntity<>(request), String.class);
 
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(repository.findAll().size(), is(6));
-    }
+		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+		assertThat(repository.findAll().size(), is(6));
+	}
 
-    @Test
-    public void retriveInvalidFile() {
-        GithubCommitInfo commitInfo = new GithubCommitInfo(Arrays.asList("testdataIkkeSlett/invalidFile.json"), null, null);
-        GithubPushEventPayloadRequest request = new GithubPushEventPayloadRequest(Arrays.asList(commitInfo));
-        ResponseEntity<String> responseEntity = restTemplate.exchange(
-                "/backend/webhooks", HttpMethod.POST, new HttpEntity<>(request), String.class);
-        assertThat(responseEntity.getStatusCode(), is (HttpStatus.INTERNAL_SERVER_ERROR));
-        assertThat(responseEntity.getBody(), containsString("Validation errors occurred when validating InformationTypeRequest"));
-    }
+	@Test
+	public void retriveInvalidFile() {
+		GithubCommitInfo commitInfo = new GithubCommitInfo(Arrays.asList("testdataIkkeSlett/invalidFile.json"), null, null);
+		GithubPushEventPayloadRequest request = new GithubPushEventPayloadRequest(Arrays.asList(commitInfo));
+		ResponseEntity<String> responseEntity = restTemplate.exchange(
+				"/backend/webhooks", HttpMethod.POST, new HttpEntity<>(request), String.class);
+		assertThat(responseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+		assertThat(responseEntity.getBody(), containsString(
+				"The request was not accepted. The following errors occurred during validation:  " +
+						"{Request nr:1={systemCode=The systemCode was null, personalData=PersonalData cannot be null, producerCode=The list of producerCodes was null}}"));
+	}
 
     @Test
     public void retriveNotExistingFile() {
