@@ -2,9 +2,12 @@ package no.nav.data.catalog.backend.test.component.codelist;
 
 import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -25,6 +28,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @RunWith(SpringRunner.class)
@@ -36,40 +42,43 @@ public class CodelistServiceTest {
 	private CodelistRepository repository;
 
 	@InjectMocks
-	private CodelistService codelistService;
+	private CodelistService service;
 
 	@Test
-	public void shouldSaveCreateRequest() {
+	public void save_shouldCreateRequest() {
 		CodelistRequest request = CodelistRequest.builder()
 				.list(ListName.CATEGORY)
 				.code("TEST_CREATE")
 				.description("Test av kategorien TEST_CREATE")
 				.build();
-//		codelistService.save(request);
-//		verify(repository, times(1)).save(any(Codelist.class));
-//		assertFalse(codelists.get(request.getList()).get(request.getCode()).isEmpty());
-//		assertThat(codelists.get(request.getList())
-//				.get(request.getCode()), is("Test av kategorien TEST_CREATE"));
+		service.save(List.of(request));
+		verify(repository, times(1)).saveAll(anyList());
+		assertFalse(codelists.get(request.getList()).get(request.getCode()).isEmpty());
+		assertThat(codelists.get(request.getList())
+				.get(request.getCode()), is("Test av kategorien TEST_CREATE"));
 	}
 
 	@Test
-	public void shouldSaveUpdateRequest() {
-		codelists.get(ListName.PRODUCER).put("TEST", "Original description");
+	public void update_shouldUpdateRequest() {
+		codelists.get(ListName.PRODUCER).put("TEST_UPDATE", "Original description");
 
 		CodelistRequest request = CodelistRequest.builder()
 				.list(ListName.PRODUCER)
-				.code("TEST")
+				.code("TEST_UPDATE")
 				.description("Updated description")
 				.build();
 
-//		codelistService.save(request);
-//
-//		verify(repository, times(1)).save(any(Codelist.class));
-//		assertThat(codelists.get(request.getList()).get(request.getCode()), is("Updated description"));
+		when(repository.findByListAndCode(request.getList(), request.getCode())).thenReturn(Optional.of(request.convert()));
+
+		service.update(List.of(request));
+
+		verify(repository, times(1)).saveAll(anyList());
+		verify(repository, times(1)).findByListAndCode(any(ListName.class), anyString());
+		assertThat(codelists.get(request.getList()).get(request.getCode()), is("Updated description"));
 	}
 
 	@Test
-	public void shouldDelete() {
+	public void delete_shouldDelete() {
 		ListName listName = ListName.CATEGORY;
 		String code = "TEST_DELETE";
 		String description = "Test delete description";
@@ -82,7 +91,7 @@ public class CodelistServiceTest {
 				.build();
 		when(repository.findByListAndCode(listName, code)).thenReturn(Optional.of(codelist));
 
-		codelistService.delete(listName, code);
+		service.delete(listName, code);
 
 		verify(repository, times(1)).findByListAndCode(any(ListName.class), anyString());
 		verify(repository, times(1)).delete(any(Codelist.class));
@@ -90,56 +99,154 @@ public class CodelistServiceTest {
 	}
 
 	@Test
-	public void shouldValidateCodelistRequest() {
-		CodelistRequest request = CodelistRequest.builder()
+	public void validateRequestsCreate_shouldValidateListOfCodelistRequests() {
+		List<CodelistRequest> requests = new ArrayList<>();
+		requests.add(CodelistRequest.builder()
 				.list(ListName.PRODUCER)
-				.code("TEST_VALIDATEREQUEST")
+				.code("TEST")
 				.description("Informasjon oppgitt av tester")
-				.build();
-		codelistService.validateRequest(request, false);
+				.build());
+		requests.add(CodelistRequest.builder()
+				.list(ListName.SYSTEM)
+				.code("TEST")
+				.description("Informasjon oppgitt av tester")
+				.build());
+		requests.add(CodelistRequest.builder()
+				.list(ListName.CATEGORY)
+				.code("TEST")
+				.description("Informasjon oppgitt av tester")
+				.build());
+
+		service.validateRequests(requests, false);
 	}
 
 	@Test
-	public void shouldThrowValidationExceptionsOnCreate() {
-		CodelistRequest request = CodelistRequest.builder().build();
+	public void validateRequestsCreate_shouldThrowValidationException_withEmptyListOfRequests() {
+		List<CodelistRequest> requests = Collections.emptyList();
 		try {
-			codelistService.validateRequest(request, false);
+			service.validateRequests(requests, false);
 		} catch (ValidationException e) {
-			assertThat(e.get().size(), is(3));
-			assertThat(e.get().get("list"), is("The codelist must have a list name"));
-			assertThat(e.get().get("code"), is("The code was null or missing"));
-			assertThat(e.get().get("description"), is("The description was null or missing"));
+			assertThat(e.getLocalizedMessage(), is("The request was not accepted because it is empty"));
 		}
 	}
 
 	@Test
-	public void shouldThrowValidationExceptionsOnUpdate() {
+	public void validateRequestsCreate_shouldThrowValidationException_withEmptyRequest() {
 		CodelistRequest request = CodelistRequest.builder().build();
 		try {
-			codelistService.validateRequest(request, true);
-		} catch (ValidationException e) {
-			assertThat(e.get().size(), is(3));
-			assertThat(e.get().get("list"), is("The codelist must have a list name"));
-			assertThat(e.get().get("code"), is("The code was null or missing"));
-			assertThat(e.get().get("description"), is("The description was null or missing"));
-		}
-	}
-
-	@Test
-	public void shouldThrowValidationExceptionsOnCreateWhenCodeExist() {
-		CodelistRequest request = CodelistRequest.builder().list(ListName.PRODUCER).code("BRUKER").description("Test").build();
-		try {
-			codelistService.validateRequest(request, false);
+			service.validateRequests(List.of(request), false);
 		} catch (ValidationException e) {
 			assertThat(e.get().size(), is(1));
-			assertThat(e.get().get("code"), is("The code BRUKER already exists in PRODUCER"));
+			assertThat(e.get().get("Request nr:1").size(), is(3));
+			assertThat(e.get().get("Request nr:1").get("list"), is("The codelist must have a list name"));
+			assertThat(e.get().get("Request nr:1").get("code"), is("The code was null or missing"));
+			assertThat(e.get().get("Request nr:1").get("description"), is("The description was null or missing"));
 		}
 	}
 
 	@Test
-	public void shouldValidateOnUpdateWhenCodeExist() {
+	public void validateRequestsCreate_shouldThrowValidationException_whenCodelistExistsInRepository() {
 		CodelistRequest request = CodelistRequest.builder().list(ListName.PRODUCER).code("BRUKER").description("Test").build();
-		codelistService.validateRequest(request, true);
+		service.save(List.of(request));
+		try {
+			service.validateRequests(List.of(request), false);
+		} catch (ValidationException e) {
+			assertThat(e.get().size(), is(1));
+			assertThat(e.get().get("Request nr:1").size(), is(1));
+			assertThat(e.get()
+					.get("Request nr:1")
+					.get("code"), is("The code BRUKER already exists in the codelist(PRODUCER) and therefore cannot be created"));
+		}
 	}
 
+	@Test
+	public void validateRequestsCreate_shouldThrowValidationException_whenCodelistExistsInRequest() {
+		List<CodelistRequest> requests = new ArrayList<>();
+		requests.add(CodelistRequest.builder()
+				.list(ListName.PRODUCER)
+				.code("TEST")
+				.description("Informasjon oppgitt av tester")
+				.build());
+		requests.add(CodelistRequest.builder()
+				.list(ListName.SYSTEM)
+				.code("TEST")
+				.description("Informasjon oppgitt av tester")
+				.build());
+		requests.add(CodelistRequest.builder()
+				.list(ListName.CATEGORY)
+				.code("TEST")
+				.description("Informasjon oppgitt av tester")
+				.build());
+		requests.add(CodelistRequest.builder()
+				.list(ListName.PRODUCER)
+				.code("TEST")
+				.description("Informasjon oppgitt av tester")
+				.build());
+
+		try {
+			service.validateRequests(requests, false);
+		} catch (ValidationException e) {
+			assertThat(e.get().size(), is(1));
+			assertThat(e.get().get("Request nr:4").size(), is(1));
+			assertThat(e.get().get("Request nr:4").get("codelistNotUniqueInThisRequest"),
+					is("The codelist (PRODUCER, TEST) has already been used in this request (see request nr:1)"));
+		}
+	}
+
+	@Test
+	public void validateRequestUpdate_shouldValidate_whenCodelistsExists() {
+		List<CodelistRequest> requests = new ArrayList<>();
+		requests.add(CodelistRequest.builder()
+				.list(ListName.PRODUCER)
+				.code("TEST")
+				.description("Informasjon oppgitt av tester")
+				.build());
+		service.save(requests);
+
+		service.validateRequests(requests, true);
+	}
+
+	@Test
+	public void validateRequestsUpdate_shouldThrowValidationException_withEmptyRequest() {
+		CodelistRequest request = CodelistRequest.builder().build();
+		try {
+			service.validateRequests(List.of(request), true);
+		} catch (ValidationException e) {
+			assertThat(e.get().size(), is(1));
+			assertThat(e.get().get("Request nr:1").size(), is(3));
+			assertThat(e.get().get("Request nr:1").get("list"), is("The codelist must have a list name"));
+			assertThat(e.get().get("Request nr:1").get("code"), is("The code was null or missing"));
+			assertThat(e.get().get("Request nr:1").get("description"), is("The description was null or missing"));
+		}
+	}
+
+	@Test
+	public void shouldThrowValidationExceptionOnUpdate_whenCodelistDoesNotExist() {
+		CodelistRequest request = CodelistRequest.builder()
+				.list(ListName.PRODUCER)
+				.code("unknownCode")
+				.description("Test")
+				.build();
+		try {
+			service.validateRequests(List.of(request), true);
+		} catch (ValidationException e) {
+			assertThat(e.get().size(), is(1));
+			assertThat(e.get().get("Request nr:1").size(), is(1));
+			assertThat(e.get().get("Request nr:1").get("code"),
+					is("The code UNKNOWNCODE does not exists in the codelist(PRODUCER) and therefore cannot be updated"));
+		}
+	}
+
+	@Test
+	public void validateRequest_shouldChangeCodeAndDescriptionInRequestToCorrectFormat() {
+		List<CodelistRequest> requests = List.of(CodelistRequest.builder()
+				.list(ListName.CATEGORY)
+				.code("    cOrRecTFormAT  ")
+				.description("   Trim av description                      ")
+				.build());
+		service.validateRequests(requests, false);
+		service.save(requests);
+		assertTrue(codelists.get(ListName.CATEGORY).containsKey("CORRECTFORMAT"));
+		assertTrue(codelists.get(ListName.CATEGORY).containsValue("Trim av description"));
+	}
 }

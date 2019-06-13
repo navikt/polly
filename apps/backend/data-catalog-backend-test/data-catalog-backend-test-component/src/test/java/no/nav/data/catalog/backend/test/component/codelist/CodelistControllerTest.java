@@ -1,6 +1,10 @@
 package no.nav.data.catalog.backend.test.component.codelist;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -17,7 +21,6 @@ import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -39,6 +42,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -98,11 +102,11 @@ public class CodelistControllerTest {
 		// then
 		HashMap<String, HashMap<String, String>> returnedCodelist = objectMapper.readValue(response.getContentAsString(), HashMap.class);
 
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-		assertThat(returnedCodelist.size()).isEqualTo(codelists.size());
-		assertThat(returnedCodelist.get(ListName.PRODUCER.toString()).size()).isEqualTo(2L);
-		assertThat(returnedCodelist.get(ListName.CATEGORY.toString()).size()).isEqualTo(3L);
-		assertThat(returnedCodelist.get(ListName.SYSTEM.toString()).size()).isEqualTo(1L);
+		assertThat(response.getStatus(), is(HttpStatus.OK.value()));
+		assertThat(returnedCodelist.size(), is(codelists.size()));
+		assertThat(returnedCodelist.get("PRODUCER").size(), is(2));
+		assertThat(returnedCodelist.get("CATEGORY").size(), is(3));
+		assertThat(returnedCodelist.get("SYSTEM").size(), is(1));
 	}
 
 	@Test
@@ -116,8 +120,8 @@ public class CodelistControllerTest {
 		HashMap<String, String> producerList = objectMapper.readValue(response.getContentAsString(), HashMap.class);
 
 		// then
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-		assertThat(producerList).isEqualTo(codelists.get(ListName.PRODUCER));
+		assertThat(response.getStatus(), is(HttpStatus.OK.value()));
+		assertThat(producerList, is(codelists.get(ListName.PRODUCER)));
 	}
 
 	@Test
@@ -138,8 +142,8 @@ public class CodelistControllerTest {
 				.andReturn().getResponse();
 
 		// then
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-		assertThat(response.getContentAsString()).isEqualTo("Arbeidsgiver");
+		assertThat(response.getStatus(), is(HttpStatus.OK.value()));
+		assertThat(response.getContentAsString(), is("Arbeidsgiver"));
 	}
 
 	@Test
@@ -151,8 +155,8 @@ public class CodelistControllerTest {
 				.andReturn().getResponse();
 
 		// then
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
-		assertThat(response.getContentAsString()).isEmpty();
+		assertThat(response.getStatus(), is(HttpStatus.NOT_FOUND.value()));
+		assertThat(response.getContentAsString(), isEmptyString());
 	}
 
 	@Test
@@ -164,8 +168,8 @@ public class CodelistControllerTest {
 				.andReturn().getResponse();
 
 		// then
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
-		assertThat(response.getContentAsString()).isEmpty();
+		assertThat(response.getStatus(), is(HttpStatus.NOT_FOUND.value()));
+		assertThat(response.getContentAsString(), isEmptyString());
 	}
 
 	@Test
@@ -187,9 +191,33 @@ public class CodelistControllerTest {
 				.andReturn().getResponse();
 
 		// then
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
-		assertThat(codelists.get(ListName.PRODUCER).size()).isEqualTo(currentProducerListSize + 1);
-		assertThat(codelists.get(request.getList()).get(request.getCode())).isEqualTo(request.getDescription());
+		assertThat(response.getStatus(), is(HttpStatus.CREATED.value()));
+		assertThat(codelists.get(ListName.PRODUCER).size(), is(currentProducerListSize + 1));
+		assertThat(codelists.get(request.getList()).get(request.getCode()), is(request.getDescription()));
+	}
+
+	@Test
+	public void save_shouldChangeCodeAndDescriptionInRequestToCorrectFormat() throws Exception {
+		CodelistRequest request = CodelistRequest.builder()
+				.list(ListName.SYSTEM)
+				.code("    wEirdFOrmat        ")
+				.description("   Trimmed description   ")
+				.build();
+		String inputJson = objectMapper.writeValueAsString(List.of(request));
+
+		// when
+		MockHttpServletResponse response = mvc.perform(
+				MockMvcRequestBuilders.post(BASE_URI)
+						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+						.content(inputJson))
+				.andReturn().getResponse();
+
+		// then
+		assertThat(response.getStatus(), is(HttpStatus.CREATED.value()));
+		assertNull(codelists.get(request.getList()).get(request.getCode()));
+		assertTrue(codelists.get(request.getList()).containsKey("WEIRDFORMAT"));
+		assertTrue(codelists.get(request.getList()).containsValue("Trimmed description"));
+
 	}
 
 	@Test
@@ -211,28 +239,29 @@ public class CodelistControllerTest {
 				.content(inputJson))
 				.andReturn().getResponse();
 
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
-		assertThat(codelists.get(ListName.PRODUCER).size()).isEqualTo(currentProducerListSize + 10);
-
+		assertThat(response.getStatus(), is(HttpStatus.CREATED.value()));
+		assertThat(codelists.get(ListName.PRODUCER).size(), is(currentProducerListSize + 10));
 	}
 
-	@Ignore // fix after service.validateRequest is fixed
 	@Test
-	public void save_shouldReturnBadRequest() throws Exception {
+	public void save_shouldReturnBadRequest_whenRequestIsEmpty() throws Exception {
 		HashMap<String, String> validationErrors = new HashMap<>();
 		validationErrors.put("list", "The codelist must have a list name");
 		validationErrors.put("code", "The code was null or missing");
 		validationErrors.put("description", "The description was null or missing");
+		Map<String, HashMap<String, String>> validationMap = Map.of("Request nr:1", validationErrors);
 
 		CodelistRequest request = CodelistRequest.builder().build();
 		String inputJson = objectMapper.writeValueAsString(List.of(request));
 
 		// when
-		MockHttpServletResponse response = mvc.perform(post(BASE_URI).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+		Exception exception = mvc.perform(post(BASE_URI).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.content(inputJson))
-				.andExpect(status().isBadRequest()).andReturn().getResponse();
+				.andExpect(status().isBadRequest())
+				.andReturn().getResolvedException();
 
-		assertThat(response.getContentAsString()).isEqualTo(objectMapper.writeValueAsString(validationErrors));
+		// then
+		assertTrue(exception.getLocalizedMessage().contains(validationMap.toString()));
 	}
 
 	@Test
@@ -261,32 +290,32 @@ public class CodelistControllerTest {
 				.andReturn().getResponse();
 
 		// then
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.ACCEPTED.value());
-		assertThat(codelists.get(ListName.SYSTEM).get("TO_UPDATE")).isEqualTo("Updated description");
+		assertThat(response.getStatus(), is(HttpStatus.ACCEPTED.value()));
+		assertThat(codelists.get(ListName.SYSTEM).get("TO_UPDATE"), is("Updated description"));
 	}
 
-	@Ignore // fix after service.validateRequest is fixed
 	@Test
-	public void update_shouldReturnBadRequest() throws Exception {
+	public void update_shouldReturnBadRequest_whenRequestIsEmpty() throws Exception {
 		HashMap<String, String> validationErrors = new HashMap<>();
 		validationErrors.put("list", "The codelist must have a list name");
 		validationErrors.put("code", "The code was null or missing");
 		validationErrors.put("description", "The description was null or missing");
+		Map<String, HashMap<String, String>> validationMap = Map.of("Request nr:1", validationErrors);
 
 		// given
 		CodelistRequest request = CodelistRequest.builder().build();
-		String inputJson = objectMapper.writeValueAsString(request);
+		String inputJson = objectMapper.writeValueAsString(List.of(request));
 
 		// when
-		MockHttpServletResponse response = mvc.perform(
+		Exception exception = mvc.perform(
 				MockMvcRequestBuilders.put(BASE_URI)
 						.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
 						.content(inputJson))
-				.andReturn().getResponse();
+				.andExpect(status().isBadRequest())
+				.andReturn().getResolvedException();
 
 		// then
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-		assertThat(response.getContentAsString()).isEqualTo(objectMapper.writeValueAsString(validationErrors));
+		assertTrue(exception.getLocalizedMessage().contains(validationMap.toString()));
 	}
 
 	@Test
@@ -310,7 +339,38 @@ public class CodelistControllerTest {
 				.andReturn().getResponse();
 
 		// then
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-		assertThat(codelists.get(ListName.PRODUCER).get(code)).isNull();
+		assertThat(response.getStatus(), is(HttpStatus.OK.value()));
+		assertNull(codelists.get(ListName.PRODUCER).get(code));
+	}
+
+	@Test
+	public void delete_shouldDelete_withoutCorrectFormat() throws Exception {
+		// initialize
+		String code = "TEST_DELETE";
+		String description = "Delete description";
+		CodelistRequest saveRequest = CodelistRequest.builder()
+				.list(ListName.PRODUCER)
+				.code(code)
+				.description(description)
+				.build();
+
+		String inputJson = objectMapper.writeValueAsString(List.of(saveRequest));
+
+		mvc.perform(MockMvcRequestBuilders.post(BASE_URI)
+				.contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+				.content(inputJson))
+				.andExpect(status().isCreated());
+
+
+		when(repository.findByListAndCode(any(ListName.class), anyString())).thenReturn(Optional.of(saveRequest.convert()));
+		String uriThatNeedsFormatChanges = BASE_URI + "/producer/test_DELETE";
+
+		MockHttpServletResponse response = mvc.perform(
+				MockMvcRequestBuilders.delete(uriThatNeedsFormatChanges))
+				.andReturn().getResponse();
+
+		// then
+		assertThat(response.getStatus(), is(HttpStatus.OK.value()));
+		assertNull(codelists.get(ListName.PRODUCER).get(code));
 	}
 }
