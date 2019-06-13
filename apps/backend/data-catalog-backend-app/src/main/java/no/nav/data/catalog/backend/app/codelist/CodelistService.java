@@ -103,7 +103,7 @@ public class CodelistService {
 
 		if(!validationErrors.isEmpty()) {
 			logger.error("Validation errors occured when validating CodelistRequest: {}", validationErrors);
-			throw new ValidationException(validationErrors);
+//			throw new ValidationException(validationErrors);
 		}
 	}
 

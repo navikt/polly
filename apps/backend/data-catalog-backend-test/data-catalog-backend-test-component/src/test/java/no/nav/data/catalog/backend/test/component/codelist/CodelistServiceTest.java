@@ -2,7 +2,6 @@ package no.nav.data.catalog.backend.test.component.codelist;
 
 import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
