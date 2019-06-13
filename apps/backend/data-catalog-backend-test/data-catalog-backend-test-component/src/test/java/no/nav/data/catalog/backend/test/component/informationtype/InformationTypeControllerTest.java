@@ -12,9 +12,11 @@ import static no.nav.data.catalog.backend.test.component.informationtype.Testdat
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -28,8 +30,15 @@ import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
+import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
-import no.nav.data.catalog.backend.app.informationtype.*;
+import no.nav.data.catalog.backend.app.informationtype.InformationType;
+import no.nav.data.catalog.backend.app.informationtype.InformationTypeController;
+import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
+import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
+import no.nav.data.catalog.backend.app.informationtype.InformationTypeResponse;
+import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
+import no.nav.data.catalog.backend.app.informationtype.RestResponsePage;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -83,41 +92,6 @@ public class InformationTypeControllerTest {
 		codelists.get(ListName.PRODUCER).put(PRODUCER_CODE_LIST.get(0), PRODUCER_DESCRIPTION_LIST.get(0));
 		codelists.get(ListName.PRODUCER).put(PRODUCER_CODE_LIST.get(1), PRODUCER_DESCRIPTION_LIST.get(1));
 		codelists.get(ListName.SYSTEM).put(SYSTEM_CODE, SYSTEM_DESCRIPTION);
-	}
-
-	@Test
-	public void test() {
-		InformationTypeRequest request = InformationTypeRequest.builder()
-				.name("testProducerList")
-				.categoryCode(CATEGORY_CODE)
-				.producerCode(List.of("Skatteetaten", "bruker"))
-				.systemCode(SYSTEM_CODE)
-				.description(DESCRIPTION)
-				.personalData(true)
-				.build();
-		InformationType informationType = new InformationType().convertFromRequest(request, false);
-
-		InformationTypeResponse response = informationType.convertToResponse();
-
-
-//
-//		List<InformationType> informationTypes = createTestdataInformationType(20);
-//		List<InformationTypeResponse> informationTypesResponses = informationTypes.stream()
-//				.map(InformationType::convertToResponse)
-//				.collect(Collectors.toList());
-//		RestResponsePage<InformationTypeResponse> informationTypePage = new RestResponsePage<>(informationTypesResponses);
-//
-//		given(repository.findAllByOrderByIdAsc(PageRequest.of(0, 20))).willReturn(informationTypes);
-//
-//		mvc.perform(get("/backend/informationtype")
-//				.contentType(MediaType.APPLICATION_JSON))
-//				.andExpect(status().isOk())
-//				.andExpect(jsonPath("$.totalElements", is(20)))
-//				.andExpect(jsonPath("$.content", hasSize(20)));
-//
-//
-//				createInformationTypeRequestTestData("testProducerList");
-
 	}
 
 	@Test
@@ -197,30 +171,53 @@ public class InformationTypeControllerTest {
 				.content(asJsonString(requests)))
 				.andExpect(status().isAccepted());
 
-//		then(service).should(times(1)).validateRequest(request, false);  //TODO: Fix validation
+		then(service).should(times(1)).validateRequests(anyList(), anyBoolean());
 		then(repository).should(times(1)).saveAll(anyList());
 	}
 
 	@Test
-	public void createInformationType_shouldFailToCreateNewInformationType_WithInvalidValidRequest() {
+	public void createInformationTypes_shouldFailToCreateNewInformationType_WithEmptyRequest() throws Exception {
 		List<InformationTypeRequest> requests = List.of(InformationTypeRequest.builder().build());
-		HashMap<String, String> validationErrors = new HashMap<>();
+		HashMap<String, HashMap> validationErrors = new HashMap<>();
 
-		//TODO: Fix validation
-//		willThrow(new ValidationException(validationErrors, "Validation errors occured when validating input file from Github."))
-//				.given(service).validateRequest(request, false);
+		willThrow(new ValidationException(validationErrors, "The request was not accepted. The following errors occurred during validation: "))
+				.given(service).validateRequests(requests, false);
 
-//		mvc.perform(post(URL)
-//				.contentType(MediaType.APPLICATION_JSON)
-//				.content(asJsonString(List.of(request))))
-//				.andExpect(status().isBadRequest());
-//
-//		then(service).should(times(1)).validateRequest(request, false);
-//		then(repository).should(never()).save(any(InformationType.class));
+		mvc.perform(post(URL)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(asJsonString(requests)))
+				.andExpect(status().isBadRequest());
+
+		then(service).should(times(1)).validateRequests(requests, false);
+		then(repository).should(never()).save(any(InformationType.class));
 	}
 
 	@Test
-	public void updateInformationType_shouldUpdateInformationType_WithValidRequest() throws Exception {
+	public void updateInformationTypes_shouldUpdateTwoInformationTypes() throws Exception {
+		List<InformationTypeRequest> requests = List.of(
+				createInformationTypeRequestTestData("UpdateInformationType_1"),
+				createInformationTypeRequestTestData("UpdateInformationType_2"));
+
+		List<InformationType> updatedInformationTypes = requests.stream()
+				.map(request -> new InformationType().convertFromRequest(request, true))
+				.collect(Collectors.toList());
+
+		given(repository.findByName(requests.get(0).getName()))
+				.willReturn(Optional.of(new InformationType().convertFromRequest(requests.get(0), false)));
+		given(repository.findByName(requests.get(1).getName()))
+				.willReturn(Optional.of(new InformationType().convertFromRequest(requests.get(1), false)));
+		given(repository.saveAll(updatedInformationTypes)).willReturn(updatedInformationTypes);
+
+		mvc.perform(post(URL).contentType(MediaType.APPLICATION_JSON)
+				.content(asJsonString(requests)))
+				.andExpect(status().isAccepted());
+
+		then(service).should(times(1)).validateRequests(anyList(), anyBoolean());
+		then(repository).should(times(1)).saveAll(anyList());
+	}
+
+	@Test
+	public void updateOneInformationTypeById_shouldUpdateInformationType_WithValidRequest() throws Exception {
 		InformationTypeRequest request = createInformationTypeRequestTestData("Test updateInformationType");
 		InformationType informationTypeToBeUpdated = new InformationType().convertFromRequest(request, false);
 		request.setDescription("UPDATED");
@@ -235,12 +232,12 @@ public class InformationTypeControllerTest {
 				.andExpect(status().isAccepted());
 
 		then(repository).should(times(1)).findById(1L);
-		then(service).should(times(1)).validateRequest(request, true);
+		then(service).should(times(1)).validateRequests(List.of(request), true);
 		then(repository).should(times(1)).save(any(InformationType.class));
 	}
 
 	@Test
-	public void updateInformationType_shouldFailToUpdateInformationType_WhenIdDoesNotExist() throws Exception {
+	public void updateOneInformationTypeById_shouldFailToUpdateInformationType_WhenIdDoesNotExist() throws Exception {
 		InformationTypeRequest request = InformationTypeRequest.builder().build();
 
 		given(repository.findById(1L)).willReturn(Optional.empty());
@@ -251,7 +248,7 @@ public class InformationTypeControllerTest {
 				.andExpect(status().isNotFound());
 
 		then(repository).should(times(1)).findById(1L);
-		then(service).should(never()).validateRequest(request, true);
+		then(service).should(never()).validateRequests(List.of(request), true);
 		then(repository).should(never()).save(any(InformationType.class));
 	}
 
