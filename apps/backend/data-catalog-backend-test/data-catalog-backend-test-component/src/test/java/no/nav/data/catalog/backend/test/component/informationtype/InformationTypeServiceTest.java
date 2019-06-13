@@ -14,6 +14,7 @@ import static no.nav.data.catalog.backend.test.component.informationtype.Testdat
 import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.SYSTEM_DESCRIPTION;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.anyMap;
@@ -45,6 +46,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +60,8 @@ import java.util.stream.IntStream;
 @EnableJpaRepositories(repositoryBaseClass = CodelistRepository.class)
 public class InformationTypeServiceTest {
 
+	private static InformationType informationType;
+
 	@Mock
 	private InformationTypeRepository informationTypeRepository;
 
@@ -65,18 +69,16 @@ public class InformationTypeServiceTest {
 	private ElasticsearchRepository elasticsearchRepository;
 
 	@InjectMocks
-	private InformationTypeService informationTypeService;
+	private InformationTypeService service;
 
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
-	private static HashMap<ListName, HashMap<String, String>> codelists;
-	private static InformationType informationType;
 
 
 	@Before
 	public void init() {
-		codelists = CodelistService.codelists;
+		HashMap<ListName, HashMap<String, String>> codelists = CodelistService.codelists;
 		codelists.get(ListName.CATEGORY).put(CATEGORY_CODE, CATEGORY_DESCRIPTION);
 		codelists.get(ListName.PRODUCER).put(PRODUCER_CODE_LIST.get(0), PRODUCER_DESCRIPTION_LIST.get(0));
 		codelists.get(ListName.PRODUCER).put(PRODUCER_CODE_LIST.get(1), PRODUCER_DESCRIPTION_LIST.get(1));
@@ -105,7 +107,7 @@ public class InformationTypeServiceTest {
 		informationTypes.add(informationType);
 		when(informationTypeRepository.findByElasticsearchStatus(TO_BE_CREATED)).thenReturn(Optional.of(informationTypes));
 
-		informationTypeService.synchToElasticsearch();
+		service.synchToElasticsearch();
 		verify(elasticsearchRepository, times(1)).insertInformationType(anyMap());
 		verify(elasticsearchRepository, times(0)).updateInformationTypeById(anyString(), anyMap());
 		verify(elasticsearchRepository, times(0)).deleteInformationTypeById(anyString());
@@ -119,7 +121,7 @@ public class InformationTypeServiceTest {
 		informationTypes.add(informationType);
 		when(informationTypeRepository.findByElasticsearchStatus(TO_BE_UPDATED)).thenReturn(Optional.of(informationTypes));
 
-		informationTypeService.synchToElasticsearch();
+		service.synchToElasticsearch();
 		verify(elasticsearchRepository, times(0)).insertInformationType(anyMap());
 		verify(elasticsearchRepository, times(1)).updateInformationTypeById(any(), anyMap());
 		verify(elasticsearchRepository, times(0)).deleteInformationTypeById(anyString());
@@ -133,7 +135,7 @@ public class InformationTypeServiceTest {
 		informationTypes.add(informationType);
 		when(informationTypeRepository.findByElasticsearchStatus(TO_BE_DELETED)).thenReturn(Optional.of(informationTypes));
 
-		informationTypeService.synchToElasticsearch();
+		service.synchToElasticsearch();
 		verify(elasticsearchRepository, times(0)).insertInformationType(anyMap());
 		verify(elasticsearchRepository, times(0)).updateInformationTypeById(any(), anyMap());
 		verify(elasticsearchRepository, times(1)).deleteInformationTypeById(any());
@@ -143,14 +145,23 @@ public class InformationTypeServiceTest {
 
 	@Test
 	public void validateRequestsCreate_shouldValidateOneInsertRequest() {
-		informationTypeService.validateRequests(createListOfOneRequest("Name"), false);
+		service.validateRequests(createListOfOneRequest("Name"), false);
 	}
 
 	@Test
-	public void validateRequestsCreate_shouldThrowValidationException_becauseRequestIsEmpty() {
+	public void validateRequestCreate_shouldThrowValidationException_withEmptyListOfRequests() {
+		try {
+			service.validateRequests(Collections.emptyList(), false);
+		} catch (ValidationException e) {
+			assertThat(e.getLocalizedMessage(), is("The request was not accepted because it is empty"));
+		}
+	}
+
+	@Test
+	public void validateRequestsCreate_shouldThrowValidationException_withEmptyRequest() {
 		InformationTypeRequest request = InformationTypeRequest.builder().build();
 		try {
-			informationTypeService.validateRequests(List.of(request), false);
+			service.validateRequests(List.of(request), false);
 		} catch (ValidationException e) {
 			HashMap validationMap = e.get().get("Request nr:1");
 			assertThat(validationMap.size(), is(5));
@@ -163,12 +174,12 @@ public class InformationTypeServiceTest {
 	}
 
 	@Test
-	public void validateRequestsCreate_shouldThrowValidationException_becauseProducerListContainsUnknownCode() {
+	public void validateRequestsCreate_shouldThrowValidationException_withUnknownCodeInProducerList() {
 		List<InformationTypeRequest> requests = createListOfOneRequest("Name");
 		requests.get(0).setProducerCode(List.of("UnknownProducerCode"));
 
 		try {
-			informationTypeService.validateRequests(requests, false);
+			service.validateRequests(requests, false);
 		} catch (ValidationException e) {
 			HashMap validationMap = e.get().get("Request nr:1");
 			assertThat(validationMap.size(), is(1));
@@ -177,7 +188,7 @@ public class InformationTypeServiceTest {
 	}
 
 	@Test
-	public void validateRequestsCreate_shouldThrowValidationException_becauseNamedIsNotUniqueInRepository() {
+	public void validateRequestsCreate_shouldThrowValidationException_whenInformationTypeExistsInRepository() {
 		InformationTypeRequest request = InformationTypeRequest.builder()
 				.categoryCode(CATEGORY_CODE)
 				.name("NotUniqueName")
@@ -188,21 +199,22 @@ public class InformationTypeServiceTest {
 
 		when(informationTypeRepository.findByName(anyString())).thenReturn(Optional.of(new InformationType().convertFromRequest(request, false)));
 		try {
-			informationTypeService.validateRequests(createListOfOneRequest("NotUniqueName"), false);
+			service.validateRequests(createListOfOneRequest("NotUniqueName"), false);
 		} catch (ValidationException e) {
 			HashMap validationMap = e.get().get("Request nr:1");
 			assertThat(validationMap.size(), is(1));
-			assertThat(validationMap.get("name"), is("The name NotUniqueName is already used by an existing Informationtype"));
+			assertThat(validationMap.get("nameAlreadyUsed"),
+					is("The name NotUniqueName is already in use by another InformationType and therefore cannot be created"));
 		}
 	}
 
 	@Test
 	public void validateRequestsCreate_shouldValidate20Request() {
-		informationTypeService.validateRequests(createRequests(20), false);
+		service.validateRequests(createRequests(20), false);
 	}
 
 	@Test
-	public void validateRequestsCreate_shouldThrowValidationException_becauseNamedIsNotUniqueInRequest() {
+	public void validateRequestsCreate_shouldThrowValidationException_whenInformationTypeIsDuplicatedInTheRequest() {
 		List<InformationTypeRequest> requests = createRequests(19);
 
 		InformationTypeRequest notUniqueNameRequest = createOneRequest(requests.get(10).getName());
@@ -211,7 +223,7 @@ public class InformationTypeServiceTest {
 		when(informationTypeRepository.findByName(notUniqueNameRequest.getName())).thenReturn(Optional.empty());
 
 		try {
-			informationTypeService.validateRequests(requests, false);
+			service.validateRequests(requests, false);
 		} catch (ValidationException e) {
 			HashMap validationMap = e.get().get("Request nr:20");
 			assertThat(validationMap.size(), is(1));
@@ -221,19 +233,19 @@ public class InformationTypeServiceTest {
 
 	@Test
 	public void validateRequestUpdate_shouldValidateRequest() {
-		List<InformationTypeRequest> requests = createListOfOneRequest("name");
+		List<InformationTypeRequest> requests = createListOfOneRequest("Name");
 		InformationType informationType = new InformationType().convertFromRequest(requests.get(0), false);
 
 		when(informationTypeRepository.findByName("Name")).thenReturn(Optional.of(informationType));
 
-		informationTypeService.validateRequests(requests, true);
+		service.validateRequests(requests, true);
 	}
 
 	@Test
-	public void validateRequestsUpdate_shouldThrowValidationException_becauseRequestIsEmpty() {
+	public void validateRequestsUpdate_shouldThrowValidationException_withEmptyRequest() {
 		InformationTypeRequest request = InformationTypeRequest.builder().build();
 		try {
-			informationTypeService.validateRequests(List.of(request), true);
+			service.validateRequests(List.of(request), true);
 		} catch (ValidationException e) {
 			HashMap validationMap = e.get().get("Request nr:1");
 			assertThat(validationMap.size(), is(5));
@@ -242,6 +254,21 @@ public class InformationTypeServiceTest {
 			assertThat(validationMap.get("producerCode"), is("The list of producerCodes was null"));
 			assertThat(validationMap.get("categoryCode"), is("The categoryCode was null"));
 			assertThat(validationMap.get("systemCode"), is("The systemCode was null"));
+		}
+	}
+
+	@Test
+	public void validateRequestsUpdate_shouldThrowValidationException_whenInformationTypeDoesNotExist() {
+		List<InformationTypeRequest> requests = createListOfOneRequest("DoesNotExist");
+
+		when(informationTypeRepository.findByName("DoesNotExist")).thenReturn(Optional.empty());
+
+		try {
+			service.validateRequests(requests, true);
+		} catch (ValidationException e) {
+			HashMap validationMap = e.get().get("Request nr:1");
+			assertThat(validationMap.size(), is(1));
+			assertThat(validationMap.get("nameNotFound"), is("There is not an InformationType with the name DoesNotExist and therefore it cannot be updated"));
 		}
 	}
 
@@ -258,7 +285,28 @@ public class InformationTypeServiceTest {
 
 		requests.forEach(request -> request.setDescription("Updated Description"));
 
-		informationTypeService.validateRequests(requests, true);
+		service.validateRequests(requests, true);
+	}
+
+	@Test
+	public void validateRequest_shouldChangeFieldsInTheRequestToTheCorrectFormat() {
+		InformationTypeRequest request = InformationTypeRequest.builder()
+				.name("   Trimmed Name   ")
+				.description(" Trimmed description ")
+				.categoryCode(" perSonAlia  ")
+				.systemCode("tps")
+				.producerCode(List.of("skatteetaten", "  BruKer  "))
+				.personalData(true)
+				.build();
+		service.validateRequests(List.of(request), false);
+		InformationType validatedInformationType = new InformationType().convertFromRequest(request, false);
+
+		assertThat(validatedInformationType.getName(), is("Trimmed Name"));
+		assertThat(validatedInformationType.getDescription(), is("Trimmed description"));
+		assertThat(validatedInformationType.getCategoryCode(), is("PERSONALIA"));
+		assertThat(validatedInformationType.getSystemCode(), is("TPS"));
+		assertThat(validatedInformationType.getProducerCode(), is("SKATTEETATEN, BRUKER"));
+		assertTrue(validatedInformationType.isPersonalData());
 	}
 
 	private List<InformationTypeRequest> createListOfOneRequest(String name) {
@@ -271,6 +319,7 @@ public class InformationTypeServiceTest {
 				.name(name)
 				.systemCode(SYSTEM_CODE)
 				.producerCode(PRODUCER_CODE_LIST)
+				.description(DESCRIPTION)
 				.personalData(true)
 				.build();
 	}
