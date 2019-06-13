@@ -13,10 +13,12 @@ import static no.nav.data.catalog.backend.test.integration.informationtype.Testd
 import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.SYSTEM_CODE;
 import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.SYSTEM_DESCRIPTION;
 import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.URL;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
@@ -51,6 +53,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -184,6 +187,16 @@ public class InformationTypeControllerIT {
 	}
 
 	@Test
+	public void createInformationType_shouldThrowValidationException_withEmptyListOfRequests() {
+		List requests = Collections.emptyList();
+
+		ResponseEntity<String> responseEntity = restTemplate.exchange(
+				URL, HttpMethod.POST, new HttpEntity<>(requests), String.class);
+		assertThat(responseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+		assertThat(responseEntity.getBody(), containsString("The request was not accepted because it is empty"));
+	}
+
+	@Test
 	public void createInformationTypes_shouldThrowValidationErrors_withInvalidRequests() {
 		List<InformationTypeRequest> requestsListWithEmtpyAndDuplicate = List.of(
 				createRequest("Request_1"),
@@ -227,7 +240,9 @@ public class InformationTypeControllerIT {
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
 				URL, HttpMethod.PUT, new HttpEntity<>(requests), String.class);
 
-		assertThat(responseEntity.getStatusCode(), is(HttpStatus.NOT_FOUND));
+		assertThat(responseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+		assertThat(responseEntity.getBody(), containsString(
+				"Request nr:2={nameNotFound=There is not an InformationType with the name InformationTypeName_nr_3 and therefore it cannot be updated}"));
 	}
 
 	@Test
@@ -252,9 +267,6 @@ public class InformationTypeControllerIT {
 	public void updateOneInformationTypeById() {
 		InformationTypeRequest request = createRequest();
 		repository.save(new InformationType().convertFromRequest(request, false));
-//		ResponseEntity<String> responseEntity = restTemplate.exchange(
-//				URL, HttpMethod.POST, new HttpEntity<>(request), String.class);
-//		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
 		assertThat(repository.findAll().size(), is(1));
 
 		InformationType storedInformationType = repository.findByName(NAME).get();
@@ -293,6 +305,32 @@ public class InformationTypeControllerIT {
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.NOT_FOUND));
 		assertNull(responseEntity.getBody());
+	}
+
+	@Test
+	public void createInformationType_shouldChangeFieldsInTheRequestToTheCorrectFormat() {
+		InformationTypeRequest request = InformationTypeRequest.builder()
+				.name("   Trimmed Name   ")
+				.description(" Trimmed description ")
+				.categoryCode(" perSonAlia  ")
+				.systemCode(" aa_Reg ")
+				.producerCode(List.of("skatteetaten", "  BruKer  "))
+				.personalData(true)
+				.build();
+
+		ResponseEntity<String> responseEntity = restTemplate.exchange(
+				URL, HttpMethod.POST, new HttpEntity<>(List.of(request)), String.class);
+
+		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
+		assertTrue(repository.findByName("Trimmed Name").isPresent());
+		InformationType validatedInformationType = repository.findByName("Trimmed Name").get();
+
+		assertThat(validatedInformationType.getName(), is("Trimmed Name"));
+		assertThat(validatedInformationType.getDescription(), is("Trimmed description"));
+		assertThat(validatedInformationType.getCategoryCode(), is("PERSONALIA"));
+		assertThat(validatedInformationType.getSystemCode(), is("AA_REG"));
+		assertThat(validatedInformationType.getProducerCode(), is("SKATTEETATEN, BRUKER"));
+		assertTrue(validatedInformationType.isPersonalData());
 	}
 
 	static class Initializer
