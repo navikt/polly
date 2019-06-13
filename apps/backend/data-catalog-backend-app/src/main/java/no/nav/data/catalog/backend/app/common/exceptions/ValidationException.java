@@ -9,6 +9,10 @@ import java.util.HashMap;
 public class ValidationException extends RuntimeException {
     private HashMap<String, HashMap> validationErrors;
 
+	public ValidationException(String message) {
+		super(message);
+	}
+
     public ValidationException(HashMap<String, HashMap> validationErrors) {
         this.validationErrors = validationErrors;
     }

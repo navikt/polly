@@ -94,6 +94,12 @@ public class InformationTypeService {
 
 	public void validateRequests(List<InformationTypeRequest> requests, boolean isUpdate) {
 		HashMap<String, HashMap> validationMap = new HashMap<>();
+
+		if (requests == null || requests.isEmpty()) {
+			logger.error("The request was not accepted because it is empty");
+			throw new ValidationException("The request was not accepted because it is empty");
+		}
+
 		HashMap<String, Integer> namesUsedInRequest = new HashMap<>();
 
 		final AtomicInteger i = new AtomicInteger(1);
@@ -121,12 +127,10 @@ public class InformationTypeService {
 
 	private HashMap validateRequest(InformationTypeRequest request, boolean isUpdate) {
 		HashMap<String, String> validationErrors = new HashMap<>();
+
 		if (request.getName() == null || request.getName().isEmpty()) {
 			validationErrors.put("name", "Name must have a non-empty value");
-		} else if (!isUpdate && repository.findByName(request.getName().trim()).isPresent()) {
-			validationErrors.put("name", String.format("The name %s is already used by an existing Informationtype", request.getName()));
 		}
-
 		if (request.getPersonalData() == null) {
 			validationErrors.put("personalData", "PersonalData cannot be null");
 		}
@@ -141,6 +145,18 @@ public class InformationTypeService {
 		if (!classScopedTemporaryMap.isEmpty()) {
 			validationErrors.putAll(classScopedTemporaryMap);
 		}
+
+		if (validationErrors.isEmpty()) {
+			request.toUpperCaseAndTrim();
+			if (!isUpdate && repository.findByName(request.getName()).isPresent()) {
+				validationErrors.put("nameAlreadyUsed", String.format("The name %s is already in use by another InformationType and therefore cannot be created", request
+						.getName()));
+			} else if (isUpdate && repository.findByName(request.getName()).isEmpty()) {
+				validationErrors.put("nameNotFound", String.format("There is not an InformationType with the name %s and therefore it cannot be updated", request
+						.getName()));
+			}
+		}
+
 		return validationErrors;
 
 	}
@@ -149,15 +165,16 @@ public class InformationTypeService {
 		String codeType = listName.toString().toLowerCase() + "Code";
 		if (code == null) {
 			classScopedTemporaryMap.put(codeType, String.format("The %s was null", codeType));
-		} else if (!codelists.get(listName).containsKey(code.toUpperCase())) {
-			classScopedTemporaryMap.put(codeType, String.format("The code %s was not found in the codelist(%s)", code.toUpperCase(), listName));
+		} else if (!codelists.get(listName).containsKey(code.toUpperCase().trim())) {
+			classScopedTemporaryMap.put(codeType, String.format("The code %s was not found in the codelist(%s)", code.toUpperCase()
+					.trim(), listName));
 		}
 	}
 
 	public List<InformationType> returnUpdatedInformationTypesIfAllArePresent(List<InformationTypeRequest> requests) {
 		List<InformationType> informationTypes = new ArrayList<>();
 		requests.forEach(request -> {
-			Optional<InformationType> optionalInformationType = repository.findByName(request.getName().trim());
+			Optional<InformationType> optionalInformationType = repository.findByName(request.getName());
 			if (optionalInformationType.isEmpty()) {
 				throw new DataCatalogBackendNotFoundException(String.format("Cannot find informationType with name: %s", request
 						.getName()));

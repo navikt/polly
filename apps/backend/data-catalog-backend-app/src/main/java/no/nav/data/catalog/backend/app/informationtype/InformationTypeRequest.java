@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -59,6 +60,16 @@ public class InformationTypeRequest {
 		}
 
 		return Collections.emptyList();
+	}
+
+	void toUpperCaseAndTrim() {
+		setName(this.name.trim());
+		setDescription(this.description.trim());
+		setCategoryCode(this.categoryCode.toUpperCase().trim());
+		setSystemCode(this.systemCode.toUpperCase().trim());
+		setProducerCode(this.producerCode.stream()
+				.map(p -> p.toUpperCase().trim())
+				.collect(Collectors.toList()));
 	}
 
 }
