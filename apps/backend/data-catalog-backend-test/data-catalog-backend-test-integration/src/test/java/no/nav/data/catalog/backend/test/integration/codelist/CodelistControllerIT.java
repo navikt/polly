@@ -39,7 +39,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -135,7 +134,7 @@ public class CodelistControllerIT extends TestdataCodelists {
 
 	@Test
 	public void save_shouldSave20Codelist() {
-		List<CodelistRequest> requests = createNrOfRequests("shouldSave20Codelists_nr_", 20);
+		List<CodelistRequest> requests = createNrOfRequests("shouldSave20Codelists", 20);
 
 		ResponseEntity<List<Codelist>> responseEntity = restTemplate.exchange(
 				URL, HttpMethod.POST, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
@@ -161,10 +160,12 @@ public class CodelistControllerIT extends TestdataCodelists {
 
 	@Test
 	public void update_shouldUpdate20Codelists() {
-		List<CodelistRequest> requests = createNrOfRequests("shouldUpdate20Codelists_nr_", 20);
-		service.save(requests);
+		List<CodelistRequest> requests = createNrOfRequests("shouldUpdate20Codelists", 20);
+		restTemplate.exchange(
+				URL, HttpMethod.POST, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
+				});
 
-		requests.forEach(request -> request.setDescription("Updated codelists"));
+		requests.forEach(request -> request.setDescription("  Updated codelists  "));
 		ResponseEntity<List<Codelist>> responseEntity = restTemplate.exchange(
 				URL, HttpMethod.PUT, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
 				});
