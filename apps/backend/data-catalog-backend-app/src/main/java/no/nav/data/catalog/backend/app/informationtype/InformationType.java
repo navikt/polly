@@ -23,7 +23,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -88,9 +87,9 @@ public class InformationType extends Auditable<String> {
 			this.elasticsearchId = base64UUID();
 		}
 		this.name = request.getName();
-		this.categoryCode = request.getCategoryCode().toUpperCase().trim();
-		this.producerCode = request.getProducerCode().stream().map(s -> s.toUpperCase().trim()).collect(Collectors.joining(", "));
-		this.systemCode = request.getSystemCode().toUpperCase().trim();
+		this.categoryCode = request.getCategoryCode();
+		this.systemCode = request.getSystemCode();
+		this.producerCode = String.join(", ", request.getProducerCode());
 		this.description = request.getDescription();
 		this.personalData = request.getPersonalData();
 		return this;
