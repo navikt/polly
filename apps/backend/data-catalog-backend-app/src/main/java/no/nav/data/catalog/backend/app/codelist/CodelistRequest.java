@@ -18,7 +18,7 @@ public class CodelistRequest {
 	public Codelist convert() {
 		return Codelist.builder()
 				.list(list)
-				.code(code.toUpperCase())
+				.code(code)
 				.description(description)
 				.build();
 	}
