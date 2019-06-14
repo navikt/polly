@@ -68,7 +68,7 @@ public class CodelistServiceIT {
 
 	@Test
 	public void save_shouldSaveNewCodelist() {
-		service.save(createRequest());
+		service.save(createListOfOneRequest());
 
 		assertThat(repository.findAll().size(), is(1));
 		assertTrue(repository.findByListAndCode(LIST_NAME, CODE).isPresent());
@@ -78,9 +78,9 @@ public class CodelistServiceIT {
 
 	@Test
 	public void update_shouldUpdateCodelist() {
-		service.save(createRequest());
+		service.save(createListOfOneRequest());
 
-		List<CodelistRequest> updatedRequest = createRequest(LIST_NAME, CODE, "Updated codelist");
+		List<CodelistRequest> updatedRequest = createListOfOneRequest(LIST_NAME, CODE, "Updated codelist");
 		service.update(updatedRequest);
 
 		assertThat(codelists.get(LIST_NAME).get(CODE), is(updatedRequest.get(0).getDescription()));
@@ -90,7 +90,7 @@ public class CodelistServiceIT {
 
 	@Test
 	public void delete_shouldDeleteCodelist() {
-		List<CodelistRequest> request = createRequest();
+		List<CodelistRequest> request = createListOfOneRequest();
 		service.save(request);
 		assertThat(repository.findAll().size(), is(1));
 		assertThat(codelists.get(LIST_NAME).size(), is(1));
@@ -103,7 +103,25 @@ public class CodelistServiceIT {
 		assertNull(codelists.get(LIST_NAME).get(CODE));
 	}
 
-	private List<CodelistRequest> createRequest(ListName listName, String code, String description) {
+	@Test
+	public void validateRequests_shouldValidateRequests() {
+		List<CodelistRequest> requests = List.of(
+				createOneRequest(ListName.PRODUCER, "CODE_1", "Description"),
+				createOneRequest(ListName.PRODUCER, "code_2 ", "Description"),
+				createOneRequest(ListName.PRODUCER, " Code_3 ", "Description "));
+
+		service.validateRequests(requests, false);
+	}
+
+	private CodelistRequest createOneRequest(ListName listName, String code, String description) {
+		return CodelistRequest.builder()
+				.list(listName)
+				.code(code)
+				.description(description)
+				.build();
+	}
+
+	private List<CodelistRequest> createListOfOneRequest(ListName listName, String code, String description) {
 		return List.of(CodelistRequest.builder()
 				.list(listName)
 				.code(code)
@@ -111,8 +129,8 @@ public class CodelistServiceIT {
 				.build());
 	}
 
-	private List<CodelistRequest> createRequest() {
-		return createRequest(LIST_NAME, CODE, DESCRIPTION);
+	private List<CodelistRequest> createListOfOneRequest() {
+		return createListOfOneRequest(LIST_NAME, CODE, DESCRIPTION);
 	}
 
 	static class Initializer
