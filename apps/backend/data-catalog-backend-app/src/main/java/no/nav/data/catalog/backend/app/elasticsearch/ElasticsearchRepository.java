@@ -1,8 +1,5 @@
 package no.nav.data.catalog.backend.app.elasticsearch;
 
-import static no.nav.data.catalog.backend.app.common.utils.Constants.INDEX;
-import static no.nav.data.catalog.backend.app.common.utils.Constants.TYPE;
-
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import no.nav.data.catalog.backend.app.common.exceptions.DocumentNotFoundException;
@@ -30,6 +27,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Map;
+
+import static no.nav.data.catalog.backend.app.common.utils.Constants.INDEX;
+import static no.nav.data.catalog.backend.app.common.utils.Constants.TYPE;
 
 @Slf4j
 @Service

@@ -1,11 +1,5 @@
 package no.nav.data.catalog.backend.app.informationtype;
 
-import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCED;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_CREATED;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
-
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
@@ -22,6 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.*;
 
 @Slf4j
 @Service
