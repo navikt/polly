@@ -1,21 +1,5 @@
 package no.nav.data.catalog.backend.test.integration.informationtype;
 
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCED;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.CATEGORY_CODE;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.CATEGORY_DESCRIPTION;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.CATEGORY_MAP;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.DESCRIPTION;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.LIST_PRODUCER_MAP;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.NAME;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.PRODUCER_CODE_LIST;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.PRODUCER_CODE_STRING;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.PRODUCER_DESCRIPTION_LIST;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.SYSTEM_CODE;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.SYSTEM_DESCRIPTION;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.SYSTEM_MAP;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
@@ -44,6 +28,11 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCED;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,

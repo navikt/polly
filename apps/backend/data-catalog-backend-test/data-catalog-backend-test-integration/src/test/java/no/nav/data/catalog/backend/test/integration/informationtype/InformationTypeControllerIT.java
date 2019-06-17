@@ -137,6 +137,12 @@ public class InformationTypeControllerIT {
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 		assertInformationTypeResponse(responseEntity.getBody());
+
+		responseEntity = restTemplate.exchange(
+				URL + "/name/" + informationType.getName() + " ", HttpMethod.GET, HttpEntity.EMPTY, InformationTypeResponse.class);
+
+		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+		assertInformationTypeResponse(responseEntity.getBody());
 	}
 
 	private InformationType saveAnInformationType(InformationTypeRequest request) {
