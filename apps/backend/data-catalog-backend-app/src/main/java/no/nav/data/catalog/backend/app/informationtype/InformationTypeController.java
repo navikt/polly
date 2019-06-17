@@ -83,6 +83,16 @@ public class InformationTypeController {
 		return new RestResponsePage<>(listOfInformationTypeResponses, pageable, listOfInformationTypeResponses.size());
 	}
 
+	@ApiOperation(value = "Count all InformationTypes", tags = { "InformationType" })
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Count of informationTypes fetched", response = Long.class),
+			@ApiResponse(code = 500, message = "Internal server error")})
+	@GetMapping("/count")
+	public Long countAllInformationTypes() {
+		logger.info("Received request for count all InformationTypes");
+		return repository.count();
+	}
+
 	@ApiOperation(value = "Create InformationType", tags = {"InformationTypes"})
 	@ApiResponses(value = {
 			@ApiResponse(code = 202, message = "InformationTypes to be created successfully accepted", response = InformationTypeResponse.class, responseContainer = "List"),
