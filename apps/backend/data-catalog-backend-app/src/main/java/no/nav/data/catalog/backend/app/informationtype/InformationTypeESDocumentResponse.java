@@ -3,10 +3,7 @@ package no.nav.data.catalog.backend.app.informationtype;
 import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.policy.Policy;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
@@ -31,6 +28,7 @@ public class InformationTypeESDocumentResponse {
         this.system = getMapForCodelistItem(ListName.SYSTEM, informationTypeESDocument.getInformationType().getSystemCode());
         this.producer = getListOfMappedProducers(informationTypeESDocument.getInformationType().getProducerCode());
         this.personalData = informationTypeESDocument.getInformationType().isPersonalData();
+        this.policies = informationTypeESDocument.getPolicies();
     }
 
     private Map<String, String> getMapForCodelistItem(ListName listName, String code) {
@@ -56,6 +54,12 @@ public class InformationTypeESDocumentResponse {
         jsonMap.put("system", system);
         jsonMap.put("personalData", personalData);
 
+        List<Map> policyMaps = new ArrayList<>();
+        for (Policy policy: policies) {
+            Map<String, Object> policyMap = policy.convertToMap();
+            policyMaps.add(policyMap);
+        }
+        jsonMap.put("policies", policyMaps);
         return jsonMap;
     }
 }

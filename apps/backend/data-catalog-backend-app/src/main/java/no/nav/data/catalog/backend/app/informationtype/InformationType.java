@@ -13,7 +13,6 @@ import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Map;
 
 import static org.elasticsearch.common.UUIDs.base64UUID;
 
@@ -67,10 +66,6 @@ public class InformationType extends Auditable<String> {
 	@Enumerated(EnumType.STRING)
 	@NotNull
 	private ElasticsearchStatus elasticsearchStatus;
-
-	Map<String, Object> convertToMap() {
-		return this.convertToResponse().convertToMap();
-	}
 
 	public InformationType convertFromRequest(InformationTypeRequest request, Boolean isUpdate) {
 		if (isUpdate) {

@@ -1,11 +1,15 @@
 package no.nav.data.catalog.backend.app.policy;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Policy {
     private Long policyId;
     private String legalBasisDescription;
@@ -16,5 +20,13 @@ public class Policy {
         this.purpose = response.getPurpose();
         this.legalBasisDescription = response.getLegalBasisDescription();
         return this;
+    }
+
+    public Map<String, Object> convertToMap() {
+        Map<String, Object> jsonMap = new HashMap<>();
+        jsonMap.put("policyId", policyId);
+        jsonMap.put("legalBasisDescription", legalBasisDescription);
+        jsonMap.put("purpose", purpose);
+        return jsonMap;
     }
 }

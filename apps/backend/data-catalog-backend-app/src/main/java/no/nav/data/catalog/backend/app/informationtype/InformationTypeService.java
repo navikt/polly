@@ -69,7 +69,12 @@ public class InformationTypeService {
 			Map<String, Object> jsonMap;
 
 			for (InformationType informationType : optinalInformationTypes.get()) {
-				jsonMap = informationType.convertToMap();
+				InformationTypeESDocument informationTypeESDocument = new InformationTypeESDocument();
+				informationTypeESDocument.setInformationType(informationType);
+				List<Policy> policies = policyConsumer.getPolicyForInformationType(informationType.getId());
+				informationTypeESDocument.setPolicies(policies);
+
+				jsonMap = informationTypeESDocument.convertToMap();
 
 				elasticsearch.updateInformationTypeById(informationType.getElasticsearchId(), jsonMap);
 

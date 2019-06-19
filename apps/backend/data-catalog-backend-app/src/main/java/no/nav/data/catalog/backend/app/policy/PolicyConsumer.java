@@ -28,10 +28,8 @@ public class PolicyConsumer {
     public List<Policy> getPolicyForInformationType(Long informationTypeId) {
         if (informationTypeId == null) return null;
         try {
-//            ResponseEntity<List<PolicyResponse>> responseEntity = restTemplate.exchange(policyUrl + "?informationTypeId=" + informationTypeId, HttpMethod.GET,  HttpEntity.EMPTY, new ParameterizedTypeReference<>() {});
-            List<Policy> responseEntity1 = null;
-            return responseEntity1;
-//            return responseEntity.getBody().stream().map(reponse -> new Policy().convertFromResponse(reponse)).collect(Collectors.toList());
+            ResponseEntity<List<PolicyResponse>> responseEntity = restTemplate.exchange(policyUrl + "?informationTypeId=" + informationTypeId, HttpMethod.GET,  HttpEntity.EMPTY, new ParameterizedTypeReference<List<PolicyResponse>>() {});
+            return responseEntity.getBody().stream().map(reponse -> new Policy().convertFromResponse(reponse)).collect(Collectors.toList());
         } catch (
                 HttpClientErrorException e) {
             if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
@@ -40,7 +38,7 @@ public class PolicyConsumer {
                 throw new DataCatalogBackendTechnicalException(String.format("Getting Policies for InformationTyp (id: %s) failed with status=%s message=%s", informationTypeId, e.getStatusCode(), e.getResponseBodyAsString()), e, e.getStatusCode());
             }
         } catch (HttpServerErrorException e) {
-            throw new DataCatalogBackendTechnicalException(String.format("Getting Policies for InformationTyp (id: %s) failed with status=%s message=%s", informationTypeId, e.getStatusCode(), e.getResponseBodyAsString()), e, e.getStatusCode());
+            throw new DataCatalogBackendTechnicalException(String.format("Getting Policies for InformationType (id: %s) failed with status=%s message=%s", informationTypeId, e.getStatusCode(), e.getResponseBodyAsString()), e, e.getStatusCode());
         }
     }
 }
