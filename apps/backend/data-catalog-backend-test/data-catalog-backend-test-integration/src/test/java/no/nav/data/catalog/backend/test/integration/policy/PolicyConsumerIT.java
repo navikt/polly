@@ -13,6 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -29,8 +30,23 @@ public class PolicyConsumerIT {
     private String policyUrl;
 
     @Test
-    public void getPolicyForInformationType1() {
+    public void getPolicyForInformationTypeId1() {
         List<Policy> policiesList = policyConsumer.getPolicyForInformationType(1L);
         assertThat(policiesList.size(), is(2));
+        assertPolicy0(policiesList.get(0));
+        assertPolicy1(policiesList.get(1));
     }
+
+    private void assertPolicy0(Policy policy) {
+        assertThat(policy.getPolicyId(), is(1L));
+        assertThat(policy.getLegalBasisDescription(), is("LB description"));
+        assertThat(policy.getPurpose(), is(Map.of("code", "KTR", "description", "Kontroll")));
+    }
+
+    private void assertPolicy1(Policy policy) {
+        assertThat(policy.getPolicyId(), is(2L));
+        assertThat(policy.getLegalBasisDescription(), is("Ftrl. § 11-20"));
+        assertThat(policy.getPurpose(), is(Map.of("code", "AAP", "description", "Arbeidsavklaringspenger")));
+    }
+
 }
