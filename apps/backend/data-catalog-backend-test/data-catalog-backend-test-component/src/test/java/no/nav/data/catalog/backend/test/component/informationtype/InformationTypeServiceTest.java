@@ -1,28 +1,5 @@
 package no.nav.data.catalog.backend.test.component.informationtype;
 
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_CREATED;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
-import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.CATEGORY_CODE;
-import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.CATEGORY_DESCRIPTION;
-import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.DESCRIPTION;
-import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.NAME;
-import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.PRODUCER_CODE_LIST;
-import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.PRODUCER_CODE_STRING;
-import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.PRODUCER_DESCRIPTION_LIST;
-import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.SYSTEM_CODE;
-import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.SYSTEM_DESCRIPTION;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.anyMap;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
@@ -34,7 +11,6 @@ import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
 import no.nav.data.catalog.backend.app.policy.Policy;
 import no.nav.data.catalog.backend.app.policy.PolicyConsumer;
-import no.nav.data.catalog.backend.app.policy.PolicyResponse;
 import no.nav.data.catalog.backend.test.component.ComponentTestConfig;
 import org.junit.Before;
 import org.junit.Rule;
@@ -51,6 +27,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.*;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ComponentTestConfig.class)
@@ -125,6 +108,9 @@ public class InformationTypeServiceTest {
 	public void shouldSyncUpdatedInformationTypes() {
 		List<InformationType> informationTypes = new ArrayList<>();
 		informationTypes.add(informationType);
+		List<Policy> policies = new ArrayList<>();
+		policies.add(policy);
+		when(policyConsumer.getPolicyForInformationType(anyLong())).thenReturn(policies);
 		when(informationTypeRepository.findByElasticsearchStatus(TO_BE_UPDATED)).thenReturn(Optional.of(informationTypes));
 
 		service.synchToElasticsearch();

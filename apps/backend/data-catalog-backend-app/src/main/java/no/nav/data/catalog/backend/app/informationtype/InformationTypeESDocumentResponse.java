@@ -55,11 +55,13 @@ public class InformationTypeESDocumentResponse {
         jsonMap.put("personalData", personalData);
 
         List<Map> policyMaps = new ArrayList<>();
-        for (Policy policy: policies) {
-            Map<String, Object> policyMap = policy.convertToMap();
-            policyMaps.add(policyMap);
+        if (policies != null) {
+            for (Policy policy : policies) {
+                Map<String, Object> policyMap = policy.convertToMap();
+                policyMaps.add(policyMap);
+            }
+            jsonMap.put("policies", policyMaps);
         }
-        jsonMap.put("policies", policyMaps);
         return jsonMap;
     }
 }

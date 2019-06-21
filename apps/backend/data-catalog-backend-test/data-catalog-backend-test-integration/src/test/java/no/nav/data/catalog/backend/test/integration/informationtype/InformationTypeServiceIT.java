@@ -69,6 +69,7 @@ public class InformationTypeServiceIT {
     public void setUp() {
         repository.deleteAll();
         initializeCodelists();
+
     }
 
     @After

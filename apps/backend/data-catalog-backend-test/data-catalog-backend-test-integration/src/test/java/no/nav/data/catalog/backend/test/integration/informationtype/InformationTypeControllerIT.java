@@ -1,33 +1,9 @@
 package no.nav.data.catalog.backend.test.integration.informationtype;
 
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.CATEGORY_CODE;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.CATEGORY_DESCRIPTION;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.DESCRIPTION;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.LIST_PRODUCER_MAP;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.NAME;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.PRODUCER_CODE_LIST;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.PRODUCER_CODE_STRING;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.PRODUCER_DESCRIPTION_LIST;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.SYSTEM_CODE;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.SYSTEM_DESCRIPTION;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.URL;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
 import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
-import no.nav.data.catalog.backend.app.informationtype.InformationType;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeResponse;
-import no.nav.data.catalog.backend.app.informationtype.RestResponsePage;
+import no.nav.data.catalog.backend.app.informationtype.*;
 import no.nav.data.catalog.backend.test.component.elasticsearch.FixedElasticsearchContainer;
 import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
 import org.junit.After;
@@ -43,6 +19,7 @@ import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -58,6 +35,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -171,13 +154,13 @@ public class InformationTypeControllerIT {
 	public void get100InformationTypes() {
 		createInformationTypeTestData(100);
 
-		ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange(
-				URL + "?page=0&size=100", HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
+		ResponseEntity<PagedResources<InformationTypeResponse>> responseEntity = restTemplate.exchange(
+				URL + "?page=0&size=100", HttpMethod.GET, null, new ParameterizedTypeReference<PagedResources<InformationTypeResponse>>() {
 				});
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 		assertThat(repository.findAll().size(), is(100));
 		//TODO: Find out why test initiate PageImpl() twice
-//		assertThat(responseEntity.getBody().getContent().size(), is(100));
+		assertThat(responseEntity.getBody().getContent().size(), is(100));
 	}
 
 	@Test

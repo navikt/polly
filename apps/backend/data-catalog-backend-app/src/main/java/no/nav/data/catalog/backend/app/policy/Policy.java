@@ -2,6 +2,7 @@ package no.nav.data.catalog.backend.app.policy;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Map;
 
 @Builder
 @NoArgsConstructor
+@Getter
 @AllArgsConstructor
 public class Policy {
     private Long policyId;
