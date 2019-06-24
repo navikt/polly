@@ -30,7 +30,7 @@ public class PolicyConsumer {
     public List<Policy> getPolicyForInformationType(Long informationTypeId) {
         if (informationTypeId == null) return null;
         try {
-            ResponseEntity<PagedResources<PolicyResponse>> responseEntity = restTemplate.exchange(policyUrl + "?informationTypeId=" + informationTypeId, HttpMethod.GET, HttpEntity.EMPTY, new ParameterizedTypeReference<PagedResources<PolicyResponse>>() {});
+            ResponseEntity<PagedResources<PolicyResponse>> responseEntity = restTemplate.exchange(policyUrl + "?informationTypeId=" + informationTypeId + "&page=0&size=1000", HttpMethod.GET, HttpEntity.EMPTY, new ParameterizedTypeReference<PagedResources<PolicyResponse>>() {});
             if (responseEntity.getBody().getContent() != null) {
                 return responseEntity.getBody().getContent()
                         .stream()
