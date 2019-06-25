@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -110,12 +111,9 @@ public class InformationTypeControllerTest {
 	@Test
 	public void get20InformationTypes() throws Exception {
 		List<InformationType> informationTypes = createTestdataInformationType(20);
-		List<InformationTypeResponse> informationTypesResponses = informationTypes.stream()
-				.map(InformationType::convertToResponse)
-				.collect(Collectors.toList());
-		RestResponsePage<InformationTypeResponse> informationTypePage = new RestResponsePage<>(informationTypesResponses);
+		Page<InformationType> informationTypePage = new PageImpl<>(informationTypes);
 
-		given(repository.findAllByOrderByIdAsc(PageRequest.of(0, 20))).willReturn(informationTypes);
+		given(repository.findAllByOrderByIdAsc(PageRequest.of(0, 20))).willReturn(informationTypePage);
 
 		mvc.perform(get("/backend/informationtype")
 				.contentType(MediaType.APPLICATION_JSON))
@@ -138,7 +136,7 @@ public class InformationTypeControllerTest {
 	public void getAllInformationTypes_shouldGetEmptyList_whenRepositoryIsEmpty() throws Exception {
 		Page<InformationType> informationTypePage = new RestResponsePage<>(Collections.emptyList());
 
-		given(repository.findAll(PageRequest.of(0, 100))).willReturn(informationTypePage);
+		given(repository.findAllByOrderByIdAsc(PageRequest.of(0, 100))).willReturn(informationTypePage);
 
 		mvc.perform(get("/backend/informationtype?page=0&size=100")
 				.contentType(MediaType.APPLICATION_JSON))

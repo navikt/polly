@@ -9,6 +9,7 @@ import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -77,10 +78,8 @@ public class InformationTypeController {
 	@GetMapping
 	public RestResponsePage<InformationTypeResponse> getAllInformationTypes(Pageable pageable) {
 		logger.info("Received request for all InformationTypes");
-		List<InformationTypeResponse> listOfInformationTypeResponses = repository.findAllByOrderByIdAsc(pageable).stream()
-				.map(InformationType::convertToResponse)
-				.collect(Collectors.toList());
-		return new RestResponsePage<>(listOfInformationTypeResponses, pageable, listOfInformationTypeResponses.size());
+		Page<InformationTypeResponse> listOfInformationTypeResponses = repository.findAllByOrderByIdAsc(pageable).map(InformationType::convertToResponse);
+		return new RestResponsePage(listOfInformationTypeResponses.getContent(), pageable, listOfInformationTypeResponses.getTotalElements());
 	}
 
 	@ApiOperation(value = "Count all InformationTypes", tags = { "InformationType" })
