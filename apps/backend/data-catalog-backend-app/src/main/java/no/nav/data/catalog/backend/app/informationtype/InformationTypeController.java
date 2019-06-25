@@ -9,7 +9,6 @@ import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -75,12 +75,19 @@ public class InformationTypeController {
 			@ApiResponse(code = 404, message = "No InformationTypes found in repository"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping
-	public RestResponsePage<InformationTypeResponse> getAllInformationTypes(Pageable pageable) {
-		logger.info("Received request for all InformationTypes");
-		List<InformationTypeResponse> listOfInformationTypeResponses = repository.findAllByOrderByIdAsc(pageable).stream()
+	public RestResponsePage<InformationTypeResponse> getAllInformationTypes(@RequestParam Map<String, String> queryMap) {
+		if (queryMap.isEmpty()) {
+			logger.info("Received request for all InformationTypes");
+		} else {
+			logger.info("Received request for all InformationTypes specified in the request{}", queryMap);
+		}
+		FilterRequest filterRequest = new FilterRequest().mapFromQuery(queryMap);
+
+		List<InformationTypeResponse> listOfInformationTypeResponses =
+				repository.findAll(filterRequest.getSpecification(), filterRequest.getPageable()).stream()
 				.map(InformationType::convertToResponse)
 				.collect(Collectors.toList());
-		return new RestResponsePage<>(listOfInformationTypeResponses, pageable, listOfInformationTypeResponses.size());
+		return new RestResponsePage<>(listOfInformationTypeResponses, filterRequest.getPageable(), repository.count());
 	}
 
 	@ApiOperation(value = "Count all InformationTypes", tags = { "InformationType" })
