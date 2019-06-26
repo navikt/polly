@@ -2,6 +2,7 @@ package no.nav.data.catalog.backend.app.codelist;
 
 import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -32,6 +33,7 @@ import java.util.Map;
 @RestController
 @CrossOrigin
 @RequestMapping("/backend/codelist")
+@Api(value = "Codelist", description = "REST API for common list of values", tags = { "Codelist" })
 public class CodelistController {
 
 	private static final Logger logger = LoggerFactory.getLogger(CodelistController.class);
@@ -77,7 +79,7 @@ public class CodelistController {
 		return codelists.get(ListName.valueOf(listName.toUpperCase())).get(code.toUpperCase());
 	}
 
-	@ApiOperation(value = "Create Codelist", tags = {"Codelists"})
+	@ApiOperation(value = "Create Codelist", tags = {"Codelist"})
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Codelist successfully created", response = Codelist.class, responseContainer = "List"),
 			@ApiResponse(code = 400, message = "Illegal arguments"),
@@ -91,7 +93,7 @@ public class CodelistController {
 		return service.save(requests);
 	}
 
-	@ApiOperation(value = "Update Codelist", tags = {"Codelists"})
+	@ApiOperation(value = "Update Codelist", tags = {"Codelist"})
 	@ApiResponses(value = {
 			@ApiResponse(code = 202, message = "Codelist updated", response = Codelist.class, responseContainer = "List"),
 			@ApiResponse(code = 400, message = "Illegal arguments"),
