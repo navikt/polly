@@ -1,7 +1,6 @@
 package no.nav.data.catalog.backend.app.informationtype;
 
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -12,8 +11,6 @@ import java.util.Optional;
 
 public interface InformationTypeRepository extends JpaRepository<InformationType, Long>,
 		JpaSpecificationExecutor<InformationType> {
-	List<InformationType> findAllByOrderByIdAsc(Pageable pageable);
-
 	Optional<List<InformationType>> findByElasticsearchStatus(@Param("status") ElasticsearchStatus status);
 
 	@Query(value = "SELECT * FROM BACKEND_SCHEMA.INFORMATION_TYPE WHERE TRIM(UPPER(name)) = TRIM(UPPER(:name))", nativeQuery = true)
