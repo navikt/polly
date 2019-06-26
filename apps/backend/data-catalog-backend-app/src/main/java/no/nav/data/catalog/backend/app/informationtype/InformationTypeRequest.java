@@ -62,7 +62,7 @@ public class InformationTypeRequest {
 		return Collections.emptyList();
 	}
 
-	void toUpperCaseAndTrim() {
+	public void toUpperCaseAndTrim() {
 		setName(this.name.trim());
 		setDescription(this.description.trim());
 		setCategoryCode(this.categoryCode.toUpperCase().trim());
