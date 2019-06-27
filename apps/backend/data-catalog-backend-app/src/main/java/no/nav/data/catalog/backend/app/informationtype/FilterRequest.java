@@ -41,14 +41,14 @@ public class FilterRequest {
 
 		if (queryMap.get("sort") != null) {
 			Queue<String> queue = new LinkedList<>(Arrays.asList(queryMap.get("sort").split(",")));
-			Sort sort = recursiveSort(queue);
+			Sort sort = getSortQuery(queue);
 			this.pageable = PageRequest.of(page, pageSize, sort);
 		} else {
 			this.pageable = PageRequest.of(page, pageSize);
 		}
 	}
 
-	private Sort recursiveSort(Queue<String> queue) {
+	private Sort getSortQuery(Queue<String> queue) {
 		String current = queue.remove();
 		String next = queue.peek();
 
@@ -66,16 +66,16 @@ public class FilterRequest {
 			if (next == null) {  // check if end of queue
 				return Sort.by(current).ascending();
 			}
-			return Sort.by(current).ascending().and(recursiveSort(queue));
+			return Sort.by(current).ascending().and(getSortQuery(queue));
 		} else if (next.equalsIgnoreCase("desc")) {
 			queue.remove(); // removes direction from queue
 			next = queue.peek();
 			if (next == null) {  // check if end of queue
 				return Sort.by(current).descending();
 			}
-			return Sort.by(current).descending().and(recursiveSort(queue));
+			return Sort.by(current).descending().and(getSortQuery(queue));
 		} else {
-			return Sort.by(current).and(recursiveSort(queue));
+			return Sort.by(current).and(getSortQuery(queue));
 		}
 	}
 
