@@ -5,8 +5,8 @@ import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchRepository;
-import no.nav.data.catalog.backend.app.policy.Policy;
 import no.nav.data.catalog.backend.app.policy.PolicyConsumer;
+import no.nav.data.catalog.backend.app.policy.PolicyResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,8 +49,8 @@ public class InformationTypeService {
 
 			for (InformationType informationType : optionalInformationTypes.get()) {
 				InformationTypeESDocument informationTypeESDocument = new InformationTypeESDocument();
-				informationTypeESDocument.setInformationType(informationType);
-				List<Policy> policies = policyConsumer.getPolicyForInformationType(informationType.getId());
+				informationTypeESDocument.setInformationTypeResponse(informationType.convertToResponse());
+				List<PolicyResponse> policies = policyConsumer.getPolicyForInformationType(informationType.getId());
 				informationTypeESDocument.setPolicies(policies);
 
 				jsonMap = informationTypeESDocument.convertToMap();
@@ -70,8 +70,8 @@ public class InformationTypeService {
 
 			for (InformationType informationType : optinalInformationTypes.get()) {
 				InformationTypeESDocument informationTypeESDocument = new InformationTypeESDocument();
-				informationTypeESDocument.setInformationType(informationType);
-				List<Policy> policies = policyConsumer.getPolicyForInformationType(informationType.getId());
+				informationTypeESDocument.setInformationTypeResponse(informationType.convertToResponse());
+				List<PolicyResponse> policies = policyConsumer.getPolicyForInformationType(informationType.getId());
 				informationTypeESDocument.setPolicies(policies);
 
 				jsonMap = informationTypeESDocument.convertToMap();

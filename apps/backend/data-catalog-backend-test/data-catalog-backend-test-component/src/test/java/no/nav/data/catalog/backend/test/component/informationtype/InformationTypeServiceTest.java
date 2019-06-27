@@ -9,8 +9,8 @@ import no.nav.data.catalog.backend.app.informationtype.InformationType;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
-import no.nav.data.catalog.backend.app.policy.Policy;
 import no.nav.data.catalog.backend.app.policy.PolicyConsumer;
+import no.nav.data.catalog.backend.app.policy.PolicyResponse;
 import no.nav.data.catalog.backend.test.component.ComponentTestConfig;
 import org.junit.Before;
 import org.junit.Rule;
@@ -42,7 +42,7 @@ import static org.mockito.Mockito.*;
 public class InformationTypeServiceTest {
 
 	private static InformationType informationType;
-	private static Policy policy;
+	private static PolicyResponse policy;
 
 	@Mock
 	private InformationTypeRepository informationTypeRepository;
@@ -83,7 +83,7 @@ public class InformationTypeServiceTest {
 		informationType.setLastModifiedBy(null);
 		informationType.setLastModifiedDate(null);
 
-		policy = Policy.builder().policyId(1L).legalBasisDescription("Legal description").purpose(Map.of("code", "purposeCode", "description", "Purpose description")).build();
+		policy = PolicyResponse.builder().policyId(1L).legalBasisDescription("Legal description").purpose(Map.of("code", "purposeCode", "description", "Purpose description")).build();
 
 	}
 
@@ -91,7 +91,7 @@ public class InformationTypeServiceTest {
 	public void shouldSyncCreatedInformationTypes() {
 		List<InformationType> informationTypes = new ArrayList<>();
 		informationTypes.add(informationType);
-		List<Policy> policies = new ArrayList<>();
+		List<PolicyResponse> policies = new ArrayList<>();
 		policies.add(policy);
 		when(informationTypeRepository.findByElasticsearchStatus(TO_BE_CREATED)).thenReturn(Optional.of(informationTypes));
 		when(policyConsumer.getPolicyForInformationType(anyLong())).thenReturn(policies);
@@ -108,7 +108,7 @@ public class InformationTypeServiceTest {
 	public void shouldSyncUpdatedInformationTypes() {
 		List<InformationType> informationTypes = new ArrayList<>();
 		informationTypes.add(informationType);
-		List<Policy> policies = new ArrayList<>();
+		List<PolicyResponse> policies = new ArrayList<>();
 		policies.add(policy);
 		when(policyConsumer.getPolicyForInformationType(anyLong())).thenReturn(policies);
 		when(informationTypeRepository.findByElasticsearchStatus(TO_BE_UPDATED)).thenReturn(Optional.of(informationTypes));

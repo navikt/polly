@@ -1,33 +1,25 @@
 package no.nav.data.catalog.backend.test.component.policy;
 
-import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import no.nav.data.catalog.backend.app.informationtype.InformationType;
-import no.nav.data.catalog.backend.app.policy.Policy;
 import no.nav.data.catalog.backend.app.policy.PolicyConsumer;
 import no.nav.data.catalog.backend.app.policy.PolicyResponse;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.data.web.config.HateoasAwareSpringDataWebConfiguration;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -88,7 +80,7 @@ public class PolicyConsumerTest {
         PagedResources<PolicyResponse> pagedResources = new PagedResources<>(responseList,
                 new PagedResources.PageMetadata(responseList.size(), 1, responseList.size(), 1));
         when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), eq(HttpEntity.EMPTY), eq(new ParameterizedTypeReference<PagedResources<PolicyResponse>>() {}))).thenReturn(ResponseEntity.ok(pagedResources));
-        List<Policy> policies = policyConsumer.getPolicyForInformationType(1L);
+        List<PolicyResponse> policies = policyConsumer.getPolicyForInformationType(1L);
         assertPolicy1(policies.get(0));
         assertPolicy2(policies.get(1));
     }
@@ -96,7 +88,7 @@ public class PolicyConsumerTest {
     @Test
     public void policiesNotFound() {
         when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), eq(HttpEntity.EMPTY), eq(new ParameterizedTypeReference<PagedResources<PolicyResponse>>() {}))).thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
-        List<Policy> policies = policyConsumer.getPolicyForInformationType(1L);
+        List<PolicyResponse> policies = policyConsumer.getPolicyForInformationType(1L);
         assertThat(policies.size(), is(0));
     }
 
@@ -116,14 +108,14 @@ public class PolicyConsumerTest {
         policyConsumer.getPolicyForInformationType(1L);
     }
 
-    private void assertPolicy1(Policy policy) {
+    private void assertPolicy1(PolicyResponse policy) {
         assertThat(policy.getPolicyId(), is(1L));
         assertThat(policy.getPurpose().get("code"), is(PURPOSECODE1));
         assertThat(policy.getPurpose().get("description"), is(PURPOSEDESCRIPTION1));
         assertThat(policy.getLegalBasisDescription(), is(LEGALBASISDESCRIPTION1));
     }
 
-    private void assertPolicy2(Policy policy) {
+    private void assertPolicy2(PolicyResponse policy) {
         assertThat(policy.getPolicyId(), is(2L));
         assertThat(policy.getPurpose().get("code"), is(PURPOSECODE2));
         assertThat(policy.getPurpose().get("description"), is(PURPOSEDESCRIPTION2));

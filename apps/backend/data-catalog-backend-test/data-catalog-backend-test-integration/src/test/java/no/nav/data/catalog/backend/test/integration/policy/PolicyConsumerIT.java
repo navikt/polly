@@ -1,8 +1,8 @@
 package no.nav.data.catalog.backend.test.integration.policy;
 
 import no.nav.data.catalog.backend.app.AppStarter;
-import no.nav.data.catalog.backend.app.policy.Policy;
 import no.nav.data.catalog.backend.app.policy.PolicyConsumer;
+import no.nav.data.catalog.backend.app.policy.PolicyResponse;
 import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,19 +31,19 @@ public class PolicyConsumerIT {
 
     @Test
     public void getPolicyForInformationTypeId1() {
-        List<Policy> policiesList = policyConsumer.getPolicyForInformationType(1L);
+        List<PolicyResponse> policiesList = policyConsumer.getPolicyForInformationType(1L);
         assertThat(policiesList.size(), is(2));
         assertPolicy0(policiesList.get(0));
         assertPolicy1(policiesList.get(1));
     }
 
-    private void assertPolicy0(Policy policy) {
+    private void assertPolicy0(PolicyResponse policy) {
         assertThat(policy.getPolicyId(), is(1L));
         assertThat(policy.getLegalBasisDescription(), is("LB description"));
         assertThat(policy.getPurpose(), is(Map.of("code", "KTR", "description", "Kontroll")));
     }
 
-    private void assertPolicy1(Policy policy) {
+    private void assertPolicy1(PolicyResponse policy) {
         assertThat(policy.getPolicyId(), is(2L));
         assertThat(policy.getLegalBasisDescription(), is("Ftrl. § 11-20"));
         assertThat(policy.getPurpose(), is(Map.of("code", "AAP", "description", "Arbeidsavklaringspenger")));

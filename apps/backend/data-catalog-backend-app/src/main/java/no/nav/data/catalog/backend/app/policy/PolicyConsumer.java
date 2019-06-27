@@ -27,15 +27,12 @@ public class PolicyConsumer {
     @Value("${datacatalog.policy.url}")
     private String policyUrl;
 
-    public List<Policy> getPolicyForInformationType(Long informationTypeId) {
+    public List<PolicyResponse> getPolicyForInformationType(Long informationTypeId) {
         if (informationTypeId == null) return null;
         try {
             ResponseEntity<PagedResources<PolicyResponse>> responseEntity = restTemplate.exchange(policyUrl + "?informationTypeId=" + informationTypeId + "&page=0&size=1000", HttpMethod.GET, HttpEntity.EMPTY, new ParameterizedTypeReference<PagedResources<PolicyResponse>>() {});
             if (responseEntity.getBody().getContent() != null) {
-                return responseEntity.getBody().getContent()
-                        .stream()
-                        .map(reponse -> new Policy().convertFromResponse(reponse))
-                        .collect(Collectors.toList());
+                return responseEntity.getBody().getContent().stream().collect(Collectors.toList());
             } else return null;
         } catch (
                 HttpClientErrorException e) {

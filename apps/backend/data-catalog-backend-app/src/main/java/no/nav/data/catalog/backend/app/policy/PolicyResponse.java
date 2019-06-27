@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import no.nav.data.catalog.backend.app.informationtype.InformationType;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Getter
@@ -19,4 +20,12 @@ public class PolicyResponse {
     private InformationType informationType;
     private String legalBasisDescription;
     private Map<String, String> purpose;
+
+    public Map<String, Object> convertToMap() {
+        Map<String, Object> jsonMap = new HashMap<>();
+        jsonMap.put("policyId", policyId);
+        jsonMap.put("legalBasisDescription", legalBasisDescription);
+        jsonMap.put("purpose", purpose);
+        return jsonMap;
+    }
 }
