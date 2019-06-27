@@ -20,7 +20,7 @@ public class SwaggerConfig {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(Predicates.or(RequestHandlerSelectors.basePackage("no.nav.data.catalog.backend.app.record"),RequestHandlerSelectors.basePackage("no.nav.data.catalog.backend.app.github") ))
+                .apis(Predicates.or(RequestHandlerSelectors.basePackage("no.nav.data.catalog.backend.app.codelist"), RequestHandlerSelectors.basePackage("no.nav.data.catalog.backend.app.informationtype"),RequestHandlerSelectors.basePackage("no.nav.data.catalog.backend.app.github") ))
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(apiInfo());
@@ -29,7 +29,7 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfo(
                 "Data Catalog Backend",
-                "Rest API for gettting and posting information on Data Catalog Backend. We need a writer for this....",
+                "Rest API for getting and posting information on Data Catalog Backend. We need a writer for this....",
                 "1.0",
                 "Terms of service",
                 new Contact("NAV", "www.nav.no", "post@nav.no"),

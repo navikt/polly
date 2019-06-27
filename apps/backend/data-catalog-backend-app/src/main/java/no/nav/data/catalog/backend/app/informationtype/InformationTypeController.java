@@ -112,7 +112,7 @@ public class InformationTypeController {
 		return repository.count();
 	}
 
-	@ApiOperation(value = "Create InformationType", tags = {"InformationTypes"})
+	@ApiOperation(value = "Create InformationType", tags = {"InformationType"})
 	@ApiResponses(value = {
 			@ApiResponse(code = 202, message = "InformationTypes to be created successfully accepted", response = InformationTypeResponse.class, responseContainer = "List"),
 			@ApiResponse(code = 400, message = "Illegal arguments"),
@@ -132,7 +132,7 @@ public class InformationTypeController {
 				.collect(Collectors.toList());
 	}
 
-	@ApiOperation(value = "Update InformationType", tags = {"InformationTypes"})
+	@ApiOperation(value = "Update InformationType", tags = {"InformationType"})
 	@ApiResponses(value = {
 			@ApiResponse(code = 202, message = "InformationTypes to be updated successfully accepted", response = InformationTypeResponse.class, responseContainer = "List"),
 			@ApiResponse(code = 400, message = "Illegal arguments"),
