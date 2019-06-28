@@ -26,6 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,6 +70,7 @@ public class InformationTypeServiceIT {
     public void setUp() {
         repository.deleteAll();
         initializeCodelists();
+
     }
 
     @After
@@ -188,5 +190,21 @@ public class InformationTypeServiceIT {
         assertThat(esMap.get("category"), is(CATEGORY_MAP));
         assertThat(esMap.get("producer"), is(LIST_PRODUCER_MAP));
         assertThat(esMap.get("system"), is(SYSTEM_MAP));
+        ArrayList<Map<String, Object>> policies = (ArrayList<Map<String, Object>>) esMap.get("policies");
+        assertThat(policies.size(), is(2));
+        assertPolicies0(policies.get(0));
+        assertPolicies1(policies.get(1));
+    }
+
+    private void assertPolicies0(Map<String, Object> policyMap) {
+        assertThat(policyMap.get("policyId"),is(1));
+        assertThat(policyMap.get("purpose"),is(Map.of("code", "KTR", "description", "Kontroll")));
+        assertThat(policyMap.get("legalBasisDescription"),is("LB description"));
+    }
+
+    private void assertPolicies1(Map<String, Object> policyMap) {
+        assertThat(policyMap.get("policyId"),is(2));
+        assertThat(policyMap.get("purpose"),is(Map.of("code", "AAP", "description", "Arbeidsavklaringspenger")));
+        assertThat(policyMap.get("legalBasisDescription"),is("Ftrl. § 11-20"));
     }
 }
