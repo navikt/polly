@@ -11,11 +11,13 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -68,7 +70,7 @@ public class CodelistService {
 		}
 		logger.error("Cannot find codelist with code={} in list={}", request.getCode(), request.getList());
 		throw new CodelistNotFoundException(String.format(
-				"Cannot find codelist with code=%s in list=%s", request.getCode(), request.getDescription()));
+				"Cannot find codelist with code=%s in list=%s", request.getCode(), request.getList()));
 	}
 
 	public void delete(ListName name, String code) {
@@ -78,51 +80,93 @@ public class CodelistService {
 			codelists.get(name).remove(code);
 		} else {
 			logger.error("Cannot find a codelist to delete with code={} and listName={}", code, name);
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(
+					String.format("Cannot find a codelist to delete with code=%s and listName=%s", code, name));
 		}
 	}
 
-	public void validateRequests(List<CodelistRequest> requests, boolean isUpdate) {
-		HashMap<String, HashMap> validationMap = new HashMap<>();
+	public void validateListNameExists(String listName) {
+		if (!isListNamePresentInCodelist(listName)) {
+			logger.error("Codelist with listName={} does not exits", listName);
+			throw new CodelistNotFoundException(String.format("Codelist with listName=%s does not exist", listName));
+		}
+	}
 
+	public void validateListNameAndCodeExists(String listName, String code) {
+		validateListNameExists(listName);
+		if (!codelists.get(ListName.valueOf(listName.toUpperCase())).containsKey(code.toUpperCase())) {
+			logger.error("The code={} does not exist in the list={}.", code, listName);
+			throw new CodelistNotFoundException(String.format("The code=%s does not exist in the list=%s.", code, listName));
+		}
+	}
+
+	public boolean isListNamePresentInCodelist(String listName) {
+		Optional<ListName> optionalListName = Arrays.stream(ListName.values())
+				.filter(x -> x.toString().equalsIgnoreCase(listName))
+				.findFirst();
+		return optionalListName.isPresent();
+	}
+
+	public void validateRequests(List<CodelistRequest> requests, boolean isUpdate) {
 		if (requests == null || requests.isEmpty()) {
 			logger.error("The request was not accepted because it is empty");
 			throw new ValidationException("The request was not accepted because it is empty");
 		}
 
-		HashMap<String, Integer> codelistsUsedInRequest = new HashMap<>();
+		Map<String, Map> validationErrorsForTheEntireRequest = new HashMap<>();
+		if (duplicatesInRequests(requests)) {
+			validationErrorsForTheEntireRequest.put("NotUniqueRequests", findDuplicatesInRequest(requests));
+		}
 
-		final AtomicInteger i = new AtomicInteger(1);
+		final AtomicInteger requestIndex = new AtomicInteger();
 		requests.forEach(request -> {
-			HashMap<String, String> requestMap = validateRequest(request, isUpdate);
+			requestIndex.addAndGet(1);
+			Map errorsInCurrentRequest = validateThatNoFieldsAreNullOrEmpty(request);
 
-			if (request.getList() != null && request.getCode() != null) {
-				String key = String.format("(%s, %s)", request.getList(), request.getCode());
-				if (codelistsUsedInRequest.containsKey(key)) {
-					requestMap.put("codelistNotUniqueInThisRequest",
-							String.format("The codelist %s has already been used in this request (see request nr:%s)",
-									key, codelistsUsedInRequest.get(key)));
-				} else {
-					codelistsUsedInRequest.put(key, i.intValue());
-				}
+			if (errorsInCurrentRequest.isEmpty()) {
+				request.toUpperCaseAndTrim();
+				errorsInCurrentRequest = validateThatAllFieldsHaveValidValues(request, isUpdate);
 			}
 
-			if (!requestMap.isEmpty()) {
-				validationMap.put(String.format("Request nr:%s", i.intValue()), requestMap);
+			if (!errorsInCurrentRequest.isEmpty()) {
+				validationErrorsForTheEntireRequest.put(String.format("Request:%s", requestIndex.toString()), errorsInCurrentRequest);
 			}
-			i.getAndIncrement();
 		});
 
-		if (!validationMap.isEmpty()) {
-			logger.error("The request was not accepted. The following errors occurred during validation: {}", validationMap);
-			throw new ValidationException(validationMap, "The request was not accepted. The following errors occurred during validation: ");
+		if (!validationErrorsForTheEntireRequest.isEmpty()) {
+			logger.error("The request was not accepted. The following errors occurred during validation: {}", validationErrorsForTheEntireRequest);
+			throw new ValidationException(validationErrorsForTheEntireRequest, "The request was not accepted. The following errors occurred during validation: ");
 		}
 	}
 
-	private HashMap validateRequest(CodelistRequest request, boolean isUpdate) {
+	private Boolean duplicatesInRequests(List<CodelistRequest> requestList) {
+		Set<CodelistRequest> requestSet = new HashSet<>(requestList);
+		return requestSet.size() < requestList.size();
+	}
+
+	private Map<String, String> findDuplicatesInRequest(List<CodelistRequest> listWithDuplicates) {
+		Map<String, Integer> mapOfRequests = new HashMap<>();
+		Map<String, String> mapOfDuplicateErrors = new HashMap<>();
+
+		AtomicInteger requestIndex = new AtomicInteger();
+		listWithDuplicates.forEach(request -> {
+			requestIndex.incrementAndGet();
+			String identifier = request.getList() + "-" + request.getCode();
+			if (mapOfRequests.containsKey(identifier)) {
+				mapOfDuplicateErrors.put(identifier,
+						String.format("Request:%s - The codelist %s is not unique because it has already been used in this request (see request:%s)",
+								requestIndex, identifier, mapOfRequests.get(identifier)));
+			} else {
+				mapOfRequests.put(identifier, requestIndex.intValue());
+			}
+		});
+		return mapOfDuplicateErrors;
+	}
+
+	private Map validateThatNoFieldsAreNullOrEmpty(CodelistRequest request) {
 		HashMap<String, String> validationErrors = new HashMap<>();
 		if (request.getList() == null) {
-			validationErrors.put("list", "The codelist must have a list name");
+			validationErrors.put("list", "The codelist must have a listName");
 		}
 		if (request.getCode() == null || request.getCode().isEmpty()) {
 			validationErrors.put("code", "The code was null or missing");
@@ -130,32 +174,22 @@ public class CodelistService {
 		if (request.getDescription() == null || request.getDescription().isEmpty()) {
 			validationErrors.put("description", "The description was null or missing");
 		}
+		return validationErrors;
+	}
 
-		if (validationErrors.isEmpty()) {
-			request.toUpperCaseAndTrim();
+	private Map validateThatAllFieldsHaveValidValues(CodelistRequest request, boolean isUpdate) {
+		HashMap<String, String> validationErrors = new HashMap<>();
+		if (!isListNamePresentInCodelist(request.getList().toString())) {
+			validationErrors.put("listName", String.format("Codelist with listName=%s does not exits", request.getList()));
+		} else {
 			if (!isUpdate && codelists.get(request.getList()).containsKey(request.getCode())) {
 				validationErrors.put("code", String.format("The code %s already exists in the codelist(%s) and therefore cannot be created",
 						request.getCode(), request.getList()));
 			} else if (isUpdate && codelists.get(request.getList()).get(request.getCode()) == null) {
-				validationErrors.put("code", String.format("The code %s does not exists in the codelist(%s) and therefore cannot be updated",
+				validationErrors.put("code", String.format("The code %s does not exist in the codelist(%s) and therefore cannot be updated",
 						request.getCode(), request.getList()));
 			}
 		}
 		return validationErrors;
-	}
-
-	private Optional<ListName> listNameInCodelist(String listName) {
-		Stream<ListName> streamOfListNames = Arrays.stream(ListName.values());
-		return streamOfListNames
-				.filter(x -> x.toString().equalsIgnoreCase(listName))
-				.findFirst();
-	}
-
-	void isListNamePresentInCodelist(String listName) {
-		Optional<ListName> optionalListName = listNameInCodelist(listName);
-		if (optionalListName.isEmpty()) {
-			logger.error("Codelist with listName={} does not exits", listName);
-			throw new CodelistNotFoundException(String.format("Codelist with ListName=%s does not exist", listName));
-		}
 	}
 }

@@ -18,6 +18,7 @@ import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
 import no.nav.data.catalog.backend.app.codelist.CodelistRequest;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
+import no.nav.data.catalog.backend.app.common.exceptions.CodelistNotFoundException;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.test.component.ComponentTestConfig;
 import org.junit.Test;
@@ -45,7 +46,7 @@ public class CodelistServiceTest {
 	private CodelistService service;
 
 	@Test
-	public void save_shouldCreateRequest() {
+	public void save_shouldCreateRequest_whenRequestIsValid() {
 		CodelistRequest request = CodelistRequest.builder()
 				.list(ListName.CATEGORY)
 				.code("TEST_CREATE")
@@ -53,13 +54,11 @@ public class CodelistServiceTest {
 				.build();
 		service.save(List.of(request));
 		verify(repository, times(1)).saveAll(anyList());
-		assertFalse(codelists.get(request.getList()).get(request.getCode()).isEmpty());
-		assertThat(codelists.get(request.getList())
-				.get(request.getCode()), is("Test av kategorien TEST_CREATE"));
+		assertThat(codelists.get(ListName.CATEGORY).get("TEST_CREATE"), is("Test av kategorien TEST_CREATE"));
 	}
 
 	@Test
-	public void update_shouldUpdateRequest() {
+	public void update_shouldUpdateRequest_whenRequestIsValid() {
 		codelists.get(ListName.PRODUCER).put("TEST_UPDATE", "Original description");
 
 		CodelistRequest request = CodelistRequest.builder()
@@ -78,7 +77,24 @@ public class CodelistServiceTest {
 	}
 
 	@Test
-	public void delete_shouldDelete() {
+	public void update_shouldThrowNotFound_whenCodeDoesNotExist() {
+		CodelistRequest request = CodelistRequest.builder()
+				.list(ListName.PRODUCER)
+				.code("UNKNOWN_CODE")
+				.description("Updated description")
+				.build();
+
+		when(repository.findByListAndCode(ListName.PRODUCER, "UNKNOWN_CODE")).thenReturn(Optional.empty());
+
+		try {
+			service.update(List.of(request));
+		} catch (CodelistNotFoundException e) {
+			assertThat(e.getLocalizedMessage(), is("Cannot find codelist with code=UNKNOWN_CODE in list=PRODUCER"));
+		}
+	}
+
+	@Test
+	public void delete_shouldDelete_whenListAndCodeExists() {
 		ListName listName = ListName.CATEGORY;
 		String code = "TEST_DELETE";
 		String description = "Test delete description";
@@ -96,6 +112,51 @@ public class CodelistServiceTest {
 		verify(repository, times(1)).findByListAndCode(any(ListName.class), anyString());
 		verify(repository, times(1)).delete(any(Codelist.class));
 		assertNull(codelists.get(listName).get(code));
+	}
+
+	@Test
+	public void delete_shouldThrowIllegalArgumentException_whenCodeDoesNotExist() {
+		when(repository.findByListAndCode(ListName.PRODUCER, "UNKNOWN_CODE")).thenReturn(Optional.empty());
+
+
+		try {
+			service.delete(ListName.PRODUCER, "UNKNOWN_CODE");
+		} catch (IllegalArgumentException e) {
+			assertThat(e.getLocalizedMessage(), is("Cannot find a codelist to delete with code=UNKNOWN_CODE and listName=PRODUCER"));
+		}
+	}
+
+	@Test
+	public void validateListNameExistsANDvalidateListNameAndCodeExists_nothingShouldHappen_whenValuesExists() {
+		codelists.get(ListName.PURPOSE).put("CODE", "Description");
+
+		service.validateListNameExists("PURPOSE");
+		service.validateListNameAndCodeExists("PURPOSE", "CODE");
+	}
+
+	@Test
+	public void validateListNameExists_shouldThrowNotFound_whenListNameDoesNotExists() {
+		try {
+			service.validateListNameExists("UNKNOWN_LISTNAME");
+		} catch (CodelistNotFoundException e) {
+			assertThat(e.getLocalizedMessage(), is("Codelist with listName=UNKNOWN_LISTNAME does not exist"));
+		}
+	}
+
+	@Test
+	public void validateListNameAndCodeExists_shouldThrowNotFound_whenCodeDoesNotExists() {
+		try {
+			service.validateListNameAndCodeExists("PRODUCER", "unknownCode");
+		} catch (CodelistNotFoundException e) {
+			assertThat(e.getLocalizedMessage(), is("The code=unknownCode does not exist in the list=PRODUCER."));
+		}
+	}
+
+	@Test
+	public void isListNamePresentInCodelist_shouldReturnOptionalEmpty_whenListNameDoesNotExist() {
+		boolean unknownListName = service.isListNamePresentInCodelist("UnknownListName");
+
+		assertFalse(unknownListName);
 	}
 
 	@Test
@@ -131,16 +192,16 @@ public class CodelistServiceTest {
 	}
 
 	@Test
-	public void validateRequestsCreate_shouldThrowValidationException_withEmptyRequest() {
+	public void validateRequestsCreate_shouldThrowValidationException_whenRequestHasEmptyValues() {
 		CodelistRequest request = CodelistRequest.builder().build();
 		try {
 			service.validateRequests(List.of(request), false);
 		} catch (ValidationException e) {
 			assertThat(e.get().size(), is(1));
-			assertThat(e.get().get("Request nr:1").size(), is(3));
-			assertThat(e.get().get("Request nr:1").get("list"), is("The codelist must have a list name"));
-			assertThat(e.get().get("Request nr:1").get("code"), is("The code was null or missing"));
-			assertThat(e.get().get("Request nr:1").get("description"), is("The description was null or missing"));
+			assertThat(e.get().get("Request:1").size(), is(3));
+			assertThat(e.get().get("Request:1").get("list"), is("The codelist must have a listName"));
+			assertThat(e.get().get("Request:1").get("code"), is("The code was null or missing"));
+			assertThat(e.get().get("Request:1").get("description"), is("The description was null or missing"));
 		}
 	}
 
@@ -152,10 +213,9 @@ public class CodelistServiceTest {
 			service.validateRequests(List.of(request), false);
 		} catch (ValidationException e) {
 			assertThat(e.get().size(), is(1));
-			assertThat(e.get().get("Request nr:1").size(), is(1));
-			assertThat(e.get()
-					.get("Request nr:1")
-					.get("code"), is("The code BRUKER already exists in the codelist(PRODUCER) and therefore cannot be created"));
+			assertThat(e.get().get("Request:1").size(), is(1));
+			assertThat(e.get().get("Request:1").get("code"),
+					is("The code BRUKER already exists in the codelist(PRODUCER) and therefore cannot be created"));
 		}
 	}
 
@@ -187,9 +247,9 @@ public class CodelistServiceTest {
 			service.validateRequests(requests, false);
 		} catch (ValidationException e) {
 			assertThat(e.get().size(), is(1));
-			assertThat(e.get().get("Request nr:4").size(), is(1));
-			assertThat(e.get().get("Request nr:4").get("codelistNotUniqueInThisRequest"),
-					is("The codelist (PRODUCER, TEST) has already been used in this request (see request nr:1)"));
+			assertThat(e.get().get("NotUniqueRequests").size(), is(1));
+			assertThat(e.get().get("NotUniqueRequests").get("PRODUCER-TEST"),
+					is("Request:4 - The codelist PRODUCER-TEST is not unique because it has already been used in this request (see request:1)"));
 		}
 	}
 
@@ -207,16 +267,16 @@ public class CodelistServiceTest {
 	}
 
 	@Test
-	public void validateRequestsUpdate_shouldThrowValidationException_withEmptyRequest() {
+	public void validateRequestsUpdate_shouldThrowValidationException_whenRequestHasEmptyValues() {
 		CodelistRequest request = CodelistRequest.builder().build();
 		try {
 			service.validateRequests(List.of(request), true);
 		} catch (ValidationException e) {
 			assertThat(e.get().size(), is(1));
-			assertThat(e.get().get("Request nr:1").size(), is(3));
-			assertThat(e.get().get("Request nr:1").get("list"), is("The codelist must have a list name"));
-			assertThat(e.get().get("Request nr:1").get("code"), is("The code was null or missing"));
-			assertThat(e.get().get("Request nr:1").get("description"), is("The description was null or missing"));
+			assertThat(e.get().get("Request:1").size(), is(3));
+			assertThat(e.get().get("Request:1").get("list"), is("The codelist must have a listName"));
+			assertThat(e.get().get("Request:1").get("code"), is("The code was null or missing"));
+			assertThat(e.get().get("Request:1").get("description"), is("The description was null or missing"));
 		}
 	}
 
@@ -231,9 +291,9 @@ public class CodelistServiceTest {
 			service.validateRequests(List.of(request), true);
 		} catch (ValidationException e) {
 			assertThat(e.get().size(), is(1));
-			assertThat(e.get().get("Request nr:1").size(), is(1));
-			assertThat(e.get().get("Request nr:1").get("code"),
-					is("The code UNKNOWNCODE does not exists in the codelist(PRODUCER) and therefore cannot be updated"));
+			assertThat(e.get().get("Request:1").size(), is(1));
+			assertThat(e.get().get("Request:1").get("code"),
+					is("The code UNKNOWNCODE does not exist in the codelist(PRODUCER) and therefore cannot be updated"));
 		}
 	}
 

@@ -2,9 +2,6 @@ package no.nav.data.catalog.backend.test.integration.codelist;
 
 
 import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
-import static no.nav.data.catalog.backend.test.integration.codelist.TestdataCodelists.CODE;
-import static no.nav.data.catalog.backend.test.integration.codelist.TestdataCodelists.DESCRIPTION;
-import static no.nav.data.catalog.backend.test.integration.codelist.TestdataCodelists.LIST_NAME;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -71,20 +68,20 @@ public class CodelistServiceIT {
 		service.save(createListOfOneRequest());
 
 		assertThat(repository.findAll().size(), is(1));
-		assertTrue(repository.findByListAndCode(LIST_NAME, CODE).isPresent());
-		assertThat(codelists.get(LIST_NAME).size(), is(1));
-		assertFalse(codelists.get(LIST_NAME).get(CODE).isEmpty());
+		assertTrue(repository.findByListAndCode(ListName.PRODUCER, "TEST_CODE").isPresent());
+		assertThat(codelists.get(ListName.PRODUCER).size(), is(1));
+		assertFalse(codelists.get(ListName.PRODUCER).get("TEST_CODE").isEmpty());
 	}
 
 	@Test
 	public void update_shouldUpdateCodelist() {
 		service.save(createListOfOneRequest());
 
-		List<CodelistRequest> updatedRequest = createListOfOneRequest(LIST_NAME, CODE, "Updated codelist");
+		List<CodelistRequest> updatedRequest = createListOfOneRequest(ListName.PRODUCER, "TEST_CODE", "Updated codelist");
 		service.update(updatedRequest);
 
-		assertThat(codelists.get(LIST_NAME).get(CODE), is(updatedRequest.get(0).getDescription()));
-		assertThat(repository.findByListAndCode(LIST_NAME, CODE).get().getDescription(), is(updatedRequest.get(0)
+		assertThat(codelists.get(ListName.PRODUCER).get("TEST_CODE"), is(updatedRequest.get(0).getDescription()));
+		assertThat(repository.findByListAndCode(ListName.PRODUCER, "TEST_CODE").get().getDescription(), is(updatedRequest.get(0)
 				.getDescription()));
 	}
 
@@ -93,14 +90,14 @@ public class CodelistServiceIT {
 		List<CodelistRequest> request = createListOfOneRequest();
 		service.save(request);
 		assertThat(repository.findAll().size(), is(1));
-		assertThat(codelists.get(LIST_NAME).size(), is(1));
+		assertThat(codelists.get(ListName.PRODUCER).size(), is(1));
 
-		service.delete(LIST_NAME, CODE);
+		service.delete(ListName.PRODUCER, "TEST_CODE");
 
 		assertThat(repository.findAll().size(), is(0));
-		assertFalse(repository.findByListAndCode(LIST_NAME, CODE).isPresent());
-		assertThat(codelists.get(LIST_NAME).size(), is(0));
-		assertNull(codelists.get(LIST_NAME).get(CODE));
+		assertFalse(repository.findByListAndCode(ListName.PRODUCER, "TEST_CODE").isPresent());
+		assertThat(codelists.get(ListName.PRODUCER).size(), is(0));
+		assertNull(codelists.get(ListName.PRODUCER).get("TEST_CODE"));
 	}
 
 	@Test
@@ -130,7 +127,7 @@ public class CodelistServiceIT {
 	}
 
 	private List<CodelistRequest> createListOfOneRequest() {
-		return createListOfOneRequest(LIST_NAME, CODE, DESCRIPTION);
+		return createListOfOneRequest(ListName.PRODUCER, "TEST_CODE", "Test description");
 	}
 
 	static class Initializer
