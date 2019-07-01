@@ -13,7 +13,7 @@ class TestdataInformationTypes {
 	static final List<Map> LIST_PRODUCER_MAP = List.of(
 			Map.of("code", PRODUCER_CODE_LIST.get(0), "description", PRODUCER_DESCRIPTION_LIST.get(0)),
 			Map.of("code", PRODUCER_CODE_LIST.get(1), "description", PRODUCER_DESCRIPTION_LIST.get(1)));
-	static final String SYSTEM_CODE = "AA_REG";
+	static final String SYSTEM_CODE = "AA-REG";
 	static final String SYSTEM_DESCRIPTION = "Arbeidsgiver / Arbeidstaker register";
 	static final Map<String, String> SYSTEM_MAP = Map.of("code", SYSTEM_CODE, "description", SYSTEM_DESCRIPTION);
 	static final String NAME = "InformationName";
