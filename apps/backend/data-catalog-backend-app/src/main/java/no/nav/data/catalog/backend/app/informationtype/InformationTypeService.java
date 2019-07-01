@@ -5,16 +5,14 @@ import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchRepository;
+import no.nav.data.catalog.backend.app.policy.PolicyConsumer;
+import no.nav.data.catalog.backend.app.policy.PolicyResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
@@ -33,6 +31,9 @@ public class InformationTypeService {
 	@Autowired
 	private ElasticsearchRepository elasticsearch;
 
+	@Autowired
+	private PolicyConsumer policyConsumer;
+
 	public void synchToElasticsearch() {
 		logger.info("Starting sync to ElasticSearch");
 		createInformationTypesInElasticsearch();
@@ -47,7 +48,12 @@ public class InformationTypeService {
 			Map<String, Object> jsonMap;
 
 			for (InformationType informationType : optionalInformationTypes.get()) {
-				jsonMap = informationType.convertToMap();
+				InformationTypeESDocument informationTypeESDocument = new InformationTypeESDocument();
+				informationTypeESDocument.setInformationTypeResponse(informationType.convertToResponse());
+				List<PolicyResponse> policies = policyConsumer.getPolicyForInformationType(informationType.getId());
+				informationTypeESDocument.setPolicies(policies);
+
+				jsonMap = informationTypeESDocument.convertToMap();
 
 				elasticsearch.insertInformationType(jsonMap);
 
@@ -63,7 +69,12 @@ public class InformationTypeService {
 			Map<String, Object> jsonMap;
 
 			for (InformationType informationType : optinalInformationTypes.get()) {
-				jsonMap = informationType.convertToMap();
+				InformationTypeESDocument informationTypeESDocument = new InformationTypeESDocument();
+				informationTypeESDocument.setInformationTypeResponse(informationType.convertToResponse());
+				List<PolicyResponse> policies = policyConsumer.getPolicyForInformationType(informationType.getId());
+				informationTypeESDocument.setPolicies(policies);
+
+				jsonMap = informationTypeESDocument.convertToMap();
 
 				elasticsearch.updateInformationTypeById(informationType.getElasticsearchId(), jsonMap);
 
