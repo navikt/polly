@@ -9,6 +9,7 @@ import no.nav.data.catalog.backend.app.informationtype.InformationType;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
 import no.nav.data.catalog.backend.test.component.elasticsearch.FixedElasticsearchContainer;
+import no.nav.data.catalog.backend.test.integration.IntegrationTestBase;
 import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
 import org.junit.After;
 import org.junit.Before;
@@ -18,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -40,7 +42,8 @@ import static org.junit.Assert.assertThat;
         classes = {IntegrationTestConfig.class, AppStarter.class})
 @ActiveProfiles("itest")
 @ContextConfiguration(initializers = {InformationTypeServiceIT.Initializer.class})
-public class InformationTypeServiceIT {
+@AutoConfigureWireMock(port = 0)
+public class InformationTypeServiceIT extends IntegrationTestBase {
     @Autowired
     private InformationTypeService service;
 
@@ -70,7 +73,7 @@ public class InformationTypeServiceIT {
     public void setUp() {
         repository.deleteAll();
         initializeCodelists();
-
+        policyStubbing();
     }
 
     @After

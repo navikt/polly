@@ -3,12 +3,14 @@ package no.nav.data.catalog.backend.test.integration.policy;
 import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.policy.PolicyConsumer;
 import no.nav.data.catalog.backend.app.policy.PolicyResponse;
+import no.nav.data.catalog.backend.test.integration.IntegrationTestBase;
 import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -19,10 +21,11 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
         classes = {IntegrationTestConfig.class, AppStarter.class})
 @ActiveProfiles("itest")
-public class PolicyConsumerIT {
+@AutoConfigureWireMock(port = 0)
+public class PolicyConsumerIT extends IntegrationTestBase {
     @Autowired
     private PolicyConsumer policyConsumer;
 
@@ -31,6 +34,7 @@ public class PolicyConsumerIT {
 
     @Test
     public void getPolicyForInformationTypeId1() {
+        policyStubbing();
         List<PolicyResponse> policiesList = policyConsumer.getPolicyForInformationType(1L);
         assertThat(policiesList.size(), is(2));
         assertPolicy0(policiesList.get(0));

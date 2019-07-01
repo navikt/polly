@@ -60,7 +60,6 @@ import java.util.stream.IntStream;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
 		classes = {IntegrationTestConfig.class, AppStarter.class})
 @ActiveProfiles("itest")
-@AutoConfigureWireMock(port = 0)
 @ContextConfiguration(initializers = {InformationTypeControllerIT.Initializer.class})
 public class InformationTypeControllerIT {
 
