@@ -1,5 +1,6 @@
 package no.nav.data.catalog.backend.app.informationtype;
 
+import static java.lang.Boolean.parseBoolean;
 import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
 
 import lombok.Data;
@@ -88,7 +89,9 @@ public class FilterRequest {
 		if (queryMap.get("description") != null) {
 			specificationList.add(InformationTypeSpecification.hasDescription(queryMap.get("description")));
 		}
-		if (queryMap.get("personalData") != null) {
+		if (queryMap.get("personalData") != null && (
+				queryMap.get("personalData").equalsIgnoreCase("true") ||
+						queryMap.get("personalData").equalsIgnoreCase("false"))) {
 			specificationList.add(InformationTypeSpecification.isPersonalData(queryMap.get("personalData")));
 		}
 		if (codeExistInCodelist(ListName.CATEGORY, queryMap.get("category"))) {
