@@ -3,6 +3,7 @@ jobs:
   build:
     docker:
     - image: "circleci/openjdk:11"
+    - image: "google/cloud-sdk:252.0.0"
     steps:
     - checkout
     - setup_remote_docker
@@ -11,7 +12,7 @@ jobs:
         name: Generate version number and docker image tags
         command: |
           mkdir /tmp/workspace
-          export RELEASE_VERSION=$CIRCLE_BUILD_NUM-$CIRCLE_SHA1
+          export RELEASE_VERSION=$CIRCLE_BUILD_NUM
           echo "export RELEASE_VERSION=$RELEASE_VERSION" >> /tmp/workspace/properties.env
           echo "export DOCKER_TAG=\"$CIRCLE_PROJECT_REPONAME:$RELEASE_VERSION\"" >> /tmp/workspace/properties.env
           cat /tmp/workspace/properties.env >> $BASH_ENV
@@ -20,14 +21,51 @@ jobs:
         command: mvn clean install
     - run:
         name: Build docker image
-        command: docker build --build-arg version=$RELEASE_VERSION --build-arg app_name=$CIRCLE_PROJECT_REPONAME -t navikt/$DOCKER_TAG .
+        command: docker build --build-arg version=$RELEASE_VERSION --build-arg app_name=$CIRCLE_PROJECT_REPONAME -t gcr.io/datajegerne/navikt/$DOCKER_TAG .
     - run:
         name: Docker push
         command: |
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
           echo "Pushing with tag $DOCKER_TAG"
-          docker push navikt/$DOCKER_TAG
+          docker push gcr.io/datajegerne/navikt/$DOCKER_TAG
     - persist_to_workspace:
         root: /tmp/workspace
         paths:
           - properties.env
+  deploy_to_staging:
+    docker:
+      - image: google/cloud-sdk
+    environment:
+      - PROJECT_NAME: "datajegerne"
+      - GOOGLE_PROJECT_ID: "datajegerne"
+      - GOOGLE_COMPUTE_ZONE: "europe-north1-b"
+      - GOOGLE_CLUSTER_NAME: "datajegerne-cluster"
+    steps:
+      - checkout
+      - run:
+          name: Setup Google Cloud SDK
+          command: |
+            apt-get install -qq -y gettext
+            echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
+            export RELEASE_VERSION=$CIRCLE_BUILD_NUM
+            gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+            gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+            gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+            gcloud --quiet container clusters get-credentials ${GOOGLE_CLUSTER_NAME}
+      - setup_remote_docker
+      - run:
+          name: Docker build and push
+          command: |
+            docker build \
+              --build-arg COMMIT_REF=${CIRCLE_SHA1} \
+              --build-arg BUILD_DATE=`date -u +”%Y-%m-%dT%H:%M:%SZ”` \
+              -t ${PROJECT_NAME} .
+            docker tag ${PROJECT_NAME} gcr.io/${GOOGLE_PROJECT_ID}/navikt/${PROJECT_NAME}:${RELEASE_VERSION}
+            gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io
+            docker push gcr.io/${GOOGLE_PROJECT_ID}/navikt/${PROJECT_NAME}:${RELEASE_VERSION}
+#      - run:
+#          name: Deploy to Kubernetes
+#          command: |
+#            envsubst < ${HOME}/project/k8s.yml > ${HOME}/patched_k8s.yml
+#            kubectl apply -f ${HOME}/patched_k8s.yml
+#            kubectl rollout status deployment/${PROJECT_NAME}
