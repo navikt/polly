@@ -68,9 +68,15 @@ workflows:
   build_and_release:
     jobs:
       - build:
+          filters:
+            branches:
+              ignore: master
       - deploy_to_staging:
           requires:
             - build
+          filters:
+            branches:
+              ignore: master
 #          filters:
 #            branches:
 #              only:
