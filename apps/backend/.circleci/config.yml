@@ -1,0 +1,9 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/backend
+    docker:
+      - image: circleci/openjdk:11-jdk
+    steps:
+      - checkout
+      - run: mvn clean install
