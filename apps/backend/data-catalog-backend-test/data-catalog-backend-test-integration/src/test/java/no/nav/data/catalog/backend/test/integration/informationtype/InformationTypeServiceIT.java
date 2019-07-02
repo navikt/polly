@@ -9,6 +9,7 @@ import no.nav.data.catalog.backend.app.informationtype.InformationType;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
 import no.nav.data.catalog.backend.test.component.elasticsearch.FixedElasticsearchContainer;
+import no.nav.data.catalog.backend.test.integration.IntegrationTestBase;
 import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
 import org.junit.After;
 import org.junit.Before;
@@ -18,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -26,6 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +42,8 @@ import static org.junit.Assert.assertThat;
         classes = {IntegrationTestConfig.class, AppStarter.class})
 @ActiveProfiles("itest")
 @ContextConfiguration(initializers = {InformationTypeServiceIT.Initializer.class})
-public class InformationTypeServiceIT {
+@AutoConfigureWireMock(port = 0)
+public class InformationTypeServiceIT extends IntegrationTestBase {
     @Autowired
     private InformationTypeService service;
 
@@ -69,6 +73,7 @@ public class InformationTypeServiceIT {
     public void setUp() {
         repository.deleteAll();
         initializeCodelists();
+        policyStubbing();
     }
 
     @After
@@ -188,5 +193,21 @@ public class InformationTypeServiceIT {
         assertThat(esMap.get("category"), is(CATEGORY_MAP));
         assertThat(esMap.get("producer"), is(LIST_PRODUCER_MAP));
         assertThat(esMap.get("system"), is(SYSTEM_MAP));
+        ArrayList<Map<String, Object>> policies = (ArrayList<Map<String, Object>>) esMap.get("policies");
+        assertThat(policies.size(), is(2));
+        assertPolicies0(policies.get(0));
+        assertPolicies1(policies.get(1));
+    }
+
+    private void assertPolicies0(Map<String, Object> policyMap) {
+        assertThat(policyMap.get("policyId"),is(1));
+        assertThat(policyMap.get("purpose"),is(Map.of("code", "KTR", "description", "Kontroll")));
+        assertThat(policyMap.get("legalBasisDescription"),is("LB description"));
+    }
+
+    private void assertPolicies1(Map<String, Object> policyMap) {
+        assertThat(policyMap.get("policyId"),is(2));
+        assertThat(policyMap.get("purpose"),is(Map.of("code", "AAP", "description", "Arbeidsavklaringspenger")));
+        assertThat(policyMap.get("legalBasisDescription"),is("Ftrl. § 11-20"));
     }
 }

@@ -8,7 +8,7 @@ services:
       - POSTGRES_PASSWORD=123
       - POSTGRES_DB=datacatalog
     ports:
-      - 5432:5432
+      - 5433:5432
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1

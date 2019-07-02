@@ -43,7 +43,6 @@ import static org.junit.Assert.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         classes = {IntegrationTestConfig.class, AppStarter.class})
 @ActiveProfiles("itest")
-@AutoConfigureWireMock(port = 0)
 @ContextConfiguration(initializers = {GithubWebhooksControllerIT.Initializer.class})
 public class GithubWebhooksControllerIT {
 

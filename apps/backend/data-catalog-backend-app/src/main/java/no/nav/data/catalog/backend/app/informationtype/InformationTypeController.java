@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -76,10 +77,20 @@ public class InformationTypeController {
 			@ApiResponse(code = 404, message = "No InformationTypes found in repository"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping
-	public RestResponsePage<InformationTypeResponse> getAllInformationTypes(Pageable pageable) {
-		logger.info("Received request for all InformationTypes");
-		Page<InformationTypeResponse> listOfInformationTypeResponses = repository.findAllByOrderByIdAsc(pageable).map(InformationType::convertToResponse);
-		return new RestResponsePage(listOfInformationTypeResponses.getContent(), pageable, listOfInformationTypeResponses.getTotalElements());
+	public RestResponsePage<InformationTypeResponse> getAllInformationTypes(@RequestParam Map<String, String> queryMap) {
+		if (queryMap.isEmpty()) {
+			logger.info("Received request for all InformationTypes");
+		} else {
+			logger.info("Received request for all InformationTypes specified in the request{}", queryMap);
+		}
+		FilterRequest filterRequest = new FilterRequest().mapFromQuery(queryMap);
+
+		Page<InformationTypeResponse> pagedInformationTypeResponses =
+				repository.findAll(filterRequest.getSpecification(), filterRequest.getPageable())
+						.map(InformationType::convertToResponse);
+
+		return new RestResponsePage<>(pagedInformationTypeResponses.getContent(), filterRequest.getPageable(), pagedInformationTypeResponses
+				.getTotalElements());
 	}
 
 	@ApiOperation(value = "Count all InformationTypes", tags = { "InformationType" })
@@ -92,7 +103,7 @@ public class InformationTypeController {
 		return repository.count();
 	}
 
-	@ApiOperation(value = "Create InformationType", tags = {"InformationTypes"})
+	@ApiOperation(value = "Create InformationType", tags = {"InformationType"})
 	@ApiResponses(value = {
 			@ApiResponse(code = 202, message = "InformationTypes to be created successfully accepted", response = InformationTypeResponse.class, responseContainer = "List"),
 			@ApiResponse(code = 400, message = "Illegal arguments"),
@@ -112,7 +123,7 @@ public class InformationTypeController {
 				.collect(Collectors.toList());
 	}
 
-	@ApiOperation(value = "Update InformationType", tags = {"InformationTypes"})
+	@ApiOperation(value = "Update InformationType", tags = {"InformationType"})
 	@ApiResponses(value = {
 			@ApiResponse(code = 202, message = "InformationTypes to be updated successfully accepted", response = InformationTypeResponse.class, responseContainer = "List"),
 			@ApiResponse(code = 400, message = "Illegal arguments"),
