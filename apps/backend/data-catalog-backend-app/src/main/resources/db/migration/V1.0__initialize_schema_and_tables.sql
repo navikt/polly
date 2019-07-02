@@ -47,8 +47,6 @@ CREATE TABLE IF NOT EXISTS BACKEND_SCHEMA.DISTRIBUTION_CHANNEL
     DISTRIBUTION_CHANNEL_ID UUID PRIMARY KEY,
     NAME                    VARCHAR(100) UNIQUE NOT NULL,
     DESCRIPTION             TEXT                NOT NULL,
-    PRODUCERS               TEXT                NOT NULL,
-    CONSUMERS               TEXT                NOT NULL,
     CREATED_BY              VARCHAR(200)        NOT NULL,
     CREATED_DATE            TIMESTAMP           NOT NULL,
     LAST_MODIFIED_BY        VARCHAR(200),
