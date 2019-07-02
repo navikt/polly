@@ -110,9 +110,8 @@ public class InformationTypeControllerTest {
 	@Test
 	public void get20InformationTypes() throws Exception {
 		List<InformationType> informationTypes = createTestdataInformationType(20);
-		Page<InformationType> informationTypePage = new PageImpl<>(informationTypes);
+		Page<InformationType> informationTypePage = new PageImpl<>(informationTypes, defaultPageable, 20);
 
-		given(repository.findAllByOrderByIdAsc(PageRequest.of(0, 20))).willReturn(informationTypePage);
 		given(repository.findAll((Specification<InformationType>) null, defaultPageable)).willReturn(informationTypePage);
 		given(repository.count()).willReturn(20L);
 

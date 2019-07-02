@@ -1,8 +1,5 @@
 package no.nav.data.catalog.backend.app.informationtype;
 
-import static java.lang.Boolean.parseBoolean;
-import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.catalog.backend.app.codelist.ListName;
@@ -11,12 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
+
+import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
 
 @Data
 @NoArgsConstructor

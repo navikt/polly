@@ -1,7 +1,5 @@
 package no.nav.data.catalog.backend.app.informationtype;
 
-import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
 
 @Data
 @NoArgsConstructor

@@ -83,13 +83,13 @@ public class InformationTypeControllerIT {
     private void initializeCodelists() {
         codelists = CodelistService.codelists;
         codelists.get(ListName.CATEGORY).put(CATEGORY_CODE, CATEGORY_DESCRIPTION);
-		codelists.get(ListName.CATEGORY).put("ARBEIDSFORHOLD", "Arbeidsforhold");
+        codelists.get(ListName.CATEGORY).put("ARBEIDSFORHOLD", "Arbeidsforhold");
         codelists.get(ListName.PRODUCER).put(PRODUCER_CODE_LIST.get(0), PRODUCER_DESCRIPTION_LIST.get(0));
         codelists.get(ListName.PRODUCER).put(PRODUCER_CODE_LIST.get(1), PRODUCER_DESCRIPTION_LIST.get(1));
-		codelists.get(ListName.PRODUCER).put("FOLKEREGISTERET", "Folkeregisteret");
-		codelists.get(ListName.PRODUCER).put("ARBEIDSGIVER", "Arbeidsgiver");
+        codelists.get(ListName.PRODUCER).put("FOLKEREGISTERET", "Folkeregisteret");
+        codelists.get(ListName.PRODUCER).put("ARBEIDSGIVER", "Arbeidsgiver");
         codelists.get(ListName.SYSTEM).put(SYSTEM_CODE, SYSTEM_DESCRIPTION);
-		codelists.get(ListName.SYSTEM).put("TPS", "Tjenestebasert PersondataSystem");
+        codelists.get(ListName.SYSTEM).put("TPS", "Tjenestebasert PersondataSystem");
     }
 
     @Test
@@ -146,10 +146,10 @@ public class InformationTypeControllerIT {
 
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(repository.findAll().size(), is(30));
-		assertThat(responseEntity.getBody().getContent().size(), is(20));
-		assertThat(responseEntity.getBody().getNumber(), is(0));
-		assertThat(responseEntity.getBody().getSize(), is(20));
-		assertThat(responseEntity.getBody().getTotalElements(), is(30L));
+        assertThat(responseEntity.getBody().getContent().size(), is(20));
+        assertThat(responseEntity.getBody().getNumber(), is(0));
+        assertThat(responseEntity.getBody().getSize(), is(20));
+        assertThat(responseEntity.getBody().getTotalElements(), is(30L));
     }
 
     @Test
@@ -157,136 +157,136 @@ public class InformationTypeControllerIT {
         createInformationTypeTestData(100);
 
         ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange(
-				URL + "?page=0&pageSize=100", HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
-				});
-		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-		assertThat(repository.findAll().size(), is(100));
-		assertThat(responseEntity.getBody().getContent().size(), is(100));
-		assertThat(responseEntity.getBody().getNumber(), is(0));
-		assertThat(responseEntity.getBody().getSize(), is(100));
-		assertThat(responseEntity.getBody().getTotalElements(), is(100L));
-	}
-
-	@Test
-	public void getLastPageWithInformationTypes() {
-		createInformationTypeTestData(98);
-
-		ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange(
-				URL + "?page=4&pageSize=20", HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
-				});
-		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-		assertThat(repository.findAll().size(), is(98));
-		assertThat(responseEntity.getBody().getContent().size(), is(18));
-		assertThat(responseEntity.getBody().getNumber(), is(4));
-		assertThat(responseEntity.getBody().getSize(), is(20));
-		assertThat(responseEntity.getBody().getTotalElements(), is(98L));
-	}
-
-	@Test
-	public void getInformationTypesSortedByIdInDescendingOrder() {
-		createInformationTypeTestData(100);
-
-		ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange(
-				URL + "?sort=id,desc", HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
+                URL + "?page=0&pageSize=100", HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
                 });
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(repository.findAll().size(), is(100));
-		assertThat(responseEntity.getBody().getContent().get(0).getName(), equalTo("InformationTypeName_nr_100"));
-		assertThat(responseEntity.getBody().getContent().get(1).getName(), equalTo("InformationTypeName_nr_99"));
-		assertThat(responseEntity.getBody().getNumber(), is(0));
-		assertThat(responseEntity.getBody().getSize(), is(20));
-		assertThat(responseEntity.getBody().getTotalElements(), is(100L));
+        assertThat(responseEntity.getBody().getContent().size(), is(100));
+        assertThat(responseEntity.getBody().getNumber(), is(0));
+        assertThat(responseEntity.getBody().getSize(), is(100));
+        assertThat(responseEntity.getBody().getTotalElements(), is(100L));
     }
 
-	@Test
-	public void getAllInformationTypesThatHasTheNumberOneInTheName() {
-		createInformationTypeTestData(100);
+    @Test
+    public void getLastPageWithInformationTypes() {
+        createInformationTypeTestData(98);
 
-		ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange(
-				URL + "?name=1&pageSize=30", HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
-				});
-		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-		assertThat(repository.findAll().size(), is(100));
-		assertThat(responseEntity.getBody().getContent().size(), is(20));
-		assertThat(responseEntity.getBody().getNumber(), is(0));
-		assertThat(responseEntity.getBody().getSize(), is(30));
-		assertThat(responseEntity.getBody().getTotalElements(), is(20L));
-	}
+        ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange(
+                URL + "?page=4&pageSize=20", HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
+                });
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(repository.findAll().size(), is(98));
+        assertThat(responseEntity.getBody().getContent().size(), is(18));
+        assertThat(responseEntity.getBody().getNumber(), is(4));
+        assertThat(responseEntity.getBody().getSize(), is(20));
+        assertThat(responseEntity.getBody().getTotalElements(), is(98L));
+    }
 
-	@Test
-	public void getInformationTypeByFilterQuerys() {
-		initializeDBForFilterQuery();
+    @Test
+    public void getInformationTypesSortedByIdInDescendingOrder() {
+        createInformationTypeTestData(100);
 
-		ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange(URL + "?name=Sivilstand",
-				HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
-				});
-		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-		assertThat(repository.findAll().size(), is(3));
-		assertThat(responseEntity.getBody().getContent().size(), is(1));
-		assertThat(responseEntity.getBody().getNumber(), is(0));
-		assertThat(responseEntity.getBody().getSize(), is(20));
-		assertThat(responseEntity.getBody().getTotalElements(), is(1L));
-		assertThat(responseEntity.getBody().getContent().get(0).getName(), equalTo("Sivilstand"));
+        ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange(
+                URL + "?sort=id,desc", HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
+                });
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(repository.findAll().size(), is(100));
+        assertThat(responseEntity.getBody().getContent().get(0).getName(), equalTo("InformationTypeName_nr_100"));
+        assertThat(responseEntity.getBody().getContent().get(1).getName(), equalTo("InformationTypeName_nr_99"));
+        assertThat(responseEntity.getBody().getNumber(), is(0));
+        assertThat(responseEntity.getBody().getSize(), is(20));
+        assertThat(responseEntity.getBody().getTotalElements(), is(100L));
+    }
 
-		responseEntity = restTemplate.exchange(URL + "?description=begrepskatalog",
-				HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
-				});
-		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-		assertThat(responseEntity.getBody().getContent().size(), is(2));
-		assertThat(responseEntity.getBody().getTotalElements(), is(2L));
-		assertThat(responseEntity.getBody().getContent().get(0).getName(), equalTo("Sivilstand"));
-		assertThat(responseEntity.getBody().getContent().get(1).getName(), equalTo("Kjønn"));
+    @Test
+    public void getAllInformationTypesThatHasTheNumberOneInTheName() {
+        createInformationTypeTestData(100);
+
+        ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange(
+                URL + "?name=1&pageSize=30", HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
+                });
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(repository.findAll().size(), is(100));
+        assertThat(responseEntity.getBody().getContent().size(), is(20));
+        assertThat(responseEntity.getBody().getNumber(), is(0));
+        assertThat(responseEntity.getBody().getSize(), is(30));
+        assertThat(responseEntity.getBody().getTotalElements(), is(20L));
+    }
+
+    @Test
+    public void getInformationTypeByFilterQuerys() {
+        initializeDBForFilterQuery();
+
+        ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange(URL + "?name=Sivilstand",
+                HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
+                });
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(repository.findAll().size(), is(3));
+        assertThat(responseEntity.getBody().getContent().size(), is(1));
+        assertThat(responseEntity.getBody().getNumber(), is(0));
+        assertThat(responseEntity.getBody().getSize(), is(20));
+        assertThat(responseEntity.getBody().getTotalElements(), is(1L));
+        assertThat(responseEntity.getBody().getContent().get(0).getName(), equalTo("Sivilstand"));
+
+        responseEntity = restTemplate.exchange(URL + "?description=begrepskatalog",
+                HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
+                });
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(responseEntity.getBody().getContent().size(), is(2));
+        assertThat(responseEntity.getBody().getTotalElements(), is(2L));
+        assertThat(responseEntity.getBody().getContent().get(0).getName(), equalTo("Sivilstand"));
+        assertThat(responseEntity.getBody().getContent().get(1).getName(), equalTo("Kjønn"));
 
 
-		responseEntity = restTemplate.exchange(URL + "?personalData=false",
-				HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
-				});
-		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-		assertThat(responseEntity.getBody().getContent().size(), is(1));
-		assertThat(responseEntity.getBody().getTotalElements(), is(1L));
-		assertThat(responseEntity.getBody().getContent().get(0).getName(), equalTo("Kjønn"));
+        responseEntity = restTemplate.exchange(URL + "?personalData=false",
+                HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
+                });
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(responseEntity.getBody().getContent().size(), is(1));
+        assertThat(responseEntity.getBody().getTotalElements(), is(1L));
+        assertThat(responseEntity.getBody().getContent().get(0).getName(), equalTo("Kjønn"));
 
-		responseEntity = restTemplate.exchange(URL + "?category=PERSONALIA",
-				HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
-				});
-		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-		assertThat(responseEntity.getBody().getContent().size(), is(2));
-		assertThat(responseEntity.getBody().getTotalElements(), is(2L));
-		assertThat(responseEntity.getBody().getContent().get(0).getName(), equalTo("Sivilstand"));
-		assertThat(responseEntity.getBody().getContent().get(1).getName(), equalTo("Kjønn"));
+        responseEntity = restTemplate.exchange(URL + "?category=PERSONALIA",
+                HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
+                });
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(responseEntity.getBody().getContent().size(), is(2));
+        assertThat(responseEntity.getBody().getTotalElements(), is(2L));
+        assertThat(responseEntity.getBody().getContent().get(0).getName(), equalTo("Sivilstand"));
+        assertThat(responseEntity.getBody().getContent().get(1).getName(), equalTo("Kjønn"));
 
 
-		responseEntity = restTemplate.exchange(URL + "?system=aa-reg",
-				HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
-				});
-		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-		assertThat(responseEntity.getBody().getContent().size(), is(2));
-		assertThat(responseEntity.getBody().getTotalElements(), is(2L));
-		assertThat(responseEntity.getBody().getContent().get(0).getName(), equalTo("Sivilstand"));
-		assertThat(responseEntity.getBody().getContent().get(1).getName(), equalTo("Arbeidsforhold"));
+        responseEntity = restTemplate.exchange(URL + "?system=aa-reg",
+                HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
+                });
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(responseEntity.getBody().getContent().size(), is(2));
+        assertThat(responseEntity.getBody().getTotalElements(), is(2L));
+        assertThat(responseEntity.getBody().getContent().get(0).getName(), equalTo("Sivilstand"));
+        assertThat(responseEntity.getBody().getContent().get(1).getName(), equalTo("Arbeidsforhold"));
 
-		responseEntity = restTemplate.exchange(URL + "?producer=Folkeregisteret",
-				HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
-				});
-		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-		assertThat(responseEntity.getBody().getContent().size(), is(2));
-		assertThat(responseEntity.getBody().getTotalElements(), is(2L));
-		assertThat(responseEntity.getBody().getContent().get(0).getName(), equalTo("Sivilstand"));
-		assertThat(responseEntity.getBody().getContent().get(0).getProducer().size(), is(1));
-		assertThat(responseEntity.getBody().getContent().get(1).getName(), equalTo("Kjønn"));
-		assertThat(responseEntity.getBody().getContent().get(1).getProducer().size(), is(2));
+        responseEntity = restTemplate.exchange(URL + "?producer=Folkeregisteret",
+                HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
+                });
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(responseEntity.getBody().getContent().size(), is(2));
+        assertThat(responseEntity.getBody().getTotalElements(), is(2L));
+        assertThat(responseEntity.getBody().getContent().get(0).getName(), equalTo("Sivilstand"));
+        assertThat(responseEntity.getBody().getContent().get(0).getProducer().size(), is(1));
+        assertThat(responseEntity.getBody().getContent().get(1).getName(), equalTo("Kjønn"));
+        assertThat(responseEntity.getBody().getContent().get(1).getProducer().size(), is(2));
 
-		responseEntity = restTemplate.exchange(URL + "?producer=Folkeregisteret&sort=id,desc",
-				HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
-				});
-		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-		assertThat(responseEntity.getBody().getContent().size(), is(2));
-		assertThat(responseEntity.getBody().getTotalElements(), is(2L));
-		assertThat(responseEntity.getBody().getContent().get(1).getName(), equalTo("Sivilstand"));
-		assertThat(responseEntity.getBody().getContent().get(1).getProducer().size(), is(1));
-		assertThat(responseEntity.getBody().getContent().get(0).getName(), equalTo("Kjønn"));
-		assertThat(responseEntity.getBody().getContent().get(0).getProducer().size(), is(2));
-	}
+        responseEntity = restTemplate.exchange(URL + "?producer=Folkeregisteret&sort=id,desc",
+                HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
+                });
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(responseEntity.getBody().getContent().size(), is(2));
+        assertThat(responseEntity.getBody().getTotalElements(), is(2L));
+        assertThat(responseEntity.getBody().getContent().get(1).getName(), equalTo("Sivilstand"));
+        assertThat(responseEntity.getBody().getContent().get(1).getProducer().size(), is(1));
+        assertThat(responseEntity.getBody().getContent().get(0).getName(), equalTo("Kjønn"));
+        assertThat(responseEntity.getBody().getContent().get(0).getProducer().size(), is(2));
+    }
 
 
     @Test
@@ -446,7 +446,7 @@ public class InformationTypeControllerIT {
                 .name("   Trimmed Name   ")
                 .description(" Trimmed description ")
                 .categoryCode(" perSonAlia  ")
-				.systemCode(" aa-Reg ")
+                .systemCode(" aa-Reg ")
                 .producerCode(List.of("skatteetaten", "  BruKer  "))
                 .personalData(true)
                 .build();
@@ -518,37 +518,37 @@ public class InformationTypeControllerIT {
         return createRequest(NAME);
     }
 
-	private void initializeDBForFilterQuery() {
-		InformationTypeRequest sivilstandRequest = InformationTypeRequest.builder()
-				.name("Sivilstand")
-				.description("En overordnet kategori som beskriver en persons forhold til en annen person. Ref. til Begrepskatalog: https://jira.adeo.no/browse/BEGREP-176")
-				.categoryCode(CATEGORY_CODE)
-				.producerCode(List.of("Folkeregisteret"))
-				.systemCode(SYSTEM_CODE)
-				.personalData(true)
-				.build();
-		InformationTypeRequest arbeidsforholdRequest = InformationTypeRequest.builder()
-				.name("Arbeidsforhold")
-				.description("Avtaleforhold hvor den ene part, arbeidstakeren, forplikter seg til å utføre arbeid mot lønn eller annen godtgjørelse for den annen part, arbeidsgiveren, i henhold til dennes ledelse.")
-				.categoryCode("Arbeidsforhold")
-				.producerCode(List.of("Arbeidsgiver"))
-				.systemCode(SYSTEM_CODE)
-				.personalData(true)
-				.build();
-		InformationTypeRequest kjonnRequest = InformationTypeRequest.builder()
-				.name("Kjønn")
-				.description("TODO - mangler i begrepskatalogen og i MFNs begrepsoversikt")
-				.categoryCode(CATEGORY_CODE)
-				.producerCode(List.of("FOLKEREGISTERET", "BRUKER"))
-				.systemCode("TPS")
-				.personalData(false)
-				.build();
-		sivilstandRequest.toUpperCaseAndTrim();
-		arbeidsforholdRequest.toUpperCaseAndTrim();
-		kjonnRequest.toUpperCaseAndTrim();
+    private void initializeDBForFilterQuery() {
+        InformationTypeRequest sivilstandRequest = InformationTypeRequest.builder()
+                .name("Sivilstand")
+                .description("En overordnet kategori som beskriver en persons forhold til en annen person. Ref. til Begrepskatalog: https://jira.adeo.no/browse/BEGREP-176")
+                .categoryCode(CATEGORY_CODE)
+                .producerCode(List.of("Folkeregisteret"))
+                .systemCode(SYSTEM_CODE)
+                .personalData(true)
+                .build();
+        InformationTypeRequest arbeidsforholdRequest = InformationTypeRequest.builder()
+                .name("Arbeidsforhold")
+                .description("Avtaleforhold hvor den ene part, arbeidstakeren, forplikter seg til å utføre arbeid mot lønn eller annen godtgjørelse for den annen part, arbeidsgiveren, i henhold til dennes ledelse.")
+                .categoryCode("Arbeidsforhold")
+                .producerCode(List.of("Arbeidsgiver"))
+                .systemCode(SYSTEM_CODE)
+                .personalData(true)
+                .build();
+        InformationTypeRequest kjonnRequest = InformationTypeRequest.builder()
+                .name("Kjønn")
+                .description("TODO - mangler i begrepskatalogen og i MFNs begrepsoversikt")
+                .categoryCode(CATEGORY_CODE)
+                .producerCode(List.of("FOLKEREGISTERET", "BRUKER"))
+                .systemCode("TPS")
+                .personalData(false)
+                .build();
+        sivilstandRequest.toUpperCaseAndTrim();
+        arbeidsforholdRequest.toUpperCaseAndTrim();
+        kjonnRequest.toUpperCaseAndTrim();
 
-		repository.save(new InformationType().convertFromRequest(sivilstandRequest, false));
-		repository.save(new InformationType().convertFromRequest(arbeidsforholdRequest, false));
-		repository.save(new InformationType().convertFromRequest(kjonnRequest, false));
-	}
+        repository.save(new InformationType().convertFromRequest(sivilstandRequest, false));
+        repository.save(new InformationType().convertFromRequest(arbeidsforholdRequest, false));
+        repository.save(new InformationType().convertFromRequest(kjonnRequest, false));
+    }
 }
