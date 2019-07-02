@@ -63,3 +63,16 @@ jobs:
 #            envsubst < ${HOME}/project/k8s.yml > ${HOME}/patched_k8s.yml
 #            kubectl apply -f ${HOME}/patched_k8s.yml
 #            kubectl rollout status deployment/${PROJECT_NAME}
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build:
+      - deploy_to_staging:
+          requires:
+            - build
+#          filters:
+#            branches:
+#              only:
+#                - dev
+#                - master
