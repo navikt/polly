@@ -6,23 +6,14 @@ import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
-import no.nav.data.catalog.backend.app.informationtype.InformationType;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeController;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeResponse;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
+import no.nav.data.catalog.backend.app.informationtype.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -37,6 +28,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
+
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(InformationTypeController.class)
@@ -118,10 +119,8 @@ public class InformationTypeControllerTest {
 		mvc.perform(get("/backend/informationtype")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.content", hasSize(20)))
-				.andExpect(jsonPath("$.currentPage", is(0)))
-				.andExpect(jsonPath("$.pageSize", is(20)))
-				.andExpect(jsonPath("$.totalElements", is(20)));
+				.andExpect(jsonPath("$.totalElements", is(20)))
+				.andExpect(jsonPath("$.content", hasSize(20)));
 	}
 
 	@Test
@@ -140,7 +139,6 @@ public class InformationTypeControllerTest {
 
 		given(repository.findAll((Specification<InformationType>) null, defaultPageable)).willReturn(informationTypePage);
 
-		given(repository.findAllByOrderByIdAsc(PageRequest.of(0, 100))).willReturn(informationTypePage);
 		mvc.perform(get("/backend/informationtype")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
