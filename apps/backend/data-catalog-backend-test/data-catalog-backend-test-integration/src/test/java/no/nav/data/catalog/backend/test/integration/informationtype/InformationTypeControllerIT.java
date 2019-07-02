@@ -461,7 +461,7 @@ public class InformationTypeControllerIT {
         assertThat(validatedInformationType.getName(), is("Trimmed Name"));
         assertThat(validatedInformationType.getDescription(), is("Trimmed description"));
         assertThat(validatedInformationType.getCategoryCode(), is("PERSONALIA"));
-        assertThat(validatedInformationType.getSystemCode(), is("AA_REG"));
+        assertThat(validatedInformationType.getSystemCode(), is("AA-REG"));
         assertThat(validatedInformationType.getProducerCode(), is("SKATTEETATEN, BRUKER"));
         assertTrue(validatedInformationType.isPersonalData());
     }
