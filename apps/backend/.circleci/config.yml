@@ -1,9 +1,34 @@
 version: 2
 jobs:
   build:
-    working_directory: ~/backend
     docker:
-      - image: circleci/openjdk:11-jdk
+    - image: "circleci/openjdk:11"
     steps:
-      - checkout
-      - run: mvn clean install
+    - checkout
+    - setup_remote_docker
+    # Since we use the docker tag in another part of the build we make sure its the same across the jobs
+    - run:
+        name: Generate version number and docker image tags
+        command: |
+          mkdir /tmp/workspace
+          export MAJOR_VERSION="$(head -1 major_version)"
+          export RELEASE_VERSION=$MAJOR_VERSION.$CIRCLE_BUILD_NUM-$CIRCLE_SHA1
+          echo "export RELEASE_VERSION=$RELEASE_VERSION" >> /tmp/workspace/properties.env
+          echo "export DOCKER_TAG=\"$CIRCLE_PROJECT_REPONAME:$RELEASE_VERSION\"" >> /tmp/workspace/properties.env
+          cat /tmp/workspace/properties.env >> $BASH_ENV
+    - run:
+        name: Build application
+        command: mvn clean install
+    - run:
+        name: Build docker image
+        command: docker build --build-arg version=$RELEASE_VERSION --build-arg app_name=$CIRCLE_PROJECT_REPONAME -t navikt/$DOCKER_TAG .
+    - run:
+        name: Docker push
+        command: |
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+          echo "Pushing with tag $DOCKER_TAG"
+          docker push navikt/$DOCKER_TAG
+    - persist_to_workspace:
+        root: /tmp/workspace
+        paths:
+          - properties.env
