@@ -13,8 +13,6 @@ import java.util.Optional;
 
 public interface InformationTypeRepository extends JpaRepository<InformationType, Long>,
         JpaSpecificationExecutor<InformationType> {
-	Page<InformationType> findAllByOrderByIdAsc(Pageable pageable);
-
 	Optional<List<InformationType>> findByElasticsearchStatus(@Param("status") ElasticsearchStatus status);
 
 	@Query(value = "SELECT * FROM BACKEND_SCHEMA.INFORMATION_TYPE WHERE TRIM(UPPER(name)) = TRIM(UPPER(:name))", nativeQuery = true)

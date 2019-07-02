@@ -214,7 +214,7 @@ public class InformationTypeControllerIT {
     }
 
     @Test
-    public void getInformationTypeByFilterQuerys() {
+    public void getInformationTypeByFilterQueries() {
         initializeDBForFilterQuery();
 
         ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange(URL + "?name=Sivilstand",
