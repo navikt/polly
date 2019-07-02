@@ -65,7 +65,7 @@ jobs:
 #            kubectl rollout status deployment/${PROJECT_NAME}
 workflows:
   version: 2
-  build:
+  build_and_release:
     jobs:
       - build:
       - deploy_to_staging:
