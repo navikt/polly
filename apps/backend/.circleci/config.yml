@@ -22,12 +22,6 @@ jobs:
     - run:
         name: Build docker image
         command: docker build --build-arg version=$RELEASE_VERSION --build-arg app_name=$CIRCLE_PROJECT_REPONAME -t gcr.io/datajegerne/navikt/$DOCKER_TAG .
-    - run:
-        name: Docker push
-        command: |
-          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-          echo "Pushing with tag $DOCKER_TAG"
-          docker push gcr.io/datajegerne/navikt/$DOCKER_TAG
     - persist_to_workspace:
         root: /tmp/workspace
         paths:
