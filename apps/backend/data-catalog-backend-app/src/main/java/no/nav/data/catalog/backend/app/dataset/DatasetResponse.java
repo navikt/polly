@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -58,6 +59,10 @@ public class DatasetResponse extends DatasetData {
 
     private <T> List<T> copyOf(List<T> list) {
         return list == null ? Collections.emptyList() : List.copyOf(list);
+    }
+
+    public Map toMap() {
+        return JsonUtils.toMap(this);
     }
 
 }
