@@ -67,14 +67,14 @@ workflows:
           filters:
             branches:
               ignore: master
-          context: backend
+          context: datajegerne
       - deploy_to_staging:
           requires:
             - build
           filters:
             branches:
               ignore: master
-          context: backend
+          context: datajegerne
 #          filters:
 #            branches:
 #              only:
