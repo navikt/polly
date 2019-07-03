@@ -46,7 +46,7 @@ jobs:
     - gcp-gke/install
     - gcp-gke/init
     - gcp-gke/rollout-image:
-        cluster: datajegerne
+        cluster: datajegerne-cluster
         deployment: data-catalog-backend
-        container: data-catalog-backend
+        container: navikt/data-catalog-backend
         image: gcr.io/datajegerne/navikt/$DOCKER_TAG
