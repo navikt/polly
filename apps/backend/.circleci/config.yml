@@ -35,7 +35,7 @@ jobs:
           - properties.env
     - run:
         name: apt update
-        command: apt-get update || apt-get update
+        command: sudo apt-get update || sudo apt-get update
     - gcp-gcr/gcr-auth
     - gcp-gcr/build-image:
         image: navikt/data-catalog-backend
