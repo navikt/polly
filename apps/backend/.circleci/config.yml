@@ -41,7 +41,6 @@ jobs:
           command: |
             apt-get install -qq -y gettext
             echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
-#           export RELEASE_VERSION=$CIRCLE_BUILD_NUM
             gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
             gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
             gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
@@ -51,7 +50,7 @@ jobs:
           name: Docker build and push
           command: |
             gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io
-            echo "koko"
+            echo gcr.io/${GOOGLE_PROJECT_ID}/navikt/${DOCKER_TAG}
             docker push gcr.io/${GOOGLE_PROJECT_ID}/navikt/${DOCKER_TAG}
 #      - run:
 #          name: Deploy to Kubernetes
