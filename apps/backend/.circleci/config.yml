@@ -1,14 +1,14 @@
 version: 2
 jobs:
-  environment:
-    - PROJECT_NAME: "datajegerne"
-    - GOOGLE_PROJECT_ID: "datajegerne"
-    - GOOGLE_COMPUTE_ZONE: "europe-north1-b"
-    - GOOGLE_CLUSTER_NAME: "datajegerne-cluster"
   build:
     docker:
     - image: "circleci/openjdk:11"
     - image: "google/cloud-sdk:252.0.0"
+    environment:
+      PROJECT_NAME: "datajegerne"
+      GOOGLE_PROJECT_ID: "datajegerne"
+      GOOGLE_COMPUTE_ZONE: "europe-north1-b"
+      GOOGLE_CLUSTER_NAME: "datajegerne-cluster"
     steps:
     - checkout
     - setup_remote_docker
