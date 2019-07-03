@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,7 @@ import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonPropertyOrder({"id", "title"})
 public class DatasetResponse extends DatasetData {
 
     private UUID id;
@@ -44,11 +46,11 @@ public class DatasetResponse extends DatasetData {
     private void mapJsonFields(@NotNull DatasetData datasetData) {
         setDescription(datasetData.getDescription());
         setTitle(datasetData.getTitle());
-        setCategory(copyOf(datasetData.getCategory()));
-        setProvenance(copyOf(datasetData.getProvenance()));
+        setCategories(copyOf(datasetData.getCategories()));
+        setProvenances(copyOf(datasetData.getProvenances()));
         setPi(datasetData.getPi());
         setIssued(datasetData.getIssued());
-        setPolicy(copyOf(datasetData.getPolicy()));
+        setPolicies(copyOf(datasetData.getPolicies()));
         setKeywords(copyOf(datasetData.getKeywords()));
         setTheme(datasetData.getTheme());
         setAccessRights(datasetData.getAccessRights());

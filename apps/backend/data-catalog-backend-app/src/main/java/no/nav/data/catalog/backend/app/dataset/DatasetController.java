@@ -55,7 +55,7 @@ public class DatasetController {
 
     @ApiOperation(value = "Get All Root Datasets", tags = {"Dataset"})
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Datasets fetched", response = DatasetResponse.class),
+            @ApiResponse(code = 200, message = "Datasets fetched", response = DatasetResponse.class, responseContainer = "List"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/roots")
     public ResponseEntity findAllRoot(@RequestParam(value = "includeDescendants", defaultValue = "false") boolean includeDescendants) {

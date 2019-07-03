@@ -41,8 +41,8 @@ public class DatasetService {
         Set<UUID> allIds = relations.stream()
                 .map(DatasetRelation::getParentOfId)
                 .collect(Collectors.toSet());
-        Map<UUID, Dataset> allDatasets = datasetRepository.findAllById(allIds)
-                .stream().collect(toMap(Dataset::getId, Function.identity()));
+        Map<UUID, Dataset> allDatasets = datasetRepository.findAllById(allIds).stream()
+                .collect(toMap(Dataset::getId, Function.identity()));
 
         DatasetResponse datasetResponse = new DatasetResponse(dataset, allDatasets, relations);
         return Optional.of(datasetResponse);

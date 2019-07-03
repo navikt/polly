@@ -135,7 +135,7 @@ public class DatasetIT {
 
     @Test
     public void findRootDataset() {
-        List<Dataset> allRootDatasets = datasetRepository.findAllRootDatasets();
+        List<DatasetResponse> allRootDatasets = datasetService.findAllRootDatasets(true);
         assertThat(allRootDatasets, hasSize(2));
     }
 
@@ -170,7 +170,6 @@ public class DatasetIT {
                     "spring.datasource.password=" + postgreSQLContainer.getPassword(),
                     "spring.jpa.show-sql=true",
                     "spring.jpa.properties.hibernate.use_sql_comments=true",
-                    "logging.level.org.hibernate.type=TRACE",
                     "spring.jpa.properties.hibernate.format_sql=true"
             ).applyTo(configurableApplicationContext.getEnvironment());
         }
