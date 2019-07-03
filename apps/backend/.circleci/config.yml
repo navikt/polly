@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   gcp-gke: circleci/gcp-gke@0.2.0
+  gcp-gcr: circleci/gcp-gcr@0.6.1
 jobs:
   build:
     docker:
@@ -32,6 +33,13 @@ jobs:
         root: /tmp/workspace
         paths:
           - properties.env
+    - gcp-gcr/gcr-auth
+    - gcp-gcr/build-image:
+        image: navikt/data-catalog-backend
+        tag: "v2"
+    - gcp-gcr/push-image:
+        image: navikt/data-catalog-backend
+        tag: "v2"
     - gcp-gke/install
     - gcp-gke/init
     - gcp-gke/rollout-image:
@@ -39,10 +47,3 @@ jobs:
         deployment: data-catalog-backend
         container: data-catalog-backend
         image: gcr.io/datajegerne/navikt/$DOCKER_TAG
-
-#      - run:
-#          name: Deploy to Kubernetes
-#          command: |
-#            envsubst < ${HOME}/project/k8s.yml > ${HOME}/patched_k8s.yml
-#            kubectl apply -f ${HOME}/patched_k8s.yml
-#            kubectl rollout status deployment/${PROJECT_NAME}
