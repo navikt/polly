@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
@@ -40,7 +39,7 @@ public class DatasetService {
         }
 
         Set<UUID> allIds = relations.stream()
-                .flatMap(rel -> Stream.of(rel.getId(), rel.getParentOfId()))
+                .map(DatasetRelation::getParentOfId)
                 .collect(Collectors.toSet());
         Map<UUID, Dataset> allDatasets = datasetRepository.findAllById(allIds)
                 .stream().collect(toMap(Dataset::getId, Function.identity()));
