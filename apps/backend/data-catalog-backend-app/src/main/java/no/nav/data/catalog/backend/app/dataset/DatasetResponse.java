@@ -47,7 +47,7 @@ public class DatasetResponse extends DatasetData {
         setProvenance(copyOf(datasetData.getProvenance()));
         setPi(datasetData.getPi());
         setIssued(datasetData.getIssued());
-        setPolicies(copyOf(datasetData.getPolicies()));
+        setPolicy(copyOf(datasetData.getPolicy()));
         setKeywords(copyOf(datasetData.getKeywords()));
         setTheme(datasetData.getTheme());
         setAccessRights(datasetData.getAccessRights());

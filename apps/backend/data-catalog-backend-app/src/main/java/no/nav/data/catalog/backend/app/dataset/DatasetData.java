@@ -21,7 +21,7 @@ public class DatasetData {
     private List<String> provenance;
     private Integer pi;
     private LocalDateTime issued;
-    private List<PolicyResponse> policies;
+    private List<PolicyResponse> policy;
     private List<String> keywords;
     private String theme;
     private String accessRights;

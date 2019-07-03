@@ -2,6 +2,7 @@ package no.nav.data.catalog.backend.app.common;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import no.nav.data.catalog.backend.app.common.auditing.AuditorAwareImpl;
 import org.apache.http.HttpHost;
@@ -29,7 +30,11 @@ public class CommonConfig {
 	@Primary
 	@Bean
 	public ObjectMapper objectMapper() {
-		return new ObjectMapper().registerModule(new JavaTimeModule());
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JavaTimeModule());
+		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+		return objectMapper;
 	}
 
 	@Bean
@@ -40,9 +45,7 @@ public class CommonConfig {
 	@Bean
 	public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
 		MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		jsonConverter.setObjectMapper(objectMapper);
+		jsonConverter.setObjectMapper(objectMapper());
 		return jsonConverter;
 	}
 

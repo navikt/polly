@@ -11,6 +11,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -130,6 +131,12 @@ public class DatasetIT {
         assertThat(datasetResponse11.getChildren(), hasSize(1));
         assertThat(datasetResponse12.getChildren(), hasSize(0));
         assertThat(findChildByTitle(datasetResponse11, "111").getChildren(), hasSize(0));
+    }
+
+    @Test
+    public void findRootDataset() {
+        List<Dataset> allRootDatasets = datasetRepository.findAllRootDatasets();
+        assertThat(allRootDatasets, hasSize(2));
     }
 
     @NotNull
