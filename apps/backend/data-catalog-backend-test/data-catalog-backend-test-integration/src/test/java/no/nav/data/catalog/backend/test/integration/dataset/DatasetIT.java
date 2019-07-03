@@ -102,17 +102,17 @@ public class DatasetIT {
         });
         assertThat(children, hasSize(2));
 
-        Set<DatasetRelation> allChildren = datasetRelationRepository.findAllChildrenOf(dataset1.getId());
-        assertThat(allChildren, hasSize(3));
-        assertThat(allChildren, containsInAnyOrder(
+        Set<DatasetRelation> allDescendants = datasetRelationRepository.findAllDescendantsOf(dataset1.getId());
+        assertThat(allDescendants, hasSize(3));
+        assertThat(allDescendants, containsInAnyOrder(
                 new DatasetRelation(dataset1.getId(), dataset11.getId()),
                 new DatasetRelation(dataset1.getId(), dataset12.getId()),
                 new DatasetRelation(dataset11.getId(), dataset111.getId())
         ));
 
-        Set<DatasetRelation> allParents = datasetRelationRepository.findAllParentsOf(dataset111.getId());
-        assertThat(allParents, hasSize(2));
-        assertThat(allParents, containsInAnyOrder(
+        Set<DatasetRelation> allAncestors = datasetRelationRepository.findAllAncestorsOf(dataset111.getId());
+        assertThat(allAncestors, hasSize(2));
+        assertThat(allAncestors, containsInAnyOrder(
                 new DatasetRelation(dataset1.getId(), dataset11.getId()),
                 new DatasetRelation(dataset11.getId(), dataset111.getId())
         ));
@@ -120,7 +120,7 @@ public class DatasetIT {
 
     @Test
     public void getDatasetResponseTree() {
-        Optional<DatasetResponse> datasetResponseOptional = datasetService.findDatasetWithChildren(dataset1.getId());
+        Optional<DatasetResponse> datasetResponseOptional = datasetService.findDatasetWithAllDescendants(dataset1.getId());
         assertTrue(datasetResponseOptional.isPresent());
         DatasetResponse datasetResponse = datasetResponseOptional.get();
 

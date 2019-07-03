@@ -39,11 +39,11 @@ public class DatasetController {
     @GetMapping("/{id}")
     public ResponseEntity findForId(
             @PathVariable UUID id,
-            @RequestParam(value = "includeChildren", defaultValue = "false") boolean includeChildren
+            @RequestParam(value = "includeDescendants", defaultValue = "false") boolean includeDescendants
     ) {
         log.info("Received request for Dataset with the id={}", id);
-        Optional<DatasetResponse> datasetResponse = includeChildren ?
-                datasetService.findDatasetWithChildren(id) :
+        Optional<DatasetResponse> datasetResponse = includeDescendants ?
+                datasetService.findDatasetWithAllDescendants(id) :
                 datasetService.findDataset(id);
         if (datasetResponse.isEmpty()) {
             log.info("Cannot find the Dataset with id={}", id);
@@ -58,9 +58,9 @@ public class DatasetController {
             @ApiResponse(code = 200, message = "Datasets fetched", response = DatasetResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/roots")
-    public ResponseEntity findAllRoot(@RequestParam(value = "includeChildren", defaultValue = "false") boolean includeChildren) {
+    public ResponseEntity findAllRoot(@RequestParam(value = "includeDescendants", defaultValue = "false") boolean includeDescendants) {
         log.info("Received request for all root Datasets");
-        List<DatasetResponse> allRootDatasets = datasetService.findAllRootDatasets(includeChildren);
+        List<DatasetResponse> allRootDatasets = datasetService.findAllRootDatasets(includeDescendants);
         log.info("Returned {} Datasets", allRootDatasets.size());
         return new ResponseEntity<>(allRootDatasets, HttpStatus.OK);
     }

@@ -28,14 +28,15 @@ public class DatasetService {
         return datasetRepository.findById(uuid).map(DatasetResponse::new);
     }
 
-    public Optional<DatasetResponse> findDatasetWithChildren(UUID uuid) {
-        Optional<Dataset> dataset = datasetRepository.findById(uuid);
-        if (dataset.isEmpty()) {
+    public Optional<DatasetResponse> findDatasetWithAllDescendants(UUID uuid) {
+        Optional<Dataset> datasetOptional = datasetRepository.findById(uuid);
+        if (datasetOptional.isEmpty()) {
             return Optional.empty();
         }
-        Set<DatasetRelation> relations = datasetRelationRepository.findAllChildrenOf(uuid);
+        Set<DatasetRelation> relations = datasetRelationRepository.findAllDescendantsOf(uuid);
+        Dataset dataset = datasetOptional.get();
         if (relations.isEmpty()) {
-            return Optional.of(new DatasetResponse(dataset.get()));
+            return Optional.of(new DatasetResponse(dataset));
         }
 
         Set<UUID> allIds = relations.stream()
@@ -44,16 +45,16 @@ public class DatasetService {
         Map<UUID, Dataset> allDatasets = datasetRepository.findAllById(allIds)
                 .stream().collect(toMap(Dataset::getId, Function.identity()));
 
-        DatasetResponse datasetResponse = new DatasetResponse(allDatasets.get(uuid), allDatasets, relations);
+        DatasetResponse datasetResponse = new DatasetResponse(dataset, allDatasets, relations);
         return Optional.of(datasetResponse);
     }
 
-    public List<DatasetResponse> findAllRootDatasets(boolean includeChildren) {
+    public List<DatasetResponse> findAllRootDatasets(boolean includeDescendants) {
         List<Dataset> datasets = datasetRepository.findAllRootDatasets();
-        if (includeChildren) {
+        if (includeDescendants) {
             return datasets.stream()
                     .map(Dataset::getId)
-                    .map(this::findDatasetWithChildren)
+                    .map(this::findDatasetWithAllDescendants)
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .collect(Collectors.toList());
