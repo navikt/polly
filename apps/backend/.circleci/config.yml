@@ -7,6 +7,7 @@ jobs:
     steps:
     - checkout
     - setup_remote_docker
+      docker_layer_caching: true
     # Since we use the docker tag in another part of the build we make sure its the same across the jobs
     - run:
         name: Generate version number and docker image tags
@@ -46,9 +47,11 @@ jobs:
             gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
             gcloud --quiet container clusters get-credentials ${GOOGLE_CLUSTER_NAME}
       - setup_remote_docker
+        docker_layer_caching: true
       - run:
           name: Docker build and push
           command: |
+            cat /tmp/workspace/properties.env >> $BASH_ENV
             gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io
             echo gcr.io/${GOOGLE_PROJECT_ID}/navikt/${DOCKER_TAG}
             docker push gcr.io/${GOOGLE_PROJECT_ID}/navikt/${DOCKER_TAG}
@@ -58,24 +61,3 @@ jobs:
 #            envsubst < ${HOME}/project/k8s.yml > ${HOME}/patched_k8s.yml
 #            kubectl apply -f ${HOME}/patched_k8s.yml
 #            kubectl rollout status deployment/${PROJECT_NAME}
-workflows:
-  version: 2
-  build_and_release:
-    jobs:
-      - build:
-          filters:
-            branches:
-              ignore: master
-          context: datajegerne
-      - deploy_to_staging:
-          requires:
-            - build
-          filters:
-            branches:
-              ignore: master
-          context: datajegerne
-#          filters:
-#            branches:
-#              only:
-#                - dev
-#                - master
