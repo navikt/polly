@@ -50,11 +50,6 @@ jobs:
       - run:
           name: Docker build and push
           command: |
-            docker build \
-              --build-arg COMMIT_REF=${CIRCLE_SHA1} \
-              --build-arg BUILD_DATE=`date -u +”%Y-%m-%dT%H:%M:%SZ”` \
-              -t ${PROJECT_NAME} .
-            docker tag ${PROJECT_NAME} gcr.io/${GOOGLE_PROJECT_ID}/navikt/${PROJECT_NAME}:${RELEASE_VERSION}
             gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io
             docker push gcr.io/${GOOGLE_PROJECT_ID}/navikt/${PROJECT_NAME}:${RELEASE_VERSION}
 #      - run:
