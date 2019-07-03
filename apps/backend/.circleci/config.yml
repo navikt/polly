@@ -49,7 +49,7 @@ jobs:
       - run:
           name: Docker build and push
           command: |
-            cat /tmp/workspace/properties.env >> $BASH_ENV
+            echo "$BASH_ENV"
             gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io
             echo gcr.io/${GOOGLE_PROJECT_ID}/navikt/${DOCKER_TAG}
             docker push gcr.io/${GOOGLE_PROJECT_ID}/navikt/${DOCKER_TAG}
