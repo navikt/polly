@@ -51,7 +51,7 @@ jobs:
           name: Docker build and push
           command: |
             gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io
-            echo gcr.io/${GOOGLE_PROJECT_ID}/navikt/${DOCKER_TAG}
+            echo "koko"
             docker push gcr.io/${GOOGLE_PROJECT_ID}/navikt/${DOCKER_TAG}
 #      - run:
 #          name: Deploy to Kubernetes
