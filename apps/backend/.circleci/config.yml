@@ -1,0 +1,55 @@
+version: 2.1
+orbs:
+  gcp-gke: circleci/gcp-gke@0.2.0
+  gcp-gcr: circleci/gcp-gcr@0.6.1
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:11
+    steps:
+    - checkout
+    - setup_remote_docker
+    - run:
+        name: Build application
+        command: mvn clean install
+  deploy_to_staging:
+    docker:
+      - image: circleci/openjdk:11
+    steps:
+    - checkout
+    - setup_remote_docker
+    - run:
+        name: Build application
+        command: mvn package
+    - run:
+        name: apt update
+        command: sudo apt-get update || sudo apt-get update
+    - gcp-gcr/gcr-auth
+    - gcp-gcr/build-image:
+        image: navikt/data-catalog-backend
+        tag: $CIRCLE_BUILD_NUM
+    - gcp-gcr/push-image:
+        image: navikt/data-catalog-backend
+        tag: $CIRCLE_BUILD_NUM
+    - gcp-gke/install
+    - gcp-gke/init
+# Timeout pga at clusteret er privat.
+#    - gcp-gke/rollout-image:
+#        cluster: datajegerne-cluster
+#        deployment: data-catalog-backend
+#        container: data-catalog-backend
+#        image: gcr.io/datajegerne/navikt/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BUILD_NUM
+workflows:
+  version: 2
+  build_and_release:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore: master
+          context: datajegerne
+      - deploy_to_staging:
+          filters:
+            branches:
+              only: master
+          context: datajegerne
