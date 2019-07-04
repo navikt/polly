@@ -16,20 +16,8 @@ jobs:
     - setup_remote_docker
     # Since we use the docker tag in another part of the build we make sure its the same across the jobs
     - run:
-        name: Generate version number and docker image tags
-        command: |
-          mkdir /tmp/workspace
-          export RELEASE_VERSION=$CIRCLE_BUILD_NUM
-          echo "export RELEASE_VERSION=$RELEASE_VERSION" >> /tmp/workspace/properties.env
-          echo "export DOCKER_TAG=\"$CIRCLE_PROJECT_REPONAME:$RELEASE_VERSION\"" >> /tmp/workspace/properties.env
-          cat /tmp/workspace/properties.env >> $BASH_ENV
-    - run:
         name: Build application
         command: mvn clean install
-    - persist_to_workspace:
-        root: /tmp/workspace
-        paths:
-          - properties.env
   deploy_to_staging:
     docker:
       - image: circleci/openjdk:11
@@ -40,6 +28,7 @@ jobs:
       - GOOGLE_CLUSTER_NAME: "datajegerne-cluster"
     steps:
     - checkout
+    - setup_remote_docker
     - run:
         name: apt update
         command: sudo apt-get update || sudo apt-get update
