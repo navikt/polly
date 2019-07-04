@@ -6,26 +6,15 @@ jobs:
   build:
     docker:
       - image: circleci/openjdk:11
-    environment:
-      PROJECT_NAME: "datajegerne"
-      GOOGLE_PROJECT_ID: "datajegerne"
-      GOOGLE_COMPUTE_ZONE: "europe-north1-b"
-      GOOGLE_CLUSTER_NAME: "datajegerne-cluster"
     steps:
     - checkout
     - setup_remote_docker
-    # Since we use the docker tag in another part of the build we make sure its the same across the jobs
     - run:
         name: Build application
         command: mvn clean install
   deploy_to_staging:
     docker:
       - image: circleci/openjdk:11
-    environment:
-      - PROJECT_NAME: "datajegerne"
-      - GOOGLE_PROJECT_ID: "datajegerne"
-      - GOOGLE_COMPUTE_ZONE: "europe-north1-b"
-      - GOOGLE_CLUSTER_NAME: "datajegerne-cluster"
     steps:
     - checkout
     - setup_remote_docker
@@ -44,11 +33,12 @@ jobs:
         tag: $CIRCLE_BUILD_NUM
     - gcp-gke/install
     - gcp-gke/init
-    - gcp-gke/rollout-image:
-        cluster: datajegerne-cluster
-        deployment: data-catalog-backend
-        container: data-catalog-backend
-        image: gcr.io/datajegerne/navikt/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BUILD_NUM
+# Timeout pga at clusteret er privat.
+#    - gcp-gke/rollout-image:
+#        cluster: datajegerne-cluster
+#        deployment: data-catalog-backend
+#        container: data-catalog-backend
+#        image: gcr.io/datajegerne/navikt/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BUILD_NUM
 workflows:
   version: 2
   build_and_release:
@@ -59,9 +49,7 @@ workflows:
               ignore: master
           context: datajegerne
       - deploy_to_staging:
-          requires:
-            - build
           filters:
             branches:
-              ignore: master
+              only: master
           context: datajegerne
