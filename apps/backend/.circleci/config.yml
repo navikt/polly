@@ -13,6 +13,11 @@ jobs:
         name: Build application
         command: mvn clean install
   deploy_to_staging:
+    environment:
+      - PROJECT_NAME: "datajegerne"
+      - GOOGLE_PROJECT_ID: "datajegerne"
+      - GOOGLE_COMPUTE_ZONE: "europe-north1-b"
+      - GOOGLE_CLUSTER_NAME: "datajegerne-cluster"
     docker:
       - image: circleci/openjdk:11
     steps:
