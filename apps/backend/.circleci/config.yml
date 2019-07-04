@@ -39,6 +39,7 @@ jobs:
       - GOOGLE_COMPUTE_ZONE: "europe-north1-b"
       - GOOGLE_CLUSTER_NAME: "datajegerne-cluster"
     steps:
+    - checkout
     - run:
         name: apt update
         command: sudo apt-get update || sudo apt-get update
