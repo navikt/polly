@@ -26,27 +26,49 @@ jobs:
     - run:
         name: Build application
         command: mvn clean install
-    - run:
-        name: Build docker image
-        command: docker build --build-arg version=$RELEASE_VERSION --build-arg app_name=$CIRCLE_PROJECT_REPONAME -t gcr.io/datajegerne/navikt/$DOCKER_TAG .
     - persist_to_workspace:
         root: /tmp/workspace
         paths:
           - properties.env
+  deploy_to_staging:
+    docker:
+      - image: google/cloud-sdk
+    environment:
+      - PROJECT_NAME: "datajegerne"
+      - GOOGLE_PROJECT_ID: "datajegerne"
+      - GOOGLE_COMPUTE_ZONE: "europe-north1-b"
+      - GOOGLE_CLUSTER_NAME: "datajegerne-cluster"
+    steps:
     - run:
         name: apt update
         command: sudo apt-get update || sudo apt-get update
     - gcp-gcr/gcr-auth
     - gcp-gcr/build-image:
         image: navikt/data-catalog-backend
-        tag: "v2"
+        tag: $RELEASE_VERSION
     - gcp-gcr/push-image:
         image: navikt/data-catalog-backend
-        tag: "v2"
+        tag: $RELEASE_VERSION
     - gcp-gke/install
     - gcp-gke/init
     - gcp-gke/rollout-image:
         cluster: datajegerne-cluster
         deployment: data-catalog-backend
-        container: navikt/data-catalog-backend
+        container: data-catalog-backend
         image: gcr.io/datajegerne/navikt/$DOCKER_TAG
+workflows:
+  version: 2
+  build_and_release:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore: master
+          context: datajegerne
+      - deploy_to_staging:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: master
+          context: datajegerne
