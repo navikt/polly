@@ -92,7 +92,7 @@ public class InformationTypeController {
 		} else {
 			logger.info("Received request for all InformationTypes specified in the request{}", queryMap);
 		}
-		FilterRequest filterRequest = new FilterRequest().mapFromQuery(queryMap);
+		FilterInformationTypeRequest filterRequest = new FilterInformationTypeRequest().mapFromQuery(queryMap);
 
 		Page<InformationTypeResponse> pagedInformationTypeResponses =
 				repository.findAll(filterRequest.getSpecification(), filterRequest.getPageable())
