@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.catalog.backend.app.system.System;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -14,7 +13,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DistributionChannelResponse implements Serializable {
+public class DistributionChannelResponse {
 
 	private UUID id;
 	private String name;

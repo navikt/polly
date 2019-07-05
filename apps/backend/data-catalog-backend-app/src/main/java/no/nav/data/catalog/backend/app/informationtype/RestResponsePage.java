@@ -7,14 +7,13 @@ import lombok.Getter;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @JsonIgnoreProperties({"pageable", "last", "totalPages", "sort", "first", "numberOfElements", "empty"})
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public class RestResponsePage<T extends Serializable> extends PageImpl<T> {
+public class RestResponsePage<T> extends PageImpl<T> {
 
 	@JsonProperty("content")
 	private List<T> content;

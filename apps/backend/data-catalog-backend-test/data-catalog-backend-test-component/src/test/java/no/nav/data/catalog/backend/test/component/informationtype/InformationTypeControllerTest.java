@@ -41,12 +41,15 @@ import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.dataset.DatasetRelationRepository;
 import no.nav.data.catalog.backend.app.dataset.DatasetRepository;
+import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
+import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelRepository;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import no.nav.data.catalog.backend.app.informationtype.InformationType;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeController;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
+import no.nav.data.catalog.backend.app.system.SystemRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -78,6 +81,10 @@ public class InformationTypeControllerTest {
 	@Autowired
 	private MockMvc mvc;
 
+	@MockBean
+	private DistributionChannelRepository distributionChannelRepository;
+	@MockBean
+	private SystemRepository systemRepository;
 	@MockBean
 	private DatasetRepository datasetRepository;
 	@MockBean
