@@ -77,7 +77,7 @@ public class DistributionChannelController {
 			@ApiResponse(code = 200, message = "Count of distributionchannel fetched", response = Long.class),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping("/count")
-	public Long countAllInformationTypes() {
+	public Long countAllDistributionChannels() {
 		log.info("Received request for count all DistributionChannels");
 		return service.getRepositoryCount();
 	}
