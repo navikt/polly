@@ -91,6 +91,4 @@ public abstract class AbstractFilterRequest<T> {
 		}
 		return buildSpecification;
 	}
-
-
 }

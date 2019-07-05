@@ -55,4 +55,8 @@ public class System extends Auditable<String> {
 		this.consumerDistributionChannels = request.getConsumerDistributionChannels();
 		return this;
 	}
+
+	public SystemResponse convertToResponse() {
+		return new SystemResponse(this);
+	}
 }
