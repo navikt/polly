@@ -31,6 +31,7 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -56,7 +57,7 @@ public class InformationTypeControllerIT {
     @Autowired
     protected CodelistService codelistService;
 
-    private static HashMap<ListName, HashMap<String, String>> codelists;
+	private static Map<ListName, Map<String, String>> codelists;
 
     @ClassRule
     public static PostgreSQLContainer postgreSQLContainer =

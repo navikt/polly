@@ -30,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
@@ -47,6 +48,7 @@ import no.nav.data.catalog.backend.app.informationtype.InformationTypeController
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
+import no.nav.data.catalog.backend.app.poldatasett.PolDatasettRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -72,12 +74,14 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 @ActiveProfiles("test")
 public class InformationTypeControllerTest {
 
-	private HashMap<ListName, HashMap<String, String>> codelists = new HashMap<>();
+	private Map<ListName, Map<String, String>> codelists = new HashMap<>();
 	private Pageable defaultPageable = PageRequest.of(0, 20);
 
 	@Autowired
 	private MockMvc mvc;
 
+	@MockBean
+	private PolDatasettRepository polDatasettRepository;
 	@MockBean
 	private DatasetRepository datasetRepository;
 	@MockBean
@@ -243,7 +247,7 @@ public class InformationTypeControllerTest {
 	@Test
 	public void createInformationTypes_shouldFailToCreateNewInformationType_WithEmptyRequest() throws Exception {
 		List<InformationTypeRequest> requests = List.of(InformationTypeRequest.builder().build());
-		HashMap<String, HashMap> validationErrors = new HashMap<>();
+		Map<String, Map<String, String>> validationErrors = new HashMap<>();
 
 		willThrow(new ValidationException(validationErrors, "The request was not accepted. The following errors occurred during validation: "))
 				.given(service).validateRequests(requests, false);

@@ -61,7 +61,7 @@ public class InformationTypeServiceTest {
 
 	@Before
 	public void init() {
-		HashMap<ListName, HashMap<String, String>> codelists = CodelistService.codelists;
+		Map<ListName, Map<String, String>> codelists = CodelistService.codelists;
 		codelists.get(ListName.CATEGORY).put(CATEGORY_CODE, CATEGORY_DESCRIPTION);
 		codelists.get(ListName.PRODUCER).put(PRODUCER_CODE_LIST.get(0), PRODUCER_DESCRIPTION_LIST.get(0));
 		codelists.get(ListName.PRODUCER).put(PRODUCER_CODE_LIST.get(1), PRODUCER_DESCRIPTION_LIST.get(1));
@@ -155,7 +155,7 @@ public class InformationTypeServiceTest {
 		try {
 			service.validateRequests(List.of(request), false);
 		} catch (ValidationException e) {
-			HashMap validationMap = e.get().get("Request nr:1");
+			Map validationMap = e.get().get("Request nr:1");
 			assertThat(validationMap.size(), is(5));
 			assertThat(validationMap.get("name"), is("Name must have a non-empty value"));
 			assertThat(validationMap.get("personalData"), is("PersonalData cannot be null"));
@@ -173,7 +173,7 @@ public class InformationTypeServiceTest {
 		try {
 			service.validateRequests(requests, false);
 		} catch (ValidationException e) {
-			HashMap validationMap = e.get().get("Request nr:1");
+			Map validationMap = e.get().get("Request nr:1");
 			assertThat(validationMap.size(), is(1));
 			assertThat(validationMap.get("producerCode"), is("The code UNKNOWNPRODUCERCODE was not found in the codelist(PRODUCER)"));
 		}
@@ -193,7 +193,7 @@ public class InformationTypeServiceTest {
 		try {
 			service.validateRequests(createListOfOneRequest("NotUniqueName"), false);
 		} catch (ValidationException e) {
-			HashMap validationMap = e.get().get("Request nr:1");
+			Map validationMap = e.get().get("Request nr:1");
 			assertThat(validationMap.size(), is(1));
 			assertThat(validationMap.get("nameAlreadyUsed"),
 					is("The name NotUniqueName is already in use by another InformationType and therefore cannot be created"));
@@ -217,7 +217,7 @@ public class InformationTypeServiceTest {
 		try {
 			service.validateRequests(requests, false);
 		} catch (ValidationException e) {
-			HashMap validationMap = e.get().get("Request nr:20");
+			Map validationMap = e.get().get("Request nr:20");
 			assertThat(validationMap.size(), is(1));
 			assertThat(validationMap.get("nameNotUniqueInThisRequest"), is("The name RequestNr:11 is not unique because it is already used in this request (see request nr:11)"));
 		}
@@ -239,7 +239,7 @@ public class InformationTypeServiceTest {
 		try {
 			service.validateRequests(List.of(request), true);
 		} catch (ValidationException e) {
-			HashMap validationMap = e.get().get("Request nr:1");
+			Map validationMap = e.get().get("Request nr:1");
 			assertThat(validationMap.size(), is(5));
 			assertThat(validationMap.get("name"), is("Name must have a non-empty value"));
 			assertThat(validationMap.get("personalData"), is("PersonalData cannot be null"));
@@ -258,7 +258,7 @@ public class InformationTypeServiceTest {
 		try {
 			service.validateRequests(requests, true);
 		} catch (ValidationException e) {
-			HashMap validationMap = e.get().get("Request nr:1");
+			Map validationMap = e.get().get("Request nr:1");
 			assertThat(validationMap.size(), is(1));
 			assertThat(validationMap.get("nameNotFound"), is("There is not an InformationType with the name DoesNotExist and therefore it cannot be updated"));
 		}

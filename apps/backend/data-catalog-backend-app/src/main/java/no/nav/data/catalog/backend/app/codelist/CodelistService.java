@@ -1,5 +1,16 @@
 package no.nav.data.catalog.backend.app.codelist;
 
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.exceptions.CodelistNotFoundException;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
@@ -7,15 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -26,7 +28,7 @@ public class CodelistService {
 	@Autowired
 	private CodelistRepository repository;
 
-	public static HashMap<ListName, HashMap<String, String>> codelists = new HashMap<>();
+	public static final Map<ListName, Map<String, String>> codelists = new EnumMap<>(ListName.class);
 
 	@PostConstruct
 	public void refreshCache() {
@@ -83,14 +85,14 @@ public class CodelistService {
 	}
 
 	public void validateRequests(List<CodelistRequest> requests, boolean isUpdate) {
-		HashMap<String, HashMap> validationMap = new HashMap<>();
+		Map<String, Map<String, String>> validationMap = new HashMap<>();
 
 		if (requests == null || requests.isEmpty()) {
 			logger.error("The request was not accepted because it is empty");
 			throw new ValidationException("The request was not accepted because it is empty");
 		}
 
-		HashMap<String, Integer> codelistsUsedInRequest = new HashMap<>();
+		Map<String, Integer> codelistsUsedInRequest = new HashMap<>();
 
 		final AtomicInteger i = new AtomicInteger(1);
 		requests.forEach(request -> {
