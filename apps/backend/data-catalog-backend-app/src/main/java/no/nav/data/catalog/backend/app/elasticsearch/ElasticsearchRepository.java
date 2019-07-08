@@ -1,5 +1,11 @@
 package no.nav.data.catalog.backend.app.elasticsearch;
 
+import static no.nav.data.catalog.backend.app.common.utils.Constants.ES_DOC_TYPE;
+import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION_TYPE_INDEX;
+
+import java.io.IOException;
+import java.util.Map;
+
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import no.nav.data.catalog.backend.app.common.exceptions.DocumentNotFoundException;
@@ -20,134 +26,143 @@ import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.Map;
-
-import static no.nav.data.catalog.backend.app.common.utils.Constants.INDEX;
-import static no.nav.data.catalog.backend.app.common.utils.Constants.TYPE;
 
 @Slf4j
 @Service
 public class ElasticsearchRepository {
 
-	private static final Logger logger = LoggerFactory.getLogger(ElasticsearchRepository.class);
-	private RequestOptions requestOptions = RequestOptions.DEFAULT.toBuilder().build();
+    private RequestOptions requestOptions = RequestOptions.DEFAULT.toBuilder().build();
 
-	@Autowired
-	RestHighLevelClient restHighLevelClient;
+    private final RestHighLevelClient restHighLevelClient;
 
-	public void insertInformationType(Map<String, Object> jsonMap) {
-		String id = jsonMap.get("id").toString();
-		logger.info("insertInformationType: Insert new InformationType with document id={}", id);
-		IndexRequest indexRequest = new IndexRequest(INDEX, TYPE, id);
-		indexRequest.source(jsonMap);
+    public ElasticsearchRepository(RestHighLevelClient restHighLevelClient) {
+        this.restHighLevelClient = restHighLevelClient;
+    }
 
-		try {
-			restHighLevelClient.index(indexRequest, requestOptions);
-			logger.info("insertInformationType: InformationType inserted");
-		} catch (ElasticsearchException e) {
-			logger.error("Elasticsearch-error occurred during insertInformationType", e);
-			throw new DataCatalogBackendTechnicalException(e.getDetailedMessage(), e);
-		} catch (IOException ex) {
-			logger.error("Error occurred during insertInformationType", ex);
-			throw new DataCatalogBackendTechnicalException(ex.getLocalizedMessage(), ex);
-		}
-	}
+    public void insertInformationType(Map<String, Object> jsonMap) {
+        insert(jsonMap, INFORMATION_TYPE_INDEX);
+    }
 
-	public Map<String, Object> getInformationTypeById(String id) {
-		logger.info("getInformationTypeById: Received request for InformationType with document id={}", id);
-		GetRequest getRequest = new GetRequest(INDEX, TYPE, id);
-		GetResponse getResponse;
+    public Map<String, Object> getInformationTypeById(String id) {
+        return getById(id, INFORMATION_TYPE_INDEX);
+    }
 
-		try {
-			getResponse = restHighLevelClient.get(getRequest, requestOptions);
-			if (getResponse.isSourceEmpty()) {
-				logger.error("getInformationTypeById: Could not find a document to retrieve, document id={}", id);
-				throw new DocumentNotFoundException(String.format("Could not find a document to retrieve, document id=%s", id));
-			}
-		} catch (IOException ex) {
-			logger.error(String.format("Error occurred during getInformationTypeById, document id=%s", id), ex);
-			throw new DataCatalogBackendTechnicalException(ex.getLocalizedMessage(), ex);
-		}
-		logger.info("getInformationTypeById: Returned InformationType");
-		return getResponse.getSourceAsMap();
-	}
+    public void updateInformationTypeById(String id, Map<String, Object> jsonMap) {
+        updateById(id, jsonMap, INFORMATION_TYPE_INDEX);
+    }
 
-	public void updateInformationTypeById(String id, Map<String, Object> jsonMap) {
-		logger.info("updateInformationTypeById: Request to update InformationType with document id={}", id);
-		UpdateRequest updateRequest = new UpdateRequest(INDEX, TYPE, id);
-		updateRequest.fetchSource(true);
-		updateRequest.doc(jsonMap);
+    public void deleteInformationTypeById(String id) {
+        deleteById(id, INFORMATION_TYPE_INDEX);
+    }
 
-		try {
-			restHighLevelClient.update(updateRequest, requestOptions);
-			logger.info("updateInformationTypeById: Updated InformationType with document id={}", id);
-		} catch (ElasticsearchException e) {
-			if (e.status() == RestStatus.NOT_FOUND) {
-				logger.info("updateInformationTypeById: InformationType with document id={} does not exist. Will try to insert InformationType instead", id);
-				IndexRequest indexRequest = new IndexRequest(INDEX, TYPE, jsonMap.get("id").toString());
-				indexRequest.source(jsonMap);
-				try {
-					restHighLevelClient.index(indexRequest, requestOptions);
-				} catch (IOException ex) {
-					logger.error(String.format("Error occurred during indexing, document id=%s", jsonMap.get("id").toString()), ex);
-					throw new DataCatalogBackendTechnicalException(ex.getLocalizedMessage(), ex);
-				}
-			} else {
-				logger.error(String.format("Error occurred during updateInformationTypeById, document id=%s", id), e);
-				throw new DataCatalogBackendTechnicalException(e.getLocalizedMessage(), e);
-			}
-		} catch (IOException ex) {
-			logger.error(String.format("IOException occurred during updateInformationTypeById, document id=%s", id), ex);
-			throw new DataCatalogBackendTechnicalException(ex.getLocalizedMessage(), ex);
-		}
-	}
+    public SearchResponse searchByField(String fieldName, String fieldValue) {
+        AbstractQueryBuilder query = new MatchQueryBuilder(fieldName, fieldValue);
+        return searchByQuery(query, INFORMATION_TYPE_INDEX);
+    }
 
-	public void deleteInformationTypeById(String id) {
-		logger.info("deleteInformationTypeById: Request to delete InformationType with document id={}", id);
-		DeleteRequest deleteRequest = new DeleteRequest(INDEX, TYPE, id);
+    public SearchResponse getAllInformationTypes() {
+        AbstractQueryBuilder query = new MatchAllQueryBuilder();
+        return searchByQuery(query, INFORMATION_TYPE_INDEX);
+    }
 
-		try {
-			DeleteResponse deleteResponse = restHighLevelClient.delete(deleteRequest, requestOptions);
-			logger.info("deleteInformationTypeById: Deleted InformationType, document id={}", id);
-			if (deleteResponse.getResult() == DocWriteResponse.Result.NOT_FOUND) {
-				logger.error("deleteInformationTypeById: Could not find a document to delete, document id={}", id);
-				throw new DocumentNotFoundException(String.format("Could not find a document to delete, document id=%s", id));
-			}
-		} catch (IOException ex) {
-			logger.error(String.format("IOException occurred during deleteInformationTypeById, document id=%s", id), ex);
-			ex.getLocalizedMessage();
-		}
-	}
+    private void insert(Map<String, Object> jsonMap, String index) {
+        String id = jsonMap.get("id").toString();
+        log.info("insert: Insert new {} with document id={}", index, id);
+        IndexRequest indexRequest = new IndexRequest(index, ES_DOC_TYPE, id);
+        indexRequest.source(jsonMap);
 
-	public SearchResponse searchByField(String fieldName, String fieldValue) {
-		AbstractQueryBuilder query = new MatchQueryBuilder(fieldName, fieldValue);
-		return searchByQuery(query);
-	}
+        try {
+            restHighLevelClient.index(indexRequest, requestOptions);
+            log.info("insert: {} inserted", index);
+        } catch (ElasticsearchException e) {
+            log.error("Elasticsearch-error occurred during insert " + index, e);
+            throw new DataCatalogBackendTechnicalException(e.getDetailedMessage(), e);
+        } catch (IOException ex) {
+            log.error("Error occurred during insert " + index, ex);
+            throw new DataCatalogBackendTechnicalException(ex.getLocalizedMessage(), ex);
+        }
+    }
 
-	public SearchResponse getAllInformationTypes() {
-		AbstractQueryBuilder query = new MatchAllQueryBuilder();
-		return searchByQuery(query);
-	}
+    private Map<String, Object> getById(String id, String index) {
+        log.info("getById: Received request for {} with document id={}", index, id);
+        GetRequest getRequest = new GetRequest(index, ES_DOC_TYPE, id);
+        GetResponse getResponse;
 
-	private SearchResponse searchByQuery(AbstractQueryBuilder query) {
-		SearchRequest searchRequest = new SearchRequest();
-		searchRequest.indices(INDEX);
+        try {
+            getResponse = restHighLevelClient.get(getRequest, requestOptions);
+            if (getResponse.isSourceEmpty()) {
+                log.error("getById: Could not find a {} document to retrieve, document id={}", index, id);
+                throw new DocumentNotFoundException(String.format("Could not find a document to retrieve, document id=%s", id));
+            }
+        } catch (IOException ex) {
+            log.error(String.format("Error occurred during getById, %s document id=%s", index, id), ex);
+            throw new DataCatalogBackendTechnicalException(ex.getLocalizedMessage(), ex);
+        }
+        log.info("getById: Returned {}", index);
+        return getResponse.getSourceAsMap();
+    }
 
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.query(query);
-		searchRequest.source(searchSourceBuilder);
+    private void updateById(String id, Map<String, Object> jsonMap, String index) {
+        log.info("updateById: Request to update {} with document id={}", index, id);
+        UpdateRequest updateRequest = new UpdateRequest(index, ES_DOC_TYPE, id);
+        updateRequest.fetchSource(true);
+        updateRequest.doc(jsonMap);
 
-		try {
-			return restHighLevelClient.search(searchRequest, requestOptions);
-		} catch (IOException ex) {
-			ex.getLocalizedMessage();
-		}
-		return null;
-	}
+        try {
+            restHighLevelClient.update(updateRequest, requestOptions);
+            log.info("updateById: Updated {} with document id={}", index, id);
+        } catch (ElasticsearchException e) {
+            if (e.status() == RestStatus.NOT_FOUND) {
+                log.info("updateById: {} with document id={} does not exist. Will try to insert {} instead", index, id, index);
+                IndexRequest indexRequest = new IndexRequest(INFORMATION_TYPE_INDEX, ES_DOC_TYPE, jsonMap.get("id").toString());
+                indexRequest.source(jsonMap);
+                try {
+                    restHighLevelClient.index(indexRequest, requestOptions);
+                } catch (IOException ex) {
+                    log.error(String.format("Error occurred during indexing, document id=%s", jsonMap.get("id").toString()), ex);
+                    throw new DataCatalogBackendTechnicalException(ex.getLocalizedMessage(), ex);
+                }
+            } else {
+                log.error(String.format("Error occurred during updateById, %s document id=%s", index, id), e);
+                throw new DataCatalogBackendTechnicalException(e.getLocalizedMessage(), e);
+            }
+        } catch (IOException ex) {
+            log.error(String.format("IOException occurred during updateById, %s document id=%s", index, id), ex);
+            throw new DataCatalogBackendTechnicalException(ex.getLocalizedMessage(), ex);
+        }
+    }
+
+    private void deleteById(String id, String index) {
+        log.info("deleteById: Request to delete {} with document id={}", index, id);
+        DeleteRequest deleteRequest = new DeleteRequest(index, ES_DOC_TYPE, id);
+
+        try {
+            DeleteResponse deleteResponse = restHighLevelClient.delete(deleteRequest, requestOptions);
+            log.info("deleteById: Deleted {}, document id={}", index, id);
+            if (deleteResponse.getResult() == DocWriteResponse.Result.NOT_FOUND) {
+                log.error("deleteById: Could not find a {} document to delete, document id={}", index, id);
+                throw new DocumentNotFoundException(String.format("Could not find a document to delete, document id=%s", id));
+            }
+        } catch (IOException ex) {
+            log.error(String.format("IOException occurred during deleteById, %s document id=%s", index, id), ex);
+            ex.getLocalizedMessage();
+        }
+    }
+
+    private SearchResponse searchByQuery(AbstractQueryBuilder query, String index) {
+        SearchRequest searchRequest = new SearchRequest();
+        searchRequest.indices(index);
+
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.query(query);
+        searchRequest.source(searchSourceBuilder);
+
+        try {
+            return restHighLevelClient.search(searchRequest, requestOptions);
+        } catch (IOException ex) {
+            ex.getLocalizedMessage();
+        }
+        return null;
+    }
 }
