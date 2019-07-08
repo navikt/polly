@@ -23,7 +23,7 @@ jobs:
     - run:
         name: Dirs
         command: |
-          tree
+          ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
     - persist_to_workspace:
         root: /tmp/workspace
         paths:
