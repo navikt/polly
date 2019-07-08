@@ -16,7 +16,6 @@ jobs:
           export RELEASE_VERSION=$CIRCLE_BUILD_NUM
           echo "export RELEASE_VERSION=$RELEASE_VERSION" >> properties.env
           echo "export DOCKER_TAG=\"$CIRCLE_PROJECT_REPONAME:$RELEASE_VERSION\"" >> properties.env
-          cat /tmp/workspace/properties.env >> $BASH_ENV
     - run:
         name: Build application
         command: mvn clean install
