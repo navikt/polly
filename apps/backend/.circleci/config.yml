@@ -10,12 +10,21 @@ jobs:
     - checkout
     - setup_remote_docker
     - run:
+        name: Generate version number and docker image tags
+        command: |
+          mkdir /tmp/workspace
+          export RELEASE_VERSION=$CIRCLE_BUILD_NUM
+          echo "export RELEASE_VERSION=$RELEASE_VERSION" >> properties.env
+          echo "export DOCKER_TAG=\"$CIRCLE_PROJECT_REPONAME:$RELEASE_VERSION\"" >> properties.env
+          cat /tmp/workspace/properties.env >> $BASH_ENV
+    - run:
         name: Build application
         command: mvn clean install
     - persist_to_workspace:
         root: /tmp/workspace
         paths:
           - data-catalog-backend-app/target/app.jar
+          - properties.env
   deploy_to_staging:
     environment:
       - PROJECT_NAME: "datajegerne"
@@ -33,6 +42,7 @@ jobs:
         name: Copy jar and env
         command: |
           cp /tmp/workspace/data-catalog-backend-app/target/app.jar data-catalog-backend-app/target/app.jar
+          cat /tmp/workspace/properties.env >> $BASH_ENV
     - run:
         name: apt update
         command: sudo apt-get update || sudo apt-get update
@@ -56,9 +66,6 @@ workflows:
   build_and_release:
     jobs:
       - build:
-          filters:
-            branches:
-              ignore: master
           context: datajegerne
       - deploy_to_staging:
           requires:
