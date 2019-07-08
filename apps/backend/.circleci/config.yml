@@ -20,15 +20,11 @@ jobs:
     - run:
         name: Build application
         command: mvn clean install
-    - run:
-        name: Dirs
-        command: |
-          ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
     - persist_to_workspace:
         root: /tmp/workspace
         paths:
-          - data-catalog-backend-app/target/app.jar
-          - properties.env
+          - ./data-catalog-backend-app/target/app-exec.jar
+          - ./properties.env
   deploy_to_staging:
     environment:
       - PROJECT_NAME: "datajegerne"
