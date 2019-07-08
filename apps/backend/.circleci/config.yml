@@ -11,18 +11,15 @@ jobs:
     - checkout
     - setup_remote_docker
     - run:
-        name: Generate version number and docker image tags
+        name: Build application
+        command: mvn clean install
+    - run:
+        name: Generate version number and docker image tags and copy jars
         command: |
           mkdir /tmp/workspace
           export RELEASE_VERSION=$CIRCLE_BUILD_NUM
           echo "export RELEASE_VERSION=$RELEASE_VERSION" >> /tmp/workspace/properties.env
           echo "export DOCKER_TAG=\"$CIRCLE_PROJECT_REPONAME:$RELEASE_VERSION\"" >> /tmp/workspace/properties.env
-    - run:
-        name: Build application
-        command: mvn clean install
-    - run:
-        name: Copy jar
-        command: |
           cp ./data-catalog-backend-app/target/app-exec.jar /tmp/workspace/app.jar
     - persist_to_workspace:
         root: /tmp/workspace
@@ -66,7 +63,7 @@ jobs:
 #        cluster: datajegerne-cluster
 #        deployment: data-catalog-backend
 #        container: data-catalog-backend
-#        image: gcr.io/datajegerne/navikt/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BUILD_NUM
+#        image: gcr.io/datajegerne/navikt/$CIRCLE_PROJECT_REPONAME:$RELEASE_VERSION
 workflows:
   version: 2
   build_and_release:
