@@ -48,10 +48,10 @@ jobs:
     - gcp-gcr/gcr-auth
     - gcp-gcr/build-image:
         image: navikt/data-catalog-backend
-        tag: $CIRCLE_BUILD_NUM
+        tag: $RELEASE_VERSION
     - gcp-gcr/push-image:
         image: navikt/data-catalog-backend
-        tag: $CIRCLE_BUILD_NUM
+        tag: $RELEASE_VERSION
     - gcp-gke/install
     - gcp-gke/init
 # Timeout pga at clusteret er privat.
