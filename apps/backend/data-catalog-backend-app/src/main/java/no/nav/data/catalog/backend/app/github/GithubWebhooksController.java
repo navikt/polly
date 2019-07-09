@@ -1,5 +1,10 @@
 package no.nav.data.catalog.backend.app.github;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -22,13 +27,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 @RestController
-@RequestMapping("/backend/webhooks")
+@RequestMapping("/webhooks")
 @Api(value = "Github Webhook", description = "Webhook called from github when push to navikt/pol-dataset is done", tags = {"webhook"})
 public class GithubWebhooksController {
 

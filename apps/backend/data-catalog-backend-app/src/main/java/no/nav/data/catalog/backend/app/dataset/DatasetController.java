@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @CrossOrigin
-@RequestMapping("/backend/dataset")
+@RequestMapping("/dataset")
 @Api(value = "Dataset", description = "REST API for Dataset", tags = {"Dataset"})
 public class DatasetController {
 

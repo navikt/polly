@@ -27,7 +27,7 @@ public class NaisEndpointsTest {
 
 	@Test
 	public void naisIsReady() {
-		String urlIsReady = "/backend/internal/isReady";
+		String urlIsReady = "/datacatalog/backend/internal/isReady";
 		when(testRestTemplate.exchange(urlIsReady, HttpMethod.GET, HttpEntity.EMPTY, String.class)).thenReturn(ResponseEntity.ok("Up and running!"));
 
 		ResponseEntity<String> responseEntity = testRestTemplate.exchange(
@@ -41,7 +41,7 @@ public class NaisEndpointsTest {
 
 	@Test
 	public void naisIsAlive() {
-		String urlIsAlive = "/backend/internal/isAlive";
+		String urlIsAlive = "/datacatalog/backend/internal/isAlive";
 		when(testRestTemplate.exchange(urlIsAlive, HttpMethod.GET, HttpEntity.EMPTY, String.class)).thenReturn(ResponseEntity.ok("Ready to receive!"));
 
 		ResponseEntity<String> responseEntity = testRestTemplate.exchange(

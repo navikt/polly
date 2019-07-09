@@ -31,7 +31,7 @@ import org.hibernate.annotations.Type;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "DATASET", schema = "BACKEND_SCHEMA")
+@Table(name = "DATASET")
 public class Dataset extends Auditable<String> {
 
     @Id

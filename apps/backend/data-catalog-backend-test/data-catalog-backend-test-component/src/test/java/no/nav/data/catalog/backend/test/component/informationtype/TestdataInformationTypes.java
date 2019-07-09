@@ -1,7 +1,6 @@
 package no.nav.data.catalog.backend.test.component.informationtype;
 
 import java.util.List;
-import java.util.Map;
 
 class TestdataInformationTypes {
 	static final String CATEGORY_CODE = "PERSONALIA";
@@ -16,5 +15,5 @@ class TestdataInformationTypes {
 	//	static final Map<String, String> SYSTEM_MAP = Map.of("code", SYSTEM_CODE, "description", SYSTEM_DESCRIPTION);
 	static final String NAME = "InformationName";
 	static final String DESCRIPTION = "InformationDescription";
-	static final String URL = "/backend/informationtype";
+	static final String URL = "/informationtype";
 }
