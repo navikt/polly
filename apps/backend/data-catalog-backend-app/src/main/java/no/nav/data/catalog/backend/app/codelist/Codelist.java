@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "CODELIST", schema = "BACKEND_SCHEMA")
+@Table(name = "CODELIST")
 @Data
 @Builder
 @NoArgsConstructor

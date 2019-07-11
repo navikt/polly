@@ -1,81 +1,42 @@
 version: 2.1
 orbs:
-  gcp-gke: circleci/gcp-gke@0.2.0
-  gcp-gcr: circleci/gcp-gcr@0.6.1
+  nais: navikt/nais-deployment@1.1.1
 jobs:
   build:
     working_directory: ~/backend_wf
     docker:
       - image: circleci/openjdk:11.0.3-stretch
     steps:
-    - checkout
-    - setup_remote_docker
-    - run:
-        name: Build application
-        command: mvn clean install
-    - run:
-        name: Generate version number and docker image tags and copy jars
-        command: |
-          mkdir /tmp/workspace
-          export RELEASE_VERSION=$CIRCLE_BUILD_NUM
-          echo "export RELEASE_VERSION=$RELEASE_VERSION" >> /tmp/workspace/properties.env
-          echo "export DOCKER_TAG=\"$CIRCLE_PROJECT_REPONAME:$RELEASE_VERSION\"" >> /tmp/workspace/properties.env
-          cp ./data-catalog-backend-app/target/app-exec.jar /tmp/workspace/app-exec.jar
-          cp ./Dockerfile /tmp/workspace/Dockerfile
-    - persist_to_workspace:
-        root: /tmp/workspace
-        paths:
-          - app-exec.jar
-          - properties.env
-          - Dockerfile
-  deploy_to_staging:
-    environment:
-      - PROJECT_NAME: "datajegerne"
-      - GOOGLE_PROJECT_ID: "datajegerne"
-      - GOOGLE_COMPUTE_ZONE: "europe-north1-b"
-      - GOOGLE_CLUSTER_NAME: "datajegerne-cluster"
-    working_directory: ~/backend_wf
-    docker:
-      - image: circleci/openjdk:11.0.3-stretch
-    steps:
-    - setup_remote_docker
-    - attach_workspace:
-        at: /tmp/workspace
-    - run:
-        name: Copy jar and env
-        command: |
-          mkdir -p ./data-catalog-backend-app/target/
-          cp /tmp/workspace/Dockerfile ./Dockerfile
-          cp /tmp/workspace/app-exec.jar ./data-catalog-backend-app/target/app-exec.jar
-          cat /tmp/workspace/properties.env >> $BASH_ENV
-    - run:
-        name: apt update
-        command: sudo apt-get update || sudo apt-get update
-    - gcp-gcr/gcr-auth
-    - gcp-gcr/build-image:
-        image: navikt/data-catalog-backend
-        tag: $RELEASE_VERSION
-    - gcp-gcr/push-image:
-        image: navikt/data-catalog-backend
-        tag: $RELEASE_VERSION
-    - gcp-gke/install
-    - gcp-gke/init
-# Timeout pga at clusteret er privat.
-#    - gcp-gke/rollout-image:
-#        cluster: datajegerne-cluster
-#        deployment: data-catalog-backend
-#        container: data-catalog-backend
-#        image: gcr.io/datajegerne/navikt/$CIRCLE_PROJECT_REPONAME:$RELEASE_VERSION
+      - checkout
+      - restore_cache:
+          key: backend_wf-{{ checksum "pom.xml" }}
+      - run:
+          name: Build application
+          command: mvn package
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: backend_wf-{{ checksum "pom.xml" }}
+      - nais/docker-deploy:
+          image: navikt/data-catalog-backend
 workflows:
   version: 2
   build_and_release:
     jobs:
       - build:
-          context: datajegerne
-      - deploy_to_staging:
+          context: NAIS deployment
+      - nais/deploy:
+          context: NAIS deployment
+          build-and-push-docker-image: false
+          repo: navikt/data-catalog-backend
+          image: navikt/data-catalog-backend
+          github-app-id: 26100
+          nais-template: naiserator.yaml
+          environment: dev-sbs
+          team: teamdatajegerne
           requires:
             - build
           filters:
             branches:
-              only: master
-          context: datajegerne
+              only:
+                - master

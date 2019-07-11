@@ -15,7 +15,7 @@ public interface InformationTypeRepository extends JpaRepository<InformationType
         JpaSpecificationExecutor<InformationType> {
 	Optional<List<InformationType>> findByElasticsearchStatus(@Param("status") ElasticsearchStatus status);
 
-	@Query(value = "SELECT * FROM BACKEND_SCHEMA.INFORMATION_TYPE WHERE TRIM(UPPER(name)) = TRIM(UPPER(:name))", nativeQuery = true)
+	@Query(value = "SELECT * FROM INFORMATION_TYPE WHERE TRIM(UPPER(name)) = TRIM(UPPER(:name))", nativeQuery = true)
 	Optional<InformationType> findByName(@Param("name") String name);
 
 	@Query("UPDATE InformationType SET elasticsearchStatus = :status WHERE status = SYNCED")

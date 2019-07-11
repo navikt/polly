@@ -1,0 +1,31 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: data-catalog-backend
+  namespace: default
+  labels:
+    team: {{team}}
+spec:
+  image: {{version}}
+  port: 8080
+  ingresses:
+    - "https://datacatalog.nais.oera-q.local/datacatalog/backend"
+    - "https://www-q0.nav.no/datacatalog/backend"
+  replicas:
+    min: 1
+    max: 2
+    cpuThresholdPercentage: 50
+  liveness:
+    path: datacatalog/backend/internal/isAlive
+    initialDelay: 60
+  readiness:
+    path: datacatalog/backend/internal/isReady
+    initialDelay: 60
+  resources:
+    limits:
+      cpu: 1500m
+      memory: 1024Mi
+    requests:
+      memory: 528Mi
+  vault:
+    enabled: true

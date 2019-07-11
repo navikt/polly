@@ -2,10 +2,15 @@ package no.nav.data.catalog.backend.app.codelist;
 
 import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
 
+import java.util.List;
+import java.util.Map;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import javax.transaction.Transactional;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.exceptions.CodelistNotFoundException;
 import org.slf4j.Logger;
@@ -24,15 +29,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.transaction.Transactional;
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Map;
-
 @Slf4j
 @RestController
 @CrossOrigin
-@RequestMapping("/backend/codelist")
+@RequestMapping("/codelist")
 @Api(value = "Codelist", description = "REST API for common list of values", tags = { "Codelist" })
 public class CodelistController {
 

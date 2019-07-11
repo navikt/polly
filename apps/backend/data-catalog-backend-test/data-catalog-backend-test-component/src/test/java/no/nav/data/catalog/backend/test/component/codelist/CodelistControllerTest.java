@@ -12,6 +12,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import no.nav.data.catalog.backend.app.AppStarter;
@@ -40,20 +47,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = AppStarter.class)
 @WebAppConfiguration
 @ActiveProfiles("test")
 public class CodelistControllerTest {
 
-	private final String BASE_URI = "/backend/codelist";
+	private final String BASE_URI = "/codelist";
 	private MockMvc mvc;
 	private ObjectMapper objectMapper;
 	private HashMap<ListName, HashMap<String, String>> codelists;

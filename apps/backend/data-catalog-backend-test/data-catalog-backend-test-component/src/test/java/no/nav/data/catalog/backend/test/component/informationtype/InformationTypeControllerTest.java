@@ -1,28 +1,31 @@
 package no.nav.data.catalog.backend.test.component.informationtype;
 
-import no.nav.data.catalog.backend.app.AppStarter;
-import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
-import no.nav.data.catalog.backend.app.codelist.CodelistService;
-import no.nav.data.catalog.backend.app.codelist.ListName;
-import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
-import no.nav.data.catalog.backend.app.dataset.DatasetRelationRepository;
-import no.nav.data.catalog.backend.app.dataset.DatasetRepository;
-import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
-import no.nav.data.catalog.backend.app.informationtype.*;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.*;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.CATEGORY_CODE;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.CATEGORY_DESCRIPTION;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.DESCRIPTION;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.PRODUCER_CODE_LIST;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.PRODUCER_CODE_STRING;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.PRODUCER_DESCRIPTION_LIST;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.SYSTEM_CODE;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.SYSTEM_DESCRIPTION;
+import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.URL;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,15 +34,37 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
-import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.*;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import no.nav.data.catalog.backend.app.AppStarter;
+import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
+import no.nav.data.catalog.backend.app.codelist.CodelistService;
+import no.nav.data.catalog.backend.app.codelist.ListName;
+import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
+import no.nav.data.catalog.backend.app.dataset.DatasetRelationRepository;
+import no.nav.data.catalog.backend.app.dataset.DatasetRepository;
+import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
+import no.nav.data.catalog.backend.app.informationtype.InformationType;
+import no.nav.data.catalog.backend.app.informationtype.InformationTypeController;
+import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
+import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
+import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(InformationTypeController.class)
@@ -121,7 +146,7 @@ public class InformationTypeControllerTest {
 		given(repository.findAll((Specification<InformationType>) null, defaultPageable)).willReturn(informationTypePage);
 		given(repository.count()).willReturn(20L);
 
-		mvc.perform(get("/backend/informationtype")
+		mvc.perform(get(URL)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.content", hasSize(20)))
@@ -134,7 +159,7 @@ public class InformationTypeControllerTest {
 	public void countInformationTypes() throws Exception {
 		given(repository.count()).willReturn(20L);
 
-		mvc.perform(get("/backend/informationtype/count")
+        mvc.perform(get(URL + "/count")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().string("20"));
@@ -146,7 +171,7 @@ public class InformationTypeControllerTest {
 
 		given(repository.findAll((Specification<InformationType>) null, defaultPageable)).willReturn(informationTypePage);
 
-		mvc.perform(get("/backend/informationtype")
+		mvc.perform(get(URL)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.content", hasSize(0)))
@@ -167,7 +192,7 @@ public class InformationTypeControllerTest {
 		given(repository.findAll((Specification<InformationType>) null, pageable)).willReturn(informationTypePage);
 		given(repository.count()).willReturn(30L);
 
-		mvc.perform(get("/backend/informationtype?page=1&pageSize=10&sort=id,desc")
+		mvc.perform(get(URL + "?page=1&pageSize=10&sort=id,desc")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.content", hasSize(30)))
@@ -189,7 +214,7 @@ public class InformationTypeControllerTest {
 		given(repository.findAll(any(Specification.class), any(Pageable.class))).willReturn(informationTypePage);
 		given(repository.count()).willReturn(2L);
 
-		mvc.perform(get("/backend/informationtype?name=filterMe")
+		mvc.perform(get(URL + "?name=filterMe")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.content", hasSize(2)))

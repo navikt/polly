@@ -18,5 +18,5 @@ class TestdataInformationTypes {
 	static final Map<String, String> SYSTEM_MAP = Map.of("code", SYSTEM_CODE, "description", SYSTEM_DESCRIPTION);
 	static final String NAME = "InformationName";
 	static final String DESCRIPTION = "InformationDescription";
-	static final String URL = "/backend/informationtype";
+	static final String URL = "/informationtype";
 }

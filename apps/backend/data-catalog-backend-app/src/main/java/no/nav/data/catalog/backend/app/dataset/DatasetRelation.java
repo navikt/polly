@@ -16,7 +16,7 @@ import org.hibernate.annotations.Type;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "dataset__parent_of_dataset", schema = "BACKEND_SCHEMA")
+@Table(name = "dataset__parent_of_dataset")
 public class DatasetRelation {
 
     public DatasetRelation(UUID id, UUID parentOfId) {
