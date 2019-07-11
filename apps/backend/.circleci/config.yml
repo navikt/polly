@@ -25,7 +25,8 @@ workflows:
     jobs:
       - build:
           context: NAIS deployment
-      - nais/deploy-preprod:
+      - nais/deploy:
+          name: Deploy preprod
           context: NAIS deployment
           build-and-push-docker-image: false
           repo: navikt/data-catalog-backend
@@ -40,7 +41,8 @@ workflows:
             branches:
               only:
                 - master
-      - nais/deploy-prod:
+      - nais/deploy:
+          name: Deploy prod
           context: NAIS deployment
           build-and-push-docker-image: false
           repo: navikt/data-catalog-backend
