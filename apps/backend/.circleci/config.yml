@@ -25,13 +25,13 @@ workflows:
     jobs:
       - build:
           context: NAIS deployment
-      - nais/deploy:
+      - nais/deploy-preprod:
           context: NAIS deployment
           build-and-push-docker-image: false
           repo: navikt/data-catalog-backend
           image: navikt/data-catalog-backend
           github-app-id: 26100
-          nais-template: naiserator.yaml
+          nais-template: naiserator-preprod.yaml
           environment: dev-sbs
           team: teamdatajegerne
           requires:
@@ -40,3 +40,18 @@ workflows:
             branches:
               only:
                 - master
+      - nais/deploy-prod:
+          context: NAIS deployment
+          build-and-push-docker-image: false
+          repo: navikt/data-catalog-backend
+          image: navikt/data-catalog-backend
+          github-app-id: 26100
+          nais-template: naiserator-prod.yaml
+          environment: dev-sbs
+          team: teamdatajegerne
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - prod
