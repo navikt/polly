@@ -1,6 +1,8 @@
 package no.nav.data.catalog.backend.app.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.prometheus.client.CollectorRegistry;
+import io.prometheus.client.hotspot.DefaultExports;
 import no.nav.data.catalog.backend.app.common.auditing.AuditorAwareImpl;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import org.apache.http.HttpHost;
@@ -53,5 +55,14 @@ public class CommonConfig {
 	@Bean
 	public AuditorAware<String> auditorAware() {
 		return new AuditorAwareImpl();
+	}
+
+	/**
+	 * Make sure spring uses the defaultRegistry
+	 */
+	@Bean
+	public CollectorRegistry collectorRegistry() {
+		DefaultExports.initialize();
+		return CollectorRegistry.defaultRegistry;
 	}
 }

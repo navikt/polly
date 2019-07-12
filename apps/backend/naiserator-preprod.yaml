@@ -29,3 +29,6 @@ spec:
       memory: 528Mi
   vault:
     enabled: true
+  prometheus:
+    enabled: true
+    path: datacatalog/backend/internal/metrics
