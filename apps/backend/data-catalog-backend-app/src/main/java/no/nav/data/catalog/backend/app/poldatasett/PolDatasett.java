@@ -15,7 +15,7 @@ import no.nav.data.catalog.backend.app.common.auditing.Auditable;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "POL_DATASETT", schema = "BACKEND_SCHEMA")
+@Table(name = "POL_DATASETT")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PolDatasett extends Auditable<String> {
 
