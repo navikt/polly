@@ -20,7 +20,6 @@ import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository
 import no.nav.data.catalog.backend.app.poldatasett.PolDatasett;
 import no.nav.data.catalog.backend.app.poldatasett.PolDatasettRepository;
 import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
-import org.apache.commons.codec.digest.HmacAlgorithms;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.eclipse.egit.github.core.event.PushPayload;
 import org.junit.Before;
@@ -30,7 +29,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -63,8 +61,7 @@ public class GithubWebhooksControllerIT {
 
     @Autowired
     protected PolDatasettRepository polDatasettRepository;
-    @Value("github.webhooks.secret")
-    private String githubSecret;
+    @Autowired
     private HmacUtils hmacUtils;
 
     @Rule
@@ -88,7 +85,6 @@ public class GithubWebhooksControllerIT {
     public void setUp() {
         repository.deleteAll();
         intializeCodelists();
-        hmacUtils = new HmacUtils(HmacAlgorithms.HMAC_SHA_1, githubSecret);
 
         polDatasettRepository.save(new PolDatasett(before));
 

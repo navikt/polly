@@ -17,12 +17,12 @@ public class GithubConfig {
     }
 
     @Bean
-    public RepositoryId repositoryId(@Value("pol.datasett.owner") String owner, @Value("pol.datasett.repo") String repo) {
+    public RepositoryId repositoryId(@Value("${pol.datasett.owner}") String owner, @Value("${pol.datasett.repo}") String repo) {
         return new RepositoryId(owner, repo);
     }
 
     @Bean
-    public HmacUtils githubHmac(@Value("github.webhooks.secret") String githubSecret) {
+    public HmacUtils githubHmac(@Value("${github.webhooks.secret}") String githubSecret) {
         return new HmacUtils(HmacAlgorithms.HMAC_SHA_1, githubSecret);
     }
 }

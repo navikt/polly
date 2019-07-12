@@ -94,14 +94,23 @@ public class GithubWebhooksController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid signature");
         }
 
-        if (PUSH_EVENT.equals(eventType)) {
-            processPushEvent(JsonUtils.toObject(jsonPayload, PushPayload.class));
-        } else if (PULL_REQUEST_EVENT.equals(eventType)) {
-            processPullRequestEvent(JsonUtils.toObject(jsonPayload, PullRequestPayload.class));
-        } else {
-            log.warn("skipping unknown eventType {}", eventType);
-        }
+        processEvent(jsonPayload, eventType);
         return ResponseEntity.ok().build();
+    }
+
+    private void processEvent(@RequestBody String jsonPayload, String eventType) {
+        try {
+            if (PUSH_EVENT.equals(eventType)) {
+                processPushEvent(JsonUtils.toObject(jsonPayload, PushPayload.class));
+            } else if (PULL_REQUEST_EVENT.equals(eventType)) {
+                processPullRequestEvent(JsonUtils.toObject(jsonPayload, PullRequestPayload.class));
+            } else {
+                log.warn("skipping unknown eventType {}", eventType);
+            }
+        } catch (RuntimeException e) {
+            log.error(String.format("Webhook event %s failed", eventType), e);
+            throw e;
+        }
     }
 
     private void processPullRequestEvent(PullRequestPayload payload) {

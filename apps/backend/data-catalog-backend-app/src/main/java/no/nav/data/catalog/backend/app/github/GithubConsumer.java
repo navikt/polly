@@ -1,12 +1,16 @@
 package no.nav.data.catalog.backend.app.github;
 
+import static java.time.LocalDateTime.now;
 import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.safeStream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.google.common.base.Joiner;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
@@ -51,6 +55,8 @@ public class GithubConsumer {
     private CommitService commitService;
     private ContentsService contentsService;
 
+    private LocalDateTime lastToken = LocalDateTime.MIN;
+
     public GithubConsumer(GitHubClient gitHubClient, RepositoryId repositoryId) {
         this.repositoryId = repositoryId;
         this.gitHubClient = gitHubClient;
@@ -59,6 +65,7 @@ public class GithubConsumer {
     }
 
     public void updateStatus(String sha, List<String> validationErrors) {
+        updateToken();
         boolean isOk = validationErrors.isEmpty();
         try {
             CommitStatus status = new CommitStatus();
@@ -72,6 +79,7 @@ public class GithubConsumer {
     }
 
     public String getShaOfMaser() {
+        updateToken();
         try {
             return commitService.getCommit(repositoryId, REFS_HEADS_MASTER).getSha();
         } catch (IOException e) {
@@ -80,7 +88,7 @@ public class GithubConsumer {
     }
 
     public RepoModification compare(String shaStart, String shaEnd) {
-//        updateToken();
+        updateToken();
         try {
             if (shaStart == null) {
                 // start from scratch, only loading files from root
@@ -123,6 +131,7 @@ public class GithubConsumer {
     }
 
     public List<RepositoryContents> getContents(String ref, String filename) {
+        updateToken();
         try {
             return contentsService.getContents(repositoryId, filename, ref);
         } catch (IOException e) {
@@ -134,13 +143,14 @@ public class GithubConsumer {
         try {
             ResponseEntity<GithubInstallation[]> responseEntity = restTemplate
                     .exchange("https://api.github.com/app/installations", HttpMethod.GET, new HttpEntity<>(createBearerHeader(getJwtToken())), GithubInstallation[].class);
-            String installationId = "";
-            for (GithubInstallation installation : responseEntity.getBody()) {
-                if (repositoryId.getOwner().equals(installation.getAccount().getLogin())) {
-                    installationId = installation.getId();
-                }
-            }
-            return installationId;
+            return Optional.of(responseEntity)
+                    .map(ResponseEntity::getBody)
+                    .map(Stream::of)
+                    .flatMap(installations -> installations
+                            .filter(installation -> repositoryId.getOwner().equals(installation.getAccount().getLogin()))
+                            .map(GithubInstallation::getId)
+                            .findFirst())
+                    .orElseThrow(() -> new DataCatalogBackendTechnicalException("GitHub returned null for installationId value!"));
         } catch (
                 HttpClientErrorException e) {
             throw new DataCatalogBackendTechnicalException(
@@ -157,12 +167,10 @@ public class GithubConsumer {
             var responseEntity = restTemplate
                     .exchange("https://api.github.com/app/installations/" + installationId + "/access_tokens", HttpMethod.POST, new HttpEntity<>(createBearerHeader(getJwtToken())),
                             GithubInstallationToken.class);
-            GithubInstallationToken token = responseEntity.getBody();
-            if (token.getToken() != null) {
-                return token.getToken();
-            } else {
-                throw new DataCatalogBackendTechnicalException("GitHub returned null for installation token value!");
-            }
+            return Optional.of(responseEntity)
+                    .map(ResponseEntity::getBody)
+                    .map(GithubInstallationToken::getToken)
+                    .orElseThrow(() -> new DataCatalogBackendTechnicalException("GitHub returned null for installation token value!"));
         } catch (HttpClientErrorException e) {
             throw new DataCatalogBackendTechnicalException(
                     String.format("Calling Github to get installation token failed with status=%s message=%s", e.getStatusCode(), e.getResponseBodyAsString()), e,
@@ -176,7 +184,6 @@ public class GithubConsumer {
     }
 
     private String getJwtToken() {
-        //TODO: Cache tokene i 9 minutter?
         return tokenGenerator.generateToken();
     }
 
@@ -187,9 +194,12 @@ public class GithubConsumer {
         return headers;
     }
 
-    // TODO use
     private void updateToken() {
+        if (lastToken.isAfter(now().minusMinutes(9))) {
+            return;
+        }
         String token = getInstallationToken(getInstallationId());
         gitHubClient.setOAuth2Token(token);
+        lastToken = now();
     }
 }
