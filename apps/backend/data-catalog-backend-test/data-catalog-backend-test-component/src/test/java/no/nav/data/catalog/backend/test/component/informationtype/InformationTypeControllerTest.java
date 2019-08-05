@@ -102,7 +102,7 @@ public class InformationTypeControllerTest {
 
 		given(repository.findById(1L)).willReturn(Optional.of(informationType));
 
-		mvc.perform(get("/backend/informationtype/1")
+		mvc.perform(get("/informationtype/1")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.name", is("infoType1")));
@@ -112,7 +112,7 @@ public class InformationTypeControllerTest {
 	public void getInformationTypeById_shouldGetNotFound_WhenIdDoesNotExist() throws Exception {
 		given(repository.findById(1L)).willReturn(Optional.empty());
 
-		mvc.perform(get("/backend/informationtype/1")
+		mvc.perform(get("/informationtype/1")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
 	}
@@ -125,7 +125,7 @@ public class InformationTypeControllerTest {
 		given(repository.findByName(name))
 				.willReturn(Optional.of(informationType));
 
-		mvc.perform(get("/backend/informationtype/name/Test"))
+		mvc.perform(get("/informationtype/name/Test"))
 				.andExpect(status().isOk());
 	}
 
@@ -138,7 +138,7 @@ public class InformationTypeControllerTest {
 		given(repository.findAll((Specification<InformationType>) null, defaultPageable)).willReturn(informationTypePage);
 		given(repository.count()).willReturn(20L);
 
-		mvc.perform(get("/backend/informationtype")
+		mvc.perform(get("/informationtype")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.content", hasSize(20)))
@@ -151,7 +151,7 @@ public class InformationTypeControllerTest {
 	public void countInformationTypes() throws Exception {
 		given(repository.count()).willReturn(20L);
 
-		mvc.perform(get("/backend/informationtype/count")
+		mvc.perform(get("/informationtype/count")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().string("20"));
@@ -163,7 +163,7 @@ public class InformationTypeControllerTest {
 
 		given(repository.findAll((Specification<InformationType>) null, defaultPageable)).willReturn(informationTypePage);
 
-		mvc.perform(get("/backend/informationtype")
+		mvc.perform(get("/informationtype")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.content", hasSize(0)))
@@ -184,7 +184,7 @@ public class InformationTypeControllerTest {
 		given(repository.findAll((Specification<InformationType>) null, pageable)).willReturn(informationTypePage);
 		given(repository.count()).willReturn(30L);
 
-		mvc.perform(get("/backend/informationtype?page=1&pageSize=10&sort=id,desc")
+		mvc.perform(get("/informationtype?page=1&pageSize=10&sort=id,desc")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.content", hasSize(30)))
@@ -206,7 +206,7 @@ public class InformationTypeControllerTest {
 		given(repository.findAll(any(Specification.class), any(Pageable.class))).willReturn(informationTypePage);
 		given(repository.count()).willReturn(2L);
 
-		mvc.perform(get("/backend/informationtype?name=filterMe")
+		mvc.perform(get("/informationtype?name=filterMe")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.content", hasSize(2)))
@@ -224,7 +224,7 @@ public class InformationTypeControllerTest {
 
 		given(repository.saveAll(createdInformationTypes)).willReturn(createdInformationTypes);
 
-		mvc.perform(post("/backend/informationtype").contentType(MediaType.APPLICATION_JSON)
+		mvc.perform(post("/informationtype").contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(requests)))
 				.andExpect(status().isAccepted());
 
@@ -240,7 +240,7 @@ public class InformationTypeControllerTest {
 		willThrow(new ValidationException(validationErrors, "The request was not accepted because it is empty"))
 				.given(service).validateRequests(requests, false);
 
-		mvc.perform(post("/backend/informationtype")
+		mvc.perform(post("/informationtype")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(requests)))
 				.andExpect(status().isBadRequest());
@@ -257,7 +257,7 @@ public class InformationTypeControllerTest {
 		willThrow(new ValidationException(validationErrors, "The request was not accepted. The following errors occurred during validation: "))
 				.given(service).validateRequests(requests, false);
 
-		mvc.perform(post("/backend/informationtype")
+		mvc.perform(post("/informationtype")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(requests)))
 				.andExpect(status().isBadRequest());
@@ -282,7 +282,7 @@ public class InformationTypeControllerTest {
 				.willReturn(Optional.of(new InformationType().convertFromRequest(requests.get(1), false)));
 		given(repository.saveAll(updatedInformationTypes)).willReturn(updatedInformationTypes);
 
-		mvc.perform(post("/backend/informationtype").contentType(MediaType.APPLICATION_JSON)
+		mvc.perform(post("/informationtype").contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(requests)))
 				.andExpect(status().isAccepted());
 
@@ -300,7 +300,7 @@ public class InformationTypeControllerTest {
 		given(repository.findById(1L)).willReturn(Optional.of(informationTypeToBeUpdated));
 		given(repository.save(updatedInformationType)).willReturn(updatedInformationType);
 
-		mvc.perform(put("/backend/informationtype/1")
+		mvc.perform(put("/informationtype/1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(request)))
 				.andExpect(status().isAccepted());
@@ -316,7 +316,7 @@ public class InformationTypeControllerTest {
 
 		given(repository.findById(1L)).willReturn(Optional.empty());
 
-		mvc.perform(put("/backend/informationtype/1")
+		mvc.perform(put("/informationtype/1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(request)))
 				.andExpect(status().isNotFound());
@@ -336,7 +336,7 @@ public class InformationTypeControllerTest {
 		given(repository.save(infoType)).willReturn(infoTypeToBeDeleted);
 
 
-		mvc.perform(delete("/backend/informationtype/1"))
+		mvc.perform(delete("/informationtype/1"))
 				.andExpect(status().isAccepted());
 
 		then(repository).should(times(1)).findById(1L);
@@ -349,7 +349,7 @@ public class InformationTypeControllerTest {
 
 		given(repository.findById(1L)).willReturn(Optional.empty());
 
-		mvc.perform(delete("/backend/informationtype/1")
+		mvc.perform(delete("/informationtype/1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(request)))
 				.andExpect(status().isNotFound());
