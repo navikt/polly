@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import no.nav.data.catalog.backend.app.common.tokensupport.JwtTokenGenerator;
+import no.nav.data.catalog.backend.app.github.GitHubClient;
 import no.nav.data.catalog.backend.app.github.GithubConsumer;
 import no.nav.data.catalog.backend.app.github.domain.GithubAccount;
 import no.nav.data.catalog.backend.app.github.domain.GithubInstallation;
@@ -26,9 +27,9 @@ import org.eclipse.egit.github.core.RepositoryCommit;
 import org.eclipse.egit.github.core.RepositoryCommitCompare;
 import org.eclipse.egit.github.core.RepositoryContents;
 import org.eclipse.egit.github.core.RepositoryId;
-import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.client.GitHubRequest;
 import org.eclipse.egit.github.core.client.GitHubResponse;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -127,9 +128,9 @@ public class GithubConsumerTest {
         assertThat(modification.getDeleted().get(0).getName(), is("/repos/owner/name/contents/removedfilename?ref=start"));
     }
 
-    private void mockToken() {
-
-        GithubInstallation installation = new GithubInstallation("1", new GithubAccount("navikt"));
+    @Before
+    public void mockToken() {
+        GithubInstallation installation = new GithubInstallation("1", new GithubAccount(repositoryId.getOwner()));
         GithubInstallation[] installations = {installation};
         GithubInstallationToken token = new GithubInstallationToken("token");
         //Installation
