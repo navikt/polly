@@ -1,9 +1,16 @@
 package no.nav.data.catalog.backend.app.informationtype;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import javax.transaction.Transactional;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.slf4j.Logger;
@@ -24,17 +31,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.transaction.Transactional;
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 @Slf4j
 @RestController
 @CrossOrigin
-@RequestMapping("/backend/informationtype")
+@RequestMapping("/informationtype")
 @Api(value = "InformationTypes", description = "REST API for InformationTypes", tags = { "InformationType" })
 public class InformationTypeController {
 

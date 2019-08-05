@@ -1,5 +1,13 @@
 package no.nav.data.catalog.backend.test.integration.github;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.HashMap;
+
 import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
@@ -9,7 +17,6 @@ import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository
 import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
 import org.junit.Before;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -18,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.HttpEntity;
@@ -29,14 +35,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.PostgreSQLContainer;
-
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.HashMap;
-
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 
 
 @RunWith(SpringRunner.class)
@@ -95,7 +93,7 @@ public class GithubWebhooksControllerIT {
 		GithubCommitInfo commitInfo = new GithubCommitInfo(Arrays.asList("testdataIkkeSlett/singleRow.json"), null, null);
 		GithubPushEventPayloadRequest request = new GithubPushEventPayloadRequest(Arrays.asList(commitInfo));
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
-				"/backend/webhooks", HttpMethod.POST, new HttpEntity<>(request), String.class);
+				"/webhooks", HttpMethod.POST, new HttpEntity<>(request), String.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 		assertThat(repository.findAll().size(), is(1));
@@ -108,7 +106,7 @@ public class GithubWebhooksControllerIT {
 		GithubCommitInfo commitInfo = new GithubCommitInfo(Arrays.asList("testdataIkkeSlett/multipleRows.json"), null, null);
 		GithubPushEventPayloadRequest request = new GithubPushEventPayloadRequest(Arrays.asList(commitInfo));
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
-				"/backend/webhooks", HttpMethod.POST, new HttpEntity<>(request), String.class);
+				"/webhooks", HttpMethod.POST, new HttpEntity<>(request), String.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 		assertThat(repository.findAll().size(), is(6));
@@ -119,7 +117,7 @@ public class GithubWebhooksControllerIT {
 		GithubCommitInfo commitInfo = new GithubCommitInfo(Arrays.asList("testdataIkkeSlett/invalidFile.json"), null, null);
 		GithubPushEventPayloadRequest request = new GithubPushEventPayloadRequest(Arrays.asList(commitInfo));
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
-				"/backend/webhooks", HttpMethod.POST, new HttpEntity<>(request), String.class);
+				"/webhooks", HttpMethod.POST, new HttpEntity<>(request), String.class);
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
 		assertThat(responseEntity.getBody(), containsString(
 				"The request was not accepted. The following errors occurred during validation:  " +
@@ -131,7 +129,7 @@ public class GithubWebhooksControllerIT {
         GithubCommitInfo commitInfo = new GithubCommitInfo(Arrays.asList("testdataIkkeSlett/notExisting.json"), null, null);
         GithubPushEventPayloadRequest request = new GithubPushEventPayloadRequest(Arrays.asList(commitInfo));
         ResponseEntity<String> responseEntity = restTemplate.exchange(
-                "/backend/webhooks", HttpMethod.POST, new HttpEntity<>(request), String.class);
+                "/webhooks", HttpMethod.POST, new HttpEntity<>(request), String.class);
         assertThat(responseEntity.getStatusCode(), is (HttpStatus.NOT_FOUND));
         assertThat(responseEntity.getBody(), containsString ("Calling Github to download file failed with status=404 NOT_FOUND. The file does not exist"));
     }

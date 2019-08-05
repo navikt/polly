@@ -23,6 +23,8 @@ import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
+import no.nav.data.catalog.backend.app.dataset.DatasetRelationRepository;
+import no.nav.data.catalog.backend.app.dataset.DatasetRepository;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import no.nav.data.catalog.backend.app.informationtype.InformationType;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeController;
@@ -68,6 +70,10 @@ public class InformationTypeControllerTest {
 	@Autowired
 	private MockMvc mvc;
 
+	@MockBean
+	private DatasetRepository datasetRepository;
+	@MockBean
+	private DatasetRelationRepository datasetRelationRepository;
 	@MockBean
 	private InformationTypeRepository repository;
 	@MockBean

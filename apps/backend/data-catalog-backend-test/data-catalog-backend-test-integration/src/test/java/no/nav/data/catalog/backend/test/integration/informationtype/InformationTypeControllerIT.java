@@ -24,11 +24,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -46,45 +44,51 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-		classes = {IntegrationTestConfig.class, AppStarter.class})
+        classes = {IntegrationTestConfig.class, AppStarter.class})
 @ActiveProfiles("itest")
 @ContextConfiguration(initializers = {InformationTypeControllerIT.Initializer.class})
 public class InformationTypeControllerIT {
 
-	@Autowired
-	protected TestRestTemplate restTemplate;
+    @Autowired
+    protected TestRestTemplate restTemplate;
 
-	@Autowired
-	protected InformationTypeRepository repository;
+    @Autowired
+    protected InformationTypeRepository repository;
 
-	@Autowired
-	protected CodelistService codelistService;
+    @Autowired
+    protected CodelistService codelistService;
 
-	private static HashMap<ListName, HashMap<String, String>> codelists;
+    private static HashMap<ListName, HashMap<String, String>> codelists;
 
-	@ClassRule
-	public static PostgreSQLContainer postgreSQLContainer =
-			(PostgreSQLContainer) new PostgreSQLContainer("postgres:10.4")
-					.withDatabaseName("sampledb")
-					.withUsername("sampleuser")
-					.withPassword("samplepwd")
-					.withStartupTimeout(Duration.ofSeconds(600));
+    @ClassRule
+    public static PostgreSQLContainer postgreSQLContainer =
+            (PostgreSQLContainer) new PostgreSQLContainer("postgres:10.4")
+                    .withDatabaseName("sampledb")
+                    .withUsername("sampleuser")
+                    .withPassword("samplepwd")
+                    .withStartupTimeout(Duration.ofSeconds(600));
 
-	@ClassRule
-	public static FixedElasticsearchContainer container = new FixedElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch-oss:6.4.1");
+    @ClassRule
+    public static FixedElasticsearchContainer container = new FixedElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch-oss:6.4.1");
 
-	@Before
-	public void setUp() {
-		repository.deleteAll();
-		initializeCodelists();
-	}
+    @Before
+    public void setUp() {
+        repository.deleteAll();
+        initializeCodelists();
+    }
 
-	@After
-	public void cleanUp() {
-		repository.deleteAll();
-	}
+    @After
+    public void cleanUp() {
+        repository.deleteAll();
+    }
 
     private void initializeCodelists() {
         codelists = CodelistService.codelists;
@@ -98,20 +102,20 @@ public class InformationTypeControllerIT {
 		codelists.get(ListName.SYSTEM).put("TPS", "Tjenestebasert PersondataSystem");
     }
 
-	@Test
-	public void getInformationTypeById() {
-		InformationType informationType = saveAnInformationType(createRequest());
+    @Test
+    public void getInformationTypeById() {
+        InformationType informationType = saveAnInformationType(createRequest());
 
 		ResponseEntity<InformationTypeResponse> responseEntity = restTemplate.exchange(
 				"/backend/informationtype/" + informationType.getId(), HttpMethod.GET, HttpEntity.EMPTY, InformationTypeResponse.class);
 
-		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-		assertInformationTypeResponse(responseEntity.getBody());
-	}
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertInformationTypeResponse(responseEntity.getBody());
+    }
 
-	@Test
-	public void getInformationTypeByName() {
-		InformationType informationType = saveAnInformationType(createRequest());
+    @Test
+    public void getInformationTypeByName() {
+        InformationType informationType = saveAnInformationType(createRequest());
 
 		ResponseEntity<InformationTypeResponse> responseEntity = restTemplate.exchange(
 				"/backend/informationtype/name/" + informationType.getName(), HttpMethod.GET, HttpEntity.EMPTY, InformationTypeResponse.class);
@@ -120,8 +124,8 @@ public class InformationTypeControllerIT {
 		assertInformationTypeResponse(responseEntity.getBody());
 
 		responseEntity = restTemplate.exchange(
-				"/backend/informationtype/name/" + informationType.getName()
-						.toUpperCase(), HttpMethod.GET, HttpEntity.EMPTY, InformationTypeResponse.class);
+				"/backend/informationtype/name/" + informationType.getName().toUpperCase(),
+				HttpMethod.GET, HttpEntity.EMPTY, InformationTypeResponse.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 		assertInformationTypeResponse(responseEntity.getBody());

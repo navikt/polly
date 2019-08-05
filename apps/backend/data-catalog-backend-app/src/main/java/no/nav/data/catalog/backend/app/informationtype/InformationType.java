@@ -21,7 +21,7 @@ import static org.elasticsearch.common.UUIDs.base64UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "INFORMATION_TYPE", schema = "BACKEND_SCHEMA")
+@Table(name = "INFORMATION_TYPE")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InformationType extends Auditable<String> {
 

@@ -1,9 +1,10 @@
 package no.nav.data.catalog.backend.app.common;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.prometheus.client.CollectorRegistry;
+import io.prometheus.client.hotspot.DefaultExports;
 import no.nav.data.catalog.backend.app.common.auditing.AuditorAwareImpl;
+import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -29,7 +30,7 @@ public class CommonConfig {
 	@Primary
 	@Bean
 	public ObjectMapper objectMapper() {
-		return new ObjectMapper().registerModule(new JavaTimeModule());
+		return JsonUtils.getObjectMapper();
 	}
 
 	@Bean
@@ -40,9 +41,7 @@ public class CommonConfig {
 	@Bean
 	public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
 		MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		jsonConverter.setObjectMapper(objectMapper);
+		jsonConverter.setObjectMapper(objectMapper());
 		return jsonConverter;
 	}
 
@@ -56,5 +55,14 @@ public class CommonConfig {
 	@Bean
 	public AuditorAware<String> auditorAware() {
 		return new AuditorAwareImpl();
+	}
+
+	/**
+	 * Make sure spring uses the defaultRegistry
+	 */
+	@Bean
+	public CollectorRegistry collectorRegistry() {
+		DefaultExports.initialize();
+		return CollectorRegistry.defaultRegistry;
 	}
 }
