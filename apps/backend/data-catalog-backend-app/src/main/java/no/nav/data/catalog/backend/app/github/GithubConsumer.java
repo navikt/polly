@@ -23,10 +23,8 @@ import org.eclipse.egit.github.core.CommitStatus;
 import org.eclipse.egit.github.core.RepositoryCommitCompare;
 import org.eclipse.egit.github.core.RepositoryContents;
 import org.eclipse.egit.github.core.RepositoryId;
-import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.CommitService;
 import org.eclipse.egit.github.core.service.ContentsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -40,28 +38,29 @@ import org.springframework.web.client.RestTemplate;
 public class GithubConsumer {
 
     public static final String REFS_HEADS_MASTER = "refs/heads/master";
-    public static final String ERROR_COMMUNICATING_WITH_GITHUB = "Error communicating with github";
+    private static final int TOKEN_MAX_AGE_MINUTES = 8;
+    private static final String ERROR_COMMUNICATING_WITH_GITHUB = "Error communicating with github";
 
-    // TODO: Make configurable URLs.
+    private final RestTemplate restTemplate;
+    private final JwtTokenGenerator tokenGenerator;
 
-    @Autowired
-    private RestTemplate restTemplate;
-
-    @Autowired
-    private JwtTokenGenerator tokenGenerator;
-
-    private RepositoryId repositoryId;
-    private GitHubClient gitHubClient;
-    private CommitService commitService;
-    private ContentsService contentsService;
+    private final RepositoryId repositoryId;
+    private final GitHubClient gitHubClient;
+    private final CommitService commitService;
+    private final ContentsService contentsService;
+    private final String installationsUri;
 
     private LocalDateTime lastToken = LocalDateTime.MIN;
 
-    public GithubConsumer(GitHubClient gitHubClient, RepositoryId repositoryId) {
+    public GithubConsumer(RestTemplate restTemplate, JwtTokenGenerator tokenGenerator,
+            GitHubClient gitHubClient, RepositoryId repositoryId) {
+        this.restTemplate = restTemplate;
+        this.tokenGenerator = tokenGenerator;
         this.repositoryId = repositoryId;
         this.gitHubClient = gitHubClient;
         commitService = new CommitService(this.gitHubClient);
         contentsService = new ContentsService(this.gitHubClient);
+        installationsUri = gitHubClient.getBaseUri() + "/app/installations/";
     }
 
     public void updateStatus(String sha, List<String> validationErrors) {
@@ -83,7 +82,7 @@ public class GithubConsumer {
         try {
             return commitService.getCommit(repositoryId, REFS_HEADS_MASTER).getSha();
         } catch (IOException e) {
-            throw new DataCatalogBackendTechnicalException("Error communicating with github", e);
+            throw new DataCatalogBackendTechnicalException(ERROR_COMMUNICATING_WITH_GITHUB, e);
         }
     }
 
@@ -135,14 +134,14 @@ public class GithubConsumer {
         try {
             return contentsService.getContents(repositoryId, filename, ref);
         } catch (IOException e) {
-            throw new DataCatalogBackendTechnicalException("Error communicating with github", e);
+            throw new DataCatalogBackendTechnicalException(ERROR_COMMUNICATING_WITH_GITHUB, e);
         }
     }
 
     private String getInstallationId() {
         try {
             ResponseEntity<GithubInstallation[]> responseEntity = restTemplate
-                    .exchange("https://api.github.com/app/installations", HttpMethod.GET, new HttpEntity<>(createBearerHeader(getJwtToken())), GithubInstallation[].class);
+                    .exchange(installationsUri, HttpMethod.GET, new HttpEntity<>(createBearerHeader(getJwtToken())), GithubInstallation[].class);
             return Optional.of(responseEntity)
                     .map(ResponseEntity::getBody)
                     .map(Stream::of)
@@ -165,7 +164,7 @@ public class GithubConsumer {
     private String getInstallationToken(String installationId) {
         try {
             var responseEntity = restTemplate
-                    .exchange("https://api.github.com/app/installations/" + installationId + "/access_tokens", HttpMethod.POST, new HttpEntity<>(createBearerHeader(getJwtToken())),
+                    .exchange(installationsUri + installationId + "/access_tokens", HttpMethod.POST, new HttpEntity<>(createBearerHeader(getJwtToken())),
                             GithubInstallationToken.class);
             return Optional.of(responseEntity)
                     .map(ResponseEntity::getBody)
@@ -195,7 +194,7 @@ public class GithubConsumer {
     }
 
     private void updateToken() {
-        if (lastToken.isAfter(now().minusMinutes(9))) {
+        if (lastToken.isAfter(now().minusMinutes(TOKEN_MAX_AGE_MINUTES))) {
             return;
         }
         String token = getInstallationToken(getInstallationId());
