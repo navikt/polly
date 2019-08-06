@@ -12,7 +12,6 @@ import io.swagger.annotations.ApiResponses;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.catalog.backend.app.common.exceptions.CodelistNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +58,7 @@ public class CodelistController {
 	@GetMapping("/{listName}")
 	public Map getCodelistByListName(@PathVariable String listName) {
 		logger.info("Received a request for the codelist with listName={}", listName);
-		service.isListNamePresentInCodelist(listName);
+		service.validateListNameExists(listName);
 		return codelists.get(ListName.valueOf(listName.toUpperCase()));
 	}
 
@@ -71,11 +70,7 @@ public class CodelistController {
 	@GetMapping("/{listName}/{code}")
 	public String getDescriptionByListNameAndCode(@PathVariable String listName, @PathVariable String code) {
 		logger.info("Received a request for the description of code={} in list={}", code, listName);
-		service.isListNamePresentInCodelist(listName);
-		if (!codelists.get(ListName.valueOf(listName.toUpperCase())).containsKey(code.toUpperCase())) {
-			logger.error("Could not find description for code={} in list={}", code, listName);
-			throw new CodelistNotFoundException(String.format("Could not find description for code=%s in list=%s", code, listName));
-		}
+		service.validateListNameAndCodeExists(listName, code);
 		return codelists.get(ListName.valueOf(listName.toUpperCase())).get(code.toUpperCase());
 	}
 
@@ -118,7 +113,7 @@ public class CodelistController {
 		listName = listName.toUpperCase().trim();
 		code = code.toUpperCase().trim();
 		logger.info("Received a request to delete code={} in the list={}", code, listName);
-		service.isListNamePresentInCodelist(listName);
+		service.validateListNameAndCodeExists(listName, code);
 		service.delete(ListName.valueOf(listName), code);
 		logger.info("Deleted code={} in the list={}", code, listName);
 	}

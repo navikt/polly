@@ -1,14 +1,5 @@
 package no.nav.data.catalog.backend.test.component.informationtype;
 
-import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.CATEGORY_CODE;
-import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.CATEGORY_DESCRIPTION;
-import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.DESCRIPTION;
-import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.PRODUCER_CODE_LIST;
-import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.PRODUCER_CODE_STRING;
-import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.PRODUCER_DESCRIPTION_LIST;
-import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.SYSTEM_CODE;
-import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.SYSTEM_DESCRIPTION;
-import static no.nav.data.catalog.backend.test.component.informationtype.TestdataInformationTypes.URL;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -102,10 +93,10 @@ public class InformationTypeControllerTest {
 		codelists.put(ListName.PRODUCER, new HashMap<>());
 		codelists.put(ListName.SYSTEM, new HashMap<>());
 
-		codelists.get(ListName.CATEGORY).put(CATEGORY_CODE, CATEGORY_DESCRIPTION);
-		codelists.get(ListName.PRODUCER).put(PRODUCER_CODE_LIST.get(0), PRODUCER_DESCRIPTION_LIST.get(0));
-		codelists.get(ListName.PRODUCER).put(PRODUCER_CODE_LIST.get(1), PRODUCER_DESCRIPTION_LIST.get(1));
-		codelists.get(ListName.SYSTEM).put(SYSTEM_CODE, SYSTEM_DESCRIPTION);
+		codelists.get(ListName.CATEGORY).put("PERSONALIA", "Personalia");
+		codelists.get(ListName.PRODUCER).put("SKATTEETATEN", "Skatteetaten");
+		codelists.get(ListName.PRODUCER).put("BRUKER", "Bruker");
+		codelists.get(ListName.SYSTEM).put("TPS", "Tjenestebasert PersondataSystem");
 	}
 
 	@Test
@@ -114,7 +105,7 @@ public class InformationTypeControllerTest {
 
 		given(repository.findById(1L)).willReturn(Optional.of(informationType));
 
-		mvc.perform(get(URL + "/1")
+		mvc.perform(get("/informationtype/1")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.name", is("infoType1")));
@@ -124,7 +115,7 @@ public class InformationTypeControllerTest {
 	public void getInformationTypeById_shouldGetNotFound_WhenIdDoesNotExist() throws Exception {
 		given(repository.findById(1L)).willReturn(Optional.empty());
 
-		mvc.perform(get(URL + "/1")
+		mvc.perform(get("/informationtype/1")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
 	}
@@ -137,7 +128,7 @@ public class InformationTypeControllerTest {
 		given(repository.findByName(name))
 				.willReturn(Optional.of(informationType));
 
-		mvc.perform(get(URL + "/name/" + name))
+		mvc.perform(get("/informationtype/name/Test"))
 				.andExpect(status().isOk());
 	}
 
@@ -150,7 +141,7 @@ public class InformationTypeControllerTest {
 		given(repository.findAll((Specification<InformationType>) null, defaultPageable)).willReturn(informationTypePage);
 		given(repository.count()).willReturn(20L);
 
-		mvc.perform(get(URL)
+		mvc.perform(get("/informationtype")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.content", hasSize(20)))
@@ -163,7 +154,7 @@ public class InformationTypeControllerTest {
 	public void countInformationTypes() throws Exception {
 		given(repository.count()).willReturn(20L);
 
-        mvc.perform(get(URL + "/count")
+		mvc.perform(get("/informationtype/count")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().string("20"));
@@ -175,7 +166,7 @@ public class InformationTypeControllerTest {
 
 		given(repository.findAll((Specification<InformationType>) null, defaultPageable)).willReturn(informationTypePage);
 
-		mvc.perform(get(URL)
+		mvc.perform(get("/informationtype")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.content", hasSize(0)))
@@ -196,7 +187,7 @@ public class InformationTypeControllerTest {
 		given(repository.findAll((Specification<InformationType>) null, pageable)).willReturn(informationTypePage);
 		given(repository.count()).willReturn(30L);
 
-		mvc.perform(get(URL + "?page=1&pageSize=10&sort=id,desc")
+		mvc.perform(get("/informationtype?page=1&pageSize=10&sort=id,desc")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.content", hasSize(30)))
@@ -218,7 +209,7 @@ public class InformationTypeControllerTest {
 		given(repository.findAll(any(Specification.class), any(Pageable.class))).willReturn(informationTypePage);
 		given(repository.count()).willReturn(2L);
 
-		mvc.perform(get(URL + "?name=filterMe")
+		mvc.perform(get("/informationtype?name=filterMe")
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.content", hasSize(2)))
@@ -236,7 +227,7 @@ public class InformationTypeControllerTest {
 
 		given(repository.saveAll(createdInformationTypes)).willReturn(createdInformationTypes);
 
-		mvc.perform(post(URL).contentType(MediaType.APPLICATION_JSON)
+		mvc.perform(post("/informationtype").contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(requests)))
 				.andExpect(status().isAccepted());
 
@@ -245,14 +236,31 @@ public class InformationTypeControllerTest {
 	}
 
 	@Test
-	public void createInformationTypes_shouldFailToCreateNewInformationType_WithEmptyRequest() throws Exception {
+	public void createInformationTypes_shouldThrowValidationException_whenListOfRequestsIsEmpty() throws Exception {
+		List<InformationTypeRequest> requests = Collections.emptyList();
+		Map<String, Map> validationErrors = new HashMap<>();
+
+		willThrow(new ValidationException(validationErrors, "The request was not accepted because it is empty"))
+				.given(service).validateRequests(requests, false);
+
+		mvc.perform(post("/informationtype")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(asJsonString(requests)))
+				.andExpect(status().isBadRequest());
+
+		then(service).should(times(1)).validateRequests(requests, false);
+		then(repository).should(never()).save(any(InformationType.class));
+	}
+
+	@Test
+	public void createInformationTypes_shouldThrowValidationException_whenRequestHasEmptyFields() throws Exception {
 		List<InformationTypeRequest> requests = List.of(InformationTypeRequest.builder().build());
 		Map<String, Map<String, String>> validationErrors = new HashMap<>();
 
 		willThrow(new ValidationException(validationErrors, "The request was not accepted. The following errors occurred during validation: "))
 				.given(service).validateRequests(requests, false);
 
-		mvc.perform(post(URL)
+		mvc.perform(post("/informationtype")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(requests)))
 				.andExpect(status().isBadRequest());
@@ -277,7 +285,7 @@ public class InformationTypeControllerTest {
 				.willReturn(Optional.of(new InformationType().convertFromRequest(requests.get(1), false)));
 		given(repository.saveAll(updatedInformationTypes)).willReturn(updatedInformationTypes);
 
-		mvc.perform(post(URL).contentType(MediaType.APPLICATION_JSON)
+		mvc.perform(post("/informationtype").contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(requests)))
 				.andExpect(status().isAccepted());
 
@@ -295,7 +303,7 @@ public class InformationTypeControllerTest {
 		given(repository.findById(1L)).willReturn(Optional.of(informationTypeToBeUpdated));
 		given(repository.save(updatedInformationType)).willReturn(updatedInformationType);
 
-		mvc.perform(put(URL + "/1")
+		mvc.perform(put("/informationtype/1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(request)))
 				.andExpect(status().isAccepted());
@@ -311,7 +319,7 @@ public class InformationTypeControllerTest {
 
 		given(repository.findById(1L)).willReturn(Optional.empty());
 
-		mvc.perform(put(URL + "/1")
+		mvc.perform(put("/informationtype/1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(request)))
 				.andExpect(status().isNotFound());
@@ -331,7 +339,7 @@ public class InformationTypeControllerTest {
 		given(repository.save(infoType)).willReturn(infoTypeToBeDeleted);
 
 
-		mvc.perform(delete(URL + "/1"))
+		mvc.perform(delete("/informationtype/1"))
 				.andExpect(status().isAccepted());
 
 		then(repository).should(times(1)).findById(1L);
@@ -344,7 +352,7 @@ public class InformationTypeControllerTest {
 
 		given(repository.findById(1L)).willReturn(Optional.empty());
 
-		mvc.perform(delete(URL + "/1")
+		mvc.perform(delete("/informationtype/1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(request)))
 				.andExpect(status().isNotFound());
@@ -364,10 +372,10 @@ public class InformationTypeControllerTest {
 		return InformationType.builder()
 				.id(id)
 				.name(name)
-				.description(DESCRIPTION)
-				.categoryCode(CATEGORY_CODE)
-				.producerCode(PRODUCER_CODE_STRING)
-				.systemCode(SYSTEM_CODE)
+				.description("InformationDescription")
+				.categoryCode("PERSONALIA")
+				.producerCode("SKATTEETATEN, BRUKER")
+				.systemCode("TPS")
 				.personalData(true)
 				.elasticsearchId("esId")
 				.elasticsearchStatus(ElasticsearchStatus.TO_BE_CREATED)
@@ -377,10 +385,10 @@ public class InformationTypeControllerTest {
 	private InformationTypeRequest createInformationTypeRequestTestData(String name) {
 		return InformationTypeRequest.builder()
 				.name(name)
-				.categoryCode(CATEGORY_CODE)
-				.producerCode(PRODUCER_CODE_LIST)
-				.systemCode(SYSTEM_CODE)
-				.description(DESCRIPTION)
+				.categoryCode("PERSONALIA")
+				.producerCode(List.of("SKATTEETATEN", "BRUKER"))
+				.systemCode("TPS")
+				.description("InformationDescription")
 				.personalData(true)
 				.build();
 	}
