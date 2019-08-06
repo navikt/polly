@@ -270,6 +270,6 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
     }
 
     private byte[] readFile(String path) throws IOException {
-        return StreamUtils.copyToByteArray(new ClassPathResource(path).getInputStream());
+        return StreamUtils.copyToByteArray(new ClassPathResource("github/" + path).getInputStream());
     }
 }
