@@ -65,7 +65,6 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 @ActiveProfiles("test")
 public class InformationTypeControllerTest {
 
-	private Map<ListName, Map<String, String>> codelists = new HashMap<>();
 	private Pageable defaultPageable = PageRequest.of(0, 20);
 
 	@Autowired
@@ -88,7 +87,7 @@ public class InformationTypeControllerTest {
 
 	@Before
 	public void initCodelists() {
-		codelists = CodelistService.codelists;
+		Map<ListName, Map<String, String>> codelists = CodelistService.codelists;
 		codelists.put(ListName.CATEGORY, new HashMap<>());
 		codelists.put(ListName.PRODUCER, new HashMap<>());
 		codelists.put(ListName.SYSTEM, new HashMap<>());
@@ -238,7 +237,7 @@ public class InformationTypeControllerTest {
 	@Test
 	public void createInformationTypes_shouldThrowValidationException_whenListOfRequestsIsEmpty() throws Exception {
 		List<InformationTypeRequest> requests = Collections.emptyList();
-		Map<String, Map> validationErrors = new HashMap<>();
+		Map<String, Map<String, String>> validationErrors = new HashMap<>();
 
 		willThrow(new ValidationException(validationErrors, "The request was not accepted because it is empty"))
 				.given(service).validateRequests(requests, false);

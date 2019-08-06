@@ -188,7 +188,7 @@ public class GithubWebhooksController {
         return difference;
     }
 
-    private void modify(Collection<InformationTypeRequest> requests) {
+    private void modify(List<InformationTypeRequest> requests) {
         if (requests.isEmpty()) {
             return;
         }

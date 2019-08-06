@@ -14,6 +14,15 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
@@ -37,16 +46,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ComponentTestConfig.class)
@@ -74,7 +73,7 @@ public class InformationTypeServiceTest {
 
 	@Before
 	public void init() {
-		HashMap<ListName, HashMap<String, String>> codelists = CodelistService.codelists;
+		Map<ListName, Map<String, String>> codelists = CodelistService.codelists;
 		codelists.get(ListName.CATEGORY).put("PERSONALIA", "Personalia");
 		codelists.get(ListName.PRODUCER).put("SKATTEETATEN", "Skatteetaten");
 		codelists.get(ListName.PRODUCER).put("BRUKER", "Bruker");

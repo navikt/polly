@@ -24,7 +24,7 @@ public final class StreamUtils {
      * @param comparator function to compare if elements are equal
      * @param <T> the type of the collections
      */
-    public static <T> CollectionDifference<T> difference(Collection<T> before, Collection<T> after, Comparator<T> comparator) {
+    public static <T> CollectionDifference<T> difference(List<T> before, List<T> after, Comparator<T> comparator) {
         List<T> removed = new ArrayList<>(before);
         List<T> shared = new ArrayList<>();
         List<T> added = new ArrayList<>(after);

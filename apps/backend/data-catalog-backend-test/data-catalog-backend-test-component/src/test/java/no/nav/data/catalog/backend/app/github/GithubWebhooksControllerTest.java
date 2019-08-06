@@ -9,6 +9,7 @@ import static no.nav.data.catalog.backend.app.github.GithubWebhooksController.HE
 import static no.nav.data.catalog.backend.app.github.GithubWebhooksController.PULL_REQUEST_EVENT;
 import static no.nav.data.catalog.backend.app.github.GithubWebhooksController.PUSH_EVENT;
 import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -120,8 +121,8 @@ public class GithubWebhooksControllerTest {
                 .header(HEADER_GITHUB_SIGNATURE, "sha1=" + githubHmac.hmacHex(payload))
         ).andExpect(status().isOk());
 
-        verify(service).validateRequestsAndReturnErrors(anyCollection(), eq(true));
-        verify(service).validateRequestsAndReturnErrors(anyCollection(), eq(false));
+        verify(service).validateRequestsAndReturnErrors(anyList(), eq(true));
+        verify(service).validateRequestsAndReturnErrors(anyList(), eq(false));
         verify(githubConsumer).updateStatus("head", emptyList());
     }
 
@@ -168,8 +169,8 @@ public class GithubWebhooksControllerTest {
                 .header(HEADER_GITHUB_SIGNATURE, "sha1=" + githubHmac.hmacHex(payload))
         ).andExpect(status().isOk());
 
-        verify(service).validateRequestsAndReturnErrors(anyCollection(), eq(true));
-        verify(service).validateRequestsAndReturnErrors(anyCollection(), eq(false));
+        verify(service).validateRequestsAndReturnErrors(anyList(), eq(true));
+        verify(service).validateRequestsAndReturnErrors(anyList(), eq(false));
         verify(githubConsumer).updateStatus("head", asList("name=modified file=add.json ordinal=1 duplicate entry", "name=modified file=mod.json ordinal=1 duplicate entry"));
     }
 
@@ -177,7 +178,7 @@ public class GithubWebhooksControllerTest {
     public void updateOnPush() throws Exception {
         when(githubConsumer.compare("internalbefore", "head")).thenReturn(repoModification);
         when(repository.findByName("removed")).then(i -> Optional.of(new InformationType()));
-        when(service.returnUpdatedInformationTypesIfAllArePresent(anyCollection())).then(AdditionalAnswers.returnsArgAt(0));
+        when(service.returnUpdatedInformationTypesIfAllArePresent(anyList())).then(AdditionalAnswers.returnsArgAt(0));
         String payload = JsonUtils.toJson(push);
 
         mvc.perform(post(GithubWebhooksController.BACKEND_WEBHOOKS)
@@ -187,8 +188,8 @@ public class GithubWebhooksControllerTest {
                 .header(HEADER_GITHUB_SIGNATURE, "sha1=" + githubHmac.hmacHex(payload))
         ).andExpect(status().isOk());
 
-        verify(service).validateRequestsAndReturnErrors(anyCollection(), eq(true));
-        verify(service).validateRequestsAndReturnErrors(anyCollection(), eq(false));
+        verify(service).validateRequestsAndReturnErrors(anyList(), eq(true));
+        verify(service).validateRequestsAndReturnErrors(anyList(), eq(false));
 
         verify(repository, times(3)).saveAll(anyCollection());
     }
