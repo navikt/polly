@@ -9,7 +9,7 @@ spec:
   image: {{version}}
   port: 8080
   ingresses:
-    - "https://datacatalog.nais.oera.io/datacatalog/backend"
+    - "https://datacatalog.prod-sbs.nais.io/datacatalog/backend"
     - "https://www.nav.no/datacatalog/backend"
   replicas:
     min: 2
