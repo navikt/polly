@@ -232,6 +232,20 @@ public class InformationTypeServiceTest {
 	}
 
 	@Test
+	public void validateRequestsCreate_shouldReturnValidationErrorsForGithubRequest() {
+		List<InformationTypeRequest> requests = createListOfOneRequest("Name");
+		InformationTypeRequest request = requests.get(0);
+		request.setGithubFile("ghf");
+		request.setGithubFileOrdinal(0);
+		request.setProducerCode(List.of("UnknownProducerCode"));
+
+		Map<String, Map<String, String>> validationMap = service.validateRequestsAndReturnErrors(requests, false);
+		assertThat(validationMap.size(), is(1));
+		Map validationForRequest = validationMap.get(request.getRequestReference().orElse(null));
+		assertThat(validationForRequest.get("producerCode"), is("The code UNKNOWNPRODUCERCODE was not found in the codelist(PRODUCER)"));
+	}
+
+	@Test
 	public void validateRequestsCreate_shouldValidate20Request() {
 		service.validateRequests(createRequests(20), false);
 	}
