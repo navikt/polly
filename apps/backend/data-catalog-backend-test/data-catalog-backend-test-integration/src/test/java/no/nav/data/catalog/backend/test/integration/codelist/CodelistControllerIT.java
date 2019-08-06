@@ -49,7 +49,7 @@ import java.util.stream.IntStream;
 		classes = {IntegrationTestConfig.class, AppStarter.class})
 @ActiveProfiles("itest")
 @ContextConfiguration(initializers = {CodelistControllerIT.Initializer.class})
-public class CodelistControllerIT extends TestdataCodelists {
+public class CodelistControllerIT {
 
 	@Autowired
 	protected TestRestTemplate restTemplate;
@@ -71,7 +71,7 @@ public class CodelistControllerIT extends TestdataCodelists {
 	@Before
 	public void setUp() {
 		service.refreshCache();
-		codelists.get(LIST_NAME).put(CODE, DESCRIPTION);
+		codelists.get(ListName.PRODUCER).put("TEST_CODE", "Test description");
 	}
 
 	@After
@@ -83,7 +83,7 @@ public class CodelistControllerIT extends TestdataCodelists {
 	@Test
 	public void findAll_shouldReturnOneCodelists() {
 		ResponseEntity<Map> responseEntity = restTemplate.exchange(
-				URL, HttpMethod.GET, HttpEntity.EMPTY, Map.class);
+				"/backend/codelist", HttpMethod.GET, HttpEntity.EMPTY, Map.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 		assertThat(responseEntity.getBody().size(), is(4));
@@ -95,40 +95,39 @@ public class CodelistControllerIT extends TestdataCodelists {
 
 	@Test
 	public void getCodelistByListName_shouldReturnCodesAndDescriptionForListName() {
-		String url = URL + "/" + LIST_NAME;
+		String url = "/backend/codelist/PRODUCER";
 
 		ResponseEntity<Map> responseEntity = restTemplate.exchange(
 				url, HttpMethod.GET, HttpEntity.EMPTY, Map.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-		assertThat(responseEntity.getBody(), is(codelists.get(LIST_NAME)));
+		assertThat(responseEntity.getBody(), is(codelists.get(ListName.PRODUCER)));
 	}
 
 	@Test
 	public void getDescriptionByListNameAndCode_shouldReturnDescriptionForCodeAndListName() {
-		String url = URL + "/" + LIST_NAME + "/" + CODE;
+		String url = "/backend/codelist/PRODUCER/TEST_CODE";
 
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
 				url, HttpMethod.GET, HttpEntity.EMPTY, String.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-		assertThat(responseEntity.getBody(), is(codelists.get(ListName.PRODUCER).get(CODE)));
+		assertThat(responseEntity.getBody(), is(codelists.get(ListName.PRODUCER).get("TEST_CODE")));
 	}
 
 	@Test
 	public void save_shouldSaveNewCodelist() {
 		String code = "SAVE_CODE";
-		String description = "Description of a new Codelist";
-		List<CodelistRequest> requests = createRequest(LIST_NAME, code, DESCRIPTION);
-		assertNull(codelists.get(LIST_NAME).get(code));
+		List<CodelistRequest> requests = createRequest(ListName.PRODUCER, code, "Test description");
+		assertNull(codelists.get(ListName.PRODUCER).get(code));
 
 		ResponseEntity<List<Codelist>> responseEntity = restTemplate.exchange(
-				URL, HttpMethod.POST, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
+				"/backend/codelist", HttpMethod.POST, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
 				});
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.CREATED));
-		assertFalse(codelists.get(LIST_NAME).get(code).isEmpty());
-		assertThat(responseEntity.getBody().get(0).getDescription(), is(codelists.get(LIST_NAME).get(code)));
+		assertFalse(codelists.get(ListName.PRODUCER).get(code).isEmpty());
+		assertThat(responseEntity.getBody().get(0).getDescription(), is(codelists.get(ListName.PRODUCER).get(code)));
 	}
 
 	@Test
@@ -136,7 +135,7 @@ public class CodelistControllerIT extends TestdataCodelists {
 		List<CodelistRequest> requests = createNrOfRequests("shouldSave20Codelists", 20);
 
 		ResponseEntity<List<Codelist>> responseEntity = restTemplate.exchange(
-				URL, HttpMethod.POST, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
+				"/backend/codelist", HttpMethod.POST, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
 				});
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.CREATED));
@@ -146,27 +145,27 @@ public class CodelistControllerIT extends TestdataCodelists {
 	@Test
 	public void update_shouldUpdateOneCodelist() {
 		String code = "UPDATE_CODE";
-		service.save(createRequest(LIST_NAME, code, DESCRIPTION));
+		service.save(createRequest(ListName.PRODUCER, code, "Test description"));
 
-		List<CodelistRequest> updatedCodelists = createRequest(LIST_NAME, code, "Updated codelists");
+		List<CodelistRequest> updatedCodelists = createRequest(ListName.PRODUCER, code, "Updated codelists");
 
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
-				URL, HttpMethod.PUT, new HttpEntity<>(updatedCodelists), String.class);
+				"/backend/codelist", HttpMethod.PUT, new HttpEntity<>(updatedCodelists), String.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
-		assertThat(codelists.get(LIST_NAME).get(code), is(updatedCodelists.get(0).getDescription()));
+		assertThat(codelists.get(ListName.PRODUCER).get(code), is(updatedCodelists.get(0).getDescription()));
 	}
 
 	@Test
 	public void update_shouldUpdate20Codelists() {
 		List<CodelistRequest> requests = createNrOfRequests("shouldUpdate20Codelists", 20);
 		restTemplate.exchange(
-				URL, HttpMethod.POST, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
+				"/backend/codelist", HttpMethod.POST, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
 				});
 
 		requests.forEach(request -> request.setDescription("  Updated codelists  "));
 		ResponseEntity<List<Codelist>> responseEntity = restTemplate.exchange(
-				URL, HttpMethod.PUT, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
+				"/backend/codelist", HttpMethod.PUT, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
 				});
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
@@ -180,21 +179,21 @@ public class CodelistControllerIT extends TestdataCodelists {
 	@Test
 	public void delete_shouldDeleteCodelist() {
 		String code = "DELETE_CODE";
-		List<CodelistRequest> requests = createRequest(LIST_NAME, code, DESCRIPTION);
+		List<CodelistRequest> requests = createRequest(ListName.PRODUCER, code, "Test description");
 		service.save(requests);
-		assertNotNull(codelists.get(LIST_NAME).get(code));
+		assertNotNull(codelists.get(ListName.PRODUCER).get(code));
 
-		String url = URL + "/" + LIST_NAME + "/" + code;
+		String url = "/backend/codelist/PRODUCER/DELETE_CODE";
 
 		ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-		assertNull(codelists.get(LIST_NAME).get(code));
+		assertNull(codelists.get(ListName.PRODUCER).get(code));
 	}
 
 	private List<CodelistRequest> createNrOfRequests(String code, int nrOfRequests) {
 		return IntStream.rangeClosed(1, nrOfRequests)
-				.mapToObj(i -> createOneRequest(ListName.SYSTEM, code + "_nr_" + i, DESCRIPTION))
+				.mapToObj(i -> createOneRequest(ListName.SYSTEM, code + "_nr_" + i, "Test description"))
 				.collect(Collectors.toList());
 
 	}

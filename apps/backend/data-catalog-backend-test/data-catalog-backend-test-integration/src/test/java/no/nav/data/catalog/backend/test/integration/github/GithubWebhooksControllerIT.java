@@ -121,7 +121,7 @@ public class GithubWebhooksControllerIT {
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
 		assertThat(responseEntity.getBody(), containsString(
 				"The request was not accepted. The following errors occurred during validation:  " +
-						"{Request nr:1={systemCode=The systemCode was null, personalData=PersonalData cannot be null, producerCode=The list of producerCodes was null}}"));
+						"{Request:1={systemCode=The systemCode was null or empty, personalData=PersonalData cannot be null, producerCode=The list of producerCodes was null or empty}}"));
 	}
 
     @Test
