@@ -1,17 +1,5 @@
 package no.nav.data.catalog.backend.app.github;
 
-import static java.time.LocalDateTime.now;
-import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.safeStream;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.google.common.base.Joiner;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import no.nav.data.catalog.backend.app.common.tokensupport.JwtTokenGenerator;
@@ -34,11 +22,22 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.time.LocalDateTime.now;
+import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.safeStream;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 @Component
 public class GithubConsumer {
 
     public static final String REFS_HEADS_MASTER = "refs/heads/master";
-    private static final int TOKEN_MAX_AGE_MINUTES = 8;
     private static final String ERROR_COMMUNICATING_WITH_GITHUB = "Error communicating with github";
 
     private final RestTemplate restTemplate;
@@ -60,7 +59,7 @@ public class GithubConsumer {
         this.gitHubClient = gitHubClient;
         commitService = new CommitService(this.gitHubClient);
         contentsService = new ContentsService(this.gitHubClient);
-        installationsUri = gitHubClient.getBaseUri() + "/app/installations/";
+        installationsUri = gitHubClient.getBaseUri() + "/app/installations";
     }
 
     public void updateStatus(String sha, List<String> validationErrors) {
@@ -141,7 +140,7 @@ public class GithubConsumer {
     private String getInstallationId() {
         try {
             ResponseEntity<GithubInstallation[]> responseEntity = restTemplate
-                    .exchange(installationsUri, HttpMethod.GET, new HttpEntity<>(createBearerHeader(getJwtToken())), GithubInstallation[].class);
+                    .exchange(installationsUri, HttpMethod.GET, new HttpEntity<>(createBearerHeader()), GithubInstallation[].class);
             return Optional.of(responseEntity)
                     .map(ResponseEntity::getBody)
                     .map(Stream::of)
@@ -164,7 +163,7 @@ public class GithubConsumer {
     private String getInstallationToken(String installationId) {
         try {
             var responseEntity = restTemplate
-                    .exchange(installationsUri + installationId + "/access_tokens", HttpMethod.POST, new HttpEntity<>(createBearerHeader(getJwtToken())),
+                    .exchange(String.format("%s/%s/access_tokens", installationsUri, installationId), HttpMethod.POST, new HttpEntity<>(createBearerHeader()),
                             GithubInstallationToken.class);
             return Optional.of(responseEntity)
                     .map(ResponseEntity::getBody)
@@ -182,19 +181,15 @@ public class GithubConsumer {
         }
     }
 
-    private String getJwtToken() {
-        return tokenGenerator.generateToken();
-    }
-
-    private static HttpHeaders createBearerHeader(String token) {
+    private HttpHeaders createBearerHeader() {
         HttpHeaders headers = new HttpHeaders();
         headers.add("accept", "application/vnd.github.machine-man-preview+json");
-        headers.add(AUTHORIZATION, "Bearer " + token);
+        headers.add(AUTHORIZATION, "Bearer " + tokenGenerator.generateToken());
         return headers;
     }
 
     private void updateToken() {
-        if (lastToken.isAfter(now().minusMinutes(TOKEN_MAX_AGE_MINUTES))) {
+        if (lastToken.isAfter(now().minusMinutes(JwtTokenGenerator.TOKEN_MAX_AGE_MINUTES - 1))) {
             return;
         }
         String token = getInstallationToken(getInstallationId());

@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Configuration;
 public class GithubConfig {
 
     @Bean
-    public GitHubClient gitHubClient() {
-        return new GitHubClient();
+    public GitHubClient gitHubClient(GithubProperties githubProperties) {
+        return new GitHubClient(githubProperties.getHost(), githubProperties.getPort(), githubProperties.getScheme());
     }
 
     @Bean
@@ -21,7 +21,7 @@ public class GithubConfig {
     }
 
     @Bean
-    public HmacUtils githubHmac(@Value("${github.webhooks.secret}") String githubSecret) {
-        return new HmacUtils(HmacAlgorithms.HMAC_SHA_1, githubSecret);
+    public HmacUtils githubHmac(GithubProperties githubProperties) {
+        return new HmacUtils(HmacAlgorithms.HMAC_SHA_1, githubProperties.getWebhooksSecret());
     }
 }

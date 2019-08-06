@@ -1,27 +1,5 @@
 package no.nav.data.catalog.backend.app.github;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
-import static no.nav.data.catalog.backend.app.github.GithubWebhooksController.HEADER_GITHUB_EVENT;
-import static no.nav.data.catalog.backend.app.github.GithubWebhooksController.HEADER_GITHUB_ID;
-import static no.nav.data.catalog.backend.app.github.GithubWebhooksController.HEADER_GITHUB_SIGNATURE;
-import static no.nav.data.catalog.backend.app.github.GithubWebhooksController.PULL_REQUEST_EVENT;
-import static no.nav.data.catalog.backend.app.github.GithubWebhooksController.PUSH_EVENT;
-import static org.mockito.ArgumentMatchers.anyCollection;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Base64;
-import java.util.Optional;
-import java.util.UUID;
-
 import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.github.domain.RepoModification;
@@ -49,9 +27,31 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Base64;
+import java.util.Optional;
+import java.util.UUID;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static no.nav.data.catalog.backend.app.github.GithubWebhooksController.HEADER_GITHUB_EVENT;
+import static no.nav.data.catalog.backend.app.github.GithubWebhooksController.HEADER_GITHUB_ID;
+import static no.nav.data.catalog.backend.app.github.GithubWebhooksController.HEADER_GITHUB_SIGNATURE;
+import static no.nav.data.catalog.backend.app.github.GithubWebhooksController.PULL_REQUEST_EVENT;
+import static no.nav.data.catalog.backend.app.github.GithubWebhooksController.PUSH_EVENT;
+import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @RunWith(SpringRunner.class)
 @WebMvcTest(GithubWebhooksController.class)
-@ContextConfiguration(classes = {AppStarter.class, GithubConfig.class})
+@ContextConfiguration(classes = {AppStarter.class, GithubConfig.class, GithubProperties.class})
 @ActiveProfiles("test")
 public class GithubWebhooksControllerTest {
 
@@ -193,7 +193,6 @@ public class GithubWebhooksControllerTest {
 
         verify(repository, times(3)).saveAll(anyCollection());
     }
-
 
     @Test
     public void updateWrongBranch() throws Exception {
