@@ -49,7 +49,7 @@ workflows:
           image: navikt/data-catalog-backend
           github-app-id: 26100
           nais-template: naiserator-prod.yaml
-          environment: dev-sbs
+          environment: prod-sbs
           team: teamdatajegerne
           requires:
             - build
