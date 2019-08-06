@@ -1,5 +1,41 @@
 package no.nav.data.catalog.backend.test.component.informationtype;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.data.catalog.backend.app.AppStarter;
+import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
+import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
+import no.nav.data.catalog.backend.app.informationtype.InformationType;
+import no.nav.data.catalog.backend.app.informationtype.InformationTypeController;
+import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
+import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
+import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
+import no.nav.data.catalog.backend.test.component.codelist.CodelistMock;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
+
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -18,47 +54,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.LongStream;
-
-import no.nav.data.catalog.backend.app.AppStarter;
-import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
-import no.nav.data.catalog.backend.app.codelist.CodelistService;
-import no.nav.data.catalog.backend.app.codelist.ListName;
-import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
-import no.nav.data.catalog.backend.app.dataset.DatasetRelationRepository;
-import no.nav.data.catalog.backend.app.dataset.DatasetRepository;
-import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
-import no.nav.data.catalog.backend.app.informationtype.InformationType;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeController;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
-import no.nav.data.catalog.backend.app.poldatasett.PolDatasettRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-
 @RunWith(SpringRunner.class)
 @WebMvcTest(InformationTypeController.class)
 @ContextConfiguration(classes = AppStarter.class)
@@ -71,31 +66,13 @@ public class InformationTypeControllerTest {
 	private MockMvc mvc;
 
 	@MockBean
-	private PolDatasettRepository polDatasettRepository;
-	@MockBean
-	private DatasetRepository datasetRepository;
-	@MockBean
-	private DatasetRelationRepository datasetRelationRepository;
-	@MockBean
 	private InformationTypeRepository repository;
 	@MockBean
 	private InformationTypeService service;
-	@MockBean
-	private CodelistService codelistService;
-	@MockBean
-	private CodelistRepository codelistRepository;
 
 	@Before
 	public void initCodelists() {
-		Map<ListName, Map<String, String>> codelists = CodelistService.codelists;
-		codelists.put(ListName.CATEGORY, new HashMap<>());
-		codelists.put(ListName.PRODUCER, new HashMap<>());
-		codelists.put(ListName.SYSTEM, new HashMap<>());
-
-		codelists.get(ListName.CATEGORY).put("PERSONALIA", "Personalia");
-		codelists.get(ListName.PRODUCER).put("SKATTEETATEN", "Skatteetaten");
-		codelists.get(ListName.PRODUCER).put("BRUKER", "Bruker");
-		codelists.get(ListName.SYSTEM).put("TPS", "Tjenestebasert PersondataSystem");
+		CodelistMock.initializeCodelist();
 	}
 
 	@Test

@@ -1,5 +1,23 @@
 package no.nav.data.catalog.backend.test.component.codelist;
 
+import no.nav.data.catalog.backend.app.codelist.Codelist;
+import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
+import no.nav.data.catalog.backend.app.codelist.CodelistRequest;
+import no.nav.data.catalog.backend.app.codelist.CodelistService;
+import no.nav.data.catalog.backend.app.codelist.ListName;
+import no.nav.data.catalog.backend.app.common.exceptions.CodelistNotFoundException;
+import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
@@ -13,30 +31,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import no.nav.data.catalog.backend.app.codelist.Codelist;
-import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
-import no.nav.data.catalog.backend.app.codelist.CodelistRequest;
-import no.nav.data.catalog.backend.app.codelist.CodelistService;
-import no.nav.data.catalog.backend.app.codelist.ListName;
-import no.nav.data.catalog.backend.app.common.exceptions.CodelistNotFoundException;
-import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
-import no.nav.data.catalog.backend.test.component.ComponentTestConfig;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = ComponentTestConfig.class)
-@ActiveProfiles("test")
+@RunWith(MockitoJUnitRunner.class)
 public class CodelistServiceTest {
 
 	@Mock

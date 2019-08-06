@@ -8,11 +8,14 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
 import no.nav.data.catalog.backend.app.codelist.CodelistRequest;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
+import no.nav.data.catalog.backend.test.component.PostgresTestContainer;
 import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
 import org.junit.After;
 import org.junit.Before;
@@ -21,22 +24,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.testcontainers.containers.PostgreSQLContainer;
-
-import java.time.Duration;
-import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
 		classes = {IntegrationTestConfig.class, AppStarter.class})
-@ActiveProfiles("itest")
-@ContextConfiguration(initializers = {CodelistServiceIT.Initializer.class})
+@ActiveProfiles("test")
+@ContextConfiguration(initializers = {PostgresTestContainer.Initializer.class})
 public class CodelistServiceIT {
 
 	@Autowired
@@ -46,12 +42,7 @@ public class CodelistServiceIT {
 	private CodelistRepository repository;
 
 	@ClassRule
-	public static PostgreSQLContainer postgreSQLContainer =
-			(PostgreSQLContainer) new PostgreSQLContainer("postgres:10.4")
-					.withDatabaseName("sampledb")
-					.withUsername("sampleuser")
-					.withPassword("samplepwd")
-					.withStartupTimeout(Duration.ofSeconds(600));
+	public static PostgresTestContainer postgreSQLContainer = PostgresTestContainer.getInstance();
 
 	@Before
 	public void setUp() {
@@ -128,17 +119,6 @@ public class CodelistServiceIT {
 
 	private List<CodelistRequest> createListOfOneRequest() {
 		return createListOfOneRequest(ListName.PRODUCER, "TEST_CODE", "Test description");
-	}
-
-	static class Initializer
-			implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-		public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-			TestPropertyValues.of(
-					"spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
-					"spring.datasource.username=" + postgreSQLContainer.getUsername(),
-					"spring.datasource.password=" + postgreSQLContainer.getPassword()
-			).applyTo(configurableApplicationContext.getEnvironment());
-		}
 	}
 
 }

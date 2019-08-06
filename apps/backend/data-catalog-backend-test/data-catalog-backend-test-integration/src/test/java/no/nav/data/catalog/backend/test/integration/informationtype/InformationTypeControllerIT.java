@@ -1,18 +1,14 @@
 package no.nav.data.catalog.backend.test.integration.informationtype;
 
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
 import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
-import no.nav.data.catalog.backend.app.informationtype.*;
+import no.nav.data.catalog.backend.app.informationtype.InformationType;
+import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
+import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
+import no.nav.data.catalog.backend.app.informationtype.InformationTypeResponse;
+import no.nav.data.catalog.backend.app.informationtype.RestResponsePage;
+import no.nav.data.catalog.backend.test.component.PostgresTestContainer;
 import no.nav.data.catalog.backend.test.component.elasticsearch.FixedElasticsearchContainer;
 import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
 import org.junit.After;
@@ -22,10 +18,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -34,11 +27,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.testcontainers.containers.PostgreSQLContainer;
 
-import java.time.Duration;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -46,15 +36,23 @@ import java.util.stream.IntStream;
 
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
-import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.CATEGORY_CODE;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.DESCRIPTION;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.NAME;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.PRODUCER_CODE_STRING;
+import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.SYSTEM_CODE;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         classes = {IntegrationTestConfig.class, AppStarter.class})
-@ActiveProfiles("itest")
-@ContextConfiguration(initializers = {InformationTypeControllerIT.Initializer.class})
+@ActiveProfiles("test")
+@ContextConfiguration(initializers = {PostgresTestContainer.Initializer.class})
 public class InformationTypeControllerIT {
 
     @Autowired
@@ -69,12 +67,7 @@ public class InformationTypeControllerIT {
 	private static Map<ListName, Map<String, String>> codelists;
 
     @ClassRule
-    public static PostgreSQLContainer postgreSQLContainer =
-            (PostgreSQLContainer) new PostgreSQLContainer("postgres:10.4")
-                    .withDatabaseName("sampledb")
-                    .withUsername("sampleuser")
-                    .withPassword("samplepwd")
-                    .withStartupTimeout(Duration.ofSeconds(600));
+    public static PostgresTestContainer postgreSQLContainer = PostgresTestContainer.getInstance();
 
     @ClassRule
     public static FixedElasticsearchContainer container = new FixedElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch-oss:6.4.1");
@@ -107,7 +100,7 @@ public class InformationTypeControllerIT {
         InformationType informationType = saveAnInformationType(createRequest());
 
 		ResponseEntity<InformationTypeResponse> responseEntity = restTemplate.exchange(
-				"/backend/informationtype/" + informationType.getId(), HttpMethod.GET, HttpEntity.EMPTY, InformationTypeResponse.class);
+				"/informationtype/" + informationType.getId(), HttpMethod.GET, HttpEntity.EMPTY, InformationTypeResponse.class);
 
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         assertInformationTypeResponse(responseEntity.getBody());
@@ -118,27 +111,27 @@ public class InformationTypeControllerIT {
         InformationType informationType = saveAnInformationType(createRequest());
 
 		ResponseEntity<InformationTypeResponse> responseEntity = restTemplate.exchange(
-				"/backend/informationtype/name/" + informationType.getName(), HttpMethod.GET, HttpEntity.EMPTY, InformationTypeResponse.class);
+				"/informationtype/name/" + informationType.getName(), HttpMethod.GET, HttpEntity.EMPTY, InformationTypeResponse.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 		assertInformationTypeResponse(responseEntity.getBody());
 
 		responseEntity = restTemplate.exchange(
-				"/backend/informationtype/name/" + informationType.getName().toUpperCase(),
+				"/informationtype/name/" + informationType.getName().toUpperCase(),
 				HttpMethod.GET, HttpEntity.EMPTY, InformationTypeResponse.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 		assertInformationTypeResponse(responseEntity.getBody());
 
 		responseEntity = restTemplate.exchange(
-				"/backend/informationtype/name/" + informationType.getName()
+				"/informationtype/name/" + informationType.getName()
 						.toLowerCase(), HttpMethod.GET, HttpEntity.EMPTY, InformationTypeResponse.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 		assertInformationTypeResponse(responseEntity.getBody());
 
 		responseEntity = restTemplate.exchange(
-				"/backend/informationtype/name/" + informationType.getName() + " ", HttpMethod.GET, HttpEntity.EMPTY, InformationTypeResponse.class);
+				"/informationtype/name/" + informationType.getName() + " ", HttpMethod.GET, HttpEntity.EMPTY, InformationTypeResponse.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 		assertInformationTypeResponse(responseEntity.getBody());
@@ -152,7 +145,7 @@ public class InformationTypeControllerIT {
 	public void get20FirstInformationTypes() {
 		createInformationTypeTestData(30);
 
-		ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange("/backend/informationtype",
+		ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange("/informationtype",
 				HttpMethod.GET, HttpEntity.EMPTY, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
 				});
 
@@ -169,7 +162,7 @@ public class InformationTypeControllerIT {
 		createInformationTypeTestData(100);
 
         ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange(
-				"/backend/informationtype?page=0&pageSize=100", HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
+				"/informationtype?page=0&pageSize=100", HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
 				});
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 		assertThat(repository.findAll().size(), is(100));
@@ -184,7 +177,7 @@ public class InformationTypeControllerIT {
 		createInformationTypeTestData(98);
 
 		ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange(
-				"/backend/informationtype?page=4&pageSize=20", HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
+				"/informationtype?page=4&pageSize=20", HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
 				});
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 		assertThat(repository.findAll().size(), is(98));
@@ -199,7 +192,7 @@ public class InformationTypeControllerIT {
 		createInformationTypeTestData(100);
 
 		ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange(
-				"/backend/informationtype?sort=id,desc", HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
+				"/informationtype?sort=id,desc", HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
                 });
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(repository.findAll().size(), is(100));
@@ -215,7 +208,7 @@ public class InformationTypeControllerIT {
 		createInformationTypeTestData(100);
 
 		ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange(
-				"/backend/informationtype?name=1&pageSize=30", HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
+				"/informationtype?name=1&pageSize=30", HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
 				});
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 		assertThat(repository.findAll().size(), is(100));
@@ -229,7 +222,7 @@ public class InformationTypeControllerIT {
 	public void getInformationTypeByFilterQuerys() {
 		initializeDBForFilterQuery();
 
-		ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange("/backend/informationtype?name=Sivilstand",
+		ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange("/informationtype?name=Sivilstand",
 				HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
 				});
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
@@ -240,7 +233,7 @@ public class InformationTypeControllerIT {
 		assertThat(responseEntity.getBody().getTotalElements(), is(1L));
 		assertThat(responseEntity.getBody().getContent().get(0).getName(), equalTo("Sivilstand"));
 
-		responseEntity = restTemplate.exchange("/backend/informationtype?description=begrepskatalog",
+		responseEntity = restTemplate.exchange("/informationtype?description=begrepskatalog",
 				HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
 				});
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
@@ -250,7 +243,7 @@ public class InformationTypeControllerIT {
 		assertThat(responseEntity.getBody().getContent().get(1).getName(), equalTo("Kjønn"));
 
 
-		responseEntity = restTemplate.exchange("/backend/informationtype?personalData=false",
+		responseEntity = restTemplate.exchange("/informationtype?personalData=false",
 				HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
 				});
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
@@ -258,7 +251,7 @@ public class InformationTypeControllerIT {
 		assertThat(responseEntity.getBody().getTotalElements(), is(1L));
 		assertThat(responseEntity.getBody().getContent().get(0).getName(), equalTo("Kjønn"));
 
-		responseEntity = restTemplate.exchange("/backend/informationtype?category=PERSONALIA",
+		responseEntity = restTemplate.exchange("/informationtype?category=PERSONALIA",
 				HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
 				});
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
@@ -268,7 +261,7 @@ public class InformationTypeControllerIT {
 		assertThat(responseEntity.getBody().getContent().get(1).getName(), equalTo("Kjønn"));
 
 
-		responseEntity = restTemplate.exchange("/backend/informationtype?system=aa-reg",
+		responseEntity = restTemplate.exchange("/informationtype?system=aa-reg",
 				HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
 				});
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
@@ -277,7 +270,7 @@ public class InformationTypeControllerIT {
 		assertThat(responseEntity.getBody().getContent().get(0).getName(), equalTo("Sivilstand"));
 		assertThat(responseEntity.getBody().getContent().get(1).getName(), equalTo("Arbeidsforhold"));
 
-		responseEntity = restTemplate.exchange("/backend/informationtype?producer=Folkeregisteret",
+		responseEntity = restTemplate.exchange("/informationtype?producer=Folkeregisteret",
 				HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
 				});
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
@@ -288,7 +281,7 @@ public class InformationTypeControllerIT {
 		assertThat(responseEntity.getBody().getContent().get(1).getName(), equalTo("Kjønn"));
 		assertThat(responseEntity.getBody().getContent().get(1).getProducer().size(), is(2));
 
-		responseEntity = restTemplate.exchange("/backend/informationtype?producer=Folkeregisteret&sort=id,desc",
+		responseEntity = restTemplate.exchange("/informationtype?producer=Folkeregisteret&sort=id,desc",
 				HttpMethod.GET, null, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
 				});
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
@@ -306,7 +299,7 @@ public class InformationTypeControllerIT {
         createInformationTypeTestData(100);
 
         ResponseEntity<Long> responseEntity = restTemplate.exchange(
-				"/backend/informationtype/count", HttpMethod.GET, null, Long.class);
+				"/informationtype/count", HttpMethod.GET, null, Long.class);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(repository.findAll().size(), is(100));
         assertThat(responseEntity.getBody(), is(100L));
@@ -315,7 +308,7 @@ public class InformationTypeControllerIT {
     @Test
     public void countNoInformationTypes() {
         ResponseEntity<Long> responseEntity = restTemplate.exchange(
-				"/backend/informationtype/count", HttpMethod.GET, null, Long.class);
+				"/informationtype/count", HttpMethod.GET, null, Long.class);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(repository.findAll().size(), is(0));
         assertThat(responseEntity.getBody(), is(0L));
@@ -325,7 +318,7 @@ public class InformationTypeControllerIT {
     public void createInformationType() {
         List<InformationTypeRequest> requests = List.of(createRequest());
         ResponseEntity<String> responseEntity = restTemplate.exchange(
-				"/backend/informationtype", HttpMethod.POST, new HttpEntity<>(requests), String.class);
+				"/informationtype", HttpMethod.POST, new HttpEntity<>(requests), String.class);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
         assertThat(repository.findAll().size(), is(1));
 		assertInformationType(repository.findByName("InformationName").get());
@@ -336,7 +329,7 @@ public class InformationTypeControllerIT {
 		List requests = Collections.emptyList();
 
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
-				"/backend/informationtype", HttpMethod.POST, new HttpEntity<>(requests), String.class);
+				"/informationtype", HttpMethod.POST, new HttpEntity<>(requests), String.class);
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
 		assertThat(responseEntity.getBody(), containsString("The request was not accepted because it is empty"));
 	}
@@ -350,7 +343,7 @@ public class InformationTypeControllerIT {
 				createRequest("Request_2"));
 
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
-				"/backend/informationtype", HttpMethod.POST, new HttpEntity<>(requestsListWithEmtpyAndDuplicate), String.class);
+				"/informationtype", HttpMethod.POST, new HttpEntity<>(requestsListWithEmtpyAndDuplicate), String.class);
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
 		assertThat(repository.findAll().size(), is(0));
 	}
@@ -359,13 +352,13 @@ public class InformationTypeControllerIT {
 	public void updateInformationTypes() {
 		List<InformationTypeRequest> requests = List.of(createRequest("UPDATE_1"), createRequest("UPDATE_2"));
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
-				"/backend/informationtype", HttpMethod.POST, new HttpEntity<>(requests), String.class);
+				"/informationtype", HttpMethod.POST, new HttpEntity<>(requests), String.class);
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
 		assertThat(repository.findAll().size(), is(2));
 
 		requests.forEach(request -> request.setDescription("Updated description"));
 		ResponseEntity<List<InformationTypeResponse>> updatedResponseEntity = restTemplate.exchange(
-				"/backend/informationtype", HttpMethod.PUT, new HttpEntity<>(requests), new ParameterizedTypeReference<List<InformationTypeResponse>>() {
+				"/informationtype", HttpMethod.PUT, new HttpEntity<>(requests), new ParameterizedTypeReference<List<InformationTypeResponse>>() {
 				});
 
 		assertThat(updatedResponseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
@@ -383,7 +376,7 @@ public class InformationTypeControllerIT {
 				createRequest("InformationTypeName_nr_3"));
 
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
-				"/backend/informationtype", HttpMethod.PUT, new HttpEntity<>(requests), String.class);
+				"/informationtype", HttpMethod.PUT, new HttpEntity<>(requests), String.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
 		assertThat(responseEntity.getBody(), containsString(
@@ -401,7 +394,7 @@ public class InformationTypeControllerIT {
 				createRequest("InformationTypeName_nr_1"));
 
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
-				"/backend/informationtype", HttpMethod.PUT, new HttpEntity<>(updateRequestsWithEmptyRequest), String.class);
+				"/informationtype", HttpMethod.PUT, new HttpEntity<>(updateRequestsWithEmptyRequest), String.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
 		assertThat(repository.findAll().size(), is(2));
@@ -417,7 +410,7 @@ public class InformationTypeControllerIT {
 		InformationType storedInformationType = repository.findByName("InformationName").get();
 		request.setDescription("InformationDescription" + "UPDATED");
 		ResponseEntity responseEntity = restTemplate.exchange(
-				"/backend/informationtype/" + storedInformationType.getId(), HttpMethod.PUT, new HttpEntity<>(request), String.class);
+				"/informationtype/" + storedInformationType.getId(), HttpMethod.PUT, new HttpEntity<>(request), String.class);
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
 		assertThat(repository.findAll().size(), is(1));
 		storedInformationType = repository.findByName("InformationName").get();
@@ -429,13 +422,13 @@ public class InformationTypeControllerIT {
 	public void deleteInformationTypeById() {
 		List<InformationTypeRequest> requests = List.of(createRequest());
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
-				"/backend/informationtype", HttpMethod.POST, new HttpEntity<>(requests), String.class);
+				"/informationtype", HttpMethod.POST, new HttpEntity<>(requests), String.class);
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
 		assertThat(repository.findAll().size(), is(1));
 
 		InformationType storedInformationType = repository.findByName("InformationName").get();
 		responseEntity = restTemplate.exchange(
-				"/backend/informationtype/" + storedInformationType.getId(), HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
+				"/informationtype/" + storedInformationType.getId(), HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
 		assertThat(repository.findAll().size(), is(1));
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
 		storedInformationType = repository.findByName("InformationName").get();
@@ -446,7 +439,7 @@ public class InformationTypeControllerIT {
 	public void deleteInformationTypeById_returnNotFound_whenNonExistingId() {
 		long nonExistingId = 42L;
 		ResponseEntity responseEntity = restTemplate.exchange(
-				"/backend/informationtype/" + nonExistingId, HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
+				"/informationtype/" + nonExistingId, HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.NOT_FOUND));
 		assertNull(responseEntity.getBody());
@@ -464,7 +457,7 @@ public class InformationTypeControllerIT {
                 .build();
 
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
-				"/backend/informationtype", HttpMethod.POST, new HttpEntity<>(List.of(request)), String.class);
+				"/informationtype", HttpMethod.POST, new HttpEntity<>(List.of(request)), String.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
 		assertTrue(repository.findByName("Trimmed Name").isPresent());
@@ -478,25 +471,14 @@ public class InformationTypeControllerIT {
         assertTrue(validatedInformationType.isPersonalData());
     }
 
-	static class Initializer
-			implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-		public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-			TestPropertyValues.of(
-					"spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
-					"spring.datasource.username=" + postgreSQLContainer.getUsername(),
-					"spring.datasource.password=" + postgreSQLContainer.getPassword()
-			).applyTo(configurableApplicationContext.getEnvironment());
-		}
-	}
-
-	private void assertInformationType(InformationType informationType) {
-		assertThat(informationType.getProducerCode(), is("SKATTEETATEN, BRUKER"));
-		assertThat(informationType.getSystemCode(), is("AA-REG"));
-		assertThat(informationType.isPersonalData(), is(true));
-		assertThat(informationType.getName(), is("InformationName"));
-		assertThat(informationType.getDescription(), is("InformationDescription"));
-		assertThat(informationType.getCategoryCode(), is("PERSONALIA"));
-	}
+    private void assertInformationType(InformationType informationType) {
+        assertThat(informationType.getProducerCode(), is(PRODUCER_CODE_STRING));
+        assertThat(informationType.getSystemCode(), is(SYSTEM_CODE));
+        assertThat(informationType.isPersonalData(), is(true));
+        assertThat(informationType.getName(), is(NAME));
+        assertThat(informationType.getDescription(), is(DESCRIPTION));
+        assertThat(informationType.getCategoryCode(), is(CATEGORY_CODE));
+    }
 
 	private void assertInformationTypeResponse(InformationTypeResponse response) {
 		assertThat(response.getName(), equalTo("InformationName"));

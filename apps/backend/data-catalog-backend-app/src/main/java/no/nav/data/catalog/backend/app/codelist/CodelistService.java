@@ -1,5 +1,10 @@
 package no.nav.data.catalog.backend.app.codelist;
 
+import lombok.extern.slf4j.Slf4j;
+import no.nav.data.catalog.backend.app.common.exceptions.CodelistNotFoundException;
+import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
+import org.springframework.stereotype.Service;
+
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -10,39 +15,31 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-
+import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
-import lombok.extern.slf4j.Slf4j;
-import no.nav.data.catalog.backend.app.common.exceptions.CodelistNotFoundException;
-import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
 public class CodelistService {
 
-	private static final Logger logger = LoggerFactory.getLogger(CodelistService.class);
-
-	@Autowired
 	private CodelistRepository repository;
 
 	public static final Map<ListName, Map<String, String>> codelists = new EnumMap<>(ListName.class);
 
+	public CodelistService(CodelistRepository repository) {
+		this.repository = repository;
+		initListNames();
+	}
+
 	@PostConstruct
 	public void refreshCache() {
 		List<Codelist> allCodelists = repository.findAll();
-		List<ListName> listNames = Arrays.asList(ListName.values());
+		initListNames();
+		allCodelists.forEach(codelist -> codelists.get(codelist.getList()).put(codelist.getCode(), codelist.getDescription()));
+	}
 
-		listNames.forEach(listName -> {
-			HashMap<String, String> content = new HashMap<>(allCodelists.stream()
-					.filter(inner -> inner.getList().equals(listName))
-					.collect(Collectors.toMap(Codelist::getCode, Codelist::getDescription)));
-
-			codelists.put(listName, content);
-		});
+	private void initListNames() {
+		Stream.of(ListName.values()).forEach(listName -> codelists.put(listName, new HashMap<>()));
 	}
 
 	public List<Codelist> save(List<CodelistRequest> requests) {
@@ -69,7 +66,7 @@ public class CodelistService {
 			codelist.setDescription(request.getDescription());
 			return codelist;
 		}
-		logger.error("Cannot find codelist with code={} in list={}", request.getCode(), request.getList());
+		log.error("Cannot find codelist with code={} in list={}", request.getCode(), request.getList());
 		throw new CodelistNotFoundException(String.format(
 				"Cannot find codelist with code=%s in list=%s", request.getCode(), request.getList()));
 	}
@@ -80,7 +77,7 @@ public class CodelistService {
 			repository.delete(toDelete.get());
 			codelists.get(name).remove(code);
 		} else {
-			logger.error("Cannot find a codelist to delete with code={} and listName={}", code, name);
+			log.error("Cannot find a codelist to delete with code={} and listName={}", code, name);
 			throw new IllegalArgumentException(
 					String.format("Cannot find a codelist to delete with code=%s and listName=%s", code, name));
 		}
@@ -88,7 +85,7 @@ public class CodelistService {
 
 	public void validateListNameExists(String listName) {
 		if (!isListNamePresentInCodelist(listName)) {
-			logger.error("Codelist with listName={} does not exits", listName);
+			log.error("Codelist with listName={} does not exits", listName);
 			throw new CodelistNotFoundException(String.format("Codelist with listName=%s does not exist", listName));
 		}
 	}
@@ -96,7 +93,7 @@ public class CodelistService {
 	public void validateListNameAndCodeExists(String listName, String code) {
 		validateListNameExists(listName);
 		if (!codelists.get(ListName.valueOf(listName.toUpperCase())).containsKey(code.toUpperCase())) {
-			logger.error("The code={} does not exist in the list={}.", code, listName);
+			log.error("The code={} does not exist in the list={}.", code, listName);
 			throw new CodelistNotFoundException(String.format("The code=%s does not exist in the list=%s.", code, listName));
 		}
 	}
@@ -112,7 +109,7 @@ public class CodelistService {
 		Map<String, Map<String, String>> validationMap = new HashMap<>();
 
 		if (requests == null || requests.isEmpty()) {
-			logger.error("The request was not accepted because it is empty");
+			log.error("The request was not accepted because it is empty");
 			throw new ValidationException("The request was not accepted because it is empty");
 		}
 
@@ -137,7 +134,7 @@ public class CodelistService {
 		});
 
 		if (!validationErrorsForTheEntireRequest.isEmpty()) {
-			logger.error("The request was not accepted. The following errors occurred during validation: {}", validationErrorsForTheEntireRequest);
+			log.error("The request was not accepted. The following errors occurred during validation: {}", validationErrorsForTheEntireRequest);
 			throw new ValidationException(validationErrorsForTheEntireRequest, "The request was not accepted. The following errors occurred during validation: ");
 		}
 	}

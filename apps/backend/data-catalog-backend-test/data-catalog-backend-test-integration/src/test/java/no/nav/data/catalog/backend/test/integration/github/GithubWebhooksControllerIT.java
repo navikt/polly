@@ -4,8 +4,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.time.Duration;
-import java.util.Map;
 import java.util.Optional;
 
 import no.nav.data.catalog.backend.app.AppStarter;
@@ -19,6 +17,7 @@ import no.nav.data.catalog.backend.app.informationtype.InformationType;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
 import no.nav.data.catalog.backend.app.poldatasett.PolDatasett;
 import no.nav.data.catalog.backend.app.poldatasett.PolDatasettRepository;
+import no.nav.data.catalog.backend.test.component.PostgresTestContainer;
 import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.eclipse.egit.github.core.event.PushPayload;
@@ -30,10 +29,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -42,14 +38,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.testcontainers.containers.PostgreSQLContainer;
 
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         classes = {IntegrationTestConfig.class, AppStarter.class})
-@ActiveProfiles("itest")
-@ContextConfiguration(initializers = {GithubWebhooksControllerIT.Initializer.class})
+@ActiveProfiles("test")
+@ContextConfiguration(initializers = {PostgresTestContainer.Initializer.class})
 public class GithubWebhooksControllerIT {
 
     public static final String URL = "/webhooks";
@@ -74,12 +69,7 @@ public class GithubWebhooksControllerIT {
     private String before = "dbe83db262b1fd082e5cf90053f6196127976e7f";
 
     @ClassRule
-    public static PostgreSQLContainer postgreSQLContainer =
-            (PostgreSQLContainer) new PostgreSQLContainer("postgres:10.4")
-                    .withDatabaseName("sampledb")
-                    .withUsername("sampleuser")
-                    .withPassword("samplepwd")
-                    .withStartupTimeout(Duration.ofSeconds(600));
+    public static PostgresTestContainer postgreSQLContainer = PostgresTestContainer.getInstance();
 
     @Before
     public void setUp() {
@@ -103,7 +93,7 @@ public class GithubWebhooksControllerIT {
     }
 
     private void intializeCodelists() {
-        Map<ListName, Map<String, String>> codelists = CodelistService.codelists;
+        var codelists = CodelistService.codelists;
         codelists.get(ListName.CATEGORY).put("PERSONALIA", "Personalia");
         codelists.get(ListName.CATEGORY).put("INNTEKT_YTELSER", "Inntekt, trygde- og pensjonsytelser");
         codelists.get(ListName.PRODUCER).put("SKATTEETATEN", "Skatteetaten");
@@ -161,15 +151,4 @@ public class GithubWebhooksControllerIT {
         return new HttpEntity<>(payload, headers);
     }
 
-    static class Initializer
-            implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-
-        public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-            TestPropertyValues.of(
-                    "spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
-                    "spring.datasource.username=" + postgreSQLContainer.getUsername(),
-                    "spring.datasource.password=" + postgreSQLContainer.getPassword()
-            ).applyTo(configurableApplicationContext.getEnvironment());
-        }
-    }
 }

@@ -7,7 +7,6 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,6 +25,7 @@ import no.nav.data.catalog.backend.app.dataset.DatasetRepository;
 import no.nav.data.catalog.backend.app.dataset.DatasetResponse;
 import no.nav.data.catalog.backend.app.dataset.DatasetService;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
+import no.nav.data.catalog.backend.test.component.PostgresTestContainer;
 import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
@@ -35,21 +35,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.domain.Example;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.testcontainers.containers.PostgreSQLContainer;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         classes = {IntegrationTestConfig.class, AppStarter.class})
-@ActiveProfiles("itest")
-@ContextConfiguration(initializers = {DatasetIT.Initializer.class})
+@ActiveProfiles("test")
+@ContextConfiguration(initializers = {PostgresTestContainer.Initializer.class})
 public class DatasetIT {
 
     @Autowired
@@ -64,12 +60,7 @@ public class DatasetIT {
     private TransactionTemplate transactionTemplate;
 
     @ClassRule
-    public static PostgreSQLContainer postgreSQLContainer =
-            (PostgreSQLContainer) new PostgreSQLContainer("postgres:10.4")
-                    .withDatabaseName("sampledb")
-                    .withUsername("sampleuser")
-                    .withPassword("samplepwd")
-                    .withStartupTimeout(Duration.ofSeconds(600));
+    public static PostgresTestContainer postgreSQLContainer = PostgresTestContainer.getInstance();
 
     private Dataset unrelated = createDataset("unrelated");
     private Dataset dataset111 = createDataset("111");
@@ -164,18 +155,4 @@ public class DatasetIT {
                 .build();
     }
 
-    static class Initializer
-            implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-
-        public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-            TestPropertyValues.of(
-                    "spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
-                    "spring.datasource.username=" + postgreSQLContainer.getUsername(),
-                    "spring.datasource.password=" + postgreSQLContainer.getPassword(),
-                    "spring.jpa.show-sql=true",
-                    "spring.jpa.properties.hibernate.use_sql_comments=true",
-                    "spring.jpa.properties.hibernate.format_sql=true"
-            ).applyTo(configurableApplicationContext.getEnvironment());
-        }
-    }
 }

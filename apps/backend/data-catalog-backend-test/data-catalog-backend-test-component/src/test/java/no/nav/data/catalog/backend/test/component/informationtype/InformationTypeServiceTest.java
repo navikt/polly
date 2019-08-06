@@ -1,5 +1,32 @@
 package no.nav.data.catalog.backend.test.component.informationtype;
 
+import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
+import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchRepository;
+import no.nav.data.catalog.backend.app.informationtype.InformationType;
+import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
+import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
+import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
+import no.nav.data.catalog.backend.app.policy.PolicyConsumer;
+import no.nav.data.catalog.backend.app.policy.PolicyResponse;
+import no.nav.data.catalog.backend.test.component.codelist.CodelistMock;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_CREATED;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
@@ -14,43 +41,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
-import no.nav.data.catalog.backend.app.codelist.CodelistService;
-import no.nav.data.catalog.backend.app.codelist.ListName;
-import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
-import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchRepository;
-import no.nav.data.catalog.backend.app.informationtype.InformationType;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
-import no.nav.data.catalog.backend.app.policy.PolicyConsumer;
-import no.nav.data.catalog.backend.app.policy.PolicyResponse;
-import no.nav.data.catalog.backend.test.component.ComponentTestConfig;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = ComponentTestConfig.class)
-@ActiveProfiles("test")
-@EnableJpaRepositories(repositoryBaseClass = CodelistRepository.class)
+@RunWith(MockitoJUnitRunner.class)
 public class InformationTypeServiceTest {
 
 	private static InformationType informationType;
@@ -73,11 +65,7 @@ public class InformationTypeServiceTest {
 
 	@Before
 	public void init() {
-		Map<ListName, Map<String, String>> codelists = CodelistService.codelists;
-		codelists.get(ListName.CATEGORY).put("PERSONALIA", "Personalia");
-		codelists.get(ListName.PRODUCER).put("SKATTEETATEN", "Skatteetaten");
-		codelists.get(ListName.PRODUCER).put("BRUKER", "Bruker");
-		codelists.get(ListName.SYSTEM).put("TPS", "Tjenestebasert PersondataSystem");
+        CodelistMock.initializeCodelist();
 
 		informationType = InformationType.builder()
 				.id(1L)

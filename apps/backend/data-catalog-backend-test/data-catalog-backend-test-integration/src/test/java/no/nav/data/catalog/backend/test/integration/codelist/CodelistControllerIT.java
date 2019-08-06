@@ -1,18 +1,12 @@
 package no.nav.data.catalog.backend.test.integration.codelist;
 
-import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-
 import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.codelist.Codelist;
 import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
 import no.nav.data.catalog.backend.app.codelist.CodelistRequest;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
+import no.nav.data.catalog.backend.test.component.PostgresTestContainer;
 import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
 import org.junit.After;
 import org.junit.Before;
@@ -21,11 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -34,9 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.testcontainers.containers.PostgreSQLContainer;
 
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -44,11 +32,18 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
 		classes = {IntegrationTestConfig.class, AppStarter.class})
-@ActiveProfiles("itest")
-@ContextConfiguration(initializers = {CodelistControllerIT.Initializer.class})
+@ActiveProfiles("test")
+@ContextConfiguration(initializers = {PostgresTestContainer.Initializer.class})
 public class CodelistControllerIT {
 
 	@Autowired
@@ -61,12 +56,7 @@ public class CodelistControllerIT {
 	private CodelistRepository repository;
 
 	@ClassRule
-	public static PostgreSQLContainer postgreSQLContainer =
-			(PostgreSQLContainer) new PostgreSQLContainer("postgres:10.4")
-					.withDatabaseName("sampledb")
-					.withUsername("sampleuser")
-					.withPassword("samplepwd")
-					.withStartupTimeout(Duration.ofSeconds(600));
+	public static PostgresTestContainer postgreSQLContainer = PostgresTestContainer.getInstance();
 
 	@Before
 	public void setUp() {
@@ -83,7 +73,7 @@ public class CodelistControllerIT {
 	@Test
 	public void findAll_shouldReturnOneCodelists() {
 		ResponseEntity<Map> responseEntity = restTemplate.exchange(
-				"/backend/codelist", HttpMethod.GET, HttpEntity.EMPTY, Map.class);
+				"/codelist", HttpMethod.GET, HttpEntity.EMPTY, Map.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 		assertThat(responseEntity.getBody().size(), is(4));
@@ -95,7 +85,7 @@ public class CodelistControllerIT {
 
 	@Test
 	public void getCodelistByListName_shouldReturnCodesAndDescriptionForListName() {
-		String url = "/backend/codelist/PRODUCER";
+		String url = "/codelist/PRODUCER";
 
 		ResponseEntity<Map> responseEntity = restTemplate.exchange(
 				url, HttpMethod.GET, HttpEntity.EMPTY, Map.class);
@@ -106,7 +96,7 @@ public class CodelistControllerIT {
 
 	@Test
 	public void getDescriptionByListNameAndCode_shouldReturnDescriptionForCodeAndListName() {
-		String url = "/backend/codelist/PRODUCER/TEST_CODE";
+		String url = "/codelist/PRODUCER/TEST_CODE";
 
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
 				url, HttpMethod.GET, HttpEntity.EMPTY, String.class);
@@ -122,7 +112,7 @@ public class CodelistControllerIT {
 		assertNull(codelists.get(ListName.PRODUCER).get(code));
 
 		ResponseEntity<List<Codelist>> responseEntity = restTemplate.exchange(
-				"/backend/codelist", HttpMethod.POST, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
+				"/codelist", HttpMethod.POST, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
 				});
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.CREATED));
@@ -135,7 +125,7 @@ public class CodelistControllerIT {
 		List<CodelistRequest> requests = createNrOfRequests("shouldSave20Codelists", 20);
 
 		ResponseEntity<List<Codelist>> responseEntity = restTemplate.exchange(
-				"/backend/codelist", HttpMethod.POST, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
+				"/codelist", HttpMethod.POST, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
 				});
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.CREATED));
@@ -150,7 +140,7 @@ public class CodelistControllerIT {
 		List<CodelistRequest> updatedCodelists = createRequest(ListName.PRODUCER, code, "Updated codelists");
 
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
-				"/backend/codelist", HttpMethod.PUT, new HttpEntity<>(updatedCodelists), String.class);
+				"/codelist", HttpMethod.PUT, new HttpEntity<>(updatedCodelists), String.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
 		assertThat(codelists.get(ListName.PRODUCER).get(code), is(updatedCodelists.get(0).getDescription()));
@@ -160,12 +150,12 @@ public class CodelistControllerIT {
 	public void update_shouldUpdate20Codelists() {
 		List<CodelistRequest> requests = createNrOfRequests("shouldUpdate20Codelists", 20);
 		restTemplate.exchange(
-				"/backend/codelist", HttpMethod.POST, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
+				"/codelist", HttpMethod.POST, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
 				});
 
 		requests.forEach(request -> request.setDescription("  Updated codelists  "));
 		ResponseEntity<List<Codelist>> responseEntity = restTemplate.exchange(
-				"/backend/codelist", HttpMethod.PUT, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
+				"/codelist", HttpMethod.PUT, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
 				});
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
@@ -183,7 +173,7 @@ public class CodelistControllerIT {
 		service.save(requests);
 		assertNotNull(codelists.get(ListName.PRODUCER).get(code));
 
-		String url = "/backend/codelist/PRODUCER/DELETE_CODE";
+		String url = "/codelist/PRODUCER/DELETE_CODE";
 
 		ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
 
@@ -210,14 +200,4 @@ public class CodelistControllerIT {
 		return List.of(createOneRequest(listName, code, description));
 	}
 
-	static class Initializer
-			implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-		public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-			TestPropertyValues.of(
-					"spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
-					"spring.datasource.username=" + postgreSQLContainer.getUsername(),
-					"spring.datasource.password=" + postgreSQLContainer.getPassword()
-			).applyTo(configurableApplicationContext.getEnvironment());
-		}
-	}
 }
