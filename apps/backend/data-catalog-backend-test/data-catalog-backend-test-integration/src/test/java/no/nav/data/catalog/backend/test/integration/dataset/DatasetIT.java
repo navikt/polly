@@ -38,6 +38,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.data.domain.Example;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -137,6 +138,9 @@ public class DatasetIT {
     public void findRootDataset() {
         List<DatasetResponse> allRootDatasets = datasetService.findAllRootDatasets(true);
         assertThat(allRootDatasets, hasSize(2));
+
+        ElasticsearchStatus elasticsearchStatus = ElasticsearchStatus.TO_BE_CREATED;
+        datasetRepository.findAll(Example.of(Dataset.builder().elasticsearchStatus(elasticsearchStatus).build()));
     }
 
     @NotNull

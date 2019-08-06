@@ -36,6 +36,7 @@
         <hibernate-types-52.version>2.4.4</hibernate-types-52.version>
         <spring-cloud-dependencies.version>Greenwich.SR2</spring-cloud-dependencies.version>
         <prometheus.version>0.6.0</prometheus.version>
+        <org.eclipse.egit.github.core.version>5.4.0.201906121030-r</org.eclipse.egit.github.core.version>
     </properties>
 
     <dependencies>
@@ -83,5 +84,13 @@
             </plugin>
         </plugins>
     </build>
+
+	<repositories>
+		<repository>
+			<id>repo.eclipse.org</id>
+			<name>EGit Maven Repository - Releases</name>
+			<url>https://repo.eclipse.org/content/repositories/egit-releases/</url>
+		</repository>
+	</repositories>
 
 </project>

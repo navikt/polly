@@ -66,7 +66,7 @@ public class InformationTypeControllerIT {
     @Autowired
     protected CodelistService codelistService;
 
-    private static HashMap<ListName, HashMap<String, String>> codelists;
+	private static Map<ListName, Map<String, String>> codelists;
 
     @ClassRule
     public static PostgreSQLContainer postgreSQLContainer =

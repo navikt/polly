@@ -6,6 +6,15 @@ import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
@@ -17,15 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Service
@@ -110,12 +110,20 @@ public class InformationTypeService {
 	}
 
 	public void validateRequests(List<InformationTypeRequest> requests, boolean isUpdate) {
+		Map<String, Map<String, String>> validation = validateRequestsAndReturnErrors(requests, isUpdate);
+		if (!validation.isEmpty()) {
+			logger.error("The request was not accepted. The following errors occurred during validation: {}", validation);
+			throw new ValidationException(validation, "The request was not accepted. The following errors occurred during validation: ");
+		}
+	}
+
+	public Map<String, Map<String, String>> validateRequestsAndReturnErrors(List<InformationTypeRequest> requests, boolean isUpdate) {
 		if (requests == null || requests.isEmpty()) {
 			logger.error("The request was not accepted because it is empty");
 			throw new ValidationException("The request was not accepted because it is empty");
 		}
 
-		Map<String, Map> validationErrorsForTheEntireRequest = new HashMap<>();
+		Map<String, Map<String, String>> validationErrorsForTheEntireRequest = new HashMap<>();
 		if (duplicatesInRequests(requests)) {
 			validationErrorsForTheEntireRequest.put("NotUniqueRequests", findDuplicatesInRequest(requests));
 		}
@@ -131,14 +139,10 @@ public class InformationTypeService {
 			}
 
 			if (!errorsInCurrentRequest.isEmpty()) {
-				validationErrorsForTheEntireRequest.put(String.format("Request:%s", requestIndex.toString()), errorsInCurrentRequest);
+				validationErrorsForTheEntireRequest.put(request.getRequestReference().orElseGet(() -> String.format("Request:%s", requestIndex.toString())), errorsInCurrentRequest);
 			}
 		});
-
-		if (!validationErrorsForTheEntireRequest.isEmpty()) {
-			logger.error("The request was not accepted. The following errors occurred during validation: {}", validationErrorsForTheEntireRequest);
-			throw new ValidationException(validationErrorsForTheEntireRequest, "The request was not accepted. The following errors occurred during validation: ");
-		}
+		return validationErrorsForTheEntireRequest;
 	}
 
 	private Boolean duplicatesInRequests(List<InformationTypeRequest> requestList) {

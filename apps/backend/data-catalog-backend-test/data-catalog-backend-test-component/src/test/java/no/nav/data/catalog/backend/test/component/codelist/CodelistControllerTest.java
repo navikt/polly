@@ -56,7 +56,7 @@ public class CodelistControllerTest {
 
 	private MockMvc mvc;
 	private ObjectMapper objectMapper;
-	private HashMap<ListName, HashMap<String, String>> codelists;
+	private Map<ListName, Map<String, String>> codelists;
 
 	@Autowired
 	WebApplicationContext webApplicationContext;
@@ -98,7 +98,7 @@ public class CodelistControllerTest {
 		MockHttpServletResponse response = mvc.perform(get("/codelist"))
 				.andReturn().getResponse();
 
-		HashMap<String, HashMap<String, String>> returnedCodelist = objectMapper.readValue(response.getContentAsString(), HashMap.class);
+        HashMap<String, HashMap<String, String>> returnedCodelist = objectMapper.readValue(response.getContentAsString(), HashMap.class);
 
 		assertThat(response.getStatus(), is(HttpStatus.OK.value()));
 		assertThat(returnedCodelist.size(), is(codelists.size()));

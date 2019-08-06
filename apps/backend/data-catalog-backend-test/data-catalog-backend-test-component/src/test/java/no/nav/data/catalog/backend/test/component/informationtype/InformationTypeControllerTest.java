@@ -18,6 +18,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
+
 import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
@@ -31,6 +39,7 @@ import no.nav.data.catalog.backend.app.informationtype.InformationTypeController
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
+import no.nav.data.catalog.backend.app.poldatasett.PolDatasettRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,26 +59,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.LongStream;
-
 @RunWith(SpringRunner.class)
 @WebMvcTest(InformationTypeController.class)
 @ContextConfiguration(classes = AppStarter.class)
 @ActiveProfiles("test")
 public class InformationTypeControllerTest {
 
-	private HashMap<ListName, HashMap<String, String>> codelists = new HashMap<>();
 	private Pageable defaultPageable = PageRequest.of(0, 20);
 
 	@Autowired
 	private MockMvc mvc;
 
+	@MockBean
+	private PolDatasettRepository polDatasettRepository;
 	@MockBean
 	private DatasetRepository datasetRepository;
 	@MockBean
@@ -85,7 +87,7 @@ public class InformationTypeControllerTest {
 
 	@Before
 	public void initCodelists() {
-		codelists = CodelistService.codelists;
+		Map<ListName, Map<String, String>> codelists = CodelistService.codelists;
 		codelists.put(ListName.CATEGORY, new HashMap<>());
 		codelists.put(ListName.PRODUCER, new HashMap<>());
 		codelists.put(ListName.SYSTEM, new HashMap<>());
@@ -235,7 +237,7 @@ public class InformationTypeControllerTest {
 	@Test
 	public void createInformationTypes_shouldThrowValidationException_whenListOfRequestsIsEmpty() throws Exception {
 		List<InformationTypeRequest> requests = Collections.emptyList();
-		Map<String, Map> validationErrors = new HashMap<>();
+		Map<String, Map<String, String>> validationErrors = new HashMap<>();
 
 		willThrow(new ValidationException(validationErrors, "The request was not accepted because it is empty"))
 				.given(service).validateRequests(requests, false);
@@ -252,7 +254,7 @@ public class InformationTypeControllerTest {
 	@Test
 	public void createInformationTypes_shouldThrowValidationException_whenRequestHasEmptyFields() throws Exception {
 		List<InformationTypeRequest> requests = List.of(InformationTypeRequest.builder().build());
-		Map<String, Map> validationErrors = new HashMap<>();
+		Map<String, Map<String, String>> validationErrors = new HashMap<>();
 
 		willThrow(new ValidationException(validationErrors, "The request was not accepted. The following errors occurred during validation: "))
 				.given(service).validateRequests(requests, false);
