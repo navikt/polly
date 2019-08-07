@@ -1,21 +1,21 @@
 package no.nav.data.catalog.backend.app.dataset;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import javax.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -29,11 +29,11 @@ public class DatasetResponse extends DatasetData {
     private Set<String> distributions; // TODO change with actual
     private Set<DatasetResponse> children;
 
-    public DatasetResponse(Dataset dataset) {
+    DatasetResponse(Dataset dataset) {
         this(dataset, Collections.emptyMap(), Collections.emptySet());
     }
 
-    public DatasetResponse(Dataset dataset, Map<UUID, Dataset> allDatasets, Set<DatasetRelation> relations) {
+    DatasetResponse(Dataset dataset, Map<UUID, Dataset> allDatasets, Set<DatasetRelation> relations) {
         id = dataset.getId();
         mapJsonFields(dataset.getDatasetData());
 
