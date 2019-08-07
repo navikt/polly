@@ -40,13 +40,12 @@ public class JwtTokenGenerator {
             Date now = new Date();
             //seconds
             Long iat = now.getTime() / 1000;
-            //9 nminutes ttl
             Long exp = iat + TOKEN_MAX_AGE_MINUTES * 60;
 
             // put your information into claim
             claims.put("iat", iat);
             claims.put("exp", exp);
-            claims.put("iss", "26100");
+            claims.put("iss", githubProperties.getAppId());
 
             return Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.RS256, key).compact();
         } catch (IOException ex) {
