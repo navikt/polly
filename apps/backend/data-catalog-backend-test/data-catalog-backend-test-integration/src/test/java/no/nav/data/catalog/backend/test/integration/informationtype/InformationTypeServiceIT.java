@@ -1,5 +1,33 @@
 package no.nav.data.catalog.backend.test.integration.informationtype;
 
+import no.nav.data.catalog.backend.app.AppStarter;
+import no.nav.data.catalog.backend.app.codelist.CodelistService;
+import no.nav.data.catalog.backend.app.codelist.ListName;
+import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchRepository;
+import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
+import no.nav.data.catalog.backend.app.informationtype.InformationType;
+import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
+import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
+import no.nav.data.catalog.backend.test.component.PostgresTestContainer;
+import no.nav.data.catalog.backend.test.component.elasticsearch.FixedElasticsearchContainer;
+import no.nav.data.catalog.backend.test.integration.IntegrationTestBase;
+import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.ArrayList;
+import java.util.Map;
+
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCED;
 import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.CATEGORY_CODE;
 import static no.nav.data.catalog.backend.test.integration.informationtype.TestdataInformationTypes.CATEGORY_DESCRIPTION;
@@ -16,39 +44,13 @@ import static no.nav.data.catalog.backend.test.integration.informationtype.Testd
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.util.ArrayList;
-import java.util.Map;
-
-import no.nav.data.catalog.backend.app.AppStarter;
-import no.nav.data.catalog.backend.app.codelist.CodelistService;
-import no.nav.data.catalog.backend.app.codelist.ListName;
-import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchRepository;
-import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
-import no.nav.data.catalog.backend.app.informationtype.InformationType;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
-import no.nav.data.catalog.backend.test.component.PostgresTestContainer;
-import no.nav.data.catalog.backend.test.component.elasticsearch.FixedElasticsearchContainer;
-import no.nav.data.catalog.backend.test.integration.IntegrationTestBase;
-import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
         classes = {IntegrationTestConfig.class, AppStarter.class})
 @ActiveProfiles("test")
 @ContextConfiguration(initializers = {PostgresTestContainer.Initializer.class})
 @AutoConfigureWireMock(port = 0)
+@Ignore
 public class InformationTypeServiceIT extends IntegrationTestBase {
     @Autowired
     private InformationTypeService service;
