@@ -8,7 +8,7 @@ import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
 import no.nav.data.catalog.backend.app.policy.PolicyConsumer;
 import no.nav.data.catalog.backend.app.policy.PolicyResponse;
-import no.nav.data.catalog.backend.test.component.codelist.CodelistMock;
+import no.nav.data.catalog.backend.test.component.codelist.CodelistStub;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -65,7 +65,7 @@ public class InformationTypeServiceTest {
 
 	@Before
 	public void init() {
-        CodelistMock.initializeCodelist();
+        CodelistStub.initializeCodelistAndStub();
 
 		informationType = InformationType.builder()
 				.id(1L)

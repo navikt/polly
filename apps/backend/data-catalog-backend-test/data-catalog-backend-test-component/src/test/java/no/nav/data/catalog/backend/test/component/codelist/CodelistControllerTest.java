@@ -73,7 +73,7 @@ public class CodelistControllerTest {
 
     @Before
     public void setUp() throws Exception {
-        CodelistMock.initializeCodelist();
+        CodelistStub.initializeCodelistAndStub();
     }
 
     @Test
@@ -87,7 +87,7 @@ public class CodelistControllerTest {
         assertThat(returnedCodelist.size(), is(CodelistService.codelists.size()));
         assertThat(returnedCodelist.get("PRODUCER").size(), is(3));
         assertThat(returnedCodelist.get("CATEGORY").size(), is(3));
-        assertThat(returnedCodelist.get("SYSTEM").size(), is(1));
+        assertThat(returnedCodelist.get("SYSTEM").size(), is(2));
     }
 
     @Test

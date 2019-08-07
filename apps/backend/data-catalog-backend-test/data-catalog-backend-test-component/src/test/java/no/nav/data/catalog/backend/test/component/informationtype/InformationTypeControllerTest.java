@@ -9,7 +9,7 @@ import no.nav.data.catalog.backend.app.informationtype.InformationTypeController
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
-import no.nav.data.catalog.backend.test.component.codelist.CodelistMock;
+import no.nav.data.catalog.backend.test.component.codelist.CodelistStub;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -72,7 +72,7 @@ public class InformationTypeControllerTest {
 
 	@Before
 	public void initCodelists() {
-		CodelistMock.initializeCodelist();
+		CodelistStub.initializeCodelistAndStub();
 	}
 
 	@Test
