@@ -25,7 +25,7 @@ jobs:
       - persist_to_workspace:
          root: .
          paths:
-           - target/
+           - data-catalog-backend-app/target/app-exec.jar
            - Dockerfile
       - save_cache:
           key: m2-{{ checksum "pom.xml" }}
