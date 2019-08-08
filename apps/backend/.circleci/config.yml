@@ -22,6 +22,11 @@ jobs:
           command: |
             mvn --version
             mvn package
+      - persist_to_workspace:
+         root: .
+         paths:
+           - target/
+           - Dockerfile
       - save_cache:
           key: m2-{{ checksum "pom.xml" }}
           paths:
@@ -35,12 +40,8 @@ jobs:
     docker:
         - image: circleci/openjdk:11-stretch
     steps:
-      - checkout
-      - restore_cache:
-          key: m2-{{ checksum "pom.xml" }}
-      - run:
-          name: Build application
-          command: mvn package -DskipTests
+      - attach_workspace:
+          at: ~/backend_wf
       - nais/docker-deploy:
           image: navikt/data-catalog-backend
 workflows:
