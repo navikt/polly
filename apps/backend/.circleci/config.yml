@@ -3,7 +3,6 @@ orbs:
   nais: navikt/nais-deployment@1.1.1
 jobs:
   build:
-    working_directory: ~/backend_wf
     machine:
       enabled: true
     environment:
@@ -36,12 +35,11 @@ jobs:
           paths:
             - /tmp/java
   build_docker_image:
-    working_directory: ~/backend_wf
     docker:
         - image: circleci/openjdk:11-stretch
     steps:
       - attach_workspace:
-          at: ~/backend_wf
+          at: ~/project
       - nais/docker-deploy:
           image: navikt/data-catalog-backend
 workflows:
