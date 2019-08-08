@@ -3,28 +3,54 @@ orbs:
   nais: navikt/nais-deployment@1.1.1
 jobs:
   build:
-    working_directory: ~/backend_wf
-    docker:
-      - image: circleci/openjdk:11.0.3-stretch
+    machine:
+      enabled: true
+    environment:
+      JAVA_HOME: /tmp/java
     steps:
       - checkout
       - restore_cache:
-          key: backend_wf-{{ checksum "pom.xml" }}
+          key: java11-{{ checksum ".circleci/install_java.sh" }}
+      - run:
+          name: Install java11
+          command: cat ${JAVA_HOME}/release || bash .circleci/install_java.sh
+      - restore_cache:
+          key: m2-{{ checksum "pom.xml" }}
       - run:
           name: Build application
-          command: mvn package
+          command: |
+            mvn --version
+            mvn package
+      - persist_to_workspace:
+         root: .
+         paths:
+           - data-catalog-backend-app/target/app-exec.jar
+           - Dockerfile
       - save_cache:
+          key: m2-{{ checksum "pom.xml" }}
           paths:
             - ~/.m2
-          key: backend_wf-{{ checksum "pom.xml" }}
+      - save_cache:
+          key: java11-{{ checksum ".circleci/install_java.sh" }}
+          paths:
+            - /tmp/java
+  build_docker_image:
+    docker:
+        - image: circleci/openjdk:11-stretch
+    steps:
+      - attach_workspace:
+          at: ~/project
       - nais/docker-deploy:
           image: navikt/data-catalog-backend
 workflows:
   version: 2
   build_and_release:
     jobs:
-      - build:
+      - build
+      - build_docker_image:
           context: NAIS deployment
+          requires:
+            - build
       - nais/deploy:
           name: Deploy preprod
           context: NAIS deployment
@@ -36,7 +62,7 @@ workflows:
           environment: dev-sbs
           team: teamdatajegerne
           requires:
-            - build
+            - build_docker_image
           filters:
             branches:
               only:
@@ -52,7 +78,7 @@ workflows:
           environment: prod-sbs
           team: teamdatajegerne
           requires:
-            - build
+            - build_docker_image
           filters:
             branches:
               only:
