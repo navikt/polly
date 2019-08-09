@@ -1,6 +1,5 @@
 package no.nav.data.catalog.backend.test.integration.github;
 
-import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import no.nav.data.catalog.backend.app.github.GithubConsumer;
@@ -14,7 +13,6 @@ import no.nav.data.catalog.backend.app.poldatasett.PolDatasett;
 import no.nav.data.catalog.backend.app.poldatasett.PolDatasettRepository;
 import no.nav.data.catalog.backend.test.component.codelist.CodelistStub;
 import no.nav.data.catalog.backend.test.integration.IntegrationTestBase;
-import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.eclipse.egit.github.core.CommitFile;
 import org.eclipse.egit.github.core.CommitStatus;
@@ -28,19 +26,14 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.StreamUtils;
 import org.testcontainers.shaded.org.apache.commons.lang.StringUtils;
 
@@ -66,11 +59,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        classes = {IntegrationTestConfig.class, AppStarter.class})
-@ActiveProfiles("test")
-@AutoConfigureWireMock(port = 0)
 public class GithubWebhooksControllerIT extends IntegrationTestBase {
 
     public static final String URL = "/webhooks";

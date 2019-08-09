@@ -1,7 +1,9 @@
 package no.nav.data.catalog.backend.test.integration;
 
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
+import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.test.component.PostgresTestContainer;
+import no.nav.data.catalog.backend.test.integration.util.EnableWiremock;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,9 +18,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
+@EnableWiremock
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = IntegrationTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {IntegrationTestConfig.class, AppStarter.class})
 @ContextConfiguration(initializers = {PostgresTestContainer.Initializer.class})
 public abstract class IntegrationTestBase {
 

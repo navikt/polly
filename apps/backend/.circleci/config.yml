@@ -51,6 +51,11 @@ workflows:
           context: NAIS deployment
           requires:
             - build
+          filters:
+            branches:
+              only:
+                - master
+                - prod
       - nais/deploy:
           name: Deploy preprod
           context: NAIS deployment
