@@ -3,9 +3,11 @@ package no.nav.data.catalog.backend.app.codelist;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.exceptions.CodelistNotFoundException;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
+import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,6 +31,16 @@ public class CodelistService {
 	public CodelistService(CodelistRepository repository) {
 		this.repository = repository;
 		initListNames();
+	}
+
+	public static CodeResponse getCodeInfoForCodelistItem(ListName listName, String code) {
+		return new CodeResponse(code, codelists.get(listName).get(code));
+	}
+
+	public static List<CodeResponse> getCodeInfoForCodelistItems(ListName listName, Collection<String> codes) {
+		return StreamUtils.safeStream(codes)
+				.map(code -> getCodeInfoForCodelistItem(listName, code))
+				.collect(Collectors.toList());
 	}
 
 	@PostConstruct

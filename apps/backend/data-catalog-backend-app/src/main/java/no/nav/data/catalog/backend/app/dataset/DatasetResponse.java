@@ -5,10 +5,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import no.nav.data.catalog.backend.app.codelist.CodeResponse;
+import no.nav.data.catalog.backend.app.codelist.CodelistService;
+import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -18,15 +21,26 @@ import java.util.stream.Collectors;
 import javax.validation.constraints.NotNull;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({"id", "title"})
-public class DatasetResponse extends DatasetData {
+public class DatasetResponse {
 
     private UUID id;
-    private Set<String> distributions; // TODO change with actual
+    private String title;
+    private String description;
+    private List<CodeResponse> categories;
+    private List<String> provenances;
+    private Integer pi;
+    private LocalDateTime issued;
+    private List<String> keywords;
+    private String theme;
+    private String accessRights;
+    private String publisher;
+    private String spatial;
+    private String haspart;
+
     private Set<DatasetResponse> children;
 
     DatasetResponse(Dataset dataset) {
@@ -46,11 +60,10 @@ public class DatasetResponse extends DatasetData {
     private void mapJsonFields(@NotNull DatasetData datasetData) {
         setDescription(datasetData.getDescription());
         setTitle(datasetData.getTitle());
-        setCategories(copyOf(datasetData.getCategories()));
+        setCategories(CodelistService.getCodeInfoForCodelistItems(ListName.CATEGORY, datasetData.getCategories()));
         setProvenances(copyOf(datasetData.getProvenances()));
         setPi(datasetData.getPi());
         setIssued(datasetData.getIssued());
-        setPolicies(copyOf(datasetData.getPolicies()));
         setKeywords(copyOf(datasetData.getKeywords()));
         setTheme(datasetData.getTheme());
         setAccessRights(datasetData.getAccessRights());
