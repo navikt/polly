@@ -22,7 +22,6 @@
 
     <properties>
         <start-class>no.nav.data.catalog.backend.app.AppStarter</start-class>
-        <jwt.version>0.9.1</jwt.version>
         <springfox.version>2.9.2</springfox.version>
         <jjwt.version>0.10.7</jjwt.version>
         <hibernate-types-52.version>2.5.0</hibernate-types-52.version>
