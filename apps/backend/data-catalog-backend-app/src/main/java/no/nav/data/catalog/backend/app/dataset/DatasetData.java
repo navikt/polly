@@ -16,11 +16,11 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DatasetData {
 
-    private String description;
     private String title;
+    private String description;
     private List<String> categories;
     private List<String> provenances;
-    private Integer pi;
+    private Boolean pi;
     private LocalDateTime issued;
     private List<String> keywords;
     private String theme;

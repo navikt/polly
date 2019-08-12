@@ -32,7 +32,7 @@ public class DatasetResponse {
     private String description;
     private List<CodeResponse> categories;
     private List<String> provenances;
-    private Integer pi;
+    private Boolean pi;
     private LocalDateTime issued;
     private List<String> keywords;
     private String theme;
