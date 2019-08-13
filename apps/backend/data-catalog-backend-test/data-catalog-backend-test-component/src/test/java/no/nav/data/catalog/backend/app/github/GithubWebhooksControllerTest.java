@@ -171,7 +171,7 @@ public class GithubWebhooksControllerTest {
 
         verify(service).validateRequestsAndReturnErrors(anyList(), eq(true));
         verify(service).validateRequestsAndReturnErrors(anyList(), eq(false));
-        verify(githubConsumer).updateStatus("head", asList("name=modified file=add.json ordinal=1 duplicate entry", "name=modified file=mod.json ordinal=1 duplicate entry"));
+        verify(githubConsumer).updateStatus("head", asList("title=modified path=add.json ordinal=1 duplicate entry", "title=modified path=mod.json ordinal=1 duplicate entry"));
     }
 
     @Test

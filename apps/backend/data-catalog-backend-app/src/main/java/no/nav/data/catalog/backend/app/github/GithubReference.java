@@ -15,6 +15,6 @@ public class GithubReference {
 
     @Override
     public String toString() {
-        return String.format("title=%s, path=%s, ordinal=%d}", title, path, ordinal);
+        return String.format("title=%s, path=%s, ordinal=%d", title, path, ordinal);
     }
 }
