@@ -1,5 +1,7 @@
 package no.nav.data.catalog.backend.app.common.nais;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 @RestController
-@RequestMapping(("/backend/internal/"))
+@RequestMapping(("/internal/"))
 public class NaisEndpoints {
 	private static AtomicInteger isReady = new AtomicInteger(1);
 

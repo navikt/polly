@@ -1,0 +1,19 @@
+[
+  {
+    "title": "removed",
+    "description": "description",
+    "categories": ["PERSONALIA"],
+    "provenances": ["abc"],
+    "pi": false,
+    "issued": "2019-06-14T12:00:00",
+    "keywords": [
+      "SKATTEETATEN",
+      "bruker"
+    ],
+    "theme": "default",
+    "accessRights": "no",
+    "publisher": "PESYS",
+    "spatial": "huh",
+    "haspart": "unknown"
+  }
+]

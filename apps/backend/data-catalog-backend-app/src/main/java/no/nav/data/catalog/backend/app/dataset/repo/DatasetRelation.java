@@ -1,22 +1,22 @@
-package no.nav.data.catalog.backend.app.dataset;
+package no.nav.data.catalog.backend.app.dataset.repo;
 
-import java.io.Serializable;
-import java.util.UUID;
-
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
+import java.io.Serializable;
+import java.util.UUID;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "dataset__parent_of_dataset", schema = "BACKEND_SCHEMA")
+@Table(name = "dataset__parent_of_dataset")
 public class DatasetRelation {
 
     public DatasetRelation(UUID id, UUID parentOfId) {

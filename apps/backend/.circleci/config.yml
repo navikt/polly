@@ -1,60 +1,90 @@
 version: 2.1
 orbs:
-  gcp-gke: circleci/gcp-gke@0.2.0
-  gcp-gcr: circleci/gcp-gcr@0.6.1
+  nais: navikt/nais-deployment@1.1.1
 jobs:
   build:
-    docker:
-      - image: circleci/openjdk:11.0.3-stretch
-    steps:
-    - checkout
-    - setup_remote_docker
-    - run:
-        name: Build application
-        command: mvn clean install
-  deploy_to_staging:
+    machine:
+      enabled: true
     environment:
-      - PROJECT_NAME: "datajegerne"
-      - GOOGLE_PROJECT_ID: "datajegerne"
-      - GOOGLE_COMPUTE_ZONE: "europe-north1-b"
-      - GOOGLE_CLUSTER_NAME: "datajegerne-cluster"
-    docker:
-      - image: circleci/openjdk:11.0.3-stretch
+      JAVA_HOME: /tmp/java
     steps:
-    - checkout
-    - setup_remote_docker
-    - run:
-        name: Build application
-        command: mvn package
-    - run:
-        name: apt update
-        command: sudo apt-get update || sudo apt-get update
-    - gcp-gcr/gcr-auth
-    - gcp-gcr/build-image:
-        image: navikt/data-catalog-backend
-        tag: $CIRCLE_BUILD_NUM
-    - gcp-gcr/push-image:
-        image: navikt/data-catalog-backend
-        tag: $CIRCLE_BUILD_NUM
-    - gcp-gke/install
-    - gcp-gke/init
-# Timeout pga at clusteret er privat.
-#    - gcp-gke/rollout-image:
-#        cluster: datajegerne-cluster
-#        deployment: data-catalog-backend
-#        container: data-catalog-backend
-#        image: gcr.io/datajegerne/navikt/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BUILD_NUM
+      - checkout
+      - restore_cache:
+          key: java11-{{ checksum ".circleci/install_java.sh" }}
+      - run:
+          name: Install java11
+          command: cat ${JAVA_HOME}/release || bash .circleci/install_java.sh
+      - restore_cache:
+          key: m2-{{ checksum "pom.xml" }}
+      - run:
+          name: Build application
+          command: |
+            mvn --version
+            mvn package
+      - persist_to_workspace:
+         root: .
+         paths:
+           - data-catalog-backend-app/target/app-exec.jar
+           - Dockerfile
+      - save_cache:
+          key: m2-{{ checksum "pom.xml" }}
+          paths:
+            - ~/.m2
+      - save_cache:
+          key: java11-{{ checksum ".circleci/install_java.sh" }}
+          paths:
+            - /tmp/java
+  build_docker_image:
+    docker:
+        - image: circleci/openjdk:11-stretch
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - nais/docker-deploy:
+          image: navikt/data-catalog-backend
 workflows:
   version: 2
   build_and_release:
     jobs:
-      - build:
+      - build
+      - build_docker_image:
+          context: NAIS deployment
+          requires:
+            - build
           filters:
             branches:
-              ignore: master
-          context: datajegerne
-      - deploy_to_staging:
+              only:
+                - master
+                - prod
+      - nais/deploy:
+          name: Deploy preprod
+          context: NAIS deployment
+          build-and-push-docker-image: false
+          repo: navikt/data-catalog-backend
+          image: navikt/data-catalog-backend
+          github-app-id: 26100
+          nais-template: naiserator-preprod.yaml
+          environment: dev-sbs
+          team: teamdatajegerne
+          requires:
+            - build_docker_image
           filters:
             branches:
-              only: master
-          context: datajegerne
+              only:
+                - master
+      - nais/deploy:
+          name: Deploy prod
+          context: NAIS deployment
+          build-and-push-docker-image: false
+          repo: navikt/data-catalog-backend
+          image: navikt/data-catalog-backend
+          github-app-id: 26100
+          nais-template: naiserator-prod.yaml
+          environment: prod-sbs
+          team: teamdatajegerne
+          requires:
+            - build_docker_image
+          filters:
+            branches:
+              only:
+                - prod

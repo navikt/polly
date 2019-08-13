@@ -1,28 +1,29 @@
 package no.nav.data.catalog.backend.app.common.exceptions;
 
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.util.HashMap;
-
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class ValidationException extends RuntimeException {
-    private HashMap<String, HashMap> validationErrors;
+
+    private Map<String, Map<String, String>> validationErrors;
 
     public ValidationException(String message) {
         super(message);
     }
 
-    public ValidationException(HashMap<String, HashMap> validationErrors) {
+    public ValidationException(Map<String, Map<String, String>> validationErrors) {
         this.validationErrors = validationErrors;
     }
 
-    public ValidationException(HashMap<String, HashMap> validationErrors, String message) {
+    public ValidationException(Map<String, Map<String, String>> validationErrors, String message) {
         super(message + " " + validationErrors);
         this.validationErrors = validationErrors;
     }
 
-    public HashMap<String, HashMap> get() {
+    public Map<String, Map<String, String>> get() {
         return validationErrors;
     }
 }
