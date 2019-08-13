@@ -1,12 +1,14 @@
 package no.nav.data.catalog.backend.app.common.utils;
 
-import java.util.Map;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import java.io.IOException;
+import java.util.Map;
 
 public final class JsonUtils {
 
@@ -29,5 +31,25 @@ public final class JsonUtils {
 
     public static Map toMap(Object object) {
         return objectMapper.convertValue(object, MAP_TYPE_REFERENCE);
+    }
+
+    public static <T> T toObject(String jsonPayload, Class<T> type) {
+        try {
+            return objectMapper.readValue(jsonPayload, type);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("invalid json ", e);
+        }
+    }
+
+    public static String toJson(Object object) {
+        try {
+            return objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("cannot convert to json", e);
+        }
+    }
+
+    public static <T> T readValue(String jsonString, TypeReference<T> type) throws IOException {
+        return objectMapper.readValue(jsonString, type);
     }
 }

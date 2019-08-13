@@ -1,8 +1,17 @@
 package no.nav.data.catalog.backend.app.dataset;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import no.nav.data.catalog.backend.app.common.auditing.Auditable;
+import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
+import org.hibernate.annotations.Type;
+
 import java.util.Set;
 import java.util.UUID;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,15 +23,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import no.nav.data.catalog.backend.app.common.auditing.Auditable;
-import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
-import org.hibernate.annotations.Type;
 
 @Data
 @EqualsAndHashCode(exclude = {"children", "parents"}, callSuper = false)
@@ -59,4 +59,7 @@ public class Dataset extends Auditable<String> {
     @ManyToMany(mappedBy = "children")
     private Set<Dataset> parents;
 
+    public DatasetResponse convertToResponse() {
+        return new DatasetResponse(this);
+    }
 }

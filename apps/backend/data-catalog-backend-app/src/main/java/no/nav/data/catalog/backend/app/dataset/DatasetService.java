@@ -1,6 +1,9 @@
 package no.nav.data.catalog.backend.app.dataset;
 
-import static java.util.stream.Collectors.toMap;
+import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelation;
+import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelationRepository;
+import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
@@ -10,7 +13,7 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.springframework.stereotype.Service;
+import static java.util.stream.Collectors.toMap;
 
 @Service
 public class DatasetService {
@@ -23,10 +26,6 @@ public class DatasetService {
         this.datasetRepository = datasetRepository;
     }
 
-    public Optional<DatasetResponse> findDataset(UUID uuid) {
-        return datasetRepository.findById(uuid).map(DatasetResponse::new);
-    }
-
     public Optional<DatasetResponse> findDatasetWithAllDescendants(UUID uuid) {
         Optional<Dataset> datasetOptional = datasetRepository.findById(uuid);
         if (datasetOptional.isEmpty()) {
@@ -35,7 +34,7 @@ public class DatasetService {
         Set<DatasetRelation> relations = datasetRelationRepository.findAllDescendantsOf(uuid);
         Dataset dataset = datasetOptional.get();
         if (relations.isEmpty()) {
-            return Optional.of(new DatasetResponse(dataset));
+            return Optional.of(dataset.convertToResponse());
         }
 
         Set<UUID> allIds = relations.stream()
@@ -58,6 +57,6 @@ public class DatasetService {
                     .map(Optional::get)
                     .collect(Collectors.toList());
         }
-        return datasets.stream().map(DatasetResponse::new).collect(Collectors.toList());
+        return datasets.stream().map(Dataset::convertToResponse).collect(Collectors.toList());
     }
 }

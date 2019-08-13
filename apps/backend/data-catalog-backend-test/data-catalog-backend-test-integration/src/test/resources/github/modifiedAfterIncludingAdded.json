@@ -1,0 +1,29 @@
+[
+  {
+    "name": "modified_changed",
+    "description": "description changed",
+    "categoryCode": "PERSONALIA",
+    "producerCode": ["SKATTEETATEN", "bruker"],
+    "systemCode": "PESYS",
+    "personalData": true
+  },
+  {
+    "name": "modified_added",
+    "description": "description",
+    "categoryCode": "PERSONALIA",
+    "producerCode": ["SKATTEETATEN", "bruker"],
+    "systemCode": "PESYS",
+    "personalData": true
+  },
+  {
+    "name": "added",
+    "description": "description",
+    "categoryCode": "PERSONALIA",
+    "producerCode": [
+      "SKATTEETATEN",
+      "bruker"
+    ],
+    "systemCode": "PESYS",
+    "personalData": true
+  }
+]

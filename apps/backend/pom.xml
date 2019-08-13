@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.6.RELEASE</version>
+        <version>2.1.7.RELEASE</version>
     </parent>
 
     <groupId>no.nav.data</groupId>
@@ -22,20 +22,16 @@
 
     <properties>
         <start-class>no.nav.data.catalog.backend.app.AppStarter</start-class>
-        <junit.version>4.12</junit.version>
-        <jwt.version>0.9.1</jwt.version>
-        <json.version>20180813</json.version>
-        <jaxb.version>2.3.1</jaxb.version>
-        <elasticsearch.version>6.4.1</elasticsearch.version>
-        <testcontainer.version>1.11.2</testcontainer.version>
         <springfox.version>2.9.2</springfox.version>
-        <postgres.version>42.2.5</postgres.version>
-        <spring.cloud.wiremock.version>2.1.1.RELEASE</spring.cloud.wiremock.version>
-        <jjwt.version>0.10.6</jjwt.version>
-        <awaitability.version>3.1.6</awaitability.version>
-        <hibernate-types-52.version>2.4.4</hibernate-types-52.version>
+        <jjwt.version>0.10.7</jjwt.version>
+        <hibernate-types-52.version>2.5.0</hibernate-types-52.version>
         <spring-cloud-dependencies.version>Greenwich.SR2</spring-cloud-dependencies.version>
         <prometheus.version>0.6.0</prometheus.version>
+        <org.eclipse.egit.github.core.version>5.4.0.201906121030-r</org.eclipse.egit.github.core.version>
+
+        <!-- Test -->
+        <awaitability.version>3.1.6</awaitability.version>
+        <testcontainer.version>1.12.0</testcontainer.version>
     </properties>
 
     <dependencies>
@@ -83,5 +79,13 @@
             </plugin>
         </plugins>
     </build>
+
+	<repositories>
+		<repository>
+			<id>repo.eclipse.org</id>
+			<name>EGit Maven Repository - Releases</name>
+			<url>https://repo.eclipse.org/content/repositories/egit-releases/</url>
+		</repository>
+	</repositories>
 
 </project>
