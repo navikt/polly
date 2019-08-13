@@ -16,19 +16,21 @@ import java.util.Queue;
 public abstract class AbstractFilterRequest<T> {
 	protected Specification<T> specification;
 	protected Pageable pageable;
+	private static final int DEFAULT_PAGE_NUMBER = 0;
+	private static final int DEFAULT_PAGE_SIZE = 20;
 
 	protected boolean isQueryMapEmpty(Map<String, String> queryMap) {
 		if (queryMap.isEmpty()) {
-			this.specification = null;                                // Specification = null -> no filter applied
-			this.pageable = PageRequest.of(0, 20);        // Default values for Pageable
+			this.specification = null;        // Specification = null -> no filter applied
+			this.pageable = PageRequest.of(DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE);
 			return true;
 		}
 		return false;
 	}
 
 	protected void checkForAndSetPageable(Map<String, String> queryMap) {
-		int page = queryMap.get("page") == null ? 0 : Integer.parseInt(queryMap.get("page"));
-		int pageSize = queryMap.get("pageSize") == null ? 20 : Integer.parseInt(queryMap.get("pageSize"));
+		int page = queryMap.get("page") == null ? DEFAULT_PAGE_NUMBER : Integer.parseInt(queryMap.get("page"));
+		int pageSize = queryMap.get("pageSize") == null ? DEFAULT_PAGE_SIZE : Integer.parseInt(queryMap.get("pageSize"));
 
 		if (queryMap.get("sort") != null) {
 			Queue<String> queue = new LinkedList<>(Arrays.asList(queryMap.get("sort").split(",")));
@@ -70,6 +72,7 @@ public abstract class AbstractFilterRequest<T> {
 		}
 	}
 
+	// Join Specifications with AND
 	protected Specification<T> conjunctureSpecificationFromList(List<Specification<T>> specificationList) {
 		Specification<T> buildSpecification = null;
 		if (!specificationList.isEmpty()) {
@@ -81,6 +84,7 @@ public abstract class AbstractFilterRequest<T> {
 		return buildSpecification;
 	}
 
+	// Join Specifications with OR
 	protected Specification<T> disjunctureSpecificationFromList(List<Specification<T>> specificationList) {
 		Specification<T> buildSpecification = null;
 		if (!specificationList.isEmpty()) {
