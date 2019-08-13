@@ -47,7 +47,7 @@ public class JwtTokenGenerator {
             claims.put("exp", exp);
             claims.put("iss", githubProperties.getAppId());
 
-            return Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.RS256, key).compact();
+            return Jwts.builder().setClaims(claims).signWith(key, SignatureAlgorithm.RS256).compact();
         } catch (IOException ex) {
             log.error(String.format("Error occurred when reading key file from %s.", githubProperties.getKeyPath()), ex);
             throw new IllegalArgumentException(String.format("Error occurred when reading key file from %s.", githubProperties.getKeyPath()), ex);

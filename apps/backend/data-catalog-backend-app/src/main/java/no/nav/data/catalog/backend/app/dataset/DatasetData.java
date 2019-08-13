@@ -29,4 +29,10 @@ public class DatasetData {
     private String spatial;
     private String haspart;
 
+    private DatasetMaster master;
+
+    public boolean hasMaster() {
+        return master != null;
+    }
+
 }

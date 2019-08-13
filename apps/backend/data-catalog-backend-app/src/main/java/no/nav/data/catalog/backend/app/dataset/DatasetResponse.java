@@ -41,6 +41,7 @@ public class DatasetResponse {
     private String spatial;
     private String haspart;
 
+    private DatasetMaster master;
     private Set<DatasetResponse> children;
 
     DatasetResponse(Dataset dataset) {
@@ -70,6 +71,7 @@ public class DatasetResponse {
         setPublisher(datasetData.getPublisher());
         setSpatial(datasetData.getSpatial());
         setHaspart(datasetData.getHaspart());
+        setMaster(datasetData.getMaster());
     }
 
     private <T> List<T> copyOf(List<T> list) {
