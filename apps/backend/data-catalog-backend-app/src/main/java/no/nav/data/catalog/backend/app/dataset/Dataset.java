@@ -65,28 +65,34 @@ public class Dataset extends Auditable<String> {
         return new DatasetResponse(this);
     }
 
-    public Dataset convertFromRequest(DatasetRequest request, boolean isUpdate) {
-        if (isUpdate) {
-            this.elasticsearchStatus = ElasticsearchStatus.TO_BE_UPDATED;
-        } else {
-            this.elasticsearchStatus = ElasticsearchStatus.TO_BE_CREATED;
-            this.id = UUID.randomUUID();
-        }
-        datasetData = DatasetData.builder()
-                .title(request.getTitle())
-                .description(request.getDescription())
-                .categories(copyOf(request.getCategories()))
-                .provenances(copyOf(request.getProvenances()))
-                .pi(request.getPi())
-                .issued(request.getIssued())
-                .keywords(copyOf(request.getKeywords()))
-                .theme(request.getTheme())
-                .accessRights(request.getAccessRights())
-                .publisher(request.getPublisher())
-                .spatial(request.getSpatial())
-                .haspart(request.getHaspart())
-                .master(request.getMaster())
-                .build();
+    public Dataset convertNewFromRequest(DatasetRequest request, DatasetMaster master) {
+        id = UUID.randomUUID();
+        elasticsearchStatus = ElasticsearchStatus.TO_BE_CREATED;
+        datasetData = new DatasetData();
+        datasetData.setMaster(master);
+        convertFromRequest(request);
         return this;
     }
+
+    public Dataset convertUpdateFromRequest(DatasetRequest request) {
+        elasticsearchStatus = ElasticsearchStatus.TO_BE_UPDATED;
+        convertFromRequest(request);
+        return this;
+    }
+
+    private void convertFromRequest(DatasetRequest request) {
+        datasetData.setTitle(request.getTitle());
+        datasetData.setDescription(request.getDescription());
+        datasetData.setCategories(copyOf(request.getCategories()));
+        datasetData.setProvenances(copyOf(request.getProvenances()));
+        datasetData.setPi(request.getPi());
+        datasetData.setIssued(request.getIssued());
+        datasetData.setKeywords(copyOf(request.getKeywords()));
+        datasetData.setTheme(request.getTheme());
+        datasetData.setAccessRights(request.getAccessRights());
+        datasetData.setPublisher(request.getPublisher());
+        datasetData.setSpatial(request.getSpatial());
+        datasetData.setHaspart(request.getHaspart());
+    }
+
 }

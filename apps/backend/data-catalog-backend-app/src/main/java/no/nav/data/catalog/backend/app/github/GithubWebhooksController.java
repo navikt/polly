@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.utils.CollectionDifference;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
+import no.nav.data.catalog.backend.app.dataset.DatasetMaster;
 import no.nav.data.catalog.backend.app.dataset.DatasetRequest;
 import no.nav.data.catalog.backend.app.dataset.DatasetService;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
@@ -221,7 +222,7 @@ public class GithubWebhooksController {
             return;
         }
         List<Dataset> datasets = requests.stream()
-                .map(request -> new Dataset().convertFromRequest(request, false))
+                .map(request -> new Dataset().convertNewFromRequest(request, DatasetMaster.GITHUB))
                 .collect(Collectors.toList());
         log.info("The following list of Datasets have been set to be added during the next scheduled task: {}", datasets);
         repository.saveAll(datasets);

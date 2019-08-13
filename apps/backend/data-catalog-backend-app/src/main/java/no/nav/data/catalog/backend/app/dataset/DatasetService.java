@@ -62,18 +62,20 @@ public class DatasetService {
     }
 
     // TODO
-    public Map<String, Map<String, String>> validateRequestsAndReturnErrors(List<DatasetRequest> shared, boolean b) {
+    public Map<String, Map<String, String>> validateRequestsAndReturnErrors(List<DatasetRequest> requests, boolean update) {
+        validateRequests(requests, update);
         return new HashMap<>();
     }
 
-    // TODO
+    // TODO validate
+    public void validateRequests(List<DatasetRequest> requests, boolean update) {
+
+    }
+
+    // TODO validate
     public List<Dataset> returnUpdatedDatasetsIfAllArePresent(List<DatasetRequest> requests) {
-        return datasetRepository.findAllByTitle(requests.stream().map(DatasetRequest::getTitle).collect(Collectors.toList()))
-                .stream()
-                .peek(ds -> {
-                    DatasetRequest req = requests.stream().filter(r -> r.getTitle().equals(ds.getDatasetData().getTitle())).findFirst().orElse(null);
-                    ds.convertFromRequest(req, true);
-                })
-                .collect(Collectors.toList());
+        List<Dataset> datasets = datasetRepository.findAllByTitle(requests.stream().map(DatasetRequest::getTitle).collect(Collectors.toList()));
+        datasets.forEach(ds -> requests.stream().filter(r -> r.getTitle().equals(ds.getDatasetData().getTitle())).findFirst().ifPresent(ds::convertUpdateFromRequest));
+        return datasets;
     }
 }
