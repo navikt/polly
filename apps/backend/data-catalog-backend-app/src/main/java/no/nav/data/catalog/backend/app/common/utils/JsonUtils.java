@@ -1,14 +1,14 @@
 package no.nav.data.catalog.backend.app.common.utils;
 
-import java.io.IOException;
-import java.util.Map;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import java.io.IOException;
+import java.util.Map;
 
 public final class JsonUtils {
 
@@ -47,5 +47,9 @@ public final class JsonUtils {
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("cannot convert to json", e);
         }
+    }
+
+    public static <T> T readValue(String jsonString, TypeReference<T> type) throws IOException {
+        return objectMapper.readValue(jsonString, type);
     }
 }

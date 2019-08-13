@@ -2,6 +2,7 @@ package no.nav.data.catalog.backend.test.component.informationtype;
 
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchRepository;
+import no.nav.data.catalog.backend.app.github.GithubReference;
 import no.nav.data.catalog.backend.app.informationtype.InformationType;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
@@ -223,8 +224,7 @@ public class InformationTypeServiceTest {
 	public void validateRequestsCreate_shouldReturnValidationErrorsForGithubRequest() {
 		List<InformationTypeRequest> requests = createListOfOneRequest("Name");
 		InformationTypeRequest request = requests.get(0);
-		request.setGithubFile("ghf");
-		request.setGithubFileOrdinal(0);
+		request.setGithubReference(new GithubReference("Name", "ghf", 0));
 		request.setProducerCode(List.of("UnknownProducerCode"));
 
 		Map<String, Map<String, String>> validationMap = service.validateRequestsAndReturnErrors(requests, false);

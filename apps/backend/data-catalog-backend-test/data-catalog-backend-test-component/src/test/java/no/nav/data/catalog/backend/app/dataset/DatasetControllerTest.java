@@ -1,6 +1,7 @@
 package no.nav.data.catalog.backend.app.dataset;
 
 import no.nav.data.catalog.backend.app.AppStarter;
+import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

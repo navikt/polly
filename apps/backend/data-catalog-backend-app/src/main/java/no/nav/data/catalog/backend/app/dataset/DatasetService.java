@@ -1,5 +1,8 @@
 package no.nav.data.catalog.backend.app.dataset;
 
+import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelation;
+import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelationRepository;
+import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

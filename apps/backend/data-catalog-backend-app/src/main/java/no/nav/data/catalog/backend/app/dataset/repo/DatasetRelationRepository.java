@@ -1,10 +1,10 @@
-package no.nav.data.catalog.backend.app.dataset;
-
-import java.util.Set;
-import java.util.UUID;
+package no.nav.data.catalog.backend.app.dataset.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * findAllDescendantsOf and findAllAncestorsOf are circular safe

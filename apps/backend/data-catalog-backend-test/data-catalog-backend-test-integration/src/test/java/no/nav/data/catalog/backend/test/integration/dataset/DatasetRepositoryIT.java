@@ -1,7 +1,7 @@
 package no.nav.data.catalog.backend.test.integration.dataset;
 
 import no.nav.data.catalog.backend.app.dataset.Dataset;
-import no.nav.data.catalog.backend.app.dataset.DatasetRelation;
+import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelation;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

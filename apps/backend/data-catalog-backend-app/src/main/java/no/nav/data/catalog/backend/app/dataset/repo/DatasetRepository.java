@@ -1,5 +1,6 @@
-package no.nav.data.catalog.backend.app.dataset;
+package no.nav.data.catalog.backend.app.dataset.repo;
 
+import no.nav.data.catalog.backend.app.dataset.Dataset;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
