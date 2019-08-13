@@ -3,7 +3,6 @@ package no.nav.data.catalog.backend.app.dataset;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -26,7 +25,6 @@ import static org.eclipse.egit.github.core.RepositoryContents.TYPE_FILE;
 
 @Slf4j
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
