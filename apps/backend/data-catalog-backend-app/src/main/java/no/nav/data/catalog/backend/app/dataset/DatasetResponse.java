@@ -21,6 +21,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.validation.constraints.NotNull;
 
+import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.copyOf;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -73,10 +75,6 @@ public class DatasetResponse {
         setSpatial(datasetData.getSpatial());
         setHaspart(datasetData.getHaspart());
         setMaster(datasetData.getMaster());
-    }
-
-    private <T> List<T> copyOf(List<T> list) {
-        return list == null ? Collections.emptyList() : List.copyOf(list);
     }
 
     public Map toMap() {

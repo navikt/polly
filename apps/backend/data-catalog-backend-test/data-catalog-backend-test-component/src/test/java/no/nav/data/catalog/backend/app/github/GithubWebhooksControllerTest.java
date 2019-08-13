@@ -2,6 +2,10 @@ package no.nav.data.catalog.backend.app.github;
 
 import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
+import no.nav.data.catalog.backend.app.dataset.Dataset;
+import no.nav.data.catalog.backend.app.dataset.DatasetRequest;
+import no.nav.data.catalog.backend.app.dataset.DatasetService;
+import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.github.domain.RepoModification;
 import no.nav.data.catalog.backend.app.informationtype.InformationType;
 import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
@@ -61,9 +65,9 @@ public class GithubWebhooksControllerTest {
     private HmacUtils githubHmac;
 
     @MockBean
-    private InformationTypeRepository repository;
+    private DatasetRepository repository;
     @MockBean
-    private InformationTypeService service;
+    private DatasetService service;
     @MockBean
     private PolDatasettRepository polDatasettRepository;
     @MockBean
@@ -177,8 +181,8 @@ public class GithubWebhooksControllerTest {
     @Test
     public void updateOnPush() throws Exception {
         when(githubConsumer.compare("internalbefore", "head")).thenReturn(repoModification);
-        when(repository.findByName("removed")).then(i -> Optional.of(new InformationType()));
-        when(service.returnUpdatedInformationTypesIfAllArePresent(anyList())).then(AdditionalAnswers.returnsArgAt(0));
+        when(repository.findByTitle("removed")).then(i -> Optional.of(new Dataset()));
+        when(service.returnUpdatedDatasetsIfAllArePresent(anyList())).then(AdditionalAnswers.returnsArgAt(0));
         String payload = JsonUtils.toJson(push);
 
         mvc.perform(post(GithubWebhooksController.BACKEND_WEBHOOKS)
@@ -210,6 +214,6 @@ public class GithubWebhooksControllerTest {
     private RepositoryContents createFile(String file, String name) {
         return new RepositoryContents().setName(name).setPath(file)
                 .setType(RepositoryContents.TYPE_FILE).setEncoding(RepositoryContents.ENCODING_BASE64)
-                .setContent(Base64.getEncoder().encodeToString(JsonUtils.toJson(InformationTypeRequest.builder().name(name).build()).getBytes()));
+                .setContent(Base64.getEncoder().encodeToString(JsonUtils.toJson(DatasetRequest.builder().title(name).build()).getBytes()));
     }
 }

@@ -1,14 +1,14 @@
 package no.nav.data.catalog.backend.test.integration.github;
 
-import no.nav.data.catalog.backend.app.codelist.CodelistService;
+import no.nav.data.catalog.backend.app.dataset.Dataset;
+import no.nav.data.catalog.backend.app.dataset.DatasetData;
+import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import no.nav.data.catalog.backend.app.github.GithubConsumer;
 import no.nav.data.catalog.backend.app.github.GithubWebhooksController;
 import no.nav.data.catalog.backend.app.github.domain.GithubAccount;
 import no.nav.data.catalog.backend.app.github.domain.GithubInstallation;
 import no.nav.data.catalog.backend.app.github.domain.GithubInstallationToken;
-import no.nav.data.catalog.backend.app.informationtype.InformationType;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
 import no.nav.data.catalog.backend.app.poldatasett.PolDatasett;
 import no.nav.data.catalog.backend.app.poldatasett.PolDatasettRepository;
 import no.nav.data.catalog.backend.test.component.codelist.CodelistStub;
@@ -23,9 +23,7 @@ import org.eclipse.egit.github.core.RepositoryContents;
 import org.eclipse.egit.github.core.event.PullRequestPayload;
 import org.eclipse.egit.github.core.event.PushPayload;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.io.ClassPathResource;
@@ -40,7 +38,9 @@ import org.testcontainers.shaded.org.apache.commons.lang.StringUtils;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.exactly;
@@ -61,23 +61,15 @@ import static org.junit.Assert.assertTrue;
 
 public class GithubWebhooksControllerIT extends IntegrationTestBase {
 
-    public static final String URL = "/webhooks";
     @Autowired
     protected TestRestTemplate restTemplate;
 
     @Autowired
-    protected InformationTypeRepository repository;
-
+    protected DatasetRepository repository;
     @Autowired
     protected PolDatasettRepository polDatasettRepository;
     @Autowired
     private HmacUtils hmacUtils;
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
-
-    @Autowired
-    protected CodelistService codelistService;
 
     private String head = "821cd53c03fa042c2a32f0c73ff5612c0a458143";
     private String before = "dbe83db262b1fd082e5cf90053f6196127976e7f";
@@ -90,18 +82,18 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
 
         polDatasettRepository.save(new PolDatasett(before));
 
-        repository.save(InformationType.builder()
-                .name("removed").description("desc").systemCode("PESYS")
-                .elasticsearchStatus(ElasticsearchStatus.SYNCED).producerCode("BRUKER")
-                .categoryCode("PERSONALIA").build());
-        repository.save(InformationType.builder()
-                .name("modified_removed").description("desc").systemCode("PESYS")
-                .elasticsearchStatus(ElasticsearchStatus.SYNCED).producerCode("BRUKER")
-                .categoryCode("PERSONALIA").build());
-        repository.save(InformationType.builder()
-                .name("modified_changed").description("desc").systemCode("PESYS")
-                .elasticsearchStatus(ElasticsearchStatus.SYNCED).producerCode("BRUKER")
-                .categoryCode("PERSONALIA").build());
+        repository.save(Dataset.builder()
+                .id(UUID.randomUUID())
+                .elasticsearchStatus(ElasticsearchStatus.SYNCED)
+                .datasetData(DatasetData.builder().title("removed").description("desc").build()).build());
+        repository.save(Dataset.builder()
+                .id(UUID.randomUUID())
+                .elasticsearchStatus(ElasticsearchStatus.SYNCED)
+                .datasetData(DatasetData.builder().title("modified_removed").description("desc").build()).build());
+        repository.save(Dataset.builder()
+                .id(UUID.randomUUID())
+                .elasticsearchStatus(ElasticsearchStatus.SYNCED)
+                .datasetData(DatasetData.builder().title("modified_changed").description("desc").build()).build());
     }
 
     @Test
@@ -113,16 +105,17 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
         request.setRef(GithubConsumer.REFS_HEADS_MASTER);
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(
-                URL, HttpMethod.POST, createRequest(request, GithubWebhooksController.PUSH_EVENT), String.class);
+                "/webhooks", HttpMethod.POST, createRequest(request, GithubWebhooksController.PUSH_EVENT), String.class);
 
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(repository.findAll().size(), is(5));
+        List<Dataset> all = repository.findAll();
+        assertThat(all.size(), is(5));
 
-        Optional<InformationType> added = repository.findByName("added");
-        Optional<InformationType> removed = repository.findByName("removed");
-        Optional<InformationType> modifiedRemoved = repository.findByName("modified_removed");
-        Optional<InformationType> modifiedChanged = repository.findByName("modified_changed");
-        Optional<InformationType> modifiedAdded = repository.findByName("modified_added");
+        Optional<Dataset> added = repository.findByTitle("added");
+        Optional<Dataset> removed = repository.findByTitle("removed");
+        Optional<Dataset> modifiedRemoved = repository.findByTitle("modified_removed");
+        Optional<Dataset> modifiedChanged = repository.findByTitle("modified_changed");
+        Optional<Dataset> modifiedAdded = repository.findByTitle("modified_added");
 
         assertTrue(added.isPresent());
         assertTrue(removed.isPresent());
@@ -150,7 +143,7 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
                 );
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(
-                URL, HttpMethod.POST, createRequest(request, GithubWebhooksController.PULL_REQUEST_EVENT), String.class);
+                "/webhooks", HttpMethod.POST, createRequest(request, GithubWebhooksController.PULL_REQUEST_EVENT), String.class);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 
         verify(postRequestedFor(urlPathEqualTo(String.format("/api/v3/repos/navikt/pol-datasett/statuses/%s", head)))
@@ -175,13 +168,13 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
                 );
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(
-                URL, HttpMethod.POST, createRequest(request, GithubWebhooksController.PULL_REQUEST_EVENT), String.class);
+                "/webhooks", HttpMethod.POST, createRequest(request, GithubWebhooksController.PULL_REQUEST_EVENT), String.class);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 
         verify(postRequestedFor(urlPathEqualTo(String.format("/api/v3/repos/navikt/pol-datasett/statuses/%s", head)))
                 .withRequestBody(matchingJsonPath("$.context", equalTo("data-catalog-validation")))
-                .withRequestBody(matchingJsonPath("$.description", equalTo("name=added file=testdataIkkeSlett/added.json ordinal=1 duplicate entry, "
-                        + "name=added file=testdataIkkeSlett/modified.json ordinal=3 duplicate entry")))
+                .withRequestBody(matchingJsonPath("$.description", equalTo("title=added path=testdataIkkeSlett/added.json ordinal=1 duplicate entry, "
+                        + "title=added path=testdataIkkeSlett/modified.json ordinal=3 duplicate entry")))
                 .withRequestBody(matchingJsonPath("$.state", equalTo("failure")))
         );
     }
@@ -197,7 +190,7 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
                 );
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(
-                URL, HttpMethod.POST, createRequest(request, GithubWebhooksController.PULL_REQUEST_EVENT), String.class);
+                "/webhooks", HttpMethod.POST, createRequest(request, GithubWebhooksController.PULL_REQUEST_EVENT), String.class);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 
         verify(exactly(0), postRequestedFor(urlPathEqualTo(String.format("/api/v3/repos/navikt/pol-datasett/statuses/%s", head))));

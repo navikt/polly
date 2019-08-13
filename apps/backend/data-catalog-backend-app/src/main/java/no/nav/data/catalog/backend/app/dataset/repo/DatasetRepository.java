@@ -21,4 +21,7 @@ public interface DatasetRepository extends JpaRepository<Dataset, UUID> {
 
     @Query(value = "select * from dataset where json_property->>'title' = ?1", nativeQuery = true)
     Optional<Dataset> findByTitle(String name);
+
+    @Query(value = "select * from dataset where json_property->>'title' in ?1", nativeQuery = true)
+    List<Dataset> findAllByTitle(List<String> title);
 }

@@ -1,18 +1,36 @@
 [
   {
-    "name": "modified_removed",
+    "title": "modified_removed",
     "description": "description",
-    "categoryCode": "PERSONALIA",
-    "producerCode": ["SKATTEETATEN", "bruker"],
-    "systemCode": "TPS",
-    "personalData": true
+    "categories": ["PERSONALIA"],
+    "provenances": ["abc"],
+    "pi": false,
+    "issued": "2019-06-14T12:00:00",
+    "keywords": [
+      "SKATTEETATEN",
+      "bruker"
+    ],
+    "theme": "default",
+    "accessRights": "no",
+    "publisher": "PESYS",
+    "spatial": "huh",
+    "haspart": "unknown"
   },
   {
-    "name": "modified_changed",
+    "title": "modified_changed",
     "description": "description",
-    "categoryCode": "PERSONALIA",
-    "producerCode": ["SKATTEETATEN", "bruker"],
-    "systemCode": "PESYS",
-    "personalData": true
+    "categories": ["PERSONALIA"],
+    "provenances": ["abc"],
+    "pi": false,
+    "issued": "2019-06-14T12:00:00",
+    "keywords": [
+      "SKATTEETATEN",
+      "bruker"
+    ],
+    "theme": "default",
+    "accessRights": "no",
+    "publisher": "PESYS",
+    "spatial": "huh",
+    "haspart": "unknown"
   }
 ]

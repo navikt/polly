@@ -1,19 +1,19 @@
 package no.nav.data.catalog.backend.app.github.domain;
 
-import static java.util.Comparator.comparing;
-import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.safeStream;
+import lombok.Builder;
+import lombok.Data;
+import no.nav.data.catalog.backend.app.common.utils.CollectionDifference;
+import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
+import no.nav.data.catalog.backend.app.dataset.DatasetRequest;
+import org.eclipse.egit.github.core.RepositoryContents;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import lombok.Builder;
-import lombok.Data;
-import no.nav.data.catalog.backend.app.common.utils.CollectionDifference;
-import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
-import org.eclipse.egit.github.core.RepositoryContents;
+import static java.util.Comparator.comparing;
+import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.safeStream;
 
 @Builder
 @Data
@@ -29,16 +29,16 @@ public class RepoModification {
         return added.size() + modifiedBefore.size() + modifiedAfter.size() + deleted.size();
     }
 
-    public CollectionDifference<InformationTypeRequest> toChangelist() {
-        List<InformationTypeRequest> previousItems = mapToInformationTypeRequest(deleted, modifiedBefore);
-        List<InformationTypeRequest> currentItems = mapToInformationTypeRequest(added, modifiedAfter);
+    public CollectionDifference<DatasetRequest> toChangelist() {
+        List<DatasetRequest> previousItems = mapToDatasetRequest(deleted, modifiedBefore);
+        List<DatasetRequest> currentItems = mapToDatasetRequest(added, modifiedAfter);
 
-        return StreamUtils.difference(previousItems, currentItems, comparing(InformationTypeRequest::getName));
+        return StreamUtils.difference(previousItems, currentItems, comparing(DatasetRequest::getTitle));
     }
 
-    private List<InformationTypeRequest> mapToInformationTypeRequest(List<RepositoryContents> contentsOne, List<RepositoryContents> contentsTwo) {
+    private List<DatasetRequest> mapToDatasetRequest(List<RepositoryContents> contentsOne, List<RepositoryContents> contentsTwo) {
         return Stream.concat(safeStream(contentsOne), safeStream(contentsTwo))
-                .map(InformationTypeRequest::convertFromGithubFile)
+                .map(DatasetRequest::convertFromGithubFile)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }

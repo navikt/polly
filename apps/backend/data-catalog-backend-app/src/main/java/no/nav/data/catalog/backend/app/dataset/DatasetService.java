@@ -5,6 +5,7 @@ import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelationRepository;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -58,5 +59,21 @@ public class DatasetService {
                     .collect(Collectors.toList());
         }
         return datasets.stream().map(Dataset::convertToResponse).collect(Collectors.toList());
+    }
+
+    // TODO
+    public Map<String, Map<String, String>> validateRequestsAndReturnErrors(List<DatasetRequest> shared, boolean b) {
+        return new HashMap<>();
+    }
+
+    // TODO
+    public List<Dataset> returnUpdatedDatasetsIfAllArePresent(List<DatasetRequest> requests) {
+        return datasetRepository.findAllByTitle(requests.stream().map(DatasetRequest::getTitle).collect(Collectors.toList()))
+                .stream()
+                .peek(ds -> {
+                    DatasetRequest req = requests.stream().filter(r -> r.getTitle().equals(ds.getDatasetData().getTitle())).findFirst().orElse(null);
+                    ds.convertFromRequest(req, true);
+                })
+                .collect(Collectors.toList());
     }
 }

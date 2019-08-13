@@ -1,11 +1,17 @@
 {
-  "name": "added",
+  "title": "added",
   "description": "description",
-  "categoryCode": "PERSONALIA",
-  "producerCode": [
+  "categories": ["PERSONALIA"],
+  "provenances": ["abc"],
+  "pi": false,
+  "issued": "2019-06-14T12:00:00",
+  "keywords": [
     "SKATTEETATEN",
     "bruker"
   ],
-  "systemCode": "PESYS",
-  "personalData": true
+  "theme": "default",
+  "accessRights": "no",
+  "publisher": "PESYS",
+  "spatial": "huh",
+  "haspart": "unknown"
 }

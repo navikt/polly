@@ -1,29 +1,18 @@
 package no.nav.data.catalog.backend.app.github;
 
-import static java.util.Arrays.asList;
-import static no.nav.data.catalog.backend.app.github.GithubConsumer.REFS_HEADS_MASTER;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.utils.CollectionDifference;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
+import no.nav.data.catalog.backend.app.dataset.Dataset;
+import no.nav.data.catalog.backend.app.dataset.DatasetRequest;
+import no.nav.data.catalog.backend.app.dataset.DatasetService;
+import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import no.nav.data.catalog.backend.app.github.domain.RepoModification;
-import no.nav.data.catalog.backend.app.informationtype.InformationType;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeRepository;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
 import no.nav.data.catalog.backend.app.poldatasett.PolDatasett;
 import no.nav.data.catalog.backend.app.poldatasett.PolDatasettRepository;
 import org.apache.commons.codec.digest.HmacUtils;
@@ -38,6 +27,17 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.transaction.Transactional;
+
+import static java.util.Arrays.asList;
+import static no.nav.data.catalog.backend.app.github.GithubConsumer.REFS_HEADS_MASTER;
 
 @Slf4j
 @Transactional
@@ -55,15 +55,15 @@ public class GithubWebhooksController {
     public static final String HEADER_GITHUB_ID = "X-GitHub-Delivery";
     public static final String HEADER_GITHUB_SIGNATURE = "X-Hub-Signature";
 
-    private final InformationTypeService service;
-    private final InformationTypeRepository repository;
+    private final DatasetService service;
+    private final DatasetRepository repository;
     private final PolDatasettRepository polDatasettRepository;
     private final GithubConsumer githubConsumer;
     private final HmacUtils githubHmac;
 
 
-    public GithubWebhooksController(InformationTypeService service,
-            InformationTypeRepository repository,
+    public GithubWebhooksController(DatasetService service,
+            DatasetRepository repository,
             PolDatasettRepository polDatasettRepository,
             GithubConsumer githubConsumer,
             HmacUtils githubHmac) {
@@ -98,7 +98,7 @@ public class GithubWebhooksController {
         return ResponseEntity.ok().build();
     }
 
-    private void processEvent(@RequestBody String jsonPayload, String eventType) {
+    private void processEvent(String jsonPayload, String eventType) {
         try {
             if (PUSH_EVENT.equals(eventType)) {
                 processPushEvent(JsonUtils.toObject(jsonPayload, PushPayload.class));
@@ -130,7 +130,7 @@ public class GithubWebhooksController {
         String before = pullRequest.getBase().getSha();
         log.info("validating pull request from {} {} to {} {}", fromBranch, before, toBranch, head);
 
-        CollectionDifference<InformationTypeRequest> difference = calculateDifference(before, head);
+        CollectionDifference<DatasetRequest> difference = calculateDifference(before, head);
         List<String> validate = validate(difference);
         githubConsumer.updateStatus(head, validate);
     }
@@ -143,7 +143,7 @@ public class GithubWebhooksController {
 
         String internalBefore = findInternallyStoredBefore();
         log.info("Before {}, internal before {}, new head {}", payload.getBefore(), internalBefore, payload.getHead());
-        CollectionDifference<InformationTypeRequest> difference = calculateDifference(internalBefore, payload.getHead());
+        CollectionDifference<DatasetRequest> difference = calculateDifference(internalBefore, payload.getHead());
         List<String> validate = validate(difference);
         if (!validate.isEmpty()) {
             throw new IllegalArgumentException(String.format("Validation errors: %s", validate));
@@ -155,12 +155,12 @@ public class GithubWebhooksController {
         polDatasettRepository.save(new PolDatasett(payload.getHead()));
     }
 
-    private List<String> validate(CollectionDifference<InformationTypeRequest> difference) {
+    private List<String> validate(CollectionDifference<DatasetRequest> difference) {
         List<String> validationErrors = new ArrayList<>();
 
         // To validate that there aren't duplicates across add and modify
         difference.getAfter().stream()
-                .filter(element -> difference.getAfter().stream().anyMatch(compare -> !element.equals(compare) && element.getName().equals(compare.getName())))
+                .filter(element -> difference.getAfter().stream().anyMatch(compare -> !element.equals(compare) && element.getTitle().equals(compare.getTitle())))
                 .map(element -> String.format("%s duplicate entry", element.getRequestReference().orElse(null)))
                 .forEach(validationErrors::add);
 
@@ -181,48 +181,49 @@ public class GithubWebhooksController {
         return polDatasettRepository.findFirstByOrderByIdDesc().map(PolDatasett::getGithubSha).orElse(null);
     }
 
-    private CollectionDifference<InformationTypeRequest> calculateDifference(String before, String head) {
+    private CollectionDifference<DatasetRequest> calculateDifference(String before, String head) {
         RepoModification repoModification = githubConsumer.compare(before, head);
-        CollectionDifference<InformationTypeRequest> difference = repoModification.toChangelist();
+        CollectionDifference<DatasetRequest> difference = repoModification.toChangelist();
         log.info("Add: {} Modify: {} Remove: {}", difference.getAdded().size(), difference.getShared().size(), difference.getRemoved().size());
         return difference;
     }
 
-    private void modify(List<InformationTypeRequest> requests) {
+    private void modify(List<DatasetRequest> requests) {
         if (requests.isEmpty()) {
             return;
         }
-        List<InformationType> updatedInformationTypes = service.returnUpdatedInformationTypesIfAllArePresent(requests);
-        log.info("The following list of InformationTypes have been set to be updated during the next scheduled task: {}", updatedInformationTypes);
-        repository.saveAll(updatedInformationTypes);
+        List<Dataset> updatedDatasets = service.returnUpdatedDatasetsIfAllArePresent(requests);
+        log.info("The following list of Datasets have been set to be updated during the next scheduled task: {}", updatedDatasets);
+        repository.saveAll(updatedDatasets);
     }
 
-    private void remove(Collection<InformationTypeRequest> requests) {
+    private void remove(Collection<DatasetRequest> requests) {
         if (requests.isEmpty()) {
             return;
         }
-        List<InformationType> toBeDeletedInformationTypes = new ArrayList<>();
+        List<Dataset> toBeDeletedDatasets = new ArrayList<>();
         requests.forEach(request -> {
-            String name = request.getName().trim();
-            Optional<InformationType> fromRepository = repository.findByName(name);
+            String title = request.getTitle().trim();
+            Optional<Dataset> fromRepository = repository.findByTitle(title);
             if (fromRepository.isEmpty()) {
-                log.warn("Cannot find InformationType with name={} for deletion", name);
+                log.warn("Cannot find Dataset with title={} for deletion", title);
                 return;
             }
             fromRepository.get().setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED);
-            toBeDeletedInformationTypes.add(fromRepository.get());
+            toBeDeletedDatasets.add(fromRepository.get());
         });
-        log.info("The following list of InformationTypes have been set to be deleted during the next scheduled task: {}", toBeDeletedInformationTypes);
-        repository.saveAll(toBeDeletedInformationTypes);
+        log.info("The following list of Datasets have been set to be deleted during the next scheduled task: {}", toBeDeletedDatasets);
+        repository.saveAll(toBeDeletedDatasets);
     }
 
-    private void add(Collection<InformationTypeRequest> requests) {
+    private void add(Collection<DatasetRequest> requests) {
         if (requests.isEmpty()) {
             return;
         }
-        log.info("The following list of InformationTypes have been set to be added during the next scheduled task: {}", requests);
-        repository.saveAll(requests.stream()
-                .map(request -> new InformationType().convertFromRequest(request, false))
-                .collect(Collectors.toList()));
+        List<Dataset> datasets = requests.stream()
+                .map(request -> new Dataset().convertFromRequest(request, false))
+                .collect(Collectors.toList());
+        log.info("The following list of Datasets have been set to be added during the next scheduled task: {}", datasets);
+        repository.saveAll(datasets);
     }
 }
