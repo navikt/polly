@@ -3,8 +3,8 @@ package no.nav.data.catalog.backend.app.dataset;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
@@ -15,6 +15,7 @@ import org.eclipse.egit.github.core.RepositoryContents;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -25,11 +26,26 @@ import static org.eclipse.egit.github.core.RepositoryContents.TYPE_FILE;
 
 @Slf4j
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class DatasetRequest extends DatasetData {
+public class DatasetRequest {
 
+    private String title;
+    private String description;
+    private List<String> categories;
+    private List<String> provenances;
+    private Boolean pi;
+    private LocalDateTime issued;
+    private List<String> keywords;
+    private String theme;
+    private String accessRights;
+    private String publisher;
+    private String spatial;
+    private String haspart;
+    private List<String> distributionChannels;
+
+    @JsonIgnore
     private GithubReference githubReference;
 
     public static List<DatasetRequest> convertFromGithubFile(RepositoryContents file) {
@@ -51,7 +67,6 @@ public class DatasetRequest extends DatasetData {
                 AtomicInteger i = new AtomicInteger(0);
                 datasetRequests.forEach(request -> {
                     request.setGithubReference(new GithubReference(request.getTitle(), file.getPath(), i.incrementAndGet()));
-                    request.setMaster(DatasetMaster.GITHUB);
                 });
                 return datasetRequests;
             } catch (IOException e) {

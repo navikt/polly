@@ -1,8 +1,12 @@
 {
   "title": "added",
   "description": "description",
-  "categories": ["PERSONALIA"],
-  "provenances": ["abc"],
+  "categories": [
+    "PERSONALIA"
+  ],
+  "provenances": [
+    "abc"
+  ],
   "pi": false,
   "issued": "2019-06-14T12:00:00",
   "keywords": [
@@ -13,5 +17,8 @@
   "accessRights": "no",
   "publisher": "PESYS",
   "spatial": "huh",
-  "haspart": "unknown"
+  "haspart": "unknown",
+  "distributionChannels": [
+    "aapen-dok-mottatt"
+  ]
 }

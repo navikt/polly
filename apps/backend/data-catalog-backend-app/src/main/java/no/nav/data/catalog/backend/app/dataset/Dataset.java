@@ -68,8 +68,7 @@ public class Dataset extends Auditable<String> {
     public Dataset convertNewFromRequest(DatasetRequest request, DatasetMaster master) {
         id = UUID.randomUUID();
         elasticsearchStatus = ElasticsearchStatus.TO_BE_CREATED;
-        datasetData = new DatasetData();
-        datasetData.setMaster(master);
+        datasetData = new DatasetData(master);
         convertFromRequest(request);
         return this;
     }
