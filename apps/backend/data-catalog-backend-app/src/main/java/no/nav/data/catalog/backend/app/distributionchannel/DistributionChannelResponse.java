@@ -3,9 +3,9 @@ package no.nav.data.catalog.backend.app.distributionchannel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.system.System;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -29,14 +29,7 @@ public class DistributionChannelResponse {
 		this.consumers = distributionChannel.getConsumers();
 	}
 
-	Map<String, Object> convertToMap() {
-		Map<String, Object> jsonMap = new HashMap<>();
-		jsonMap.put("distribusjonId", this.id);
-		jsonMap.put("name", this.name);
-		jsonMap.put("description", this.description);
-		jsonMap.put("producers", this.producers);
-		jsonMap.put("consumers", this.consumers);
-
-		return jsonMap;
+    public Map toMap() {
+        return JsonUtils.toMap(this);
 	}
 }

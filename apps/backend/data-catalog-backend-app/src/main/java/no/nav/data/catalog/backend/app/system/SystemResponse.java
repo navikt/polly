@@ -2,9 +2,9 @@ package no.nav.data.catalog.backend.app.system;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -25,14 +25,8 @@ public class SystemResponse {
 		this.consumerDistributionChannels = system.getConsumerDistributionChannels();
 	}
 
-	Map<String, Object> convertToMap() {
-		Map<String, Object> jsonMap = new HashMap<>();
-		jsonMap.put("systemId", this.id);
-		jsonMap.put("name", this.name);
-		jsonMap.put("producerDistributionChannels", this.producerDistributionChannels);
-		jsonMap.put("consumerDistributionChannels", this.consumerDistributionChannels);
-
-		return jsonMap;
+	public Map toMap() {
+		return JsonUtils.toMap(this);
 	}
 
 }

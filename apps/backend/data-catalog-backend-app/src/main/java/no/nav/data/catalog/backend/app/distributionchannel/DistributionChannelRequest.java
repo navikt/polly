@@ -16,7 +16,6 @@ public class DistributionChannelRequest {
 
 	private String name;
 	private String description;
-    //TODO: String name of System here?
     private Set<System> producers;
 	private Set<System> consumers;
 }
