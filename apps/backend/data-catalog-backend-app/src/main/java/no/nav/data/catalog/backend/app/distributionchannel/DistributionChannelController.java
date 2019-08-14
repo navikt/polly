@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.informationtype.RestResponsePage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,24 +30,29 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @CrossOrigin
-@RequestMapping("/backend/distributionchannel")
+@RequestMapping("/distributionchannel")
 @Api(value = "DistributionChannel", description = "REST API for DistributionChannel", tags = {"DistributionChannel"})
 public class DistributionChannelController {
 
-	@Autowired
-	private DistributionChannelService service;
+    private final DistributionChannelService service;
+    private final DistributionChannelRepository repository;
+
+    public DistributionChannelController(DistributionChannelService service, DistributionChannelRepository repository) {
+        this.service = service;
+        this.repository = repository;
+    }
 
 	@ApiOperation(value = "Get DistributionChannelById", tags = {"DistributionChannel"})
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "DistributionChannel fetched", response = DistributionChannel.class),
 			@ApiResponse(code = 404, message = "DistributionChannel  not found"),
 			@ApiResponse(code = 500, message = "Internal server error")})
-	@GetMapping("/id/{uuid}")
-	public ResponseEntity getDistributionChannelById(@PathVariable UUID uuid) {
-		log.info("Received request for DistributionChannel with the id={}", uuid);
-		Optional<DistributionChannel> distributionChannel = service.findDistributionChannelById(uuid);
+    @GetMapping("/{id}")
+    public ResponseEntity getDistributionChannelById(@PathVariable UUID id) {
+        log.info("Received request for DistributionChannel with the id={}", id);
+        Optional<DistributionChannel> distributionChannel = repository.findById(id);
 		if (distributionChannel.isEmpty()) {
-			log.info("Cannot find the DistributionChannel with id={}", uuid);
+            log.info("Cannot find the DistributionChannel with id={}", id);
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		log.info("Returned DistributionChannel");
@@ -79,7 +83,7 @@ public class DistributionChannelController {
 	@GetMapping("/count")
 	public Long countAllDistributionChannels() {
 		log.info("Received request for count all DistributionChannels");
-		return service.getRepositoryCount();
+        return repository.count();
 	}
 
 	@ApiOperation(value = "Create DistributionChannel", tags = {"DistributionChannel"})
