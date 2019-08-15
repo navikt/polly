@@ -12,14 +12,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
+
+import static java.util.Collections.emptyList;
 
 @Component
 public class PolicyConsumer {
+
+    private static final ParameterizedTypeReference<PagedResources<PolicyResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    };
 
     @Autowired
     private RestTemplate restTemplate;
@@ -27,22 +33,31 @@ public class PolicyConsumer {
     @Value("${datacatalog.policy.url}")
     private String policyUrl;
 
-    public List<PolicyResponse> getPolicyForInformationType(Long informationTypeId) {
-        if (informationTypeId == null) return null;
+    public List<PolicyResponse> getPolicyForDataset(UUID datasetId) {
+        if (datasetId == null) {
+            return emptyList();
+        }
         try {
-            ResponseEntity<PagedResources<PolicyResponse>> responseEntity = restTemplate.exchange(policyUrl + "?informationTypeId=" + informationTypeId + "&page=0&size=1000", HttpMethod.GET, HttpEntity.EMPTY, new ParameterizedTypeReference<PagedResources<PolicyResponse>>() {});
+            ResponseEntity<PagedResources<PolicyResponse>> responseEntity = restTemplate
+                    .exchange(policyUrl + "?datasetId={id}&page=0&size=1000", HttpMethod.GET, HttpEntity.EMPTY, RESPONSE_TYPE, datasetId);
             if (responseEntity.getBody().getContent() != null) {
-                return responseEntity.getBody().getContent().stream().collect(Collectors.toList());
-            } else return null;
-        } catch (
-                HttpClientErrorException e) {
-            if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
-                return new ArrayList<>();
+                return new ArrayList<>(responseEntity.getBody().getContent());
             } else {
-                throw new DataCatalogBackendTechnicalException(String.format("Getting Policies for InformationType (id: %s) failed with status=%s message=%s", informationTypeId, e.getStatusCode(), e.getResponseBodyAsString()), e, e.getStatusCode());
+                return emptyList();
+            }
+        } catch (HttpClientErrorException e) {
+            if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
+                return emptyList();
+            } else {
+                return throwException(datasetId, e);
             }
         } catch (HttpServerErrorException e) {
-            throw new DataCatalogBackendTechnicalException(String.format("Getting Policies for InformationType (id: %s) failed with status=%s message=%s", informationTypeId, e.getStatusCode(), e.getResponseBodyAsString()), e, e.getStatusCode());
+            return throwException(datasetId, e);
         }
+    }
+
+    private List<PolicyResponse> throwException(UUID datasetId, HttpStatusCodeException e) {
+        String message = String.format("Getting Policies for Dataset (id: %s) failed with status=%s message=%s", datasetId, e.getStatusCode(), e.getResponseBodyAsString());
+        throw new DataCatalogBackendTechnicalException(message, e, e.getStatusCode());
     }
 }

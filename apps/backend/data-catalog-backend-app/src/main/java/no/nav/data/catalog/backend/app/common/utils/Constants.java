@@ -6,6 +6,6 @@ public final class Constants {
 		throw new IllegalStateException("Utility class");
 	}
 
-	public static final String INFORMATION_TYPE_INDEX = "informationtypes";
+	public static final String DATASET_ELASTICSEARCH_INDEX = "datasets";
 	public static final String ES_DOC_TYPE = "_doc";
 }

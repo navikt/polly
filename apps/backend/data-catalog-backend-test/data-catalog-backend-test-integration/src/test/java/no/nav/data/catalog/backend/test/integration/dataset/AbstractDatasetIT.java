@@ -59,6 +59,7 @@ public abstract class AbstractDatasetIT {
     private Dataset createDataset(String name, Set<Dataset> children) {
         return Dataset.builder()
                 .id(UUID.randomUUID())
+                .generateElasticsearchId()
                 .elasticsearchStatus(ElasticsearchStatus.TO_BE_CREATED)
                 .datasetData(DatasetData.builder()
                         .title(name).build())

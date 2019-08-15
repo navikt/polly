@@ -1,6 +1,6 @@
 package no.nav.data.catalog.backend.test.integration.scheduler;
 
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeService;
+import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchDatasetService;
 import no.nav.data.catalog.backend.test.integration.IntegrationTestBase;
 import org.awaitility.Duration;
 import org.junit.Test;
@@ -10,10 +10,10 @@ import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.verify;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
-public class ElasticsearchIndexingSchedulerConfigTest extends IntegrationTestBase {
+public class ElasticsearchIndexingSchedulerConfigIT extends IntegrationTestBase {
 
     @SpyBean
-    private InformationTypeService service;
+    private ElasticsearchDatasetService service;
 
     @Test
     public void jobRuns() {
