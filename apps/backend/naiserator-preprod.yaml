@@ -16,10 +16,10 @@ spec:
     max: 2
     cpuThresholdPercentage: 50
   liveness:
-    path: datacatalog/backend/internal/isAlive
+    path: backend/internal/isAlive
     initialDelay: 60
   readiness:
-    path: datacatalog/backend/internal/isReady
+    path: backend/internal/isReady
     initialDelay: 60
   resources:
     limits:
@@ -31,4 +31,4 @@ spec:
     enabled: true
   prometheus:
     enabled: true
-    path: datacatalog/backend/internal/metrics
+    path: backend/internal/metrics
