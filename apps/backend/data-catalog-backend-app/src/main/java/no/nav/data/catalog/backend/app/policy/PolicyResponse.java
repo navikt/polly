@@ -5,10 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import no.nav.data.catalog.backend.app.informationtype.InformationType;
-
-import java.util.HashMap;
-import java.util.Map;
+import no.nav.data.catalog.backend.app.codelist.CodeResponse;
 
 @Getter
 @Builder
@@ -16,16 +13,9 @@ import java.util.Map;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PolicyResponse {
-    private Long policyId;
-    private InformationType informationType;
-    private String legalBasisDescription;
-    private Map<String, String> purpose;
 
-    public Map<String, Object> convertToMap() {
-        Map<String, Object> jsonMap = new HashMap<>();
-        jsonMap.put("policyId", policyId);
-        jsonMap.put("legalBasisDescription", legalBasisDescription);
-        jsonMap.put("purpose", purpose);
-        return jsonMap;
-    }
+    private Long policyId;
+    private String legalBasisDescription;
+    private CodeResponse purpose;
+
 }

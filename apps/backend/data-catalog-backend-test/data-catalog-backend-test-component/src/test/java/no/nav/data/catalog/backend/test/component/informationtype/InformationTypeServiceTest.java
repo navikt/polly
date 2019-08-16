@@ -1,5 +1,6 @@
 package no.nav.data.catalog.backend.test.component.informationtype;
 
+import no.nav.data.catalog.backend.app.codelist.CodeResponse;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchRepository;
 import no.nav.data.catalog.backend.app.github.GithubReference;
@@ -29,25 +30,18 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_CREATED;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.anyMap;
 import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
 @RunWith(MockitoJUnitRunner.class)
 public class InformationTypeServiceTest {
 
-	private static InformationType informationType;
-	private static PolicyResponse policy;
+	private InformationType informationType;
+	private PolicyResponse policy;
 
 	@Mock
 	private InformationTypeRepository informationTypeRepository;
@@ -84,56 +78,9 @@ public class InformationTypeServiceTest {
 		informationType.setLastModifiedBy(null);
 		informationType.setLastModifiedDate(null);
 
-		policy = PolicyResponse.builder().policyId(1L).legalBasisDescription("Legal description").purpose(Map.of("code", "purposeCode", "description", "Purpose description")).build();
+		policy = PolicyResponse.builder().policyId(1L).legalBasisDescription("Legal description")
+				.purpose(new CodeResponse("purposeCode", "Purpose description")).build();
 
-	}
-
-	@Test
-	public void shouldSyncCreatedInformationTypes() {
-		List<InformationType> informationTypes = new ArrayList<>();
-		informationTypes.add(informationType);
-		List<PolicyResponse> policies = new ArrayList<>();
-		policies.add(policy);
-		when(informationTypeRepository.findByElasticsearchStatus(TO_BE_CREATED)).thenReturn(Optional.of(informationTypes));
-		when(policyConsumer.getPolicyForInformationType(anyLong())).thenReturn(policies);
-
-		service.synchToElasticsearch();
-		verify(elasticsearchRepository, times(1)).insertInformationType(anyMap());
-		verify(elasticsearchRepository, times(0)).updateInformationTypeById(anyString(), anyMap());
-		verify(elasticsearchRepository, times(0)).deleteInformationTypeById(anyString());
-		verify(informationTypeRepository, times(1)).save(any(InformationType.class));
-		verify(informationTypeRepository, times(0)).deleteById(anyLong());
-	}
-
-	@Test
-	public void shouldSyncUpdatedInformationTypes() {
-		List<InformationType> informationTypes = new ArrayList<>();
-		informationTypes.add(informationType);
-		List<PolicyResponse> policies = new ArrayList<>();
-		policies.add(policy);
-		when(policyConsumer.getPolicyForInformationType(anyLong())).thenReturn(policies);
-		when(informationTypeRepository.findByElasticsearchStatus(TO_BE_UPDATED)).thenReturn(Optional.of(informationTypes));
-
-		service.synchToElasticsearch();
-		verify(elasticsearchRepository, times(0)).insertInformationType(anyMap());
-		verify(elasticsearchRepository, times(1)).updateInformationTypeById(any(), anyMap());
-		verify(elasticsearchRepository, times(0)).deleteInformationTypeById(anyString());
-		verify(informationTypeRepository, times(1)).save(any(InformationType.class));
-		verify(informationTypeRepository, times(0)).deleteById(anyLong());
-	}
-
-	@Test
-	public void shouldSyncDeletedInformationTypes() {
-		List<InformationType> informationTypes = new ArrayList<>();
-		informationTypes.add(informationType);
-		when(informationTypeRepository.findByElasticsearchStatus(TO_BE_DELETED)).thenReturn(Optional.of(informationTypes));
-
-		service.synchToElasticsearch();
-		verify(elasticsearchRepository, times(0)).insertInformationType(anyMap());
-		verify(elasticsearchRepository, times(0)).updateInformationTypeById(any(), anyMap());
-		verify(elasticsearchRepository, times(1)).deleteInformationTypeById(any());
-		verify(informationTypeRepository, times(0)).save(any(InformationType.class));
-		verify(informationTypeRepository, times(1)).deleteById(any());
 	}
 
 	@Test

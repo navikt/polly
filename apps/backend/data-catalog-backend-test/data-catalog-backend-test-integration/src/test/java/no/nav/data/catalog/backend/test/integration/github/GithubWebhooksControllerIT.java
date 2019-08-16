@@ -83,15 +83,15 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
         polDatasettRepository.save(new PolDatasett(before));
 
         repository.save(Dataset.builder()
-                .id(UUID.randomUUID())
+                .id(UUID.randomUUID()).generateElasticsearchId()
                 .elasticsearchStatus(ElasticsearchStatus.SYNCED)
                 .datasetData(DatasetData.builder().title("removed").description("desc").build()).build());
         repository.save(Dataset.builder()
-                .id(UUID.randomUUID())
+                .id(UUID.randomUUID()).generateElasticsearchId()
                 .elasticsearchStatus(ElasticsearchStatus.SYNCED)
                 .datasetData(DatasetData.builder().title("modified_removed").description("desc").build()).build());
         repository.save(Dataset.builder()
-                .id(UUID.randomUUID())
+                .id(UUID.randomUUID()).generateElasticsearchId()
                 .elasticsearchStatus(ElasticsearchStatus.SYNCED)
                 .datasetData(DatasetData.builder().title("modified_changed").description("desc").build()).build());
     }

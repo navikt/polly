@@ -25,6 +25,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.copyOf;
+import static org.elasticsearch.common.UUIDs.base64UUID;
 
 @Data
 @EqualsAndHashCode(exclude = {"children", "parents"}, callSuper = false)
@@ -40,6 +41,10 @@ public class Dataset extends Auditable<String> {
     @Column(name = "DATASET_ID")
     @Type(type = "pg-uuid")
     private UUID id;
+
+    @NotNull
+    @Column(name = "ELASTICSEARCH_ID", nullable = false)
+    private String elasticsearchId;
 
     @NotNull
     @Column(name = "ELASTICSEARCH_STATUS", nullable = false)
@@ -67,6 +72,7 @@ public class Dataset extends Auditable<String> {
 
     public Dataset convertNewFromRequest(DatasetRequest request, DatasetMaster master) {
         id = UUID.randomUUID();
+        elasticsearchId = base64UUID();
         elasticsearchStatus = ElasticsearchStatus.TO_BE_CREATED;
         datasetData = new DatasetData(master);
         convertFromRequest(request);
@@ -92,6 +98,14 @@ public class Dataset extends Auditable<String> {
         datasetData.setPublisher(request.getPublisher());
         datasetData.setSpatial(request.getSpatial());
         datasetData.setHaspart(request.getHaspart());
+    }
+
+    public static class DatasetBuilder {
+
+        public DatasetBuilder generateElasticsearchId() {
+            this.elasticsearchId = base64UUID();
+            return this;
+        }
     }
 
 }

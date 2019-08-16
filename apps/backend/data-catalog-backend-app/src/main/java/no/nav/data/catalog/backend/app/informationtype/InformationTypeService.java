@@ -1,10 +1,13 @@
 package no.nav.data.catalog.backend.app.informationtype;
 
-import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCED;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_CREATED;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
-import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.data.catalog.backend.app.codelist.ListName;
+import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
+import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,17 +18,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import lombok.extern.slf4j.Slf4j;
-import no.nav.data.catalog.backend.app.codelist.ListName;
-import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
-import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
-import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchRepository;
-import no.nav.data.catalog.backend.app.policy.PolicyConsumer;
-import no.nav.data.catalog.backend.app.policy.PolicyResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
 
 @Slf4j
 @Service
@@ -35,79 +28,6 @@ public class InformationTypeService {
 
 	@Autowired
 	private InformationTypeRepository repository;
-
-	@Autowired
-	private ElasticsearchRepository elasticsearch;
-
-	@Autowired
-	private PolicyConsumer policyConsumer;
-
-	public void synchToElasticsearch() {
-		logger.info("Starting sync to ElasticSearch");
-		createInformationTypesInElasticsearch();
-		updateInformationTypesInElasticsearch();
-		deleteInformationTypesInElasticsearchAndInPostgres();
-		logger.info("Finished sync to ElasticSearch");
-	}
-
-	private void createInformationTypesInElasticsearch() {
-		Optional<List<InformationType>> optionalInformationTypes = repository.findByElasticsearchStatus(TO_BE_CREATED);
-		if (optionalInformationTypes.isPresent()) {
-			Map<String, Object> jsonMap;
-
-			for (InformationType informationType : optionalInformationTypes.get()) {
-				InformationTypeESDocument informationTypeESDocument = new InformationTypeESDocument();
-				informationTypeESDocument.setInformationTypeResponse(informationType.convertToResponse());
-				List<PolicyResponse> policies = policyConsumer.getPolicyForInformationType(informationType.getId());
-				informationTypeESDocument.setPolicies(policies);
-
-				jsonMap = informationTypeESDocument.convertToMap();
-
-				elasticsearch.insertInformationType(jsonMap);
-
-				informationType.setElasticsearchStatus(SYNCED);
-				repository.save(informationType);
-			}
-		}
-	}
-
-	private void updateInformationTypesInElasticsearch() {
-		Optional<List<InformationType>> optinalInformationTypes = repository.findByElasticsearchStatus(TO_BE_UPDATED);
-		if (optinalInformationTypes.isPresent()) {
-			Map<String, Object> jsonMap;
-
-			for (InformationType informationType : optinalInformationTypes.get()) {
-				InformationTypeESDocument informationTypeESDocument = new InformationTypeESDocument();
-				informationTypeESDocument.setInformationTypeResponse(informationType.convertToResponse());
-				List<PolicyResponse> policies = policyConsumer.getPolicyForInformationType(informationType.getId());
-				informationTypeESDocument.setPolicies(policies);
-
-				jsonMap = informationTypeESDocument.convertToMap();
-
-				elasticsearch.updateInformationTypeById(informationType.getElasticsearchId(), jsonMap);
-
-				informationType.setElasticsearchStatus(SYNCED);
-				repository.save(informationType);
-			}
-		}
-	}
-
-	private void deleteInformationTypesInElasticsearchAndInPostgres() {
-		Optional<List<InformationType>> optinalInformationTypes = repository.findByElasticsearchStatus(TO_BE_DELETED);
-		if (optinalInformationTypes.isPresent()) {
-
-			for (InformationType informationType : optinalInformationTypes.get()) {
-				elasticsearch.deleteInformationTypeById(informationType.getElasticsearchId());
-
-				repository.deleteById(informationType.getId());
-			}
-		}
-	}
-
-	//TODO: Do we need this?
-	public void resendToElasticsearch() {
-		repository.updateStatusAllRows(TO_BE_UPDATED);
-	}
 
 	public void validateRequests(List<InformationTypeRequest> requests, boolean isUpdate) {
 		Map<String, Map<String, String>> validation = validateRequestsAndReturnErrors(requests, isUpdate);
