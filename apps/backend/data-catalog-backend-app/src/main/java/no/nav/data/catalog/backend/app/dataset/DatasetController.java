@@ -5,11 +5,13 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.catalog.backend.app.common.rest.PageParameters;
 import no.nav.data.catalog.backend.app.common.rest.RestResponsePage;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -91,10 +93,9 @@ public class DatasetController {
             @ApiResponse(code = 200, message = "Datasets fetched", response = DatasetResponse.class, responseContainer = "List"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/roots")
-    public RestResponsePage<DatasetResponse> findAllRoot(@RequestParam(value = "includeDescendants", defaultValue = "false") boolean includeDescendants,
-            @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "pageSize", defaultValue = "20") int pageSize) {
+    public RestResponsePage<DatasetResponse> findAllRoot(@RequestParam(value = "includeDescendants", defaultValue = "false") boolean includeDescendants, PageParameters page) {
         log.info("Received request for all root Datasets");
-        PageRequest pageable = PageRequest.of(page, pageSize, Sort.by("id"));
+        Pageable pageable = createIdSortedPage(page);
         Page<DatasetResponse> allRootDatasets = service.findAllRootDatasets(includeDescendants, pageable);
         log.info("Returned {} root Datasets", allRootDatasets.getContent().size());
         return new RestResponsePage<>(allRootDatasets.getContent(), pageable, allRootDatasets.getTotalElements());
@@ -105,9 +106,9 @@ public class DatasetController {
             @ApiResponse(code = 200, message = "Datasets fetched", response = DatasetResponse.class, responseContainer = "List"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/")
-    public RestResponsePage<DatasetResponse> findAll(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "pageSize", defaultValue = "20") int pageSize) {
+    public RestResponsePage<DatasetResponse> findAll(PageParameters page) {
         log.info("Received request for all Datasets");
-        PageRequest pageable = PageRequest.of(page, pageSize, Sort.by("id"));
+        Pageable pageable = createIdSortedPage(page);
         Page<DatasetResponse> datasets = repository.findAll(pageable).map(Dataset::convertToResponse);
         log.info("Returned {} Datasets", datasets.getContent().size());
         return new RestResponsePage<>(datasets.getContent(), pageable, datasets.getTotalElements());
@@ -201,6 +202,10 @@ public class DatasetController {
         dataset.setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED);
         log.info("Dataset with id={} has been set to be deleted during the next scheduled task", id);
         return new ResponseEntity<>(repository.save(dataset).convertToResponse(), HttpStatus.ACCEPTED);
+    }
+
+    private Pageable createIdSortedPage(PageParameters page) {
+        return PageRequest.of(page.getPageNumber(), page.getPageSize(), Sort.by("id"));
     }
 
 }

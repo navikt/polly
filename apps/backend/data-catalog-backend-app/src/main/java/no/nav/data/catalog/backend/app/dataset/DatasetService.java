@@ -4,7 +4,7 @@ import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelation;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelationRepository;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -49,7 +49,7 @@ public class DatasetService {
         return new DatasetResponse(dataset, allDatasets, relations);
     }
 
-    public Page<DatasetResponse> findAllRootDatasets(boolean includeDescendants, PageRequest pageable) {
+    public Page<DatasetResponse> findAllRootDatasets(boolean includeDescendants, Pageable pageable) {
         Page<Dataset> datasets = datasetRepository.findAllRootDatasets(pageable);
         if (includeDescendants) {
             return datasets
