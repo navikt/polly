@@ -2,6 +2,7 @@ package no.nav.data.catalog.backend.app.dataset;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,6 +12,7 @@ import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelation;
+import no.nav.data.catalog.backend.app.policy.PolicyResponse;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -31,6 +33,7 @@ import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.copyOf;
 public class DatasetResponse {
 
     private UUID id;
+    private String elasticsearchId;
     private String title;
     private String description;
     private List<CodeResponse> categories;
@@ -45,7 +48,8 @@ public class DatasetResponse {
     private String haspart;
 
     private DatasetMaster master;
-    private Set<DatasetResponse> children;
+    private List<DatasetResponse> children;
+    private List<PolicyResponse> policies;
 
     DatasetResponse(Dataset dataset) {
         this(dataset, Collections.emptyMap(), Collections.emptySet());
@@ -53,12 +57,13 @@ public class DatasetResponse {
 
     DatasetResponse(Dataset dataset, Map<UUID, Dataset> allDatasets, Set<DatasetRelation> relations) {
         id = dataset.getId();
+        elasticsearchId = dataset.getElasticsearchId();
         mapJsonFields(dataset.getDatasetData());
 
         children = relations.stream()
                 .filter(rel -> rel.getId().equals(id))
                 .map(rel -> new DatasetResponse(allDatasets.get(rel.getParentOfId()), allDatasets, relations))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     private void mapJsonFields(@NotNull DatasetData datasetData) {

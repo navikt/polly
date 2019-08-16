@@ -1,14 +1,13 @@
 package no.nav.data.catalog.backend.app.elasticsearch;
 
 import static no.nav.data.catalog.backend.app.common.utils.Constants.ES_DOC_TYPE;
-import static no.nav.data.catalog.backend.app.common.utils.Constants.INFORMATION_TYPE_INDEX;
 
 import java.io.IOException;
-import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import no.nav.data.catalog.backend.app.common.exceptions.DocumentNotFoundException;
+import no.nav.data.catalog.backend.app.common.utils.Constants;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -21,6 +20,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.AbstractQueryBuilder;
 import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
@@ -40,37 +40,22 @@ public class ElasticsearchRepository {
         this.restHighLevelClient = restHighLevelClient;
     }
 
-    public void insertInformationType(Map<String, Object> jsonMap) {
-        insert(jsonMap, INFORMATION_TYPE_INDEX);
-    }
-
-    public Map<String, Object> getInformationTypeById(String id) {
-        return getById(id, INFORMATION_TYPE_INDEX);
-    }
-
-    public void updateInformationTypeById(String id, Map<String, Object> jsonMap) {
-        updateById(id, jsonMap, INFORMATION_TYPE_INDEX);
-    }
-
-    public void deleteInformationTypeById(String id) {
-        deleteById(id, INFORMATION_TYPE_INDEX);
-    }
-
-    public SearchResponse searchByField(String fieldName, String fieldValue) {
+    public SearchResponse searchDatasetsByField(String fieldName, String fieldValue) {
         AbstractQueryBuilder query = new MatchQueryBuilder(fieldName, fieldValue);
-        return searchByQuery(query, INFORMATION_TYPE_INDEX);
+        return searchByQuery(query, Constants.DATASET_ELASTICSEARCH_INDEX);
     }
 
-    public SearchResponse getAllInformationTypes() {
+    public SearchResponse getAllDatasets() {
         AbstractQueryBuilder query = new MatchAllQueryBuilder();
-        return searchByQuery(query, INFORMATION_TYPE_INDEX);
+        return searchByQuery(query, Constants.DATASET_ELASTICSEARCH_INDEX);
     }
 
-    private void insert(Map<String, Object> jsonMap, String index) {
-        String id = jsonMap.get("id").toString();
+    public void insert(ElasticsearchDocument document) {
+        String index = document.getIndex();
+        String id = document.getId();
         log.info("insert: Insert new {} with document id={}", index, id);
         IndexRequest indexRequest = new IndexRequest(index, ES_DOC_TYPE, id);
-        indexRequest.source(jsonMap);
+        indexRequest.source(document.getJson(), XContentType.JSON);
 
         try {
             restHighLevelClient.index(indexRequest, requestOptions);
@@ -84,7 +69,9 @@ public class ElasticsearchRepository {
         }
     }
 
-    private Map<String, Object> getById(String id, String index) {
+    public String getById(ElasticsearchDocument document) {
+        String index = document.getIndex();
+        String id = document.getId();
         log.info("getById: Received request for {} with document id={}", index, id);
         GetRequest getRequest = new GetRequest(index, ES_DOC_TYPE, id);
         GetResponse getResponse;
@@ -100,14 +87,16 @@ public class ElasticsearchRepository {
             throw new DataCatalogBackendTechnicalException(ex.getLocalizedMessage(), ex);
         }
         log.info("getById: Returned {}", index);
-        return getResponse.getSourceAsMap();
+        return getResponse.getSourceAsString();
     }
 
-    private void updateById(String id, Map<String, Object> jsonMap, String index) {
+    public void updateById(ElasticsearchDocument document) {
+        String index = document.getIndex();
+        String id = document.getId();
         log.info("updateById: Request to update {} with document id={}", index, id);
         UpdateRequest updateRequest = new UpdateRequest(index, ES_DOC_TYPE, id);
         updateRequest.fetchSource(true);
-        updateRequest.doc(jsonMap);
+        updateRequest.doc(document.getJson(), XContentType.JSON);
 
         try {
             restHighLevelClient.update(updateRequest, requestOptions);
@@ -115,12 +104,12 @@ public class ElasticsearchRepository {
         } catch (ElasticsearchException e) {
             if (e.status() == RestStatus.NOT_FOUND) {
                 log.info("updateById: {} with document id={} does not exist. Will try to insert {} instead", index, id, index);
-                IndexRequest indexRequest = new IndexRequest(INFORMATION_TYPE_INDEX, ES_DOC_TYPE, jsonMap.get("id").toString());
-                indexRequest.source(jsonMap);
+                IndexRequest indexRequest = new IndexRequest(index, ES_DOC_TYPE, id);
+                indexRequest.source(document.getJson(), XContentType.JSON);
                 try {
                     restHighLevelClient.index(indexRequest, requestOptions);
                 } catch (IOException ex) {
-                    log.error(String.format("Error occurred during indexing, document id=%s", jsonMap.get("id").toString()), ex);
+                    log.error(String.format("Error occurred during indexing, document id=%s", id), ex);
                     throw new DataCatalogBackendTechnicalException(ex.getLocalizedMessage(), ex);
                 }
             } else {
@@ -133,7 +122,9 @@ public class ElasticsearchRepository {
         }
     }
 
-    private void deleteById(String id, String index) {
+    public void deleteById(ElasticsearchDocument document) {
+        String index = document.getIndex();
+        String id = document.getId();
         log.info("deleteById: Request to delete {} with document id={}", index, id);
         DeleteRequest deleteRequest = new DeleteRequest(index, ES_DOC_TYPE, id);
 
@@ -150,7 +141,7 @@ public class ElasticsearchRepository {
         }
     }
 
-    private SearchResponse searchByQuery(AbstractQueryBuilder query, String index) {
+    public SearchResponse searchByQuery(AbstractQueryBuilder query, String index) {
         SearchRequest searchRequest = new SearchRequest();
         searchRequest.indices(index);
 
