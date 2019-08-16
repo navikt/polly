@@ -1,14 +1,22 @@
 package no.nav.data.catalog.backend.app.dataset;
 
 import no.nav.data.catalog.backend.app.AppStarter;
+import no.nav.data.catalog.backend.app.common.rest.PageParameters;
+import no.nav.data.catalog.backend.app.common.rest.RestResponsePage;
+import no.nav.data.catalog.backend.app.dataset.Dataset;
+import no.nav.data.catalog.backend.app.dataset.DatasetController;
+import no.nav.data.catalog.backend.app.dataset.DatasetData;
+import no.nav.data.catalog.backend.app.dataset.DatasetService;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -19,6 +27,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -73,7 +82,10 @@ public class DatasetControllerTest {
 
     @Test
     public void findAllRoot() throws Exception {
-        when(service.findAllRootDatasets(false, PageRequest.of(0, 20, Sort.by("id")))).thenReturn(new PageImpl<>(Collections.singletonList(dataset.convertToResponse())));
+        Pageable pageable = new PageParameters().createIdSortedPage();
+        Page<DatasetResponse> allRootDatasets = new PageImpl<>(Collections.singletonList(dataset.convertToResponse()), pageable, 1);
+
+        when(service.findAllRootDatasets(false, pageable)).thenReturn(allRootDatasets);
         mvc.perform(get("/dataset/roots"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].id").value(dataset.getId().toString()));

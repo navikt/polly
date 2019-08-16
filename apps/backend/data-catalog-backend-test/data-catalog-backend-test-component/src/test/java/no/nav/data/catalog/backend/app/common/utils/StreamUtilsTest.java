@@ -6,6 +6,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.Comparator;
 import java.util.function.Function;
 
+import no.nav.data.catalog.backend.app.common.utils.CollectionDifference;
+import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import org.junit.Test;
 
 public class StreamUtilsTest {
