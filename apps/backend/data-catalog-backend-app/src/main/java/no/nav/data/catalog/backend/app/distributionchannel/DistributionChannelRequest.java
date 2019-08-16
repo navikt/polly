@@ -4,9 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.data.catalog.backend.app.system.System;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Builder
@@ -14,8 +13,9 @@ import java.util.Set;
 @AllArgsConstructor
 public class DistributionChannelRequest {
 
-	private String name;
-	private String description;
-    private Set<System> producers;
-	private Set<System> consumers;
+    private String name;
+    private String description;
+    private DistributionChannelType type;
+    private List<String> producers;
+    private List<String> consumers;
 }

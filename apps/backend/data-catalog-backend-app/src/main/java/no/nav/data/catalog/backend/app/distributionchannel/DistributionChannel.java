@@ -62,8 +62,9 @@ public class DistributionChannel extends Auditable<String> {
 		}
 		this.name = request.getName().trim();
 		this.description = request.getDescription().trim();
-		this.producers = request.getProducers();
-		this.consumers = request.getConsumers();
+		// TODO
+//		this.producers = request.getProducers();
+//		this.consumers = request.getConsumers();
 
 		return this;
 	}

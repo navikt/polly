@@ -6,11 +6,18 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.core.ParameterizedTypeReference;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 public final class JsonUtils {
+
+    public static final ParameterizedTypeReference<List<String>> STRING_LIST = new ParameterizedTypeReference<>() {
+    };
+    public static final ParameterizedTypeReference<List<String>> INT_LIST = new ParameterizedTypeReference<>() {
+    };
 
     private JsonUtils() {
     }

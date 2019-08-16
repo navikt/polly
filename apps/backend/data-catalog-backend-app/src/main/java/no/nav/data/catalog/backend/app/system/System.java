@@ -51,8 +51,9 @@ public class System extends Auditable<String> {
 			this.id = UUID.randomUUID();
 		}
 		this.name = request.getName().trim();
-		this.producerDistributionChannels = request.getProducerDistributionChannels();
-		this.consumerDistributionChannels = request.getConsumerDistributionChannels();
+		// TODO
+//		this.producerDistributionChannels = request.getProducerDistributionChannels();
+//		this.consumerDistributionChannels = request.getConsumerDistributionChannels();
 		return this;
 	}
 

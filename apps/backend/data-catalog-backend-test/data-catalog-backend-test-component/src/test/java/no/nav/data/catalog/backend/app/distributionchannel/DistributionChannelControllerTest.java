@@ -21,6 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -54,14 +55,8 @@ public class DistributionChannelControllerTest {
     private DistributionChannelRequest distributionChannelRequest = DistributionChannelRequest.builder()
             .name("distributionChannelName")
             .description("description")
-            .producers(Set.of(System.builder()
-                    .id(UUID.randomUUID())
-                    .name("producer")
-                    .build()))
-            .consumers(Set.of(System.builder()
-                    .id(UUID.randomUUID())
-                    .name("consumer")
-                    .build()))
+            .producers(Collections.singletonList("producer"))
+            .consumers(Collections.singletonList("consumer"))
             .build();
 
     private DistributionChannel distributionChannel = DistributionChannel.builder()
