@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.app.informationtype;
+package no.nav.data.catalog.backend.app.common.rest;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -22,7 +22,7 @@ public class RestResponsePage<T> extends PageImpl<T> {
 	@JsonProperty("totalElements")
 	private long totalElements;
 
-	RestResponsePage(List<T> content, Pageable pageable, long total) {
+	public RestResponsePage(List<T> content, Pageable pageable, long total) {
 		super(content, pageable, total);
 		this.content = content;
 		this.number = pageable.getPageNumber();
