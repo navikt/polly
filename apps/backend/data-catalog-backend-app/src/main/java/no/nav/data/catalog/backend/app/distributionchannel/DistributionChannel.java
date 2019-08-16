@@ -10,6 +10,8 @@ import no.nav.data.catalog.backend.app.common.auditing.Auditable;
 import no.nav.data.catalog.backend.app.system.System;
 import org.hibernate.annotations.Type;
 
+import java.util.Set;
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -18,8 +20,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.util.Set;
-import java.util.UUID;
 
 @Data
 @EqualsAndHashCode(exclude = {"producers", "consumers"}, callSuper = false)
@@ -56,7 +56,7 @@ public class DistributionChannel extends Auditable<String> {
 			inverseJoinColumns = @JoinColumn(name = "SYSTEM_ID"))
 	private Set<System> consumers;
 
-	public DistributionChannel convertFromRequest(DistributionChannelRequest request, Boolean isUpdate) {
+    public DistributionChannel convertFromRequest(DistributionChannelRequest request, boolean isUpdate) {
 		if (!isUpdate) {
 			this.id = UUID.randomUUID();
 		}

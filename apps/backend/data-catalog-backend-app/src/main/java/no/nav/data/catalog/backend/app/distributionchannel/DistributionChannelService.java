@@ -1,13 +1,12 @@
 package no.nav.data.catalog.backend.app.distributionchannel;
 
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -15,22 +14,18 @@ import java.util.stream.Collectors;
 @Service
 public class DistributionChannelService {
 
-	@Autowired
-	private DistributionChannelRepository repository;
+	private final DistributionChannelRepository repository;
+
+	public DistributionChannelService(DistributionChannelRepository repository) {
+		this.repository = repository;
+	}
 
 	public Optional<DistributionChannel> findDistributionChannelById(UUID id) {
 		return repository.findById(id);
 	}
 
-	public Page<DistributionChannelResponse> getAllDistributionChannelsByQuery(Map<String, String> queryMap) {
-		FilterDistributionChannelRequest filterRequest = new FilterDistributionChannelRequest().mapFromQuery(queryMap);
-
-		return repository.findAll(filterRequest.getSpecification(), filterRequest.getPageable())
-				.map(DistributionChannel::convertToResponse);
-	}
-
-	public Long getRepositoryCount() {
-		return repository.count();
+	public Page<DistributionChannelResponse> getAllDistributionChannels(Pageable pageable) {
+		return repository.findAll(pageable).map(DistributionChannel::convertToResponse);
 	}
 
 	public List<DistributionChannelResponse> createDistributionChannels(List<DistributionChannelRequest> requests) {

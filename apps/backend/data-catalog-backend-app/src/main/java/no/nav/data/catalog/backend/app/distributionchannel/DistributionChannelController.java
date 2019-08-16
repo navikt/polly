@@ -7,6 +7,10 @@ import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.informationtype.RestResponsePage;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,15 +21,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import javax.transaction.Transactional;
 
 @Slf4j
 @RestController
@@ -65,13 +67,12 @@ public class DistributionChannelController {
 			@ApiResponse(code = 404, message = "No DistributionChannel found in repository"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping
-	public RestResponsePage<DistributionChannelResponse> getAllDistributionChannel(@RequestParam Map<String, String> queryMap) {
-		if (queryMap.isEmpty()) {
-			log.info("Received request for all DistributionChannels");
-		} else {
-			log.info("Received request for all DistributionChannel specified in the request{}", queryMap);
-		}
-		Page<DistributionChannelResponse> pagedResponse = service.getAllDistributionChannelsByQuery(queryMap);
+    public RestResponsePage<DistributionChannelResponse> getAllDistributionChannel(
+            @PageableDefault(page = 0, size = 20)
+            @SortDefault(sort = "name", direction = Sort.Direction.ASC)
+                    Pageable pageable) {
+        log.info("Received request for all DistributionChannels");
+        Page<DistributionChannelResponse> pagedResponse = service.getAllDistributionChannels(pageable);
 		log.info("Returned DistributionChannels");
 		return new RestResponsePage<>(pagedResponse.getContent(), pagedResponse.getPageable(), pagedResponse.getTotalElements());
 	}
