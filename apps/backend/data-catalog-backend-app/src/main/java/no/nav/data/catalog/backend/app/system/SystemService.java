@@ -3,11 +3,11 @@ package no.nav.data.catalog.backend.app.system;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -15,17 +15,18 @@ import java.util.stream.Collectors;
 @Service
 public class SystemService {
 
-	@Autowired
-	private SystemRepository repository;
+	private final SystemRepository repository;
+
+	public SystemService(SystemRepository repository) {
+		this.repository = repository;
+	}
 
 	public Optional<System> findSystemById(UUID id) {
 		return repository.findById(id);
 	}
 
-	public Page<SystemResponse> getAllSystemsByQuery(Map<String, String> queryMap) {
-		FilterSystemRequest filterRequest = new FilterSystemRequest().mapFromQuery(queryMap);
-		return repository.findAll(filterRequest.getSpecification(), filterRequest.getPageable())
-				.map(System::convertToResponse);
+	public Page<SystemResponse> getAllSystems(Pageable pageable) {
+		return repository.findAll(pageable).map(System::convertToResponse);
 	}
 
 	public Long getRepositoryCount() {

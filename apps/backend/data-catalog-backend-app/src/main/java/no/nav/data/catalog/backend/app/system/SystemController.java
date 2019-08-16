@@ -8,6 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.informationtype.RestResponsePage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,15 +22,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import javax.transaction.Transactional;
 
 @Slf4j
 @RestController
@@ -35,8 +37,11 @@ import java.util.UUID;
 @Api(value = "System", description = "REST API for Systems", tags = {"System"})
 public class SystemController {
 
-	@Autowired
-	private SystemService service;
+	private final SystemService service;
+
+	public SystemController(SystemService service) {
+		this.service = service;
+	}
 
 	@ApiOperation(value = "Get SystemById", tags = {"System"})
 	@ApiResponses(value = {
@@ -61,13 +66,12 @@ public class SystemController {
 			@ApiResponse(code = 404, message = "No System found in repository"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping
-	public RestResponsePage<SystemResponse> getAllSystems(@RequestParam Map<String, String> queryMap) {
-		if (queryMap.isEmpty()) {
-			log.info("Received request for all Systems");
-		} else {
-			log.info("Received request for all Systems specified in the request{}", queryMap);
-		}
-		Page<SystemResponse> pagedResponse = service.getAllSystemsByQuery(queryMap);
+	public RestResponsePage<SystemResponse> getAllSystems(
+			@PageableDefault(page = 0, size = 20)
+			@SortDefault(sort = "name", direction = Sort.Direction.ASC)
+					Pageable pageable) {
+		log.info("Received request for all Systems");
+		Page<SystemResponse> pagedResponse = service.getAllSystems(pageable);
 		log.info("Returned systems");
 		return new RestResponsePage<>(pagedResponse.getContent(), pagedResponse.getPageable(), pagedResponse.getTotalElements());
 	}

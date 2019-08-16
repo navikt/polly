@@ -10,14 +10,14 @@ import no.nav.data.catalog.backend.app.common.auditing.Auditable;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
 import org.hibernate.annotations.Type;
 
+import java.util.Set;
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.util.Set;
-import java.util.UUID;
 
 @Data
 @EqualsAndHashCode(exclude = {"producerDistributionChannels", "consumerDistributionChannels"}, callSuper = false)
@@ -46,7 +46,7 @@ public class System extends Auditable<String> {
 	@ManyToMany(mappedBy = "consumers")
 	private Set<DistributionChannel> consumerDistributionChannels;
 
-	public System convertFromRequest(SystemRequest request, Boolean isUpdate) {
+	public System convertFromRequest(SystemRequest request, boolean isUpdate) {
 		if (!isUpdate) {
 			this.id = UUID.randomUUID();
 		}
