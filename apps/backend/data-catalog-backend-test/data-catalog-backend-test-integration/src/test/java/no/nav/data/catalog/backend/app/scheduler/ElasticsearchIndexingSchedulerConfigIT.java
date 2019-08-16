@@ -1,7 +1,7 @@
-package no.nav.data.catalog.backend.test.integration.scheduler;
+package no.nav.data.catalog.backend.app.scheduler;
 
+import no.nav.data.catalog.backend.app.IntegrationTestBase;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchDatasetService;
-import no.nav.data.catalog.backend.test.integration.IntegrationTestBase;
 import org.awaitility.Duration;
 import org.junit.Test;
 import org.springframework.boot.test.mock.mockito.SpyBean;

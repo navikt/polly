@@ -1,11 +1,9 @@
 package no.nav.data.catalog.backend.app.policy;
 
 import no.nav.data.catalog.backend.app.AppStarter;
+import no.nav.data.catalog.backend.app.IntegrationTestBase;
+import no.nav.data.catalog.backend.app.IntegrationTestConfig;
 import no.nav.data.catalog.backend.app.codelist.CodeResponse;
-import no.nav.data.catalog.backend.app.policy.PolicyConsumer;
-import no.nav.data.catalog.backend.app.policy.PolicyResponse;
-import no.nav.data.catalog.backend.test.integration.IntegrationTestBase;
-import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

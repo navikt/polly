@@ -1,6 +1,8 @@
-package no.nav.data.catalog.backend.test.integration.elasticsearch;
+package no.nav.data.catalog.backend.app.elasticsearch;
 
 import no.nav.data.catalog.backend.app.AppStarter;
+import no.nav.data.catalog.backend.app.IntegrationTestBase;
+import no.nav.data.catalog.backend.app.IntegrationTestConfig;
 import no.nav.data.catalog.backend.app.codelist.CodeResponse;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
@@ -9,13 +11,7 @@ import no.nav.data.catalog.backend.app.dataset.Dataset;
 import no.nav.data.catalog.backend.app.dataset.DatasetData;
 import no.nav.data.catalog.backend.app.dataset.DatasetResponse;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
-import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchDatasetService;
-import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchRepository;
-import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import no.nav.data.catalog.backend.app.policy.PolicyResponse;
-import no.nav.data.catalog.backend.test.component.elasticsearch.FixedElasticsearchContainer;
-import no.nav.data.catalog.backend.test.integration.IntegrationTestBase;
-import no.nav.data.catalog.backend.test.integration.IntegrationTestConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
