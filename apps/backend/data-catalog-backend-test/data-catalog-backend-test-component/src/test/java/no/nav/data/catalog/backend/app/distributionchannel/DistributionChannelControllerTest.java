@@ -1,13 +1,8 @@
 package no.nav.data.catalog.backend.app.distributionchannel;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
-import no.nav.data.catalog.backend.app.dataset.DatasetController;
-import no.nav.data.catalog.backend.app.informationtype.InformationType;
-import no.nav.data.catalog.backend.app.informationtype.InformationTypeRequest;
-import no.nav.data.catalog.backend.app.informationtype.RestResponsePage;
 import no.nav.data.catalog.backend.app.system.System;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -26,21 +21,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

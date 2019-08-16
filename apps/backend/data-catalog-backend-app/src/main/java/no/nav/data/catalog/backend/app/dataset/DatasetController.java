@@ -10,9 +10,6 @@ import no.nav.data.catalog.backend.app.common.rest.RestResponsePage;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -95,10 +92,9 @@ public class DatasetController {
     @GetMapping("/roots")
     public RestResponsePage<DatasetResponse> findAllRoot(@RequestParam(value = "includeDescendants", defaultValue = "false") boolean includeDescendants, PageParameters page) {
         log.info("Received request for all root Datasets");
-        Pageable pageable = createIdSortedPage(page);
-        Page<DatasetResponse> allRootDatasets = service.findAllRootDatasets(includeDescendants, pageable);
+        Page<DatasetResponse> allRootDatasets = service.findAllRootDatasets(includeDescendants, page.createIdSortedPage());
         log.info("Returned {} root Datasets", allRootDatasets.getContent().size());
-        return new RestResponsePage<>(allRootDatasets.getContent(), pageable, allRootDatasets.getTotalElements());
+        return new RestResponsePage<>(allRootDatasets.getContent(), allRootDatasets.getPageable(), allRootDatasets.getTotalElements());
     }
 
     @ApiOperation(value = "Get All Datasets", tags = {"Dataset"})
@@ -108,10 +104,9 @@ public class DatasetController {
     @GetMapping("/")
     public RestResponsePage<DatasetResponse> findAll(PageParameters page) {
         log.info("Received request for all Datasets");
-        Pageable pageable = createIdSortedPage(page);
-        Page<DatasetResponse> datasets = repository.findAll(pageable).map(Dataset::convertToResponse);
+        Page<DatasetResponse> datasets = repository.findAll(page.createIdSortedPage()).map(Dataset::convertToResponse);
         log.info("Returned {} Datasets", datasets.getContent().size());
-        return new RestResponsePage<>(datasets.getContent(), pageable, datasets.getTotalElements());
+        return new RestResponsePage<>(datasets.getContent(), datasets.getPageable(), datasets.getTotalElements());
     }
 
     @ApiOperation(value = "Count all Datasets", tags = {"Dataset"})
@@ -203,9 +198,4 @@ public class DatasetController {
         log.info("Dataset with id={} has been set to be deleted during the next scheduled task", id);
         return new ResponseEntity<>(repository.save(dataset).convertToResponse(), HttpStatus.ACCEPTED);
     }
-
-    private Pageable createIdSortedPage(PageParameters page) {
-        return PageRequest.of(page.getPageNumber(), page.getPageSize(), Sort.by("id"));
-    }
-
 }

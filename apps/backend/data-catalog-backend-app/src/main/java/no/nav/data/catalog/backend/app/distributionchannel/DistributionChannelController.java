@@ -5,12 +5,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.catalog.backend.app.informationtype.RestResponsePage;
+import no.nav.data.catalog.backend.app.common.rest.PageParameters;
+import no.nav.data.catalog.backend.app.common.rest.RestResponsePage;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -67,12 +64,9 @@ public class DistributionChannelController {
 			@ApiResponse(code = 404, message = "No DistributionChannel found in repository"),
 			@ApiResponse(code = 500, message = "Internal server error")})
 	@GetMapping
-    public RestResponsePage<DistributionChannelResponse> getAllDistributionChannel(
-            @PageableDefault(page = 0, size = 20)
-            @SortDefault(sort = "name", direction = Sort.Direction.ASC)
-                    Pageable pageable) {
+	public RestResponsePage<DistributionChannelResponse> getAllDistributionChannel(PageParameters pageParameters) {
         log.info("Received request for all DistributionChannels");
-        Page<DistributionChannelResponse> pagedResponse = service.getAllDistributionChannels(pageable);
+		Page<DistributionChannelResponse> pagedResponse = service.getAllDistributionChannels(pageParameters.createIdSortedPage());
 		log.info("Returned DistributionChannels");
 		return new RestResponsePage<>(pagedResponse.getContent(), pagedResponse.getPageable(), pagedResponse.getTotalElements());
 	}
