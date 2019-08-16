@@ -3,6 +3,8 @@ package no.nav.data.catalog.backend.app.dataset;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelation;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelationRepository;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -27,15 +29,15 @@ public class DatasetService {
         this.datasetRepository = datasetRepository;
     }
 
-    public Optional<DatasetResponse> findDatasetWithAllDescendants(UUID uuid) {
+    public DatasetResponse findDatasetWithAllDescendants(UUID uuid) {
         Optional<Dataset> datasetOptional = datasetRepository.findById(uuid);
         if (datasetOptional.isEmpty()) {
-            return Optional.empty();
+            return null;
         }
         Set<DatasetRelation> relations = datasetRelationRepository.findAllDescendantsOf(uuid);
         Dataset dataset = datasetOptional.get();
         if (relations.isEmpty()) {
-            return Optional.of(dataset.convertToResponse());
+            return dataset.convertToResponse();
         }
 
         Set<UUID> allIds = relations.stream()
@@ -44,21 +46,17 @@ public class DatasetService {
         Map<UUID, Dataset> allDatasets = datasetRepository.findAllById(allIds).stream()
                 .collect(toMap(Dataset::getId, Function.identity()));
 
-        DatasetResponse datasetResponse = new DatasetResponse(dataset, allDatasets, relations);
-        return Optional.of(datasetResponse);
+        return new DatasetResponse(dataset, allDatasets, relations);
     }
 
-    public List<DatasetResponse> findAllRootDatasets(boolean includeDescendants) {
-        List<Dataset> datasets = datasetRepository.findAllRootDatasets();
+    public Page<DatasetResponse> findAllRootDatasets(boolean includeDescendants, Pageable pageable) {
+        Page<Dataset> datasets = datasetRepository.findAllRootDatasets(pageable);
         if (includeDescendants) {
-            return datasets.stream()
+            return datasets
                     .map(Dataset::getId)
-                    .map(this::findDatasetWithAllDescendants)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .collect(Collectors.toList());
+                    .map(this::findDatasetWithAllDescendants);
         }
-        return datasets.stream().map(Dataset::convertToResponse).collect(Collectors.toList());
+        return datasets.map(Dataset::convertToResponse);
     }
 
     // TODO

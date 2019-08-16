@@ -23,7 +23,6 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(Predicates.or(basePackage("no.nav.data.catalog.backend.app.codelist"),
-                        basePackage("no.nav.data.catalog.backend.app.informationtype"),
                         basePackage("no.nav.data.catalog.backend.app.github"),
                         basePackage("no.nav.data.catalog.backend.app.dataset")
                 ))

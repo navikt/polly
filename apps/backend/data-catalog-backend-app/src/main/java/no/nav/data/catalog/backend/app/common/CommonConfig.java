@@ -22,10 +22,10 @@ import org.springframework.web.client.RestTemplate;
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 public class CommonConfig {
 	@Value("${elasticsearch.host}")
-	private String dockerHost;
+	private String elasticsearchHost;
 
 	@Value("${elasticsearch.port}")
-	private int dockerPort;
+	private int elasticsearchPort;
 
 	@Primary
 	@Bean
@@ -49,7 +49,7 @@ public class CommonConfig {
 	public RestHighLevelClient restHighLevelClient() {
 		return new RestHighLevelClient(
 				RestClient.builder(
-						new HttpHost(dockerHost, dockerPort, "http")));
+						new HttpHost(elasticsearchHost, elasticsearchPort, "http")));
 	}
 
 	@Bean
