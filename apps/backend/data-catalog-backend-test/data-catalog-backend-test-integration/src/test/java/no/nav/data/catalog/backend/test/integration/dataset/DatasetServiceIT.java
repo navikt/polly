@@ -7,9 +7,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -38,9 +39,7 @@ public class DatasetServiceIT extends AbstractDatasetIT {
 
     @Test
     public void getDatasetResponseTree() {
-        Optional<DatasetResponse> datasetResponseOptional = datasetService.findDatasetWithAllDescendants(dataset1.getId());
-        assertTrue(datasetResponseOptional.isPresent());
-        DatasetResponse datasetResponse = datasetResponseOptional.get();
+        DatasetResponse datasetResponse = datasetService.findDatasetWithAllDescendants(dataset1.getId());
 
         assertThat(datasetResponse.getId(), is(dataset1.getId()));
         assertThat(datasetResponse.getChildren(), hasSize(2));
@@ -53,8 +52,8 @@ public class DatasetServiceIT extends AbstractDatasetIT {
 
     @Test
     public void findRootDataset() {
-        List<DatasetResponse> allRootDatasets = datasetService.findAllRootDatasets(true);
-        assertThat(allRootDatasets, hasSize(2));
+        Page<DatasetResponse> allRootDatasets = datasetService.findAllRootDatasets(true, PageRequest.of(0, 20));
+        assertThat(allRootDatasets.getContent(), hasSize(2));
 
         ElasticsearchStatus elasticsearchStatus = ElasticsearchStatus.TO_BE_CREATED;
         datasetRepository.findAll(Example.of(Dataset.builder().elasticsearchStatus(elasticsearchStatus).build()));

@@ -7,6 +7,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -54,7 +57,7 @@ public class DatasetControllerTest {
 
     @Test
     public void findForIdWithDescendants() throws Exception {
-        when(service.findDatasetWithAllDescendants(dataset.getId())).thenReturn(Optional.of(dataset.convertToResponse()));
+        when(service.findDatasetWithAllDescendants(dataset.getId())).thenReturn(dataset.convertToResponse());
         mvc.perform(get("/dataset/{id}", dataset.getId()).param("includeDescendants", "true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(dataset.getId().toString()));
@@ -70,10 +73,10 @@ public class DatasetControllerTest {
 
     @Test
     public void findAllRoot() throws Exception {
-        when(service.findAllRootDatasets(false)).thenReturn(Collections.singletonList(dataset.convertToResponse()));
+        when(service.findAllRootDatasets(false, PageRequest.of(0, 20, Sort.by("id")))).thenReturn(new PageImpl<>(Collections.singletonList(dataset.convertToResponse())));
         mvc.perform(get("/dataset/roots"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(dataset.getId().toString()));
+                .andExpect(jsonPath("$.content[0].id").value(dataset.getId().toString()));
     }
 
     @Test

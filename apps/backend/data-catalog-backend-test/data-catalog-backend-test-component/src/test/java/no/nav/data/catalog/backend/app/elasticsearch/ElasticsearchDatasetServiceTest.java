@@ -64,7 +64,7 @@ public class ElasticsearchDatasetServiceTest {
     }
 
     @Test
-    public void shouldSyncCreatedInformationTypes() {
+    public void shouldSyncCreatedDatasets() {
         when(repository.findByElasticsearchStatus(TO_BE_CREATED)).thenReturn(singletonList(dataset));
         service.synchToElasticsearch();
         verify(elasticsearch, times(1)).insert(captor.capture());
@@ -77,7 +77,7 @@ public class ElasticsearchDatasetServiceTest {
     }
 
     @Test
-    public void shouldSyncUpdatedInformationTypes() {
+    public void shouldSyncUpdatedDatasets() {
         when(repository.findByElasticsearchStatus(TO_BE_UPDATED)).thenReturn(singletonList(dataset));
         service.synchToElasticsearch();
         verify(elasticsearch, times(0)).insert(any());
@@ -89,7 +89,7 @@ public class ElasticsearchDatasetServiceTest {
     }
 
     @Test
-    public void shouldSyncDeletedInformationTypes() {
+    public void shouldSyncDeletedDatasets() {
         when(repository.findByElasticsearchStatus(TO_BE_DELETED)).thenReturn(singletonList(dataset));
         service.synchToElasticsearch();
         verify(elasticsearch, times(0)).insert(any());

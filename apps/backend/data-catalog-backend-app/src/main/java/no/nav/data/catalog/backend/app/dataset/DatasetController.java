@@ -5,8 +5,14 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.catalog.backend.app.common.rest.PageParameters;
+import no.nav.data.catalog.backend.app.common.rest.RestResponsePage;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -55,7 +61,7 @@ public class DatasetController {
     ) {
         log.info("Received request for Dataset with the id={}", id);
         Optional<DatasetResponse> datasetResponse = includeDescendants ?
-                service.findDatasetWithAllDescendants(id) :
+                Optional.ofNullable(service.findDatasetWithAllDescendants(id)) :
                 repository.findById(id).map(Dataset::convertToResponse);
         if (datasetResponse.isEmpty()) {
             log.info("Cannot find the Dataset with id={}", id);
@@ -87,12 +93,25 @@ public class DatasetController {
             @ApiResponse(code = 200, message = "Datasets fetched", response = DatasetResponse.class, responseContainer = "List"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/roots")
-    public ResponseEntity findAllRoot(@RequestParam(value = "includeDescendants", defaultValue = "false") boolean includeDescendants) {
-        // TODO paging
+    public RestResponsePage<DatasetResponse> findAllRoot(@RequestParam(value = "includeDescendants", defaultValue = "false") boolean includeDescendants, PageParameters page) {
         log.info("Received request for all root Datasets");
-        List<DatasetResponse> allRootDatasets = service.findAllRootDatasets(includeDescendants);
-        log.info("Returned {} Datasets", allRootDatasets.size());
-        return new ResponseEntity<>(allRootDatasets, HttpStatus.OK);
+        Pageable pageable = createIdSortedPage(page);
+        Page<DatasetResponse> allRootDatasets = service.findAllRootDatasets(includeDescendants, pageable);
+        log.info("Returned {} root Datasets", allRootDatasets.getContent().size());
+        return new RestResponsePage<>(allRootDatasets.getContent(), pageable, allRootDatasets.getTotalElements());
+    }
+
+    @ApiOperation(value = "Get All Datasets", tags = {"Dataset"})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Datasets fetched", response = DatasetResponse.class, responseContainer = "List"),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @GetMapping("/")
+    public RestResponsePage<DatasetResponse> findAll(PageParameters page) {
+        log.info("Received request for all Datasets");
+        Pageable pageable = createIdSortedPage(page);
+        Page<DatasetResponse> datasets = repository.findAll(pageable).map(Dataset::convertToResponse);
+        log.info("Returned {} Datasets", datasets.getContent().size());
+        return new RestResponsePage<>(datasets.getContent(), pageable, datasets.getTotalElements());
     }
 
     @ApiOperation(value = "Count all Datasets", tags = {"Dataset"})
@@ -143,7 +162,7 @@ public class DatasetController {
 
     }
 
-    @ApiOperation(value = "Update Dataset", tags = { "Dataset" })
+    @ApiOperation(value = "Update Dataset", tags = {"Dataset"})
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Accepted one Dataset to be updated", response = Dataset.class),
             @ApiResponse(code = 400, message = "Illegal arguments"),
@@ -165,7 +184,7 @@ public class DatasetController {
         return new ResponseEntity<>(repository.save(dataset).convertToResponse(), HttpStatus.ACCEPTED);
     }
 
-    @ApiOperation(value = "Delete Dataset", tags = { "Dataset" })
+    @ApiOperation(value = "Delete Dataset", tags = {"Dataset"})
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Dataset deleted"),
             @ApiResponse(code = 404, message = "Dataset not found"),
@@ -175,7 +194,7 @@ public class DatasetController {
     public ResponseEntity deleteDatasetById(@PathVariable UUID id) {
         log.info("Received a request to delete Dataset with id={}", id);
         Optional<Dataset> fromRepository = repository.findById(id);
-        if(fromRepository.isEmpty()) {
+        if (fromRepository.isEmpty()) {
             log.info("Cannot find Dataset with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -183,6 +202,10 @@ public class DatasetController {
         dataset.setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED);
         log.info("Dataset with id={} has been set to be deleted during the next scheduled task", id);
         return new ResponseEntity<>(repository.save(dataset).convertToResponse(), HttpStatus.ACCEPTED);
+    }
+
+    private Pageable createIdSortedPage(PageParameters page) {
+        return PageRequest.of(page.getPageNumber(), page.getPageSize(), Sort.by("id"));
     }
 
 }
