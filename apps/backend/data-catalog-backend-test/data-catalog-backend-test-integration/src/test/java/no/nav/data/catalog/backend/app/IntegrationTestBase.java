@@ -26,9 +26,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 public abstract class IntegrationTestBase {
 
     protected static final UUID DATASET_ID_1 = UUID.fromString("acab158d-67ef-4030-a3c2-195e993f18d2");
-    protected static final UUID DATASET_ID_2 = UUID.fromString("55fc53fa-1e1e-4652-a139-e8d5d9b51a08");
-    protected static final UUID DATASET_ID_3 = UUID.fromString("e2c3254b-2529-40af-b6a6-14d975f5b274");
-    protected static final UUID DATASET_ID_4 = UUID.fromString("93818c51-69a5-4e37-a723-9e64a05b5cff");
 
     @ClassRule
     public static PostgresTestContainer postgreSQLContainer = PostgresTestContainer.getInstance();
@@ -38,45 +35,13 @@ public abstract class IntegrationTestBase {
                 .withQueryParam("datasetId", equalTo(DATASET_ID_1.toString()))
                 .willReturn(aResponse().withStatus(HttpStatus.OK.value())
                         .withHeader(ContentTypeHeader.KEY, "application/json")
-                        .withBody(
-                                "{\"content\":[{\"policyId\":1,\"informationType\":{\"informationTypeId\":1,\"name\":\"Sivilstand\",\"description\":\"En overordnet kategori som beskriver en persons forhold til en annen person\"},\"legalBasisDescription\":\"LB description\",\"purpose\":{\"code\":\"KTR\",\"description\":\"Kontroll\"}}"
-                                        +
-                                        ",{\"policyId\":2,\"informationType\":{\"informationTypeId\":1,\"name\":\"Sivilstand\",\"description\":\"En overordnet kategori som beskriver en persons forhold til en annen person\"},\"legalBasisDescription\":\"Ftrl. § 11-20\",\"purpose\":{\"code\":\"AAP\",\"description\":\"Arbeidsavklaringspenger\"}}"
-                                        +
-                                        "],\"pageable\":{\"sort\":{\"sorted\":false,\"unsorted\":true,\"empty\":true},\"offset\":0,\"pageSize\":20,\"pageNumber\":0,\"unpaged\":false,\"paged\":true},\"last\":false,\"totalPages\":2,\"totalElements\":2,\"size\":10,\"number\":0,\"sort\":{\"sorted\":false,\"unsorted\":true,\"empty\":true},\"first\":true,\"numberOfElements\":2,\"empty\":false}")
-                ));
-        stubFor(get(urlPathEqualTo("/policy/policy"))
-                .withQueryParam("informationTypeId", equalTo(DATASET_ID_2.toString()))
-                .willReturn(aResponse().withStatus(HttpStatus.OK.value())
-                        .withHeader(ContentTypeHeader.KEY, "application/json")
-                        .withBody(
-                                "{\"content\":[{\"policyId\":1,\"informationType\":{\"informationTypeId\":2,\"name\":\"Sivilstand\",\"description\":\"En overordnet kategori som beskriver en persons forhold til en annen person. Ref. til Begrepskatalog: https://jira.adeo.no/browse/BEGREP-176\"},\"legalBasisDescription\":\"LB description\",\"purpose\":{\"code\":\"KTR\",\"description\":\"Kontroll\"}}"
-                                        +
-                                        ",{\"policyId\":2,\"informationType\":{\"informationTypeId\":2,\"name\":\"Sivilstand\",\"description\":\"En overordnet kategori som beskriver en persons forhold til en annen person. Ref. til Begrepskatalog: https://jira.adeo.no/browse/BEGREP-176\"},\"legalBasisDescription\":\"Ftrl. § 11-20\",\"purpose\":{\"code\":\"AAP\",\"description\":\"Arbeidsavklaringspenger\"}}"
-                                        +
-                                        "],\"pageable\":{\"sort\":{\"sorted\":false,\"unsorted\":true,\"empty\":true},\"offset\":0,\"pageSize\":20,\"pageNumber\":0,\"unpaged\":false,\"paged\":true},\"last\":false,\"totalPages\":2,\"totalElements\":2,\"size\":10,\"number\":0,\"sort\":{\"sorted\":false,\"unsorted\":true,\"empty\":true},\"first\":true,\"numberOfElements\":2,\"empty\":false}")
-                ));
-        stubFor(get(urlPathEqualTo("/policy/policy"))
-                .withQueryParam("informationTypeId", equalTo(DATASET_ID_3.toString()))
-                .willReturn(aResponse().withStatus(HttpStatus.OK.value())
-                        .withHeader(ContentTypeHeader.KEY, "application/json")
-                        .withBody(
-                                "{\"content\":[{\"policyId\":1,\"informationType\":{\"informationTypeId\":3,\"name\":\"Sivilstand\",\"description\":\"En overordnet kategori som beskriver en persons forhold til en annen person. Ref. til Begrepskatalog: https://jira.adeo.no/browse/BEGREP-176\"},\"legalBasisDescription\":\"LB description\",\"purpose\":{\"code\":\"KTR\",\"description\":\"Kontroll\"}}"
-                                        +
-                                        ",{\"policyId\":2,\"informationType\":{\"informationTypeId\":3,\"name\":\"Sivilstand\",\"description\":\"En overordnet kategori som beskriver en persons forhold til en annen person. Ref. til Begrepskatalog: https://jira.adeo.no/browse/BEGREP-176\"},\"legalBasisDescription\":\"Ftrl. § 11-20\",\"purpose\":{\"code\":\"AAP\",\"description\":\"Arbeidsavklaringspenger\"}}"
-                                        +
-                                        "],\"pageable\":{\"sort\":{\"sorted\":false,\"unsorted\":true,\"empty\":true},\"offset\":0,\"pageSize\":20,\"pageNumber\":0,\"unpaged\":false,\"paged\":true},\"last\":false,\"totalPages\":2,\"totalElements\":2,\"size\":10,\"number\":0,\"sort\":{\"sorted\":false,\"unsorted\":true,\"empty\":true},\"first\":true,\"numberOfElements\":2,\"empty\":false}")
-                ));
-        stubFor(get(urlPathEqualTo("/policy/policy"))
-                .withQueryParam("informationTypeId", equalTo(DATASET_ID_4.toString()))
-                .willReturn(aResponse().withStatus(HttpStatus.OK.value())
-                        .withHeader(ContentTypeHeader.KEY, "application/json")
-                        .withBody(
-                                "{\"content\":[{\"policyId\":1,\"informationType\":{\"informationTypeId\":4,\"name\":\"Sivilstand\",\"description\":\"En overordnet kategori som beskriver en persons forhold til en annen person. Ref. til Begrepskatalog: https://jira.adeo.no/browse/BEGREP-176\"},\"legalBasisDescription\":\"LB description\",\"purpose\":{\"code\":\"KTR\",\"description\":\"Kontroll\"}}"
-                                        +
-                                        ",{\"policyId\":2,\"informationType\":{\"informationTypeId\":4,\"name\":\"Sivilstand\",\"description\":\"En overordnet kategori som beskriver en persons forhold til en annen person. Ref. til Begrepskatalog: https://jira.adeo.no/browse/BEGREP-176\"},\"legalBasisDescription\":\"Ftrl. § 11-20\",\"purpose\":{\"code\":\"AAP\",\"description\":\"Arbeidsavklaringspenger\"}}"
-                                        +
-                                        "],\"pageable\":{\"sort\":{\"sorted\":false,\"unsorted\":true,\"empty\":true},\"offset\":0,\"pageSize\":20,\"pageNumber\":0,\"unpaged\":false,\"paged\":true},\"last\":false,\"totalPages\":2,\"totalElements\":2,\"size\":10,\"number\":0,\"sort\":{\"sorted\":false,\"unsorted\":true,\"empty\":true},\"first\":true,\"numberOfElements\":2,\"empty\":false}")
+                        .withBody("{\"content\":["
+                                + "{\"policyId\":1,\"legalBasisDescription\":\"LB description\",\"purpose\":{\"code\":\"KTR\",\"description\":\"Kontroll\"}}"
+                                + ",{\"policyId\":2,\"legalBasisDescription\":\"Ftrl. § 11-20\",\"purpose\":{\"code\":\"AAP\",\"description\":\"Arbeidsavklaringspenger\"}}"
+                                + "],"
+                                + "\"pageable\":{\"sort\":{\"sorted\":false,\"unsorted\":true,\"empty\":true},\"offset\":0,\"pageSize\":20,\"pageNumber\":0,\"unpaged\":false,\"paged\":true},"
+                                + "\"last\":false,\"totalPages\":2,\"totalElements\":2,\"size\":10,\"number\":0,"
+                                + "\"sort\":{\"sorted\":false,\"unsorted\":true,\"empty\":true},\"first\":true,\"numberOfElements\":2,\"empty\":false}")
                 ));
     }
 }

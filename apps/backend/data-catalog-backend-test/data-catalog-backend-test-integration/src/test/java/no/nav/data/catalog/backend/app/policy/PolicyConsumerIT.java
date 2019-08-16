@@ -32,7 +32,7 @@ public class PolicyConsumerIT extends IntegrationTestBase {
     private String policyUrl;
 
     @Test
-    public void getPolicyForInformationTypeId1() {
+    public void getPolicyForDatasetId1() {
         policyStubbing();
         List<PolicyResponse> policiesList = policyConsumer.getPolicyForDataset(DATASET_ID_1);
         assertThat(policiesList.size(), is(2));

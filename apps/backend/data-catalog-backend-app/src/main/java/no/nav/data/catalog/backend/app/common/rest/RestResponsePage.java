@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.app.informationtype;
+package no.nav.data.catalog.backend.app.common.rest;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
