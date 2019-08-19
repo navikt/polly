@@ -1,5 +1,7 @@
 package no.nav.data.catalog.backend.app.github;
 
+import no.nav.data.catalog.backend.app.IntegrationTestBase;
+import no.nav.data.catalog.backend.app.codelist.CodelistStub;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
 import no.nav.data.catalog.backend.app.dataset.DatasetData;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
@@ -9,8 +11,6 @@ import no.nav.data.catalog.backend.app.github.domain.GithubInstallation;
 import no.nav.data.catalog.backend.app.github.domain.GithubInstallationToken;
 import no.nav.data.catalog.backend.app.poldatasett.PolDatasett;
 import no.nav.data.catalog.backend.app.poldatasett.PolDatasettRepository;
-import no.nav.data.catalog.backend.app.codelist.CodelistStub;
-import no.nav.data.catalog.backend.app.IntegrationTestBase;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.eclipse.egit.github.core.CommitFile;
 import org.eclipse.egit.github.core.CommitStatus;
@@ -24,13 +24,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StreamUtils;
 import org.testcontainers.shaded.org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
@@ -51,6 +49,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static java.util.Collections.singletonList;
+import static no.nav.data.catalog.backend.app.TestUtil.readFile;
 import static no.nav.data.catalog.backend.app.common.utils.JsonUtils.toJson;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -155,7 +154,7 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
     public void pullRequestWithValidationErrors() throws IOException {
         stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/modified.json"))
                 .withQueryParam("ref", equalTo(head))
-                .willReturn(okJson(toJson(singletonList(createFile("testdataIkkeSlett/modified.json", readFile("modifiedAfterIncludingAdded.json")))))));
+                .willReturn(okJson(toJson(singletonList(createFile("testdataIkkeSlett/modified.json", readFile("github/modifiedAfterIncludingAdded.json")))))));
 
         PullRequestPayload request = new PullRequestPayload()
                 .setAction("opened")
@@ -220,35 +219,32 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
         // github files
         stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/added.json"))
                 .withQueryParam("ref", equalTo(head))
-                .willReturn(okJson(toJson(singletonList(createFile("testdataIkkeSlett/added.json", readFile("added.json")))))));
+                .willReturn(okJson(toJson(singletonList(createFile("testdataIkkeSlett/added.json", readFile("github/added.json")))))));
 
         stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/modified.json"))
                 .withQueryParam("ref", equalTo(before))
-                .willReturn(okJson(toJson(singletonList(createFile("testdataIkkeSlett/modified.json", readFile("modifiedBefore.json")))))));
+                .willReturn(okJson(toJson(singletonList(createFile("testdataIkkeSlett/modified.json", readFile("github/modifiedBefore.json")))))));
 
         stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/modified.json"))
                 .withQueryParam("ref", equalTo(head))
-                .willReturn(okJson(toJson(singletonList(createFile("testdataIkkeSlett/modified.json", readFile("modifiedAfter.json")))))));
+                .willReturn(okJson(toJson(singletonList(createFile("testdataIkkeSlett/modified.json", readFile("github/modifiedAfter.json")))))));
 
         stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/removed.json"))
                 .withQueryParam("ref", equalTo(before))
-                .willReturn(okJson(toJson(singletonList(createFile("testdataIkkeSlett/removed.json", readFile("removed.json")))))));
+                .willReturn(okJson(toJson(singletonList(createFile("testdataIkkeSlett/removed.json", readFile("github/removed.json")))))));
 
         // Github statuses
         stubFor(post(urlPathEqualTo(String.format("/api/v3/repos/navikt/pol-datasett/statuses/%s", head)))
                 .willReturn(okJson(toJson(new CommitStatus()))));
     }
 
-    private RepositoryContents createFile(String path, byte[] content) {
+    private RepositoryContents createFile(String path, String content) {
         return new RepositoryContents()
                 .setName(StringUtils.substringAfterLast(path, "/"))
                 .setPath(path)
                 .setType(RepositoryContents.TYPE_FILE)
                 .setEncoding(RepositoryContents.ENCODING_BASE64)
-                .setContent(Base64.getEncoder().encodeToString(content));
+                .setContent(Base64.getEncoder().encodeToString(content.getBytes()));
     }
 
-    private byte[] readFile(String path) throws IOException {
-        return StreamUtils.copyToByteArray(new ClassPathResource("github/" + path).getInputStream());
-    }
 }

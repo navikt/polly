@@ -1,0 +1,50 @@
+{
+  "name": "aapen-topicname",
+  "groups": [
+    {
+      "type": "PRODUCER",
+      "name": "KP-aapen-topicname",
+      "members": [
+        "CN=srvbruker-producer,OU=ou1,OU=ou2,DC=adeo,DC=no"
+      ],
+      "ldapResult": {
+        "resultCode": {
+          "intValue": 0,
+          "name": "success",
+          "stringRepresentation": "0 (success)"
+        },
+        "message": ""
+      }
+    },
+    {
+      "type": "CONSUMER",
+      "name": "KC-aapen-topicname",
+      "members": [
+        "CN=srvbruker-consumer,OU=ou1,OU=ServiceAccounts,DC=adeo,DC=no"
+      ],
+      "ldapResult": {
+        "resultCode": {
+          "intValue": 0,
+          "name": "success",
+          "stringRepresentation": "0 (success)"
+        },
+        "message": ""
+      }
+    },
+    {
+      "type": "MANAGER",
+      "name": "KM-aapen-topicname",
+      "members": [
+        "CN=BRUKERIDENT,OU=ou0,OU=ou1,OU=ou2,DC=adeo,DC=no"
+      ],
+      "ldapResult": {
+        "resultCode": {
+          "intValue": 0,
+          "name": "success",
+          "stringRepresentation": "0 (success)"
+        },
+        "message": ""
+      }
+    }
+  ]
+}

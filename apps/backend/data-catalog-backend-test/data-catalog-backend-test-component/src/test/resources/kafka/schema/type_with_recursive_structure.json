@@ -1,0 +1,6 @@
+{
+  "id": 341,
+  "schema": "{\"type\":\"record\",\"name\":\"PensjonsgivendeInntekt\",\"namespace\":\"no.nav.opptjening.schema\",\"fields\":[{\"name\":\"personidentifikator\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"inntektsaar\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"fastlandsinntekt\",\"type\":{\"type\":\"record\",\"name\":\"Fastlandsinntekt\",\"fields\":[{\"name\":\"personinntektLoenn\",\"type\":[\"long\",\"null\"]},{\"name\":\"personinntektFiskeFangstFamiliebarnehage\",\"type\":[\"long\",\"null\"]},{\"name\":\"personinntektNaering\",\"type\":[\"long\",\"null\"]},{\"name\":\"personinntektBarePensjonsdel\",\"type\":[\"long\",\"null\"]}]}},{\"name\":\"svalbardinntekt\",\"type\":{\"type\":\"record\",\"name\":\"Svalbardinntekt\",\"fields\":[{\"name\":\"svalbardLoennLoennstrekkordningen\",\"type\":[\"long\",\"null\"]},{\"name\":\"svalbardPersoninntektNaering\",\"type\":[\"long\",\"null\"]}]}}]}",
+  "subject": "aapen-opptjening-pensjonsgivendeInntekt-value",
+  "version": 2
+}

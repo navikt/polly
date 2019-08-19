@@ -4,9 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Builder
@@ -14,8 +13,8 @@ import java.util.Set;
 @AllArgsConstructor
 public class SystemRequest {
 
-	private String name;
-	private Set<DistributionChannel> producerDistributionChannels;
-	private Set<DistributionChannel> consumerDistributionChannels;
+    private String name;
+    private List<String> producerDistributionChannels;
+    private List<String> consumerDistributionChannels;
 
 }
