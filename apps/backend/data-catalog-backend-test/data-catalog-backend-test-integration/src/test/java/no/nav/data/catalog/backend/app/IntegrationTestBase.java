@@ -4,11 +4,13 @@ import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import no.nav.data.catalog.backend.app.util.EnableWiremock;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.UUID;
 
@@ -29,6 +31,8 @@ public abstract class IntegrationTestBase {
 
     @ClassRule
     public static PostgresTestContainer postgreSQLContainer = PostgresTestContainer.getInstance();
+    @Autowired
+    protected TransactionTemplate transactionTemplate;
 
     protected void policyStubbing() {
         stubFor(get(urlPathEqualTo("/policy/policy"))

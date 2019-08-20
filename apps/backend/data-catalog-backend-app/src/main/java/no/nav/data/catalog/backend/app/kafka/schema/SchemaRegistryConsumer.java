@@ -20,8 +20,7 @@ import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.safeStrea
 public class SchemaRegistryConsumer {
 
     private final String baseUrl;
-
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
     public SchemaRegistryConsumer(RestTemplate restTemplate, KafkaRestProperties kafkaRestProperties) {
         this.restTemplate = restTemplate;

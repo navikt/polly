@@ -28,7 +28,7 @@ public class GroupsResponse {
 
     private Group find(Type type) {
         return StreamUtils.safeStream(groups)
-                .filter(group -> group.getType() == type)
+                .filter(group -> group.isType(type))
                 .findFirst()
                 .orElse(new Group());
     }

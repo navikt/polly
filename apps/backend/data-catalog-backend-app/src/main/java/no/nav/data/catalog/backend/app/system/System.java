@@ -8,8 +8,10 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import no.nav.data.catalog.backend.app.common.auditing.Auditable;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Column;
@@ -26,7 +28,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SYSTEM", schema = "BACKGROUND_SCHEMA")
+@Table(name = "SYSTEM")
 public class System extends Auditable<String> {
 
 	@Id
@@ -49,11 +51,10 @@ public class System extends Auditable<String> {
 	public System convertFromRequest(SystemRequest request, boolean isUpdate) {
 		if (!isUpdate) {
 			this.id = UUID.randomUUID();
+			this.producerDistributionChannels = new HashSet<>();
+			this.consumerDistributionChannels = new HashSet<>();
 		}
-		this.name = request.getName().trim();
-		// TODO
-//		this.producerDistributionChannels = request.getProducerDistributionChannels();
-//		this.consumerDistributionChannels = request.getConsumerDistributionChannels();
+		this.name = StringUtils.trim(request.getName());
 		return this;
 	}
 

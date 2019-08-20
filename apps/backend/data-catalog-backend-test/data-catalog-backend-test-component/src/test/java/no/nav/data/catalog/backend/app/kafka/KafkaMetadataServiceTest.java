@@ -27,8 +27,8 @@ public class KafkaMetadataServiceTest {
 
     @Test
     public void getDistributionChannelsForTopic() {
-        when(kafkaAdminRestConsumer.getTopicAcl("aapen-topicname"))
-                .thenReturn(JsonUtils.toObject(readFile("kafka/topic_acl.json"), GroupsResponse.class));
+        when(kafkaAdminRestConsumer.getTopicGroups("aapen-topicname"))
+                .thenReturn(JsonUtils.toObject(readFile("kafka/topic_groups.json"), GroupsResponse.class));
 
         DistributionChannelRequest request = kafkaMetadataService.getDistributionChannelsForTopic("aapen-topicname");
 
