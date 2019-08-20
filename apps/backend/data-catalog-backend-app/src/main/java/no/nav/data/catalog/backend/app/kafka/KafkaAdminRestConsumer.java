@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -25,18 +26,19 @@ public class KafkaAdminRestConsumer {
     }
 
     public List<String> getAapenTopics() {
-        ResponseEntity<List<String>> entity = restTemplate.exchange(baseUrl + "api/v1/topics", HttpMethod.GET, null, JsonUtils.STRING_LIST);
+        ResponseEntity<List<String>> entity = restTemplate.exchange(baseUrl + "/api/v1/topics", HttpMethod.GET, null, JsonUtils.STRING_LIST);
         if (entity.getStatusCode() != HttpStatus.OK || !entity.hasBody()) {
             log.warn("Fant ingen topics: {}", entity);
             return Collections.emptyList();
         }
-        return entity.getBody();
+        return entity.getBody().stream().filter(topic -> topic.startsWith("aapen-")).collect(Collectors.toList());
     }
 
-    public GroupsResponse getTopicAcl(String topic) {
-        ResponseEntity<GroupsResponse> entity = restTemplate.getForEntity(baseUrl + "api/v1/topics/{topic}/groups", GroupsResponse.class, topic);
+    public GroupsResponse getTopicGroups(String topic) {
+        ResponseEntity<GroupsResponse> entity = restTemplate.getForEntity(baseUrl + "/api/v1/topics/{topic}/groups", GroupsResponse.class, topic);
         if (entity.getStatusCode() != HttpStatus.OK || !entity.hasBody()) {
-            throw new RuntimeException("Fant ingen TopicAcl: " + entity);
+            log.warn("Fant ingen topic groups: {}", entity);
+            return null;
         }
         return entity.getBody();
     }

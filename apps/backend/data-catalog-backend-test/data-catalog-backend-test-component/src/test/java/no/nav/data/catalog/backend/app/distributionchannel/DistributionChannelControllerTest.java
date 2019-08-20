@@ -122,10 +122,9 @@ public class DistributionChannelControllerTest {
     public void createDistributionChannels_shouldCreateNewDistributionChannel_withValidRequest() throws Exception {
         List<DistributionChannel> distributionChannels = List.of(distributionChannel);
         List<DistributionChannelRequest> requests = List.of(distributionChannelRequest);
-        List<DistributionChannelResponse> responses = List.of(new DistributionChannelResponse(distributionChannel));
 
         when(repository.saveAll(distributionChannels)).thenReturn(distributionChannels);
-        when(service.createDistributionChannels(requests)).thenReturn(responses);
+        when(service.createDistributionChannels(requests)).thenReturn(distributionChannels);
 
         mvc.perform(post("/distributionchannel")
                 .contentType(MediaType.APPLICATION_JSON)

@@ -13,6 +13,6 @@ public class LdapResult {
     private String message;
 
     public boolean erOk() {
-        return resultCode.getIntValue() == 0;
+        return resultCode != null && resultCode.getIntValue() == 0;
     }
 }

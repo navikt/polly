@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 @Slf4j
@@ -92,7 +93,7 @@ public class DistributionChannelController {
 		log.info("Received requests to create DistributionChannels");
 		//TODO: ValidateRequest
 //		service.validateRequests(requests, false);
-		return service.createDistributionChannels(requests);
+		return service.createDistributionChannels(requests).stream().map(DistributionChannel::convertToResponse).collect(Collectors.toList());
 	}
 
 	@ApiOperation(value = "Update DistributionChannel", tags = {"DistributionChannel"})
@@ -106,7 +107,7 @@ public class DistributionChannelController {
 		log.info("Received requests to create DistributionChannels");
 		//TODO: ValidateRequest
 //		service.validateRequests(requests, true);
-		return service.updateDistributionChannels(requests);
+		return service.updateDistributionChannels(requests).stream().map(DistributionChannel::convertToResponse).collect(Collectors.toList());
 	}
 
 	@ApiOperation(value = "Delete DistributionChannel", tags = {"DistributionChannel"})

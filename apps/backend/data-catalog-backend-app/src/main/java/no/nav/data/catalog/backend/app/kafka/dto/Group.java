@@ -3,30 +3,41 @@ package no.nav.data.catalog.backend.app.kafka.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.safeStream;
 
 @Data
+@Slf4j
 @AllArgsConstructor
 @NoArgsConstructor
 public class Group {
 
-    private Type type;
+    /**
+     * See {@link Type}
+     */
+    private String type;
     private String name;
     private List<String> members;
     private LdapResult ldapResult;
 
     public List<String> convertToSystemNames() {
+        if (ldapResult == null || !ldapResult.erOk()) {
+            log.warn("Feil i ldap oppslag {}", this);
+            return emptyList();
+        }
+
         return safeStream(members)
                 .map(this::findCn)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     private String findCn(String member) {
@@ -39,5 +50,18 @@ public class Group {
                 .findFirst()
                 .map(string -> StringUtils.substringAfter(string, "CN="))
                 .orElse(null);
+    }
+
+    public boolean isType(Type otherType) {
+        return otherType == getTypeEnum();
+    }
+
+    private Type getTypeEnum() {
+        try {
+            return Type.valueOf(type);
+        } catch (IllegalArgumentException e) {
+            log.warn("invalid type " + type, e);
+            return null;
+        }
     }
 }

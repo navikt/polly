@@ -8,12 +8,16 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import no.nav.data.catalog.backend.app.common.auditing.Auditable;
 import no.nav.data.catalog.backend.app.system.System;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -28,7 +32,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "DISTRIBUTION_CHANNEL", schema = "BACKGROUND_SCHEMA")
+@Table(name = "DISTRIBUTION_CHANNEL")
 public class DistributionChannel extends Auditable<String> {
 
 	@Id
@@ -40,9 +44,13 @@ public class DistributionChannel extends Auditable<String> {
 	@Column(name = "NAME", nullable = false)
 	private String name;
 
-	@NotNull
-	@Column(name = "DESCRIPTION", nullable = false)
+	@Column(name = "DESCRIPTION")
 	private String description;
+
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(name = "TYPE", nullable = false)
+	private DistributionChannelType type;
 
 	@ManyToMany
 	@JoinTable(name = "DISTRIBUTION_CHANNEL__SYSTEM_PRODUCER",
@@ -59,17 +67,27 @@ public class DistributionChannel extends Auditable<String> {
     public DistributionChannel convertFromRequest(DistributionChannelRequest request, boolean isUpdate) {
 		if (!isUpdate) {
 			this.id = UUID.randomUUID();
+			this.producers = new HashSet<>();
+			this.consumers = new HashSet<>();
 		}
-		this.name = request.getName().trim();
-		this.description = request.getDescription().trim();
-		// TODO
-//		this.producers = request.getProducers();
-//		this.consumers = request.getConsumers();
+		this.name = StringUtils.trim(request.getName());
+		this.description = StringUtils.trim(request.getDescription());
+		this.type = request.getType();
 
 		return this;
 	}
 
 	public DistributionChannelResponse convertToResponse() {
 		return new DistributionChannelResponse(this);
+	}
+
+	public void addConsumer(System system) {
+		getConsumers().add(system);
+		system.getConsumerDistributionChannels().add(this);
+	}
+
+	public void addProducer(System system) {
+		getProducers().add(system);
+		system.getProducerDistributionChannels().add(this);
 	}
 }
