@@ -61,7 +61,6 @@ public class CodelistControllerIT {
 
 	@After
 	public void cleanUp() {
-		codelists.clear();
 		repository.deleteAll();
 	}
 

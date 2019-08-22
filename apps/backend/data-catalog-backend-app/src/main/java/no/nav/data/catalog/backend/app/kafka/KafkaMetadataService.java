@@ -5,6 +5,8 @@ import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelSe
 import no.nav.data.catalog.backend.app.kafka.dto.GroupsResponse;
 import no.nav.data.catalog.backend.app.kafka.schema.AvroSchemaParser;
 import no.nav.data.catalog.backend.app.kafka.schema.SchemaRegistryConsumer;
+import no.nav.data.catalog.backend.app.kafka.schema.domain.AvroSchema;
+import no.nav.data.catalog.backend.app.kafka.schema.domain.AvroSchemaVersion;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,7 +35,15 @@ public class KafkaMetadataService {
                 .forEach(distributionChannelService::createOrUpdateDistributionChannelFromKafka);
     }
 
-    public DistributionChannelRequest getDistributionChannelsForTopic(String topic) {
+    public AvroSchema getSchemaForTopic(String topic) {
+        AvroSchemaVersion schemaVersion = schemaRegistryConsumer.getAvroSchemaVersionForTopic(topic);
+        if (schemaVersion == null) {
+            return null;
+        }
+        return AvroSchemaParser.parseSchema(schemaVersion);
+    }
+
+    DistributionChannelRequest getDistributionChannelsForTopic(String topic) {
         GroupsResponse groupsResponse = kafkaAdminRestConsumer.getTopicGroups(topic);
         return groupsResponse.convertToDistributionChannelRequest();
     }

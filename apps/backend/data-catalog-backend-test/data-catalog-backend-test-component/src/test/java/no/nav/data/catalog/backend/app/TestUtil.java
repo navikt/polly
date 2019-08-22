@@ -15,7 +15,7 @@ public final class TestUtil {
         try {
             return StreamUtils.copyToString(new ClassPathResource(path).getInputStream(), Charset.defaultCharset());
         } catch (IOException e) {
-            throw new RuntimeException("error reading file", e);
+            throw new RuntimeException("error reading file " + path, e);
         }
     }
 }

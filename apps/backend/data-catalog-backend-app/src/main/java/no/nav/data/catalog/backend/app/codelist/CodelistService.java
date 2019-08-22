@@ -28,9 +28,12 @@ public class CodelistService {
 
 	public static final Map<ListName, Map<String, String>> codelists = new EnumMap<>(ListName.class);
 
+	static {
+		initListNames();
+	}
+
 	public CodelistService(CodelistRepository repository) {
 		this.repository = repository;
-		initListNames();
 	}
 
 	public static CodeResponse getCodeInfoForCodelistItem(ListName listName, String code) {
@@ -50,7 +53,7 @@ public class CodelistService {
 		allCodelists.forEach(codelist -> codelists.get(codelist.getList()).put(codelist.getCode(), codelist.getDescription()));
 	}
 
-	private void initListNames() {
+	private static void initListNames() {
 		Stream.of(ListName.values()).forEach(listName -> codelists.put(listName, new HashMap<>()));
 	}
 
