@@ -10,6 +10,9 @@ import no.nav.data.catalog.backend.app.kafka.schema.domain.AvroSchema;
 import no.nav.data.catalog.backend.app.kafka.schema.domain.AvroSchemaVersion;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 public class KafkaMetadataService {
@@ -27,14 +30,15 @@ public class KafkaMetadataService {
         this.distributionChannelService = distributionChannelService;
     }
 
-    public void synchDistributions() {
+    public void syncDistributionsFromKafkaAdmin() {
         log.info("Starting kafka distribution sync");
-        long count = kafkaAdminRestConsumer.getAapenTopics()
+        List<DistributionChannelRequest> requests = kafkaAdminRestConsumer.getAapenTopics()
                 .stream()
                 .map(this::getDistributionChannelsForTopic)
-                .peek(distributionChannelService::createOrUpdateDistributionChannelFromKafka)
-                .count();
-        log.info("Finished kafka distribution sync of {} topics", count);
+                .collect(Collectors.toList());
+
+        requests.forEach(distributionChannelService::createOrUpdateDistributionChannelFromKafka);
+        log.info("Finished kafka distribution sync of {} topics", requests.size());
     }
 
     public AvroSchema getSchemaForTopic(String topic) {

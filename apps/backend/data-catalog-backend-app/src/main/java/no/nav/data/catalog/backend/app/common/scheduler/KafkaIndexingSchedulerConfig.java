@@ -31,6 +31,6 @@ public class KafkaIndexingSchedulerConfig implements SchedulingConfigurer {
 
     IntervalTask syncTask() {
         long syncIntervalInMillis = TimeUnit.SECONDS.toMillis(syncIntervalSeconds);
-        return new IntervalTask(service::synchDistributions, syncIntervalInMillis, 1000L);
+        return new IntervalTask(service::syncDistributionsFromKafkaAdmin, syncIntervalInMillis, 1000L);
     }
 }

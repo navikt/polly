@@ -39,7 +39,7 @@ public class KafkaMetadataServiceIT extends IntegrationTestBase {
 
     @Test
     public void syncKafka() {
-        kafkaMetadataService.synchDistributions();
+        kafkaMetadataService.syncDistributionsFromKafkaAdmin();
         assertResults();
     }
 
@@ -51,7 +51,7 @@ public class KafkaMetadataServiceIT extends IntegrationTestBase {
         distributionChannel.addProducer(producer);
         distributionChannelRepository.save(distributionChannel);
 
-        kafkaMetadataService.synchDistributions();
+        kafkaMetadataService.syncDistributionsFromKafkaAdmin();
         assertResults();
     }
 
