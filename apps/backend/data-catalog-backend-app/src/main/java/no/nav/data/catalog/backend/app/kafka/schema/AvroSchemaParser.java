@@ -7,7 +7,6 @@ import no.nav.data.catalog.backend.app.kafka.schema.domain.AvroSchemaVersion;
 import no.nav.data.catalog.backend.app.kafka.schema.domain.FieldType;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Type;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Deque;
@@ -16,7 +15,6 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Component
 public class AvroSchemaParser {
 
     private AvroSchemaParser() {
