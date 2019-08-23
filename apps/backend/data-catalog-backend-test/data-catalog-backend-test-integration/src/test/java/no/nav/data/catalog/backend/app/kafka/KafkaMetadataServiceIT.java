@@ -80,7 +80,7 @@ public class KafkaMetadataServiceIT extends IntegrationTestBase {
     }
 
     private void stubKafkaAdminRest() {
-        stubFor(get("/api/v1/topics").willReturn(okJson("[\"aapen-topic1\",\"privat-topic1\",\"aapen-topic2\"]")));
+        stubFor(get("/api/v1/topics").willReturn(okJson("{\"topics\":[\"aapen-topic1\",\"privat-topic1\",\"aapen-topic2\"]}")));
         stubFor(get("/api/v1/topics/aapen-topic1/groups").willReturn(okJson(readFile("kafka/topic_groups.json").replace("topicname", "topic1"))));
         stubFor(get("/api/v1/topics/aapen-topic2/groups").willReturn(okJson(readFile("kafka/topic_groups.json").replace("topicname", "topic2"))));
     }

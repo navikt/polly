@@ -1,8 +1,8 @@
 package no.nav.data.catalog.backend.app.kafka;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.kafka.dto.GroupsResponse;
+import no.nav.data.catalog.backend.app.kafka.dto.TopicsResponse;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -31,12 +31,12 @@ public class KafkaAdminRestConsumer {
     }
 
     public List<String> getAapenTopics() {
-        ResponseEntity<List<String>> entity = restTemplate.exchange(baseUrl + "/api/v1/topics", HttpMethod.GET, new HttpEntity<>(apiKeyHeaders), JsonUtils.STRING_LIST);
+        ResponseEntity<TopicsResponse> entity = restTemplate.exchange(baseUrl + "/api/v1/topics", HttpMethod.GET, new HttpEntity<>(apiKeyHeaders), TopicsResponse.class);
         if (entity.getStatusCode() != HttpStatus.OK || !entity.hasBody()) {
             log.warn("Fant ingen topics: {}", entity);
             return Collections.emptyList();
         }
-        return entity.getBody().stream().filter(topic -> topic.startsWith("aapen-")).collect(Collectors.toList());
+        return entity.getBody().getTopics().stream().filter(topic -> topic.startsWith("aapen-")).collect(Collectors.toList());
     }
 
     public GroupsResponse getTopicGroups(String topic) {
