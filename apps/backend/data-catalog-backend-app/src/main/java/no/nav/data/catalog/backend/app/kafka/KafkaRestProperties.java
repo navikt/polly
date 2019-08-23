@@ -11,4 +11,5 @@ public class KafkaRestProperties {
 
     private String adminUrl;
     private String schemaRegistryUrl;
+    private String adminApikey;
 }
