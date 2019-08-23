@@ -1,7 +1,7 @@
 package no.nav.data.catalog.backend.app;
 
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
-import no.nav.data.catalog.backend.app.util.EnableWiremock;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,16 +11,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.util.SocketUtils;
 
 import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
-@EnableWiremock
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {IntegrationTestConfig.class, AppStarter.class})
@@ -28,14 +27,22 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 public abstract class IntegrationTestBase {
 
     protected static final UUID DATASET_ID_1 = UUID.fromString("acab158d-67ef-4030-a3c2-195e993f18d2");
+    private static final int wiremockport = SocketUtils.findAvailableTcpPort();
 
     @ClassRule
     public static PostgresTestContainer postgreSQLContainer = PostgresTestContainer.getInstance();
+    @ClassRule
+    public static WireMockClassRule wiremock = new WireMockClassRule(wiremockport) {
+        @Override
+        protected void before() {
+            System.setProperty("wiremock.server.port", String.valueOf(wiremockport));
+        }
+    };
     @Autowired
     protected TransactionTemplate transactionTemplate;
 
     protected void policyStubbing() {
-        stubFor(get(urlPathEqualTo("/policy/policy"))
+        wiremock.stubFor(get(urlPathEqualTo("/policy/policy"))
                 .withQueryParam("datasetId", equalTo(DATASET_ID_1.toString()))
                 .willReturn(aResponse().withStatus(HttpStatus.OK.value())
                         .withHeader(ContentTypeHeader.KEY, "application/json")

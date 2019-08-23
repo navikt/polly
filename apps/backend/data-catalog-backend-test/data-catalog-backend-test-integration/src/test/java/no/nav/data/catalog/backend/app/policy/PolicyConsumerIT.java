@@ -5,24 +5,17 @@ import no.nav.data.catalog.backend.app.IntegrationTestBase;
 import no.nav.data.catalog.backend.app.IntegrationTestConfig;
 import no.nav.data.catalog.backend.app.codelist.CodeResponse;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
         classes = {IntegrationTestConfig.class, AppStarter.class})
-@ActiveProfiles("test")
-@AutoConfigureWireMock(port = 0)
 public class PolicyConsumerIT extends IntegrationTestBase {
 
     @Autowired

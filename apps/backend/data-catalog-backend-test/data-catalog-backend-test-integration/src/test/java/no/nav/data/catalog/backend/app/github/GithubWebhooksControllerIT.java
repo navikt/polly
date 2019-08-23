@@ -45,7 +45,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.matchingJsonPath;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static java.util.Collections.singletonList;
@@ -68,15 +67,14 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
     @Autowired
     private HmacUtils hmacUtils;
 
-    private String head = "821cd53c03fa042c2a32f0c73ff5612c0a458143";
-    private String before = "dbe83db262b1fd082e5cf90053f6196127976e7f";
+    private static final String head = "821cd53c03fa042c2a32f0c73ff5612c0a458143";
+    private static final String before = "dbe83db262b1fd082e5cf90053f6196127976e7f";
 
     @Before
-    public void setUp() throws IOException {
-        repository.deleteAll();
+    public void setUp() {
         CodelistStub.initializeCodelist();
         stubGithub();
-
+        repository.deleteAll();
         polDatasettRepository.save(new PolDatasett(before));
 
         repository.save(Dataset.builder()
@@ -152,7 +150,7 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
 
     @Test
     public void pullRequestWithValidationErrors() throws IOException {
-        stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/modified.json"))
+        wiremock.stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/modified.json"))
                 .withQueryParam("ref", equalTo(head))
                 .willReturn(okJson(toJson(singletonList(createFile("testdataIkkeSlett/modified.json", readFile("github/modifiedAfterIncludingAdded.json")))))));
 
@@ -202,13 +200,14 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
         return new HttpEntity<>(payload, headers);
     }
 
-    private void stubGithub() throws IOException {
-        stubFor(get(urlPathEqualTo("/app/installations"))
+    private void stubGithub() {
+        wiremock.resetAll();
+        wiremock.stubFor(get(urlPathEqualTo("/app/installations"))
                 .willReturn(okJson(toJson(new GithubInstallation[]{new GithubInstallation("installId", new GithubAccount("navikt"))}))));
-        stubFor(post(urlPathEqualTo("/app/installations/installId/access_tokens"))
+        wiremock.stubFor(post(urlPathEqualTo("/app/installations/installId/access_tokens"))
                 .willReturn(okJson(toJson(new GithubInstallationToken("githubToken"))).withStatus(HttpStatus.CREATED.value())));
 
-        stubFor(get(urlPathEqualTo(String.format("/api/v3/repos/navikt/pol-datasett/compare/%s...%s", before, head)))
+        wiremock.stubFor(get(urlPathEqualTo(String.format("/api/v3/repos/navikt/pol-datasett/compare/%s...%s", before, head)))
                 .willReturn(okJson(toJson(new RepositoryCommitCompare()
                         .setFiles(Arrays.asList(
                                 new CommitFile().setStatus("added").setFilename("testdataIkkeSlett/added.json"),
@@ -217,28 +216,28 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
                         ))))));
 
         // github files
-        stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/added.json"))
+        wiremock.stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/added.json"))
                 .withQueryParam("ref", equalTo(head))
                 .willReturn(okJson(toJson(singletonList(createFile("testdataIkkeSlett/added.json", readFile("github/added.json")))))));
 
-        stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/modified.json"))
+        wiremock.stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/modified.json"))
                 .withQueryParam("ref", equalTo(before))
                 .willReturn(okJson(toJson(singletonList(createFile("testdataIkkeSlett/modified.json", readFile("github/modifiedBefore.json")))))));
 
-        stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/modified.json"))
+        wiremock.stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/modified.json"))
                 .withQueryParam("ref", equalTo(head))
                 .willReturn(okJson(toJson(singletonList(createFile("testdataIkkeSlett/modified.json", readFile("github/modifiedAfter.json")))))));
 
-        stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/removed.json"))
+        wiremock.stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/removed.json"))
                 .withQueryParam("ref", equalTo(before))
                 .willReturn(okJson(toJson(singletonList(createFile("testdataIkkeSlett/removed.json", readFile("github/removed.json")))))));
 
         // Github statuses
-        stubFor(post(urlPathEqualTo(String.format("/api/v3/repos/navikt/pol-datasett/statuses/%s", head)))
+        wiremock.stubFor(post(urlPathEqualTo(String.format("/api/v3/repos/navikt/pol-datasett/statuses/%s", head)))
                 .willReturn(okJson(toJson(new CommitStatus()))));
     }
 
-    private RepositoryContents createFile(String path, String content) {
+    private static RepositoryContents createFile(String path, String content) {
         return new RepositoryContents()
                 .setName(StringUtils.substringAfterLast(path, "/"))
                 .setPath(path)
