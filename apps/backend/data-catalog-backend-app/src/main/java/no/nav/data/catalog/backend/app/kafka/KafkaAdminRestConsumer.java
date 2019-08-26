@@ -31,12 +31,16 @@ public class KafkaAdminRestConsumer {
     }
 
     public List<String> getAapenTopics() {
+        return getAllTopics().stream().filter(topic -> topic.startsWith("aapen-")).collect(Collectors.toList());
+    }
+
+    public List<String> getAllTopics() {
         ResponseEntity<TopicsResponse> entity = restTemplate.exchange(baseUrl + "/api/v1/topics", HttpMethod.GET, new HttpEntity<>(apiKeyHeaders), TopicsResponse.class);
         if (entity.getStatusCode() != HttpStatus.OK || !entity.hasBody()) {
             log.warn("Fant ingen topics: {}", entity);
             return Collections.emptyList();
         }
-        return entity.getBody().getTopics().stream().filter(topic -> topic.startsWith("aapen-")).collect(Collectors.toList());
+        return entity.getBody().getTopics();
     }
 
     public GroupsResponse getTopicGroups(String topic) {

@@ -24,7 +24,8 @@ public class SwaggerConfig {
                 .select()
                 .apis(Predicates.or(basePackage("no.nav.data.catalog.backend.app.codelist"),
                         basePackage("no.nav.data.catalog.backend.app.github"),
-                        basePackage("no.nav.data.catalog.backend.app.dataset")
+                        basePackage("no.nav.data.catalog.backend.app.dataset"),
+                        basePackage("no.nav.data.catalog.backend.app.kafka")
                 ))
                 .paths(PathSelectors.any())
                 .build()
