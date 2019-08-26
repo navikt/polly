@@ -29,6 +29,7 @@
         <prometheus.version>0.6.0</prometheus.version>
         <org.eclipse.egit.github.core.version>5.4.0.201906121030-r</org.eclipse.egit.github.core.version>
         <confluent.version>5.3.0</confluent.version>
+        <azure.version>2.1.7</azure.version>
 
         <!-- Test -->
         <awaitability.version>3.1.6</awaitability.version>
@@ -49,6 +50,13 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring-cloud-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>azure-spring-boot-bom</artifactId>
+                <version>${azure.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

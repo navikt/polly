@@ -1,10 +1,13 @@
 package no.nav.data.catalog.backend.app.common.swagger;
 
 import com.google.common.base.Predicates;
+import io.swagger.models.auth.In;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -28,6 +31,7 @@ public class SwaggerConfig {
                 ))
                 .paths(PathSelectors.any())
                 .build()
+                .securitySchemes(Collections.singletonList(new ApiKey("Token Access", HttpHeaders.AUTHORIZATION, In.HEADER.name())))
                 .apiInfo(apiInfo());
     }
 
