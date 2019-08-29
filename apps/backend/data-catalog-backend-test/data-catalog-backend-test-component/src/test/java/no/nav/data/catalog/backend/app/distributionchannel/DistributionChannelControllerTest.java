@@ -2,9 +2,9 @@ package no.nav.data.catalog.backend.app.distributionchannel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.data.catalog.backend.app.AppStarter;
+import no.nav.data.catalog.backend.app.common.rest.PageParameters;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.system.System;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -29,6 +28,7 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -50,16 +50,16 @@ public class DistributionChannelControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    private ObjectMapper objectMapper = JsonUtils.getObjectMapper();
+    private final ObjectMapper objectMapper = JsonUtils.getObjectMapper();
 
-    private DistributionChannelRequest distributionChannelRequest = DistributionChannelRequest.builder()
+    private final DistributionChannelRequest distributionChannelRequest = DistributionChannelRequest.builder()
             .name("distributionChannelName")
             .description("description")
             .producers(Collections.singletonList("producer"))
             .consumers(Collections.singletonList("consumer"))
             .build();
 
-    private DistributionChannel distributionChannel = DistributionChannel.builder()
+    private final DistributionChannel distributionChannel = DistributionChannel.builder()
             .id(UUID.randomUUID())
             .name("distributionChannelName")
             .description("description")
@@ -73,7 +73,6 @@ public class DistributionChannelControllerTest {
                     .build()))
             .build();
 
-    // ResponseEntity getDistributionChannelById(@PathVariable UUID uuid) {
     @Test
     public void getDistributionChannelById_shouldGetDistributionChannel_whenIdExists() throws Exception {
         when(repository.findById(distributionChannel.getId())).thenReturn(Optional.of(distributionChannel));
@@ -91,23 +90,23 @@ public class DistributionChannelControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    // RestResponsePage<DistributionChannelResponse> getAllDistributionChannel(@RequestParam Map<String, String> queryMap) {
-    //TODO: Fix this test
-    @Ignore
     @Test
-    public void getAllDistributionChannel_shouldGetPagedList_whenRequestContainsPageInformation() {
+    public void getAllDistributionChannel_shouldGetPagedList_whenRequestContainsPageInformation() throws Exception {
         List<DistributionChannel> distributionChannels = List.of(distributionChannel);
         Pageable pageable = PageRequest.of(0, 20);
 
         Page<DistributionChannel> distributionChannelPage = new PageImpl<>(distributionChannels, pageable, 1);
-//        RestResponsePage<DistributionChannelResponse> pagedResponse =
-//                new RestResponsePage<DistributionChannelResponse>(distributionChannelPage.getContent(), distributionChannelPage.getPageable(), distributionChannelPage.getTotalElements());
+        Page<DistributionChannelResponse> pagedResponse = distributionChannelPage.map(DistributionChannel::convertToResponse);
 
-        when(repository.findAll((Specification<DistributionChannel>) null, pageable)).thenReturn(distributionChannelPage);
-//        when(service.getAllDistributionChannelsByQuery(anyMap())).thenReturn(distributionChannelPage);
+        PageParameters pageParameters = new PageParameters();
+        when(service.getAllDistributionChannels(pageParameters.createIdSortedPage())).thenReturn(pagedResponse);
+
+        mvc.perform(get("/distributionchannel")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new PageParameters())))
+                .andExpect(status().isOk());
     }
 
-    // Long countAllDistributionChannels() {
     @Test
     public void countAllDistributionChannels() throws Exception {
         when(repository.count()).thenReturn(20L);
@@ -117,7 +116,6 @@ public class DistributionChannelControllerTest {
                 .andExpect(content().string("20"));
     }
 
-    // List<DistributionChannelResponse> createDistributionChannels(@RequestBody List<DistributionChannelRequest> requests) {
     @Test
     public void createDistributionChannels_shouldCreateNewDistributionChannel_withValidRequest() throws Exception {
         List<DistributionChannel> distributionChannels = List.of(distributionChannel);
@@ -132,5 +130,24 @@ public class DistributionChannelControllerTest {
                 .andExpect(status().isAccepted());
     }
 
-    // ResponseEntity deleteDistributionChannelById(@PathVariable UUID id) {
+    @Test
+    public void deleteDistributionChannelBYId_shouldDeleteDistributionChannel_whenIdExist() throws Exception {
+        DistributionChannel toBeDeletedDChannel = DistributionChannel.builder()
+                .id(UUID.randomUUID())
+                .name("toBeDeletedDChannel")
+                .description("description")
+                .producers(Set.of(System.builder()
+                        .id(UUID.randomUUID())
+                        .name("producer")
+                        .build()))
+                .consumers(Set.of(System.builder()
+                        .id(UUID.randomUUID())
+                        .name("consumer")
+                        .build()))
+                .build();
+
+        when(service.findDistributionChannelById(toBeDeletedDChannel.getId())).thenReturn(Optional.of(toBeDeletedDChannel));
+
+        mvc.perform(delete("/distributionchannel/" + toBeDeletedDChannel.getId())).andExpect(status().isAccepted());
+    }
 }
