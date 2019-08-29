@@ -8,9 +8,13 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
+import static no.nav.data.catalog.backend.app.dataset.DatasetMaster.REST;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertThat;
@@ -18,10 +22,14 @@ import static org.junit.Assert.assertTrue;
 
 public class DatasetServiceIT extends AbstractDatasetIT {
 
+    private static final LocalDateTime localDateTime = LocalDateTime.now();
+    private int nrOfDatasetsAtSetup;
+
     @Before
     public void setUp() {
         datasetRepository.deleteAll();
         datasetRepository.saveAll(Arrays.asList(dataset111, dataset11, dataset12, dataset1, unrelated));
+        nrOfDatasetsAtSetup = (int) datasetRepository.count();
         entityManager.clear();
     }
 
@@ -58,9 +66,58 @@ public class DatasetServiceIT extends AbstractDatasetIT {
     }
 
     private DatasetResponse findChildByTitle(DatasetResponse dataset, String title) {
-        Optional<DatasetResponse> optional = dataset.getChildren().stream().filter(ds -> ds.getTitle().equals(title)).findFirst();
+        Optional<DatasetResponse> optional = dataset.getChildren()
+                .stream()
+                .filter(ds -> ds.getTitle().equals(title))
+                .findFirst();
         assertTrue(title + " child missing from " + dataset.getTitle(), optional.isPresent());
         return optional.get();
+    }
+
+    @Test
+    public void save() {
+        List<DatasetRequest> requests = new ArrayList<>();
+        requests.add(createRequest("createDataset"));
+
+        datasetService.save(requests, REST);
+
+        assertThat(datasetRepository.findAll().size(), is(nrOfDatasetsAtSetup + 1));
+        assertTrue(datasetRepository.findByTitle("CREATEDATASET").isPresent());
+    }
+
+    @Test
+    public void update() {
+        List<DatasetRequest> requests = new ArrayList<>();
+        requests.add(createRequest("updateDataset"));
+        datasetService.save(requests, REST);
+
+        assertThat(datasetRepository.findByTitle("UPDATEDATASET").get().getDatasetData().getDescription()
+                , is("DatasetDescription"));
+
+        requests.get(0).setDescription("UPDATED DESCRIPTION");
+        datasetService.update(requests);
+
+        assertThat(datasetRepository.findByTitle("UPDATEDATASET").get().getDatasetData().getDescription()
+                , is("UPDATED DESCRIPTION"));
+    }
+
+
+    private DatasetRequest createRequest(String title) {
+        return DatasetRequest.builder()
+                .title(title.toUpperCase().trim())
+                .description("DatasetDescription")
+                .categories(List.of("PERSONALIA"))
+                .provenances(List.of("Provenance"))
+                .pi("false")
+                .issued(localDateTime.toString())
+                .keywords(List.of("Keywords"))
+                .theme("Theme")
+                .accessRights("AccessRights")
+                .publisher("Publisher")
+                .spatial("Spatial")
+                .haspart("Haspart")
+                .distributionChannels(List.of("DistributionChannel"))
+                .build();
     }
 
 }
