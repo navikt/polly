@@ -102,7 +102,7 @@ public class CodelistControllerIT {
 	@Test
 	public void save_shouldSaveNewCodelist() {
 		String code = "SAVE_CODE";
-		List<CodelistRequest> requests = createRequest(ListName.PRODUCER, code, "Test description");
+        List<CodelistRequest> requests = createRequest("PRODUCER", code, "Test description");
 		assertNull(codelists.get(ListName.PRODUCER).get(code));
 
 		ResponseEntity<List<Codelist>> responseEntity = restTemplate.exchange(
@@ -129,9 +129,9 @@ public class CodelistControllerIT {
 	@Test
 	public void update_shouldUpdateOneCodelist() {
 		String code = "UPDATE_CODE";
-		service.save(createRequest(ListName.PRODUCER, code, "Test description"));
+        service.save(createRequest("PRODUCER", code, "Test description"));
 
-		List<CodelistRequest> updatedCodelists = createRequest(ListName.PRODUCER, code, "Updated codelists");
+        List<CodelistRequest> updatedCodelists = createRequest("PRODUCER", code, "Updated codelists");
 
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
 				"/codelist", HttpMethod.PUT, new HttpEntity<>(updatedCodelists), String.class);
@@ -163,7 +163,7 @@ public class CodelistControllerIT {
 	@Test
 	public void delete_shouldDeleteCodelist() {
 		String code = "DELETE_CODE";
-		List<CodelistRequest> requests = createRequest(ListName.PRODUCER, code, "Test description");
+        List<CodelistRequest> requests = createRequest("PRODUCER", code, "Test description");
 		service.save(requests);
 		assertNotNull(codelists.get(ListName.PRODUCER).get(code));
 
@@ -177,12 +177,12 @@ public class CodelistControllerIT {
 
 	private List<CodelistRequest> createNrOfRequests(String code, int nrOfRequests) {
 		return IntStream.rangeClosed(1, nrOfRequests)
-				.mapToObj(i -> createOneRequest(ListName.SYSTEM, code + "_nr_" + i, "Test description"))
+                .mapToObj(i -> createOneRequest("SYSTEM", code + "_nr_" + i, "Test description"))
 				.collect(Collectors.toList());
 
 	}
 
-	private CodelistRequest createOneRequest(ListName listName, String code, String description) {
+    private CodelistRequest createOneRequest(String listName, String code, String description) {
 		return CodelistRequest.builder()
 				.list(listName)
 				.code(code)
@@ -190,7 +190,7 @@ public class CodelistControllerIT {
 				.build();
 	}
 
-	private List<CodelistRequest> createRequest(ListName listName, String code, String description) {
+    private List<CodelistRequest> createRequest(String listName, String code, String description) {
 		return List.of(createOneRequest(listName, code, description));
 	}
 
