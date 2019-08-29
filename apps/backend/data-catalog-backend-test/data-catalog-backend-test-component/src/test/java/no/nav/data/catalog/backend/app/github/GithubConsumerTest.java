@@ -1,22 +1,7 @@
 package no.nav.data.catalog.backend.app.github;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import no.nav.data.catalog.backend.app.common.tokensupport.JwtTokenGenerator;
-import no.nav.data.catalog.backend.app.github.GitHubClient;
-import no.nav.data.catalog.backend.app.github.GithubConsumer;
+import no.nav.data.catalog.backend.app.common.validator.ValidationError;
 import no.nav.data.catalog.backend.app.github.domain.GithubAccount;
 import no.nav.data.catalog.backend.app.github.domain.GithubInstallation;
 import no.nav.data.catalog.backend.app.github.domain.GithubInstallationToken;
@@ -46,6 +31,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 @ActiveProfiles("test")
@@ -99,11 +98,13 @@ public class GithubConsumerTest {
     public void updateStatusFailure() throws IOException {
         String sha = "12512";
         when(gitHubClient.post(anyString(), mapCaptor.capture(), any())).thenReturn(new CommitStatus());
-        githubConsumer.updateStatus(sha, asList("feil1", "feil2"));
+        List<ValidationError> validationErrors = asList(new ValidationError("ref1", "type1", "feilmessage1"),
+                new ValidationError("ref2", "type2", "feilmessage2"));
+        githubConsumer.updateStatus(sha, validationErrors);
 
         Map<String, String> value = mapCaptor.getValue();
         assertThat(value.get("state"), is(CommitStatus.STATE_FAILURE));
-        assertThat(value.get("description"), is("feil1, feil2"));
+        assertThat(value.get("description"), is("ref1 -- type1 -- feilmessage1, ref2 -- type2 -- feilmessage2"));
         assertThat(value.get("context"), is("data-catalog-validation"));
     }
 
