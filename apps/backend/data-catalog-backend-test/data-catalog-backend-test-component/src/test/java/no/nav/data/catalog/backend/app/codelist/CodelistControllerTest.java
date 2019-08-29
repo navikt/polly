@@ -68,8 +68,8 @@ public class CodelistControllerTest {
     public ExpectedException expectedException = ExpectedException.none();
 
     @Before
-    public void setUp() throws Exception {
-        CodelistStub.initializeCodelist();
+    public void setUp() {
+        CodelistStub.initializeCodelistAndStub();
     }
 
     @Test
@@ -141,7 +141,7 @@ public class CodelistControllerTest {
 
         List<CodelistRequest> requests = IntStream.rangeClosed(1, 10)
                 .mapToObj(i -> CodelistRequest.builder()
-                        .list(ListName.PRODUCER)
+                        .list("PRODUCER")
                         .code("CODE_nr:" + i)
                         .description("Description")
                         .build())
@@ -159,7 +159,7 @@ public class CodelistControllerTest {
     @Test
     public void save_shouldReturnBadRequestWhenFailsValidation() throws Exception {
         String errorMessage = "The request was not accepted because it is empty";
-        doThrow(new ValidationException(errorMessage)).when(service).validateRequests(anyList(), anyBoolean());
+        doThrow(new ValidationException(errorMessage)).when(service).validate(anyList(), anyBoolean());
 
         String inputJson = objectMapper.writeValueAsString(Collections.emptyList());
 
@@ -177,7 +177,7 @@ public class CodelistControllerTest {
 
         List<CodelistRequest> requests = IntStream.rangeClosed(1, 10)
                 .mapToObj(i -> CodelistRequest.builder()
-                        .list(ListName.PRODUCER)
+                        .list("PRODUCER")
                         .code("CODE_nr:" + i)
                         .description("Description")
                         .build())
@@ -195,7 +195,7 @@ public class CodelistControllerTest {
     @Test
     public void update_shouldReturnBadRequest_withEmptyListOfRequests() throws Exception {
         String errorMessage = "The request was not accepted because it is empty";
-        doThrow(new ValidationException(errorMessage)).when(service).validateRequests(anyList(), anyBoolean());
+        doThrow(new ValidationException(errorMessage)).when(service).validate(anyList(), anyBoolean());
 
         String inputJson = objectMapper.writeValueAsString(Collections.emptyList());
 
