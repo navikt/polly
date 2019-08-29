@@ -3,6 +3,7 @@ package no.nav.data.catalog.backend.app.github;
 import com.google.common.base.Joiner;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import no.nav.data.catalog.backend.app.common.tokensupport.JwtTokenGenerator;
+import no.nav.data.catalog.backend.app.common.validator.ValidationError;
 import no.nav.data.catalog.backend.app.github.domain.GithubInstallation;
 import no.nav.data.catalog.backend.app.github.domain.GithubInstallationToken;
 import no.nav.data.catalog.backend.app.github.domain.RepoModification;
@@ -52,7 +53,7 @@ public class GithubConsumer {
     private LocalDateTime lastToken = LocalDateTime.MIN;
 
     public GithubConsumer(RestTemplate restTemplate, JwtTokenGenerator tokenGenerator,
-            GitHubClient gitHubClient, RepositoryId repositoryId) {
+                          GitHubClient gitHubClient, RepositoryId repositoryId) {
         this.restTemplate = restTemplate;
         this.tokenGenerator = tokenGenerator;
         this.repositoryId = repositoryId;
@@ -62,7 +63,7 @@ public class GithubConsumer {
         installationsUri = gitHubClient.getBaseUri() + "/app/installations";
     }
 
-    public void updateStatus(String sha, List<String> validationErrors) {
+    public void updateStatus(String sha, List<ValidationError> validationErrors) {
         updateToken();
         boolean isOk = validationErrors.isEmpty();
         try {
@@ -152,11 +153,13 @@ public class GithubConsumer {
         } catch (
                 HttpClientErrorException e) {
             throw new DataCatalogBackendTechnicalException(
-                    String.format("Calling Github to get installation id failed with status=%s message=%s", e.getStatusCode(), e.getResponseBodyAsString()), e, e.getStatusCode());
+                    String.format("Calling Github to get installation id failed with status=%s message=%s", e.getStatusCode(), e
+                            .getResponseBodyAsString()), e, e.getStatusCode());
         } catch (
                 HttpServerErrorException e) {
             throw new DataCatalogBackendTechnicalException(
-                    String.format("Service getting Github installation id failed with status=%s message=%s", e.getStatusCode(), e.getResponseBodyAsString()), e, e.getStatusCode());
+                    String.format("Service getting Github installation id failed with status=%s message=%s", e.getStatusCode(), e
+                            .getResponseBodyAsString()), e, e.getStatusCode());
         }
     }
 
@@ -171,12 +174,14 @@ public class GithubConsumer {
                     .orElseThrow(() -> new DataCatalogBackendTechnicalException("GitHub returned null for installation token value!"));
         } catch (HttpClientErrorException e) {
             throw new DataCatalogBackendTechnicalException(
-                    String.format("Calling Github to get installation token failed with status=%s message=%s", e.getStatusCode(), e.getResponseBodyAsString()), e,
+                    String.format("Calling Github to get installation token failed with status=%s message=%s", e.getStatusCode(), e
+                            .getResponseBodyAsString()), e,
                     e.getStatusCode());
         } catch (
                 HttpServerErrorException e) {
             throw new DataCatalogBackendTechnicalException(
-                    String.format("Service getting Github installation token failed with status=%s message=%s", e.getStatusCode(), e.getResponseBodyAsString()), e,
+                    String.format("Service getting Github installation token failed with status=%s message=%s", e.getStatusCode(), e
+                            .getResponseBodyAsString()), e,
                     e.getStatusCode());
         }
     }
