@@ -10,6 +10,7 @@ import no.nav.data.catalog.backend.app.common.auditing.Auditable;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.hibernate.annotations.Type;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Column;
@@ -90,8 +91,8 @@ public class Dataset extends Auditable<String> {
         datasetData.setDescription(request.getDescription());
         datasetData.setCategories(copyOf(request.getCategories()));
         datasetData.setProvenances(copyOf(request.getProvenances()));
-        datasetData.setPi(request.getPi());
-        datasetData.setIssued(request.getIssued());
+        datasetData.setPi(Boolean.parseBoolean(request.getPi()));
+        datasetData.setIssued(LocalDateTime.parse(request.getIssued()));
         datasetData.setKeywords(copyOf(request.getKeywords()));
         datasetData.setTheme(request.getTheme());
         datasetData.setAccessRights(request.getAccessRights());
