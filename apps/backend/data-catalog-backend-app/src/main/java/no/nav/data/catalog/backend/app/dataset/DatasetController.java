@@ -27,9 +27,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+
+import static no.nav.data.catalog.backend.app.dataset.DatasetMaster.REST;
 
 @Slf4j
 @RestController
@@ -128,15 +129,9 @@ public class DatasetController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public List<DatasetResponse> createDatasets(@RequestBody List<DatasetRequest> requests) {
         log.info("Received requests to create Datasets");
-        service.validateRequests(requests, false);
+        service.validate(requests, false, REST);
 
-        List<Dataset> datasets = requests.stream()
-                .map(request -> new Dataset().convertNewFromRequest(request, DatasetMaster.REST))
-                .collect(Collectors.toList());
-
-        return repository.saveAll(datasets).stream()
-                .map(Dataset::convertToResponse)
-                .collect(Collectors.toList());
+        return service.save(requests, REST);
     }
 
     @ApiOperation(value = "Update Dataset", tags = {"Dataset"})
@@ -148,13 +143,9 @@ public class DatasetController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public List<DatasetResponse> updateDatasets(@RequestBody List<DatasetRequest> requests) {
         log.info("Received requests to update Datasets");
-        service.validateRequests(requests, true);
-        List<Dataset> updatedDatasets = service.returnUpdatedDatasetsIfAllArePresent(requests);
+        service.validate(requests, true, REST);
 
-        return repository.saveAll(updatedDatasets).stream()
-                .map(Dataset::convertToResponse)
-                .collect(Collectors.toList());
-
+        return service.update(requests);
     }
 
     @ApiOperation(value = "Update Dataset", tags = {"Dataset"})
@@ -171,7 +162,7 @@ public class DatasetController {
             log.info("Cannot find Dataset with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        service.validateRequests(List.of(request), true);
+        service.validate(List.of(request), true, REST);
 
         Dataset dataset = fromRepository.get().convertUpdateFromRequest(request);
 
