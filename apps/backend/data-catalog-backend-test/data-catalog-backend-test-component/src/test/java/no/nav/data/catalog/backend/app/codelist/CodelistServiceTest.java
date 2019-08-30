@@ -169,7 +169,7 @@ public class CodelistServiceTest {
 
         when(repository.findByListAndCode(any(ListName.class), anyString())).thenReturn(Optional.empty());
 
-        service.validate(requests, false);
+        service.validateRequest(requests, false);
     }
 
     @Test
@@ -177,7 +177,7 @@ public class CodelistServiceTest {
         CodelistRequest request = CodelistRequest.builder().list("PRODUCER").code("BRUKER").description("Test").build();
         service.save(List.of(request));
         try {
-            service.validate(List.of(request), false);
+            service.validateRequest(List.of(request), false);
         } catch (ValidationException e) {
             assertThat(e.get().size(), is(1));
             assertThat(e.toErrorString(), is("Request:1 -- creatingExistingCode -- The code BRUKER already exists in the codelist(PRODUCER) and therefore cannot be created"));
@@ -198,7 +198,7 @@ public class CodelistServiceTest {
 
         when(repository.findByListAndCode(ListName.PRODUCER, "TEST")).thenReturn(Optional.of(codelist));
 
-        service.validate(requests, true);
+        service.validateRequest(requests, true);
     }
 
     @Test
@@ -209,7 +209,7 @@ public class CodelistServiceTest {
                 .description("Test")
                 .build();
         try {
-            service.validate(List.of(request), true);
+            service.validateRequest(List.of(request), true);
         } catch (ValidationException e) {
             assertThat(e.get().size(), is(1));
             assertThat(e.toErrorString(),
@@ -224,7 +224,7 @@ public class CodelistServiceTest {
                 .code("    cOrRecTFormAT  ")
                 .description("   Trim av description                      ")
                 .build());
-        service.validate(requests, false);
+        service.validateRequest(requests, false);
         service.save(requests);
         assertTrue(codelists.get(ListName.CATEGORY).containsKey("CORRECTFORMAT"));
         assertTrue(codelists.get(ListName.CATEGORY).containsValue("Trim av description"));

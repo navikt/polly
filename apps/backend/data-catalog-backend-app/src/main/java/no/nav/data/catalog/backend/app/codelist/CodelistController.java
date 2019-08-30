@@ -81,7 +81,7 @@ public class CodelistController {
     @ResponseStatus(HttpStatus.CREATED)
     public List<Codelist> save(@Valid @RequestBody List<CodelistRequest> requests) {
         log.info("Received a requests to create codelists");
-        service.validate(requests, false);
+        service.validateRequest(requests, false);
 
         return service.save(requests);
     }
@@ -95,7 +95,7 @@ public class CodelistController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public List<Codelist> update(@Valid @RequestBody List<CodelistRequest> requests) {
         log.info("Received a request to update codelists");
-        service.validate(requests, true);
+        service.validateRequest(requests, true);
 
         return service.update(requests);
     }

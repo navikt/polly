@@ -159,7 +159,7 @@ public class CodelistControllerTest {
     @Test
     public void save_shouldReturnBadRequestWhenFailsValidation() throws Exception {
         String errorMessage = "The request was not accepted because it is empty";
-        doThrow(new ValidationException(errorMessage)).when(service).validate(anyList(), anyBoolean());
+        doThrow(new ValidationException(errorMessage)).when(service).validateRequest(anyList(), anyBoolean());
 
         String inputJson = objectMapper.writeValueAsString(Collections.emptyList());
 
@@ -195,7 +195,7 @@ public class CodelistControllerTest {
     @Test
     public void update_shouldReturnBadRequest_withEmptyListOfRequests() throws Exception {
         String errorMessage = "The request was not accepted because it is empty";
-        doThrow(new ValidationException(errorMessage)).when(service).validate(anyList(), anyBoolean());
+        doThrow(new ValidationException(errorMessage)).when(service).validateRequest(anyList(), anyBoolean());
 
         String inputJson = objectMapper.writeValueAsString(Collections.emptyList());
 

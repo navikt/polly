@@ -95,7 +95,7 @@ public class CodelistServiceIT {
                 createOneRequest("PRODUCER", "code_2 ", "Description"),
                 createOneRequest("PRODUCER", " Code_3 ", "Description "));
 
-        service.validate(requests, false);
+        service.validateRequest(requests, false);
     }
 
     private CodelistRequest createOneRequest(String listName, String code, String description) {
