@@ -9,14 +9,13 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
-import no.nav.data.catalog.backend.app.common.validator.ValidationError;
+import no.nav.data.catalog.backend.app.common.validator.RequestElement;
 import no.nav.data.catalog.backend.app.github.GithubReference;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.eclipse.egit.github.core.RepositoryContents;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +30,7 @@ import static org.eclipse.egit.github.core.RepositoryContents.TYPE_FILE;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DatasetRequest {
+public class DatasetRequest implements RequestElement {
 
     private String title;
     private String description;
@@ -81,11 +80,21 @@ public class DatasetRequest {
     }
 
     @JsonIgnore
-    public Optional<String> getRequestReference() {
+    private Optional<String> getRequestReference() {
         return githubReference == null ? Optional.empty() : Optional.ofNullable(githubReference.toString());
     }
 
-    public String getReference(DatasetMaster master, String requestIndex) {
+    @Override
+    public String getIdentifyingFields() {
+        return title;
+    }
+
+    @Override
+    public String getRequestType() {
+        return "dataset";
+    }
+
+    String getReference(DatasetMaster master, String requestIndex) {
         switch (master) {
             case GITHUB:
                 return getRequestReference().orElse("");
@@ -98,54 +107,7 @@ public class DatasetRequest {
         }
     }
 
-    public List<ValidationError> validateThatNoFieldsAreNullOrEmpty(String reference) {
-        final String ERROR_TYPE = "fieldIsNullOrMissing";
-        String errorMessage = "The %s was null or missing";
-        List<ValidationError> validationErrors = new ArrayList<>();
-
-        if (title == null || title.isEmpty()) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(errorMessage, "title")));
-        }
-        if (description == null || description.isEmpty()) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(errorMessage, "description")));
-        }
-        if (categories == null || categories.isEmpty()) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(errorMessage, "categories")));
-        }
-        if (provenances == null || provenances.isEmpty()) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(errorMessage, "provenances")));
-        }
-        if (pi == null) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(errorMessage, "pi")));
-        }
-        if (issued == null) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(errorMessage, "issued")));
-        }
-        if (keywords == null || keywords.isEmpty()) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(errorMessage, "keywords")));
-        }
-        if (theme == null || theme.isEmpty()) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(errorMessage, "theme")));
-        }
-        if (accessRights == null || accessRights.isEmpty()) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(errorMessage, "accessRights")));
-        }
-        if (publisher == null || publisher.isEmpty()) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(errorMessage, "publisher")));
-        }
-        if (spatial == null || spatial.isEmpty()) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(errorMessage, "spatial")));
-        }
-        if (haspart == null || haspart.isEmpty()) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(errorMessage, "haspart")));
-        }
-        if (distributionChannels == null || distributionChannels.isEmpty()) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(errorMessage, "distributionChannels")));
-        }
-        return validationErrors;
-    }
-
-    public void toUpperCaseAndTrim() {
+    void toUpperCaseAndTrim() {
         setTitle(this.title.toUpperCase().trim());
         setDescription(this.description.toUpperCase().trim());
         setCategories(this.categories.stream().map(String::toUpperCase).map(String::trim).collect(Collectors.toList()));

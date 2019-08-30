@@ -37,7 +37,7 @@ public class DatasetServiceTest {
         CodelistStub.initializeCodelist();
     }
 
-    // findDatasetWithAllDescendandts
+    // findDatasetWithAllDescendants
 
     // findAllRootDatasets
 
@@ -45,7 +45,7 @@ public class DatasetServiceTest {
     @Test
     public void validate_shouldThrowValidationException_whenListOfRequestsIsNull() {
         try {
-            service.validate(null, false, REST);
+            service.validateRequest(null, false, REST);
         } catch (ValidationException e) {
             assertThat(e.get().size(), is(1));
             assertThat(e.toErrorString(),
@@ -57,7 +57,7 @@ public class DatasetServiceTest {
     public void validate_shouldThrowValidationException_whenListOfRequestsIsEmpty() {
         List<DatasetRequest> requests = Collections.emptyList();
         try {
-            service.validate(requests, false, REST);
+            service.validateRequest(requests, false, REST);
         } catch (ValidationException e) {
             assertThat(e.get().size(), is(1));
             assertThat(e.toErrorString(),
@@ -79,11 +79,11 @@ public class DatasetServiceTest {
                 .issued(localDateTime)
                 .keywords(List.of("Keywords"))
                 .theme("Theme")
-                .accessRights("AccesRights")
+                .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
                 .haspart("Haspart")
-                .distributionChannels(List.of("DistribusjonChannel"))
+                .distributionChannels(List.of("DistributionChannel"))
                 .build());
         requests.add(DatasetRequest.builder()
                 .title("Title2")
@@ -94,11 +94,11 @@ public class DatasetServiceTest {
                 .issued(localDateTime)
                 .keywords(List.of("Keywords"))
                 .theme("Theme")
-                .accessRights("AccesRights")
+                .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
                 .haspart("Haspart")
-                .distributionChannels(List.of("DistribusjonChannel"))
+                .distributionChannels(List.of("DistributionChannel"))
                 .build());
         requests.add(DatasetRequest.builder()
                 .title("Title1")
@@ -109,14 +109,14 @@ public class DatasetServiceTest {
                 .issued(localDateTime)
                 .keywords(List.of("Keywords"))
                 .theme("Theme")
-                .accessRights("AccesRights")
+                .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
                 .haspart("Haspart")
-                .distributionChannels(List.of("DistribusjonChannel"))
+                .distributionChannels(List.of("DistributionChannel"))
                 .build());
         try {
-            service.validate(requests, false, REST);
+            service.validateRequest(requests, false, REST);
         } catch (ValidationException e) {
             assertThat(e.get().size(), is(1));
             assertThat(e.toErrorString(), is("Request:3 -- DuplicateElement -- The dataset Title1 is not unique because it has already been used in this request (see request:1)"));
@@ -137,7 +137,7 @@ public class DatasetServiceTest {
                 .issued(localDateTime)
                 .keywords(List.of("Keywords"))
                 .theme("Theme")
-                .accessRights("AccesRights")
+                .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
                 .haspart("Haspart")
@@ -152,7 +152,7 @@ public class DatasetServiceTest {
                 .issued(localDateTime)
                 .keywords(List.of("Keywords"))
                 .theme("Theme")
-                .accessRights("AccesRights")
+                .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
                 .haspart("Haspart")
@@ -167,17 +167,17 @@ public class DatasetServiceTest {
                 .issued(localDateTime)
                 .keywords(List.of("Keywords"))
                 .theme("Theme")
-                .accessRights("AccesRights")
+                .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
                 .haspart("Haspart")
-                .distributionChannels(List.of("DistribusjonChannel"))
+                .distributionChannels(List.of("DistributionChannel"))
                 .build());
         try {
-            service.validate(requests, false, REST);
+            service.validateRequest(requests, false, REST);
         } catch (ValidationException e) {
             assertThat(e.get().size(), is(1));
-            assertThat(e.toErrorString(), is("Title1 -- DuplicatedIdentifyingFields -- Multipe elements in this request are using the same unique fields (Title1)"));
+            assertThat(e.toErrorString(), is("Title1 -- DuplicatedIdentifyingFields -- Multiple elements in this request are using the same unique fields (Title1)"));
         }
     }
 

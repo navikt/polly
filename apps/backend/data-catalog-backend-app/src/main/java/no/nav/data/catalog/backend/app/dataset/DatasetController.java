@@ -129,7 +129,7 @@ public class DatasetController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public List<DatasetResponse> createDatasets(@RequestBody List<DatasetRequest> requests) {
         log.info("Received requests to create Datasets");
-        service.validate(requests, false, REST);
+        service.validateRequest(requests, false, REST);
 
         return service.save(requests, REST);
     }
@@ -143,7 +143,7 @@ public class DatasetController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public List<DatasetResponse> updateDatasets(@RequestBody List<DatasetRequest> requests) {
         log.info("Received requests to update Datasets");
-        service.validate(requests, true, REST);
+        service.validateRequest(requests, true, REST);
 
         return service.update(requests);
     }
@@ -162,7 +162,7 @@ public class DatasetController {
             log.info("Cannot find Dataset with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        service.validate(List.of(request), true, REST);
+        service.validateRequest(List.of(request), true, REST);
 
         Dataset dataset = fromRepository.get().convertUpdateFromRequest(request);
 
