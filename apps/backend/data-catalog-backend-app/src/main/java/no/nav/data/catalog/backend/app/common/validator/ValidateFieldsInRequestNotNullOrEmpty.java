@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ValidateFieldsInRequestNotNullOrEmpty {
     private static final String ERROR_TYPE = "fieldIsNullOrMissing";
-    private static final String ERROR_MESSAGE = "The %s was null or missing";
+    private static final String ERROR_MESSAGE = "%s was null or missing";
     private final List<ValidationError> validationErrors;
     private final String reference;
 

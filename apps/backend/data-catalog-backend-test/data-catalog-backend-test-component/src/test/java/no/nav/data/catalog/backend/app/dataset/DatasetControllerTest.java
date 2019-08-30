@@ -82,7 +82,7 @@ public class DatasetControllerTest {
     }
 
     @Test
-    public void findForIdWithDescendants() throws Exception {
+    public void findForId_withDescendants() throws Exception {
         when(service.findDatasetWithAllDescendants(dataset.getId())).thenReturn(dataset.convertToResponse());
         mvc.perform(get("/dataset/{id}", dataset.getId()).param("includeDescendants", "true"))
                 .andExpect(status().isOk())
@@ -109,7 +109,7 @@ public class DatasetControllerTest {
     }
 
     @Test
-    public void count() throws Exception {
+    public void countAllDatasets() throws Exception {
         when(repository.count()).thenReturn(4L);
         mvc.perform(get("/dataset/count"))
                 .andExpect(status().isOk())
@@ -128,11 +128,11 @@ public class DatasetControllerTest {
                 .issued(LocalDateTime.now().toString())
                 .keywords(List.of("Keywords"))
                 .theme("Theme")
-                .accessRights("AccesRights")
+                .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
                 .haspart("Haspart")
-                .distributionChannels(List.of("DistribusjonChannel"))
+                .distributionChannels(List.of("DistributionChannel"))
                 .build());
 
         List<DatasetResponse> datasetResponses = requests.stream()
@@ -163,11 +163,11 @@ public class DatasetControllerTest {
                 .issued(LocalDateTime.now().toString())
                 .keywords(List.of("Keywords"))
                 .theme("Theme")
-                .accessRights("AccesRights")
+                .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
                 .haspart("Haspart")
-                .distributionChannels(List.of("DistribusjonChannel"))
+                .distributionChannels(List.of("DistributionChannel"))
                 .build());
 
         List<DatasetResponse> datasetResponses = requests.stream()
@@ -202,7 +202,7 @@ public class DatasetControllerTest {
                         .issued(LocalDateTime.now())
                         .keywords(List.of("Keywords"))
                         .theme("Theme")
-                        .accessRights("AccesRights")
+                        .accessRights("AccessRights")
                         .publisher("Publisher")
                         .spatial("Spatial")
                         .haspart("Haspart")
@@ -219,11 +219,11 @@ public class DatasetControllerTest {
                 .issued(LocalDateTime.now().toString())
                 .keywords(List.of("Keywords"))
                 .theme("Theme")
-                .accessRights("AccesRights")
+                .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
                 .haspart("Haspart")
-                .distributionChannels(List.of("DistribusjonChannel"))
+                .distributionChannels(List.of("DistributionChannel"))
                 .build();
 
         Dataset datasetAfterUpdate = datasetToUpdate.convertUpdateFromRequest(request);
@@ -253,7 +253,7 @@ public class DatasetControllerTest {
                         .issued(LocalDateTime.now())
                         .keywords(List.of("Keywords"))
                         .theme("Theme")
-                        .accessRights("AccesRights")
+                        .accessRights("AccessRights")
                         .publisher("Publisher")
                         .spatial("Spatial")
                         .haspart("Haspart")
