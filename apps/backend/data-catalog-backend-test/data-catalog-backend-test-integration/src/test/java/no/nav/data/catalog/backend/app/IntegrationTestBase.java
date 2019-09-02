@@ -11,7 +11,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.util.SocketUtils;
 
 import java.util.UUID;
 
@@ -19,6 +18,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static no.nav.data.catalog.backend.app.TestPorts.WIREMOCK_PORT;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -26,22 +26,14 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 @ContextConfiguration(initializers = {PostgresTestContainer.Initializer.class})
 public abstract class IntegrationTestBase {
 
-    public static final int ELASTICSEARCH_PORT = SocketUtils.findAvailableTcpPort();
-    private static final int wiremockport = SocketUtils.findAvailableTcpPort();
-
     protected static final UUID DATASET_ID_1 = UUID.fromString("acab158d-67ef-4030-a3c2-195e993f18d2");
 
     @ClassRule
     public static PostgresTestContainer postgreSQLContainer = PostgresTestContainer.getInstance();
     @ClassRule
-    public static WireMockClassRule wiremock = new WireMockClassRule(wiremockport);
+    public static WireMockClassRule wiremock = new WireMockClassRule(WIREMOCK_PORT);
     @Autowired
     protected TransactionTemplate transactionTemplate;
-
-    static {
-        System.setProperty("elasticsearch.port", String.valueOf(ELASTICSEARCH_PORT));
-        System.setProperty("wiremock.server.port", String.valueOf(wiremockport));
-    }
 
     protected void policyStubbing() {
         wiremock.stubFor(get(urlPathEqualTo("/policy/policy"))
