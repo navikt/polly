@@ -3,6 +3,7 @@ package no.nav.data.catalog.backend.app.common;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.hotspot.DefaultExports;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.auditing.AuditorAwareImpl;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import org.apache.http.HttpHost;
@@ -18,6 +19,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+@Slf4j
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 public class CommonConfig {
@@ -47,6 +49,7 @@ public class CommonConfig {
 
 	@Bean
 	public RestHighLevelClient restHighLevelClient() {
+		log.info("Elasticsearch {}:{}", elasticsearchHost, elasticsearchPort);
 		return new RestHighLevelClient(
 				RestClient.builder(
 						new HttpHost(elasticsearchHost, elasticsearchPort, "http")));
