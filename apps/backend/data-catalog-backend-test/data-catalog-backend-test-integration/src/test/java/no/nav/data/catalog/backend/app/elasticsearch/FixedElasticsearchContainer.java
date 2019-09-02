@@ -6,7 +6,7 @@ import org.testcontainers.utility.Base58;
 
 import java.time.Duration;
 
-import static no.nav.data.catalog.backend.app.TestPorts.ELASTICSEARCH_PORT;
+import static no.nav.data.catalog.backend.app.IntegrationTestBase.ELASTICSEARCH_PORT;
 
 
 public class FixedElasticsearchContainer extends FixedHostPortGenericContainer<FixedElasticsearchContainer> {
