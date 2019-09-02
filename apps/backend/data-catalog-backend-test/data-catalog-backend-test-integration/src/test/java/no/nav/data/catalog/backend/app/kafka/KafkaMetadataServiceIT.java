@@ -1,6 +1,5 @@
 package no.nav.data.catalog.backend.app.kafka;
 
-import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.data.catalog.backend.app.IntegrationTestBase;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelRepository;
@@ -79,7 +78,6 @@ public class KafkaMetadataServiceIT extends IntegrationTestBase {
     }
 
     private static void stubKafkaAdminRest() {
-        WireMock.reset();
         wiremock.stubFor(get("/api/v1/topics").willReturn(okJson("{\"topics\":[\"aapen-topic1\",\"privat-topic1\",\"aapen-topic2\"]}")));
         wiremock.stubFor(get("/api/v1/topics/aapen-topic1/groups").willReturn(okJson(readFile("kafka/topic_groups.json").replace("topicname", "topic1"))));
         wiremock.stubFor(get("/api/v1/topics/aapen-topic2/groups").willReturn(okJson(readFile("kafka/topic_groups.json").replace("topicname", "topic2"))));
