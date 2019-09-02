@@ -35,7 +35,7 @@ public class DatasetServiceTest {
 
     @Before
     public void setUp() {
-        CodelistStub.initializeCodelistAndStub();
+        CodelistStub.initializeCodelist();
     }
 
     @Test

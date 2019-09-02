@@ -69,7 +69,7 @@ public class CodelistControllerTest {
 
     @Before
     public void setUp() {
-        CodelistStub.initializeCodelistAndStub();
+        CodelistStub.initializeCodelist();
     }
 
     @Test
