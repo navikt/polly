@@ -1,26 +1,18 @@
 package no.nav.data.catalog.backend.app.dataset;
 
-import no.nav.data.catalog.backend.app.AppStarter;
-import no.nav.data.catalog.backend.app.IntegrationTestConfig;
-import no.nav.data.catalog.backend.app.PostgresTestContainer;
 import no.nav.data.catalog.backend.app.common.rest.PageParameters;
 import no.nav.data.catalog.backend.app.common.rest.RestResponsePage;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,11 +27,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        classes = {IntegrationTestConfig.class, AppStarter.class})
-@ActiveProfiles("test")
-@ContextConfiguration(initializers = {PostgresTestContainer.Initializer.class})
 public class DatasetControllerIT extends AbstractDatasetIT {
 
     @Autowired
