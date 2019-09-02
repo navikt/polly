@@ -55,9 +55,9 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         allCodelists.forEach(codelist -> codelists.get(codelist.getList()).put(codelist.getCode(), codelist.getDescription()));
     }
 
-    private static void initListNames() {
-        Stream.of(ListName.values()).forEach(listName -> codelists.put(listName, new HashMap<>()));
-    }
+	static void initListNames() {
+		Stream.of(ListName.values()).forEach(listName -> codelists.put(listName, new HashMap<>()));
+	}
 
     public List<Codelist> save(List<CodelistRequest> requests) {
         requests.forEach(request -> codelists.get(request.getListAsListName())
