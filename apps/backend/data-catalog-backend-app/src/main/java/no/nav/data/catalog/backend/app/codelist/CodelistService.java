@@ -53,7 +53,7 @@ public class CodelistService {
 		allCodelists.forEach(codelist -> codelists.get(codelist.getList()).put(codelist.getCode(), codelist.getDescription()));
 	}
 
-	private static void initListNames() {
+	static void initListNames() {
 		Stream.of(ListName.values()).forEach(listName -> codelists.put(listName, new HashMap<>()));
 	}
 

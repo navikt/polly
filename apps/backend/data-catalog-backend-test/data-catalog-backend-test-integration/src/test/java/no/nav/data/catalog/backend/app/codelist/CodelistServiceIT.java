@@ -31,6 +31,7 @@ public class CodelistServiceIT extends IntegrationTestBase {
 
 	@Before
 	public void setUp() {
+		CodelistService.initListNames();
 		repository.deleteAll();
 	}
 
