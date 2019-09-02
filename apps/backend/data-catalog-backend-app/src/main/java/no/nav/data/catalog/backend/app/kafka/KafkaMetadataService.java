@@ -11,6 +11,7 @@ import no.nav.data.catalog.backend.app.kafka.schema.domain.AvroSchemaVersion;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -41,7 +42,7 @@ public class KafkaMetadataService {
         log.info("Finished kafka distribution sync of {} topics", requests.size());
     }
 
-    public AvroSchema getSchemaForTopic(String topic) {
+    AvroSchema getSchemaForTopic(String topic) {
         AvroSchemaVersion schemaVersion = schemaRegistryConsumer.getAvroSchemaVersionForTopic(topic);
         if (schemaVersion == null) {
             return null;
@@ -50,7 +51,10 @@ public class KafkaMetadataService {
     }
 
     DistributionChannelRequest getDistributionChannelsForTopic(String topic) {
-        GroupsResponse groupsResponse = kafkaAdminRestConsumer.getTopicGroups(topic);
-        return groupsResponse.convertToDistributionChannelRequest();
+        return Optional.ofNullable(kafkaAdminRestConsumer.getTopicGroups(topic)).map(GroupsResponse::convertToDistributionChannelRequest).orElse(null);
+    }
+
+    List<String> listTopics() {
+        return kafkaAdminRestConsumer.getAllTopics();
     }
 }

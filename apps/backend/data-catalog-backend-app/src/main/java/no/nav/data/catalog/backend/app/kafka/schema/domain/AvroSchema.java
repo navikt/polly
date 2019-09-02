@@ -1,5 +1,6 @@
 package no.nav.data.catalog.backend.app.kafka.schema.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,5 +17,6 @@ public class AvroSchema {
     private String topicName;
     private AvroSchemaType rootType;
     // First occurance of the type is stored here to give access to all individual types
+    @JsonIgnore
     private Set<AvroSchemaType> allTypes;
 }

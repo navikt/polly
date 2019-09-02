@@ -27,20 +27,23 @@ public class AvroSchemaType {
     private FieldType wrapperFieldType;
     private List<AvroSchemaField> fields;
     // Does not contain fields as this is a recursive loop avoided type
-    private boolean stub;
+    private Boolean stub;
     private List<String> enumValues = Collections.emptyList();
 
     public AvroSchemaType(FieldType fieldType, String typeName, FieldType wrapperFieldType, String fullTypeName, List<AvroSchemaField> fields) {
         this.fieldType = fieldType;
         this.typeName = typeName;
         this.fullTypeName = fullTypeName;
-        this.wrapperFieldType = fieldType == wrapperFieldType ? null : wrapperFieldType;
+        this.wrapperFieldType = wrapperFieldType;
         this.fields = fields;
     }
 
     public String toString() {
-        return typeName + (wrapperFieldType != null ? " " + wrapperFieldType : "") + (stub ? " (stubbed)" : "")
-                + (enumValues.isEmpty() ? "" : enumValues) +
+        return typeName +
+                (wrapperFieldType != null ? " " + wrapperFieldType : "") +
+                (fieldType == FieldType.UNION ? " " + fieldType : "") +
+                (stub == Boolean.TRUE ? " (stubbed)" : "") +
+                (enumValues.isEmpty() ? "" : enumValues) +
                 (fields.isEmpty() ? "" : "\n" + fields.stream().map(AvroSchemaField::toString).collect(joining("\n")));
     }
 

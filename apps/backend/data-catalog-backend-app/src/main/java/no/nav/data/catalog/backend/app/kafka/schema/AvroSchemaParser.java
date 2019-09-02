@@ -13,6 +13,7 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class AvroSchemaParser {
@@ -42,35 +43,39 @@ public class AvroSchemaParser {
         var avroSchemaFields = new ArrayList<AvroSchemaField>();
 
         // Ignore nullable unions
-        var nonNullschema = isNullableField(schemaIn) ? getNullableUnionType(schemaIn) : schemaIn;
+        Schema schema = isNullableField(schemaIn) ? getNullableUnionType(schemaIn) : schemaIn;
+        FieldType wrapperType = getType(schema);
 
         // Unwrap arrays and maps
-        Schema schema;
-        if (nonNullschema.getType() == Type.ARRAY) {
-            schema = nonNullschema.getElementType();
-        } else if (nonNullschema.getType() == Type.MAP) {
-            schema = nonNullschema.getValueType();
+        if (wrapperType == FieldType.ARRAY) {
+            schema = schema.getElementType();
+        } else if (wrapperType == FieldType.MAP) {
+            schema = schema.getValueType();
         } else {
-            schema = nonNullschema;
+            wrapperType = null;
         }
-        String schemaName = schema.getFullName();
 
-        AvroSchemaType avroSchemaType = new AvroSchemaType(getType(schema), getTypeName(schema), getType(nonNullschema), schemaName, avroSchemaFields);
+        FieldType type = getType(schema);
+        String typeName = getTypeName(schema);
+        String fullName = schema.getFullName().equals(typeName) ? null : schema.getFullName();
+
+        AvroSchemaType avroSchemaType = new AvroSchemaType(type, typeName, wrapperType, fullName, avroSchemaFields);
         if (avroSchemaType.getFieldType() == FieldType.ENUM) {
             avroSchemaType.setEnumValues(schema.getEnumSymbols());
         }
 
         // Avoid loops
-        if (stack.contains(schemaName)) {
-            avroSchemaType.setStub(true);
+        if (type == FieldType.OBJECT && stack.contains(fullName)) {
+            avroSchemaType.setStub(Boolean.TRUE);
             return avroSchemaType;
         }
-        stack.add(schemaName);
+        stack.add(fullName);
 
         if (schema.getType() == Type.RECORD) {
-            schema.getFields().forEach(f -> avroSchemaFields.add(new AvroSchemaField(f.name(), depth, parseSchema(f.schema(), depth + 1))));
+            schema.getFields().forEach(f -> avroSchemaFields.add(new AvroSchemaField(f.name(), depth, parseSchema(f.schema(), depth + 1), null)));
         } else if (schema.getType() == Type.UNION) {
-            schema.getTypes().forEach(type -> avroSchemaFields.add(new AvroSchemaField(getTypeName(schema), depth, parseSchema(type, depth + 1))));
+            AtomicInteger i = new AtomicInteger(1);
+            schema.getTypes().forEach(unionType -> avroSchemaFields.add(new AvroSchemaField(getTypeName(unionType), depth, parseSchema(unionType, depth + 1), i.getAndIncrement())));
         }
         if (avroSchemaType.getFieldType() == FieldType.OBJECT || avroSchemaType.getFieldType() == FieldType.ENUM) {
             allTypes.add(avroSchemaType);
