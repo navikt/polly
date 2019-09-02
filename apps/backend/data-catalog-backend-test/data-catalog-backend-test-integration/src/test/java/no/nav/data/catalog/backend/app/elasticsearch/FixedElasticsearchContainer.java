@@ -1,19 +1,15 @@
 package no.nav.data.catalog.backend.app.elasticsearch;
 
-import org.springframework.util.SocketUtils;
 import org.testcontainers.containers.FixedHostPortGenericContainer;
 import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
 import org.testcontainers.utility.Base58;
 
 import java.time.Duration;
 
-public class FixedElasticsearchContainer extends FixedHostPortGenericContainer<FixedElasticsearchContainer> {
-    private static final int ELASTICSEARCH_PORT = SocketUtils.findAvailableTcpPort();
-    private static final int ELASTICSEARCH_DEFAULT_PORT = 9200;
+import static no.nav.data.catalog.backend.app.IntegrationTestBase.ELASTICSEARCH_PORT;
 
-    static {
-        System.setProperty("elasticsearch.port", String.valueOf(ELASTICSEARCH_PORT));
-    }
+public class FixedElasticsearchContainer extends FixedHostPortGenericContainer<FixedElasticsearchContainer> {
+    private static final int ELASTICSEARCH_DEFAULT_PORT = 9200;
 
     public FixedElasticsearchContainer(String dockerImageName) {
         super(dockerImageName);

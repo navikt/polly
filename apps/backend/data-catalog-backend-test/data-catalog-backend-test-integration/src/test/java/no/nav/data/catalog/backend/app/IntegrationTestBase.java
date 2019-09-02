@@ -26,20 +26,22 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 @ContextConfiguration(initializers = {PostgresTestContainer.Initializer.class})
 public abstract class IntegrationTestBase {
 
-    protected static final UUID DATASET_ID_1 = UUID.fromString("acab158d-67ef-4030-a3c2-195e993f18d2");
+    public static final int ELASTICSEARCH_PORT = SocketUtils.findAvailableTcpPort();
     private static final int wiremockport = SocketUtils.findAvailableTcpPort();
+
+    protected static final UUID DATASET_ID_1 = UUID.fromString("acab158d-67ef-4030-a3c2-195e993f18d2");
 
     @ClassRule
     public static PostgresTestContainer postgreSQLContainer = PostgresTestContainer.getInstance();
     @ClassRule
-    public static WireMockClassRule wiremock = new WireMockClassRule(wiremockport) {
-        @Override
-        protected void before() {
-            System.setProperty("wiremock.server.port", String.valueOf(wiremockport));
-        }
-    };
+    public static WireMockClassRule wiremock = new WireMockClassRule(wiremockport);
     @Autowired
     protected TransactionTemplate transactionTemplate;
+
+    static {
+        System.setProperty("elasticsearch.port", String.valueOf(ELASTICSEARCH_PORT));
+        System.setProperty("wiremock.server.port", String.valueOf(wiremockport));
+    }
 
     protected void policyStubbing() {
         wiremock.stubFor(get(urlPathEqualTo("/policy/policy"))
