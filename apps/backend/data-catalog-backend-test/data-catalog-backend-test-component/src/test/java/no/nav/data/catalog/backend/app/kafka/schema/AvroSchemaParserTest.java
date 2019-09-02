@@ -118,7 +118,28 @@ public class AvroSchemaParserTest {
         System.out.println(rootType);
 
         AvroSchemaField toDoItems = rootType.findField("toDoItems").getType().findField("subItems");
-        assertTrue(toDoItems.getType().isStub());
+        assertTrue(toDoItems.getType().getStub());
         assertThat(toDoItems.getType().getFields(), hasSize(0));
+    }
+
+    @Test
+    public void testUnion() {
+        AvroSchemaVersion avroSchemaVersion = JsonUtils.toObject(readFile("kafka/schema/avroDocExample.json"), AvroSchemaVersion.class);
+        AvroSchema avroSchema = AvroSchemaParser.parseSchema(avroSchemaVersion);
+        AvroSchemaType rootType = avroSchema.getRootType();
+
+        System.out.println(rootType);
+
+        AvroSchemaType unionField = rootType.findField("toDoItems").getType().findField("unionField").getType();
+        assertThat(unionField.getFieldType(), is(FieldType.UNION));
+        assertThat(unionField.getFields(), hasSize(2));
+
+        assertThat(unionField.getFields().get(0).getUnionOrdinal(), is(1));
+        assertThat(unionField.getFields().get(0).getName(), is("long"));
+        assertThat(unionField.getFields().get(0).getType().getTypeName(), is("long"));
+
+        assertThat(unionField.getFields().get(1).getUnionOrdinal(), is(2));
+        assertThat(unionField.getFields().get(1).getName(), is("ToDoItem"));
+        assertThat(unionField.getFields().get(1).getType().getTypeName(), is("ToDoItem"));
     }
 }

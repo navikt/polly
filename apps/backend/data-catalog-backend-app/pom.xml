@@ -135,6 +135,11 @@
 			<artifactId>simpleclient_hotspot</artifactId>
 			<version>${prometheus.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.microsoft.azure</groupId>
+			<artifactId>azure-active-directory-spring-boot-starter</artifactId>
+		</dependency>
 	</dependencies>
 
 	<packaging>jar</packaging>
