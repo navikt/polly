@@ -2,7 +2,6 @@ package no.nav.data.catalog.backend.app.policy;
 
 import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.IntegrationTestBase;
-import no.nav.data.catalog.backend.app.IntegrationTestConfig;
 import no.nav.data.catalog.backend.app.codelist.CodeResponse;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
-        classes = {IntegrationTestConfig.class, AppStarter.class})
+        classes = {AppStarter.class})
 public class PolicyConsumerIT extends IntegrationTestBase {
 
     @Autowired

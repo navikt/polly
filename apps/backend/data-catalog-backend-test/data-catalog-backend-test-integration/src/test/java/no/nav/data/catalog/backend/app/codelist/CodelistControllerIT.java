@@ -1,7 +1,7 @@
 package no.nav.data.catalog.backend.app.codelist;
 
 import no.nav.data.catalog.backend.app.AppStarter;
-import no.nav.data.catalog.backend.app.IntegrationTestConfig;
+import no.nav.data.catalog.backend.app.IntegrationTestBase;
 import no.nav.data.catalog.backend.app.PostgresTestContainer;
 import org.junit.After;
 import org.junit.Before;
@@ -34,12 +34,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-		classes = {IntegrationTestConfig.class, AppStarter.class})
-@ActiveProfiles("test")
-@ContextConfiguration(initializers = {PostgresTestContainer.Initializer.class})
-public class CodelistControllerIT {
+public class CodelistControllerIT extends IntegrationTestBase {
 
 	@Autowired
 	protected TestRestTemplate restTemplate;
