@@ -1,5 +1,6 @@
 package no.nav.data.catalog.backend.app.search;
 
+import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchProperties;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchRepository;
 import org.elasticsearch.action.search.SearchResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +18,13 @@ public class SearchController {
 
 	@Autowired
 	private ElasticsearchRepository repository;
+	@Autowired
+	private ElasticsearchProperties properties;
 
 	@GetMapping(value = "/field/{fieldName}/{fieldValue}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public SearchResult searchByField(@PathVariable String fieldName, @PathVariable String fieldValue) {
 
-		SearchResponse searchResponse = repository.searchDatasetsByField(fieldName, fieldValue);
+		SearchResponse searchResponse = repository.searchDatasetsByField(fieldName, fieldValue, properties.getIndex());
 
 		return SearchResult.builder()
 				.searchResponse(searchResponse)

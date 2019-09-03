@@ -1,13 +1,8 @@
 package no.nav.data.catalog.backend.app.elasticsearch;
 
-import static no.nav.data.catalog.backend.app.common.utils.Constants.ES_DOC_TYPE;
-
-import java.io.IOException;
-
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import no.nav.data.catalog.backend.app.common.exceptions.DocumentNotFoundException;
-import no.nav.data.catalog.backend.app.common.utils.Constants;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -28,6 +23,10 @@ import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+
+import static no.nav.data.catalog.backend.app.common.utils.Constants.ES_DOC_TYPE;
+
 @Slf4j
 @Service
 public class ElasticsearchRepository {
@@ -40,14 +39,14 @@ public class ElasticsearchRepository {
         this.restHighLevelClient = restHighLevelClient;
     }
 
-    public SearchResponse searchDatasetsByField(String fieldName, String fieldValue) {
+    public SearchResponse searchDatasetsByField(String fieldName, String fieldValue, String index) {
         AbstractQueryBuilder query = new MatchQueryBuilder(fieldName, fieldValue);
-        return searchByQuery(query, Constants.DATASET_ELASTICSEARCH_INDEX);
+        return searchByQuery(query, index);
     }
 
-    public SearchResponse getAllDatasets() {
+    public SearchResponse getAllDatasets(String index) {
         AbstractQueryBuilder query = new MatchAllQueryBuilder();
-        return searchByQuery(query, Constants.DATASET_ELASTICSEARCH_INDEX);
+        return searchByQuery(query, index);
     }
 
     public void insert(ElasticsearchDocument document) {

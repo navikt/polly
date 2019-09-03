@@ -5,6 +5,7 @@ import no.nav.data.catalog.backend.app.PostgresTestContainer;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelationRepository;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -31,6 +32,17 @@ public abstract class AbstractDatasetIT extends IntegrationTestBase {
 
     @ClassRule
     public static PostgresTestContainer postgreSQLContainer = PostgresTestContainer.getInstance();
+
+    @Before
+    public void setUpAbstract() throws Exception {
+        datasetRepository.deleteAll();
+        entityManager.clear();
+        dataset111 = datasetRepository.save(dataset111);
+        dataset11 = datasetRepository.save(dataset11);
+        dataset12 = datasetRepository.save(dataset12);
+        dataset1 = datasetRepository.save(dataset1);
+        unrelated = datasetRepository.save(unrelated);
+    }
 
     Dataset unrelated = createDataset("unrelated");
     Dataset dataset111 = createDataset("111");

@@ -167,7 +167,7 @@ public class DatasetController {
         }
         service.validateRequest(List.of(request), true, REST);
 
-        Dataset dataset = fromRepository.get().convertUpdateFromRequest(request);
+        Dataset dataset = service.convertUpdateFromRequest(request, fromRepository.get());
 
         log.info("Updated the Dataset");
         return new ResponseEntity<>(repository.save(dataset).convertToResponse(), HttpStatus.ACCEPTED);

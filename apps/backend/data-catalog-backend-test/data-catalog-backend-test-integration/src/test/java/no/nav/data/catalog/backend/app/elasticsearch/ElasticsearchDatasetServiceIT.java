@@ -1,6 +1,5 @@
 package no.nav.data.catalog.backend.app.elasticsearch;
 
-import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.IntegrationTestBase;
 import no.nav.data.catalog.backend.app.codelist.CodeResponse;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
@@ -16,18 +15,15 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchDocument.newDatasetDocumentId;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCED;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = {AppStarter.class})
 public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
 
     private static final String TITLE = "title";
@@ -48,8 +44,6 @@ public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
     @Autowired
     protected CodelistService codelistService;
 
-    private static Map<ListName, Map<String, String>> codelists;
-
     @ClassRule
     public static FixedElasticsearchContainer container = new FixedElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch-oss:6.6.1");
 
@@ -66,8 +60,7 @@ public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
     }
 
     private void initializeCodelists() {
-        codelists = CodelistService.codelists;
-        codelists.get(ListName.CATEGORY).put(CATEGORY_CODE, CATEGORY_DESCRIPTION);
+        CodelistService.codelists.get(ListName.CATEGORY).put(CATEGORY_CODE, CATEGORY_DESCRIPTION);
     }
 
     @Test
@@ -76,8 +69,8 @@ public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
         service.synchToElasticsearch();
         // Let indexing finish
         Thread.sleep(1000L);
-        assertThat(esRepository.getAllDatasets().getHits().totalHits, is(1L));
-        String json = esRepository.getById(newDatasetDocumentId("elasticSearchId"));
+        assertThat(esRepository.getAllDatasets("index").getHits().totalHits, is(1L));
+        String json = esRepository.getById(newDatasetDocumentId("elasticSearchId", "index"));
         assertDataset(json);
         Dataset dataset = repository.findAll().get(0);
         assertThat(dataset.getElasticsearchStatus(), is(SYNCED));
@@ -89,7 +82,7 @@ public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
         service.synchToElasticsearch();
         // Let indexing finish
         Thread.sleep(1000L);
-        assertThat(esRepository.getAllDatasets().getHits().totalHits, is(1L));
+        assertThat(esRepository.getAllDatasets("index").getHits().totalHits, is(1L));
 
         assertThat(repository.findAll().size(), is(1));
         Dataset dataset = repository.findAll().get(0);
@@ -98,8 +91,8 @@ public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
         service.synchToElasticsearch();
 
         Thread.sleep(1000L);
-        assertThat(esRepository.getAllDatasets().getHits().totalHits, is(1L));
-        String json = esRepository.getById(newDatasetDocumentId("elasticSearchId"));
+        assertThat(esRepository.getAllDatasets("index").getHits().totalHits, is(1L));
+        String json = esRepository.getById(newDatasetDocumentId("elasticSearchId", "index"));
         assertDataset(json);
 
         assertThat(repository.findAll().size(), is(1));
@@ -113,8 +106,8 @@ public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
         service.synchToElasticsearch();
 
         Thread.sleep(1000L);
-        assertThat(esRepository.getAllDatasets().getHits().totalHits, is(1L));
-        String json = esRepository.getById(newDatasetDocumentId("elasticSearchId"));
+        assertThat(esRepository.getAllDatasets("index").getHits().totalHits, is(1L));
+        String json = esRepository.getById(newDatasetDocumentId("elasticSearchId", "index"));
         assertDataset(json);
 
         assertThat(repository.findAll().size(), is(1));
@@ -129,19 +122,19 @@ public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
         service.synchToElasticsearch();
         // Let indexing finish
         Thread.sleep(1000L);
-        assertThat(esRepository.getAllDatasets().getHits().totalHits, is(1L));
+        assertThat(esRepository.getAllDatasets("index").getHits().totalHits, is(1L));
 
         assertThat(repository.findAll().size(), is(1));
         Dataset dataset = repository.findAll().get(0);
         dataset.setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED);
         repository.save(dataset);
-        String json = esRepository.getById(newDatasetDocumentId("elasticSearchId"));
+        String json = esRepository.getById(newDatasetDocumentId("elasticSearchId", "index"));
         assertDataset(json);
 
         service.synchToElasticsearch();
 
         Thread.sleep(1000L);
-        assertThat(esRepository.getAllDatasets().getHits().totalHits, is(0L));
+        assertThat(esRepository.getAllDatasets("index").getHits().totalHits, is(0L));
         assertThat(repository.findAll().size(), is(0));
     }
 

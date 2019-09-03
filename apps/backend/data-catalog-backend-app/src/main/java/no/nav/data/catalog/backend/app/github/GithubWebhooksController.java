@@ -10,6 +10,7 @@ import no.nav.data.catalog.backend.app.common.utils.CollectionDifference;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.common.validator.ValidationError;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
+import no.nav.data.catalog.backend.app.dataset.DatasetMaster;
 import no.nav.data.catalog.backend.app.dataset.DatasetRequest;
 import no.nav.data.catalog.backend.app.dataset.DatasetService;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
@@ -212,7 +214,7 @@ public class GithubWebhooksController {
             return;
         }
         List<Dataset> datasets = requests.stream()
-                .map(request -> new Dataset().convertNewFromRequest(request, GITHUB))
+                .map(request -> service.convertNewFromRequest(request, DatasetMaster.GITHUB))
                 .collect(Collectors.toList());
         log.info("The following list of Datasets have been set to be added during the next scheduled task: {}", datasets);
         repository.saveAll(datasets);

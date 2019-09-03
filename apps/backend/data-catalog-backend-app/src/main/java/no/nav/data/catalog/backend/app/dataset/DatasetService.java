@@ -1,11 +1,5 @@
 package no.nav.data.catalog.backend.app.dataset;
 
-import lombok.extern.slf4j.Slf4j;
-import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
-import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
-import no.nav.data.catalog.backend.app.common.validator.RequestValidator;
-import no.nav.data.catalog.backend.app.common.validator.ValidateFieldsInRequestNotNullOrEmpty;
-import no.nav.data.catalog.backend.app.common.validator.ValidationError;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelation;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelationRepository;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
@@ -13,8 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,6 +16,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -86,14 +80,37 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public Dataset convertNewFromRequest(DatasetRequest request, DatasetMaster master) {
+        Dataset dataset = new Dataset().convertNewFromRequest(request, master);
+        attachChildren(dataset, request.getHaspart());
+        return dataset;
+    }
+
+    @Transactional
+    public Dataset convertUpdateFromRequest(DatasetRequest request, Dataset dataset) {
+        dataset.convertUpdateFromRequest(request);
+        attachChildren(dataset, request.getHaspart());
+        return dataset;
+    }
+
+    private void attachChildren(Dataset dataset, List<String> titles) {
+        List<Dataset> children = titles.isEmpty() ? Collections.emptyList() : datasetRepository.findAllByTitle(titles);
+        if (titles.size() != children.size()) {
+            throw new DataCatalogBackendNotFoundException(String.format("Could not find hasparts %s, found %s", titles, Dataset.titles(children)));
+        }
+        dataset.replaceChildren(children);
+    }
+
+    // TODO validate
+    @Transactional
     public List<Dataset> returnUpdatedDatasetsIfAllArePresent(List<DatasetRequest> requests) {
-        List<Dataset> datasets = datasetRepository.findAllByTitle(requests.stream()
-                .map(DatasetRequest::getTitle)
-                .collect(Collectors.toList()));
-        datasets.forEach(ds -> requests.stream()
-                .filter(r -> r.getTitle().equals(ds.getDatasetData().getTitle()))
-                .findFirst()
-                .ifPresent(ds::convertUpdateFromRequest));
+        List<Dataset> datasets = datasetRepository.findAllByTitle(requests.stream().map(DatasetRequest::getTitle).collect(Collectors.toList()));
+        datasets.forEach(
+                ds -> {
+                    Optional<DatasetRequest> request = requests.stream().filter(r -> r.getTitle().equals(ds.getDatasetData().getTitle())).findFirst();
+                    request.ifPresent(datasetRequest -> convertUpdateFromRequest(datasetRequest, ds));
+                });
         return datasets;
     }
 

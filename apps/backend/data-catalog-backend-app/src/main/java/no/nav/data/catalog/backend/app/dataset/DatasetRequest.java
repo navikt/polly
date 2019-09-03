@@ -45,7 +45,7 @@ public class DatasetRequest implements RequestElement {
     private String accessRights;
     private String publisher;
     private String spatial;
-    private String haspart;
+    private List<String> haspart;
     private List<String> distributionChannels;
 
     @JsonIgnore
