@@ -1,10 +1,8 @@
 package no.nav.data.catalog.backend.app.elasticsearch;
 
 import no.nav.data.catalog.backend.app.codelist.CodeResponse;
-import no.nav.data.catalog.backend.app.common.utils.Constants;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
 import no.nav.data.catalog.backend.app.dataset.DatasetData;
-import no.nav.data.catalog.backend.app.dataset.DatasetResponse;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.policy.PolicyConsumer;
 import no.nav.data.catalog.backend.app.policy.PolicyResponse;
@@ -104,8 +102,7 @@ public class ElasticsearchDatasetServiceTest {
         ElasticsearchDocument document = captor.getValue();
 
         assertThat(document.getId(), is(dataset.getElasticsearchId()));
-        assertThat(document.getIndex(), is(Constants.DATASET_ELASTICSEARCH_INDEX));
-        assertThat(document.getType(), is((Object) DatasetResponse.class));
+        assertThat(document.getIndex(), is("index"));
         if (verifyJson) {
             assertThat(document.getJson(), containsString(dataset.getElasticsearchId()));
             assertThat(document.getJson(), containsString(policy.getLegalBasisDescription()));

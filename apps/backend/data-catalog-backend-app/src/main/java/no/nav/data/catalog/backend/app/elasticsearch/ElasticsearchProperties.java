@@ -12,6 +12,7 @@ public class ElasticsearchProperties {
     private String host;
     private int port;
     private String schema;
-    private String token;
-    private String pathPrefix;
+    private String index;
+    private String user;
+    private String password;
 }

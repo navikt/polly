@@ -22,11 +22,14 @@ public class ElasticsearchDatasetService {
     private final DatasetRepository repository;
     private final PolicyConsumer policyConsumer;
     private final ElasticsearchRepository elasticsearch;
+    private final ElasticsearchProperties elasticsearchProperties;
 
-    public ElasticsearchDatasetService(DatasetRepository repository, PolicyConsumer policyConsumer, ElasticsearchRepository elasticsearch) {
+    public ElasticsearchDatasetService(DatasetRepository repository, PolicyConsumer policyConsumer, ElasticsearchRepository elasticsearch,
+            ElasticsearchProperties elasticsearchProperties) {
         this.repository = repository;
         this.policyConsumer = policyConsumer;
         this.elasticsearch = elasticsearch;
+        this.elasticsearchProperties = elasticsearchProperties;
     }
 
     public void synchToElasticsearch() {
@@ -44,7 +47,7 @@ public class ElasticsearchDatasetService {
             List<PolicyResponse> policies = policyConsumer.getPolicyForDataset(dataset.getId());
             datasetResponse.setPolicies(policies);
 
-            elasticsearch.insert(ElasticsearchDocument.newDatasetDocument(datasetResponse));
+            elasticsearch.insert(ElasticsearchDocument.newDatasetDocument(datasetResponse, elasticsearchProperties.getIndex()));
 
             dataset.setElasticsearchStatus(SYNCED);
             repository.save(dataset);
@@ -59,7 +62,7 @@ public class ElasticsearchDatasetService {
             List<PolicyResponse> policies = policyConsumer.getPolicyForDataset(dataset.getId());
             datasetResponse.setPolicies(policies);
 
-            elasticsearch.updateById(ElasticsearchDocument.newDatasetDocument(datasetResponse));
+            elasticsearch.updateById(ElasticsearchDocument.newDatasetDocument(datasetResponse, elasticsearchProperties.getIndex()));
 
             dataset.setElasticsearchStatus(SYNCED);
             repository.save(dataset);
@@ -70,7 +73,7 @@ public class ElasticsearchDatasetService {
     private void deleteDatasetsInElasticsearchAndInPostgres() {
         List<Dataset> datasets = repository.findByElasticsearchStatus(TO_BE_DELETED);
         for (Dataset dataset : datasets) {
-            elasticsearch.deleteById(ElasticsearchDocument.newDatasetDocumentId(dataset.getElasticsearchId()));
+            elasticsearch.deleteById(ElasticsearchDocument.newDatasetDocumentId(dataset.getElasticsearchId(), elasticsearchProperties.getIndex()));
             repository.deleteById(dataset.getId());
         }
         log.info("deleted {}", datasets.size());
