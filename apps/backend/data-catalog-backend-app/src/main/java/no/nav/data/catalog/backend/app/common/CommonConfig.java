@@ -59,10 +59,10 @@ public class CommonConfig {
     public RestHighLevelClient restHighLevelClient() {
         log.info("Elasticsearch {} {}:{}", elasticsearchSchema, elasticsearchHost, elasticsearchPort);
         return new RestHighLevelClient(
-                RestClient.builder(
-                        new HttpHost(elasticsearchHost, elasticsearchPort, elasticsearchSchema)
-                ).setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder
-                        .addInterceptorFirst((HttpRequestInterceptor) (request, context) -> request.getParams().setParameter("token", elasticsearchToken)))
+                RestClient.builder(new HttpHost(elasticsearchHost, elasticsearchPort, elasticsearchSchema))
+                        .setPathPrefix("index")
+                        .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder
+                                .addInterceptorFirst((HttpRequestInterceptor) (request, context) -> request.getParams().setParameter("token", elasticsearchToken)))
         );
     }
 
