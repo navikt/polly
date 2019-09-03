@@ -41,6 +41,8 @@ public class ElasticsearchDatasetServiceTest {
     private PolicyConsumer policyConsumer;
     @Mock
     private ElasticsearchRepository elasticsearch;
+    @Mock
+    private ElasticsearchProperties properties;
     @InjectMocks
     private ElasticsearchDatasetService service;
 
@@ -59,6 +61,7 @@ public class ElasticsearchDatasetServiceTest {
                 .build();
 
         when(policyConsumer.getPolicyForDataset(dataset.getId())).thenReturn(singletonList(policy));
+        when(properties.getIndex()).thenReturn("index");
     }
 
     @Test
