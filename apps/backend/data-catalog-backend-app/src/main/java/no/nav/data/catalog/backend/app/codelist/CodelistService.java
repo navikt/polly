@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -132,9 +133,13 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     }
 
     private List<ValidationError> validateRequestsAndReturnErrors(List<CodelistRequest> requests, boolean isUpdate) {
+        requests = StreamUtils.nullToEmptyList(requests);
+        if (requests.isEmpty()) {
+            return Collections.emptyList();
+        }
         List<ValidationError> validationErrors = new ArrayList<>(validateListOfRequests(requests));
 
-        if (validationErrors.isEmpty()) {
+        if (validationErrors.isEmpty()) { // to avoid NPE
             validationErrors.addAll(validateCodelistRequest(requests, isUpdate));
         }
         return validationErrors;

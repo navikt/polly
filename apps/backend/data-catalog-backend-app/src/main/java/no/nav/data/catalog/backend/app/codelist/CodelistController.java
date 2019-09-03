@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -81,6 +82,7 @@ public class CodelistController {
     @ResponseStatus(HttpStatus.CREATED)
     public List<Codelist> save(@Valid @RequestBody List<CodelistRequest> requests) {
         log.info("Received a requests to create codelists");
+        requests = StreamUtils.nullToEmptyList(requests);
         service.validateRequest(requests, false);
 
         return service.save(requests);
@@ -95,6 +97,7 @@ public class CodelistController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public List<Codelist> update(@Valid @RequestBody List<CodelistRequest> requests) {
         log.info("Received a request to update codelists");
+        requests = StreamUtils.nullToEmptyList(requests);
         service.validateRequest(requests, true);
 
         return service.update(requests);

@@ -12,21 +12,10 @@ import java.util.stream.Collectors;
 public abstract class RequestValidator<T extends RequestElement> {
 
     protected List<ValidationError> validateListOfRequests(List<T> requests) {
-        List<ValidationError> validationErrors = new ArrayList<>(validateListNotNullOrEmpty(requests));
-
-        if (validationErrors.isEmpty()) {
-            validationErrors.addAll(validateThatTheSameElementIsNotDuplicatedInTheRequest(requests));
-            validationErrors.addAll(validateThatElementsDoNotUseTheSameIdentifyingFieldsInTheRequest(requests));
-        }
-        return validationErrors;
-    }
-
-    private List<ValidationError> validateListNotNullOrEmpty(List<T> requests) {
         List<ValidationError> validationErrors = new ArrayList<>();
-        if (requests == null || requests.isEmpty()) {
-            validationErrors.add(new ValidationError("RequestNotAccepted", "RequestWasNullOrEmpty",
-                    "The request was not accepted because it is null or empty"));
-        }
+
+        validationErrors.addAll(validateThatTheSameElementIsNotDuplicatedInTheRequest(requests));
+        validationErrors.addAll(validateThatElementsDoNotUseTheSameIdentifyingFieldsInTheRequest(requests));
         return validationErrors;
     }
 

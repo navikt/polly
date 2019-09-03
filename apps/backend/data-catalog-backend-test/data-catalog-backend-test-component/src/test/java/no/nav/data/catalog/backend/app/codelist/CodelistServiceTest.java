@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -114,7 +115,7 @@ public class CodelistServiceTest {
     }
 
     @Test
-    public void validateListNameExistsANDvalidateListNameAndCodeExists_nothingShouldHappenWhenValuesExists() {
+    public void validateListNameExistsAndValidateListNameAndCodeExists_nothingShouldHappenWhenValuesExists() {
         codelists.get(ListName.PURPOSE).put("CODE", "Description");
 
         service.validateListNameExists("PURPOSE");
@@ -169,6 +170,18 @@ public class CodelistServiceTest {
 
         when(repository.findByListAndCode(any(ListName.class), anyString())).thenReturn(Optional.empty());
 
+        service.validateRequest(requests, false);
+    }
+
+    @Test
+    public void validate_shouldValidateWithoutAnyProcessing_whenRequestIsEmpty() {
+        List<CodelistRequest> requests = new ArrayList<>(Collections.emptyList());
+        service.validateRequest(requests, false);
+    }
+
+    @Test
+    public void validate_shouldValidateWithoutAnyProcessing_whenRequestIsNull() {
+        List<CodelistRequest> requests = null;
         service.validateRequest(requests, false);
     }
 

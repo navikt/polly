@@ -9,6 +9,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collections;
 import java.util.List;
 
 import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
@@ -50,6 +51,13 @@ public class CodelistServiceIT extends IntegrationTestBase {
 		assertFalse(codelists.get(ListName.PRODUCER).get("TEST_CODE").isEmpty());
 	}
 
+    @Test
+    public void save_shouldNotSaveOrProcessAnEmptyRequest() {
+        service.save(Collections.emptyList());
+
+        assertThat(repository.findAll().size(), is(0));
+    }
+
 	@Test
 	public void update_shouldUpdateCodelist() {
 		service.save(createListOfOneRequest());
@@ -84,6 +92,20 @@ public class CodelistServiceIT extends IntegrationTestBase {
                 createOneRequest("PRODUCER", "CODE_1", "Description"),
                 createOneRequest("PRODUCER", "code_2 ", "Description"),
                 createOneRequest("PRODUCER", " Code_3 ", "Description "));
+
+        service.validateRequest(requests, false);
+    }
+
+    @Test
+    public void validateRequests_shouldValidateWithoutAnyProcessing_whenRequestIsNull() {
+        List<CodelistRequest> requests = null;
+
+        service.validateRequest(requests, false);
+    }
+
+    @Test
+    public void validateRequests_shouldValidateWithoutAnyProcessing_whenListOfRequestsIsEmpty() {
+        List<CodelistRequest> requests = Collections.emptyList();
 
         service.validateRequest(requests, false);
     }
