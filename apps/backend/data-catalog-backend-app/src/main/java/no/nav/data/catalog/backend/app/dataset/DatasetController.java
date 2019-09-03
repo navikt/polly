@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.rest.PageParameters;
 import no.nav.data.catalog.backend.app.common.rest.RestResponsePage;
+import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.springframework.data.domain.Page;
@@ -129,6 +130,7 @@ public class DatasetController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public List<DatasetResponse> createDatasets(@RequestBody List<DatasetRequest> requests) {
         log.info("Received requests to create Datasets");
+        requests = StreamUtils.nullToEmptyList(requests);
         service.validateRequest(requests, false, REST);
 
         return service.save(requests, REST);
@@ -143,6 +145,7 @@ public class DatasetController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public List<DatasetResponse> updateDatasets(@RequestBody List<DatasetRequest> requests) {
         log.info("Received requests to update Datasets");
+        requests = StreamUtils.nullToEmptyList(requests);
         service.validateRequest(requests, true, REST);
 
         return service.update(requests);

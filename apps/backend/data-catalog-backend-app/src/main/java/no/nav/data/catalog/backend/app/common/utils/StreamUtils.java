@@ -52,6 +52,10 @@ public final class StreamUtils {
         return list == null ? Collections.emptyList() : list;
     }
 
+    public static String nullToEmptyString(String title) {
+        return title == null ? "" : title;
+    }
+
     public static <T> List<T> copyOf(List<T> list) {
         return list == null ? Collections.emptyList() : List.copyOf(list);
     }
