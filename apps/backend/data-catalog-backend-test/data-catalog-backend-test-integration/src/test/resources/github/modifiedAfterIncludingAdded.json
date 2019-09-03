@@ -14,7 +14,7 @@
     "accessRights": "no",
     "publisher": "PESYS",
     "spatial": "huh",
-    "haspart": "unknown"
+    "haspart": []
   },
   {
     "title": "modified_added",
@@ -31,7 +31,7 @@
     "accessRights": "no",
     "publisher": "PESYS",
     "spatial": "huh",
-    "haspart": "unknown"
+    "haspart": []
   },
   {
     "title": "added",
@@ -48,6 +48,6 @@
     "accessRights": "no",
     "publisher": "PESYS",
     "spatial": "huh",
-    "haspart": "unknown"
+    "haspart": []
   }
 ]

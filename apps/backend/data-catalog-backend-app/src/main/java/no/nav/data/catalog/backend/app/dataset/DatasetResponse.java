@@ -2,7 +2,6 @@ package no.nav.data.catalog.backend.app.dataset;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +9,6 @@ import lombok.NoArgsConstructor;
 import no.nav.data.catalog.backend.app.codelist.CodeResponse;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
-import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelation;
 import no.nav.data.catalog.backend.app.policy.PolicyResponse;
 
@@ -45,7 +43,7 @@ public class DatasetResponse {
     private String accessRights;
     private String publisher;
     private String spatial;
-    private String haspart;
+    private List<String> haspart;
 
     private DatasetMaster master;
     private List<DatasetResponse> children;
@@ -80,10 +78,6 @@ public class DatasetResponse {
         setSpatial(datasetData.getSpatial());
         setHaspart(datasetData.getHaspart());
         setMaster(datasetData.getMaster());
-    }
-
-    public Map toMap() {
-        return JsonUtils.toMap(this);
     }
 
 }

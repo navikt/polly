@@ -131,7 +131,7 @@ public class DatasetController {
         service.validateRequests(requests, false);
 
         List<Dataset> datasets = requests.stream()
-                .map(request -> new Dataset().convertNewFromRequest(request, DatasetMaster.REST))
+                .map(request -> service.convertNewFromRequest(request, DatasetMaster.REST))
                 .collect(Collectors.toList());
 
         return repository.saveAll(datasets).stream()
@@ -173,7 +173,7 @@ public class DatasetController {
         }
         service.validateRequests(List.of(request), true);
 
-        Dataset dataset = fromRepository.get().convertUpdateFromRequest(request);
+        Dataset dataset = service.convertUpdateFromRequest(request, fromRepository.get());
 
         log.info("Updated the Dataset");
         return new ResponseEntity<>(repository.save(dataset).convertToResponse(), HttpStatus.ACCEPTED);

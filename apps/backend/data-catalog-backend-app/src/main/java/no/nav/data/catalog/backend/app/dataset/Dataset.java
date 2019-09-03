@@ -10,8 +10,12 @@ import no.nav.data.catalog.backend.app.common.auditing.Auditable;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.hibernate.annotations.Type;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -61,16 +65,20 @@ public class Dataset extends Auditable<String> {
             joinColumns = @JoinColumn(name = "DATASET_ID"),
             inverseJoinColumns = @JoinColumn(name = "PARENT_OF_DATASET_ID")
     )
-    private Set<Dataset> children;
+    private Set<Dataset> children = new HashSet<>();
 
     @ManyToMany(mappedBy = "children")
-    private Set<Dataset> parents;
+    private Set<Dataset> parents = new HashSet<>();
+
+    public String getTitle() {
+        return datasetData.getTitle();
+    }
 
     public DatasetResponse convertToResponse() {
         return new DatasetResponse(this);
     }
 
-    public Dataset convertNewFromRequest(DatasetRequest request, DatasetMaster master) {
+    Dataset convertNewFromRequest(DatasetRequest request, DatasetMaster master) {
         id = UUID.randomUUID();
         elasticsearchId = base64UUID();
         elasticsearchStatus = ElasticsearchStatus.TO_BE_CREATED;
@@ -79,7 +87,7 @@ public class Dataset extends Auditable<String> {
         return this;
     }
 
-    public Dataset convertUpdateFromRequest(DatasetRequest request) {
+    Dataset convertUpdateFromRequest(DatasetRequest request) {
         elasticsearchStatus = ElasticsearchStatus.TO_BE_UPDATED;
         convertFromRequest(request);
         return this;
@@ -97,7 +105,33 @@ public class Dataset extends Auditable<String> {
         datasetData.setAccessRights(request.getAccessRights());
         datasetData.setPublisher(request.getPublisher());
         datasetData.setSpatial(request.getSpatial());
-        datasetData.setHaspart(request.getHaspart());
+    }
+
+    void replaceChildren(List<Dataset> children) {
+        var titles = titles(children);
+        getChildren().stream().filter(child -> !titles.contains(child.getTitle())).forEach(this::removeChild);
+        children.forEach(this::addChild);
+        updateHasparts();
+    }
+
+    private void addChild(Dataset child) {
+        if (child != null) {
+            children.add(child);
+            child.getParents().add(this);
+        }
+    }
+
+    private void removeChild(Dataset child) {
+        getChildren().remove(child);
+        child.getParents().remove(this);
+    }
+
+    private void updateHasparts() {
+        datasetData.setHaspart(titles(children));
+    }
+
+    public static List<String> titles(Collection<Dataset> datasets) {
+        return datasets.stream().map(Dataset::getTitle).collect(Collectors.toList());
     }
 
     public static class DatasetBuilder {
@@ -107,5 +141,4 @@ public class Dataset extends Auditable<String> {
             return this;
         }
     }
-
 }

@@ -33,7 +33,7 @@ public class DatasetData {
     private String accessRights;
     private String publisher;
     private String spatial;
-    private String haspart;
+    private List<String> haspart;
 
     @Setter(AccessLevel.PRIVATE)
     private DatasetMaster master;

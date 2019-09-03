@@ -222,7 +222,7 @@ public class GithubWebhooksController {
             return;
         }
         List<Dataset> datasets = requests.stream()
-                .map(request -> new Dataset().convertNewFromRequest(request, DatasetMaster.GITHUB))
+                .map(request -> service.convertNewFromRequest(request, DatasetMaster.GITHUB))
                 .collect(Collectors.toList());
         log.info("The following list of Datasets have been set to be added during the next scheduled task: {}", datasets);
         repository.saveAll(datasets);

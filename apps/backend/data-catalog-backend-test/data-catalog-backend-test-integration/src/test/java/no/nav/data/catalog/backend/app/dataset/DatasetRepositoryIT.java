@@ -2,11 +2,9 @@ package no.nav.data.catalog.backend.app.dataset;
 
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelation;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 
@@ -17,13 +15,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class DatasetRepositoryIT extends AbstractDatasetIT {
-
-    @Before
-    public void setUp() {
-        datasetRepository.deleteAll();
-        datasetRepository.saveAll(Arrays.asList(dataset111, dataset11, dataset12, dataset1, unrelated));
-        entityManager.clear();
-    }
 
     @After
     public void tearDown() {
