@@ -52,7 +52,7 @@ public class DatasetServiceTest {
                 .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
-                .haspart("Haspart")
+                .haspart(List.of("Haspart"))
                 .distributionChannels(List.of("DistributionChannel"))
                 .build();
 
@@ -74,7 +74,7 @@ public class DatasetServiceTest {
                 .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
-                .haspart("Haspart")
+                .haspart(List.of("Haspart"))
                 .distributionChannels(List.of("DistributionChannel"))
                 .build();
 
@@ -110,7 +110,7 @@ public class DatasetServiceTest {
                 .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
-                .haspart("Haspart")
+                .haspart(List.of("Haspart"))
                 .distributionChannels(List.of("DistributionChannel"))
                 .build());
         requests.add(DatasetRequest.builder()
@@ -125,7 +125,7 @@ public class DatasetServiceTest {
                 .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
-                .haspart("Haspart")
+                .haspart(List.of("Haspart"))
                 .distributionChannels(List.of("DistributionChannel"))
                 .build());
         requests.add(DatasetRequest.builder()
@@ -140,7 +140,7 @@ public class DatasetServiceTest {
                 .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
-                .haspart("Haspart")
+                .haspart(List.of("Haspart"))
                 .distributionChannels(List.of("DistributionChannel"))
                 .build());
         try {
@@ -168,7 +168,7 @@ public class DatasetServiceTest {
                 .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
-                .haspart("Haspart")
+                .haspart(List.of("Haspart"))
                 .distributionChannels(List.of("DistributionChannel"))
                 .build());
         requests.add(DatasetRequest.builder()
@@ -183,7 +183,7 @@ public class DatasetServiceTest {
                 .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
-                .haspart("Haspart")
+                .haspart(List.of("Haspart"))
                 .distributionChannels(List.of("DistributionChannel"))
                 .build());
         requests.add(DatasetRequest.builder()
@@ -198,7 +198,7 @@ public class DatasetServiceTest {
                 .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
-                .haspart("Haspart")
+                .haspart(List.of("Haspart"))
                 .distributionChannels(List.of("DistributionChannel"))
                 .build());
         try {
@@ -241,7 +241,7 @@ public class DatasetServiceTest {
                 .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
-                .haspart("Haspart")
+                .haspart(List.of("Haspart"))
                 .distributionChannels(List.of("DistributionChannel"))
                 .build());
         try {
@@ -268,7 +268,7 @@ public class DatasetServiceTest {
                 .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
-                .haspart("Haspart")
+                .haspart(List.of("Haspart"))
                 .distributionChannels(List.of("DistributionChannel"))
                 .build());
 
@@ -300,7 +300,7 @@ public class DatasetServiceTest {
                 .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
-                .haspart("Haspart")
+                .haspart(List.of("Haspart"))
                 .distributionChannels(List.of("DistributionChannel"))
                 .build());
 
@@ -330,7 +330,7 @@ public class DatasetServiceTest {
                 .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
-                .haspart("Haspart")
+                .haspart(List.of("Haspart"))
                 .distributionChannels(List.of("DistributionChannel"))
                 .build());
 

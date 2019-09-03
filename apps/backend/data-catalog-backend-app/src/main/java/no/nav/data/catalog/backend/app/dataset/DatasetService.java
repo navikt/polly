@@ -1,5 +1,12 @@
 package no.nav.data.catalog.backend.app.dataset;
 
+import lombok.extern.slf4j.Slf4j;
+import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
+import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
+import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
+import no.nav.data.catalog.backend.app.common.validator.RequestValidator;
+import no.nav.data.catalog.backend.app.common.validator.ValidateFieldsInRequestNotNullOrEmpty;
+import no.nav.data.catalog.backend.app.common.validator.ValidationError;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelation;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelationRepository;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
@@ -7,7 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,6 +27,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import static java.util.stream.Collectors.toMap;
+import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.nullToEmptyList;
 
 @Slf4j
 @Service
@@ -90,25 +99,31 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
     @Transactional
     public Dataset convertUpdateFromRequest(DatasetRequest request, Dataset dataset) {
         dataset.convertUpdateFromRequest(request);
-        attachChildren(dataset, request.getHaspart());
+        attachChildren(dataset, StreamUtils.nullToEmptyList(request.getHaspart()));
         return dataset;
     }
 
     private void attachChildren(Dataset dataset, List<String> titles) {
         List<Dataset> children = titles.isEmpty() ? Collections.emptyList() : datasetRepository.findAllByTitle(titles);
+        if (children.isEmpty()) {
+            return;
+        }
         if (titles.size() != children.size()) {
             throw new DataCatalogBackendNotFoundException(String.format("Could not find hasparts %s, found %s", titles, Dataset.titles(children)));
         }
         dataset.replaceChildren(children);
     }
 
-    // TODO validate
     @Transactional
     public List<Dataset> returnUpdatedDatasetsIfAllArePresent(List<DatasetRequest> requests) {
-        List<Dataset> datasets = datasetRepository.findAllByTitle(requests.stream().map(DatasetRequest::getTitle).collect(Collectors.toList()));
+        List<Dataset> datasets = datasetRepository.findAllByTitle(requests.stream()
+                .map(DatasetRequest::getTitle)
+                .collect(Collectors.toList()));
         datasets.forEach(
                 ds -> {
-                    Optional<DatasetRequest> request = requests.stream().filter(r -> r.getTitle().equals(ds.getDatasetData().getTitle())).findFirst();
+                    Optional<DatasetRequest> request = requests.stream()
+                            .filter(r -> r.getTitle().equals(ds.getDatasetData().getTitle()))
+                            .findFirst();
                     request.ifPresent(datasetRequest -> convertUpdateFromRequest(datasetRequest, ds));
                 });
         return datasets;
@@ -125,7 +140,7 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
     }
 
     public List<ValidationError> validateRequestsAndReturnErrors(List<DatasetRequest> requests, boolean isUpdate, DatasetMaster master) {
-        requests = StreamUtils.nullToEmptyList(requests);
+        requests = nullToEmptyList(requests);
         if (requests.isEmpty()) {
             return Collections.emptyList();
         }
@@ -138,7 +153,7 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
     }
 
     public List<ValidationError> validateNoDuplicates(List<DatasetRequest> requests) {
-        requests = StreamUtils.nullToEmptyList(requests);
+        requests = nullToEmptyList(requests);
         if (requests.isEmpty()) {
             return Collections.emptyList();
         }

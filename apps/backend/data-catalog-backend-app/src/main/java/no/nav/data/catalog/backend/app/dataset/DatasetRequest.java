@@ -127,7 +127,7 @@ public class DatasetRequest implements RequestElement {
         setAccessRights(nullToEmptyString(accessRights).toUpperCase().trim());
         setPublisher(nullToEmptyString(publisher).toUpperCase().trim());
         setSpatial(nullToEmptyString(spatial).toUpperCase().trim());
-        setHaspart(nullToEmptyString(haspart).toUpperCase().trim());
+        setHaspart(nullToEmptyList(haspart).stream().map(String::trim).collect(Collectors.toList()));
         setDistributionChannels(nullToEmptyList(distributionChannels).stream()
                 .map(String::toUpperCase)
                 .map(String::trim)

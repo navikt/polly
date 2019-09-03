@@ -47,10 +47,10 @@ public class DatasetControllerIT extends AbstractDatasetIT {
                     .issued(localDateTime)
                     .keywords(List.of("Keywords"))
                     .theme("Theme")
-                    .accessRights("AccesRights")
+                    .accessRights("AccessRights")
                     .publisher("Publisher")
                     .spatial("Spatial")
-                    .haspart("Haspart")
+                    .haspart(List.of("Haspart"))
                     .master(REST)
                     .build())
             .build();
@@ -58,9 +58,7 @@ public class DatasetControllerIT extends AbstractDatasetIT {
     @Before
     public void setUp() {
         datasetRepository.deleteAll();
-//        datasetRepository.saveAll(Arrays.asList(dataset111, dataset11, dataset12, dataset1, unrelated));
         entityManager.clear();
-
     }
 
     @After
@@ -278,7 +276,6 @@ public class DatasetControllerIT extends AbstractDatasetIT {
                 .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
-                .haspart("Haspart")
                 .distributionChannels(List.of("DistributionChannel"))
                 .build();
     }

@@ -10,10 +10,10 @@ import no.nav.data.catalog.backend.app.common.auditing.Auditable;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.hibernate.annotations.Type;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -79,7 +79,7 @@ public class Dataset extends Auditable<String> {
         return new DatasetResponse(this);
     }
 
-    Dataset convertNewFromRequest(DatasetRequest request, DatasetMaster master) {
+    public Dataset convertNewFromRequest(DatasetRequest request, DatasetMaster master) {
         id = UUID.randomUUID();
         elasticsearchId = base64UUID();
         elasticsearchStatus = ElasticsearchStatus.TO_BE_CREATED;

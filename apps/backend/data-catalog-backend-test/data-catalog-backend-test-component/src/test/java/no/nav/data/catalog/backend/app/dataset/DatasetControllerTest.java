@@ -132,7 +132,7 @@ public class DatasetControllerTest {
                 .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
-                .haspart("Haspart")
+                .haspart(List.of("Haspart"))
                 .distributionChannels(List.of("DistributionChannel"))
                 .build());
 
@@ -167,7 +167,7 @@ public class DatasetControllerTest {
                 .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
-                .haspart("Haspart")
+                .haspart(List.of("Haspart"))
                 .distributionChannels(List.of("DistributionChannel"))
                 .build());
 
@@ -231,7 +231,7 @@ public class DatasetControllerTest {
                         .accessRights("AccessRights")
                         .publisher("Publisher")
                         .spatial("Spatial")
-                        .haspart("Haspart")
+                        .haspart(List.of("Haspart"))
                         .master(REST)
                         .build()
                 ).build();
@@ -248,7 +248,7 @@ public class DatasetControllerTest {
                 .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
-                .haspart("Haspart")
+                .haspart(List.of("Haspart"))
                 .distributionChannels(List.of("DistributionChannel"))
                 .build();
 
@@ -282,7 +282,7 @@ public class DatasetControllerTest {
                         .accessRights("AccessRights")
                         .publisher("Publisher")
                         .spatial("Spatial")
-                        .haspart("Haspart")
+                        .haspart(List.of("Haspart"))
                         .master(REST)
                         .build()
                 ).build();
