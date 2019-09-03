@@ -2,6 +2,7 @@ package no.nav.data.catalog.backend.app.dataset;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
+import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import no.nav.data.catalog.backend.app.common.validator.RequestValidator;
 import no.nav.data.catalog.backend.app.common.validator.ValidateFieldsInRequestNotNullOrEmpty;
 import no.nav.data.catalog.backend.app.common.validator.ValidationError;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -106,15 +108,23 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
     }
 
     public List<ValidationError> validateRequestsAndReturnErrors(List<DatasetRequest> requests, boolean isUpdate, DatasetMaster master) {
-        List<ValidationError> validationErrors = new ArrayList<>(validateListOfRequests(requests));
+        requests = StreamUtils.nullToEmptyList(requests);
+        if (requests.isEmpty()) {
+            return Collections.emptyList();
+        }
 
-        if (validationErrors.isEmpty()) {
+        List<ValidationError> validationErrors = new ArrayList<>(validateListOfRequests(requests));
+        if (validationErrors.isEmpty()) { // to avoid NPE
             validationErrors.addAll(validateDatasetRequest(requests, isUpdate, master));
         }
         return validationErrors;
     }
 
     public List<ValidationError> validateNoDuplicates(List<DatasetRequest> requests) {
+        requests = StreamUtils.nullToEmptyList(requests);
+        if (requests.isEmpty()) {
+            return Collections.emptyList();
+        }
         return validateListOfRequests(requests);
     }
 
@@ -129,7 +139,8 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
             List<ValidationError> errorsInCurrentRequest = validateThatNoFieldsAreNullOrEmpty(request, reference);
 
             if (errorsInCurrentRequest.isEmpty()) {  // to avoid NPE in current request
-                request.toUpperCaseAndTrim();
+                //TODO: Find out if request should be stored in uppercase format
+//                request.toUpperCaseAndTrim();
                 errorsInCurrentRequest.addAll(validateRepositoryValues(request, isUpdate, reference, master));
             }
 
@@ -143,19 +154,20 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
     private List<ValidationError> validateThatNoFieldsAreNullOrEmpty(DatasetRequest request, String reference) {
         ValidateFieldsInRequestNotNullOrEmpty nullOrEmpty = new ValidateFieldsInRequestNotNullOrEmpty(reference);
 
+        // TODO: Find out which fields should be validated
         nullOrEmpty.checkField("title", request.getTitle());
-        nullOrEmpty.checkField("description", request.getDescription());
-        nullOrEmpty.checkListOfFields("categories", request.getCategories());
-        nullOrEmpty.checkListOfFields("provenances", request.getProvenances());
-        nullOrEmpty.checkField("pi", request.getPi());
-        nullOrEmpty.checkField("issued", request.getIssued());
-        nullOrEmpty.checkListOfFields("keywords", request.getKeywords());
-        nullOrEmpty.checkField("theme", request.getTheme());
-        nullOrEmpty.checkField("accessRights", request.getAccessRights());
-        nullOrEmpty.checkField("publisher", request.getPublisher());
-        nullOrEmpty.checkField("spatial", request.getSpatial());
-        nullOrEmpty.checkField("haspart", request.getHaspart());
-        nullOrEmpty.checkListOfFields("distributionChannels", request.getDistributionChannels());
+//        nullOrEmpty.checkField("description", request.getDescription());
+//        nullOrEmpty.checkListOfFields("categories", request.getCategories());
+//        nullOrEmpty.checkListOfFields("provenances", request.getProvenances());
+//        nullOrEmpty.checkField("pi", request.getPi());
+//        nullOrEmpty.checkField("issued", request.getIssued());
+//        nullOrEmpty.checkListOfFields("keywords", request.getKeywords());
+//        nullOrEmpty.checkField("theme", request.getTheme());
+//        nullOrEmpty.checkField("accessRights", request.getAccessRights());
+//        nullOrEmpty.checkField("publisher", request.getPublisher());
+//        nullOrEmpty.checkField("spatial", request.getSpatial());
+//        nullOrEmpty.checkField("haspart", request.getHaspart());
+//        nullOrEmpty.checkListOfFields("distributionChannels", request.getDistributionChannels());
 
         return nullOrEmpty.getErrors();
     }

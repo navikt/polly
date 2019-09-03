@@ -22,6 +22,8 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.nullToEmptyList;
+import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.nullToEmptyString;
 import static org.eclipse.egit.github.core.RepositoryContents.ENCODING_BASE64;
 import static org.eclipse.egit.github.core.RepositoryContents.TYPE_FILE;
 
@@ -108,19 +110,25 @@ public class DatasetRequest implements RequestElement {
     }
 
     void toUpperCaseAndTrim() {
-        setTitle(this.title.toUpperCase().trim());
-        setDescription(this.description.toUpperCase().trim());
-        setCategories(this.categories.stream().map(String::toUpperCase).map(String::trim).collect(Collectors.toList()));
-        setProvenances(this.provenances.stream().map(String::toUpperCase).map(String::trim).collect(Collectors.toList()));
-        setPi(this.pi.trim());
-        setIssued(this.issued.trim());
-        setKeywords(this.keywords.stream().map(String::toUpperCase).map(String::trim).collect(Collectors.toList()));
-        setTheme(this.theme.toUpperCase().trim());
-        setAccessRights(this.accessRights.toUpperCase().trim());
-        setPublisher(this.publisher.toUpperCase().trim());
-        setSpatial(this.spatial.toUpperCase().trim());
-        setHaspart(this.haspart.toUpperCase().trim());
-        setDistributionChannels(this.distributionChannels.stream()
+        setTitle(nullToEmptyString(title).toUpperCase().trim());
+        setDescription(nullToEmptyString(description).toUpperCase().trim());
+        setCategories(nullToEmptyList(categories).stream()
+                .map(String::toUpperCase)
+                .map(String::trim)
+                .collect(Collectors.toList()));
+        setProvenances(nullToEmptyList(provenances).stream()
+                .map(String::toUpperCase)
+                .map(String::trim)
+                .collect(Collectors.toList()));
+        setPi(nullToEmptyString(pi).trim());
+        setIssued(nullToEmptyString(issued).trim());
+        setKeywords(nullToEmptyList(keywords).stream().map(String::toUpperCase).map(String::trim).collect(Collectors.toList()));
+        setTheme(nullToEmptyString(theme).toUpperCase().trim());
+        setAccessRights(nullToEmptyString(accessRights).toUpperCase().trim());
+        setPublisher(nullToEmptyString(publisher).toUpperCase().trim());
+        setSpatial(nullToEmptyString(spatial).toUpperCase().trim());
+        setHaspart(nullToEmptyString(haspart).toUpperCase().trim());
+        setDistributionChannels(nullToEmptyList(distributionChannels).stream()
                 .map(String::toUpperCase)
                 .map(String::trim)
                 .collect(Collectors.toList()));

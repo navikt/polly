@@ -1,5 +1,7 @@
 package no.nav.data.catalog.backend.app.common.validator;
 
+import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +24,9 @@ public class ValidateFieldsInRequestNotNullOrEmpty {
     }
 
     public void checkListOfFields(String listName, List<String> fields) {
-        if (fields == null || fields.isEmpty()) {
+        fields = StreamUtils.nullToEmptyList(fields);
+        //TODO: Find out if empty list should throw validationError or allowed not processed
+        if (fields.isEmpty()) {
             validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(ERROR_MESSAGE, listName)));
         } else {
             fields.forEach(f -> checkField(listName, f));
