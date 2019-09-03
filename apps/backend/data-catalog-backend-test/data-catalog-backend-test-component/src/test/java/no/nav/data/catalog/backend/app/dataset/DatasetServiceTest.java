@@ -83,26 +83,14 @@ public class DatasetServiceTest {
     }
 
     @Test
-    public void validateRequest_shouldThrowValidationException_whenListOfRequestsIsNull() {
-        try {
-            service.validateRequest(null, false, REST);
-        } catch (ValidationException e) {
-            assertThat(e.get().size(), is(1));
-            assertThat(e.toErrorString(),
-                    is("RequestNotAccepted -- RequestWasNullOrEmpty -- The request was not accepted because it is null or empty"));
-        }
+    public void validateRequest_shouldValidateWithoutAnyProcessing_whenListOfRequestsIsNull() {
+        service.validateRequest(null, false, REST);
     }
 
     @Test
-    public void validateRequest_shouldThrowValidationException_whenListOfRequestsIsEmpty() {
+    public void validateRequest_shouldValidateWithoutAnyProcessing_whenListOfRequestsIsEmpty() {
         List<DatasetRequest> requests = Collections.emptyList();
-        try {
-            service.validateRequest(requests, false, REST);
-        } catch (ValidationException e) {
-            assertThat(e.get().size(), is(1));
-            assertThat(e.toErrorString(),
-                    is("RequestNotAccepted -- RequestWasNullOrEmpty -- The request was not accepted because it is null or empty"));
-        }
+        service.validateRequest(requests, false, REST);
     }
 
     @Test
@@ -222,28 +210,17 @@ public class DatasetServiceTest {
     }
 
     @Test
-    public void validateRequest_shouldThrowValidationException_whenFieldIssuedIsNull() {
+    public void validateRequest_shouldThrowValidationException_whenFieldTitleIsNull() {
         List<DatasetRequest> requests = new ArrayList<>();
 
         requests.add(DatasetRequest.builder()
-                .title("Title1")
-                .description("Description")
-                .categories(List.of("Category"))
-                .provenances(List.of("Provenance"))
-                .pi("false")
-                .keywords(List.of("Keywords"))
-                .theme("Theme")
-                .accessRights("AccessRights")
-                .publisher("Publisher")
-                .spatial("Spatial")
-                .haspart("Haspart")
-                .distributionChannels(List.of("DistributionChannel"))
+                .description("Missing title")
                 .build());
         try {
             service.validateRequest(requests, false, REST);
         } catch (ValidationException e) {
             assertThat(e.get().size(), is(1));
-            assertThat(e.toErrorString(), is("Request:1 -- fieldIsNullOrMissing -- issued was null or missing"));
+            assertThat(e.toErrorString(), is("Request:1 -- fieldIsNullOrMissing -- title was null or missing"));
         }
     }
 
@@ -297,14 +274,14 @@ public class DatasetServiceTest {
 
         Dataset existingDataset = new Dataset().convertNewFromRequest(requests.get(0), REST);
 
-        when(datasetRepository.findByTitle("TITLE1")).thenReturn(Optional.of(existingDataset));
+        when(datasetRepository.findByTitle("Title1")).thenReturn(Optional.of(existingDataset));
 
         try {
             service.validateRequest(requests, false, REST);
         } catch (ValidationException e) {
             assertThat(e.get().size(), is(1));
             assertThat(e.toErrorString(), is("Request:1 -- creatingExistingDataset -- " +
-                    "The dataset TITLE1 already exists and therefore cannot be created"));
+                    "The dataset Title1 already exists and therefore cannot be created"));
         }
     }
 
@@ -327,14 +304,14 @@ public class DatasetServiceTest {
                 .distributionChannels(List.of("DistributionChannel"))
                 .build());
 
-        when(datasetRepository.findByTitle("TITLE1")).thenReturn(Optional.empty());
+        when(datasetRepository.findByTitle("Title1")).thenReturn(Optional.empty());
 
         try {
             service.validateRequest(requests, true, REST);
         } catch (ValidationException e) {
             assertThat(e.get().size(), is(1));
             assertThat(e.toErrorString(), is("Request:1 -- updatingNonExistingDataset -- " +
-                    "The dataset TITLE1 does not exist and therefore cannot be updated"));
+                    "The dataset Title1 does not exist and therefore cannot be updated"));
         }
     }
 
@@ -359,14 +336,14 @@ public class DatasetServiceTest {
 
         Dataset existingDataset = new Dataset().convertNewFromRequest(requests.get(0), GITHUB);
 
-        when(datasetRepository.findByTitle("TITLE1")).thenReturn(Optional.of(existingDataset));
+        when(datasetRepository.findByTitle("Title1")).thenReturn(Optional.of(existingDataset));
 
         try {
             service.validateRequest(requests, true, REST);
         } catch (ValidationException e) {
             assertThat(e.get().size(), is(1));
             assertThat(e.toErrorString(), is("Request:1 -- nonCorrelatingMaster -- " +
-                    "The dataset TITLE1 is mastered in GITHUB and therefore cannot be updated from REST"));
+                    "The dataset Title1 is mastered in GITHUB and therefore cannot be updated from REST"));
         }
     }
 

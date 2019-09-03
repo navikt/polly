@@ -3,7 +3,8 @@ package no.nav.data.catalog.backend.app.github;
 import no.nav.data.catalog.backend.app.IntegrationTestBase;
 import no.nav.data.catalog.backend.app.codelist.CodelistStub;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
-import no.nav.data.catalog.backend.app.dataset.DatasetData;
+import no.nav.data.catalog.backend.app.dataset.DatasetMaster;
+import no.nav.data.catalog.backend.app.dataset.DatasetRequest;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import no.nav.data.catalog.backend.app.github.domain.GithubAccount;
@@ -31,13 +32,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.testcontainers.shaded.org.apache.commons.lang.StringUtils;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.exactly;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -77,18 +77,18 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
         repository.deleteAll();
         polDatasettRepository.save(new PolDatasett(before));
 
-        repository.save(Dataset.builder()
-                .id(UUID.randomUUID()).generateElasticsearchId()
-                .elasticsearchStatus(ElasticsearchStatus.SYNCED)
-                .datasetData(DatasetData.builder().title("removed").description("desc").build()).build());
-        repository.save(Dataset.builder()
-                .id(UUID.randomUUID()).generateElasticsearchId()
-                .elasticsearchStatus(ElasticsearchStatus.SYNCED)
-                .datasetData(DatasetData.builder().title("modified_removed").description("desc").build()).build());
-        repository.save(Dataset.builder()
-                .id(UUID.randomUUID()).generateElasticsearchId()
-                .elasticsearchStatus(ElasticsearchStatus.SYNCED)
-                .datasetData(DatasetData.builder().title("modified_changed").description("desc").build()).build());
+        repository.save(new Dataset().convertNewFromRequest(DatasetRequest.builder()
+                .title("removed")
+                .description("desc")
+                .build(), DatasetMaster.GITHUB));
+        repository.save(new Dataset().convertNewFromRequest(DatasetRequest.builder()
+                .title("modified_removed")
+                .description("desc")
+                .build(), DatasetMaster.GITHUB));
+        repository.save(new Dataset().convertNewFromRequest(DatasetRequest.builder()
+                .title("modified_changed")
+                .description("desc")
+                .build(), DatasetMaster.GITHUB));
     }
 
     @Test
@@ -149,7 +149,7 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    public void pullRequestWithValidationErrors() throws IOException {
+    public void pullRequestWithValidationErrors() {
         wiremock.stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/modified.json"))
                 .withQueryParam("ref", equalTo(head))
                 .willReturn(okJson(toJson(singletonList(createFile("testdataIkkeSlett/modified.json", readFile("github/modifiedAfterIncludingAdded.json")))))));
@@ -168,8 +168,7 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
 
         verify(postRequestedFor(urlPathEqualTo(String.format("/api/v3/repos/navikt/pol-datasett/statuses/%s", head)))
                 .withRequestBody(matchingJsonPath("$.context", equalTo("data-catalog-validation")))
-                .withRequestBody(matchingJsonPath("$.description", equalTo("title=added path=testdataIkkeSlett/added.json ordinal=1 duplicate entry, "
-                        + "title=added path=testdataIkkeSlett/modified.json ordinal=3 duplicate entry")))
+                .withRequestBody(matchingJsonPath("$.description", containing("added -- DuplicatedIdentifyingFields -- Multiple elements in this request are using the same unique fields (added)")))
                 .withRequestBody(matchingJsonPath("$.state", equalTo("failure")))
         );
     }

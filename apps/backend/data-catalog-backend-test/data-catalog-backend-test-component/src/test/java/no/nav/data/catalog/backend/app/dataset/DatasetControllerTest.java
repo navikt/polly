@@ -30,6 +30,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static junit.framework.TestCase.assertTrue;
 import static no.nav.data.catalog.backend.app.dataset.DatasetMaster.REST;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
@@ -187,6 +188,31 @@ public class DatasetControllerTest {
                 .andExpect(jsonPath("$.length()", is(1)))
                 .andExpect(jsonPath("$[0].description", containsString("UPDATED")))
                 .andReturn().getResponse();
+    }
+
+    @Test
+    public void updateOneDatasetById_withExistingIdAndRequestIsNull() throws Exception {
+        Dataset datasetToUpdate = Dataset.builder()
+                .id(UUID.randomUUID())
+                .datasetData(DatasetData.builder()
+                        .title("UpdateTitle")
+                        .description("Description")
+                        .master(REST)
+                        .build()
+                ).build();
+
+        DatasetRequest request = null;
+
+        when(repository.findById(datasetToUpdate.getId())).thenReturn(Optional.of(datasetToUpdate));
+        String inputJson = objectMapper.writeValueAsString(request);
+
+        Exception exception = mvc.perform(put("/dataset/" + datasetToUpdate.getId())
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .content(inputJson))
+                .andExpect(status().isBadRequest()).andReturn().getResolvedException();
+
+        assertTrue(exception.getLocalizedMessage().contains("Required request body is missing:"));
+
     }
 
     @Test

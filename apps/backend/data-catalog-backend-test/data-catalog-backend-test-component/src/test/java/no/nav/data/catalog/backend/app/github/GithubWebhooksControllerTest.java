@@ -18,7 +18,6 @@ import org.eclipse.egit.github.core.RepositoryContents;
 import org.eclipse.egit.github.core.event.PullRequestPayload;
 import org.eclipse.egit.github.core.event.PushPayload;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.AdditionalAnswers;
@@ -37,7 +36,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.Collections.singletonList;
-import static no.nav.data.catalog.backend.app.dataset.DatasetMaster.GITHUB;
 import static no.nav.data.catalog.backend.app.github.GithubWebhooksController.HEADER_GITHUB_EVENT;
 import static no.nav.data.catalog.backend.app.github.GithubWebhooksController.HEADER_GITHUB_ID;
 import static no.nav.data.catalog.backend.app.github.GithubWebhooksController.HEADER_GITHUB_SIGNATURE;
@@ -162,12 +160,15 @@ public class GithubWebhooksControllerTest {
         verifyZeroInteractions(githubConsumer, service);
     }
 
-    //TODO: Fix this test
-    @Ignore
     @Test
     public void pullRequestValidationFailure() throws Exception {
         repoModification.setAdded(singletonList(createFile("add.json", "modified")));
         String payload = JsonUtils.toJson(pullRequest);
+
+        List<ValidationError> validationErrors = List.of(new ValidationError("title=modified path=add.json ordinal=1 duplicate entry",
+                "DuplicatedIdentifyingFields", "Multipe elements in this request are using the same unique fields (modified)"));
+
+        when(service.validateRequestsAndReturnErrors(anyList(), eq(true), any(DatasetMaster.class))).thenReturn(validationErrors);
 
         mvc.perform(post(GithubWebhooksController.BACKEND_WEBHOOKS)
                 .content(payload)
@@ -176,16 +177,13 @@ public class GithubWebhooksControllerTest {
                 .header(HEADER_GITHUB_SIGNATURE, "sha1=" + githubHmac.hmacHex(payload))
         ).andExpect(status().isOk());
 
-        List<ValidationError> validationErrors = List.of(new ValidationError("title=modified path=add.json ordinal=1 duplicate entry",
-                "DuplicatedIdentifyingFields", "Multipe elements in this request are using the same unique fields (modified)"));
 
+        verify(service).validateNoDuplicates(anyList());
         verify(service).validateRequestsAndReturnErrors(anyList(), eq(true), any(DatasetMaster.class));
         verify(service).validateRequestsAndReturnErrors(anyList(), eq(false), any(DatasetMaster.class));
         verify(githubConsumer).updateStatus("head", validationErrors);
     }
 
-    //TODO: Fix this test
-    @Ignore
     @Test
     public void updateOnPush() throws Exception {
         when(githubConsumer.compare("internalbefore", "head")).thenReturn(repoModification);
@@ -200,8 +198,8 @@ public class GithubWebhooksControllerTest {
                 .header(HEADER_GITHUB_SIGNATURE, "sha1=" + githubHmac.hmacHex(payload))
         ).andExpect(status().isOk());
 
-        verify(service).validateRequestsAndReturnErrors(anyList(), eq(true), GITHUB);
-        verify(service).validateRequestsAndReturnErrors(anyList(), eq(false), GITHUB);
+        verify(service).validateRequestsAndReturnErrors(anyList(), eq(true), any(DatasetMaster.class));
+        verify(service).validateRequestsAndReturnErrors(anyList(), eq(false), any(DatasetMaster.class));
 
         verify(repository, times(3)).saveAll(anyCollection());
     }
@@ -222,6 +220,7 @@ public class GithubWebhooksControllerTest {
     private RepositoryContents createFile(String file, String name) {
         return new RepositoryContents().setName(name).setPath(file)
                 .setType(RepositoryContents.TYPE_FILE).setEncoding(RepositoryContents.ENCODING_BASE64)
-                .setContent(Base64.getEncoder().encodeToString(JsonUtils.toJson(DatasetRequest.builder().title(name).build()).getBytes()));
+                .setContent(Base64.getEncoder()
+                        .encodeToString(JsonUtils.toJson(DatasetRequest.builder().title(name).build()).getBytes()));
     }
 }
