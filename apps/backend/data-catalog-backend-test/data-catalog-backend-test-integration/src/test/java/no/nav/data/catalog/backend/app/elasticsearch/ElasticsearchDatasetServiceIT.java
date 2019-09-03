@@ -1,6 +1,5 @@
 package no.nav.data.catalog.backend.app.elasticsearch;
 
-import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.IntegrationTestBase;
 import no.nav.data.catalog.backend.app.codelist.CodeResponse;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
@@ -16,7 +15,6 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +25,6 @@ import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = {AppStarter.class})
 public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
 
     private static final String TITLE = "title";
