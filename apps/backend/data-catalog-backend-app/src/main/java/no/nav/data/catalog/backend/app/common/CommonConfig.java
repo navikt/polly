@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.auditing.AuditorAwareImpl;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import org.apache.http.HttpHost;
+import org.apache.http.HttpRequestInterceptor;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,49 +24,59 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 public class CommonConfig {
-	@Value("${elasticsearch.host}")
-	private String elasticsearchHost;
 
-	@Value("${elasticsearch.port}")
-	private int elasticsearchPort;
+    @Value("${elasticsearch.host}")
+    private String elasticsearchHost;
 
-	@Primary
-	@Bean
-	public ObjectMapper objectMapper() {
-		return JsonUtils.getObjectMapper();
-	}
+    @Value("${elasticsearch.port}")
+    private int elasticsearchPort;
 
-	@Bean
-	public RestTemplate restTemplate(RestTemplateBuilder builder) {
-		return builder.build();
-	}
+    @Value("${elasticsearch.schema}")
+    private String elasticsearchSchema;
 
-	@Bean
-	public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
-		MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
-		jsonConverter.setObjectMapper(objectMapper());
-		return jsonConverter;
-	}
+    @Value("${elasticsearch.token}")
+    private String elasticsearchToken;
 
-	@Bean
-	public RestHighLevelClient restHighLevelClient() {
-		log.info("Elasticsearch {}:{}", elasticsearchHost, elasticsearchPort);
-		return new RestHighLevelClient(
-				RestClient.builder(
-						new HttpHost(elasticsearchHost, elasticsearchPort, "http")));
-	}
+    @Primary
+    @Bean
+    public ObjectMapper objectMapper() {
+        return JsonUtils.getObjectMapper();
+    }
 
-	@Bean
-	public AuditorAware<String> auditorAware() {
-		return new AuditorAwareImpl();
-	}
+    @Bean
+    public RestTemplate restTemplate(RestTemplateBuilder builder) {
+        return builder.build();
+    }
 
-	/**
-	 * Make sure spring uses the defaultRegistry
-	 */
-	@Bean
-	public CollectorRegistry collectorRegistry() {
-		DefaultExports.initialize();
-		return CollectorRegistry.defaultRegistry;
-	}
+    @Bean
+    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
+        MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
+        jsonConverter.setObjectMapper(objectMapper());
+        return jsonConverter;
+    }
+
+    @Bean
+    public RestHighLevelClient restHighLevelClient() {
+        log.info("Elasticsearch {} {}:{}", elasticsearchSchema, elasticsearchHost, elasticsearchPort);
+        return new RestHighLevelClient(
+                RestClient.builder(
+                        new HttpHost(elasticsearchHost, elasticsearchPort, elasticsearchSchema)
+                ).setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder
+                        .addInterceptorFirst((HttpRequestInterceptor) (request, context) -> request.getParams().setParameter("token", elasticsearchToken)))
+        );
+    }
+
+    @Bean
+    public AuditorAware<String> auditorAware() {
+        return new AuditorAwareImpl();
+    }
+
+    /**
+     * Make sure spring uses the defaultRegistry
+     */
+    @Bean
+    public CollectorRegistry collectorRegistry() {
+        DefaultExports.initialize();
+        return CollectorRegistry.defaultRegistry;
+    }
 }
