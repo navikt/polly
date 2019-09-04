@@ -10,12 +10,12 @@ gruppering av sammenhørende data. Applikasjonen inneholder også kodeverk som b
 ## Kom i gang
 Prosjektet krever maven og java 11
 
-For å bygge
+#####For å bygge
 
 ``mvn clean install``
 
-For å kjøre, navigèr til ``data-catalog-backend-app`` og kjør
+#####For å kjøre lokalt
+Start postgres og elasticsearch med `docker-compose up -d elasticsearch postgres`
+og bruk ``no.nav.data.catalog.backend.app.LocalAppStarter``
 
-``mvn exec:java -Dspring.profiles.active=test``
-
-Swagger-dokumentasjon av tjenestene er tilgjenglig på http://localhost:8081/swagger-ui.html
+Swagger-dokumentasjon av tjenestene er tilgjenglig på http://localhost:8080/backend/swagger-ui.html
