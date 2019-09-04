@@ -5,6 +5,7 @@ import java.util.Map;
 public class CodelistStub {
 
     public static void initializeCodelist() {
+        CodelistService.initListNames();
         Map<ListName, Map<String, String>> codelists = CodelistService.codelists;
         codelists.get(ListName.PRODUCER).put("ARBEIDSGIVER", "Arbeidsgiver");
         codelists.get(ListName.PRODUCER).put("SKATTEETATEN", "Skatteetaten");
