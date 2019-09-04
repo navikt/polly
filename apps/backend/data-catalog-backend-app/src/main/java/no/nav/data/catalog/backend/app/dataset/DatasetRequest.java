@@ -23,7 +23,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.nullToEmptyList;
-import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.nullToEmptyString;
 import static org.eclipse.egit.github.core.RepositoryContents.ENCODING_BASE64;
 import static org.eclipse.egit.github.core.RepositoryContents.TYPE_FILE;
 
@@ -110,8 +109,8 @@ public class DatasetRequest implements RequestElement {
     }
 
     void toUpperCaseAndTrim() {
-        setTitle(nullToEmptyString(title).toUpperCase().trim());
-        setDescription(nullToEmptyString(description).toUpperCase().trim());
+        setTitle(ifNotNullToUppercaseAndTrim(title));
+        setDescription(ifNotNullToUppercaseAndTrim(description));
         setCategories(nullToEmptyList(categories).stream()
                 .map(String::toUpperCase)
                 .map(String::trim)
@@ -120,17 +119,25 @@ public class DatasetRequest implements RequestElement {
                 .map(String::toUpperCase)
                 .map(String::trim)
                 .collect(Collectors.toList()));
-        setPi(nullToEmptyString(pi).trim());
-        setIssued(nullToEmptyString(issued).trim());
+        setPi(ifNotNullTrim(pi));
+        setIssued(ifNotNullTrim(issued));
         setKeywords(nullToEmptyList(keywords).stream().map(String::toUpperCase).map(String::trim).collect(Collectors.toList()));
-        setTheme(nullToEmptyString(theme).toUpperCase().trim());
-        setAccessRights(nullToEmptyString(accessRights).toUpperCase().trim());
-        setPublisher(nullToEmptyString(publisher).toUpperCase().trim());
-        setSpatial(nullToEmptyString(spatial).toUpperCase().trim());
-        setHaspart(nullToEmptyList(haspart).stream().map(String::trim).collect(Collectors.toList()));
+        setTheme(ifNotNullToUppercaseAndTrim(theme));
+        setAccessRights(ifNotNullToUppercaseAndTrim(accessRights));
+        setPublisher(ifNotNullToUppercaseAndTrim(publisher));
+        setSpatial(ifNotNullToUppercaseAndTrim(spatial));
+        setHaspart(nullToEmptyList(haspart).stream().map(String::toUpperCase).map(String::trim).collect(Collectors.toList()));
         setDistributionChannels(nullToEmptyList(distributionChannels).stream()
                 .map(String::toUpperCase)
                 .map(String::trim)
                 .collect(Collectors.toList()));
+    }
+
+    private String ifNotNullToUppercaseAndTrim(String field) {
+        return field == null ? null : field.toUpperCase().trim();
+    }
+
+    private String ifNotNullTrim(String field) {
+        return field == null ? null : field.trim();
     }
 }
