@@ -42,7 +42,7 @@ public class DatasetServiceTest {
     public void save_shouldSave_whenRequestIsValid() {
         DatasetRequest request = createValidDatasetRequest("Title");
 
-        service.save(List.of(request), REST);
+        service.saveAll(List.of(request), REST);
         verify(datasetRepository, times(1)).saveAll(anyList());
     }
 
@@ -50,7 +50,7 @@ public class DatasetServiceTest {
     public void update_shouldUpdate_whenRequestIsValid() {
         DatasetRequest request = createValidDatasetRequest("Title");
 
-        service.update(List.of(request));
+        service.updateAll(List.of(request));
         verify(datasetRepository, times(1)).saveAll(anyList());
     }
 

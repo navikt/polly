@@ -133,7 +133,7 @@ public class DatasetController {
         requests = StreamUtils.nullToEmptyList(requests);
         service.validateRequest(requests, false, REST);
 
-        return service.save(requests, REST);
+        return service.saveAll(requests, REST);
     }
 
     @ApiOperation(value = "Update Dataset", tags = {"Dataset"})
@@ -148,7 +148,7 @@ public class DatasetController {
         requests = StreamUtils.nullToEmptyList(requests);
         service.validateRequest(requests, true, REST);
 
-        return service.update(requests);
+        return service.updateAll(requests);
     }
 
     @ApiOperation(value = "Update Dataset", tags = {"Dataset"})
@@ -167,7 +167,7 @@ public class DatasetController {
         }
         service.validateRequest(List.of(request), true, REST);
 
-        Dataset dataset = service.convertUpdateFromRequest(request, fromRepository.get());
+        Dataset dataset = service.update(request, fromRepository.get());
 
         log.info("Updated the Dataset");
         return new ResponseEntity<>(repository.save(dataset).convertToResponse(), HttpStatus.ACCEPTED);

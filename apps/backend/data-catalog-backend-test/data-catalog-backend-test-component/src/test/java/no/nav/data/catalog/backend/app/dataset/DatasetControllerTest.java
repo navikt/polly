@@ -127,7 +127,7 @@ public class DatasetControllerTest {
                 .map(Dataset::convertToResponse)
                 .collect(Collectors.toList());
 
-        when(service.save(ArgumentMatchers.anyList(), any(DatasetMaster.class))).thenReturn(datasetResponses);
+        when(service.saveAll(ArgumentMatchers.anyList(), any(DatasetMaster.class))).thenReturn(datasetResponses);
 
         String inputJson = objectMapper.writeValueAsString(requests);
 
@@ -150,7 +150,7 @@ public class DatasetControllerTest {
                 .map(Dataset::convertToResponse)
                 .collect(Collectors.toList());
 
-        when(service.update(ArgumentMatchers.anyList())).thenReturn(datasetResponses);
+        when(service.updateAll(ArgumentMatchers.anyList())).thenReturn(datasetResponses);
 
         String inputJson = objectMapper.writeValueAsString(requests);
 

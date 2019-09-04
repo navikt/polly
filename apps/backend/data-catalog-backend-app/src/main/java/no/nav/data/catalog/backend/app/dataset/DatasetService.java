@@ -26,6 +26,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.nullToEmptyList;
 
@@ -71,33 +72,28 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         return datasets.map(Dataset::convertToResponse);
     }
 
-    public List<DatasetResponse> save(List<DatasetRequest> requests, DatasetMaster master) {
-        List<Dataset> datasets = requests.stream()
-                .map(request -> new Dataset().convertNewFromRequest(request, master))
-                .collect(Collectors.toList());
-
-        return datasetRepository.saveAll(datasets).stream()
-                .map(Dataset::convertToResponse)
-                .collect(Collectors.toList());
-    }
-
-    public List<DatasetResponse> update(List<DatasetRequest> requests) {
-        List<Dataset> updatedDatasets = returnUpdatedDatasetsIfAllArePresent(requests);
-
-        return datasetRepository.saveAll(updatedDatasets).stream()
+    @Transactional
+    public List<DatasetResponse> saveAll(List<DatasetRequest> requests, DatasetMaster master) {
+        return datasetRepository.saveAll(requests.stream().map(request -> save(request, master)).collect(toList()))
+                .stream()
                 .map(Dataset::convertToResponse)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public Dataset convertNewFromRequest(DatasetRequest request, DatasetMaster master) {
+    public List<DatasetResponse> updateAll(List<DatasetRequest> requests) {
+        return datasetRepository.saveAll(returnUpdatedDatasetsIfAllArePresent(requests)).stream().map(Dataset::convertToResponse).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public Dataset save(DatasetRequest request, DatasetMaster master) {
         Dataset dataset = new Dataset().convertNewFromRequest(request, master);
-        attachChildren(dataset, request.getHaspart());
+        attachChildren(dataset, StreamUtils.nullToEmptyList(request.getHaspart()));
         return dataset;
     }
 
     @Transactional
-    public Dataset convertUpdateFromRequest(DatasetRequest request, Dataset dataset) {
+    public Dataset update(DatasetRequest request, Dataset dataset) {
         dataset.convertUpdateFromRequest(request);
         attachChildren(dataset, StreamUtils.nullToEmptyList(request.getHaspart()));
         return dataset;
@@ -119,12 +115,13 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         List<Dataset> datasets = datasetRepository.findAllByTitle(requests.stream()
                 .map(DatasetRequest::getTitle)
                 .collect(Collectors.toList()));
+
         datasets.forEach(
                 ds -> {
                     Optional<DatasetRequest> request = requests.stream()
                             .filter(r -> r.getTitle().equals(ds.getDatasetData().getTitle()))
                             .findFirst();
-                    request.ifPresent(datasetRequest -> convertUpdateFromRequest(datasetRequest, ds));
+                    request.ifPresent(datasetRequest -> update(datasetRequest, ds));
                 });
         return datasets;
     }

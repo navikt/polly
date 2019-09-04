@@ -59,7 +59,7 @@ public class DatasetServiceIT extends AbstractDatasetIT {
                 .haspart(Collections.singletonList(dataset1.getTitle()))
                 .build();
 
-        Dataset dataset = datasetRepository.save(datasetService.convertNewFromRequest(request, DatasetMaster.GITHUB));
+        Dataset dataset = datasetRepository.save(datasetService.save(request, DatasetMaster.GITHUB));
         assertThat(dataset.getChildren(), hasItem(dataset1));
         assertThat(dataset.getDatasetData().getHaspart(), hasItem(dataset1.getTitle()));
     }
@@ -81,7 +81,7 @@ public class DatasetServiceIT extends AbstractDatasetIT {
                 .build());
         int nrOfDatasetsBeforeSave = (int) datasetRepository.count();
 
-        datasetService.save(requests, REST);
+        datasetService.saveAll(requests, REST);
 
         assertThat(datasetRepository.findAll().size(), is(nrOfDatasetsBeforeSave + 1));
         assertTrue(datasetRepository.findByTitle("createDataset").isPresent());
@@ -94,13 +94,13 @@ public class DatasetServiceIT extends AbstractDatasetIT {
                 .description("DatasetDescription")
                 .build());
 
-        datasetService.save(requests, REST);
+        datasetService.saveAll(requests, REST);
 
         assertThat(datasetRepository.findByTitle("updateDataset").get().getDatasetData().getDescription()
                 , is("DatasetDescription"));
 
         requests.get(0).setDescription("UPDATED DESCRIPTION");
-        datasetService.update(requests);
+        datasetService.updateAll(requests);
 
         assertThat(datasetRepository.findByTitle("updateDataset").get().getDatasetData().getDescription()
                 , is("UPDATED DESCRIPTION"));
