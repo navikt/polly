@@ -9,6 +9,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collections;
 import java.util.List;
 
 import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
@@ -50,11 +51,18 @@ public class CodelistServiceIT extends IntegrationTestBase {
 		assertFalse(codelists.get(ListName.PRODUCER).get("TEST_CODE").isEmpty());
 	}
 
+    @Test
+    public void save_shouldNotSaveOrProcessAnEmptyRequest() {
+        service.save(Collections.emptyList());
+
+        assertThat(repository.findAll().size(), is(0));
+    }
+
 	@Test
 	public void update_shouldUpdateCodelist() {
 		service.save(createListOfOneRequest());
 
-		List<CodelistRequest> updatedRequest = createListOfOneRequest(ListName.PRODUCER, "TEST_CODE", "Updated codelist");
+        List<CodelistRequest> updatedRequest = createListOfOneRequest("PRODUCER", "TEST_CODE", "Updated codelist");
 		service.update(updatedRequest);
 
 		assertThat(codelists.get(ListName.PRODUCER).get("TEST_CODE"), is(updatedRequest.get(0).getDescription()));
@@ -77,17 +85,32 @@ public class CodelistServiceIT extends IntegrationTestBase {
 		assertNull(codelists.get(ListName.PRODUCER).get("TEST_CODE"));
 	}
 
+
 	@Test
 	public void validateRequests_shouldValidateRequests() {
 		List<CodelistRequest> requests = List.of(
-				createOneRequest(ListName.PRODUCER, "CODE_1", "Description"),
-				createOneRequest(ListName.PRODUCER, "code_2 ", "Description"),
-				createOneRequest(ListName.PRODUCER, " Code_3 ", "Description "));
+                createOneRequest("PRODUCER", "CODE_1", "Description"),
+                createOneRequest("PRODUCER", "code_2 ", "Description"),
+                createOneRequest("PRODUCER", " Code_3 ", "Description "));
 
-		service.validateRequests(requests, false);
-	}
+        service.validateRequest(requests, false);
+    }
 
-	private CodelistRequest createOneRequest(ListName listName, String code, String description) {
+    @Test
+    public void validateRequests_shouldValidateWithoutAnyProcessing_whenRequestIsNull() {
+        List<CodelistRequest> requests = null;
+
+        service.validateRequest(requests, false);
+    }
+
+    @Test
+    public void validateRequests_shouldValidateWithoutAnyProcessing_whenListOfRequestsIsEmpty() {
+        List<CodelistRequest> requests = Collections.emptyList();
+
+        service.validateRequest(requests, false);
+    }
+
+    private CodelistRequest createOneRequest(String listName, String code, String description) {
 		return CodelistRequest.builder()
 				.list(listName)
 				.code(code)
@@ -95,7 +118,7 @@ public class CodelistServiceIT extends IntegrationTestBase {
 				.build();
 	}
 
-	private List<CodelistRequest> createListOfOneRequest(ListName listName, String code, String description) {
+    private List<CodelistRequest> createListOfOneRequest(String listName, String code, String description) {
 		return List.of(CodelistRequest.builder()
 				.list(listName)
 				.code(code)
@@ -104,7 +127,7 @@ public class CodelistServiceIT extends IntegrationTestBase {
 	}
 
 	private List<CodelistRequest> createListOfOneRequest() {
-		return createListOfOneRequest(ListName.PRODUCER, "TEST_CODE", "Test description");
+        return createListOfOneRequest("PRODUCER", "TEST_CODE", "Test description");
 	}
 
 }

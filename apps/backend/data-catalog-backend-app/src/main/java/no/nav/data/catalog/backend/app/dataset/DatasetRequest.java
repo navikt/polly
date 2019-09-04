@@ -9,18 +9,20 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
+import no.nav.data.catalog.backend.app.common.validator.RequestElement;
 import no.nav.data.catalog.backend.app.github.GithubReference;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.eclipse.egit.github.core.RepositoryContents;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
+import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.nullToEmptyList;
 import static org.eclipse.egit.github.core.RepositoryContents.ENCODING_BASE64;
 import static org.eclipse.egit.github.core.RepositoryContents.TYPE_FILE;
 
@@ -29,14 +31,14 @@ import static org.eclipse.egit.github.core.RepositoryContents.TYPE_FILE;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DatasetRequest {
+public class DatasetRequest implements RequestElement {
 
     private String title;
     private String description;
     private List<String> categories;
     private List<String> provenances;
-    private Boolean pi;
-    private LocalDateTime issued;
+    private String pi;
+    private String issued;
     private List<String> keywords;
     private String theme;
     private String accessRights;
@@ -47,6 +49,12 @@ public class DatasetRequest {
 
     @JsonIgnore
     private GithubReference githubReference;
+    @JsonIgnore
+    private boolean isUpdate;
+    @JsonIgnore
+    private int requestIndex;
+    @JsonIgnore
+    private DatasetMaster master;
 
     public static List<DatasetRequest> convertFromGithubFile(RepositoryContents file) {
         byte[] content = null;
@@ -65,9 +73,8 @@ public class DatasetRequest {
                 List<DatasetRequest> datasetRequests = JsonUtils.readValue(jsonString, new TypeReference<>() {
                 });
                 AtomicInteger i = new AtomicInteger(0);
-                datasetRequests.forEach(request -> {
-                    request.setGithubReference(new GithubReference(request.getTitle(), file.getPath(), i.incrementAndGet()));
-                });
+                datasetRequests.forEach(request -> request.setGithubReference(new GithubReference(request.getTitle(), file.getPath(), i
+                        .incrementAndGet())));
                 return datasetRequests;
             } catch (IOException e) {
                 String error = String.format("Error occurred during parse of Json in file %s from github ", file.getPath());
@@ -80,7 +87,63 @@ public class DatasetRequest {
     }
 
     @JsonIgnore
-    public Optional<String> getRequestReference() {
+    private Optional<String> getRequestReference() {
         return githubReference == null ? Optional.empty() : Optional.ofNullable(githubReference.toString());
+    }
+
+    @Override
+    public String getIdentifyingFields() {
+        return title;
+    }
+
+    @Override
+    public String getRequestType() {
+        return "dataset";
+    }
+
+    String getReference() {
+        switch (master) {
+            case GITHUB:
+                return getRequestReference().orElse("");
+            case REST:
+                return "Request:" + requestIndex;
+            case KAFKA:
+                return "Kafka";
+            default:
+                throw new IllegalStateException("Unexpected value: " + master);
+        }
+    }
+
+    void toUpperCaseAndTrim() {
+        setTitle(ifNotNullToUppercaseAndTrim(title));
+        setDescription(ifNotNullToUppercaseAndTrim(description));
+        setCategories(nullToEmptyList(categories).stream()
+                .map(String::toUpperCase)
+                .map(String::trim)
+                .collect(Collectors.toList()));
+        setProvenances(nullToEmptyList(provenances).stream()
+                .map(String::toUpperCase)
+                .map(String::trim)
+                .collect(Collectors.toList()));
+        setPi(ifNotNullTrim(pi));
+        setIssued(ifNotNullTrim(issued));
+        setKeywords(nullToEmptyList(keywords).stream().map(String::toUpperCase).map(String::trim).collect(Collectors.toList()));
+        setTheme(ifNotNullToUppercaseAndTrim(theme));
+        setAccessRights(ifNotNullToUppercaseAndTrim(accessRights));
+        setPublisher(ifNotNullToUppercaseAndTrim(publisher));
+        setSpatial(ifNotNullToUppercaseAndTrim(spatial));
+        setHaspart(nullToEmptyList(haspart).stream().map(String::toUpperCase).map(String::trim).collect(Collectors.toList()));
+        setDistributionChannels(nullToEmptyList(distributionChannels).stream()
+                .map(String::toUpperCase)
+                .map(String::trim)
+                .collect(Collectors.toList()));
+    }
+
+    private String ifNotNullToUppercaseAndTrim(String field) {
+        return field == null ? null : field.toUpperCase().trim();
+    }
+
+    private String ifNotNullTrim(String field) {
+        return field == null ? null : field.trim();
     }
 }

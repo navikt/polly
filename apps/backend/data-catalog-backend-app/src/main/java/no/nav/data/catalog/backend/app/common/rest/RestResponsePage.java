@@ -1,11 +1,13 @@
 package no.nav.data.catalog.backend.app.common.rest;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 @Getter
+@NoArgsConstructor
 public class RestResponsePage<T> {
 
     private List<T> content;

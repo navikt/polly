@@ -5,8 +5,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.common.utils.CollectionDifference;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
+import no.nav.data.catalog.backend.app.common.validator.ValidationError;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
 import no.nav.data.catalog.backend.app.dataset.DatasetMaster;
 import no.nav.data.catalog.backend.app.dataset.DatasetRequest;
@@ -32,12 +34,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import static java.util.Arrays.asList;
+import static no.nav.data.catalog.backend.app.dataset.DatasetMaster.GITHUB;
 import static no.nav.data.catalog.backend.app.github.GithubConsumer.REFS_HEADS_MASTER;
 
 @Slf4j
@@ -64,10 +66,10 @@ public class GithubWebhooksController {
 
 
     public GithubWebhooksController(DatasetService service,
-            DatasetRepository repository,
-            PolDatasettRepository polDatasettRepository,
-            GithubConsumer githubConsumer,
-            HmacUtils githubHmac) {
+                                    DatasetRepository repository,
+                                    PolDatasettRepository polDatasettRepository,
+                                    GithubConsumer githubConsumer,
+                                    HmacUtils githubHmac) {
         this.service = service;
         this.repository = repository;
         this.polDatasettRepository = polDatasettRepository;
@@ -132,8 +134,8 @@ public class GithubWebhooksController {
         log.info("validating pull request from {} {} to {} {}", fromBranch, before, toBranch, head);
 
         CollectionDifference<DatasetRequest> difference = calculateDifference(before, head);
-        List<String> validate = validate(difference);
-        githubConsumer.updateStatus(head, validate);
+        List<ValidationError> validationErrors = validate(difference);
+        githubConsumer.updateStatus(head, validationErrors);
     }
 
     private void processPushEvent(PushPayload payload) {
@@ -145,9 +147,9 @@ public class GithubWebhooksController {
         String internalBefore = findInternallyStoredBefore();
         log.info("Before {}, internal before {}, new head {}", payload.getBefore(), internalBefore, payload.getHead());
         CollectionDifference<DatasetRequest> difference = calculateDifference(internalBefore, payload.getHead());
-        List<String> validate = validate(difference);
-        if (!validate.isEmpty()) {
-            throw new IllegalArgumentException(String.format("Validation errors: %s", validate));
+        List<ValidationError> validationErrors = validate(difference);
+        if (!validationErrors.isEmpty()) {
+            throw new ValidationException(validationErrors, "The request was not accepted. The following errors occurred during validation: ");
         }
         remove(difference.getRemoved());
         modify(difference.getShared());
@@ -156,26 +158,14 @@ public class GithubWebhooksController {
         polDatasettRepository.save(new PolDatasett(payload.getHead()));
     }
 
-    private List<String> validate(CollectionDifference<DatasetRequest> difference) {
-        List<String> validationErrors = new ArrayList<>();
 
-        // To validate that there aren't duplicates across add and modify
-        difference.getAfter().stream()
-                .filter(element -> difference.getAfter().stream().anyMatch(compare -> !element.equals(compare) && element.getTitle().equals(compare.getTitle())))
-                .map(element -> String.format("%s duplicate entry", element.getRequestReference().orElse(null)))
-                .forEach(validationErrors::add);
-
-        mapErrors(service.validateRequestsAndReturnErrors(difference.getShared(), true), validationErrors);
-        mapErrors(service.validateRequestsAndReturnErrors(difference.getAdded(), false), validationErrors);
+    private List<ValidationError> validate(CollectionDifference<DatasetRequest> difference) {
+        List<ValidationError> validationErrors = new ArrayList<>();
+        validationErrors.addAll(service.validateNoDuplicates(difference.getAfter()));
+        validationErrors.addAll(service.validateRequestsAndReturnErrors(difference.getShared(), true, GITHUB));
+        validationErrors.addAll(service.validateRequestsAndReturnErrors(difference.getAdded(), false, GITHUB));
 
         return validationErrors;
-    }
-
-    private void mapErrors(Map<String, Map<String, String>> validationErrorsMap, List<String> validationErrors) {
-        validationErrorsMap
-                .entrySet().stream()
-                .flatMap(entry -> entry.getValue().values().stream().map(value -> entry.getKey() + " " + value))
-                .forEach(validationErrors::add);
     }
 
     private String findInternallyStoredBefore() {
@@ -185,7 +175,8 @@ public class GithubWebhooksController {
     private CollectionDifference<DatasetRequest> calculateDifference(String before, String head) {
         RepoModification repoModification = githubConsumer.compare(before, head);
         CollectionDifference<DatasetRequest> difference = repoModification.toChangelist();
-        log.info("Add: {} Modify: {} Remove: {}", difference.getAdded().size(), difference.getShared().size(), difference.getRemoved().size());
+        log.info("Add: {} Modify: {} Remove: {}", difference.getAdded().size(), difference.getShared()
+                .size(), difference.getRemoved().size());
         return difference;
     }
 
@@ -222,7 +213,7 @@ public class GithubWebhooksController {
             return;
         }
         List<Dataset> datasets = requests.stream()
-                .map(request -> service.convertNewFromRequest(request, DatasetMaster.GITHUB))
+                .map(request -> service.save(request, DatasetMaster.GITHUB))
                 .collect(Collectors.toList());
         log.info("The following list of Datasets have been set to be added during the next scheduled task: {}", datasets);
         repository.saveAll(datasets);

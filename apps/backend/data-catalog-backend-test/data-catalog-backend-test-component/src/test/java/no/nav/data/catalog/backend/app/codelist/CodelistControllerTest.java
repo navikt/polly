@@ -3,7 +3,6 @@ package no.nav.data.catalog.backend.app.codelist;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.common.exceptions.CodelistNotFoundException;
-import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import org.junit.Before;
 import org.junit.Rule;
@@ -23,21 +22,16 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -56,7 +50,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 public class CodelistControllerTest {
 
-    private ObjectMapper objectMapper = JsonUtils.getObjectMapper();
+    private final ObjectMapper objectMapper = JsonUtils.getObjectMapper();
 
     @Autowired
     private MockMvc mvc;
@@ -68,7 +62,7 @@ public class CodelistControllerTest {
     public ExpectedException expectedException = ExpectedException.none();
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         CodelistStub.initializeCodelist();
     }
 
@@ -141,7 +135,7 @@ public class CodelistControllerTest {
 
         List<CodelistRequest> requests = IntStream.rangeClosed(1, 10)
                 .mapToObj(i -> CodelistRequest.builder()
-                        .list(ListName.PRODUCER)
+                        .list("PRODUCER")
                         .code("CODE_nr:" + i)
                         .description("Description")
                         .build())
@@ -157,27 +151,12 @@ public class CodelistControllerTest {
     }
 
     @Test
-    public void save_shouldReturnBadRequestWhenFailsValidation() throws Exception {
-        String errorMessage = "The request was not accepted because it is empty";
-        doThrow(new ValidationException(errorMessage)).when(service).validateRequests(anyList(), anyBoolean());
-
-        String inputJson = objectMapper.writeValueAsString(Collections.emptyList());
-
-        Exception exception = mvc.perform(post("/codelist").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .content(inputJson))
-                .andExpect(status().isBadRequest())
-                .andReturn().getResolvedException();
-
-        assertTrue(exception.getLocalizedMessage().contains(errorMessage));
-    }
-
-    @Test
     public void update_shouldUpdateCodelist() throws Exception {
         when(service.update(ArgumentMatchers.anyList())).thenAnswer(AdditionalAnswers.returnsFirstArg());
 
         List<CodelistRequest> requests = IntStream.rangeClosed(1, 10)
                 .mapToObj(i -> CodelistRequest.builder()
-                        .list(ListName.PRODUCER)
+                        .list("PRODUCER")
                         .code("CODE_nr:" + i)
                         .description("Description")
                         .build())
@@ -190,23 +169,6 @@ public class CodelistControllerTest {
                 .content(inputJson))
                 .andExpect(status().isAccepted())
                 .andExpect(jsonPath("$.length()", is(10)));
-    }
-
-    @Test
-    public void update_shouldReturnBadRequest_withEmptyListOfRequests() throws Exception {
-        String errorMessage = "The request was not accepted because it is empty";
-        doThrow(new ValidationException(errorMessage)).when(service).validateRequests(anyList(), anyBoolean());
-
-        String inputJson = objectMapper.writeValueAsString(Collections.emptyList());
-
-        Exception exception = mvc.perform(
-                MockMvcRequestBuilders.put("/codelist")
-                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                        .content(inputJson))
-                .andExpect(status().isBadRequest())
-                .andReturn().getResolvedException();
-
-        assertTrue(exception.getLocalizedMessage().contains(errorMessage));
     }
 
     @Test

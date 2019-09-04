@@ -8,8 +8,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
+import static no.nav.data.catalog.backend.app.dataset.DatasetMaster.REST;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -57,15 +59,50 @@ public class DatasetServiceIT extends AbstractDatasetIT {
                 .haspart(Collections.singletonList(dataset1.getTitle()))
                 .build();
 
-        Dataset dataset = datasetRepository.save(datasetService.convertNewFromRequest(request, DatasetMaster.GITHUB));
+        Dataset dataset = datasetRepository.save(datasetService.save(request, DatasetMaster.GITHUB));
         assertThat(dataset.getChildren(), hasItem(dataset1));
         assertThat(dataset.getDatasetData().getHaspart(), hasItem(dataset1.getTitle()));
     }
 
     private DatasetResponse findChildByTitle(DatasetResponse dataset, String title) {
-        Optional<DatasetResponse> optional = dataset.getChildren().stream().filter(ds -> ds.getTitle().equals(title)).findFirst();
+        Optional<DatasetResponse> optional = dataset.getChildren()
+                .stream()
+                .filter(ds -> ds.getTitle().equals(title))
+                .findFirst();
         assertTrue(title + " child missing from " + dataset.getTitle(), optional.isPresent());
         return optional.get();
     }
 
+    @Test
+    public void save() {
+        List<DatasetRequest> requests = List.of(DatasetRequest.builder()
+                .title("createDataset")
+                .description("DatasetDescription")
+                .build());
+        int nrOfDatasetsBeforeSave = (int) datasetRepository.count();
+
+        datasetService.saveAll(requests, REST);
+
+        assertThat(datasetRepository.findAll().size(), is(nrOfDatasetsBeforeSave + 1));
+        assertTrue(datasetRepository.findByTitle("createDataset").isPresent());
+    }
+
+    @Test
+    public void update() {
+        List<DatasetRequest> requests = List.of(DatasetRequest.builder()
+                .title("updateDataset")
+                .description("DatasetDescription")
+                .build());
+
+        datasetService.saveAll(requests, REST);
+
+        assertThat(datasetRepository.findByTitle("updateDataset").get().getDatasetData().getDescription()
+                , is("DatasetDescription"));
+
+        requests.get(0).setDescription("UPDATED DESCRIPTION");
+        datasetService.updateAll(requests);
+
+        assertThat(datasetRepository.findByTitle("updateDataset").get().getDatasetData().getDescription()
+                , is("UPDATED DESCRIPTION"));
+    }
 }

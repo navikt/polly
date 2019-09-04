@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.rest.PageParameters;
 import no.nav.data.catalog.backend.app.common.rest.RestResponsePage;
+import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.springframework.data.domain.Page;
@@ -27,9 +28,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+
+import static no.nav.data.catalog.backend.app.dataset.DatasetMaster.REST;
 
 @Slf4j
 @RestController
@@ -128,15 +130,10 @@ public class DatasetController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public List<DatasetResponse> createDatasets(@RequestBody List<DatasetRequest> requests) {
         log.info("Received requests to create Datasets");
-        service.validateRequests(requests, false);
+        requests = StreamUtils.nullToEmptyList(requests);
+        service.validateRequest(requests, false, REST);
 
-        List<Dataset> datasets = requests.stream()
-                .map(request -> service.convertNewFromRequest(request, DatasetMaster.REST))
-                .collect(Collectors.toList());
-
-        return repository.saveAll(datasets).stream()
-                .map(Dataset::convertToResponse)
-                .collect(Collectors.toList());
+        return service.saveAll(requests, REST);
     }
 
     @ApiOperation(value = "Update Dataset", tags = {"Dataset"})
@@ -148,13 +145,10 @@ public class DatasetController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public List<DatasetResponse> updateDatasets(@RequestBody List<DatasetRequest> requests) {
         log.info("Received requests to update Datasets");
-        service.validateRequests(requests, true);
-        List<Dataset> updatedDatasets = service.returnUpdatedDatasetsIfAllArePresent(requests);
+        requests = StreamUtils.nullToEmptyList(requests);
+        service.validateRequest(requests, true, REST);
 
-        return repository.saveAll(updatedDatasets).stream()
-                .map(Dataset::convertToResponse)
-                .collect(Collectors.toList());
-
+        return service.updateAll(requests);
     }
 
     @ApiOperation(value = "Update Dataset", tags = {"Dataset"})
@@ -171,9 +165,9 @@ public class DatasetController {
             log.info("Cannot find Dataset with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        service.validateRequests(List.of(request), true);
+        service.validateRequest(List.of(request), true, REST);
 
-        Dataset dataset = service.convertUpdateFromRequest(request, fromRepository.get());
+        Dataset dataset = service.update(request, fromRepository.get());
 
         log.info("Updated the Dataset");
         return new ResponseEntity<>(repository.save(dataset).convertToResponse(), HttpStatus.ACCEPTED);
