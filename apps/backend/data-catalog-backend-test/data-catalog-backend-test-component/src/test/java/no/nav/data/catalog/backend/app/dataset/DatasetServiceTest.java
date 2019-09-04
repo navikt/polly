@@ -40,21 +40,7 @@ public class DatasetServiceTest {
 
     @Test
     public void save_shouldSave_whenRequestIsValid() {
-        DatasetRequest request = DatasetRequest.builder()
-                .title("Title1")
-                .description("Description")
-                .categories(List.of("Category"))
-                .provenances(List.of("Provenance"))
-                .pi("false")
-                .issued(LocalDateTime.now().toString())
-                .keywords(List.of("Keywords"))
-                .theme("Theme")
-                .accessRights("AccessRights")
-                .publisher("Publisher")
-                .spatial("Spatial")
-                .haspart(List.of("Haspart"))
-                .distributionChannels(List.of("DistributionChannel"))
-                .build();
+        DatasetRequest request = createValidDatasetRequest("Title");
 
         service.save(List.of(request), REST);
         verify(datasetRepository, times(1)).saveAll(anyList());
@@ -62,21 +48,7 @@ public class DatasetServiceTest {
 
     @Test
     public void update_shouldUpdate_whenRequestIsValid() {
-        DatasetRequest request = DatasetRequest.builder()
-                .title("Title1")
-                .description("Description")
-                .categories(List.of("Category"))
-                .provenances(List.of("Provenance"))
-                .pi("false")
-                .issued(LocalDateTime.now().toString())
-                .keywords(List.of("Keywords"))
-                .theme("Theme")
-                .accessRights("AccessRights")
-                .publisher("Publisher")
-                .spatial("Spatial")
-                .haspart(List.of("Haspart"))
-                .distributionChannels(List.of("DistributionChannel"))
-                .build();
+        DatasetRequest request = createValidDatasetRequest("Title");
 
         service.update(List.of(request));
         verify(datasetRepository, times(1)).saveAll(anyList());
@@ -95,54 +67,12 @@ public class DatasetServiceTest {
 
     @Test
     public void validateRequest_shouldThrowValidationException_withDuplicatedElementInRequest() {
-        List<DatasetRequest> requests = new ArrayList<>();
-        String localDateTime = LocalDateTime.now().toString();
+        DatasetRequest title1 = createValidDatasetRequest("Title1");
+        DatasetRequest title2 = createValidDatasetRequest("Title2");
+        DatasetRequest title3 = title1;
 
-        requests.add(DatasetRequest.builder()
-                .title("Title1")
-                .description("Description")
-                .categories(List.of("Category"))
-                .provenances(List.of("Provenance"))
-                .pi("false")
-                .issued(localDateTime)
-                .keywords(List.of("Keywords"))
-                .theme("Theme")
-                .accessRights("AccessRights")
-                .publisher("Publisher")
-                .spatial("Spatial")
-                .haspart(List.of("Haspart"))
-                .distributionChannels(List.of("DistributionChannel"))
-                .build());
-        requests.add(DatasetRequest.builder()
-                .title("Title2")
-                .description("Description")
-                .categories(List.of("Category"))
-                .provenances(List.of("Provenance"))
-                .pi("false")
-                .issued(localDateTime)
-                .keywords(List.of("Keywords"))
-                .theme("Theme")
-                .accessRights("AccessRights")
-                .publisher("Publisher")
-                .spatial("Spatial")
-                .haspart(List.of("Haspart"))
-                .distributionChannels(List.of("DistributionChannel"))
-                .build());
-        requests.add(DatasetRequest.builder()
-                .title("Title1")
-                .description("Description")
-                .categories(List.of("Category"))
-                .provenances(List.of("Provenance"))
-                .pi("false")
-                .issued(localDateTime)
-                .keywords(List.of("Keywords"))
-                .theme("Theme")
-                .accessRights("AccessRights")
-                .publisher("Publisher")
-                .spatial("Spatial")
-                .haspart(List.of("Haspart"))
-                .distributionChannels(List.of("DistributionChannel"))
-                .build());
+        List<DatasetRequest> requests = new ArrayList<>(List.of(title1, title2, title3));
+
         try {
             service.validateRequest(requests, false, REST);
         } catch (ValidationException e) {
@@ -153,54 +83,13 @@ public class DatasetServiceTest {
 
     @Test
     public void validateRequest_shouldThrowValidationException_withDuplicatedIdentifyingFieldsInRequest() {
-        List<DatasetRequest> requests = new ArrayList<>();
-        String localDateTime = LocalDateTime.now().toString();
+        DatasetRequest title1 = createValidDatasetRequest("Title1");
+        DatasetRequest title2 = createValidDatasetRequest("Title2");
+        DatasetRequest title3 = createValidDatasetRequest("Title1");
+        title3.setDescription("Not equal object as the request1");
 
-        requests.add(DatasetRequest.builder()
-                .title("Title1")
-                .description("Description")
-                .categories(List.of("Category"))
-                .provenances(List.of("Provenance"))
-                .pi("false")
-                .issued(localDateTime)
-                .keywords(List.of("Keywords"))
-                .theme("Theme")
-                .accessRights("AccessRights")
-                .publisher("Publisher")
-                .spatial("Spatial")
-                .haspart(List.of("Haspart"))
-                .distributionChannels(List.of("DistributionChannel"))
-                .build());
-        requests.add(DatasetRequest.builder()
-                .title("Title2")
-                .description("Description")
-                .categories(List.of("Category"))
-                .provenances(List.of("Provenance"))
-                .pi("false")
-                .issued(localDateTime)
-                .keywords(List.of("Keywords"))
-                .theme("Theme")
-                .accessRights("AccessRights")
-                .publisher("Publisher")
-                .spatial("Spatial")
-                .haspart(List.of("Haspart"))
-                .distributionChannels(List.of("DistributionChannel"))
-                .build());
-        requests.add(DatasetRequest.builder()
-                .title("Title1")
-                .description("Not equal object as the request1")
-                .categories(List.of("Category"))
-                .provenances(List.of("Provenance"))
-                .pi("false")
-                .issued(localDateTime)
-                .keywords(List.of("Keywords"))
-                .theme("Theme")
-                .accessRights("AccessRights")
-                .publisher("Publisher")
-                .spatial("Spatial")
-                .haspart(List.of("Haspart"))
-                .distributionChannels(List.of("DistributionChannel"))
-                .build());
+        List<DatasetRequest> requests = new ArrayList<>(List.of(title1, title2, title3));
+
         try {
             service.validateRequest(requests, false, REST);
         } catch (ValidationException e) {
@@ -211,11 +100,9 @@ public class DatasetServiceTest {
 
     @Test
     public void validateRequest_shouldThrowValidationException_whenFieldTitleIsNull() {
-        List<DatasetRequest> requests = new ArrayList<>();
+        DatasetRequest request = createValidDatasetRequest(null);
+        List<DatasetRequest> requests = new ArrayList<>(List.of(request));
 
-        requests.add(DatasetRequest.builder()
-                .description("Missing title")
-                .build());
         try {
             service.validateRequest(requests, false, REST);
         } catch (ValidationException e) {
@@ -225,101 +112,74 @@ public class DatasetServiceTest {
     }
 
     @Test
-    public void validateRequest_shouldThrowValidationException_whenFieldsAreEmpty() {
-        List<DatasetRequest> requests = new ArrayList<>();
-        String localDateTime = LocalDateTime.now().toString();
+    public void validateRequest_shouldThrowValidationException_whenFieldTitleIsEmpty() {
+        DatasetRequest request = createValidDatasetRequest("");
 
-        requests.add(DatasetRequest.builder()
-                .title("Title1")
-                .description("")
-                .categories(List.of(""))
-                .provenances(List.of("Provenance"))
-                .pi("false")
-                .issued(localDateTime)
-                .keywords(List.of("Keywords"))
-                .theme("Theme")
-                .accessRights("AccessRights")
-                .publisher("Publisher")
-                .spatial("Spatial")
-                .haspart(List.of("Haspart"))
-                .distributionChannels(List.of("DistributionChannel"))
-                .build());
+        List<DatasetRequest> requests = new ArrayList<>(List.of(request));
+
         try {
             service.validateRequest(requests, false, REST);
         } catch (ValidationException e) {
-            assertThat(e.get().size(), is(2));
-            assertThat(e.toErrorString(), is("Request:1 -- fieldIsNullOrMissing -- description was null or missing, " +
-                    "Request:1 -- fieldIsNullOrMissing -- categories was null or missing"));
+            assertThat(e.get().size(), is(1));
+            assertThat(e.toErrorString(), is("Request:1 -- fieldIsNullOrMissing -- title was null or missing"));
         }
     }
 
     @Test
     public void validateRequest_shouldThrowValidationException_whenCreatingExistingDataset() {
         List<DatasetRequest> requests = new ArrayList<>();
-        requests.add(DatasetRequest.builder()
-                .title("Title1")
-                .description("Description")
-                .categories(List.of("Category"))
-                .provenances(List.of("Provenance"))
-                .pi("false")
-                .issued(LocalDateTime.now().toString())
-                .keywords(List.of("Keywords"))
-                .theme("Theme")
-                .accessRights("AccessRights")
-                .publisher("Publisher")
-                .spatial("Spatial")
-                .haspart(List.of("Haspart"))
-                .distributionChannels(List.of("DistributionChannel"))
-                .build());
+        requests.add(createValidDatasetRequest("Title"));
 
         Dataset existingDataset = new Dataset().convertNewFromRequest(requests.get(0), REST);
 
-        when(datasetRepository.findByTitle("Title1")).thenReturn(Optional.of(existingDataset));
+        when(datasetRepository.findByTitle("Title")).thenReturn(Optional.of(existingDataset));
 
         try {
             service.validateRequest(requests, false, REST);
         } catch (ValidationException e) {
             assertThat(e.get().size(), is(1));
             assertThat(e.toErrorString(), is("Request:1 -- creatingExistingDataset -- " +
-                    "The dataset Title1 already exists and therefore cannot be created"));
+                    "The dataset Title already exists and therefore cannot be created"));
         }
     }
 
     @Test
     public void validateRequest_shouldThrowValidationException_whenTryingToUpdateNonExistingDataset() {
         List<DatasetRequest> requests = new ArrayList<>();
-        requests.add(DatasetRequest.builder()
-                .title("Title1")
-                .description("Description")
-                .categories(List.of("Category"))
-                .provenances(List.of("Provenance"))
-                .pi("false")
-                .issued(LocalDateTime.now().toString())
-                .keywords(List.of("Keywords"))
-                .theme("Theme")
-                .accessRights("AccessRights")
-                .publisher("Publisher")
-                .spatial("Spatial")
-                .haspart(List.of("Haspart"))
-                .distributionChannels(List.of("DistributionChannel"))
-                .build());
+        requests.add(createValidDatasetRequest("Title"));
 
-        when(datasetRepository.findByTitle("Title1")).thenReturn(Optional.empty());
+        when(datasetRepository.findByTitle("Title")).thenReturn(Optional.empty());
 
         try {
             service.validateRequest(requests, true, REST);
         } catch (ValidationException e) {
             assertThat(e.get().size(), is(1));
             assertThat(e.toErrorString(), is("Request:1 -- updatingNonExistingDataset -- " +
-                    "The dataset Title1 does not exist and therefore cannot be updated"));
+                    "The dataset Title does not exist and therefore cannot be updated"));
         }
     }
 
     @Test
     public void validateRequest_shouldThrowValidationException_whenNonCorrelatingMaster() {
         List<DatasetRequest> requests = new ArrayList<>();
-        requests.add(DatasetRequest.builder()
-                .title("Title1")
+        requests.add(createValidDatasetRequest("Title"));
+
+        Dataset existingDataset = new Dataset().convertNewFromRequest(requests.get(0), GITHUB);
+
+        when(datasetRepository.findByTitle("Title")).thenReturn(Optional.of(existingDataset));
+
+        try {
+            service.validateRequest(requests, true, REST);
+        } catch (ValidationException e) {
+            assertThat(e.get().size(), is(1));
+            assertThat(e.toErrorString(), is("Request:1 -- nonCorrelatingMaster -- " +
+                    "The dataset Title is mastered in GITHUB and therefore cannot be updated from REST"));
+        }
+    }
+
+    private DatasetRequest createValidDatasetRequest(String title) {
+        return DatasetRequest.builder()
+                .title(title)
                 .description("Description")
                 .categories(List.of("Category"))
                 .provenances(List.of("Provenance"))
@@ -332,19 +192,7 @@ public class DatasetServiceTest {
                 .spatial("Spatial")
                 .haspart(List.of("Haspart"))
                 .distributionChannels(List.of("DistributionChannel"))
-                .build());
-
-        Dataset existingDataset = new Dataset().convertNewFromRequest(requests.get(0), GITHUB);
-
-        when(datasetRepository.findByTitle("Title1")).thenReturn(Optional.of(existingDataset));
-
-        try {
-            service.validateRequest(requests, true, REST);
-        } catch (ValidationException e) {
-            assertThat(e.get().size(), is(1));
-            assertThat(e.toErrorString(), is("Request:1 -- nonCorrelatingMaster -- " +
-                    "The dataset Title1 is mastered in GITHUB and therefore cannot be updated from REST"));
-        }
+                .build();
     }
 
 }

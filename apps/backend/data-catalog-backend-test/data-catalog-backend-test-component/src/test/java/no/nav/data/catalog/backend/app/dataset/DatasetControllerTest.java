@@ -119,25 +119,11 @@ public class DatasetControllerTest {
 
     @Test
     public void createDataset_shouldCreateADataset() throws Exception {
-        List<DatasetRequest> requests = new ArrayList<>();
-        requests.add(DatasetRequest.builder()
-                .title("Title1")
-                .description("Description")
-                .categories(List.of("Category"))
-                .provenances(List.of("Provenance"))
-                .pi("false")
-                .issued(LocalDateTime.now().toString())
-                .keywords(List.of("Keywords"))
-                .theme("Theme")
-                .accessRights("AccessRights")
-                .publisher("Publisher")
-                .spatial("Spatial")
-                .haspart(List.of("Haspart"))
-                .distributionChannels(List.of("DistributionChannel"))
-                .build());
+        DatasetRequest request = createValidDatasetRequest("Title1");
+        List<DatasetRequest> requests = new ArrayList<>(List.of(request));
 
         List<DatasetResponse> datasetResponses = requests.stream()
-                .map(request -> new Dataset().convertNewFromRequest(request, REST))
+                .map(r -> new Dataset().convertNewFromRequest(r, REST))
                 .map(Dataset::convertToResponse)
                 .collect(Collectors.toList());
 
@@ -154,25 +140,13 @@ public class DatasetControllerTest {
 
     @Test
     public void updateDataset_shouldUpdateDataset() throws Exception {
-        List<DatasetRequest> requests = new ArrayList<>();
-        requests.add(DatasetRequest.builder()
-                .title("Title1")
-                .description("UPDATED")
-                .categories(List.of("Category"))
-                .provenances(List.of("Provenance"))
-                .pi("false")
-                .issued(LocalDateTime.now().toString())
-                .keywords(List.of("Keywords"))
-                .theme("Theme")
-                .accessRights("AccessRights")
-                .publisher("Publisher")
-                .spatial("Spatial")
-                .haspart(List.of("Haspart"))
-                .distributionChannels(List.of("DistributionChannel"))
-                .build());
+        DatasetRequest request = createValidDatasetRequest("Title1");
+        request.setDescription("UPDATED");
+
+        List<DatasetRequest> requests = new ArrayList<>(List.of(request));
 
         List<DatasetResponse> datasetResponses = requests.stream()
-                .map(request -> new Dataset().convertNewFromRequest(request, REST))
+                .map(r -> new Dataset().convertNewFromRequest(r, REST))
                 .map(Dataset::convertToResponse)
                 .collect(Collectors.toList());
 
@@ -194,12 +168,7 @@ public class DatasetControllerTest {
     public void updateOneDatasetById_withExistingIdAndRequestIsNull() throws Exception {
         Dataset datasetToUpdate = Dataset.builder()
                 .id(UUID.randomUUID())
-                .datasetData(DatasetData.builder()
-                        .title("UpdateTitle")
-                        .description("Description")
-                        .master(REST)
-                        .build()
-                ).build();
+                .datasetData(createValidDatasetData("UpdateTitle")).build();
 
         DatasetRequest request = null;
 
@@ -219,38 +188,9 @@ public class DatasetControllerTest {
     public void updateOneDatasetById() throws Exception {
         Dataset datasetToUpdate = Dataset.builder()
                 .id(UUID.randomUUID())
-                .datasetData(DatasetData.builder()
-                        .title("UpdateTitle")
-                        .description("Description")
-                        .categories(List.of("Category"))
-                        .provenances(List.of("Provenance"))
-                        .pi(false)
-                        .issued(LocalDateTime.now())
-                        .keywords(List.of("Keywords"))
-                        .theme("Theme")
-                        .accessRights("AccessRights")
-                        .publisher("Publisher")
-                        .spatial("Spatial")
-                        .haspart(List.of("Haspart"))
-                        .master(REST)
-                        .build()
-                ).build();
+                .datasetData(createValidDatasetData("UpdateTitle")).build();
 
-        DatasetRequest request = DatasetRequest.builder()
-                .title("UpdateTitle")
-                .description("UPDATED DESCRIPTION")
-                .categories(List.of("Category"))
-                .provenances(List.of("Provenance"))
-                .pi("false")
-                .issued(LocalDateTime.now().toString())
-                .keywords(List.of("Keywords"))
-                .theme("Theme")
-                .accessRights("AccessRights")
-                .publisher("Publisher")
-                .spatial("Spatial")
-                .haspart(List.of("Haspart"))
-                .distributionChannels(List.of("DistributionChannel"))
-                .build();
+        DatasetRequest request = createValidDatasetRequest("UpdateTitle");
 
         Dataset datasetAfterUpdate = datasetToUpdate.convertUpdateFromRequest(request);
 
@@ -270,22 +210,7 @@ public class DatasetControllerTest {
     public void deleteDatasetById() throws Exception {
         Dataset deleteDataset = Dataset.builder()
                 .id(UUID.randomUUID())
-                .datasetData(DatasetData.builder()
-                        .title("deleteTitle")
-                        .description("Description")
-                        .categories(List.of("Category"))
-                        .provenances(List.of("Provenance"))
-                        .pi(false)
-                        .issued(LocalDateTime.now())
-                        .keywords(List.of("Keywords"))
-                        .theme("Theme")
-                        .accessRights("AccessRights")
-                        .publisher("Publisher")
-                        .spatial("Spatial")
-                        .haspart(List.of("Haspart"))
-                        .master(REST)
-                        .build()
-                ).build();
+                .datasetData(createValidDatasetData("deleteTitle")).build();
 
         when(repository.findById(deleteDataset.getId())).thenReturn(Optional.of(deleteDataset));
         when(repository.save(deleteDataset)).thenReturn(deleteDataset);
@@ -295,4 +220,39 @@ public class DatasetControllerTest {
     }
 
 
+    private DatasetRequest createValidDatasetRequest(String title) {
+        return DatasetRequest.builder()
+                .title(title)
+                .description("UPDATED DESCRIPTION")
+                .categories(List.of("Category"))
+                .provenances(List.of("Provenance"))
+                .pi("false")
+                .issued(LocalDateTime.now().toString())
+                .keywords(List.of("Keywords"))
+                .theme("Theme")
+                .accessRights("AccessRights")
+                .publisher("Publisher")
+                .spatial("Spatial")
+                .haspart(List.of("Haspart"))
+                .distributionChannels(List.of("DistributionChannel"))
+                .build();
+    }
+
+    private DatasetData createValidDatasetData(String title) {
+        return DatasetData.builder()
+                .title(title)
+                .description("Description")
+                .categories(List.of("Category"))
+                .provenances(List.of("Provenance"))
+                .pi(false)
+                .issued(LocalDateTime.now())
+                .keywords(List.of("Keywords"))
+                .theme("Theme")
+                .accessRights("AccessRights")
+                .publisher("Publisher")
+                .spatial("Spatial")
+                .haspart(List.of("Haspart"))
+                .master(REST)
+                .build();
+    }
 }

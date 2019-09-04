@@ -146,9 +146,7 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         }
 
         List<ValidationError> validationErrors = new ArrayList<>(validateListOfRequests(requests));
-        if (validationErrors.isEmpty()) { // to avoid NPE
-            validationErrors.addAll(validateDatasetRequest(requests, isUpdate, master));
-        }
+        validationErrors.addAll(validateDatasetRequest(requests, isUpdate, master));
         return validationErrors;
     }
 

@@ -56,9 +56,9 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         allCodelists.forEach(codelist -> codelists.get(codelist.getList()).put(codelist.getCode(), codelist.getDescription()));
     }
 
-	static void initListNames() {
-		Stream.of(ListName.values()).forEach(listName -> codelists.put(listName, new HashMap<>()));
-	}
+    static void initListNames() {
+        Stream.of(ListName.values()).forEach(listName -> codelists.put(listName, new HashMap<>()));
+    }
 
     public List<Codelist> save(List<CodelistRequest> requests) {
         requests.forEach(request -> codelists.get(request.getListAsListName())
@@ -138,10 +138,7 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
             return Collections.emptyList();
         }
         List<ValidationError> validationErrors = new ArrayList<>(validateListOfRequests(requests));
-
-        if (validationErrors.isEmpty()) { // to avoid NPE
-            validationErrors.addAll(validateCodelistRequest(requests, isUpdate));
-        }
+        validationErrors.addAll(validateCodelistRequest(requests, isUpdate));
         return validationErrors;
     }
 
