@@ -1,5 +1,6 @@
 package no.nav.data.catalog.backend.app.codelist;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +25,15 @@ public class CodelistRequest implements RequestElement {
                 .build();
     }
 
+    @JsonIgnore
+    private boolean isUpdate;
+    @JsonIgnore
+    private int requestIndex;
+
+    String getReference() {
+        return "Request:" + requestIndex;
+    }
+
     @Override
     public String getIdentifyingFields() {
         return list + "-" + code;
@@ -39,8 +49,16 @@ public class CodelistRequest implements RequestElement {
     }
 
     void toUpperCaseAndTrim() {
-        setList(this.list.toUpperCase().trim());
-        setCode(this.code.toUpperCase().trim());
-        setDescription(this.description.trim());
+        setList(ifNotNullToUppercaseAndTrim(list));
+        setCode(ifNotNullToUppercaseAndTrim(code));
+        setDescription(ifNotNullTrim(description));
+    }
+
+    private String ifNotNullToUppercaseAndTrim(String field) {
+        return field == null ? null : field.toUpperCase().trim();
+    }
+
+    private String ifNotNullTrim(String field) {
+        return field == null ? null : field.trim();
     }
 }

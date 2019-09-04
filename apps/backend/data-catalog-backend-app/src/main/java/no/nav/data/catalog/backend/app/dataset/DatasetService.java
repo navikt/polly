@@ -146,7 +146,8 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         }
 
         List<ValidationError> validationErrors = new ArrayList<>(validateListOfRequests(requests));
-        validationErrors.addAll(validateDatasetRequest(requests, isUpdate, master));
+        prepareDatasetRequestForValidation(requests, isUpdate, master);
+        validationErrors.addAll(validateDatasetRequest(requests));
         return validationErrors;
     }
 
@@ -158,21 +159,23 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         return validateListOfRequests(requests);
     }
 
-    private List<ValidationError> validateDatasetRequest(List<DatasetRequest> requests, boolean isUpdate, DatasetMaster master) {
-        List<ValidationError> validationErrors = new ArrayList<>();
+    private void prepareDatasetRequestForValidation(List<DatasetRequest> requests, boolean isUpdate, DatasetMaster master) {
         AtomicInteger requestIndex = new AtomicInteger();
 
         requests.forEach(request -> {
-            requestIndex.incrementAndGet();
-            String reference = request.getReference(master, requestIndex.toString());
+            request.setUpdate(isUpdate);
+            request.setRequestIndex(requestIndex.incrementAndGet());
+            request.setMaster(master);
+        });
+    }
 
-            List<ValidationError> errorsInCurrentRequest = validateThatNoFieldsAreNullOrEmpty(request, reference);
+    private List<ValidationError> validateDatasetRequest(List<DatasetRequest> requests) {
+        List<ValidationError> validationErrors = new ArrayList<>();
 
-            if (errorsInCurrentRequest.isEmpty()) {  // to avoid NPE in current request
-                //TODO: Find out if request should be stored in uppercase format
+        requests.forEach(request -> {
+            List<ValidationError> errorsInCurrentRequest = validateThatNoFieldsAreNullOrEmpty(request);
 //                request.toUpperCaseAndTrim();
-                errorsInCurrentRequest.addAll(validateRepositoryValues(request, isUpdate, reference, master));
-            }
+            errorsInCurrentRequest.addAll(validateRepositoryValues(request));
 
             if (!errorsInCurrentRequest.isEmpty()) {
                 validationErrors.addAll(errorsInCurrentRequest);
@@ -181,8 +184,8 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         return validationErrors;
     }
 
-    private List<ValidationError> validateThatNoFieldsAreNullOrEmpty(DatasetRequest request, String reference) {
-        ValidateFieldsInRequestNotNullOrEmpty nullOrEmpty = new ValidateFieldsInRequestNotNullOrEmpty(reference);
+    private List<ValidationError> validateThatNoFieldsAreNullOrEmpty(DatasetRequest request) {
+        ValidateFieldsInRequestNotNullOrEmpty nullOrEmpty = new ValidateFieldsInRequestNotNullOrEmpty(request.getReference());
 
         // TODO: Find out which fields should be validated
         nullOrEmpty.checkField("title", request.getTitle());
@@ -202,30 +205,30 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         return nullOrEmpty.getErrors();
     }
 
-    private List<ValidationError> validateRepositoryValues(DatasetRequest request, boolean isUpdate, String reference, DatasetMaster requestMaster) {
+    private List<ValidationError> validateRepositoryValues(DatasetRequest request) {
         List<ValidationError> validationErrors = new ArrayList<>();
         Optional<Dataset> existingDataset = datasetRepository.findByTitle(request.getTitle());
 
-        if (creatingExistingElement(isUpdate, existingDataset.isPresent())) {
-            validationErrors.add(new ValidationError(reference, "creatingExistingDataset",
+        if (creatingExistingElement(request.isUpdate(), existingDataset.isPresent())) {
+            validationErrors.add(new ValidationError(request.getReference(), "creatingExistingDataset",
                     String.format("The dataset %s already exists and therefore cannot be created", request.getTitle())));
         }
 
-        if (updatingNonExistingElement(isUpdate, existingDataset.isPresent())) {
-            validationErrors.add(new ValidationError(reference, "updatingNonExistingDataset",
+        if (updatingNonExistingElement(request.isUpdate(), existingDataset.isPresent())) {
+            validationErrors.add(new ValidationError(request.getReference(), "updatingNonExistingDataset",
                     String.format("The dataset %s does not exist and therefore cannot be updated", request.getTitle())));
         }
 
-        if (updatingExistingElement(isUpdate, existingDataset.isPresent())) {
+        if (updatingExistingElement(request.isUpdate(), existingDataset.isPresent())) {
             DatasetData existingDatasetData = existingDataset.get().getDatasetData();
 
             if (!existingDatasetData.hasMaster()) {
-                validationErrors.add(new ValidationError(reference, "missingMasterInExistingDataset"
+                validationErrors.add(new ValidationError(request.getReference(), "missingMasterInExistingDataset"
                         , String.format("The dataset %s has not defined where it is mastered", existingDatasetData.getTitle())));
-            } else if (!correlatingMaster(existingDatasetData.getMaster(), requestMaster)) {
-                validationErrors.add(new ValidationError(reference, "nonCorrelatingMaster",
+            } else if (!correlatingMaster(existingDatasetData.getMaster(), request.getMaster())) {
+                validationErrors.add(new ValidationError(request.getReference(), "nonCorrelatingMaster",
                         String.format("The dataset %s is mastered in %s and therefore cannot be updated from %s",
-                                request.getTitle(), existingDatasetData.getMaster(), requestMaster)));
+                                request.getTitle(), existingDatasetData.getMaster(), request.getMaster())));
             }
         }
         return validationErrors;

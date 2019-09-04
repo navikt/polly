@@ -49,6 +49,12 @@ public class DatasetRequest implements RequestElement {
 
     @JsonIgnore
     private GithubReference githubReference;
+    @JsonIgnore
+    private boolean isUpdate;
+    @JsonIgnore
+    private int requestIndex;
+    @JsonIgnore
+    private DatasetMaster master;
 
     public static List<DatasetRequest> convertFromGithubFile(RepositoryContents file) {
         byte[] content = null;
@@ -95,7 +101,7 @@ public class DatasetRequest implements RequestElement {
         return "dataset";
     }
 
-    String getReference(DatasetMaster master, String requestIndex) {
+    String getReference() {
         switch (master) {
             case GITHUB:
                 return getRequestReference().orElse("");

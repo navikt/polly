@@ -138,25 +138,28 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
             return Collections.emptyList();
         }
         List<ValidationError> validationErrors = new ArrayList<>(validateListOfRequests(requests));
-        validationErrors.addAll(validateCodelistRequest(requests, isUpdate));
+        prepareCodelistRequestForValidation(requests, isUpdate);
+        validationErrors.addAll(validateCodelistRequest(requests));
         return validationErrors;
     }
 
-    private List<ValidationError> validateCodelistRequest(List<CodelistRequest> requests, boolean isUpdate) {
-        List<ValidationError> validationErrors = new ArrayList<>();
+    private void prepareCodelistRequestForValidation(List<CodelistRequest> requests, boolean isUpdate) {
         AtomicInteger requestIndex = new AtomicInteger();
 
         requests.forEach(request -> {
-            requestIndex.incrementAndGet();
-            String reference = "Request:" + requestIndex.toString();
+            request.setUpdate(isUpdate);
+            request.setRequestIndex(requestIndex.incrementAndGet());
+        });
+    }
 
-            List<ValidationError> errorsInCurrentRequest = validateThatNoFieldsAreNullOrEmpty(request, reference);
+    private List<ValidationError> validateCodelistRequest(List<CodelistRequest> requests) {
+        List<ValidationError> validationErrors = new ArrayList<>();
 
-            if (errorsInCurrentRequest.isEmpty()) {  // to avoid NPE in current request
-                request.toUpperCaseAndTrim();
-                errorsInCurrentRequest.addAll(validListName(request.getList(), reference));
-                errorsInCurrentRequest.addAll(validateRepositoryValues(request, isUpdate, reference));
-            }
+        requests.forEach(request -> {
+            List<ValidationError> errorsInCurrentRequest = validateThatNoFieldsAreNullOrEmpty(request);
+            request.toUpperCaseAndTrim();
+            errorsInCurrentRequest.addAll(validListName(request.getList(), request.getReference()));
+            errorsInCurrentRequest.addAll(validateRepositoryValues(request));
 
             if (!errorsInCurrentRequest.isEmpty()) {
                 validationErrors.addAll(errorsInCurrentRequest);
@@ -165,8 +168,8 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         return validationErrors;
     }
 
-    private List<ValidationError> validateThatNoFieldsAreNullOrEmpty(CodelistRequest request, String reference) {
-        ValidateFieldsInRequestNotNullOrEmpty nullOrEmpty = new ValidateFieldsInRequestNotNullOrEmpty(reference);
+    private List<ValidationError> validateThatNoFieldsAreNullOrEmpty(CodelistRequest request) {
+        ValidateFieldsInRequestNotNullOrEmpty nullOrEmpty = new ValidateFieldsInRequestNotNullOrEmpty(request.getReference());
 
         nullOrEmpty.checkField("listName", request.getList());
         nullOrEmpty.checkField("code", request.getCode());
@@ -184,16 +187,16 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         return validationErrors;
     }
 
-    private List<ValidationError> validateRepositoryValues(CodelistRequest request, boolean isUpdate, String reference) {
+    private List<ValidationError> validateRepositoryValues(CodelistRequest request) {
         List<ValidationError> validationErrors = new ArrayList<>();
         Optional<Codelist> existingCodelist = repository.findByListAndCode(request.getListAsListName(), request.getCode());
 
-        if (creatingExistingElement(isUpdate, existingCodelist.isPresent())) {
-            validationErrors.add(new ValidationError(reference, "creatingExistingCodelist",
+        if (creatingExistingElement(request.isUpdate(), existingCodelist.isPresent())) {
+            validationErrors.add(new ValidationError(request.getReference(), "creatingExistingCodelist",
                     String.format("The codelist %s already exists and therefore cannot be created", request.getIdentifyingFields())));
         }
-        if (updatingNonExistingElement(isUpdate, existingCodelist.isPresent())) {
-            validationErrors.add(new ValidationError(reference, "updatingNonExistingCodelist",
+        if (updatingNonExistingElement(request.isUpdate(), existingCodelist.isPresent())) {
+            validationErrors.add(new ValidationError(request.getReference(), "updatingNonExistingCodelist",
                     String.format("The codelist %s does not exist and therefore cannot be updated", request.getIdentifyingFields())));
         }
         return validationErrors;
