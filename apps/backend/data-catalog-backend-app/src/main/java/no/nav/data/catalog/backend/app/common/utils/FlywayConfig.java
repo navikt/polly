@@ -1,7 +1,5 @@
 package no.nav.data.catalog.backend.app.common.utils;
 
-import static java.lang.String.format;
-
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +9,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.vault.core.VaultOperations;
 import org.springframework.vault.core.lease.SecretLeaseContainer;
+
+import java.util.Map;
+
+import static java.lang.String.format;
 
 @Slf4j
 @Configuration
@@ -30,10 +32,12 @@ public class FlywayConfig {
             val secretPath = format("%s/creds/%s", backend, adminRole);
 
             val vaultResponse = vaultOperations.read(secretPath);
-            val username = vaultResponse.getData().get("username").toString();
-            val password = vaultResponse.getData().get("password").toString();
+            Map<String, Object> data = vaultResponse.getData();
+            val username = data.get("username").toString();
+            val password = data.get("password").toString();
+            val duration = data.get("lease_duration").toString();
 
-            log.info("Vault: Flyway configured with credentials from Vault. Credential path: {}", secretPath);
+            log.info("Vault: Flyway configured with credentials from Vault. Credential path: {} duration: {}", secretPath, duration);
 
             configuration
                     .dataSource(url, username, password)
