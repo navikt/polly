@@ -3,6 +3,8 @@ package no.nav.data.catalog.backend.app.dataset;
 import no.nav.data.catalog.backend.app.codelist.CodelistStub;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
+import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
+import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,14 +29,20 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DatasetServiceTest {
+
     @Mock
     private DatasetRepository datasetRepository;
+
+    @Mock
+    private DistributionChannelRepository distributionChannelRepository;
 
     @InjectMocks
     private DatasetService service;
 
     @Before
     public void setUp() {
+        when(datasetRepository.findAllByTitle(Collections.singletonList("Haspart"))).thenReturn(Collections.singletonList(new Dataset()));
+        when(distributionChannelRepository.findAllByName(Collections.singletonList("DistributionChannel"))).thenReturn(Collections.singletonList(new DistributionChannel()));
         CodelistStub.initializeCodelist();
     }
 

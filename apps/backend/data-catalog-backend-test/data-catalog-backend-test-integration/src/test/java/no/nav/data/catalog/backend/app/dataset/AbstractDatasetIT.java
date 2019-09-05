@@ -4,6 +4,7 @@ import no.nav.data.catalog.backend.app.IntegrationTestBase;
 import no.nav.data.catalog.backend.app.PostgresTestContainer;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelationRepository;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
+import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelRepository;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -21,6 +22,8 @@ public abstract class AbstractDatasetIT extends IntegrationTestBase {
 
     @Autowired
     DatasetRepository datasetRepository;
+    @Autowired
+    DistributionChannelRepository distributionChannelRepository;
     @Autowired
     DatasetRelationRepository datasetRelationRepository;
     @Autowired

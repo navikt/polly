@@ -2,6 +2,8 @@ package no.nav.data.catalog.backend.app.dataset;
 
 import no.nav.data.catalog.backend.app.common.rest.PageParameters;
 import no.nav.data.catalog.backend.app.common.rest.RestResponsePage;
+import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
+import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelType;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.junit.After;
 import org.junit.Before;
@@ -58,7 +60,9 @@ public class DatasetControllerIT extends AbstractDatasetIT {
     @Before
     public void setUp() {
         datasetRepository.deleteAll();
+        distributionChannelRepository.deleteAll();
         entityManager.clear();
+        distributionChannelRepository.save(DistributionChannel.builder().id(UUID.randomUUID()).type(DistributionChannelType.REST).name("DistributionChannel").build());
     }
 
     @After

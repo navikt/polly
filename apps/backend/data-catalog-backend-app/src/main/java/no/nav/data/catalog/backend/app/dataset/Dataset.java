@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 import no.nav.data.catalog.backend.app.common.auditing.Auditable;
+import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.hibernate.annotations.Type;
 
@@ -33,11 +33,10 @@ import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.copyOf;
 import static org.elasticsearch.common.UUIDs.base64UUID;
 
 @Data
-@EqualsAndHashCode(exclude = {"children", "parents"}, callSuper = false)
-@ToString(exclude = {"children", "parents"})
+@EqualsAndHashCode(exclude = {"children", "parents", "distributionChannels"}, callSuper = false)
+@ToString(exclude = {"children", "parents", "distributionChannels"})
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "DATASET")
 public class Dataset extends Auditable<String> {
@@ -70,6 +69,17 @@ public class Dataset extends Auditable<String> {
 
     @ManyToMany(mappedBy = "children")
     private Set<Dataset> parents = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "DATASET__DISTRIBUTION_CHANNEL",
+            joinColumns = @JoinColumn(name = "DATASET_ID"),
+            inverseJoinColumns = @JoinColumn(name = "DISTRIBUTION_CHANNEL_ID")
+    )
+    private Set<DistributionChannel> distributionChannels = new HashSet<>();
+
+    public Dataset() {
+        datasetData = new DatasetData();
+    }
 
     public String getTitle() {
         return datasetData.getTitle();
@@ -109,10 +119,9 @@ public class Dataset extends Auditable<String> {
     }
 
     void replaceChildren(List<Dataset> children) {
-        var titles = titles(children);
-        getChildren().stream().filter(child -> !titles.contains(child.getTitle())).forEach(this::removeChild);
+        getChildren().forEach(this::removeChild);
         children.forEach(this::addChild);
-        updateHasparts();
+        updateJsonHaspartsAndDistributionChannels();
     }
 
     private void addChild(Dataset child) {
@@ -127,8 +136,27 @@ public class Dataset extends Auditable<String> {
         child.getParents().remove(this);
     }
 
-    private void updateHasparts() {
+    void replaceDistributionChannels(List<DistributionChannel> distributionChannels) {
+        getDistributionChannels().forEach(this::removeDistributionChannel);
+        distributionChannels.forEach(this::addDistributionChannel);
+        updateJsonHaspartsAndDistributionChannels();
+    }
+
+    private void addDistributionChannel(DistributionChannel distributionChannel) {
+        if (distributionChannel != null) {
+            distributionChannels.add(distributionChannel);
+            distributionChannel.getDatasets().add(this);
+        }
+    }
+
+    private void removeDistributionChannel(DistributionChannel distributionChannel) {
+        getDistributionChannels().remove(distributionChannel);
+        distributionChannel.getDatasets().remove(this);
+    }
+
+    private void updateJsonHaspartsAndDistributionChannels() {
         datasetData.setHaspart(titles(children));
+        datasetData.setDistributionChannels(DistributionChannel.names(distributionChannels));
     }
 
     public static List<String> titles(Collection<Dataset> datasets) {
@@ -136,6 +164,9 @@ public class Dataset extends Auditable<String> {
     }
 
     public static class DatasetBuilder {
+        private Set<Dataset> children = new HashSet<>();
+        private Set<Dataset> parents = new HashSet<>();
+        private Set<DistributionChannel> distributionChannels = new HashSet<>();
 
         public DatasetBuilder generateElasticsearchId() {
             this.elasticsearchId = base64UUID();
