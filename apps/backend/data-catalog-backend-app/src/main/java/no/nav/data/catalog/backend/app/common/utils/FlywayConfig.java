@@ -35,9 +35,8 @@ public class FlywayConfig {
             Map<String, Object> data = vaultResponse.getData();
             val username = data.get("username").toString();
             val password = data.get("password").toString();
-            val duration = data.get("lease_duration").toString();
 
-            log.info("Vault: Flyway configured with credentials from Vault. Credential path: {} duration: {}", secretPath, duration);
+            log.info("Vault: Flyway configured with credentials from Vault. Credential path: {}", secretPath);
 
             configuration
                     .dataSource(url, username, password)
