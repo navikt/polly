@@ -32,14 +32,7 @@ public final class StreamUtils {
             for (T afterElement : after) {
                 if (comparator.compare(beforeElement, afterElement) == 0) {
                     shared.add(afterElement);
-                    return true;
-                }
-            }
-            return false;
-        });
-        added.removeIf(afterElement -> {
-            for (T beforeElement : before) {
-                if (comparator.compare(beforeElement, afterElement) == 0) {
+                    added.remove(afterElement);
                     return true;
                 }
             }
