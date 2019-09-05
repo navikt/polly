@@ -59,7 +59,6 @@ public class KafkaMetadataServiceIT extends IntegrationTestBase {
 
     private void assertResults() {
         assertThat(distributionChannelRepository.count(), is(2L));
-        assertThat(systemRepository.count(), is(3L));
 
         transactionTemplate.execute(t -> {
             DistributionChannel topic1 = distributionChannelRepository.findByName("aapen-topic1").orElse(null);

@@ -128,7 +128,7 @@ public class Dataset extends Auditable<String> {
         updateJsonHaspartsAndDistributionChannels();
         var after = titles(this.children);
         if (!before.equals(after)) {
-            log.info("Changed Children {}", StreamUtils.difference(before, after).changeString());
+            log.info("Dataset {} changed Children {}", getTitle(), StreamUtils.difference(before, after).changeString());
         }
     }
 
@@ -151,7 +151,7 @@ public class Dataset extends Auditable<String> {
         updateJsonHaspartsAndDistributionChannels();
         var after = DistributionChannel.names(this.distributionChannels);
         if (!before.equals(after)) {
-            log.info("Changed DistributionChannels {}", StreamUtils.difference(before, after).changeString());
+            log.info("Dataset {} changed DistributionChannels {}", getTitle(), StreamUtils.difference(before, after).changeString());
         }
     }
 
