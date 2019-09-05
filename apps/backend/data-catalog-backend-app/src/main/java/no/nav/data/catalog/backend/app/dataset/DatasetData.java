@@ -34,6 +34,7 @@ public class DatasetData {
     private String publisher;
     private String spatial;
     private List<String> haspart;
+    private List<String> distributionChannels;
 
     @Setter(AccessLevel.PRIVATE)
     private DatasetMaster master;

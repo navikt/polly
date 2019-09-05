@@ -20,7 +20,6 @@ import org.eclipse.egit.github.core.event.PushPayload;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.AdditionalAnswers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -42,10 +41,8 @@ import static no.nav.data.catalog.backend.app.github.GithubWebhooksController.HE
 import static no.nav.data.catalog.backend.app.github.GithubWebhooksController.PULL_REQUEST_EVENT;
 import static no.nav.data.catalog.backend.app.github.GithubWebhooksController.PUSH_EVENT;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -188,7 +185,6 @@ public class GithubWebhooksControllerTest {
     public void updateOnPush() throws Exception {
         when(githubConsumer.compare("internalbefore", "head")).thenReturn(repoModification);
         when(repository.findByTitle("removed")).then(i -> Optional.of(new Dataset()));
-        when(service.returnUpdatedDatasetsIfAllArePresent(anyList())).then(AdditionalAnswers.returnsArgAt(0));
         String payload = JsonUtils.toJson(push);
 
         mvc.perform(post(GithubWebhooksController.BACKEND_WEBHOOKS)
@@ -201,7 +197,10 @@ public class GithubWebhooksControllerTest {
         verify(service).validateRequestsAndReturnErrors(anyList(), eq(true), any(DatasetMaster.class));
         verify(service).validateRequestsAndReturnErrors(anyList(), eq(false), any(DatasetMaster.class));
 
-        verify(repository, times(3)).saveAll(anyCollection());
+        verify(service).saveAll(anyList(), eq(DatasetMaster.GITHUB));
+        verify(service).updateAll(anyList());
+        // Deletes
+        verify(repository).saveAll(anyList());
     }
 
     @Test

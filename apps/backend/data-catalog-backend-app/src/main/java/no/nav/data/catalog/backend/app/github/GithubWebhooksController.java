@@ -10,7 +10,6 @@ import no.nav.data.catalog.backend.app.common.utils.CollectionDifference;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.common.validator.ValidationError;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
-import no.nav.data.catalog.backend.app.dataset.DatasetMaster;
 import no.nav.data.catalog.backend.app.dataset.DatasetRequest;
 import no.nav.data.catalog.backend.app.dataset.DatasetService;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
@@ -35,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import static java.util.Arrays.asList;
@@ -66,10 +64,10 @@ public class GithubWebhooksController {
 
 
     public GithubWebhooksController(DatasetService service,
-                                    DatasetRepository repository,
-                                    PolDatasettRepository polDatasettRepository,
-                                    GithubConsumer githubConsumer,
-                                    HmacUtils githubHmac) {
+            DatasetRepository repository,
+            PolDatasettRepository polDatasettRepository,
+            GithubConsumer githubConsumer,
+            HmacUtils githubHmac) {
         this.service = service;
         this.repository = repository;
         this.polDatasettRepository = polDatasettRepository;
@@ -184,9 +182,8 @@ public class GithubWebhooksController {
         if (requests.isEmpty()) {
             return;
         }
-        List<Dataset> updatedDatasets = service.returnUpdatedDatasetsIfAllArePresent(requests);
-        log.info("The following list of Datasets have been set to be updated during the next scheduled task: {}", updatedDatasets);
-        repository.saveAll(updatedDatasets);
+        log.info("The following list of Datasets have been set to be updated during the next scheduled task: {}", requests);
+        service.updateAll(requests);
     }
 
     private void remove(Collection<DatasetRequest> requests) {
@@ -208,14 +205,11 @@ public class GithubWebhooksController {
         repository.saveAll(toBeDeletedDatasets);
     }
 
-    private void add(Collection<DatasetRequest> requests) {
+    private void add(List<DatasetRequest> requests) {
         if (requests.isEmpty()) {
             return;
         }
-        List<Dataset> datasets = requests.stream()
-                .map(request -> service.save(request, DatasetMaster.GITHUB))
-                .collect(Collectors.toList());
-        log.info("The following list of Datasets have been set to be added during the next scheduled task: {}", datasets);
-        repository.saveAll(datasets);
+        log.info("The following list of Datasets have been set to be added during the next scheduled task: {}", requests);
+        service.saveAll(requests, GITHUB);
     }
 }

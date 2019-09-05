@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
@@ -133,7 +134,7 @@ public class DatasetController {
         requests = StreamUtils.nullToEmptyList(requests);
         service.validateRequest(requests, false, REST);
 
-        return service.saveAll(requests, REST);
+        return service.saveAll(requests, REST).stream().map(Dataset::convertToResponse).collect(Collectors.toList());
     }
 
     @ApiOperation(value = "Update Dataset", tags = {"Dataset"})
@@ -148,7 +149,7 @@ public class DatasetController {
         requests = StreamUtils.nullToEmptyList(requests);
         service.validateRequest(requests, true, REST);
 
-        return service.updateAll(requests);
+        return service.updateAll(requests).stream().map(Dataset::convertToResponse).collect(Collectors.toList());
     }
 
     @ApiOperation(value = "Update Dataset", tags = {"Dataset"})
@@ -160,14 +161,13 @@ public class DatasetController {
     @PutMapping("/{id}")
     public ResponseEntity updateOneDatasetById(@PathVariable UUID id, @Valid @RequestBody DatasetRequest request) {
         log.info("Received a request to update Dataset with id={}", id);
-        Optional<Dataset> fromRepository = repository.findById(id);
-        if (fromRepository.isEmpty()) {
+        if (repository.findById(id).isEmpty()) {
             log.info("Cannot find Dataset with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         service.validateRequest(List.of(request), true, REST);
 
-        Dataset dataset = service.update(request, fromRepository.get());
+        Dataset dataset = service.update(request);
 
         log.info("Updated the Dataset");
         return new ResponseEntity<>(repository.save(dataset).convertToResponse(), HttpStatus.ACCEPTED);

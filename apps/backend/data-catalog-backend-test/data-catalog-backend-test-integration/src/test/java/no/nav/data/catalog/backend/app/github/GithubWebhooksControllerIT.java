@@ -6,6 +6,9 @@ import no.nav.data.catalog.backend.app.dataset.Dataset;
 import no.nav.data.catalog.backend.app.dataset.DatasetMaster;
 import no.nav.data.catalog.backend.app.dataset.DatasetRequest;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
+import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
+import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelRepository;
+import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelType;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import no.nav.data.catalog.backend.app.github.domain.GithubAccount;
 import no.nav.data.catalog.backend.app.github.domain.GithubInstallation;
@@ -36,6 +39,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -63,6 +67,8 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
     @Autowired
     protected DatasetRepository repository;
     @Autowired
+    protected DistributionChannelRepository distributionChannelRepository;
+    @Autowired
     protected PolDatasettRepository polDatasettRepository;
     @Autowired
     private HmacUtils hmacUtils;
@@ -75,7 +81,10 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
         CodelistStub.initializeCodelist();
         stubGithub();
         repository.deleteAll();
+        distributionChannelRepository.deleteAll();
         polDatasettRepository.save(new PolDatasett(before));
+
+        distributionChannelRepository.save(DistributionChannel.builder().id(UUID.randomUUID()).name("aapen-dok-mottatt").type(DistributionChannelType.KAFKA).build());
 
         repository.save(new Dataset().convertNewFromRequest(DatasetRequest.builder()
                 .title("removed")

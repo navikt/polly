@@ -59,7 +59,7 @@ public class DatasetServiceIT extends AbstractDatasetIT {
                 .haspart(Collections.singletonList(dataset1.getTitle()))
                 .build();
 
-        Dataset dataset = datasetRepository.save(datasetService.save(request, DatasetMaster.GITHUB));
+        Dataset dataset = datasetService.save(request, DatasetMaster.GITHUB);
         assertThat(dataset.getChildren(), hasItem(dataset1));
         assertThat(dataset.getDatasetData().getHaspart(), hasItem(dataset1.getTitle()));
     }

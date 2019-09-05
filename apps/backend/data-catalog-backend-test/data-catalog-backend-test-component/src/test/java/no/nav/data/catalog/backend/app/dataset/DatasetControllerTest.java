@@ -28,7 +28,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static junit.framework.TestCase.assertTrue;
 import static no.nav.data.catalog.backend.app.dataset.DatasetMaster.REST;
@@ -122,12 +121,7 @@ public class DatasetControllerTest {
         DatasetRequest request = createValidDatasetRequest("Title1");
         List<DatasetRequest> requests = new ArrayList<>(List.of(request));
 
-        List<DatasetResponse> datasetResponses = requests.stream()
-                .map(r -> new Dataset().convertNewFromRequest(r, REST))
-                .map(Dataset::convertToResponse)
-                .collect(Collectors.toList());
-
-        when(service.saveAll(ArgumentMatchers.anyList(), any(DatasetMaster.class))).thenReturn(datasetResponses);
+        when(service.saveAll(ArgumentMatchers.anyList(), any(DatasetMaster.class))).thenReturn(Collections.singletonList(new Dataset()));
 
         String inputJson = objectMapper.writeValueAsString(requests);
 
@@ -141,16 +135,11 @@ public class DatasetControllerTest {
     @Test
     public void updateDataset_shouldUpdateDataset() throws Exception {
         DatasetRequest request = createValidDatasetRequest("Title1");
-        request.setDescription("UPDATED");
 
         List<DatasetRequest> requests = new ArrayList<>(List.of(request));
 
-        List<DatasetResponse> datasetResponses = requests.stream()
-                .map(r -> new Dataset().convertNewFromRequest(r, REST))
-                .map(Dataset::convertToResponse)
-                .collect(Collectors.toList());
-
-        when(service.updateAll(ArgumentMatchers.anyList())).thenReturn(datasetResponses);
+        when(service.updateAll(ArgumentMatchers.anyList()))
+                .thenReturn(Collections.singletonList(Dataset.builder().datasetData(DatasetData.builder().description("UPDATED").build()).build()));
 
         String inputJson = objectMapper.writeValueAsString(requests);
 
