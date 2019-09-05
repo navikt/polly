@@ -6,7 +6,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.auditing.Auditable;
+import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
 import no.nav.data.catalog.backend.app.system.System;
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +31,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+@Slf4j
 @Data
 @EqualsAndHashCode(exclude = {"producers", "consumers"}, callSuper = false)
 @ToString(exclude = {"producers", "consumers"})
@@ -93,13 +96,25 @@ public class DistributionChannel extends Auditable<String> {
         system.getConsumerDistributionChannels().add(this);
     }
 
+    public void removeConsumer(System system) {
+        getConsumers().remove(system);
+        system.getConsumerDistributionChannels().remove(this);
+        log.info("Removed consumer={} from distributionChannel={}", system.getName(), getName());
+    }
+
     public void addProducer(System system) {
         getProducers().add(system);
         system.getProducerDistributionChannels().add(this);
     }
 
+    public void removeProducer(System system) {
+        getProducers().remove(system);
+        system.getProducerDistributionChannels().remove(this);
+        log.info("Removed producer={} from distributionChannel={}", system.getName(), getName());
+    }
+
     public static List<String> names(Collection<DistributionChannel> distributionChannels) {
-        return distributionChannels.stream().map(DistributionChannel::getName).collect(Collectors.toList());
+        return StreamUtils.safeStream(distributionChannels).map(DistributionChannel::getName).collect(Collectors.toList());
     }
 
 }

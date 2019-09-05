@@ -1,10 +1,10 @@
 package no.nav.data.catalog.backend.app.common.utils;
 
-import java.util.Comparator;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * See {@link StreamUtils#difference(List, List, Comparator)}
@@ -20,4 +20,7 @@ public class CollectionDifference<T> {
     private List<T> shared;
     private List<T> added;
 
+    public String changeString() {
+        return "removed=" + removed + ", added=" + added;
+    }
 }

@@ -18,6 +18,7 @@ import static no.nav.data.catalog.backend.app.TestUtil.readFile;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertThat;
 
 public class KafkaMetadataServiceIT extends IntegrationTestBase {
@@ -45,9 +46,11 @@ public class KafkaMetadataServiceIT extends IntegrationTestBase {
     @Test
     public void syncKafkaWithExistingElements() {
         System producer = systemRepository.save(new System().convertFromRequest(SystemRequest.builder().name("srvbruker-producer").build(), false));
+        System producerToRemove = systemRepository.save(new System().convertFromRequest(SystemRequest.builder().name("srvbruker-producer-willberemoved").build(), false));
         DistributionChannel distributionChannel = new DistributionChannel()
                 .convertFromRequest(DistributionChannelRequest.builder().name("aapen-topic1").type(DistributionChannelType.KAFKA).build(), false);
         distributionChannel.addProducer(producer);
+        distributionChannel.addProducer(producerToRemove);
         distributionChannelRepository.save(distributionChannel);
 
         kafkaMetadataService.syncDistributionsFromKafkaAdmin();
@@ -56,21 +59,25 @@ public class KafkaMetadataServiceIT extends IntegrationTestBase {
 
     private void assertResults() {
         assertThat(distributionChannelRepository.count(), is(2L));
-        assertThat(systemRepository.count(), is(2L));
+        assertThat(systemRepository.count(), is(3L));
 
         transactionTemplate.execute(t -> {
             DistributionChannel topic1 = distributionChannelRepository.findByName("aapen-topic1").orElse(null);
 
             assertThat(topic1, notNullValue());
             assertThat(topic1.getType(), is(DistributionChannelType.KAFKA));
+            assertThat(topic1.getProducers(), hasSize(1));
             assertThat(topic1.getProducers(), hasItem(systemRepository.findByName("srvbruker-producer").orElse(null)));
+            assertThat(topic1.getConsumers(), hasSize(1));
             assertThat(topic1.getConsumers(), hasItem(systemRepository.findByName("srvbruker-consumer").orElse(null)));
 
             DistributionChannel topic2 = distributionChannelRepository.findByName("aapen-topic2").orElse(null);
 
             assertThat(topic2, notNullValue());
             assertThat(topic2.getType(), is(DistributionChannelType.KAFKA));
+            assertThat(topic2.getProducers(), hasSize(1));
             assertThat(topic2.getProducers(), hasItem(systemRepository.findByName("srvbruker-producer").orElse(null)));
+            assertThat(topic2.getConsumers(), hasSize(1));
             assertThat(topic2.getConsumers(), hasItem(systemRepository.findByName("srvbruker-consumer").orElse(null)));
 
             return null;

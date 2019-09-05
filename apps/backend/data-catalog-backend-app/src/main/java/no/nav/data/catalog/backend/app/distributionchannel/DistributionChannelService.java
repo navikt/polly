@@ -84,10 +84,14 @@ public class DistributionChannelService {
 		safeStream(request.getConsumers())
 				.filter(consumer -> safeStream(distributionChannel.getConsumers()).noneMatch(existingConsumer -> existingConsumer.getName().equals(consumer)))
 				.forEach(consumer -> distributionChannel.addConsumer(systemRepository.findByName(consumer).orElseGet(() -> createNewSystem(consumer))));
+		distributionChannel.getConsumers().stream().filter(consumer -> !request.getConsumers().contains(consumer.getName()))
+				.forEach(distributionChannel::removeConsumer);
 
 		safeStream(request.getProducers())
 				.filter(producer -> safeStream(distributionChannel.getProducers()).noneMatch(existingProducer -> existingProducer.getName().equals(producer)))
 				.forEach(producer -> distributionChannel.addProducer(systemRepository.findByName(producer).orElseGet(() -> createNewSystem(producer))));
+		distributionChannel.getProducers().stream().filter(producer -> !request.getProducers().contains(producer.getName()))
+				.forEach(distributionChannel::removeProducer);
 	}
 
 	public void createOrUpdateDistributionChannelFromKafka(DistributionChannelRequest request) {

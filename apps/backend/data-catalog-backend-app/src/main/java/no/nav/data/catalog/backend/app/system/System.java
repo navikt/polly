@@ -7,13 +7,17 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import no.nav.data.catalog.backend.app.common.auditing.Auditable;
+import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -60,5 +64,9 @@ public class System extends Auditable<String> {
 
 	public SystemResponse convertToResponse() {
 		return new SystemResponse(this);
+	}
+
+	public static List<String> names(Collection<System> systems) {
+		return StreamUtils.safeStream(systems).map(System::getName).collect(Collectors.toList());
 	}
 }

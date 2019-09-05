@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 public final class StreamUtils {
@@ -39,6 +40,10 @@ public final class StreamUtils {
             return false;
         });
         return new CollectionDifference<>(before, after, removed, shared, added);
+    }
+
+    public static <T> CollectionDifference<T> difference(List<T> before, List<T> after) {
+        return difference(before, after, (Comparator<T>) Comparator.comparing(Function.identity()));
     }
 
     public static <T> List<T> nullToEmptyList(List<T> list) {

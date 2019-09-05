@@ -5,7 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.auditing.Auditable;
+import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.hibernate.annotations.Type;
@@ -32,6 +34,7 @@ import javax.validation.constraints.NotNull;
 import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.copyOf;
 import static org.elasticsearch.common.UUIDs.base64UUID;
 
+@Slf4j
 @Data
 @EqualsAndHashCode(exclude = {"children", "parents", "distributionChannels"}, callSuper = false)
 @ToString(exclude = {"children", "parents", "distributionChannels"})
@@ -119,9 +122,14 @@ public class Dataset extends Auditable<String> {
     }
 
     void replaceChildren(List<Dataset> children) {
+        var before = titles(this.children);
         getChildren().forEach(this::removeChild);
         children.forEach(this::addChild);
         updateJsonHaspartsAndDistributionChannels();
+        var after = titles(this.children);
+        if (!before.equals(after)) {
+            log.info("Changed Children {}", StreamUtils.difference(before, after).changeString());
+        }
     }
 
     private void addChild(Dataset child) {
@@ -137,9 +145,14 @@ public class Dataset extends Auditable<String> {
     }
 
     void replaceDistributionChannels(List<DistributionChannel> distributionChannels) {
+        var before = DistributionChannel.names(this.distributionChannels);
         getDistributionChannels().forEach(this::removeDistributionChannel);
         distributionChannels.forEach(this::addDistributionChannel);
         updateJsonHaspartsAndDistributionChannels();
+        var after = DistributionChannel.names(this.distributionChannels);
+        if (!before.equals(after)) {
+            log.info("Changed DistributionChannels {}", StreamUtils.difference(before, after).changeString());
+        }
     }
 
     private void addDistributionChannel(DistributionChannel distributionChannel) {
@@ -164,6 +177,7 @@ public class Dataset extends Auditable<String> {
     }
 
     public static class DatasetBuilder {
+
         private Set<Dataset> children = new HashSet<>();
         private Set<Dataset> parents = new HashSet<>();
         private Set<DistributionChannel> distributionChannels = new HashSet<>();
