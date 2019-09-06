@@ -44,6 +44,7 @@ public class DatasetResponse {
     private String publisher;
     private String spatial;
     private List<String> haspart;
+    private List<String> distributionChannels;
 
     private DatasetMaster master;
     private List<DatasetResponse> children;
@@ -78,6 +79,7 @@ public class DatasetResponse {
         setSpatial(datasetData.getSpatial());
         setHaspart(datasetData.getHaspart());
         setMaster(datasetData.getMaster());
+        setDistributionChannels(copyOf(datasetData.getDistributionChannels()));
     }
 
 }
