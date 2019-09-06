@@ -26,7 +26,7 @@ public class CodelistRequest implements RequestElement {
     }
 
     @JsonIgnore
-    private boolean isUpdate;
+    private boolean update;
     @JsonIgnore
     private int requestIndex;
 

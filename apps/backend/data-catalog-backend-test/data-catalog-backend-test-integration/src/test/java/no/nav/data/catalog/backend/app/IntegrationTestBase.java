@@ -3,6 +3,10 @@ package no.nav.data.catalog.backend.app;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import no.nav.data.catalog.backend.app.IntegrationTestBase.Initializer;
+import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
+import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelRepository;
+import no.nav.data.catalog.backend.app.system.SystemRepository;
+import org.junit.After;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +45,19 @@ public abstract class IntegrationTestBase {
     public static WireMockClassRule wiremock = new WireMockClassRule(WIREMOCK_PORT);
     @Autowired
     protected TransactionTemplate transactionTemplate;
+    @Autowired
+    protected DistributionChannelRepository distributionChannelRepository;
+    @Autowired
+    protected SystemRepository systemRepository;
+    @Autowired
+    protected DatasetRepository datasetRepository;
+
+    @After
+    public void deleteRepositories() {
+        datasetRepository.deleteAll();
+        distributionChannelRepository.deleteAll();
+        systemRepository.deleteAll();
+    }
 
     protected void policyStubbing() {
         wiremock.stubFor(get(urlPathEqualTo("/policy/policy"))
