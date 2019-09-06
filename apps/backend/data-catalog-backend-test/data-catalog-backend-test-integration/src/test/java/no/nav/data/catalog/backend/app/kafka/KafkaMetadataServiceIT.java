@@ -25,16 +25,11 @@ public class KafkaMetadataServiceIT extends IntegrationTestBase {
 
     @Autowired
     private KafkaMetadataService kafkaMetadataService;
-    @Autowired
-    private DistributionChannelRepository distributionChannelRepository;
-    @Autowired
-    private SystemRepository systemRepository;
+
 
     @Before
     public void setUp() {
         stubKafkaAdminRest();
-        distributionChannelRepository.deleteAll();
-        systemRepository.deleteAll();
     }
 
     @Test
