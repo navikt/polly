@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.app.common.utils;
+package no.nav.data.catalog.backend.app.common.jpa;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;

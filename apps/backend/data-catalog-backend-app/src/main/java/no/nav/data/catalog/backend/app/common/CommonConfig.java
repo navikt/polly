@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.hotspot.DefaultExports;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.catalog.backend.app.common.auditing.AuditorAwareImpl;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchProperties;
 import org.apache.http.HttpHost;
@@ -17,14 +16,11 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.data.domain.AuditorAware;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Configuration
-@EnableJpaAuditing(auditorAwareRef = "auditorAware")
 public class CommonConfig {
 
     @Primary
@@ -57,11 +53,6 @@ public class CommonConfig {
                         new HttpHost(properties.getHost(), properties.getPort(), properties.getSchema())
                 ).setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider))
         );
-    }
-
-    @Bean
-    public AuditorAware<String> auditorAware() {
-        return new AuditorAwareImpl();
     }
 
     /**

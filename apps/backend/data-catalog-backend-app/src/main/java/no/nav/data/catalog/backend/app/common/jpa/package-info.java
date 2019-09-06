@@ -4,7 +4,7 @@
 @TypeDefs(
         @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 )
-package no.nav.data.catalog.backend.app.common;
+package no.nav.data.catalog.backend.app.common.jpa;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import org.hibernate.annotations.TypeDef;
