@@ -116,6 +116,10 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
     }
 
     private Dataset convertUpdate(DatasetRequest request, Dataset dataset) {
+        if (request.getMaster() != dataset.getDatasetData().getMaster()) {
+            throw new ValidationException(
+                    String.format("Master mismatch for update, dataset is mastered by=%s request came from %s", dataset.getDatasetData().getMaster(), request.getMaster()));
+        }
         dataset.convertUpdateFromRequest(request);
         attachDependencies(dataset, request);
         return dataset;
