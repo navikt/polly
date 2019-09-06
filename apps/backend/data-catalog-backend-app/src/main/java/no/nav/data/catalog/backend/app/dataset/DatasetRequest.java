@@ -50,7 +50,7 @@ public class DatasetRequest implements RequestElement {
     @JsonIgnore
     private GithubReference githubReference;
     @JsonIgnore
-    private boolean isUpdate;
+    private boolean update;
     @JsonIgnore
     private int requestIndex;
     @JsonIgnore
