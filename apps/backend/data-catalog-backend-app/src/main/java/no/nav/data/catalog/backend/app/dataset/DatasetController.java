@@ -9,7 +9,6 @@ import no.nav.data.catalog.backend.app.common.rest.PageParameters;
 import no.nav.data.catalog.backend.app.common.rest.RestResponsePage;
 import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
-import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -132,7 +131,8 @@ public class DatasetController {
     public List<DatasetResponse> createDatasets(@RequestBody List<DatasetRequest> requests) {
         log.info("Received requests to create Datasets");
         requests = StreamUtils.nullToEmptyList(requests);
-        service.validateRequest(requests, false, REST);
+        DatasetRequest.initiateRequests(requests, false, REST);
+        service.validateRequest(requests);
 
         return service.saveAll(requests, REST).stream().map(Dataset::convertToResponse).collect(Collectors.toList());
     }
@@ -147,7 +147,8 @@ public class DatasetController {
     public List<DatasetResponse> updateDatasets(@RequestBody List<DatasetRequest> requests) {
         log.info("Received requests to update Datasets");
         requests = StreamUtils.nullToEmptyList(requests);
-        service.validateRequest(requests, true, REST);
+        DatasetRequest.initiateRequests(requests, true, REST);
+        service.validateRequest(requests);
 
         return service.updateAll(requests).stream().map(Dataset::convertToResponse).collect(Collectors.toList());
     }
@@ -165,7 +166,8 @@ public class DatasetController {
             log.info("Cannot find Dataset with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        service.validateRequest(List.of(request), true, REST);
+        DatasetRequest.initiateRequests(List.of(request), true, REST);
+        service.validateRequest(List.of(request));
 
         Dataset dataset = service.update(request);
 
@@ -187,9 +189,8 @@ public class DatasetController {
             log.info("Cannot find Dataset with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Dataset dataset = fromRepository.get();
-        dataset.setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED);
         log.info("Dataset with id={} has been set to be deleted during the next scheduled task", id);
-        return new ResponseEntity<>(repository.save(dataset).convertToResponse(), HttpStatus.ACCEPTED);
+        DatasetRequest deleteRequest = DatasetRequest.builder().master(REST).title(fromRepository.get().getTitle()).build();
+        return new ResponseEntity<>(service.delete(deleteRequest).convertToResponse(), HttpStatus.ACCEPTED);
     }
 }

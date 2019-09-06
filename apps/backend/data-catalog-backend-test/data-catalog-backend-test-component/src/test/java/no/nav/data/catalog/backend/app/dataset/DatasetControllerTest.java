@@ -184,7 +184,7 @@ public class DatasetControllerTest {
         Dataset datasetAfterUpdate = datasetToUpdate.convertUpdateFromRequest(request);
 
         when(repository.findById(datasetToUpdate.getId())).thenReturn(Optional.of(datasetToUpdate));
-        when(repository.save(datasetAfterUpdate)).thenReturn(datasetAfterUpdate);
+        when(service.delete(any(DatasetRequest.class))).thenReturn(datasetAfterUpdate);
 
         String inputJson = objectMapper.writeValueAsString(request);
 
@@ -202,7 +202,7 @@ public class DatasetControllerTest {
                 .datasetData(createValidDatasetData("deleteTitle")).build();
 
         when(repository.findById(deleteDataset.getId())).thenReturn(Optional.of(deleteDataset));
-        when(repository.save(deleteDataset)).thenReturn(deleteDataset);
+        when(service.delete(any(DatasetRequest.class))).thenReturn(deleteDataset);
 
         mvc.perform(delete("/dataset/" + deleteDataset.getId()))
                 .andExpect(status().isAccepted());

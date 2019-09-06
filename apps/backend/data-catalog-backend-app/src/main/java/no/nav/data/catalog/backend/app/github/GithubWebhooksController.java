@@ -159,9 +159,10 @@ public class GithubWebhooksController {
 
     private List<ValidationError> validate(CollectionDifference<DatasetRequest> difference) {
         List<ValidationError> validationErrors = new ArrayList<>();
+        // TODO validate deletes, at least master, how does kafka delete?
         validationErrors.addAll(service.validateNoDuplicates(difference.getAfter()));
-        validationErrors.addAll(service.validateRequestsAndReturnErrors(difference.getShared(), true, GITHUB));
-        validationErrors.addAll(service.validateRequestsAndReturnErrors(difference.getAdded(), false, GITHUB));
+        validationErrors.addAll(service.validateRequestsAndReturnErrors(difference.getShared()));
+        validationErrors.addAll(service.validateRequestsAndReturnErrors(difference.getAdded()));
 
         return validationErrors;
     }
@@ -190,19 +191,8 @@ public class GithubWebhooksController {
         if (requests.isEmpty()) {
             return;
         }
-        List<Dataset> toBeDeletedDatasets = new ArrayList<>();
-        requests.forEach(request -> {
-            String title = request.getTitle().trim();
-            Optional<Dataset> fromRepository = repository.findByTitle(title);
-            if (fromRepository.isEmpty()) {
-                log.warn("Cannot find Dataset with title={} for deletion", title);
-                return;
-            }
-            fromRepository.get().setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED);
-            toBeDeletedDatasets.add(fromRepository.get());
-        });
-        log.info("The following list of Datasets have been set to be deleted during the next scheduled task: {}", toBeDeletedDatasets);
-        repository.saveAll(toBeDeletedDatasets);
+        log.info("The following list of Datasets have been set to be deleted during the next scheduled task: {}", requests);
+        service.deleteAll(requests);
     }
 
     private void add(List<DatasetRequest> requests) {

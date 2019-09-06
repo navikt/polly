@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static no.nav.data.catalog.backend.app.github.GithubWebhooksController.HEADER_GITHUB_EVENT;
 import static no.nav.data.catalog.backend.app.github.GithubWebhooksController.HEADER_GITHUB_ID;
@@ -46,6 +47,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -121,8 +123,7 @@ public class GithubWebhooksControllerTest {
                 .header(HEADER_GITHUB_SIGNATURE, "sha1=" + githubHmac.hmacHex(payload))
         ).andExpect(status().isOk());
 
-        verify(service).validateRequestsAndReturnErrors(anyList(), eq(true), any(DatasetMaster.class));
-        verify(service).validateRequestsAndReturnErrors(anyList(), eq(false), any(DatasetMaster.class));
+        verify(service, times(2)).validateRequestsAndReturnErrors(anyList());
         verify(githubConsumer).updateStatus("head", Collections.emptyList());
     }
 
@@ -165,7 +166,7 @@ public class GithubWebhooksControllerTest {
         List<ValidationError> validationErrors = List.of(new ValidationError("title=modified path=add.json ordinal=1 duplicate entry",
                 "DuplicatedIdentifyingFields", "Multipe elements in this request are using the same unique fields (modified)"));
 
-        when(service.validateRequestsAndReturnErrors(anyList(), eq(true), any(DatasetMaster.class))).thenReturn(validationErrors);
+        when(service.validateRequestsAndReturnErrors(anyList())).thenReturn(validationErrors).thenReturn(emptyList());
 
         mvc.perform(post(GithubWebhooksController.BACKEND_WEBHOOKS)
                 .content(payload)
@@ -174,10 +175,8 @@ public class GithubWebhooksControllerTest {
                 .header(HEADER_GITHUB_SIGNATURE, "sha1=" + githubHmac.hmacHex(payload))
         ).andExpect(status().isOk());
 
-
         verify(service).validateNoDuplicates(anyList());
-        verify(service).validateRequestsAndReturnErrors(anyList(), eq(true), any(DatasetMaster.class));
-        verify(service).validateRequestsAndReturnErrors(anyList(), eq(false), any(DatasetMaster.class));
+        verify(service, times(2)).validateRequestsAndReturnErrors(anyList());
         verify(githubConsumer).updateStatus("head", validationErrors);
     }
 
@@ -194,13 +193,10 @@ public class GithubWebhooksControllerTest {
                 .header(HEADER_GITHUB_SIGNATURE, "sha1=" + githubHmac.hmacHex(payload))
         ).andExpect(status().isOk());
 
-        verify(service).validateRequestsAndReturnErrors(anyList(), eq(true), any(DatasetMaster.class));
-        verify(service).validateRequestsAndReturnErrors(anyList(), eq(false), any(DatasetMaster.class));
-
+        verify(service, times(2)).validateRequestsAndReturnErrors(anyList());
         verify(service).saveAll(anyList(), eq(DatasetMaster.GITHUB));
         verify(service).updateAll(anyList());
-        // Deletes
-        verify(repository).saveAll(anyList());
+        verify(service).deleteAll(anyList());
     }
 
     @Test

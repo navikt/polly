@@ -11,18 +11,19 @@ import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelationRepository;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelRepository;
+import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
@@ -109,6 +110,24 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         return datasetRepository.saveAll(datasets);
     }
 
+    @Transactional
+    public Dataset delete(DatasetRequest request) {
+        Optional<Dataset> fromRepository = datasetRepository.findByTitle(request.getTitle());
+        if (fromRepository.isEmpty()) {
+            log.warn("Cannot find Dataset with title={} for deletion", request.getTitle());
+            return null;
+        }
+        Dataset dataset = fromRepository.get();
+        request.assertMaster(dataset);
+        dataset.setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED);
+        return dataset;
+    }
+
+    @Transactional
+    public void deleteAll(Collection<DatasetRequest> requests) {
+        requests.forEach(this::delete);
+    }
+
     private Dataset convertNew(DatasetRequest request, DatasetMaster master) {
         Dataset dataset = new Dataset().convertNewFromRequest(request, master);
         attachDependencies(dataset, request);
@@ -116,10 +135,7 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
     }
 
     private Dataset convertUpdate(DatasetRequest request, Dataset dataset) {
-        if (request.getMaster() != dataset.getDatasetData().getMaster()) {
-            throw new ValidationException(
-                    String.format("Master mismatch for update, dataset is mastered by=%s request came from %s", dataset.getDatasetData().getMaster(), request.getMaster()));
-        }
+        request.assertMaster(dataset);
         dataset.convertUpdateFromRequest(request);
         attachDependencies(dataset, request);
         return dataset;
@@ -144,8 +160,8 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         dataset.replaceDistributionChannels(distChannels);
     }
 
-    public void validateRequest(List<DatasetRequest> requests, boolean isUpdate, DatasetMaster master) {
-        List<ValidationError> validationErrors = validateRequestsAndReturnErrors(requests, isUpdate, master);
+    public void validateRequest(List<DatasetRequest> requests) {
+        List<ValidationError> validationErrors = validateRequestsAndReturnErrors(requests);
 
         if (!validationErrors.isEmpty()) {
             log.error("The request was not accepted. The following errors occurred during validation: {}", validationErrors);
@@ -153,14 +169,16 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         }
     }
 
-    public List<ValidationError> validateRequestsAndReturnErrors(List<DatasetRequest> requests, boolean isUpdate, DatasetMaster master) {
+    public List<ValidationError> validateRequestsAndReturnErrors(List<DatasetRequest> requests) {
         requests = nullToEmptyList(requests);
         if (requests.isEmpty()) {
             return Collections.emptyList();
         }
+        if (requests.stream().anyMatch(r -> r.getMaster() == null)) {
+            throw new IllegalStateException("missing master on request");
+        }
 
         List<ValidationError> validationErrors = new ArrayList<>(validateListOfRequests(requests));
-        prepareDatasetRequestForValidation(requests, isUpdate, master);
         validationErrors.addAll(validateDatasetRequest(requests));
         return validationErrors;
     }
@@ -171,16 +189,6 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
             return Collections.emptyList();
         }
         return validateListOfRequests(requests);
-    }
-
-    private void prepareDatasetRequestForValidation(List<DatasetRequest> requests, boolean isUpdate, DatasetMaster master) {
-        AtomicInteger requestIndex = new AtomicInteger();
-
-        requests.forEach(request -> {
-            request.setUpdate(isUpdate);
-            request.setRequestIndex(requestIndex.incrementAndGet());
-            request.setMaster(master);
-        });
     }
 
     private List<ValidationError> validateDatasetRequest(List<DatasetRequest> requests) {

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import no.nav.data.catalog.backend.app.common.utils.CollectionDifference;
 import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
+import no.nav.data.catalog.backend.app.dataset.DatasetMaster;
 import no.nav.data.catalog.backend.app.dataset.DatasetRequest;
 import org.eclipse.egit.github.core.RepositoryContents;
 
@@ -33,7 +34,11 @@ public class RepoModification {
         List<DatasetRequest> previousItems = mapToDatasetRequest(deleted, modifiedBefore);
         List<DatasetRequest> currentItems = mapToDatasetRequest(added, modifiedAfter);
 
-        return StreamUtils.difference(previousItems, currentItems, comparing(DatasetRequest::getTitle));
+        CollectionDifference<DatasetRequest> difference = StreamUtils.difference(previousItems, currentItems, comparing(DatasetRequest::getTitle));
+        DatasetRequest.initiateRequests(difference.getRemoved(), true, DatasetMaster.GITHUB);
+        DatasetRequest.initiateRequests(difference.getShared(), true, DatasetMaster.GITHUB);
+        DatasetRequest.initiateRequests(difference.getAdded(), false, DatasetMaster.GITHUB);
+        return difference;
     }
 
     private List<DatasetRequest> mapToDatasetRequest(List<RepositoryContents> contentsOne, List<RepositoryContents> contentsTwo) {

@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
+import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.common.validator.RequestElement;
 import no.nav.data.catalog.backend.app.github.GithubReference;
@@ -145,5 +146,27 @@ public class DatasetRequest implements RequestElement {
 
     private String ifNotNullTrim(String field) {
         return field == null ? null : field.trim();
+    }
+
+    public static void initiateRequests(List<DatasetRequest> requests, boolean update, DatasetMaster master) {
+        requests.forEach(datasetRequest -> {
+            datasetRequest.setMaster(master);
+            datasetRequest.setUpdate(update);
+        });
+        if (master == DatasetMaster.REST) {
+            assignIds(requests);
+        }
+    }
+
+    public static void assignIds(List<DatasetRequest> requests) {
+        AtomicInteger requestIndex = new AtomicInteger(1);
+        requests.forEach(request -> request.setRequestIndex(requestIndex.getAndIncrement()));
+    }
+
+    public void assertMaster(Dataset dataset) {
+        if (getMaster() != dataset.getDatasetData().getMaster()) {
+            throw new ValidationException(
+                    String.format("Master mismatch for update, dataset is mastered by=%s request came from %s", dataset.getDatasetData().getMaster(), getMaster()));
+        }
     }
 }
