@@ -92,6 +92,7 @@ public class DatasetServiceIT extends AbstractDatasetIT {
         List<DatasetRequest> requests = List.of(DatasetRequest.builder()
                 .title("updateDataset")
                 .description("DatasetDescription")
+                .master(REST)
                 .build());
 
         datasetService.saveAll(requests, REST);
