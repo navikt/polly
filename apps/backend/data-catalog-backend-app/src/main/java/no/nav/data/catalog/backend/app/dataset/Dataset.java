@@ -10,6 +10,7 @@ import no.nav.data.catalog.backend.app.common.auditing.Auditable;
 import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
+import org.apache.commons.lang3.BooleanUtils;
 import org.hibernate.annotations.Type;
 
 import java.time.LocalDateTime;
@@ -113,7 +114,7 @@ public class Dataset extends Auditable<String> {
         datasetData.setDescription(request.getDescription());
         datasetData.setCategories(copyOf(request.getCategories()));
         datasetData.setProvenances(copyOf(request.getProvenances()));
-        datasetData.setPi(request.getPi() == null ? null : Boolean.parseBoolean(request.getPi()));
+        datasetData.setPi(request.getPi() == null ? null : BooleanUtils.toBoolean(request.getPi()) || request.getPi().trim().equals("1"));
         datasetData.setIssued(request.getIssued() == null ? null : LocalDateTime.parse(request.getIssued()));
         datasetData.setKeywords(copyOf(request.getKeywords()));
         datasetData.setThemes(copyOf(request.getThemes()));
