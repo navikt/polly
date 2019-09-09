@@ -2,6 +2,7 @@ package no.nav.data.catalog.backend.app.dataset;
 
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelation;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -15,6 +16,11 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class DatasetRepositoryIT extends AbstractDatasetIT {
+
+    @Before
+    public void setUp() throws Exception {
+        saveDatasets();
+    }
 
     @After
     public void tearDown() {

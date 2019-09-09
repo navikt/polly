@@ -165,8 +165,9 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
     }
 
     private List<DistributionChannel> createDistributionChannels(List<DistributionChannelShort> requestedDistChannel, List<DistributionChannel> existingDistChannels) {
+        List<String> existingNames = DistributionChannel.names(existingDistChannels);
         List<DistributionChannel> newChannels = safeStream(requestedDistChannel)
-                .filter(distChannelRequest -> DistributionChannel.names(existingDistChannels).contains(distChannelRequest.getName()))
+                .filter(distChannelRequest -> !existingNames.contains(distChannelRequest.getName()))
                 .map(DistributionChannelShort::toRequest)
                 .map(distChannelRequest -> new DistributionChannel().convertFromRequest(distChannelRequest, false))
                 .collect(Collectors.toList());

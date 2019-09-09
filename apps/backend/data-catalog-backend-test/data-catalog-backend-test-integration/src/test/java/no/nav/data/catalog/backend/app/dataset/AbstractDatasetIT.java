@@ -11,12 +11,15 @@ import org.junit.ClassRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.EntityManager;
 
 import static com.google.common.collect.Sets.newHashSet;
+import static no.nav.data.catalog.backend.app.dataset.DatacatalogMaster.REST;
 
 public abstract class AbstractDatasetIT extends IntegrationTestBase {
 
@@ -39,7 +42,11 @@ public abstract class AbstractDatasetIT extends IntegrationTestBase {
     @Before
     public void setUpAbstract() throws Exception {
         datasetRepository.deleteAll();
+        distributionChannelRepository.deleteAll();
         entityManager.clear();
+    }
+
+    void saveDatasets() {
         dataset111 = datasetRepository.save(dataset111);
         dataset11 = datasetRepository.save(dataset11);
         dataset12 = datasetRepository.save(dataset12);
@@ -52,8 +59,9 @@ public abstract class AbstractDatasetIT extends IntegrationTestBase {
     Dataset dataset12 = createDataset("12");
     Dataset dataset11 = createDataset("11", newHashSet(dataset111));
     Dataset dataset1 = createDataset("1", newHashSet(dataset11, dataset12));
+    LocalDateTime localDateTime = LocalDateTime.now();
 
-    private Dataset createDataset(String name) {
+    Dataset createDataset(String name) {
         return createDataset(name, Collections.emptySet());
     }
 
@@ -61,9 +69,23 @@ public abstract class AbstractDatasetIT extends IntegrationTestBase {
         return Dataset.builder()
                 .id(UUID.randomUUID())
                 .generateElasticsearchId()
-                .elasticsearchStatus(ElasticsearchStatus.TO_BE_CREATED)
+                .elasticsearchStatus(ElasticsearchStatus.SYNCED)
                 .datasetData(DatasetData.builder()
-                        .title(name).build())
+                        .contentType(ContentType.DATASET)
+                        .title(name)
+                        .description("Description")
+                        .categories(List.of("Category"))
+                        .provenances(List.of("Provenance"))
+                        .pi(false)
+                        .issued(localDateTime)
+                        .keywords(List.of("Keywords"))
+                        .themes(Collections.singletonList("Theme"))
+                        .accessRights("AccessRights")
+                        .publisher("Publisher")
+                        .spatial("Spatial")
+                        .haspart(List.of("Haspart"))
+                        .datacatalogMaster(REST)
+                        .build())
                 .children(children)
                 .build();
     }

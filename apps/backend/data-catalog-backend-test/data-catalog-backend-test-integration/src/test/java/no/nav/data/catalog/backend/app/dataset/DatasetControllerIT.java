@@ -17,11 +17,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
@@ -35,36 +35,10 @@ public class DatasetControllerIT extends AbstractDatasetIT {
 
     @Autowired
     protected TestRestTemplate restTemplate;
-
-    private static final LocalDateTime localDateTime = LocalDateTime.now();
-
-    private final Dataset dataset = Dataset.builder()
-            .id(UUID.randomUUID())
-            .generateElasticsearchId()
-            .elasticsearchStatus(ElasticsearchStatus.SYNCED)
-            .datasetData(DatasetData.builder()
-                    .contentType(ContentType.DATASET)
-                    .title("DatasetData")
-                    .description("Description")
-                    .categories(List.of("Category"))
-                    .provenances(List.of("Provenance"))
-                    .pi(false)
-                    .issued(localDateTime)
-                    .keywords(List.of("Keywords"))
-                    .themes(Collections.singletonList("Theme"))
-                    .accessRights("AccessRights")
-                    .publisher("Publisher")
-                    .spatial("Spatial")
-                    .haspart(List.of("Haspart"))
-                    .datacatalogMaster(REST)
-                    .build())
-            .build();
+    private Dataset dataset;
 
     @Before
     public void setUp() {
-        datasetRepository.deleteAll();
-        distributionChannelRepository.deleteAll();
-        entityManager.clear();
         distributionChannelRepository.save(DistributionChannel.builder().id(UUID.randomUUID()).type(DistributionChannelType.REST).name("DistributionChannel").build());
     }
 
@@ -75,19 +49,17 @@ public class DatasetControllerIT extends AbstractDatasetIT {
 
     @Test
     public void findForId() {
-        datasetRepository.save(dataset);
-
+        dataset = datasetRepository.save(createDataset("DatasetData"));
         ResponseEntity<Map> responseEntity = restTemplate.exchange(
                 "/dataset/" + dataset.getId(), HttpMethod.GET, HttpEntity.EMPTY, Map.class);
 
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(responseEntity.getBody().get("title"), is("DatasetData"));
+        assertThat(responseEntity.getBody().get("title"), is(dataset.getTitle()));
     }
 
     @Test
     public void getDatasetByTitle() {
-        datasetRepository.save(dataset);
-
+        dataset = datasetRepository.save(createDataset("DatasetData"));
         ResponseEntity<Map> responseEntity = restTemplate.exchange(
                 "/dataset/title/DatasetData", HttpMethod.GET, HttpEntity.EMPTY, Map.class);
 
@@ -156,6 +128,9 @@ public class DatasetControllerIT extends AbstractDatasetIT {
         List<DatasetRequest> requests = new ArrayList<>();
         requests.add(createRequest("createTitle1"));
         requests.add(createRequest("createTitle2"));
+        DistributionChannelShort distributionChannelRequest = requests.get(0).getDistributionChannels().get(0);
+        distributionChannelRequest.setName("DistributionChannelNewKafka");
+        distributionChannelRequest.setType(DistributionChannelType.KAFKA.name());
 
         ResponseEntity<List> responseEntity = restTemplate.exchange(
                 "/dataset", HttpMethod.POST, new HttpEntity(requests), List.class);
@@ -165,6 +140,11 @@ public class DatasetControllerIT extends AbstractDatasetIT {
         assertThat(datasetRepository.count(), is(2L));
         assertTrue(datasetRepository.findByTitle("createTitle1".toUpperCase()).isPresent());
         assertTrue(datasetRepository.findByTitle("createTitle2".toUpperCase()).isPresent());
+
+        // create dist channel
+        Optional<DistributionChannel> distributionChannel = distributionChannelRepository.findByName("DistributionChannelNewKafka");
+        assertTrue(distributionChannel.isPresent());
+        assertThat(distributionChannel.get().getType(), is(DistributionChannelType.KAFKA));
     }
 
     @Test
@@ -283,7 +263,7 @@ public class DatasetControllerIT extends AbstractDatasetIT {
                 .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
-                .distributionChannels(Collections.singletonList(new DistributionChannelShort("DistributionChannel", DistributionChannelType.KAFKA.name())))
+                .distributionChannels(Collections.singletonList(new DistributionChannelShort("DistributionChannel", DistributionChannelType.REST.name())))
                 .build();
     }
 }

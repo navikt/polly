@@ -2,6 +2,7 @@ package no.nav.data.catalog.backend.app.dataset;
 
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,11 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class DatasetServiceIT extends AbstractDatasetIT {
+
+    @Before
+    public void setUp() throws Exception {
+        saveDatasets();
+    }
 
     @After
     public void tearDown() {
