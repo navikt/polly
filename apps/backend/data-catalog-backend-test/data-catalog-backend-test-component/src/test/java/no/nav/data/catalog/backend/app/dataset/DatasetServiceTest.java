@@ -1,14 +1,15 @@
 package no.nav.data.catalog.backend.app.dataset;
 
 import no.nav.data.catalog.backend.app.codelist.CodelistStub;
-import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelRepository;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelShort;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelType;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -22,9 +23,6 @@ import java.util.Optional;
 
 import static no.nav.data.catalog.backend.app.dataset.DatacatalogMaster.GITHUB;
 import static no.nav.data.catalog.backend.app.dataset.DatacatalogMaster.REST;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -41,6 +39,9 @@ public class DatasetServiceTest {
 
     @InjectMocks
     private DatasetService service;
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
 
     @Before
     public void setUp() {
@@ -79,128 +80,95 @@ public class DatasetServiceTest {
 
     @Test
     public void validateRequest_shouldThrowValidationException_withDuplicatedElementInRequest() {
+        exception.expectMessage("Request:3 -- DuplicateElement -- The dataset Title1 is not unique because it has already been used in this request (see request:1)");
         DatasetRequest title1 = createValidDatasetRequest("Title1");
         DatasetRequest title2 = createValidDatasetRequest("Title2");
         DatasetRequest title3 = title1;
 
-        List<DatasetRequest> requests = new ArrayList<>(List.of(title1, title2, title3));
-
-        try {
-            service.validateRequest(requests);
-        } catch (ValidationException e) {
-            assertThat(e.get().size(), is(1));
-            assertThat(e.toErrorString(), is("Request:3 -- DuplicateElement -- The dataset Title1 is not unique because it has already been used in this request (see request:1)"));
-        }
+        service.validateRequest(new ArrayList<>(List.of(title1, title2, title3)));
     }
 
     @Test
     public void validateRequest_shouldThrowValidationException_withDuplicatedIdentifyingFieldsInRequest() {
+        exception.expectMessage("Title1 -- DuplicatedIdentifyingFields -- Multiple elements in this request are using the same unique fields (Title1)");
         DatasetRequest title1 = createValidDatasetRequest("Title1");
         DatasetRequest title2 = createValidDatasetRequest("Title2");
         DatasetRequest title3 = createValidDatasetRequest("Title1");
         title3.setDescription("Not equal object as the request1");
 
-        List<DatasetRequest> requests = new ArrayList<>(List.of(title1, title2, title3));
-
-        try {
-            service.validateRequest(requests);
-        } catch (ValidationException e) {
-            assertThat(e.get().size(), is(1));
-            assertThat(e.toErrorString(), is("Title1 -- DuplicatedIdentifyingFields -- Multiple elements in this request are using the same unique fields (Title1)"));
-        }
+        service.validateRequest(new ArrayList<>(List.of(title1, title2, title3)));
     }
 
     @Test
     public void validateRequest_shouldThrowValidationException_whenFieldTitleIsNull() {
-        DatasetRequest request = createValidDatasetRequest(null);
-        List<DatasetRequest> requests = new ArrayList<>(List.of(request));
+        exception.expectMessage("Request:1 -- fieldIsNullOrMissing -- title was null or missing");
 
-        try {
-            service.validateRequest(requests);
-        } catch (ValidationException e) {
-            assertThat(e.get().size(), is(1));
-            assertThat(e.toErrorString(), is("Request:1 -- fieldIsNullOrMissing -- title was null or missing"));
-        }
+        service.validateRequest(List.of(createValidDatasetRequest(null)));
+    }
+
+    @Test
+    public void validateRequest_shouldThrowValidationException_whenFieldCategoriesInvalid() {
+        exception.expectMessage("Request:1 -- fieldIsNullOrMissing -- categories: DOESNTEXIST code not found in codelist CATEGORY");
+        DatasetRequest request = createValidDatasetRequest("Title1");
+        request.setCategories(List.of("doesntexist"));
+
+        service.validateRequest(List.of(request));
     }
 
     @Test
     public void validateRequest_shouldThrowValidationException_whenFieldContentTypeMissing() {
+        exception.expectMessage("Request:1 -- fieldIsNullOrMissing -- contentType was null or missing");
         DatasetRequest request = createValidDatasetRequest("Title");
         request.setContentType(null);
-        List<DatasetRequest> requests = new ArrayList<>(List.of(request));
 
-        try {
-            service.validateRequest(requests);
-        } catch (ValidationException e) {
-            assertThat(e.get().size(), is(1));
-            assertThat(e.toErrorString(), is("Request:1 -- fieldIsNullOrMissing -- contentType was null or missing"));
-        }
+        service.validateRequest(List.of(request));
     }
 
     @Test
     public void validateRequest_shouldThrowValidationException_whenFieldContentTypeInvalid() {
+        exception.expectMessage("Request:1 -- fieldIsNullOrMissing -- contentType was invalid for type ContentType");
         DatasetRequest request = createValidDatasetRequest("Title");
         request.setContentType("invalid-type");
-        List<DatasetRequest> requests = new ArrayList<>(List.of(request));
 
-        try {
-            service.validateRequest(requests);
-        } catch (ValidationException e) {
-            assertThat(e.get().size(), is(1));
-            assertThat(e.toErrorString(), is("Request:1 -- fieldIsNullOrMissing -- contentType was invalid for type ContentType"));
-        }
+        service.validateRequest(List.of(request));
     }
 
     @Test
     public void validateRequest_shouldThrowValidationException_whenFieldTitleIsEmpty() {
+        exception.expectMessage("Request:1 -- fieldIsNullOrMissing -- title was null or missing");
         DatasetRequest request = createValidDatasetRequest("");
 
-        List<DatasetRequest> requests = new ArrayList<>(List.of(request));
-
-        try {
-            service.validateRequest(requests);
-        } catch (ValidationException e) {
-            assertThat(e.get().size(), is(1));
-            assertThat(e.toErrorString(), is("Request:1 -- fieldIsNullOrMissing -- title was null or missing"));
-        }
+        service.validateRequest(List.of(request));
     }
 
     @Test
     public void validateRequest_shouldThrowValidationException_whenCreatingExistingDataset() {
-        List<DatasetRequest> requests = new ArrayList<>();
-        requests.add(createValidDatasetRequest("Title"));
-
+        exception.expectMessage("Request:1 -- creatingExistingDataset --");
+        exception.expectMessage("The dataset Title already exists and therefore cannot be created");
+        List<DatasetRequest> requests = List.of(createValidDatasetRequest("Title"));
         Dataset existingDataset = new Dataset().convertNewFromRequest(requests.get(0), REST);
 
         when(datasetRepository.findByTitle("Title")).thenReturn(Optional.of(existingDataset));
 
-        try {
-            service.validateRequest(requests);
-        } catch (ValidationException e) {
-            assertThat(e.get().size(), is(1));
-            assertThat(e.toErrorString(), is("Request:1 -- creatingExistingDataset -- " +
-                    "The dataset Title already exists and therefore cannot be created"));
-        }
+        service.validateRequest(requests);
     }
 
     @Test
     public void validateRequest_shouldThrowValidationException_whenTryingToUpdateNonExistingDataset() {
-        List<DatasetRequest> requests = new ArrayList<>();
-        requests.add(createValidDatasetRequest("Title"));
+        exception.expectMessage("Request:1 -- updatingNonExistingDataset --");
+        exception.expectMessage("The dataset Title does not exist and therefore cannot be updated");
 
         when(datasetRepository.findByTitle("Title")).thenReturn(Optional.empty());
 
-        try {
-            service.validateRequest(requests);
-        } catch (ValidationException e) {
-            assertThat(e.get().size(), is(1));
-            assertThat(e.toErrorString(), is("Request:1 -- updatingNonExistingDataset -- " +
-                    "The dataset Title does not exist and therefore cannot be updated"));
-        }
+        DatasetRequest request = createValidDatasetRequest("Title");
+        request.setUpdate(true);
+        service.validateRequest(List.of(request));
     }
 
     @Test
     public void validateRequest_shouldThrowValidationException_whenNonCorrelatingMaster() {
+        exception.expectMessage("Request:1 -- nonCorrelatingMaster --");
+        exception.expectMessage("The dataset Title is mastered in GITHUB and therefore cannot be updated from REST");
         DatasetRequest requst = createValidDatasetRequest("Title");
         requst.setUpdate(true);
 
@@ -208,14 +176,7 @@ public class DatasetServiceTest {
 
         when(datasetRepository.findByTitle("Title")).thenReturn(Optional.of(existingDataset));
 
-        try {
-            service.validateRequest(Collections.singletonList(requst));
-            fail();
-        } catch (ValidationException e) {
-            assertThat(e.get().size(), is(1));
-            assertThat(e.toErrorString(), is("Request:1 -- nonCorrelatingMaster -- " +
-                    "The dataset Title is mastered in GITHUB and therefore cannot be updated from REST"));
-        }
+        service.validateRequest(List.of(requst));
     }
 
     private DatasetRequest createValidDatasetRequest(String title) {

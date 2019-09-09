@@ -13,7 +13,7 @@ public class FieldValidator {
     private static final String ERROR_TYPE = "fieldIsNullOrMissing";
     private static final String ERROR_MESSAGE = "%s was null or missing";
     private static final String ERROR_MESSAGE_ENUM = "%s was invalid for type %s";
-    private static final String ERROR_MESSAGE_CODELIST = "%s code not found in codelist %s";
+    private static final String ERROR_MESSAGE_CODELIST = "%s: %s code not found in codelist %s";
     private final List<ValidationError> validationErrors;
     private final String reference;
 
@@ -47,7 +47,7 @@ public class FieldValidator {
             return;
         }
         if (CodelistService.getCodeInfoForCodelistItem(listName, fieldValue) == null) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(ERROR_MESSAGE_CODELIST, fieldValue, listName)));
+            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(ERROR_MESSAGE_CODELIST, fieldName, fieldValue, listName)));
         }
     }
 
