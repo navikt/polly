@@ -119,6 +119,7 @@ public class DatasetRequest implements RequestElement {
     }
 
     void toUpperCaseAndTrim() {
+        setContentType(ifNotNullToUppercaseAndTrim(contentType));
         setCategories(nullToEmptyList(categories).stream()
                 .map(String::toUpperCase)
                 .map(String::trim)
