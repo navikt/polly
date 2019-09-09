@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ValidateFieldsInRequestNotNullOrEmpty {
+
     private static final String ERROR_TYPE = "fieldIsNullOrMissing";
     private static final String ERROR_MESSAGE = "%s was null or missing";
+    private static final String ERROR_MESSAGE_ENUM = "%s was invalid for type %s";
     private final List<ValidationError> validationErrors;
     private final String reference;
 
@@ -20,6 +22,18 @@ public class ValidateFieldsInRequestNotNullOrEmpty {
     public void checkField(String fieldName, String fieldValue) {
         if (fieldValue == null || fieldValue.isEmpty()) {
             validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(ERROR_MESSAGE, fieldName)));
+        }
+    }
+
+    public <T extends Enum<T>> void checkEnum(String fieldName, String fieldValue, Class<T> type) {
+        if (fieldValue == null || fieldValue.isEmpty()) {
+            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(ERROR_MESSAGE, fieldName)));
+            return;
+        }
+        try {
+            Enum.valueOf(type, fieldValue);
+        } catch (IllegalArgumentException e) {
+            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(ERROR_MESSAGE_ENUM, fieldName, type.getSimpleName())));
         }
     }
 

@@ -11,6 +11,7 @@ import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechn
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.common.validator.RequestElement;
+import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelShort;
 import no.nav.data.catalog.backend.app.github.GithubReference;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.eclipse.egit.github.core.RepositoryContents;
@@ -34,19 +35,21 @@ import static org.eclipse.egit.github.core.RepositoryContents.TYPE_FILE;
 @NoArgsConstructor
 public class DatasetRequest implements RequestElement {
 
+    private String contentType;
     private String title;
     private String description;
     private List<String> categories;
     private List<String> provenances;
     private String pi;
-    private String issued;
     private List<String> keywords;
-    private String theme;
+    private List<String> themes;
     private String accessRights;
-    private String publisher;
     private String spatial;
     private List<String> haspart;
-    private List<String> distributionChannels;
+    private List<DistributionChannelShort> distributionChannels;
+
+    private String issued;
+    private String publisher;
 
     @JsonIgnore
     private GithubReference githubReference;
@@ -55,7 +58,7 @@ public class DatasetRequest implements RequestElement {
     @JsonIgnore
     private int requestIndex;
     @JsonIgnore
-    private DatasetMaster master;
+    private DatacatalogMaster datacatalogMaster;
 
     public static List<DatasetRequest> convertFromGithubFile(RepositoryContents file) {
         byte[] content = null;
@@ -103,7 +106,7 @@ public class DatasetRequest implements RequestElement {
     }
 
     String getReference() {
-        switch (master) {
+        switch (datacatalogMaster) {
             case GITHUB:
                 return getRequestReference().orElse("");
             case REST:
@@ -111,7 +114,7 @@ public class DatasetRequest implements RequestElement {
             case KAFKA:
                 return "Kafka";
             default:
-                throw new IllegalStateException("Unexpected value: " + master);
+                throw new IllegalStateException("Unexpected value: " + datacatalogMaster);
         }
     }
 
@@ -129,15 +132,15 @@ public class DatasetRequest implements RequestElement {
         setPi(ifNotNullTrim(pi));
         setIssued(ifNotNullTrim(issued));
         setKeywords(nullToEmptyList(keywords).stream().map(String::toUpperCase).map(String::trim).collect(Collectors.toList()));
-        setTheme(ifNotNullToUppercaseAndTrim(theme));
+        setThemes(nullToEmptyList(themes));
         setAccessRights(ifNotNullToUppercaseAndTrim(accessRights));
         setPublisher(ifNotNullToUppercaseAndTrim(publisher));
         setSpatial(ifNotNullToUppercaseAndTrim(spatial));
         setHaspart(nullToEmptyList(haspart).stream().map(String::toUpperCase).map(String::trim).collect(Collectors.toList()));
-        setDistributionChannels(nullToEmptyList(distributionChannels).stream()
-                .map(String::toUpperCase)
-                .map(String::trim)
-                .collect(Collectors.toList()));
+//        setDistributionChannels(nullToEmptyList(distributionChannels).stream()
+//                .map(String::toUpperCase)
+//                .map(String::trim)
+//                .collect(Collectors.toList()));
     }
 
     private String ifNotNullToUppercaseAndTrim(String field) {
@@ -148,12 +151,12 @@ public class DatasetRequest implements RequestElement {
         return field == null ? null : field.trim();
     }
 
-    public static void initiateRequests(List<DatasetRequest> requests, boolean update, DatasetMaster master) {
+    public static void initiateRequests(List<DatasetRequest> requests, boolean update, DatacatalogMaster master) {
         requests.forEach(datasetRequest -> {
-            datasetRequest.setMaster(master);
+            datasetRequest.setDatacatalogMaster(master);
             datasetRequest.setUpdate(update);
         });
-        if (master == DatasetMaster.REST) {
+        if (master == DatacatalogMaster.REST) {
             assignIds(requests);
         }
     }
@@ -164,9 +167,10 @@ public class DatasetRequest implements RequestElement {
     }
 
     public void assertMaster(Dataset dataset) {
-        if (getMaster() != dataset.getDatasetData().getMaster()) {
+        if (getDatacatalogMaster() != dataset.getDatasetData().getDatacatalogMaster()) {
             throw new ValidationException(
-                    String.format("Master mismatch for update, dataset is mastered by=%s request came from %s", dataset.getDatasetData().getMaster(), getMaster()));
+                    String.format("Master mismatch for update, dataset is mastered by=%s request came from %s", dataset.getDatasetData().getDatacatalogMaster(),
+                            getDatacatalogMaster()));
         }
     }
 }

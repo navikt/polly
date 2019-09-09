@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelShort;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,29 +19,31 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DatasetData {
 
-    DatasetData(DatasetMaster master) {
-        this.master = master;
+    DatasetData(DatacatalogMaster datacatalogMaster) {
+        this.datacatalogMaster = datacatalogMaster;
     }
 
+    private ContentType contentType;
     private String title;
     private String description;
     private List<String> categories;
     private List<String> provenances;
     private Boolean pi;
-    private LocalDateTime issued;
     private List<String> keywords;
-    private String theme;
+    private List<String> themes;
     private String accessRights;
-    private String publisher;
     private String spatial;
     private List<String> haspart;
-    private List<String> distributionChannels;
+    private List<DistributionChannelShort> distributionChannels;
+
+    private String publisher;
+    private LocalDateTime issued;
 
     @Setter(AccessLevel.PRIVATE)
-    private DatasetMaster master;
+    private DatacatalogMaster datacatalogMaster;
 
-    public boolean hasMaster() {
-        return master != null;
+    public boolean hasDatacatalogMaster() {
+        return datacatalogMaster != null;
     }
 
 }

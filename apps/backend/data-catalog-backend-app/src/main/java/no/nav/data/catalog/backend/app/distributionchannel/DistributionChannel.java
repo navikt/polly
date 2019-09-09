@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.auditing.Auditable;
 import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
+import no.nav.data.catalog.backend.app.dataset.Dataset.DatasetBuilder;
 import no.nav.data.catalog.backend.app.system.System;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
@@ -30,6 +31,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
+import static org.elasticsearch.common.UUIDs.base64UUID;
 
 @Slf4j
 @Data
@@ -66,19 +69,17 @@ public class DistributionChannel extends Auditable<String> {
     @JoinTable(name = "DISTRIBUTION_CHANNEL__SYSTEM_PRODUCER",
             joinColumns = @JoinColumn(name = "DISTRIBUTION_CHANNEL_ID"),
             inverseJoinColumns = @JoinColumn(name = "SYSTEM_ID"))
-    private Set<System> producers;
+    private Set<System> producers = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "DISTRIBUTION_CHANNEL__SYSTEM_CONSUMER",
             joinColumns = @JoinColumn(name = "DISTRIBUTION_CHANNEL_ID"),
             inverseJoinColumns = @JoinColumn(name = "SYSTEM_ID"))
-    private Set<System> consumers;
+    private Set<System> consumers = new HashSet<>();
 
     public DistributionChannel convertFromRequest(DistributionChannelRequest request, boolean isUpdate) {
         if (!isUpdate) {
             this.id = UUID.randomUUID();
-            this.producers = new HashSet<>();
-            this.consumers = new HashSet<>();
         }
         this.name = StringUtils.trim(request.getName());
         this.description = StringUtils.trim(request.getDescription());
@@ -115,6 +116,20 @@ public class DistributionChannel extends Auditable<String> {
 
     public static List<String> names(Collection<DistributionChannel> distributionChannels) {
         return StreamUtils.safeStream(distributionChannels).map(DistributionChannel::getName).collect(Collectors.toList());
+    }
+
+    public static List<DistributionChannelShort> distributionChannelShorts(Collection<DistributionChannel> distributionChannels) {
+        return StreamUtils.safeStream(distributionChannels)
+                .map(distributionChannel -> new DistributionChannelShort(distributionChannel.getName(), distributionChannel.getType().name()))
+                .collect(Collectors.toList());
+    }
+
+    public static class DistributionChannelBuilder {
+
+        private Set<Dataset> datasets = new HashSet<>();
+        private Set<System> producers = new HashSet<>();
+        private Set<System> consumers = new HashSet<>();
+
     }
 
 }

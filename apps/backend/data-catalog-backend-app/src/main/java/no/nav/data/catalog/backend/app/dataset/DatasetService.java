@@ -3,6 +3,7 @@ package no.nav.data.catalog.backend.app.dataset;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
+import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import no.nav.data.catalog.backend.app.common.validator.RequestValidator;
 import no.nav.data.catalog.backend.app.common.validator.ValidateFieldsInRequestNotNullOrEmpty;
 import no.nav.data.catalog.backend.app.common.validator.ValidationError;
@@ -11,6 +12,8 @@ import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelationRepository;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelRepository;
+import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelShort;
+import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelType;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +34,7 @@ import javax.transaction.Transactional;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.nullToEmptyList;
+import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.safeStream;
 
 @Slf4j
 @Service
@@ -78,12 +82,12 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
     }
 
     @Transactional
-    public Dataset save(DatasetRequest request, DatasetMaster master) {
+    public Dataset save(DatasetRequest request, DatacatalogMaster master) {
         return datasetRepository.save(convertNew(request, master));
     }
 
     @Transactional
-    public List<Dataset> saveAll(List<DatasetRequest> requests, DatasetMaster master) {
+    public List<Dataset> saveAll(List<DatasetRequest> requests, DatacatalogMaster master) {
         List<Dataset> datasets = requests.stream().map(request -> convertNew(request, master)).collect(toList());
         return datasetRepository.saveAll(datasets);
     }
@@ -128,7 +132,7 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         requests.forEach(this::delete);
     }
 
-    private Dataset convertNew(DatasetRequest request, DatasetMaster master) {
+    private Dataset convertNew(DatasetRequest request, DatacatalogMaster master) {
         Dataset dataset = new Dataset().convertNewFromRequest(request, master);
         attachDependencies(dataset, request);
         return dataset;
@@ -143,7 +147,7 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
 
     private void attachDependencies(Dataset dataset, DatasetRequest request) {
         var childTitles = nullToEmptyList(request.getHaspart());
-        var distChannelNames = nullToEmptyList(request.getDistributionChannels());
+        var distChannelNames = safeStream(request.getDistributionChannels()).map(DistributionChannelShort::getName).collect(toList());
 
         List<Dataset> children = childTitles.isEmpty() ? Collections.emptyList() : datasetRepository.findAllByTitle(childTitles);
         if (childTitles.size() != children.size()) {
@@ -151,13 +155,23 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         }
 
         List<DistributionChannel> distChannels = distChannelNames.isEmpty() ? Collections.emptyList() : distributionChannelRepository.findAllByName(distChannelNames);
+        List<DistributionChannel> newChannels = Collections.emptyList();
         if (distChannelNames.size() != distChannels.size()) {
-            throw new DataCatalogBackendNotFoundException(
-                    String.format("Could not find all DistributionChannels %s, found %s", distChannelNames, DistributionChannel.names(distChannels)));
+            newChannels = createDistributionChannels(request.getDistributionChannels(), distChannels);
         }
 
         dataset.replaceChildren(children);
-        dataset.replaceDistributionChannels(distChannels);
+        dataset.replaceDistributionChannels(StreamUtils.union(distChannels, newChannels));
+    }
+
+    private List<DistributionChannel> createDistributionChannels(List<DistributionChannelShort> requestedDistChannel, List<DistributionChannel> existingDistChannels) {
+        List<DistributionChannel> newChannels = safeStream(requestedDistChannel)
+                .filter(distChannelRequest -> DistributionChannel.names(existingDistChannels).contains(distChannelRequest.getName()))
+                .map(DistributionChannelShort::toRequest)
+                .map(distChannelRequest -> new DistributionChannel().convertFromRequest(distChannelRequest, false))
+                .collect(Collectors.toList());
+        log.info("Creating new DistributionChannels {}", newChannels);
+        return distributionChannelRepository.saveAll(newChannels);
     }
 
     public void validateRequest(List<DatasetRequest> requests) {
@@ -174,8 +188,8 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         if (requests.isEmpty()) {
             return Collections.emptyList();
         }
-        if (requests.stream().anyMatch(r -> r.getMaster() == null)) {
-            throw new IllegalStateException("missing master on request");
+        if (requests.stream().anyMatch(r -> r.getDatacatalogMaster() == null)) {
+            throw new IllegalStateException("missing DatacatalogMaster on request");
         }
 
         List<ValidationError> validationErrors = new ArrayList<>(validateListOfRequests(requests));
@@ -209,8 +223,16 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
     private List<ValidationError> validateThatNoFieldsAreNullOrEmpty(DatasetRequest request) {
         ValidateFieldsInRequestNotNullOrEmpty nullOrEmpty = new ValidateFieldsInRequestNotNullOrEmpty(request.getReference());
 
-        // TODO: Find out which fields should be validated
+        nullOrEmpty.checkEnum("contentType", request.getContentType(), ContentType.class);
         nullOrEmpty.checkField("title", request.getTitle());
+
+        safeStream(request.getDistributionChannels())
+                .forEach(distributionChannelShort -> {
+                    nullOrEmpty.checkField("distributionchannel.name", distributionChannelShort.getName());
+                    nullOrEmpty.checkEnum("distributionchannel.type", distributionChannelShort.getType(), DistributionChannelType.class);
+                });
+
+        // TODO: Find out which fields should be validated
 //        nullOrEmpty.checkField("description", request.getDescription());
 //        nullOrEmpty.checkListOfFields("categories", request.getCategories());
 //        nullOrEmpty.checkListOfFields("provenances", request.getProvenances());
@@ -244,19 +266,19 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         if (updatingExistingElement(request.isUpdate(), existingDataset.isPresent())) {
             DatasetData existingDatasetData = existingDataset.get().getDatasetData();
 
-            if (!existingDatasetData.hasMaster()) {
+            if (!existingDatasetData.hasDatacatalogMaster()) {
                 validationErrors.add(new ValidationError(request.getReference(), "missingMasterInExistingDataset"
                         , String.format("The dataset %s has not defined where it is mastered", existingDatasetData.getTitle())));
-            } else if (!correlatingMaster(existingDatasetData.getMaster(), request.getMaster())) {
+            } else if (!correlatingMaster(existingDatasetData.getDatacatalogMaster(), request.getDatacatalogMaster())) {
                 validationErrors.add(new ValidationError(request.getReference(), "nonCorrelatingMaster",
                         String.format("The dataset %s is mastered in %s and therefore cannot be updated from %s",
-                                request.getTitle(), existingDatasetData.getMaster(), request.getMaster())));
+                                request.getTitle(), existingDatasetData.getDatacatalogMaster(), request.getDatacatalogMaster())));
             }
         }
         return validationErrors;
     }
 
-    private boolean correlatingMaster(DatasetMaster existingMaster, DatasetMaster requestMaster) {
+    private boolean correlatingMaster(DatacatalogMaster existingMaster, DatacatalogMaster requestMaster) {
         return existingMaster.equals(requestMaster);
     }
 }

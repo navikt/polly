@@ -4,6 +4,7 @@ public enum DistributionChannelType {
     KAFKA,
     REST,
     SOAP,
-    MQ
+    MQ,
+    FIL
 
 }

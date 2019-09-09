@@ -6,6 +6,8 @@ import no.nav.data.catalog.backend.app.codelist.CodelistStub;
 import no.nav.data.catalog.backend.app.common.rest.PageParameters;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
+import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelShort;
+import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +32,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static junit.framework.TestCase.assertTrue;
-import static no.nav.data.catalog.backend.app.dataset.DatasetMaster.REST;
+import static no.nav.data.catalog.backend.app.dataset.DatacatalogMaster.REST;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -77,8 +79,7 @@ public class DatasetControllerTest {
         when(repository.findById(dataset.getId())).thenReturn(Optional.of(dataset));
         mvc.perform(get("/dataset/{id}", dataset.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(dataset.getId().toString()))
-                .andExpect(jsonPath("$.title").value("datasetTitle"));
+                .andExpect(jsonPath("$.title").value(dataset.getTitle()));
     }
 
     @Test
@@ -86,7 +87,7 @@ public class DatasetControllerTest {
         when(service.findDatasetWithAllDescendants(dataset.getId())).thenReturn(dataset.convertToResponse());
         mvc.perform(get("/dataset/{id}", dataset.getId()).param("includeDescendants", "true"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(dataset.getId().toString()));
+                .andExpect(jsonPath("$.title").value(dataset.getTitle()));
     }
 
     @Test
@@ -94,7 +95,7 @@ public class DatasetControllerTest {
         when(repository.findByTitle(dataset.getDatasetData().getTitle())).thenReturn(Optional.of(dataset));
         mvc.perform(get("/dataset/title/{title}", dataset.getDatasetData().getTitle()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(dataset.getId().toString()));
+                .andExpect(jsonPath("$.title").value(dataset.getTitle()));
     }
 
     @Test
@@ -105,7 +106,7 @@ public class DatasetControllerTest {
         when(service.findAllRootDatasets(false, pageable)).thenReturn(allRootDatasets);
         mvc.perform(get("/dataset/roots"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].id").value(dataset.getId().toString()));
+                .andExpect(jsonPath("$.content[0].title").value(dataset.getTitle()));
     }
 
     @Test
@@ -121,7 +122,7 @@ public class DatasetControllerTest {
         DatasetRequest request = createValidDatasetRequest("Title1");
         List<DatasetRequest> requests = new ArrayList<>(List.of(request));
 
-        when(service.saveAll(ArgumentMatchers.anyList(), any(DatasetMaster.class))).thenReturn(Collections.singletonList(new Dataset()));
+        when(service.saveAll(ArgumentMatchers.anyList(), any(DatacatalogMaster.class))).thenReturn(Collections.singletonList(new Dataset()));
 
         String inputJson = objectMapper.writeValueAsString(requests);
 
@@ -211,6 +212,7 @@ public class DatasetControllerTest {
 
     private DatasetRequest createValidDatasetRequest(String title) {
         return DatasetRequest.builder()
+                .contentType(ContentType.DATASET.name())
                 .title(title)
                 .description("UPDATED DESCRIPTION")
                 .categories(List.of("Category"))
@@ -218,17 +220,18 @@ public class DatasetControllerTest {
                 .pi("false")
                 .issued(LocalDateTime.now().toString())
                 .keywords(List.of("Keywords"))
-                .theme("Theme")
+                .themes(Collections.singletonList("Theme"))
                 .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
                 .haspart(List.of("Haspart"))
-                .distributionChannels(List.of("DistributionChannel"))
+                .distributionChannels(List.of(new DistributionChannelShort("DistributionChannel", DistributionChannelType.KAFKA.name())))
                 .build();
     }
 
     private DatasetData createValidDatasetData(String title) {
         return DatasetData.builder()
+                .contentType(ContentType.DATASET)
                 .title(title)
                 .description("Description")
                 .categories(List.of("Category"))
@@ -236,12 +239,12 @@ public class DatasetControllerTest {
                 .pi(false)
                 .issued(LocalDateTime.now())
                 .keywords(List.of("Keywords"))
-                .theme("Theme")
+                .themes(Collections.singletonList("Theme"))
                 .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
                 .haspart(List.of("Haspart"))
-                .master(REST)
+                .datacatalogMaster(REST)
                 .build();
     }
 }

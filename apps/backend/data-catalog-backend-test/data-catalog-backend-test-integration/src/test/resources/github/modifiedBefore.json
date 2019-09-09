@@ -1,5 +1,6 @@
 [
   {
+    "contentType": "DATASET",
     "title": "modified_removed",
     "description": "description",
     "categories": ["PERSONALIA"],
@@ -10,13 +11,14 @@
       "SKATTEETATEN",
       "bruker"
     ],
-    "theme": "default",
+    "themes": ["default"],
     "accessRights": "no",
     "publisher": "PESYS",
     "spatial": "huh",
     "haspart": []
   },
   {
+    "contentType": "DATASET",
     "title": "modified_changed",
     "description": "description",
     "categories": ["PERSONALIA"],
@@ -27,7 +29,7 @@
       "SKATTEETATEN",
       "bruker"
     ],
-    "theme": "default",
+    "themes": ["default"],
     "accessRights": "no",
     "publisher": "PESYS",
     "spatial": "huh",

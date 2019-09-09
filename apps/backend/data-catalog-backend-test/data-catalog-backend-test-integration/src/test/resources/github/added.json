@@ -1,4 +1,5 @@
 {
+  "contentType": "DATASET",
   "title": "added",
   "description": "description",
   "categories": [
@@ -13,12 +14,12 @@
     "SKATTEETATEN",
     "bruker"
   ],
-  "theme": "default",
+  "themes": ["default"],
   "accessRights": "no",
   "publisher": "PESYS",
   "spatial": "huh",
   "haspart": [],
   "distributionChannels": [
-    "aapen-dok-mottatt"
+     {"name":  "aapen-dok-mottatt", "type": "REST"}
   ]
 }

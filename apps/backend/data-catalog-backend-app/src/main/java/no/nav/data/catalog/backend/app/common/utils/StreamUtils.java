@@ -53,4 +53,11 @@ public final class StreamUtils {
     public static <T> List<T> copyOf(List<T> list) {
         return list == null ? Collections.emptyList() : List.copyOf(list);
     }
+
+    public static <T> List<T> union(List<T> listA, List<T> listB) {
+        ArrayList<T> list = new ArrayList<>(listA);
+        list.addAll(listB);
+        return list;
+    }
+
 }

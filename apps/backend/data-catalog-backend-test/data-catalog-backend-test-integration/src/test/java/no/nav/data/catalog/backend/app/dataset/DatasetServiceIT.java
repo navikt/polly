@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static no.nav.data.catalog.backend.app.dataset.DatasetMaster.REST;
+import static no.nav.data.catalog.backend.app.dataset.DatacatalogMaster.REST;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -34,7 +34,7 @@ public class DatasetServiceIT extends AbstractDatasetIT {
     public void getDatasetResponseTree() {
         DatasetResponse datasetResponse = datasetService.findDatasetWithAllDescendants(dataset1.getId());
 
-        assertThat(datasetResponse.getId(), is(dataset1.getId()));
+        assertThat(datasetResponse.getTitle(), is(dataset1.getTitle()));
         assertThat(datasetResponse.getChildren(), hasSize(2));
         DatasetResponse datasetResponse11 = findChildByTitle(datasetResponse, "11");
         DatasetResponse datasetResponse12 = findChildByTitle(datasetResponse, "12");
@@ -59,7 +59,7 @@ public class DatasetServiceIT extends AbstractDatasetIT {
                 .haspart(Collections.singletonList(dataset1.getTitle()))
                 .build();
 
-        Dataset dataset = datasetService.save(request, DatasetMaster.GITHUB);
+        Dataset dataset = datasetService.save(request, DatacatalogMaster.GITHUB);
         assertThat(dataset.getChildren(), hasItem(dataset1));
         assertThat(dataset.getDatasetData().getHaspart(), hasItem(dataset1.getTitle()));
     }
@@ -92,7 +92,7 @@ public class DatasetServiceIT extends AbstractDatasetIT {
         List<DatasetRequest> requests = List.of(DatasetRequest.builder()
                 .title("updateDataset")
                 .description("DatasetDescription")
-                .master(REST)
+                .datacatalogMaster(REST)
                 .build());
 
         datasetService.saveAll(requests, REST);

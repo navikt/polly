@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
-import static no.nav.data.catalog.backend.app.dataset.DatasetMaster.REST;
+import static no.nav.data.catalog.backend.app.dataset.DatacatalogMaster.REST;
 
 @Slf4j
 @RestController
@@ -190,7 +190,7 @@ public class DatasetController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         log.info("Dataset with id={} has been set to be deleted during the next scheduled task", id);
-        DatasetRequest deleteRequest = DatasetRequest.builder().master(REST).title(fromRepository.get().getTitle()).build();
+        DatasetRequest deleteRequest = DatasetRequest.builder().datacatalogMaster(REST).title(fromRepository.get().getTitle()).build();
         return new ResponseEntity<>(service.delete(deleteRequest).convertToResponse(), HttpStatus.ACCEPTED);
     }
 }

@@ -3,6 +3,7 @@ package no.nav.data.catalog.backend.app.dataset;
 import no.nav.data.catalog.backend.app.common.rest.PageParameters;
 import no.nav.data.catalog.backend.app.common.rest.RestResponsePage;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
+import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelShort;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelType;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.junit.After;
@@ -18,13 +19,14 @@ import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.data.catalog.backend.app.dataset.DatasetMaster.REST;
+import static no.nav.data.catalog.backend.app.dataset.DatacatalogMaster.REST;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -41,6 +43,7 @@ public class DatasetControllerIT extends AbstractDatasetIT {
             .generateElasticsearchId()
             .elasticsearchStatus(ElasticsearchStatus.SYNCED)
             .datasetData(DatasetData.builder()
+                    .contentType(ContentType.DATASET)
                     .title("DatasetData")
                     .description("Description")
                     .categories(List.of("Category"))
@@ -48,12 +51,12 @@ public class DatasetControllerIT extends AbstractDatasetIT {
                     .pi(false)
                     .issued(localDateTime)
                     .keywords(List.of("Keywords"))
-                    .theme("Theme")
+                    .themes(Collections.singletonList("Theme"))
                     .accessRights("AccessRights")
                     .publisher("Publisher")
                     .spatial("Spatial")
                     .haspart(List.of("Haspart"))
-                    .master(REST)
+                    .datacatalogMaster(REST)
                     .build())
             .build();
 
@@ -89,7 +92,7 @@ public class DatasetControllerIT extends AbstractDatasetIT {
                 "/dataset/title/DatasetData", HttpMethod.GET, HttpEntity.EMPTY, Map.class);
 
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(responseEntity.getBody().get("id"), is(dataset.getId().toString()));
+        assertThat(responseEntity.getBody().get("title"), is(dataset.getTitle()));
     }
 
     @Test
@@ -243,7 +246,6 @@ public class DatasetControllerIT extends AbstractDatasetIT {
                 .get()
                 .getElasticsearchStatus(), is(ElasticsearchStatus.SYNCED));
 
-
         ResponseEntity<DatasetResponse> responseEntity = restTemplate.exchange(
                 "/dataset/" + id, HttpMethod.DELETE, HttpEntity.EMPTY, DatasetResponse.class);
 
@@ -269,6 +271,7 @@ public class DatasetControllerIT extends AbstractDatasetIT {
 
     private DatasetRequest createRequest(String title) {
         return DatasetRequest.builder()
+                .contentType(ContentType.DATASET.name())
                 .title(title.toUpperCase().trim())
                 .description("DatasetDescription")
                 .categories(List.of("PERSONALIA"))
@@ -276,11 +279,11 @@ public class DatasetControllerIT extends AbstractDatasetIT {
                 .pi("false")
                 .issued(localDateTime.toString())
                 .keywords(List.of("Keywords"))
-                .theme("Theme")
+                .themes(Collections.singletonList("Theme"))
                 .accessRights("AccessRights")
                 .publisher("Publisher")
                 .spatial("Spatial")
-                .distributionChannels(List.of("DistributionChannel"))
+                .distributionChannels(Collections.singletonList(new DistributionChannelShort("DistributionChannel", DistributionChannelType.KAFKA.name())))
                 .build();
     }
 }

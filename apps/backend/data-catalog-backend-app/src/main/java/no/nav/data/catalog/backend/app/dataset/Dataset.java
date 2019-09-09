@@ -92,7 +92,7 @@ public class Dataset extends Auditable<String> {
         return new DatasetResponse(this);
     }
 
-    public Dataset convertNewFromRequest(DatasetRequest request, DatasetMaster master) {
+    public Dataset convertNewFromRequest(DatasetRequest request, DatacatalogMaster master) {
         id = UUID.randomUUID();
         elasticsearchId = base64UUID();
         elasticsearchStatus = ElasticsearchStatus.TO_BE_CREATED;
@@ -108,6 +108,7 @@ public class Dataset extends Auditable<String> {
     }
 
     private void convertFromRequest(DatasetRequest request) {
+        datasetData.setContentType(request.getContentType() != null ? ContentType.valueOf(request.getContentType()) : null);
         datasetData.setTitle(request.getTitle());
         datasetData.setDescription(request.getDescription());
         datasetData.setCategories(copyOf(request.getCategories()));
@@ -115,7 +116,7 @@ public class Dataset extends Auditable<String> {
         datasetData.setPi(request.getPi() == null ? null : Boolean.parseBoolean(request.getPi()));
         datasetData.setIssued(request.getIssued() == null ? null : LocalDateTime.parse(request.getIssued()));
         datasetData.setKeywords(copyOf(request.getKeywords()));
-        datasetData.setTheme(request.getTheme());
+        datasetData.setThemes(copyOf(request.getThemes()));
         datasetData.setAccessRights(request.getAccessRights());
         datasetData.setPublisher(request.getPublisher());
         datasetData.setSpatial(request.getSpatial());
@@ -169,7 +170,7 @@ public class Dataset extends Auditable<String> {
 
     private void updateJsonHaspartsAndDistributionChannels() {
         datasetData.setHaspart(titles(children));
-        datasetData.setDistributionChannels(DistributionChannel.names(distributionChannels));
+        datasetData.setDistributionChannels(DistributionChannel.distributionChannelShorts(distributionChannels));
     }
 
     public static List<String> titles(Collection<Dataset> datasets) {

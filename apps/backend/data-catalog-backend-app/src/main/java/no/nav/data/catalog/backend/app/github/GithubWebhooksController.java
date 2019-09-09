@@ -9,11 +9,9 @@ import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.common.utils.CollectionDifference;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.common.validator.ValidationError;
-import no.nav.data.catalog.backend.app.dataset.Dataset;
 import no.nav.data.catalog.backend.app.dataset.DatasetRequest;
 import no.nav.data.catalog.backend.app.dataset.DatasetService;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
-import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import no.nav.data.catalog.backend.app.github.domain.RepoModification;
 import no.nav.data.catalog.backend.app.poldatasett.PolDatasett;
 import no.nav.data.catalog.backend.app.poldatasett.PolDatasettRepository;
@@ -33,11 +31,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import javax.transaction.Transactional;
 
 import static java.util.Arrays.asList;
-import static no.nav.data.catalog.backend.app.dataset.DatasetMaster.GITHUB;
+import static no.nav.data.catalog.backend.app.dataset.DatacatalogMaster.GITHUB;
 import static no.nav.data.catalog.backend.app.github.GithubConsumer.REFS_HEADS_MASTER;
 
 @Slf4j

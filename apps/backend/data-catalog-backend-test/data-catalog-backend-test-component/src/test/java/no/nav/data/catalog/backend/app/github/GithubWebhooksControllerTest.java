@@ -4,7 +4,7 @@ import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.common.validator.ValidationError;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
-import no.nav.data.catalog.backend.app.dataset.DatasetMaster;
+import no.nav.data.catalog.backend.app.dataset.DatacatalogMaster;
 import no.nav.data.catalog.backend.app.dataset.DatasetRequest;
 import no.nav.data.catalog.backend.app.dataset.DatasetService;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
@@ -194,7 +194,7 @@ public class GithubWebhooksControllerTest {
         ).andExpect(status().isOk());
 
         verify(service, times(2)).validateRequestsAndReturnErrors(anyList());
-        verify(service).saveAll(anyList(), eq(DatasetMaster.GITHUB));
+        verify(service).saveAll(anyList(), eq(DatacatalogMaster.GITHUB));
         verify(service).updateAll(anyList());
         verify(service).deleteAll(anyList());
     }

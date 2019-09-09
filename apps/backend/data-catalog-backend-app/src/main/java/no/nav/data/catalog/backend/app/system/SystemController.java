@@ -29,7 +29,7 @@ import javax.transaction.Transactional;
 @Slf4j
 @RestController
 @CrossOrigin
-@RequestMapping("/backend/system")
+@RequestMapping("/system")
 @Api(value = "System", description = "REST API for Systems", tags = {"System"})
 public class SystemController {
 

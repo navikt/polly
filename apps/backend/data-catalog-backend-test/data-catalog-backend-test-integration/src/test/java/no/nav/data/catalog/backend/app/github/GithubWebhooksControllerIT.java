@@ -3,7 +3,7 @@ package no.nav.data.catalog.backend.app.github;
 import no.nav.data.catalog.backend.app.IntegrationTestBase;
 import no.nav.data.catalog.backend.app.codelist.CodelistStub;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
-import no.nav.data.catalog.backend.app.dataset.DatasetMaster;
+import no.nav.data.catalog.backend.app.dataset.DatacatalogMaster;
 import no.nav.data.catalog.backend.app.dataset.DatasetRequest;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
@@ -89,15 +89,15 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
         repository.save(new Dataset().convertNewFromRequest(DatasetRequest.builder()
                 .title("removed")
                 .description("desc")
-                .build(), DatasetMaster.GITHUB));
+                .build(), DatacatalogMaster.GITHUB));
         repository.save(new Dataset().convertNewFromRequest(DatasetRequest.builder()
                 .title("modified_removed")
                 .description("desc")
-                .build(), DatasetMaster.GITHUB));
+                .build(), DatacatalogMaster.GITHUB));
         repository.save(new Dataset().convertNewFromRequest(DatasetRequest.builder()
                 .title("modified_changed")
                 .description("desc")
-                .build(), DatasetMaster.GITHUB));
+                .build(), DatacatalogMaster.GITHUB));
     }
 
     @Test
