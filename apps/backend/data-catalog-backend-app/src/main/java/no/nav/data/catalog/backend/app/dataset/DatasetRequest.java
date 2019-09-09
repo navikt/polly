@@ -119,12 +119,17 @@ public class DatasetRequest implements RequestElement {
     }
 
     void toUpperCaseAndTrim() {
-        setTitle(ifNotNullToUppercaseAndTrim(title));
-        setDescription(ifNotNullToUppercaseAndTrim(description));
         setCategories(nullToEmptyList(categories).stream()
                 .map(String::toUpperCase)
                 .map(String::trim)
                 .collect(Collectors.toList()));
+
+        // TODO sjekk
+//        doUpperCaseAndTrim();
+    }
+    void doUpperCaseAndTrim() {
+        setTitle(ifNotNullToUppercaseAndTrim(title));
+        setDescription(ifNotNullToUppercaseAndTrim(description));
         setProvenances(nullToEmptyList(provenances).stream()
                 .map(String::toUpperCase)
                 .map(String::trim)

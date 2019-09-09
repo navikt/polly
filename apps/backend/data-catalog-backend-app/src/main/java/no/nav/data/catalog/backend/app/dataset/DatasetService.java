@@ -1,11 +1,12 @@
 package no.nav.data.catalog.backend.app.dataset;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import no.nav.data.catalog.backend.app.common.validator.RequestValidator;
-import no.nav.data.catalog.backend.app.common.validator.ValidateFieldsInRequestNotNullOrEmpty;
+import no.nav.data.catalog.backend.app.common.validator.FieldValidator;
 import no.nav.data.catalog.backend.app.common.validator.ValidationError;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelation;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelationRepository;
@@ -210,8 +211,8 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         List<ValidationError> validationErrors = new ArrayList<>();
 
         requests.forEach(request -> {
+            request.toUpperCaseAndTrim();
             List<ValidationError> errorsInCurrentRequest = validateThatNoFieldsAreNullOrEmpty(request);
-//                request.toUpperCaseAndTrim();
             errorsInCurrentRequest.addAll(validateRepositoryValues(request));
 
             if (!errorsInCurrentRequest.isEmpty()) {
@@ -222,32 +223,34 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
     }
 
     private List<ValidationError> validateThatNoFieldsAreNullOrEmpty(DatasetRequest request) {
-        ValidateFieldsInRequestNotNullOrEmpty nullOrEmpty = new ValidateFieldsInRequestNotNullOrEmpty(request.getReference());
+        FieldValidator validator = new FieldValidator(request.getReference());
 
-        nullOrEmpty.checkEnum("contentType", request.getContentType(), ContentType.class);
-        nullOrEmpty.checkField("title", request.getTitle());
+        validator.checkEnum("contentType", request.getContentType(), ContentType.class);
+        validator.checkBlank("title", request.getTitle());
+
+        safeStream(request.getCategories()).forEach(category -> validator.checkCodelist("categories", category, ListName.CATEGORY));
 
         safeStream(request.getDistributionChannels())
                 .forEach(distributionChannelShort -> {
-                    nullOrEmpty.checkField("distributionchannel.name", distributionChannelShort.getName());
-                    nullOrEmpty.checkEnum("distributionchannel.type", distributionChannelShort.getType(), DistributionChannelType.class);
+                    validator.checkBlank("distributionchannel.name", distributionChannelShort.getName());
+                    validator.checkEnum("distributionchannel.type", distributionChannelShort.getType(), DistributionChannelType.class);
                 });
 
         // TODO: Find out which fields should be validated
-//        nullOrEmpty.checkField("description", request.getDescription());
-//        nullOrEmpty.checkListOfFields("categories", request.getCategories());
-//        nullOrEmpty.checkListOfFields("provenances", request.getProvenances());
-//        nullOrEmpty.checkField("pi", request.getPi());
-//        nullOrEmpty.checkField("issued", request.getIssued());
-//        nullOrEmpty.checkListOfFields("keywords", request.getKeywords());
-//        nullOrEmpty.checkField("theme", request.getTheme());
-//        nullOrEmpty.checkField("accessRights", request.getAccessRights());
-//        nullOrEmpty.checkField("publisher", request.getPublisher());
-//        nullOrEmpty.checkField("spatial", request.getSpatial());
-//        nullOrEmpty.checkField("haspart", request.getHaspart());
-//        nullOrEmpty.checkListOfFields("distributionChannels", request.getDistributionChannels());
+//        validator.checkField("description", request.getDescription());
+//        validator.checkListOfFields("categories", request.getCategories());
+//        validator.checkListOfFields("provenances", request.getProvenances());
+//        validator.checkField("pi", request.getPi());
+//        validator.checkField("issued", request.getIssued());
+//        validator.checkListOfFields("keywords", request.getKeywords());
+//        validator.checkField("theme", request.getTheme());
+//        validator.checkField("accessRights", request.getAccessRights());
+//        validator.checkField("publisher", request.getPublisher());
+//        validator.checkField("spatial", request.getSpatial());
+//        validator.checkField("haspart", request.getHaspart());
+//        validator.checkListOfFields("distributionChannels", request.getDistributionChannels());
 
-        return nullOrEmpty.getErrors();
+        return validator.getErrors();
     }
 
     private List<ValidationError> validateRepositoryValues(DatasetRequest request) {

@@ -223,7 +223,7 @@ public class DatasetServiceTest {
                 .contentType(ContentType.DATASET.name())
                 .title(title)
                 .description("Description")
-                .categories(List.of("Category"))
+                .categories(List.of("Personalia"))
                 .provenances(List.of("Provenance"))
                 .pi("false")
                 .issued(LocalDateTime.now().toString())

@@ -5,7 +5,7 @@ import no.nav.data.catalog.backend.app.common.exceptions.CodelistNotFoundExcepti
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import no.nav.data.catalog.backend.app.common.validator.RequestValidator;
-import no.nav.data.catalog.backend.app.common.validator.ValidateFieldsInRequestNotNullOrEmpty;
+import no.nav.data.catalog.backend.app.common.validator.FieldValidator;
 import no.nav.data.catalog.backend.app.common.validator.ValidationError;
 import org.springframework.stereotype.Service;
 
@@ -39,8 +39,12 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         this.repository = repository;
     }
 
-    private static CodeResponse getCodeInfoForCodelistItem(ListName listName, String code) {
-        return new CodeResponse(code, codelists.get(listName).get(code));
+    public static CodeResponse getCodeInfoForCodelistItem(ListName listName, String code) {
+        String description = codelists.get(listName).get(code);
+        if (description == null) {
+            return null;
+        }
+        return new CodeResponse(code, description);
     }
 
     public static List<CodeResponse> getCodeInfoForCodelistItems(ListName listName, Collection<String> codes) {
@@ -169,11 +173,11 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     }
 
     private List<ValidationError> validateThatNoFieldsAreNullOrEmpty(CodelistRequest request) {
-        ValidateFieldsInRequestNotNullOrEmpty nullOrEmpty = new ValidateFieldsInRequestNotNullOrEmpty(request.getReference());
+        FieldValidator nullOrEmpty = new FieldValidator(request.getReference());
 
-        nullOrEmpty.checkField("listName", request.getList());
-        nullOrEmpty.checkField("code", request.getCode());
-        nullOrEmpty.checkField("description", request.getDescription());
+        nullOrEmpty.checkBlank("listName", request.getList());
+        nullOrEmpty.checkBlank("code", request.getCode());
+        nullOrEmpty.checkBlank("description", request.getDescription());
 
         return nullOrEmpty.getErrors();
     }
