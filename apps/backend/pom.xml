@@ -24,7 +24,7 @@
         <start-class>no.nav.data.catalog.backend.app.AppStarter</start-class>
         <springfox.version>2.9.2</springfox.version>
         <jjwt.version>0.10.7</jjwt.version>
-        <hibernate-types-52.version>2.5.0</hibernate-types-52.version>
+        <hibernate-types-52.version>2.6.1</hibernate-types-52.version>
         <spring-cloud-dependencies.version>Greenwich.SR2</spring-cloud-dependencies.version>
         <prometheus.version>0.6.0</prometheus.version>
         <org.eclipse.egit.github.core.version>5.4.0.201906121030-r</org.eclipse.egit.github.core.version>
