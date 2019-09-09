@@ -34,6 +34,7 @@ import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.nullToEmp
 @JsonPropertyOrder({"id", "title"})
 public class DatasetResponse {
 
+    private UUID id;
     private String elasticsearchId;
     private ContentType contentType;
     private String title;
@@ -63,6 +64,7 @@ public class DatasetResponse {
     }
 
     DatasetResponse(Dataset dataset, Map<UUID, Dataset> allDatasets, Set<DatasetRelation> relations) {
+        id = dataset.getId();
         elasticsearchId = dataset.getElasticsearchId();
         mapJsonFields(dataset.getDatasetData());
 
