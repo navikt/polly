@@ -14,6 +14,7 @@ import org.springframework.vault.core.lease.LeaseEndpoints;
 import org.springframework.vault.core.lease.SecretLeaseContainer;
 import org.springframework.vault.support.VaultResponse;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 
@@ -39,7 +40,7 @@ public class VaultHikariConfig implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         container.setLeaseEndpoints(LeaseEndpoints.SysLeases);
-        scheduleNextRotation(0);
+        scheduleNextRotation(Duration.ofMinutes(5).toSeconds());
     }
 
     private void rotate() {
