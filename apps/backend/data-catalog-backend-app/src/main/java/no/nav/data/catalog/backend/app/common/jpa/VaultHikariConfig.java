@@ -41,7 +41,7 @@ public class VaultHikariConfig implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         container.setLeaseEndpoints(LeaseEndpoints.SysLeases);
-        scheduleNextRotation(Duration.ofMinutes(5).toSeconds());
+        scheduleNextRotation(Duration.ofMinutes(5).toSeconds(), 0);
     }
 
     private void rotate() {
@@ -52,7 +52,7 @@ public class VaultHikariConfig implements InitializingBean {
                 log.info("Roterer brukernavn/passord for: {}", path);
                 VaultResponse vaultResponse = vaultOperations.read(path);
                 updateCredentials(vaultResponse);
-                scheduleNextRotation(vaultResponse.getLeaseDuration());
+                scheduleNextRotation(vaultResponse.getLeaseDuration(), 30);
                 return;
             } catch (Exception e) {
                 log.error("error rotating db credentials", e);
@@ -74,8 +74,8 @@ public class VaultHikariConfig implements InitializingBean {
         ds.setPassword(password);
     }
 
-    private void scheduleNextRotation(long leaseDuration) {
-        Instant startTime = Instant.now().plusSeconds(leaseDuration - 30 * 60);
+    private void scheduleNextRotation(long leaseDuration, int minutesBeforeExpire) {
+        Instant startTime = Instant.now().plusSeconds(leaseDuration - minutesBeforeExpire * 60);
         log.info("Ny lease duration: {}, next: {}", leaseDuration, startTime);
         scheduler.schedule(this::rotate, startTime);
     }
