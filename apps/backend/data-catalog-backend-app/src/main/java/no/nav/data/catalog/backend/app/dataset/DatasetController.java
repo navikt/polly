@@ -193,4 +193,16 @@ public class DatasetController {
         DatasetRequest deleteRequest = DatasetRequest.builder().datacatalogMaster(REST).title(fromRepository.get().getTitle()).build();
         return new ResponseEntity<>(service.delete(deleteRequest).convertToResponse(), HttpStatus.ACCEPTED);
     }
+
+    @ApiOperation(value = "Trigger Datasetsync", tags = {"Dataset"})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Datasets will be synced"),
+            @ApiResponse(code = 400, message = "Illegal arguments"),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @PostMapping("/{id}/sync")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void syncDataset(@PathVariable UUID id) {
+        log.info("Received requests to sync Dataset");
+        service.sync(id);
+    }
 }

@@ -5,8 +5,8 @@ import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
-import no.nav.data.catalog.backend.app.common.validator.RequestValidator;
 import no.nav.data.catalog.backend.app.common.validator.FieldValidator;
+import no.nav.data.catalog.backend.app.common.validator.RequestValidator;
 import no.nav.data.catalog.backend.app.common.validator.ValidationError;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelation;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelationRepository;
@@ -284,5 +284,16 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
 
     private boolean correlatingMaster(DatacatalogMaster existingMaster, DatacatalogMaster requestMaster) {
         return existingMaster.equals(requestMaster);
+    }
+
+    @Transactional
+    public void sync(UUID id) {
+        datasetRepository.findById(id)
+                .ifPresentOrElse(
+                        dataset -> dataset.setElasticsearchStatus(ElasticsearchStatus.TO_BE_UPDATED),
+                        () -> {
+                            throw new DataCatalogBackendNotFoundException("Fant ikke dataset med id " + id);
+                        }
+                );
     }
 }
