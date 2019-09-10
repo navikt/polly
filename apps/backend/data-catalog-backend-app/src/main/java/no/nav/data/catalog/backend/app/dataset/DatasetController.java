@@ -199,10 +199,10 @@ public class DatasetController {
             @ApiResponse(code = 200, message = "Datasets will be synced"),
             @ApiResponse(code = 400, message = "Illegal arguments"),
             @ApiResponse(code = 500, message = "Internal server error")})
-    @PostMapping("/{id}/sync")
+    @PostMapping("/sync")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void syncDataset(@PathVariable UUID id) {
+    public void syncDataset(@RequestBody List<UUID> ids) {
         log.info("Received requests to sync Dataset");
-        service.sync(id);
+        service.sync(ids);
     }
 }

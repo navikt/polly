@@ -246,7 +246,7 @@ public class DatasetControllerIT extends AbstractDatasetIT {
     public void testSync() {
         dataset = datasetRepository.save(createDataset("DatasetData"));
 
-        restTemplate.postForLocation("/dataset/{id}/sync",  null, dataset.getId());
+        restTemplate.postForLocation("/dataset/sync",  List.of(dataset.getId()), dataset.getId());
         assertThat(datasetRepository.findById(dataset.getId()).get().getElasticsearchStatus(), is(ElasticsearchStatus.TO_BE_UPDATED));
     }
 

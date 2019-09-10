@@ -287,13 +287,7 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
     }
 
     @Transactional
-    public void sync(UUID id) {
-        datasetRepository.findById(id)
-                .ifPresentOrElse(
-                        dataset -> dataset.setElasticsearchStatus(ElasticsearchStatus.TO_BE_UPDATED),
-                        () -> {
-                            throw new DataCatalogBackendNotFoundException("Fant ikke dataset med id " + id);
-                        }
-                );
+    public void sync(List<UUID> ids) {
+        datasetRepository.findAllById(ids).forEach(dataset -> dataset.setElasticsearchStatus(ElasticsearchStatus.TO_BE_UPDATED));
     }
 }
