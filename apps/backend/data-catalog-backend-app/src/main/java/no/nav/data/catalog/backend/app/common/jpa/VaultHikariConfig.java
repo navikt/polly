@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.vault.config.databases.VaultDatabaseProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.vault.core.VaultOperations;
 import org.springframework.vault.core.lease.LeaseEndpoints;
 import org.springframework.vault.core.lease.SecretLeaseContainer;
@@ -25,15 +26,14 @@ public class VaultHikariConfig implements InitializingBean {
     private final VaultOperations vaultOperations;
     private final HikariDataSource ds;
     private final VaultDatabaseProperties props;
-    private TaskScheduler scheduler;
+    private TaskScheduler scheduler = new ThreadPoolTaskScheduler();
 
     public VaultHikariConfig(SecretLeaseContainer container, VaultOperations vaultOperations,
-            HikariDataSource ds, VaultDatabaseProperties props, TaskScheduler scheduler) {
+            HikariDataSource ds, VaultDatabaseProperties props) {
         this.container = container;
         this.vaultOperations = vaultOperations;
         this.ds = ds;
         this.props = props;
-        this.scheduler = scheduler;
     }
 
     @Override
