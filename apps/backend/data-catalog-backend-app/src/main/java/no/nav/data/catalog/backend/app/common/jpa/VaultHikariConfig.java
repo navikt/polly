@@ -34,7 +34,7 @@ public class VaultHikariConfig implements InitializingBean {
         this.vaultOperations = vaultOperations;
         this.ds = ds;
         this.props = props;
-        scheduler.setThreadNamePrefix(getClass().getSimpleName());
+        scheduler.setThreadNamePrefix("VaultRotater");
         scheduler.initialize();
     }
 
