@@ -72,6 +72,7 @@ public class VaultHikariConfig implements InitializingBean {
         val password = data.get("password").toString();
         ds.setUsername(username);
         ds.setPassword(password);
+        ds.getHikariPoolMXBean().softEvictConnections();
     }
 
     private void scheduleNextRotation(long leaseDuration, int minutesBeforeExpire) {
