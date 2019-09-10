@@ -2,18 +2,19 @@ package no.nav.data.catalog.backend.app.common.jpa;
 
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.vault.config.databases.VaultDatabaseProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.vault.core.VaultOperations;
 import org.springframework.vault.core.lease.LeaseEndpoints;
 import org.springframework.vault.core.lease.SecretLeaseContainer;
-import org.springframework.vault.core.lease.domain.RequestedSecret;
-import org.springframework.vault.core.lease.event.SecretLeaseCreatedEvent;
+import org.springframework.vault.support.VaultResponse;
 
+import java.time.Instant;
 import java.util.Map;
-
-import static org.springframework.vault.core.lease.domain.RequestedSecret.rotating;
 
 @Slf4j
 @Configuration
@@ -21,30 +22,64 @@ import static org.springframework.vault.core.lease.domain.RequestedSecret.rotati
 public class VaultHikariConfig implements InitializingBean {
 
     private final SecretLeaseContainer container;
+    private final VaultOperations vaultOperations;
     private final HikariDataSource ds;
     private final VaultDatabaseProperties props;
+    private TaskScheduler scheduler;
 
-    public VaultHikariConfig(SecretLeaseContainer container, HikariDataSource ds, VaultDatabaseProperties props) {
+    public VaultHikariConfig(SecretLeaseContainer container, VaultOperations vaultOperations,
+            HikariDataSource ds, VaultDatabaseProperties props, TaskScheduler scheduler) {
         this.container = container;
+        this.vaultOperations = vaultOperations;
         this.ds = ds;
         this.props = props;
+        this.scheduler = scheduler;
     }
 
     @Override
     public void afterPropertiesSet() {
         container.setLeaseEndpoints(LeaseEndpoints.SysLeases);
-        RequestedSecret secret = rotating(props.getBackend() + "/creds/" + props.getRole());
-        container.addLeaseListener(leaseEvent -> {
-            if (leaseEvent.getSource() == secret && leaseEvent instanceof SecretLeaseCreatedEvent) {
-                log.info("Roterer brukernavn/passord for : {}", leaseEvent.getSource().getPath());
-                Map<String, Object> secrets = ((SecretLeaseCreatedEvent) leaseEvent).getSecrets();
-                String username = secrets.get("username").toString();
-                String password = secrets.get("password").toString();
-                ds.setUsername(username);
-                ds.setPassword(password);
+        scheduleNextRotation(0);
+    }
+
+    private void rotate() {
+        int tries = 0;
+        while (tries++ < 10) {
+            try {
+                String path = getPath();
+                log.info("Roterer brukernavn/passord for: {}", path);
+                VaultResponse vaultResponse = vaultOperations.read(path);
+                updateCredentials(vaultResponse);
+                scheduleNextRotation(vaultResponse.getLeaseDuration());
+                return;
+            } catch (Exception e) {
+                log.error("error rotating db credentials", e);
+                try {
+                    Thread.sleep(1000L * (tries * tries));
+                } catch (InterruptedException ex) {
+                    log.warn("sleepinterruped", ex);
+                }
             }
-        });
-        container.addRequestedSecret(secret);
+        }
+        log.error("Failed getting database credentials");
+    }
+
+    private void updateCredentials(VaultResponse vaultResponse) {
+        Map<String, Object> data = vaultResponse.getData();
+        val username = data.get("username").toString();
+        val password = data.get("password").toString();
+        ds.setUsername(username);
+        ds.setPassword(password);
+    }
+
+    private void scheduleNextRotation(long leaseDuration) {
+        Instant startTime = Instant.now().plusSeconds(leaseDuration - 30 * 60);
+        log.info("Ny lease duration: {}, next: {}", leaseDuration, startTime);
+        scheduler.schedule(this::rotate, startTime);
+    }
+
+    private String getPath() {
+        return String.format("%s/creds/%s", props.getBackend(), props.getRole());
     }
 
     @Override
