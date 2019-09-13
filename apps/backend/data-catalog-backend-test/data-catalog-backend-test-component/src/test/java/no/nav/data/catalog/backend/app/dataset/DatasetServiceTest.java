@@ -185,7 +185,7 @@ public class DatasetServiceTest {
                 .title(title)
                 .description("Description")
                 .categories(List.of("Personalia"))
-                .provenances(List.of("Provenance"))
+                .provenances(List.of("ARBEIDSGIVER"))
                 .pi("false")
                 .issued(LocalDateTime.now().toString())
                 .keywords(List.of("Keywords"))

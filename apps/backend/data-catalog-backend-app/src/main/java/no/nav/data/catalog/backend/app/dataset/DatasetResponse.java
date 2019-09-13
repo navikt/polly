@@ -42,7 +42,7 @@ public class DatasetResponse {
     private String description;
     private String suggest;
     private List<CodeResponse> categories;
-    private List<String> provenances;
+    private List<CodeResponse> provenances;
     private Integer pi;
     private List<String> keywords;
     private List<String> themes;
@@ -80,7 +80,7 @@ public class DatasetResponse {
         setTitle(datasetData.getTitle());
         setDescription(datasetData.getDescription());
         setCategories(CodelistService.getCodeInfoForCodelistItems(ListName.CATEGORY, datasetData.getCategories()));
-        setProvenances(copyOf(datasetData.getProvenances()));
+        setProvenances(CodelistService.getCodeInfoForCodelistItems(ListName.PROVENANCE, datasetData.getProvenances()));
         setPi(datasetData.getPi() == null ? null : BooleanUtils.toInteger(datasetData.getPi()));
         setKeywords(copyOf(datasetData.getKeywords()));
         setThemes(copyOf(datasetData.getThemes()));

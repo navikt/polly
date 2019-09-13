@@ -75,21 +75,20 @@ public class CodelistControllerTest {
 
         assertThat(response.getStatus(), is(HttpStatus.OK.value()));
         assertThat(returnedCodelist.size(), is(CodelistService.codelists.size()));
-        assertThat(returnedCodelist.get("PRODUCER").size(), is(3));
+        assertThat(returnedCodelist.get("PROVENANCE").size(), is(3));
         assertThat(returnedCodelist.get("CATEGORY").size(), is(3));
-        assertThat(returnedCodelist.get("SYSTEM").size(), is(2));
     }
 
     @Test
     public void getCodelistByListName_shouldReturnCodelistForProducer() throws Exception {
-        String uri = "/codelist/PRODUCER";
+        String uri = "/codelist/PROVENANCE";
 
         MockHttpServletResponse response = mvc.perform(get(uri))
                 .andExpect(status().isOk())
                 .andReturn().getResponse();
 
         Map mappedResponse = objectMapper.readValue(response.getContentAsString(), HashMap.class);
-        assertThat(mappedResponse, is(CodelistService.codelists.get(ListName.PRODUCER)));
+        assertThat(mappedResponse, is(CodelistService.codelists.get(ListName.PROVENANCE)));
     }
 
     @Test
@@ -107,7 +106,7 @@ public class CodelistControllerTest {
 
     @Test
     public void getDescriptionByListNameAndCode_shouldReturnDescriptionForARBEIDSGIVER() throws Exception {
-        String uri = "/codelist/PRODUCER/ARBEIDSGIVER";
+        String uri = "/codelist/PROVENANCE/ARBEIDSGIVER";
 
         MockHttpServletResponse response = mvc.perform(get(uri))
                 .andExpect(status().isOk())
@@ -118,15 +117,15 @@ public class CodelistControllerTest {
 
     @Test
     public void getDescriptionByListNameAndCode_shouldReturnNotFound_whenUnknownCode() throws Exception {
-        String uri = "/codelist/PRODUCER/UNKNOWN_CODE";
-        doThrow(new CodelistNotFoundException("The code=UNKNOWN_CODE does not exist in the list=PRODUCER."))
+        String uri = "/codelist/PROVENANCE/UNKNOWN_CODE";
+        doThrow(new CodelistNotFoundException("The code=UNKNOWN_CODE does not exist in the list=PROVENANCE."))
                 .when(service).validateListNameAndCodeExists(anyString(), anyString());
 
         Exception exception = mvc.perform(get(uri))
                 .andExpect(status().isNotFound())
                 .andReturn().getResolvedException();
 
-        assertThat(exception.getLocalizedMessage(), equalTo("The code=UNKNOWN_CODE does not exist in the list=PRODUCER."));
+        assertThat(exception.getLocalizedMessage(), equalTo("The code=UNKNOWN_CODE does not exist in the list=PROVENANCE."));
     }
 
     @Test
@@ -135,7 +134,7 @@ public class CodelistControllerTest {
 
         List<CodelistRequest> requests = IntStream.rangeClosed(1, 10)
                 .mapToObj(i -> CodelistRequest.builder()
-                        .list("PRODUCER")
+                        .list("PROVENANCE")
                         .code("CODE_nr:" + i)
                         .description("Description")
                         .build())
@@ -156,7 +155,7 @@ public class CodelistControllerTest {
 
         List<CodelistRequest> requests = IntStream.rangeClosed(1, 10)
                 .mapToObj(i -> CodelistRequest.builder()
-                        .list("PRODUCER")
+                        .list("PROVENANCE")
                         .code("CODE_nr:" + i)
                         .description("Description")
                         .build())
@@ -174,13 +173,13 @@ public class CodelistControllerTest {
     @Test
     public void delete_shouldDeleteCodelistItem() throws Exception {
         String code = "TEST_DELETE";
-        String uri = "/codelist/PRODUCER/TEST_DELETE";
+        String uri = "/codelist/PROVENANCE/TEST_DELETE";
         MockHttpServletResponse response = mvc.perform(
                 delete(uri))
                 .andReturn().getResponse();
 
         assertThat(response.getStatus(), is(HttpStatus.OK.value()));
-        verify(service).delete(ListName.PRODUCER, code);
+        verify(service).delete(ListName.PROVENANCE, code);
     }
 
     @Test
@@ -188,10 +187,10 @@ public class CodelistControllerTest {
         String code = "TEST_DELETE";
 
         MockHttpServletResponse response = mvc.perform(
-                delete("/codelist/producer/test_DELETE"))
+                delete("/codelist/provenance/test_DELETE"))
                 .andReturn().getResponse();
 
         assertThat(response.getStatus(), is(HttpStatus.OK.value()));
-        verify(service).delete(ListName.PRODUCER, code);
+        verify(service).delete(ListName.PROVENANCE, code);
     }
 }

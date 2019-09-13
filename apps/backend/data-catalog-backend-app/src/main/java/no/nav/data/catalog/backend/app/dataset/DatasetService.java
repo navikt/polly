@@ -229,6 +229,7 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         validator.checkBlank("title", request.getTitle());
 
         safeStream(request.getCategories()).forEach(category -> validator.checkCodelist("categories", category, ListName.CATEGORY));
+        safeStream(request.getProvenances()).forEach(provenance -> validator.checkCodelist("provenances", provenance, ListName.PROVENANCE));
 
         safeStream(request.getDistributionChannels())
                 .forEach(distributionChannelShort -> {

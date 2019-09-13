@@ -263,7 +263,7 @@ public class DatasetControllerIT extends AbstractDatasetIT {
                 .title(title.toUpperCase().trim())
                 .description("DatasetDescription")
                 .categories(List.of("PERSONALIA"))
-                .provenances(List.of("Provenance"))
+                .provenances(List.of("ARBEIDSGIVER"))
                 .pi("false")
                 .issued(localDateTime.toString())
                 .keywords(List.of("Keywords"))

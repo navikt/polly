@@ -46,9 +46,9 @@ public class CodelistServiceIT extends IntegrationTestBase {
 		service.save(createListOfOneRequest());
 
 		assertThat(repository.findAll().size(), is(1));
-		assertTrue(repository.findByListAndCode(ListName.PRODUCER, "TEST_CODE").isPresent());
-		assertThat(codelists.get(ListName.PRODUCER).size(), is(1));
-		assertFalse(codelists.get(ListName.PRODUCER).get("TEST_CODE").isEmpty());
+		assertTrue(repository.findByListAndCode(ListName.PROVENANCE, "TEST_CODE").isPresent());
+		assertThat(codelists.get(ListName.PROVENANCE).size(), is(1));
+		assertFalse(codelists.get(ListName.PROVENANCE).get("TEST_CODE").isEmpty());
 	}
 
     @Test
@@ -62,11 +62,11 @@ public class CodelistServiceIT extends IntegrationTestBase {
 	public void update_shouldUpdateCodelist() {
 		service.save(createListOfOneRequest());
 
-        List<CodelistRequest> updatedRequest = createListOfOneRequest("PRODUCER", "TEST_CODE", "Updated codelist");
+        List<CodelistRequest> updatedRequest = createListOfOneRequest("PROVENANCE", "TEST_CODE", "Updated codelist");
 		service.update(updatedRequest);
 
-		assertThat(codelists.get(ListName.PRODUCER).get("TEST_CODE"), is(updatedRequest.get(0).getDescription()));
-		assertThat(repository.findByListAndCode(ListName.PRODUCER, "TEST_CODE").get().getDescription(), is(updatedRequest.get(0)
+		assertThat(codelists.get(ListName.PROVENANCE).get("TEST_CODE"), is(updatedRequest.get(0).getDescription()));
+		assertThat(repository.findByListAndCode(ListName.PROVENANCE, "TEST_CODE").get().getDescription(), is(updatedRequest.get(0)
 				.getDescription()));
 	}
 
@@ -75,23 +75,23 @@ public class CodelistServiceIT extends IntegrationTestBase {
 		List<CodelistRequest> request = createListOfOneRequest();
 		service.save(request);
 		assertThat(repository.findAll().size(), is(1));
-		assertThat(codelists.get(ListName.PRODUCER).size(), is(1));
+		assertThat(codelists.get(ListName.PROVENANCE).size(), is(1));
 
-		service.delete(ListName.PRODUCER, "TEST_CODE");
+		service.delete(ListName.PROVENANCE, "TEST_CODE");
 
 		assertThat(repository.findAll().size(), is(0));
-		assertFalse(repository.findByListAndCode(ListName.PRODUCER, "TEST_CODE").isPresent());
-		assertThat(codelists.get(ListName.PRODUCER).size(), is(0));
-		assertNull(codelists.get(ListName.PRODUCER).get("TEST_CODE"));
+		assertFalse(repository.findByListAndCode(ListName.PROVENANCE, "TEST_CODE").isPresent());
+		assertThat(codelists.get(ListName.PROVENANCE).size(), is(0));
+		assertNull(codelists.get(ListName.PROVENANCE).get("TEST_CODE"));
 	}
 
 
 	@Test
 	public void validateRequests_shouldValidateRequests() {
 		List<CodelistRequest> requests = List.of(
-                createOneRequest("PRODUCER", "CODE_1", "Description"),
-                createOneRequest("PRODUCER", "code_2 ", "Description"),
-                createOneRequest("PRODUCER", " Code_3 ", "Description "));
+                createOneRequest("PROVENANCE", "CODE_1", "Description"),
+                createOneRequest("PROVENANCE", "code_2 ", "Description"),
+                createOneRequest("PROVENANCE", " Code_3 ", "Description "));
 
         service.validateRequest(requests, false);
     }
@@ -127,7 +127,7 @@ public class CodelistServiceIT extends IntegrationTestBase {
 	}
 
 	private List<CodelistRequest> createListOfOneRequest() {
-        return createListOfOneRequest("PRODUCER", "TEST_CODE", "Test description");
+        return createListOfOneRequest("PROVENANCE", "TEST_CODE", "Test description");
 	}
 
 }

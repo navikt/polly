@@ -45,7 +45,6 @@ public class CodelistControllerIT extends IntegrationTestBase {
 	@Before
 	public void setUp() {
 		service.refreshCache();
-		codelists.get(ListName.PRODUCER).put("TEST_CODE", "Test description");
 	}
 
 	@After
@@ -59,7 +58,7 @@ public class CodelistControllerIT extends IntegrationTestBase {
 				"/codelist", HttpMethod.GET, HttpEntity.EMPTY, Map.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-		assertThat(responseEntity.getBody().size(), is(4));
+		assertThat(responseEntity.getBody().size(), is(3));
 
 		Arrays.stream(ListName.values())
 				.forEach(listName -> assertThat(responseEntity.getBody()
@@ -68,39 +67,40 @@ public class CodelistControllerIT extends IntegrationTestBase {
 
 	@Test
 	public void getCodelistByListName_shouldReturnCodesAndDescriptionForListName() {
-		String url = "/codelist/PRODUCER";
+		String url = "/codelist/PROVENANCE";
 
 		ResponseEntity<Map> responseEntity = restTemplate.exchange(
 				url, HttpMethod.GET, HttpEntity.EMPTY, Map.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-		assertThat(responseEntity.getBody(), is(codelists.get(ListName.PRODUCER)));
+		assertThat(responseEntity.getBody(), is(codelists.get(ListName.PROVENANCE)));
 	}
 
 	@Test
 	public void getDescriptionByListNameAndCode_shouldReturnDescriptionForCodeAndListName() {
-		String url = "/codelist/PRODUCER/TEST_CODE";
+		codelists.get(ListName.PROVENANCE).put("TEST_CODE", "Test description");
+		String url = "/codelist/PROVENANCE/TEST_CODE";
 
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
 				url, HttpMethod.GET, HttpEntity.EMPTY, String.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-		assertThat(responseEntity.getBody(), is(codelists.get(ListName.PRODUCER).get("TEST_CODE")));
+		assertThat(responseEntity.getBody(), is(codelists.get(ListName.PROVENANCE).get("TEST_CODE")));
 	}
 
 	@Test
 	public void save_shouldSaveNewCodelist() {
 		String code = "SAVE_CODE";
-        List<CodelistRequest> requests = createRequest("PRODUCER", code, "Test description");
-		assertNull(codelists.get(ListName.PRODUCER).get(code));
+        List<CodelistRequest> requests = createRequest("PROVENANCE", code, "Test description");
+		assertNull(codelists.get(ListName.PROVENANCE).get(code));
 
 		ResponseEntity<List<Codelist>> responseEntity = restTemplate.exchange(
 				"/codelist", HttpMethod.POST, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
 				});
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.CREATED));
-		assertFalse(codelists.get(ListName.PRODUCER).get(code).isEmpty());
-		assertThat(responseEntity.getBody().get(0).getDescription(), is(codelists.get(ListName.PRODUCER).get(code)));
+		assertFalse(codelists.get(ListName.PROVENANCE).get(code).isEmpty());
+		assertThat(responseEntity.getBody().get(0).getDescription(), is(codelists.get(ListName.PROVENANCE).get(code)));
 	}
 
 	@Test
@@ -112,21 +112,21 @@ public class CodelistControllerIT extends IntegrationTestBase {
 				});
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.CREATED));
-		assertThat(codelists.get(ListName.SYSTEM).size(), is(20));
+		assertThat(codelists.get(ListName.PROVENANCE).size(), is(20));
 	}
 
 	@Test
 	public void update_shouldUpdateOneCodelist() {
 		String code = "UPDATE_CODE";
-        service.save(createRequest("PRODUCER", code, "Test description"));
+        service.save(createRequest("PROVENANCE", code, "Test description"));
 
-        List<CodelistRequest> updatedCodelists = createRequest("PRODUCER", code, "Updated codelists");
+        List<CodelistRequest> updatedCodelists = createRequest("PROVENANCE", code, "Updated codelists");
 
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
 				"/codelist", HttpMethod.PUT, new HttpEntity<>(updatedCodelists), String.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
-		assertThat(codelists.get(ListName.PRODUCER).get(code), is(updatedCodelists.get(0).getDescription()));
+		assertThat(codelists.get(ListName.PROVENANCE).get(code), is(updatedCodelists.get(0).getDescription()));
 	}
 
 	@Test
@@ -142,9 +142,9 @@ public class CodelistControllerIT extends IntegrationTestBase {
 				});
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
-		assertThat(codelists.get(ListName.SYSTEM).size(), is(20));
-		codelists.get(ListName.SYSTEM);
-		Collection<String> descriptionList = codelists.get(ListName.SYSTEM).values();
+		assertThat(codelists.get(ListName.PROVENANCE).size(), is(20));
+		codelists.get(ListName.PROVENANCE);
+		Collection<String> descriptionList = codelists.get(ListName.PROVENANCE).values();
 		descriptionList.forEach(description -> assertThat(description, is("Updated codelists")));
 	}
 
@@ -152,21 +152,21 @@ public class CodelistControllerIT extends IntegrationTestBase {
 	@Test
 	public void delete_shouldDeleteCodelist() {
 		String code = "DELETE_CODE";
-        List<CodelistRequest> requests = createRequest("PRODUCER", code, "Test description");
+        List<CodelistRequest> requests = createRequest("PROVENANCE", code, "Test description");
 		service.save(requests);
-		assertNotNull(codelists.get(ListName.PRODUCER).get(code));
+		assertNotNull(codelists.get(ListName.PROVENANCE).get(code));
 
-		String url = "/codelist/PRODUCER/DELETE_CODE";
+		String url = "/codelist/PROVENANCE/DELETE_CODE";
 
 		ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
 
 		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-		assertNull(codelists.get(ListName.PRODUCER).get(code));
+		assertNull(codelists.get(ListName.PROVENANCE).get(code));
 	}
 
 	private List<CodelistRequest> createNrOfRequests(String code, int nrOfRequests) {
 		return IntStream.rangeClosed(1, nrOfRequests)
-                .mapToObj(i -> createOneRequest("SYSTEM", code + "_nr_" + i, "Test description"))
+                .mapToObj(i -> createOneRequest("PROVENANCE", code + "_nr_" + i, "Test description"))
 				.collect(Collectors.toList());
 
 	}

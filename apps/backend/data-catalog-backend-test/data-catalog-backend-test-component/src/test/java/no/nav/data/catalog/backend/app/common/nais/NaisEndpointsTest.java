@@ -2,13 +2,13 @@ package no.nav.data.catalog.backend.app.common.nais;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import no.nav.data.catalog.backend.app.AppStarter;
+import no.nav.data.catalog.backend.app.codelist.CodelistRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.health.Health;
-import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -27,7 +27,7 @@ public class NaisEndpointsTest {
     @MockBean
     private MeterRegistry meterRegistry;
     @MockBean
-    private HealthIndicator dbHealthIndicator;
+    private CodelistRepository codelistRepository;
     @Autowired
     private MockMvc mvc;
 
@@ -40,7 +40,7 @@ public class NaisEndpointsTest {
 
     @Test
     public void naisIsAlive() throws Exception {
-        when(dbHealthIndicator.health()).thenReturn(Health.up().build());
+        when(codelistRepository.count()).thenReturn(4L);
         String urlIsAlive = "/internal/isAlive";
         mvc.perform(get(urlIsAlive))
                 .andExpect(status().isOk());
@@ -48,7 +48,7 @@ public class NaisEndpointsTest {
 
     @Test
     public void naisIsDead() throws Exception {
-        when(dbHealthIndicator.health()).thenReturn(Health.down().build());
+        when(codelistRepository.count()).thenThrow(new InvalidDataAccessApiUsageException("permission denied"));
         String urlIsAlive = "/internal/isAlive";
         mvc.perform(get(urlIsAlive))
                 .andExpect(status().isInternalServerError());

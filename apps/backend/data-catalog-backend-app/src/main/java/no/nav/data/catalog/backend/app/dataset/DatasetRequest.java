@@ -124,6 +124,10 @@ public class DatasetRequest implements RequestElement {
                 .map(String::toUpperCase)
                 .map(String::trim)
                 .collect(Collectors.toList()));
+        setProvenances(nullToEmptyList(provenances).stream()
+                .map(String::toUpperCase)
+                .map(String::trim)
+                .collect(Collectors.toList()));
 
         // TODO sjekk
 //        doUpperCaseAndTrim();

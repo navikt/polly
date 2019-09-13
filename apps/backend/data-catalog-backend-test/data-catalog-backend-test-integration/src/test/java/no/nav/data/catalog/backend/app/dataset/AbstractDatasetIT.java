@@ -75,7 +75,7 @@ public abstract class AbstractDatasetIT extends IntegrationTestBase {
                         .title(name)
                         .description("Description")
                         .categories(List.of("Category"))
-                        .provenances(List.of("Provenance"))
+                        .provenances(List.of("ARBEIDSGIVER"))
                         .pi(false)
                         .issued(localDateTime)
                         .keywords(List.of("Keywords"))
