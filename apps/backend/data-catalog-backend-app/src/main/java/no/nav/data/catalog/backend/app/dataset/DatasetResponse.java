@@ -50,7 +50,6 @@ public class DatasetResponse {
     private String spatial;
     private List<String> haspart;
     private List<DistributionChannelShort> distributionChannels;
-    private List<PolicyResponse> policies;
 
     private String publisher;
     private LocalDateTime issued;
@@ -59,6 +58,8 @@ public class DatasetResponse {
     private DatacatalogMaster datacatalogMaster;
     @ApiModelProperty(hidden = true)
     private List<DatasetResponse> children;
+    @ApiModelProperty(hidden = true) // Only used for sync to elasticsearch
+    private List<PolicyResponse> policies;
 
     DatasetResponse(Dataset dataset) {
         this(dataset, Collections.emptyMap(), Collections.emptySet());
