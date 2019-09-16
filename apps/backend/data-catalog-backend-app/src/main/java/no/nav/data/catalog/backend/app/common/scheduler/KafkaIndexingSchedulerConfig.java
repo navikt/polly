@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.IntervalTask;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
@@ -31,6 +32,6 @@ public class KafkaIndexingSchedulerConfig implements SchedulingConfigurer {
 
     IntervalTask syncTask() {
         long syncIntervalInMillis = TimeUnit.SECONDS.toMillis(syncIntervalSeconds);
-        return new IntervalTask(service::syncDistributionsFromKafkaAdmin, syncIntervalInMillis, 1000L);
+        return new IntervalTask(service::syncDistributionsFromKafkaAdmin, syncIntervalInMillis, Duration.ofMinutes(2).toMillis());
     }
 }
