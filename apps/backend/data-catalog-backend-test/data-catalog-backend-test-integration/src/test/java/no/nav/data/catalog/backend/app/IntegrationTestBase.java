@@ -3,10 +3,13 @@ package no.nav.data.catalog.backend.app;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import no.nav.data.catalog.backend.app.IntegrationTestBase.Initializer;
+import no.nav.data.catalog.backend.app.common.nais.LeaderElectionService;
+import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelRepository;
 import no.nav.data.catalog.backend.app.system.SystemRepository;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,7 @@ import java.util.UUID;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
 @ActiveProfiles("test")
@@ -51,6 +55,11 @@ public abstract class IntegrationTestBase {
     protected SystemRepository systemRepository;
     @Autowired
     protected DatasetRepository datasetRepository;
+
+    @Before
+    public void setUpAbstract() throws Exception {
+        wiremock.stubFor(get("/elector").willReturn(okJson(JsonUtils.toJson(LeaderElectionService.getHostInfo()))));
+    }
 
     @After
     public void deleteRepositories() {

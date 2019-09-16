@@ -1,6 +1,7 @@
 package no.nav.data.catalog.backend.app.elasticsearch;
 
 import no.nav.data.catalog.backend.app.codelist.CodeResponse;
+import no.nav.data.catalog.backend.app.common.nais.LeaderElectionService;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
 import no.nav.data.catalog.backend.app.dataset.DatasetData;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
@@ -43,6 +44,8 @@ public class ElasticsearchDatasetServiceTest {
     private ElasticsearchRepository elasticsearch;
     @Mock
     private ElasticsearchProperties properties;
+    @Mock
+    private LeaderElectionService leaderElectionService;
     @InjectMocks
     private ElasticsearchDatasetService service;
 
@@ -62,6 +65,7 @@ public class ElasticsearchDatasetServiceTest {
 
         when(policyConsumer.getPolicyForDataset(dataset.getId())).thenReturn(singletonList(policy));
         when(properties.getIndex()).thenReturn("index");
+        when(leaderElectionService.isLeader()).thenReturn(true);
     }
 
     @Test

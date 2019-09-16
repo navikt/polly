@@ -32,3 +32,4 @@ spec:
   prometheus:
     enabled: true
     path: backend/internal/metrics
+  leaderElection: true

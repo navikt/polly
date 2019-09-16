@@ -1,6 +1,7 @@
 package no.nav.data.catalog.backend.app.kafka;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.catalog.backend.app.common.nais.LeaderElectionService;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelRequest;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelService;
 import no.nav.data.catalog.backend.app.kafka.dto.GroupsResponse;
@@ -20,18 +21,24 @@ public class KafkaMetadataService {
 
     private final KafkaAdminRestConsumer kafkaAdminRestConsumer;
     private final SchemaRegistryConsumer schemaRegistryConsumer;
-
     private final DistributionChannelService distributionChannelService;
+    private final LeaderElectionService leaderElectionService;
 
     public KafkaMetadataService(KafkaAdminRestConsumer kafkaAdminRestConsumer,
             SchemaRegistryConsumer schemaRegistryConsumer,
-            DistributionChannelService distributionChannelService) {
+            DistributionChannelService distributionChannelService,
+            LeaderElectionService leaderElectionService) {
         this.kafkaAdminRestConsumer = kafkaAdminRestConsumer;
         this.schemaRegistryConsumer = schemaRegistryConsumer;
         this.distributionChannelService = distributionChannelService;
+        this.leaderElectionService = leaderElectionService;
     }
 
     public void syncDistributionsFromKafkaAdmin() {
+        if (!leaderElectionService.isLeader()) {
+            log.info("Skip kafka distribution sync, not leader");
+            return;
+        }
         log.info("Starting kafka distribution sync");
         List<DistributionChannelRequest> requests = kafkaAdminRestConsumer.getAapenTopics()
                 .stream()

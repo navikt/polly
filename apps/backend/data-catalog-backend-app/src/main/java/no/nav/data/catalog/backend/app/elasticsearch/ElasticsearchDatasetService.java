@@ -1,6 +1,7 @@
 package no.nav.data.catalog.backend.app.elasticsearch;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.catalog.backend.app.common.nais.LeaderElectionService;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
 import no.nav.data.catalog.backend.app.dataset.DatasetElasticsearch;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
@@ -25,16 +26,22 @@ public class ElasticsearchDatasetService {
     private final PolicyConsumer policyConsumer;
     private final ElasticsearchRepository elasticsearch;
     private final ElasticsearchProperties elasticsearchProperties;
+    private final LeaderElectionService leaderElectionService;
 
     public ElasticsearchDatasetService(DatasetRepository repository, PolicyConsumer policyConsumer, ElasticsearchRepository elasticsearch,
-            ElasticsearchProperties elasticsearchProperties) {
+            ElasticsearchProperties elasticsearchProperties, LeaderElectionService leaderElectionService) {
         this.repository = repository;
         this.policyConsumer = policyConsumer;
         this.elasticsearch = elasticsearch;
         this.elasticsearchProperties = elasticsearchProperties;
+        this.leaderElectionService = leaderElectionService;
     }
 
     public void synchToElasticsearch() {
+        if (!leaderElectionService.isLeader()) {
+            log.info("Skip sync to ElasticSearch, not leader");
+            return;
+        }
         log.info("Starting sync to ElasticSearch");
         var created = createDatasetsInElasticsearch();
         var updated = updateDatasetsInElasticsearch();
