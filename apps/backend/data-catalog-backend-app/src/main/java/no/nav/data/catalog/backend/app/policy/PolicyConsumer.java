@@ -43,7 +43,7 @@ public class PolicyConsumer {
         try {
             ResponseEntity<PagedResources<PolicyResponse>> responseEntity = restTemplate
                     .exchange(policyUrl + "?datasetId={id}&page=0&size=1000", HttpMethod.GET, HttpEntity.EMPTY, RESPONSE_TYPE, datasetId.toString());
-            if (responseEntity.getBody() != null) {
+            if (responseEntity.getBody() != null && responseEntity.getBody().getContent() != null) {
                 Collection<PolicyResponse> content = responseEntity.getBody().getContent();
                 log.debug("Found {} policies", content.size());
                 return new ArrayList<>(content);
