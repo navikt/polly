@@ -25,9 +25,17 @@ public class LeaderElectionService {
     }
 
     public boolean isLeader() {
+        try {
+            return getHostInfo().equals(getLeader());
+        } catch (Exception e) {
+            log.error("failed to get leader", e);
+            return false;
+        }
+    }
+
+    private HostInfo getLeader() {
         String leaderJson = restTemplate.getForObject("http://" + electorPath, String.class);
-        HostInfo leader = JsonUtils.toObject(leaderJson, HostInfo.class);
-        return getHostInfo().equals(leader);
+        return JsonUtils.toObject(leaderJson, HostInfo.class);
     }
 
     public static HostInfo getHostInfo() {
