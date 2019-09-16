@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,8 +25,9 @@ public class LeaderElectionService {
     }
 
     public boolean isLeader() {
-        ResponseEntity<HostInfo> leader = restTemplate.getForEntity("http://" + electorPath, HostInfo.class);
-        return leader.hasBody() && getHostInfo().equals(leader.getBody());
+        String leaderJson = restTemplate.getForObject("http://" + electorPath, String.class);
+        HostInfo leader = JsonUtils.toObject(leaderJson, HostInfo.class);
+        return getHostInfo().equals(leader);
     }
 
     public static HostInfo getHostInfo() {
