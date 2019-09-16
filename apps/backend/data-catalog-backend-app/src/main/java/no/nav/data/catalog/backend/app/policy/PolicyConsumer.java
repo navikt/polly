@@ -2,10 +2,10 @@ package no.nav.data.catalog.backend.app.policy;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
+import no.nav.data.catalog.backend.app.common.rest.RestResponsePage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -26,7 +26,7 @@ import static java.util.Collections.emptyList;
 @Component
 public class PolicyConsumer {
 
-    private static final ParameterizedTypeReference<PagedResources<PolicyResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    private static final  ParameterizedTypeReference<RestResponsePage<PolicyResponse>>  RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     @Autowired
@@ -40,7 +40,7 @@ public class PolicyConsumer {
             return emptyList();
         }
         try {
-            ResponseEntity<PagedResources<PolicyResponse>> responseEntity = restTemplate
+            ResponseEntity<RestResponsePage<PolicyResponse>> responseEntity = restTemplate
                     .exchange(policyUrl + "?datasetId={id}&page=0&size=1000", HttpMethod.GET, HttpEntity.EMPTY, RESPONSE_TYPE, datasetId);
             if (responseEntity.getBody().getContent() != null) {
                 return new ArrayList<>(responseEntity.getBody().getContent());

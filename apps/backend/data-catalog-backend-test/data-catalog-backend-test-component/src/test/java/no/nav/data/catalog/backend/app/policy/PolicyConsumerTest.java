@@ -2,8 +2,7 @@ package no.nav.data.catalog.backend.app.policy;
 
 import no.nav.data.catalog.backend.app.codelist.CodeResponse;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
-import no.nav.data.catalog.backend.app.policy.PolicyConsumer;
-import no.nav.data.catalog.backend.app.policy.PolicyResponse;
+import no.nav.data.catalog.backend.app.common.rest.RestResponsePage;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -14,8 +13,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.config.HateoasAwareSpringDataWebConfiguration;
-import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -40,6 +39,7 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 @Import(HateoasAwareSpringDataWebConfiguration.class)
 public class PolicyConsumerTest {
+
     private static final String LEGALBASISDESCRIPTION1 = "Legal basis description 1";
     private static final String LEGALBASISDESCRIPTION2 = "Legal basis description 2";
     private static final String PURPOSECODE1 = "PUR1";
@@ -76,9 +76,9 @@ public class PolicyConsumerTest {
     @Test
     public void getListOfPolicies() {
         List<PolicyResponse> responseList = asList(policyResponse1, policyResponse2);
-        PagedResources<PolicyResponse> pagedResources = new PagedResources<>(responseList,
-                new PagedResources.PageMetadata(responseList.size(), 1, responseList.size(), 1));
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), eq(HttpEntity.EMPTY), eq(new ParameterizedTypeReference<PagedResources<PolicyResponse>>() {}), eq(DATASET_ID_1)))
+        RestResponsePage<PolicyResponse> pagedResources = new RestResponsePage<>(responseList, PageRequest.of(0, responseList.size()), responseList.size());
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), eq(HttpEntity.EMPTY), eq(new ParameterizedTypeReference<RestResponsePage<PolicyResponse>>() {
+        }), eq(DATASET_ID_1)))
                 .thenReturn(ResponseEntity.ok(pagedResources));
         List<PolicyResponse> policies = policyConsumer.getPolicyForDataset(DATASET_ID_1);
         assertPolicy1(policies.get(0));
@@ -87,7 +87,8 @@ public class PolicyConsumerTest {
 
     @Test
     public void policiesNotFound() {
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), eq(HttpEntity.EMPTY), eq(new ParameterizedTypeReference<PagedResources<PolicyResponse>>() {}), eq(DATASET_ID_1)))
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), eq(HttpEntity.EMPTY), eq(new ParameterizedTypeReference<RestResponsePage<PolicyResponse>>() {
+        }), eq(DATASET_ID_1)))
                 .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
         List<PolicyResponse> policies = policyConsumer.getPolicyForDataset(DATASET_ID_1);
         assertThat(policies.size(), is(0));
@@ -97,7 +98,8 @@ public class PolicyConsumerTest {
     public void shouldThrowClientException() {
         expectedException.expect(DataCatalogBackendTechnicalException.class);
         expectedException.expectMessage("Getting Policies for Dataset (id: acab158d-67ef-4030-a3c2-195e993f18d2) failed with status=500 INTERNAL_SERVER_ERROR");
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), eq(HttpEntity.EMPTY), eq(new ParameterizedTypeReference<PagedResources<PolicyResponse>>() {}), eq(DATASET_ID_1)))
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), eq(HttpEntity.EMPTY), eq(new ParameterizedTypeReference<RestResponsePage<PolicyResponse>>() {
+        }), eq(DATASET_ID_1)))
                 .thenThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
         policyConsumer.getPolicyForDataset(DATASET_ID_1);
     }
@@ -106,7 +108,8 @@ public class PolicyConsumerTest {
     public void shouldThrowServerException() {
         expectedException.expect(DataCatalogBackendTechnicalException.class);
         expectedException.expectMessage("Getting Policies for Dataset (id: acab158d-67ef-4030-a3c2-195e993f18d2) failed with status=500 INTERNAL_SERVER_ERROR");
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), eq(HttpEntity.EMPTY), eq(new ParameterizedTypeReference<PagedResources<PolicyResponse>>() {}), eq(DATASET_ID_1)))
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), eq(HttpEntity.EMPTY), eq(new ParameterizedTypeReference<RestResponsePage<PolicyResponse>>() {
+        }), eq(DATASET_ID_1)))
                 .thenThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
         policyConsumer.getPolicyForDataset(DATASET_ID_1);
     }
