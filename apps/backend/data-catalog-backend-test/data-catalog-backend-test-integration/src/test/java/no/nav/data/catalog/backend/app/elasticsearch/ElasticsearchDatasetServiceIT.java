@@ -15,7 +15,6 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collections;
 import java.util.List;
 
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchDocument.newDatasetDocumentId;
@@ -29,6 +28,8 @@ public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
     private static final String DESCRIPTION = "desc";
     private static final String CATEGORY_CODE = "cat1";
     private static final String CATEGORY_DESCRIPTION = "cat1desc";
+    private static final String PROVENANCE_CODE = "prov1";
+    private static final String PROVENANCE_DESCRIPTION = "prov1desc";
 
 
     @Autowired
@@ -60,6 +61,7 @@ public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
 
     private void initializeCodelists() {
         CodelistService.codelists.get(ListName.CATEGORY).put(CATEGORY_CODE, CATEGORY_DESCRIPTION);
+        CodelistService.codelists.get(ListName.PROVENANCE).put(PROVENANCE_CODE, PROVENANCE_DESCRIPTION);
     }
 
     @Test
@@ -145,7 +147,8 @@ public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
                 .datasetData(DatasetData.builder()
                         .title(TITLE)
                         .description(DESCRIPTION)
-                        .categories(Collections.singletonList(CATEGORY_CODE))
+                        .provenances(List.of(PROVENANCE_CODE))
+                        .categories(List.of(CATEGORY_CODE))
                         .pi(true)
                         .build())
                 .build();
@@ -158,7 +161,8 @@ public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
         assertThat(dataset.getTitle(), is(TITLE));
         assertThat(dataset.getDescription(), is(DESCRIPTION));
         assertThat(dataset.getPi(), is(1));
-        assertThat(dataset.getCategory(), is(Collections.singletonList(CATEGORY_DESCRIPTION)));
+        assertThat(dataset.getCategory(), is(List.of(CATEGORY_DESCRIPTION)));
+        assertThat(dataset.getProvenance(), is(List.of(PROVENANCE_DESCRIPTION)));
         List<PolicyElasticsearch> policies = dataset.getPolicies();
         assertThat(policies.size(), is(2));
         assertPolicies0(policies.get(0));

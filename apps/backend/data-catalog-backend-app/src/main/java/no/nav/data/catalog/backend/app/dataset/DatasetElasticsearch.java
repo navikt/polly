@@ -87,7 +87,7 @@ public class DatasetElasticsearch {
         setTitle(datasetData.getTitle());
         setDescription(datasetData.getDescription());
         setCategory(getCodelistDescription(ListName.CATEGORY, datasetData.getCategories()));
-        setProvenance(getCodelistDescription(ListName.PROVENANCE, datasetData.getCategories()));
+        setProvenance(getCodelistDescription(ListName.PROVENANCE, datasetData.getProvenances()));
         setPi(datasetData.getPi() == null ? null : BooleanUtils.toInteger(datasetData.getPi()));
         setKeywords(copyOf(datasetData.getKeywords()));
         setTheme(copyOf(datasetData.getThemes()));
