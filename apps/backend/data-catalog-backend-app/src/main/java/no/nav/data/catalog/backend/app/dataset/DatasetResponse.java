@@ -58,6 +58,7 @@ public class DatasetResponse {
 
     // Intended for rest response only
     private DatacatalogMaster datacatalogMaster;
+
     @JsonInclude(Include.NON_EMPTY)
     @ApiModelProperty(hidden = true)
     private List<DatasetResponse> children;

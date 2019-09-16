@@ -1,5 +1,6 @@
 package no.nav.data.catalog.backend.app.dataset;
 
+import no.nav.data.catalog.backend.app.codelist.CodelistStub;
 import no.nav.data.catalog.backend.app.common.rest.PageParameters;
 import no.nav.data.catalog.backend.app.common.rest.RestResponsePage;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
@@ -40,6 +41,7 @@ public class DatasetControllerIT extends AbstractDatasetIT {
     @Before
     public void setUp() {
         distributionChannelRepository.save(DistributionChannel.builder().id(UUID.randomUUID()).type(DistributionChannelType.REST).name("DistributionChannel").build());
+        CodelistStub.initializeCodelist();
     }
 
     @After
@@ -88,7 +90,7 @@ public class DatasetControllerIT extends AbstractDatasetIT {
                 .findFirst()
                 .get();
         DatasetResponse response11 = response1.getChildren().stream()
-                .filter(datasetResponse -> datasetResponse.getChildren().size() > 0).findFirst().get();
+                .filter(datasetResponse -> datasetResponse.getChildren() != null && datasetResponse.getChildren().size() > 0).findFirst().get();
 
         assertThat(responseUnrelated.getChildren().size(), is(0));
         assertThat(response1.getChildren().size(), is(2));
@@ -246,7 +248,7 @@ public class DatasetControllerIT extends AbstractDatasetIT {
     public void testSync() {
         dataset = datasetRepository.save(createDataset("DatasetData"));
 
-        restTemplate.postForLocation("/dataset/sync",  List.of(dataset.getId()), dataset.getId());
+        restTemplate.postForLocation("/dataset/sync", List.of(dataset.getId()), dataset.getId());
         assertThat(datasetRepository.findById(dataset.getId()).get().getElasticsearchStatus(), is(ElasticsearchStatus.TO_BE_UPDATED));
     }
 
