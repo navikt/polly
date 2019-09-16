@@ -10,6 +10,7 @@ import no.nav.data.catalog.backend.app.common.auditing.Auditable;
 import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
+import no.nav.data.catalog.backend.app.policy.PolicyElasticsearch;
 import org.apache.commons.lang3.BooleanUtils;
 import org.hibernate.annotations.Type;
 
@@ -91,6 +92,10 @@ public class Dataset extends Auditable<String> {
 
     public DatasetResponse convertToResponse() {
         return new DatasetResponse(this);
+    }
+
+    public DatasetElasticsearch convertToElasticSearch(List<PolicyElasticsearch> policies) {
+        return new DatasetElasticsearch(this, policies);
     }
 
     public Dataset convertNewFromRequest(DatasetRequest request, DatacatalogMaster master) {

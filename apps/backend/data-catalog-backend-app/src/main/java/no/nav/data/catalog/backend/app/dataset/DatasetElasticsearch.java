@@ -1,0 +1,109 @@
+package no.nav.data.catalog.backend.app.dataset;
+
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import no.nav.data.catalog.backend.app.codelist.CodeResponse;
+import no.nav.data.catalog.backend.app.codelist.CodelistService;
+import no.nav.data.catalog.backend.app.codelist.ListName;
+import no.nav.data.catalog.backend.app.common.utils.DateUtil;
+import no.nav.data.catalog.backend.app.distributionchannel.DistributionElasticsearch;
+import no.nav.data.catalog.backend.app.policy.PolicyElasticsearch;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import javax.validation.constraints.NotNull;
+
+import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.copyOf;
+import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.nullToEmptyList;
+import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.safeStream;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonPropertyOrder({"id", "title"})
+public class DatasetElasticsearch {
+
+    private String id;
+    private String elasticsearchId;
+    private ContentType type;
+    private String title;
+    private String description;
+    private String suggest;
+    private List<String> category;
+    private List<String> provenance;
+    private Integer pi;
+    private List<String> keywords;
+    private List<String> theme;
+    private String accessRights;
+    private String spatial;
+    private List<String> haspart;
+    private List<DistributionElasticsearch> distribution;
+
+    private String publisher;
+    private LocalDateTime issued;
+    private List<PolicyElasticsearch> policies;
+
+    private String modfied;
+    @JsonProperty("modified_by")
+    private String modfiedBy;
+    private String created;
+    @JsonProperty("created_by")
+    private String createdBy;
+    // Mapped from policies
+    private List<String> purpose = new ArrayList<>();
+    private List<String> legalbasis = new ArrayList<>();
+
+    DatasetElasticsearch(Dataset dataset, List<PolicyElasticsearch> policies) {
+        id = dataset.getId().toString();
+        elasticsearchId = dataset.getElasticsearchId();
+
+        setCreated(DateUtil.formatDate(dataset.getCreatedDate()));
+        setCreatedBy(dataset.getCreatedBy());
+        setModfied(DateUtil.formatDate(dataset.getLastModifiedDate()));
+        setModfiedBy(dataset.getLastModifiedBy());
+
+        setPolicies(policies);
+        policies.forEach(policy -> {
+            purpose.add(policy.getPurpose());
+            legalbasis.add(policy.getLegalBasis());
+        });
+
+        mapJsonFields(dataset.getDatasetData());
+    }
+
+    private void mapJsonFields(@NotNull DatasetData datasetData) {
+        setType(datasetData.getContentType());
+        setTitle(datasetData.getTitle());
+        setDescription(datasetData.getDescription());
+        setCategory(getCodelistDescription(ListName.CATEGORY, datasetData.getCategories()));
+        setProvenance(getCodelistDescription(ListName.PROVENANCE, datasetData.getCategories()));
+        setPi(datasetData.getPi() == null ? null : BooleanUtils.toInteger(datasetData.getPi()));
+        setKeywords(copyOf(datasetData.getKeywords()));
+        setTheme(copyOf(datasetData.getThemes()));
+        setAccessRights(datasetData.getAccessRights());
+        setSpatial(datasetData.getSpatial());
+        setHaspart(copyOf(datasetData.getHaspart()));
+        setDistribution(safeStream(datasetData.getDistributionChannels()).map(dc -> new DistributionElasticsearch(dc.getType(), dc.getName())).collect(Collectors.toList()));
+
+        setPublisher(datasetData.getPublisher());
+        setIssued(datasetData.getIssued());
+
+        setSuggest(String.format("%s %s %s", title, StringUtils.trimToEmpty(description), String.join(" ", nullToEmptyList(keywords))));
+    }
+
+    private List<String> getCodelistDescription(ListName listName, List<String> values) {
+        return CodelistService.getCodeInfoForCodelistItems(listName, values).stream().filter(Objects::nonNull).map(CodeResponse::getDescription).collect(Collectors.toList());
+    }
+
+}

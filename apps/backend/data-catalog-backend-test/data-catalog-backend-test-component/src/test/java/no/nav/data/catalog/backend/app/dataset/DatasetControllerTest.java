@@ -8,6 +8,7 @@ import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelShort;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelType;
+import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchDatasetService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,6 +59,8 @@ public class DatasetControllerTest {
     private DatasetRepository repository;
     @MockBean
     private DatasetService service;
+    @MockBean
+    private ElasticsearchDatasetService elasticsearchDatasetService;
 
     @Autowired
     private MockMvc mvc;

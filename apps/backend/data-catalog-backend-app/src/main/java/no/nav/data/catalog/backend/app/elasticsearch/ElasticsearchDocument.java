@@ -3,7 +3,7 @@ package no.nav.data.catalog.backend.app.elasticsearch;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
-import no.nav.data.catalog.backend.app.dataset.DatasetResponse;
+import no.nav.data.catalog.backend.app.dataset.DatasetElasticsearch;
 
 @Data
 @AllArgsConstructor
@@ -13,7 +13,7 @@ public class ElasticsearchDocument {
     private String json;
     private String index;
 
-    public static ElasticsearchDocument newDatasetDocument(DatasetResponse dataset, String index) {
+    public static ElasticsearchDocument newDatasetDocument(DatasetElasticsearch dataset, String index) {
         return new ElasticsearchDocument(dataset.getElasticsearchId(), JsonUtils.toJson(dataset), index);
     }
 

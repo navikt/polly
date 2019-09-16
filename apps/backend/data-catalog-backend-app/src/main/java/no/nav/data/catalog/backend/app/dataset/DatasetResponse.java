@@ -59,26 +59,24 @@ public class DatasetResponse {
     // Intended for rest response only
     private DatacatalogMaster datacatalogMaster;
 
-    @JsonInclude(Include.NON_EMPTY)
+    @JsonInclude(Include.NON_NULL)
     @ApiModelProperty(hidden = true)
     private List<DatasetResponse> children;
-    @JsonInclude(Include.NON_EMPTY)
-    @ApiModelProperty(hidden = true) // Only used for sync to elasticsearch
-    private List<PolicyResponse> policies;
 
     DatasetResponse(Dataset dataset) {
-        this(dataset, Collections.emptyMap(), Collections.emptySet());
+        this(dataset, Collections.emptyMap(), Collections.emptySet(), false);
     }
 
-    DatasetResponse(Dataset dataset, Map<UUID, Dataset> allDatasets, Set<DatasetRelation> relations) {
+    DatasetResponse(Dataset dataset, Map<UUID, Dataset> allDatasets, Set<DatasetRelation> relations, boolean includeChildren) {
         id = dataset.getId();
         elasticsearchId = dataset.getElasticsearchId();
         mapJsonFields(dataset.getDatasetData());
 
         children = relations.stream()
                 .filter(rel -> rel.getId().equals(dataset.getId()))
-                .map(rel -> new DatasetResponse(allDatasets.get(rel.getParentOfId()), allDatasets, relations))
+                .map(rel -> new DatasetResponse(allDatasets.get(rel.getParentOfId()), allDatasets, relations, includeChildren))
                 .collect(Collectors.toList());
+        children = includeChildren ? children : null;
     }
 
     private void mapJsonFields(@NotNull DatasetData datasetData) {

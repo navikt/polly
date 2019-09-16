@@ -60,7 +60,7 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         Set<DatasetRelation> relations = datasetRelationRepository.findAllDescendantsOf(uuid);
         Dataset dataset = datasetOptional.get();
         if (relations.isEmpty()) {
-            return dataset.convertToResponse();
+            return new DatasetResponse(dataset, Collections.emptyMap(), relations, true);
         }
 
         Set<UUID> allIds = relations.stream()
@@ -69,7 +69,7 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         Map<UUID, Dataset> allDatasets = datasetRepository.findAllById(allIds).stream()
                 .collect(toMap(Dataset::getId, Function.identity()));
 
-        return new DatasetResponse(dataset, allDatasets, relations);
+        return new DatasetResponse(dataset, allDatasets, relations, true);
     }
 
     public Page<DatasetResponse> findAllRootDatasets(boolean includeDescendants, Pageable pageable) {

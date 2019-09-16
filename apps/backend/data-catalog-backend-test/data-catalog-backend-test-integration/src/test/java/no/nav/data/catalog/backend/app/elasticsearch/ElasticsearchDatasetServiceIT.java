@@ -1,15 +1,14 @@
 package no.nav.data.catalog.backend.app.elasticsearch;
 
 import no.nav.data.catalog.backend.app.IntegrationTestBase;
-import no.nav.data.catalog.backend.app.codelist.CodeResponse;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
 import no.nav.data.catalog.backend.app.dataset.DatasetData;
-import no.nav.data.catalog.backend.app.dataset.DatasetResponse;
+import no.nav.data.catalog.backend.app.dataset.DatasetElasticsearch;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
-import no.nav.data.catalog.backend.app.policy.PolicyResponse;
+import no.nav.data.catalog.backend.app.policy.PolicyElasticsearch;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -154,27 +153,27 @@ public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
     }
 
     private void assertDataset(String json) {
-        var dataset = JsonUtils.toObject(json, DatasetResponse.class);
+        var dataset = JsonUtils.toObject(json, DatasetElasticsearch.class);
 
         assertThat(dataset.getTitle(), is(TITLE));
         assertThat(dataset.getDescription(), is(DESCRIPTION));
         assertThat(dataset.getPi(), is(1));
-        assertThat(dataset.getCategories(), is(Collections.singletonList(new CodeResponse(CATEGORY_CODE, CATEGORY_DESCRIPTION))));
-        List<PolicyResponse> policies = dataset.getPolicies();
+        assertThat(dataset.getCategory(), is(Collections.singletonList(CATEGORY_DESCRIPTION)));
+        List<PolicyElasticsearch> policies = dataset.getPolicies();
         assertThat(policies.size(), is(2));
         assertPolicies0(policies.get(0));
         assertPolicies1(policies.get(1));
     }
 
-    private void assertPolicies0(PolicyResponse policy) {
-        assertThat(policy.getPolicyId(), is(1L));
-        assertThat(policy.getPurpose(), is(new CodeResponse("KTR", "Kontroll")));
-        assertThat(policy.getLegalBasisDescription(), is("LB description"));
+    private void assertPolicies0(PolicyElasticsearch policy) {
+        assertThat(policy.getPurpose(), is("KTR"));
+        assertThat(policy.getDescription(), is("Kontroll"));
+        assertThat(policy.getLegalBasis(), is("LB description"));
     }
 
-    private void assertPolicies1(PolicyResponse policy) {
-        assertThat(policy.getPolicyId(), is(2L));
-        assertThat(policy.getPurpose(), is(new CodeResponse("AAP", "Arbeidsavklaringspenger")));
-        assertThat(policy.getLegalBasisDescription(), is("Ftrl. § 11-20"));
+    private void assertPolicies1(PolicyElasticsearch policy) {
+        assertThat(policy.getPurpose(), is("AAP"));
+        assertThat(policy.getDescription(), is("Arbeidsavklaringspenger"));
+        assertThat(policy.getLegalBasis(), is("Ftrl. § 11-20"));
     }
 }

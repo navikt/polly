@@ -90,7 +90,7 @@ public class DatasetControllerIT extends AbstractDatasetIT {
                 .findFirst()
                 .get();
         DatasetResponse response11 = response1.getChildren().stream()
-                .filter(datasetResponse -> datasetResponse.getChildren() != null && datasetResponse.getChildren().size() > 0).findFirst().get();
+                .filter(datasetResponse -> datasetResponse.getChildren().size() > 0).findFirst().get();
 
         assertThat(responseUnrelated.getChildren().size(), is(0));
         assertThat(response1.getChildren().size(), is(2));

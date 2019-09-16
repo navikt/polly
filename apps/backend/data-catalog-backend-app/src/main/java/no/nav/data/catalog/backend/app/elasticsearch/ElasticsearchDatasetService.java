@@ -2,13 +2,15 @@ package no.nav.data.catalog.backend.app.elasticsearch;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
-import no.nav.data.catalog.backend.app.dataset.DatasetResponse;
+import no.nav.data.catalog.backend.app.dataset.DatasetElasticsearch;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.policy.PolicyConsumer;
+import no.nav.data.catalog.backend.app.policy.PolicyElasticsearch;
 import no.nav.data.catalog.backend.app.policy.PolicyResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCED;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_CREATED;
@@ -34,48 +36,54 @@ public class ElasticsearchDatasetService {
 
     public void synchToElasticsearch() {
         log.info("Starting sync to ElasticSearch");
-        createDatasetsInElasticsearch();
-        updateDatasetsInElasticsearch();
-        deleteDatasetsInElasticsearchAndInPostgres();
-        log.info("Finished sync to ElasticSearch");
+        var created = createDatasetsInElasticsearch();
+        var updated = updateDatasetsInElasticsearch();
+        var deleted = deleteDatasetsInElasticsearchAndInPostgres();
+        log.info("Finished sync to ElasticSearch created={} updated={} deleted={}", created, updated, deleted);
     }
 
-    private void createDatasetsInElasticsearch() {
+    private int createDatasetsInElasticsearch() {
         List<Dataset> datasets = repository.findByElasticsearchStatus(TO_BE_CREATED);
         for (Dataset dataset : datasets) {
-            DatasetResponse datasetResponse = dataset.convertToResponse();
-            List<PolicyResponse> policies = policyConsumer.getPolicyForDataset(dataset.getId());
-            datasetResponse.setPolicies(policies);
-
-            elasticsearch.insert(ElasticsearchDocument.newDatasetDocument(datasetResponse, elasticsearchProperties.getIndex()));
+            DatasetElasticsearch datasetES = mapDataset(dataset);
+            elasticsearch.insert(ElasticsearchDocument.newDatasetDocument(datasetES, elasticsearchProperties.getIndex()));
 
             dataset.setElasticsearchStatus(SYNCED);
             repository.save(dataset);
         }
-        log.info("created {}", datasets.size());
+        return datasets.size();
     }
 
-    private void updateDatasetsInElasticsearch() {
+    private int updateDatasetsInElasticsearch() {
         List<Dataset> datasets = repository.findByElasticsearchStatus(TO_BE_UPDATED);
         for (Dataset dataset : datasets) {
-            DatasetResponse datasetResponse = dataset.convertToResponse();
-            List<PolicyResponse> policies = policyConsumer.getPolicyForDataset(dataset.getId());
-            datasetResponse.setPolicies(policies);
-
-            elasticsearch.updateById(ElasticsearchDocument.newDatasetDocument(datasetResponse, elasticsearchProperties.getIndex()));
+            DatasetElasticsearch datasetES = mapDataset(dataset);
+            elasticsearch.updateById(ElasticsearchDocument.newDatasetDocument(datasetES, elasticsearchProperties.getIndex()));
 
             dataset.setElasticsearchStatus(SYNCED);
             repository.save(dataset);
         }
-        log.info("updated {}", datasets.size());
+        return datasets.size();
     }
 
-    private void deleteDatasetsInElasticsearchAndInPostgres() {
+    private int deleteDatasetsInElasticsearchAndInPostgres() {
         List<Dataset> datasets = repository.findByElasticsearchStatus(TO_BE_DELETED);
         for (Dataset dataset : datasets) {
             elasticsearch.deleteById(ElasticsearchDocument.newDatasetDocumentId(dataset.getElasticsearchId(), elasticsearchProperties.getIndex()));
             repository.deleteById(dataset.getId());
         }
-        log.info("deleted {}", datasets.size());
+        return datasets.size();
+    }
+
+    public DatasetElasticsearch mapDataset(Dataset dataset) {
+        List<PolicyResponse> policies = policyConsumer.getPolicyForDataset(dataset.getId());
+        var policiesES = mapPolicies(policies);
+        return dataset.convertToElasticSearch(policiesES);
+    }
+
+    private List<PolicyElasticsearch> mapPolicies(List<PolicyResponse> policies) {
+        return policies.stream()
+                .map(policy -> new PolicyElasticsearch(policy.getPurpose().getCode(), policy.getPurpose().getDescription(), policy.getLegalBasisDescription()))
+                .collect(Collectors.toList());
     }
 }
