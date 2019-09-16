@@ -54,9 +54,9 @@ public class DatasetElasticsearch {
     private LocalDateTime issued;
     private List<PolicyElasticsearch> policy;
 
-    private String modfied;
+    private String modified;
     @JsonProperty("modified_by")
-    private String modfiedBy;
+    private String modifiedBy;
     private String created;
     @JsonProperty("created_by")
     private String createdBy;
@@ -70,8 +70,8 @@ public class DatasetElasticsearch {
 
         setCreated(DateUtil.formatDate(dataset.getCreatedDate()));
         setCreatedBy(dataset.getCreatedBy());
-        setModfied(DateUtil.formatDate(dataset.getLastModifiedDate()));
-        setModfiedBy(dataset.getLastModifiedBy());
+        setModified(DateUtil.formatDate(dataset.getLastModifiedDate()));
+        setModifiedBy(dataset.getLastModifiedBy());
 
         setPolicy(policies);
         policies.forEach(policy -> {
