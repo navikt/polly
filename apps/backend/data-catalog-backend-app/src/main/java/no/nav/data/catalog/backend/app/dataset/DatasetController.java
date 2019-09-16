@@ -75,20 +75,20 @@ public class DatasetController {
         return new ResponseEntity<>(datasetResponse.get(), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get Dataset in elasticsearch format", tags = {"Dataset"})
+    @ApiOperation(value = "Get Dataset in Elasticsearch format", tags = {"Dataset"})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Dataset fetched", response = DatasetElasticsearch.class),
             @ApiResponse(code = 404, message = "Dataset not found"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/elasticsearch/{id}")
-    public ResponseEntity findelEsticsearchFormatForId(@PathVariable UUID id) {
-        log.info("Received request for Dataset EsticsearchFormat with the id={}", id);
+    public ResponseEntity findElasticsearchFormatForId(@PathVariable UUID id) {
+        log.info("Received request for Dataset ElasticsearchFormat with the id={}", id);
         Optional<Dataset> datasetResponse = repository.findById(id);
         if (datasetResponse.isEmpty()) {
             log.info("Cannot find the Dataset with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        log.info("Returned Dataset EsticsearchFormat");
+        log.info("Returned Dataset ElasticsearchFormat");
         return new ResponseEntity<>(elasticsearchDatasetService.mapDataset(datasetResponse.get()), HttpStatus.OK);
     }
 
