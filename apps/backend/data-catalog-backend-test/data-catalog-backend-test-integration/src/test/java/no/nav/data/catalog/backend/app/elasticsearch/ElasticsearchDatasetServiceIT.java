@@ -163,7 +163,7 @@ public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
         assertThat(dataset.getPi(), is(1));
         assertThat(dataset.getCategory(), is(List.of(CATEGORY_DESCRIPTION)));
         assertThat(dataset.getProvenance(), is(List.of(PROVENANCE_DESCRIPTION)));
-        List<PolicyElasticsearch> policies = dataset.getPolicies();
+        List<PolicyElasticsearch> policies = dataset.getPolicy();
         assertThat(policies.size(), is(2));
         assertPolicies0(policies.get(0));
         assertPolicies1(policies.get(1));

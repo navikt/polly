@@ -52,7 +52,7 @@ public class DatasetElasticsearch {
 
     private String publisher;
     private LocalDateTime issued;
-    private List<PolicyElasticsearch> policies;
+    private List<PolicyElasticsearch> policy;
 
     private String modfied;
     @JsonProperty("modified_by")
@@ -73,7 +73,7 @@ public class DatasetElasticsearch {
         setModfied(DateUtil.formatDate(dataset.getLastModifiedDate()));
         setModfiedBy(dataset.getLastModifiedBy());
 
-        setPolicies(policies);
+        setPolicy(policies);
         policies.forEach(policy -> {
             purpose.add(policy.getPurpose());
             legalbasis.add(policy.getLegalBasis());
