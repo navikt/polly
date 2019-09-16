@@ -14,8 +14,6 @@ import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelation;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelShort;
-import no.nav.data.catalog.backend.app.policy.PolicyResponse;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
@@ -45,7 +43,7 @@ public class DatasetResponse {
     private String suggest;
     private List<CodeResponse> categories;
     private List<CodeResponse> provenances;
-    private Integer pi;
+    private Boolean pi;
     private List<String> keywords;
     private List<String> themes;
     private String accessRights;
@@ -85,7 +83,7 @@ public class DatasetResponse {
         setDescription(datasetData.getDescription());
         setCategories(CodelistService.getCodeInfoForCodelistItems(ListName.CATEGORY, datasetData.getCategories()));
         setProvenances(CodelistService.getCodeInfoForCodelistItems(ListName.PROVENANCE, datasetData.getProvenances()));
-        setPi(datasetData.getPi() == null ? null : BooleanUtils.toInteger(datasetData.getPi()));
+        setPi(datasetData.getPi());
         setKeywords(copyOf(datasetData.getKeywords()));
         setThemes(copyOf(datasetData.getThemes()));
         setAccessRights(datasetData.getAccessRights());
