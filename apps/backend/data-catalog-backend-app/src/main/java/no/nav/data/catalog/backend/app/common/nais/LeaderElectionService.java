@@ -25,7 +25,7 @@ public class LeaderElectionService {
     }
 
     public boolean isLeader() {
-        ResponseEntity<HostInfo> leader = restTemplate.getForEntity(electorPath, HostInfo.class);
+        ResponseEntity<HostInfo> leader = restTemplate.getForEntity("http://" + electorPath, HostInfo.class);
         return leader.hasBody() && getHostInfo().equals(leader.getBody());
     }
 
