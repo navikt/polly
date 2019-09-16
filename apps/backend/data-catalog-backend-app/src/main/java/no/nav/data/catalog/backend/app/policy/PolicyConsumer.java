@@ -17,7 +17,6 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,11 +41,9 @@ public class PolicyConsumer {
         }
         try {
             ResponseEntity<PagedResources<PolicyResponse>> responseEntity = restTemplate
-                    .exchange(policyUrl + "?datasetId={id}&page=0&size=1000", HttpMethod.GET, HttpEntity.EMPTY, RESPONSE_TYPE, datasetId.toString());
-            if (responseEntity.getBody() != null && responseEntity.getBody().getContent() != null) {
-                Collection<PolicyResponse> content = responseEntity.getBody().getContent();
-                log.debug("Found {} policies", content.size());
-                return new ArrayList<>(content);
+                    .exchange(policyUrl + "?datasetId={id}&page=0&size=1000", HttpMethod.GET, HttpEntity.EMPTY, RESPONSE_TYPE, datasetId);
+            if (responseEntity.getBody().getContent() != null) {
+                return new ArrayList<>(responseEntity.getBody().getContent());
             } else {
                 log.warn("policy response without content");
                 return emptyList();
