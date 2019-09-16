@@ -1,5 +1,6 @@
 package no.nav.data.catalog.backend.app.policy;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,11 +17,13 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 import static java.util.Collections.emptyList;
 
+@Slf4j
 @Component
 public class PolicyConsumer {
 
@@ -39,10 +42,13 @@ public class PolicyConsumer {
         }
         try {
             ResponseEntity<PagedResources<PolicyResponse>> responseEntity = restTemplate
-                    .exchange(policyUrl + "?datasetId={id}&page=0&size=1000", HttpMethod.GET, HttpEntity.EMPTY, RESPONSE_TYPE, datasetId);
-            if (responseEntity.getBody().getContent() != null) {
-                return new ArrayList<>(responseEntity.getBody().getContent());
+                    .exchange(policyUrl + "?datasetId={id}&page=0&size=1000", HttpMethod.GET, HttpEntity.EMPTY, RESPONSE_TYPE, datasetId.toString());
+            if (responseEntity.getBody() != null) {
+                Collection<PolicyResponse> content = responseEntity.getBody().getContent();
+                log.debug("Found {} policies", content.size());
+                return new ArrayList<>(content);
             } else {
+                log.warn("policy response without content");
                 return emptyList();
             }
         } catch (HttpClientErrorException e) {
