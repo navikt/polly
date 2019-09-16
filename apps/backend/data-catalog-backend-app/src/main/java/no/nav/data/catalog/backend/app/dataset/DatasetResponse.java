@@ -2,6 +2,8 @@ package no.nav.data.catalog.backend.app.dataset;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -56,8 +58,10 @@ public class DatasetResponse {
 
     // Intended for rest response only
     private DatacatalogMaster datacatalogMaster;
+    @JsonInclude(Include.NON_NULL)
     @ApiModelProperty(hidden = true)
     private List<DatasetResponse> children;
+    @JsonInclude(Include.NON_NULL)
     @ApiModelProperty(hidden = true) // Only used for sync to elasticsearch
     private List<PolicyResponse> policies;
 
