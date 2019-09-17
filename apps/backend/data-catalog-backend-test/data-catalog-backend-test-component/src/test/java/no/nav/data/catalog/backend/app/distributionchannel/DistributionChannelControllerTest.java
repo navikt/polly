@@ -127,7 +127,7 @@ public class DistributionChannelControllerTest {
         mvc.perform(post("/distributionchannel")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requests)))
-                .andExpect(status().isAccepted());
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -147,7 +147,8 @@ public class DistributionChannelControllerTest {
                 .build();
 
         when(service.findDistributionChannelById(toBeDeletedDChannel.getId())).thenReturn(Optional.of(toBeDeletedDChannel));
+        when(service.deleteDistributionChannel(toBeDeletedDChannel)).thenReturn(toBeDeletedDChannel);
 
-        mvc.perform(delete("/distributionchannel/" + toBeDeletedDChannel.getId())).andExpect(status().isAccepted());
+        mvc.perform(delete("/distributionchannel/" + toBeDeletedDChannel.getId())).andExpect(status().isOk());
     }
 }

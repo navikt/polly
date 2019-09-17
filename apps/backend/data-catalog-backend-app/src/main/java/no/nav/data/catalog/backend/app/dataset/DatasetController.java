@@ -112,7 +112,7 @@ public class DatasetController {
 
     @ApiOperation(value = "Get All Root Datasets", tags = {"Dataset"})
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Datasets fetched", response = DatasetResponse.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "Datasets fetched", response = DatasetPage.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/roots")
     public RestResponsePage<DatasetResponse> findAllRoot(@RequestParam(value = "includeDescendants", defaultValue = "false") boolean includeDescendants, PageParameters page) {
@@ -124,7 +124,7 @@ public class DatasetController {
 
     @ApiOperation(value = "Get All Datasets", tags = {"Dataset"})
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Datasets fetched", response = DatasetResponse.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "Datasets fetched", response = DatasetPage.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/")
     public RestResponsePage<DatasetResponse> findAll(PageParameters page) {
@@ -228,4 +228,9 @@ public class DatasetController {
         log.info("Received requests to sync Dataset");
         service.sync(ids);
     }
+
+    private static final class DatasetPage extends RestResponsePage<DatasetResponse> {
+
+    }
+
 }

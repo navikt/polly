@@ -59,6 +59,7 @@ public class VaultHikariConfig implements InitializingBean {
                 try {
                     Thread.sleep(1000L * (tries * tries));
                 } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
                     log.warn("sleepinterruped", ex);
                 }
             }

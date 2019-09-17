@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -42,89 +41,92 @@ public class DistributionChannelController {
         this.repository = repository;
     }
 
-	@ApiOperation(value = "Get DistributionChannelById", tags = {"DistributionChannel"})
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "DistributionChannel fetched", response = DistributionChannel.class),
-			@ApiResponse(code = 404, message = "DistributionChannel  not found"),
-			@ApiResponse(code = 500, message = "Internal server error")})
+    @ApiOperation(value = "Get DistributionChannelById", tags = {"DistributionChannel"})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "DistributionChannel fetched", response = DistributionChannel.class),
+            @ApiResponse(code = 404, message = "DistributionChannel  not found"),
+            @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/{id}")
-    public ResponseEntity getDistributionChannelById(@PathVariable UUID id) {
+    public ResponseEntity<DistributionChannelResponse> getDistributionChannelById(@PathVariable UUID id) {
         log.info("Received request for DistributionChannel with the id={}", id);
         Optional<DistributionChannel> distributionChannel = repository.findById(id);
-		if (distributionChannel.isEmpty()) {
+        if (distributionChannel.isEmpty()) {
             log.info("Cannot find the DistributionChannel with id={}", id);
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-		log.info("Returned DistributionChannel");
-		return new ResponseEntity<>(distributionChannel.get(), HttpStatus.OK);
-	}
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        log.info("Returned DistributionChannel");
+        return new ResponseEntity<>(distributionChannel.get().convertToResponse(), HttpStatus.OK);
+    }
 
-	@ApiOperation(value = "Get all DistributionChannels", tags = {"DistributionChannel"})
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "All distributionChannels fetched", response = DistributionChannel.class, responseContainer = "Page"),
-			@ApiResponse(code = 404, message = "No DistributionChannel found in repository"),
-			@ApiResponse(code = 500, message = "Internal server error")})
-	@GetMapping
-	public RestResponsePage<DistributionChannelResponse> getAllDistributionChannel(PageParameters pageParameters) {
+    @ApiOperation(value = "Get all DistributionChannels", tags = {"DistributionChannel"})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "All distributionChannels fetched", response = DistributionChannelPage.class),
+            @ApiResponse(code = 404, message = "No DistributionChannel found in repository"),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @GetMapping
+    public ResponseEntity<RestResponsePage<DistributionChannelResponse>> getAllDistributionChannel(PageParameters pageParameters) {
         log.info("Received request for all DistributionChannels");
-		Page<DistributionChannelResponse> pagedResponse = service.getAllDistributionChannels(pageParameters.createIdSortedPage());
-		log.info("Returned DistributionChannels");
-		return new RestResponsePage<>(pagedResponse.getContent(), pagedResponse.getPageable(), pagedResponse.getTotalElements());
-	}
+        Page<DistributionChannelResponse> pagedResponse = service.getAllDistributionChannels(pageParameters.createIdSortedPage());
+        log.info("Returned DistributionChannels");
+        return ResponseEntity.ok(new RestResponsePage<>(pagedResponse.getContent(), pagedResponse.getPageable(), pagedResponse.getTotalElements()));
+    }
 
-	@ApiOperation(value = "Count all DistributionChannels", tags = {"DistributionChannel"})
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Count of distributionchannel fetched", response = Long.class),
-			@ApiResponse(code = 500, message = "Internal server error")})
-	@GetMapping("/count")
-	public Long countAllDistributionChannels() {
-		log.info("Received request for count all DistributionChannels");
+    @ApiOperation(value = "Count all DistributionChannels", tags = {"DistributionChannel"})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Count of distributionchannel fetched", response = Long.class),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @GetMapping("/count")
+    public Long countAllDistributionChannels() {
+        log.info("Received request for count all DistributionChannels");
         return repository.count();
-	}
+    }
 
-	@ApiOperation(value = "Create DistributionChannel", tags = {"DistributionChannel"})
-	@ApiResponses(value = {
-			@ApiResponse(code = 202, message = "DistributionChannels to be created successfully accepted", response = DistributionChannel.class, responseContainer = "List"),
-			@ApiResponse(code = 400, message = "Illegal arguments"),
-			@ApiResponse(code = 500, message = "Internal server error")})
-	@PostMapping
-	@ResponseStatus(HttpStatus.ACCEPTED)
-	public List<DistributionChannelResponse> createDistributionChannels(@RequestBody List<DistributionChannelRequest> requests) {
-		log.info("Received requests to create DistributionChannels");
-		//TODO: ValidateRequest
+    @ApiOperation(value = "Create DistributionChannel", tags = {"DistributionChannel"})
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "DistributionChannels to be created successfully accepted", response = DistributionChannel.class, responseContainer = "List"),
+            @ApiResponse(code = 400, message = "Illegal arguments"),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @PostMapping
+    public ResponseEntity<List<DistributionChannelResponse>> createDistributionChannels(@RequestBody List<DistributionChannelRequest> requests) {
+        log.info("Received requests to create DistributionChannels");
+        //TODO: ValidateRequest
 //		service.validateRequests(requests, false);
-		return service.createDistributionChannels(requests).stream().map(DistributionChannel::convertToResponse).collect(Collectors.toList());
-	}
+        return new ResponseEntity<>(service.createDistributionChannels(requests).stream().map(DistributionChannel::convertToResponse).collect(Collectors.toList()),
+                HttpStatus.CREATED);
+    }
 
-	@ApiOperation(value = "Update DistributionChannel", tags = {"DistributionChannel"})
-	@ApiResponses(value = {
-			@ApiResponse(code = 202, message = "DistributionChannels to be updated successfully accepted", response = DistributionChannel.class, responseContainer = "List"),
-			@ApiResponse(code = 400, message = "Illegal arguments"),
-			@ApiResponse(code = 500, message = "Internal server error")})
-	@PutMapping
-	@ResponseStatus(HttpStatus.ACCEPTED)
-	public List<DistributionChannelResponse> updateDistributionChannels(@RequestBody List<DistributionChannelRequest> requests) {
-		log.info("Received requests to create DistributionChannels");
-		//TODO: ValidateRequest
+    @ApiOperation(value = "Update DistributionChannel", tags = {"DistributionChannel"})
+    @ApiResponses(value = {
+            @ApiResponse(code = 202, message = "DistributionChannels to be updated successfully accepted", response = DistributionChannel.class, responseContainer = "List"),
+            @ApiResponse(code = 400, message = "Illegal arguments"),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @PutMapping
+    public ResponseEntity<List<DistributionChannelResponse>> updateDistributionChannels(@RequestBody List<DistributionChannelRequest> requests) {
+        log.info("Received requests to create DistributionChannels");
+        //TODO: ValidateRequest
 //		service.validateRequests(requests, true);
-		return service.updateDistributionChannels(requests).stream().map(DistributionChannel::convertToResponse).collect(Collectors.toList());
-	}
+        return ResponseEntity.ok(service.updateDistributionChannels(requests).stream().map(DistributionChannel::convertToResponse).collect(Collectors.toList()));
+    }
 
-	@ApiOperation(value = "Delete DistributionChannel", tags = {"DistributionChannel"})
-	@ApiResponses(value = {
-			@ApiResponse(code = 201, message = "DistributionChannel deleted"),
-			@ApiResponse(code = 404, message = "DistributionChannel not found"),
-			@ApiResponse(code = 500, message = "Internal server error")})
-	@DeleteMapping("/{id}")
-	@Transactional
-	public ResponseEntity deleteDistributionChannelById(@PathVariable UUID id) {
-		log.info("Received a request to delete DistributionChannel with id={}", id);
-		Optional<DistributionChannel> fromRepository = service.findDistributionChannelById(id);
-		if (fromRepository.isEmpty()) {
-			log.info("Cannot find DistributionChannel with id={}", id);
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-		log.info("DistributionChannel with id={} has been set to be deleted during the next scheduled task", id);
-		return new ResponseEntity<>(service.deleteDistributionChannel(fromRepository.get()), HttpStatus.ACCEPTED);
-	}
+    @ApiOperation(value = "Delete DistributionChannel", tags = {"DistributionChannel"})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "DistributionChannel deleted", response = DistributionChannelResponse.class),
+            @ApiResponse(code = 404, message = "DistributionChannel not found"),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<DistributionChannelResponse> deleteDistributionChannelById(@PathVariable UUID id) {
+        log.info("Received a request to delete DistributionChannel with id={}", id);
+        Optional<DistributionChannel> fromRepository = service.findDistributionChannelById(id);
+        if (fromRepository.isEmpty()) {
+            log.info("Cannot find DistributionChannel with id={}", id);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        log.info("DistributionChannel with id={} has been set to be deleted during the next scheduled task", id);
+        return new ResponseEntity<>(service.deleteDistributionChannel(fromRepository.get()).convertToResponse(), HttpStatus.OK);
+    }
+
+    private static final class DistributionChannelPage extends RestResponsePage<DistributionChannelResponse> {
+
+    }
 }
