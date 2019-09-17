@@ -194,17 +194,9 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
             throw new IllegalStateException("missing DatacatalogMaster on request");
         }
 
-        List<ValidationError> validationErrors = new ArrayList<>(validateListOfRequests(requests));
+        List<ValidationError> validationErrors = new ArrayList<>(validateNoDuplicates(requests));
         validationErrors.addAll(validateDatasetRequest(requests));
         return validationErrors;
-    }
-
-    public List<ValidationError> validateNoDuplicates(List<DatasetRequest> requests) {
-        requests = nullToEmptyList(requests);
-        if (requests.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return validateListOfRequests(requests);
     }
 
     private List<ValidationError> validateDatasetRequest(List<DatasetRequest> requests) {
@@ -212,14 +204,13 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
 
         requests.forEach(request -> {
             request.toUpperCaseAndTrim();
-            List<ValidationError> errorsInCurrentRequest = validateThatNoFieldsAreNullOrEmpty(request);
-            errorsInCurrentRequest.addAll(validateRepositoryValues(request));
-            validationErrors.addAll(errorsInCurrentRequest);
+            validationErrors.addAll(validateFields(request));
+            validationErrors.addAll(validateRepositoryValues(request));
         });
         return validationErrors;
     }
 
-    private List<ValidationError> validateThatNoFieldsAreNullOrEmpty(DatasetRequest request) {
+    private List<ValidationError> validateFields(DatasetRequest request) {
         FieldValidator validator = new FieldValidator(request.getReference());
 
         validator.checkEnum("contentType", request.getContentType(), ContentType.class);
@@ -267,8 +258,6 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
 
         if (updatingExistingElement(request.isUpdate(), existingDataset.isPresent())) {
             DatasetData existingDatasetData = existingDataset.get().getDatasetData();
-            UUID existingDatasetId = existingDataset.get().getId();
-
 
             if (!existingDatasetData.hasDatacatalogMaster()) {
                 validationErrors.add(new ValidationError(request.getReference(), "missingMasterInExistingDataset"

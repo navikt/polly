@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.exceptions.CodelistNotFoundException;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
-import no.nav.data.catalog.backend.app.common.validator.RequestValidator;
 import no.nav.data.catalog.backend.app.common.validator.FieldValidator;
+import no.nav.data.catalog.backend.app.common.validator.RequestValidator;
 import no.nav.data.catalog.backend.app.common.validator.ValidationError;
 import org.springframework.stereotype.Service;
 
@@ -141,7 +141,7 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         if (requests.isEmpty()) {
             return Collections.emptyList();
         }
-        List<ValidationError> validationErrors = new ArrayList<>(validateListOfRequests(requests));
+        List<ValidationError> validationErrors = new ArrayList<>(validateNoDuplicates(requests));
         prepareCodelistRequestForValidation(requests, isUpdate);
         validationErrors.addAll(validateCodelistRequest(requests));
         return validationErrors;

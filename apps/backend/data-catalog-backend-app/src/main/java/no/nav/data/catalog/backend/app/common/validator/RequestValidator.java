@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public abstract class RequestValidator<T extends RequestElement> {
 
-    protected List<ValidationError> validateListOfRequests(List<T> requests) {
+    public List<ValidationError> validateNoDuplicates(List<T> requests) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
         validationErrors.addAll(validateThatTheSameElementIsNotDuplicatedInTheRequest(requests));
