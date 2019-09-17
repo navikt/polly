@@ -137,7 +137,7 @@ public class DatasetControllerIT extends AbstractDatasetIT {
         ResponseEntity<List> responseEntity = restTemplate.exchange(
                 "/dataset", HttpMethod.POST, new HttpEntity(requests), List.class);
 
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.CREATED));
         assertThat(responseEntity.getBody().size(), is(2));
         assertThat(datasetRepository.count(), is(2L));
         assertTrue(datasetRepository.findByTitle("createTitle1".toUpperCase()).isPresent());
