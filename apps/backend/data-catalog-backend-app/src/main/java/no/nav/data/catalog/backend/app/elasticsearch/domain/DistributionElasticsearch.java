@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.app.distributionchannel;
+package no.nav.data.catalog.backend.app.elasticsearch.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;

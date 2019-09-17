@@ -3,10 +3,9 @@ package no.nav.data.catalog.backend.app.elasticsearch;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.nais.LeaderElectionService;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
-import no.nav.data.catalog.backend.app.dataset.DatasetElasticsearch;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
+import no.nav.data.catalog.backend.app.elasticsearch.domain.DatasetElasticsearch;
 import no.nav.data.catalog.backend.app.policy.PolicyConsumer;
-import no.nav.data.catalog.backend.app.policy.PolicyElasticsearch;
 import no.nav.data.catalog.backend.app.policy.PolicyResponse;
 import org.springframework.stereotype.Service;
 
@@ -84,13 +83,8 @@ public class ElasticsearchDatasetService {
 
     public DatasetElasticsearch mapDataset(Dataset dataset) {
         List<PolicyResponse> policies = policyConsumer.getPolicyForDataset(dataset.getId());
-        var policiesES = mapPolicies(policies);
-        return dataset.convertToElasticSearch(policiesES);
+        var policiesES = policies.stream().map(PolicyResponse::convertToElasticsearch).collect(Collectors.toList());
+        return dataset.convertToElasticsearch(policiesES);
     }
 
-    private List<PolicyElasticsearch> mapPolicies(List<PolicyResponse> policies) {
-        return policies.stream()
-                .map(policy -> new PolicyElasticsearch(policy.getPurpose().getCode(), policy.getPurpose().getDescription(), policy.getLegalBasisDescription()))
-                .collect(Collectors.toList());
-    }
 }

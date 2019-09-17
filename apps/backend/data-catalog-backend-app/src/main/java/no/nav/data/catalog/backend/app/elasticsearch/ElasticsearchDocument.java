@@ -3,7 +3,7 @@ package no.nav.data.catalog.backend.app.elasticsearch;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
-import no.nav.data.catalog.backend.app.dataset.DatasetElasticsearch;
+import no.nav.data.catalog.backend.app.elasticsearch.domain.DatasetElasticsearch;
 
 @Data
 @AllArgsConstructor

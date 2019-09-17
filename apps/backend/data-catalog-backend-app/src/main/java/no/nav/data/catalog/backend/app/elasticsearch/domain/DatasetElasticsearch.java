@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.app.dataset;
+package no.nav.data.catalog.backend.app.elasticsearch.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -11,8 +11,9 @@ import no.nav.data.catalog.backend.app.codelist.CodeResponse;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.common.utils.DateUtil;
-import no.nav.data.catalog.backend.app.distributionchannel.DistributionElasticsearch;
-import no.nav.data.catalog.backend.app.policy.PolicyElasticsearch;
+import no.nav.data.catalog.backend.app.dataset.ContentType;
+import no.nav.data.catalog.backend.app.dataset.Dataset;
+import no.nav.data.catalog.backend.app.dataset.DatasetData;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -39,7 +40,6 @@ public class DatasetElasticsearch {
     private ContentType type;
     private String title;
     private String description;
-    private String suggest;
     private List<String> category;
     private List<String> provenance;
     private Integer pi;
@@ -60,11 +60,15 @@ public class DatasetElasticsearch {
     private String created;
     @JsonProperty("created_by")
     private String createdBy;
+
+    // Mapped
+    private String suggest;
+
     // Mapped from policies
     private List<String> purpose = new ArrayList<>();
     private List<String> legalbasis = new ArrayList<>();
 
-    DatasetElasticsearch(Dataset dataset, List<PolicyElasticsearch> policies) {
+    public DatasetElasticsearch(Dataset dataset, List<PolicyElasticsearch> policies) {
         id = dataset.getId().toString();
         elasticsearchId = dataset.getElasticsearchId();
 

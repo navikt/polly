@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import no.nav.data.catalog.backend.app.codelist.CodeResponse;
+import no.nav.data.catalog.backend.app.elasticsearch.domain.PolicyElasticsearch;
 
 @Getter
 @Builder
@@ -18,4 +19,11 @@ public class PolicyResponse {
     private String legalBasisDescription;
     private CodeResponse purpose;
 
+    public PolicyElasticsearch convertToElasticsearch() {
+        return PolicyElasticsearch.builder()
+                .purpose(getPurpose().getCode())
+                .description(getPurpose().getDescription())
+                .legalBasis(getLegalBasisDescription())
+                .build();
+    }
 }

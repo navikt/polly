@@ -1,4 +1,4 @@
-package no.nav.data.catalog.backend.app.policy;
+package no.nav.data.catalog.backend.app.elasticsearch.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
