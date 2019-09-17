@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.common.rest.PageParameters;
 import no.nav.data.catalog.backend.app.common.rest.RestResponsePage;
 import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
@@ -23,7 +24,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -60,7 +60,7 @@ public class DatasetController {
             @ApiResponse(code = 404, message = "Dataset not found"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/{id}")
-    public ResponseEntity findForId(
+    public ResponseEntity<DatasetResponse> findForId(
             @PathVariable UUID id,
             @RequestParam(value = "includeDescendants", defaultValue = "false") boolean includeDescendants
     ) {
@@ -82,7 +82,7 @@ public class DatasetController {
             @ApiResponse(code = 404, message = "Dataset not found"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/elasticsearch/{id}")
-    public ResponseEntity findElasticsearchFormatForId(@PathVariable UUID id) {
+    public ResponseEntity<DatasetElasticsearch> findElasticsearchFormatForId(@PathVariable UUID id) {
         log.info("Received request for Dataset ElasticsearchFormat with the id={}", id);
         Optional<Dataset> datasetResponse = repository.findById(id);
         if (datasetResponse.isEmpty()) {
@@ -99,7 +99,7 @@ public class DatasetController {
             @ApiResponse(code = 404, message = "Dataset not found"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/title/{title}")
-    public ResponseEntity getDatasetByTitle(@PathVariable String title) {
+    public ResponseEntity<DatasetResponse> getDatasetByTitle(@PathVariable String title) {
         log.info("Received request for Dataset with the title={}", title);
         Optional<Dataset> dataset = repository.findByTitle(title);
         if (dataset.isEmpty()) {
@@ -115,11 +115,12 @@ public class DatasetController {
             @ApiResponse(code = 200, message = "Datasets fetched", response = DatasetPage.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/roots")
-    public RestResponsePage<DatasetResponse> findAllRoot(@RequestParam(value = "includeDescendants", defaultValue = "false") boolean includeDescendants, PageParameters page) {
+    public ResponseEntity<RestResponsePage<DatasetResponse>> findAllRoot(@RequestParam(value = "includeDescendants", defaultValue = "false") boolean includeDescendants,
+            PageParameters page) {
         log.info("Received request for all root Datasets");
         Page<DatasetResponse> allRootDatasets = service.findAllRootDatasets(includeDescendants, page.createIdSortedPage());
         log.info("Returned {} root Datasets", allRootDatasets.getContent().size());
-        return new RestResponsePage<>(allRootDatasets.getContent(), allRootDatasets.getPageable(), allRootDatasets.getTotalElements());
+        return ResponseEntity.ok(new RestResponsePage<>(allRootDatasets.getContent(), allRootDatasets.getPageable(), allRootDatasets.getTotalElements()));
     }
 
     @ApiOperation(value = "Get All Datasets", tags = {"Dataset"})
@@ -127,11 +128,11 @@ public class DatasetController {
             @ApiResponse(code = 200, message = "Datasets fetched", response = DatasetPage.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/")
-    public RestResponsePage<DatasetResponse> findAll(PageParameters page) {
+    public ResponseEntity<RestResponsePage<DatasetResponse>> findAll(PageParameters page) {
         log.info("Received request for all Datasets");
         Page<DatasetResponse> datasets = repository.findAll(page.createIdSortedPage()).map(Dataset::convertToResponse);
         log.info("Returned {} Datasets", datasets.getContent().size());
-        return new RestResponsePage<>(datasets.getContent(), datasets.getPageable(), datasets.getTotalElements());
+        return ResponseEntity.ok(new RestResponsePage<>(datasets.getContent(), datasets.getPageable(), datasets.getTotalElements()));
     }
 
     @ApiOperation(value = "Count all Datasets", tags = {"Dataset"})
@@ -146,48 +147,51 @@ public class DatasetController {
 
     @ApiOperation(value = "Create Datasets", tags = {"Dataset"})
     @ApiResponses(value = {
-            @ApiResponse(code = 202, message = "Datasets to be created successfully accepted", response = DatasetResponse.class, responseContainer = "List"),
+            @ApiResponse(code = 201, message = "Datasets to be created successfully accepted", response = DatasetResponse.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Illegal arguments"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @PostMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public List<DatasetResponse> createDatasets(@RequestBody List<DatasetRequest> requests) {
+    public ResponseEntity<List<DatasetResponse>> createDatasets(@RequestBody List<DatasetRequest> requests) {
         log.info("Received requests to create Datasets");
         requests = StreamUtils.nullToEmptyList(requests);
         DatasetRequest.initiateRequests(requests, false, REST);
         service.validateRequest(requests);
 
-        return service.saveAll(requests, REST).stream().map(Dataset::convertToResponse).collect(Collectors.toList());
+        return new ResponseEntity<>(service.saveAll(requests, REST).stream().map(Dataset::convertToResponse).collect(Collectors.toList()), HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "Update Dataset", tags = {"Dataset"})
     @ApiResponses(value = {
-            @ApiResponse(code = 202, message = "Dataset to be updated successfully accepted", response = DatasetResponse.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "Dataset to be updated successfully accepted", response = DatasetResponse.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Illegal arguments"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @PutMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public List<DatasetResponse> updateDatasets(@RequestBody List<DatasetRequest> requests) {
+    public ResponseEntity<List<DatasetResponse>> updateDatasets(@RequestBody List<DatasetRequest> requests) {
         log.info("Received requests to update Datasets");
         requests = StreamUtils.nullToEmptyList(requests);
         DatasetRequest.initiateRequests(requests, true, REST);
         service.validateRequest(requests);
 
-        return service.updateAll(requests).stream().map(Dataset::convertToResponse).collect(Collectors.toList());
+        return ResponseEntity.ok(service.updateAll(requests).stream().map(Dataset::convertToResponse).collect(Collectors.toList()));
     }
 
     @ApiOperation(value = "Update Dataset", tags = {"Dataset"})
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Accepted one Dataset to be updated", response = Dataset.class),
+            @ApiResponse(code = 200, message = "Accepted one Dataset to be updated", response = Dataset.class),
             @ApiResponse(code = 400, message = "Illegal arguments"),
             @ApiResponse(code = 404, message = "Dataset not found"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @PutMapping("/{id}")
-    public ResponseEntity updateOneDatasetById(@PathVariable UUID id, @Valid @RequestBody DatasetRequest request) {
+    public ResponseEntity<DatasetResponse> updateOneDatasetById(@PathVariable UUID id, @Valid @RequestBody DatasetRequest request) {
         log.info("Received a request to update Dataset with id={}", id);
-        if (repository.findById(id).isEmpty()) {
+        Optional<Dataset> byId = repository.findById(id);
+        if (byId.isEmpty()) {
             log.info("Cannot find Dataset with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        String existingTitle = byId.get().getTitle();
+        if (!existingTitle.equals(request.getTitle())) {
+            throw new ValidationException(String.format("Cannot change title of dataset in update, id=%s has title=%s", id, existingTitle));
         }
         DatasetRequest.initiateRequests(List.of(request), true, REST);
         service.validateRequest(List.of(request));
@@ -195,12 +199,12 @@ public class DatasetController {
         Dataset dataset = service.update(request);
 
         log.info("Updated the Dataset");
-        return new ResponseEntity<>(repository.save(dataset).convertToResponse(), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(repository.save(dataset).convertToResponse(), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Delete Dataset", tags = {"Dataset"})
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Dataset deleted"),
+            @ApiResponse(code = 202, message = "Dataset deleted"),
             @ApiResponse(code = 404, message = "Dataset not found"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @DeleteMapping("/{id}")
@@ -223,7 +227,6 @@ public class DatasetController {
             @ApiResponse(code = 400, message = "Illegal arguments"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @PostMapping("/sync")
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public void syncDataset(@RequestBody List<UUID> ids) {
         log.info("Received requests to sync Dataset");
         service.sync(ids);

@@ -126,7 +126,7 @@ public class DatasetServiceTest {
 
     @Test
     public void validateRequest_shouldThrowValidationException_whenFieldContentTypeInvalid() {
-        exception.expectMessage("Request:1 -- fieldIsNullOrMissing -- contentType was invalid for type ContentType");
+        exception.expectMessage("Request:1 -- fieldIsNullOrMissing -- contentType: INVALID-TYPE was invalid for type ContentType");
         DatasetRequest request = createValidDatasetRequest("Title");
         request.setContentType("invalid-type");
 

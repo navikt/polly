@@ -97,7 +97,7 @@ public class DistributionChannelController {
 
     @ApiOperation(value = "Update DistributionChannel", tags = {"DistributionChannel"})
     @ApiResponses(value = {
-            @ApiResponse(code = 202, message = "DistributionChannels to be updated successfully accepted", response = DistributionChannel.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "DistributionChannels to be updated successfully accepted", response = DistributionChannel.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Illegal arguments"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @PutMapping
@@ -110,7 +110,7 @@ public class DistributionChannelController {
 
     @ApiOperation(value = "Delete DistributionChannel", tags = {"DistributionChannel"})
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "DistributionChannel deleted", response = DistributionChannelResponse.class),
+            @ApiResponse(code = 202, message = "DistributionChannel deleted", response = DistributionChannelResponse.class),
             @ApiResponse(code = 404, message = "DistributionChannel not found"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @DeleteMapping("/{id}")
@@ -123,7 +123,7 @@ public class DistributionChannelController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         log.info("DistributionChannel with id={} has been set to be deleted during the next scheduled task", id);
-        return new ResponseEntity<>(service.deleteDistributionChannel(fromRepository.get()).convertToResponse(), HttpStatus.OK);
+        return new ResponseEntity<>(service.deleteDistributionChannel(fromRepository.get()).convertToResponse(), HttpStatus.ACCEPTED);
     }
 
     private static final class DistributionChannelPage extends RestResponsePage<DistributionChannelResponse> {

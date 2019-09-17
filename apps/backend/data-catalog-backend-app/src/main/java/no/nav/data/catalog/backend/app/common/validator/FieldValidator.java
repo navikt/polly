@@ -12,7 +12,7 @@ public class FieldValidator {
 
     private static final String ERROR_TYPE = "fieldIsNullOrMissing";
     private static final String ERROR_MESSAGE = "%s was null or missing";
-    private static final String ERROR_MESSAGE_ENUM = "%s was invalid for type %s";
+    private static final String ERROR_MESSAGE_ENUM = "%s: %s was invalid for type %s";
     private static final String ERROR_MESSAGE_CODELIST = "%s: %s code not found in codelist %s";
     private final List<ValidationError> validationErrors;
     private final String reference;
@@ -38,7 +38,7 @@ public class FieldValidator {
         try {
             Enum.valueOf(type, fieldValue);
         } catch (IllegalArgumentException e) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(ERROR_MESSAGE_ENUM, fieldName, type.getSimpleName())));
+            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(ERROR_MESSAGE_ENUM, fieldName, fieldValue, type.getSimpleName())));
         }
     }
 

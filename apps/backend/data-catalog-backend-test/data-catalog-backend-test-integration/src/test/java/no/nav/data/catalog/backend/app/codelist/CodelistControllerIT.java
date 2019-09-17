@@ -125,7 +125,7 @@ public class CodelistControllerIT extends IntegrationTestBase {
 		ResponseEntity<String> responseEntity = restTemplate.exchange(
 				"/codelist", HttpMethod.PUT, new HttpEntity<>(updatedCodelists), String.class);
 
-		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
+		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 		assertThat(codelists.get(ListName.PROVENANCE).get(code), is(updatedCodelists.get(0).getDescription()));
 	}
 
@@ -141,7 +141,7 @@ public class CodelistControllerIT extends IntegrationTestBase {
 				"/codelist", HttpMethod.PUT, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
 				});
 
-		assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
+		assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
 		assertThat(codelists.get(ListName.PROVENANCE).size(), is(20));
 		codelists.get(ListName.PROVENANCE);
 		Collection<String> descriptionList = codelists.get(ListName.PROVENANCE).values();

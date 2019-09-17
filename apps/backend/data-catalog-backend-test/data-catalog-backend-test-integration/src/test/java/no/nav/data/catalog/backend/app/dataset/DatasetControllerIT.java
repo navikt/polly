@@ -137,7 +137,7 @@ public class DatasetControllerIT extends AbstractDatasetIT {
         ResponseEntity<List> responseEntity = restTemplate.exchange(
                 "/dataset", HttpMethod.POST, new HttpEntity(requests), List.class);
 
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(responseEntity.getBody().size(), is(2));
         assertThat(datasetRepository.count(), is(2L));
         assertTrue(datasetRepository.findByTitle("createTitle1".toUpperCase()).isPresent());
@@ -163,7 +163,7 @@ public class DatasetControllerIT extends AbstractDatasetIT {
         ResponseEntity<List> responseEntity = restTemplate.exchange(
                 "/dataset", HttpMethod.PUT, new HttpEntity(requests), List.class);
 
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(responseEntity.getBody().size(), is(3));
         assertThat(datasetRepository.count(), is(3L));
         assertThat(datasetRepository.findByTitle("Dataset_nr1".toUpperCase())
@@ -191,7 +191,7 @@ public class DatasetControllerIT extends AbstractDatasetIT {
         ResponseEntity<DatasetResponse> responseEntity = restTemplate.exchange(
                 "/dataset/" + id, HttpMethod.PUT, new HttpEntity(request), DatasetResponse.class);
 
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(responseEntity.getBody().getDescription(), is("UPDATED DESCRIPTION"));
         assertThat(datasetRepository.count(), is(3L));
         assertThat(datasetRepository.findByTitle("Dataset_nr1".toUpperCase())

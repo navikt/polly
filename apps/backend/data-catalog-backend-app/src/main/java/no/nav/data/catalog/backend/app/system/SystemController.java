@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -81,16 +80,15 @@ public class SystemController {
 
     @ApiOperation(value = "Create Systems", tags = {"System"})
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Systems to be created successfully accepted", response = SystemResponse.class, responseContainer = "List"),
+            @ApiResponse(code = 201, message = "Systems to be created successfully accepted", response = SystemResponse.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Illegal arguments"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @PostMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<List<SystemResponse>> createSystems(@RequestBody List<SystemRequest> requests) {
         log.info("Received requests to create Systems");
         //TODO: ValidateRequest
 //		service.validateRequests(requests, false);
-		return new ResponseEntity<>(service.createSystems(requests), HttpStatus.OK);
+		return new ResponseEntity<>(service.createSystems(requests), HttpStatus.CREATED);
 	}
 
     @ApiOperation(value = "Update Systems", tags = {"System"})
@@ -99,7 +97,6 @@ public class SystemController {
             @ApiResponse(code = 400, message = "Illegal arguments"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @PutMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<List<SystemResponse>> updateSystems(@RequestBody List<SystemRequest> requests) {
         log.info("Received requests to create Systems");
         //TODO: ValidateRequest
@@ -109,7 +106,7 @@ public class SystemController {
 
     @ApiOperation(value = "Delete System", tags = {"System"})
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "System deleted", response = SystemResponse.class),
+            @ApiResponse(code = 202, message = "System deleted", response = SystemResponse.class),
             @ApiResponse(code = 404, message = "System not found"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @DeleteMapping("/{id}")
@@ -122,7 +119,7 @@ public class SystemController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         log.info("System with id={} has been set to be deleted during the next scheduled task", id);
-        return new ResponseEntity<>(service.deleteSystem(fromRepository.get()).convertToResponse(), HttpStatus.OK);
+        return new ResponseEntity<>(service.deleteSystem(fromRepository.get()).convertToResponse(), HttpStatus.ACCEPTED);
     }
 
     private static final class SystemPage extends RestResponsePage<SystemResponse> {

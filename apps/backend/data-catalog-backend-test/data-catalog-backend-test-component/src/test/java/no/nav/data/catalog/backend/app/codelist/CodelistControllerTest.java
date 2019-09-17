@@ -1,6 +1,5 @@
 package no.nav.data.catalog.backend.app.codelist;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.common.exceptions.CodelistNotFoundException;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
@@ -50,8 +49,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 public class CodelistControllerTest {
 
-    private final ObjectMapper objectMapper = JsonUtils.getObjectMapper();
-
     @Autowired
     private MockMvc mvc;
 
@@ -71,7 +68,7 @@ public class CodelistControllerTest {
         MockHttpServletResponse response = mvc.perform(get("/codelist"))
                 .andReturn().getResponse();
 
-        HashMap<String, HashMap<String, String>> returnedCodelist = objectMapper.readValue(response.getContentAsString(), HashMap.class);
+        HashMap<String, HashMap<String, String>> returnedCodelist = JsonUtils.toObject(response.getContentAsString(), HashMap.class);
 
         assertThat(response.getStatus(), is(HttpStatus.OK.value()));
         assertThat(returnedCodelist.size(), is(CodelistService.codelists.size()));
@@ -87,7 +84,7 @@ public class CodelistControllerTest {
                 .andExpect(status().isOk())
                 .andReturn().getResponse();
 
-        Map mappedResponse = objectMapper.readValue(response.getContentAsString(), HashMap.class);
+        Map mappedResponse = JsonUtils.toObject(response.getContentAsString(), HashMap.class);
         assertThat(mappedResponse, is(CodelistService.codelists.get(ListName.PROVENANCE)));
     }
 
@@ -140,7 +137,7 @@ public class CodelistControllerTest {
                         .build())
                 .collect(Collectors.toList());
 
-        String inputJson = objectMapper.writeValueAsString(requests);
+        String inputJson = JsonUtils.toJson(requests);
 
         mvc.perform(post("/codelist")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -161,12 +158,12 @@ public class CodelistControllerTest {
                         .build())
                 .collect(Collectors.toList());
 
-        String inputJson = objectMapper.writeValueAsString(requests);
+        String inputJson = JsonUtils.toJson(requests);
 
         mvc.perform(put("/codelist")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(inputJson))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(10)));
     }
 

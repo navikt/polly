@@ -1,6 +1,5 @@
 package no.nav.data.catalog.backend.app.distributionchannel;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.common.rest.PageParameters;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
@@ -49,8 +48,6 @@ public class DistributionChannelControllerTest {
 
     @Autowired
     private MockMvc mvc;
-
-    private final ObjectMapper objectMapper = JsonUtils.getObjectMapper();
 
     private final DistributionChannelRequest distributionChannelRequest = DistributionChannelRequest.builder()
             .name("distributionChannelName")
@@ -103,7 +100,7 @@ public class DistributionChannelControllerTest {
 
         mvc.perform(get("/distributionchannel")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new PageParameters())))
+                .content(JsonUtils.toJson(new PageParameters())))
                 .andExpect(status().isOk());
     }
 
@@ -126,7 +123,7 @@ public class DistributionChannelControllerTest {
 
         mvc.perform(post("/distributionchannel")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requests)))
+                .content(JsonUtils.toJson(requests)))
                 .andExpect(status().isCreated());
     }
 
@@ -149,6 +146,6 @@ public class DistributionChannelControllerTest {
         when(service.findDistributionChannelById(toBeDeletedDChannel.getId())).thenReturn(Optional.of(toBeDeletedDChannel));
         when(service.deleteDistributionChannel(toBeDeletedDChannel)).thenReturn(toBeDeletedDChannel);
 
-        mvc.perform(delete("/distributionchannel/" + toBeDeletedDChannel.getId())).andExpect(status().isOk());
+        mvc.perform(delete("/distributionchannel/" + toBeDeletedDChannel.getId())).andExpect(status().isAccepted());
     }
 }

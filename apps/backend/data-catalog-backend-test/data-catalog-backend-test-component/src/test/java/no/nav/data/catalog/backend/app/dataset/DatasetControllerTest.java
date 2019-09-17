@@ -1,6 +1,5 @@
 package no.nav.data.catalog.backend.app.dataset;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.codelist.CodelistStub;
 import no.nav.data.catalog.backend.app.common.rest.PageParameters;
@@ -52,8 +51,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {AppStarter.class})
 @ActiveProfiles("test")
 public class DatasetControllerTest {
-
-    private final ObjectMapper objectMapper = JsonUtils.getObjectMapper();
 
     @MockBean
     private DatasetRepository repository;
@@ -127,12 +124,12 @@ public class DatasetControllerTest {
 
         when(service.saveAll(ArgumentMatchers.anyList(), any(DatacatalogMaster.class))).thenReturn(Collections.singletonList(new Dataset()));
 
-        String inputJson = objectMapper.writeValueAsString(requests);
+        String inputJson = JsonUtils.toJson(requests);
 
         mvc.perform(post("/dataset")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(inputJson))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.length()", is(1)));
     }
 
@@ -145,13 +142,13 @@ public class DatasetControllerTest {
         when(service.updateAll(ArgumentMatchers.anyList()))
                 .thenReturn(Collections.singletonList(Dataset.builder().datasetData(DatasetData.builder().description("UPDATED").build()).build()));
 
-        String inputJson = objectMapper.writeValueAsString(requests);
+        String inputJson = JsonUtils.toJson(requests);
 
         mvc.perform(put("/dataset")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(inputJson))
                 .andDo(print())
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(1)))
                 .andExpect(jsonPath("$[0].description", containsString("UPDATED")))
                 .andReturn().getResponse();
@@ -166,7 +163,7 @@ public class DatasetControllerTest {
         DatasetRequest request = null;
 
         when(repository.findById(datasetToUpdate.getId())).thenReturn(Optional.of(datasetToUpdate));
-        String inputJson = objectMapper.writeValueAsString(request);
+        String inputJson = JsonUtils.toJson(request);
 
         Exception exception = mvc.perform(put("/dataset/" + datasetToUpdate.getId())
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -190,7 +187,7 @@ public class DatasetControllerTest {
         when(repository.findById(datasetToUpdate.getId())).thenReturn(Optional.of(datasetToUpdate));
         when(service.delete(any(DatasetRequest.class))).thenReturn(datasetAfterUpdate);
 
-        String inputJson = objectMapper.writeValueAsString(request);
+        String inputJson = JsonUtils.toJson(request);
 
         mvc.perform(delete("/dataset/" + datasetToUpdate.getId())
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)

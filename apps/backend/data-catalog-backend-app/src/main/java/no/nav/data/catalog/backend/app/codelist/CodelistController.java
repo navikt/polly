@@ -90,11 +90,10 @@ public class CodelistController {
 
     @ApiOperation(value = "Update Codelist", tags = {"Codelist"})
     @ApiResponses(value = {
-            @ApiResponse(code = 202, message = "Codelist updated", response = Codelist.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "Codelist updated", response = Codelist.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Illegal arguments"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @PutMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public List<Codelist> update(@Valid @RequestBody List<CodelistRequest> requests) {
         log.info("Received a request to update codelists");
         requests = StreamUtils.nullToEmptyList(requests);

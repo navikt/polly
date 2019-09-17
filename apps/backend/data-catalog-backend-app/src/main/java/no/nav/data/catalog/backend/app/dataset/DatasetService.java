@@ -214,10 +214,7 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
             request.toUpperCaseAndTrim();
             List<ValidationError> errorsInCurrentRequest = validateThatNoFieldsAreNullOrEmpty(request);
             errorsInCurrentRequest.addAll(validateRepositoryValues(request));
-
-            if (!errorsInCurrentRequest.isEmpty()) {
-                validationErrors.addAll(errorsInCurrentRequest);
-            }
+            validationErrors.addAll(errorsInCurrentRequest);
         });
         return validationErrors;
     }
@@ -270,6 +267,8 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
 
         if (updatingExistingElement(request.isUpdate(), existingDataset.isPresent())) {
             DatasetData existingDatasetData = existingDataset.get().getDatasetData();
+            UUID existingDatasetId = existingDataset.get().getId();
+
 
             if (!existingDatasetData.hasDatacatalogMaster()) {
                 validationErrors.add(new ValidationError(request.getReference(), "missingMasterInExistingDataset"
