@@ -13,12 +13,14 @@ public class RestResponsePage<T> {
     private List<T> content;
     private int currentPage;
     private int pageSize;
+    private long returnedElements;
     private long totalElements;
 
     public RestResponsePage(List<T> content, Pageable pageable, long total) {
         this.content = content;
         this.currentPage = pageable.getPageNumber();
         this.pageSize = pageable.getPageSize();
+        this.returnedElements = content.size();
         this.totalElements = total;
     }
 
