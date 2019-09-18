@@ -14,7 +14,7 @@ public class ElasticsearchDocument {
     private String index;
 
     public static ElasticsearchDocument newDatasetDocument(DatasetElasticsearch dataset, String index) {
-        return new ElasticsearchDocument(dataset.getElasticsearchId(), JsonUtils.toJson(dataset), index);
+        return new ElasticsearchDocument(dataset.getId().toString(), JsonUtils.toJson(dataset), index);
     }
 
     public static ElasticsearchDocument newDatasetDocumentId(String id, String index) {

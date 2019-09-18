@@ -68,7 +68,6 @@ public abstract class AbstractDatasetIT extends IntegrationTestBase {
     private Dataset createDataset(String name, Set<Dataset> children) {
         return Dataset.builder()
                 .id(UUID.randomUUID())
-                .generateElasticsearchId()
                 .elasticsearchStatus(ElasticsearchStatus.SYNCED)
                 .datasetData(DatasetData.builder()
                         .contentType(ContentType.DATASET)

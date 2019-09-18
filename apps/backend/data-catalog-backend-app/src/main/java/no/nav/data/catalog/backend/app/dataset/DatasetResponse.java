@@ -36,7 +36,6 @@ import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.nullToEmp
 public class DatasetResponse {
 
     private UUID id;
-    private String elasticsearchId;
     private ContentType contentType;
     private String title;
     private String description;
@@ -67,7 +66,6 @@ public class DatasetResponse {
 
     DatasetResponse(Dataset dataset, Map<UUID, Dataset> allDatasets, Set<DatasetRelation> relations, boolean includeChildren) {
         id = dataset.getId();
-        elasticsearchId = dataset.getElasticsearchId();
         mapJsonFields(dataset.getDatasetData());
 
         children = relations.stream()

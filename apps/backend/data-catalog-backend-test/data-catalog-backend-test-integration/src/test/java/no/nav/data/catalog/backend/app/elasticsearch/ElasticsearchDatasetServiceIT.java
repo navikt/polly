@@ -74,7 +74,7 @@ public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
         // Let indexing finish
         Thread.sleep(1000L);
         assertThat(esRepository.getAllDatasets("index").getHits().totalHits, is(1L));
-        String json = esRepository.getById(newDatasetDocumentId("elasticSearchId", "index"));
+        String json = esRepository.getById(newDatasetDocumentId(DATASET_ID_1.toString(), "index"));
         assertDataset(json);
         Dataset dataset = repository.findAll().get(0);
         assertThat(dataset.getElasticsearchStatus(), is(SYNCED));
@@ -96,7 +96,7 @@ public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
 
         Thread.sleep(1000L);
         assertThat(esRepository.getAllDatasets("index").getHits().totalHits, is(1L));
-        String json = esRepository.getById(newDatasetDocumentId("elasticSearchId", "index"));
+        String json = esRepository.getById(newDatasetDocumentId(DATASET_ID_1.toString(), "index"));
         assertDataset(json);
 
         assertThat(repository.findAll().size(), is(1));
@@ -111,7 +111,7 @@ public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
 
         Thread.sleep(1000L);
         assertThat(esRepository.getAllDatasets("index").getHits().totalHits, is(1L));
-        String json = esRepository.getById(newDatasetDocumentId("elasticSearchId", "index"));
+        String json = esRepository.getById(newDatasetDocumentId(DATASET_ID_1.toString(), "index"));
         assertDataset(json);
 
         assertThat(repository.findAll().size(), is(1));
@@ -132,7 +132,7 @@ public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
         Dataset dataset = repository.findAll().get(0);
         dataset.setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED);
         repository.save(dataset);
-        String json = esRepository.getById(newDatasetDocumentId("elasticSearchId", "index"));
+        String json = esRepository.getById(newDatasetDocumentId(DATASET_ID_1.toString(), "index"));
         assertDataset(json);
 
         service.synchToElasticsearch();
@@ -146,7 +146,6 @@ public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
     private void createTestData(ElasticsearchStatus esStatus) {
         Dataset dataset = Dataset.builder()
                 .id(DATASET_ID_1)
-                .elasticsearchId("elasticSearchId")
                 .elasticsearchStatus(esStatus)
                 .datasetData(DatasetData.builder()
                         .title(TITLE)

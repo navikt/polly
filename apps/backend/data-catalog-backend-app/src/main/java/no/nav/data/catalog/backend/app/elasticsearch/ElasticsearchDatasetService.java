@@ -75,8 +75,9 @@ public class ElasticsearchDatasetService {
     private int deleteDatasetsInElasticsearchAndInPostgres() {
         List<Dataset> datasets = repository.findByElasticsearchStatus(TO_BE_DELETED);
         for (Dataset dataset : datasets) {
-            elasticsearch.deleteById(ElasticsearchDocument.newDatasetDocumentId(dataset.getElasticsearchId(), elasticsearchProperties.getIndex()));
+            elasticsearch.deleteById(ElasticsearchDocument.newDatasetDocumentId(dataset.getId().toString(), elasticsearchProperties.getIndex()));
             repository.deleteById(dataset.getId());
+            // As we share a schema, perhpas do a scheduled task to delete orphan policies instead
             try {
                 policyConsumer.deletePoliciesForDataset(dataset.getId());
             } catch (Exception e) {

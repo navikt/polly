@@ -59,7 +59,6 @@ public class ElasticsearchDatasetServiceTest {
 
         dataset = Dataset.builder()
                 .id(UUID.randomUUID())
-                .elasticsearchId("elasticId")
                 .datasetData(DatasetData.builder().build())
                 .build();
 
@@ -109,10 +108,10 @@ public class ElasticsearchDatasetServiceTest {
     private void verifyCapture(boolean verifyJson) {
         ElasticsearchDocument document = captor.getValue();
 
-        assertThat(document.getId(), is(dataset.getElasticsearchId()));
+        assertThat(document.getId(), is(dataset.getId().toString()));
         assertThat(document.getIndex(), is("index"));
         if (verifyJson) {
-            assertThat(document.getJson(), containsString(dataset.getElasticsearchId()));
+            assertThat(document.getJson(), containsString(dataset.getId().toString()));
             assertThat(document.getJson(), containsString(policy.getLegalBasisDescription()));
         }
     }

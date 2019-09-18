@@ -36,7 +36,6 @@ import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.safeStrea
 public class DatasetElasticsearch {
 
     private String id;
-    private String elasticsearchId;
     private ContentType type;
     private ContentType format;
     private String title;
@@ -71,7 +70,6 @@ public class DatasetElasticsearch {
 
     public DatasetElasticsearch(Dataset dataset, List<PolicyElasticsearch> policies) {
         id = dataset.getId().toString();
-        elasticsearchId = dataset.getElasticsearchId();
 
         setCreated(DateUtil.formatDate(dataset.getCreatedDate()));
         setCreatedBy(dataset.getCreatedBy());
