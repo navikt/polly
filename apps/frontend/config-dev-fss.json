@@ -1,0 +1,6 @@
+{
+  "application_name": "data-catalog-editor",
+  "image_name": "data-catalog-editor",
+  "org_name": "navikt",
+  "ingress": "https://data-catalog-editor.nais.preprod.local"
+}
