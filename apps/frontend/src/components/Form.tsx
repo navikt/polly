@@ -124,7 +124,7 @@ const DatasetForm = ({
                             justifyContent="space-between"
                             alignContent="center"
                         >
-                            {!isEdit ? <h1>Opprettting</h1> : <h1>Rediger</h1>}
+                            {!isEdit ? <h1>Opprett</h1> : <h1>Rediger</h1>}
                         </Block>
                         <FlexGrid
                             flexGridColumnCount={3}
