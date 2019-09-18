@@ -1,61 +1,61 @@
 version: 2.1
 
 jobs:
-  build:
-    docker:
-      - image: circleci/node:8.10.0
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: Build application
-          command: |
-            yarn
-            CI=false yarn run build
-      - run:
-          name: Build docker images
-          command: |
-            chmod +x .circleci/scripts/docker_build_and_push.sh
-            ./.circleci/scripts/docker_build_and_push.sh
-      - persist_to_workspace:
-          root: img_tag
-          paths:
-          - ./docker_img_tag
+    build:
+        docker:
+            - image: circleci/node:10.15.3
+        steps:
+            - checkout
+            - setup_remote_docker
+            - run:
+                  name: Build application
+                  command: |
+                      yarn
+                      CI=false yarn run build
+            - run:
+                  name: Build docker images
+                  command: |
+                      chmod +x .circleci/scripts/docker_build_and_push.sh
+                      ./.circleci/scripts/docker_build_and_push.sh
+            - persist_to_workspace:
+                  root: img_tag
+                  paths:
+                      - ./docker_img_tag
 
-  deploy-nais:
-    docker:
-      - image: navikt/deployment-cli:v0.1.8
-    steps:
-      - checkout
-      - attach_workspace:
-          at: img_tag
-      - run:
-          name: Deploy to NAIS dev-fss
-          command: deployment-cli deploy create
-            --cluster=dev-fss
-            --repository=${ORG_NAME}/${REPO_NAME}
-            --team=${TEAM}
-            --resource=naiserator.yaml
-            --version=`cat img_tag/docker_img_tag`
-            --vars=config-dev-fss.json
-      - run:
-          name: Deploy to NAIS prod-fss
-          command: deployment-cli deploy create
-            --cluster=prod-fss
-            --repository=${ORG_NAME}/${REPO_NAME}
-            --team=${TEAM}
-            --resource=naiserator.yaml
-            --version=`cat img_tag/docker_img_tag`
-            --vars=config-prod-fss.json
+    deploy-nais:
+        docker:
+            - image: navikt/deployment-cli:v0.1.8
+        steps:
+            - checkout
+            - attach_workspace:
+                  at: img_tag
+            - run:
+                  name: Deploy to NAIS dev-fss
+                  command: deployment-cli deploy create
+                      --cluster=dev-fss
+                      --repository=${ORG_NAME}/${REPO_NAME}
+                      --team=${TEAM}
+                      --resource=naiserator.yaml
+                      --version=`cat img_tag/docker_img_tag`
+                      --vars=config-dev-fss.json
+            - run:
+                  name: Deploy to NAIS prod-fss
+                  command: deployment-cli deploy create
+                      --cluster=prod-fss
+                      --repository=${ORG_NAME}/${REPO_NAME}
+                      --team=${TEAM}
+                      --resource=naiserator.yaml
+                      --version=`cat img_tag/docker_img_tag`
+                      --vars=config-prod-fss.json
 
 workflows:
-  version: 2
-  build_and_deploy:
-    jobs:
-      - build:
-          filters:
-            branches:
-              only: master
-      - deploy-nais:
-          requires:
-            - build
+    version: 2
+    build_and_deploy:
+        jobs:
+            - build:
+                  filters:
+                      branches:
+                          only: master
+            - deploy-nais:
+                  requires:
+                      - build
