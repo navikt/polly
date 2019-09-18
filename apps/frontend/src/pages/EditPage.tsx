@@ -100,7 +100,8 @@ const EditPage = (props: any) => {
 
     const handleSubmit = async (values: any) => {
         if (!values) return null;
-
+        values.issued = "2019-09-18T14:21:09.763265";
+        console.log(values, "values submitted");
         await axios
             .put(`${server_backend}/${dataset.id}`, values)
             .then(handlePutDatasetResponse);
