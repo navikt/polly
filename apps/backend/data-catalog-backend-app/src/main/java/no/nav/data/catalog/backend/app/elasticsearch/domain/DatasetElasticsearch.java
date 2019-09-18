@@ -38,6 +38,7 @@ public class DatasetElasticsearch {
     private String id;
     private String elasticsearchId;
     private ContentType type;
+    private ContentType format;
     private String title;
     private String description;
     private List<String> category;
@@ -88,6 +89,7 @@ public class DatasetElasticsearch {
 
     private void mapJsonFields(@NotNull DatasetData datasetData) {
         setType(datasetData.getContentType());
+        setFormat(datasetData.getContentType());
         setTitle(datasetData.getTitle());
         setDescription(datasetData.getDescription());
         setCategory(getCodelistDescription(ListName.CATEGORY, datasetData.getCategories()));
