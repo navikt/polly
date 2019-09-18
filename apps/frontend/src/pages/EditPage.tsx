@@ -59,6 +59,7 @@ const EditPage = (props: any) => {
             console.log(error.response.data);
             console.log(error.response.status);
             console.log(error.response.headers);
+            setError(error.response.data);
         } else {
             console.log(error.message);
             setError(error.message);
@@ -102,7 +103,7 @@ const EditPage = (props: any) => {
 
         await axios
             .put(`${server_backend}/${dataset.id}`, values)
-            .then(handlePostPolicyResponse);
+            .then(handlePutDatasetResponse);
     };
 
     const handleAddPolicy = async (values: any) => {
@@ -115,7 +116,6 @@ const EditPage = (props: any) => {
     };
 
     const handleRemovePolicy = async (id: any) => {
-        console.log(id, " ID REMOVE");
         await axios
             .delete(`${server_policy}/${id}`)
             .then(res => {
@@ -167,19 +167,25 @@ const EditPage = (props: any) => {
                 <Spinner size={30} />
             ) : (
                 <React.Fragment>
-                    <DatasetForm
-                        formInitialValues={initializeFormValues(dataset)}
-                        isEdit={true}
-                        submit={handleSubmit}
-                        codelist={codelist}
-                    />
-                    <Block marginTop="3rem">
-                        <Policy
-                            policies={policies}
-                            onAddPolicy={handleAddPolicy}
-                            onRemovePolicy={handleRemovePolicy}
-                        />
-                    </Block>
+                    {!error && dataset && policies && codelist ? (
+                        <React.Fragment>
+                            <DatasetForm
+                                formInitialValues={initializeFormValues(
+                                    dataset
+                                )}
+                                isEdit={true}
+                                submit={handleSubmit}
+                                codelist={codelist}
+                            />
+                            <Block marginTop="3rem">
+                                <Policy
+                                    policies={policies}
+                                    onAddPolicy={handleAddPolicy}
+                                    onRemovePolicy={handleRemovePolicy}
+                                />
+                            </Block>
+                        </React.Fragment>
+                    ) : null}
                 </React.Fragment>
             )}
         </React.Fragment>

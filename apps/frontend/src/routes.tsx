@@ -10,6 +10,13 @@ const Routes = (): JSX.Element => (
             <Route exact path="/create" component={CreatePage} />
             <Route exact path="/edit/:id" component={EditPage} />
             <Route exact path="/" component={CreatePage} />
+            <Route
+                component={() => (
+                    <div>
+                        Datacatalog id parameter missing. Format https://url/id
+                    </div>
+                )}
+            />
         </Switch>
     </Root>
 );
