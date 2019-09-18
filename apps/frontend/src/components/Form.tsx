@@ -269,7 +269,6 @@ const DatasetForm = ({
                                                             .value
                                                     )
                                                 }
-                                                size="compact"
                                                 overrides={{
                                                     After: () => (
                                                         <Button
