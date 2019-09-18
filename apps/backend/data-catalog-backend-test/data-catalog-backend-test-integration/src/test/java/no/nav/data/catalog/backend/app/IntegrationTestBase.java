@@ -27,10 +27,14 @@ import org.springframework.util.SocketUtils;
 import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.matching;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -81,6 +85,7 @@ public abstract class IntegrationTestBase {
                                 + "\"last\":false,\"totalPages\":2,\"totalElements\":2,\"size\":10,\"number\":0,"
                                 + "\"sort\":{\"sorted\":false,\"unsorted\":true,\"empty\":true},\"first\":true,\"numberOfElements\":2,\"empty\":false}")
                 ));
+        wiremock.stubFor(delete(urlPathMatching("/policy/policy")).withQueryParam("datasetId", matching("[0-9a-f\\-]{36}")).willReturn(ok()));
     }
 
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {

@@ -15,6 +15,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ import static java.util.Collections.emptyList;
 @Component
 public class PolicyConsumer {
 
-    private static final  ParameterizedTypeReference<RestResponsePage<PolicyResponse>>  RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    private static final ParameterizedTypeReference<RestResponsePage<PolicyResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     @Autowired
@@ -57,6 +58,11 @@ public class PolicyConsumer {
         } catch (HttpServerErrorException e) {
             return throwException(datasetId, e);
         }
+    }
+
+    public void deletePoliciesForDataset(UUID id) {
+        log.info("Deleting policies for datasetId={}", id);
+        restTemplate.delete(UriComponentsBuilder.fromHttpUrl(policyUrl).queryParam("datasetId", id.toString()).build().toUri());
     }
 
     private List<PolicyResponse> throwException(UUID datasetId, HttpStatusCodeException e) {

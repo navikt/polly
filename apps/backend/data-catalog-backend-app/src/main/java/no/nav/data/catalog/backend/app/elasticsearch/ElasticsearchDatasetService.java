@@ -77,6 +77,11 @@ public class ElasticsearchDatasetService {
         for (Dataset dataset : datasets) {
             elasticsearch.deleteById(ElasticsearchDocument.newDatasetDocumentId(dataset.getElasticsearchId(), elasticsearchProperties.getIndex()));
             repository.deleteById(dataset.getId());
+            try {
+                policyConsumer.deletePoliciesForDataset(dataset.getId());
+            } catch (Exception e) {
+                log.warn(String.format("Failed to delete policies for datasetId=%s", dataset.getId()), e);
+            }
         }
         return datasets.size();
     }

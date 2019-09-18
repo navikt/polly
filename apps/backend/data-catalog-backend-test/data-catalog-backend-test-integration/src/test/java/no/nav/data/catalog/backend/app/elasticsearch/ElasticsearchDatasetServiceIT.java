@@ -17,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchDocument.newDatasetDocumentId;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCED;
 import static org.hamcrest.CoreMatchers.is;
@@ -137,6 +140,7 @@ public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
         Thread.sleep(1000L);
         assertThat(esRepository.getAllDatasets("index").getHits().totalHits, is(0L));
         assertThat(repository.findAll().size(), is(0));
+        wiremock.verify(deleteRequestedFor(urlPathEqualTo("/policy/policy")).withQueryParam("datasetId", equalTo(DATASET_ID_1.toString())));
     }
 
     private void createTestData(ElasticsearchStatus esStatus) {

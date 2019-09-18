@@ -102,6 +102,7 @@ public class ElasticsearchDatasetServiceTest {
         verify(elasticsearch, times(1)).deleteById(captor.capture());
         verify(repository, times(0)).save(any(Dataset.class));
         verify(repository, times(1)).deleteById(dataset.getId());
+        verify(policyConsumer).deletePoliciesForDataset(dataset.getId());
         verifyCapture(false);
     }
 
