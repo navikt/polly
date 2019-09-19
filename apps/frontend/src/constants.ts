@@ -7,7 +7,7 @@ export interface Policy {
 export interface DatasetFormValues {
     title: string;
     contentType: string | null;
-    pi: string | null;
+    pi: string | boolean | null;
     description: string | null;
     categories: string[] | null[] | null;
     provenances: string[] | null[] | null;

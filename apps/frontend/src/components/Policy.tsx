@@ -12,7 +12,6 @@ import { Block, BlockProps } from "baseui/block";
 import { Delete } from "baseui/icon";
 import { Button, SIZE, KIND as BUTTONKIND, KIND } from "baseui/button";
 import { Input, SIZE as ButtonSIZE } from "baseui/input";
-import { Select, Value } from "baseui/select";
 
 const StyledBodyRow = withStyle(StyledRow, {
     backgroundColor: "transparent",
@@ -24,7 +23,6 @@ const StyledBodyRow = withStyle(StyledRow, {
 
 type TableProps = {
     policies: any | undefined;
-    onAddPolicy: Function;
     onRemovePolicy: Function;
 };
 
@@ -33,84 +31,14 @@ const inputBlockProps: BlockProps = {
     marginRight: "2rem"
 };
 
-const Policy = ({ policies, onAddPolicy, onRemovePolicy }: TableProps) => {
+const Policy = ({ policies, onRemovePolicy }: TableProps) => {
     const [useCss, theme] = useStyletron();
-    const [purposeValue, setPurposeValue] = React.useState("");
-    const [legalBasisValue, setLegalBasisValue] = React.useState("");
 
     return (
         <React.Fragment>
-            <hr />
-            <Block marginBottom="1rem" marginTop="2rem">
-                <h2>Behandlingsgrunnlag</h2>
-            </Block>
-            <Block
-                display="flex"
-                justifyContent="space-between"
-                marginBottom="3rem"
-            >
-                <Block {...inputBlockProps}>
-                    {/* <Select
-                        options={[{ id: "TEXT" }]}
-                        labelKey="id"
-                        valueKey="id"
-                        maxDropdownHeight="300px"
-                        onChange={({ value }) => {
-                            setPurposeValue(value);
-                            console.log("selected", value);
-                            //arrayHelpers.push(option ? option.id : null);
-                        }}
-                        value={purposeValue}
-                    /> */}
-                    <Input
-                        type="text"
-                        placeholder="Velg formål"
-                        value={purposeValue}
-                        onChange={event =>
-                            setPurposeValue(event.currentTarget.value)
-                        }
-                    />
-                </Block>
-
-                <Block {...inputBlockProps}>
-                    <Input
-                        type="text"
-                        placeholder="Skriv inn rettslig grunnlag"
-                        value={legalBasisValue}
-                        onChange={event =>
-                            setLegalBasisValue(event.currentTarget.value)
-                        }
-                    />
-                </Block>
-                <Button
-                    type="button"
-                    size={SIZE.compact}
-                    overrides={{
-                        BaseButton: {
-                            style: ({ $theme }) => {
-                                return {
-                                    paddingRight: "3rem",
-                                    paddingLeft: "3rem"
-                                };
-                            }
-                        }
-                    }}
-                    onClick={() => {
-                        onAddPolicy({
-                            purposeCode: purposeValue,
-                            legalBasisDescription: legalBasisValue
-                        });
-                        setPurposeValue("");
-                        setLegalBasisValue("");
-                    }}
-                >
-                    Lagre
-                </Button>
-            </Block>
-
             <StyledTable
                 className={useCss({
-                    marginBottom: "2rem",
+                    marginBottom: "8rem",
                     overflow: "hidden !important"
                 })}
             >

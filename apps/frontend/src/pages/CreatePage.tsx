@@ -63,7 +63,7 @@ const CreatePage = () => {
         values.issued = "2019-09-18T14:21:09.763265";
         let body = [values];
 
-        axios.post(`${server_backend}`, body).then(res => console.log(res));
+        axios.post(`${server_backend}`, body).then(handleGetCodelistResponse);
         setCreated(true);
     };
 

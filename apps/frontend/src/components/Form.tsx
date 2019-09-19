@@ -19,6 +19,7 @@ import { Plus } from "baseui/icon";
 import { Tag, KIND, VARIANT } from "baseui/tag";
 import { Select, TYPE, Value } from "baseui/select";
 import { Label1 } from "baseui/typography";
+import { Radio, RadioGroup } from "baseui/radio";
 
 import { DatasetFormValues, Codelist } from "../constants";
 
@@ -81,6 +82,7 @@ const DatasetForm = ({
     codelist
 }: FormProps) => {
     const [value, setValue] = React.useState<Value>([]);
+    const [piValue, setPiValue] = React.useState();
     const [currentProvenanceValue, setCurrentProvenanceValue] = React.useState(
         []
     );
@@ -114,7 +116,6 @@ const DatasetForm = ({
                     actions: FormikActions<DatasetFormValues>
                 ) => {
                     submit(values);
-                    alert(JSON.stringify(values, null, 2));
                     actions.setSubmitting(false);
                 }}
                 render={(formikBag: FormikProps<DatasetFormValues>) => (
@@ -124,7 +125,11 @@ const DatasetForm = ({
                             justifyContent="space-between"
                             alignContent="center"
                         >
-                            {!isEdit ? <h1>Opprett</h1> : <h1>Rediger</h1>}
+                            {!isEdit ? (
+                                <h1>Opprett</h1>
+                            ) : (
+                                <h1>Rediger ({formikBag.values.title})</h1>
+                            )}
                         </Block>
                         <FlexGrid
                             flexGridColumnCount={3}
@@ -133,30 +138,21 @@ const DatasetForm = ({
                         >
                             <FlexGridItem>
                                 <Field
-                                    name="title"
-                                    render={({
-                                        field,
-                                        form
-                                    }: FieldProps<DatasetFormValues>) => (
-                                        <FormControl label="Title">
-                                            <Input {...field} />
-                                        </FormControl>
-                                    )}
-                                />
-                            </FlexGridItem>
-                            <FlexGridItem>
-                                <Field
                                     name="contentType"
                                     render={({
                                         field,
                                         form
                                     }: FieldProps<DatasetFormValues>) => (
-                                        <FormControl label="Type">
+                                        <React.Fragment>
+                                            <Label1 marginBottom="8px">
+                                                Type
+                                            </Label1>
                                             <Input {...field} />
-                                        </FormControl>
+                                        </React.Fragment>
                                     )}
                                 />
                             </FlexGridItem>
+                            <FlexGridItem display="none" />
                             <FlexGridItem>
                                 <Field
                                     name="pi"
@@ -164,9 +160,47 @@ const DatasetForm = ({
                                         field,
                                         form
                                     }: FieldProps<DatasetFormValues>) => (
-                                        <FormControl label="PI">
-                                            <Input {...field} />
-                                        </FormControl>
+                                        <Block>
+                                            <Label1 marginBottom="8px">
+                                                Personopplysning
+                                            </Label1>
+                                            <RadioGroup
+                                                value={
+                                                    !formikBag.values.pi
+                                                        ? "false"
+                                                        : formikBag.values.pi.toString()
+                                                }
+                                                onChange={e => {
+                                                    (e.target as HTMLInputElement)
+                                                        .value === "true"
+                                                        ? form.setFieldValue(
+                                                              "pi",
+                                                              true
+                                                          )
+                                                        : form.setFieldValue(
+                                                              "pi",
+                                                              false
+                                                          );
+                                                }}
+                                                align="horizontal"
+                                            >
+                                                <Radio
+                                                    value="true"
+                                                    overrides={{
+                                                        Root: {
+                                                            style: () => ({
+                                                                marginRight:
+                                                                    "scale600"
+                                                            })
+                                                        }
+                                                    }}
+                                                >
+                                                    Ja
+                                                </Radio>
+                                                <Block marginLeft="1rem"></Block>
+                                                <Radio value="false">Nei</Radio>
+                                            </RadioGroup>
+                                        </Block>
                                     )}
                                 />
                             </FlexGridItem>

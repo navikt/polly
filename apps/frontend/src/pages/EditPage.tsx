@@ -5,6 +5,7 @@ import { Spinner } from "baseui/spinner";
 import { Block } from "baseui/block";
 
 import Policy from "../components/Policy";
+import PolicyForm from "../components/PolicyForm";
 
 const server_backend = process.env.REACT_APP_BACKEND_ENDPOINT;
 const server_policy = process.env.REACT_APP_POLICY_ENDPOINT;
@@ -16,22 +17,6 @@ const reduceList = (list: any) => {
         return [...acc, !curr ? null : curr.code];
     }, []);
 };
-
-// const reducePolicies = (list: any) => {
-//     if (!list) return;
-
-//     return list.reduce((acc: any, curr: any) => {
-//         return [
-//             ...acc,
-//             {
-//                 datasetTitle: curr.dataset.title,
-//                 id: curr.policyId,
-//                 purposeCode: curr.purpose.code,
-//                 legalBasisDescription: curr.legalBasisDescription
-//             }
-//         ];
-//     }, []);
-// };
 
 const initializeFormValues = (data: any) => {
     if (!data) return null;
@@ -67,6 +52,7 @@ const EditPage = (props: any) => {
     };
 
     const handleGetDatasetResponse = (response: any) => {
+        console.log(response, "RESPO");
         if (typeof response.data === "object" && response.data !== null) {
             setDataset(response.data);
         } else {
@@ -101,14 +87,13 @@ const EditPage = (props: any) => {
     const handleSubmit = async (values: any) => {
         if (!values) return null;
         values.issued = "2019-09-18T14:21:09.763265";
-        console.log(values, "values submitted");
         await axios
             .put(`${server_backend}/${dataset.id}`, values)
             .then(handlePutDatasetResponse);
     };
 
     const handleAddPolicy = async (values: any) => {
-        if (!values) return null; //Error handling mulig
+        if (!values) return;
         values.datasetTitle = dataset.title;
 
         await axios
@@ -134,6 +119,28 @@ const EditPage = (props: any) => {
         } else {
             setError(response.data);
         }
+    };
+
+    const getPolicySelectItems = (codelistValues: any) => {
+        console.log(policies);
+        if (!codelist["PURPOSE"]) return [];
+        let filteredItems: any = [];
+        let parsedItems = Object.keys(codelist["PURPOSE"]).reduce(
+            (acc: any, curr: any) => {
+                return [...acc, { id: curr }];
+            },
+            []
+        );
+
+        if (policies.length < 1) return parsedItems;
+        policies.map((policy: any) => {
+            filteredItems = parsedItems.filter(
+                (item: any) => item.id !== policy.purpose.code
+            );
+        });
+        console.log(filteredItems, "policies", policies);
+
+        return filteredItems;
     };
 
     React.useEffect(() => {
@@ -179,9 +186,15 @@ const EditPage = (props: any) => {
                                 codelist={codelist}
                             />
                             <Block marginTop="3rem">
+                                <PolicyForm
+                                    onAddSubmit={handleAddPolicy}
+                                    selectItems={getPolicySelectItems(
+                                        codelist.PURPOSE
+                                    )}
+                                />
+
                                 <Policy
                                     policies={policies}
-                                    onAddPolicy={handleAddPolicy}
                                     onRemovePolicy={handleRemovePolicy}
                                 />
                             </Block>
