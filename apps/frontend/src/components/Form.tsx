@@ -136,6 +136,21 @@ const DatasetForm = ({
                             flexGridColumnGap="scale1200"
                             flexGridRowGap="scale1600"
                         >
+                            {!isEdit ? (
+                                <FlexGridItem>
+                                    <Field
+                                        name="title"
+                                        render={({
+                                            field,
+                                            form
+                                        }: FieldProps<DatasetFormValues>) => (
+                                            <FormControl label="Title">
+                                                <Input {...field} />
+                                            </FormControl>
+                                        )}
+                                    />
+                                </FlexGridItem>
+                            ) : null}
                             <FlexGridItem>
                                 <Field
                                     name="contentType"
@@ -152,7 +167,7 @@ const DatasetForm = ({
                                     )}
                                 />
                             </FlexGridItem>
-                            <FlexGridItem display="none" />
+                            {isEdit ? <FlexGridItem display="none" /> : null}
                             <FlexGridItem>
                                 <Field
                                     name="pi"
