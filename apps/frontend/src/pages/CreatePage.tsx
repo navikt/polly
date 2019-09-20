@@ -59,11 +59,13 @@ const CreatePage = () => {
 
     //TODO - sette opp error handling
     const handleSubmit = (values: any) => {
-        console.log(values, "values submitted");
         values.issued = "2019-09-18T14:21:09.763265";
         let body = [values];
 
-        axios.post(`${server_backend}`, body).then(handleGetCodelistResponse);
+        axios
+            .post(`${server_backend}`, body)
+            .then(res => console.log(res))
+            .catch(handleAxiosError);
         setCreated(true);
     };
 
