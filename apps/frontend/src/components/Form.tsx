@@ -144,9 +144,12 @@ const DatasetForm = ({
                                             field,
                                             form
                                         }: FieldProps<DatasetFormValues>) => (
-                                            <FormControl label="Title">
+                                            <React.Fragment>
+                                                <Label1 marginBottom="8px">
+                                                    Tittel
+                                                </Label1>
                                                 <Input {...field} />
-                                            </FormControl>
+                                            </React.Fragment>
                                         )}
                                     />
                                 </FlexGridItem>
@@ -177,7 +180,7 @@ const DatasetForm = ({
                                     }: FieldProps<DatasetFormValues>) => (
                                         <Block>
                                             <Label1 marginBottom="8px">
-                                                Personopplysning
+                                                Personinformasjon
                                             </Label1>
                                             <RadioGroup
                                                 value={
@@ -227,7 +230,7 @@ const DatasetForm = ({
                                         <Block>
                                             <Block>
                                                 <Label1 marginBottom="8px">
-                                                    Categories
+                                                    Kategori
                                                 </Label1>
                                                 <Select
                                                     options={getParsedOptions(
@@ -266,7 +269,7 @@ const DatasetForm = ({
                                         <Block>
                                             <Block>
                                                 <Label1 marginBottom="8px">
-                                                    Provenances
+                                                    Kilde
                                                 </Label1>
                                                 <Select
                                                     options={getParsedOptions(
@@ -306,7 +309,7 @@ const DatasetForm = ({
                                     render={arrayHelpers => (
                                         <Block>
                                             <Label1 marginBottom="8px">
-                                                Keywords
+                                                Nøkkelord
                                             </Label1>
                                             <Input
                                                 type="text"
@@ -385,7 +388,7 @@ const DatasetForm = ({
                                     }
                                 }}
                             >
-                                Lagre Endringer
+                                Lagre
                             </Button>
                         </Block>
                     </Form>
