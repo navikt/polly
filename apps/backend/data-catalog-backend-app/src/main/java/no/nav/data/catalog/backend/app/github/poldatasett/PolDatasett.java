@@ -3,7 +3,6 @@ package no.nav.data.catalog.backend.app.github.poldatasett;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.data.catalog.backend.app.common.auditing.Auditable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Table(name = "POL_DATASETT")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PolDatasett extends Auditable<String> {
+public class PolDatasett {
 
     public PolDatasett(String githubSha) {
         this.githubSha = githubSha;

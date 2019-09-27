@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.auditing.Auditable;
 import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
-import no.nav.data.catalog.backend.app.dataset.Dataset.DatasetBuilder;
 import no.nav.data.catalog.backend.app.system.System;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
@@ -31,8 +30,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-
-import static org.elasticsearch.common.UUIDs.base64UUID;
 
 @Slf4j
 @Data
