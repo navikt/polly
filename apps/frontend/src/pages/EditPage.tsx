@@ -1,11 +1,11 @@
 import * as React from "react";
 import axios from "axios";
-import DatasetForm from "../components/Form";
 import { Spinner } from "baseui/spinner";
 import { Block } from "baseui/block";
 
-import Policy from "../components/Policy";
-import PolicyForm from "../components/PolicyForm";
+import FormDataset from '../components/Dataset/FormDataset'
+import PolicyTable from "../components/Dataset/PolicyTable";
+import PolicyForm from "../components/Dataset/PolicyForm";
 
 const server_backend = process.env.REACT_APP_BACKEND_ENDPOINT;
 const server_policy = process.env.REACT_APP_POLICY_ENDPOINT;
@@ -177,7 +177,7 @@ const EditPage = (props: any) => {
                 <React.Fragment>
                     {!error && dataset && policies && codelist ? (
                         <React.Fragment>
-                            <DatasetForm
+                            <FormDataset
                                 formInitialValues={initializeFormValues(
                                     dataset
                                 )}
@@ -193,7 +193,7 @@ const EditPage = (props: any) => {
                                     )}
                                 />
 
-                                <Policy
+                                <PolicyTable
                                     policies={policies}
                                     onRemovePolicy={handleRemovePolicy}
                                 />

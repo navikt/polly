@@ -5,7 +5,7 @@ import { Card } from "baseui/card";
 import { Paragraph2 } from "baseui/typography";
 import { Spinner } from "baseui/spinner";
 
-import DatasetForm from "../components/Form";
+import FormDataset from '../components/Dataset/FormDataset'
 
 const server_backend = process.env.REACT_APP_BACKEND_ENDPOINT;
 const server_codelist = process.env.REACT_APP_CODELIST_ENDPOINT;
@@ -94,7 +94,7 @@ const CreatePage = () => {
                     <Spinner size={30} />
                 ) : (
                     <React.Fragment>
-                        <DatasetForm
+                        <FormDataset
                             formInitialValues={initialFormValues}
                             submit={handleSubmit}
                             codelist={codelist}
