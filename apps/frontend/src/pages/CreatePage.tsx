@@ -69,19 +69,19 @@ const CreatePage = () => {
         setCreated(true);
     };
 
-    React.useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            await axios
-                .get(`${server_codelist}`)
-                .then(handleGetCodelistResponse)
-                .catch(handleAxiosError);
+    // React.useEffect(() => {
+    //     const fetchData = async () => {
+    //         setLoading(true);
+    //         await axios
+    //             .get(`${server_codelist}`)
+    //             .then(handleGetCodelistResponse)
+    //             .catch(handleAxiosError);
 
-            setLoading(false);
-        };
+    //         setLoading(false);
+    //     };
 
-        fetchData();
-    }, []);
+    //     fetchData();
+    // }, []);
 
     return (
         <React.Fragment>

@@ -143,31 +143,31 @@ const EditPage = (props: any) => {
         return filteredItems;
     };
 
-    React.useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            await axios
-                .get(`${server_backend}/${props.match.params.id}`)
-                .then(handleGetDatasetResponse)
-                .catch(handleAxiosError);
+    // React.useEffect(() => {
+    //     const fetchData = async () => {
+    //         setLoading(true);
+    //         await axios
+    //             .get(`${server_backend}/${props.match.params.id}`)
+    //             .then(handleGetDatasetResponse)
+    //             .catch(handleAxiosError);
 
-            await axios
-                .get(
-                    `${server_policy}?datasetId=${props.match.params.id}&pageSize=100`
-                )
-                .then(handleGetPolicyResponse)
-                .catch(handleAxiosError);
+    //         await axios
+    //             .get(
+    //                 `${server_policy}?datasetId=${props.match.params.id}&pageSize=100`
+    //             )
+    //             .then(handleGetPolicyResponse)
+    //             .catch(handleAxiosError);
 
-            await axios
-                .get(`${server_codelist}`)
-                .then(handleGetCodelistResponse)
-                .catch(handleAxiosError);
+    //         await axios
+    //             .get(`${server_codelist}`)
+    //             .then(handleGetCodelistResponse)
+    //             .catch(handleAxiosError);
 
-            setLoading(false);
-        };
+    //         setLoading(false);
+    //     };
 
-        fetchData();
-    }, []);
+    //     fetchData();
+    // }, []);
 
     return (
         <React.Fragment>
