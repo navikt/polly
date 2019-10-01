@@ -86,18 +86,9 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
 
         distributionChannelRepository.save(DistributionChannel.builder().id(UUID.randomUUID()).name("aapen-dok-mottatt").type(DistributionChannelType.KAFKA).build());
 
-        repository.save(new Dataset().convertNewFromRequest(DatasetRequest.builder()
-                .title("removed")
-                .description("desc")
-                .build(), DatacatalogMaster.GITHUB));
-        repository.save(new Dataset().convertNewFromRequest(DatasetRequest.builder()
-                .title("modified_removed")
-                .description("desc")
-                .build(), DatacatalogMaster.GITHUB));
-        repository.save(new Dataset().convertNewFromRequest(DatasetRequest.builder()
-                .title("modified_changed")
-                .description("desc")
-                .build(), DatacatalogMaster.GITHUB));
+        repository.save(createDataset("removed"));
+        repository.save(createDataset("modified_removed"));
+        repository.save(createDataset("modified_changed"));
     }
 
     @Test
@@ -177,7 +168,8 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
 
         verify(postRequestedFor(urlPathEqualTo(String.format("/api/v3/repos/navikt/pol-datasett/statuses/%s", head)))
                 .withRequestBody(matchingJsonPath("$.context", equalTo("data-catalog-validation")))
-                .withRequestBody(matchingJsonPath("$.description", containing("added -- DuplicatedIdentifyingFields -- Multiple elements in this request are using the same unique fields (added)")))
+                .withRequestBody(matchingJsonPath("$.description",
+                        containing("added -- DuplicatedIdentifyingFields -- Multiple elements in this request are using the same unique fields (added)")))
                 .withRequestBody(matchingJsonPath("$.state", equalTo("failure")))
         );
     }
@@ -254,4 +246,12 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
                 .setContent(Base64.getEncoder().encodeToString(content.getBytes()));
     }
 
+    private Dataset createDataset(String removed) {
+        Dataset dataset = new Dataset().convertNewFromRequest(DatasetRequest.builder()
+                .title(removed)
+                .description("desc")
+                .build(), DatacatalogMaster.GITHUB);
+        dataset.setElasticsearchStatus(ElasticsearchStatus.SYNCED);
+        return dataset;
+    }
 }
