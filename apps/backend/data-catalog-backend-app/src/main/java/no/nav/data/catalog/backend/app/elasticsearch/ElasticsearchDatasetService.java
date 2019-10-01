@@ -102,7 +102,7 @@ public class ElasticsearchDatasetService {
 
     private static Counter initCounter() {
         Counter counter = Counter.build()
-                .name("datacatalog.elasticsearch.sync")
+                .name("datacatalog_elasticsearch_sync")
                 .help("Sync stats for datacatalog")
                 .labelNames("action")
                 .register();
