@@ -109,7 +109,7 @@ public class DatasetControllerIT extends AbstractDatasetIT {
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(datasetRepository.findAll().size(), is(30));
         assertThat(responseEntity.getBody().getContent().size(), is(20));
-        assertThat(responseEntity.getBody().getCurrentPage(), is(0));
+        assertThat(responseEntity.getBody().getPageNumber(), is(0));
         assertThat(responseEntity.getBody().getPageSize(), is(20));
         assertThat(responseEntity.getBody().getTotalElements(), is(30L));
     }
