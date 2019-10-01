@@ -2,6 +2,7 @@ package no.nav.data.catalog.backend.app;
 
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import io.prometheus.client.CollectorRegistry;
 import no.nav.data.catalog.backend.app.IntegrationTestBase.Initializer;
 import no.nav.data.catalog.backend.app.common.nais.LeaderElectionService;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
@@ -66,10 +67,11 @@ public abstract class IntegrationTestBase {
     }
 
     @After
-    public void deleteRepositories() {
+    public void teardownAbstract() {
         datasetRepository.deleteAll();
         distributionChannelRepository.deleteAll();
         systemRepository.deleteAll();
+        CollectorRegistry.defaultRegistry.clear();
     }
 
     protected void policyStubbing() {

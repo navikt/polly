@@ -1,5 +1,6 @@
 package no.nav.data.catalog.backend.app.elasticsearch;
 
+import io.prometheus.client.Counter;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.nais.LeaderElectionService;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
@@ -26,6 +27,7 @@ public class ElasticsearchDatasetService {
     private final ElasticsearchRepository elasticsearch;
     private final ElasticsearchProperties elasticsearchProperties;
     private final LeaderElectionService leaderElectionService;
+    private final Counter counter;
 
     public ElasticsearchDatasetService(DatasetRepository repository, PolicyConsumer policyConsumer, ElasticsearchRepository elasticsearch,
             ElasticsearchProperties elasticsearchProperties, LeaderElectionService leaderElectionService) {
@@ -34,6 +36,7 @@ public class ElasticsearchDatasetService {
         this.elasticsearch = elasticsearch;
         this.elasticsearchProperties = elasticsearchProperties;
         this.leaderElectionService = leaderElectionService;
+        this.counter = initCounter();
     }
 
     public void synchToElasticsearch() {
@@ -41,6 +44,7 @@ public class ElasticsearchDatasetService {
             log.info("Skip sync to ElasticSearch, not leader");
             return;
         }
+        counter.labels("sync").inc();
         log.info("Starting sync to ElasticSearch");
         var created = createDatasetsInElasticsearch();
         var updated = updateDatasetsInElasticsearch();
@@ -56,6 +60,7 @@ public class ElasticsearchDatasetService {
 
             dataset.setElasticsearchStatus(SYNCED);
             repository.save(dataset);
+            counter.labels("create").inc();
         }
         return datasets.size();
     }
@@ -68,6 +73,7 @@ public class ElasticsearchDatasetService {
 
             dataset.setElasticsearchStatus(SYNCED);
             repository.save(dataset);
+            counter.labels("update").inc();
         }
         return datasets.size();
     }
@@ -83,6 +89,7 @@ public class ElasticsearchDatasetService {
             } catch (Exception e) {
                 log.warn(String.format("Failed to delete policies for datasetId=%s", dataset.getId()), e);
             }
+            counter.labels("delete").inc();
         }
         return datasets.size();
     }
@@ -93,4 +100,16 @@ public class ElasticsearchDatasetService {
         return dataset.convertToElasticsearch(policiesES);
     }
 
+    private static Counter initCounter() {
+        Counter counter = Counter.build()
+                .name("datacatalog.elasticsearch.sync")
+                .help("Sync stats for datacatalog")
+                .labelNames("action")
+                .register();
+        counter.labels("sync");
+        counter.labels("create");
+        counter.labels("update");
+        counter.labels("delete");
+        return counter;
+    }
 }
