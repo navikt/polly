@@ -6,8 +6,8 @@ import { Select, Value, TYPE } from "baseui/select";
 const rowBlockProps: BlockProps = {
     display: "flex",
     marginBottom: "3rem",
-    marginTop: '3rem',
-    width: '100%'
+    marginTop: "3rem",
+    width: "100%"
 };
 
 const FormPurpose = () => {
@@ -17,19 +17,19 @@ const FormPurpose = () => {
         <form
             onSubmit={e => {
                 e.preventDefault();
-                console.log('clicked')
+                console.log("clicked");
             }}
         >
             <Block {...rowBlockProps}>
                 <Block width="100%">
                     <Select
                         options={[
-                            { id: 'AliceBlue', color: '#F0F8FF' },
-                            { id: 'AntiqueWhite', color: '#FAEBD7' },
-                            { id: 'Aqua', color: '#00FFFF' },
-                            { id: 'Aquamarine', color: '#7FFFD4' },
-                            { id: 'Azure', color: '#F0FFFF' },
-                            { id: 'Beige', color: '#F5F5DC' },
+                            { id: "AliceBlue", color: "#F0F8FF" },
+                            { id: "AntiqueWhite", color: "#FAEBD7" },
+                            { id: "Aqua", color: "#00FFFF" },
+                            { id: "Aquamarine", color: "#7FFFD4" },
+                            { id: "Azure", color: "#F0FFFF" },
+                            { id: "Beige", color: "#F5F5DC" }
                         ]}
                         labelKey="id"
                         valueKey="color"
@@ -39,8 +39,7 @@ const FormPurpose = () => {
                     />
                 </Block>
 
-
-                <Button
+                {/* <Button
                     type="submit"
                     size={SIZE.compact}
                     overrides={{
@@ -55,7 +54,7 @@ const FormPurpose = () => {
                     }}
                 >
                     Søk
-                </Button>
+                </Button> */}
             </Block>
         </form>
     );
