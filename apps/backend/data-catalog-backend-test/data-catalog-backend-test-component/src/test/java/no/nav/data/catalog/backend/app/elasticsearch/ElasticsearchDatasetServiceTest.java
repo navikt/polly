@@ -1,5 +1,6 @@
 package no.nav.data.catalog.backend.app.elasticsearch;
 
+import io.prometheus.client.CollectorRegistry;
 import no.nav.data.catalog.backend.app.codelist.CodeResponse;
 import no.nav.data.catalog.backend.app.common.nais.LeaderElectionService;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
@@ -7,6 +8,7 @@ import no.nav.data.catalog.backend.app.dataset.DatasetData;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.policy.PolicyConsumer;
 import no.nav.data.catalog.backend.app.policy.PolicyResponse;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +36,6 @@ public class ElasticsearchDatasetServiceTest {
 
     private Dataset dataset;
     private PolicyResponse policy;
-
 
     @Mock
     private DatasetRepository repository;
@@ -65,6 +66,11 @@ public class ElasticsearchDatasetServiceTest {
         when(policyConsumer.getPolicyForDataset(dataset.getId())).thenReturn(singletonList(policy));
         when(properties.getIndex()).thenReturn("index");
         when(leaderElectionService.isLeader()).thenReturn(true);
+    }
+
+    @After
+    public void tearDown() {
+        CollectorRegistry.defaultRegistry.clear();
     }
 
     @Test
