@@ -8,111 +8,91 @@ import {
     SortableHeadCell,
     SORT_DIRECTION
 } from "baseui/table";
+import { withStyle, useStyletron } from "baseui";
+import { Alert } from "baseui/icon";
+import { Block } from "baseui/block";
+import { Paragraph1, Paragraph2 } from "baseui/typography";
+import { string } from "prop-types";
 
-const DATA = [
-    ["Marlyn", 10],
-    ["Luther", 15],
-    ["Kiera", 13],
-    ["Edna", 20],
-    ["Soraya", 18],
-    ["Dorris", 32],
-    ["Astrid", 26],
-    ["Wendie", 17],
-    ["Marna", 11],
-    ["Malka", 14]
-];
+// Styling for table header
+const StyledHeader = withStyle(StyledHead, {
+    backgroundColor: "transparent",
+    boxShadow: "none",
+    borderBottom: "2px solid #E9E7E7"
+});
+
+// Styling for rows in table
+const CustomStyledRow = withStyle(StyledRow, {
+    borderBottom: "1px solid #E9E7E7",
+    padding: "8px",
+    fontSize: "24px"
+});
 
 type DirectionT = SORT_DIRECTION | null;
 
-export default class TablePurpose extends React.Component<
-    {},
-    {
-        nameDirection: DirectionT;
-        ageDirection: DirectionT;
-    }
-> {
-    state = { nameDirection: null, ageDirection: null };
-    handleSort = (title: string, prevDirection: DirectionT) => {
+type TablePurposeProps = {
+    datasets:
+        | Array<{
+              id: string;
+              title: string | null;
+          }>
+        | Array<any>
+        | null
+        | undefined;
+};
+
+const TablePurpose = ({ datasets }: TablePurposeProps) => {
+    const [purposeDirection, setPurposeDirection] = React.useState<any>(null);
+    const [legalBasisDirection, setLegalBasisDirection] = React.useState<any>(
+        null
+    );
+
+    const handleSort = (title: string, prevDirection: string) => {
         let nextDirection = null;
-        if (prevDirection === SORT_DIRECTION.ASC) {
-            nextDirection = SORT_DIRECTION.DESC;
+        if (prevDirection === "ASC") nextDirection = "DESC";
+
+        if (prevDirection === "DESC") nextDirection = "ASC";
+
+        if (prevDirection === null) nextDirection = "ASC";
+
+        if (title === "purpose") {
+            setPurposeDirection(nextDirection);
+            setLegalBasisDirection(null);
         }
-        if (prevDirection === SORT_DIRECTION.DESC) {
-            nextDirection = null;
+        if (title === "legalBasis") {
+            setLegalBasisDirection(nextDirection);
+            setPurposeDirection(null);
         }
-        if (prevDirection === null) {
-            nextDirection = SORT_DIRECTION.ASC;
-        }
-        if (title === "name") {
-            this.setState({
-                nameDirection: nextDirection,
-                ageDirection: null
-            });
-            return;
-        }
-        if (title === "age") {
-            this.setState({
-                nameDirection: null,
-                ageDirection: nextDirection
-            });
-            return;
-        }
+        return;
     };
-    getSortedData = () => {
-        if (this.state.nameDirection) {
-            const sorted = DATA.slice(0).sort((a, b) =>
-                //@ts-ignore
-                a[0].localeCompare(b[0])
-            );
-            if (this.state.nameDirection === SORT_DIRECTION.ASC) {
+
+    const getSortedData = () => {
+        if (purposeDirection) {
+            const sorted = datasets
+                .slice(0)
+                .sort((a: any, b: any) => a[1] - b[1]);
+            if (purposeDirection === SORT_DIRECTION.ASC) {
                 return sorted;
             }
-            if (this.state.nameDirection === SORT_DIRECTION.DESC) {
+            if (purposeDirection === SORT_DIRECTION.DESC) {
                 return sorted.reverse();
             }
         }
-        if (this.state.ageDirection) {
-            //@ts-ignore
-            const sorted = DATA.slice(0).sort((a, b) => a[1] - b[1]);
-            if (this.state.ageDirection === SORT_DIRECTION.ASC) {
+
+        if (legalBasisDirection) {
+            const sorted = datasets
+                .slice(0)
+                .sort((a: any, b: any) => a[1] - b[1]);
+            if (legalBasisDirection === SORT_DIRECTION.ASC) {
                 return sorted;
             }
-            if (this.state.ageDirection === SORT_DIRECTION.DESC) {
+            if (legalBasisDirection === SORT_DIRECTION.DESC) {
                 return sorted.reverse();
             }
         }
-        return DATA;
+
+        return datasets;
     };
-    render() {
-        return (
-            <StyledTable>
-                <StyledHead>
-                    <SortableHeadCell
-                        title="Datasett"
-                        direction={this.state.nameDirection}
-                        onSort={() =>
-                            this.handleSort("name", this.state.nameDirection)
-                        }
-                        fillClickTarget
-                    />
-                    <SortableHeadCell
-                        title="Rettslig Grunnlag"
-                        direction={this.state.ageDirection}
-                        onSort={() =>
-                            this.handleSort("age", this.state.ageDirection)
-                        }
-                    />
-                </StyledHead>
-                <StyledBody>
-                    {this.getSortedData().map((row, index) => (
-                        <StyledRow key={index}>
-                            {row.map((cell, cellIndex) => (
-                                <StyledCell key={cellIndex}>{cell}</StyledCell>
-                            ))}
-                        </StyledRow>
-                    ))}
-                </StyledBody>
-            </StyledTable>
-        );
-    }
-}
+};
+
+export default TablePurpose;

@@ -7,12 +7,17 @@ import FormPurpose from "./FormPurpose";
 import TablePurpose from "./TablePurpose";
 
 type PurposeViewProps = {
+    purpose: any | null | undefined;
+    handleChange: Function;
     optionsSelect: any | undefined;
 };
 
-const PurposeView = ({ optionsSelect }: PurposeViewProps) => {
+const PurposeView = ({
+    purpose,
+    handleChange,
+    optionsSelect
+}: PurposeViewProps) => {
     const [value, setValue] = React.useState<Value>([]);
-    console.log(optionsSelect, "OPTIOS");
 
     return (
         <React.Fragment>
@@ -23,14 +28,24 @@ const PurposeView = ({ optionsSelect }: PurposeViewProps) => {
                     labelKey="id"
                     valueKey="id"
                     placeholder="Velg formål"
-                    onChange={({ value }) => setValue(value)}
+                    maxDropdownHeight="250px"
+                    onChange={({ value }) => {
+                        setValue(value);
+                        handleChange(
+                            value && value.length > 0 ? value[0].id : null
+                        );
+                    }}
                     value={value}
                 />
             </Block>
 
-            <Block marginTop="3rem" width="100%">
-                <TablePurpose />
-            </Block>
+            {purpose ? (
+                <React.Fragment>
+                    <Block marginTop="3rem" marginBottom="3rem">
+                        <TablePurpose datasets={purpose.datasets} />
+                    </Block>
+                </React.Fragment>
+            ) : null}
         </React.Fragment>
     );
 };
