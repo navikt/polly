@@ -35,6 +35,9 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.copyOf;
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCED;
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_CREATED;
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
 
 @Slf4j
 @Data
@@ -96,14 +99,14 @@ public class Dataset extends Auditable<String> {
 
     public Dataset convertNewFromRequest(DatasetRequest request, DatacatalogMaster master) {
         id = UUID.randomUUID();
-        elasticsearchStatus = ElasticsearchStatus.TO_BE_CREATED;
+        elasticsearchStatus = TO_BE_CREATED;
         datasetData = new DatasetData(master);
         convertFromRequest(request);
         return this;
     }
 
     Dataset convertUpdateFromRequest(DatasetRequest request) {
-        elasticsearchStatus = ElasticsearchStatus.TO_BE_UPDATED;
+        elasticsearchStatus = elasticsearchStatus == SYNCED ? TO_BE_UPDATED : elasticsearchStatus;
         convertFromRequest(request);
         return this;
     }
