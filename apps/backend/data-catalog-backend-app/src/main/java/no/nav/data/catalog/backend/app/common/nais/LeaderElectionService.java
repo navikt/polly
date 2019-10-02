@@ -1,5 +1,6 @@
 package no.nav.data.catalog.backend.app.common.nais;
 
+import io.prometheus.client.Gauge;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ public class LeaderElectionService {
 
     private String electorPath;
     private RestTemplate restTemplate;
+    private Gauge leaderGauge = Gauge.build().name("datacatalog_backend_leader").help("am i leader").register();
 
     public LeaderElectionService(@Value("${nais.elector.path}") String electorPath, RestTemplate restTemplate) {
         this.electorPath = electorPath;
@@ -26,7 +28,9 @@ public class LeaderElectionService {
 
     public boolean isLeader() {
         try {
-            return getHostInfo().equals(getLeader());
+            boolean leader = getHostInfo().equals(getLeader());
+            leaderGauge.set(leader ? 1 : 0);
+            return leader;
         } catch (Exception e) {
             log.error("failed to get leader", e);
             return false;

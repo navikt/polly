@@ -41,8 +41,8 @@ public class ElasticsearchDatasetService {
         this.leaderElectionService = leaderElectionService;
         this.counter = initCounter();
         this.summary = Summary.build().name("elasticsearch_sync_summary").help("runtime es-sync")
-                .quantile(.5, .05).quantile(.9, .01).quantile(.99, .001)
-                .maxAgeSeconds(Duration.ofHours(1).toSeconds()).ageBuckets(12)
+                .quantile(.5, .05).quantile(.9, .01).quantile(.95, .005).quantile(.99, .001)
+                .maxAgeSeconds(Duration.ofMinutes(30).toSeconds()).ageBuckets(6)
                 .register();
     }
 
