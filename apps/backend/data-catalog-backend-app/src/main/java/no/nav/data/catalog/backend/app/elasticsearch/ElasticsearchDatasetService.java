@@ -1,6 +1,7 @@
 package no.nav.data.catalog.backend.app.elasticsearch;
 
 import io.prometheus.client.Counter;
+import io.prometheus.client.Summary;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.nais.LeaderElectionService;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
@@ -10,6 +11,7 @@ import no.nav.data.catalog.backend.app.policy.PolicyConsumer;
 import no.nav.data.catalog.backend.app.policy.PolicyResponse;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +30,7 @@ public class ElasticsearchDatasetService {
     private final ElasticsearchProperties elasticsearchProperties;
     private final LeaderElectionService leaderElectionService;
     private final Counter counter;
+    private final Summary summary;
 
     public ElasticsearchDatasetService(DatasetRepository repository, PolicyConsumer policyConsumer, ElasticsearchRepository elasticsearch,
             ElasticsearchProperties elasticsearchProperties, LeaderElectionService leaderElectionService) {
@@ -37,6 +40,10 @@ public class ElasticsearchDatasetService {
         this.elasticsearchProperties = elasticsearchProperties;
         this.leaderElectionService = leaderElectionService;
         this.counter = initCounter();
+        this.summary = Summary.build().name("elasticsearch_sync_summary").help("runtime es-sync")
+                .quantile(.5, .05).quantile(.9, .01).quantile(.99, .001)
+                .maxAgeSeconds(Duration.ofHours(1).toSeconds()).ageBuckets(12)
+                .register();
     }
 
     public void synchToElasticsearch() {
@@ -45,11 +52,13 @@ public class ElasticsearchDatasetService {
             return;
         }
         counter.labels("sync").inc();
-        log.info("Starting sync to ElasticSearch");
-        var created = createDatasetsInElasticsearch();
-        var updated = updateDatasetsInElasticsearch();
-        var deleted = deleteDatasetsInElasticsearchAndInPostgres();
-        log.info("Finished sync to ElasticSearch created={} updated={} deleted={}", created, updated, deleted);
+        summary.time(() -> {
+            log.info("Starting sync to ElasticSearch");
+            var created = createDatasetsInElasticsearch();
+            var updated = updateDatasetsInElasticsearch();
+            var deleted = deleteDatasetsInElasticsearchAndInPostgres();
+            log.info("Finished sync to ElasticSearch created={} updated={} deleted={}", created, updated, deleted);
+        });
     }
 
     private int createDatasetsInElasticsearch() {
