@@ -5,7 +5,7 @@ import { Card } from "baseui/card";
 import { Paragraph2 } from "baseui/typography";
 import { Spinner } from "baseui/spinner";
 
-import FormDataset from '../components/Dataset/FormDataset'
+import FormDataset from "../components/Dataset/FormDataset";
 
 const server_backend = process.env.REACT_APP_BACKEND_ENDPOINT;
 const server_codelist = process.env.REACT_APP_CODELIST_ENDPOINT;
@@ -69,19 +69,19 @@ const CreatePage = () => {
         setCreated(true);
     };
 
-    // React.useEffect(() => {
-    //     const fetchData = async () => {
-    //         setLoading(true);
-    //         await axios
-    //             .get(`${server_codelist}`)
-    //             .then(handleGetCodelistResponse)
-    //             .catch(handleAxiosError);
+    React.useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            await axios
+                .get(`${server_codelist}`)
+                .then(handleGetCodelistResponse)
+                .catch(handleAxiosError);
 
-    //         setLoading(false);
-    //     };
+            setLoading(false);
+        };
 
-    //     fetchData();
-    // }, []);
+        fetchData();
+    }, []);
 
     return (
         <React.Fragment>

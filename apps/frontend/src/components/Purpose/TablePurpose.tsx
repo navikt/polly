@@ -9,10 +9,6 @@ import {
     SORT_DIRECTION
 } from "baseui/table";
 import { withStyle, useStyletron } from "baseui";
-import { Alert } from "baseui/icon";
-import { Block } from "baseui/block";
-import { Paragraph1, Paragraph2 } from "baseui/typography";
-import { string } from "prop-types";
 
 // Styling for table header
 const StyledHeader = withStyle(StyledHead, {
@@ -28,21 +24,17 @@ const CustomStyledRow = withStyle(StyledRow, {
     fontSize: "24px"
 });
 
-type DirectionT = SORT_DIRECTION | null;
-
 type TablePurposeProps = {
     datasets:
         | Array<{
               id: string;
               title: string | null;
           }>
-        | Array<any>
-        | null
-        | undefined;
+        | Array<any>;
 };
 
 const TablePurpose = ({ datasets }: TablePurposeProps) => {
-    const [purposeDirection, setPurposeDirection] = React.useState<any>(null);
+    const [titleDirection, settitleDirection] = React.useState<any>(null);
     const [legalBasisDirection, setLegalBasisDirection] = React.useState<any>(
         null
     );
@@ -55,26 +47,26 @@ const TablePurpose = ({ datasets }: TablePurposeProps) => {
 
         if (prevDirection === null) nextDirection = "ASC";
 
-        if (title === "purpose") {
-            setPurposeDirection(nextDirection);
+        if (title === "datasetTitle") {
+            settitleDirection(nextDirection);
             setLegalBasisDirection(null);
         }
-        if (title === "legalBasis") {
+        if (title === "legalBasisDescription") {
             setLegalBasisDirection(nextDirection);
-            setPurposeDirection(null);
+            settitleDirection(null);
         }
         return;
     };
 
     const getSortedData = () => {
-        if (purposeDirection) {
+        if (titleDirection) {
             const sorted = datasets
                 .slice(0)
                 .sort((a: any, b: any) => a[1] - b[1]);
-            if (purposeDirection === SORT_DIRECTION.ASC) {
+            if (titleDirection === SORT_DIRECTION.ASC) {
                 return sorted;
             }
-            if (purposeDirection === SORT_DIRECTION.DESC) {
+            if (titleDirection === SORT_DIRECTION.DESC) {
                 return sorted.reverse();
             }
         }
@@ -93,6 +85,41 @@ const TablePurpose = ({ datasets }: TablePurposeProps) => {
 
         return datasets;
     };
+
+    return (
+        <React.Fragment>
+            <StyledTable>
+                <StyledHeader>
+                    <SortableHeadCell
+                        title="Datasett"
+                        direction={titleDirection}
+                        onSort={() =>
+                            handleSort("datasetTitle", titleDirection)
+                        }
+                    />
+                    <SortableHeadCell
+                        title="Rettslig Grunnlag"
+                        direction={legalBasisDirection}
+                        onSort={() =>
+                            handleSort(
+                                "legalBasisDescription",
+                                legalBasisDirection
+                            )
+                        }
+                    />
+                </StyledHeader>
+                <StyledBody>
+                    {getSortedData().map((row: any, index: number) => (
+                        <CustomStyledRow key={index}>
+                            <StyledCell>{row.title}</StyledCell>
+
+                            <StyledCell>{row.legalBasisDescription}</StyledCell>
+                        </CustomStyledRow>
+                    ))}
+                </StyledBody>
+            </StyledTable>
+        </React.Fragment>
+    );
 };
 
 export default TablePurpose;

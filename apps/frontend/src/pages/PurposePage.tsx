@@ -1,17 +1,21 @@
 import * as React from "react";
 import axios from "axios";
-import { Spinner } from "baseui/spinner";
+import { Select, Value, TYPE } from "baseui/select";
 
-import PurposeView from "../components/Purpose/PurposeView";
-import MockCodelist from "./mock/MockCodelist";
+import PurposeResult from "../components/Purpose/PurposeResult";
+
+import { Block } from "baseui/block";
 
 const server_codelist = process.env.REACT_APP_CODELIST_ENDPOINT;
 const server_policy_purpose = process.env.REACT_APP_PURPOSE_ENDPOINT;
 
 const PurposePage = () => {
+    const [value, setValue] = React.useState<Value>([]);
     const [codelist, setCodelist] = React.useState();
-    const [currentPurpose, setCurrentPurpose] = React.useState(null);
+    const [currentPurpose, setCurrentPurpose] = React.useState();
     const [isLoading, setLoading] = React.useState(false);
+    const [isLoadingPurpose, setLoadingPurpose] = React.useState(false);
+
     const [error, setError] = React.useState(null);
 
     const handleAxiosError = (error: any) => {
@@ -27,7 +31,6 @@ const PurposePage = () => {
 
     const handleGetCodelistResponse = (response: any) => {
         if (typeof response.data === "object" && response.data !== null) {
-            console.log(response);
             setCodelist(response.data);
         } else {
             setError(response.data);
@@ -35,27 +38,26 @@ const PurposePage = () => {
     };
 
     const handleGetPurposeResponse = (response: any) => {
-        console.log(response, "RESPONSE");
         if (typeof response.data === "object" && response.data !== null) {
-            console.log(response);
-            setCurrentPurpose(response);
+            setCurrentPurpose(response.data);
         } else {
             setError(response.data);
         }
     };
 
     const handleChange = async (value: any) => {
-        console.log("Changed", value);
+        setLoadingPurpose(true);
         if (!value) setCurrentPurpose(null);
 
         await axios
             .get(`${server_policy_purpose}/${value}`)
             .then(handleGetPurposeResponse)
             .catch(handleAxiosError);
+
+        setLoadingPurpose(false);
     };
 
     const getPurposeSelectItems = () => {
-        console.log(codelist, "CODELIST");
         if (!codelist) return [];
         let parsedItems = Object.keys(codelist["PURPOSE"]).reduce(
             (acc: any, curr: any) => {
@@ -65,6 +67,12 @@ const PurposePage = () => {
         );
 
         return parsedItems;
+    };
+
+    const getPurposeDescription = (purpose: any) => {
+        if (!purpose) return null;
+        if (!codelist) return null;
+        return codelist["PURPOSE"][purpose];
     };
 
     React.useEffect(() => {
@@ -77,27 +85,48 @@ const PurposePage = () => {
 
             setLoading(false);
         };
-
         fetchData();
     }, []);
 
     return (
         <React.Fragment>
-            {isLoading ? (
-                <Spinner size={30} />
-            ) : (
-                <React.Fragment>
+            <h1>Formål</h1>
+            {isLoading ? null : (
+                <Block marginBottom="3rem">
                     {error ? (
                         <p>Feil i henting av formål fra codelist</p>
                     ) : (
-                        <PurposeView
-                            optionsSelect={getPurposeSelectItems()}
-                            handleChange={handleChange}
-                            purpose={currentPurpose}
+                        <Select
+                            options={getPurposeSelectItems()}
+                            labelKey="id"
+                            valueKey="id"
+                            placeholder="Velg formål"
+                            maxDropdownHeight="250px"
+                            isLoading={isLoadingPurpose}
+                            onChange={({ value }) => {
+                                setValue(value);
+                                handleChange(
+                                    value && value.length > 0
+                                        ? value[0].id
+                                        : null
+                                );
+                            }}
+                            value={value}
                         />
                     )}
-                </React.Fragment>
+                </Block>
             )}
+
+            {currentPurpose ? (
+                <React.Fragment>
+                    <PurposeResult
+                        purpose={currentPurpose}
+                        description={getPurposeDescription(
+                            currentPurpose.purpose
+                        )}
+                    />
+                </React.Fragment>
+            ) : null}
         </React.Fragment>
     );
 };

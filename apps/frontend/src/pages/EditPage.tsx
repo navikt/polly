@@ -3,7 +3,7 @@ import axios from "axios";
 import { Spinner } from "baseui/spinner";
 import { Block } from "baseui/block";
 
-import FormDataset from '../components/Dataset/FormDataset'
+import FormDataset from "../components/Dataset/FormDataset";
 import PolicyTable from "../components/Dataset/PolicyTable";
 import PolicyForm from "../components/Dataset/PolicyForm";
 
@@ -52,7 +52,6 @@ const EditPage = (props: any) => {
     };
 
     const handleGetDatasetResponse = (response: any) => {
-        console.log(response, "RESPO");
         if (typeof response.data === "object" && response.data !== null) {
             setDataset(response.data);
         } else {
@@ -122,7 +121,6 @@ const EditPage = (props: any) => {
     };
 
     const getPolicySelectItems = (codelistValues: any) => {
-        console.log(policies);
         if (!codelist["PURPOSE"]) return [];
         let filteredItems: any = [];
         let parsedItems = Object.keys(codelist["PURPOSE"]).reduce(
@@ -138,36 +136,35 @@ const EditPage = (props: any) => {
                 (item: any) => item.id !== policy.purpose.code
             );
         });
-        console.log(filteredItems, "policies", policies);
 
         return filteredItems;
     };
 
-    // React.useEffect(() => {
-    //     const fetchData = async () => {
-    //         setLoading(true);
-    //         await axios
-    //             .get(`${server_backend}/${props.match.params.id}`)
-    //             .then(handleGetDatasetResponse)
-    //             .catch(handleAxiosError);
+    React.useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            await axios
+                .get(`${server_backend}/${props.match.params.id}`)
+                .then(handleGetDatasetResponse)
+                .catch(handleAxiosError);
 
-    //         await axios
-    //             .get(
-    //                 `${server_policy}?datasetId=${props.match.params.id}&pageSize=100`
-    //             )
-    //             .then(handleGetPolicyResponse)
-    //             .catch(handleAxiosError);
+            await axios
+                .get(
+                    `${server_policy}?datasetId=${props.match.params.id}&pageSize=100`
+                )
+                .then(handleGetPolicyResponse)
+                .catch(handleAxiosError);
 
-    //         await axios
-    //             .get(`${server_codelist}`)
-    //             .then(handleGetCodelistResponse)
-    //             .catch(handleAxiosError);
+            await axios
+                .get(`${server_codelist}`)
+                .then(handleGetCodelistResponse)
+                .catch(handleAxiosError);
 
-    //         setLoading(false);
-    //     };
+            setLoading(false);
+        };
 
-    //     fetchData();
-    // }, []);
+        fetchData();
+    }, []);
 
     return (
         <React.Fragment>
