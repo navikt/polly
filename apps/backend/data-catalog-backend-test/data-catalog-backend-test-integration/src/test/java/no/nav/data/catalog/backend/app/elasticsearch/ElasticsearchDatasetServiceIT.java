@@ -2,7 +2,7 @@ package no.nav.data.catalog.backend.app.elasticsearch;
 
 import no.nav.data.catalog.backend.app.IntegrationTestBase;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
-import no.nav.data.catalog.backend.app.codelist.ListName;
+import no.nav.data.catalog.backend.app.codelist.CodelistStub;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
 import no.nav.data.catalog.backend.app.dataset.DatasetData;
@@ -29,10 +29,6 @@ public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
 
     private static final String TITLE = "title";
     private static final String DESCRIPTION = "desc";
-    private static final String CATEGORY_CODE = "cat1";
-    private static final String CATEGORY_DESCRIPTION = "cat1desc";
-    private static final String PROVENANCE_CODE = "prov1";
-    private static final String PROVENANCE_DESCRIPTION = "prov1desc";
 
 
     @Autowired
@@ -63,8 +59,7 @@ public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
     }
 
     private void initializeCodelists() {
-        CodelistService.codelists.get(ListName.CATEGORY).put(CATEGORY_CODE, CATEGORY_DESCRIPTION);
-        CodelistService.codelists.get(ListName.PROVENANCE).put(PROVENANCE_CODE, PROVENANCE_DESCRIPTION);
+        CodelistStub.initializeCodelist();
     }
 
     @Test
@@ -150,8 +145,8 @@ public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
                 .datasetData(DatasetData.builder()
                         .title(TITLE)
                         .description(DESCRIPTION)
-                        .provenances(List.of(PROVENANCE_CODE))
-                        .categories(List.of(CATEGORY_CODE))
+                        .provenances(List.of("ARBEIDSGIVER"))
+                        .categories(List.of("PERSONALIA"))
                         .pi(true)
                         .build())
                 .build();
@@ -164,8 +159,8 @@ public class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
         assertThat(dataset.getTitle(), is(TITLE));
         assertThat(dataset.getDescription(), is(DESCRIPTION));
         assertThat(dataset.getPi(), is(1));
-        assertThat(dataset.getCategory(), is(List.of(CATEGORY_DESCRIPTION)));
-        assertThat(dataset.getProvenance(), is(List.of(PROVENANCE_DESCRIPTION)));
+        assertThat(dataset.getProvenance(), is(List.of("Arbeidsgiver")));
+        assertThat(dataset.getCategory(), is(List.of("Personalia")));
         List<PolicyElasticsearch> policies = dataset.getPolicy();
         assertThat(policies.size(), is(2));
         assertPolicies0(policies.get(0));

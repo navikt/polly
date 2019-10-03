@@ -46,7 +46,7 @@ public class FieldValidator {
         if (checkBlank(fieldName,fieldValue)) {
             return;
         }
-        if (CodelistService.getCodeInfoForCodelistItem(listName, fieldValue) == null) {
+        if (CodelistService.getCodeResponseForCodelistItem(listName, fieldValue) == null) {
             validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(ERROR_MESSAGE_CODELIST, fieldName, fieldValue, listName)));
         }
     }

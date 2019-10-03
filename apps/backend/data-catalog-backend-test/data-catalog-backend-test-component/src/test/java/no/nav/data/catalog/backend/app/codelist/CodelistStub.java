@@ -1,17 +1,18 @@
 package no.nav.data.catalog.backend.app.codelist;
 
-import java.util.Map;
-
 public class CodelistStub {
 
     public static void initializeCodelist() {
-        CodelistService.initListNames();
-        Map<ListName, Map<String, String>> codelists = CodelistService.codelists;
-        codelists.get(ListName.PROVENANCE).put("ARBEIDSGIVER", "Arbeidsgiver");
-        codelists.get(ListName.PROVENANCE).put("SKATTEETATEN", "Skatteetaten");
-        codelists.get(ListName.PROVENANCE).put("BRUKER", "Bruker");
-        codelists.get(ListName.CATEGORY).put("PERSONALIA", "Personalia");
-        codelists.get(ListName.CATEGORY).put("ARBEIDSFORHOLD", "Arbeidsforhold");
-        codelists.get(ListName.CATEGORY).put("UTDANNING", "Utdanning");
+        CodelistCache.init();
+        CodelistCache.set(create(ListName.PROVENANCE, "ARBEIDSGIVER", "Arbeidsgiver"));
+        CodelistCache.set(create(ListName.PROVENANCE, "SKATTEETATEN", "Skatteetaten"));
+        CodelistCache.set(create(ListName.PROVENANCE, "BRUKER", "BRUKER"));
+        CodelistCache.set(create(ListName.CATEGORY, "PERSONALIA", "Personalia"));
+        CodelistCache.set(create(ListName.CATEGORY, "ARBEIDSFORHOLD", "Arbeidsforhold"));
+        CodelistCache.set(create(ListName.CATEGORY, "UTDANNING", "Utdanning"));
+    }
+
+    private static Codelist create(ListName list, String code, String description) {
+        return Codelist.builder().list(list).code(code).description(description).build();
     }
 }

@@ -79,8 +79,8 @@ public class DatasetResponse {
         setContentType(datasetData.getContentType());
         setTitle(datasetData.getTitle());
         setDescription(datasetData.getDescription());
-        setCategories(CodelistService.getCodeInfoForCodelistItems(ListName.CATEGORY, datasetData.getCategories()));
-        setProvenances(CodelistService.getCodeInfoForCodelistItems(ListName.PROVENANCE, datasetData.getProvenances()));
+        setCategories(CodelistService.getCodeResponseForCodelistItems(ListName.CATEGORY, datasetData.getCategories()));
+        setProvenances(CodelistService.getCodeResponseForCodelistItems(ListName.PROVENANCE, datasetData.getProvenances()));
         setPi(datasetData.getPi());
         setKeywords(copyOf(datasetData.getKeywords()));
         setThemes(copyOf(datasetData.getThemes()));

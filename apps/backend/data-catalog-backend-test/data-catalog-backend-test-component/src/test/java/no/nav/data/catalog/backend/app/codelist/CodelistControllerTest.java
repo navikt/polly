@@ -71,7 +71,7 @@ public class CodelistControllerTest {
         HashMap<String, HashMap<String, String>> returnedCodelist = JsonUtils.toObject(response.getContentAsString(), HashMap.class);
 
         assertThat(response.getStatus(), is(HttpStatus.OK.value()));
-        assertThat(returnedCodelist.size(), is(CodelistService.codelists.size()));
+        assertThat(returnedCodelist.size(), is(CodelistCache.getAllAsMap().size()));
         assertThat(returnedCodelist.get("PROVENANCE").size(), is(3));
         assertThat(returnedCodelist.get("CATEGORY").size(), is(3));
     }
@@ -85,7 +85,7 @@ public class CodelistControllerTest {
                 .andReturn().getResponse();
 
         Map mappedResponse = JsonUtils.toObject(response.getContentAsString(), HashMap.class);
-        assertThat(mappedResponse, is(CodelistService.codelists.get(ListName.PROVENANCE)));
+        assertThat(mappedResponse, is(CodelistCache.getAsMap(ListName.PROVENANCE)));
     }
 
     @Test

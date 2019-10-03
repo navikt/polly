@@ -13,14 +13,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 
 @Slf4j
@@ -29,52 +25,48 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
 
     private CodelistRepository repository;
 
-    public static final Map<ListName, Map<String, String>> codelists = new EnumMap<>(ListName.class);
-
     static {
-        initListNames();
+        CodelistCache.init();
     }
 
     public CodelistService(CodelistRepository repository) {
         this.repository = repository;
     }
 
-    public static CodeResponse getCodeInfoForCodelistItem(ListName listName, String code) {
-        String description = codelists.get(listName).get(code);
-        if (description == null) {
-            return null;
-        }
-        return new CodeResponse(code, description);
+    public static Codelist getCodelist(ListName listName, String code) {
+        return CodelistCache.getCodelist(listName, code);
     }
 
-    public static List<CodeResponse> getCodeInfoForCodelistItems(ListName listName, Collection<String> codes) {
+    public static CodeResponse getCodeResponseForCodelistItem(ListName listName, String code) {
+        Codelist codelist = getCodelist(listName, code);
+        if (codelist == null) {
+            return null;
+        }
+        return new CodeResponse(codelist.getCode(), codelist.getDescription());
+    }
+
+    public static List<CodeResponse> getCodeResponseForCodelistItems(ListName listName, Collection<String> codes) {
         return StreamUtils.safeStream(codes)
-                .map(code -> getCodeInfoForCodelistItem(listName, code))
+                .map(code -> getCodeResponseForCodelistItem(listName, code))
                 .collect(Collectors.toList());
     }
 
     @PostConstruct
     public void refreshCache() {
         List<Codelist> allCodelists = repository.findAll();
-        initListNames();
-        allCodelists.forEach(codelist -> codelists.get(codelist.getList()).put(codelist.getCode(), codelist.getDescription()));
-    }
-
-    static void initListNames() {
-        Stream.of(ListName.values()).forEach(listName -> codelists.put(listName, new HashMap<>()));
+        CodelistCache.init();
+        allCodelists.forEach(CodelistCache::set);
     }
 
     public List<Codelist> save(List<CodelistRequest> requests) {
-        requests.forEach(request -> codelists.get(request.getListAsListName())
-                .put(request.getCode(), request.getDescription()));
+        requests.forEach(request -> CodelistCache.set(request.convert()));
         return repository.saveAll(requests.stream()
                 .map(CodelistRequest::convert)
                 .collect(Collectors.toList()));
     }
 
     public List<Codelist> update(List<CodelistRequest> requests) {
-        requests.forEach(request -> codelists.get(request.getListAsListName())
-                .put(request.getCode(), request.getDescription()));
+        requests.forEach(request -> CodelistCache.set(request.convert()));
 
         return repository.saveAll(requests.stream()
                 .map(this::updateDescriptionInRepository)
@@ -82,7 +74,7 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     }
 
     private Codelist updateDescriptionInRepository(CodelistRequest request) {
-        Optional<Codelist> optionalCodelist = repository.findByListAndCode(request.getListAsListName(), request.getCode());
+        Optional<Codelist> optionalCodelist = repository.findByListAndNormalizedCode(request.getListAsListName(), request.getNormalizedCode());
         if (optionalCodelist.isPresent()) {
             Codelist codelist = optionalCodelist.get();
             codelist.setDescription(request.getDescription());
@@ -94,10 +86,10 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     }
 
     public void delete(ListName name, String code) {
-        Optional<Codelist> toDelete = repository.findByListAndCode(name, code);
+        Optional<Codelist> toDelete = repository.findByListAndNormalizedCode(name, Codelist.normalize(code));
         if (toDelete.isPresent()) {
             repository.delete(toDelete.get());
-            codelists.get(name).remove(code);
+            CodelistCache.remove(name, code);
         } else {
             log.error("Cannot find a codelist to delete with code={} and listName={}", code, name);
             throw new IllegalArgumentException(
@@ -114,7 +106,7 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
 
     public void validateListNameAndCodeExists(String listName, String code) {
         validateListNameExists(listName);
-        if (!codelists.get(ListName.valueOf(listName.toUpperCase())).containsKey(code.toUpperCase())) {
+        if (!CodelistCache.contains(ListName.valueOf(listName.toUpperCase()), code)) {
             log.error("The code={} does not exist in the list={}.", code, listName);
             throw new CodelistNotFoundException(String.format("The code=%s does not exist in the list=%s.", code, listName));
         }
@@ -193,7 +185,7 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
 
     private List<ValidationError> validateRepositoryValues(CodelistRequest request) {
         List<ValidationError> validationErrors = new ArrayList<>();
-        Optional<Codelist> existingCodelist = repository.findByListAndCode(request.getListAsListName(), request.getCode());
+        Optional<Codelist> existingCodelist = repository.findByListAndNormalizedCode(request.getListAsListName(), request.getNormalizedCode());
 
         if (creatingExistingElement(request.isUpdate(), existingCodelist.isPresent())) {
             validationErrors.add(new ValidationError(request.getReference(), "creatingExistingCodelist",

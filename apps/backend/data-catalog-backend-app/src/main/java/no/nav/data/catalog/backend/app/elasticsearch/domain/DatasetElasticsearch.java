@@ -107,7 +107,7 @@ public class DatasetElasticsearch {
     }
 
     private List<String> getCodelistDescription(ListName listName, List<String> values) {
-        return CodelistService.getCodeInfoForCodelistItems(listName, values).stream().filter(Objects::nonNull).map(CodeResponse::getDescription).collect(Collectors.toList());
+        return CodelistService.getCodeResponseForCodelistItems(listName, values).stream().filter(Objects::nonNull).map(CodeResponse::getDescription).collect(Collectors.toList());
     }
 
 }

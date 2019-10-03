@@ -21,10 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-
-import static no.nav.data.catalog.backend.app.codelist.CodelistService.codelists;
 
 @Slf4j
 @RestController
@@ -44,9 +43,9 @@ public class CodelistController {
             @ApiResponse(code = 200, message = "Entire Codelist fetched", response = Map.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping
-    public Map findAll() {
+    public Map<ListName, Map<String, String>> findAll() {
         log.info("Received a request for and returned the entire Codelist");
-        return codelists;
+        return CodelistCache.getAllAsMap();
     }
 
     @ApiOperation(value = "Get codes and descriptions for listName", tags = {"Codelist"})
@@ -55,10 +54,10 @@ public class CodelistController {
             @ApiResponse(code = 404, message = "ListName not found"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/{listName}")
-    public Map getCodelistByListName(@PathVariable String listName) {
+    public Map<String, String> getCodelistByListName(@PathVariable String listName) {
         log.info("Received a request for the codelist with listName={}", listName);
         service.validateListNameExists(listName);
-        return codelists.get(ListName.valueOf(listName.toUpperCase()));
+        return CodelistCache.getAsMap(ListName.valueOf(listName.toUpperCase()));
     }
 
     @ApiOperation(value = "Get description for code in listName", tags = {"Codelist"})
@@ -70,7 +69,7 @@ public class CodelistController {
     public String getDescriptionByListNameAndCode(@PathVariable String listName, @PathVariable String code) {
         log.info("Received a request for the description of code={} in list={}", code, listName);
         service.validateListNameAndCodeExists(listName, code);
-        return codelists.get(ListName.valueOf(listName.toUpperCase())).get(code.toUpperCase());
+        return Objects.requireNonNull(CodelistService.getCodeResponseForCodelistItem(ListName.valueOf(listName.toUpperCase()), code)).getDescription();
     }
 
     @ApiOperation(value = "Create Codelist", tags = {"Codelist"})

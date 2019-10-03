@@ -36,7 +36,11 @@ public class CodelistRequest implements RequestElement {
 
     @Override
     public String getIdentifyingFields() {
-        return list + "-" + code;
+        return list + "-" + getNormalizedCode();
+    }
+
+    public String getNormalizedCode() {
+        return Codelist.normalize(code);
     }
 
     @Override
@@ -50,7 +54,7 @@ public class CodelistRequest implements RequestElement {
 
     void toUpperCaseAndTrim() {
         setList(ifNotNullToUppercaseAndTrim(list));
-        setCode(ifNotNullToUppercaseAndTrim(code));
+        setCode(ifNotNullTrim(code));
         setDescription(ifNotNullTrim(description));
     }
 
