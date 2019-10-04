@@ -31,7 +31,7 @@ public class KafkaMetadataController {
         this.service = service;
     }
 
-    @ApiOperation(value = "Get Dataset", tags = {"Dataset"})
+    @ApiOperation(value = "Get Avroschema for topic", tags = {"Kafkametadata"})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "AvroSchema fetched", response = AvroSchema.class),
             @ApiResponse(code = 404, message = "Topic not found"),
@@ -48,7 +48,7 @@ public class KafkaMetadataController {
         return new ResponseEntity<>(metadata.get(), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get DistributionChannel for topic", tags = {"DistributionChannel"})
+    @ApiOperation(value = "Get DistributionChannel for topic", tags = {"Kafkametadata"})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "DistributionChannel fetched", response = DistributionChannelRequest.class),
             @ApiResponse(code = 404, message = "Topic not found"),
@@ -65,7 +65,7 @@ public class KafkaMetadataController {
         return new ResponseEntity<>(distributionChannelRequest.get(), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get Topics", tags = {"Topic"})
+    @ApiOperation(value = "Get Topics", tags = {"Kafkametadata"})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Topics fetched", response = String.class, responseContainer = "list"),
             @ApiResponse(code = 500, message = "Internal server error")})
