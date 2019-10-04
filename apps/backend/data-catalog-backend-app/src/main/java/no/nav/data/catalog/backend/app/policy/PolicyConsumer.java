@@ -42,7 +42,7 @@ public class PolicyConsumer {
         }
         try {
             ResponseEntity<RestResponsePage<PolicyResponse>> responseEntity = restTemplate
-                    .exchange(policyUrl + "?datasetId={id}&page=0&size=1000", HttpMethod.GET, HttpEntity.EMPTY, RESPONSE_TYPE, datasetId);
+                    .exchange(policyUrl + "?datasetId={id}", HttpMethod.GET, HttpEntity.EMPTY, RESPONSE_TYPE, datasetId);
             if (responseEntity.getBody().getContent() != null) {
                 return new ArrayList<>(responseEntity.getBody().getContent());
             } else {
