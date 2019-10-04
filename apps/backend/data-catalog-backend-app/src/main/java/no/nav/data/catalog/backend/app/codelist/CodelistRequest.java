@@ -39,6 +39,7 @@ public class CodelistRequest implements RequestElement {
         return list + "-" + getNormalizedCode();
     }
 
+    @JsonIgnore
     public String getNormalizedCode() {
         return Codelist.normalize(code);
     }
