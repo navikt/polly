@@ -7,7 +7,6 @@ import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
@@ -79,12 +79,12 @@ public class CodelistController {
             @ApiResponse(code = 500, message = "Internal server error")})
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public List<Codelist> save(@Valid @RequestBody List<CodelistRequest> requests) {
+    public List<CodelistResponse> save(@Valid @RequestBody List<CodelistRequest> requests) {
         log.info("Received a requests to create codelists");
         requests = StreamUtils.nullToEmptyList(requests);
         service.validateRequest(requests, false);
 
-        return service.save(requests);
+        return service.save(requests).stream().map(Codelist::convertToResponse).collect(Collectors.toList());
     }
 
     @ApiOperation(value = "Update Codelist", tags = {"Codelist"})
@@ -93,12 +93,12 @@ public class CodelistController {
             @ApiResponse(code = 400, message = "Illegal arguments"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @PutMapping
-    public List<Codelist> update(@Valid @RequestBody List<CodelistRequest> requests) {
+    public List<CodelistResponse> update(@Valid @RequestBody List<CodelistRequest> requests) {
         log.info("Received a request to update codelists");
         requests = StreamUtils.nullToEmptyList(requests);
         service.validateRequest(requests, true);
 
-        return service.update(requests);
+        return service.update(requests).stream().map(Codelist::convertToResponse).collect(Collectors.toList());
     }
 
     @ApiOperation(value = "Delete Codelist", tags = {"Codelist"})
@@ -122,9 +122,8 @@ public class CodelistController {
             @ApiResponse(code = 200, message = "Codelist refreshed"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/refresh")
-    public ResponseEntity refresh() {
+    public void refresh() {
         log.info("Refreshed the codelists");
         service.refreshCache();
-        return new ResponseEntity(HttpStatus.OK);
     }
 }

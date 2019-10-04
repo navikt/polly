@@ -6,16 +6,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Shorter class to be used in other objects when not interacting with codelist directly
- */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonPropertyOrder({"code", "description"})
-public class CodeResponse {
+@JsonPropertyOrder({"list", "code", "normalizedCode", "description"})
+public class CodelistResponse {
 
+    private ListName list;
     private String code;
+    private String normalizedCode;
     private String description;
 }

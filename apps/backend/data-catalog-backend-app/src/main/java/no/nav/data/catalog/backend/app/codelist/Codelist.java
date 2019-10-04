@@ -39,15 +39,25 @@ public class Codelist extends Auditable<String> {
     @Column(name = "DESCRIPTION")
     private String description;
 
+    public static String normalize(String code) {
+        return code == null ? null : code.toUpperCase().replaceAll("[^A-ZÆØÅ0-9]*", "");
+    }
+
+    public CodelistResponse convertToResponse() {
+        return CodelistResponse.builder()
+                .list(list)
+                .code(code)
+                .normalizedCode(normalizedCode)
+                .description(description)
+                .build();
+    }
+
     @Data
     static class IdClass implements Serializable {
 
         private ListName list;
         private String code;
-    }
 
-    public static String normalize(String code) {
-        return code == null ? null : code.toUpperCase().replaceAll("[^A-ZÆØÅ0-9]*", "");
     }
 
     public static class CodelistBuilder {
