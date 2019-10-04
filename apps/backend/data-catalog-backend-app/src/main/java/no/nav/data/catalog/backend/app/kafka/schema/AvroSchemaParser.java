@@ -61,7 +61,9 @@ public class AvroSchemaParser {
             schema.getFields().forEach(f -> avroType.addField(new AvroField(f.name(), depth, parseSchema(f.schema(), depth + 1), null)));
         } else if (avroType.isUnion()) {
             AtomicInteger i = new AtomicInteger(1);
-            schema.getTypes().forEach(unionType -> avroType.addField(new AvroField(getTypeName(unionType), depth, parseSchema(unionType, depth + 1), i.getAndIncrement())));
+            schema.getTypes()
+                    .stream().filter(type -> type.getType() != Type.NULL)
+                    .forEach(unionType -> avroType.addField(new AvroField(getTypeName(unionType), depth, parseSchema(unionType, depth + 1), i.getAndIncrement())));
         }
         if (avroType.isObject() || avroType.isEnum()) {
             allTypes.add(avroType);
@@ -81,7 +83,7 @@ public class AvroSchemaParser {
             case MAP:
                 return FieldType.MAP;
             case UNION:
-                return isNullableField(schema) ? getType(getNullableUnionType(schema)) : FieldType.UNION;
+                return isNullableOrdinaryField(schema) ? getType(getNullableUnionType(schema)) : FieldType.UNION;
             default:
                 return FieldType.BASIC;
         }
@@ -93,11 +95,16 @@ public class AvroSchemaParser {
             case RECORD:
                 return schema.getName();
             case UNION:
-                return isNullableField(schema) ? getTypeName(getNullableUnionType(schema))
-                        : schema.getTypes().stream().map(this::getTypeName).collect(Collectors.joining(", ", "[", "]"));
+                return isNullableOrdinaryField(schema) ? getTypeName(getNullableUnionType(schema)) : unionTypeString(schema);
             default:
                 return schema.getType().getName() + (schema.getLogicalType() != null ? " " + schema.getLogicalType().getName() : "");
         }
+    }
+
+    private String unionTypeString(Schema schema) {
+        return schema.getTypes()
+                .stream().filter(type -> type.getType() != Type.NULL)
+                .map(this::getTypeName).collect(Collectors.joining(", ", "[", "]"));
     }
 
     private Schema getNullableUnionType(Schema schema) {
@@ -105,13 +112,17 @@ public class AvroSchemaParser {
     }
 
     private boolean isNullableField(Schema schema) {
+        return schema.getType() == Type.UNION && schema.getTypes().stream().anyMatch(typeSchema -> typeSchema.getType() == Type.NULL);
+    }
+
+    private boolean isNullableOrdinaryField(Schema schema) {
         return schema.getType() == Type.UNION && schema.getTypes().stream().filter(typeSchema -> typeSchema.getType() != Type.NULL).count() == 1;
     }
 
     private Schema unwrapSchema(Schema schema, AvroType avroType) {
         // Unwrap nullable unions and treat as normal field
         avroType.setNullable(isNullableField(schema));
-        Schema nonNullSchema = avroType.isNullable() ? getNullableUnionType(schema) : schema;
+        Schema nonNullSchema = isNullableOrdinaryField(schema) ? getNullableUnionType(schema) : schema;
 
         FieldType outerType = getType(nonNullSchema);
 
