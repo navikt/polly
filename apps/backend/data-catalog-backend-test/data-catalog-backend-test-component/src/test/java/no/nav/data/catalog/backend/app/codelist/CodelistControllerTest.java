@@ -165,7 +165,7 @@ public class CodelistControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(inputJson))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(10)));
+                .andExpect(jsonPath("$.length()", is(2)));
     }
 
     @Test
