@@ -13,12 +13,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonPropertyOrder({"name"})
 @JsonInclude(Include.NON_EMPTY)
-public class AvroSchemaField {
+public class AvroField {
 
     private String name;
     @JsonIgnore
     private int depth;
-    private AvroSchemaType type;
+    private AvroType type;
     // If union type lists several types for a field, each field with the same name will have a unique ordinal
     private Integer unionOrdinal;
 

@@ -1,5 +1,6 @@
 package no.nav.data.catalog.backend.app.kafka.schema.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,7 +19,7 @@ import static java.util.stream.Collectors.joining;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(Include.NON_EMPTY)
-public class AvroSchemaType {
+public class AvroType {
 
     private FieldType fieldType;
     private String typeName;
@@ -25,17 +27,14 @@ public class AvroSchemaType {
     private String fullTypeName;
     // Maps and arrays
     private FieldType wrapperFieldType;
-    private List<AvroSchemaField> fields;
+    private List<AvroField> fields = new ArrayList<>();
     // Does not contain fields as this is a recursive loop avoided type
     private Boolean stub;
+    private boolean nullable;
     private List<String> enumValues = Collections.emptyList();
 
-    public AvroSchemaType(FieldType fieldType, String typeName, FieldType wrapperFieldType, String fullTypeName, List<AvroSchemaField> fields) {
-        this.fieldType = fieldType;
-        this.typeName = typeName;
-        this.fullTypeName = fullTypeName;
-        this.wrapperFieldType = wrapperFieldType;
-        this.fields = fields;
+    public void addField(AvroField field) {
+        this.fields.add(field);
     }
 
     public String toString() {
@@ -44,10 +43,25 @@ public class AvroSchemaType {
                 (fieldType == FieldType.UNION ? " " + fieldType : "") +
                 (stub == Boolean.TRUE ? " (stubbed)" : "") +
                 (enumValues.isEmpty() ? "" : enumValues) +
-                (fields.isEmpty() ? "" : "\n" + fields.stream().map(AvroSchemaField::toString).collect(joining("\n")));
+                (fields.isEmpty() ? "" : "\n" + fields.stream().map(AvroField::toString).collect(joining("\n")));
     }
 
-    public AvroSchemaField findField(String fieldName) {
+    public AvroField findField(String fieldName) {
         return getFields().stream().filter(f -> f.getName().equals(fieldName)).findFirst().orElseThrow();
+    }
+
+    @JsonIgnore
+    public boolean isEnum() {
+        return getFieldType() == FieldType.ENUM;
+    }
+
+    @JsonIgnore
+    public boolean isObject() {
+        return getFieldType() == FieldType.OBJECT;
+    }
+
+    @JsonIgnore
+    public boolean isUnion() {
+        return getFieldType() == FieldType.UNION;
     }
 }

@@ -15,8 +15,8 @@ import java.util.Set;
 public class AvroSchema {
 
     private String topicName;
-    private AvroSchemaType rootType;
+    private AvroType rootType;
     // First occurance of the type is stored here to give access to all individual types
     @JsonIgnore
-    private Set<AvroSchemaType> allTypes;
+    private Set<AvroType> allTypes;
 }
