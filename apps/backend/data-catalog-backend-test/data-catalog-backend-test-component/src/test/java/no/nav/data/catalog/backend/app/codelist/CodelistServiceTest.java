@@ -4,6 +4,7 @@ import no.nav.data.catalog.backend.app.common.exceptions.CodelistNotFoundExcepti
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -41,6 +42,7 @@ public class CodelistServiceTest {
                 .code("TEST_CREATE")
                 .description("Test av kategorien TEST_CREATE")
                 .build();
+        when(repository.saveAll(anyList())).thenAnswer(AdditionalAnswers.returnsFirstArg());
         service.save(List.of(request));
         verify(repository, times(1)).saveAll(anyList());
         assertThat(CodelistService.getCodelist(ListName.CATEGORY, "TEST_CREATE").getDescription(), is("Test av kategorien TEST_CREATE"));
@@ -236,6 +238,7 @@ public class CodelistServiceTest {
                 .code("    cOrRecTFormAT  ")
                 .description("   Trim av description                      ")
                 .build());
+        when(repository.saveAll(anyList())).thenAnswer(AdditionalAnswers.returnsFirstArg());
         service.validateRequest(requests, false);
         service.save(requests);
         assertTrue(CodelistCache.contains(ListName.CATEGORY, "CORRECTFORMAT"));
