@@ -46,8 +46,9 @@ public class CodelistServiceIT extends IntegrationTestBase {
 
         assertThat(repository.findAll().size(), is(1));
         assertTrue(repository.findByListAndNormalizedCode(ListName.PROVENANCE, "TESTCODE").isPresent());
-        assertThat(CodelistCache.getAsMap(ListName.PROVENANCE).size(), is(1));
-        assertFalse(CodelistCache.getAsMap(ListName.PROVENANCE).get("TEST_CODE").isEmpty());
+        assertThat(CodelistCache.getAsMap(ListName.PROVENANCE).get("TEST_CODE"), is("Test description"));
+        assertThat(CodelistService.getCodelist(ListName.PROVENANCE, "TEST_code").getDescription(), is("Test description"));
+        assertThat(repository.findByListAndNormalizedCode(ListName.PROVENANCE, "TESTCODE").get().getDescription(), is("Test description"));
     }
 
     @Test
@@ -61,12 +62,12 @@ public class CodelistServiceIT extends IntegrationTestBase {
     public void update_shouldUpdateCodelist() {
         service.save(createListOfOneRequest());
 
-        List<CodelistRequest> updatedRequest = createListOfOneRequest("PROVENANCE", "TEST_code", "Updated codelist");
+        List<CodelistRequest> updatedRequest = createListOfOneRequest("PROVENANCE", "TEST_CODE", "Updated codelist");
         service.update(updatedRequest);
 
-        assertThat(CodelistCache.getAsMap(ListName.PROVENANCE).get("TEST_code"), is(updatedRequest.get(0).getDescription()));
-        assertThat(repository.findByListAndNormalizedCode(ListName.PROVENANCE, "TESTCODE").get().getDescription(), is(updatedRequest.get(0)
-                .getDescription()));
+        assertThat(CodelistCache.getAsMap(ListName.PROVENANCE).get("TEST_CODE"), is("Updated codelist"));
+        assertThat(CodelistService.getCodelist(ListName.PROVENANCE, "TEST_code").getDescription(), is("Updated codelist"));
+        assertThat(repository.findByListAndNormalizedCode(ListName.PROVENANCE, "TESTCODE").get().getDescription(), is("Updated codelist"));
     }
 
     @Test
