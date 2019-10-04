@@ -8,8 +8,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.AdditionalAnswers;
-import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -31,6 +29,7 @@ import java.util.stream.IntStream;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -126,8 +125,9 @@ public class CodelistControllerTest {
     }
 
     @Test
-    public void save_shouldSave10Codelists() throws Exception {
-        when(service.save(ArgumentMatchers.anyList())).thenAnswer(AdditionalAnswers.returnsFirstArg());
+    public void save_shouldSaveMultipleCodelists() throws Exception {
+        List<Codelist> codelists = List.of(CodelistService.getCodelist(ListName.PROVENANCE, "Arbeidsgiver"), CodelistService.getCodelist(ListName.PROVENANCE, "Bruker"));
+        when(service.save(anyList())).thenReturn(codelists);
 
         List<CodelistRequest> requests = IntStream.rangeClosed(1, 10)
                 .mapToObj(i -> CodelistRequest.builder()
@@ -143,12 +143,13 @@ public class CodelistControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(inputJson))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.length()", is(10)));
+                .andExpect(jsonPath("$.length()", is(2)));
     }
 
     @Test
     public void update_shouldUpdateCodelist() throws Exception {
-        when(service.update(ArgumentMatchers.anyList())).thenAnswer(AdditionalAnswers.returnsFirstArg());
+        List<Codelist> codelists = List.of(CodelistService.getCodelist(ListName.PROVENANCE, "Arbeidsgiver"), CodelistService.getCodelist(ListName.PROVENANCE, "Bruker"));
+        when(service.update(anyList())).thenReturn(codelists);
 
         List<CodelistRequest> requests = IntStream.rangeClosed(1, 10)
                 .mapToObj(i -> CodelistRequest.builder()

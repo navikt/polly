@@ -59,18 +59,22 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     }
 
     public List<Codelist> save(List<CodelistRequest> requests) {
-        requests.forEach(request -> CodelistCache.set(request.convert()));
-        return repository.saveAll(requests.stream()
+        List<Codelist> codelists = requests.stream()
                 .map(CodelistRequest::convert)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
+        List<Codelist> saved = repository.saveAll(codelists);
+        saved.forEach(CodelistCache::set);
+        return saved;
     }
 
     public List<Codelist> update(List<CodelistRequest> requests) {
-        requests.forEach(request -> CodelistCache.set(request.convert()));
-
-        return repository.saveAll(requests.stream()
+        List<Codelist> codelists = requests.stream()
                 .map(this::updateDescriptionInRepository)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
+
+        List<Codelist> saved = repository.saveAll(codelists);
+        saved.forEach(CodelistCache::set);
+        return saved;
     }
 
     private Codelist updateDescriptionInRepository(CodelistRequest request) {
