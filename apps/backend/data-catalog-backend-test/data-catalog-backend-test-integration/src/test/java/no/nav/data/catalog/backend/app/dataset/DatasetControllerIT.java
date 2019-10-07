@@ -7,9 +7,9 @@ import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelShort;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelType;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
@@ -28,58 +28,57 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
 import static no.nav.data.catalog.backend.app.dataset.DatacatalogMaster.REST;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DatasetControllerIT extends AbstractDatasetIT {
+class DatasetControllerIT extends AbstractDatasetIT {
 
     @Autowired
     protected TestRestTemplate restTemplate;
     private Dataset dataset;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         distributionChannelRepository.save(DistributionChannel.builder().id(UUID.randomUUID()).type(DistributionChannelType.REST).name("DistributionChannel").build());
         CodelistStub.initializeCodelist();
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
         datasetRepository.deleteAll();
     }
 
     @Test
-    public void findForId() {
+    void findForId() {
         dataset = datasetRepository.save(createDataset("DatasetData"));
         ResponseEntity<Map> responseEntity = restTemplate.exchange(
                 "/dataset/" + dataset.getId(), HttpMethod.GET, HttpEntity.EMPTY, Map.class);
 
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(responseEntity.getBody().get("title"), is(dataset.getTitle()));
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody().get("title")).isEqualTo(dataset.getTitle());
     }
 
     @Test
-    public void getDatasetByTitle() {
+    void getDatasetByTitle() {
         dataset = datasetRepository.save(createDataset("DatasetData"));
         ResponseEntity<Map> responseEntity = restTemplate.exchange(
                 "/dataset/title/DatasetData", HttpMethod.GET, HttpEntity.EMPTY, Map.class);
 
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(responseEntity.getBody().get("title"), is(dataset.getTitle()));
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody().get("title")).isEqualTo(dataset.getTitle());
     }
 
     @Test
-    public void findAllRoot() {
+    void findAllRoot() {
         datasetRepository.saveAll(List.of(unrelated, dataset111, dataset12, dataset11, dataset1));
 
         ResponseEntity<RestResponsePage<DatasetResponse>> responseEntity = restTemplate.exchange("/dataset/roots?includeDescendants=true",
                 HttpMethod.GET, new HttpEntity<>(new PageParameters()), new ParameterizedTypeReference<RestResponsePage<DatasetResponse>>() {
                 });
 
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(datasetRepository.findAll().size(), is(5));
-        assertThat(responseEntity.getBody().getContent().size(), is(2));
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(datasetRepository.findAll().size()).isEqualTo(5);
+        assertThat(responseEntity.getBody().getContent().size()).isEqualTo(2);
 
         DatasetResponse responseUnrelated = responseEntity.getBody().getContent().stream()
                 .filter(datasetResponse -> datasetResponse.getTitle().equals("unrelated"))
@@ -92,41 +91,41 @@ public class DatasetControllerIT extends AbstractDatasetIT {
         DatasetResponse response11 = response1.getChildren().stream()
                 .filter(datasetResponse -> datasetResponse.getChildren().size() > 0).findFirst().get();
 
-        assertThat(responseUnrelated.getChildren().size(), is(0));
-        assertThat(response1.getChildren().size(), is(2));
-        assertThat(response11.getTitle(), is("11"));
-        assertThat(response11.getChildren().get(0).getTitle(), is("111"));
+        assertThat(responseUnrelated.getChildren().size()).isEqualTo(0);
+        assertThat(response1.getChildren().size()).isEqualTo(2);
+        assertThat(response11.getTitle()).isEqualTo("11");
+        assertThat(response11.getChildren().get(0).getTitle()).isEqualTo("111");
     }
 
     @Test
-    public void findAll() {
+    void findAll() {
         createDatasetTestData(30);
 
         ResponseEntity<RestResponsePage<DatasetResponse>> responseEntity = restTemplate.exchange("/dataset/",
                 HttpMethod.GET, HttpEntity.EMPTY, new ParameterizedTypeReference<RestResponsePage<DatasetResponse>>() {
                 });
 
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(datasetRepository.findAll().size(), is(30));
-        assertThat(responseEntity.getBody().getContent().size(), is(20));
-        assertThat(responseEntity.getBody().getPageNumber(), is(0));
-        assertThat(responseEntity.getBody().getPageSize(), is(20));
-        assertThat(responseEntity.getBody().getTotalElements(), is(30L));
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(datasetRepository.findAll().size()).isEqualTo(30);
+        assertThat(responseEntity.getBody().getContent().size()).isEqualTo(20);
+        assertThat(responseEntity.getBody().getPageNumber()).isEqualTo(0);
+        assertThat(responseEntity.getBody().getPageSize()).isEqualTo(20);
+        assertThat(responseEntity.getBody().getTotalElements()).isEqualTo(30L);
     }
 
     @Test
-    public void countAllDatasets() {
+    void countAllDatasets() {
         createDatasetTestData(35);
 
         ResponseEntity<Long> responseEntity = restTemplate.exchange(
                 "/dataset/count", HttpMethod.GET, HttpEntity.EMPTY, Long.class);
 
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(responseEntity.getBody(), is(35L));
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isEqualTo(35L);
     }
 
     @Test
-    public void createDatasets() {
+    void createDatasets() {
         List<DatasetRequest> requests = new ArrayList<>();
         requests.add(createRequest("createTitle1"));
         requests.add(createRequest("createTitle2"));
@@ -137,20 +136,20 @@ public class DatasetControllerIT extends AbstractDatasetIT {
         ResponseEntity<List> responseEntity = restTemplate.exchange(
                 "/dataset", HttpMethod.POST, new HttpEntity(requests), List.class);
 
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.CREATED));
-        assertThat(responseEntity.getBody().size(), is(2));
-        assertThat(datasetRepository.count(), is(2L));
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(responseEntity.getBody().size()).isEqualTo(2);
+        assertThat(datasetRepository.count()).isEqualTo(2L);
         assertTrue(datasetRepository.findByTitle("createTitle1".toUpperCase()).isPresent());
         assertTrue(datasetRepository.findByTitle("createTitle2".toUpperCase()).isPresent());
 
         // create dist channel
         Optional<DistributionChannel> distributionChannel = distributionChannelRepository.findByName("DistributionChannelNewKafka");
         assertTrue(distributionChannel.isPresent());
-        assertThat(distributionChannel.get().getType(), is(DistributionChannelType.KAFKA));
+        assertThat(distributionChannel.get().getType()).isEqualTo(DistributionChannelType.KAFKA);
     }
 
     @Test
-    public void updateDatasets() {
+    void updateDatasets() {
         createDatasetTestData(3);
 
         List<DatasetRequest> requests = new ArrayList<>();
@@ -163,25 +162,25 @@ public class DatasetControllerIT extends AbstractDatasetIT {
         ResponseEntity<List> responseEntity = restTemplate.exchange(
                 "/dataset", HttpMethod.PUT, new HttpEntity(requests), List.class);
 
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(responseEntity.getBody().size(), is(3));
-        assertThat(datasetRepository.count(), is(3L));
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody().size()).isEqualTo(3);
+        assertThat(datasetRepository.count()).isEqualTo(3L);
         assertThat(datasetRepository.findByTitle("Dataset_nr1".toUpperCase())
                 .get()
                 .getDatasetData()
-                .getDescription(), is("UPDATED DESCRIPTION"));
+                .getDescription()).isEqualTo("UPDATED DESCRIPTION");
         assertThat(datasetRepository.findByTitle("Dataset_nr2".toUpperCase())
                 .get()
                 .getDatasetData()
-                .getDescription(), is("UPDATED DESCRIPTION"));
+                .getDescription()).isEqualTo("UPDATED DESCRIPTION");
         assertThat(datasetRepository.findByTitle("Dataset_nr3".toUpperCase())
                 .get()
                 .getDatasetData()
-                .getDescription(), is("UPDATED DESCRIPTION"));
+                .getDescription()).isEqualTo("UPDATED DESCRIPTION");
     }
 
     @Test
-    public void updateOneDatasetById() {
+    void updateOneDatasetById() {
         createDatasetTestData(3);
         UUID id = datasetRepository.findByTitle("DATASET_NR2").get().getId();
 
@@ -191,25 +190,25 @@ public class DatasetControllerIT extends AbstractDatasetIT {
         ResponseEntity<DatasetResponse> responseEntity = restTemplate.exchange(
                 "/dataset/" + id, HttpMethod.PUT, new HttpEntity(request), DatasetResponse.class);
 
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(responseEntity.getBody().getDescription(), is("UPDATED DESCRIPTION"));
-        assertThat(datasetRepository.count(), is(3L));
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody().getDescription()).isEqualTo("UPDATED DESCRIPTION");
+        assertThat(datasetRepository.count()).isEqualTo(3L);
         assertThat(datasetRepository.findByTitle("Dataset_nr1".toUpperCase())
                 .get()
                 .getDatasetData()
-                .getDescription(), is("DatasetDescription"));
+                .getDescription()).isEqualTo("DatasetDescription");
         assertThat(datasetRepository.findByTitle("Dataset_nr2".toUpperCase())
                 .get()
                 .getDatasetData()
-                .getDescription(), is("UPDATED DESCRIPTION"));
+                .getDescription()).isEqualTo("UPDATED DESCRIPTION");
         assertThat(datasetRepository.findByTitle("Dataset_nr3".toUpperCase())
                 .get()
                 .getDatasetData()
-                .getDescription(), is("DatasetDescription"));
+                .getDescription()).isEqualTo("DatasetDescription");
     }
 
     @Test
-    public void deleteDatasetById() {
+    void deleteDatasetById() {
         createDatasetTestData(3);
 
         List<Dataset> datasets = datasetRepository.findAll();
@@ -217,39 +216,39 @@ public class DatasetControllerIT extends AbstractDatasetIT {
         datasetRepository.saveAll(datasets);
 
         UUID id = datasetRepository.findByTitle("DATASET_NR2").get().getId();
-        assertThat(datasetRepository.count(), is(3L));
+        assertThat(datasetRepository.count()).isEqualTo(3L);
         assertThat(datasetRepository.findByTitle("Dataset_nr1".toUpperCase())
                 .get()
-                .getElasticsearchStatus(), is(ElasticsearchStatus.SYNCED));
+                .getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.SYNCED);
         assertThat(datasetRepository.findByTitle("Dataset_nr2".toUpperCase())
                 .get()
-                .getElasticsearchStatus(), is(ElasticsearchStatus.SYNCED));
+                .getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.SYNCED);
         assertThat(datasetRepository.findByTitle("Dataset_nr3".toUpperCase())
                 .get()
-                .getElasticsearchStatus(), is(ElasticsearchStatus.SYNCED));
+                .getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.SYNCED);
 
         ResponseEntity<DatasetResponse> responseEntity = restTemplate.exchange(
                 "/dataset/" + id, HttpMethod.DELETE, HttpEntity.EMPTY, DatasetResponse.class);
 
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.ACCEPTED));
-        assertThat(datasetRepository.count(), is(3L));
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
+        assertThat(datasetRepository.count()).isEqualTo(3L);
         assertThat(datasetRepository.findByTitle("Dataset_nr1".toUpperCase())
                 .get()
-                .getElasticsearchStatus(), is(ElasticsearchStatus.SYNCED));
+                .getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.SYNCED);
         assertThat(datasetRepository.findByTitle("Dataset_nr2".toUpperCase())
                 .get()
-                .getElasticsearchStatus(), is(ElasticsearchStatus.TO_BE_DELETED));
+                .getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_DELETED);
         assertThat(datasetRepository.findByTitle("Dataset_nr3".toUpperCase())
                 .get()
-                .getElasticsearchStatus(), is(ElasticsearchStatus.SYNCED));
+                .getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.SYNCED);
     }
 
     @Test
-    public void testSync() {
+    void testSync() {
         dataset = datasetRepository.save(createDataset("DatasetData"));
 
         restTemplate.postForLocation("/dataset/sync", List.of(dataset.getId()), dataset.getId());
-        assertThat(datasetRepository.findById(dataset.getId()).get().getElasticsearchStatus(), is(ElasticsearchStatus.TO_BE_UPDATED));
+        assertThat(datasetRepository.findById(dataset.getId()).get().getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_UPDATED);
     }
 
     private void createDatasetTestData(int nrOfRows) {

@@ -1,13 +1,11 @@
 package no.nav.data.catalog.backend.app.dataset;
 
 import no.nav.data.catalog.backend.app.IntegrationTestBase;
-import no.nav.data.catalog.backend.app.PostgresTestContainer;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelationRepository;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelRepository;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
-import org.junit.Before;
-import org.junit.ClassRule;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -36,10 +34,7 @@ public abstract class AbstractDatasetIT extends IntegrationTestBase {
     @Autowired
     TransactionTemplate transactionTemplate;
 
-    @ClassRule
-    public static PostgresTestContainer postgreSQLContainer = PostgresTestContainer.getInstance();
-
-    @Before
+    @BeforeEach
     public void setUpAbstract() throws Exception {
         datasetRepository.deleteAll();
         distributionChannelRepository.deleteAll();

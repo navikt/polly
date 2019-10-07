@@ -3,19 +3,18 @@ package no.nav.data.catalog.backend.app.policy;
 import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.IntegrationTestBase;
 import no.nav.data.catalog.backend.app.codelist.CodeResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE,
-        classes = {AppStarter.class})
-public class PolicyConsumerIT extends IntegrationTestBase {
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = {AppStarter.class})
+class PolicyConsumerIT extends IntegrationTestBase {
 
     @Autowired
     private PolicyConsumer policyConsumer;
@@ -24,24 +23,24 @@ public class PolicyConsumerIT extends IntegrationTestBase {
     private String policyUrl;
 
     @Test
-    public void getPolicyForDatasetId1() {
+    void getPolicyForDatasetId1() {
         policyStubbing();
         List<PolicyResponse> policiesList = policyConsumer.getPolicyForDataset(DATASET_ID_1);
-        assertThat(policiesList.size(), is(2));
+        assertThat(policiesList.size()).isEqualTo(2);
         assertPolicy0(policiesList.get(0));
         assertPolicy1(policiesList.get(1));
     }
 
     private void assertPolicy0(PolicyResponse policy) {
-        assertThat(policy.getPolicyId(), is(1L));
-        assertThat(policy.getLegalBasisDescription(), is("LB description"));
-        assertThat(policy.getPurpose(), is(new CodeResponse("KTR", "Kontroll")));
+        assertThat(policy.getPolicyId()).isEqualTo(1L);
+        assertThat(policy.getLegalBasisDescription()).isEqualTo("LB description");
+        assertThat(policy.getPurpose()).isEqualTo(new CodeResponse("KTR", "Kontroll"));
     }
 
     private void assertPolicy1(PolicyResponse policy) {
-        assertThat(policy.getPolicyId(), is(2L));
-        assertThat(policy.getLegalBasisDescription(), is("Ftrl. § 11-20"));
-        assertThat(policy.getPurpose(), is(new CodeResponse("AAP", "Arbeidsavklaringspenger")));
+        assertThat(policy.getPolicyId()).isEqualTo(2L);
+        assertThat(policy.getLegalBasisDescription()).isEqualTo("Ftrl. § 11-20");
+        assertThat(policy.getPurpose()).isEqualTo(new CodeResponse("AAP", "Arbeidsavklaringspenger"));
     }
 
 }

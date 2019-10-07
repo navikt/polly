@@ -4,8 +4,8 @@ import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.common.rest.PageParameters;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.system.System;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -16,7 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
@@ -34,11 +34,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @WebMvcTest(DistributionChannelController.class)
 @ContextConfiguration(classes = {AppStarter.class})
 @ActiveProfiles("test")
-public class DistributionChannelControllerTest {
+class DistributionChannelControllerTest {
 
     @MockBean
     private DistributionChannelRepository repository;
@@ -71,7 +71,7 @@ public class DistributionChannelControllerTest {
             .build();
 
     @Test
-    public void getDistributionChannelById_shouldGetDistributionChannel_whenIdExists() throws Exception {
+    void getDistributionChannelById_shouldGetDistributionChannel_whenIdExists() throws Exception {
         when(repository.findById(distributionChannel.getId())).thenReturn(Optional.of(distributionChannel));
         mvc.perform(get("/distributionchannel/" + distributionChannel.getId()))
                 .andExpect(status().isOk())
@@ -80,7 +80,7 @@ public class DistributionChannelControllerTest {
     }
 
     @Test
-    public void getDistributionChannelById_shouldThrowNotFound_whenIdDoesNotExists() throws Exception {
+    void getDistributionChannelById_shouldThrowNotFound_whenIdDoesNotExists() throws Exception {
         when(service.findDistributionChannelById(any(UUID.class))).thenReturn(Optional.empty());
 
         mvc.perform(get("/distributionchannel/" + distributionChannel.getId()))
@@ -88,7 +88,7 @@ public class DistributionChannelControllerTest {
     }
 
     @Test
-    public void getAllDistributionChannel_shouldGetPagedList_whenRequestContainsPageInformation() throws Exception {
+    void getAllDistributionChannel_shouldGetPagedList_whenRequestContainsPageInformation() throws Exception {
         List<DistributionChannel> distributionChannels = List.of(distributionChannel);
         Pageable pageable = PageRequest.of(0, 20);
 
@@ -105,7 +105,7 @@ public class DistributionChannelControllerTest {
     }
 
     @Test
-    public void countAllDistributionChannels() throws Exception {
+    void countAllDistributionChannels() throws Exception {
         when(repository.count()).thenReturn(20L);
 
         mvc.perform(get("/distributionchannel/count"))
@@ -114,7 +114,7 @@ public class DistributionChannelControllerTest {
     }
 
     @Test
-    public void createDistributionChannels_shouldCreateNewDistributionChannel_withValidRequest() throws Exception {
+    void createDistributionChannels_shouldCreateNewDistributionChannel_withValidRequest() throws Exception {
         List<DistributionChannel> distributionChannels = List.of(distributionChannel);
         List<DistributionChannelRequest> requests = List.of(distributionChannelRequest);
 
@@ -128,7 +128,7 @@ public class DistributionChannelControllerTest {
     }
 
     @Test
-    public void deleteDistributionChannelBYId_shouldDeleteDistributionChannel_whenIdExist() throws Exception {
+    void deleteDistributionChannelBYId_shouldDeleteDistributionChannel_whenIdExist() throws Exception {
         DistributionChannel toBeDeletedDChannel = DistributionChannel.builder()
                 .id(UUID.randomUUID())
                 .name("toBeDeletedDChannel")

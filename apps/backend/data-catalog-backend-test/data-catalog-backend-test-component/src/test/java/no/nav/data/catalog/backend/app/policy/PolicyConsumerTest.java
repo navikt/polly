@@ -3,13 +3,11 @@ package no.nav.data.catalog.backend.app.policy;
 import no.nav.data.catalog.backend.app.codelist.CodeResponse;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import no.nav.data.catalog.backend.app.common.rest.RestResponsePage;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
@@ -28,17 +26,17 @@ import java.util.List;
 import java.util.UUID;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
 @Import(HateoasAwareSpringDataWebConfiguration.class)
-public class PolicyConsumerTest {
+class PolicyConsumerTest {
 
     private static final String LEGALBASISDESCRIPTION1 = "Legal basis description 1";
     private static final String LEGALBASISDESCRIPTION2 = "Legal basis description 2";
@@ -47,7 +45,8 @@ public class PolicyConsumerTest {
     private static final String PURPOSEDESCRIPTION1 = "Purpose description 1";
     private static final String PURPOSEDESCRIPTION2 = "Purpose description 2";
     private static final UUID DATASET_ID_1 = UUID.fromString("acab158d-67ef-4030-a3c2-195e993f18d2");
-
+    private static final ParameterizedTypeReference<RestResponsePage<PolicyResponse>> REST_PAGE_RESPONSE = new ParameterizedTypeReference<>() {
+    };
 
     private static PolicyResponse policyResponse1;
     private static PolicyResponse policyResponse2;
@@ -58,11 +57,8 @@ public class PolicyConsumerTest {
     @InjectMocks
     private PolicyConsumer policyConsumer;
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
-
-    @BeforeClass
-    public static void setUp() {
+    @BeforeAll
+    static void setUp() {
         policyResponse1 = PolicyResponse.builder()
                 .policyId(1L)
                 .legalBasisDescription(LEGALBASISDESCRIPTION1)
@@ -74,11 +70,10 @@ public class PolicyConsumerTest {
     }
 
     @Test
-    public void getListOfPolicies() {
+    void getListOfPolicies() {
         List<PolicyResponse> responseList = asList(policyResponse1, policyResponse2);
         RestResponsePage<PolicyResponse> pagedResources = new RestResponsePage<>(responseList, PageRequest.of(0, responseList.size()), responseList.size());
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), eq(HttpEntity.EMPTY), eq(new ParameterizedTypeReference<RestResponsePage<PolicyResponse>>() {
-        }), eq(DATASET_ID_1)))
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), eq(HttpEntity.EMPTY), eq(REST_PAGE_RESPONSE), eq(DATASET_ID_1)))
                 .thenReturn(ResponseEntity.ok(pagedResources));
         List<PolicyResponse> policies = policyConsumer.getPolicyForDataset(DATASET_ID_1);
         assertPolicy1(policies.get(0));
@@ -86,45 +81,40 @@ public class PolicyConsumerTest {
     }
 
     @Test
-    public void policiesNotFound() {
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), eq(HttpEntity.EMPTY), eq(new ParameterizedTypeReference<RestResponsePage<PolicyResponse>>() {
-        }), eq(DATASET_ID_1)))
+    void policiesNotFound() {
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), eq(HttpEntity.EMPTY), eq(REST_PAGE_RESPONSE), eq(DATASET_ID_1)))
                 .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
         List<PolicyResponse> policies = policyConsumer.getPolicyForDataset(DATASET_ID_1);
-        assertThat(policies.size(), is(0));
+        assertThat(policies.size()).isEqualTo(0);
     }
 
     @Test
-    public void shouldThrowClientException() {
-        expectedException.expect(DataCatalogBackendTechnicalException.class);
-        expectedException.expectMessage("Getting Policies for Dataset (id: acab158d-67ef-4030-a3c2-195e993f18d2) failed with status=500 INTERNAL_SERVER_ERROR");
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), eq(HttpEntity.EMPTY), eq(new ParameterizedTypeReference<RestResponsePage<PolicyResponse>>() {
-        }), eq(DATASET_ID_1)))
+    void shouldThrowClientException() {
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), eq(HttpEntity.EMPTY), eq(REST_PAGE_RESPONSE), eq(DATASET_ID_1)))
                 .thenThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
-        policyConsumer.getPolicyForDataset(DATASET_ID_1);
+        DataCatalogBackendTechnicalException exception = assertThrows(DataCatalogBackendTechnicalException.class, () -> policyConsumer.getPolicyForDataset(DATASET_ID_1));
+        assertThat(exception).hasMessageContaining("Getting Policies for Dataset (id: acab158d-67ef-4030-a3c2-195e993f18d2) failed with status=500 INTERNAL_SERVER_ERROR");
     }
 
     @Test
-    public void shouldThrowServerException() {
-        expectedException.expect(DataCatalogBackendTechnicalException.class);
-        expectedException.expectMessage("Getting Policies for Dataset (id: acab158d-67ef-4030-a3c2-195e993f18d2) failed with status=500 INTERNAL_SERVER_ERROR");
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), eq(HttpEntity.EMPTY), eq(new ParameterizedTypeReference<RestResponsePage<PolicyResponse>>() {
-        }), eq(DATASET_ID_1)))
+    void shouldThrowServerException() {
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), eq(HttpEntity.EMPTY), eq(REST_PAGE_RESPONSE), eq(DATASET_ID_1)))
                 .thenThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
-        policyConsumer.getPolicyForDataset(DATASET_ID_1);
+        DataCatalogBackendTechnicalException exception = assertThrows(DataCatalogBackendTechnicalException.class, () -> policyConsumer.getPolicyForDataset(DATASET_ID_1));
+        assertThat(exception).hasMessageContaining("Getting Policies for Dataset (id: acab158d-67ef-4030-a3c2-195e993f18d2) failed with status=500 INTERNAL_SERVER_ERROR");
     }
 
     private void assertPolicy1(PolicyResponse policy) {
-        assertThat(policy.getPolicyId(), is(1L));
-        assertThat(policy.getPurpose().getCode(), is(PURPOSECODE1));
-        assertThat(policy.getPurpose().getDescription(), is(PURPOSEDESCRIPTION1));
-        assertThat(policy.getLegalBasisDescription(), is(LEGALBASISDESCRIPTION1));
+        assertThat(policy.getPolicyId()).isEqualTo(1L);
+        assertThat(policy.getPurpose().getCode()).isEqualTo(PURPOSECODE1);
+        assertThat(policy.getPurpose().getDescription()).isEqualTo(PURPOSEDESCRIPTION1);
+        assertThat(policy.getLegalBasisDescription()).isEqualTo(LEGALBASISDESCRIPTION1);
     }
 
     private void assertPolicy2(PolicyResponse policy) {
-        assertThat(policy.getPolicyId(), is(2L));
-        assertThat(policy.getPurpose().getCode(), is(PURPOSECODE2));
-        assertThat(policy.getPurpose().getDescription(), is(PURPOSEDESCRIPTION2));
-        assertThat(policy.getLegalBasisDescription(), is(LEGALBASISDESCRIPTION2));
+        assertThat(policy.getPolicyId()).isEqualTo(2L);
+        assertThat(policy.getPurpose().getCode()).isEqualTo(PURPOSECODE2);
+        assertThat(policy.getPurpose().getDescription()).isEqualTo(PURPOSEDESCRIPTION2);
+        assertThat(policy.getLegalBasisDescription()).isEqualTo(LEGALBASISDESCRIPTION2);
     }
 }

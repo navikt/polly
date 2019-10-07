@@ -8,14 +8,14 @@ import no.nav.data.catalog.backend.app.dataset.DatasetData;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.policy.PolicyConsumer;
 import no.nav.data.catalog.backend.app.policy.PolicyResponse;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.UUID;
 
@@ -23,16 +23,15 @@ import static java.util.Collections.singletonList;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_CREATED;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ElasticsearchDatasetServiceTest {
+@ExtendWith(MockitoExtension.class)
+class ElasticsearchDatasetServiceTest {
 
     private Dataset dataset;
     private PolicyResponse policy;
@@ -52,8 +51,8 @@ public class ElasticsearchDatasetServiceTest {
 
     private ArgumentCaptor<ElasticsearchDocument> captor = ArgumentCaptor.forClass(ElasticsearchDocument.class);
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         policy = PolicyResponse.builder().policyId(1L).legalBasisDescription("Legal description")
                 .purpose(new CodeResponse("purposeCode", "Purpose description"))
                 .build();
@@ -63,19 +62,19 @@ public class ElasticsearchDatasetServiceTest {
                 .datasetData(DatasetData.builder().build())
                 .build();
 
-        when(policyConsumer.getPolicyForDataset(dataset.getId())).thenReturn(singletonList(policy));
+        lenient().when(policyConsumer.getPolicyForDataset(dataset.getId())).thenReturn(singletonList(policy));
         when(properties.getIndex()).thenReturn("index");
         when(leaderElectionService.isLeader()).thenReturn(true);
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
         CollectorRegistry.defaultRegistry.clear();
     }
 
     @Test
-    public void shouldSyncCreatedDatasets() {
-        when(repository.findByElasticsearchStatus(TO_BE_CREATED)).thenReturn(singletonList(dataset));
+    void shouldSyncCreatedDatasets() {
+        lenient().when(repository.findByElasticsearchStatus(TO_BE_CREATED)).thenReturn(singletonList(dataset));
         service.synchToElasticsearch();
         verify(elasticsearch, times(1)).insert(captor.capture());
         verify(elasticsearch, times(0)).updateById(any());
@@ -87,8 +86,8 @@ public class ElasticsearchDatasetServiceTest {
     }
 
     @Test
-    public void shouldSyncUpdatedDatasets() {
-        when(repository.findByElasticsearchStatus(TO_BE_UPDATED)).thenReturn(singletonList(dataset));
+    void shouldSyncUpdatedDatasets() {
+        lenient().when(repository.findByElasticsearchStatus(TO_BE_UPDATED)).thenReturn(singletonList(dataset));
         service.synchToElasticsearch();
         verify(elasticsearch, times(0)).insert(any());
         verify(elasticsearch, times(1)).updateById(captor.capture());
@@ -99,8 +98,8 @@ public class ElasticsearchDatasetServiceTest {
     }
 
     @Test
-    public void shouldSyncDeletedDatasets() {
-        when(repository.findByElasticsearchStatus(TO_BE_DELETED)).thenReturn(singletonList(dataset));
+    void shouldSyncDeletedDatasets() {
+        lenient().when(repository.findByElasticsearchStatus(TO_BE_DELETED)).thenReturn(singletonList(dataset));
         service.synchToElasticsearch();
         verify(elasticsearch, times(0)).insert(any());
         verify(elasticsearch, times(0)).updateById(any());
@@ -114,11 +113,11 @@ public class ElasticsearchDatasetServiceTest {
     private void verifyCapture(boolean verifyJson) {
         ElasticsearchDocument document = captor.getValue();
 
-        assertThat(document.getId(), is(dataset.getId().toString()));
-        assertThat(document.getIndex(), is("index"));
+        assertThat(document.getId()).isEqualTo(dataset.getId().toString());
+        assertThat(document.getIndex()).isEqualTo("index");
         if (verifyJson) {
-            assertThat(document.getJson(), containsString(dataset.getId().toString()));
-            assertThat(document.getJson(), containsString(policy.getLegalBasisDescription()));
+            assertThat(document.getJson()).contains(dataset.getId().toString());
+            assertThat(document.getJson()).contains(policy.getLegalBasisDescription());
         }
     }
 

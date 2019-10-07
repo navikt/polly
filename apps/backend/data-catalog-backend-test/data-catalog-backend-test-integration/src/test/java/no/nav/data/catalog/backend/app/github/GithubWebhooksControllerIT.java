@@ -1,5 +1,6 @@
 package no.nav.data.catalog.backend.app.github;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.data.catalog.backend.app.IntegrationTestBase;
 import no.nav.data.catalog.backend.app.codelist.CodelistStub;
 import no.nav.data.catalog.backend.app.dataset.DatacatalogMaster;
@@ -24,8 +25,8 @@ import org.eclipse.egit.github.core.RepositoryCommitCompare;
 import org.eclipse.egit.github.core.RepositoryContents;
 import org.eclipse.egit.github.core.event.PullRequestPayload;
 import org.eclipse.egit.github.core.event.PushPayload;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
@@ -54,12 +55,11 @@ import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static java.util.Collections.singletonList;
 import static no.nav.data.catalog.backend.app.TestUtil.readFile;
 import static no.nav.data.catalog.backend.app.common.utils.JsonUtils.toJson;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class GithubWebhooksControllerIT extends IntegrationTestBase {
+class GithubWebhooksControllerIT extends IntegrationTestBase {
 
     @Autowired
     protected TestRestTemplate restTemplate;
@@ -76,8 +76,8 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
     private static final String head = "821cd53c03fa042c2a32f0c73ff5612c0a458143";
     private static final String before = "dbe83db262b1fd082e5cf90053f6196127976e7f";
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         CodelistStub.initializeCodelist();
         stubGithub();
         repository.deleteAll();
@@ -92,7 +92,7 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    public void compareAndUpdateOk() {
+    void compareAndUpdateOk() {
         PushPayload request = new PushPayload();
         request.setHead(head);
         request.setBefore(before);
@@ -102,9 +102,9 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 "/webhooks", HttpMethod.POST, createRequest(request, GithubWebhooksController.PUSH_EVENT), String.class);
 
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         List<Dataset> all = repository.findAll();
-        assertThat(all.size(), is(5));
+        assertThat(all.size()).isEqualTo(5);
 
         Optional<Dataset> added = repository.findByTitle("added");
         Optional<Dataset> removed = repository.findByTitle("removed");
@@ -118,17 +118,17 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
         assertTrue(modifiedChanged.isPresent());
         assertTrue(modifiedRemoved.isPresent());
 
-        assertThat(added.get().getElasticsearchStatus(), is(ElasticsearchStatus.TO_BE_CREATED));
-        assertThat(removed.get().getElasticsearchStatus(), is(ElasticsearchStatus.TO_BE_DELETED));
-        assertThat(modifiedAdded.get().getElasticsearchStatus(), is(ElasticsearchStatus.TO_BE_CREATED));
-        assertThat(modifiedChanged.get().getElasticsearchStatus(), is(ElasticsearchStatus.TO_BE_UPDATED));
-        assertThat(modifiedRemoved.get().getElasticsearchStatus(), is(ElasticsearchStatus.TO_BE_DELETED));
+        assertThat(added.get().getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_CREATED);
+        assertThat(removed.get().getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_DELETED);
+        assertThat(modifiedAdded.get().getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_CREATED);
+        assertThat(modifiedChanged.get().getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_UPDATED);
+        assertThat(modifiedRemoved.get().getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_DELETED);
 
-        assertThat(polDatasettRepository.findFirstByOrderByIdDesc().get().getGithubSha(), is(head));
+        assertThat(polDatasettRepository.findFirstByOrderByIdDesc().get().getGithubSha()).isEqualTo(head);
     }
 
     @Test
-    public void pullRequest() {
+    void pullRequest() {
         PullRequestPayload request = new PullRequestPayload()
                 .setAction("opened")
                 .setNumber(512)
@@ -139,7 +139,7 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 "/webhooks", HttpMethod.POST, createRequest(request, GithubWebhooksController.PULL_REQUEST_EVENT), String.class);
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         verify(postRequestedFor(urlPathEqualTo(String.format("/api/v3/repos/navikt/pol-datasett/statuses/%s", head)))
                 .withRequestBody(matchingJsonPath("$.context", equalTo("data-catalog-validation")))
@@ -149,8 +149,8 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    public void pullRequestWithValidationErrors() {
-        wiremock.stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/modified.json"))
+    void pullRequestWithValidationErrors() {
+        WireMock.stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/modified.json"))
                 .withQueryParam("ref", equalTo(head))
                 .willReturn(okJson(toJson(singletonList(createFile("testdataIkkeSlett/modified.json", readFile("github/modifiedAfterIncludingAdded.json")))))));
 
@@ -164,7 +164,7 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 "/webhooks", HttpMethod.POST, createRequest(request, GithubWebhooksController.PULL_REQUEST_EVENT), String.class);
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         verify(postRequestedFor(urlPathEqualTo(String.format("/api/v3/repos/navikt/pol-datasett/statuses/%s", head)))
                 .withRequestBody(matchingJsonPath("$.context", equalTo("data-catalog-validation")))
@@ -175,7 +175,7 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    public void pullRequestToNonMaster() {
+    void pullRequestToNonMaster() {
         PullRequestPayload request = new PullRequestPayload()
                 .setAction("opened")
                 .setNumber(512)
@@ -186,7 +186,7 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 "/webhooks", HttpMethod.POST, createRequest(request, GithubWebhooksController.PULL_REQUEST_EVENT), String.class);
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         verify(exactly(0), postRequestedFor(urlPathEqualTo(String.format("/api/v3/repos/navikt/pol-datasett/statuses/%s", head))));
     }
@@ -201,13 +201,13 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
     }
 
     private void stubGithub() {
-        wiremock.resetAll();
-        wiremock.stubFor(get(urlPathEqualTo("/app/installations"))
+        WireMock.reset();
+        WireMock.stubFor(get(urlPathEqualTo("/app/installations"))
                 .willReturn(okJson(toJson(new GithubInstallation[]{new GithubInstallation("installId", new GithubAccount("navikt"))}))));
-        wiremock.stubFor(post(urlPathEqualTo("/app/installations/installId/access_tokens"))
+        WireMock.stubFor(post(urlPathEqualTo("/app/installations/installId/access_tokens"))
                 .willReturn(okJson(toJson(new GithubInstallationToken("githubToken"))).withStatus(HttpStatus.CREATED.value())));
 
-        wiremock.stubFor(get(urlPathEqualTo(String.format("/api/v3/repos/navikt/pol-datasett/compare/%s...%s", before, head)))
+        WireMock.stubFor(get(urlPathEqualTo(String.format("/api/v3/repos/navikt/pol-datasett/compare/%s...%s", before, head)))
                 .willReturn(okJson(toJson(new RepositoryCommitCompare()
                         .setFiles(Arrays.asList(
                                 new CommitFile().setStatus("added").setFilename("testdataIkkeSlett/added.json"),
@@ -216,24 +216,24 @@ public class GithubWebhooksControllerIT extends IntegrationTestBase {
                         ))))));
 
         // github files
-        wiremock.stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/added.json"))
+        WireMock.stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/added.json"))
                 .withQueryParam("ref", equalTo(head))
                 .willReturn(okJson(toJson(singletonList(createFile("testdataIkkeSlett/added.json", readFile("github/added.json")))))));
 
-        wiremock.stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/modified.json"))
+        WireMock.stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/modified.json"))
                 .withQueryParam("ref", equalTo(before))
                 .willReturn(okJson(toJson(singletonList(createFile("testdataIkkeSlett/modified.json", readFile("github/modifiedBefore.json")))))));
 
-        wiremock.stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/modified.json"))
+        WireMock.stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/modified.json"))
                 .withQueryParam("ref", equalTo(head))
                 .willReturn(okJson(toJson(singletonList(createFile("testdataIkkeSlett/modified.json", readFile("github/modifiedAfter.json")))))));
 
-        wiremock.stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/removed.json"))
+        WireMock.stubFor(get(urlPathEqualTo("/api/v3/repos/navikt/pol-datasett/contents/testdataIkkeSlett/removed.json"))
                 .withQueryParam("ref", equalTo(before))
                 .willReturn(okJson(toJson(singletonList(createFile("testdataIkkeSlett/removed.json", readFile("github/removed.json")))))));
 
         // Github statuses
-        wiremock.stubFor(post(urlPathEqualTo(String.format("/api/v3/repos/navikt/pol-datasett/statuses/%s", head)))
+        WireMock.stubFor(post(urlPathEqualTo(String.format("/api/v3/repos/navikt/pol-datasett/statuses/%s", head)))
                 .willReturn(okJson(toJson(new CommitStatus()))));
     }
 

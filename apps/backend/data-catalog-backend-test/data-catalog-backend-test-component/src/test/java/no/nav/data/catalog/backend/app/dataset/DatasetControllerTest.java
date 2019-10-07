@@ -8,9 +8,9 @@ import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelShort;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelType;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchDatasetService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,7 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
@@ -31,10 +31,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static junit.framework.TestCase.assertTrue;
 import static no.nav.data.catalog.backend.app.dataset.DatacatalogMaster.REST;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -46,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @WebMvcTest(DatasetController.class)
 @ContextConfiguration(classes = {AppStarter.class})
 @ActiveProfiles("test")
@@ -62,7 +61,7 @@ public class DatasetControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         CodelistStub.initializeCodelist();
     }
@@ -75,7 +74,7 @@ public class DatasetControllerTest {
             ).build();
 
     @Test
-    public void findForId() throws Exception {
+    void findForId() throws Exception {
         when(repository.findById(dataset.getId())).thenReturn(Optional.of(dataset));
         mvc.perform(get("/dataset/{id}", dataset.getId()))
                 .andExpect(status().isOk())
@@ -83,7 +82,7 @@ public class DatasetControllerTest {
     }
 
     @Test
-    public void findForId_withDescendants() throws Exception {
+    void findForId_withDescendants() throws Exception {
         when(service.findDatasetWithAllDescendants(dataset.getId())).thenReturn(dataset.convertToResponse());
         mvc.perform(get("/dataset/{id}", dataset.getId()).param("includeDescendants", "true"))
                 .andExpect(status().isOk())
@@ -91,7 +90,7 @@ public class DatasetControllerTest {
     }
 
     @Test
-    public void getDatasetByTitle() throws Exception {
+    void getDatasetByTitle() throws Exception {
         when(repository.findByTitle(dataset.getDatasetData().getTitle())).thenReturn(Optional.of(dataset));
         mvc.perform(get("/dataset/title/{title}", dataset.getDatasetData().getTitle()))
                 .andExpect(status().isOk())
@@ -99,7 +98,7 @@ public class DatasetControllerTest {
     }
 
     @Test
-    public void findAllRoot() throws Exception {
+    void findAllRoot() throws Exception {
         Pageable pageable = new PageParameters().createIdSortedPage();
         Page<DatasetResponse> allRootDatasets = new PageImpl<>(Collections.singletonList(dataset.convertToResponse()), pageable, 1);
 
@@ -110,7 +109,7 @@ public class DatasetControllerTest {
     }
 
     @Test
-    public void countAllDatasets() throws Exception {
+    void countAllDatasets() throws Exception {
         when(repository.count()).thenReturn(4L);
         mvc.perform(get("/dataset/count"))
                 .andExpect(status().isOk())
@@ -118,7 +117,7 @@ public class DatasetControllerTest {
     }
 
     @Test
-    public void createDataset_shouldCreateADataset() throws Exception {
+    void createDataset_shouldCreateADataset() throws Exception {
         DatasetRequest request = createValidDatasetRequest("Title1");
         List<DatasetRequest> requests = new ArrayList<>(List.of(request));
 
@@ -130,11 +129,11 @@ public class DatasetControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(inputJson))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.length()", is(1)));
+                .andExpect(jsonPath("$.length()").value(1));
     }
 
     @Test
-    public void updateDataset_shouldUpdateDataset() throws Exception {
+    void updateDataset_shouldUpdateDataset() throws Exception {
         DatasetRequest request = createValidDatasetRequest("Title1");
 
         List<DatasetRequest> requests = new ArrayList<>(List.of(request));
@@ -149,13 +148,13 @@ public class DatasetControllerTest {
                 .content(inputJson))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(1)))
+                .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[0].description", containsString("UPDATED")))
                 .andReturn().getResponse();
     }
 
     @Test
-    public void updateOneDatasetById_withExistingIdAndRequestIsNull() throws Exception {
+    void updateOneDatasetById_withExistingIdAndRequestIsNull() throws Exception {
         Dataset datasetToUpdate = Dataset.builder()
                 .id(UUID.randomUUID())
                 .datasetData(createValidDatasetData("UpdateTitle")).build();
@@ -175,7 +174,7 @@ public class DatasetControllerTest {
     }
 
     @Test
-    public void updateOneDatasetById() throws Exception {
+    void updateOneDatasetById() throws Exception {
         Dataset datasetToUpdate = Dataset.builder()
                 .id(UUID.randomUUID())
                 .datasetData(createValidDatasetData("UpdateTitle")).build();
@@ -193,11 +192,11 @@ public class DatasetControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(inputJson))
                 .andExpect(status().isAccepted())
-                .andExpect(jsonPath("$.description", is("UPDATED DESCRIPTION")));
+                .andExpect(jsonPath("$.description").value("UPDATED DESCRIPTION"));
     }
 
     @Test
-    public void deleteDatasetById() throws Exception {
+    void deleteDatasetById() throws Exception {
         Dataset deleteDataset = Dataset.builder()
                 .id(UUID.randomUUID())
                 .datasetData(createValidDatasetData("deleteTitle")).build();

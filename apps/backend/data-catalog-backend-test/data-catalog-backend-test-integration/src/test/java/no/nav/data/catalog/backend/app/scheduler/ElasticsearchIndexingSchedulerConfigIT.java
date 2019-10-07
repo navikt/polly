@@ -3,7 +3,7 @@ package no.nav.data.catalog.backend.app.scheduler;
 import no.nav.data.catalog.backend.app.IntegrationTestBase;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchDatasetService;
 import org.awaitility.Duration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import static org.awaitility.Awaitility.await;
@@ -16,7 +16,7 @@ public class ElasticsearchIndexingSchedulerConfigIT extends IntegrationTestBase 
     private ElasticsearchDatasetService service;
 
     @Test
-    public void jobRuns() {
+    void jobRuns() {
         await().atMost(Duration.ONE_MINUTE)
                 .untilAsserted(() -> verify(service, times(1)).synchToElasticsearch());
     }

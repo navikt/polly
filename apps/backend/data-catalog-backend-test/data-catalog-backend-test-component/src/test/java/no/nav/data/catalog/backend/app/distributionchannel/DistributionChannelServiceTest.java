@@ -1,17 +1,12 @@
 package no.nav.data.catalog.backend.app.distributionchannel;
 
-import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
-import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelRepository;
-import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelService;
 import no.nav.data.catalog.backend.app.system.System;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 import java.util.Set;
@@ -22,9 +17,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
-public class DistributionChannelServiceTest {
+class DistributionChannelServiceTest {
 
 	@InjectMocks
 	private DistributionChannelService service;
@@ -32,7 +27,7 @@ public class DistributionChannelServiceTest {
 	private DistributionChannelRepository repository;
 
 	@Test
-	public void findDistribtionChannelById_shouldReturnDistributionChannel() {
+	void findDistribtionChannelById_shouldReturnDistributionChannel() {
 		DistributionChannel distributionChannel = DistributionChannel.builder()
 				.id(UUID.randomUUID())
 				.name("Distribution")

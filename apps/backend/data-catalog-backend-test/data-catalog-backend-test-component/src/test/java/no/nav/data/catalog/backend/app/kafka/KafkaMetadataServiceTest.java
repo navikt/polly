@@ -4,20 +4,18 @@ import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelRequest;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelType;
 import no.nav.data.catalog.backend.app.kafka.dto.GroupsResponse;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static no.nav.data.catalog.backend.app.TestUtil.readFile;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class KafkaMetadataServiceTest {
+@ExtendWith(MockitoExtension.class)
+class KafkaMetadataServiceTest {
 
     @Mock
     private KafkaAdminRestConsumer kafkaAdminRestConsumer;
@@ -26,15 +24,15 @@ public class KafkaMetadataServiceTest {
     private KafkaMetadataService kafkaMetadataService;
 
     @Test
-    public void getDistributionChannelsForTopic() {
+    void getDistributionChannelsForTopic() {
         when(kafkaAdminRestConsumer.getTopicGroups("aapen-topicname"))
                 .thenReturn(JsonUtils.toObject(readFile("kafka/topic_groups.json"), GroupsResponse.class));
 
         DistributionChannelRequest request = kafkaMetadataService.getDistributionChannelsForTopic("aapen-topicname");
 
-        assertThat(request.getName(), is("aapen-topicname"));
-        assertThat(request.getType(), is(DistributionChannelType.KAFKA));
-        assertThat(request.getConsumers(), hasItem("srvbruker-consumer"));
-        assertThat(request.getProducers(), hasItem("srvbruker-producer"));
+        assertThat(request.getName()).isEqualTo("aapen-topicname");
+        assertThat(request.getType()).isEqualTo(DistributionChannelType.KAFKA);
+        assertThat(request.getConsumers()).contains("srvbruker-consumer");
+        assertThat(request.getProducers()).contains("srvbruker-producer");
     }
 }

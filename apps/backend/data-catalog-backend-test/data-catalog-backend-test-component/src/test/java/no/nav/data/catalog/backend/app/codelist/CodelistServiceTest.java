@@ -2,23 +2,22 @@ package no.nav.data.catalog.backend.app.codelist;
 
 import no.nav.data.catalog.backend.app.common.exceptions.CodelistNotFoundException;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -26,8 +25,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class CodelistServiceTest {
+@ExtendWith(MockitoExtension.class)
+class CodelistServiceTest {
 
     @Mock
     private CodelistRepository repository;
@@ -36,7 +35,7 @@ public class CodelistServiceTest {
     private CodelistService service;
 
     @Test
-    public void save_shouldSaveCodelist_whenRequestIsValid() {
+    void save_shouldSaveCodelist_whenRequestIsValid() {
         CodelistRequest request = CodelistRequest.builder()
                 .list("CATEGORY")
                 .code("TEST_CREATE")
@@ -45,11 +44,11 @@ public class CodelistServiceTest {
         when(repository.saveAll(anyList())).thenAnswer(AdditionalAnswers.returnsFirstArg());
         service.save(List.of(request));
         verify(repository, times(1)).saveAll(anyList());
-        assertThat(CodelistService.getCodelist(ListName.CATEGORY, "TEST_CREATE").getDescription(), is("Test av kategorien TEST_CREATE"));
+        assertThat(CodelistService.getCodelist(ListName.CATEGORY, "TEST_CREATE").getDescription()).isEqualTo("Test av kategorien TEST_CREATE");
     }
 
     @Test
-    public void update_shouldUpdateCodelist_whenRequestIsValid() {
+    void update_shouldUpdateCodelist_whenRequestIsValid() {
         CodelistCache.set(Codelist.builder().list(ListName.PROVENANCE).code("test_update").description("Original description").build());
 
         CodelistRequest request = CodelistRequest.builder()
@@ -64,11 +63,11 @@ public class CodelistServiceTest {
         service.update(List.of(request));
 
         verify(repository, times(1)).saveAll(anyList());
-        assertThat(CodelistService.getCodelist(ListName.PROVENANCE, request.getCode()).getDescription(), is("Updated description"));
+        assertThat(CodelistService.getCodelist(ListName.PROVENANCE, request.getCode()).getDescription()).isEqualTo("Updated description");
     }
 
     @Test
-    public void update_shouldThrowNotFound_whenCodeDoesNotExist() {
+    void update_shouldThrowNotFound_whenCodeDoesNotExist() {
         CodelistRequest request = CodelistRequest.builder()
                 .list("PROVENANCE")
                 .code("UNKNOWN_CODE")
@@ -78,12 +77,12 @@ public class CodelistServiceTest {
             service.update(List.of(request));
             fail();
         } catch (CodelistNotFoundException e) {
-            assertThat(e.getLocalizedMessage(), is("Cannot find codelist with code=UNKNOWN_CODE in list=PROVENANCE"));
+            assertThat(e.getLocalizedMessage()).isEqualTo("Cannot find codelist with code=UNKNOWN_CODE in list=PROVENANCE");
         }
     }
 
     @Test
-    public void delete_shouldDelete_whenListAndCodeExists() {
+    void delete_shouldDelete_whenListAndCodeExists() {
         ListName listName = ListName.CATEGORY;
         String code = "TEST_DELETE";
         String description = "Test delete description";
@@ -104,19 +103,19 @@ public class CodelistServiceTest {
     }
 
     @Test
-    public void delete_shouldThrowIllegalArgumentException_whenCodeDoesNotExist() {
+    void delete_shouldThrowIllegalArgumentException_whenCodeDoesNotExist() {
         when(repository.findByListAndNormalizedCode(ListName.PROVENANCE, "UNKNOWNCODE")).thenReturn(Optional.empty());
 
         try {
             service.delete(ListName.PROVENANCE, "UNKNOWN_CODE");
             fail();
         } catch (IllegalArgumentException e) {
-            assertThat(e.getLocalizedMessage(), is("Cannot find a codelist to delete with code=UNKNOWN_CODE and listName=PROVENANCE"));
+            assertThat(e.getLocalizedMessage()).isEqualTo("Cannot find a codelist to delete with code=UNKNOWN_CODE and listName=PROVENANCE");
         }
     }
 
     @Test
-    public void validateListNameExistsAndValidateListNameAndCodeExists_nothingShouldHappenWhenValuesExists() {
+    void validateListNameExistsAndValidateListNameAndCodeExists_nothingShouldHappenWhenValuesExists() {
         CodelistCache.set(Codelist.builder().list(ListName.PURPOSE).code("CODE").description("Description").build());
 
         service.validateListNameExists("PURPOSE");
@@ -124,37 +123,37 @@ public class CodelistServiceTest {
     }
 
     @Test
-    public void validateListNameExists_shouldThrowNotFound_whenListNameDoesNotExists() {
+    void validateListNameExists_shouldThrowNotFound_whenListNameDoesNotExists() {
         try {
             service.validateListNameExists("UNKNOWN_LISTNAME");
             fail();
         } catch (CodelistNotFoundException e) {
-            assertThat(e.getLocalizedMessage(), is("Codelist with listName=UNKNOWN_LISTNAME does not exist"));
+            assertThat(e.getLocalizedMessage()).isEqualTo("Codelist with listName=UNKNOWN_LISTNAME does not exist");
         }
     }
 
     @Test
-    public void validateListNameAndCodeExists_shouldThrowNotFound_whenCodeDoesNotExists() {
+    void validateListNameAndCodeExists_shouldThrowNotFound_whenCodeDoesNotExists() {
         try {
             service.validateListNameAndCodeExists("PROVENANCE", "unknownCode");
             fail();
         } catch (CodelistNotFoundException e) {
-            assertThat(e.getLocalizedMessage(), is("The code=unknownCode does not exist in the list=PROVENANCE."));
+            assertThat(e.getLocalizedMessage()).isEqualTo("The code=unknownCode does not exist in the list=PROVENANCE.");
         }
     }
 
     @Test
-    public void listNameExists_shouldReturnFalse_whenListNameDoesNotExist() {
+    void listNameExists_shouldReturnFalse_whenListNameDoesNotExist() {
         try {
             service.validateListNameExists("UnknownListName");
             fail();
         } catch (CodelistNotFoundException e) {
-            assertThat(e.getLocalizedMessage(), is("Codelist with listName=UnknownListName does not exist"));
+            assertThat(e.getLocalizedMessage()).isEqualTo("Codelist with listName=UnknownListName does not exist");
         }
     }
 
     @Test
-    public void validateThatAllFieldsHaveValidValues_shouldValidate_whenSaveAndRequestItemDoesNotExist() {
+    void validateThatAllFieldsHaveValidValues_shouldValidate_whenSaveAndRequestItemDoesNotExist() {
         List<CodelistRequest> requests = new ArrayList<>();
         requests.add(CodelistRequest.builder()
                 .list("PROVENANCE")
@@ -173,32 +172,32 @@ public class CodelistServiceTest {
     }
 
     @Test
-    public void validate_shouldValidateWithoutAnyProcessing_whenRequestIsEmpty() {
+    void validate_shouldValidateWithoutAnyProcessing_whenRequestIsEmpty() {
         List<CodelistRequest> requests = new ArrayList<>(Collections.emptyList());
         service.validateRequest(requests, false);
     }
 
     @Test
-    public void validate_shouldValidateWithoutAnyProcessing_whenRequestIsNull() {
+    void validate_shouldValidateWithoutAnyProcessing_whenRequestIsNull() {
         List<CodelistRequest> requests = null;
         service.validateRequest(requests, false);
     }
 
     @Test
-    public void validateThatAllFieldsHaveValidValues_shouldThrowValidationException_whenSaveAndRequestItemExist() {
+    void validateThatAllFieldsHaveValidValues_shouldThrowValidationException_whenSaveAndRequestItemExist() {
         CodelistRequest request = CodelistRequest.builder().list("PROVENANCE").code("bruker").description("Test").build();
         when(repository.findByListAndNormalizedCode(ListName.PROVENANCE, "BRUKER")).thenReturn(Optional.of(request.convert()));
         try {
             service.validateRequest(List.of(request), false);
             fail();
         } catch (ValidationException e) {
-            assertThat(e.get().size(), is(1));
-            assertThat(e.toErrorString(), is("Request:1 -- creatingExistingCodelist -- The codelist PROVENANCE-BRUKER already exists and therefore cannot be created"));
+            assertThat(e.get().size()).isEqualTo(1);
+            assertThat(e.toErrorString()).isEqualTo("Request:1 -- creatingExistingCodelist -- The codelist PROVENANCE-BRUKER already exists and therefore cannot be created");
         }
     }
 
     @Test
-    public void validateThatAllFieldsHaveValidValues_shouldValidate_whenUpdateAndRequestItemExist() {
+    void validateThatAllFieldsHaveValidValues_shouldValidate_whenUpdateAndRequestItemExist() {
         List<CodelistRequest> requests = new ArrayList<>();
         requests.add(CodelistRequest.builder()
                 .list("PROVENANCE")
@@ -215,7 +214,7 @@ public class CodelistServiceTest {
     }
 
     @Test
-    public void validateThatAllFieldsHaveValidValues_shouldThrowValidationException_whenUpdateAndRequestItemDoesNotExist() {
+    void validateThatAllFieldsHaveValidValues_shouldThrowValidationException_whenUpdateAndRequestItemDoesNotExist() {
         CodelistRequest request = CodelistRequest.builder()
                 .list("PROVENANCE")
                 .code("unknownCode")
@@ -225,14 +224,14 @@ public class CodelistServiceTest {
             service.validateRequest(List.of(request), true);
             fail();
         } catch (ValidationException e) {
-            assertThat(e.get().size(), is(1));
-            assertThat(e.toErrorString(),
-                    is("Request:1 -- updatingNonExistingCodelist -- The codelist PROVENANCE-UNKNOWNCODE does not exist and therefore cannot be updated"));
+            assertThat(e.get().size()).isEqualTo(1);
+            assertThat(e.toErrorString())
+                    .isEqualTo("Request:1 -- updatingNonExistingCodelist -- The codelist PROVENANCE-UNKNOWNCODE does not exist and therefore cannot be updated");
         }
     }
 
     @Test
-    public void validateThatAllFieldsHaveValidValues_shouldChangeInputInRequestToCorrectFormat() {
+    void validateThatAllFieldsHaveValidValues_shouldChangeInputInRequestToCorrectFormat() {
         List<CodelistRequest> requests = List.of(CodelistRequest.builder()
                 .list("     category      ")
                 .code("    cOrRecTFormAT  ")
@@ -242,6 +241,6 @@ public class CodelistServiceTest {
         service.validateRequest(requests, false);
         service.save(requests);
         assertTrue(CodelistCache.contains(ListName.CATEGORY, "CORRECTFORMAT"));
-        assertThat(CodelistService.getCodelist(ListName.CATEGORY, "CORRECTFORMAT").getDescription(), is("Trim av description"));
+        assertThat(CodelistService.getCodelist(ListName.CATEGORY, "CORRECTFORMAT").getDescription()).isEqualTo("Trim av description");
     }
 }

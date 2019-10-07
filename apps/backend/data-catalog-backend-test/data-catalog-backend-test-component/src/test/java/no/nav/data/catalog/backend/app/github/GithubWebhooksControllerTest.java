@@ -17,15 +17,15 @@ import org.eclipse.egit.github.core.PullRequestMarker;
 import org.eclipse.egit.github.core.RepositoryContents;
 import org.eclipse.egit.github.core.event.PullRequestPayload;
 import org.eclipse.egit.github.core.event.PushPayload;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Base64;
@@ -50,11 +50,11 @@ import static org.mockito.internal.verification.VerificationModeFactory.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @WebMvcTest(GithubWebhooksController.class)
 @ContextConfiguration(classes = {AppStarter.class, GithubConfig.class, GithubProperties.class})
 @ActiveProfiles("test")
-public class GithubWebhooksControllerTest {
+class GithubWebhooksControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -74,8 +74,8 @@ public class GithubWebhooksControllerTest {
     private PullRequestPayload pullRequest;
     private PushPayload push;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         repoModification = RepoModification.builder()
                 .added(singletonList(createFile("add.json", "added")))
                 .modifiedBefore(singletonList(createFile("mod.json", "modified")))
@@ -98,7 +98,7 @@ public class GithubWebhooksControllerTest {
     }
 
     @Test
-    public void invalidSignature() throws Exception {
+    void invalidSignature() throws Exception {
         String payload = JsonUtils.toJson(pullRequest);
 
         mvc.perform(post(GithubWebhooksController.BACKEND_WEBHOOKS)
@@ -112,7 +112,7 @@ public class GithubWebhooksControllerTest {
     }
 
     @Test
-    public void pullRequets() throws Exception {
+    void pullRequets() throws Exception {
         String payload = JsonUtils.toJson(pullRequest);
 
         mvc.perform(post(GithubWebhooksController.BACKEND_WEBHOOKS)
@@ -127,7 +127,7 @@ public class GithubWebhooksControllerTest {
     }
 
     @Test
-    public void pullRequestWrongToBranch() throws Exception {
+    void pullRequestWrongToBranch() throws Exception {
         pullRequest.getPullRequest().getBase().setRef("someone_is_trying_something");
         String payload = JsonUtils.toJson(pullRequest);
 
@@ -143,7 +143,7 @@ public class GithubWebhooksControllerTest {
 
 
     @Test
-    public void pullRequestWrongAction() throws Exception {
+    void pullRequestWrongAction() throws Exception {
         pullRequest.setAction("closed");
         String payload = JsonUtils.toJson(pullRequest);
 
@@ -158,7 +158,7 @@ public class GithubWebhooksControllerTest {
     }
 
     @Test
-    public void pullRequestValidationFailure() throws Exception {
+    void pullRequestValidationFailure() throws Exception {
         repoModification.setAdded(singletonList(createFile("add.json", "modified")));
         String payload = JsonUtils.toJson(pullRequest);
 
@@ -180,7 +180,7 @@ public class GithubWebhooksControllerTest {
     }
 
     @Test
-    public void updateOnPush() throws Exception {
+    void updateOnPush() throws Exception {
         when(githubConsumer.compare("internalbefore", "head")).thenReturn(repoModification);
         when(repository.findByTitle("removed")).then(i -> Optional.of(new Dataset()));
         String payload = JsonUtils.toJson(push);
@@ -199,7 +199,7 @@ public class GithubWebhooksControllerTest {
     }
 
     @Test
-    public void updateWrongBranch() throws Exception {
+    void updateWrongBranch() throws Exception {
         push.setRef("refs/heads/someotherbranch");
         String payload = JsonUtils.toJson(push);
         mvc.perform(post(GithubWebhooksController.BACKEND_WEBHOOKS)
