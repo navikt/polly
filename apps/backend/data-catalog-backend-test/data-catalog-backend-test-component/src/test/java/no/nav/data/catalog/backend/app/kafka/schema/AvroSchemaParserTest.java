@@ -76,6 +76,8 @@ class AvroSchemaParserTest {
         AvroField personinntektLoenn = fastlandsinntekt.getType().findField("personinntektLoenn");
         assertThat(personinntektLoenn.getType().getFieldType()).isEqualTo(FieldType.BASIC);
         assertThat(personinntektLoenn.getType().getTypeName()).isEqualTo("long");
+
+        assertThat(avroSchema.getAllTypes().stream().map(AvroType::getTypeName)).contains("PensjonsgivendeInntekt", "Fastlandsinntekt", "Svalbardinntekt");
     }
 
     @Test
@@ -89,6 +91,7 @@ class AvroSchemaParserTest {
         AvroField nullable = rootType.findField("emailAddresses").getType().findField("dateBounced");
         assertThat(nullable.getType().getFieldType()).isEqualTo(FieldType.BASIC);
         assertThat(nullable.getType().getTypeName()).isEqualTo("long");
+        assertThat(nullable.isNullable()).isTrue();
     }
 
     @Test
@@ -117,6 +120,8 @@ class AvroSchemaParserTest {
         AvroField toDoItems = rootType.findField("toDoItems").getType().findField("subItems");
         assertTrue(toDoItems.getType().getStub());
         assertThat(toDoItems.getType().getFields()).hasSize(0);
+
+        assertThat(avroSchema.getAllTypes().stream().map(AvroType::getTypeName)).contains("User", "EmailAddress", "TwitterAccount", "OAuthStatus", "ToDoItem", "ToDoStatus");
     }
 
     @Test
@@ -127,16 +132,12 @@ class AvroSchemaParserTest {
 
         System.out.println(rootType);
 
-        AvroType unionField = rootType.findField("toDoItems").getType().findField("unionField").getType();
-        assertThat(unionField.getFieldType()).isEqualTo(FieldType.UNION);
-        assertThat(unionField.getFields()).hasSize(2);
+        AvroType toDoItems = rootType.findField("toDoItems").getType();
 
-        assertThat(unionField.getFields().get(0).getUnionOrdinal()).isEqualTo(1);
-        assertThat(unionField.getFields().get(0).getName()).isEqualTo("long");
-        assertThat(unionField.getFields().get(0).getType().getTypeName()).isEqualTo("long");
+        AvroField unionFieldOne = toDoItems.findField("unionField", 1);
+        assertThat(unionFieldOne.getType().getTypeName()).isEqualTo("long");
 
-        assertThat(unionField.getFields().get(1).getUnionOrdinal()).isEqualTo(2);
-        assertThat(unionField.getFields().get(1).getName()).isEqualTo("ToDoItem");
-        assertThat(unionField.getFields().get(1).getType().getTypeName()).isEqualTo("ToDoItem");
+        AvroField unionFieldTwo = toDoItems.findField("unionField", 2);
+        assertThat(unionFieldTwo.getType().getTypeName()).isEqualTo("ToDoItem");
     }
 }

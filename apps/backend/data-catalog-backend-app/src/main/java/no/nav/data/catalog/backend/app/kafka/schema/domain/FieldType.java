@@ -6,5 +6,17 @@ public enum FieldType {
     ARRAY,
     MAP,
     OBJECT,
-    UNION
+    UNION;
+
+    public boolean isEnum() {
+        return this == FieldType.ENUM;
+    }
+
+    public boolean isObject() {
+        return this == FieldType.OBJECT;
+    }
+
+    public boolean isUnion() {
+        return this == FieldType.UNION;
+    }
 }
