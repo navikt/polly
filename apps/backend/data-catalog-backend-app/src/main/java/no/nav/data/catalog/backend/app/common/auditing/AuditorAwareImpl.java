@@ -11,7 +11,7 @@ public class AuditorAwareImpl implements AuditorAware<String> {
     @Override
     public Optional<String> getCurrentAuditor() {
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
-                .map(authentication -> (UserPrincipal) authentication.getPrincipal())
+                .map(authentication -> authentication.getPrincipal() instanceof UserPrincipal ? (UserPrincipal) authentication.getPrincipal() : null)
                 .map(principal -> String.format("%s - %s", getNAVident(principal), principal.getName()))
                 .or(() -> Optional.of("Datajeger"));
     }
