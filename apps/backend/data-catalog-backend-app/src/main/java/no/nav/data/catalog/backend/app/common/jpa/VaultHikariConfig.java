@@ -17,10 +17,14 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 
+import static no.nav.data.catalog.backend.app.common.utils.MdcUtils.wrapAsync;
+
 @Slf4j
 @Configuration
 @ConditionalOnProperty(value = "spring.cloud.vault.enabled", matchIfMissing = true)
 public class VaultHikariConfig implements InitializingBean {
+
+    private static final String VAULT_ROTATER = "VaultRotater";
 
     private final SecretLeaseContainer container;
     private final VaultOperations vaultOperations;
@@ -34,7 +38,7 @@ public class VaultHikariConfig implements InitializingBean {
         this.vaultOperations = vaultOperations;
         this.ds = ds;
         this.props = props;
-        scheduler.setThreadNamePrefix("VaultRotater");
+        scheduler.setThreadNamePrefix(VAULT_ROTATER);
         scheduler.initialize();
     }
 
@@ -79,7 +83,7 @@ public class VaultHikariConfig implements InitializingBean {
     private void scheduleNextRotation(long leaseDuration, int minutesBeforeExpire) {
         Instant startTime = Instant.now().plusSeconds(leaseDuration - minutesBeforeExpire * 60);
         log.info("Ny lease duration: {}, next: {}", leaseDuration, startTime);
-        scheduler.schedule(this::rotate, startTime);
+        scheduler.schedule(wrapAsync(this::rotate, VAULT_ROTATER), startTime);
     }
 
     private String getPath() {

@@ -12,9 +12,12 @@ import no.nav.data.catalog.backend.app.github.domain.RepoModification;
 import no.nav.data.catalog.backend.app.github.poldatasett.PolDatasett;
 import no.nav.data.catalog.backend.app.github.poldatasett.PolDatasettRepository;
 import org.apache.commons.codec.digest.HmacUtils;
+import org.eclipse.egit.github.core.Commit;
+import org.eclipse.egit.github.core.CommitUser;
 import org.eclipse.egit.github.core.PullRequest;
 import org.eclipse.egit.github.core.PullRequestMarker;
 import org.eclipse.egit.github.core.RepositoryContents;
+import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.event.PullRequestPayload;
 import org.eclipse.egit.github.core.event.PushPayload;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,12 +91,14 @@ class GithubWebhooksControllerTest {
         pullRequest = new PullRequestPayload()
                 .setAction("edited")
                 .setPullRequest(new PullRequest()
+                        .setUser(new User().setName("githubuser"))
                         .setBase(new PullRequestMarker().setSha("base").setRef("master"))
                         .setHead(new PullRequestMarker().setSha("head").setRef("prbranch"))
                 );
         push = new PushPayload()
                 .setBefore("githubbefore")
                 .setHead("head")
+                .setCommits(List.of(new Commit().setSha("head").setAuthor(new CommitUser().setName("githubuser"))))
                 .setRef(GithubConsumer.REFS_HEADS_MASTER);
     }
 

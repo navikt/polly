@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.common.utils.CollectionDifference;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
+import no.nav.data.catalog.backend.app.common.utils.MdcUtils;
+import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import no.nav.data.catalog.backend.app.common.validator.ValidationError;
 import no.nav.data.catalog.backend.app.dataset.DatasetRequest;
 import no.nav.data.catalog.backend.app.dataset.DatasetService;
@@ -16,6 +18,8 @@ import no.nav.data.catalog.backend.app.github.domain.RepoModification;
 import no.nav.data.catalog.backend.app.github.poldatasett.PolDatasett;
 import no.nav.data.catalog.backend.app.github.poldatasett.PolDatasettRepository;
 import org.apache.commons.codec.digest.HmacUtils;
+import org.eclipse.egit.github.core.Commit;
+import org.eclipse.egit.github.core.CommitUser;
 import org.eclipse.egit.github.core.PullRequest;
 import org.eclipse.egit.github.core.event.PullRequestPayload;
 import org.eclipse.egit.github.core.event.PushPayload;
@@ -114,6 +118,7 @@ public class GithubWebhooksController {
     private void processPullRequestEvent(PullRequestPayload payload) {
         log.info("Pull request #{} event {}", payload.getNumber(), payload.getAction());
         PullRequest pullRequest = payload.getPullRequest();
+        MdcUtils.setUser("github " + pullRequest.getUser().getName());
         String fromBranch = pullRequest.getHead().getRef();
         String toBranch = pullRequest.getBase().getRef();
         if (!toBranch.equals("master")) {
@@ -134,6 +139,7 @@ public class GithubWebhooksController {
     }
 
     private void processPushEvent(PushPayload payload) {
+        MdcUtils.setUser("github " + getPushAuthor(payload));
         if (!REFS_HEADS_MASTER.equals(payload.getRef())) {
             log.info("Not master, skipping for ref {}", payload.getRef());
             return;
@@ -152,7 +158,6 @@ public class GithubWebhooksController {
 
         polDatasettRepository.save(new PolDatasett(payload.getHead()));
     }
-
 
     private List<ValidationError> validate(CollectionDifference<DatasetRequest> difference) {
         List<ValidationError> validationErrors = new ArrayList<>();
@@ -198,5 +203,13 @@ public class GithubWebhooksController {
         }
         log.info("The following list of Datasets have been set to be added during the next scheduled task: {}", requests);
         service.saveAll(requests, GITHUB);
+    }
+
+    private String getPushAuthor(PushPayload payload) {
+        return StreamUtils.safeStream(payload.getCommits())
+                .filter(c -> c.getSha().equals(payload.getHead())).findFirst()
+                .map(Commit::getAuthor)
+                .map(CommitUser::getName)
+                .orElse("-");
     }
 }

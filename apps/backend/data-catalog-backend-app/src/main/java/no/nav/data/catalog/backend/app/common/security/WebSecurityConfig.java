@@ -1,6 +1,8 @@
 package no.nav.data.catalog.backend.app.common.security;
 
 import com.microsoft.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter;
+import no.nav.data.catalog.backend.app.common.web.CorrelationFilter;
+import no.nav.data.catalog.backend.app.common.web.UserFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -9,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
 @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -23,7 +26,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
+        http.addFilterBefore(new CorrelationFilter(), SecurityContextPersistenceFilter.class);
+
         if (!enable) {
+            http.addFilterAfter(new UserFilter(), CorrelationFilter.class);
             return;
         }
         http.authorizeRequests().antMatchers("/internal/**").permitAll();
@@ -44,6 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().anyRequest().authenticated();
 
         http.addFilterBefore(aadAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(new UserFilter(), AADAppRoleStatelessAuthenticationFilter.class);
     }
 
 }

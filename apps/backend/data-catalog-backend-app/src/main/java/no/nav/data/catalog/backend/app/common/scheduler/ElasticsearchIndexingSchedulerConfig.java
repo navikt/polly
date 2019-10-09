@@ -11,8 +11,10 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 import java.util.concurrent.TimeUnit;
 
+import static no.nav.data.catalog.backend.app.common.utils.MdcUtils.wrapAsync;
+
 @Configuration
-@EnableScheduling()
+@EnableScheduling
 public class ElasticsearchIndexingSchedulerConfig implements SchedulingConfigurer {
 
     @Value("${esindexingjob.interval.seconds:1}")
@@ -28,6 +30,6 @@ public class ElasticsearchIndexingSchedulerConfig implements SchedulingConfigure
     }
 
     IntervalTask syncTask(long interval, long initialDelay) {
-        return new IntervalTask(service::synchToElasticsearch, interval, initialDelay);
+        return new IntervalTask(wrapAsync(service::synchToElasticsearch, "elasticsync"), interval, initialDelay);
     }
 }

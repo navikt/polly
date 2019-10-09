@@ -12,6 +12,8 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
+import static no.nav.data.catalog.backend.app.common.utils.MdcUtils.wrapAsync;
+
 @Configuration
 @EnableScheduling
 public class KafkaIndexingSchedulerConfig implements SchedulingConfigurer {
@@ -32,6 +34,6 @@ public class KafkaIndexingSchedulerConfig implements SchedulingConfigurer {
 
     IntervalTask syncTask() {
         long syncIntervalInMillis = TimeUnit.SECONDS.toMillis(syncIntervalSeconds);
-        return new IntervalTask(service::syncDistributionsFromKafkaAdmin, syncIntervalInMillis, Duration.ofMinutes(2).toMillis());
+        return new IntervalTask(wrapAsync(service::syncDistributionsFromKafkaAdmin, "kafkasync"), syncIntervalInMillis, Duration.ofMinutes(2).toMillis());
     }
 }

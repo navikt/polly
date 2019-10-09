@@ -17,12 +17,15 @@ import no.nav.data.catalog.backend.app.github.domain.GithubInstallationToken;
 import no.nav.data.catalog.backend.app.github.poldatasett.PolDatasett;
 import no.nav.data.catalog.backend.app.github.poldatasett.PolDatasettRepository;
 import org.apache.commons.codec.digest.HmacUtils;
+import org.eclipse.egit.github.core.Commit;
 import org.eclipse.egit.github.core.CommitFile;
 import org.eclipse.egit.github.core.CommitStatus;
+import org.eclipse.egit.github.core.CommitUser;
 import org.eclipse.egit.github.core.PullRequest;
 import org.eclipse.egit.github.core.PullRequestMarker;
 import org.eclipse.egit.github.core.RepositoryCommitCompare;
 import org.eclipse.egit.github.core.RepositoryContents;
+import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.event.PullRequestPayload;
 import org.eclipse.egit.github.core.event.PushPayload;
 import org.junit.jupiter.api.BeforeEach;
@@ -97,6 +100,7 @@ class GithubWebhooksControllerIT extends IntegrationTestBase {
         request.setHead(head);
         request.setBefore(before);
         request.setSize(1);
+        request.setCommits(List.of(new Commit().setSha(head).setAuthor(new CommitUser().setName("username"))));
         request.setRef(GithubConsumer.REFS_HEADS_MASTER);
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(
@@ -112,12 +116,14 @@ class GithubWebhooksControllerIT extends IntegrationTestBase {
         Optional<Dataset> modifiedChanged = repository.findByTitle("modified_changed");
         Optional<Dataset> modifiedAdded = repository.findByTitle("modified_added");
 
+
         assertTrue(added.isPresent());
         assertTrue(removed.isPresent());
         assertTrue(modifiedAdded.isPresent());
         assertTrue(modifiedChanged.isPresent());
         assertTrue(modifiedRemoved.isPresent());
 
+        assertThat(added.get().getCreatedBy()).isEqualTo("github username");
         assertThat(added.get().getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_CREATED);
         assertThat(removed.get().getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_DELETED);
         assertThat(modifiedAdded.get().getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_CREATED);
@@ -133,6 +139,7 @@ class GithubWebhooksControllerIT extends IntegrationTestBase {
                 .setAction("opened")
                 .setNumber(512)
                 .setPullRequest(new PullRequest()
+                        .setUser(new User().setName("githubuser"))
                         .setHead(new PullRequestMarker().setRef("featureBranch").setSha(head))
                         .setBase(new PullRequestMarker().setRef("master").setSha(before))
                 );
@@ -158,6 +165,7 @@ class GithubWebhooksControllerIT extends IntegrationTestBase {
                 .setAction("opened")
                 .setNumber(512)
                 .setPullRequest(new PullRequest()
+                        .setUser(new User().setName("githubuser"))
                         .setHead(new PullRequestMarker().setRef("featureBranch").setSha(head))
                         .setBase(new PullRequestMarker().setRef("master").setSha(before))
                 );
@@ -180,6 +188,7 @@ class GithubWebhooksControllerIT extends IntegrationTestBase {
                 .setAction("opened")
                 .setNumber(512)
                 .setPullRequest(new PullRequest()
+                        .setUser(new User().setName("githubuser"))
                         .setHead(new PullRequestMarker().setRef("featureBranch").setSha(head))
                         .setBase(new PullRequestMarker().setRef("develop").setSha(before))
                 );
