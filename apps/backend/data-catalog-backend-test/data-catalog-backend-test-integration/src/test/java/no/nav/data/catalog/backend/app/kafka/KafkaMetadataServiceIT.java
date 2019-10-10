@@ -35,10 +35,10 @@ class KafkaMetadataServiceIT extends IntegrationTestBase {
 
     @Test
     void syncKafkaWithExistingElements() {
-        System producer = systemRepository.save(new System().convertFromRequest(SystemRequest.builder().name("srvbruker-producer").build(), false));
-        System producerToRemove = systemRepository.save(new System().convertFromRequest(SystemRequest.builder().name("srvbruker-producer-willberemoved").build(), false));
+        System producer = systemRepository.save(new System().createNewSystemWithName("srvbruker-producer"));
+        System producerToRemove = systemRepository.save(new System().createNewSystemWithName("srvbruker-producer-willberemoved"));
         DistributionChannel distributionChannel = new DistributionChannel()
-                .convertFromRequest(DistributionChannelRequest.builder().name("aapen-topic1").type(DistributionChannelType.KAFKA).build(), false);
+                .convertNewFromRequest(DistributionChannelRequest.builder().name("aapen-topic1").type(DistributionChannelType.KAFKA).build());
         distributionChannel.addProducer(producer);
         distributionChannel.addProducer(producerToRemove);
         distributionChannelRepository.save(distributionChannel);

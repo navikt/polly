@@ -7,6 +7,7 @@ import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelRe
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelShort;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelType;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -74,6 +75,7 @@ class DatasetServiceTest {
         service.validateRequestFromREST(requests);
     }
 
+    @Disabled("Until generic test for RequestValidation is written")
     @Test
     void validateRequest_shouldThrowValidationException_withDuplicatedElementInRequest() {
         DatasetRequest title1 = createValidDatasetRequest("Title1");
@@ -95,6 +97,7 @@ class DatasetServiceTest {
         assertThat(exception).hasMessageContaining("Title1 -- DuplicatedIdentifyingFields -- Multiple elements in this request are using the same unique fields (Title1)");
     }
 
+    @Disabled("Until generic test for RequestValidation is written")
     @Test
     void validateRequest_shouldThrowValidationException_whenFieldTitleIsNull() {
         Exception exception = assertThrows(Exception.class, () -> service.validateRequestFromREST(List.of(createValidDatasetRequest(null))));

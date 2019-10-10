@@ -119,7 +119,7 @@ class DistributionChannelControllerTest {
         List<DistributionChannelRequest> requests = List.of(distributionChannelRequest);
 
         when(repository.saveAll(distributionChannels)).thenReturn(distributionChannels);
-        when(service.createDistributionChannels(requests)).thenReturn(distributionChannels);
+        when(service.saveAll(requests)).thenReturn(distributionChannels);
 
         mvc.perform(post("/distributionchannel")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -144,7 +144,7 @@ class DistributionChannelControllerTest {
                 .build();
 
         when(service.findDistributionChannelById(toBeDeletedDChannel.getId())).thenReturn(Optional.of(toBeDeletedDChannel));
-        when(service.deleteDistributionChannel(toBeDeletedDChannel)).thenReturn(toBeDeletedDChannel);
+        when(service.delete(toBeDeletedDChannel)).thenReturn(toBeDeletedDChannel);
 
         mvc.perform(delete("/distributionchannel/" + toBeDeletedDChannel.getId())).andExpect(status().isAccepted());
     }

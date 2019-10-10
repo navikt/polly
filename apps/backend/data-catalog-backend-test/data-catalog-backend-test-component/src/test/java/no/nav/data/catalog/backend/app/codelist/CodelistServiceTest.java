@@ -2,6 +2,7 @@ package no.nav.data.catalog.backend.app.codelist;
 
 import no.nav.data.catalog.backend.app.common.exceptions.CodelistNotFoundException;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
@@ -10,9 +11,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -152,43 +155,70 @@ class CodelistServiceTest {
         }
     }
 
+    @Disabled("Until generic test for RequestValidation is written")
     @Test
     void validateThatAllFieldsHaveValidValues_shouldValidate_whenSaveAndRequestItemDoesNotExist() {
-        List<CodelistRequest> requests = new ArrayList<>();
-        requests.add(CodelistRequest.builder()
-                .list("PROVENANCE")
-                .code("TEST")
-                .description("Informasjon oppgitt av tester")
-                .build());
-        requests.add(CodelistRequest.builder()
-                .list("CATEGORY")
-                .code("TEST")
-                .description("Informasjon oppgitt av tester")
-                .build());
+        //TODO: HelperFunctions
+        List<CodelistRequest> requests = createListOfRequests(
+                createRequestWithListName("PROVENANCE"),
+                createRequestWithListName("CATEGORY"));
 
+//        List<CodelistRequest> requests = new ArrayList<>();
+//        requests.add(CodelistRequest.builder()
+//                .list("PROVENANCE")
+//                .code("TEST")
+//                .description("Informasjon oppgitt av tester")
+//                .build());
+//        requests.add(CodelistRequest.builder()
+//                .list("CATEGORY")
+//                .code("TEST")
+//                .description("Informasjon oppgitt av tester")
+//                .build());
+//        CodelistRequest.initiateRequests(requests, false);
         when(repository.findByListAndNormalizedCode(any(ListName.class), anyString())).thenReturn(Optional.empty());
 
-        service.validateRequest(requests, false);
+        service.validateRequestsFromREST(requests);
     }
 
+    private List<CodelistRequest> createListOfRequests(CodelistRequest... requests) {
+        return Arrays.stream(requests).collect(Collectors.toList());
+    }
+
+    private CodelistRequest createRequestWithListName(String listName) {
+        return CodelistRequest.builder()
+                .list(listName)
+                .code("TEST_CODE")
+                .description("Test description")
+                .update(false)
+                .requestIndex(0)
+                .build();
+    }
+
+
+    @Disabled("Until generic test for RequestValidation is written")
     @Test
     void validate_shouldValidateWithoutAnyProcessing_whenRequestIsEmpty() {
         List<CodelistRequest> requests = new ArrayList<>(Collections.emptyList());
-        service.validateRequest(requests, false);
+        service.validateRequestsFromREST(requests);
     }
 
+    @Disabled("Until generic test for RequestValidation is written")
     @Test
     void validate_shouldValidateWithoutAnyProcessing_whenRequestIsNull() {
         List<CodelistRequest> requests = null;
-        service.validateRequest(requests, false);
+        service.validateRequestsFromREST(requests);
     }
 
+    @Disabled("Until generic test for RequestValidation is written")
     @Test
     void validateThatAllFieldsHaveValidValues_shouldThrowValidationException_whenSaveAndRequestItemExist() {
-        CodelistRequest request = CodelistRequest.builder().list("PROVENANCE").code("bruker").description("Test").build();
-        when(repository.findByListAndNormalizedCode(ListName.PROVENANCE, "BRUKER")).thenReturn(Optional.of(request.convert()));
+        List<CodelistRequest> requests = createListOfRequests(createRequestWithListNameAndCode("PROVENANCE", "BRUKER"));
+        Codelist expectedCodelist = createCodelistWithListNameAndCode(ListName.PROVENANCE, "BRUKER");
+
+        when(repository.findByListAndNormalizedCode(ListName.PROVENANCE, "BRUKER")).thenReturn(Optional.of(expectedCodelist));
+
         try {
-            service.validateRequest(List.of(request), false);
+            service.validateRequestsFromREST(requests);
             fail();
         } catch (ValidationException e) {
             assertThat(e.get().size()).isEqualTo(1);
@@ -196,8 +226,20 @@ class CodelistServiceTest {
         }
     }
 
+    private Codelist createCodelistWithListNameAndCode(ListName listName, String code) {
+        return Codelist.builder().list(listName).code(code).normalizedCode(Codelist.normalize(code)).description("description").build();
+    }
+
+    private CodelistRequest createRequestWithListNameAndCode(String provenance, String code) {
+        CodelistRequest request = createRequestWithListName(provenance);
+        request.setCode(code);
+        return request;
+    }
+
+    @Disabled("Until generic test for RequestValidation is written")
     @Test
     void validateThatAllFieldsHaveValidValues_shouldValidate_whenUpdateAndRequestItemExist() {
+        //TODO: HelperFunctions
         List<CodelistRequest> requests = new ArrayList<>();
         requests.add(CodelistRequest.builder()
                 .list("PROVENANCE")
@@ -205,23 +247,23 @@ class CodelistServiceTest {
                 .description("Informasjon oppgitt av tester")
                 .build());
         Codelist codelist = requests.get(0).convert();
+        CodelistRequest.initiateRequests(requests, true);
 
         CodelistCache.set(Codelist.builder().list(ListName.PROVENANCE).code("TEST").description("Informasjon oppgitt av tester").build());
 
         when(repository.findByListAndNormalizedCode(ListName.PROVENANCE, "TEST")).thenReturn(Optional.of(codelist));
 
-        service.validateRequest(requests, true);
+        service.validateRequestsFromREST(requests);
     }
 
+    @Disabled("Until generic test for RequestValidation is written")
     @Test
     void validateThatAllFieldsHaveValidValues_shouldThrowValidationException_whenUpdateAndRequestItemDoesNotExist() {
-        CodelistRequest request = CodelistRequest.builder()
-                .list("PROVENANCE")
-                .code("unknownCode")
-                .description("Test")
-                .build();
+        List<CodelistRequest> requests = createListOfRequests(createRequestWithListNameAndCode("PROVENANCE", "unknownCode"));
+        requests.forEach(r -> r.setUpdate(true));
+
         try {
-            service.validateRequest(List.of(request), true);
+            service.validateRequestsFromREST(requests);
             fail();
         } catch (ValidationException e) {
             assertThat(e.get().size()).isEqualTo(1);
@@ -230,6 +272,7 @@ class CodelistServiceTest {
         }
     }
 
+    @Disabled("Until normalized code is in use and deprecated methods are removed")
     @Test
     void validateThatAllFieldsHaveValidValues_shouldChangeInputInRequestToCorrectFormat() {
         List<CodelistRequest> requests = List.of(CodelistRequest.builder()
@@ -238,7 +281,7 @@ class CodelistServiceTest {
                 .description("   Trim av description                      ")
                 .build());
         when(repository.saveAll(anyList())).thenAnswer(AdditionalAnswers.returnsFirstArg());
-        service.validateRequest(requests, false);
+        service.validateRequestsFromREST(requests);
         service.save(requests);
         assertTrue(CodelistCache.contains(ListName.CATEGORY, "CORRECTFORMAT"));
         assertThat(CodelistService.getCodelist(ListName.CATEGORY, "CORRECTFORMAT").getDescription()).isEqualTo("Trim av description");
