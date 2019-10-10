@@ -1,19 +1,16 @@
 package no.nav.data.catalog.backend.app.policy;
 
-import no.nav.data.catalog.backend.app.AppStarter;
 import no.nav.data.catalog.backend.app.IntegrationTestBase;
 import no.nav.data.catalog.backend.app.codelist.CodeResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = {AppStarter.class})
 class PolicyConsumerIT extends IntegrationTestBase {
 
     @Autowired
