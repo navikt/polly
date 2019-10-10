@@ -1,9 +1,11 @@
 package no.nav.data.catalog.backend.app.common.jpa;
 
 import com.bettercloud.vault.response.LogicalResponse;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.catalog.backend.app.common.jpa.VaultHikariConfig.VaultConfig;
+import no.nav.data.catalog.backend.app.common.jpa.DatasourceConfig.VaultConfig;
 import no.nav.vault.jdbc.hikaricp.VaultUtil;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.flyway.FlywayConfigurationCustomizer;
@@ -21,14 +23,18 @@ public class FlywayConfig {
         return configuration -> {
             String adminRole = vaultConfig.getDatabaseAdminrole();
             String path = vaultConfig.getDatabaseBackend() + "/creds/" + adminRole;
-            log.info("Getting credentials for for role {}", adminRole);
+            log.info("Getting credentials for role {}", adminRole);
             LogicalResponse response = read(path);
             String username = response.getData().get("username");
             String password = response.getData().get("password");
             log.info("Setting datasource for flyway with user {} and role {}", username, adminRole);
 
+            HikariConfig config = DatasourceConfig.createHikariConfig(properties);
+            config.setUsername(username);
+            config.setPassword(password);
+
             configuration
-                    .dataSource(properties.getUrl(), username, password)
+                    .dataSource(new HikariDataSource(config))
                     .initSql(String.format("SET ROLE \"%s\"", adminRole));
         };
     }
