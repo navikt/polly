@@ -6,10 +6,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.auditing.Auditable;
 import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
 
 import java.util.Collection;
@@ -25,6 +25,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import static no.nav.data.catalog.backend.app.common.utils.StringUtils.ifNotNullTrim;
+
+@Slf4j
 @Data
 @EqualsAndHashCode(exclude = {"producerDistributionChannels", "consumerDistributionChannels"}, callSuper = false)
 @ToString(exclude = {"producerDistributionChannels", "consumerDistributionChannels"})
@@ -35,38 +38,74 @@ import javax.validation.constraints.NotNull;
 @Table(name = "SYSTEM")
 public class System extends Auditable<String> {
 
-	@Id
-	@Column(name = "SYSTEM_ID")
-	@Type(type = "pg-uuid")
-	private UUID id;
+    @Id
+    @Column(name = "SYSTEM_ID")
+    @Type(type = "pg-uuid")
+    private UUID id;
 
-	@NotNull
-	@Column(name = "NAME", nullable = false)
-	private String name;
+    @NotNull
+    @Column(name = "NAME", nullable = false)
+    private String name;
 
-	@NotNull
-	@ManyToMany(mappedBy = "producers")
-	private Set<DistributionChannel> producerDistributionChannels;
+    @NotNull
+    @ManyToMany(mappedBy = "producers")
+    private Set<DistributionChannel> producerDistributionChannels;
 
-	@NotNull
-	@ManyToMany(mappedBy = "consumers")
-	private Set<DistributionChannel> consumerDistributionChannels;
+    @NotNull
+    @ManyToMany(mappedBy = "consumers")
+    private Set<DistributionChannel> consumerDistributionChannels;
 
-	public System convertFromRequest(SystemRequest request, boolean isUpdate) {
-		if (!isUpdate) {
-			this.id = UUID.randomUUID();
-			this.producerDistributionChannels = new HashSet<>();
-			this.consumerDistributionChannels = new HashSet<>();
-		}
-		this.name = StringUtils.trim(request.getName());
-		return this;
-	}
+    public System createNewSystemWithName(String systemName) {
+        this.id = UUID.randomUUID();
+        this.name = ifNotNullTrim(systemName);
+        this.producerDistributionChannels = new HashSet<>();
+        this.consumerDistributionChannels = new HashSet<>();
+        return this;
+    }
 
-	public SystemResponse convertToResponse() {
-		return new SystemResponse(this);
-	}
+    public System convertNewFromRequest(SystemRequest request) {
+        return createNewSystemWithName(request.getName());
+    }
 
-	public static List<String> names(Collection<System> systems) {
-		return StreamUtils.safeStream(systems).map(System::getName).collect(Collectors.toList());
-	}
+    public System convertUpdateFromRequest(SystemRequest request) {
+        this.name = ifNotNullTrim(request.getName());
+        return this;
+    }
+
+
+    public void addProducerDistributionChannel(DistributionChannel distributionChannel) {
+        if (distributionChannel != null) {
+            getProducerDistributionChannels().add(distributionChannel);
+            distributionChannel.getProducers().add(this);
+        }
+    }
+
+    public void removeProducerDistributionChannel(DistributionChannel distributionChannel) {
+        if (distributionChannel != null) {
+            getProducerDistributionChannels().remove(distributionChannel);
+            distributionChannel.getProducers().remove(this);
+        }
+    }
+
+    public void addConsumerDistributionChannel(DistributionChannel distributionChannel) {
+        if (distributionChannel != null) {
+            getConsumerDistributionChannels().add(distributionChannel);
+            distributionChannel.getConsumers().add(this);
+        }
+    }
+
+    public void removeConsumerDistributionChannel(DistributionChannel distributionChannel) {
+        if (distributionChannel != null) {
+            getConsumerDistributionChannels().remove(distributionChannel);
+            distributionChannel.getConsumers().remove(this);
+        }
+    }
+
+    public SystemResponse convertToResponse() {
+        return new SystemResponse(this);
+    }
+
+    public static List<String> names(Collection<System> systems) {
+        return StreamUtils.safeStream(systems).map(System::getName).collect(Collectors.toList());
+    }
 }
