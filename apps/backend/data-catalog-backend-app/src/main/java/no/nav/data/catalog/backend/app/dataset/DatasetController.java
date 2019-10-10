@@ -155,7 +155,7 @@ public class DatasetController {
         log.info("Received requests to create Datasets");
         requests = StreamUtils.nullToEmptyList(requests);
         DatasetRequest.initiateRequests(requests, false, REST);
-        service.validateRequest(requests);
+        service.validateRequestFromREST(requests);
 
         return new ResponseEntity<>(service.saveAll(requests, REST).stream().map(Dataset::convertToResponse).collect(Collectors.toList()), HttpStatus.CREATED);
     }
@@ -170,7 +170,7 @@ public class DatasetController {
         log.info("Received requests to update Datasets");
         requests = StreamUtils.nullToEmptyList(requests);
         DatasetRequest.initiateRequests(requests, true, REST);
-        service.validateRequest(requests);
+        service.validateRequestFromREST(requests);
 
         return ResponseEntity.ok(service.updateAll(requests).stream().map(Dataset::convertToResponse).collect(Collectors.toList()));
     }
@@ -194,7 +194,7 @@ public class DatasetController {
             throw new ValidationException(String.format("Cannot change title of dataset in update, id=%s has title=%s", id, existingTitle));
         }
         DatasetRequest.initiateRequests(List.of(request), true, REST);
-        service.validateRequest(List.of(request));
+        service.validateRequestFromREST(List.of(request));
 
         Dataset dataset = service.update(request);
 

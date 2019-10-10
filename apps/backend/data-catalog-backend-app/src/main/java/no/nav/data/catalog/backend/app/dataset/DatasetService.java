@@ -1,11 +1,9 @@
 package no.nav.data.catalog.backend.app.dataset;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
-import no.nav.data.catalog.backend.app.common.validator.FieldValidator;
 import no.nav.data.catalog.backend.app.common.validator.RequestValidator;
 import no.nav.data.catalog.backend.app.common.validator.ValidationError;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRelation;
@@ -14,7 +12,6 @@ import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelRepository;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelShort;
-import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelType;
 import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,7 +43,7 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
     private final DistributionChannelRepository distributionChannelRepository;
 
     public DatasetService(DatasetRelationRepository datasetRelationRepository, DatasetRepository datasetRepository,
-            DistributionChannelRepository distributionChannelRepository) {
+                          DistributionChannelRepository distributionChannelRepository) {
         this.datasetRelationRepository = datasetRelationRepository;
         this.datasetRepository = datasetRepository;
         this.distributionChannelRepository = distributionChannelRepository;
@@ -170,13 +167,13 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         List<DistributionChannel> newChannels = safeStream(requestedDistChannel)
                 .filter(distChannelRequest -> !existingNames.contains(distChannelRequest.getName()))
                 .map(DistributionChannelShort::toRequest)
-                .map(distChannelRequest -> new DistributionChannel().convertFromRequest(distChannelRequest, false))
+                .map(distChannelRequest -> new DistributionChannel().convertNewFromRequest(distChannelRequest))
                 .collect(Collectors.toList());
         log.info("Creating new DistributionChannels {}", newChannels);
         return distributionChannelRepository.saveAll(newChannels);
     }
 
-    public void validateRequest(List<DatasetRequest> requests) {
+    public void validateRequestFromREST(List<DatasetRequest> requests) {
         List<ValidationError> validationErrors = validateRequestsAndReturnErrors(requests);
 
         if (!validationErrors.isEmpty()) {
@@ -205,56 +202,14 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         requests.forEach(request -> {
             request.toUpperCaseAndTrim();
             validationErrors.addAll(validateFields(request));
-            validationErrors.addAll(validateRepositoryValues(request));
+            validationErrors.addAll(validateDatasetRepositoryValues(request));
         });
         return validationErrors;
     }
 
-    private List<ValidationError> validateFields(DatasetRequest request) {
-        FieldValidator validator = new FieldValidator(request.getReference());
-
-        validator.checkEnum("contentType", request.getContentType(), ContentType.class);
-        validator.checkBlank("title", request.getTitle());
-
-        safeStream(request.getCategories()).forEach(category -> validator.checkCodelist("categories", category, ListName.CATEGORY));
-        safeStream(request.getProvenances()).forEach(provenance -> validator.checkCodelist("provenances", provenance, ListName.PROVENANCE));
-
-        safeStream(request.getDistributionChannels())
-                .forEach(distributionChannelShort -> {
-                    validator.checkBlank("distributionchannel.name", distributionChannelShort.getName());
-                    validator.checkEnum("distributionchannel.type", distributionChannelShort.getType(), DistributionChannelType.class);
-                });
-
-        // TODO: Find out which fields should be validated
-//        validator.checkField("description", request.getDescription());
-//        validator.checkListOfFields("categories", request.getCategories());
-//        validator.checkListOfFields("provenances", request.getProvenances());
-//        validator.checkField("pi", request.getPi());
-//        validator.checkField("issued", request.getIssued());
-//        validator.checkListOfFields("keywords", request.getKeywords());
-//        validator.checkField("theme", request.getTheme());
-//        validator.checkField("accessRights", request.getAccessRights());
-//        validator.checkField("publisher", request.getPublisher());
-//        validator.checkField("spatial", request.getSpatial());
-//        validator.checkField("haspart", request.getHaspart());
-//        validator.checkListOfFields("distributionChannels", request.getDistributionChannels());
-
-        return validator.getErrors();
-    }
-
-    private List<ValidationError> validateRepositoryValues(DatasetRequest request) {
-        List<ValidationError> validationErrors = new ArrayList<>();
+    private List<ValidationError> validateDatasetRepositoryValues(DatasetRequest request) {
         Optional<Dataset> existingDataset = datasetRepository.findByTitle(request.getTitle());
-
-        if (creatingExistingElement(request.isUpdate(), existingDataset.isPresent())) {
-            validationErrors.add(new ValidationError(request.getReference(), "creatingExistingDataset",
-                    String.format("The dataset %s already exists and therefore cannot be created", request.getTitle())));
-        }
-
-        if (updatingNonExistingElement(request.isUpdate(), existingDataset.isPresent())) {
-            validationErrors.add(new ValidationError(request.getReference(), "updatingNonExistingDataset",
-                    String.format("The dataset %s does not exist and therefore cannot be updated", request.getTitle())));
-        }
+        List<ValidationError> validationErrors = new ArrayList<>(validateRepositoryValues(request, existingDataset.isPresent()));
 
         if (updatingExistingElement(request.isUpdate(), existingDataset.isPresent())) {
             DatasetData existingDatasetData = existingDataset.get().getDatasetData();
@@ -269,6 +224,10 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
             }
         }
         return validationErrors;
+    }
+
+    private boolean updatingExistingElement(boolean isUpdate, boolean existInRepository) {
+        return isUpdate && existInRepository;
     }
 
     private boolean correlatingMaster(DatacatalogMaster existingMaster, DatacatalogMaster requestMaster) {
