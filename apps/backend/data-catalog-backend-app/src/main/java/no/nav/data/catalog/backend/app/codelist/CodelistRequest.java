@@ -5,7 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.data.catalog.backend.app.common.validator.FieldValidator;
 import no.nav.data.catalog.backend.app.common.validator.RequestElement;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static no.nav.data.catalog.backend.app.common.utils.StringUtils.ifNotNullToUppercaseAndTrim;
+import static no.nav.data.catalog.backend.app.common.utils.StringUtils.ifNotNullTrim;
 
 @Data
 @Builder
@@ -30,7 +37,8 @@ public class CodelistRequest implements RequestElement {
     @JsonIgnore
     private int requestIndex;
 
-    String getReference() {
+    @Override
+    public String getReference() {
         return "Request:" + requestIndex;
     }
 
@@ -40,7 +48,7 @@ public class CodelistRequest implements RequestElement {
     }
 
     @JsonIgnore
-    public String getNormalizedCode() {
+    String getNormalizedCode() {
         return Codelist.normalize(code);
     }
 
@@ -59,11 +67,23 @@ public class CodelistRequest implements RequestElement {
         setDescription(ifNotNullTrim(description));
     }
 
-    private String ifNotNullToUppercaseAndTrim(String field) {
-        return field == null ? null : field.toUpperCase().trim();
+    static void initiateRequests(List<CodelistRequest> codelistRequests, boolean update) {
+        AtomicInteger requestIndex = new AtomicInteger(1);
+        codelistRequests.forEach(request -> {
+            request.setUpdate(update);
+            request.setRequestIndex(requestIndex.getAndIncrement());
+        });
     }
 
-    private String ifNotNullTrim(String field) {
-        return field == null ? null : field.trim();
+    @Override
+    public FieldValidator validateFields() {
+        FieldValidator validator = new FieldValidator(getReference());
+
+        validator.checkBlank("listName", getList());
+        validator.checkBlank("code", getCode());
+        validator.checkBlank("description", getDescription());
+
+        return validator;
     }
+
 }
