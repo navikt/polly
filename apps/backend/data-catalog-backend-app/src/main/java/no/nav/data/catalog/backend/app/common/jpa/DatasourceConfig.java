@@ -20,7 +20,7 @@ public class DatasourceConfig {
     @ConfigurationProperties(prefix = "vault")
     public static class VaultConfig {
 
-        private boolean enabled;
+        private boolean enabled = true;
         private String databaseBackend;
         private String databaseRole;
         private String databaseAdminrole;
