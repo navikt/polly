@@ -20,7 +20,7 @@ public class DatasourceConfig {
     @ConfigurationProperties(prefix = "vault")
     public static class VaultConfig {
 
-        private boolean enable;
+        private boolean enabled;
         private String databaseBackend;
         private String databaseRole;
         private String databaseAdminrole;
@@ -29,7 +29,7 @@ public class DatasourceConfig {
     @Bean
     public HikariDataSource dataSource(DataSourceProperties properties, VaultConfig vaultConfig) throws VaultError {
         HikariConfig config = createHikariConfig(properties);
-        if (vaultConfig.enable) {
+        if (vaultConfig.enabled) {
             return HikariCPVaultUtil.createHikariDataSourceWithVaultIntegration(config, vaultConfig.databaseBackend, vaultConfig.databaseRole);
         }
         config.setUsername(properties.getUsername());
