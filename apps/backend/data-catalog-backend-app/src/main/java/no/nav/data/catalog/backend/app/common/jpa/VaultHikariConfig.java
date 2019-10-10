@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.vault.config.databases.VaultDatabaseProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.util.Assert;
 import org.springframework.vault.core.VaultOperations;
 import org.springframework.vault.core.lease.LeaseEndpoints;
 import org.springframework.vault.core.lease.SecretLeaseContainer;
@@ -55,8 +56,11 @@ public class VaultHikariConfig implements InitializingBean {
                 String path = getPath();
                 log.info("Roterer brukernavn/passord for: {}", path);
                 VaultResponse vaultResponse = vaultOperations.read(path);
+                Assert.notNull(vaultResponse, "No response from vault");
+                log.info("Ny lease for {} {}", path, vaultResponse.getLeaseId());
                 updateCredentials(vaultResponse);
-                scheduleNextRotation(vaultResponse.getLeaseDuration(), 30);
+                int minutesBeforeExpire = 30;
+                scheduleNextRotation(vaultResponse.getLeaseDuration(), minutesBeforeExpire);
                 return;
             } catch (Exception e) {
                 log.error("error rotating db credentials", e);
@@ -73,6 +77,7 @@ public class VaultHikariConfig implements InitializingBean {
 
     private void updateCredentials(VaultResponse vaultResponse) {
         Map<String, Object> data = vaultResponse.getData();
+        Assert.notNull(data, "No data in vaultResponse");
         val username = data.get("username").toString();
         val password = data.get("password").toString();
         ds.setUsername(username);
