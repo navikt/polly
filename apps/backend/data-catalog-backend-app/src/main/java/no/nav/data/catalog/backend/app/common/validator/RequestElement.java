@@ -8,4 +8,16 @@ public interface RequestElement {
 
     @JsonIgnore
     String getRequestType();
+
+    @JsonIgnore
+    boolean isUpdate();
+
+    @JsonIgnore
+    int getRequestIndex();
+
+    @JsonIgnore
+    String getReference();
+
+    @JsonIgnore
+    FieldValidator validateFields();
 }
