@@ -11,7 +11,6 @@ import no.nav.data.catalog.backend.app.common.auditing.Auditable;
 import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
 import no.nav.data.catalog.backend.app.system.System;
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
 
 import java.util.Collection;
@@ -30,6 +29,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
+import static no.nav.data.catalog.backend.app.common.utils.StringUtils.ifNotNullTrim;
 
 @Slf4j
 @Data
@@ -74,15 +75,24 @@ public class DistributionChannel extends Auditable<String> {
             inverseJoinColumns = @JoinColumn(name = "SYSTEM_ID"))
     private Set<System> consumers = new HashSet<>();
 
-    public DistributionChannel convertFromRequest(DistributionChannelRequest request, boolean isUpdate) {
-        if (!isUpdate) {
-            this.id = UUID.randomUUID();
-        }
-        this.name = StringUtils.trim(request.getName());
-        this.description = StringUtils.trim(request.getDescription());
-        this.type = request.getType();
-
+    public DistributionChannel convertNewFromRequest(DistributionChannelRequest request) {
+        this.id = UUID.randomUUID();
+        this.datasets = new HashSet<>();
+        this.producers = new HashSet<>();
+        this.consumers = new HashSet<>();
+        convertFromRequest(request);
         return this;
+    }
+
+    public DistributionChannel convertUpdateFromRequest(DistributionChannelRequest request) {
+        convertFromRequest(request);
+        return this;
+    }
+
+    private void convertFromRequest(DistributionChannelRequest request) {
+        this.name = ifNotNullTrim(request.getName());
+        this.description = ifNotNullTrim(request.getDescription());
+        this.type = request.getType();
     }
 
     public DistributionChannelResponse convertToResponse() {
@@ -90,31 +100,40 @@ public class DistributionChannel extends Auditable<String> {
     }
 
     public void addConsumer(System system) {
-        getConsumers().add(system);
-        system.getConsumerDistributionChannels().add(this);
+        if (system != null) {
+            getConsumers().add(system);
+            system.getConsumerDistributionChannels().add(this);
+        }
     }
 
     public void removeConsumer(System system) {
-        getConsumers().remove(system);
-        system.getConsumerDistributionChannels().remove(this);
-        log.info("Removed consumer={} from distributionChannel={}", system.getName(), getName());
+        if (system != null) {
+            getConsumers().remove(system);
+            system.getConsumerDistributionChannels().remove(this);
+            log.info("Removed consumer={} from distributionChannel={}", system.getName(), getName());
+        }
     }
 
     public void addProducer(System system) {
-        getProducers().add(system);
-        system.getProducerDistributionChannels().add(this);
+        if (system != null) {
+            getProducers().add(system);
+            system.getProducerDistributionChannels().add(this);
+        }
     }
 
     public void removeProducer(System system) {
-        getProducers().remove(system);
-        system.getProducerDistributionChannels().remove(this);
-        log.info("Removed producer={} from distributionChannel={}", system.getName(), getName());
+        if (system != null) {
+            getProducers().remove(system);
+            system.getProducerDistributionChannels().remove(this);
+            log.info("Removed producer={} from distributionChannel={}", system.getName(), getName());
+        }
     }
 
     public static List<String> names(Collection<DistributionChannel> distributionChannels) {
         return StreamUtils.safeStream(distributionChannels).map(DistributionChannel::getName).collect(Collectors.toList());
     }
 
+    // TODO: Add description to distributionChannelShort, otherwise it will overwrite existing description with emtpy string.
     public static List<DistributionChannelShort> distributionChannelShorts(Collection<DistributionChannel> distributionChannels) {
         return StreamUtils.safeStream(distributionChannels)
                 .map(distributionChannel -> new DistributionChannelShort(distributionChannel.getName(), distributionChannel.getType().name()))
