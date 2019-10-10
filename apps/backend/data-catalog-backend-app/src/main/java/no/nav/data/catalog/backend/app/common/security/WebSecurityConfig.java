@@ -16,6 +16,9 @@ import org.springframework.security.web.context.SecurityContextPersistenceFilter
 @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final CorrelationFilter correlationFilter = new CorrelationFilter();
+    private final UserFilter userFilter = new UserFilter();
+
     @Autowired(required = false)
     private AADAppRoleStatelessAuthenticationFilter aadAuthFilter;
     @Value("${security.enabled:true}")
@@ -26,10 +29,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.addFilterBefore(new CorrelationFilter(), SecurityContextPersistenceFilter.class);
+        addFilters(http);
 
         if (!enable) {
-            http.addFilterAfter(new UserFilter(), CorrelationFilter.class);
             return;
         }
         http.authorizeRequests().antMatchers("/internal/**").permitAll();
@@ -48,9 +50,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(HttpMethod.GET, "/records/search").permitAll();
 
         http.authorizeRequests().anyRequest().authenticated();
+    }
 
-        http.addFilterBefore(aadAuthFilter, UsernamePasswordAuthenticationFilter.class);
-        http.addFilterAfter(new UserFilter(), AADAppRoleStatelessAuthenticationFilter.class);
+    private void addFilters(HttpSecurity http) {
+        http.addFilterBefore(correlationFilter, SecurityContextPersistenceFilter.class);
+        // In lightweight mvc tests where authfilter isnt initialized
+        if (aadAuthFilter != null) {
+            http.addFilterBefore(aadAuthFilter, UsernamePasswordAuthenticationFilter.class);
+            http.addFilterAfter(userFilter, AADAppRoleStatelessAuthenticationFilter.class);
+        } else {
+            http.addFilterAfter(userFilter, UsernamePasswordAuthenticationFilter.class);
+        }
     }
 
 }
