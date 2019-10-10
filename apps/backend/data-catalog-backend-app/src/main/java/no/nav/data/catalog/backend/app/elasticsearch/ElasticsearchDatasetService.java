@@ -67,8 +67,7 @@ public class ElasticsearchDatasetService {
             DatasetElasticsearch datasetES = mapDataset(dataset);
             elasticsearch.insert(ElasticsearchDocument.newDatasetDocument(datasetES, elasticsearchProperties.getIndex()));
 
-            dataset.setElasticsearchStatus(SYNCED);
-            repository.save(dataset);
+            repository.updateStatusForDataset(dataset.getId(), SYNCED);
             counter.labels("create").inc();
         }
         return datasets.size();
@@ -80,8 +79,7 @@ public class ElasticsearchDatasetService {
             DatasetElasticsearch datasetES = mapDataset(dataset);
             elasticsearch.updateById(ElasticsearchDocument.newDatasetDocument(datasetES, elasticsearchProperties.getIndex()));
 
-            dataset.setElasticsearchStatus(SYNCED);
-            repository.save(dataset);
+            repository.updateStatusForDataset(dataset.getId(), SYNCED);
             counter.labels("update").inc();
         }
         return datasets.size();
