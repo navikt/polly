@@ -11,7 +11,6 @@ import no.nav.data.catalog.backend.app.policy.PolicyConsumer;
 import no.nav.data.catalog.backend.app.policy.PolicyResponse;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +41,6 @@ public class ElasticsearchDatasetService {
         this.counter = initCounter();
         this.summary = Summary.build().name("elasticsearch_sync_summary").help("runtime es-sync")
                 .quantile(.5, .05).quantile(.9, .01).quantile(.95, .005).quantile(.99, .001)
-                .maxAgeSeconds(Duration.ofMinutes(30).toSeconds()).ageBuckets(6)
                 .register();
     }
 
