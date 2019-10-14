@@ -1,10 +1,12 @@
 package no.nav.data.catalog.backend.app.distributionchannel;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendNotFoundException;
+import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
+import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
+import no.nav.data.catalog.backend.app.common.validator.RequestValidator;
+import no.nav.data.catalog.backend.app.common.validator.ValidationError;
 import no.nav.data.catalog.backend.app.system.System;
 import no.nav.data.catalog.backend.app.system.SystemRepository;
-import no.nav.data.catalog.backend.app.system.SystemRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,76 +19,107 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
+import static java.util.stream.Collectors.toList;
 import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.safeStream;
 
 @Slf4j
 @Service
 @Transactional
-public class DistributionChannelService {
+public class DistributionChannelService extends RequestValidator<DistributionChannelRequest> {
 
-	private final DistributionChannelRepository repository;
+	private final DistributionChannelRepository distributionChannelRepository;
 	private final SystemRepository systemRepository;
 
 	public DistributionChannelService(DistributionChannelRepository repository, SystemRepository systemRepository) {
-		this.repository = repository;
+		this.distributionChannelRepository = repository;
 		this.systemRepository = systemRepository;
 	}
 
 	public Optional<DistributionChannel> findDistributionChannelById(UUID id) {
-		return repository.findById(id);
+		return distributionChannelRepository.findById(id);
 	}
 
 	public Page<DistributionChannelResponse> getAllDistributionChannels(Pageable pageable) {
-		return repository.findAll(pageable).map(DistributionChannel::convertToResponse);
+		return distributionChannelRepository.findAll(pageable).map(DistributionChannel::convertToResponse);
 	}
 
-	public List<DistributionChannel> createDistributionChannels(List<DistributionChannelRequest> requests) {
-		List<DistributionChannel> distributionChannels = requests.stream()
-				.map(request -> {
-					DistributionChannel distributionChannel = new DistributionChannel().convertFromRequest(request, false);
-					attachSystems(request, distributionChannel);
-					return distributionChannel;
-				})
-				.collect(Collectors.toList());
-
-		//TODO: Her må alle berørte datasett og system updateres samtidig
-		return new ArrayList<>(repository.saveAll(distributionChannels));
+	@Transactional
+	public List<DistributionChannel> saveAll(List<DistributionChannelRequest> requests) {
+		List<DistributionChannel> distributionChannels = requests.stream().map(this::convertNew).collect(Collectors.toList());
+		return distributionChannelRepository.saveAll(distributionChannels);
 	}
 
-	public List<DistributionChannel> updateDistributionChannels(List<DistributionChannelRequest> requests) {
-		List<DistributionChannel> distributionChannels = updateAndReturnAllDistributionChannelsIfAllExists(requests);
+	@Transactional
+	public List<DistributionChannel> updateAll(List<DistributionChannelRequest> requests) {
+		List<DistributionChannel> distChannels = distributionChannelRepository.findAllByName(requests.stream()
+				.map(DistributionChannelRequest::getName)
+				.collect(toList()));
 
-		//TODO: Her må alle berørte datasett og system updateres samtidig -> if System_id update -> set ElasticsearchStatus to TO_BE_UDPATED?
-		return new ArrayList<>(repository.saveAll(distributionChannels));
+		distChannels.forEach(
+				distChannel -> {
+					Optional<DistributionChannelRequest> request = requests.stream()
+							.filter(r -> r.getName().equals(distChannel.getName()))
+							.findFirst();
+					request.ifPresent(distChannelRequest -> convertUpdate(distChannelRequest, distChannel));
+				});
+
+		return distributionChannelRepository.saveAll(distChannels);
+
 	}
 
-	private List<DistributionChannel> updateAndReturnAllDistributionChannelsIfAllExists(List<DistributionChannelRequest> requests) {
-		List<DistributionChannel> distributionChannels = new ArrayList<>();
-		requests.forEach(request -> {
-			Optional<DistributionChannel> optionalDistributionChannels = repository.findByName(request.getName());
-			if (optionalDistributionChannels.isEmpty()) {
-				throw new DataCatalogBackendNotFoundException(String.format("Cannot find distributionChannel with name: %s",
-						request.getName()));
-			}
-			DistributionChannel distributionChannel = optionalDistributionChannels.get().convertFromRequest(request, true);
-			attachSystems(request, distributionChannel);
-			distributionChannels.add(distributionChannel);
-		});
-		return distributionChannels;
+	@Transactional
+	public DistributionChannel delete(DistributionChannel distChannel) {
+		// remove this distChannel from all producers and consumers (System)
+		safeStream(distChannel.getConsumers()).forEach(system -> system.getConsumerDistributionChannels().remove(distChannel));
+		safeStream(distChannel.getProducers()).forEach(system -> system.getProducerDistributionChannels().remove(distChannel));
+
+
+		// remove this distChannel from all datasets ???
+		distributionChannelRepository.delete(distChannel);
+		return distChannel;
 	}
 
-	public DistributionChannel deleteDistributionChannel(DistributionChannel distributionChannel) {
-		//TODO: Her må alle berørte datasett og system fjernes samtidig
-		return repository.save(distributionChannel);
+	private DistributionChannel convertNew(DistributionChannelRequest request) {
+		DistributionChannel distChannels = new DistributionChannel().convertNewFromRequest(request);
+		attachDependencies(request, distChannels);
+		return distChannels;
+	}
+
+	private DistributionChannel convertUpdate(DistributionChannelRequest request, DistributionChannel distChannel) {
+		distChannel.convertUpdateFromRequest(request);
+		attachDependencies(request, distChannel);
+		return distChannel;
+	}
+
+	private void attachDependencies(DistributionChannelRequest request, DistributionChannel distributionChannel) {
+		var consumerBefore = System.names(distributionChannel.getConsumers());
+		var producerBefore = System.names(distributionChannel.getProducers());
+
+		attachSystems(request, distributionChannel);
+
+		var consumerAfter = System.names(distributionChannel.getConsumers());
+		var producerAfter = System.names(distributionChannel.getProducers());
+
+		if (!consumerBefore.equals(consumerAfter)) {
+			log.info("System {} changed DistributionChannels for consumers {}", distributionChannel.getName(), StreamUtils.difference(consumerBefore, consumerAfter)
+					.changeString());
+		}
+		if (!producerBefore.equals(producerAfter)) {
+			log.info("System {} changed DistributionChannels for producers {}", distributionChannel.getName(), StreamUtils.difference(producerBefore, producerAfter)
+					.changeString());
+		}
 	}
 
     private void attachSystems(DistributionChannelRequest request, DistributionChannel distributionChannel) {
+        // filter out by name which systems that are in the request but not in the repository, convert from String to System and add to the consumers
         safeStream(request.getConsumers())
-                .filter(consumer -> safeStream(distributionChannel.getConsumers()).noneMatch(existingConsumer -> existingConsumer.getName().equals(consumer)))
+                .filter(requestedConsumer -> safeStream(distributionChannel.getConsumers()).noneMatch(existingConsumer -> existingConsumer.getName().equals(requestedConsumer)))
                 .forEach(consumer -> distributionChannel.addConsumer(systemRepository.findByName(consumer).orElseGet(() -> createNewSystem(consumer))));
+        // filter out by name which systems that are in the repository but not in the request and remove these from the distributionChannel
         var removeConsumers = distributionChannel.getConsumers().stream().filter(consumer -> !request.getConsumers().contains(consumer.getName())).collect(Collectors.toList());
         removeConsumers.forEach(distributionChannel::removeConsumer);
 
+        // same procedure for producerSystems
         safeStream(request.getProducers())
                 .filter(producer -> safeStream(distributionChannel.getProducers()).noneMatch(existingProducer -> existingProducer.getName().equals(producer)))
                 .forEach(producer -> distributionChannel.addProducer(systemRepository.findByName(producer).orElseGet(() -> createNewSystem(producer))));
@@ -95,18 +128,44 @@ public class DistributionChannelService {
 	}
 
 	public void createOrUpdateDistributionChannelFromKafka(DistributionChannelRequest request) {
-		Optional<DistributionChannel> optional = repository.findByName(request.getName());
+		Optional<DistributionChannel> optional = distributionChannelRepository.findByName(request.getName());
 		if (optional.isEmpty()) {
 			log.info("Creating new distributionChannel={}", request.getName());
-			createDistributionChannels(Collections.singletonList(request));
+			saveAll(Collections.singletonList(request));
 		} else {
-			updateDistributionChannels(Collections.singletonList(request));
+			updateAll(Collections.singletonList(request));
 		}
 	}
 
 	private System createNewSystem(String systemName) {
 		log.info("Creating new system={}", systemName);
-		System system = new System().convertFromRequest(SystemRequest.builder().name(systemName).build(), false);
+        System system = new System().createNewSystemWithName(systemName);
 		return systemRepository.save(system);
+	}
+
+    void validateRequest(List<DistributionChannelRequest> requests) {
+		List<ValidationError> validationErrors = validateRequestsAndReturnErrors(requests);
+
+		if (!validationErrors.isEmpty()) {
+			log.error("The request was not accepted. The following errors occurred during validation: {}", validationErrors);
+			throw new ValidationException(validationErrors, "The request was not accepted. The following errors occurred during validation: ");
+		}
+	}
+
+	private List<ValidationError> validateRequestsAndReturnErrors(List<DistributionChannelRequest> requests) {
+		if (requests.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		List<ValidationError> validationErrors = new ArrayList<>(validateNoDuplicates(requests));
+
+        requests.forEach(request -> {
+            validationErrors.addAll(validateFields(request));
+
+            boolean existInRepository = distributionChannelRepository.findByName(request.getName()).isPresent();
+            validationErrors.addAll(validateRepositoryValues(request, existInRepository));
+        });
+
+		return validationErrors;
 	}
 }

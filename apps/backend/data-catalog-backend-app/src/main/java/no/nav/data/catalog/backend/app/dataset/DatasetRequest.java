@@ -7,12 +7,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.catalog.backend.app.codelist.ListName;
 import no.nav.data.catalog.backend.app.common.exceptions.DataCatalogBackendTechnicalException;
 import no.nav.data.catalog.backend.app.common.exceptions.ValidationException;
 import no.nav.data.catalog.backend.app.common.utils.JsonUtils;
+import no.nav.data.catalog.backend.app.common.validator.FieldValidator;
 import no.nav.data.catalog.backend.app.common.validator.RequestElement;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelShort;
+import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelType;
 import no.nav.data.catalog.backend.app.github.GithubReference;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.eclipse.egit.github.core.RepositoryContents;
 
@@ -25,6 +29,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.nullToEmptyList;
+import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.safeStream;
+import static no.nav.data.catalog.backend.app.common.utils.StringUtils.ifNotNullToUppercaseAndTrim;
 import static org.eclipse.egit.github.core.RepositoryContents.ENCODING_BASE64;
 import static org.eclipse.egit.github.core.RepositoryContents.TYPE_FILE;
 
@@ -105,7 +111,8 @@ public class DatasetRequest implements RequestElement {
         return "dataset";
     }
 
-    String getReference() {
+    @Override
+    public String getReference() {
         switch (datacatalogMaster) {
             case GITHUB:
                 return getRequestReference().orElse("");
@@ -132,6 +139,7 @@ public class DatasetRequest implements RequestElement {
         // TODO sjekk
 //        doUpperCaseAndTrim();
     }
+
     void doUpperCaseAndTrim() {
         setTitle(ifNotNullToUppercaseAndTrim(title));
         setDescription(ifNotNullToUppercaseAndTrim(description));
@@ -139,8 +147,8 @@ public class DatasetRequest implements RequestElement {
                 .map(String::toUpperCase)
                 .map(String::trim)
                 .collect(Collectors.toList()));
-        setPi(ifNotNullTrim(pi));
-        setIssued(ifNotNullTrim(issued));
+        setPi(StringUtils.trim(pi));
+        setIssued(StringUtils.trim(issued));
         setKeywords(nullToEmptyList(keywords).stream().map(String::toUpperCase).map(String::trim).collect(Collectors.toList()));
         setThemes(nullToEmptyList(themes));
         setAccessRights(ifNotNullToUppercaseAndTrim(accessRights));
@@ -151,14 +159,6 @@ public class DatasetRequest implements RequestElement {
 //                .map(String::toUpperCase)
 //                .map(String::trim)
 //                .collect(Collectors.toList()));
-    }
-
-    private String ifNotNullToUppercaseAndTrim(String field) {
-        return field == null ? null : field.toUpperCase().trim();
-    }
-
-    private String ifNotNullTrim(String field) {
-        return field == null ? null : field.trim();
     }
 
     public static void initiateRequests(List<DatasetRequest> requests, boolean update, DatacatalogMaster master) {
@@ -182,5 +182,38 @@ public class DatasetRequest implements RequestElement {
                     String.format("Master mismatch for update, dataset is mastered by=%s request came from %s", dataset.getDatasetData().getDatacatalogMaster(),
                             getDatacatalogMaster()));
         }
+    }
+
+    @Override
+    public FieldValidator validateFields() {
+        FieldValidator validator = new FieldValidator(getReference());
+
+        validator.checkEnum("contentType", getContentType(), ContentType.class);
+        validator.checkBlank("title", getTitle());
+
+        safeStream(getCategories()).forEach(category -> validator.checkCodelist("categories", category, ListName.CATEGORY));
+        safeStream(getProvenances()).forEach(provenance -> validator.checkCodelist("provenances", provenance, ListName.PROVENANCE));
+
+        safeStream(getDistributionChannels())
+                .forEach(distributionChannelShort -> {
+                    validator.checkBlank("distributionchannel.name", distributionChannelShort.getName());
+                    validator.checkEnum("distributionchannel.type", distributionChannelShort.getType(), DistributionChannelType.class);
+                });
+
+        // TODO: Find out which fields should be validated
+//        validator.checkField("description", request.getDescription());
+//        validator.checkListOfFields("categories", request.getCategories());
+//        validator.checkListOfFields("provenances", request.getProvenances());
+//        validator.checkField("pi", request.getPi());
+//        validator.checkField("issued", request.getIssued());
+//        validator.checkListOfFields("keywords", request.getKeywords());
+//        validator.checkField("theme", request.getTheme());
+//        validator.checkField("accessRights", request.getAccessRights());
+//        validator.checkField("publisher", request.getPublisher());
+//        validator.checkField("spatial", request.getSpatial());
+//        validator.checkField("haspart", request.getHaspart());
+//        validator.checkListOfFields("distributionChannels", request.getDistributionChannels());
+
+        return validator;
     }
 }

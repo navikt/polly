@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.rest.PageParameters;
 import no.nav.data.catalog.backend.app.common.rest.RestResponsePage;
+import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -89,9 +90,11 @@ public class DistributionChannelController {
     @PostMapping
     public ResponseEntity<List<DistributionChannelResponse>> createDistributionChannels(@RequestBody List<DistributionChannelRequest> requests) {
         log.info("Received requests to create DistributionChannels");
-        //TODO: ValidateRequest
-//		service.validateRequests(requests, false);
-        return new ResponseEntity<>(service.createDistributionChannels(requests).stream().map(DistributionChannel::convertToResponse).collect(Collectors.toList()),
+        requests = StreamUtils.nullToEmptyList(requests);
+        DistributionChannelRequest.initiateRequests(requests, false);
+        service.validateRequest(requests);
+
+        return new ResponseEntity<>(service.saveAll(requests).stream().map(DistributionChannel::convertToResponse).collect(Collectors.toList()),
                 HttpStatus.CREATED);
     }
 
@@ -103,9 +106,10 @@ public class DistributionChannelController {
     @PutMapping
     public ResponseEntity<List<DistributionChannelResponse>> updateDistributionChannels(@RequestBody List<DistributionChannelRequest> requests) {
         log.info("Received requests to create DistributionChannels");
-        //TODO: ValidateRequest
-//		service.validateRequests(requests, true);
-        return ResponseEntity.ok(service.updateDistributionChannels(requests).stream().map(DistributionChannel::convertToResponse).collect(Collectors.toList()));
+        requests = StreamUtils.nullToEmptyList(requests);
+        DistributionChannelRequest.initiateRequests(requests, true);
+        service.validateRequest(requests);
+        return ResponseEntity.ok(service.updateAll(requests).stream().map(DistributionChannel::convertToResponse).collect(Collectors.toList()));
     }
 
     @ApiOperation(value = "Delete DistributionChannel", tags = {"DistributionChannel"})
@@ -123,7 +127,7 @@ public class DistributionChannelController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         log.info("DistributionChannel with id={} has been set to be deleted during the next scheduled task", id);
-        return new ResponseEntity<>(service.deleteDistributionChannel(fromRepository.get()).convertToResponse(), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(service.delete(fromRepository.get()).convertToResponse(), HttpStatus.ACCEPTED);
     }
 
     private static final class DistributionChannelPage extends RestResponsePage<DistributionChannelResponse> {

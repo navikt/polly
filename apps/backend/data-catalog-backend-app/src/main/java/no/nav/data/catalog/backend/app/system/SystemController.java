@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.rest.PageParameters;
 import no.nav.data.catalog.backend.app.common.rest.RestResponsePage;
+import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 @Slf4j
@@ -86,10 +88,12 @@ public class SystemController {
     @PostMapping
     public ResponseEntity<List<SystemResponse>> createSystems(@RequestBody List<SystemRequest> requests) {
         log.info("Received requests to create Systems");
-        //TODO: ValidateRequest
-//		service.validateRequests(requests, false);
-		return new ResponseEntity<>(service.createSystems(requests), HttpStatus.CREATED);
-	}
+        requests = StreamUtils.nullToEmptyList(requests);
+        SystemRequest.initiateRequests(requests, false);
+        service.validateRequest(requests);
+
+        return new ResponseEntity<>(service.saveAll(requests).stream().map(System::convertToResponse).collect(Collectors.toList()), HttpStatus.CREATED);
+    }
 
     @ApiOperation(value = "Update Systems", tags = {"System"})
     @ApiResponses(value = {
@@ -99,9 +103,11 @@ public class SystemController {
     @PutMapping
     public ResponseEntity<List<SystemResponse>> updateSystems(@RequestBody List<SystemRequest> requests) {
         log.info("Received requests to create Systems");
-        //TODO: ValidateRequest
-//		service.validateRequests(requests, false);
-        return new ResponseEntity<>(service.updateSystems(requests), HttpStatus.OK);
+        requests = StreamUtils.nullToEmptyList(requests);
+        SystemRequest.initiateRequests(requests, true);
+        service.validateRequest(requests);
+
+        return new ResponseEntity<>(service.updateAll(requests).stream().map(System::convertToResponse).collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Delete System", tags = {"System"})
@@ -118,8 +124,8 @@ public class SystemController {
             log.info("Cannot find System with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        log.info("System with id={} has been set to be deleted during the next scheduled task", id);
-        return new ResponseEntity<>(service.deleteSystem(fromRepository.get()).convertToResponse(), HttpStatus.ACCEPTED);
+//        log.info("System with id={} has been set to be deleted during the next scheduled task", id);
+        return new ResponseEntity<>(service.delete(fromRepository.get()).convertToResponse(), HttpStatus.ACCEPTED);
     }
 
     private static final class SystemPage extends RestResponsePage<SystemResponse> {
