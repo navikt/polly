@@ -120,7 +120,6 @@
 		<dependency>
 			<groupId>io.confluent</groupId>
 			<artifactId>kafka-avro-serializer</artifactId>
-			<version>${confluent.version}</version>
 		</dependency>
 
 		<!-- Prometheus metrics-->
