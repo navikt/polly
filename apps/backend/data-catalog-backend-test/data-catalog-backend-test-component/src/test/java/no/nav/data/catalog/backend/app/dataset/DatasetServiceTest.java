@@ -66,13 +66,13 @@ class DatasetServiceTest {
 
     @Test
     void validateRequest_shouldValidateWithoutAnyProcessing_whenListOfRequestsIsNull() {
-        service.validateRequestFromREST(null);
+        service.validateRequest(null);
     }
 
     @Test
     void validateRequest_shouldValidateWithoutAnyProcessing_whenListOfRequestsIsEmpty() {
         List<DatasetRequest> requests = Collections.emptyList();
-        service.validateRequestFromREST(requests);
+        service.validateRequest(requests);
     }
 
     @Disabled("Until generic test for RequestValidation is written")
@@ -81,7 +81,7 @@ class DatasetServiceTest {
         DatasetRequest title1 = createValidDatasetRequest("Title1");
         DatasetRequest title2 = createValidDatasetRequest("Title2");
 
-        Exception exception = assertThrows(Exception.class, () -> service.validateRequestFromREST(new ArrayList<>(List.of(title1, title2, title1))));
+        Exception exception = assertThrows(Exception.class, () -> service.validateRequest(new ArrayList<>(List.of(title1, title2, title1))));
         assertThat(exception)
                 .hasMessageContaining("Request:3 -- DuplicateElement -- The dataset Title1 is not unique because it has already been used in this request (see request:1)");
     }
@@ -93,14 +93,14 @@ class DatasetServiceTest {
         DatasetRequest title3 = createValidDatasetRequest("Title1");
         title3.setDescription("Not equal object as the request1");
 
-        Exception exception = assertThrows(Exception.class, () -> service.validateRequestFromREST(new ArrayList<>(List.of(title1, title2, title3))));
+        Exception exception = assertThrows(Exception.class, () -> service.validateRequest(new ArrayList<>(List.of(title1, title2, title3))));
         assertThat(exception).hasMessageContaining("Title1 -- DuplicatedIdentifyingFields -- Multiple elements in this request are using the same unique fields (Title1)");
     }
 
     @Disabled("Until generic test for RequestValidation is written")
     @Test
     void validateRequest_shouldThrowValidationException_whenFieldTitleIsNull() {
-        Exception exception = assertThrows(Exception.class, () -> service.validateRequestFromREST(List.of(createValidDatasetRequest(null))));
+        Exception exception = assertThrows(Exception.class, () -> service.validateRequest(List.of(createValidDatasetRequest(null))));
         assertThat(exception).hasMessageContaining("Request:1 -- fieldIsNullOrMissing -- title was null or missing");
     }
 
@@ -109,7 +109,7 @@ class DatasetServiceTest {
         DatasetRequest request = createValidDatasetRequest("Title1");
         request.setCategories(List.of("doesntexist"));
 
-        Exception exception = assertThrows(Exception.class, () -> service.validateRequestFromREST(List.of(request)));
+        Exception exception = assertThrows(Exception.class, () -> service.validateRequest(List.of(request)));
         assertThat(exception).hasMessageContaining("Request:1 -- fieldIsNullOrMissing -- categories: DOESNTEXIST code not found in codelist CATEGORY");
     }
 
@@ -118,7 +118,7 @@ class DatasetServiceTest {
         DatasetRequest request = createValidDatasetRequest("Title");
         request.setContentType(null);
 
-        Exception exception = assertThrows(Exception.class, () -> service.validateRequestFromREST(List.of(request)));
+        Exception exception = assertThrows(Exception.class, () -> service.validateRequest(List.of(request)));
         assertThat(exception).hasMessageContaining("Request:1 -- fieldIsNullOrMissing -- contentType was null or missing");
     }
 
@@ -127,7 +127,7 @@ class DatasetServiceTest {
         DatasetRequest request = createValidDatasetRequest("Title");
         request.setContentType("invalid-type");
 
-        Exception exception = assertThrows(Exception.class, () -> service.validateRequestFromREST(List.of(request)));
+        Exception exception = assertThrows(Exception.class, () -> service.validateRequest(List.of(request)));
         assertThat(exception).hasMessageContaining("Request:1 -- fieldIsNullOrMissing -- contentType: INVALID-TYPE was invalid for type ContentType");
     }
 
@@ -135,7 +135,7 @@ class DatasetServiceTest {
     void validateRequest_shouldThrowValidationException_whenFieldTitleIsEmpty() {
         DatasetRequest request = createValidDatasetRequest("");
 
-        Exception exception = assertThrows(Exception.class, () -> service.validateRequestFromREST(List.of(request)));
+        Exception exception = assertThrows(Exception.class, () -> service.validateRequest(List.of(request)));
         assertThat(exception).hasMessageContaining("Request:1 -- fieldIsNullOrMissing -- title was null or missing");
     }
 
@@ -146,7 +146,7 @@ class DatasetServiceTest {
 
         when(datasetRepository.findByTitle("Title")).thenReturn(Optional.of(existingDataset));
 
-        Exception exception = assertThrows(Exception.class, () -> service.validateRequestFromREST(requests));
+        Exception exception = assertThrows(Exception.class, () -> service.validateRequest(requests));
         assertThat(exception).hasMessageContaining("Request:1 -- creatingExistingDataset --");
         assertThat(exception).hasMessageContaining("The dataset Title already exists and therefore cannot be created");
     }
@@ -157,7 +157,7 @@ class DatasetServiceTest {
 
         DatasetRequest request = createValidDatasetRequest("Title");
         request.setUpdate(true);
-        Exception exception = assertThrows(Exception.class, () -> service.validateRequestFromREST(List.of(request)));
+        Exception exception = assertThrows(Exception.class, () -> service.validateRequest(List.of(request)));
         assertThat(exception).hasMessageContaining("Request:1 -- updatingNonExistingDataset --");
         assertThat(exception).hasMessageContaining("The dataset Title does not exist and therefore cannot be updated");
     }
@@ -171,7 +171,7 @@ class DatasetServiceTest {
 
         when(datasetRepository.findByTitle("Title")).thenReturn(Optional.of(existingDataset));
 
-        Exception exception = assertThrows(Exception.class, () -> service.validateRequestFromREST(List.of(request)));
+        Exception exception = assertThrows(Exception.class, () -> service.validateRequest(List.of(request)));
         assertThat(exception).hasMessageContaining("Request:1 -- nonCorrelatingMaster --");
         assertThat(exception).hasMessageContaining("The dataset Title is mastered in GITHUB and therefore cannot be updated from REST");
     }

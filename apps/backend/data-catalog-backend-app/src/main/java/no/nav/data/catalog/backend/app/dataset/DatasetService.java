@@ -173,7 +173,7 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         return distributionChannelRepository.saveAll(newChannels);
     }
 
-    public void validateRequestFromREST(List<DatasetRequest> requests) {
+    public void validateRequest(List<DatasetRequest> requests) {
         List<ValidationError> validationErrors = validateRequestsAndReturnErrors(requests);
 
         if (!validationErrors.isEmpty()) {
@@ -192,16 +192,10 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         }
 
         List<ValidationError> validationErrors = new ArrayList<>(validateNoDuplicates(requests));
-        validationErrors.addAll(validateDatasetRequest(requests));
-        return validationErrors;
-    }
-
-    private List<ValidationError> validateDatasetRequest(List<DatasetRequest> requests) {
-        List<ValidationError> validationErrors = new ArrayList<>();
 
         requests.forEach(request -> {
-            request.toUpperCaseAndTrim();
             validationErrors.addAll(validateFields(request));
+            request.toUpperCaseAndTrim();
             validationErrors.addAll(validateDatasetRepositoryValues(request));
         });
         return validationErrors;
