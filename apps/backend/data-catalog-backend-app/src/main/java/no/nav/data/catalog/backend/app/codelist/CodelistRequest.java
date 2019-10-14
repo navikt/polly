@@ -7,12 +7,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.catalog.backend.app.common.validator.FieldValidator;
 import no.nav.data.catalog.backend.app.common.validator.RequestElement;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static no.nav.data.catalog.backend.app.common.utils.StringUtils.ifNotNullToUppercaseAndTrim;
-import static no.nav.data.catalog.backend.app.common.utils.StringUtils.ifNotNullTrim;
 
 @Data
 @Builder
@@ -63,8 +63,8 @@ public class CodelistRequest implements RequestElement {
 
     void toUpperCaseAndTrim() {
         setList(ifNotNullToUppercaseAndTrim(list));
-        setCode(ifNotNullTrim(code));
-        setDescription(ifNotNullTrim(description));
+        setCode(StringUtils.trim(code));
+        setDescription(StringUtils.trim(description));
     }
 
     static void initiateRequests(List<CodelistRequest> codelistRequests, boolean update) {

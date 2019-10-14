@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.auditing.Auditable;
 import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannel;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
 
 import java.util.Collection;
@@ -24,8 +25,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-
-import static no.nav.data.catalog.backend.app.common.utils.StringUtils.ifNotNullTrim;
 
 @Slf4j
 @Data
@@ -57,7 +56,7 @@ public class System extends Auditable<String> {
 
     public System createNewSystemWithName(String systemName) {
         this.id = UUID.randomUUID();
-        this.name = ifNotNullTrim(systemName);
+        this.name = StringUtils.trim(systemName);
         this.producerDistributionChannels = new HashSet<>();
         this.consumerDistributionChannels = new HashSet<>();
         return this;
@@ -68,7 +67,7 @@ public class System extends Auditable<String> {
     }
 
     public System convertUpdateFromRequest(SystemRequest request) {
-        this.name = ifNotNullTrim(request.getName());
+        this.name = StringUtils.trim(request.getName());
         return this;
     }
 

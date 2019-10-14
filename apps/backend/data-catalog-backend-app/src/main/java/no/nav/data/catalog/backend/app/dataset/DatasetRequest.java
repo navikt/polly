@@ -16,6 +16,7 @@ import no.nav.data.catalog.backend.app.common.validator.RequestElement;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelShort;
 import no.nav.data.catalog.backend.app.distributionchannel.DistributionChannelType;
 import no.nav.data.catalog.backend.app.github.GithubReference;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.eclipse.egit.github.core.RepositoryContents;
 
@@ -27,10 +28,9 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.nullToEmptyList;
 import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.safeStream;
 import static no.nav.data.catalog.backend.app.common.utils.StringUtils.ifNotNullToUppercaseAndTrim;
-import static no.nav.data.catalog.backend.app.common.utils.StringUtils.ifNotNullTrim;
-import static no.nav.data.catalog.backend.app.common.utils.StreamUtils.nullToEmptyList;
 import static org.eclipse.egit.github.core.RepositoryContents.ENCODING_BASE64;
 import static org.eclipse.egit.github.core.RepositoryContents.TYPE_FILE;
 
@@ -139,6 +139,7 @@ public class DatasetRequest implements RequestElement {
         // TODO sjekk
 //        doUpperCaseAndTrim();
     }
+
     void doUpperCaseAndTrim() {
         setTitle(ifNotNullToUppercaseAndTrim(title));
         setDescription(ifNotNullToUppercaseAndTrim(description));
@@ -146,8 +147,8 @@ public class DatasetRequest implements RequestElement {
                 .map(String::toUpperCase)
                 .map(String::trim)
                 .collect(Collectors.toList()));
-        setPi(ifNotNullTrim(pi));
-        setIssued(ifNotNullTrim(issued));
+        setPi(StringUtils.trim(pi));
+        setIssued(StringUtils.trim(issued));
         setKeywords(nullToEmptyList(keywords).stream().map(String::toUpperCase).map(String::trim).collect(Collectors.toList()));
         setThemes(nullToEmptyList(themes));
         setAccessRights(ifNotNullToUppercaseAndTrim(accessRights));

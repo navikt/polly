@@ -8,8 +8,4 @@ public class StringUtils {
     public static String ifNotNullToUppercaseAndTrim(String field) {
         return field == null ? null : field.toUpperCase().trim();
     }
-
-    public static String ifNotNullTrim(String field) {
-        return field == null ? null : field.trim();
-    }
 }

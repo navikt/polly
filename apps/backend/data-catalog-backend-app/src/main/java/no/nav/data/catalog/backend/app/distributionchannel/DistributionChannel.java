@@ -11,6 +11,7 @@ import no.nav.data.catalog.backend.app.common.auditing.Auditable;
 import no.nav.data.catalog.backend.app.common.utils.StreamUtils;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
 import no.nav.data.catalog.backend.app.system.System;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
 
 import java.util.Collection;
@@ -29,8 +30,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-
-import static no.nav.data.catalog.backend.app.common.utils.StringUtils.ifNotNullTrim;
 
 @Slf4j
 @Data
@@ -90,8 +89,8 @@ public class DistributionChannel extends Auditable<String> {
     }
 
     private void convertFromRequest(DistributionChannelRequest request) {
-        this.name = ifNotNullTrim(request.getName());
-        this.description = ifNotNullTrim(request.getDescription());
+        this.name = StringUtils.trim(request.getName());
+        this.description = StringUtils.trim(request.getDescription());
         this.type = request.getType();
     }
 
