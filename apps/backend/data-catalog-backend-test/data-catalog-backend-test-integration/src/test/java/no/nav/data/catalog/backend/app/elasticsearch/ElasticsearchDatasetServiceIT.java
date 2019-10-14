@@ -1,6 +1,5 @@
 package no.nav.data.catalog.backend.app.elasticsearch;
 
-import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.data.catalog.backend.app.IntegrationTestBase;
 import no.nav.data.catalog.backend.app.codelist.CodelistService;
 import no.nav.data.catalog.backend.app.codelist.CodelistStub;
@@ -10,6 +9,7 @@ import no.nav.data.catalog.backend.app.dataset.DatasetData;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.elasticsearch.domain.DatasetElasticsearch;
 import no.nav.data.catalog.backend.app.elasticsearch.domain.PolicyElasticsearch;
+import org.awaitility.Duration;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -22,9 +22,11 @@ import java.util.List;
 import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchDocument.newDatasetDocumentId;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCED;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
 
@@ -73,12 +75,11 @@ class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
     }
 
     @Test
-    void syncNewDatasetsToES() throws Exception {
+    void syncNewDatasetsToES() {
         createTestData(ElasticsearchStatus.TO_BE_CREATED);
         service.synchToElasticsearch();
-        // Let indexing finish
-        Thread.sleep(1000L);
-        assertThat(esRepository.getAllDatasets("index").getHits().totalHits).isEqualTo(1L);
+        await().atMost(Duration.FIVE_SECONDS).untilAsserted(() ->
+                assertThat(esRepository.getAllDatasets("index").getHits().totalHits).isEqualTo(1L));
         String json = esRepository.getById(newDatasetDocumentId(DATASET_ID_1.toString(), "index"));
         assertDataset(json);
         Dataset dataset = repository.findAll().get(0);
@@ -86,12 +87,11 @@ class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
     }
 
     @Test
-    void syncUpdatedDatasetsToES() throws Exception {
+    void syncUpdatedDatasetsToES() {
         createTestData(ElasticsearchStatus.TO_BE_CREATED);
         service.synchToElasticsearch();
-        // Let indexing finish
-        Thread.sleep(1000L);
-        assertThat(esRepository.getAllDatasets("index").getHits().totalHits).isEqualTo(1L);
+        await().atMost(Duration.FIVE_SECONDS).untilAsserted(() ->
+                assertThat(esRepository.getAllDatasets("index").getHits().totalHits).isEqualTo(1L));
 
         assertThat(repository.findAll().size()).isEqualTo(1);
         Dataset dataset = repository.findAll().get(0);
@@ -99,8 +99,8 @@ class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
         repository.save(dataset);
         service.synchToElasticsearch();
 
-        Thread.sleep(1000L);
-        assertThat(esRepository.getAllDatasets("index").getHits().totalHits).isEqualTo(1L);
+        await().atMost(Duration.FIVE_SECONDS).untilAsserted(() ->
+                assertThat(esRepository.getAllDatasets("index").getHits().totalHits).isEqualTo(1L));
         String json = esRepository.getById(newDatasetDocumentId(DATASET_ID_1.toString(), "index"));
         assertDataset(json);
 
@@ -110,12 +110,12 @@ class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
     }
 
     @Test
-    void syncNotExistingUpdatedDatasetsToES() throws Exception {
+    void syncNotExistingUpdatedDatasetsToES() {
         createTestData(ElasticsearchStatus.TO_BE_UPDATED);
         service.synchToElasticsearch();
 
-        Thread.sleep(1000L);
-        assertThat(esRepository.getAllDatasets("index").getHits().totalHits).isEqualTo(1L);
+        await().atMost(Duration.FIVE_SECONDS).untilAsserted(() ->
+                assertThat(esRepository.getAllDatasets("index").getHits().totalHits).isEqualTo(1L));
         String json = esRepository.getById(newDatasetDocumentId(DATASET_ID_1.toString(), "index"));
         assertDataset(json);
 
@@ -126,12 +126,11 @@ class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
 
 
     @Test
-    void syncDeletedDatasetsToES() throws Exception {
+    void syncDeletedDatasetsToES() {
         createTestData(ElasticsearchStatus.TO_BE_CREATED);
         service.synchToElasticsearch();
-        // Let indexing finish
-        Thread.sleep(1000L);
-        assertThat(esRepository.getAllDatasets("index").getHits().totalHits).isEqualTo(1L);
+        await().atMost(Duration.FIVE_SECONDS).untilAsserted(() ->
+                assertThat(esRepository.getAllDatasets("index").getHits().totalHits).isEqualTo(1L));
 
         assertThat(repository.findAll().size()).isEqualTo(1);
         Dataset dataset = repository.findAll().get(0);
@@ -142,10 +141,10 @@ class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
 
         service.synchToElasticsearch();
 
-        Thread.sleep(1000L);
-        assertThat(esRepository.getAllDatasets("index").getHits().totalHits).isEqualTo(0L);
+        await().atMost(Duration.FIVE_SECONDS).untilAsserted(() ->
+                assertThat(esRepository.getAllDatasets("index").getHits().totalHits).isEqualTo(0L));
         assertThat(repository.findAll().size()).isEqualTo(0);
-        WireMock.verify(deleteRequestedFor(urlPathEqualTo("/policy/policy")).withQueryParam("datasetId", equalTo(DATASET_ID_1.toString())));
+        verify(deleteRequestedFor(urlPathEqualTo("/policy/policy")).withQueryParam("datasetId", equalTo(DATASET_ID_1.toString())));
     }
 
     private void createTestData(ElasticsearchStatus esStatus) {

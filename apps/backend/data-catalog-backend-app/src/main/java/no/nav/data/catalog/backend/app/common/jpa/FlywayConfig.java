@@ -1,47 +1,46 @@
 package no.nav.data.catalog.backend.app.common.jpa;
 
+import com.bettercloud.vault.response.LogicalResponse;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
+import no.nav.data.catalog.backend.app.common.jpa.DatasourceConfig.VaultConfig;
+import no.nav.vault.jdbc.hikaricp.VaultUtil;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.flyway.FlywayConfigurationCustomizer;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.cloud.vault.config.databases.VaultDatabaseProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.vault.core.VaultOperations;
-import org.springframework.vault.support.VaultResponse;
-
-import java.util.Map;
-
-import static java.lang.String.format;
 
 @Slf4j
 @Configuration
-@ConditionalOnProperty(value = "spring.cloud.vault.enabled", matchIfMissing = true)
+@ConditionalOnProperty(value = "vault.enabled", matchIfMissing = true)
 public class FlywayConfig {
 
     @Bean
-    public FlywayConfigurationCustomizer flywayConfigurationCustomizer(
-            VaultOperations vaultOperations,
-            VaultDatabaseProperties vaultDatabaseProperties,
-            DataSourceProperties dataSourceProperties
-    ) {
+    public FlywayConfigurationCustomizer flywayConfigurationCustomizer(VaultConfig vaultConfig, DataSourceProperties properties) {
         return configuration -> {
-            String userRole = vaultDatabaseProperties.getRole();
-            String backend = vaultDatabaseProperties.getBackend();
-            String adminRole = userRole.replace("-user", "-admin");
-            String secretPath = format("%s/creds/%s", backend, adminRole);
+            String adminRole = vaultConfig.getDatabaseAdminrole();
+            String path = vaultConfig.getDatabaseBackend() + "/creds/" + adminRole;
+            log.info("Getting credentials for role {}", adminRole);
+            LogicalResponse response = read(path);
+            String username = response.getData().get("username");
+            String password = response.getData().get("password");
+            log.info("Setting datasource for flyway with user {} and role {}", username, adminRole);
 
-            VaultResponse vaultResponse = vaultOperations.read(secretPath);
-            Map<String, Object> data = vaultResponse.getData();
-            val username = data.get("username").toString();
-            val password = data.get("password").toString();
-
-            log.info("Vault: Flyway configured with credentials from Vault. Credential path: {}", secretPath);
+            HikariConfig config = DatasourceConfig.createHikariConfig(properties);
+            config.setUsername(username);
+            config.setPassword(password);
 
             configuration
-                    .dataSource(dataSourceProperties.getUrl(), username, password)
+                    .dataSource(new HikariDataSource(config))
                     .initSql(String.format("SET ROLE \"%s\"", adminRole));
         };
+    }
+
+    @SneakyThrows
+    private LogicalResponse read(String path) {
+        return VaultUtil.getInstance().getClient().logical().read(path);
     }
 }

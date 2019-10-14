@@ -14,7 +14,9 @@ public final class MdcUtils {
     }
 
     private static final String CORRELATION_ID = "correlationId";
+    private static final String CALL_ID = "callId";
     private static final String USER_ID = "userId";
+    private static final String CONSUMER_ID = "consumerId";
 
     private static String createUUID() {
         return UUID.randomUUID().toString();
@@ -26,6 +28,22 @@ public final class MdcUtils {
 
     public static void createCorrelationId() {
         MDC.put(CORRELATION_ID, createUUID());
+    }
+
+    public static void clearCorrelationId() {
+        MDC.remove(USER_ID);
+    }
+
+    public static String getCallId() {
+        return MDC.get(CALL_ID);
+    }
+
+    public static void setCallId(String correlationId) {
+        MDC.put(CALL_ID, correlationId);
+    }
+
+    public static void clearCallId() {
+        MDC.remove(CALL_ID);
     }
 
     public static String getUser() {
@@ -44,13 +62,18 @@ public final class MdcUtils {
         MDC.remove(USER_ID);
     }
 
-    public static void clearCorrelation() {
-        MDC.remove(USER_ID);
+    public static void setConsumerId(String consumer) {
+        MDC.put(CONSUMER_ID, consumer);
+    }
+
+    public static void clearConsumer() {
+        MDC.remove(CONSUMER_ID);
     }
 
     public static Runnable wrapAsync(Runnable runnable, String user) {
         return () -> {
             setUser(user);
+            setConsumerId(Constants.APP_ID);
             createCorrelationId();
             try {
                 runnable.run();
@@ -74,7 +97,9 @@ public final class MdcUtils {
     }
 
     private static void clearMdc() {
-        clearCorrelation();
+        createCorrelationId();
+        clearCallId();
         clearUser();
+        clearConsumer();
     }
 }

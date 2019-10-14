@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.UUID;
 
 import static java.util.Collections.singletonList;
+import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.SYNCED;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_CREATED;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
 import static no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
@@ -79,7 +80,7 @@ class ElasticsearchDatasetServiceTest {
         verify(elasticsearch, times(1)).insert(captor.capture());
         verify(elasticsearch, times(0)).updateById(any());
         verify(elasticsearch, times(0)).deleteById(any());
-        verify(repository, times(1)).save(dataset);
+        verify(repository, times(1)).updateStatusForDataset(dataset.getId(), SYNCED);
         verify(repository, times(0)).deleteById(any());
 
         verifyCapture(true);
@@ -92,7 +93,7 @@ class ElasticsearchDatasetServiceTest {
         verify(elasticsearch, times(0)).insert(any());
         verify(elasticsearch, times(1)).updateById(captor.capture());
         verify(elasticsearch, times(0)).deleteById(any());
-        verify(repository, times(1)).save(dataset);
+        verify(repository, times(1)).updateStatusForDataset(dataset.getId(), SYNCED);
         verify(repository, times(0)).deleteById(any());
         verifyCapture(true);
     }

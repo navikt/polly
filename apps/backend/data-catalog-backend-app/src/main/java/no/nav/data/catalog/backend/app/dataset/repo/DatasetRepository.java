@@ -5,15 +5,14 @@ import no.nav.data.catalog.backend.app.elasticsearch.ElasticsearchStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import javax.transaction.Transactional;
 
-/**
- * create json indexes? - CREATE INDEX dataset_idx_title ON dataset ((json_property ->> 'title'))
- */
 public interface DatasetRepository extends JpaRepository<Dataset, UUID> {
 
     List<Dataset> findByElasticsearchStatus(ElasticsearchStatus status);
@@ -26,4 +25,14 @@ public interface DatasetRepository extends JpaRepository<Dataset, UUID> {
 
     @Query(value = "select * from dataset where json_property->>'title' in (?1)", nativeQuery = true)
     List<Dataset> findAllByTitle(List<String> title);
+
+    @Modifying
+    @Transactional
+    @Query("update Dataset set elasticsearchStatus = 'TO_BE_UPDATED' where id in ?1")
+    int setSyncForDatasets(List<UUID> datasetIds);
+
+    @Modifying
+    @Transactional
+    @Query("update Dataset set elasticsearchStatus = ?2 where id = ?1")
+    void updateStatusForDataset(UUID datasetId, ElasticsearchStatus elasticsearchStatus);
 }

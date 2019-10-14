@@ -234,8 +234,8 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         return existingMaster.equals(requestMaster);
     }
 
-    @Transactional
     public void sync(List<UUID> ids) {
-        datasetRepository.findAllById(ids).forEach(dataset -> dataset.setElasticsearchStatus(ElasticsearchStatus.TO_BE_UPDATED));
+        int datasetsUpdated = datasetRepository.setSyncForDatasets(ids);
+        log.info("marked {} datasets for sync", datasetsUpdated);
     }
 }
