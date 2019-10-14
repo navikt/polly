@@ -141,7 +141,7 @@ public class SystemService extends RequestValidator<SystemRequest> {
 	}
 
 
-	public void validateRequestsFromREST(List<SystemRequest> requests) {
+	public void validateRequest(List<SystemRequest> requests) {
 		List<ValidationError> validationErrors = validateRequestsAndReturnErrors(requests);
 
 		if (!validationErrors.isEmpty()) {
@@ -156,18 +156,14 @@ public class SystemService extends RequestValidator<SystemRequest> {
 		}
 
 		List<ValidationError> validationErrors = new ArrayList<>(validateNoDuplicates(requests));
-		validationErrors.addAll(validateSystemRequest(requests));
-		return validationErrors;
-	}
-
-	private List<ValidationError> validateSystemRequest(List<SystemRequest> requests) {
-		List<ValidationError> validationErrors = new ArrayList<>();
 
 		requests.forEach(request -> {
 			validationErrors.addAll(validateFields(request));
+
 			boolean existInRepository = systemRepository.findByName(request.getName()).isPresent();
 			validationErrors.addAll(validateRepositoryValues(request, existInRepository));
 		});
+
 		return validationErrors;
 	}
 }

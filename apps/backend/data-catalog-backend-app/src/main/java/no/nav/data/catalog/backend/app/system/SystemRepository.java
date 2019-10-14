@@ -12,6 +12,5 @@ import java.util.UUID;
 public interface SystemRepository extends JpaRepository<System, UUID>, JpaSpecificationExecutor<System> {
 	Optional<System> findByName(@Param("name") String name);
 
-	@Query(value = "select * from system where json_property->>'name' = (?1)", nativeQuery = true)
 	List<System> findAllByName(List<String> name);
 }

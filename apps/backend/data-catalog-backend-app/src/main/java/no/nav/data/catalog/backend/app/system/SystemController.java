@@ -90,7 +90,7 @@ public class SystemController {
         log.info("Received requests to create Systems");
         requests = StreamUtils.nullToEmptyList(requests);
         SystemRequest.initiateRequests(requests, false);
-        service.validateRequestsFromREST(requests);
+        service.validateRequest(requests);
 
         return new ResponseEntity<>(service.saveAll(requests).stream().map(System::convertToResponse).collect(Collectors.toList()), HttpStatus.CREATED);
     }
@@ -105,7 +105,7 @@ public class SystemController {
         log.info("Received requests to create Systems");
         requests = StreamUtils.nullToEmptyList(requests);
         SystemRequest.initiateRequests(requests, true);
-        service.validateRequestsFromREST(requests);
+        service.validateRequest(requests);
 
         return new ResponseEntity<>(service.updateAll(requests).stream().map(System::convertToResponse).collect(Collectors.toList()), HttpStatus.OK);
     }
