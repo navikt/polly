@@ -92,7 +92,7 @@ public class DistributionChannelController {
         log.info("Received requests to create DistributionChannels");
         requests = StreamUtils.nullToEmptyList(requests);
         DistributionChannelRequest.initiateRequests(requests, false);
-        service.validateRequestsFromREST(requests);
+        service.validateRequest(requests);
 
         return new ResponseEntity<>(service.saveAll(requests).stream().map(DistributionChannel::convertToResponse).collect(Collectors.toList()),
                 HttpStatus.CREATED);
@@ -108,7 +108,7 @@ public class DistributionChannelController {
         log.info("Received requests to create DistributionChannels");
         requests = StreamUtils.nullToEmptyList(requests);
         DistributionChannelRequest.initiateRequests(requests, true);
-        service.validateRequestsFromREST(requests);
+        service.validateRequest(requests);
         return ResponseEntity.ok(service.updateAll(requests).stream().map(DistributionChannel::convertToResponse).collect(Collectors.toList()));
     }
 

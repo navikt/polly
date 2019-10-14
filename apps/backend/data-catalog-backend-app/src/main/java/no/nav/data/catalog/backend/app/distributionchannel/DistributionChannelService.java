@@ -143,7 +143,7 @@ public class DistributionChannelService extends RequestValidator<DistributionCha
 		return systemRepository.save(system);
 	}
 
-	void validateRequestsFromREST(List<DistributionChannelRequest> requests) {
+    void validateRequest(List<DistributionChannelRequest> requests) {
 		List<ValidationError> validationErrors = validateRequestsAndReturnErrors(requests);
 
 		if (!validationErrors.isEmpty()) {
@@ -158,18 +158,14 @@ public class DistributionChannelService extends RequestValidator<DistributionCha
 		}
 
 		List<ValidationError> validationErrors = new ArrayList<>(validateNoDuplicates(requests));
-		validationErrors.addAll(validateDistributionChannelRequests(requests));
-		return validationErrors;
-	}
 
-	private List<ValidationError> validateDistributionChannelRequests(List<DistributionChannelRequest> requests) {
-		List<ValidationError> validationErrors = new ArrayList<>();
+        requests.forEach(request -> {
+            validationErrors.addAll(validateFields(request));
 
-		requests.forEach(request -> {
-			validationErrors.addAll(validateFields(request));
-			boolean existInRepository = distributionChannelRepository.findByName(request.getName()).isPresent();
-			validationErrors.addAll(validateRepositoryValues(request, existInRepository));
-		});
+            boolean existInRepository = distributionChannelRepository.findByName(request.getName()).isPresent();
+            validationErrors.addAll(validateRepositoryValues(request, existInRepository));
+        });
+
 		return validationErrors;
 	}
 }
