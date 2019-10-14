@@ -110,7 +110,7 @@ class DatasetServiceTest {
         request.setCategories(List.of("doesntexist"));
 
         Exception exception = assertThrows(Exception.class, () -> service.validateRequest(List.of(request)));
-        assertThat(exception).hasMessageContaining("Request:1 -- fieldIsNullOrMissing -- categories: DOESNTEXIST code not found in codelist CATEGORY");
+        assertThat(exception).hasMessageContaining("Request:1 -- fieldIsNullOrMissing -- categories: doesntexist code not found in codelist CATEGORY");
     }
 
     @Test
@@ -128,7 +128,7 @@ class DatasetServiceTest {
         request.setContentType("invalid-type");
 
         Exception exception = assertThrows(Exception.class, () -> service.validateRequest(List.of(request)));
-        assertThat(exception).hasMessageContaining("Request:1 -- fieldIsNullOrMissing -- contentType: INVALID-TYPE was invalid for type ContentType");
+        assertThat(exception).hasMessageContaining("Request:1 -- fieldIsNullOrMissing -- contentType: invalid-type was invalid for type ContentType");
     }
 
     @Test
