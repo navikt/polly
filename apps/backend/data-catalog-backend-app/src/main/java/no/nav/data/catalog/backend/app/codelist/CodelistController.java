@@ -85,7 +85,7 @@ public class CodelistController {
         log.info("Received a requests to create codelists");
         requests = StreamUtils.nullToEmptyList(requests);
         CodelistRequest.initiateRequests(requests, false);
-        service.validateRequestsFromREST(requests);
+        service.validateRequest(requests);
 
         return service.save(requests).stream().map(Codelist::convertToResponse).collect(Collectors.toList());
     }
@@ -100,7 +100,7 @@ public class CodelistController {
         log.info("Received a request to update codelists");
         requests = StreamUtils.nullToEmptyList(requests);
         CodelistRequest.initiateRequests(requests, true);
-        service.validateRequestsFromREST(requests);
+        service.validateRequest(requests);
 
         return service.update(requests).stream().map(Codelist::convertToResponse).collect(Collectors.toList());
     }

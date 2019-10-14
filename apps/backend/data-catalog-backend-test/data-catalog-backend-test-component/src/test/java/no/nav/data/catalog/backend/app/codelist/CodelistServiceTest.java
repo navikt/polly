@@ -177,7 +177,7 @@ class CodelistServiceTest {
 //        CodelistRequest.initiateRequests(requests, false);
         when(repository.findByListAndNormalizedCode(any(ListName.class), anyString())).thenReturn(Optional.empty());
 
-        service.validateRequestsFromREST(requests);
+        service.validateRequest(requests);
     }
 
     private List<CodelistRequest> createListOfRequests(CodelistRequest... requests) {
@@ -199,14 +199,14 @@ class CodelistServiceTest {
     @Test
     void validate_shouldValidateWithoutAnyProcessing_whenRequestIsEmpty() {
         List<CodelistRequest> requests = new ArrayList<>(Collections.emptyList());
-        service.validateRequestsFromREST(requests);
+        service.validateRequest(requests);
     }
 
     @Disabled("Until generic test for RequestValidation is written")
     @Test
     void validate_shouldValidateWithoutAnyProcessing_whenRequestIsNull() {
         List<CodelistRequest> requests = null;
-        service.validateRequestsFromREST(requests);
+        service.validateRequest(requests);
     }
 
     @Disabled("Until generic test for RequestValidation is written")
@@ -218,7 +218,7 @@ class CodelistServiceTest {
         when(repository.findByListAndNormalizedCode(ListName.PROVENANCE, "BRUKER")).thenReturn(Optional.of(expectedCodelist));
 
         try {
-            service.validateRequestsFromREST(requests);
+            service.validateRequest(requests);
             fail();
         } catch (ValidationException e) {
             assertThat(e.get().size()).isEqualTo(1);
@@ -253,7 +253,7 @@ class CodelistServiceTest {
 
         when(repository.findByListAndNormalizedCode(ListName.PROVENANCE, "TEST")).thenReturn(Optional.of(codelist));
 
-        service.validateRequestsFromREST(requests);
+        service.validateRequest(requests);
     }
 
     @Disabled("Until generic test for RequestValidation is written")
@@ -263,7 +263,7 @@ class CodelistServiceTest {
         requests.forEach(r -> r.setUpdate(true));
 
         try {
-            service.validateRequestsFromREST(requests);
+            service.validateRequest(requests);
             fail();
         } catch (ValidationException e) {
             assertThat(e.get().size()).isEqualTo(1);
@@ -281,7 +281,7 @@ class CodelistServiceTest {
                 .description("   Trim av description                      ")
                 .build());
         when(repository.saveAll(anyList())).thenAnswer(AdditionalAnswers.returnsFirstArg());
-        service.validateRequestsFromREST(requests);
+        service.validateRequest(requests);
         service.save(requests);
         assertTrue(CodelistCache.contains(ListName.CATEGORY, "CORRECTFORMAT"));
         assertThat(CodelistService.getCodelist(ListName.CATEGORY, "CORRECTFORMAT").getDescription()).isEqualTo("Trim av description");

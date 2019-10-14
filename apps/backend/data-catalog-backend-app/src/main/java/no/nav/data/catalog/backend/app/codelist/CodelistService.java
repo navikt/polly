@@ -121,7 +121,7 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         return optionalListName.isEmpty();
     }
 
-    public void validateRequestsFromREST(List<CodelistRequest> requests) {
+    public void validateRequest(List<CodelistRequest> requests) {
         List<ValidationError> validationErrors = validateRequestsAndReturnErrors(requests);
 
         if (!validationErrors.isEmpty()) {
@@ -135,25 +135,22 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         if (requests.isEmpty()) {
             return Collections.emptyList();
         }
-        List<ValidationError> validationErrors = new ArrayList<>(validateNoDuplicates(requests));
-        validationErrors.addAll(validateCodelistRequest(requests));
-        return validationErrors;
-    }
 
-    private List<ValidationError> validateCodelistRequest(List<CodelistRequest> requests) {
-        List<ValidationError> validationErrors = new ArrayList<>();
+        List<ValidationError> validationErrors = new ArrayList<>(validateNoDuplicates(requests));
 
         requests.forEach(request -> {
             validationErrors.addAll(validateFields(request));
             request.toUpperCaseAndTrim();
-            validationErrors.addAll(validListName(request));
+            validationErrors.addAll(validateListName(request));
+
             boolean existInRepository = repository.findByListAndNormalizedCode(request.getListAsListName(), Codelist.normalize(request.getCode())).isPresent();
             validationErrors.addAll(validateRepositoryValues(request, existInRepository));
         });
+
         return validationErrors;
     }
 
-    private List<ValidationError> validListName(CodelistRequest request) {
+    private List<ValidationError> validateListName(CodelistRequest request) {
         List<ValidationError> validationErrors = new ArrayList<>();
         if (nonValidListName(request.getList())) {
             validationErrors.add(new ValidationError(request.getReference(), "invalidListName", String.format("The ListName %s does not exist", request.getList())));
