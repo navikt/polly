@@ -15,9 +15,9 @@ import org.springframework.data.domain.Sort;
 @NoArgsConstructor
 public class PageParameters {
 
-    @ApiParam(defaultValue = "0", allowableValues = "[0, infinity]")
+    @ApiParam(defaultValue = "0", allowableValues = "range[0, infinity]")
     private int pageNumber = 0;
-    @ApiParam(defaultValue = "20", allowableValues = "[1, 250]")
+    @ApiParam(defaultValue = "20", allowableValues = "range[1, 250]")
     private int pageSize = 20;
 
     public Pageable createIdSortedPage() {
