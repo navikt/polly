@@ -51,12 +51,12 @@ final class CodelistCache {
     }
 
     @Deprecated
-    public static Map<ListName, Map<String, String>> getAllAsMap() {
+    static Map<ListName, Map<String, String>> getAllAsMap() {
         return codelistLegacy;
     }
 
     @Deprecated
-    public static Map<String, String> getAsMap(ListName listName) {
+    static Map<String, String> getAsMap(ListName listName) {
         return codelistLegacy.get(listName);
     }
 }

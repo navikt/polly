@@ -1,12 +1,17 @@
 package no.nav.data.catalog.backend.app.common.utils;
 
 import com.microsoft.azure.spring.autoconfigure.aad.UserPrincipal;
+import no.nav.data.catalog.backend.app.common.security.AADStatelessAuthenticationFilter;
+import no.nav.data.catalog.backend.app.common.security.AppIdMapping;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 import java.util.UUID;
+
+import static no.nav.data.catalog.backend.app.common.security.AADStatelessAuthenticationFilter.APPID_CLAIM;
 
 public final class MdcUtils {
 
@@ -87,12 +92,20 @@ public final class MdcUtils {
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .filter(Authentication::isAuthenticated)
                 .map(authentication -> authentication.getPrincipal() instanceof UserPrincipal ? (UserPrincipal) authentication.getPrincipal() : null)
-                .map(principal -> String.format("%s - %s", getNAVident(principal), principal.getName()))
+                .map(principal -> StringUtils.isBlank(principal.getName()) ? getAppId(principal) : formatUser(principal))
                 .orElse("no-auth");
     }
 
+    private static String getAppId(UserPrincipal principal) {
+        return AppIdMapping.getAppNameForAppId((String) principal.getClaim(APPID_CLAIM));
+    }
+
+    private static String formatUser(UserPrincipal principal) {
+        return String.format("%s - %s", getNAVident(principal), principal.getName());
+    }
+
     private static String getNAVident(UserPrincipal principal) {
-        Object navClaim = principal.getClaim("NAVident");
+        Object navClaim = principal.getClaim(AADStatelessAuthenticationFilter.NAV_IDENT_CLAIM);
         return navClaim == null ? "missing-ident" : ((String) navClaim);
     }
 

@@ -1,9 +1,6 @@
 package no.nav.data.catalog.backend.app.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microsoft.azure.spring.autoconfigure.aad.AADAuthenticationProperties;
-import com.nimbusds.jose.util.DefaultResourceRetriever;
-import com.nimbusds.jose.util.ResourceRetriever;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.hotspot.DefaultExports;
 import lombok.extern.slf4j.Slf4j;
@@ -63,14 +60,6 @@ public class CommonConfig {
                         new HttpHost(properties.getHost(), properties.getPort(), properties.getSchema())
                 ).setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider))
         );
-    }
-
-    @Bean
-    public ResourceRetriever getJWTResourceRetriever(AADAuthenticationProperties aadAuthProps, Proxy proxy) {
-        DefaultResourceRetriever defaultResourceRetriever = new DefaultResourceRetriever(aadAuthProps.getJwtConnectTimeout(), aadAuthProps.getJwtReadTimeout(),
-                aadAuthProps.getJwtSizeLimit());
-        defaultResourceRetriever.setProxy(proxy);
-        return defaultResourceRetriever;
     }
 
     @Bean

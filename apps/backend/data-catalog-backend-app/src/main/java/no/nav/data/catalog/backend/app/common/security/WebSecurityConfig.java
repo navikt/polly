@@ -1,6 +1,5 @@
 package no.nav.data.catalog.backend.app.common.security;
 
-import com.microsoft.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter;
 import no.nav.data.catalog.backend.app.common.web.CorrelationFilter;
 import no.nav.data.catalog.backend.app.common.web.UserFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserFilter userFilter = new UserFilter();
 
     @Autowired(required = false)
-    private AADAppRoleStatelessAuthenticationFilter aadAuthFilter;
+    private AADStatelessAuthenticationFilter aadAuthFilter;
     @Value("${security.enabled:true}")
     private boolean enable;
 
@@ -28,7 +27,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
         addFilters(http);
 
         if (!enable) {
@@ -57,7 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // In lightweight mvc tests where authfilter isnt initialized
         if (aadAuthFilter != null) {
             http.addFilterBefore(aadAuthFilter, UsernamePasswordAuthenticationFilter.class);
-            http.addFilterAfter(userFilter, AADAppRoleStatelessAuthenticationFilter.class);
+            http.addFilterAfter(userFilter, AADStatelessAuthenticationFilter.class);
         } else {
             http.addFilterAfter(userFilter, UsernamePasswordAuthenticationFilter.class);
         }
