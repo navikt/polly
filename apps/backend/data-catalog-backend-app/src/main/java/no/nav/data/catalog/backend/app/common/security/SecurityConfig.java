@@ -42,11 +42,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationContext authenticationContext() throws MalformedURLException {
+    public AuthenticationContext authenticationContext(Proxy proxy) throws MalformedURLException {
         ExecutorService service = Executors.newFixedThreadPool(5);
         ServiceEndpoints serviceEndpoints = serviceEndpointsProps.getServiceEndpoints(aadAuthProps.getEnvironment());
         String uri = serviceEndpoints.getAadSigninUri() + aadAuthProps.getTenantId() + "/";
-        return new AuthenticationContext(uri, true, service);
+        AuthenticationContext authenticationContext = new AuthenticationContext(uri, true, service);
+        authenticationContext.setProxy(proxy);
+        return authenticationContext;
     }
 
     @Bean
