@@ -12,9 +12,15 @@ class AuthResultExpiryTest {
     private AuthResultExpiry expiry = new AuthResultExpiry();
 
     @Test
-    void expireAfterCreate() {
-        long l = expiry.expireAfterCreate("", createAuth(), 0);
-        assertThat(l).isBetween(Duration.ofSeconds(30).minusSeconds(1).toNanos(), Duration.ofSeconds(30).plusSeconds(1).toNanos());
+    void expireAfterCreateShort() {
+        long l = expiry.expireAfterCreate("", createAuth(60), 0);
+        assertThat(l).isBetween(Duration.ofSeconds(29).toNanos(), Duration.ofSeconds(31).toNanos());
+    }
+
+    @Test
+    void expireAfterCreateLong() {
+        long l = expiry.expireAfterCreate("", createAuth(Duration.ofMinutes(30).toSeconds()), 0);
+        assertThat(l).isBetween(Duration.ofMinutes(20).minusSeconds(1).toNanos(), Duration.ofMinutes(20).plusSeconds(1).toNanos());
     }
 
     @Test
@@ -27,7 +33,7 @@ class AuthResultExpiryTest {
         assertThat(expiry.expireAfterRead("", null, 0, 100)).isEqualTo(100);
     }
 
-    private AuthenticationResult createAuth() {
-        return new AuthenticationResult("", "", "", 60, "", null, false);
+    private AuthenticationResult createAuth(long expiresInSeconds) {
+        return new AuthenticationResult("", "", "", expiresInSeconds, "", null, false);
     }
 }
