@@ -99,9 +99,9 @@ public class AADStatelessAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void validate(UserPrincipal principal) throws BadJWTException {
-        String appIdClaim = (String) principal.getClaim(APPID_CLAIM);
-        if (!allowedAppIds.contains(appIdClaim)) {
-            throw new BadJWTException("Invalid token appid. Provided value " + appIdClaim + "does not match neither allowed appid");
+        String appidClaim = (String) principal.getClaim(APPID_CLAIM);
+        if (appidClaim == null || !allowedAppIds.contains(appidClaim)) {
+            throw new BadJWTException("Invalid token appid. Provided value " + appidClaim + " does not match allowed appid");
         }
     }
 
