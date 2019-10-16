@@ -17,9 +17,9 @@ public class TraceHeaderRequestInterceptor implements ClientHttpRequestIntercept
         String correlationId = MdcUtils.getOrGenerateCorrelationId();
         String callId = Optional.ofNullable(MdcUtils.getCallId()).orElse(correlationId);
 
-        req.getHeaders().set(Constants.NAV_CORRELATION_ID, correlationId);
-        req.getHeaders().set(Constants.NAV_CALL_ID, callId);
-        req.getHeaders().set(Constants.NAV_CONSUMER_ID, Constants.APP_ID);
+        req.getHeaders().set(Constants.HEADER_CORRELATION_ID, correlationId);
+        req.getHeaders().set(Constants.HEADER_CALL_ID, callId);
+        req.getHeaders().set(Constants.HEADER_CONSUMER_ID, Constants.APP_ID);
         return execution.execute(req, body);
     }
 }
