@@ -35,6 +35,12 @@ public class SecurityConfig {
     }
 
     @Bean
+    public AADStatelessAuthenticationFilter aadStatelessAuthenticationFilter(UserPrincipalManager userPrincipalManager, AuthenticationContext authenticationContext,
+            AADAuthenticationProperties aadAuthProps, AppIdMapping appIdMapping) {
+        return new AADStatelessAuthenticationFilter(userPrincipalManager, authenticationContext, aadAuthProps, appIdMapping);
+    }
+
+    @Bean
     public AuthenticationContext authenticationContext(Proxy proxy,
             AADAuthenticationProperties aadAuthProps, ServiceEndpointsProperties serviceEndpointsProps) throws MalformedURLException {
         ExecutorService service = Executors.newFixedThreadPool(5);
