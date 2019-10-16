@@ -5,6 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.microsoft.aad.adal4j.AuthenticationContext;
 import com.microsoft.aad.adal4j.AuthenticationResult;
 import com.microsoft.aad.adal4j.ClientCredential;
+import com.microsoft.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter;
 import com.microsoft.azure.spring.autoconfigure.aad.AADAuthenticationProperties;
 import com.microsoft.azure.spring.autoconfigure.aad.UserPrincipal;
 import com.microsoft.azure.spring.autoconfigure.aad.UserPrincipalManager;
@@ -17,7 +18,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -32,10 +32,10 @@ import static java.util.Objects.requireNonNull;
 import static org.springframework.util.StringUtils.hasText;
 
 /**
- * Based on {@link com.microsoft.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter}
+ * Based on {@link com.microsoft.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter}. Extends class to prevent additional filter to be created
  */
 @Slf4j
-public class AADStatelessAuthenticationFilter extends OncePerRequestFilter {
+public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthenticationFilter {
 
     private static final String TOKEN_TYPE = "Bearer ";
 
@@ -50,6 +50,7 @@ public class AADStatelessAuthenticationFilter extends OncePerRequestFilter {
 
     public AADStatelessAuthenticationFilter(UserPrincipalManager userPrincipalManager, AuthenticationContext authenticationContext,
             AADAuthenticationProperties aadAuthProps, AppIdMapping appIdMapping) {
+        super(null);
         this.principalManager = userPrincipalManager;
         this.authenticationContext = authenticationContext;
         this.aadAuthProps = aadAuthProps;
