@@ -15,8 +15,9 @@ public class AuthResultExpiry implements Expiry<String, AuthenticationResult> {
         if (value.getExpiresOnDate() == null) {
             return Duration.ofMinutes(5).toNanos();
         }
-        Instant expiryInstant = value.getExpiresOnDate().toInstant();
-        return suggestedRefreshInterval(Duration.between(Instant.now(), expiryInstant).toMillis()) * 1000;
+        Instant tokenExpiryInstant = value.getExpiresOnDate().toInstant();
+        long expireMillis = suggestedRefreshInterval(Duration.between(Instant.now(), tokenExpiryInstant).toMillis());
+        return Duration.ofMillis(expireMillis).toNanos();
     }
 
     @Override
