@@ -19,16 +19,8 @@ import java.util.concurrent.Executors;
 @Configuration
 public class SecurityConfig {
 
-    private final AADAuthenticationProperties aadAuthProps;
-    private final ServiceEndpointsProperties serviceEndpointsProps;
-
-    public SecurityConfig(AADAuthenticationProperties aadAuthProps, ServiceEndpointsProperties serviceEndpointsProps) {
-        this.aadAuthProps = aadAuthProps;
-        this.serviceEndpointsProps = serviceEndpointsProps;
-    }
-
     @Bean
-    public ResourceRetriever resourceRetriever(Proxy proxy) {
+    public ResourceRetriever resourceRetriever(Proxy proxy, AADAuthenticationProperties aadAuthProps) {
         DefaultResourceRetriever resourceRetriever =
                 new DefaultResourceRetriever(aadAuthProps.getJwtConnectTimeout(), aadAuthProps.getJwtReadTimeout(), aadAuthProps.getJwtSizeLimit());
         resourceRetriever.setProxy(proxy);
@@ -36,25 +28,21 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserPrincipalManager userPrincipalManager(ResourceRetriever resourceRetriever) {
+    public UserPrincipalManager userPrincipalManager(
+            ResourceRetriever resourceRetriever, AADAuthenticationProperties aadAuthProps, ServiceEndpointsProperties serviceEndpointsProps) {
         boolean useExplicitAudienceCheck = true;
         return new UserPrincipalManager(serviceEndpointsProps, aadAuthProps, resourceRetriever, useExplicitAudienceCheck);
     }
 
     @Bean
-    public AuthenticationContext authenticationContext(Proxy proxy) throws MalformedURLException {
+    public AuthenticationContext authenticationContext(Proxy proxy,
+            AADAuthenticationProperties aadAuthProps, ServiceEndpointsProperties serviceEndpointsProps) throws MalformedURLException {
         ExecutorService service = Executors.newFixedThreadPool(5);
         ServiceEndpoints serviceEndpoints = serviceEndpointsProps.getServiceEndpoints(aadAuthProps.getEnvironment());
         String uri = serviceEndpoints.getAadSigninUri() + aadAuthProps.getTenantId() + "/";
         AuthenticationContext authenticationContext = new AuthenticationContext(uri, true, service);
         authenticationContext.setProxy(proxy);
         return authenticationContext;
-    }
-
-    @Bean
-    public AADStatelessAuthenticationFilter aadStatelessAuthenticationFilter(
-            UserPrincipalManager userPrincipalManager, AuthenticationContext authenticationContext, AppIdMapping appIdMapping) {
-        return new AADStatelessAuthenticationFilter(userPrincipalManager, authenticationContext, aadAuthProps, appIdMapping);
     }
 
     @Bean

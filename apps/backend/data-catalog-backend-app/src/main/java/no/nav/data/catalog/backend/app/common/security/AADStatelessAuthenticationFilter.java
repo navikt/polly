@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -35,6 +36,7 @@ import static org.springframework.util.StringUtils.hasText;
  * Based on {@link com.microsoft.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter}
  */
 @Slf4j
+@Component
 public class AADStatelessAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String TOKEN_TYPE = "Bearer ";
@@ -48,8 +50,8 @@ public class AADStatelessAuthenticationFilter extends OncePerRequestFilter {
     private final List<String> allowedAppIds;
     private final Cache<String, AuthenticationResult> accessTokenCache;
 
-    public AADStatelessAuthenticationFilter(UserPrincipalManager userPrincipalManager, AuthenticationContext authenticationContext, AADAuthenticationProperties aadAuthProps,
-            AppIdMapping appIdMapping) {
+    public AADStatelessAuthenticationFilter(UserPrincipalManager userPrincipalManager, AuthenticationContext authenticationContext,
+            AADAuthenticationProperties aadAuthProps, AppIdMapping appIdMapping) {
         this.principalManager = userPrincipalManager;
         this.authenticationContext = authenticationContext;
         this.aadAuthProps = aadAuthProps;

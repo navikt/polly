@@ -15,6 +15,7 @@
     </appender>
 
     <logger name="no.nav" level="DEBUG"/>
+    <logger name="com.microsoft.aad" level="DEBUG"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT_JSON"/>
