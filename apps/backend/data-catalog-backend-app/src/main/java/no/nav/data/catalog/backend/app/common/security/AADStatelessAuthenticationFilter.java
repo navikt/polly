@@ -12,6 +12,7 @@ import com.microsoft.azure.spring.autoconfigure.aad.UserPrincipalManager;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jwt.proc.BadJWTException;
+import io.prometheus.client.Counter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -47,6 +48,7 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
     private final AADAuthenticationProperties aadAuthProps;
     private final List<String> allowedAppIds;
     private final Cache<String, AuthenticationResult> accessTokenCache;
+    private final Counter counter;
 
     public AADStatelessAuthenticationFilter(UserPrincipalManager userPrincipalManager, AuthenticationContext authenticationContext,
             AADAuthenticationProperties aadAuthProps, AppIdMapping appIdMapping) {
@@ -58,6 +60,7 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
         this.accessTokenCache = Caffeine.newBuilder()
                 .expireAfter(new AuthResultExpiry())
                 .maximumSize(1000).build();
+        counter = initCounter();
     }
 
     @Override
@@ -71,7 +74,7 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
                 UserPrincipal principal = buildUserPrincipal(token);
                 var authentication = new PreAuthenticatedAuthenticationToken(principal, null, Collections.emptyList());
                 authentication.setAuthenticated(true);
-                log.info("Request token verification success. {}", authentication);
+                log.info("Request token verification success.");
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 cleanupRequired = true;
             } catch (BadJWTException ex) {
@@ -81,6 +84,10 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
             } catch (ParseException | BadJOSEException | JOSEException ex) {
                 log.error("Failed to initialize UserPrincipal.", ex);
                 throw new ServletException(ex);
+            }
+        } else {
+            if (!StringUtils.startsWith(request.getServletPath(), "/internal")) {
+                counter.labels("no_auth").inc();
             }
         }
 
@@ -110,8 +117,10 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
     private String getAccessToken(String authHeader) {
         String token = authHeader.replace(TOKEN_TYPE, "");
         if (StringUtils.countMatches(token, '.') == 2) {
+            counter.labels("direct_token").inc();
             return token;
         } else {
+            counter.labels("refresh_token").inc();
             log.debug("Assuming refresh token, token was not valid access token");
             return requireNonNull(accessTokenCache.get(token, this::getAccessTokenForRefreshToken)).getAccessToken();
         }
@@ -119,8 +128,23 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
 
     @SneakyThrows
     private AuthenticationResult getAccessTokenForRefreshToken(String refreshToken) {
+        counter.labels("refresh_token_lookup").inc();
         log.debug("Looking up access token");
         var credential = new ClientCredential(aadAuthProps.getClientId(), aadAuthProps.getClientSecret());
         return authenticationContext.acquireTokenByRefreshToken(refreshToken, credential, aadAuthProps.getClientId(), null).get();
     }
+
+    private static Counter initCounter() {
+        Counter counter = Counter.build()
+                .name("adal_auth_counter")
+                .help("Counter for authentication events")
+                .labelNames("action")
+                .register();
+        counter.labels("no_auth");
+        counter.labels("refresh_token");
+        counter.labels("refresh_token_lookup");
+        counter.labels("direct_token");
+        return counter;
+    }
+
 }
