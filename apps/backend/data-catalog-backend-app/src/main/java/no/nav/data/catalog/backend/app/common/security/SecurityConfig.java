@@ -7,14 +7,13 @@ import com.microsoft.azure.spring.autoconfigure.aad.ServiceEndpointsProperties;
 import com.microsoft.azure.spring.autoconfigure.aad.UserPrincipalManager;
 import com.nimbusds.jose.util.DefaultResourceRetriever;
 import com.nimbusds.jose.util.ResourceRetriever;
+import no.nav.data.catalog.backend.app.common.utils.MdcExecutor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.net.MalformedURLException;
 import java.net.Proxy;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Configuration
 public class SecurityConfig {
@@ -43,10 +42,9 @@ public class SecurityConfig {
     @Bean
     public AuthenticationContext authenticationContext(Proxy proxy,
             AADAuthenticationProperties aadAuthProps, ServiceEndpointsProperties serviceEndpointsProps) throws MalformedURLException {
-        ExecutorService service = Executors.newFixedThreadPool(5);
         ServiceEndpoints serviceEndpoints = serviceEndpointsProps.getServiceEndpoints(aadAuthProps.getEnvironment());
         String uri = serviceEndpoints.getAadSigninUri() + aadAuthProps.getTenantId() + "/";
-        AuthenticationContext authenticationContext = new AuthenticationContext(uri, true, service);
+        AuthenticationContext authenticationContext = new AuthenticationContext(uri, true, MdcExecutor.newThreadPool(5));
         authenticationContext.setProxy(proxy);
         return authenticationContext;
     }
