@@ -12,14 +12,30 @@ import java.util.Optional;
 
 public class TraceHeaderRequestInterceptor implements ClientHttpRequestInterceptor {
 
+    private final boolean includeAllHeaders;
+
+    private TraceHeaderRequestInterceptor(boolean includeAllHeaders) {
+        this.includeAllHeaders = includeAllHeaders;
+    }
+
+    public static TraceHeaderRequestInterceptor fullInterceptor() {
+        return new TraceHeaderRequestInterceptor(true);
+    }
+
+    public static TraceHeaderRequestInterceptor correlationInterceptor() {
+        return new TraceHeaderRequestInterceptor(false);
+    }
+
     @Override
     public ClientHttpResponse intercept(HttpRequest req, byte[] body, ClientHttpRequestExecution execution) throws IOException {
         String correlationId = MdcUtils.getOrGenerateCorrelationId();
-        String callId = Optional.ofNullable(MdcUtils.getCallId()).orElse(correlationId);
-
         req.getHeaders().set(Constants.HEADER_CORRELATION_ID, correlationId);
-        req.getHeaders().set(Constants.HEADER_CALL_ID, callId);
-        req.getHeaders().set(Constants.HEADER_CONSUMER_ID, Constants.APP_ID);
+
+        if (includeAllHeaders) {
+            String callId = Optional.ofNullable(MdcUtils.getCallId()).orElse(correlationId);
+            req.getHeaders().set(Constants.HEADER_CALL_ID, callId);
+            req.getHeaders().set(Constants.HEADER_CONSUMER_ID, Constants.APP_ID);
+        }
         return execution.execute(req, body);
     }
 }

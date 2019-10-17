@@ -34,9 +34,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AADStatelessAuthenticationFilter aadStatelessAuthenticationFilter(UserPrincipalManager userPrincipalManager, AuthenticationContext authenticationContext,
-            AADAuthenticationProperties aadAuthProps, AppIdMapping appIdMapping) {
-        return new AADStatelessAuthenticationFilter(userPrincipalManager, authenticationContext, aadAuthProps, appIdMapping);
+    public AADStatelessAuthenticationFilter aadStatelessAuthenticationFilter(UserPrincipalManager userPrincipalManager, AzureTokenProvider azureTokenProvider, AppIdMapping appIdMapping) {
+        return new AADStatelessAuthenticationFilter(userPrincipalManager, azureTokenProvider, appIdMapping);
     }
 
     @Bean
@@ -44,9 +43,14 @@ public class SecurityConfig {
             AADAuthenticationProperties aadAuthProps, ServiceEndpointsProperties serviceEndpointsProps) throws MalformedURLException {
         ServiceEndpoints serviceEndpoints = serviceEndpointsProps.getServiceEndpoints(aadAuthProps.getEnvironment());
         String uri = serviceEndpoints.getAadSigninUri() + aadAuthProps.getTenantId() + "/";
-        AuthenticationContext authenticationContext = new AuthenticationContext(uri, true, MdcExecutor.newThreadPool(5));
+        AuthenticationContext authenticationContext = new AuthenticationContext(uri, true, adalAuthenticationExecutor());
         authenticationContext.setProxy(proxy);
         return authenticationContext;
+    }
+
+    @Bean
+    public MdcExecutor adalAuthenticationExecutor() {
+        return MdcExecutor.newThreadPool(5, "adal");
     }
 
     @Bean

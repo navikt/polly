@@ -31,12 +31,12 @@ public class AuthResultExpiry implements Expiry<String, AuthenticationResult> {
 
     private Duration expire(AuthenticationResult value) {
         if (value.getExpiresAfter() == 0) {
-            log.debug("Token TTL missing default cache expire {}s", DEFAULT_EXPIRE.toSeconds());
+            log.debug("Acquired token, TTL missing default cache expire {}s", DEFAULT_EXPIRE.toSeconds());
             return DEFAULT_EXPIRE;
         }
         Duration duration = Duration.between(Instant.now(), value.getExpiresOnDate().toInstant());
         Duration expire = suggestedRefreshInterval(duration);
-        log.debug("Token TTL {}s cache expire {}s", duration.toSeconds(), expire.toSeconds());
+        log.debug("Acquired token, TTL {}s cache expire {}s", duration.toSeconds(), expire.toSeconds());
         return expire;
     }
 

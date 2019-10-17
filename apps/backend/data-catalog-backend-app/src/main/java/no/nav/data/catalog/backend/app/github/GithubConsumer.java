@@ -41,7 +41,7 @@ public class GithubConsumer {
     public static final String REFS_HEADS_MASTER = "refs/heads/master";
     private static final String ERROR_COMMUNICATING_WITH_GITHUB = "Error communicating with github";
 
-    private final RestTemplate restTemplate;
+    private final RestTemplate externalRestTemplate;
     private final JwtTokenGenerator tokenGenerator;
 
     private final RepositoryId repositoryId;
@@ -52,9 +52,9 @@ public class GithubConsumer {
 
     private LocalDateTime lastToken = LocalDateTime.MIN;
 
-    public GithubConsumer(RestTemplate restTemplate, JwtTokenGenerator tokenGenerator,
+    public GithubConsumer(RestTemplate externalRestTemplate, JwtTokenGenerator tokenGenerator,
                           GitHubClient gitHubClient, RepositoryId repositoryId) {
-        this.restTemplate = restTemplate;
+        this.externalRestTemplate = externalRestTemplate;
         this.tokenGenerator = tokenGenerator;
         this.repositoryId = repositoryId;
         this.gitHubClient = gitHubClient;
@@ -140,7 +140,7 @@ public class GithubConsumer {
 
     private String getInstallationId() {
         try {
-            ResponseEntity<GithubInstallation[]> responseEntity = restTemplate
+            ResponseEntity<GithubInstallation[]> responseEntity = externalRestTemplate
                     .exchange(installationsUri, HttpMethod.GET, new HttpEntity<>(createBearerHeader()), GithubInstallation[].class);
             return Optional.of(responseEntity)
                     .map(ResponseEntity::getBody)
@@ -165,7 +165,7 @@ public class GithubConsumer {
 
     private String getInstallationToken(String installationId) {
         try {
-            var responseEntity = restTemplate
+            var responseEntity = externalRestTemplate
                     .exchange(String.format("%s/%s/access_tokens", installationsUri, installationId), HttpMethod.POST, new HttpEntity<>(createBearerHeader()),
                             GithubInstallationToken.class);
             return Optional.of(responseEntity)

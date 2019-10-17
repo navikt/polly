@@ -1,19 +1,21 @@
 package no.nav.data.catalog.backend.app.common.utils;
 
 import org.slf4j.MDC;
+import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.PreDestroy;
 
 public class MdcExecutor extends ThreadPoolExecutor {
 
-    public static MdcExecutor newThreadPool(int maximumPoolSize) {
-        return new MdcExecutor(maximumPoolSize);
+    public static MdcExecutor newThreadPool(int maximumPoolSize, String name) {
+        return new MdcExecutor(maximumPoolSize, name);
     }
 
-    private MdcExecutor(int maximumPoolSize) {
-        super(1, maximumPoolSize, 60L, TimeUnit.SECONDS, new SynchronousQueue<>());
+    private MdcExecutor(int maximumPoolSize, String name) {
+        super(1, maximumPoolSize, 60L, TimeUnit.SECONDS, new SynchronousQueue<>(), new CustomizableThreadFactory(name + "-"));
     }
 
     @Override
@@ -40,5 +42,11 @@ public class MdcExecutor extends ThreadPoolExecutor {
                 }
             }
         };
+    }
+
+    @Override
+    @PreDestroy
+    public void shutdown() {
+        super.shutdown();
     }
 }

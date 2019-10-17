@@ -1,12 +1,6 @@
 package no.nav.data.catalog.backend.app.common.security;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.microsoft.aad.adal4j.AuthenticationContext;
-import com.microsoft.aad.adal4j.AuthenticationResult;
-import com.microsoft.aad.adal4j.ClientCredential;
 import com.microsoft.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter;
-import com.microsoft.azure.spring.autoconfigure.aad.AADAuthenticationProperties;
 import com.microsoft.azure.spring.autoconfigure.aad.UserPrincipal;
 import com.microsoft.azure.spring.autoconfigure.aad.UserPrincipalManager;
 import com.nimbusds.jose.JOSEException;
@@ -29,7 +23,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static java.util.Objects.requireNonNull;
 import static org.springframework.util.StringUtils.hasText;
 
 /**
@@ -44,22 +37,15 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
     public static final String NAV_IDENT_CLAIM = "NAVident";
 
     private final UserPrincipalManager principalManager;
-    private final AuthenticationContext authenticationContext;
-    private final AADAuthenticationProperties aadAuthProps;
+    private final AzureTokenProvider azureTokenProvider;
     private final List<String> allowedAppIds;
-    private final Cache<String, AuthenticationResult> accessTokenCache;
     private final Counter counter;
 
-    public AADStatelessAuthenticationFilter(UserPrincipalManager userPrincipalManager, AuthenticationContext authenticationContext,
-            AADAuthenticationProperties aadAuthProps, AppIdMapping appIdMapping) {
+    public AADStatelessAuthenticationFilter(UserPrincipalManager userPrincipalManager, AzureTokenProvider azureTokenProvider, AppIdMapping appIdMapping) {
         super(null);
         this.principalManager = userPrincipalManager;
-        this.authenticationContext = authenticationContext;
-        this.aadAuthProps = aadAuthProps;
+        this.azureTokenProvider = azureTokenProvider;
         this.allowedAppIds = List.copyOf(appIdMapping.getIds());
-        this.accessTokenCache = Caffeine.newBuilder()
-                .expireAfter(new AuthResultExpiry())
-                .maximumSize(1000).build();
         counter = initCounter();
     }
 
@@ -70,11 +56,11 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
 
         if (hasText(authHeader) && authHeader.startsWith(TOKEN_TYPE)) {
             try {
-                String token = getAccessToken(authHeader);
-                UserPrincipal principal = buildUserPrincipal(token);
-                var authentication = new PreAuthenticatedAuthenticationToken(principal, null, Collections.emptyList());
+                Credential credential = getCredential(authHeader);
+                UserPrincipal principal = buildUserPrincipal(credential.getAccessToken());
+                var authentication = new PreAuthenticatedAuthenticationToken(principal, credential, Collections.emptyList());
                 authentication.setAuthenticated(true);
-                log.info("Request token verification success.");
+                log.info("Request token verification success for subject {}.", principal.getSubject());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 cleanupRequired = true;
             } catch (BadJWTException ex) {
@@ -114,24 +100,17 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
     }
 
     @SneakyThrows
-    private String getAccessToken(String authHeader) {
+    private Credential getCredential(String authHeader) {
         String token = authHeader.replace(TOKEN_TYPE, "");
         if (StringUtils.countMatches(token, '.') == 2) {
             counter.labels("direct_token").inc();
-            return token;
+            return new Credential(token, null);
         } else {
             counter.labels("refresh_token").inc();
-            log.debug("Assuming refresh token, token was not valid access token");
-            return requireNonNull(accessTokenCache.get(token, this::getAccessTokenForRefreshToken)).getAccessToken();
+            // Assuming refresh token, token was not valid access token
+            String accessToken = azureTokenProvider.getAccessToken(token);
+            return new Credential(accessToken, token);
         }
-    }
-
-    @SneakyThrows
-    private AuthenticationResult getAccessTokenForRefreshToken(String refreshToken) {
-        counter.labels("refresh_token_lookup").inc();
-        log.debug("Looking up access token");
-        var credential = new ClientCredential(aadAuthProps.getClientId(), aadAuthProps.getClientSecret());
-        return authenticationContext.acquireTokenByRefreshToken(refreshToken, credential, aadAuthProps.getClientId(), null).get();
     }
 
     private static Counter initCounter() {
