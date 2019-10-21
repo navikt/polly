@@ -4,6 +4,7 @@ import io.prometheus.client.Counter;
 import io.prometheus.client.Summary;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.catalog.backend.app.common.nais.LeaderElectionService;
+import no.nav.data.catalog.backend.app.common.utils.MetricUtils;
 import no.nav.data.catalog.backend.app.dataset.Dataset;
 import no.nav.data.catalog.backend.app.dataset.repo.DatasetRepository;
 import no.nav.data.catalog.backend.app.elasticsearch.domain.DatasetElasticsearch;
@@ -39,7 +40,7 @@ public class ElasticsearchDatasetService {
         this.elasticsearchProperties = elasticsearchProperties;
         this.leaderElectionService = leaderElectionService;
         this.counter = initCounter();
-        this.summary = Summary.build().name("elasticsearch_sync_summary").help("runtime es-sync")
+        this.summary = MetricUtils.summary().name("elasticsearch_sync_summary").help("runtime es-sync")
                 .quantile(.5, .05).quantile(.9, .01).quantile(.95, .005).quantile(.99, .001)
                 .register();
     }
@@ -106,15 +107,11 @@ public class ElasticsearchDatasetService {
     }
 
     private static Counter initCounter() {
-        Counter counter = Counter.build()
+        return MetricUtils.counter()
+                .labels("sync").labels("create").labels("update").labels("delete")
                 .name("datacatalog_elasticsearch_sync")
                 .help("Sync stats for datacatalog")
                 .labelNames("action")
                 .register();
-        counter.labels("sync");
-        counter.labels("create");
-        counter.labels("update");
-        counter.labels("delete");
-        return counter;
     }
 }

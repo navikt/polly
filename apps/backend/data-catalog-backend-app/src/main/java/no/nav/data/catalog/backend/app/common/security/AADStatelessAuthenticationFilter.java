@@ -9,6 +9,7 @@ import com.nimbusds.jwt.proc.BadJWTException;
 import io.prometheus.client.Counter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.catalog.backend.app.common.utils.MetricUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -114,16 +115,12 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
     }
 
     private static Counter initCounter() {
-        Counter counter = Counter.build()
+        return MetricUtils.counter()
+                .labels("no_auth").labels("refresh_token").labels("refresh_token_lookup").labels("direct_token")
                 .name("adal_auth_counter")
                 .help("Counter for authentication events")
                 .labelNames("action")
                 .register();
-        counter.labels("no_auth");
-        counter.labels("refresh_token");
-        counter.labels("refresh_token_lookup");
-        counter.labels("direct_token");
-        return counter;
     }
 
 }

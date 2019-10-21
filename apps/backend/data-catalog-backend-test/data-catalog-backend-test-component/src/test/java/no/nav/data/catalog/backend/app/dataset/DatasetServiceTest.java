@@ -199,7 +199,7 @@ class DatasetServiceTest {
 
     private void mockRelations() {
         when(datasetRepository.findAllByTitle(Collections.singletonList("Haspart"))).thenReturn(Collections.singletonList(new Dataset()));
-        when(distributionChannelRepository.findAllByName(Collections.singletonList("DistributionChannel")))
+        when(distributionChannelRepository.findAllByNameIn(Collections.singletonList("DistributionChannel")))
                 .thenReturn(Collections.singletonList(DistributionChannel.builder().name("name").type(DistributionChannelType.KAFKA).build()));
     }
 }

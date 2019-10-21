@@ -54,7 +54,7 @@ public class SystemService extends RequestValidator<SystemRequest> {
 
 	@Transactional
 	public List<System> updateAll(List<SystemRequest> requests) {
-		List<System> systems = systemRepository.findAllByName(requests.stream().map(SystemRequest::getName).collect(Collectors.toList()));
+		List<System> systems = systemRepository.findAllByNameIn(requests.stream().map(SystemRequest::getName).collect(Collectors.toList()));
 
 		systems.forEach(
 				system -> {

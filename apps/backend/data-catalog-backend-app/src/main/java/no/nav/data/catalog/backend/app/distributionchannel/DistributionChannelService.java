@@ -51,7 +51,7 @@ public class DistributionChannelService extends RequestValidator<DistributionCha
 
 	@Transactional
 	public List<DistributionChannel> updateAll(List<DistributionChannelRequest> requests) {
-		List<DistributionChannel> distChannels = distributionChannelRepository.findAllByName(requests.stream()
+		List<DistributionChannel> distChannels = distributionChannelRepository.findAllByNameIn(requests.stream()
 				.map(DistributionChannelRequest::getName)
 				.collect(toList()));
 

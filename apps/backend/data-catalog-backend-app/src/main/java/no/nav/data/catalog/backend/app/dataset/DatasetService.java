@@ -152,7 +152,7 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
             throw new DataCatalogBackendNotFoundException(String.format("Could not find all hasparts %s, found %s", childTitles, Dataset.titles(children)));
         }
 
-        List<DistributionChannel> distChannels = distChannelNames.isEmpty() ? Collections.emptyList() : distributionChannelRepository.findAllByName(distChannelNames);
+        List<DistributionChannel> distChannels = distChannelNames.isEmpty() ? Collections.emptyList() : distributionChannelRepository.findAllByNameIn(distChannelNames);
         List<DistributionChannel> newChannels = Collections.emptyList();
         if (distChannelNames.size() != distChannels.size()) {
             newChannels = createDistributionChannels(request.getDistributionChannels(), distChannels);

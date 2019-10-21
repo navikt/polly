@@ -9,7 +9,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface SystemRepository extends JpaRepository<System, UUID>, JpaSpecificationExecutor<System> {
+
     Optional<System> findByName(@Param("name") String name);
 
-    List<System> findAllByName(List<String> name);
+    List<System> findAllByNameIn(List<String> name);
 }
