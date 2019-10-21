@@ -25,6 +25,9 @@ public class ValidationException extends RuntimeException {
     public List<ValidationError> get() {
         return validationErrors;
     }
+    public ValidationError get(String errorType) {
+        return validationErrors.stream().filter(v -> v.getErrorType().equals(errorType)).findFirst().orElse(null);
+    }
 
     public String toErrorString() {
         return validationErrors.stream().map(ValidationError::toString).collect(Collectors.joining(", "));

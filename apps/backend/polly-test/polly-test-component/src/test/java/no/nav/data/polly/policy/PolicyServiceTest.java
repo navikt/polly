@@ -1,7 +1,6 @@
 package no.nav.data.polly.policy;
 
 import no.nav.data.polly.common.exceptions.ValidationException;
-import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.dataset.Dataset;
 import no.nav.data.polly.dataset.repo.DatasetRepository;
 import no.nav.data.polly.policy.domain.PolicyRequest;
@@ -15,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -60,10 +58,10 @@ class PolicyServiceTest {
             service.validateRequests(List.of(request), false);
             fail();
         } catch (ValidationException e) {
-            assertEquals(3, e.get().get("Request nr:1").size());
-            assertEquals("datasetTitle cannot be null", e.get().get("Request nr:1").get("datasetTitle"));
-            assertEquals("purposeCode cannot be null", e.get().get("Request nr:1").get("purposeCode"));
-            assertEquals("legalBasisDescription cannot be null", e.get().get("Request nr:1").get("legalBasisDescription"));
+            assertEquals(3, e.get().size());
+            assertEquals("datasetTitle cannot be null", e.get("datasetTitle").getErrorMessage());
+            assertEquals("purposeCode cannot be null", e.get("purposeCode").getErrorMessage());
+            assertEquals("legalBasisDescription cannot be null", e.get("legalBasisDescription").getErrorMessage());
         }
     }
 
@@ -79,9 +77,9 @@ class PolicyServiceTest {
             service.validateRequests(List.of(request), false);
             fail();
         } catch (ValidationException e) {
-            assertEquals(2, e.get().get(DATASET_TITLE + "/" + PURPOSECODE).size());
-            assertEquals("The purposeCode AAP was not found in the PURPOSE codelist.", e.get().get(DATASET_TITLE + "/" + PURPOSECODE).get("purposeCode"));
-            assertEquals("A dataset with title " + DATASET_TITLE + " does not exist", e.get().get(DATASET_TITLE + "/" + PURPOSECODE).get("datasetTitle"));
+            assertEquals(2, e.get().size());
+            assertEquals("The purposeCode AAP was not found in the PURPOSE codelist.", e.get("purposeCode").getErrorMessage());
+            assertEquals("A dataset with title " + DATASET_TITLE + " does not exist", e.get("datasetTitle").getErrorMessage());
         }
     }
 
@@ -99,8 +97,8 @@ class PolicyServiceTest {
             service.validateRequests(List.of(request), false);
             fail();
         } catch (ValidationException e) {
-            assertEquals(1, e.get().get(DATASET_TITLE + "/" + PURPOSECODE).size());
-            assertEquals("A policy combining Dataset Personalia and Purpose AAP already exists", e.get().get(DATASET_TITLE + "/" + PURPOSECODE).get("datasetAndPurpose"));
+            assertEquals(1, e.get().size());
+            assertEquals("A policy combining Dataset Personalia and Purpose AAP already exists", e.get("datasetAndPurpose").getErrorMessage());
         }
     }
 
@@ -111,11 +109,11 @@ class PolicyServiceTest {
             service.validateRequests(List.of(request), true);
             fail();
         } catch (ValidationException e) {
-            assertEquals(4, e.get().get("Request nr:1").size());
-            assertEquals("Id is missing for update", e.get().get("Request nr:1").get("missingIdForUpdate"));
-            assertEquals("datasetTitle cannot be null", e.get().get("Request nr:1").get("datasetTitle"));
-            assertEquals("purposeCode cannot be null", e.get().get("Request nr:1").get("purposeCode"));
-            assertEquals("legalBasisDescription cannot be null", e.get().get("Request nr:1").get("legalBasisDescription"));
+            assertEquals(4, e.get().size());
+            assertEquals("Id is missing for update", e.get("missingIdForUpdate").getErrorMessage());
+            assertEquals("datasetTitle cannot be null", e.get("datasetTitle").getErrorMessage());
+            assertEquals("purposeCode cannot be null", e.get("purposeCode").getErrorMessage());
+            assertEquals("legalBasisDescription cannot be null", e.get("legalBasisDescription").getErrorMessage());
         }
     }
 
@@ -133,10 +131,9 @@ class PolicyServiceTest {
             service.validateRequests(List.of(request), true);
             fail();
         } catch (ValidationException e) {
-            Map<String, String> map = e.get().get(DATASET_TITLE + "/" + PURPOSECODE);
-            assertEquals(2, map.size(), JsonUtils.toJson(map));
-            assertEquals("The purposeCode AAP was not found in the PURPOSE codelist.", map.get("purposeCode"));
-            assertEquals("A dataset with title " + DATASET_TITLE + " does not exist", map.get("datasetTitle"));
+            assertEquals(2, e.get().size());
+            assertEquals("The purposeCode AAP was not found in the PURPOSE codelist.", e.get("purposeCode").getErrorMessage());
+            assertEquals("A dataset with title " + DATASET_TITLE + " does not exist", e.get("datasetTitle").getErrorMessage());
         }
     }
 
@@ -153,9 +150,8 @@ class PolicyServiceTest {
             service.validateRequests(List.of(request), true);
             fail();
         } catch (ValidationException e) {
-            Map<String, String> map = e.get().get(DATASET_TITLE + "/" + PURPOSECODE);
-            assertEquals(1, map.size(), JsonUtils.toJson(map));
-            assertEquals("Cannot change purpose from otherpurpose to AAP for policy 152", map.get("cannotChangePurpose"));
+            assertEquals(1, e.get().size());
+            assertEquals("Cannot change purpose from otherpurpose to AAP for policy 152", e.get("cannotChangePurpose").getErrorMessage());
         }
     }
 

@@ -1,12 +1,12 @@
 package no.nav.data.polly.policy.rest;
 
 import com.github.tomakehurst.wiremock.http.HttpHeaders;
-import no.nav.data.catalog.policies.app.behandlingsgrunnlag.domain.BehandlingsgrunnlagDistribution;
-import no.nav.data.catalog.policies.app.common.web.RestResponsePage;
-import no.nav.data.catalog.policies.app.policy.domain.PolicyRequest;
-import no.nav.data.catalog.policies.app.policy.domain.PolicyResponse;
-import no.nav.data.catalog.policies.app.policy.entities.Policy;
-import no.nav.data.catalog.policies.test.integration.IntegrationTestBase;
+import no.nav.data.polly.IntegrationTestBase;
+import no.nav.data.polly.behandlingsgrunnlag.domain.BehandlingsgrunnlagDistribution;
+import no.nav.data.polly.common.rest.RestResponsePage;
+import no.nav.data.polly.policy.domain.PolicyRequest;
+import no.nav.data.polly.policy.domain.PolicyResponse;
+import no.nav.data.polly.policy.entities.Policy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -355,7 +355,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     private void create5PoliciesWith2Inactive() {
         createPolicy(5, (i, p) -> {
-            p.setDatasetId(DATASET_ID_1);
+            p.setDatasetId(DATASET_ID_1.toString());
             p.setDatasetTitle(DATASET_TITLE);
             if (i > 3) {
                 p.setFom(LocalDate.now().minusDays(2));
@@ -365,7 +365,7 @@ class PolicyControllerIT extends IntegrationTestBase {
     }
 
     private PolicyRequest createPolicyRequest(String datasetTitle) {
-        return PolicyRequest.builder().datasetTitle(datasetTitle).datasetId(DATASET_ID_1).legalBasisDescription(LEGAL_BASIS_DESCRIPTION1).purposeCode(PURPOSE_CODE1).build();
+        return PolicyRequest.builder().datasetTitle(datasetTitle).datasetId(DATASET_ID_1.toString()).legalBasisDescription(LEGAL_BASIS_DESCRIPTION1).purposeCode(PURPOSE_CODE1).build();
     }
 
     private void assertPolicy(PolicyResponse policy, String legalBasisDescription) {
