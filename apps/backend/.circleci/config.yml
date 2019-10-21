@@ -24,7 +24,7 @@ jobs:
       - persist_to_workspace:
          root: .
          paths:
-           - data-catalog-backend-app/target/app-exec.jar
+           - polly-app/target/app-exec.jar
            - Dockerfile
       - save_cache:
           key: m2-{{ checksum "pom.xml" }}
@@ -41,7 +41,7 @@ jobs:
       - attach_workspace:
           at: ~/project
       - nais/docker-deploy:
-          image: navikt/data-catalog-backend
+          image: navikt/polly
 workflows:
   version: 2
   build_and_release:
@@ -60,8 +60,8 @@ workflows:
           name: Deploy preprod
           context: NAIS deployment
           build-and-push-docker-image: false
-          repo: navikt/data-catalog-backend
-          image: navikt/data-catalog-backend
+          repo: navikt/polly
+          image: navikt/polly
           github-app-id: 26100
           nais-template: naiserator-preprod.yaml
           environment: dev-sbs
@@ -76,8 +76,8 @@ workflows:
           name: Deploy prod
           context: NAIS deployment
           build-and-push-docker-image: false
-          repo: navikt/data-catalog-backend
-          image: navikt/data-catalog-backend
+          repo: navikt/polly
+          image: navikt/polly
           github-app-id: 26100
           nais-template: naiserator-prod.yaml
           environment: prod-sbs

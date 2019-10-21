@@ -11,17 +11,17 @@
     </parent>
 
     <groupId>no.nav.data</groupId>
-    <artifactId>data-catalog-backend</artifactId>
+    <artifactId>polly</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>data-catalog-backend-app</module>
-        <module>data-catalog-backend-test</module>
+        <module>polly-app</module>
+        <module>polly-test</module>
     </modules>
 
     <properties>
-        <start-class>no.nav.data.catalog.backend.app.AppStarter</start-class>
+        <start-class>no.nav.polly.AppStarter</start-class>
         <springfox.version>2.9.2</springfox.version>
         <swagger.version>1.5.24</swagger.version>
         <wiremock.version>2.25.1</wiremock.version>
