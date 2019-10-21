@@ -21,7 +21,7 @@
     </modules>
 
     <properties>
-        <start-class>no.nav.polly.AppStarter</start-class>
+        <start-class>no.nav.data.polly.AppStarter</start-class>
         <springfox.version>2.9.2</springfox.version>
         <swagger.version>1.5.24</swagger.version>
         <wiremock.version>2.25.1</wiremock.version>
