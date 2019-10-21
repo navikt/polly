@@ -10,6 +10,7 @@ public class CodelistStub {
         CodelistCache.set(create(ListName.CATEGORY, "PERSONALIA", "Personalia"));
         CodelistCache.set(create(ListName.CATEGORY, "ARBEIDSFORHOLD", "Arbeidsforhold"));
         CodelistCache.set(create(ListName.CATEGORY, "UTDANNING", "Utdanning"));
+        CodelistCache.set(create(ListName.PURPOSE, "Kontroll", "Kontrollering"));
     }
 
     private static Codelist create(ListName list, String code, String description) {

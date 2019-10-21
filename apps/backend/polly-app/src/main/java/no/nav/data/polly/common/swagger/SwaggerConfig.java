@@ -32,7 +32,9 @@ public class SwaggerConfig {
                 .select()
                 .apis(Predicates.or(basePackage("no.nav.data.polly.codelist"),
                         basePackage("no.nav.data.polly.github"),
-                        basePackage("no.nav.data.polly.dataset")
+                        basePackage("no.nav.data.polly.dataset"),
+                        basePackage("no.nav.data.polly.policy"),
+                        basePackage("no.nav.data.polly.behandlingsgrunnlag")
                 ))
                 .paths(PathSelectors.any())
                 .build()

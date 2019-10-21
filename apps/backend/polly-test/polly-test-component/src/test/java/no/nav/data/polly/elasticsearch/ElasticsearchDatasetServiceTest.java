@@ -1,13 +1,12 @@
 package no.nav.data.polly.elasticsearch;
 
 import io.prometheus.client.CollectorRegistry;
-import no.nav.data.polly.codelist.CodeResponse;
 import no.nav.data.polly.common.nais.LeaderElectionService;
 import no.nav.data.polly.dataset.Dataset;
 import no.nav.data.polly.dataset.DatasetData;
 import no.nav.data.polly.dataset.repo.DatasetRepository;
-import no.nav.data.polly.policy.PolicyConsumer;
-import no.nav.data.polly.policy.PolicyResponse;
+import no.nav.data.polly.policy.entities.Policy;
+import no.nav.data.polly.policy.repository.PolicyRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +25,7 @@ import static no.nav.data.polly.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
 import static no.nav.data.polly.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -35,12 +35,12 @@ import static org.mockito.Mockito.when;
 class ElasticsearchDatasetServiceTest {
 
     private Dataset dataset;
-    private PolicyResponse policy;
+    private Policy policy;
 
     @Mock
     private DatasetRepository repository;
     @Mock
-    private PolicyConsumer policyConsumer;
+    private PolicyRepository policyRepository;
     @Mock
     private ElasticsearchRepository elasticsearch;
     @Mock
@@ -54,8 +54,8 @@ class ElasticsearchDatasetServiceTest {
 
     @BeforeEach
     void setUp() {
-        policy = PolicyResponse.builder().policyId(1L).legalBasisDescription("Legal description")
-                .purpose(new CodeResponse("purposeCode", "Purpose description"))
+        policy = Policy.builder().policyId(1L).legalBasisDescription("Legal description")
+                .purposeCode("Kontroll")
                 .build();
 
         dataset = Dataset.builder()
@@ -63,7 +63,7 @@ class ElasticsearchDatasetServiceTest {
                 .datasetData(DatasetData.builder().build())
                 .build();
 
-        lenient().when(policyConsumer.getPolicyForDataset(dataset.getId())).thenReturn(singletonList(policy));
+        lenient().when(policyRepository.findByDatasetId(dataset.getId().toString())).thenReturn(singletonList(policy));
         when(properties.getIndex()).thenReturn("index");
         when(leaderElectionService.isLeader()).thenReturn(true);
     }
@@ -107,7 +107,7 @@ class ElasticsearchDatasetServiceTest {
         verify(elasticsearch, times(1)).deleteById(captor.capture());
         verify(repository, times(0)).save(any(Dataset.class));
         verify(repository, times(1)).deleteById(dataset.getId());
-        verify(policyConsumer).deletePoliciesForDataset(dataset.getId());
+        verify(policyRepository).deleteAll(anyList());
         verifyCapture(false);
     }
 

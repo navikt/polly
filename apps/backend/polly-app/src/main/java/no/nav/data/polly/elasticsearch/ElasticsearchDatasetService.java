@@ -8,8 +8,8 @@ import no.nav.data.polly.common.utils.MetricUtils;
 import no.nav.data.polly.dataset.Dataset;
 import no.nav.data.polly.dataset.repo.DatasetRepository;
 import no.nav.data.polly.elasticsearch.domain.DatasetElasticsearch;
-import no.nav.data.polly.policy.PolicyConsumer;
-import no.nav.data.polly.policy.PolicyResponse;
+import no.nav.data.polly.policy.entities.Policy;
+import no.nav.data.polly.policy.repository.PolicyRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,17 +25,17 @@ import static no.nav.data.polly.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
 public class ElasticsearchDatasetService {
 
     private final DatasetRepository repository;
-    private final PolicyConsumer policyConsumer;
+    private final PolicyRepository policyRepository;
     private final ElasticsearchRepository elasticsearch;
     private final ElasticsearchProperties elasticsearchProperties;
     private final LeaderElectionService leaderElectionService;
     private final Counter counter;
     private final Summary summary;
 
-    public ElasticsearchDatasetService(DatasetRepository repository, PolicyConsumer policyConsumer, ElasticsearchRepository elasticsearch,
+    public ElasticsearchDatasetService(DatasetRepository repository, PolicyRepository policyRepository, ElasticsearchRepository elasticsearch,
             ElasticsearchProperties elasticsearchProperties, LeaderElectionService leaderElectionService) {
         this.repository = repository;
-        this.policyConsumer = policyConsumer;
+        this.policyRepository = policyRepository;
         this.elasticsearch = elasticsearch;
         this.elasticsearchProperties = elasticsearchProperties;
         this.leaderElectionService = leaderElectionService;
@@ -91,7 +91,8 @@ public class ElasticsearchDatasetService {
             repository.deleteById(dataset.getId());
             // As we share a schema, perhpas do a scheduled task to delete orphan policies instead
             try {
-                policyConsumer.deletePoliciesForDataset(dataset.getId());
+                long deletes = policyRepository.deleteByDatasetId(dataset.getId().toString());
+                log.debug("Deleted {} policies", deletes);
             } catch (Exception e) {
                 log.warn(String.format("Failed to delete policies for datasetId=%s", dataset.getId()), e);
             }
@@ -101,8 +102,8 @@ public class ElasticsearchDatasetService {
     }
 
     public DatasetElasticsearch mapDataset(Dataset dataset) {
-        List<PolicyResponse> policies = policyConsumer.getPolicyForDataset(dataset.getId());
-        var policiesES = policies.stream().map(PolicyResponse::convertToElasticsearch).collect(Collectors.toList());
+        List<Policy> policies = policyRepository.findByDatasetId(dataset.getId().toString());
+        var policiesES = policies.stream().map(Policy::convertToElasticsearch).collect(Collectors.toList());
         return dataset.convertToElasticsearch(policiesES);
     }
 

@@ -1,0 +1,9 @@
+{
+  "namespace": "no.nav.data.polly",
+  "type": "record",
+  "name": "Behandlingsgrunnlag",
+  "fields": [
+    {"name": "purpose", "type": "string"},
+    {"name": "datasets", "type": {"type": "array", "items": "string"}}
+  ]
+}
