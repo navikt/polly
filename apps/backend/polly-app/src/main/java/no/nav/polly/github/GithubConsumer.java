@@ -1,7 +1,7 @@
 package no.nav.polly.github;
 
 import com.google.common.base.Joiner;
-import no.nav.polly.common.exceptions.DataCatalogBackendTechnicalException;
+import no.nav.polly.common.exceptions.PollyTechnicalException;
 import no.nav.polly.common.tokensupport.JwtTokenGenerator;
 import no.nav.polly.common.validator.ValidationError;
 import no.nav.polly.github.domain.GithubInstallation;
@@ -73,7 +73,7 @@ public class GithubConsumer {
             status.setContext("polly-validation");
             commitService.createStatus(repositoryId, sha, status);
         } catch (Exception e) {
-            throw new DataCatalogBackendTechnicalException(ERROR_COMMUNICATING_WITH_GITHUB, e);
+            throw new PollyTechnicalException(ERROR_COMMUNICATING_WITH_GITHUB, e);
         }
     }
 
@@ -82,7 +82,7 @@ public class GithubConsumer {
         try {
             return commitService.getCommit(repositoryId, REFS_HEADS_MASTER).getSha();
         } catch (IOException e) {
-            throw new DataCatalogBackendTechnicalException(ERROR_COMMUNICATING_WITH_GITHUB, e);
+            throw new PollyTechnicalException(ERROR_COMMUNICATING_WITH_GITHUB, e);
         }
     }
 
@@ -125,7 +125,7 @@ public class GithubConsumer {
                     .deleted(deleted)
                     .build();
         } catch (IOException e) {
-            throw new DataCatalogBackendTechnicalException(ERROR_COMMUNICATING_WITH_GITHUB, e);
+            throw new PollyTechnicalException(ERROR_COMMUNICATING_WITH_GITHUB, e);
         }
     }
 
@@ -134,7 +134,7 @@ public class GithubConsumer {
         try {
             return contentsService.getContents(repositoryId, filename, ref);
         } catch (IOException e) {
-            throw new DataCatalogBackendTechnicalException(ERROR_COMMUNICATING_WITH_GITHUB, e);
+            throw new PollyTechnicalException(ERROR_COMMUNICATING_WITH_GITHUB, e);
         }
     }
 
@@ -149,15 +149,15 @@ public class GithubConsumer {
                             .filter(installation -> repositoryId.getOwner().equals(installation.getAccount().getLogin()))
                             .map(GithubInstallation::getId)
                             .findFirst())
-                    .orElseThrow(() -> new DataCatalogBackendTechnicalException("GitHub returned null for installationId value!"));
+                    .orElseThrow(() -> new PollyTechnicalException("GitHub returned null for installationId value!"));
         } catch (
                 HttpClientErrorException e) {
-            throw new DataCatalogBackendTechnicalException(
+            throw new PollyTechnicalException(
                     String.format("Calling Github to get installation id failed with status=%s message=%s", e.getStatusCode(), e
                             .getResponseBodyAsString()), e, e.getStatusCode());
         } catch (
                 HttpServerErrorException e) {
-            throw new DataCatalogBackendTechnicalException(
+            throw new PollyTechnicalException(
                     String.format("Service getting Github installation id failed with status=%s message=%s", e.getStatusCode(), e
                             .getResponseBodyAsString()), e, e.getStatusCode());
         }
@@ -171,15 +171,15 @@ public class GithubConsumer {
             return Optional.of(responseEntity)
                     .map(ResponseEntity::getBody)
                     .map(GithubInstallationToken::getToken)
-                    .orElseThrow(() -> new DataCatalogBackendTechnicalException("GitHub returned null for installation token value!"));
+                    .orElseThrow(() -> new PollyTechnicalException("GitHub returned null for installation token value!"));
         } catch (HttpClientErrorException e) {
-            throw new DataCatalogBackendTechnicalException(
+            throw new PollyTechnicalException(
                     String.format("Calling Github to get installation token failed with status=%s message=%s", e.getStatusCode(), e
                             .getResponseBodyAsString()), e,
                     e.getStatusCode());
         } catch (
                 HttpServerErrorException e) {
-            throw new DataCatalogBackendTechnicalException(
+            throw new PollyTechnicalException(
                     String.format("Service getting Github installation token failed with status=%s message=%s", e.getStatusCode(), e
                             .getResponseBodyAsString()), e,
                     e.getStatusCode());

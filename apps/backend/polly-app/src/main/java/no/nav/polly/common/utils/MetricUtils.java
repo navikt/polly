@@ -4,7 +4,7 @@ import io.prometheus.client.Counter;
 import io.prometheus.client.SimpleCollector;
 import io.prometheus.client.Summary;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.polly.common.exceptions.DataCatalogBackendTechnicalException;
+import no.nav.polly.common.exceptions.PollyTechnicalException;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -41,10 +41,10 @@ public final class MetricUtils {
             if (registeredCollector.getClass().isAssignableFrom(collector.getClass())) {
                 return (T) registeredCollector;
             } else {
-                throw new DataCatalogBackendTechnicalException("Collector allready assigned to different type " + collector);
+                throw new PollyTechnicalException("Collector allready assigned to different type " + collector);
             }
         } catch (Exception e) {
-            throw new DataCatalogBackendTechnicalException("failed to init collector", e);
+            throw new PollyTechnicalException("failed to init collector", e);
         }
     }
 

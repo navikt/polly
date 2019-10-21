@@ -1,7 +1,7 @@
 package no.nav.polly.policy;
 
 import no.nav.polly.codelist.CodeResponse;
-import no.nav.polly.common.exceptions.DataCatalogBackendTechnicalException;
+import no.nav.polly.common.exceptions.PollyTechnicalException;
 import no.nav.polly.common.rest.RestResponsePage;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -92,7 +92,7 @@ class PolicyConsumerTest {
     void shouldThrowClientException() {
         when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), eq(HttpEntity.EMPTY), eq(REST_PAGE_RESPONSE), eq(DATASET_ID_1)))
                 .thenThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
-        DataCatalogBackendTechnicalException exception = assertThrows(DataCatalogBackendTechnicalException.class, () -> policyConsumer.getPolicyForDataset(DATASET_ID_1));
+        PollyTechnicalException exception = assertThrows(PollyTechnicalException.class, () -> policyConsumer.getPolicyForDataset(DATASET_ID_1));
         assertThat(exception).hasMessageContaining("Getting Policies for Dataset (id: acab158d-67ef-4030-a3c2-195e993f18d2) failed with status=500 INTERNAL_SERVER_ERROR");
     }
 
@@ -100,7 +100,7 @@ class PolicyConsumerTest {
     void shouldThrowServerException() {
         when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), eq(HttpEntity.EMPTY), eq(REST_PAGE_RESPONSE), eq(DATASET_ID_1)))
                 .thenThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
-        DataCatalogBackendTechnicalException exception = assertThrows(DataCatalogBackendTechnicalException.class, () -> policyConsumer.getPolicyForDataset(DATASET_ID_1));
+        PollyTechnicalException exception = assertThrows(PollyTechnicalException.class, () -> policyConsumer.getPolicyForDataset(DATASET_ID_1));
         assertThat(exception).hasMessageContaining("Getting Policies for Dataset (id: acab158d-67ef-4030-a3c2-195e993f18d2) failed with status=500 INTERNAL_SERVER_ERROR");
     }
 

@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.polly.codelist.ListName;
-import no.nav.polly.common.exceptions.DataCatalogBackendTechnicalException;
+import no.nav.polly.common.exceptions.PollyTechnicalException;
 import no.nav.polly.common.exceptions.ValidationException;
 import no.nav.polly.common.utils.JsonUtils;
 import no.nav.polly.common.validator.FieldValidator;
@@ -89,7 +89,7 @@ public class DatasetRequest implements RequestElement {
             } catch (IOException e) {
                 String error = String.format("Error occurred during parse of Json in file %s from github ", file.getPath());
                 log.error(error, e);
-                throw new DataCatalogBackendTechnicalException(error, e);
+                throw new PollyTechnicalException(error, e);
             }
         }
 

@@ -19,7 +19,7 @@ public class LeaderElectionService {
 
     private String electorPath;
     private RestTemplate restTemplate;
-    private Gauge leaderGauge = Gauge.build().name("datacatalog_backend_leader").help("am i leader").register();
+    private Gauge leaderGauge = Gauge.build().name("polly_leader").help("am i leader").register();
 
     public LeaderElectionService(@Value("${nais.elector.path}") String electorPath, RestTemplate restTemplate) {
         this.electorPath = electorPath;

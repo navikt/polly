@@ -1,7 +1,7 @@
 package no.nav.polly.dataset;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.polly.common.exceptions.DataCatalogBackendNotFoundException;
+import no.nav.polly.common.exceptions.PollyNotFoundException;
 import no.nav.polly.common.exceptions.ValidationException;
 import no.nav.polly.common.utils.StreamUtils;
 import no.nav.polly.common.validator.RequestValidator;
@@ -149,7 +149,7 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
 
         List<Dataset> children = childTitles.isEmpty() ? Collections.emptyList() : datasetRepository.findAllByTitle(childTitles);
         if (childTitles.size() != children.size()) {
-            throw new DataCatalogBackendNotFoundException(String.format("Could not find all hasparts %s, found %s", childTitles, Dataset.titles(children)));
+            throw new PollyNotFoundException(String.format("Could not find all hasparts %s, found %s", childTitles, Dataset.titles(children)));
         }
 
         List<DistributionChannel> distChannels = distChannelNames.isEmpty() ? Collections.emptyList() : distributionChannelRepository.findAllByNameIn(distChannelNames);

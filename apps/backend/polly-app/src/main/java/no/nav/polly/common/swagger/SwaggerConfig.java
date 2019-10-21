@@ -54,8 +54,8 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfo(
-                "Data Catalog Backend",
-                "Rest API for getting and posting information on Data Catalog Backend. We need a writer for this....",
+                "Polly",
+                "Rest API for getting and posting information on Polly",
                 "1.0",
                 "Terms of service",
                 new Contact("NAV", "www.nav.no", "post@nav.no"),

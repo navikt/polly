@@ -1,7 +1,7 @@
 package no.nav.polly.elasticsearch;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.polly.common.exceptions.DataCatalogBackendTechnicalException;
+import no.nav.polly.common.exceptions.PollyTechnicalException;
 import no.nav.polly.common.exceptions.DocumentNotFoundException;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.DocWriteResponse;
@@ -61,10 +61,10 @@ public class ElasticsearchRepository {
             log.info("insert: {} inserted", index);
         } catch (ElasticsearchException e) {
             log.error("Elasticsearch-error occurred during insert " + index, e);
-            throw new DataCatalogBackendTechnicalException(e.getDetailedMessage(), e);
+            throw new PollyTechnicalException(e.getDetailedMessage(), e);
         } catch (IOException ex) {
             log.error("Error occurred during insert " + index, ex);
-            throw new DataCatalogBackendTechnicalException(ex.getLocalizedMessage(), ex);
+            throw new PollyTechnicalException(ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -83,7 +83,7 @@ public class ElasticsearchRepository {
             }
         } catch (IOException ex) {
             log.error(String.format("Error occurred during getById, %s document id=%s", index, id), ex);
-            throw new DataCatalogBackendTechnicalException(ex.getLocalizedMessage(), ex);
+            throw new PollyTechnicalException(ex.getLocalizedMessage(), ex);
         }
         log.info("getById: Returned {}", index);
         return getResponse.getSourceAsString();
@@ -109,15 +109,15 @@ public class ElasticsearchRepository {
                     restHighLevelClient.index(indexRequest, requestOptions);
                 } catch (IOException ex) {
                     log.error(String.format("Error occurred during indexing, document id=%s", id), ex);
-                    throw new DataCatalogBackendTechnicalException(ex.getLocalizedMessage(), ex);
+                    throw new PollyTechnicalException(ex.getLocalizedMessage(), ex);
                 }
             } else {
                 log.error(String.format("Error occurred during updateById, %s document id=%s", index, id), e);
-                throw new DataCatalogBackendTechnicalException(e.getLocalizedMessage(), e);
+                throw new PollyTechnicalException(e.getLocalizedMessage(), e);
             }
         } catch (IOException ex) {
             log.error(String.format("IOException occurred during updateById, %s document id=%s", index, id), ex);
-            throw new DataCatalogBackendTechnicalException(ex.getLocalizedMessage(), ex);
+            throw new PollyTechnicalException(ex.getLocalizedMessage(), ex);
         }
     }
 

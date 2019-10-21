@@ -1,7 +1,7 @@
 package no.nav.polly.policy;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.polly.common.exceptions.DataCatalogBackendTechnicalException;
+import no.nav.polly.common.exceptions.PollyTechnicalException;
 import no.nav.polly.common.rest.RestResponsePage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -67,6 +67,6 @@ public class PolicyConsumer {
 
     private List<PolicyResponse> throwException(UUID datasetId, HttpStatusCodeException e) {
         String message = String.format("Getting Policies for Dataset (id: %s) failed with status=%s message=%s", datasetId, e.getStatusCode(), e.getResponseBodyAsString());
-        throw new DataCatalogBackendTechnicalException(message, e, e.getStatusCode());
+        throw new PollyTechnicalException(message, e, e.getStatusCode());
     }
 }

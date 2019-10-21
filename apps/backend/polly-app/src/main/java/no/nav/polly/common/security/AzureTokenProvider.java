@@ -7,7 +7,7 @@ import com.microsoft.aad.adal4j.AuthenticationResult;
 import com.microsoft.aad.adal4j.ClientCredential;
 import com.microsoft.azure.spring.autoconfigure.aad.AADAuthenticationProperties;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.polly.common.exceptions.DataCatalogBackendTechnicalException;
+import no.nav.polly.common.exceptions.PollyTechnicalException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -66,7 +66,7 @@ public class AzureTokenProvider {
             log.debug("Looking up access token for resource {}", resource);
             return authenticationContext.acquireTokenByRefreshToken(refreshToken, credential, resource, null).get();
         } catch (Exception e) {
-            throw new DataCatalogBackendTechnicalException("Failed to get access token for refreshToken", e);
+            throw new PollyTechnicalException("Failed to get access token for refreshToken", e);
         }
     }
 
@@ -75,7 +75,7 @@ public class AzureTokenProvider {
             log.debug("Looking up application token for resource {}", resource);
             return authenticationContext.acquireToken(resource, credential, null).get();
         } catch (Exception e) {
-            throw new DataCatalogBackendTechnicalException("Failed to get access token for credential", e);
+            throw new PollyTechnicalException("Failed to get access token for credential", e);
         }
     }
 
