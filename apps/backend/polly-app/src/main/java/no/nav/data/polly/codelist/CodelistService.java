@@ -23,10 +23,6 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
 
     private CodelistRepository repository;
 
-    static {
-        CodelistCache.init();
-    }
-
     public CodelistService(CodelistRepository repository) {
         this.repository = repository;
     }

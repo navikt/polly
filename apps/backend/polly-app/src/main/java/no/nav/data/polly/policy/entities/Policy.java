@@ -35,7 +35,7 @@ public class Policy extends Auditable<String> {
     @GenericGenerator(name = "seq_policy", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
             parameters = {@Parameter(name = "sequence_name", value = "SEQ_POLICY")})
     @Column(name = "POLICY_ID", nullable = false, updatable = false, unique = true)
-    private Long policyId;
+    private Long id;
 
     @NotNull
     @Column(name = "DATASET_ID", nullable = false)

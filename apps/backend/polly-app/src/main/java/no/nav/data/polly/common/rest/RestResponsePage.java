@@ -13,14 +13,14 @@ import java.util.List;
 public class RestResponsePage<T> {
 
     private List<T> content;
-    private int pageNumber;
-    private int pageSize;
+    private long pageNumber;
+    private long pageSize;
     private long returnedElements;
     private long totalElements;
 
     public RestResponsePage(List<T> content) {
         this.content = content;
-        this.pageNumber = 0;
+        this.pageNumber = 0L;
         this.pageSize = content.size();
         this.returnedElements = pageSize;
         this.totalElements = pageSize;

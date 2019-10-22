@@ -1,11 +1,14 @@
 package no.nav.data.polly.policy;
 
+import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.common.exceptions.ValidationException;
+import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.dataset.Dataset;
 import no.nav.data.polly.dataset.repo.DatasetRepository;
 import no.nav.data.polly.policy.domain.PolicyRequest;
 import no.nav.data.polly.policy.entities.Policy;
 import no.nav.data.polly.policy.repository.PolicyRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -39,6 +42,11 @@ class PolicyServiceTest {
     @InjectMocks
     private PolicyService service;
 
+    @BeforeEach
+    void setUp() {
+        CodelistStub.initializeCodelist();
+    }
+
     @Test
     void shouldValidateInsertRequest() {
         PolicyRequest request = PolicyRequest.builder()
@@ -58,7 +66,7 @@ class PolicyServiceTest {
             service.validateRequests(List.of(request), false);
             fail();
         } catch (ValidationException e) {
-            assertEquals(3, e.get().size());
+            assertEquals(3, e.get().size(), JsonUtils.toJson(e.get()));
             assertEquals("datasetTitle cannot be null", e.get("datasetTitle").getErrorMessage());
             assertEquals("purposeCode cannot be null", e.get("purposeCode").getErrorMessage());
             assertEquals("legalBasisDescription cannot be null", e.get("legalBasisDescription").getErrorMessage());
@@ -77,8 +85,8 @@ class PolicyServiceTest {
             service.validateRequests(List.of(request), false);
             fail();
         } catch (ValidationException e) {
-            assertEquals(2, e.get().size());
-            assertEquals("The purposeCode AAP was not found in the PURPOSE codelist.", e.get("purposeCode").getErrorMessage());
+            assertEquals(2, e.get().size(), JsonUtils.toJson(e.get()));
+            assertEquals("The purposeCode wrong was not found in the PURPOSE codelist.", e.get("purposeCode").getErrorMessage());
             assertEquals("A dataset with title " + DATASET_TITLE + " does not exist", e.get("datasetTitle").getErrorMessage());
         }
     }
@@ -90,15 +98,15 @@ class PolicyServiceTest {
                 .legalBasisDescription(LEGALBASISDESCRIPTION)
                 .purposeCode(PURPOSECODE)
                 .build();
-        when(datasetRepository.findByTitle(request.getDatasetTitle())).thenReturn(Optional.empty());
+        when(datasetRepository.findByTitle(request.getDatasetTitle())).thenReturn(Optional.of(Dataset.builder().id(UUID.fromString(DATASET_ID_1)).build()));
         when(policyRepository.findByDatasetIdAndPurposeCode(any(String.class), anyString()))
                 .thenReturn(List.of(Policy.builder().fom(LocalDate.now()).tom(LocalDate.now()).build()));
         try {
             service.validateRequests(List.of(request), false);
             fail();
         } catch (ValidationException e) {
-            assertEquals(1, e.get().size());
-            assertEquals("A policy combining Dataset Personalia and Purpose AAP already exists", e.get("datasetAndPurpose").getErrorMessage());
+            assertEquals(1, e.get().size(), JsonUtils.toJson(e.get()));
+            assertEquals("A policy combining Dataset Personalia and Purpose Kontroll already exists", e.get("datasetAndPurpose").getErrorMessage());
         }
     }
 
@@ -109,7 +117,7 @@ class PolicyServiceTest {
             service.validateRequests(List.of(request), true);
             fail();
         } catch (ValidationException e) {
-            assertEquals(4, e.get().size());
+            assertEquals(4, e.get().size(), JsonUtils.toJson(e.get()));
             assertEquals("Id is missing for update", e.get("missingIdForUpdate").getErrorMessage());
             assertEquals("datasetTitle cannot be null", e.get("datasetTitle").getErrorMessage());
             assertEquals("purposeCode cannot be null", e.get("purposeCode").getErrorMessage());
@@ -126,13 +134,13 @@ class PolicyServiceTest {
                 .purposeCode("wrong")
                 .build();
         when(datasetRepository.findByTitle(request.getDatasetTitle())).thenReturn(Optional.empty());
-        when(policyRepository.findById(152L)).thenReturn(Optional.of(Policy.builder().purposeCode(PURPOSECODE).build()));
+        when(policyRepository.findById(152L)).thenReturn(Optional.of(Policy.builder().purposeCode("wrong").build()));
         try {
             service.validateRequests(List.of(request), true);
             fail();
         } catch (ValidationException e) {
-            assertEquals(2, e.get().size());
-            assertEquals("The purposeCode AAP was not found in the PURPOSE codelist.", e.get("purposeCode").getErrorMessage());
+            assertEquals(2, e.get().size(), JsonUtils.toJson(e.get()));
+            assertEquals("The purposeCode wrong was not found in the PURPOSE codelist.", e.get("purposeCode").getErrorMessage());
             assertEquals("A dataset with title " + DATASET_TITLE + " does not exist", e.get("datasetTitle").getErrorMessage());
         }
     }
@@ -145,13 +153,14 @@ class PolicyServiceTest {
                 .legalBasisDescription(LEGALBASISDESCRIPTION)
                 .purposeCode(PURPOSECODE)
                 .build();
+        when(datasetRepository.findByTitle(request.getDatasetTitle())).thenReturn(Optional.of(Dataset.builder().id(UUID.fromString(DATASET_ID_1)).build()));
         when(policyRepository.findById(152L)).thenReturn(Optional.of(Policy.builder().purposeCode("otherpurpose").build()));
         try {
             service.validateRequests(List.of(request), true);
             fail();
         } catch (ValidationException e) {
-            assertEquals(1, e.get().size());
-            assertEquals("Cannot change purpose from otherpurpose to AAP for policy 152", e.get("cannotChangePurpose").getErrorMessage());
+            assertEquals(1, e.get().size(), JsonUtils.toJson(e.get()));
+            assertEquals("Cannot change purpose from otherpurpose to Kontroll for policy 152", e.get("cannotChangePurpose").getErrorMessage());
         }
     }
 

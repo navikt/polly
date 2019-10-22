@@ -19,6 +19,10 @@ final class CodelistCache {
     private static final Map<ListName, Map<String, String>> codelistLegacy = new EnumMap<>(ListName.class);
     private static final Map<ListName, Map<String, Codelist>> codelists = new EnumMap<>(ListName.class);
 
+    static {
+        CodelistCache.init();
+    }
+
     static void init() {
         Stream.of(ListName.values()).forEach(listName -> {
             codelists.put(listName, new HashMap<>());

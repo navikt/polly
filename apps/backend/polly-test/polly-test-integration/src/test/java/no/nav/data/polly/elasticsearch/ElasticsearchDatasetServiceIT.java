@@ -1,28 +1,18 @@
 package no.nav.data.polly.elasticsearch;
 
 import no.nav.data.polly.IntegrationTestBase;
-import no.nav.data.polly.codelist.CodelistService;
-import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.dataset.Dataset;
-import no.nav.data.polly.dataset.DatasetData;
-import no.nav.data.polly.dataset.repo.DatasetRepository;
 import no.nav.data.polly.elasticsearch.domain.DatasetElasticsearch;
 import no.nav.data.polly.elasticsearch.domain.PolicyElasticsearch;
 import org.awaitility.Duration;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static no.nav.data.polly.elasticsearch.ElasticsearchDocument.newDatasetDocumentId;
 import static no.nav.data.polly.elasticsearch.ElasticsearchStatus.SYNCED;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,21 +20,11 @@ import static org.awaitility.Awaitility.await;
 
 class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
 
-    private static final String TITLE = "title";
-    private static final String DESCRIPTION = "desc";
-
-
     @Autowired
     private ElasticsearchDatasetService service;
 
     @Autowired
-    private DatasetRepository repository;
-
-    @Autowired
     private ElasticsearchRepository esRepository;
-
-    @Autowired
-    protected CodelistService codelistService;
 
     private static FixedElasticsearchContainer container = new FixedElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch-oss:6.6.1", ELASTICSEARCH_PORT);
 
@@ -53,29 +33,9 @@ class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
         container.start();
     }
 
-    @BeforeEach
-    void setUp() {
-        repository.deleteAll();
-        initializeCodelists();
-        policyStubbing();
-    }
-
-    private void policyStubbing() {
-        // todo
-    }
-
-    @AfterEach
-    void cleanUp() {
-        repository.deleteAll();
-    }
-
     @AfterAll
     static void cleanUpAll() {
         container.stop();
-    }
-
-    private void initializeCodelists() {
-        CodelistStub.initializeCodelist();
     }
 
     @Test
@@ -86,7 +46,7 @@ class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
                 assertThat(esRepository.getAllDatasets("index").getHits().totalHits).isEqualTo(1L));
         String json = esRepository.getById(newDatasetDocumentId(DATASET_ID_1.toString(), "index"));
         assertDataset(json);
-        Dataset dataset = repository.findAll().get(0);
+        Dataset dataset = datasetRepository.findAll().get(0);
         assertThat(dataset.getElasticsearchStatus()).isEqualTo(SYNCED);
     }
 
@@ -97,10 +57,10 @@ class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
         await().atMost(Duration.FIVE_SECONDS).untilAsserted(() ->
                 assertThat(esRepository.getAllDatasets("index").getHits().totalHits).isEqualTo(1L));
 
-        assertThat(repository.findAll().size()).isEqualTo(1);
-        Dataset dataset = repository.findAll().get(0);
+        assertThat(datasetRepository.findAll().size()).isEqualTo(1);
+        Dataset dataset = datasetRepository.findAll().get(0);
         dataset.setElasticsearchStatus(ElasticsearchStatus.TO_BE_UPDATED);
-        repository.save(dataset);
+        datasetRepository.save(dataset);
         service.synchToElasticsearch();
 
         await().atMost(Duration.FIVE_SECONDS).untilAsserted(() ->
@@ -108,8 +68,8 @@ class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
         String json = esRepository.getById(newDatasetDocumentId(DATASET_ID_1.toString(), "index"));
         assertDataset(json);
 
-        assertThat(repository.findAll().size()).isEqualTo(1);
-        dataset = repository.findAll().get(0);
+        assertThat(datasetRepository.findAll().size()).isEqualTo(1);
+        dataset = datasetRepository.findAll().get(0);
         assertThat(dataset.getElasticsearchStatus()).isEqualTo(SYNCED);
     }
 
@@ -123,11 +83,10 @@ class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
         String json = esRepository.getById(newDatasetDocumentId(DATASET_ID_1.toString(), "index"));
         assertDataset(json);
 
-        assertThat(repository.findAll().size()).isEqualTo(1);
-        Dataset dataset = repository.findAll().get(0);
+        assertThat(datasetRepository.findAll().size()).isEqualTo(1);
+        Dataset dataset = datasetRepository.findAll().get(0);
         assertThat(dataset.getElasticsearchStatus()).isEqualTo(SYNCED);
     }
-
 
     @Test
     void syncDeletedDatasetsToES() {
@@ -136,10 +95,10 @@ class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
         await().atMost(Duration.FIVE_SECONDS).untilAsserted(() ->
                 assertThat(esRepository.getAllDatasets("index").getHits().totalHits).isEqualTo(1L));
 
-        assertThat(repository.findAll().size()).isEqualTo(1);
-        Dataset dataset = repository.findAll().get(0);
+        assertThat(datasetRepository.findAll().size()).isEqualTo(1);
+        Dataset dataset = datasetRepository.findAll().get(0);
         dataset.setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED);
-        repository.save(dataset);
+        datasetRepository.save(dataset);
         String json = esRepository.getById(newDatasetDocumentId(DATASET_ID_1.toString(), "index"));
         assertDataset(json);
 
@@ -147,30 +106,23 @@ class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
 
         await().atMost(Duration.FIVE_SECONDS).untilAsserted(() ->
                 assertThat(esRepository.getAllDatasets("index").getHits().totalHits).isEqualTo(0L));
-        assertThat(repository.findAll().size()).isEqualTo(0);
-        verify(deleteRequestedFor(urlPathEqualTo("/policy/policy")).withQueryParam("datasetId", equalTo(DATASET_ID_1.toString())));
+        assertThat(datasetRepository.count()).isEqualTo(0);
+        assertThat(policyRepository.count()).isEqualTo(0);
     }
 
     private void createTestData(ElasticsearchStatus esStatus) {
-        Dataset dataset = Dataset.builder()
-                .id(DATASET_ID_1)
-                .elasticsearchStatus(esStatus)
-                .datasetData(DatasetData.builder()
-                        .title(TITLE)
-                        .description(DESCRIPTION)
-                        .provenances(List.of("ARBEIDSGIVER"))
-                        .categories(List.of("PERSONALIA"))
-                        .pi(true)
-                        .build())
-                .build();
-        repository.save(dataset);
+        Dataset dataset = createDataset();
+        dataset.setElasticsearchStatus(esStatus);
+        datasetRepository.save(dataset);
+        createPolicy("Kontroll", dataset);
+        createPolicy("AAP", dataset);
     }
 
     private void assertDataset(String json) {
         var dataset = JsonUtils.toObject(json, DatasetElasticsearch.class);
 
-        assertThat(dataset.getTitle()).isEqualTo(TITLE);
-        assertThat(dataset.getDescription()).isEqualTo(DESCRIPTION);
+        assertThat(dataset.getTitle()).isEqualTo(DATASET_TITLE);
+        assertThat(dataset.getDescription()).isEqualTo("desc");
         assertThat(dataset.getPi()).isEqualTo(1);
         assertThat(dataset.getProvenance()).isEqualTo(List.of("Arbeidsgiver"));
         assertThat(dataset.getCategory()).isEqualTo(List.of("Personalia"));
@@ -181,14 +133,14 @@ class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
     }
 
     private void assertPolicies0(PolicyElasticsearch policy) {
-        assertThat(policy.getPurpose()).isEqualTo("KTR");
-        assertThat(policy.getDescription()).isEqualTo("Kontroll");
-        assertThat(policy.getLegalBasis()).isEqualTo("LB description");
+        assertThat(policy.getPurpose()).isEqualTo("Kontroll");
+        assertThat(policy.getDescription()).isEqualTo("Kontrollering");
+        assertThat(policy.getLegalBasis()).isEqualTo("legal");
     }
 
     private void assertPolicies1(PolicyElasticsearch policy) {
         assertThat(policy.getPurpose()).isEqualTo("AAP");
         assertThat(policy.getDescription()).isEqualTo("Arbeidsavklaringspenger");
-        assertThat(policy.getLegalBasis()).isEqualTo("Ftrl. § 11-20");
+        assertThat(policy.getLegalBasis()).isEqualTo("legal");
     }
 }

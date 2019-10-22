@@ -4,8 +4,11 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import io.prometheus.client.CollectorRegistry;
 import no.nav.data.polly.IntegrationTestBase.Initializer;
 import no.nav.data.polly.behandlingsgrunnlag.BehandlingsgrunnlagDistributionRepository;
+import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.common.nais.LeaderElectionService;
 import no.nav.data.polly.common.utils.JsonUtils;
+import no.nav.data.polly.dataset.Dataset;
+import no.nav.data.polly.dataset.DatasetData;
 import no.nav.data.polly.dataset.repo.DatasetRepository;
 import no.nav.data.polly.kafka.KafkaContainer;
 import no.nav.data.polly.kafka.KafkaTopicProperties;
@@ -27,11 +30,13 @@ import org.springframework.util.SocketUtils;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
+import static no.nav.data.polly.elasticsearch.ElasticsearchStatus.SYNCED;
 
 @ActiveProfiles("test")
 @ExtendWith(WiremockExtension.class)
@@ -43,7 +48,7 @@ public abstract class IntegrationTestBase {
 
     protected static final UUID DATASET_ID_1 = UUID.fromString("acab158d-67ef-4030-a3c2-195e993f18d2");
     protected static final String LEGAL_BASIS_DESCRIPTION1 = "Legal basis 1";
-    protected static final String PURPOSE_CODE1 = "TEST1";
+    protected static final String PURPOSE_CODE1 = "Kontroll";
     protected static final String DATASET_TITLE = "Sivilstand";
 
     private static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:10.4");
@@ -64,6 +69,7 @@ public abstract class IntegrationTestBase {
 
     @BeforeEach
     public void setUpAbstract() throws Exception {
+        CodelistStub.initializeCodelist();
         WireMock.stubFor(get("/elector").willReturn(okJson(JsonUtils.toJson(LeaderElectionService.getHostInfo()))));
         policyRepository.deleteAll();
         datasetRepository.deleteAll();
@@ -94,6 +100,31 @@ public abstract class IntegrationTestBase {
             callback.accept(i, policy);
             policyRepository.save(policy);
         }
+    }
+
+    protected Policy createPolicy(String purpose, Dataset dataset) {
+        return policyRepository.save(Policy.builder().purposeCode(purpose).legalBasisDescription("legal")
+                .datasetId(dataset.getId().toString()).datasetTitle(dataset.getTitle())
+                .fom(LocalDate.now()).tom(LocalDate.now()).build());
+    }
+
+    protected Dataset createDataset() {
+        return createDataset(DATASET_ID_1, DATASET_TITLE);
+    }
+
+    protected Dataset createDataset(UUID id, String datasetTitle) {
+        Dataset dataset = Dataset.builder()
+                .id(id)
+                .elasticsearchStatus(SYNCED)
+                .datasetData(DatasetData.builder()
+                        .title(datasetTitle)
+                        .description("desc")
+                        .provenances(List.of("ARBEIDSGIVER"))
+                        .categories(List.of("PERSONALIA"))
+                        .pi(true)
+                        .build())
+                .build();
+        return datasetRepository.save(dataset);
     }
 
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {

@@ -1,6 +1,7 @@
 package no.nav.data.polly.elasticsearch;
 
 import io.prometheus.client.CollectorRegistry;
+import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.common.nais.LeaderElectionService;
 import no.nav.data.polly.dataset.Dataset;
 import no.nav.data.polly.dataset.DatasetData;
@@ -25,7 +26,6 @@ import static no.nav.data.polly.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
 import static no.nav.data.polly.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -54,7 +54,8 @@ class ElasticsearchDatasetServiceTest {
 
     @BeforeEach
     void setUp() {
-        policy = Policy.builder().policyId(1L).legalBasisDescription("Legal description")
+        CodelistStub.initializeCodelist();
+        policy = Policy.builder().id(1L).legalBasisDescription("Legal description")
                 .purposeCode("Kontroll")
                 .build();
 
@@ -107,7 +108,7 @@ class ElasticsearchDatasetServiceTest {
         verify(elasticsearch, times(1)).deleteById(captor.capture());
         verify(repository, times(0)).save(any(Dataset.class));
         verify(repository, times(1)).deleteById(dataset.getId());
-        verify(policyRepository).deleteAll(anyList());
+        verify(policyRepository).deleteByDatasetId(dataset.getId().toString());
         verifyCapture(false);
     }
 

@@ -1,5 +1,6 @@
 package no.nav.data.polly.policy.mapper;
 
+import no.nav.data.polly.codelist.CodeResponse;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.ListName;
 import no.nav.data.polly.policy.domain.DatasetResponse;
@@ -25,7 +26,7 @@ public class PolicyMapper {
         policy.setFom(parse(policyRequest.getFom(), DEFAULT_FOM));
         policy.setTom(parse(policyRequest.getTom(), DEFAULT_TOM));
         if (id != null) {
-            policy.setPolicyId(id);
+            policy.setId(id);
         }
         Policy existingPolicy = policyRequest.getExistingPolicy();
         if (existingPolicy != null) {
@@ -37,10 +38,11 @@ public class PolicyMapper {
 
     public PolicyResponse mapPolicyToResponse(Policy policy) {
         PolicyResponse response = new PolicyResponse();
-        response.setPolicyId(policy.getPolicyId());
+        response.setPolicyId(policy.getId());
         response.setLegalBasisDescription(policy.getLegalBasisDescription());
         response.setDataset(new DatasetResponse(policy.getDatasetId(), policy.getDatasetTitle()));
-        response.setPurpose(CodelistService.getCodeResponseForCodelistItem(ListName.CATEGORY, policy.getPurposeCode()));
+        CodeResponse purposeCode = CodelistService.getCodeResponseForCodelistItem(ListName.PURPOSE, policy.getPurposeCode());
+        response.setPurpose(purposeCode);
         response.setFom(policy.getFom());
         response.setTom(policy.getTom());
         response.setActive(policy.isActive());
