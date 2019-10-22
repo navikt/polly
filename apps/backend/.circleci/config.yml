@@ -64,7 +64,7 @@ workflows:
           image: navikt/polly
           github-app-id: 26100
           nais-template: naiserator-preprod.yaml
-          environment: dev-sbs
+          environment: dev-fss
           team: teamdatajegerne
           requires:
             - build_docker_image
@@ -80,7 +80,7 @@ workflows:
           image: navikt/polly
           github-app-id: 26100
           nais-template: naiserator-prod.yaml
-          environment: prod-sbs
+          environment: prod-fss
           team: teamdatajegerne
           requires:
             - build_docker_image
