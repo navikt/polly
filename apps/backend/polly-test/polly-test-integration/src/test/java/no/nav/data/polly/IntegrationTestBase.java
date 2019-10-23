@@ -13,6 +13,7 @@ import no.nav.data.polly.dataset.repo.DatasetRepository;
 import no.nav.data.polly.kafka.KafkaContainer;
 import no.nav.data.polly.kafka.KafkaTopicProperties;
 import no.nav.data.polly.kafka.SchemaRegistryContainer;
+import no.nav.data.polly.legalbasis.LegalBasis;
 import no.nav.data.polly.policy.entities.Policy;
 import no.nav.data.polly.policy.repository.PolicyRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -31,6 +32,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
@@ -91,21 +93,21 @@ public abstract class IntegrationTestBase {
         int i = 0;
         while (i++ < rows) {
             Policy policy = new Policy();
-            policy.setDatasetId(i == 1 ? DATASET_ID_1.toString() : UUID.randomUUID().toString());
-            policy.setDatasetTitle(DATASET_TITLE);
-            policy.setLegalBasisDescription(LEGAL_BASIS_DESCRIPTION1);
+//            policy.setDatasetId(i == 1 ? DATASET_ID_1.toString() : UUID.randomUUID().toString());
+//            policy.setDatasetTitle(DATASET_TITLE);
+//            policy.setLegalBasisDescription(LEGAL_BASIS_DESCRIPTION1);
             policy.setPurposeCode(PURPOSE_CODE1);
-            policy.setFom(LocalDate.now());
-            policy.setTom(LocalDate.now());
+            policy.setStart(LocalDate.now());
+            policy.setEnd(LocalDate.now());
             callback.accept(i, policy);
             policyRepository.save(policy);
         }
     }
 
     protected Policy createPolicy(String purpose, Dataset dataset) {
-        return policyRepository.save(Policy.builder().purposeCode(purpose).legalBasisDescription("legal")
-                .datasetId(dataset.getId().toString()).datasetTitle(dataset.getTitle())
-                .fom(LocalDate.now()).tom(LocalDate.now()).build());
+        return policyRepository.save(Policy.builder().purposeCode(purpose).legalBases(Set.of(new LegalBasis("a", "b", "desc")))
+//                .datasetId(dataset.getId().toString()).datasetTitle(dataset.getTitle())
+                .start(LocalDate.now()).end(LocalDate.now()).build());
     }
 
     protected Dataset createDataset() {

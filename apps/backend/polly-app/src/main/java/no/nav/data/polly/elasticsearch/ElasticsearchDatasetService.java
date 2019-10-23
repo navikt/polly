@@ -91,7 +91,7 @@ public class ElasticsearchDatasetService {
             repository.deleteById(dataset.getId());
             // As we share a schema, perhpas do a scheduled task to delete orphan policies instead
             try {
-                long deletes = policyRepository.deleteByDatasetId(dataset.getId().toString());
+                long deletes = policyRepository.deleteByInformationTypeId(dataset.getId());
                 log.debug("Deleted {} policies", deletes);
             } catch (Exception e) {
                 log.warn(String.format("Failed to delete policies for datasetId=%s", dataset.getId()), e);
@@ -102,7 +102,7 @@ public class ElasticsearchDatasetService {
     }
 
     public DatasetElasticsearch mapDataset(Dataset dataset) {
-        List<Policy> policies = policyRepository.findByDatasetId(dataset.getId().toString());
+        List<Policy> policies = policyRepository.findByInformationTypeId(dataset.getId());
         var policiesES = policies.stream().map(Policy::convertToElasticsearch).collect(Collectors.toList());
         return dataset.convertToElasticsearch(policiesES);
     }

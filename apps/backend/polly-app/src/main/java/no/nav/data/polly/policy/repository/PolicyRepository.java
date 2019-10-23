@@ -5,22 +5,23 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 import javax.transaction.Transactional;
 
 @Repository
-public interface PolicyRepository extends JpaRepository<Policy, Long> {
+public interface PolicyRepository extends JpaRepository<Policy, UUID> {
 
-    List<Policy> findByDatasetId(String datasetId);
+    List<Policy> findByInformationTypeId(UUID informationTypeId);
 
     /**
      * For some reason deleteBy methods are not transactional by default
      */
     @Transactional
-    long deleteByDatasetId(String datasetId);
+    long deleteByInformationTypeId(UUID informationTypeId);
 
-    long countByDatasetId(String datasetId);
+    long countByInformationTypeId(UUID informationTypeId);
 
-    List<Policy> findByDatasetIdAndPurposeCode(String datasetId, String purposeCode);
+    List<Policy> findByInformationTypeIdAndPurposeCode(UUID informationTypeId, String purposeCode);
 
     List<Policy> findByPurposeCode(String purposeCode);
 

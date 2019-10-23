@@ -3,6 +3,7 @@ package no.nav.data.polly.dataset;
 import no.nav.data.polly.dataset.repo.DatasetRelation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Disabled
 class DatasetRepositoryIT extends AbstractDatasetIT {
 
     @BeforeEach

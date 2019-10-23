@@ -3,69 +3,92 @@ package no.nav.data.polly.policy.entities;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import no.nav.data.polly.behandlingsgrunnlag.domain.DatasetBehandlingsgrunnlagResponse;
 import no.nav.data.polly.codelist.Codelist;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.ListName;
 import no.nav.data.polly.common.auditing.Auditable;
 import no.nav.data.polly.elasticsearch.domain.PolicyElasticsearch;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
+import no.nav.data.polly.informationtype.InformationType;
+import no.nav.data.polly.legalbasis.LegalBasis;
+import no.nav.data.polly.process.Process;
+import org.hibernate.annotations.Type;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-@Entity
-@Table(name = "POLICY")
 @Data
 @Builder
+@ToString(exclude = {"informationType"})
+@EqualsAndHashCode(callSuper = false, exclude = {"informationType"})
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "POLICY")
 public class Policy extends Auditable<String> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_policy")
-    @GenericGenerator(name = "seq_policy", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-            parameters = {@Parameter(name = "sequence_name", value = "SEQ_POLICY")})
-    @Column(name = "POLICY_ID", nullable = false, updatable = false, unique = true)
-    private Long id;
+    @Type(type = "pg-uuid")
+    private UUID id;
 
     @NotNull
-    @Column(name = "DATASET_ID", nullable = false)
-    private String datasetId;
-
-    @Column(name = "DATASET_TITLE")
-    private String datasetTitle;
-
-    @NotNull
-    @Column(name = "PURPOSE_CODE", nullable = false)
+    @Column(name = "PURPOSE_CODE", nullable = false, updatable = false)
     private String purposeCode;
 
-    @Column(name = "LEGAL_BASIS_DESCRIPTION", length = 500)
-    private String legalBasisDescription;
+    @Column(name = "SUBJECT_CATEGORIES", length = 500)
+    private String subjectCategories;
 
     @NotNull
-    @Column(name = "FOM", nullable = false)
-    private LocalDate fom;
+    @Column(name = "START", nullable = false)
+    private LocalDate start;
 
     @NotNull
-    @Column(name = "TOM", nullable = false)
-    private LocalDate tom;
+    @Column(name = "END", nullable = false)
+    private LocalDate end;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "INFORMATION_TYPE_ID", nullable = false, updatable = false)
+    private InformationType informationType;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "PROCESS_ID", nullable = false, updatable = false)
+    private Process process;
+
+    @Valid
+    @Type(type = "jsonb")
+    @Column(name = "LEGAL_BASES", nullable = false)
+    private Set<LegalBasis> legalBases = new HashSet<>();
+
+    // Added outside builder to enforce backreference
+    public Policy addLegalBasis(LegalBasis legalBasis) {
+        if (legalBasis != null) {
+            legalBases.add(legalBasis);
+        }
+        return this;
+    }
 
     public DatasetBehandlingsgrunnlagResponse convertToDatasetBehandlingsgrunnlagResponse() {
-        return new DatasetBehandlingsgrunnlagResponse(datasetId, datasetTitle, legalBasisDescription);
+        return new DatasetBehandlingsgrunnlagResponse(informationType.getId(), informationType.getData().getName(), legalBases.toString());
     }
 
     public boolean isActive() {
-        return (fom == null || fom.minusDays(1).isBefore(LocalDate.now())) &&
-                (tom == null || tom.plusDays(1).isAfter(LocalDate.now()));
+        return (start == null || start.minusDays(1).isBefore(LocalDate.now())) &&
+                (end == null || end.plusDays(1).isAfter(LocalDate.now()));
     }
 
     public PolicyElasticsearch convertToElasticsearch() {
@@ -73,7 +96,7 @@ public class Policy extends Auditable<String> {
         return PolicyElasticsearch.builder()
                 .purpose(purpose.getCode())
                 .description(purpose.getDescription())
-                .legalBasis(getLegalBasisDescription())
+                .legalBasis("merge no.nav.data.polly.legalbasis")
                 .build();
     }
 }

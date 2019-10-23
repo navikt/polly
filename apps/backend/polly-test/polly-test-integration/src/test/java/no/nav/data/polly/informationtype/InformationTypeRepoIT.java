@@ -18,21 +18,19 @@ class InformationTypeRepoIT extends IntegrationTestBase {
     void save() {
         InformationType type = InformationType.builder()
                 .generateId()
-                .name("name")
-                .description("desc")
-                .category("cat")
-                .pii("oh yes")
-                .sensitivity("much")
-                .build()
-                .addContext(Context.builder()
-                        .generateId()
-                        .name("cname")
-                        .elasticsearchStatus(ElasticsearchStatus.SYNCED)
-                        .description("cdesc")
+                .elasticsearchStatus(ElasticsearchStatus.SYNCED)
+                .data(InformationTypeData.builder()
+                        .name("name")
+                        .context("context")
+                        .description("desc")
+                        .pii("oh yes")
+                        .sensitivity("much")
+                        .category("cat")
                         .source("source")
                         .keyword("keyword")
                         .build()
-                );
+                )
+                .build();
 
         informationTypeRepository.saveAndFlush(type);
 

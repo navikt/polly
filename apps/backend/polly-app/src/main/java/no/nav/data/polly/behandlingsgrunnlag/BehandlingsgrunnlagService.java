@@ -2,6 +2,8 @@ package no.nav.data.polly.behandlingsgrunnlag;
 
 import no.nav.data.polly.behandlingsgrunnlag.domain.BehandlingsgrunnlagDistribution;
 import no.nav.data.polly.common.nais.LeaderElectionService;
+import no.nav.data.polly.informationtype.InformationType;
+import no.nav.data.polly.informationtype.InformationTypeData;
 import no.nav.data.polly.policy.PolicyService;
 import no.nav.data.polly.policy.entities.Policy;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,7 +50,11 @@ public class BehandlingsgrunnlagService {
     }
 
     private void distribute(String purpose, List<BehandlingsgrunnlagDistribution> behandlingsgrunnlagDistributions) {
-        List<String> datasetTitles = policyService.findActiveByPurposeCode(purpose).stream().map(Policy::getDatasetTitle).collect(Collectors.toList());
+        List<String> datasetTitles = policyService.findActiveByPurposeCode(purpose).stream()
+                .map(Policy::getInformationType)
+                .map(InformationType::getData)
+                .map(InformationTypeData::getName)
+                .collect(Collectors.toList());
         if (behandlingsgrunnlagProducer.sendBehandlingsgrunnlag(purpose, datasetTitles)) {
             behandlingsgrunnlagDistributions.forEach(bd -> distributionRepository.deleteById(bd.getId()));
         }

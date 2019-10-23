@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -66,7 +67,7 @@ public class PolicyService {
         }
         Policy policy = policyRepository.findById(request.getId()).orElse(null);
         if (policy == null) {
-            validations.add(new ValidationError(request.getReference(), "notFound", String.format("A policy with id: %d was not found", request.getId())));
+            validations.add(new ValidationError(request.getReference(), "notFound", String.format("A policy with id: %s was not found", request.getId())));
         } else if (!StringUtils.equals(policy.getPurposeCode(), request.getPurposeCode())) {
             validations.add(new ValidationError(request.getReference(), "cannotChangePurpose",
                     String.format("Cannot change purpose from %s to %s for policy %s", policy.getPurposeCode(), request.getPurposeCode(), request.getId())));
@@ -101,7 +102,7 @@ public class PolicyService {
                 request.setDatasetId(dataset.getId().toString());
             }
 
-            if (!request.isUpdate() && dataset != null && exists(dataset.getId().toString(), request.getPurposeCode())) {
+            if (!request.isUpdate() && dataset != null && exists(dataset.getId(), request.getPurposeCode())) {
                 validations.add(new ValidationError(request.getReference(), "datasetAndPurpose",
                         String.format("A policy combining Dataset %s and Purpose %s already exists", request.getDatasetTitle(), request.getPurposeCode())));
             }
@@ -113,8 +114,8 @@ public class PolicyService {
         return validations;
     }
 
-    private boolean exists(String datasetId, String purposeCode) {
-        return policyRepository.findByDatasetIdAndPurposeCode(datasetId, purposeCode).stream().anyMatch(Policy::isActive);
+    private boolean exists(UUID datasetId, String purposeCode) {
+        return policyRepository.findByInformationTypeIdAndPurposeCode(datasetId, purposeCode).stream().anyMatch(Policy::isActive);
     }
 
     public List<Policy> findActiveByPurposeCode(String purpose) {

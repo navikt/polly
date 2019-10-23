@@ -55,7 +55,8 @@ class ElasticsearchDatasetServiceTest {
     @BeforeEach
     void setUp() {
         CodelistStub.initializeCodelist();
-        policy = Policy.builder().id(1L).legalBasisDescription("Legal description")
+        policy = Policy.builder().id(UUID.randomUUID())
+//                .legalBasisDescription("Legal description")
                 .purposeCode("Kontroll")
                 .build();
 
@@ -64,7 +65,7 @@ class ElasticsearchDatasetServiceTest {
                 .datasetData(DatasetData.builder().build())
                 .build();
 
-        lenient().when(policyRepository.findByDatasetId(dataset.getId().toString())).thenReturn(singletonList(policy));
+        lenient().when(policyRepository.findByInformationTypeId(dataset.getId())).thenReturn(singletonList(policy));
         when(properties.getIndex()).thenReturn("index");
         when(leaderElectionService.isLeader()).thenReturn(true);
     }
@@ -108,7 +109,7 @@ class ElasticsearchDatasetServiceTest {
         verify(elasticsearch, times(1)).deleteById(captor.capture());
         verify(repository, times(0)).save(any(Dataset.class));
         verify(repository, times(1)).deleteById(dataset.getId());
-        verify(policyRepository).deleteByDatasetId(dataset.getId().toString());
+        verify(policyRepository).deleteByInformationTypeId(dataset.getId());
         verifyCapture(false);
     }
 
@@ -119,7 +120,7 @@ class ElasticsearchDatasetServiceTest {
         assertThat(document.getIndex()).isEqualTo("index");
         if (verifyJson) {
             assertThat(document.getJson()).contains(dataset.getId().toString());
-            assertThat(document.getJson()).contains(policy.getLegalBasisDescription());
+//            assertThat(document.getJson()).contains(policy.getLegalBasisDescription());
         }
     }
 

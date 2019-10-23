@@ -8,6 +8,7 @@ import no.nav.data.polly.elasticsearch.domain.PolicyElasticsearch;
 import org.awaitility.Duration;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,6 +19,7 @@ import static no.nav.data.polly.elasticsearch.ElasticsearchStatus.SYNCED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
+@Disabled
 class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
 
     @Autowired

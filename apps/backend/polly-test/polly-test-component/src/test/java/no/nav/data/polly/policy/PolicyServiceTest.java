@@ -55,7 +55,7 @@ class PolicyServiceTest {
                 .purposeCode(PURPOSECODE)
                 .build();
         when(datasetRepository.findByTitle(request.getDatasetTitle())).thenReturn(Optional.of(Dataset.builder().id(UUID.fromString(DATASET_ID_1)).build()));
-        when(policyRepository.findByDatasetIdAndPurposeCode(any(String.class), anyString())).thenReturn(List.of());
+        when(policyRepository.findByInformationTypeIdAndPurposeCode(any(UUID.class), anyString())).thenReturn(List.of());
         service.validateRequests(List.of(request), false);
     }
 
@@ -99,8 +99,8 @@ class PolicyServiceTest {
                 .purposeCode(PURPOSECODE)
                 .build();
         when(datasetRepository.findByTitle(request.getDatasetTitle())).thenReturn(Optional.of(Dataset.builder().id(UUID.fromString(DATASET_ID_1)).build()));
-        when(policyRepository.findByDatasetIdAndPurposeCode(any(String.class), anyString()))
-                .thenReturn(List.of(Policy.builder().fom(LocalDate.now()).tom(LocalDate.now()).build()));
+        when(policyRepository.findByInformationTypeIdAndPurposeCode(any(UUID.class), anyString()))
+                .thenReturn(List.of(Policy.builder().start(LocalDate.now()).end(LocalDate.now()).build()));
         try {
             service.validateRequests(List.of(request), false);
             fail();
@@ -128,13 +128,13 @@ class PolicyServiceTest {
     @Test
     void shouldThrowNotFoundValidationExceptionOnUpdate() {
         PolicyRequest request = PolicyRequest.builder()
-                .id(152L)
+                .id(UUID.randomUUID())
                 .datasetTitle(DATASET_TITLE)
                 .legalBasisDescription(LEGALBASISDESCRIPTION)
                 .purposeCode("wrong")
                 .build();
         when(datasetRepository.findByTitle(request.getDatasetTitle())).thenReturn(Optional.empty());
-        when(policyRepository.findById(152L)).thenReturn(Optional.of(Policy.builder().purposeCode("wrong").build()));
+        when(policyRepository.findById(request.getId())).thenReturn(Optional.of(Policy.builder().purposeCode("wrong").build()));
         try {
             service.validateRequests(List.of(request), true);
             fail();
@@ -148,13 +148,13 @@ class PolicyServiceTest {
     @Test
     void shouldThrowWrongPurposecodeOnUpdate() {
         PolicyRequest request = PolicyRequest.builder()
-                .id(152L)
+                .id(UUID.randomUUID())
                 .datasetTitle(DATASET_TITLE)
                 .legalBasisDescription(LEGALBASISDESCRIPTION)
                 .purposeCode(PURPOSECODE)
                 .build();
         when(datasetRepository.findByTitle(request.getDatasetTitle())).thenReturn(Optional.of(Dataset.builder().id(UUID.fromString(DATASET_ID_1)).build()));
-        when(policyRepository.findById(152L)).thenReturn(Optional.of(Policy.builder().purposeCode("otherpurpose").build()));
+        when(policyRepository.findById(request.getId())).thenReturn(Optional.of(Policy.builder().purposeCode("otherpurpose").build()));
         try {
             service.validateRequests(List.of(request), true);
             fail();
@@ -170,7 +170,7 @@ class PolicyServiceTest {
                 .datasetTitle(DATASET_TITLE)
                 .legalBasisDescription(LEGALBASISDESCRIPTION)
                 .purposeCode(PURPOSECODE)
-                .id(1L)
+                .id(UUID.fromString("1-1-1-1-1"))
                 .build();
         when(datasetRepository.findByTitle(request.getDatasetTitle())).thenReturn(Optional.of(Dataset.builder().id(UUID.fromString(DATASET_ID_1)).build()));
 

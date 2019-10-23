@@ -3,6 +3,7 @@ package no.nav.data.polly.dataset;
 import no.nav.data.polly.elasticsearch.ElasticsearchStatus;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import static no.nav.data.polly.dataset.DatacatalogMaster.REST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Disabled
 class DatasetServiceIT extends AbstractDatasetIT {
 
     @BeforeEach

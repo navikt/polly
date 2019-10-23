@@ -9,19 +9,20 @@ import lombok.NoArgsConstructor;
 import no.nav.data.polly.codelist.CodeResponse;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder({"policyId", "legalBasisDescription", "fom", "tom", "active", "purpose", "dataset"})
+@JsonPropertyOrder({"policyId", "legalBasisDescription", "start", "end", "active", "purpose", "dataset"})
 public class PolicyResponse {
 
-    private Long policyId;
+    private UUID policyId;
     private String legalBasisDescription;
-    private LocalDate fom;
-    private LocalDate tom;
+    private LocalDate start;
+    private LocalDate end;
     private boolean active;
     private CodeResponse purpose;
     private DatasetResponse dataset;

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import no.nav.data.polly.policy.entities.Policy;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Data
@@ -18,12 +19,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PolicyRequest {
 
-    private Long id;
+    private UUID id;
     private String legalBasisDescription;
     private String purposeCode;
     private String datasetTitle;
-    private String fom;
-    private String tom;
+    private String start;
+    private String end;
 
     @JsonIgnore
     private int requestId;

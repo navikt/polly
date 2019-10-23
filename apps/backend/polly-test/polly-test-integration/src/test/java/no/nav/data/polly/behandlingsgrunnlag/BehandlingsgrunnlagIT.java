@@ -6,16 +6,16 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.awaitility.Duration;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
-
-import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Disabled
 class BehandlingsgrunnlagIT extends KafkaIntegrationTestBase {
 
     @Autowired
@@ -38,10 +38,10 @@ class BehandlingsgrunnlagIT extends KafkaIntegrationTestBase {
             // Inactive policy should not be sent
             if (index == 1) {
                 policy.setPurposeCode("other-purpose");
-                policy.setDatasetTitle("other-title");
-                policy.setTom(LocalDate.now().minusDays(1));
+//                policy.setDatasetTitle("other-title");
+//                policy.setTom(LocalDate.now().minusDays(1));
             } else if (index == 2) {
-                policy.setDatasetTitle(DATASET_TITLE + "2");
+//                policy.setDatasetTitle(DATASET_TITLE + "2");
             }
         });
 

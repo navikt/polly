@@ -201,6 +201,10 @@ public class DatasetService extends RequestValidator<DatasetRequest> {
         return existingMaster.equals(requestMaster);
     }
 
+    public void syncForPolicyIds(List<UUID> ids) {
+        // todo
+    }
+
     public void sync(List<UUID> ids) {
         int datasetsUpdated = datasetRepository.setSyncForDatasets(ids);
         log.info("marked {} datasets for sync", datasetsUpdated);

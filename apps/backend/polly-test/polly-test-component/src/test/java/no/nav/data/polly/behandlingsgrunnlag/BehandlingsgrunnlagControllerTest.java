@@ -35,7 +35,7 @@ class BehandlingsgrunnlagControllerTest {
     @Test
     void hentBehandlingsgrunnlag() throws Exception {
         given(policyService.findActiveByPurposeCode("the-purpose"))
-                .willReturn(List.of(Policy.builder().datasetId("id").datasetTitle("title").legalBasisDescription("legaldesc").build()));
+                .willReturn(List.of(Policy.builder()/*.datasetId("id").datasetTitle("title").legalBasisDescription("legaldesc")*/.build()));
 
         mvc.perform(get("/behandlingsgrunnlag/purpose/{purpose}", "the-purpose"))
                 .andExpect(MockMvcResultMatchers.status().isOk())

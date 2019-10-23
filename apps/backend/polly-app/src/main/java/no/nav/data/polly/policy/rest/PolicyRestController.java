@@ -18,7 +18,6 @@ import no.nav.data.polly.policy.domain.PolicyResponse;
 import no.nav.data.polly.policy.entities.Policy;
 import no.nav.data.polly.policy.mapper.PolicyMapper;
 import no.nav.data.polly.policy.repository.PolicyRepository;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,18 +64,18 @@ public class PolicyRestController {
         this.datasetService = datasetService;
     }
 
-    @ApiOperation(value = "Get all Policies, get for datasetId will always return all policies", tags = {"Policies"})
+    @ApiOperation(value = "Get all Policies, get for informationTypeId will always return all policies", tags = {"Policies"})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "All policies fetched", response = PolicyPage.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping
     public ResponseEntity<RestResponsePage<PolicyResponse>> getPolicies(PageParameters pageParameters,
-            @RequestParam(required = false) String datasetId,
+            @RequestParam(required = false) UUID informationTypeId,
             @ApiParam("If fetching for a dataset, include inactive policies. For all policies, inactive will always be included")
             @RequestParam(required = false, defaultValue = "false") Boolean includeInactive) {
-        if (datasetId != null) {
-            log.debug("Received request for Policies related to Dataset with id={}", datasetId);
-            var policies = policyRepository.findByDatasetId(datasetId).stream()
+        if (informationTypeId != null) {
+            log.debug("Received request for Policies related to Dataset with id={}", informationTypeId);
+            var policies = policyRepository.findByInformationTypeId(informationTypeId).stream()
                     .filter(policy -> includeInactive || policy.isActive())
                     .map(mapper::mapPolicyToResponse)
                     .collect(toList());
@@ -102,10 +101,10 @@ public class PolicyRestController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Count fetched", response = Long.class),
             @ApiResponse(code = 500, message = "Internal server error")})
-    @GetMapping(path = "/count", params = {"datasetId"})
-    public ResponseEntity<Long> countPoliciesByDataset(@RequestParam String datasetId) {
-        log.debug("Received request for number of policies related to Datasets with id={}", datasetId);
-        return ResponseEntity.ok(policyRepository.countByDatasetId(datasetId));
+    @GetMapping(path = "/count", params = {"informationTypeId"})
+    public ResponseEntity<Long> countPoliciesByDataset(@RequestParam UUID informationTypeId) {
+        log.debug("Received request for number of policies related to Datasets with id={}", informationTypeId);
+        return ResponseEntity.ok(policyRepository.countByInformationTypeId(informationTypeId));
     }
 
     @ApiOperation(value = "Create Policy", tags = {"Policies"})
@@ -129,7 +128,7 @@ public class PolicyRestController {
             @ApiResponse(code = 404, message = "Policy not found"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/{id}")
-    public ResponseEntity<PolicyResponse> getPolicy(@PathVariable Long id) {
+    public ResponseEntity<PolicyResponse> getPolicy(@PathVariable UUID id) {
         log.debug("Received request for Policy with id={}", id);
         Optional<Policy> optionalPolicy = policyRepository.findById(id);
         if (optionalPolicy.isEmpty()) {
@@ -144,7 +143,7 @@ public class PolicyRestController {
             @ApiResponse(code = 404, message = "Policy not found"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @DeleteMapping("/{id}")
-    public void deletePolicy(@PathVariable Long id) {
+    public void deletePolicy(@PathVariable UUID id) {
         log.debug("Received request to delete Policy with id={}", id);
         Optional<Policy> optionalPolicy = policyRepository.findById(id);
         if (optionalPolicy.isEmpty()) {
@@ -154,17 +153,17 @@ public class PolicyRestController {
         policyRepository.deleteById(id);
     }
 
-    @ApiOperation(value = "Delete Policies by datasetId", tags = {"Policies"})
+    @ApiOperation(value = "Delete Policies by informationTypeId", tags = {"Policies"})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Policies deleted"),
             @ApiResponse(code = 500, message = "Internal server error")})
-    @DeleteMapping(params = {"datasetId"})
-    public void deletePoliciesByDataset(@RequestParam String datasetId) {
-        log.debug("Received request to delete Policies with datasetId={}", datasetId);
-        if (StringUtils.isBlank(datasetId)) {
-            throw new ValidationException("Blank datasetId");
+    @DeleteMapping(params = {"informationTypeId"})
+    public void deletePoliciesByDataset(@RequestParam UUID informationTypeId) {
+        log.debug("Received request to delete Policies with informationTypeId={}", informationTypeId);
+        if (informationTypeId != null) {
+            throw new ValidationException("Blank informationTypeId");
         }
-        List<Policy> deletes = policyRepository.findByDatasetId(datasetId);
+        List<Policy> deletes = policyRepository.findByInformationTypeId(informationTypeId);
         onChange(deletes);
         policyRepository.deleteAll(deletes);
         log.debug("Deleted {} policies", deletes);
@@ -176,13 +175,13 @@ public class PolicyRestController {
             @ApiResponse(code = 404, message = "Policy not found"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @PutMapping("/{id}")
-    public ResponseEntity<PolicyResponse> updatePolicy(@PathVariable Long id, @Valid @RequestBody PolicyRequest policyRequest) {
+    public ResponseEntity<PolicyResponse> updatePolicy(@PathVariable UUID id, @Valid @RequestBody PolicyRequest policyRequest) {
         log.debug("Received request to update Policy with id={}", id);
         if (policyRepository.findById(id).isEmpty()) {
             throw notFoundError(id);
         }
         if (!Objects.equals(id, policyRequest.getId())) {
-            throw new ValidationException(String.format("id mismatch in request %d and path %d", policyRequest.getId(), id));
+            throw new ValidationException(String.format("id mismatch in request %s and path %s", policyRequest.getId(), id));
         }
         service.validateRequests(List.of(policyRequest), true);
         Policy policy = mapper.mapRequestToPolicy(policyRequest, id);
@@ -204,7 +203,7 @@ public class PolicyRestController {
         return ResponseEntity.ok(policyRepository.saveAll(policies).stream().map(mapper::mapPolicyToResponse).collect(Collectors.toList()));
     }
 
-    private RuntimeException notFoundError(Long id) {
+    private RuntimeException notFoundError(UUID id) {
         String message = String.format("Cannot find Policy with id: %s", id);
         log.warn(message);
         throw new PollyNotFoundException(message);
@@ -216,6 +215,6 @@ public class PolicyRestController {
 
     private void onChange(List<Policy> policies) {
         policies.stream().map(Policy::getPurposeCode).distinct().forEach(behandlingsgrunnlagService::scheduleDistributeForPurpose);
-        datasetService.sync(policies.stream().map(Policy::getDatasetId).map(UUID::fromString).collect(toList()));
+        datasetService.syncForPolicyIds(policies.stream().map(Policy::getId).collect(toList()));
     }
 }
