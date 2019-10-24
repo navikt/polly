@@ -2,8 +2,8 @@ package no.nav.data.polly.behandlingsgrunnlag;
 
 import no.nav.data.polly.behandlingsgrunnlag.domain.BehandlingsgrunnlagDistribution;
 import no.nav.data.polly.common.nais.LeaderElectionService;
-import no.nav.data.polly.informationtype.InformationType;
-import no.nav.data.polly.informationtype.InformationTypeData;
+import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.informationtype.domain.InformationTypeData;
 import no.nav.data.polly.policy.PolicyService;
 import no.nav.data.polly.policy.entities.Policy;
 import org.springframework.beans.factory.annotation.Value;

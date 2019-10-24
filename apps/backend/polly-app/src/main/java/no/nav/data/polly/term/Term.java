@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import no.nav.data.polly.common.auditing.Auditable;
-import no.nav.data.polly.informationtype.InformationType;
+import no.nav.data.polly.informationtype.domain.InformationType;
 import org.hibernate.annotations.Type;
 
 import java.util.HashSet;

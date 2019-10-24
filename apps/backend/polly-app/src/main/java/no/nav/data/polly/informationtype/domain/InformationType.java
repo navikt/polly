@@ -1,4 +1,4 @@
-package no.nav.data.polly.informationtype;
+package no.nav.data.polly.informationtype.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -50,6 +50,7 @@ public class InformationType extends Auditable<String> {
     @Valid
     @NotNull
     @Type(type = "jsonb")
+    @Column(name = "DATA")
     private InformationTypeData data;
 
     @ManyToOne
@@ -67,6 +68,18 @@ public class InformationType extends Auditable<String> {
             policy.setInformationType(this);
         }
         return this;
+    }
+
+    public InformationTypeResponse convertToResponse() {
+        return new InformationTypeResponse(this);
+    }
+
+    public InformationType convertNewFromRequest(InformationTypeRequest request, InformationTypeMaster master) {
+        return null;
+    }
+
+    public void convertUpdateFromRequest(InformationTypeRequest request) {
+
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")

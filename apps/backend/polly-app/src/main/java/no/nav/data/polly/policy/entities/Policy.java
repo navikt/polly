@@ -12,7 +12,7 @@ import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.ListName;
 import no.nav.data.polly.common.auditing.Auditable;
 import no.nav.data.polly.elasticsearch.domain.PolicyElasticsearch;
-import no.nav.data.polly.informationtype.InformationType;
+import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.LegalBasis;
 import no.nav.data.polly.process.Process;
 import org.hibernate.annotations.Type;
@@ -45,18 +45,18 @@ public class Policy extends Auditable<String> {
     private UUID id;
 
     @NotNull
-    @Column(name = "PURPOSE_CODE", nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     private String purposeCode;
 
-    @Column(name = "SUBJECT_CATEGORIES", length = 500)
+    @Column(name = "SUBJECT_CATEGORIES")
     private String subjectCategories;
 
     @NotNull
-    @Column(name = "START", nullable = false)
+    @Column(name = "START_TIME", nullable = false)
     private LocalDate start;
 
     @NotNull
-    @Column(name = "END", nullable = false)
+    @Column(name = "END_TIME", nullable = false)
     private LocalDate end;
 
     @NotNull

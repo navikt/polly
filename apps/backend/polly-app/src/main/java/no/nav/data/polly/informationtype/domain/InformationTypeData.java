@@ -1,4 +1,4 @@
-package no.nav.data.polly.informationtype;
+package no.nav.data.polly.informationtype.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -28,6 +28,9 @@ public class InformationTypeData {
     private List<String> categories = new ArrayList<>();
     private List<String> sources = new ArrayList<>();
     private List<String> keywords = new ArrayList<>();
+
+    // Keep?
+    private InformationTypeMaster InformationTypeMaster;
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static class InformationTypeDataBuilder {

@@ -2,6 +2,8 @@ package no.nav.data.polly.policy.repository;
 
 import no.nav.data.polly.policy.entities.Policy;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,9 +15,7 @@ public interface PolicyRepository extends JpaRepository<Policy, UUID> {
 
     List<Policy> findByInformationTypeId(UUID informationTypeId);
 
-    /**
-     * For some reason deleteBy methods are not transactional by default
-     */
+    @Modifying
     @Transactional
     long deleteByInformationTypeId(UUID informationTypeId);
 
@@ -24,5 +24,8 @@ public interface PolicyRepository extends JpaRepository<Policy, UUID> {
     List<Policy> findByInformationTypeIdAndPurposeCode(UUID informationTypeId, String purposeCode);
 
     List<Policy> findByPurposeCode(String purposeCode);
+
+    @Query("select p.informationType.id from Policy p where id in ?1")
+    List<UUID> getInformationTypeIdsByIdIn(List<UUID> policyIds);
 
 }

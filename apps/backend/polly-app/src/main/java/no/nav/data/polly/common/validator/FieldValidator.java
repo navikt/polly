@@ -6,7 +6,10 @@ import no.nav.data.polly.common.utils.StreamUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 
 public class FieldValidator {
 
@@ -32,7 +35,7 @@ public class FieldValidator {
     }
 
     public <T extends Enum<T>> void checkEnum(String fieldName, String fieldValue, Class<T> type) {
-        if (checkBlank(fieldName,fieldValue)) {
+        if (checkBlank(fieldName, fieldValue)) {
             return;
         }
         try {
@@ -43,12 +46,16 @@ public class FieldValidator {
     }
 
     public void checkCodelist(String fieldName, String fieldValue, ListName listName) {
-        if (checkBlank(fieldName,fieldValue)) {
+        if (checkBlank(fieldName, fieldValue)) {
             return;
         }
         if (CodelistService.getCodeResponseForCodelistItem(listName, fieldValue) == null) {
             validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(ERROR_MESSAGE_CODELIST, fieldName, fieldValue, listName)));
         }
+    }
+
+    public void checkCodelists(String fieldName, Collection<String> values, ListName listName) {
+        safeStream(values).forEach(value -> checkCodelist(fieldName, value, listName));
     }
 
     public void checkListOfFields(String listName, List<String> fields) {

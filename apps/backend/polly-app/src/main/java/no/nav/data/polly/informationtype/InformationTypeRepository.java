@@ -1,6 +1,7 @@
 package no.nav.data.polly.informationtype;
 
 import no.nav.data.polly.elasticsearch.ElasticsearchStatus;
+import no.nav.data.polly.informationtype.domain.InformationType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,10 +24,13 @@ public interface InformationTypeRepository extends JpaRepository<InformationType
     @Modifying
     @Transactional
     @Query("update InformationType set elasticsearchStatus = 'TO_BE_UPDATED' where id in ?1")
-    int setSyncForDatasets(List<UUID> datasetIds);
+    int setSyncForInformationTypeIds(List<UUID> ids);
 
     @Modifying
     @Transactional
     @Query("update InformationType set elasticsearchStatus = ?2 where id = ?1")
-    void updateStatusForDataset(UUID datasetId, ElasticsearchStatus elasticsearchStatus);
+    void updateStatusForDataset(UUID informationTypeId, ElasticsearchStatus elasticsearchStatus);
+
+    @Query(value = "select *  from information_type where information_type_id in (select information_type_id from policy where policy_id in ?1)", nativeQuery = true)
+    List<InformationType> findByPolicyIdIn(List<UUID> ids);
 }

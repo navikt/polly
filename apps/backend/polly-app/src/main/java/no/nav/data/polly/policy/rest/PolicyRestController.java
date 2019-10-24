@@ -11,7 +11,7 @@ import no.nav.data.polly.common.exceptions.PollyNotFoundException;
 import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.rest.PageParameters;
 import no.nav.data.polly.common.rest.RestResponsePage;
-import no.nav.data.polly.dataset.DatasetService;
+import no.nav.data.polly.informationtype.InformationTypeService;
 import no.nav.data.polly.policy.PolicyService;
 import no.nav.data.polly.policy.domain.PolicyRequest;
 import no.nav.data.polly.policy.domain.PolicyResponse;
@@ -53,15 +53,15 @@ public class PolicyRestController {
     private final PolicyMapper mapper;
     private final PolicyRepository policyRepository;
     private final BehandlingsgrunnlagService behandlingsgrunnlagService;
-    private final DatasetService datasetService;
+    private final InformationTypeService informationTypeService;
 
     public PolicyRestController(PolicyService service, PolicyMapper mapper, PolicyRepository policyRepository,
-            BehandlingsgrunnlagService behandlingsgrunnlagService, DatasetService datasetService) {
+            BehandlingsgrunnlagService behandlingsgrunnlagService, InformationTypeService informationTypeService) {
         this.service = service;
         this.mapper = mapper;
         this.policyRepository = policyRepository;
         this.behandlingsgrunnlagService = behandlingsgrunnlagService;
-        this.datasetService = datasetService;
+        this.informationTypeService = informationTypeService;
     }
 
     @ApiOperation(value = "Get all Policies, get for informationTypeId will always return all policies", tags = {"Policies"})
@@ -215,6 +215,6 @@ public class PolicyRestController {
 
     private void onChange(List<Policy> policies) {
         policies.stream().map(Policy::getPurposeCode).distinct().forEach(behandlingsgrunnlagService::scheduleDistributeForPurpose);
-        datasetService.syncForPolicyIds(policies.stream().map(Policy::getId).collect(toList()));
+        informationTypeService.syncForPolicyIds(policies.stream().map(Policy::getId).collect(toList()));
     }
 }
