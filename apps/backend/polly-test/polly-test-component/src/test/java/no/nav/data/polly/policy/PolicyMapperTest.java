@@ -1,7 +1,8 @@
 package no.nav.data.polly.policy;
 
 import no.nav.data.polly.codelist.CodelistStub;
-import no.nav.data.polly.policy.domain.DatasetResponse;
+import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.informationtype.domain.InformationTypeData;
 import no.nav.data.polly.policy.domain.PolicyRequest;
 import no.nav.data.polly.policy.domain.PolicyResponse;
 import no.nav.data.polly.policy.entities.Policy;
@@ -23,8 +24,8 @@ class PolicyMapperTest {
     private static final String LEGAL_BASIS_DESCRIPTION1 = "Legal basis 1";
     private static final String PURPOSE_CODE1 = "Kontroll";
     private static final String DESC = "Kontrollering";
-    private static final String DATASET_TITLE_1 = "DatasetTitle 1";
-    private static final String DATASET_ID_1 = "cd7f037e-374e-4e68-b705-55b61966b2fc";
+    private static final String INF_TYPE_NAME_1 = "DatasetTitle 1";
+    private static final UUID INF_TYPE_ID_1 = UUID.fromString("cd7f037e-374e-4e68-b705-55b61966b2fc");
 
     @BeforeEach
     void setUp() {
@@ -33,42 +34,41 @@ class PolicyMapperTest {
 
     @Test
     void shouldMapToPolicy() {
-        DatasetResponse dataset = createBasicTestdata();
+        InformationType informationType = createBasicTestdata();
         PolicyRequest request = PolicyRequest.builder()
                 .legalBasisDescription(LEGAL_BASIS_DESCRIPTION1).purposeCode(PURPOSE_CODE1)
-                .datasetId(dataset.getId()).datasetTitle(dataset.getTitle()).build();
+                .informationType(informationType).informationTypeName(informationType.getData().getName()).build();
         Policy policy = mapper.mapRequestToPolicy(request, null);
 //        assertThat(policy.getLegalBasisDescription(), is(LEGAL_BASIS_DESCRIPTION1));
         assertThat(policy.getPurposeCode(), is(PURPOSE_CODE1));
-//        assertThat(policy.getDatasetId(), is(dataset.getId()));
-//        assertThat(policy.getDatasetTitle(), is(dataset.getTitle()));
+        assertThat(policy.getInformationType(), is(informationType));
     }
 
     @Test
     void shouldMapToPolicyResponse() {
-        DatasetResponse dataset = createBasicTestdata();
-        Policy policy = createPolicy(dataset);
+        InformationType informationType = createBasicTestdata();
+        Policy policy = createPolicy(informationType);
         PolicyResponse policyResponse = mapper.mapPolicyToResponse(policy);
-//        assertThat(policyResponse.getDataset().getId(), is(policy.getDatasetId()));
-//        assertThat(policyResponse.getDataset().getTitle(), is(policy.getDatasetTitle()));
+        assertThat(policyResponse.getInformationType().getId(), is(policy.getInformationTypeId()));
+        assertThat(policyResponse.getInformationType().getName(), is(policy.getInformationTypeName()));
         assertThat(policyResponse.getLegalBasisDescription(), is(LEGAL_BASIS_DESCRIPTION1));
         assertThat(policyResponse.getPurpose(), notNullValue());
         assertThat(policyResponse.getPurpose().getCode(), is(PURPOSE_CODE1));
         assertThat(policyResponse.getPurpose().getDescription(), is(DESC));
     }
 
-    private Policy createPolicy(DatasetResponse dataset) {
+    private Policy createPolicy(InformationType informationType) {
         return Policy.builder().id(UUID.randomUUID())
 //                .legalBasisDescription(LEGAL_BASIS_DESCRIPTION1)
                 .purposeCode(PURPOSE_CODE1)
-//                .datasetTitle(dataset.getTitle()).datasetId(dataset.getId())
+                .informationType(informationType)
                 .build();
     }
 
-    private DatasetResponse createBasicTestdata() {
-        return DatasetResponse.builder()
-                .id(DATASET_ID_1)
-                .title(DATASET_TITLE_1)
+    private InformationType createBasicTestdata() {
+        return InformationType.builder()
+                .id(INF_TYPE_ID_1)
+                .data(InformationTypeData.builder().name(INF_TYPE_NAME_1).build())
                 .build();
     }
 }

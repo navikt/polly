@@ -6,9 +6,9 @@ import lombok.Value;
 import java.util.List;
 
 @Value
-@JsonPropertyOrder({"purpose", "datasets"})
+@JsonPropertyOrder({"purpose", "informationTypes"})
 public class BehandlingsgrunnlagResponse {
 
     private String purpose;
-    private List<DatasetBehandlingsgrunnlagResponse> datasets;
+    private List<InformationTypeBehandlingsgrunnlagResponse> informationTypes;
 }

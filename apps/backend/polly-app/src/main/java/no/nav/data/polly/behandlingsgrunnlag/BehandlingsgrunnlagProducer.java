@@ -33,8 +33,8 @@ public class BehandlingsgrunnlagProducer {
         initMetrics();
     }
 
-    public boolean sendBehandlingsgrunnlag(String purpose, List<String> datasets) {
-        var behandlingsgrunnlag = new Behandlingsgrunnlag(purpose, new ArrayList<>(datasets));
+    boolean sendBehandlingsgrunnlag(String purpose, List<String> informationTypeNames) {
+        var behandlingsgrunnlag = new Behandlingsgrunnlag(purpose, new ArrayList<>(informationTypeNames));
         log.info("Sender behandlingsgrunnlag {} på topic {}", behandlingsgrunnlag, topic);
 
         try {

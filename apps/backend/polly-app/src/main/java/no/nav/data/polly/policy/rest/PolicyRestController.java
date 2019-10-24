@@ -71,10 +71,10 @@ public class PolicyRestController {
     @GetMapping
     public ResponseEntity<RestResponsePage<PolicyResponse>> getPolicies(PageParameters pageParameters,
             @RequestParam(required = false) UUID informationTypeId,
-            @ApiParam("If fetching for a dataset, include inactive policies. For all policies, inactive will always be included")
+            @ApiParam("If fetching for a InformationType, include inactive policies. For all policies, inactive will always be included")
             @RequestParam(required = false, defaultValue = "false") Boolean includeInactive) {
         if (informationTypeId != null) {
-            log.debug("Received request for Policies related to Dataset with id={}", informationTypeId);
+            log.debug("Received request for Policies related to InformationType with id={}", informationTypeId);
             var policies = policyRepository.findByInformationTypeId(informationTypeId).stream()
                     .filter(policy -> includeInactive || policy.isActive())
                     .map(mapper::mapPolicyToResponse)
@@ -97,13 +97,13 @@ public class PolicyRestController {
         return ResponseEntity.ok(policyRepository.count());
     }
 
-    @ApiOperation(value = "Count Policies by Dataset", tags = {"Policies"})
+    @ApiOperation(value = "Count Policies by InformationType", tags = {"Policies"})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Count fetched", response = Long.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping(path = "/count", params = {"informationTypeId"})
-    public ResponseEntity<Long> countPoliciesByDataset(@RequestParam UUID informationTypeId) {
-        log.debug("Received request for number of policies related to Datasets with id={}", informationTypeId);
+    public ResponseEntity<Long> countPoliciesByInformationType(@RequestParam UUID informationTypeId) {
+        log.debug("Received request for number of policies related to InformationTypes with id={}", informationTypeId);
         return ResponseEntity.ok(policyRepository.countByInformationTypeId(informationTypeId));
     }
 
@@ -158,7 +158,7 @@ public class PolicyRestController {
             @ApiResponse(code = 200, message = "Policies deleted"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @DeleteMapping(params = {"informationTypeId"})
-    public void deletePoliciesByDataset(@RequestParam UUID informationTypeId) {
+    public void deletePoliciesByInformationType(@RequestParam UUID informationTypeId) {
         log.debug("Received request to delete Policies with informationTypeId={}", informationTypeId);
         if (informationTypeId != null) {
             throw new ValidationException("Blank informationTypeId");
@@ -198,7 +198,7 @@ public class PolicyRestController {
     public ResponseEntity<List<PolicyResponse>> updatePolicies(@Valid @RequestBody List<PolicyRequest> policyRequests) {
         log.debug("Received requests to update Policies");
         service.validateRequests(policyRequests, true);
-        List<Policy> policies = policyRequests.stream().map(policyRequest -> mapper.mapRequestToPolicy(policyRequest, policyRequest.getId())).collect(toList());
+        List<Policy> policies = policyRequests.stream().map(policyRequest -> mapper.mapRequestToPolicy(policyRequest, UUID.fromString(policyRequest.getId()))).collect(toList());
         onChange(policies);
         return ResponseEntity.ok(policyRepository.saveAll(policies).stream().map(mapper::mapPolicyToResponse).collect(Collectors.toList()));
     }

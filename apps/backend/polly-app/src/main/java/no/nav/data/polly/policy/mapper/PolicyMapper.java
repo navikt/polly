@@ -3,6 +3,7 @@ package no.nav.data.polly.policy.mapper;
 import no.nav.data.polly.codelist.CodeResponse;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.ListName;
+import no.nav.data.polly.policy.domain.InformationTypeNameResponse;
 import no.nav.data.polly.policy.domain.PolicyRequest;
 import no.nav.data.polly.policy.domain.PolicyResponse;
 import no.nav.data.polly.policy.entities.Policy;
@@ -19,8 +20,7 @@ public class PolicyMapper {
 
     public Policy mapRequestToPolicy(PolicyRequest policyRequest, UUID id) {
         Policy policy = new Policy();
-//        policy.setDatasetId(policyRequest.getDatasetId());
-//        policy.setDatasetTitle(policyRequest.getDatasetTitle());
+        policyRequest.getInformationType().addPolicy(policy);
         policy.setPurposeCode(policyRequest.getPurposeCode());
         policy.setStart(parse(policyRequest.getStart(), DEFAULT_FOM));
         policy.setEnd(parse(policyRequest.getEnd(), DEFAULT_TOM));
@@ -39,7 +39,7 @@ public class PolicyMapper {
         PolicyResponse response = new PolicyResponse();
         response.setPolicyId(policy.getId());
 //        response.setLegalBasisDescription(policy.getLegalBasisDescription());
-//        response.setDataset(new DatasetResponse(policy.getDatasetId(), policy.getDatasetTitle()));
+        response.setInformationType(new InformationTypeNameResponse(policy.getInformationTypeId(), policy.getInformationTypeName()));
         CodeResponse purposeCode = CodelistService.getCodeResponseForCodelistItem(ListName.PURPOSE, policy.getPurposeCode());
         response.setPurpose(purposeCode);
         response.setStart(policy.getStart());

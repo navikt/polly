@@ -4,6 +4,7 @@ package no.nav.data.polly.informationtype.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.polly.codelist.CodeResponse;
@@ -11,19 +12,19 @@ import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.ListName;
 
 import java.util.List;
-import java.util.UUID;
 import javax.validation.constraints.NotNull;
 
 import static no.nav.data.polly.common.utils.StreamUtils.copyOf;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder({"id", "title"})
+@JsonPropertyOrder({"id", "name"})
 public class InformationTypeResponse {
 
-    private UUID id;
+    private String id;
     private String name;
     private String context;
     private String description;
@@ -36,7 +37,7 @@ public class InformationTypeResponse {
     private InformationTypeMaster informationTypeMaster;
 
     InformationTypeResponse(InformationType informationType) {
-        id = informationType.getId();
+        id = informationType.getId().toString();
         mapJsonFields(informationType.getData());
     }
 

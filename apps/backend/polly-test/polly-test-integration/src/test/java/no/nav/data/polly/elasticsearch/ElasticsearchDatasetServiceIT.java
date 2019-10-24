@@ -5,6 +5,7 @@ import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.dataset.Dataset;
 import no.nav.data.polly.elasticsearch.domain.DatasetElasticsearch;
 import no.nav.data.polly.elasticsearch.domain.PolicyElasticsearch;
+import no.nav.data.polly.informationtype.domain.InformationType;
 import org.awaitility.Duration;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -113,11 +114,11 @@ class ElasticsearchDatasetServiceIT extends IntegrationTestBase {
     }
 
     private void createTestData(ElasticsearchStatus esStatus) {
-        Dataset dataset = createDataset();
-        dataset.setElasticsearchStatus(esStatus);
-        datasetRepository.save(dataset);
-        createPolicy("Kontroll", dataset);
-        createPolicy("AAP", dataset);
+        InformationType informationType = createInformationType();
+        informationType.setElasticsearchStatus(esStatus);
+        informationTypeRepository.save(informationType);
+        createPolicy("Kontroll", informationType);
+        createPolicy("AAP", informationType);
     }
 
     private void assertDataset(String json) {

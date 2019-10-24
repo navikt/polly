@@ -10,12 +10,18 @@ import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.dataset.Dataset;
 import no.nav.data.polly.dataset.DatasetData;
 import no.nav.data.polly.dataset.repo.DatasetRepository;
+import no.nav.data.polly.informationtype.InformationTypeRepository;
+import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.informationtype.domain.InformationTypeData;
 import no.nav.data.polly.kafka.KafkaContainer;
 import no.nav.data.polly.kafka.KafkaTopicProperties;
 import no.nav.data.polly.kafka.SchemaRegistryContainer;
 import no.nav.data.polly.legalbasis.LegalBasis;
 import no.nav.data.polly.policy.entities.Policy;
 import no.nav.data.polly.policy.repository.PolicyRepository;
+import no.nav.data.polly.process.ProcessRepository;
+import no.nav.data.polly.term.Term;
+import no.nav.data.polly.term.TermRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,15 +55,23 @@ public abstract class IntegrationTestBase {
     public static final int ELASTICSEARCH_PORT = SocketUtils.findAvailableTcpPort();
 
     protected static final UUID DATASET_ID_1 = UUID.fromString("acab158d-67ef-4030-a3c2-195e993f18d2");
+    protected static final UUID INFORMATION_TYPE_ID_1 = UUID.fromString("fe566351-da4d-43b0-a2e9-b09e41ff8aa7");
     protected static final String LEGAL_BASIS_DESCRIPTION1 = "Legal basis 1";
     protected static final String PURPOSE_CODE1 = "Kontroll";
     protected static final String DATASET_TITLE = "Sivilstand";
+    protected static final String INFORMATION_TYPE_NAME = "Sivilstand";
 
     private static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:10.4");
     @Autowired
     protected TransactionTemplate transactionTemplate;
     @Autowired
     protected DatasetRepository datasetRepository;
+    @Autowired
+    protected InformationTypeRepository informationTypeRepository;
+    @Autowired
+    protected TermRepository termRepository;
+    @Autowired
+    protected ProcessRepository processRepository;
     @Autowired
     protected PolicyRepository policyRepository;
     @Autowired
@@ -69,12 +83,22 @@ public abstract class IntegrationTestBase {
         postgreSQLContainer.start();
     }
 
+    private InformationType informationType;
+
     @BeforeEach
     public void setUpAbstract() throws Exception {
         CodelistStub.initializeCodelist();
         WireMock.stubFor(get("/elector").willReturn(okJson(JsonUtils.toJson(LeaderElectionService.getHostInfo()))));
+        termRepository.deleteAll();
         policyRepository.deleteAll();
-        datasetRepository.deleteAll();
+        informationTypeRepository.deleteAll();
+        processRepository.deleteAll();
+
+        // loosen db rules to allow easier testing?
+        var term = termRepository.save(new Term(UUID.randomUUID(), "termname", "termdesc", Set.of()));
+        var auto = createInformationType(UUID.randomUUID(), "Auto");
+        term.addInformationType(auto);
+        informationType = informationTypeRepository.save(auto);
     }
 
     @AfterEach
@@ -92,21 +116,16 @@ public abstract class IntegrationTestBase {
     protected void createPolicy(int rows, BiConsumer<Integer, Policy> callback) {
         int i = 0;
         while (i++ < rows) {
-            Policy policy = new Policy();
-//            policy.setDatasetId(i == 1 ? DATASET_ID_1.toString() : UUID.randomUUID().toString());
-//            policy.setDatasetTitle(DATASET_TITLE);
-//            policy.setLegalBasisDescription(LEGAL_BASIS_DESCRIPTION1);
-            policy.setPurposeCode(PURPOSE_CODE1);
-            policy.setStart(LocalDate.now());
-            policy.setEnd(LocalDate.now());
+            informationType = new InformationType();
+            Policy policy = createPolicy(PURPOSE_CODE1, informationType);
             callback.accept(i, policy);
             policyRepository.save(policy);
         }
     }
 
-    protected Policy createPolicy(String purpose, Dataset dataset) {
+    protected Policy createPolicy(String purpose, InformationType informationType) {
         return policyRepository.save(Policy.builder().purposeCode(purpose).legalBases(Set.of(new LegalBasis("a", "b", "desc")))
-//                .datasetId(dataset.getId().toString()).datasetTitle(dataset.getTitle())
+                .informationType(informationType).informationTypeName(informationType.getData().getName())
                 .start(LocalDate.now()).end(LocalDate.now()).build());
     }
 
@@ -127,6 +146,25 @@ public abstract class IntegrationTestBase {
                         .build())
                 .build();
         return datasetRepository.save(dataset);
+    }
+
+    protected InformationType createInformationType() {
+        return createInformationType(INFORMATION_TYPE_ID_1, INFORMATION_TYPE_NAME);
+    }
+
+    protected InformationType createInformationType(UUID id, String name) {
+        InformationType informationType = InformationType.builder()
+                .id(id)
+                .elasticsearchStatus(SYNCED)
+                .data(InformationTypeData.builder()
+                        .name(name)
+                        .description("desc")
+                        .source("ARBEIDSGIVER")
+                        .category("PERSONALIA")
+                        .pii("loads")
+                        .build())
+                .build();
+        return informationTypeRepository.save(informationType);
     }
 
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {

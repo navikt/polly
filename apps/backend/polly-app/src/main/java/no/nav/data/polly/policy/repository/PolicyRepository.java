@@ -25,7 +25,7 @@ public interface PolicyRepository extends JpaRepository<Policy, UUID> {
 
     List<Policy> findByPurposeCode(String purposeCode);
 
-    @Query("select p.informationType.id from Policy p where id in ?1")
+    @Query("select it.id from Policy p left join p.informationType it where p.id in ?1")
     List<UUID> getInformationTypeIdsByIdIn(List<UUID> policyIds);
 
 }

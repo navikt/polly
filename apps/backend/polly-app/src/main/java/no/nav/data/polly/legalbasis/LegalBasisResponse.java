@@ -1,5 +1,6 @@
 package no.nav.data.polly.legalbasis;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +12,8 @@ import javax.validation.constraints.NotNull;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LegalBasis {
+@JsonPropertyOrder({"gdpr", "nationalLaw", "description"})
+public class LegalBasisResponse {
 
     @NotNull
     private String gdpr;
@@ -19,7 +21,4 @@ public class LegalBasis {
     @NotNull
     private String description;
 
-    public LegalBasisResponse convertToResponse() {
-        return new LegalBasisResponse(gdpr, nationalLaw, description);
-    }
 }

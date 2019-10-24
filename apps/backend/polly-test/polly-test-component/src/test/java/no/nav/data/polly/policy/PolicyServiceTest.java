@@ -3,8 +3,8 @@ package no.nav.data.polly.policy;
 import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.utils.JsonUtils;
-import no.nav.data.polly.dataset.Dataset;
-import no.nav.data.polly.dataset.repo.DatasetRepository;
+import no.nav.data.polly.informationtype.InformationTypeRepository;
+import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.policy.domain.PolicyRequest;
 import no.nav.data.polly.policy.entities.Policy;
 import no.nav.data.polly.policy.repository.PolicyRepository;
@@ -29,13 +29,13 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class PolicyServiceTest {
 
-    private static final String DATASET_TITLE = "Personalia";
+    private static final String INFTYPE_ID_1 = "cd7f037e-374e-4e68-b705-55b61966b2fc";
+    private static final String INFTYPE_NAME = "Personalia";
     private static final String LEGALBASISDESCRIPTION = "LegalBasis";
     private static final String PURPOSECODE = "Kontroll";
-    private static final String DATASET_ID_1 = "cd7f037e-374e-4e68-b705-55b61966b2fc";
 
     @Mock
-    private DatasetRepository datasetRepository;
+    private InformationTypeRepository informationTypeRepository;
     @Mock
     private PolicyRepository policyRepository;
 
@@ -50,11 +50,11 @@ class PolicyServiceTest {
     @Test
     void shouldValidateInsertRequest() {
         PolicyRequest request = PolicyRequest.builder()
-                .datasetTitle(DATASET_TITLE)
+                .informationTypeName(INFTYPE_NAME)
                 .legalBasisDescription(LEGALBASISDESCRIPTION)
                 .purposeCode(PURPOSECODE)
                 .build();
-        when(datasetRepository.findByTitle(request.getDatasetTitle())).thenReturn(Optional.of(Dataset.builder().id(UUID.fromString(DATASET_ID_1)).build()));
+        when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.of(InformationType.builder().id(UUID.fromString(INFTYPE_ID_1)).build()));
         when(policyRepository.findByInformationTypeIdAndPurposeCode(any(UUID.class), anyString())).thenReturn(List.of());
         service.validateRequests(List.of(request), false);
     }
@@ -67,7 +67,7 @@ class PolicyServiceTest {
             fail();
         } catch (ValidationException e) {
             assertEquals(3, e.get().size(), JsonUtils.toJson(e.get()));
-            assertEquals("datasetTitle cannot be null", e.get("datasetTitle").getErrorMessage());
+            assertEquals("informationTypeName cannot be null", e.get("informationTypeName").getErrorMessage());
             assertEquals("purposeCode cannot be null", e.get("purposeCode").getErrorMessage());
             assertEquals("legalBasisDescription cannot be null", e.get("legalBasisDescription").getErrorMessage());
         }
@@ -76,29 +76,29 @@ class PolicyServiceTest {
     @Test
     void shouldThrowNotFoundValidationExceptionOnInsert() {
         PolicyRequest request = PolicyRequest.builder()
-                .datasetTitle(DATASET_TITLE)
+                .informationTypeName(INFTYPE_NAME)
                 .legalBasisDescription(LEGALBASISDESCRIPTION)
                 .purposeCode("wrong")
                 .build();
-        when(datasetRepository.findByTitle(request.getDatasetTitle())).thenReturn(Optional.empty());
+        when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.empty());
         try {
             service.validateRequests(List.of(request), false);
             fail();
         } catch (ValidationException e) {
             assertEquals(2, e.get().size(), JsonUtils.toJson(e.get()));
             assertEquals("The purposeCode wrong was not found in the PURPOSE codelist.", e.get("purposeCode").getErrorMessage());
-            assertEquals("A dataset with title " + DATASET_TITLE + " does not exist", e.get("datasetTitle").getErrorMessage());
+            assertEquals("A dataset with title " + INFTYPE_NAME + " does not exist", e.get("informationTypeName").getErrorMessage());
         }
     }
 
     @Test
     void shouldThrowAlreadyExistsValidationExceptionOnInsert() {
         PolicyRequest request = PolicyRequest.builder()
-                .datasetTitle(DATASET_TITLE)
+                .informationTypeName(INFTYPE_NAME)
                 .legalBasisDescription(LEGALBASISDESCRIPTION)
                 .purposeCode(PURPOSECODE)
                 .build();
-        when(datasetRepository.findByTitle(request.getDatasetTitle())).thenReturn(Optional.of(Dataset.builder().id(UUID.fromString(DATASET_ID_1)).build()));
+        when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.of(InformationType.builder().id(UUID.fromString(INFTYPE_ID_1)).build()));
         when(policyRepository.findByInformationTypeIdAndPurposeCode(any(UUID.class), anyString()))
                 .thenReturn(List.of(Policy.builder().start(LocalDate.now()).end(LocalDate.now()).build()));
         try {
@@ -119,7 +119,7 @@ class PolicyServiceTest {
         } catch (ValidationException e) {
             assertEquals(4, e.get().size(), JsonUtils.toJson(e.get()));
             assertEquals("Id is missing for update", e.get("missingIdForUpdate").getErrorMessage());
-            assertEquals("datasetTitle cannot be null", e.get("datasetTitle").getErrorMessage());
+            assertEquals("informationTypeName cannot be null", e.get("informationTypeName").getErrorMessage());
             assertEquals("purposeCode cannot be null", e.get("purposeCode").getErrorMessage());
             assertEquals("legalBasisDescription cannot be null", e.get("legalBasisDescription").getErrorMessage());
         }
@@ -128,33 +128,33 @@ class PolicyServiceTest {
     @Test
     void shouldThrowNotFoundValidationExceptionOnUpdate() {
         PolicyRequest request = PolicyRequest.builder()
-                .id(UUID.randomUUID())
-                .datasetTitle(DATASET_TITLE)
+                .id("1-1-1-1-1")
+                .informationTypeName(INFTYPE_NAME)
                 .legalBasisDescription(LEGALBASISDESCRIPTION)
                 .purposeCode("wrong")
                 .build();
-        when(datasetRepository.findByTitle(request.getDatasetTitle())).thenReturn(Optional.empty());
-        when(policyRepository.findById(request.getId())).thenReturn(Optional.of(Policy.builder().purposeCode("wrong").build()));
+        when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.empty());
+        when(policyRepository.findById(UUID.fromString(request.getId()))).thenReturn(Optional.of(Policy.builder().purposeCode("wrong").build()));
         try {
             service.validateRequests(List.of(request), true);
             fail();
         } catch (ValidationException e) {
             assertEquals(2, e.get().size(), JsonUtils.toJson(e.get()));
             assertEquals("The purposeCode wrong was not found in the PURPOSE codelist.", e.get("purposeCode").getErrorMessage());
-            assertEquals("A dataset with title " + DATASET_TITLE + " does not exist", e.get("datasetTitle").getErrorMessage());
+            assertEquals("A dataset with title " + INFTYPE_NAME + " does not exist", e.get("informationTypeName").getErrorMessage());
         }
     }
 
     @Test
     void shouldThrowWrongPurposecodeOnUpdate() {
         PolicyRequest request = PolicyRequest.builder()
-                .id(UUID.randomUUID())
-                .datasetTitle(DATASET_TITLE)
+                .id("1-1-1-1-1")
+                .informationTypeName(INFTYPE_NAME)
                 .legalBasisDescription(LEGALBASISDESCRIPTION)
                 .purposeCode(PURPOSECODE)
                 .build();
-        when(datasetRepository.findByTitle(request.getDatasetTitle())).thenReturn(Optional.of(Dataset.builder().id(UUID.fromString(DATASET_ID_1)).build()));
-        when(policyRepository.findById(request.getId())).thenReturn(Optional.of(Policy.builder().purposeCode("otherpurpose").build()));
+        when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.of(InformationType.builder().id(UUID.fromString(INFTYPE_ID_1)).build()));
+        when(policyRepository.findById(UUID.fromString(request.getId()))).thenReturn(Optional.of(Policy.builder().purposeCode("otherpurpose").build()));
         try {
             service.validateRequests(List.of(request), true);
             fail();
@@ -167,12 +167,12 @@ class PolicyServiceTest {
     @Test
     void shouldNotThrowAlreadyExistsValidationExceptionOnInsert() {
         PolicyRequest request = PolicyRequest.builder()
-                .datasetTitle(DATASET_TITLE)
+                .informationTypeName(INFTYPE_NAME)
                 .legalBasisDescription(LEGALBASISDESCRIPTION)
                 .purposeCode(PURPOSECODE)
-                .id(UUID.fromString("1-1-1-1-1"))
+                .id("1-1-1-1-1")
                 .build();
-        when(datasetRepository.findByTitle(request.getDatasetTitle())).thenReturn(Optional.of(Dataset.builder().id(UUID.fromString(DATASET_ID_1)).build()));
+        when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.of(InformationType.builder().id(UUID.fromString(INFTYPE_ID_1)).build()));
 
         service.validateRequests(List.of(request), false);
     }

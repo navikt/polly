@@ -5,9 +5,10 @@ import no.nav.data.polly.AppStarter;
 import no.nav.data.polly.behandlingsgrunnlag.BehandlingsgrunnlagService;
 import no.nav.data.polly.codelist.CodeResponse;
 import no.nav.data.polly.common.rest.PageParameters;
-import no.nav.data.polly.dataset.DatasetService;
+import no.nav.data.polly.informationtype.InformationTypeService;
+import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.policy.PolicyService;
-import no.nav.data.polly.policy.domain.DatasetResponse;
+import no.nav.data.polly.policy.domain.InformationTypeNameResponse;
 import no.nav.data.polly.policy.domain.PolicyRequest;
 import no.nav.data.polly.policy.domain.PolicyResponse;
 import no.nav.data.polly.policy.entities.Policy;
@@ -38,6 +39,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -54,23 +56,18 @@ class PolicyRestControllerTest {
 
     private static final UUID DATASET_ID_1 = UUID.fromString("cd7f037e-374e-4e68-b705-55b61966b2fc");
     private static final UUID DATASET_ID_2 = UUID.fromString("5992e0d0-1fc9-4d67-b825-d198be0827bf");
-    private static final UUID POLICY_ID_1 = UUID.randomUUID();
+    private static final UUID POLICY_ID_1 = UUID.fromString("a7b134d0-34a6-4d3d-85f7-935ee12f5c25");
 
     @Autowired
     private MockMvc mvc;
-
     @MockBean
     private PolicyMapper mapper;
-
     @MockBean
     private PolicyService service;
-
     @MockBean
     private PolicyRepository policyRepository;
-
     @MockBean
-    private DatasetService datasetService;
-
+    private InformationTypeService informationTypeService;
     @MockBean
     private BehandlingsgrunnlagService behandlingsgrunnlagService;
 
@@ -151,7 +148,7 @@ class PolicyRestControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.*", hasSize(1)));
 
-//        verify(datasetService).sync(List.of(UUID.fromString(policy1.getDatasetId())));
+        verify(informationTypeService).syncForPolicyIds(List.of(policy1.getId()));
     }
 
     @Test
@@ -170,13 +167,13 @@ class PolicyRestControllerTest {
                 .content(asJsonString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.*", hasSize(2)));
-//        verify(datasetService).sync(List.of(UUID.fromString(policy1.getDatasetId()), UUID.fromString(policy2.getDatasetId())));
+        verify(informationTypeService).syncForPolicyIds(List.of(policy1.getId(), policy2.getId()));
     }
 
     @Test
     void updatePolicy() throws Exception {
         Policy policy1 = createPolicyTestdata(DATASET_ID_1);
-        PolicyRequest request = PolicyRequest.builder().id(POLICY_ID_1).build();
+        PolicyRequest request = PolicyRequest.builder().id(POLICY_ID_1.toString()).build();
         PolicyResponse response = createPolicyResponse("code", "Description", null);
 
         given(mapper.mapRequestToPolicy(request, POLICY_ID_1)).willReturn(policy1);
@@ -189,8 +186,7 @@ class PolicyRestControllerTest {
                 .content(asJsonString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.legalBasisDescription", is("Description")));
-//        verify(datasetService).sync(List.of(UUID.fromString(policy1.getDatasetId())));
-
+        verify(informationTypeService).syncForPolicyIds(List.of(policy1.getId()));
     }
 
     @Test
@@ -200,10 +196,10 @@ class PolicyRestControllerTest {
         List<PolicyRequest> request = Arrays.asList(createPolicyRequest("Desc1", "Code1", "Title1"), createPolicyRequest("Desc2", "Code2", "Title2"));
         List<Policy> policies = Arrays.asList(policy1, policy2);
 
-        given(mapper.mapRequestToPolicy(request.get(0), request.get(0).getId())).willReturn(policy1);
-        given(mapper.mapRequestToPolicy(request.get(1), request.get(1).getId())).willReturn(policy2);
-        given(policyRepository.findById(request.get(0).getId())).willReturn(Optional.of(policy1));
-        given(policyRepository.findById(request.get(1).getId())).willReturn(Optional.of(policy2));
+        given(mapper.mapRequestToPolicy(request.get(0), UUID.fromString(request.get(0).getId()))).willReturn(policy1);
+        given(mapper.mapRequestToPolicy(request.get(1), UUID.fromString(request.get(1).getId()))).willReturn(policy2);
+        given(policyRepository.findById(UUID.fromString(request.get(0).getId()))).willReturn(Optional.of(policy1));
+        given(policyRepository.findById(UUID.fromString(request.get(1).getId()))).willReturn(Optional.of(policy2));
         given(policyRepository.saveAll(policies)).willReturn(policies);
 
         mvc.perform(put("/policy")
@@ -211,8 +207,7 @@ class PolicyRestControllerTest {
                 .content(asJsonString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(2)));
-//        verify(datasetService).sync(List.of(UUID.fromString(policy1.getDatasetId()), UUID.fromString(policy2.getDatasetId())));
-
+        verify(informationTypeService).syncForPolicyIds(List.of(policy1.getId(), policy2.getId()));
     }
 
     @Test
@@ -223,8 +218,7 @@ class PolicyRestControllerTest {
         mvc.perform(delete("/policy/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-//        verify(datasetService).sync(List.of(UUID.fromString(policy1.getDatasetId())));
-
+        verify(informationTypeService).syncForPolicyIds(List.of(policy1.getId()));
     }
 
     @Test
@@ -235,19 +229,19 @@ class PolicyRestControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    private Policy createPolicyTestdata(UUID datasetId) {
+    private Policy createPolicyTestdata(UUID informationTypeId) {
         Policy policy = new Policy();
-//        policy.setDatasetId(datasetId);
+        policy.setInformationType(InformationType.builder().id(informationTypeId).build());
 //        policy.setLegalBasisDescription("Description");
         return policy;
     }
 
-    private PolicyRequest createPolicyRequest(String desc, String code, String title) {
-        return PolicyRequest.builder().legalBasisDescription(desc).purposeCode(code).datasetTitle(title).build();
+    private PolicyRequest createPolicyRequest(String desc, String code, String name) {
+        return PolicyRequest.builder().legalBasisDescription(desc).purposeCode(code).informationTypeName(name).build();
     }
 
     private PolicyResponse createPolicyResponse(String purpose, String desc, UUID id) {
-        return PolicyResponse.builder().policyId(id).purpose(new CodeResponse(purpose, "")).dataset(new DatasetResponse()).legalBasisDescription(desc).build();
+        return PolicyResponse.builder().policyId(id).purpose(new CodeResponse(purpose, "")).informationType(new InformationTypeNameResponse()).legalBasisDescription(desc).build();
     }
 
     private static String asJsonString(final Object obj) {

@@ -5,8 +5,8 @@ import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.ListName;
 import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.validator.ValidationError;
-import no.nav.data.polly.dataset.Dataset;
-import no.nav.data.polly.dataset.repo.DatasetRepository;
+import no.nav.data.polly.informationtype.InformationTypeRepository;
+import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.policy.domain.PolicyRequest;
 import no.nav.data.polly.policy.entities.Policy;
 import no.nav.data.polly.policy.repository.PolicyRepository;
@@ -26,11 +26,11 @@ import java.util.stream.Collectors;
 public class PolicyService {
 
     private final PolicyRepository policyRepository;
-    private final DatasetRepository datasetRepository;
+    private final InformationTypeRepository informationTypeRepository;
 
-    public PolicyService(PolicyRepository policyRepository, DatasetRepository datasetRepository) {
+    public PolicyService(PolicyRepository policyRepository, InformationTypeRepository informationTypeRepository) {
         this.policyRepository = policyRepository;
-        this.datasetRepository = datasetRepository;
+        this.informationTypeRepository = informationTypeRepository;
     }
 
     public void validateRequests(List<PolicyRequest> requests, boolean isUpdate) {
@@ -40,13 +40,15 @@ public class PolicyService {
         final AtomicInteger i = new AtomicInteger(1);
         requests.forEach(request -> {
             List<ValidationError> requestValidations = validatePolicyRequest(request);
-            if (titlesUsedInRequest.containsKey(request.getDatasetTitle() + request.getPurposeCode())) {
+            String informationTypeName = request.getInformationTypeName();
+            String purposeCode = request.getPurposeCode();
+            if (titlesUsedInRequest.containsKey(informationTypeName + purposeCode)) {
                 requestValidations.add(new ValidationError(request.getReference(), "combinationNotUniqueInThisRequest", String.format(
-                        "A request combining Dataset: %s and Purpose: %s is not unique because " +
+                        "A request combining informationType: %s and Purpose: %s is not unique because " +
                                 "it is already used in this request (see request nr:%s)",
-                        request.getDatasetTitle(), request.getPurposeCode(), titlesUsedInRequest.get(request.getDatasetTitle() + request.getPurposeCode()))));
-            } else if (request.getDatasetTitle() != null && request.getPurposeCode() != null) {
-                titlesUsedInRequest.put(request.getDatasetTitle() + request.getPurposeCode(), i.intValue());
+                        informationTypeName, purposeCode, titlesUsedInRequest.get(informationTypeName + purposeCode))));
+            } else if (informationTypeName != null && purposeCode != null) {
+                titlesUsedInRequest.put(informationTypeName + purposeCode, i.intValue());
             }
             if (request.isUpdate()) {
                 validateUpdate(request, validations);
@@ -55,8 +57,8 @@ public class PolicyService {
             i.getAndIncrement();
         });
         if (!validations.isEmpty()) {
-            log.error("Validation errors occurred when validating DatasetRequest: {}", validations);
-            throw new ValidationException(validations, "Validation errors occurred when validating DatasetRequest.");
+            log.error("Validation errors occurred when validating PolicyRequest: {}", validations);
+            throw new ValidationException(validations, "Validation errors occurred when validating PolicyRequest.");
         }
     }
 
@@ -65,7 +67,14 @@ public class PolicyService {
             validations.add(new ValidationError(request.getReference(), "missingIdForUpdate", "Id is missing for update"));
             return;
         }
-        Policy policy = policyRepository.findById(request.getId()).orElse(null);
+        UUID uuid;
+        try {
+            uuid = UUID.fromString(request.getId());
+        } catch (IllegalArgumentException e) {
+            validations.add(new ValidationError(request.getReference(), "invalidIdForUpdate", "Id is invalid for update"));
+            return;
+        }
+        Policy policy = policyRepository.findById(uuid).orElse(null);
         if (policy == null) {
             validations.add(new ValidationError(request.getReference(), "notFound", String.format("A policy with id: %s was not found", request.getId())));
         } else if (!StringUtils.equals(policy.getPurposeCode(), request.getPurposeCode())) {
@@ -78,8 +87,8 @@ public class PolicyService {
 
     private List<ValidationError> validatePolicyRequest(PolicyRequest request) {
         List<ValidationError> validations = new ArrayList<>();
-        if (request.getDatasetTitle() == null) {
-            validations.add(new ValidationError(request.getReference(), "datasetTitle", "datasetTitle cannot be null"));
+        if (request.getInformationTypeName() == null) {
+            validations.add(new ValidationError(request.getReference(), "informationTypeName", "informationTypeName cannot be null"));
         }
         if (request.getLegalBasisDescription() == null) {
             validations.add(new ValidationError(request.getReference(), "legalBasisDescription", "legalBasisDescription cannot be null"));
@@ -93,29 +102,30 @@ public class PolicyService {
                         String.format("The purposeCode %s was not found in the PURPOSE codelist.", request.getPurposeCode())));
             }
         }
-        // Combination of Dataset and purpose must be unique
-        if (request.getPurposeCode() != null && request.getDatasetTitle() != null) {
-            Dataset dataset = datasetRepository.findByTitle(request.getDatasetTitle()).orElse(null);
-            if (dataset == null) {
-                validations.add(new ValidationError(request.getReference(), "datasetTitle", String.format("A dataset with title %s does not exist", request.getDatasetTitle())));
+        // Combination of InformationType and purpose must be unique
+        if (request.getPurposeCode() != null && request.getInformationTypeName() != null) {
+            InformationType informationType = informationTypeRepository.findByName(request.getInformationTypeName()).orElse(null);
+            if (informationType == null) {
+                validations.add(new ValidationError(request.getReference(), "informationTypeName",
+                        String.format("An informationType with name %s does not exist", request.getInformationTypeName())));
             } else {
-                request.setDatasetId(dataset.getId().toString());
+                request.setInformationType(informationType);
             }
 
-            if (!request.isUpdate() && dataset != null && exists(dataset.getId(), request.getPurposeCode())) {
-                validations.add(new ValidationError(request.getReference(), "datasetAndPurpose",
-                        String.format("A policy combining Dataset %s and Purpose %s already exists", request.getDatasetTitle(), request.getPurposeCode())));
+            if (!request.isUpdate() && informationType != null && exists(informationType.getId(), request.getPurposeCode())) {
+                validations.add(new ValidationError(request.getReference(), "informationTypeAndPurpose",
+                        String.format("A policy combining InformationType %s and Purpose %s already exists", request.getInformationTypeName(), request.getPurposeCode())));
             }
         }
 
         if (!validations.isEmpty()) {
-            log.error("Validation errors occurred when validating DatasetRequest: {}", validations);
+            log.error("Validation errors occurred when validating PolicyRequest: {}", validations);
         }
         return validations;
     }
 
-    private boolean exists(UUID datasetId, String purposeCode) {
-        return policyRepository.findByInformationTypeIdAndPurposeCode(datasetId, purposeCode).stream().anyMatch(Policy::isActive);
+    private boolean exists(UUID informationTypeId, String purposeCode) {
+        return policyRepository.findByInformationTypeIdAndPurposeCode(informationTypeId, purposeCode).stream().anyMatch(Policy::isActive);
     }
 
     public List<Policy> findActiveByPurposeCode(String purpose) {

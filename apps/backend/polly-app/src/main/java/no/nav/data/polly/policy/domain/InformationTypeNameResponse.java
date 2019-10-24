@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder({"id", "title"})
-public class DatasetResponse {
+@JsonPropertyOrder({"id", "name"})
+public class InformationTypeNameResponse {
 
     private String id;
-    private String title;
+    private String name;
 
 }

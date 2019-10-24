@@ -6,10 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.policy.entities.Policy;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Data
@@ -19,10 +19,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PolicyRequest {
 
-    private UUID id;
+    private String id;
     private String legalBasisDescription;
     private String purposeCode;
-    private String datasetTitle;
+    private String informationTypeName;
     private String start;
     private String end;
 
@@ -31,13 +31,13 @@ public class PolicyRequest {
     @JsonIgnore
     private boolean isUpdate;
     @JsonIgnore
-    private String datasetId;
+    private InformationType informationType;
     @JsonIgnore
     private Policy existingPolicy;
 
     @JsonIgnore
     public String getReference() {
-        return getDatasetTitle() + "/" + getPurposeCode();
+        return getInformationTypeName() + "/" + getPurposeCode();
     }
 
     public static void initialize(List<PolicyRequest> requests, boolean isUpdate) {

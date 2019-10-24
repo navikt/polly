@@ -19,6 +19,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -47,13 +48,14 @@ public class InformationType extends Auditable<String> {
     @Enumerated(EnumType.STRING)
     private ElasticsearchStatus elasticsearchStatus;
 
+    @Builder.Default
     @Valid
     @NotNull
     @Type(type = "jsonb")
     @Column(name = "DATA")
-    private InformationTypeData data;
+    private InformationTypeData data = new InformationTypeData();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TERM_ID")
     private Term term;
 

@@ -5,7 +5,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class StreamUtils {
@@ -58,6 +60,10 @@ public final class StreamUtils {
         ArrayList<T> list = new ArrayList<>(listA);
         list.addAll(listB);
         return list;
+    }
+
+    public static <T, F> List<T> convert(Collection<F> from, Function<F, T> converter) {
+        return safeStream(from).map(converter).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
 }
