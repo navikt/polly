@@ -7,8 +7,6 @@ import no.nav.data.polly.behandlingsgrunnlag.BehandlingsgrunnlagDistributionRepo
 import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.common.nais.LeaderElectionService;
 import no.nav.data.polly.common.utils.JsonUtils;
-import no.nav.data.polly.dataset.Dataset;
-import no.nav.data.polly.dataset.DatasetData;
 import no.nav.data.polly.dataset.repo.DatasetRepository;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
@@ -36,7 +34,6 @@ import org.springframework.util.SocketUtils;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiConsumer;
@@ -82,8 +79,6 @@ public abstract class IntegrationTestBase {
         postgreSQLContainer.start();
     }
 
-    private InformationType informationType;
-
     @BeforeEach
     public void setUpAbstract() throws Exception {
         CodelistStub.initializeCodelist();
@@ -95,7 +90,6 @@ public abstract class IntegrationTestBase {
         processRepository.deleteAll();
         datasetRepository.deleteAll();
 
-        informationType = informationTypeRepository.save(createInformationType(UUID.randomUUID(), "Auto"));
     }
 
     @AfterEach
@@ -114,6 +108,7 @@ public abstract class IntegrationTestBase {
     }
 
     protected void createPolicy(int rows, BiConsumer<Integer, Policy> callback) {
+        var informationType = informationTypeRepository.save(createInformationType(UUID.randomUUID(), "Auto"));
         int i = 0;
         while (i++ < rows) {
             Policy policy = createPolicy(PURPOSE_CODE1, informationType);
@@ -126,25 +121,6 @@ public abstract class IntegrationTestBase {
         return policyRepository.save(Policy.builder().purposeCode(purpose).legalBases(Set.of(new LegalBasis("a", "b", "desc")))
                 .informationType(informationType).informationTypeName(informationType.getData().getName())
                 .start(LocalDate.now()).end(LocalDate.now()).build());
-    }
-
-    protected Dataset createDataset() {
-        return createDataset(DATASET_ID_1, DATASET_TITLE);
-    }
-
-    protected Dataset createDataset(UUID id, String datasetTitle) {
-        Dataset dataset = Dataset.builder()
-                .id(id)
-                .elasticsearchStatus(SYNCED)
-                .datasetData(DatasetData.builder()
-                        .title(datasetTitle)
-                        .description("desc")
-                        .provenances(List.of("ARBEIDSGIVER"))
-                        .categories(List.of("PERSONALIA"))
-                        .pi(true)
-                        .build())
-                .build();
-        return datasetRepository.save(dataset);
     }
 
     protected InformationType createInformationType() {

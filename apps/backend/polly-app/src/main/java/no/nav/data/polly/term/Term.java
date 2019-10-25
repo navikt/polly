@@ -34,10 +34,10 @@ public class Term extends Auditable<String> {
     @Column(name = "TERM_ID")
     private UUID id;
 
-    @Column(name = "NAME")
+    @Column(name = "NAME", nullable = false, updatable = false)
     private String name;
 
-    @Column(name = "DESCRIPTION")
+    @Column(name = "DESCRIPTION", nullable = false)
     private String description;
 
     @Builder.Default
