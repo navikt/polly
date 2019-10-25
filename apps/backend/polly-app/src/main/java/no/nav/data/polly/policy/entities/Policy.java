@@ -86,14 +86,6 @@ public class Policy extends Auditable<String> {
     @Column(name = "LEGAL_BASES", nullable = false)
     private Set<LegalBasis> legalBases = new HashSet<>();
 
-    // Added outside builder to enforce backreference
-    public Policy addLegalBasis(LegalBasis legalBasis) {
-        if (legalBasis != null) {
-            legalBases.add(legalBasis);
-        }
-        return this;
-    }
-
     public InformationTypeBehandlingsgrunnlagResponse convertToBehandlingsgrunnlagResponse() {
         return new InformationTypeBehandlingsgrunnlagResponse(informationType.getId(), informationTypeName, convert(legalBases, LegalBasis::convertToResponse));
     }
@@ -111,6 +103,16 @@ public class Policy extends Auditable<String> {
                 .subjectCategories(getSubjectCategories())
                 .legalbases(convert(legalBases, LegalBasis::convertToElasticsearch))
                 .build();
+    }
+
+    public static class PolicyBuilder {
+
+        private Set<LegalBasis> legalBases = new HashSet<>();
+
+        public PolicyBuilder legalBasis(LegalBasis legalBasis) {
+            legalBases.add(legalBasis);
+            return this;
+        }
     }
 
 }
