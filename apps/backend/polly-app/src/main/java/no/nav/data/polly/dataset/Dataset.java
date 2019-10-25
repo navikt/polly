@@ -9,8 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.auditing.Auditable;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.elasticsearch.ElasticsearchStatus;
-import no.nav.data.polly.elasticsearch.domain.DatasetElasticsearch;
-import no.nav.data.polly.elasticsearch.domain.PolicyElasticsearch;
 import org.apache.commons.lang3.BooleanUtils;
 import org.hibernate.annotations.Type;
 
@@ -83,10 +81,6 @@ public class Dataset extends Auditable<String> {
 
     public DatasetResponse convertToResponse() {
         return new DatasetResponse(this);
-    }
-
-    public DatasetElasticsearch convertToElasticsearch(List<PolicyElasticsearch> policies) {
-        return new DatasetElasticsearch(this, policies);
     }
 
     public Dataset convertNewFromRequest(DatasetRequest request, DatacatalogMaster master) {

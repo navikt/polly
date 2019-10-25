@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DistributionElasticsearch {
+public class LegalBasisElasticSearch {
 
-    private String format;
-    private String url;
-
+    private String gdpr;
+    private String nationalLaw;
+    private String description;
 }

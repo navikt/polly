@@ -1,11 +1,13 @@
 package no.nav.data.polly.elasticsearch.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Builder
@@ -16,7 +18,7 @@ public class PolicyElasticsearch {
 
     private String purpose;
     private String description;
-    @JsonProperty("legal_basis")
-    private String legalBasis;
+    private String subjectCategories;
+    private List<LegalBasisElasticSearch> legalbases = new ArrayList<>();
 
 }

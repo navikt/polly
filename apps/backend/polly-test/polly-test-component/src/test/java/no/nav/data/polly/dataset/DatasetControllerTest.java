@@ -5,7 +5,7 @@ import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.common.rest.PageParameters;
 import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.dataset.repo.DatasetRepository;
-import no.nav.data.polly.elasticsearch.ElasticsearchDatasetService;
+import no.nav.data.polly.elasticsearch.ElasticsearchService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,7 +54,7 @@ public class DatasetControllerTest {
     @MockBean
     private DatasetService service;
     @MockBean
-    private ElasticsearchDatasetService elasticsearchDatasetService;
+    private ElasticsearchService elasticsearchService;
 
     @Autowired
     private MockMvc mvc;

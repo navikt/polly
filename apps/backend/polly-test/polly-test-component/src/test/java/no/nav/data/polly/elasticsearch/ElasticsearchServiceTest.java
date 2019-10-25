@@ -32,7 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ElasticsearchDatasetServiceTest {
+class ElasticsearchServiceTest {
 
     private Dataset dataset;
     private Policy policy;
@@ -48,7 +48,7 @@ class ElasticsearchDatasetServiceTest {
     @Mock
     private LeaderElectionService leaderElectionService;
     @InjectMocks
-    private ElasticsearchDatasetService service;
+    private ElasticsearchService service;
 
     private ArgumentCaptor<ElasticsearchDocument> captor = ArgumentCaptor.forClass(ElasticsearchDocument.class);
 

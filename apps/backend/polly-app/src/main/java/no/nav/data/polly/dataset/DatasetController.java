@@ -10,8 +10,7 @@ import no.nav.data.polly.common.rest.PageParameters;
 import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.dataset.repo.DatasetRepository;
-import no.nav.data.polly.elasticsearch.ElasticsearchDatasetService;
-import no.nav.data.polly.elasticsearch.domain.DatasetElasticsearch;
+import no.nav.data.polly.elasticsearch.ElasticsearchService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,14 +43,14 @@ public class DatasetController {
 
     private final DatasetRepository repository;
     private final DatasetService service;
-    private final ElasticsearchDatasetService elasticsearchDatasetService;
+    private final ElasticsearchService elasticsearchService;
 
     public DatasetController(DatasetRepository datasetRepository,
             DatasetService datasetService,
-            ElasticsearchDatasetService elasticsearchDatasetService) {
+            ElasticsearchService elasticsearchService) {
         this.repository = datasetRepository;
         this.service = datasetService;
-        this.elasticsearchDatasetService = elasticsearchDatasetService;
+        this.elasticsearchService = elasticsearchService;
     }
 
     @ApiOperation(value = "Get Dataset", tags = {"Dataset"})
@@ -74,23 +73,6 @@ public class DatasetController {
         }
         log.info("Returned Dataset");
         return new ResponseEntity<>(datasetResponse.get(), HttpStatus.OK);
-    }
-
-    @ApiOperation(value = "Get Dataset in Elasticsearch format", tags = {"Dataset"})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Dataset fetched", response = DatasetElasticsearch.class),
-            @ApiResponse(code = 404, message = "Dataset not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
-    @GetMapping("/elasticsearch/{id}")
-    public ResponseEntity<DatasetElasticsearch> findElasticsearchFormatForId(@PathVariable UUID id) {
-        log.info("Received request for Dataset ElasticsearchFormat with the id={}", id);
-        Optional<Dataset> datasetResponse = repository.findById(id);
-        if (datasetResponse.isEmpty()) {
-            log.info("Cannot find the Dataset with id={}", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        log.info("Returned Dataset ElasticsearchFormat");
-        return new ResponseEntity<>(elasticsearchDatasetService.mapDataset(datasetResponse.get()), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Get Dataset", tags = {"Dataset"})

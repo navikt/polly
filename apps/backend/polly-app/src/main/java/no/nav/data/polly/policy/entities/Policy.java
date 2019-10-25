@@ -105,7 +105,8 @@ public class Policy extends Auditable<String> {
         return PolicyElasticsearch.builder()
                 .purpose(purpose.getCode())
                 .description(purpose.getDescription())
-                .legalBasis("merge no.nav.data.polly.legalbasis")
+                .subjectCategories(getSubjectCategories())
+                .legalbases(convert(legalBases, LegalBasis::convertToElasticsearch))
                 .build();
     }
 

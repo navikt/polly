@@ -9,7 +9,7 @@ import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.rest.PageParameters;
 import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.common.utils.StreamUtils;
-import no.nav.data.polly.elasticsearch.ElasticsearchInformationTypeService;
+import no.nav.data.polly.elasticsearch.ElasticsearchService;
 import no.nav.data.polly.elasticsearch.domain.InformationTypeElasticsearch;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeRequest;
@@ -45,14 +45,14 @@ public class InformationTypeController {
 
     private final InformationTypeRepository repository;
     private final InformationTypeService service;
-    private final ElasticsearchInformationTypeService elasticsearchInformationTypeService;
+    private final ElasticsearchService elasticsearchService;
 
     public InformationTypeController(InformationTypeRepository informationTypeRepository,
             InformationTypeService informationTypeService,
-            ElasticsearchInformationTypeService elasticsearchInformationTypeService) {
+            ElasticsearchService elasticsearchService) {
         this.repository = informationTypeRepository;
         this.service = informationTypeService;
-        this.elasticsearchInformationTypeService = elasticsearchInformationTypeService;
+        this.elasticsearchService = elasticsearchService;
     }
 
     @ApiOperation(value = "Get InformationType")
@@ -88,7 +88,7 @@ public class InformationTypeController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         log.info("Returned InformationType ElasticsearchFormat");
-        return new ResponseEntity<>(elasticsearchInformationTypeService.mapInformationType(informationTypeResponse.get()), HttpStatus.OK);
+        return new ResponseEntity<>(elasticsearchService.mapInformationType(informationTypeResponse.get()), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Get InformationType")

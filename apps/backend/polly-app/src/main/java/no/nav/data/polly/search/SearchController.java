@@ -24,7 +24,7 @@ public class SearchController {
 	@GetMapping(value = "/field/{fieldName}/{fieldValue}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public SearchResult searchByField(@PathVariable String fieldName, @PathVariable String fieldValue) {
 
-		SearchResponse searchResponse = repository.searchDatasetsByField(fieldName, fieldValue, properties.getIndex());
+		SearchResponse searchResponse = repository.searchInformationTypesByField(fieldName, fieldValue, properties.getIndex());
 
 		return SearchResult.builder()
 				.searchResponse(searchResponse)

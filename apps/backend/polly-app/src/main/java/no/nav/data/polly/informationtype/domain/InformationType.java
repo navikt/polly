@@ -8,11 +8,14 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import no.nav.data.polly.common.auditing.Auditable;
 import no.nav.data.polly.elasticsearch.ElasticsearchStatus;
+import no.nav.data.polly.elasticsearch.domain.InformationTypeElasticsearch;
+import no.nav.data.polly.elasticsearch.domain.PolicyElasticsearch;
 import no.nav.data.polly.policy.entities.Policy;
 import no.nav.data.polly.term.Term;
 import org.hibernate.annotations.Type;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Column;
@@ -82,6 +85,10 @@ public class InformationType extends Auditable<String> {
 
     public void convertUpdateFromRequest(InformationTypeRequest request) {
 
+    }
+
+    public InformationTypeElasticsearch convertToElasticsearch(List<PolicyElasticsearch> policiesES) {
+        return new InformationTypeElasticsearch(this, policiesES);
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")

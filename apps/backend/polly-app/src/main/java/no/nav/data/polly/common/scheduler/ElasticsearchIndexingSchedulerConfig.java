@@ -1,6 +1,6 @@
 package no.nav.data.polly.common.scheduler;
 
-import no.nav.data.polly.elasticsearch.ElasticsearchDatasetService;
+import no.nav.data.polly.elasticsearch.ElasticsearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +21,7 @@ public class ElasticsearchIndexingSchedulerConfig implements SchedulingConfigure
     private Integer syncIntervalSeconds;
 
     @Autowired
-    private ElasticsearchDatasetService service;
+    private ElasticsearchService service;
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {

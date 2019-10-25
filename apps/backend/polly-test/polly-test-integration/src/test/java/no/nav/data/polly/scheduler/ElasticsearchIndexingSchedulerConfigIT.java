@@ -1,7 +1,7 @@
 package no.nav.data.polly.scheduler;
 
 import no.nav.data.polly.IntegrationTestBase;
-import no.nav.data.polly.elasticsearch.ElasticsearchDatasetService;
+import no.nav.data.polly.elasticsearch.ElasticsearchService;
 import org.awaitility.Duration;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -13,7 +13,7 @@ import static org.mockito.internal.verification.VerificationModeFactory.times;
 public class ElasticsearchIndexingSchedulerConfigIT extends IntegrationTestBase {
 
     @SpyBean
-    private ElasticsearchDatasetService service;
+    private ElasticsearchService service;
 
     @Test
     void jobRuns() {

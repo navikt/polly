@@ -1,8 +1,8 @@
 package no.nav.data.polly.elasticsearch;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.polly.common.exceptions.PollyTechnicalException;
 import no.nav.data.polly.common.exceptions.DocumentNotFoundException;
+import no.nav.data.polly.common.exceptions.PollyTechnicalException;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -39,12 +39,12 @@ public class ElasticsearchRepository {
         this.restHighLevelClient = restHighLevelClient;
     }
 
-    public SearchResponse searchDatasetsByField(String fieldName, String fieldValue, String index) {
+    public SearchResponse searchInformationTypesByField(String fieldName, String fieldValue, String index) {
         AbstractQueryBuilder query = new MatchQueryBuilder(fieldName, fieldValue);
         return searchByQuery(query, index);
     }
 
-    public SearchResponse getAllDatasets(String index) {
+    public SearchResponse getAllInformationTypes(String index) {
         AbstractQueryBuilder query = new MatchAllQueryBuilder();
         return searchByQuery(query, index);
     }

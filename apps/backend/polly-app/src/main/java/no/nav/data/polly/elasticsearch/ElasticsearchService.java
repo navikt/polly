@@ -5,9 +5,9 @@ import io.prometheus.client.Summary;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.nais.LeaderElectionService;
 import no.nav.data.polly.common.utils.MetricUtils;
-import no.nav.data.polly.dataset.Dataset;
-import no.nav.data.polly.dataset.repo.DatasetRepository;
-import no.nav.data.polly.elasticsearch.domain.DatasetElasticsearch;
+import no.nav.data.polly.elasticsearch.domain.InformationTypeElasticsearch;
+import no.nav.data.polly.informationtype.InformationTypeRepository;
+import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.policy.entities.Policy;
 import no.nav.data.polly.policy.repository.PolicyRepository;
 import org.springframework.stereotype.Service;
@@ -22,9 +22,9 @@ import static no.nav.data.polly.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
 
 @Slf4j
 @Service
-public class ElasticsearchDatasetService {
+public class ElasticsearchService {
 
-    private final DatasetRepository repository;
+    private final InformationTypeRepository repository;
     private final PolicyRepository policyRepository;
     private final ElasticsearchRepository elasticsearch;
     private final ElasticsearchProperties elasticsearchProperties;
@@ -32,7 +32,7 @@ public class ElasticsearchDatasetService {
     private final Counter counter;
     private final Summary summary;
 
-    public ElasticsearchDatasetService(DatasetRepository repository, PolicyRepository policyRepository, ElasticsearchRepository elasticsearch,
+    public ElasticsearchService(InformationTypeRepository repository, PolicyRepository policyRepository, ElasticsearchRepository elasticsearch,
             ElasticsearchProperties elasticsearchProperties, LeaderElectionService leaderElectionService) {
         this.repository = repository;
         this.policyRepository = policyRepository;
@@ -53,58 +53,58 @@ public class ElasticsearchDatasetService {
         counter.labels("sync").inc();
         summary.time(() -> {
             log.info("Starting sync to ElasticSearch");
-            var created = createDatasetsInElasticsearch();
-            var updated = updateDatasetsInElasticsearch();
-            var deleted = deleteDatasetsInElasticsearchAndInPostgres();
+            var created = createInformationTypesInElasticsearch();
+            var updated = updateInformationTypesInElasticsearch();
+            var deleted = deleteInformationTypesInElasticsearchAndInPostgres();
             log.info("Finished sync to ElasticSearch created={} updated={} deleted={}", created, updated, deleted);
         });
     }
 
-    private int createDatasetsInElasticsearch() {
-        List<Dataset> datasets = repository.findByElasticsearchStatus(TO_BE_CREATED);
-        for (Dataset dataset : datasets) {
-            DatasetElasticsearch datasetES = mapDataset(dataset);
-            elasticsearch.insert(ElasticsearchDocument.newDatasetDocument(datasetES, elasticsearchProperties.getIndex()));
+    private int createInformationTypesInElasticsearch() {
+        List<InformationType> informationTypes = repository.findByElasticsearchStatus(TO_BE_CREATED);
+        for (InformationType informationType : informationTypes) {
+            InformationTypeElasticsearch informationTypeES = mapInformationType(informationType);
+            elasticsearch.insert(ElasticsearchDocument.newDocument(informationTypeES, elasticsearchProperties.getIndex()));
 
-            repository.updateStatusForDataset(dataset.getId(), SYNCED);
+            repository.updateStatusForInformationType(informationType.getId(), SYNCED);
             counter.labels("create").inc();
         }
-        return datasets.size();
+        return informationTypes.size();
     }
 
-    private int updateDatasetsInElasticsearch() {
-        List<Dataset> datasets = repository.findByElasticsearchStatus(TO_BE_UPDATED);
-        for (Dataset dataset : datasets) {
-            DatasetElasticsearch datasetES = mapDataset(dataset);
-            elasticsearch.updateById(ElasticsearchDocument.newDatasetDocument(datasetES, elasticsearchProperties.getIndex()));
+    private int updateInformationTypesInElasticsearch() {
+        List<InformationType> informationTypes = repository.findByElasticsearchStatus(TO_BE_UPDATED);
+        for (InformationType informationType : informationTypes) {
+            InformationTypeElasticsearch informationTypeES = mapInformationType(informationType);
+            elasticsearch.updateById(ElasticsearchDocument.newDocument(informationTypeES, elasticsearchProperties.getIndex()));
 
-            repository.updateStatusForDataset(dataset.getId(), SYNCED);
+            repository.updateStatusForInformationType(informationType.getId(), SYNCED);
             counter.labels("update").inc();
         }
-        return datasets.size();
+        return informationTypes.size();
     }
 
-    private int deleteDatasetsInElasticsearchAndInPostgres() {
-        List<Dataset> datasets = repository.findByElasticsearchStatus(TO_BE_DELETED);
-        for (Dataset dataset : datasets) {
-            elasticsearch.deleteById(ElasticsearchDocument.newDatasetDocumentId(dataset.getId().toString(), elasticsearchProperties.getIndex()));
-            repository.deleteById(dataset.getId());
+    private int deleteInformationTypesInElasticsearchAndInPostgres() {
+        List<InformationType> informationTypes = repository.findByElasticsearchStatus(TO_BE_DELETED);
+        for (InformationType informationType : informationTypes) {
+            elasticsearch.deleteById(ElasticsearchDocument.newDocumentId(informationType.getId().toString(), elasticsearchProperties.getIndex()));
+            repository.deleteById(informationType.getId());
             // As we share a schema, perhpas do a scheduled task to delete orphan policies instead
             try {
-                long deletes = policyRepository.deleteByInformationTypeId(dataset.getId());
+                long deletes = policyRepository.deleteByInformationTypeId(informationType.getId());
                 log.debug("Deleted {} policies", deletes);
             } catch (Exception e) {
-                log.warn(String.format("Failed to delete policies for datasetId=%s", dataset.getId()), e);
+                log.warn(String.format("Failed to delete policies for informationTypeId=%s", informationType.getId()), e);
             }
             counter.labels("delete").inc();
         }
-        return datasets.size();
+        return informationTypes.size();
     }
 
-    public DatasetElasticsearch mapDataset(Dataset dataset) {
-        List<Policy> policies = policyRepository.findByInformationTypeId(dataset.getId());
+    public InformationTypeElasticsearch mapInformationType(InformationType informationType) {
+        List<Policy> policies = policyRepository.findByInformationTypeId(informationType.getId());
         var policiesES = policies.stream().map(Policy::convertToElasticsearch).collect(Collectors.toList());
-        return dataset.convertToElasticsearch(policiesES);
+        return informationType.convertToElasticsearch(policiesES);
     }
 
     private static Counter initCounter() {

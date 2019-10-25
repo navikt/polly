@@ -29,7 +29,7 @@ public interface InformationTypeRepository extends JpaRepository<InformationType
     @Modifying
     @Transactional
     @Query("update InformationType set elasticsearchStatus = ?2 where id = ?1")
-    void updateStatusForDataset(UUID informationTypeId, ElasticsearchStatus elasticsearchStatus);
+    void updateStatusForInformationType(UUID informationTypeId, ElasticsearchStatus elasticsearchStatus);
 
     @Query(value = "select *  from information_type where information_type_id in (select information_type_id from policy where policy_id in ?1)", nativeQuery = true)
     List<InformationType> findByPolicyIdIn(List<UUID> ids);
