@@ -8,7 +8,6 @@ import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeRequest;
 import no.nav.data.polly.informationtype.domain.InformationTypeResponse;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -28,7 +27,6 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.data.polly.informationtype.domain.InformationTypeMaster.REST;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled
 class InformationTypeControllerIT extends IntegrationTestBase {
 
     @Autowired
