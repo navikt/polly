@@ -54,9 +54,9 @@ public class InformationTypeElasticsearch {
     public InformationTypeElasticsearch(InformationType informationType, List<PolicyElasticsearch> policies) {
         setId(informationType.getId().toString());
 
-        setCreated(DateUtil.formatDate(informationType.getCreatedDate()));
+        setCreated(DateUtil.formatDateTime(informationType.getCreatedDate()));
         setCreatedBy(informationType.getCreatedBy());
-        setModified(DateUtil.formatDate(informationType.getLastModifiedDate()));
+        setModified(DateUtil.formatDateTime(informationType.getLastModifiedDate()));
         setModifiedBy(informationType.getLastModifiedBy());
 
         setPolicies(policies);

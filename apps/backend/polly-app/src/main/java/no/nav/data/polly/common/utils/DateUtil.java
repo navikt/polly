@@ -1,16 +1,14 @@
 package no.nav.data.polly.common.utils;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public final class DateUtil {
 
     private DateUtil() {
     }
 
-    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-
-    public static String formatDate(Date date) {
-        return date == null ? null : sdf.format(date);
+    public static String formatDateTime(LocalDateTime date) {
+        return date == null ? null : date.format(DateTimeFormatter.ISO_DATE_TIME);
     }
 }
