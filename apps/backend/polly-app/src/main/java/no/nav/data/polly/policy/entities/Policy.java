@@ -11,7 +11,6 @@ import no.nav.data.polly.codelist.Codelist;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.ListName;
 import no.nav.data.polly.common.auditing.Auditable;
-import no.nav.data.polly.common.utils.HibernateUtils;
 import no.nav.data.polly.elasticsearch.domain.PolicyElasticsearch;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.LegalBasis;
@@ -57,11 +56,11 @@ public class Policy extends Auditable<String> {
     private String subjectCategories;
 
     @NotNull
-    @Column(name = "START_TIME", nullable = false)
+    @Column(name = "START_DATE", nullable = false)
     private LocalDate start;
 
     @NotNull
-    @Column(name = "END_TIME", nullable = false)
+    @Column(name = "END_DATE", nullable = false)
     private LocalDate end;
 
     @NotNull
@@ -72,6 +71,9 @@ public class Policy extends Auditable<String> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "INFORMATION_TYPE_ID", nullable = false, updatable = false)
     private InformationType informationType;
+
+    @Column(name = "INFORMATION_TYPE_ID", insertable = false, updatable = false)
+    private UUID informationTypeId;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
@@ -111,7 +113,4 @@ public class Policy extends Auditable<String> {
                 .build();
     }
 
-    public String getInformationTypeId() {
-        return HibernateUtils.getId(getInformationType()).toString();
-    }
 }

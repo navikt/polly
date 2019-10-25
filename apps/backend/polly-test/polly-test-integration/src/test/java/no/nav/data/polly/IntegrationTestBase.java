@@ -20,7 +20,6 @@ import no.nav.data.polly.legalbasis.LegalBasis;
 import no.nav.data.polly.policy.entities.Policy;
 import no.nav.data.polly.policy.repository.PolicyRepository;
 import no.nav.data.polly.process.ProcessRepository;
-import no.nav.data.polly.term.Term;
 import no.nav.data.polly.term.TermRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -84,7 +83,6 @@ public abstract class IntegrationTestBase {
     }
 
     private InformationType informationType;
-    private Term term;
 
     @BeforeEach
     public void setUpAbstract() throws Exception {
@@ -97,8 +95,6 @@ public abstract class IntegrationTestBase {
         processRepository.deleteAll();
         datasetRepository.deleteAll();
 
-        // loosen db rules to allow easier testing?
-        term = termRepository.save(new Term(UUID.randomUUID(), "termname", "termdesc", Set.of()));
         informationType = informationTypeRepository.save(createInformationType(UUID.randomUUID(), "Auto"));
     }
 
@@ -120,7 +116,6 @@ public abstract class IntegrationTestBase {
     protected void createPolicy(int rows, BiConsumer<Integer, Policy> callback) {
         int i = 0;
         while (i++ < rows) {
-            informationType = new InformationType();
             Policy policy = createPolicy(PURPOSE_CODE1, informationType);
             callback.accept(i, policy);
             policyRepository.save(policy);
@@ -169,7 +164,6 @@ public abstract class IntegrationTestBase {
                         .pii("loads")
                         .build())
                 .build();
-        term.addInformationType(informationType);
         return informationTypeRepository.save(informationType);
     }
 

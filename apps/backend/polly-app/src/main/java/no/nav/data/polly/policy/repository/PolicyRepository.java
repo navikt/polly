@@ -15,18 +15,14 @@ public interface PolicyRepository extends JpaRepository<Policy, UUID> {
 
     List<Policy> findByPurposeCode(String purposeCode);
 
-    @Query("select p from Policy p left join p.informationType it where it.id = ?1")
     List<Policy> findByInformationTypeId(UUID informationTypeId);
 
-    @Query("select p from Policy p left join p.informationType it where it.id = ?1 and p.purposeCode = ?2")
     List<Policy> findByInformationTypeIdAndPurposeCode(UUID informationTypeId, String purposeCode);
 
-    @Query("select count(p) from Policy p left join p.informationType it where it.id = ?1")
     long countByInformationTypeId(UUID informationTypeId);
 
     @Modifying
     @Transactional
-    @Query(value = "delete from POLICY where INFORMATION_TYPE_ID = ?1", nativeQuery = true)
     long deleteByInformationTypeId(UUID informationTypeId);
 
     @Query("select it.id from Policy p left join p.informationType it where p.id in ?1")
