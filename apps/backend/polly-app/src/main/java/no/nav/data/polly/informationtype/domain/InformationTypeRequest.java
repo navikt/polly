@@ -52,7 +52,7 @@ public class InformationTypeRequest implements RequestElement {
 
     @Override
     public String getIdentifyingFields() {
-        return name + context;
+        return name + "-" + context;
     }
 
     @Override

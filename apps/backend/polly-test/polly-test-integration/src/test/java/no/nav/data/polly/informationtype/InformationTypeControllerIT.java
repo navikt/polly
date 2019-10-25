@@ -7,6 +7,7 @@ import no.nav.data.polly.elasticsearch.ElasticsearchStatus;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeRequest;
 import no.nav.data.polly.informationtype.domain.InformationTypeResponse;
+import no.nav.data.polly.term.Term;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         createInformationTypeTestData(30);
 
         ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange("/informationtype/",
-                HttpMethod.GET, HttpEntity.EMPTY, new ParameterizedTypeReference<RestResponsePage<InformationTypeResponse>>() {
+                HttpMethod.GET, HttpEntity.EMPTY, new ParameterizedTypeReference<>() {
                 });
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -86,18 +87,32 @@ class InformationTypeControllerIT extends IntegrationTestBase {
 
     @Test
     void createInformationTypes() {
-        List<InformationTypeRequest> requests = new ArrayList<>();
-        requests.add(createRequest("createName1"));
-        requests.add(createRequest("createName2"));
+        termRepository.save(Term.builder().generateId().name("existingterm").description("desc").build());
+        InformationTypeRequest req1 = createRequest("createName1");
+        req1.setTerm("existingterm");
+        InformationTypeRequest req2 = createRequest("createName2");
 
-        ResponseEntity<List> responseEntity = restTemplate.exchange(
-                "/informationtype", HttpMethod.POST, new HttpEntity(requests), List.class);
+        ResponseEntity<List> responseEntity = restTemplate.exchange("/informationtype", HttpMethod.POST, new HttpEntity<>(List.of(req1, req2)), List.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(responseEntity.getBody().size()).isEqualTo(2);
         assertThat(informationTypeRepository.count()).isEqualTo(2L);
         assertThat(informationTypeRepository.findByName("createName1")).isPresent();
         assertThat(informationTypeRepository.findByName("createName2")).isPresent();
+        assertThat(termRepository.count()).isEqualTo(2L);
+        assertThat(termRepository.findByName(req1.getTerm())).isPresent();
+        assertThat(termRepository.findByName(req2.getTerm())).isPresent();
+    }
+
+    @Test
+    void createInvalidInformationType() {
+        List<InformationTypeRequest> requests = List.of(createRequest("createName"), createRequest("createName"));
+
+        ResponseEntity<String> responseEntity = restTemplate.exchange("/informationtype", HttpMethod.POST, new HttpEntity<>(requests), String.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(responseEntity.getBody()).contains("DuplicatedIdentifyingFields");
+        assertThat(informationTypeRepository.count()).isZero();
     }
 
     @Test
@@ -112,7 +127,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         requests.forEach(request -> request.setDescription("UPDATED DESCRIPTION"));
 
         ResponseEntity<List> responseEntity = restTemplate.exchange(
-                "/informationtype", HttpMethod.PUT, new HttpEntity(requests), List.class);
+                "/informationtype", HttpMethod.PUT, new HttpEntity<>(requests), List.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody().size()).isEqualTo(3);
@@ -140,7 +155,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         request.setDescription("UPDATED DESCRIPTION");
 
         ResponseEntity<InformationTypeResponse> responseEntity = restTemplate.exchange(
-                "/informationtype/" + id, HttpMethod.PUT, new HttpEntity(request), InformationTypeResponse.class);
+                "/informationtype/" + id, HttpMethod.PUT, new HttpEntity<>(request), InformationTypeResponse.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody().getDescription()).isEqualTo("UPDATED DESCRIPTION");

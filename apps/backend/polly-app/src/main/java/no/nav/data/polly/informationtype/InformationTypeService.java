@@ -148,11 +148,11 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
 
             if (existingInformationTypeData.getInformationTypeMaster() == null) {
                 validationErrors.add(new ValidationError(request.getReference(), "missingMasterInExistingInformationType"
-                        , String.format("The informationType %s has not defined where it is mastered", existingInformationTypeData.getName())));
+                        , String.format("The InformationType %s has not defined where it is mastered", request.getIdentifyingFields())));
             } else if (!correlatingMaster(existingInformationTypeData.getInformationTypeMaster(), request.getInformationTypeMaster())) {
                 validationErrors.add(new ValidationError(request.getReference(), "nonCorrelatingMaster",
-                        String.format("The informationType %s is mastered in %s and therefore cannot be updated from %s",
-                                request.getName(), existingInformationTypeData.getInformationTypeMaster(), request.getInformationTypeMaster())));
+                        String.format("The InformationType %s is mastered in %s and therefore cannot be updated from %s",
+                                request.getIdentifyingFields(), existingInformationTypeData.getInformationTypeMaster(), request.getInformationTypeMaster())));
             }
         }
         return validationErrors;
