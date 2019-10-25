@@ -46,6 +46,7 @@ public class Policy extends Auditable<String> {
 
     @Id
     @Type(type = "pg-uuid")
+    @Column(name = "POLICY_ID")
     private UUID id;
 
     @NotNull

@@ -84,26 +84,30 @@ public abstract class IntegrationTestBase {
     }
 
     private InformationType informationType;
+    private Term term;
 
     @BeforeEach
     public void setUpAbstract() throws Exception {
         CodelistStub.initializeCodelist();
         WireMock.stubFor(get("/elector").willReturn(okJson(JsonUtils.toJson(LeaderElectionService.getHostInfo()))));
+
+        informationTypeRepository.deleteAll();
         termRepository.deleteAll();
         policyRepository.deleteAll();
-        informationTypeRepository.deleteAll();
         processRepository.deleteAll();
+        datasetRepository.deleteAll();
 
         // loosen db rules to allow easier testing?
-        var term = termRepository.save(new Term(UUID.randomUUID(), "termname", "termdesc", Set.of()));
-        var auto = createInformationType(UUID.randomUUID(), "Auto");
-        term.addInformationType(auto);
-        informationType = informationTypeRepository.save(auto);
+        term = termRepository.save(new Term(UUID.randomUUID(), "termname", "termdesc", Set.of()));
+        informationType = informationTypeRepository.save(createInformationType(UUID.randomUUID(), "Auto"));
     }
 
     @AfterEach
     public void teardownAbstract() {
+        informationTypeRepository.deleteAll();
+        termRepository.deleteAll();
         policyRepository.deleteAll();
+        processRepository.deleteAll();
         datasetRepository.deleteAll();
         CollectorRegistry.defaultRegistry.clear();
     }
@@ -158,12 +162,14 @@ public abstract class IntegrationTestBase {
                 .elasticsearchStatus(SYNCED)
                 .data(InformationTypeData.builder()
                         .name(name)
+                        .context("context")
                         .description("desc")
                         .source("ARBEIDSGIVER")
                         .category("PERSONALIA")
                         .pii("loads")
                         .build())
                 .build();
+        term.addInformationType(informationType);
         return informationTypeRepository.save(informationType);
     }
 

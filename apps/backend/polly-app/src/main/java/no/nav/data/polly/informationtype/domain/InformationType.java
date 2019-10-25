@@ -43,7 +43,7 @@ public class InformationType extends Auditable<String> {
 
     @Id
     @Type(type = "pg-uuid")
-    @Column(nullable = false, updatable = false)
+    @Column(name = "INFORMATION_TYPE_ID", nullable = false, updatable = false)
     private UUID id;
 
     @NotNull

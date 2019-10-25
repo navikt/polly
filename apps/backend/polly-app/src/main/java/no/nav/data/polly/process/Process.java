@@ -32,6 +32,7 @@ public class Process extends Auditable<String> {
 
     @Id
     @Type(type = "pg-uuid")
+    @Column(name = "PROCESS_ID")
     private UUID id;
 
     @NotNull

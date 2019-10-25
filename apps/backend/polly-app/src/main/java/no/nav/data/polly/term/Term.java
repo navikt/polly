@@ -30,8 +30,8 @@ import javax.persistence.Table;
 public class Term extends Auditable<String> {
 
     @Id
-    @Column(name = "INFORMATION_TYPE_ID")
     @Type(type = "pg-uuid")
+    @Column(name = "TERM_ID")
     private UUID id;
 
     @Column(name = "NAME")

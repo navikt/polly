@@ -12,9 +12,6 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-
-import static javax.persistence.TemporalType.TIMESTAMP;
 
 @Getter
 @Setter
@@ -27,7 +24,6 @@ public abstract class Auditable<U> {
     protected U createdBy;
 
     @CreatedDate
-    @Temporal(TIMESTAMP)
     @Column(name = "CREATED_DATE")
     protected LocalDateTime createdDate;
 
@@ -36,7 +32,6 @@ public abstract class Auditable<U> {
     protected U lastModifiedBy;
 
     @LastModifiedDate
-    @Temporal(TIMESTAMP)
     @Column(name = "LAST_MODIFIED_DATE")
     protected LocalDateTime lastModifiedDate;
 }
