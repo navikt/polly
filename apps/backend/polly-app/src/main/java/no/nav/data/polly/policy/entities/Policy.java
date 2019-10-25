@@ -18,8 +18,8 @@ import no.nav.data.polly.process.Process;
 import org.hibernate.annotations.Type;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -84,7 +84,7 @@ public class Policy extends Auditable<String> {
     @Builder.Default
     @Type(type = "jsonb")
     @Column(name = "LEGAL_BASES", nullable = false)
-    private Set<LegalBasis> legalBases = new HashSet<>();
+    private List<LegalBasis> legalBases = new ArrayList<>();
 
     public InformationTypeBehandlingsgrunnlagResponse convertToBehandlingsgrunnlagResponse() {
         return new InformationTypeBehandlingsgrunnlagResponse(informationType.getId(), informationTypeName, convert(legalBases, LegalBasis::convertToResponse));
@@ -108,7 +108,7 @@ public class Policy extends Auditable<String> {
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static class PolicyBuilder {
 
-        private Set<LegalBasis> legalBases = new HashSet<>();
+        private List<LegalBasis> legalBases = new ArrayList<>();
 
         public PolicyBuilder generateId() {
             id = UUID.randomUUID();

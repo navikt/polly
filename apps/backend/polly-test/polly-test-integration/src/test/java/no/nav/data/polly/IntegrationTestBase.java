@@ -16,6 +16,7 @@ import no.nav.data.polly.kafka.SchemaRegistryContainer;
 import no.nav.data.polly.legalbasis.LegalBasis;
 import no.nav.data.polly.policy.entities.Policy;
 import no.nav.data.polly.policy.repository.PolicyRepository;
+import no.nav.data.polly.process.Process;
 import no.nav.data.polly.process.ProcessRepository;
 import no.nav.data.polly.term.TermRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -33,7 +34,7 @@ import org.springframework.util.SocketUtils;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
@@ -74,23 +75,25 @@ public abstract class IntegrationTestBase {
         postgreSQLContainer.start();
     }
 
+    private Process process;
+    private InformationType informationType;
+
     @BeforeEach
-    public void setUpAbstract() throws Exception {
+    public void setUpAbstract() {
         CodelistStub.initializeCodelist();
         WireMock.stubFor(get("/elector").willReturn(okJson(JsonUtils.toJson(LeaderElectionService.getHostInfo()))));
 
+        policyRepository.deleteAll();
         informationTypeRepository.deleteAll();
         termRepository.deleteAll();
-        policyRepository.deleteAll();
         processRepository.deleteAll();
-
     }
 
     @AfterEach
     public void teardownAbstract() {
+        policyRepository.deleteAll();
         informationTypeRepository.deleteAll();
         termRepository.deleteAll();
-        policyRepository.deleteAll();
         processRepository.deleteAll();
         CollectorRegistry.defaultRegistry.clear();
     }
@@ -101,23 +104,31 @@ public abstract class IntegrationTestBase {
     }
 
     protected void createPolicy(int rows, BiConsumer<Integer, Policy> callback) {
-        var informationType = informationTypeRepository.save(createInformationType(UUID.randomUUID(), "Auto"));
         int i = 0;
         while (i++ < rows) {
-            Policy policy = createPolicy(PURPOSE_CODE1, informationType);
+            Policy policy = createPolicy(PURPOSE_CODE1, createInformationType());
             callback.accept(i, policy);
             policyRepository.save(policy);
         }
     }
 
     protected Policy createPolicy(String purpose, InformationType informationType) {
-        return policyRepository.save(Policy.builder().generateId().purposeCode(purpose).legalBases(Set.of(new LegalBasis("a", "b", "desc")))
+        Policy policy = Policy.builder()
+                .generateId()
+                .purposeCode(purpose)
+                .legalBases(List.of(new LegalBasis("a", "b", "desc")))
                 .informationType(informationType).informationTypeName(informationType.getData().getName())
-                .start(LocalDate.now()).end(LocalDate.now()).build());
+                .subjectCategories("Bror")
+                .start(LocalDate.now()).end(LocalDate.now()).build();
+        createProcess().addPolicy(policy);
+        return policyRepository.save(policy);
     }
 
     protected InformationType createInformationType() {
-        return createInformationType(INFORMATION_TYPE_ID_1, INFORMATION_TYPE_NAME);
+        if (informationType == null) {
+            informationType = informationTypeRepository.save(createInformationType(INFORMATION_TYPE_ID_1, INFORMATION_TYPE_NAME));
+        }
+        return informationType;
     }
 
     protected InformationType createInformationType(UUID id, String name) {
@@ -134,6 +145,13 @@ public abstract class IntegrationTestBase {
                         .build())
                 .build();
         return informationTypeRepository.save(informationType);
+    }
+
+    protected Process createProcess() {
+        if (process == null) {
+            process = processRepository.save(Process.builder().generateId().name("Auto").build());
+        }
+        return process;
     }
 
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {

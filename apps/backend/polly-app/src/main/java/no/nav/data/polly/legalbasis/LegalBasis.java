@@ -6,13 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.polly.elasticsearch.domain.LegalBasisElasticSearch;
 
+import java.io.Serializable;
 import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LegalBasis {
+public class LegalBasis implements Serializable {
 
     @NotNull
     private String gdpr;

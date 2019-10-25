@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -70,7 +70,7 @@ class RepositoryTest extends IntegrationTestBase {
         Policy policy = new Policy();
 //        policy.setDatasetId(datasetId);
         policy.setPurposeCode(purposeCode);
-        policy.setLegalBases(Set.of(new LegalBasis()));
+        policy.setLegalBases(List.of(new LegalBasis()));
         policy.setStart(LocalDate.now());
         policy.setEnd(LocalDate.now());
         policyRepository.save(policy);

@@ -39,7 +39,7 @@ class BehandlingsgrunnlagIT extends KafkaIntegrationTestBase {
             if (index == 1) {
                 policy.setPurposeCode("other-purpose");
                 policy.setInformationTypeName("other-title");
-                policy.setStart(LocalDate.now().minusDays(1));
+                policy.setEnd(LocalDate.now().minusDays(1));
             } else if (index == 2) {
                 policy.setInformationTypeName(INFORMATION_TYPE_NAME + "2");
             }
