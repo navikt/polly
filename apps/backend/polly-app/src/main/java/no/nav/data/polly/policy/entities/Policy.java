@@ -35,8 +35,8 @@ import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Data
 @Builder
-@ToString(exclude = {"informationType"})
-@EqualsAndHashCode(callSuper = false, exclude = {"informationType"})
+@ToString(exclude = {"informationType", "process"})
+@EqualsAndHashCode(callSuper = false, exclude = {"informationType", "process"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
