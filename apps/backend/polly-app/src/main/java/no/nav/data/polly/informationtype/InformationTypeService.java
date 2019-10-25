@@ -1,7 +1,6 @@
 package no.nav.data.polly.informationtype;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.polly.common.exceptions.PollyNotFoundException;
 import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.validator.RequestValidator;
 import no.nav.data.polly.common.validator.ValidationError;
@@ -106,13 +105,10 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
     }
 
     private void attachDependencies(InformationType informationType, InformationTypeRequest request) {
-        Optional<Term> term = termRepository.findByName(request.getTerm());
+        Term term = termRepository.findByName(request.getTerm())
+                .orElseGet(() -> termRepository.save(Term.builder().generateId().name(request.getTerm()).build()));
 
-        if (term.isEmpty()) {
-            throw new PollyNotFoundException(String.format("Could not find term %s", request.getTerm()));
-        }
-
-        term.get().addInformationType(informationType);
+        term.addInformationType(informationType);
     }
 
     public void validateRequest(List<InformationTypeRequest> requests) {

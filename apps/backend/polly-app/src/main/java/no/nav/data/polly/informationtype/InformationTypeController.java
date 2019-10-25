@@ -39,7 +39,7 @@ import static no.nav.data.polly.informationtype.domain.InformationTypeMaster.RES
 @Slf4j
 @RestController
 @CrossOrigin
-@RequestMapping("/informationType")
+@RequestMapping("/informationtype")
 @Api(value = "InformationType", description = "REST API for InformationType", tags = {"InformationType"})
 public class InformationTypeController {
 

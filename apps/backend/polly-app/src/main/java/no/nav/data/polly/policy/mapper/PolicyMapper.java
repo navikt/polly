@@ -39,7 +39,7 @@ public class PolicyMapper {
         PolicyResponse response = new PolicyResponse();
         response.setPolicyId(policy.getId());
 //        response.setLegalBasisDescription(policy.getLegalBasisDescription());
-        response.setInformationType(new InformationTypeNameResponse(policy.getInformationTypeId(), policy.getInformationTypeName()));
+        response.setInformationType(new InformationTypeNameResponse(policy.getInformationTypeId().toString(), policy.getInformationTypeName()));
         CodeResponse purposeCode = CodelistService.getCodeResponseForCodelistItem(ListName.PURPOSE, policy.getPurposeCode());
         response.setPurpose(purposeCode);
         response.setStart(policy.getStart());

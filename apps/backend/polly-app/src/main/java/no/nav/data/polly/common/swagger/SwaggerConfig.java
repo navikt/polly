@@ -34,7 +34,9 @@ public class SwaggerConfig {
                         basePackage("no.nav.data.polly.github"),
                         basePackage("no.nav.data.polly.dataset"),
                         basePackage("no.nav.data.polly.policy"),
-                        basePackage("no.nav.data.polly.behandlingsgrunnlag")
+                        basePackage("no.nav.data.polly.behandlingsgrunnlag"),
+                        basePackage("no.nav.data.polly.process"),
+                        basePackage("no.nav.data.polly.term")
                 ))
                 .paths(PathSelectors.any())
                 .build()

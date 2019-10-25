@@ -31,6 +31,11 @@ import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import static no.nav.data.polly.common.utils.StreamUtils.copyOf;
+import static no.nav.data.polly.elasticsearch.ElasticsearchStatus.SYNCED;
+import static no.nav.data.polly.elasticsearch.ElasticsearchStatus.TO_BE_CREATED;
+import static no.nav.data.polly.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -80,11 +85,28 @@ public class InformationType extends Auditable<String> {
     }
 
     public InformationType convertNewFromRequest(InformationTypeRequest request, InformationTypeMaster master) {
-        return null;
+        id = UUID.randomUUID();
+        elasticsearchStatus = TO_BE_CREATED;
+        data.setInformationTypeMaster(master);
+        convertFromRequest(request);
+        return this;
     }
 
-    public void convertUpdateFromRequest(InformationTypeRequest request) {
+    public InformationType convertUpdateFromRequest(InformationTypeRequest request) {
+        elasticsearchStatus = elasticsearchStatus == SYNCED ? TO_BE_UPDATED : elasticsearchStatus;
+        convertFromRequest(request);
+        return this;
+    }
 
+    private void convertFromRequest(InformationTypeRequest request) {
+        data.setName(request.getName());
+        data.setContext(request.getContext());
+        data.setDescription(request.getDescription());
+        data.setCategories(copyOf(request.getCategories()));
+        data.setSources(copyOf(request.getSources()));
+        data.setKeywords(copyOf(request.getKeywords()));
+        data.setPii(request.getPii());
+        data.setSensitivity(request.getSensitivity());
     }
 
     public InformationTypeElasticsearch convertToElasticsearch(List<PolicyElasticsearch> policiesES) {

@@ -53,6 +53,24 @@ public class Term extends Auditable<String> {
         return this;
     }
 
+    public TermResponse convertToResponse() {
+        return new TermResponse(id.toString(), name, description);
+    }
+
+    public static Term convertFromNewRequest(TermRequest request) {
+        return Term.builder()
+                .generateId()
+                .name(request.getName())
+                .description(request.getDescription())
+                .build();
+    }
+
+    public Term convertFromRequest(TermRequest request) {
+        name = request.getName();
+        description = request.getDescription();
+        return this;
+    }
+
     public static class TermBuilder {
 
         public TermBuilder generateId() {

@@ -41,10 +41,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // Verified by github signature
         http.authorizeRequests().antMatchers("/webhooks/**").permitAll();
 
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/dataset/**").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.GET, "/codelist/**").permitAll();
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/distributionchannel/**").permitAll();
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/system/**").permitAll();
+        http.authorizeRequests().antMatchers(HttpMethod.GET, "/informationtype/**").permitAll();
+        http.authorizeRequests().antMatchers(HttpMethod.GET, "/policy/**").permitAll();
+        http.authorizeRequests().antMatchers(HttpMethod.GET, "/process/**").permitAll();
+        http.authorizeRequests().antMatchers(HttpMethod.GET, "/term/**").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.GET, "/records/search").permitAll();
 
         http.authorizeRequests().anyRequest().authenticated();
