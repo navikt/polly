@@ -5,7 +5,6 @@ import no.nav.data.polly.legalbasis.LegalBasis;
 import no.nav.data.polly.policy.entities.Policy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,7 +15,6 @@ import java.util.UUID;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@Disabled
 class RepositoryTest extends IntegrationTestBase {
 
     private static final String LEGAL_BASIS_DESCRIPTION1 = "Legal basis 1";

@@ -1,20 +1,20 @@
 [
   {
-    "contentType": "DATASET",
-    "title": "removed",
+    "name": "removed",
+    "term": "someterm",
+    "context": "cont",
     "description": "description",
-    "categories": ["PERSONALIA"],
-    "provenances": ["ARBEIDSGIVER"],
-    "pi": false,
-    "issued": "2019-06-14T12:00:00",
+    "pii": "her og der",
+    "sensitivity": "mindre enn forventet",
+    "categories": [
+      "PERSONALIA"
+    ],
+    "sources": [
+      "Skatt"
+    ],
     "keywords": [
       "SKATTEETATEN",
       "bruker"
-    ],
-    "themes": ["default"],
-    "accessRights": "no",
-    "publisher": "PESYS",
-    "spatial": "huh",
-    "haspart": []
+    ]
   }
 ]

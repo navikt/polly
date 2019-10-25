@@ -1,4 +1,4 @@
-package no.nav.data.polly.github.poldatasett;
+package no.nav.data.polly.github.status;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
@@ -15,17 +15,17 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "POL_DATASETT")
+@Table(name = "GITHUB_STATUS")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PolDatasett {
+public class GithubStatus {
 
-    public PolDatasett(String githubSha) {
+    public GithubStatus(String githubSha) {
         this.githubSha = githubSha;
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "POL_DATASETT_ID", nullable = false, updatable = false, unique = true)
+    @Column(name = "GITHUB_STATUS_ID", nullable = false, updatable = false, unique = true)
     private Long id;
 
     @NotNull

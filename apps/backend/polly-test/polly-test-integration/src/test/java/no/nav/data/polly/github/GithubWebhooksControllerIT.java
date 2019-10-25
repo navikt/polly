@@ -3,16 +3,15 @@ package no.nav.data.polly.github;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.CodelistStub;
-import no.nav.data.polly.dataset.DatacatalogMaster;
-import no.nav.data.polly.dataset.Dataset;
-import no.nav.data.polly.dataset.DatasetRequest;
-import no.nav.data.polly.dataset.repo.DatasetRepository;
 import no.nav.data.polly.elasticsearch.ElasticsearchStatus;
 import no.nav.data.polly.github.domain.GithubAccount;
 import no.nav.data.polly.github.domain.GithubInstallation;
 import no.nav.data.polly.github.domain.GithubInstallationToken;
-import no.nav.data.polly.github.poldatasett.PolDatasett;
-import no.nav.data.polly.github.poldatasett.PolDatasettRepository;
+import no.nav.data.polly.github.status.GithubStatus;
+import no.nav.data.polly.github.status.GithubStatusRepository;
+import no.nav.data.polly.informationtype.InformationTypeRepository;
+import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.informationtype.domain.InformationTypeRequest;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.eclipse.egit.github.core.Commit;
 import org.eclipse.egit.github.core.CommitFile;
@@ -26,7 +25,6 @@ import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.event.PullRequestPayload;
 import org.eclipse.egit.github.core.event.PushPayload;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -55,20 +53,20 @@ import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static java.util.Collections.singletonList;
 import static no.nav.data.polly.TestUtil.readFile;
 import static no.nav.data.polly.common.utils.JsonUtils.toJson;
+import static no.nav.data.polly.informationtype.domain.InformationTypeMaster.GITHUB;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-@Disabled
 class GithubWebhooksControllerIT extends IntegrationTestBase {
 
     @Autowired
     protected TestRestTemplate restTemplate;
 
     @Autowired
-    protected DatasetRepository repository;
+    protected InformationTypeRepository repository;
     @Autowired
-    protected PolDatasettRepository polDatasettRepository;
+    protected GithubStatusRepository githubStatusRepository;
     @Autowired
     private HmacUtils hmacUtils;
 
@@ -80,11 +78,11 @@ class GithubWebhooksControllerIT extends IntegrationTestBase {
         CodelistStub.initializeCodelist();
         stubGithub();
         repository.deleteAll();
-        polDatasettRepository.save(new PolDatasett(before));
+        githubStatusRepository.save(new GithubStatus(before));
 
-        repository.save(createDataset("removed"));
-        repository.save(createDataset("modified_removed"));
-        repository.save(createDataset("modified_changed"));
+        repository.save(createInformationType("removed"));
+        repository.save(createInformationType("modified_removed"));
+        repository.save(createInformationType("modified_changed"));
     }
 
     @Test
@@ -100,14 +98,14 @@ class GithubWebhooksControllerIT extends IntegrationTestBase {
                 "/webhooks", HttpMethod.POST, createRequest(request, GithubWebhooksController.PUSH_EVENT), String.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        List<Dataset> all = repository.findAll();
+        List<InformationType> all = repository.findAll();
         assertThat(all.size()).isEqualTo(5);
 
-        Optional<Dataset> added = repository.findByTitle("added");
-        Optional<Dataset> removed = repository.findByTitle("removed");
-        Optional<Dataset> modifiedRemoved = repository.findByTitle("modified_removed");
-        Optional<Dataset> modifiedChanged = repository.findByTitle("modified_changed");
-        Optional<Dataset> modifiedAdded = repository.findByTitle("modified_added");
+        Optional<InformationType> added = repository.findByName("added");
+        Optional<InformationType> removed = repository.findByName("removed");
+        Optional<InformationType> modifiedRemoved = repository.findByName("modified_removed");
+        Optional<InformationType> modifiedChanged = repository.findByName("modified_changed");
+        Optional<InformationType> modifiedAdded = repository.findByName("modified_added");
 
         assertTrue(added.isPresent());
         assertTrue(removed.isPresent());
@@ -122,7 +120,7 @@ class GithubWebhooksControllerIT extends IntegrationTestBase {
         assertThat(modifiedChanged.get().getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_UPDATED);
         assertThat(modifiedRemoved.get().getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_DELETED);
 
-        assertThat(polDatasettRepository.findFirstByOrderByIdDesc().get().getGithubSha()).isEqualTo(head);
+        assertThat(githubStatusRepository.findFirstByOrderByIdDesc().get().getGithubSha()).isEqualTo(head);
     }
 
     @Test
@@ -169,7 +167,7 @@ class GithubWebhooksControllerIT extends IntegrationTestBase {
         verify(postRequestedFor(urlPathEqualTo(String.format("/api/v3/repos/navikt/pol-datasett/statuses/%s", head)))
                 .withRequestBody(matchingJsonPath("$.context", equalTo("polly-validation")))
                 .withRequestBody(matchingJsonPath("$.description",
-                        containing("added -- DuplicatedIdentifyingFields -- Multiple elements in this request are using the same unique fields (added)")))
+                        containing("added-cont -- DuplicatedIdentifyingFields -- Multiple elements in this request are using the same unique fields (added-cont)")))
                 .withRequestBody(matchingJsonPath("$.state", equalTo("failure")))
         );
     }
@@ -247,12 +245,14 @@ class GithubWebhooksControllerIT extends IntegrationTestBase {
                 .setContent(Base64.getEncoder().encodeToString(content.getBytes()));
     }
 
-    private Dataset createDataset(String removed) {
-        Dataset dataset = new Dataset().convertNewFromRequest(DatasetRequest.builder()
-                .title(removed)
+    private InformationType createInformationType(String removed) {
+        InformationType InformationType = new InformationType().convertNewFromRequest(InformationTypeRequest.builder()
+                .term("someterm")
+                .name(removed)
+                .context("context")
                 .description("desc")
-                .build(), DatacatalogMaster.GITHUB);
-        dataset.setElasticsearchStatus(ElasticsearchStatus.SYNCED);
-        return dataset;
+                .build(), GITHUB);
+        InformationType.setElasticsearchStatus(ElasticsearchStatus.SYNCED);
+        return InformationType;
     }
 }

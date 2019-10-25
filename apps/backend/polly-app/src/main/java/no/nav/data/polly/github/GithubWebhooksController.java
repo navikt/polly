@@ -11,12 +11,12 @@ import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.common.utils.MdcUtils;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.common.validator.ValidationError;
-import no.nav.data.polly.dataset.DatasetRequest;
-import no.nav.data.polly.dataset.DatasetService;
-import no.nav.data.polly.dataset.repo.DatasetRepository;
 import no.nav.data.polly.github.domain.RepoModification;
-import no.nav.data.polly.github.poldatasett.PolDatasett;
-import no.nav.data.polly.github.poldatasett.PolDatasettRepository;
+import no.nav.data.polly.github.status.GithubStatus;
+import no.nav.data.polly.github.status.GithubStatusRepository;
+import no.nav.data.polly.informationtype.InformationTypeRepository;
+import no.nav.data.polly.informationtype.InformationTypeService;
+import no.nav.data.polly.informationtype.domain.InformationTypeRequest;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.eclipse.egit.github.core.Commit;
 import org.eclipse.egit.github.core.CommitUser;
@@ -38,14 +38,14 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import static java.util.Arrays.asList;
-import static no.nav.data.polly.dataset.DatacatalogMaster.GITHUB;
 import static no.nav.data.polly.github.GithubConsumer.REFS_HEADS_MASTER;
+import static no.nav.data.polly.informationtype.domain.InformationTypeMaster.GITHUB;
 
 @Slf4j
 @Transactional
 @RestController
 @RequestMapping(GithubWebhooksController.BACKEND_WEBHOOKS)
-@Api(value = "Github Webhook", description = "Webhook called from github when push or pull-request update to navikt/pol-dataset is done", tags = {"webhook"})
+@Api(value = "Github Webhook", description = "Webhook called from github when push or pull-request update to navikt/pol-informationType is done", tags = {"webhook"})
 public class GithubWebhooksController {
 
     public static final String BACKEND_WEBHOOKS = "/webhooks";
@@ -57,21 +57,21 @@ public class GithubWebhooksController {
     public static final String HEADER_GITHUB_ID = "X-GitHub-Delivery";
     public static final String HEADER_GITHUB_SIGNATURE = "X-Hub-Signature";
 
-    private final DatasetService service;
-    private final DatasetRepository repository;
-    private final PolDatasettRepository polDatasettRepository;
+    private final InformationTypeService service;
+    private final InformationTypeRepository repository;
+    private final GithubStatusRepository githubStatusRepository;
     private final GithubConsumer githubConsumer;
     private final HmacUtils githubHmac;
 
 
-    public GithubWebhooksController(DatasetService service,
-            DatasetRepository repository,
-            PolDatasettRepository polDatasettRepository,
+    public GithubWebhooksController(InformationTypeService service,
+            InformationTypeRepository repository,
+            GithubStatusRepository githubStatusRepository,
             GithubConsumer githubConsumer,
             HmacUtils githubHmac) {
         this.service = service;
         this.repository = repository;
-        this.polDatasettRepository = polDatasettRepository;
+        this.githubStatusRepository = githubStatusRepository;
         this.githubConsumer = githubConsumer;
         this.githubHmac = githubHmac;
     }
@@ -133,7 +133,7 @@ public class GithubWebhooksController {
         String before = pullRequest.getBase().getSha();
         log.info("validating pull request from {} {} to {} {}", fromBranch, before, toBranch, head);
 
-        CollectionDifference<DatasetRequest> difference = calculateDifference(before, head);
+        CollectionDifference<InformationTypeRequest> difference = calculateDifference(before, head);
         List<ValidationError> validationErrors = validate(difference);
         githubConsumer.updateStatus(head, validationErrors);
     }
@@ -147,7 +147,7 @@ public class GithubWebhooksController {
 
         String internalBefore = findInternallyStoredBefore();
         log.info("Before {}, internal before {}, new head {}", payload.getBefore(), internalBefore, payload.getHead());
-        CollectionDifference<DatasetRequest> difference = calculateDifference(internalBefore, payload.getHead());
+        CollectionDifference<InformationTypeRequest> difference = calculateDifference(internalBefore, payload.getHead());
         List<ValidationError> validationErrors = validate(difference);
         if (!validationErrors.isEmpty()) {
             throw new ValidationException(validationErrors, "The request was not accepted. The following errors occurred during validation: ");
@@ -156,10 +156,10 @@ public class GithubWebhooksController {
         modify(difference.getShared());
         add(difference.getAdded());
 
-        polDatasettRepository.save(new PolDatasett(payload.getHead()));
+        githubStatusRepository.save(new GithubStatus(payload.getHead()));
     }
 
-    private List<ValidationError> validate(CollectionDifference<DatasetRequest> difference) {
+    private List<ValidationError> validate(CollectionDifference<InformationTypeRequest> difference) {
         List<ValidationError> validationErrors = new ArrayList<>();
         // TODO validate deletes, at least master, how does kafka delete?
         validationErrors.addAll(service.validateNoDuplicates(difference.getAfter()));
@@ -170,38 +170,38 @@ public class GithubWebhooksController {
     }
 
     private String findInternallyStoredBefore() {
-        return polDatasettRepository.findFirstByOrderByIdDesc().map(PolDatasett::getGithubSha).orElse(null);
+        return githubStatusRepository.findFirstByOrderByIdDesc().map(GithubStatus::getGithubSha).orElse(null);
     }
 
-    private CollectionDifference<DatasetRequest> calculateDifference(String before, String head) {
+    private CollectionDifference<InformationTypeRequest> calculateDifference(String before, String head) {
         RepoModification repoModification = githubConsumer.compare(before, head);
-        CollectionDifference<DatasetRequest> difference = repoModification.toChangelist();
+        CollectionDifference<InformationTypeRequest> difference = repoModification.toChangelist();
         log.info("Add: {} Modify: {} Remove: {}", difference.getAdded().size(), difference.getShared()
                 .size(), difference.getRemoved().size());
         return difference;
     }
 
-    private void modify(List<DatasetRequest> requests) {
+    private void modify(List<InformationTypeRequest> requests) {
         if (requests.isEmpty()) {
             return;
         }
-        log.info("The following list of Datasets have been set to be updated during the next scheduled task: {}", requests);
+        log.info("The following list of InformationTypes have been set to be updated during the next scheduled task: {}", requests);
         service.updateAll(requests);
     }
 
-    private void remove(Collection<DatasetRequest> requests) {
+    private void remove(Collection<InformationTypeRequest> requests) {
         if (requests.isEmpty()) {
             return;
         }
-        log.info("The following list of Datasets have been set to be deleted during the next scheduled task: {}", requests);
+        log.info("The following list of InformationTypes have been set to be deleted during the next scheduled task: {}", requests);
         service.deleteAll(requests);
     }
 
-    private void add(List<DatasetRequest> requests) {
+    private void add(List<InformationTypeRequest> requests) {
         if (requests.isEmpty()) {
             return;
         }
-        log.info("The following list of Datasets have been set to be added during the next scheduled task: {}", requests);
+        log.info("The following list of InformationTypes have been set to be added during the next scheduled task: {}", requests);
         service.saveAll(requests, GITHUB);
     }
 

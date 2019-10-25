@@ -11,6 +11,7 @@ import no.nav.data.polly.codelist.ListName;
 import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
+import no.nav.data.polly.github.GithubReference;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,11 +45,8 @@ public class InformationTypeRequest implements RequestElement {
     private int requestIndex;
     @JsonIgnore
     private InformationTypeMaster informationTypeMaster;
-
     @JsonIgnore
-    private Optional<String> getRequestReference() {
-        return Optional.empty();
-    }
+    private GithubReference githubReference;
 
     @Override
     public String getIdentifyingFields() {
@@ -76,15 +74,11 @@ public class InformationTypeRequest implements RequestElement {
 
     public void toUpperCaseAndTrim() {
         setCategories(nullToEmptyList(categories).stream()
-                .map(String::toUpperCase)
                 .map(String::trim)
                 .collect(Collectors.toList()));
         setSources(nullToEmptyList(sources).stream()
-                .map(String::toUpperCase)
                 .map(String::trim)
                 .collect(Collectors.toList()));
-
-        // TODO
     }
 
     public static void initiateRequests(List<InformationTypeRequest> requests, boolean update, InformationTypeMaster master) {
@@ -122,5 +116,10 @@ public class InformationTypeRequest implements RequestElement {
         validator.checkCodelists(Fields.sources, getSources(), ListName.SOURCE);
 
         return validator;
+    }
+
+    @JsonIgnore
+    private Optional<String> getRequestReference() {
+        return githubReference == null ? Optional.empty() : Optional.ofNullable(githubReference.toString());
     }
 }

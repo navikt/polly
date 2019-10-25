@@ -1,25 +1,18 @@
 {
-  "contentType": "DATASET",
-  "title": "added",
+  "term": "someterm",
+  "name": "added",
+  "context": "cont",
   "description": "description",
+  "pii": "her og der",
+  "sensitivity": "mindre enn forventet",
   "categories": [
     "PERSONALIA"
   ],
-  "provenances": [
-    "ARBEIDSGIVER"
+  "sources": [
+    "Skatt"
   ],
-  "pi": false,
-  "issued": "2019-06-14T12:00:00",
   "keywords": [
     "SKATTEETATEN",
     "bruker"
-  ],
-  "themes": ["default"],
-  "accessRights": "no",
-  "publisher": "PESYS",
-  "spatial": "huh",
-  "haspart": [],
-  "distributionChannels": [
-     {"name":  "aapen-dok-mottatt", "type": "REST"}
   ]
 }

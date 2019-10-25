@@ -4,8 +4,8 @@ import lombok.Builder;
 import lombok.Data;
 import no.nav.data.polly.common.utils.CollectionDifference;
 import no.nav.data.polly.common.utils.StreamUtils;
-import no.nav.data.polly.dataset.DatacatalogMaster;
-import no.nav.data.polly.dataset.DatasetRequest;
+import no.nav.data.polly.github.GithubContentConverter;
+import no.nav.data.polly.informationtype.domain.InformationTypeRequest;
 import org.eclipse.egit.github.core.RepositoryContents;
 
 import java.util.Collection;
@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
 import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
+import static no.nav.data.polly.informationtype.domain.InformationTypeMaster.GITHUB;
 
 @Builder
 @Data
@@ -30,20 +31,20 @@ public class RepoModification {
         return added.size() + modifiedBefore.size() + modifiedAfter.size() + deleted.size();
     }
 
-    public CollectionDifference<DatasetRequest> toChangelist() {
-        List<DatasetRequest> previousItems = mapToDatasetRequest(deleted, modifiedBefore);
-        List<DatasetRequest> currentItems = mapToDatasetRequest(added, modifiedAfter);
+    public CollectionDifference<InformationTypeRequest> toChangelist() {
+        List<InformationTypeRequest> previousItems = mapToInformationTypeRequest(deleted, modifiedBefore);
+        List<InformationTypeRequest> currentItems = mapToInformationTypeRequest(added, modifiedAfter);
 
-        CollectionDifference<DatasetRequest> difference = StreamUtils.difference(previousItems, currentItems, comparing(DatasetRequest::getTitle));
-        DatasetRequest.initiateRequests(difference.getRemoved(), true, DatacatalogMaster.GITHUB);
-        DatasetRequest.initiateRequests(difference.getShared(), true, DatacatalogMaster.GITHUB);
-        DatasetRequest.initiateRequests(difference.getAdded(), false, DatacatalogMaster.GITHUB);
+        CollectionDifference<InformationTypeRequest> difference = StreamUtils.difference(previousItems, currentItems, comparing(InformationTypeRequest::getIdentifyingFields));
+        InformationTypeRequest.initiateRequests(difference.getRemoved(), true, GITHUB);
+        InformationTypeRequest.initiateRequests(difference.getShared(), true, GITHUB);
+        InformationTypeRequest.initiateRequests(difference.getAdded(), false, GITHUB);
         return difference;
     }
 
-    private List<DatasetRequest> mapToDatasetRequest(List<RepositoryContents> contentsOne, List<RepositoryContents> contentsTwo) {
+    private List<InformationTypeRequest> mapToInformationTypeRequest(List<RepositoryContents> contentsOne, List<RepositoryContents> contentsTwo) {
         return Stream.concat(safeStream(contentsOne), safeStream(contentsTwo))
-                .map(DatasetRequest::convertFromGithubFile)
+                .map(GithubContentConverter::convertFromGithubFile)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }

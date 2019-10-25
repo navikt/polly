@@ -16,7 +16,7 @@ public class GithubConfig {
     }
 
     @Bean
-    public RepositoryId repositoryId(@Value("${pol.datasett.owner}") String owner, @Value("${pol.datasett.repo}") String repo) {
+    public RepositoryId repositoryId(@Value("${github.status.owner}") String owner, @Value("${github.status.repo}") String repo) {
         return new RepositoryId(owner, repo);
     }
 

@@ -1,56 +1,56 @@
 [
   {
-    "contentType": "DATASET",
-    "title": "modified_changed",
+    "name": "modified_changed",
+    "term": "someterm",
+    "context": "cont",
     "description": "description",
-    "categories": ["PERSONALIA"],
-    "provenances": ["ARBEIDSGIVER"],
-    "pi": false,
-    "issued": "2019-06-14T12:00:00",
+    "pii": "her og der",
+    "sensitivity": "mindre enn forventet",
+    "categories": [
+      "PERSONALIA"
+    ],
+    "sources": [
+      "Skatt"
+    ],
     "keywords": [
       "SKATTEETATEN",
       "bruker"
-    ],
-    "themes": ["default"],
-    "accessRights": "no",
-    "publisher": "PESYS",
-    "spatial": "huh",
-    "haspart": []
+    ]
   },
   {
-    "contentType": "DATASET",
-    "title": "modified_added",
+    "name": "modified_added",
+    "term": "someterm",
+    "context": "cont",
     "description": "description",
-    "categories": ["PERSONALIA"],
-    "provenances": ["ARBEIDSGIVER"],
-    "pi": false,
-    "issued": "2019-06-14T12:00:00",
+    "pii": "her og der",
+    "sensitivity": "mindre enn forventet",
+    "categories": [
+      "PERSONALIA"
+    ],
+    "sources": [
+      "Skatt"
+    ],
     "keywords": [
       "SKATTEETATEN",
       "bruker"
-    ],
-    "themes": ["default"],
-    "accessRights": "no",
-    "publisher": "PESYS",
-    "spatial": "huh",
-    "haspart": []
+    ]
   },
   {
-    "contentType": "DATASET",
-    "title": "added",
+    "name": "added",
+    "term": "someterm",
+    "context": "cont",
     "description": "description",
-    "categories": ["PERSONALIA"],
-    "provenances": ["ARBEIDSGIVER"],
-    "pi": false,
-    "issued": "2019-06-14T12:00:00",
+    "pii": "her og der",
+    "sensitivity": "mindre enn forventet",
+    "categories": [
+      "PERSONALIA"
+    ],
+    "sources": [
+      "Skatt"
+    ],
     "keywords": [
       "SKATTEETATEN",
       "bruker"
-    ],
-    "themes": ["default"],
-    "accessRights": "no",
-    "publisher": "PESYS",
-    "spatial": "huh",
-    "haspart": []
+    ]
   }
 ]

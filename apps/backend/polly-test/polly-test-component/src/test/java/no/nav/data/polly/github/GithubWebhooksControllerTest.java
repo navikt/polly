@@ -3,14 +3,13 @@ package no.nav.data.polly.github;
 import no.nav.data.polly.AppStarter;
 import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.common.validator.ValidationError;
-import no.nav.data.polly.dataset.DatacatalogMaster;
-import no.nav.data.polly.dataset.Dataset;
-import no.nav.data.polly.dataset.DatasetRequest;
-import no.nav.data.polly.dataset.DatasetService;
-import no.nav.data.polly.dataset.repo.DatasetRepository;
 import no.nav.data.polly.github.domain.RepoModification;
-import no.nav.data.polly.github.poldatasett.PolDatasett;
-import no.nav.data.polly.github.poldatasett.PolDatasettRepository;
+import no.nav.data.polly.github.status.GithubStatus;
+import no.nav.data.polly.github.status.GithubStatusRepository;
+import no.nav.data.polly.informationtype.InformationTypeRepository;
+import no.nav.data.polly.informationtype.InformationTypeService;
+import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.informationtype.domain.InformationTypeRequest;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.eclipse.egit.github.core.Commit;
 import org.eclipse.egit.github.core.CommitUser;
@@ -44,10 +43,11 @@ import static no.nav.data.polly.github.GithubWebhooksController.HEADER_GITHUB_ID
 import static no.nav.data.polly.github.GithubWebhooksController.HEADER_GITHUB_SIGNATURE;
 import static no.nav.data.polly.github.GithubWebhooksController.PULL_REQUEST_EVENT;
 import static no.nav.data.polly.github.GithubWebhooksController.PUSH_EVENT;
+import static no.nav.data.polly.informationtype.domain.InformationTypeMaster.GITHUB;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -65,11 +65,11 @@ class GithubWebhooksControllerTest {
     private HmacUtils githubHmac;
 
     @MockBean
-    private DatasetRepository repository;
+    private InformationTypeRepository repository;
     @MockBean
-    private DatasetService service;
+    private InformationTypeService service;
     @MockBean
-    private PolDatasettRepository polDatasettRepository;
+    private GithubStatusRepository githubStatusRepository;
     @MockBean
     private GithubConsumer githubConsumer;
 
@@ -86,7 +86,7 @@ class GithubWebhooksControllerTest {
                 .deleted(singletonList(createFile("rem.json", "removed")))
                 .build();
         when(githubConsumer.compare("base", "head")).thenReturn(repoModification);
-        when(polDatasettRepository.findFirstByOrderByIdDesc()).thenReturn(Optional.of(new PolDatasett("internalbefore")));
+        when(githubStatusRepository.findFirstByOrderByIdDesc()).thenReturn(Optional.of(new GithubStatus("internalbefore")));
 
         pullRequest = new PullRequestPayload()
                 .setAction("edited")
@@ -113,7 +113,7 @@ class GithubWebhooksControllerTest {
                 .header(HEADER_GITHUB_SIGNATURE, "sha1=fdsaatfdsdfasgdfuasd")
         ).andExpect(status().isForbidden());
 
-        verifyZeroInteractions(service, githubConsumer);
+        verifyNoInteractions(service, githubConsumer);
     }
 
     @Test
@@ -143,7 +143,7 @@ class GithubWebhooksControllerTest {
                 .header(HEADER_GITHUB_SIGNATURE, "sha1=" + githubHmac.hmacHex(payload))
         ).andExpect(status().isOk());
 
-        verifyZeroInteractions(githubConsumer, service);
+        verifyNoInteractions(githubConsumer, service);
     }
 
 
@@ -159,7 +159,7 @@ class GithubWebhooksControllerTest {
                 .header(HEADER_GITHUB_SIGNATURE, "sha1=" + githubHmac.hmacHex(payload))
         ).andExpect(status().isOk());
 
-        verifyZeroInteractions(githubConsumer, service);
+        verifyNoInteractions(githubConsumer, service);
     }
 
     @Test
@@ -187,7 +187,7 @@ class GithubWebhooksControllerTest {
     @Test
     void updateOnPush() throws Exception {
         when(githubConsumer.compare("internalbefore", "head")).thenReturn(repoModification);
-        when(repository.findByTitle("removed")).then(i -> Optional.of(new Dataset()));
+        when(repository.findByName("removed")).then(i -> Optional.of(new InformationType()));
         String payload = JsonUtils.toJson(push);
 
         mvc.perform(post(GithubWebhooksController.BACKEND_WEBHOOKS)
@@ -198,7 +198,7 @@ class GithubWebhooksControllerTest {
         ).andExpect(status().isOk());
 
         verify(service, times(2)).validateRequestsAndReturnErrors(anyList());
-        verify(service).saveAll(anyList(), eq(DatacatalogMaster.GITHUB));
+        verify(service).saveAll(anyList(), eq(GITHUB));
         verify(service).updateAll(anyList());
         verify(service).deleteAll(anyList());
     }
@@ -213,13 +213,13 @@ class GithubWebhooksControllerTest {
                 .header(HEADER_GITHUB_ID, UUID.randomUUID().toString())
                 .header(HEADER_GITHUB_SIGNATURE, "sha1=" + githubHmac.hmacHex(payload))
         ).andExpect(status().isOk());
-        verifyZeroInteractions(service, repository, polDatasettRepository);
+        verifyNoInteractions(service, repository, githubStatusRepository);
     }
 
     private RepositoryContents createFile(String file, String name) {
         return new RepositoryContents().setName(name).setPath(file)
                 .setType(RepositoryContents.TYPE_FILE).setEncoding(RepositoryContents.ENCODING_BASE64)
                 .setContent(Base64.getEncoder()
-                        .encodeToString(JsonUtils.toJson(DatasetRequest.builder().title(name).build()).getBytes()));
+                        .encodeToString(JsonUtils.toJson(InformationTypeRequest.builder().name(name).build()).getBytes()));
     }
 }
