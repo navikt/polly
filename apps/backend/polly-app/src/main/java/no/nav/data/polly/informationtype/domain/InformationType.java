@@ -113,7 +113,6 @@ public class InformationType extends Auditable<String> {
         return new InformationTypeElasticsearch(this, policiesES);
     }
 
-    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static class InformationTypeBuilder {
 
         public InformationTypeBuilder generateId() {

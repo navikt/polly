@@ -7,7 +7,6 @@ import no.nav.data.polly.behandlingsgrunnlag.BehandlingsgrunnlagDistributionRepo
 import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.common.nais.LeaderElectionService;
 import no.nav.data.polly.common.utils.JsonUtils;
-import no.nav.data.polly.dataset.repo.DatasetRepository;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
@@ -50,18 +49,14 @@ public abstract class IntegrationTestBase {
 
     public static final int ELASTICSEARCH_PORT = SocketUtils.findAvailableTcpPort();
 
-    protected static final UUID DATASET_ID_1 = UUID.fromString("acab158d-67ef-4030-a3c2-195e993f18d2");
     protected static final UUID INFORMATION_TYPE_ID_1 = UUID.fromString("fe566351-da4d-43b0-a2e9-b09e41ff8aa7");
     protected static final String LEGAL_BASIS_DESCRIPTION1 = "Legal basis 1";
     protected static final String PURPOSE_CODE1 = "Kontroll";
-    protected static final String DATASET_TITLE = "Sivilstand";
     protected static final String INFORMATION_TYPE_NAME = "Sivilstand";
 
     private static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:10.4");
     @Autowired
     protected TransactionTemplate transactionTemplate;
-    @Autowired
-    protected DatasetRepository datasetRepository;
     @Autowired
     protected InformationTypeRepository informationTypeRepository;
     @Autowired
@@ -88,7 +83,6 @@ public abstract class IntegrationTestBase {
         termRepository.deleteAll();
         policyRepository.deleteAll();
         processRepository.deleteAll();
-        datasetRepository.deleteAll();
 
     }
 
@@ -98,7 +92,6 @@ public abstract class IntegrationTestBase {
         termRepository.deleteAll();
         policyRepository.deleteAll();
         processRepository.deleteAll();
-        datasetRepository.deleteAll();
         CollectorRegistry.defaultRegistry.clear();
     }
 
@@ -118,7 +111,7 @@ public abstract class IntegrationTestBase {
     }
 
     protected Policy createPolicy(String purpose, InformationType informationType) {
-        return policyRepository.save(Policy.builder().purposeCode(purpose).legalBases(Set.of(new LegalBasis("a", "b", "desc")))
+        return policyRepository.save(Policy.builder().generateId().purposeCode(purpose).legalBases(Set.of(new LegalBasis("a", "b", "desc")))
                 .informationType(informationType).informationTypeName(informationType.getData().getName())
                 .start(LocalDate.now()).end(LocalDate.now()).build());
     }

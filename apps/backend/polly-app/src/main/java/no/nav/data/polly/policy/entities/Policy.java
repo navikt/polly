@@ -105,9 +105,15 @@ public class Policy extends Auditable<String> {
                 .build();
     }
 
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static class PolicyBuilder {
 
         private Set<LegalBasis> legalBases = new HashSet<>();
+
+        public PolicyBuilder generateId() {
+            id = UUID.randomUUID();
+            return this;
+        }
 
         public PolicyBuilder legalBasis(LegalBasis legalBasis) {
             legalBases.add(legalBasis);

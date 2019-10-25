@@ -46,7 +46,7 @@ class ElasticsearchServiceIT extends IntegrationTestBase {
         service.synchToElasticsearch();
         await().atMost(Duration.FIVE_SECONDS).untilAsserted(() ->
                 assertThat(esRepository.getAllInformationTypes("index").getHits().totalHits).isEqualTo(1L));
-        String json = esRepository.getById(newDocumentId(DATASET_ID_1.toString(), "index"));
+        String json = esRepository.getById(newDocumentId(INFORMATION_TYPE_ID_1.toString(), "index"));
         assertInformationType(json);
         InformationType informationType = informationTypeRepository.findAll().get(0);
         assertThat(informationType.getElasticsearchStatus()).isEqualTo(SYNCED);
@@ -67,7 +67,7 @@ class ElasticsearchServiceIT extends IntegrationTestBase {
 
         await().atMost(Duration.FIVE_SECONDS).untilAsserted(() ->
                 assertThat(esRepository.getAllInformationTypes("index").getHits().totalHits).isEqualTo(1L));
-        String json = esRepository.getById(newDocumentId(DATASET_ID_1.toString(), "index"));
+        String json = esRepository.getById(newDocumentId(INFORMATION_TYPE_ID_1.toString(), "index"));
         assertInformationType(json);
 
         assertThat(informationTypeRepository.findAll().size()).isEqualTo(1);
@@ -82,7 +82,7 @@ class ElasticsearchServiceIT extends IntegrationTestBase {
 
         await().atMost(Duration.FIVE_SECONDS).untilAsserted(() ->
                 assertThat(esRepository.getAllInformationTypes("index").getHits().totalHits).isEqualTo(1L));
-        String json = esRepository.getById(newDocumentId(DATASET_ID_1.toString(), "index"));
+        String json = esRepository.getById(newDocumentId(INFORMATION_TYPE_ID_1.toString(), "index"));
         assertInformationType(json);
 
         assertThat(informationTypeRepository.findAll().size()).isEqualTo(1);
@@ -101,7 +101,7 @@ class ElasticsearchServiceIT extends IntegrationTestBase {
         InformationType informationType = informationTypeRepository.findAll().get(0);
         informationType.setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED);
         informationTypeRepository.save(informationType);
-        String json = esRepository.getById(newDocumentId(DATASET_ID_1.toString(), "index"));
+        String json = esRepository.getById(newDocumentId(INFORMATION_TYPE_ID_1.toString(), "index"));
         assertInformationType(json);
 
         service.synchToElasticsearch();
