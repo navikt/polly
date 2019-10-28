@@ -54,11 +54,6 @@ public class InformationTypeRequest implements RequestElement {
     }
 
     @Override
-    public String getRequestType() {
-        return "InformationType";
-    }
-
-    @Override
     public String getReference() {
         switch (informationTypeMaster) {
             case GITHUB:
@@ -72,7 +67,7 @@ public class InformationTypeRequest implements RequestElement {
         }
     }
 
-    public void toUpperCaseAndTrim() {
+    public void format() {
         setCategories(nullToEmptyList(categories).stream()
                 .map(String::trim)
                 .collect(Collectors.toList()));

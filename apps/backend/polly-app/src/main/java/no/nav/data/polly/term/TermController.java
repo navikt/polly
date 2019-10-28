@@ -38,9 +38,11 @@ import static no.nav.data.polly.common.utils.StreamUtils.convert;
 public class TermController {
 
     private final TermRepository repository;
+    private final TermService service;
 
-    public TermController(TermRepository repository) {
+    public TermController(TermRepository repository, TermService service) {
         this.repository = repository;
+        this.service = service;
     }
 
     @ApiOperation(value = "Get Term")
@@ -101,35 +103,35 @@ public class TermController {
 
     @ApiOperation(value = "Create Terms")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Terms to be created successfully accepted", response = TermResponse.class, responseContainer = "List"),
+            @ApiResponse(code = 201, message = "Terms to be created successfully accepted", response = TermPage.class),
             @ApiResponse(code = 400, message = "Illegal arguments"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @PostMapping
-    public ResponseEntity<List<TermResponse>> createTerms(@RequestBody List<TermRequest> requests) {
+    public ResponseEntity<RestResponsePage<TermResponse>> createTerms(@RequestBody List<TermRequest> requests) {
         log.info("Received requests to create Terms");
         requests = StreamUtils.nullToEmptyList(requests);
         TermRequest.initiateRequests(requests, false);
-//        service.validateRequest(requests); TODO
+        service.validateRequest(requests);
         List<Term> terms = convert(requests, Term::convertFromNewRequest);
 
-        return new ResponseEntity<>(repository.saveAll(terms).stream().map(Term::convertToResponse).collect(Collectors.toList()), HttpStatus.CREATED);
+        return new ResponseEntity<>(new RestResponsePage<>(repository.saveAll(terms).stream().map(Term::convertToResponse).collect(Collectors.toList())), HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "Update Term")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Term to be updated successfully accepted", response = TermResponse.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "Term to be updated successfully accepted", response = TermPage.class),
             @ApiResponse(code = 400, message = "Illegal arguments"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @PutMapping
-    public ResponseEntity<List<TermResponse>> updateTerms(@RequestBody List<TermRequest> requestsIn) {
+    public ResponseEntity<RestResponsePage<TermResponse>> updateTerms(@RequestBody List<TermRequest> requestsIn) {
         log.info("Received requests to update Terms");
         var requests = StreamUtils.nullToEmptyList(requestsIn);
         TermRequest.initiateRequests(requests, true);
-//        service.validateRequest(requests); TODO
+        service.validateRequest(requests);
         List<Term> all = repository.findAllByNameIn(convert(requests, TermRequest::getName));
         all.forEach(term -> term.convertFromRequest(requests.stream().filter(r -> r.getName().equals(term.getName())).findFirst().orElseThrow()));
 
-        return ResponseEntity.ok(repository.saveAll(all).stream().map(Term::convertToResponse).collect(Collectors.toList()));
+        return ResponseEntity.ok(new RestResponsePage<>(repository.saveAll(all).stream().map(Term::convertToResponse).collect(Collectors.toList())));
     }
 
     @ApiOperation(value = "Update Term")
@@ -151,7 +153,7 @@ public class TermController {
             throw new ValidationException(String.format("Cannot change name of term in update, id=%s has name=%s", id, existingName));
         }
         TermRequest.initiateRequests(List.of(request), true);
-//        service.validateRequest(List.of(request)); TODO
+        service.validateRequest(List.of(request));
 
         Term term = byId.get().convertFromRequest(request);
 
@@ -177,7 +179,7 @@ public class TermController {
         return new ResponseEntity<>(fromRepository.get().convertToResponse(), HttpStatus.OK);
     }
 
-    private static final class TermPage extends RestResponsePage<TermResponse> {
+    static final class TermPage extends RestResponsePage<TermResponse> {
 
     }
 

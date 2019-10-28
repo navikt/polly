@@ -66,4 +66,14 @@ public final class StreamUtils {
         return safeStream(from).map(converter).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
+    @SafeVarargs
+    public static <T, F> List<T> applyAll(Collection<F> from, Function<F, Collection<T>>... converters) {
+        return safeStream(from)
+                .map(f -> Stream.of(converters).map(converter -> converter.apply(f)))
+                .flatMap(Function.identity())
+                .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
 }

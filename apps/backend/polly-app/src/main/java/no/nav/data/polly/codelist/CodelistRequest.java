@@ -38,11 +38,6 @@ public class CodelistRequest implements RequestElement {
     private int requestIndex;
 
     @Override
-    public String getReference() {
-        return "Request:" + requestIndex;
-    }
-
-    @Override
     public String getIdentifyingFields() {
         return list + "-" + getNormalizedCode();
     }
@@ -50,11 +45,6 @@ public class CodelistRequest implements RequestElement {
     @JsonIgnore
     String getNormalizedCode() {
         return Codelist.normalize(code);
-    }
-
-    @Override
-    public String getRequestType() {
-        return "codelist";
     }
 
     ListName getListAsListName() {

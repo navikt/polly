@@ -133,7 +133,7 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
 
         requests.forEach(request -> {
             validationErrors.addAll(validateFields(request));
-            request.toUpperCaseAndTrim();
+            request.format();
             validationErrors.addAll(validateInformationTypeRepositoryValues(request));
         });
         return validationErrors;

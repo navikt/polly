@@ -3,11 +3,14 @@ package no.nav.data.polly.common.validator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public interface RequestElement {
+
     @JsonIgnore
     String getIdentifyingFields();
 
     @JsonIgnore
-    String getRequestType();
+    default String getRequestType() {
+        return getClass().getSimpleName();
+    }
 
     @JsonIgnore
     boolean isUpdate();
@@ -16,7 +19,9 @@ public interface RequestElement {
     int getRequestIndex();
 
     @JsonIgnore
-    String getReference();
+    default String getReference() {
+        return "Request:" + getRequestIndex();
+    }
 
     @JsonIgnore
     FieldValidator validateFields();

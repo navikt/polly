@@ -1,9 +1,15 @@
 package no.nav.data.polly.term;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @JsonPropertyOrder({"id", "name", "description"})
 public class TermResponse {
 
