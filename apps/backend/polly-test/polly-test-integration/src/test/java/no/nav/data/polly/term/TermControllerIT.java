@@ -24,4 +24,23 @@ class TermControllerIT extends IntegrationTestBase {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
+
+    @Test
+    void createTermValidationFail() {
+        ResponseEntity<String> response = template
+                .postForEntity("/term", List.of(TermRequest.builder().name("new-term").build()), String.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody()).contains("description was null or missing");
+    }
+
+    @Test
+    void createTermDuplicateFail() {
+        template.postForEntity("/term", List.of(TermRequest.builder().name("new-term").description("some description").build()), TermPage.class);
+        ResponseEntity<String> response = template
+                .postForEntity("/term", List.of(TermRequest.builder().name("new-term").description("some other description").build()), String.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody()).contains("The Term new-term already exists and therefore cannot be created");
+    }
 }

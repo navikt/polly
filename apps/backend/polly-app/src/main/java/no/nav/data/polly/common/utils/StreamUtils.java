@@ -68,11 +68,10 @@ public final class StreamUtils {
 
     @SafeVarargs
     public static <T, F> List<T> applyAll(Collection<F> from, Function<F, Collection<T>>... converters) {
-        return safeStream(from)
-                .map(f -> Stream.of(converters).map(converter -> converter.apply(f)))
-                .flatMap(Function.identity())
+        return Stream.of(converters)
+                .map(f -> convert(from, f))
                 .flatMap(Collection::stream)
-                .filter(Objects::nonNull)
+                .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
 

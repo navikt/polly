@@ -1,6 +1,7 @@
 package no.nav.data.polly.common.validator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.StringUtils;
 
 public interface RequestElement {
 
@@ -9,7 +10,7 @@ public interface RequestElement {
 
     @JsonIgnore
     default String getRequestType() {
-        return getClass().getSimpleName();
+        return StringUtils.substringBefore(getClass().getSimpleName(), "Request");
     }
 
     @JsonIgnore
