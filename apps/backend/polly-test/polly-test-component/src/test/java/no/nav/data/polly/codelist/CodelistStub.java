@@ -7,7 +7,7 @@ public class CodelistStub {
         CodelistCache.set(create(ListName.PROVENANCE, "ARBEIDSGIVER", "Arbeidsgiver"));
         CodelistCache.set(create(ListName.PROVENANCE, "SKATTEETATEN", "Skatteetaten"));
         CodelistCache.set(create(ListName.PROVENANCE, "BRUKER", "BRUKER"));
-        CodelistCache.set(create(ListName.CATEGORY, "PERSONALIA", "Personalia"));
+        CodelistCache.set(create(ListName.CATEGORY, "Personalia", "Personalia"));
         CodelistCache.set(create(ListName.CATEGORY, "ARBEIDSFORHOLD", "Arbeidsforhold"));
         CodelistCache.set(create(ListName.CATEGORY, "UTDANNING", "Utdanning"));
         CodelistCache.set(create(ListName.PURPOSE, "Kontroll", "Kontrollering"));

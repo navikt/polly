@@ -139,7 +139,7 @@ public abstract class IntegrationTestBase {
                         .name(name)
                         .context("context")
                         .description("desc")
-                        .source("ARBEIDSGIVER")
+                        .source("Skatt")
                         .category("PERSONALIA")
                         .pii("loads")
                         .build())

@@ -122,10 +122,11 @@ class ElasticsearchServiceIT extends IntegrationTestBase {
         var informationType = JsonUtils.toObject(json, InformationTypeElasticsearch.class);
 
         assertThat(informationType.getName()).isEqualTo(INFORMATION_TYPE_NAME);
+        assertThat(informationType.getContext()).isEqualTo("context");
         assertThat(informationType.getDescription()).isEqualTo("desc");
-        assertThat(informationType.getPii()).isEqualTo("yes");
-        assertThat(informationType.getSources()).isEqualTo(List.of("Arbeidsgiver"));
-        assertThat(informationType.getCategories()).isEqualTo(List.of("Personalia"));
+        assertThat(informationType.getPii()).isEqualTo("loads");
+        assertThat(informationType.getSources().get(0).getCode()).isEqualTo("Skatt");
+        assertThat(informationType.getCategories().get(0).getCode()).isEqualTo("Personalia");
         List<PolicyElasticsearch> policies = informationType.getPolicies();
         assertThat(policies.size()).isEqualTo(2);
         assertPolicies0(policies.get(0));
@@ -135,12 +136,12 @@ class ElasticsearchServiceIT extends IntegrationTestBase {
     private void assertPolicies0(PolicyElasticsearch policy) {
         assertThat(policy.getPurpose()).isEqualTo("Kontroll");
         assertThat(policy.getDescription()).isEqualTo("Kontrollering");
-        assertThat(policy.getLegalbases()).isEqualTo("legal");
+        assertThat(policy.getLegalbases().get(0).getDescription()).isEqualTo("desc");
     }
 
     private void assertPolicies1(PolicyElasticsearch policy) {
         assertThat(policy.getPurpose()).isEqualTo("AAP");
         assertThat(policy.getDescription()).isEqualTo("Arbeidsavklaringspenger");
-        assertThat(policy.getLegalbases()).isEqualTo("legal");
+        assertThat(policy.getLegalbases().get(0).getDescription()).isEqualTo("desc");
     }
 }

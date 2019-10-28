@@ -88,14 +88,9 @@ public class ElasticsearchService {
         List<InformationType> informationTypes = repository.findByElasticsearchStatus(TO_BE_DELETED);
         for (InformationType informationType : informationTypes) {
             elasticsearch.deleteById(ElasticsearchDocument.newDocumentId(informationType.getId().toString(), elasticsearchProperties.getIndex()));
+            long deletes = policyRepository.deleteByInformationTypeId(informationType.getId());
+            log.debug("Deleted {} policies", deletes);
             repository.deleteById(informationType.getId());
-            // As we share a schema, perhpas do a scheduled task to delete orphan policies instead
-            try {
-                long deletes = policyRepository.deleteByInformationTypeId(informationType.getId());
-                log.debug("Deleted {} policies", deletes);
-            } catch (Exception e) {
-                log.warn(String.format("Failed to delete policies for informationTypeId=%s", informationType.getId()), e);
-            }
             counter.labels("delete").inc();
         }
         return informationTypes.size();
