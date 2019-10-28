@@ -34,6 +34,7 @@ public class PolicyMapper {
         Policy policy = policyRequest.getExistingPolicy() != null ? policyRequest.getExistingPolicy() : new Policy();
         policyRequest.getInformationType().addPolicy(policy);
         policy.setPurposeCode(policyRequest.getPurposeCode());
+        policy.setSubjectCategories(policyRequest.getSubjectCategories());
         policy.setStart(parse(policyRequest.getStart(), DEFAULT_FOM));
         policy.setEnd(parse(policyRequest.getEnd(), DEFAULT_TOM));
         policy.setLegalBases(convert(policyRequest.getLegalBases(), LegalBasisRequest::convertToLegalBasis));

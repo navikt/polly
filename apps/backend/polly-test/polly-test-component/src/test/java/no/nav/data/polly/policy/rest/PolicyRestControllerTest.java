@@ -7,6 +7,8 @@ import no.nav.data.polly.codelist.CodeResponse;
 import no.nav.data.polly.common.rest.PageParameters;
 import no.nav.data.polly.informationtype.InformationTypeService;
 import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.legalbasis.LegalBasisRequest;
+import no.nav.data.polly.legalbasis.LegalBasisResponse;
 import no.nav.data.polly.policy.PolicyService;
 import no.nav.data.polly.policy.domain.InformationTypeNameResponse;
 import no.nav.data.polly.policy.domain.PolicyRequest;
@@ -94,7 +96,7 @@ class PolicyRestControllerTest {
         given(mapper.mapPolicyToResponse(policy1)).willReturn(response);
         mvc.perform(get("/policy/{id}", POLICY_ID_1).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.legalBasisDescription", is("Description")));
+                .andExpect(jsonPath("$.legalBases[0].description", is("Description")));
     }
 
     @Test
@@ -185,7 +187,7 @@ class PolicyRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.legalBasisDescription", is("Description")));
+                .andExpect(jsonPath("$.legalBases[0].description", is("Description")));
         verify(informationTypeService).sync(List.of(INFORMATION_TYPE_ID_1));
     }
 
@@ -238,11 +240,15 @@ class PolicyRestControllerTest {
     }
 
     private PolicyRequest createPolicyRequest(String desc, String code, String name) {
-        return PolicyRequest.builder().id(UUID.randomUUID().toString()).purposeCode(code).informationTypeName(name).build();
+        return PolicyRequest.builder().id(UUID.randomUUID().toString()).purposeCode(code).informationTypeName(name)
+                .legalBases(List.of(LegalBasisRequest.builder().description(desc).build()))
+                .build();
     }
 
     private PolicyResponse createPolicyResponse(String purpose, String desc, UUID id) {
-        return PolicyResponse.builder().id(id).purposeCode(new CodeResponse(purpose, "")).informationType(new InformationTypeNameResponse()).build();
+        return PolicyResponse.builder().id(id).purposeCode(new CodeResponse(purpose, "")).informationType(new InformationTypeNameResponse())
+                .legalBases(List.of(LegalBasisResponse.builder().description(desc).build()))
+                .build();
     }
 
     private static String asJsonString(final Object obj) {

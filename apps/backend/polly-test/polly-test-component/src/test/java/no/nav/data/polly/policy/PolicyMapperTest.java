@@ -3,6 +3,8 @@ package no.nav.data.polly.policy;
 import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
+import no.nav.data.polly.legalbasis.LegalBasis;
+import no.nav.data.polly.legalbasis.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.PolicyRequest;
 import no.nav.data.polly.policy.domain.PolicyResponse;
 import no.nav.data.polly.policy.entities.Policy;
@@ -16,6 +18,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,19 +45,29 @@ class PolicyMapperTest {
     @BeforeEach
     void setUp() {
         CodelistStub.initializeCodelist();
-        given(processRepository.findByName("process")).willReturn(Optional.of(new Process()));
     }
 
     @Test
     void shouldMapToPolicy() {
+        given(processRepository.findByName("process")).willReturn(Optional.of(Process.builder().name("process").build()));
         InformationType informationType = createBasicTestdata();
         PolicyRequest request = PolicyRequest.builder()
+                .process("process")
+                .subjectCategories("sc")
+                .legalBases(List.of(LegalBasisRequest.builder().gdpr("gdpr").nationalLaw("nl").description(LEGAL_BASIS_DESCRIPTION1).build()))
+                .start("2019-02-04")
+                .end("2020-02-04")
                 .purposeCode(PURPOSE_CODE1)
-                .informationType(informationType).informationTypeName(informationType.getData().getName()).build();
+                .informationType(informationType)
+                .build();
         Policy policy = mapper.mapRequestToPolicy(request);
-//        assertThat(policy.getLegalBasisDescription(), is(LEGAL_BASIS_DESCRIPTION1));
+        assertThat(policy.getProcess().getName(), is("process"));
+        assertThat(policy.getSubjectCategories(), is("sc"));
         assertThat(policy.getPurposeCode(), is(PURPOSE_CODE1));
         assertThat(policy.getInformationType(), is(informationType));
+        assertThat(policy.getInformationTypeId(), is(informationType.getId()));
+        assertThat(policy.getInformationTypeName(), is(informationType.getData().getName()));
+        assertThat(policy.getLegalBases().get(0).getDescription(), is(LEGAL_BASIS_DESCRIPTION1));
     }
 
     @Test
@@ -63,7 +77,7 @@ class PolicyMapperTest {
         PolicyResponse policyResponse = mapper.mapPolicyToResponse(policy);
         assertThat(policyResponse.getInformationType().getId(), is(policy.getInformationTypeId().toString()));
         assertThat(policyResponse.getInformationType().getName(), is(policy.getInformationTypeName()));
-//        assertThat(policyResponse.getLegalBasisDescription(), is(LEGAL_BASIS_DESCRIPTION1));
+        assertThat(policyResponse.getLegalBases().get(0).getDescription(), is(LEGAL_BASIS_DESCRIPTION1));
         assertThat(policyResponse.getPurposeCode(), notNullValue());
         assertThat(policyResponse.getPurposeCode().getCode(), is(PURPOSE_CODE1));
         assertThat(policyResponse.getPurposeCode().getDescription(), is(DESC));
@@ -71,7 +85,11 @@ class PolicyMapperTest {
 
     private Policy createPolicy(InformationType informationType) {
         return Policy.builder().id(UUID.randomUUID())
-//                .legalBasisDescription(LEGAL_BASIS_DESCRIPTION1)
+                .process(Process.builder().name("process").build())
+                .subjectCategories("sc")
+                .legalBases(List.of(LegalBasis.builder().gdpr("gdpr").nationalLaw("nl").description(LEGAL_BASIS_DESCRIPTION1).build()))
+                .start(LocalDate.parse("2019-02-04"))
+                .end(LocalDate.parse("2020-02-04"))
                 .purposeCode(PURPOSE_CODE1)
                 .informationType(informationType)
                 .build();

@@ -91,7 +91,7 @@ public class PolicyService {
             validations.add(new ValidationError(request.getReference(), "informationTypeName", "informationTypeName cannot be null"));
         }
         if (request.getLegalBases() == null) {
-            validations.add(new ValidationError(request.getReference(), "legalBases", "legalBasisDescription cannot be null"));
+            validations.add(new ValidationError(request.getReference(), "legalBases", "legalBases cannot be null"));
             // todo validate content
         }
         if (request.getPurposeCode() == null) {
