@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldNameConstants;
 import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +19,7 @@ import static no.nav.data.polly.common.utils.StringUtils.ifNotNullToUppercaseAnd
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldNameConstants
 public class CodelistRequest implements RequestElement {
 
     private String list;
@@ -66,14 +68,10 @@ public class CodelistRequest implements RequestElement {
     }
 
     @Override
-    public FieldValidator validateFields() {
-        FieldValidator validator = new FieldValidator(getReference());
-
-        validator.checkBlank("listName", getList());
-        validator.checkBlank("code", getCode());
-        validator.checkBlank("description", getDescription());
-
-        return validator;
+    public void validate(FieldValidator validator) {
+        validator.checkEnum(Fields.list, getList(), ListName.class);
+        validator.checkBlank(Fields.code, getCode());
+        validator.checkBlank(Fields.description, getDescription());
     }
 
 }

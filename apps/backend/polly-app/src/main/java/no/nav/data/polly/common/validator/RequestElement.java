@@ -25,5 +25,11 @@ public interface RequestElement {
     }
 
     @JsonIgnore
-    FieldValidator validateFields();
+    default FieldValidator validateFields() {
+        FieldValidator validator = new FieldValidator(getReference());
+        validate(validator);
+        return validator;
+    }
+
+    void validate(FieldValidator validator);
 }

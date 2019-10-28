@@ -42,10 +42,8 @@ public class TermRequest implements RequestElement {
     }
 
     @Override
-    public FieldValidator validateFields() {
-        FieldValidator validator = new FieldValidator(getReference());
+    public void validate(FieldValidator validator) {
         validator.checkBlank(Fields.name, name);
         validator.checkBlank(Fields.description, description);
-        return validator;
     }
 }

@@ -100,17 +100,14 @@ public class InformationTypeRequest implements RequestElement {
     }
 
     @Override
-    public FieldValidator validateFields() {
-        FieldValidator validator = new FieldValidator(getReference());
-
+    public void validate(FieldValidator validator) {
         validator.checkBlank(Fields.term, getTerm());
         validator.checkBlank(Fields.name, getName());
+        validator.checkBlank(Fields.context, getContext());
         validator.checkBlank(Fields.description, getDescription());
 
         validator.checkCodelists(Fields.categories, getCategories(), ListName.CATEGORY);
         validator.checkCodelists(Fields.sources, getSources(), ListName.SOURCE);
-
-        return validator;
     }
 
     @JsonIgnore
