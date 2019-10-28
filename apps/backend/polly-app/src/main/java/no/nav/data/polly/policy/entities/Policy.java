@@ -1,10 +1,12 @@
 package no.nav.data.polly.policy.entities;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import no.nav.data.polly.behandlingsgrunnlag.domain.InformationTypeBehandlingsgrunnlagResponse;
 import no.nav.data.polly.codelist.Codelist;
@@ -72,6 +74,8 @@ public class Policy extends Auditable<String> {
     @JoinColumn(name = "INFORMATION_TYPE_ID", nullable = false, updatable = false)
     private InformationType informationType;
 
+    // Managed by hibernate
+    @Setter(AccessLevel.PRIVATE)
     @Column(name = "INFORMATION_TYPE_ID", insertable = false, updatable = false)
     private UUID informationTypeId;
 
@@ -85,6 +89,13 @@ public class Policy extends Auditable<String> {
     @Type(type = "jsonb")
     @Column(name = "LEGAL_BASES", nullable = false)
     private List<LegalBasis> legalBases = new ArrayList<>();
+
+    public void setInformationType(InformationType informationType) {
+        this.informationType = informationType;
+        if (informationType != null) {
+            this.informationTypeId = informationType.getId();
+        }
+    }
 
     public InformationTypeBehandlingsgrunnlagResponse convertToBehandlingsgrunnlagResponse() {
         return new InformationTypeBehandlingsgrunnlagResponse(informationType.getId(), informationTypeName, convert(legalBases, LegalBasis::convertToResponse));
@@ -117,6 +128,14 @@ public class Policy extends Auditable<String> {
 
         public PolicyBuilder legalBasis(LegalBasis legalBasis) {
             legalBases.add(legalBasis);
+            return this;
+        }
+
+        public PolicyBuilder informationType(InformationType informationType) {
+            this.informationType = informationType;
+            if (informationType != null) {
+                this.informationTypeId = informationType.getId();
+            }
             return this;
         }
     }

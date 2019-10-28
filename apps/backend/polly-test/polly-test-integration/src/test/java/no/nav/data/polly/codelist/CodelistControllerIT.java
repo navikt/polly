@@ -48,12 +48,12 @@ class CodelistControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void findAll_shouldReturnOneCodelists() {
+    void findAll_shouldReturnAllCodelists() {
         ResponseEntity<Map> responseEntity = restTemplate.exchange(
                 "/codelist", HttpMethod.GET, HttpEntity.EMPTY, Map.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody().size()).isEqualTo(3);
+        assertThat(responseEntity.getBody().size()).isEqualTo(ListName.values().length);
 
         Arrays.stream(ListName.values())
                 .forEach(listName -> assertThat(responseEntity.getBody()

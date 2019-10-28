@@ -54,8 +54,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 class PolicyRestControllerTest {
 
-    private static final UUID DATASET_ID_1 = UUID.fromString("cd7f037e-374e-4e68-b705-55b61966b2fc");
-    private static final UUID DATASET_ID_2 = UUID.fromString("5992e0d0-1fc9-4d67-b825-d198be0827bf");
+    private static final UUID INFORMATION_TYPE_ID_1 = UUID.fromString("cd7f037e-374e-4e68-b705-55b61966b2fc");
+    private static final UUID INFORMATION_TYPE_ID_2 = UUID.fromString("5992e0d0-1fc9-4d67-b825-d198be0827bf");
     private static final UUID POLICY_ID_1 = UUID.fromString("a7b134d0-34a6-4d3d-85f7-935ee12f5c25");
 
     @Autowired
@@ -73,8 +73,8 @@ class PolicyRestControllerTest {
 
     @Test
     void getAllPolicies() throws Exception {
-        Policy policy1 = createPolicyTestdata(DATASET_ID_1);
-        Policy policy2 = createPolicyTestdata(DATASET_ID_2);
+        Policy policy1 = createPolicyTestdata(INFORMATION_TYPE_ID_1);
+        Policy policy2 = createPolicyTestdata(INFORMATION_TYPE_ID_2);
 
         List<Policy> policies = Arrays.asList(policy1, policy2);
         Page<Policy> policyPage = new PageImpl<>(policies, PageRequest.of(0, 100), 2);
@@ -87,12 +87,12 @@ class PolicyRestControllerTest {
 
     @Test
     void getOnePolicy() throws Exception {
-        Policy policy1 = createPolicyTestdata(DATASET_ID_1);
+        Policy policy1 = createPolicyTestdata(INFORMATION_TYPE_ID_1);
         PolicyResponse response = createPolicyResponse("code", "Description", POLICY_ID_1);
 
         given(policyRepository.findById(POLICY_ID_1)).willReturn(Optional.of(policy1));
         given(mapper.mapPolicyToResponse(policy1)).willReturn(response);
-        mvc.perform(get("/policy/1").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/policy/{id}", POLICY_ID_1).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.legalBasisDescription", is("Description")));
     }
@@ -100,26 +100,26 @@ class PolicyRestControllerTest {
     @Test
     void getNotExistingPolicy() throws Exception {
         given(policyRepository.findById(POLICY_ID_1)).willReturn(Optional.empty());
-        mvc.perform(get("/policy/1").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/policy/{id}", POLICY_ID_1).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void getPoliciesForDataset() throws Exception {
-        Policy policy1 = createPolicyTestdata(DATASET_ID_1);
+    void getPoliciesForInformationType() throws Exception {
+        Policy policy1 = createPolicyTestdata(INFORMATION_TYPE_ID_1);
 
         List<Policy> policies = Collections.singletonList(policy1);
-        given(policyRepository.findByInformationTypeId(DATASET_ID_1)).willReturn(policies);
-        mvc.perform(get("/policy?datasetId=" + DATASET_ID_1).contentType(MediaType.APPLICATION_JSON))
+        given(policyRepository.findByInformationTypeId(INFORMATION_TYPE_ID_1)).willReturn(policies);
+        mvc.perform(get("/policy?informationTypeId=" + INFORMATION_TYPE_ID_1).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content", hasSize(1)));
 
     }
 
     @Test
-    void countPoliciesForDataset() throws Exception {
-        given(policyRepository.countByInformationTypeId(DATASET_ID_1)).willReturn(1L);
-        mvc.perform(get("/policy/count?datasetId=" + DATASET_ID_1).contentType(MediaType.APPLICATION_JSON))
+    void countPoliciesForInformationType() throws Exception {
+        given(policyRepository.countByInformationTypeId(INFORMATION_TYPE_ID_1)).willReturn(1L);
+        mvc.perform(get("/policy/count?informationTypeId=" + INFORMATION_TYPE_ID_1).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("1"));
     }
@@ -135,7 +135,7 @@ class PolicyRestControllerTest {
 
     @Test
     void createOnePolicy() throws Exception {
-        Policy policy1 = createPolicyTestdata(DATASET_ID_1);
+        Policy policy1 = createPolicyTestdata(INFORMATION_TYPE_ID_1);
         List<PolicyRequest> request = Collections.singletonList(new PolicyRequest());
         List<Policy> policies = Collections.singletonList(policy1);
 
@@ -153,8 +153,8 @@ class PolicyRestControllerTest {
 
     @Test
     void createTwoPolicies() throws Exception {
-        Policy policy1 = createPolicyTestdata(DATASET_ID_1);
-        Policy policy2 = createPolicyTestdata(DATASET_ID_2);
+        Policy policy1 = createPolicyTestdata(INFORMATION_TYPE_ID_1);
+        Policy policy2 = createPolicyTestdata(INFORMATION_TYPE_ID_2);
         List<PolicyRequest> request = Arrays.asList(createPolicyRequest("Desc1", "Code1", "Title1"), createPolicyRequest("Desc2", "Code2", "Title2"));
         List<Policy> policies = Arrays.asList(policy1, policy2);
 
@@ -172,7 +172,7 @@ class PolicyRestControllerTest {
 
     @Test
     void updatePolicy() throws Exception {
-        Policy policy1 = createPolicyTestdata(DATASET_ID_1);
+        Policy policy1 = createPolicyTestdata(INFORMATION_TYPE_ID_1);
         PolicyRequest request = PolicyRequest.builder().id(POLICY_ID_1.toString()).build();
         PolicyResponse response = createPolicyResponse("code", "Description", null);
 
@@ -181,7 +181,7 @@ class PolicyRestControllerTest {
         given(policyRepository.save(policy1)).willReturn(policy1);
         given(mapper.mapPolicyToResponse(policy1)).willReturn(response);
 
-        mvc.perform(put("/policy/1")
+        mvc.perform(put("/policy/{id}", POLICY_ID_1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(request)))
                 .andExpect(status().isOk())
@@ -191,8 +191,8 @@ class PolicyRestControllerTest {
 
     @Test
     void updateTwoPolicies() throws Exception {
-        Policy policy1 = createPolicyTestdata(DATASET_ID_1);
-        Policy policy2 = createPolicyTestdata(DATASET_ID_2);
+        Policy policy1 = createPolicyTestdata(INFORMATION_TYPE_ID_1);
+        Policy policy2 = createPolicyTestdata(INFORMATION_TYPE_ID_2);
         List<PolicyRequest> request = Arrays.asList(createPolicyRequest("Desc1", "Code1", "Title1"), createPolicyRequest("Desc2", "Code2", "Title2"));
         List<Policy> policies = Arrays.asList(policy1, policy2);
 
@@ -212,10 +212,10 @@ class PolicyRestControllerTest {
 
     @Test
     void deletePolicy() throws Exception {
-        Policy policy1 = createPolicyTestdata(DATASET_ID_1);
+        Policy policy1 = createPolicyTestdata(INFORMATION_TYPE_ID_1);
         given(policyRepository.findById(POLICY_ID_1)).willReturn(Optional.of(policy1));
 
-        mvc.perform(delete("/policy/1")
+        mvc.perform(delete("/policy/{id}", POLICY_ID_1)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         verify(informationTypeService).syncForPolicyIds(List.of(policy1.getId()));
@@ -224,20 +224,21 @@ class PolicyRestControllerTest {
     @Test
     void deleteNotExistsingPolicy() throws Exception {
         doThrow(new EmptyResultDataAccessException(1)).when(policyRepository).deleteById(POLICY_ID_1);
-        mvc.perform(delete("/policy/1")
+        mvc.perform(delete("/policy/{id}", POLICY_ID_1)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
     private Policy createPolicyTestdata(UUID informationTypeId) {
         Policy policy = new Policy();
+        policy.setId(POLICY_ID_1);
         policy.setInformationType(InformationType.builder().id(informationTypeId).build());
 //        policy.setLegalBasisDescription("Description");
         return policy;
     }
 
     private PolicyRequest createPolicyRequest(String desc, String code, String name) {
-        return PolicyRequest.builder().legalBasisDescription(desc).purposeCode(code).informationTypeName(name).build();
+        return PolicyRequest.builder().id(UUID.randomUUID().toString()).legalBasisDescription(desc).purposeCode(code).informationTypeName(name).build();
     }
 
     private PolicyResponse createPolicyResponse(String purpose, String desc, UUID id) {

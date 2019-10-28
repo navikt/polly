@@ -175,16 +175,22 @@ public class PolicyRestController {
             @ApiResponse(code = 404, message = "Policy not found"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @PutMapping("/{id}")
-    public ResponseEntity<PolicyResponse> updatePolicy(@PathVariable UUID id, @Valid @RequestBody PolicyRequest policyRequest) {
+    public ResponseEntity<PolicyResponse> updatePolicy(@PathVariable String id, @Valid @RequestBody PolicyRequest policyRequest) {
         log.debug("Received request to update Policy with id={}", id);
-        if (policyRepository.findById(id).isEmpty()) {
-            throw notFoundError(id);
-        }
         if (!Objects.equals(id, policyRequest.getId())) {
             throw new ValidationException(String.format("id mismatch in request %s and path %s", policyRequest.getId(), id));
         }
+        UUID uuid;
+        try {
+            uuid = UUID.fromString(id);
+        } catch (Exception e) {
+            throw new ValidationException(String.format("invalid UUID %s", id));
+        }
+        if (policyRepository.findById(uuid).isEmpty()) {
+            throw notFoundError(uuid);
+        }
         service.validateRequests(List.of(policyRequest), true);
-        Policy policy = mapper.mapRequestToPolicy(policyRequest, id);
+        Policy policy = mapper.mapRequestToPolicy(policyRequest, uuid);
         onChange(List.of(policy));
         return ResponseEntity.ok(mapper.mapPolicyToResponse(policyRepository.save(policy)));
     }

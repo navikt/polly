@@ -87,7 +87,7 @@ class PolicyServiceTest {
         } catch (ValidationException e) {
             assertEquals(2, e.get().size(), JsonUtils.toJson(e.get()));
             assertEquals("The purposeCode wrong was not found in the PURPOSE codelist.", e.get("purposeCode").getErrorMessage());
-            assertEquals("A dataset with title " + INFTYPE_NAME + " does not exist", e.get("informationTypeName").getErrorMessage());
+            assertEquals("An informationType with name " + INFTYPE_NAME + " does not exist", e.get("informationTypeName").getErrorMessage());
         }
     }
 
@@ -106,7 +106,7 @@ class PolicyServiceTest {
             fail();
         } catch (ValidationException e) {
             assertEquals(1, e.get().size(), JsonUtils.toJson(e.get()));
-            assertEquals("A policy combining Dataset Personalia and Purpose Kontroll already exists", e.get("datasetAndPurpose").getErrorMessage());
+            assertEquals("A policy combining InformationType Personalia and Purpose Kontroll already exists", e.get("informationTypeAndPurpose").getErrorMessage());
         }
     }
 
@@ -141,7 +141,7 @@ class PolicyServiceTest {
         } catch (ValidationException e) {
             assertEquals(2, e.get().size(), JsonUtils.toJson(e.get()));
             assertEquals("The purposeCode wrong was not found in the PURPOSE codelist.", e.get("purposeCode").getErrorMessage());
-            assertEquals("A dataset with title " + INFTYPE_NAME + " does not exist", e.get("informationTypeName").getErrorMessage());
+            assertEquals("An informationType with name " + INFTYPE_NAME + " does not exist", e.get("informationTypeName").getErrorMessage());
         }
     }
 
@@ -160,7 +160,7 @@ class PolicyServiceTest {
             fail();
         } catch (ValidationException e) {
             assertEquals(1, e.get().size(), JsonUtils.toJson(e.get()));
-            assertEquals("Cannot change purpose from otherpurpose to Kontroll for policy 152", e.get("cannotChangePurpose").getErrorMessage());
+            assertEquals("Cannot change purpose from otherpurpose to Kontroll for policy 1-1-1-1-1", e.get("cannotChangePurpose").getErrorMessage());
         }
     }
 
