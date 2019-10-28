@@ -1,5 +1,7 @@
 package no.nav.data.polly.common.validator;
 
+import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.common.exceptions.ValidationException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -10,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 public abstract class RequestValidator<T extends RequestElement> {
 
     public List<ValidationError> validateNoDuplicates(List<T> requests) {
@@ -88,5 +91,12 @@ public abstract class RequestValidator<T extends RequestElement> {
 
     private boolean updatingNonExistingElement(boolean isUpdate, boolean existInRepository) {
         return isUpdate && !existInRepository;
+    }
+
+    protected void checkForErrors(List<ValidationError> validationErrors) {
+        if (!validationErrors.isEmpty()) {
+            log.error("The request was not accepted. The following errors occurred during validation: {}", validationErrors);
+            throw new ValidationException(validationErrors, "The request was not accepted. The following errors occurred during validation: ");
+        }
     }
 }

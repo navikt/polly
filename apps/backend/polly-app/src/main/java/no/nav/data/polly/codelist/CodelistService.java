@@ -135,22 +135,16 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         List<ValidationError> validationErrors = new ArrayList<>(validateNoDuplicates(requests));
 
         requests.forEach(request -> {
-            validationErrors.addAll(validateFields(request));
             request.toUpperCaseAndTrim();
-            validationErrors.addAll(validateListName(request));
+            validationErrors.addAll(validateFields(request));
 
-            boolean existInRepository = repository.findByListAndNormalizedCode(request.getListAsListName(), Codelist.normalize(request.getCode())).isPresent();
-            validationErrors.addAll(validateRepositoryValues(request, existInRepository));
+            if (request.getListAsListName() != null) {
+                boolean existInRepository = repository.findByListAndNormalizedCode(request.getListAsListName(), Codelist.normalize(request.getCode())).isPresent();
+                validationErrors.addAll(validateRepositoryValues(request, existInRepository));
+            }
         });
 
         return validationErrors;
     }
 
-    private List<ValidationError> validateListName(CodelistRequest request) {
-        List<ValidationError> validationErrors = new ArrayList<>();
-        if (nonValidListName(request.getList())) {
-            validationErrors.add(new ValidationError(request.getReference(), "invalidListName", String.format("The ListName %s does not exist", request.getList())));
-        }
-        return validationErrors;
-    }
 }

@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 @Data
 public class ValidationError implements Serializable {
+
     private String reference;
     private String errorType;
     private String errorMessage;

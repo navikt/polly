@@ -106,6 +106,17 @@ class CodelistControllerIT extends IntegrationTestBase {
     }
 
     @Test
+    void save_shouldInvalidateWrongListname() {
+        List<CodelistRequest> requests = createRequest("PROVENAANCE", "Save Code", "Test description");
+
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                "/codelist", HttpMethod.POST, new HttpEntity<>(requests), String.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(responseEntity.getBody()).contains("PROVENAANCE was invalid for type ListName");
+    }
+
+    @Test
     void save_shouldSave20Codelist() {
         List<CodelistRequest> requests = createNrOfRequests("shouldSave20Codelists", 20);
 

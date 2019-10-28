@@ -50,7 +50,11 @@ public class CodelistRequest implements RequestElement {
     }
 
     ListName getListAsListName() {
-        return ListName.valueOf(list);
+        try {
+            return ListName.valueOf(list);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
     void toUpperCaseAndTrim() {

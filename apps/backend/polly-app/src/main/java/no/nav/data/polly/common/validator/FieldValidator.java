@@ -2,7 +2,6 @@ package no.nav.data.polly.common.validator;
 
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.ListName;
-import no.nav.data.polly.common.utils.StreamUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -14,6 +13,8 @@ import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 public class FieldValidator {
 
     private static final String ERROR_TYPE = "fieldIsNullOrMissing";
+    private static final String ERROR_TYPE_ENUM = "fieldIsInvalidEnum";
+    private static final String ERROR_TYPE_CODELIST = "fieldIsInvalidCodelist";
     private static final String ERROR_MESSAGE = "%s was null or missing";
     private static final String ERROR_MESSAGE_ENUM = "%s: %s was invalid for type %s";
     private static final String ERROR_MESSAGE_CODELIST = "%s: %s code not found in codelist %s";
@@ -41,7 +42,7 @@ public class FieldValidator {
         try {
             Enum.valueOf(type, fieldValue);
         } catch (IllegalArgumentException e) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(ERROR_MESSAGE_ENUM, fieldName, fieldValue, type.getSimpleName())));
+            validationErrors.add(new ValidationError(reference, ERROR_TYPE_ENUM, String.format(ERROR_MESSAGE_ENUM, fieldName, fieldValue, type.getSimpleName())));
         }
     }
 
@@ -50,22 +51,12 @@ public class FieldValidator {
             return;
         }
         if (CodelistService.getCodeResponseForCodelistItem(listName, fieldValue) == null) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(ERROR_MESSAGE_CODELIST, fieldName, fieldValue, listName)));
+            validationErrors.add(new ValidationError(reference, ERROR_TYPE_CODELIST, String.format(ERROR_MESSAGE_CODELIST, fieldName, fieldValue, listName)));
         }
     }
 
     public void checkCodelists(String fieldName, Collection<String> values, ListName listName) {
         safeStream(values).forEach(value -> checkCodelist(fieldName, value, listName));
-    }
-
-    public void checkListOfFields(String listName, List<String> fields) {
-        fields = StreamUtils.nullToEmptyList(fields);
-        //TODO: Find out if empty list should throw validationError or allowed not processed
-        if (fields.isEmpty()) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(ERROR_MESSAGE, listName)));
-        } else {
-            fields.forEach(f -> checkBlank(listName, f));
-        }
     }
 
     public List<ValidationError> getErrors() {
