@@ -51,6 +51,7 @@ class PolicyServiceTest {
     @Test
     void shouldValidateInsertRequest() {
         PolicyRequest request = PolicyRequest.builder()
+                .process("process")
                 .informationTypeName(INFTYPE_NAME)
                 .legalBases(List.of(LegalBasisRequest.builder().description(LEGALBASISDESCRIPTION).build()))
                 .purposeCode(PURPOSECODE)
@@ -67,16 +68,18 @@ class PolicyServiceTest {
             service.validateRequests(List.of(request), false);
             fail();
         } catch (ValidationException e) {
-            assertEquals(3, e.get().size(), JsonUtils.toJson(e.get()));
+            assertEquals(4, e.get().size(), JsonUtils.toJson(e.get()));
             assertEquals("informationTypeName cannot be null", e.get("informationTypeName").getErrorMessage());
             assertEquals("purposeCode cannot be null", e.get("purposeCode").getErrorMessage());
             assertEquals("legalBases cannot be null", e.get("legalBases").getErrorMessage());
+            assertEquals("process cannot be null", e.get("process").getErrorMessage());
         }
     }
 
     @Test
     void shouldThrowNotFoundValidationExceptionOnInsert() {
         PolicyRequest request = PolicyRequest.builder()
+                .process("process")
                 .informationTypeName(INFTYPE_NAME)
                 .legalBases(List.of(LegalBasisRequest.builder().description(LEGALBASISDESCRIPTION).build()))
                 .purposeCode("wrong")
@@ -95,6 +98,7 @@ class PolicyServiceTest {
     @Test
     void shouldThrowAlreadyExistsValidationExceptionOnInsert() {
         PolicyRequest request = PolicyRequest.builder()
+                .process("process")
                 .informationTypeName(INFTYPE_NAME)
                 .legalBases(List.of(LegalBasisRequest.builder().description(LEGALBASISDESCRIPTION).build()))
                 .purposeCode(PURPOSECODE)
@@ -118,11 +122,12 @@ class PolicyServiceTest {
             service.validateRequests(List.of(request), true);
             fail();
         } catch (ValidationException e) {
-            assertEquals(4, e.get().size(), JsonUtils.toJson(e.get()));
+            assertEquals(5, e.get().size(), JsonUtils.toJson(e.get()));
             assertEquals("Id is missing for update", e.get("missingIdForUpdate").getErrorMessage());
             assertEquals("informationTypeName cannot be null", e.get("informationTypeName").getErrorMessage());
             assertEquals("purposeCode cannot be null", e.get("purposeCode").getErrorMessage());
             assertEquals("legalBases cannot be null", e.get("legalBases").getErrorMessage());
+            assertEquals("process cannot be null", e.get("process").getErrorMessage());
         }
     }
 
@@ -130,6 +135,7 @@ class PolicyServiceTest {
     void shouldThrowNotFoundValidationExceptionOnUpdate() {
         PolicyRequest request = PolicyRequest.builder()
                 .id("1-1-1-1-1")
+                .process("process")
                 .informationTypeName(INFTYPE_NAME)
                 .legalBases(List.of(LegalBasisRequest.builder().description(LEGALBASISDESCRIPTION).build()))
                 .purposeCode("wrong")
@@ -149,6 +155,7 @@ class PolicyServiceTest {
     @Test
     void shouldThrowWrongPurposecodeOnUpdate() {
         PolicyRequest request = PolicyRequest.builder()
+                .process("process")
                 .id("1-1-1-1-1")
                 .informationTypeName(INFTYPE_NAME)
                 .legalBases(List.of(LegalBasisRequest.builder().description(LEGALBASISDESCRIPTION).build()))
@@ -168,6 +175,7 @@ class PolicyServiceTest {
     @Test
     void shouldNotThrowAlreadyExistsValidationExceptionOnInsert() {
         PolicyRequest request = PolicyRequest.builder()
+                .process("process")
                 .informationTypeName(INFTYPE_NAME)
                 .legalBases(List.of(LegalBasisRequest.builder().description(LEGALBASISDESCRIPTION).build()))
                 .purposeCode(PURPOSECODE)
