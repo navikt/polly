@@ -2,6 +2,7 @@ package no.nav.data.polly;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import io.prometheus.client.CollectorRegistry;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.IntegrationTestBase.Initializer;
 import no.nav.data.polly.behandlingsgrunnlag.BehandlingsgrunnlagDistributionRepository;
 import no.nav.data.polly.codelist.CodelistStub;
@@ -42,6 +43,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static no.nav.data.polly.elasticsearch.ElasticsearchStatus.SYNCED;
 
+@Slf4j
 @ActiveProfiles("test")
 @ExtendWith(WiremockExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {AppStarter.class})

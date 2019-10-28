@@ -5,6 +5,7 @@ import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.behandlingsgrunnlag.domain.BehandlingsgrunnlagDistribution;
 import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.legalbasis.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.PolicyRequest;
 import no.nav.data.polly.policy.domain.PolicyResponse;
 import no.nav.data.polly.policy.entities.Policy;
@@ -55,7 +56,7 @@ class PolicyControllerIT extends IntegrationTestBase {
                 POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), POLICY_LIST_RESPONSE);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
         assertThat(policyRepository.count(), is(1L));
-        assertPolicy(createEntity.getBody().get(0), LEGAL_BASIS_DESCRIPTION1);
+        assertPolicy(createEntity.getBody().get(0), "AAP");
         assertBehandlingsgrunnlagDistribusjon(1);
     }
 
@@ -65,8 +66,8 @@ class PolicyControllerIT extends IntegrationTestBase {
         ResponseEntity<String> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
         assertThat(createEntity.getBody(), containsString("purposeCode cannot be null"));
-        assertThat(createEntity.getBody(), containsString("informationTypeTitle cannot be null"));
-        assertThat(createEntity.getBody(), containsString("legalBasisDescription cannot be null"));
+        assertThat(createEntity.getBody(), containsString("informationTypeName cannot be null"));
+        assertThat(createEntity.getBody(), containsString("legalBases cannot be null"));
         assertThat(policyRepository.count(), is(0L));
     }
 
@@ -106,7 +107,7 @@ class PolicyControllerIT extends IntegrationTestBase {
                 POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
         assertThat(createEntity.getBody(), containsString("The purposeCode NOTFOUND was not found in the PURPOSE codelist"));
-        assertThat(createEntity.getBody(), containsString("An informationType with name NOTFOUND does not exist"));
+        assertThat(createEntity.getBody(), containsString("An InformationType with name NOTFOUND does not exist"));
         assertThat(policyRepository.count(), is(0L));
     }
 
@@ -119,13 +120,13 @@ class PolicyControllerIT extends IntegrationTestBase {
         ResponseEntity<PolicyResponse> getEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT + createEntity.getBody().get(0).getId(), HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), PolicyResponse.class);
         assertThat(getEntity.getStatusCode(), is(HttpStatus.OK));
-        assertPolicy(getEntity.getBody(), LEGAL_BASIS_DESCRIPTION1);
+        assertPolicy(getEntity.getBody(), "AAP");
         assertThat(policyRepository.count(), is(1L));
     }
 
     @Test
     void getNotExistingPolicy() {
-        ResponseEntity<PolicyResponse> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT + "-1", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), PolicyResponse.class);
+        ResponseEntity<PolicyResponse> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT + "1-1-1-1-1", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), PolicyResponse.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.NOT_FOUND));
     }
 
@@ -159,7 +160,7 @@ class PolicyControllerIT extends IntegrationTestBase {
         ResponseEntity<String> updateEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT + request.getId(), HttpMethod.PUT, new HttpEntity<>(request), String.class);
         assertThat(updateEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(updateEntity.getBody(), containsString("legalBasisDescription cannot be null"));
+        assertThat(updateEntity.getBody(), containsString("legalBases cannot be null"));
         assertThat(policyRepository.count(), is(1L));
     }
 
@@ -206,8 +207,8 @@ class PolicyControllerIT extends IntegrationTestBase {
         ResponseEntity<String> updateEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT, HttpMethod.PUT, new HttpEntity<>(requestList), String.class);
         assertThat(updateEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(updateEntity.getBody(), containsString("Sivilstand/Kontroll -- legalBasisDescription -- legalBasisDescription cannot be null"));
-        assertThat(updateEntity.getBody(), containsString("Postadresse/Kontroll -- legalBasisDescription -- legalBasisDescription cannot be null"));
+        assertThat(updateEntity.getBody(), containsString("Sivilstand/Kontroll -- process -- process cannot be null"));
+        assertThat(updateEntity.getBody(), containsString("Postadresse/Kontroll -- process -- process cannot be null"));
         // No error reported regarding Arbeidsforhold/TEST1
         assertFalse(updateEntity.getBody().contains("Arbeidsforhold/TEST1"));
         assertThat(policyRepository.count(), is(3L));
@@ -216,8 +217,9 @@ class PolicyControllerIT extends IntegrationTestBase {
     @Test
     void updateNotExistingPolicy() {
         PolicyRequest request = createPolicyRequest(createInformationType());
+        request.setId("1-1-1-1-1");
         ResponseEntity<Policy> createEntity = restTemplate.exchange(
-                POLICY_REST_ENDPOINT + "-1", HttpMethod.PUT, new HttpEntity<>(request), Policy.class);
+                POLICY_REST_ENDPOINT + "1-1-1-1-1", HttpMethod.PUT, new HttpEntity<>(request), Policy.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.NOT_FOUND));
     }
 
@@ -257,7 +259,7 @@ class PolicyControllerIT extends IntegrationTestBase {
     @Test
     void deleteNotExistingPolicy() {
         ResponseEntity<String> deleteEntity = restTemplate.exchange(
-                POLICY_REST_ENDPOINT + "-1", HttpMethod.DELETE, new HttpEntity<>(new HttpHeaders()), String.class);
+                POLICY_REST_ENDPOINT + "1-1-1-1-1", HttpMethod.DELETE, new HttpEntity<>(new HttpHeaders()), String.class);
         assertThat(deleteEntity.getStatusCode(), is(HttpStatus.NOT_FOUND));
     }
 
@@ -319,7 +321,7 @@ class PolicyControllerIT extends IntegrationTestBase {
                 POLICY_REST_ENDPOINT + "?informationTypeId={id}", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()),
                 PAGE_RESPONSE, INFORMATION_TYPE_ID_1);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(responseEntity.getBody().getContent().size(), is(1));
+        assertThat(responseEntity.getBody().getContent().size(), is(5));
         assertThat(policyRepository.count(), is(5L));
     }
 
@@ -330,7 +332,7 @@ class PolicyControllerIT extends IntegrationTestBase {
         ResponseEntity<Long> responseEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT + "count?informationTypeId={id}", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), Long.class, INFORMATION_TYPE_ID_1);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(responseEntity.getBody(), is(1L));
+        assertThat(responseEntity.getBody(), is(5L));
     }
 
     @Test
@@ -359,7 +361,6 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     private void create5PoliciesWith2Inactive() {
         createPolicy(5, (i, p) -> {
-//            p.setInformationTypeId(INFORMATION_TYPE_ID_1.toString());
             p.setInformationTypeName(INFORMATION_TYPE_NAME);
             if (i > 3) {
                 p.setStart(LocalDate.now().minusDays(2));
@@ -369,7 +370,11 @@ class PolicyControllerIT extends IntegrationTestBase {
     }
 
     private PolicyRequest createPolicyRequest(InformationType informationType) {
-        return PolicyRequest.builder().informationTypeName(informationType.getData().getName())
+        return PolicyRequest.builder()
+                .subjectCategories("Person")
+                .process("AAP")
+                .informationTypeName(informationType.getData().getName())
+                .legalBases(List.of(LegalBasisRequest.builder().gdpr("9a").nationalLaw("Ftrl").description("§ 1-4").build()))
                 .purposeCode(PURPOSE_CODE1).build();
     }
 

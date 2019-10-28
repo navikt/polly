@@ -44,7 +44,7 @@ public class PolicyService {
             String purposeCode = request.getPurposeCode();
             if (titlesUsedInRequest.containsKey(informationTypeName + purposeCode)) {
                 requestValidations.add(new ValidationError(request.getReference(), "combinationNotUniqueInThisRequest", String.format(
-                        "A request combining informationType: %s and Purpose: %s is not unique because " +
+                        "A request combining InformationType: %s and Purpose: %s is not unique because " +
                                 "it is already used in this request (see request nr:%s)",
                         informationTypeName, purposeCode, titlesUsedInRequest.get(informationTypeName + purposeCode))));
             } else if (informationTypeName != null && purposeCode != null) {
@@ -87,6 +87,9 @@ public class PolicyService {
 
     private List<ValidationError> validatePolicyRequest(PolicyRequest request) {
         List<ValidationError> validations = new ArrayList<>();
+        if (request.getProcess() == null) {
+            validations.add(new ValidationError(request.getReference(), "process", "process cannot be null"));
+        }
         if (request.getInformationTypeName() == null) {
             validations.add(new ValidationError(request.getReference(), "informationTypeName", "informationTypeName cannot be null"));
         }
@@ -108,7 +111,7 @@ public class PolicyService {
             InformationType informationType = informationTypeRepository.findByName(request.getInformationTypeName()).orElse(null);
             if (informationType == null) {
                 validations.add(new ValidationError(request.getReference(), "informationTypeName",
-                        String.format("An informationType with name %s does not exist", request.getInformationTypeName())));
+                        String.format("An InformationType with name %s does not exist", request.getInformationTypeName())));
             } else {
                 request.setInformationType(informationType);
             }

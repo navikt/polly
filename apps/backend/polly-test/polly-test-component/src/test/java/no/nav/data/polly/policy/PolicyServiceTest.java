@@ -88,7 +88,7 @@ class PolicyServiceTest {
         } catch (ValidationException e) {
             assertEquals(2, e.get().size(), JsonUtils.toJson(e.get()));
             assertEquals("The purposeCode wrong was not found in the PURPOSE codelist.", e.get("purposeCode").getErrorMessage());
-            assertEquals("An informationType with name " + INFTYPE_NAME + " does not exist", e.get("informationTypeName").getErrorMessage());
+            assertEquals("An InformationType with name " + INFTYPE_NAME + " does not exist", e.get("informationTypeName").getErrorMessage());
         }
     }
 
@@ -142,7 +142,7 @@ class PolicyServiceTest {
         } catch (ValidationException e) {
             assertEquals(2, e.get().size(), JsonUtils.toJson(e.get()));
             assertEquals("The purposeCode wrong was not found in the PURPOSE codelist.", e.get("purposeCode").getErrorMessage());
-            assertEquals("An informationType with name " + INFTYPE_NAME + " does not exist", e.get("informationTypeName").getErrorMessage());
+            assertEquals("An InformationType with name " + INFTYPE_NAME + " does not exist", e.get("informationTypeName").getErrorMessage());
         }
     }
 

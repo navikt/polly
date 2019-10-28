@@ -162,7 +162,7 @@ public class PolicyRestController {
     @DeleteMapping(params = {"informationTypeId"})
     public void deletePoliciesByInformationType(@RequestParam UUID informationTypeId) {
         log.debug("Received request to delete Policies with informationTypeId={}", informationTypeId);
-        if (informationTypeId != null) {
+        if (informationTypeId == null) {
             throw new ValidationException("Blank informationTypeId");
         }
         List<Policy> deletes = policyRepository.findByInformationTypeId(informationTypeId);
