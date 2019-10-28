@@ -101,7 +101,7 @@ class PolicyControllerIT extends IntegrationTestBase {
     void createPolicyThrowNotFoundValidationException() {
         createPolicyRequest(createInformationType());
         List<PolicyRequest> requestList = Arrays
-                .asList(PolicyRequest.builder().purposeCode("NOTFOUND").informationTypeName("NOTFOUND").legalBasisDescription(LEGAL_BASIS_DESCRIPTION1).build());
+                .asList(PolicyRequest.builder().purposeCode("NOTFOUND").informationTypeName("NOTFOUND").build());
         ResponseEntity<String> createEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
@@ -117,7 +117,7 @@ class PolicyControllerIT extends IntegrationTestBase {
         assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
 
         ResponseEntity<PolicyResponse> getEntity = restTemplate.exchange(
-                POLICY_REST_ENDPOINT + createEntity.getBody().get(0).getPolicyId(), HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), PolicyResponse.class);
+                POLICY_REST_ENDPOINT + createEntity.getBody().get(0).getId(), HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), PolicyResponse.class);
         assertThat(getEntity.getStatusCode(), is(HttpStatus.OK));
         assertPolicy(getEntity.getBody(), LEGAL_BASIS_DESCRIPTION1);
         assertThat(policyRepository.count(), is(1L));
@@ -138,10 +138,10 @@ class PolicyControllerIT extends IntegrationTestBase {
         assertBehandlingsgrunnlagDistribusjon(1);
 
         PolicyRequest request = requestList.get(0);
-        request.setId(createEntity.getBody().get(0).getPolicyId().toString());
-        request.setLegalBasisDescription("UPDATED");
+        request.setId(createEntity.getBody().get(0).getId().toString());
+        request.setProcess("UPDATED");
         ResponseEntity<PolicyResponse> updateEntity = restTemplate
-                .exchange(POLICY_REST_ENDPOINT + createEntity.getBody().get(0).getPolicyId(), HttpMethod.PUT, new HttpEntity<>(request), PolicyResponse.class);
+                .exchange(POLICY_REST_ENDPOINT + createEntity.getBody().get(0).getId(), HttpMethod.PUT, new HttpEntity<>(request), PolicyResponse.class);
         assertThat(updateEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(policyRepository.count(), is(1L));
         assertPolicy(updateEntity.getBody(), "UPDATED");
@@ -154,8 +154,8 @@ class PolicyControllerIT extends IntegrationTestBase {
         ResponseEntity<List<PolicyResponse>> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(List.of(request)), POLICY_LIST_RESPONSE);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
 
-        request.setId(createEntity.getBody().get(0).getPolicyId().toString());
-        request.setLegalBasisDescription(null);
+        request.setId(createEntity.getBody().get(0).getId().toString());
+        request.setLegalBases(null);
         ResponseEntity<String> updateEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT + request.getId(), HttpMethod.PUT, new HttpEntity<>(request), String.class);
         assertThat(updateEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
@@ -172,15 +172,15 @@ class PolicyControllerIT extends IntegrationTestBase {
         assertThat(createEntity.getBody().size(), is(2));
         assertThat(policyRepository.count(), is(2L));
 
-        requestList.forEach(request -> request.setLegalBasisDescription("UPDATED"));
-        requestList.get(0).setId(createEntity.getBody().get(0).getPolicyId().toString());
-        requestList.get(1).setId(createEntity.getBody().get(1).getPolicyId().toString());
+        requestList.forEach(request -> request.setProcess("UPDATED"));
+        requestList.get(0).setId(createEntity.getBody().get(0).getId().toString());
+        requestList.get(1).setId(createEntity.getBody().get(1).getId().toString());
 
         ResponseEntity<List<PolicyResponse>> updateEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.PUT, new HttpEntity<>(requestList), POLICY_LIST_RESPONSE);
         assertThat(updateEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(updateEntity.getBody().size(), is(2));
         assertPolicy(updateEntity.getBody().get(0), "UPDATED");
-        assertThat(updateEntity.getBody().get(1).getLegalBasisDescription(), is("UPDATED"));
+        assertThat(updateEntity.getBody().get(1).getProcess(), is("UPDATED"));
         assertThat(policyRepository.count(), is(2L));
         assertBehandlingsgrunnlagDistribusjon(2);
     }
@@ -196,12 +196,12 @@ class PolicyControllerIT extends IntegrationTestBase {
         assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
         assertThat(createEntity.getBody().size(), is(3));
 
-        requestList.get(0).setLegalBasisDescription(null);
-        requestList.get(1).setLegalBasisDescription(null);
-        requestList.get(2).setLegalBasisDescription("UPDATED");
-        requestList.get(0).setId(createEntity.getBody().get(0).getPolicyId().toString());
-        requestList.get(1).setId(createEntity.getBody().get(1).getPolicyId().toString());
-        requestList.get(2).setId(createEntity.getBody().get(2).getPolicyId().toString());
+        requestList.get(0).setProcess(null);
+        requestList.get(1).setProcess(null);
+        requestList.get(2).setProcess("UPDATED");
+        requestList.get(0).setId(createEntity.getBody().get(0).getId().toString());
+        requestList.get(1).setId(createEntity.getBody().get(1).getId().toString());
+        requestList.get(2).setId(createEntity.getBody().get(2).getId().toString());
 
         ResponseEntity<String> updateEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT, HttpMethod.PUT, new HttpEntity<>(requestList), String.class);
@@ -230,7 +230,7 @@ class PolicyControllerIT extends IntegrationTestBase {
         assertBehandlingsgrunnlagDistribusjon(1);
 
         ResponseEntity<String> deleteEntity = restTemplate.exchange(
-                POLICY_REST_ENDPOINT + createEntity.getBody().get(0).getPolicyId(), HttpMethod.DELETE, new HttpEntity<>(new HttpHeaders()), String.class);
+                POLICY_REST_ENDPOINT + createEntity.getBody().get(0).getId(), HttpMethod.DELETE, new HttpEntity<>(new HttpHeaders()), String.class);
         assertThat(deleteEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(policyRepository.count(), is(0L));
         assertBehandlingsgrunnlagDistribusjon(2);
@@ -243,7 +243,7 @@ class PolicyControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    public void deletePoliciesByInformationTypeId() {
+    void deletePoliciesByInformationTypeId() {
         List<PolicyRequest> requestList = List.of(createPolicyRequest(createInformationType()));
         ResponseEntity<List<PolicyResponse>> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), POLICY_LIST_RESPONSE);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
@@ -369,13 +369,13 @@ class PolicyControllerIT extends IntegrationTestBase {
     }
 
     private PolicyRequest createPolicyRequest(InformationType informationType) {
-        return PolicyRequest.builder().informationTypeName(informationType.getData().getName()).legalBasisDescription(LEGAL_BASIS_DESCRIPTION1)
+        return PolicyRequest.builder().informationTypeName(informationType.getData().getName())
                 .purposeCode(PURPOSE_CODE1).build();
     }
 
-    private void assertPolicy(PolicyResponse policy, String legalBasisDescription) {
+    private void assertPolicy(PolicyResponse policy, String process) {
         assertThat(policy.getInformationType().getName(), is(INFORMATION_TYPE_NAME));
-        assertThat(policy.getLegalBasisDescription(), is(legalBasisDescription));
-        assertThat(policy.getPurpose().getCode(), is(PURPOSE_CODE1));
+        assertThat(policy.getProcess(), is(process));
+        assertThat(policy.getPurposeCode().getCode(), is(PURPOSE_CODE1));
     }
 }

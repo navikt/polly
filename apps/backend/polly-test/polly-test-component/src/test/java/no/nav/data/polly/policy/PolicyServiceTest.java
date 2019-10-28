@@ -51,7 +51,7 @@ class PolicyServiceTest {
     void shouldValidateInsertRequest() {
         PolicyRequest request = PolicyRequest.builder()
                 .informationTypeName(INFTYPE_NAME)
-                .legalBasisDescription(LEGALBASISDESCRIPTION)
+//                .legalBasisDescription(LEGALBASISDESCRIPTION)
                 .purposeCode(PURPOSECODE)
                 .build();
         when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.of(InformationType.builder().id(UUID.fromString(INFTYPE_ID_1)).build()));
@@ -77,7 +77,7 @@ class PolicyServiceTest {
     void shouldThrowNotFoundValidationExceptionOnInsert() {
         PolicyRequest request = PolicyRequest.builder()
                 .informationTypeName(INFTYPE_NAME)
-                .legalBasisDescription(LEGALBASISDESCRIPTION)
+//                .legalBasisDescription(LEGALBASISDESCRIPTION)
                 .purposeCode("wrong")
                 .build();
         when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.empty());
@@ -95,7 +95,7 @@ class PolicyServiceTest {
     void shouldThrowAlreadyExistsValidationExceptionOnInsert() {
         PolicyRequest request = PolicyRequest.builder()
                 .informationTypeName(INFTYPE_NAME)
-                .legalBasisDescription(LEGALBASISDESCRIPTION)
+//                .legalBasisDescription(LEGALBASISDESCRIPTION)
                 .purposeCode(PURPOSECODE)
                 .build();
         when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.of(InformationType.builder().id(UUID.fromString(INFTYPE_ID_1)).build()));
@@ -130,7 +130,7 @@ class PolicyServiceTest {
         PolicyRequest request = PolicyRequest.builder()
                 .id("1-1-1-1-1")
                 .informationTypeName(INFTYPE_NAME)
-                .legalBasisDescription(LEGALBASISDESCRIPTION)
+//                .legalBasisDescription(LEGALBASISDESCRIPTION)
                 .purposeCode("wrong")
                 .build();
         when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.empty());
@@ -150,7 +150,7 @@ class PolicyServiceTest {
         PolicyRequest request = PolicyRequest.builder()
                 .id("1-1-1-1-1")
                 .informationTypeName(INFTYPE_NAME)
-                .legalBasisDescription(LEGALBASISDESCRIPTION)
+//                .legalBasisDescription(LEGALBASISDESCRIPTION)
                 .purposeCode(PURPOSECODE)
                 .build();
         when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.of(InformationType.builder().id(UUID.fromString(INFTYPE_ID_1)).build()));
@@ -168,7 +168,7 @@ class PolicyServiceTest {
     void shouldNotThrowAlreadyExistsValidationExceptionOnInsert() {
         PolicyRequest request = PolicyRequest.builder()
                 .informationTypeName(INFTYPE_NAME)
-                .legalBasisDescription(LEGALBASISDESCRIPTION)
+//                .legalBasisDescription(LEGALBASISDESCRIPTION)
                 .purposeCode(PURPOSECODE)
                 .id("1-1-1-1-1")
                 .build();

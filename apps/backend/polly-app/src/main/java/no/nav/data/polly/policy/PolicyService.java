@@ -90,8 +90,9 @@ public class PolicyService {
         if (request.getInformationTypeName() == null) {
             validations.add(new ValidationError(request.getReference(), "informationTypeName", "informationTypeName cannot be null"));
         }
-        if (request.getLegalBasisDescription() == null) {
-            validations.add(new ValidationError(request.getReference(), "legalBasisDescription", "legalBasisDescription cannot be null"));
+        if (request.getLegalBases() == null) {
+            validations.add(new ValidationError(request.getReference(), "legalBases", "legalBasisDescription cannot be null"));
+            // todo validate content
         }
         if (request.getPurposeCode() == null) {
             validations.add(new ValidationError(request.getReference(), "purposeCode", "purposeCode cannot be null"));

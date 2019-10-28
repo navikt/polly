@@ -94,6 +94,7 @@ public class Policy extends Auditable<String> {
         this.informationType = informationType;
         if (informationType != null) {
             this.informationTypeId = informationType.getId();
+            this.informationTypeName = informationType.getData().getName();
         }
     }
 

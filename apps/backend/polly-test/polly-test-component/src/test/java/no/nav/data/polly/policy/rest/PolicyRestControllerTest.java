@@ -139,7 +139,7 @@ class PolicyRestControllerTest {
         List<PolicyRequest> request = Collections.singletonList(new PolicyRequest());
         List<Policy> policies = Collections.singletonList(policy1);
 
-        given(mapper.mapRequestToPolicy(request.get(0), null)).willReturn(policy1);
+        given(mapper.mapRequestToPolicy(request.get(0))).willReturn(policy1);
         given(policyRepository.saveAll(policies)).willReturn(policies);
 
         mvc.perform(post("/policy")
@@ -148,7 +148,7 @@ class PolicyRestControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.*", hasSize(1)));
 
-        verify(informationTypeService).syncForPolicyIds(List.of(policy1.getId()));
+        verify(informationTypeService).sync(List.of(INFORMATION_TYPE_ID_1));
     }
 
     @Test
@@ -158,8 +158,8 @@ class PolicyRestControllerTest {
         List<PolicyRequest> request = Arrays.asList(createPolicyRequest("Desc1", "Code1", "Title1"), createPolicyRequest("Desc2", "Code2", "Title2"));
         List<Policy> policies = Arrays.asList(policy1, policy2);
 
-        given(mapper.mapRequestToPolicy(request.get(0), null)).willReturn(policy1);
-        given(mapper.mapRequestToPolicy(request.get(1), null)).willReturn(policy2);
+        given(mapper.mapRequestToPolicy(request.get(0))).willReturn(policy1);
+        given(mapper.mapRequestToPolicy(request.get(1))).willReturn(policy2);
         given(policyRepository.saveAll(policies)).willReturn(policies);
 
         mvc.perform(post("/policy")
@@ -167,7 +167,7 @@ class PolicyRestControllerTest {
                 .content(asJsonString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.*", hasSize(2)));
-        verify(informationTypeService).syncForPolicyIds(List.of(policy1.getId(), policy2.getId()));
+        verify(informationTypeService).sync(List.of(INFORMATION_TYPE_ID_1, INFORMATION_TYPE_ID_2));
     }
 
     @Test
@@ -176,7 +176,7 @@ class PolicyRestControllerTest {
         PolicyRequest request = PolicyRequest.builder().id(POLICY_ID_1.toString()).build();
         PolicyResponse response = createPolicyResponse("code", "Description", null);
 
-        given(mapper.mapRequestToPolicy(request, POLICY_ID_1)).willReturn(policy1);
+        given(mapper.mapRequestToPolicy(request)).willReturn(policy1);
         given(policyRepository.findById(POLICY_ID_1)).willReturn(Optional.of(policy1));
         given(policyRepository.save(policy1)).willReturn(policy1);
         given(mapper.mapPolicyToResponse(policy1)).willReturn(response);
@@ -186,7 +186,7 @@ class PolicyRestControllerTest {
                 .content(asJsonString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.legalBasisDescription", is("Description")));
-        verify(informationTypeService).syncForPolicyIds(List.of(policy1.getId()));
+        verify(informationTypeService).sync(List.of(INFORMATION_TYPE_ID_1));
     }
 
     @Test
@@ -196,8 +196,8 @@ class PolicyRestControllerTest {
         List<PolicyRequest> request = Arrays.asList(createPolicyRequest("Desc1", "Code1", "Title1"), createPolicyRequest("Desc2", "Code2", "Title2"));
         List<Policy> policies = Arrays.asList(policy1, policy2);
 
-        given(mapper.mapRequestToPolicy(request.get(0), UUID.fromString(request.get(0).getId()))).willReturn(policy1);
-        given(mapper.mapRequestToPolicy(request.get(1), UUID.fromString(request.get(1).getId()))).willReturn(policy2);
+        given(mapper.mapRequestToPolicy(request.get(0))).willReturn(policy1);
+        given(mapper.mapRequestToPolicy(request.get(1))).willReturn(policy2);
         given(policyRepository.findById(UUID.fromString(request.get(0).getId()))).willReturn(Optional.of(policy1));
         given(policyRepository.findById(UUID.fromString(request.get(1).getId()))).willReturn(Optional.of(policy2));
         given(policyRepository.saveAll(policies)).willReturn(policies);
@@ -207,7 +207,7 @@ class PolicyRestControllerTest {
                 .content(asJsonString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(2)));
-        verify(informationTypeService).syncForPolicyIds(List.of(policy1.getId(), policy2.getId()));
+        verify(informationTypeService).sync(List.of(INFORMATION_TYPE_ID_1, INFORMATION_TYPE_ID_2));
     }
 
     @Test
@@ -218,7 +218,7 @@ class PolicyRestControllerTest {
         mvc.perform(delete("/policy/{id}", POLICY_ID_1)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        verify(informationTypeService).syncForPolicyIds(List.of(policy1.getId()));
+        verify(informationTypeService).sync(List.of(INFORMATION_TYPE_ID_1));
     }
 
     @Test
@@ -238,11 +238,11 @@ class PolicyRestControllerTest {
     }
 
     private PolicyRequest createPolicyRequest(String desc, String code, String name) {
-        return PolicyRequest.builder().id(UUID.randomUUID().toString()).legalBasisDescription(desc).purposeCode(code).informationTypeName(name).build();
+        return PolicyRequest.builder().id(UUID.randomUUID().toString()).purposeCode(code).informationTypeName(name).build();
     }
 
     private PolicyResponse createPolicyResponse(String purpose, String desc, UUID id) {
-        return PolicyResponse.builder().policyId(id).purpose(new CodeResponse(purpose, "")).informationType(new InformationTypeNameResponse()).legalBasisDescription(desc).build();
+        return PolicyResponse.builder().id(id).purposeCode(new CodeResponse(purpose, "")).informationType(new InformationTypeNameResponse()).build();
     }
 
     private static String asJsonString(final Object obj) {

@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.legalbasis.LegalBasisRequest;
 import no.nav.data.polly.policy.entities.Policy;
 
 import java.util.List;
@@ -20,9 +21,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class PolicyRequest {
 
     private String id;
-    private String legalBasisDescription;
     private String purposeCode;
     private String informationTypeName;
+    private String process;
+    private String subjectCategories;
+    private List<LegalBasisRequest> legalBases;
     private String start;
     private String end;
 

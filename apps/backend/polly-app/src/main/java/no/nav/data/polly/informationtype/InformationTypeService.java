@@ -166,10 +166,6 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
         return existingMaster.equals(requestMaster);
     }
 
-    public void syncForPolicyIds(List<UUID> ids) {
-        sync(policyRepository.getInformationTypeIdsByIdIn(ids));
-    }
-
     public void sync(List<UUID> ids) {
         int informationTypesUpdated = repository.setSyncForInformationTypeIds(ids);
         log.info("marked {} informationTypes for sync", informationTypesUpdated);

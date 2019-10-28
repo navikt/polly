@@ -38,6 +38,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import static java.util.stream.Collectors.toList;
@@ -45,6 +46,7 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 @RestController
 @CrossOrigin
+@Transactional
 @Api(value = "Data Catalog Policies", description = "REST API for Policies", tags = {"Policies"})
 @RequestMapping("/policy")
 public class PolicyRestController {
@@ -117,7 +119,7 @@ public class PolicyRestController {
     public ResponseEntity<List<PolicyResponse>> createPolicy(@Valid @RequestBody List<PolicyRequest> policyRequests) {
         log.debug("Received request to create Policies");
         service.validateRequests(policyRequests, false);
-        List<Policy> policies = policyRequests.stream().map(policy -> mapper.mapRequestToPolicy(policy, null)).collect(toList());
+        List<Policy> policies = policyRequests.stream().map(mapper::mapRequestToPolicy).collect(toList());
         onChange(policies);
         return new ResponseEntity<>(policyRepository.saveAll(policies).stream().map(mapper::mapPolicyToResponse).collect(Collectors.toList()), HttpStatus.CREATED);
     }
@@ -190,7 +192,7 @@ public class PolicyRestController {
             throw notFoundError(uuid);
         }
         service.validateRequests(List.of(policyRequest), true);
-        Policy policy = mapper.mapRequestToPolicy(policyRequest, uuid);
+        Policy policy = mapper.mapRequestToPolicy(policyRequest);
         onChange(List.of(policy));
         return ResponseEntity.ok(mapper.mapPolicyToResponse(policyRepository.save(policy)));
     }
@@ -204,7 +206,7 @@ public class PolicyRestController {
     public ResponseEntity<List<PolicyResponse>> updatePolicies(@Valid @RequestBody List<PolicyRequest> policyRequests) {
         log.debug("Received requests to update Policies");
         service.validateRequests(policyRequests, true);
-        List<Policy> policies = policyRequests.stream().map(policyRequest -> mapper.mapRequestToPolicy(policyRequest, UUID.fromString(policyRequest.getId()))).collect(toList());
+        List<Policy> policies = policyRequests.stream().map(mapper::mapRequestToPolicy).collect(toList());
         onChange(policies);
         return ResponseEntity.ok(policyRepository.saveAll(policies).stream().map(mapper::mapPolicyToResponse).collect(Collectors.toList()));
     }
@@ -221,6 +223,6 @@ public class PolicyRestController {
 
     private void onChange(List<Policy> policies) {
         policies.stream().map(Policy::getPurposeCode).distinct().forEach(behandlingsgrunnlagService::scheduleDistributeForPurpose);
-        informationTypeService.syncForPolicyIds(policies.stream().map(Policy::getId).collect(toList()));
+        informationTypeService.sync(policies.stream().map(Policy::getInformationTypeId).collect(toList()));
     }
 }

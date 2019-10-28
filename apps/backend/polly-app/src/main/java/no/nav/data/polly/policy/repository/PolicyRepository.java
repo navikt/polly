@@ -25,7 +25,7 @@ public interface PolicyRepository extends JpaRepository<Policy, UUID> {
     @Transactional
     long deleteByInformationTypeId(UUID informationTypeId);
 
-    @Query("select it.id from Policy p left join p.informationType it where p.id in ?1")
+    @Query("select p.informationTypeId from Policy p where p.id in ?1")
     List<UUID> getInformationTypeIdsByIdIn(List<UUID> policyIds);
 
 }
