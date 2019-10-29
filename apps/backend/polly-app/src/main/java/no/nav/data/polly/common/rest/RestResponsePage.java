@@ -3,6 +3,7 @@ package no.nav.data.polly.common.rest;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -17,6 +18,10 @@ public class RestResponsePage<T> {
     private long pageSize;
     private long returnedElements;
     private long totalElements;
+
+    public RestResponsePage(Page<T> page) {
+        this(page.getContent(), page.getPageable(), page.getTotalElements());
+    }
 
     public RestResponsePage(List<T> content) {
         this.content = content;

@@ -7,7 +7,6 @@ import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessDistribution;
 import no.nav.data.polly.process.domain.ProcessDistributionRepository;
 import no.nav.data.polly.process.domain.ProcessRepository;
-import no.nav.data.polly.process.dto.ProcessResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
@@ -17,10 +16,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.transaction.Transactional;
 
 import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toList;
 import static no.nav.data.polly.common.utils.MdcUtils.wrapAsync;
 
 @Service
@@ -42,11 +39,6 @@ public class ProcessService {
         this.leaderElectionService = leaderElectionService;
         this.processRepository = processRepository;
         scheduleDistributions(rateSeconds);
-    }
-
-    @Transactional
-    public List<ProcessResponse> findForPurpose(String purpose) {
-        return processRepository.findByPurposeCode(purpose).stream().map(Process::convertToResponse).collect(toList());
     }
 
     public void scheduleDistributeForPurpose(Process process) {

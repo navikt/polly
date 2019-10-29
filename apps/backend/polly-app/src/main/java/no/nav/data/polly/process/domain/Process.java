@@ -64,6 +64,14 @@ public class Process extends Auditable<String> {
                 .id(id.toString())
                 .name(name)
                 .purposeCode(purposeCode)
+                .build();
+    }
+
+    public ProcessResponse convertToResponseWithInformationTypes() {
+        return ProcessResponse.builder()
+                .id(id.toString())
+                .name(name)
+                .purposeCode(purposeCode)
                 .informationTypes(convert(policies, Policy::convertToPurposeResponse))
                 .build();
     }

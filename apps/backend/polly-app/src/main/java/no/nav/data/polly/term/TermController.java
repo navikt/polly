@@ -92,7 +92,7 @@ public class TermController {
         log.info("Received request for all Terms");
         Page<TermResponse> terms = repository.findAll(page.createIdSortedPage()).map(Term::convertToResponse);
         log.info("Returned {} Terms", terms.getContent().size());
-        return ResponseEntity.ok(new RestResponsePage<>(terms.getContent(), terms.getPageable(), terms.getTotalElements()));
+        return ResponseEntity.ok(new RestResponsePage<>(terms));
     }
 
     @ApiOperation(value = "Count all Terms")

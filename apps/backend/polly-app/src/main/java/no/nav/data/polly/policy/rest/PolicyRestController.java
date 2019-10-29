@@ -12,11 +12,11 @@ import no.nav.data.polly.common.rest.PageParameters;
 import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.informationtype.InformationTypeService;
 import no.nav.data.polly.policy.PolicyService;
+import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
-import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.mapper.PolicyMapper;
-import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.process.ProcessService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -85,7 +85,7 @@ public class PolicyRestController {
         } else {
             log.debug("Received request for all Policies");
             Page<PolicyResponse> policyResponses = policyRepository.findAll(pageParameters.createIdSortedPage()).map(mapper::mapPolicyToResponse);
-            return ResponseEntity.ok(new RestResponsePage<>(policyResponses.getContent(), policyResponses.getPageable(), policyResponses.getTotalElements()));
+            return ResponseEntity.ok(new RestResponsePage<>(policyResponses));
         }
     }
 

@@ -117,7 +117,7 @@ public class InformationTypeController {
         log.info("Received request for all InformationTypes");
         Page<InformationTypeResponse> informationTypes = repository.findAll(page.createIdSortedPage()).map(InformationType::convertToResponse);
         log.info("Returned {} InformationTypes", informationTypes.getContent().size());
-        return ResponseEntity.ok(new RestResponsePage<>(informationTypes.getContent(), informationTypes.getPageable(), informationTypes.getTotalElements()));
+        return ResponseEntity.ok(new RestResponsePage<>(informationTypes));
     }
 
     @ApiOperation(value = "Count all InformationTypes")
