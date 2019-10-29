@@ -40,7 +40,7 @@ public class ElasticsearchService {
         this.elasticsearchProperties = elasticsearchProperties;
         this.leaderElectionService = leaderElectionService;
         this.counter = initCounter();
-        this.summary = MetricUtils.summary().name("elasticsearch_sync_summary").help("runtime es-sync")
+        this.summary = MetricUtils.summary().name("polly_elasticsearch_sync_summary").help("runtime es-sync")
                 .quantile(.5, .05).quantile(.9, .01).quantile(.95, .005).quantile(.99, .001)
                 .register();
     }
@@ -105,8 +105,8 @@ public class ElasticsearchService {
     private static Counter initCounter() {
         return MetricUtils.counter()
                 .labels("sync").labels("create").labels("update").labels("delete")
-                .name("datacatalog_elasticsearch_sync")
-                .help("Sync stats for datacatalog")
+                .name("polly_elasticsearch_sync")
+                .help("Sync stats for InformationTypes")
                 .labelNames("action")
                 .register();
     }

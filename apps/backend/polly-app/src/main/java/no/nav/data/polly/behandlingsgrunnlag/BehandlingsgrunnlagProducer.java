@@ -51,7 +51,7 @@ public class BehandlingsgrunnlagProducer {
     private void initMetrics() {
         counter = counter()
                 .labels("feil").labels("ok")
-                .name(Collector.sanitizeMetricName(String.format("kafka_producer_%s_counter", topic)))
+                .name(Collector.sanitizeMetricName(String.format("polly_kafka_producer_%s_counter", topic)))
                 .help(String.format("Kafka melding lagt på topic %s", topic))
                 .labelNames("resultat")
                 .register();

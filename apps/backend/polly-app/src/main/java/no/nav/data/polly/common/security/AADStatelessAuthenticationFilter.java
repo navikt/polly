@@ -117,7 +117,7 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
     private static Counter initCounter() {
         return MetricUtils.counter()
                 .labels("no_auth").labels("refresh_token").labels("refresh_token_lookup").labels("direct_token")
-                .name("adal_auth_counter")
+                .name("polly_adal_auth_counter")
                 .help("Counter for authentication events")
                 .labelNames("action")
                 .register();
