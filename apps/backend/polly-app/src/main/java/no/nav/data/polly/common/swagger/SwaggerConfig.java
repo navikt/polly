@@ -33,7 +33,8 @@ public class SwaggerConfig {
                 .apis(Predicates.or(basePackage("no.nav.data.polly.codelist"),
                         basePackage("no.nav.data.polly.github"),
                         basePackage("no.nav.data.polly.policy"),
-                        basePackage("no.nav.data.polly.behandlingsgrunnlag"),
+                        basePackage("no.nav.data.polly.informationtype"),
+                        basePackage("no.nav.data.polly.purpose"),
                         basePackage("no.nav.data.polly.process"),
                         basePackage("no.nav.data.polly.term")
                 ))
