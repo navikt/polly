@@ -7,11 +7,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import no.nav.data.polly.common.auditing.Auditable;
-import no.nav.data.polly.elasticsearch.ElasticsearchStatus;
-import no.nav.data.polly.elasticsearch.domain.InformationTypeElasticsearch;
-import no.nav.data.polly.elasticsearch.domain.PolicyElasticsearch;
-import no.nav.data.polly.policy.entities.Policy;
-import no.nav.data.polly.term.Term;
+import no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus;
+import no.nav.data.polly.elasticsearch.dto.InformationTypeElasticsearch;
+import no.nav.data.polly.elasticsearch.dto.PolicyElasticsearch;
+import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
+import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
+import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.term.domain.Term;
 import org.hibernate.annotations.Type;
 
 import java.util.HashSet;
@@ -32,9 +34,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import static no.nav.data.polly.common.utils.StreamUtils.copyOf;
-import static no.nav.data.polly.elasticsearch.ElasticsearchStatus.SYNCED;
-import static no.nav.data.polly.elasticsearch.ElasticsearchStatus.TO_BE_CREATED;
-import static no.nav.data.polly.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
+import static no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus.SYNCED;
+import static no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus.TO_BE_CREATED;
+import static no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus.TO_BE_UPDATED;
 
 @Data
 @Builder

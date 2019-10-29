@@ -1,7 +1,7 @@
 package no.nav.data.polly.common.validator;
 
 import no.nav.data.polly.codelist.CodelistService;
-import no.nav.data.polly.codelist.ListName;
+import no.nav.data.polly.codelist.domain.ListName;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;

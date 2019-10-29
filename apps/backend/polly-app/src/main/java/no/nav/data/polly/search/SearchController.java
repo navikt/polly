@@ -1,7 +1,7 @@
 package no.nav.data.polly.search;
 
 import no.nav.data.polly.elasticsearch.ElasticsearchProperties;
-import no.nav.data.polly.elasticsearch.ElasticsearchRepository;
+import no.nav.data.polly.elasticsearch.domain.ElasticsearchRepository;
 import org.elasticsearch.action.search.SearchResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

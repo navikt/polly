@@ -1,14 +1,14 @@
 package no.nav.data.polly.policy.mapper;
 
-import no.nav.data.polly.codelist.CodeResponse;
+import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.codelist.CodelistService;
-import no.nav.data.polly.codelist.ListName;
-import no.nav.data.polly.legalbasis.LegalBasis;
-import no.nav.data.polly.legalbasis.LegalBasisRequest;
-import no.nav.data.polly.policy.domain.InformationTypeNameResponse;
-import no.nav.data.polly.policy.domain.PolicyRequest;
-import no.nav.data.polly.policy.domain.PolicyResponse;
-import no.nav.data.polly.policy.entities.Policy;
+import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.policy.domain.LegalBasis;
+import no.nav.data.polly.policy.dto.LegalBasisRequest;
+import no.nav.data.polly.policy.dto.InformationTypeNameResponse;
+import no.nav.data.polly.policy.dto.PolicyRequest;
+import no.nav.data.polly.policy.dto.PolicyResponse;
+import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import org.springframework.stereotype.Component;

@@ -1,7 +1,7 @@
 package no.nav.data.polly.informationtype;
 
 import no.nav.data.polly.IntegrationTestBase;
-import no.nav.data.polly.elasticsearch.ElasticsearchStatus;
+import no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
 import org.junit.jupiter.api.Test;

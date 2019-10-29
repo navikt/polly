@@ -2,6 +2,7 @@ package no.nav.data.polly.term;
 
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.term.TermController.TermPage;
+import no.nav.data.polly.term.dto.TermRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;

@@ -2,14 +2,14 @@ package no.nav.data.polly.policy;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.codelist.CodelistService;
-import no.nav.data.polly.codelist.ListName;
+import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.validator.ValidationError;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
-import no.nav.data.polly.policy.domain.PolicyRequest;
-import no.nav.data.polly.policy.entities.Policy;
-import no.nav.data.polly.policy.repository.PolicyRepository;
+import no.nav.data.polly.policy.dto.PolicyRequest;
+import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.policy.domain.PolicyRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 

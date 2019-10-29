@@ -2,6 +2,8 @@ package no.nav.data.polly.codelist;
 
 
 import no.nav.data.polly.IntegrationTestBase;
+import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.codelist.dto.CodelistRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;

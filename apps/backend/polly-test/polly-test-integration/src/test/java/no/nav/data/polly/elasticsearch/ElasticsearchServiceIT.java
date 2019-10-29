@@ -2,8 +2,10 @@ package no.nav.data.polly.elasticsearch;
 
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.common.utils.JsonUtils;
-import no.nav.data.polly.elasticsearch.domain.InformationTypeElasticsearch;
-import no.nav.data.polly.elasticsearch.domain.PolicyElasticsearch;
+import no.nav.data.polly.elasticsearch.domain.ElasticsearchRepository;
+import no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus;
+import no.nav.data.polly.elasticsearch.dto.InformationTypeElasticsearch;
+import no.nav.data.polly.elasticsearch.dto.PolicyElasticsearch;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import org.awaitility.Duration;
 import org.junit.jupiter.api.AfterAll;
@@ -13,8 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static no.nav.data.polly.elasticsearch.ElasticsearchDocument.newDocumentId;
-import static no.nav.data.polly.elasticsearch.ElasticsearchStatus.SYNCED;
+import static no.nav.data.polly.elasticsearch.domain.ElasticsearchDocument.newDocumentId;
+import static no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus.SYNCED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 

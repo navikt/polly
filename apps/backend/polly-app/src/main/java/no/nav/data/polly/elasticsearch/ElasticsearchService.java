@@ -5,20 +5,22 @@ import io.prometheus.client.Summary;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.nais.LeaderElectionService;
 import no.nav.data.polly.common.utils.MetricUtils;
-import no.nav.data.polly.elasticsearch.domain.InformationTypeElasticsearch;
+import no.nav.data.polly.elasticsearch.domain.ElasticsearchDocument;
+import no.nav.data.polly.elasticsearch.domain.ElasticsearchRepository;
+import no.nav.data.polly.elasticsearch.dto.InformationTypeElasticsearch;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
-import no.nav.data.polly.policy.entities.Policy;
-import no.nav.data.polly.policy.repository.PolicyRepository;
+import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.policy.domain.PolicyRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static no.nav.data.polly.elasticsearch.ElasticsearchStatus.SYNCED;
-import static no.nav.data.polly.elasticsearch.ElasticsearchStatus.TO_BE_CREATED;
-import static no.nav.data.polly.elasticsearch.ElasticsearchStatus.TO_BE_DELETED;
-import static no.nav.data.polly.elasticsearch.ElasticsearchStatus.TO_BE_UPDATED;
+import static no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus.SYNCED;
+import static no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus.TO_BE_CREATED;
+import static no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus.TO_BE_DELETED;
+import static no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus.TO_BE_UPDATED;
 
 @Slf4j
 @Service

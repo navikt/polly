@@ -2,9 +2,9 @@ package no.nav.data.polly.informationtype;
 
 import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.informationtype.domain.InformationType;
-import no.nav.data.polly.informationtype.domain.InformationTypeRequest;
-import no.nav.data.polly.term.Term;
-import no.nav.data.polly.term.TermRepository;
+import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
+import no.nav.data.polly.term.domain.Term;
+import no.nav.data.polly.term.domain.TermRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

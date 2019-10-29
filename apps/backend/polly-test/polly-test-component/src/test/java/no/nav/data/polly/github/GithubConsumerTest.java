@@ -2,10 +2,10 @@ package no.nav.data.polly.github;
 
 import no.nav.data.polly.common.tokensupport.JwtTokenGenerator;
 import no.nav.data.polly.common.validator.ValidationError;
-import no.nav.data.polly.github.domain.GithubAccount;
-import no.nav.data.polly.github.domain.GithubInstallation;
-import no.nav.data.polly.github.domain.GithubInstallationToken;
-import no.nav.data.polly.github.domain.RepoModification;
+import no.nav.data.polly.github.dto.GithubAccount;
+import no.nav.data.polly.github.dto.GithubInstallation;
+import no.nav.data.polly.github.dto.GithubInstallationToken;
+import no.nav.data.polly.github.dto.RepoModification;
 import org.eclipse.egit.github.core.CommitFile;
 import org.eclipse.egit.github.core.CommitStatus;
 import org.eclipse.egit.github.core.RepositoryCommit;

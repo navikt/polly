@@ -1,5 +1,7 @@
 package no.nav.data.polly.codelist;
 
+import no.nav.data.polly.codelist.domain.Codelist;
+import no.nav.data.polly.codelist.domain.ListName;
 import org.springframework.util.Assert;
 
 import java.util.EnumMap;

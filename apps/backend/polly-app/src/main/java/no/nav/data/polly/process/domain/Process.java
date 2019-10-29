@@ -7,7 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import no.nav.data.polly.common.auditing.Auditable;
-import no.nav.data.polly.policy.entities.Policy;
+import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.process.dto.ProcessResponse;
 import org.hibernate.annotations.Type;
 
 import java.util.HashSet;
@@ -19,6 +20,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
+import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Data
 @Builder
@@ -54,6 +57,15 @@ public class Process extends Auditable<String> {
             policy.setProcess(this);
         }
         return this;
+    }
+
+    public ProcessResponse convertToResponse() {
+        return ProcessResponse.builder()
+                .id(id.toString())
+                .name(name)
+                .purposeCode(purposeCode)
+                .informationTypes(convert(policies, Policy::convertToPurposeResponse))
+                .build();
     }
 
     public static class ProcessBuilder {

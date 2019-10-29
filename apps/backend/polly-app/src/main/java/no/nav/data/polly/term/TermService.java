@@ -3,6 +3,8 @@ package no.nav.data.polly.term;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.common.validator.RequestValidator;
+import no.nav.data.polly.term.domain.TermRepository;
+import no.nav.data.polly.term.dto.TermRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.exceptions.PollyTechnicalException;
 import no.nav.data.polly.common.utils.JsonUtils;
-import no.nav.data.polly.informationtype.domain.InformationTypeRequest;
+import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.eclipse.egit.github.core.RepositoryContents;
 

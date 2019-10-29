@@ -13,13 +13,13 @@ import no.nav.data.polly.informationtype.domain.InformationTypeData;
 import no.nav.data.polly.kafka.KafkaContainer;
 import no.nav.data.polly.kafka.KafkaTopicProperties;
 import no.nav.data.polly.kafka.SchemaRegistryContainer;
-import no.nav.data.polly.legalbasis.LegalBasis;
-import no.nav.data.polly.policy.entities.Policy;
-import no.nav.data.polly.policy.repository.PolicyRepository;
+import no.nav.data.polly.policy.domain.LegalBasis;
+import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessDistributionRepository;
 import no.nav.data.polly.process.domain.ProcessRepository;
-import no.nav.data.polly.term.TermRepository;
+import no.nav.data.polly.term.domain.TermRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,7 +43,7 @@ import java.util.function.BiConsumer;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
-import static no.nav.data.polly.elasticsearch.ElasticsearchStatus.SYNCED;
+import static no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus.SYNCED;
 
 @Slf4j
 @ActiveProfiles("test")
