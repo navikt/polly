@@ -10,11 +10,13 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: java11-{{ checksum ".circleci/install_java.sh" }}
+          name: Restore java cache
+          key: java-{{ checksum ".circleci/install_java.sh" }}
       - run:
-          name: Install java11
+          name: Install java
           command: cat ${JAVA_HOME}/release || bash .circleci/install_java.sh
       - restore_cache:
+          name: Restore m2 cache
           key: m2-{{ checksum "pom.xml" }}
       - run:
           name: Build application
@@ -35,16 +37,18 @@ jobs:
            - polly-app/target/app-exec.jar
            - Dockerfile
       - save_cache:
+          name: Cache m2
           key: m2-{{ checksum "pom.xml" }}
           paths:
             - ~/.m2
       - save_cache:
-          key: java11-{{ checksum ".circleci/install_java.sh" }}
+          name: Cache Java
+          key: java-{{ checksum ".circleci/install_java.sh" }}
           paths:
             - /tmp/java
   build_docker_image:
     docker:
-        - image: circleci/openjdk:11-stretch
+        - image: circleci/openjdk:stretch
     steps:
       - attach_workspace:
           at: ~/project
