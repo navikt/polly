@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Singular;
 import no.nav.data.polly.policy.dto.LegalBasisResponse;
 
 import java.util.List;
@@ -19,5 +20,6 @@ public class InformationTypePurposeResponse {
 
     private UUID id;
     private String name;
+    @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;
 }

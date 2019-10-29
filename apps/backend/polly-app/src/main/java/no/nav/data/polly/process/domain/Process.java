@@ -47,7 +47,7 @@ public class Process extends Auditable<String> {
     private String purposeCode;
 
     @Builder.Default
-    @OneToMany(mappedBy = "informationType")
+    @OneToMany(mappedBy = "process")
     private Set<Policy> policies = new HashSet<>();
 
     // Added outside builder to enforce backreference

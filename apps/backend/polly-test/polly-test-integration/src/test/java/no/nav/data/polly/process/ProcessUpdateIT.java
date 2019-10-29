@@ -1,8 +1,7 @@
-package no.nav.data.polly.purpose;
+package no.nav.data.polly.process;
 
 import no.nav.data.polly.KafkaIntegrationTestBase;
 import no.nav.data.polly.avro.ProcessUpdate;
-import no.nav.data.polly.process.ProcessService;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessDistributionRepository;
 import org.apache.kafka.clients.consumer.Consumer;
