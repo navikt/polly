@@ -8,7 +8,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import no.nav.data.polly.behandlingsgrunnlag.domain.InformationTypeBehandlingsgrunnlagResponse;
 import no.nav.data.polly.codelist.Codelist;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.ListName;
@@ -16,11 +15,13 @@ import no.nav.data.polly.common.auditing.Auditable;
 import no.nav.data.polly.elasticsearch.domain.PolicyElasticsearch;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.LegalBasis;
-import no.nav.data.polly.process.Process;
+import no.nav.data.polly.process.domain.Process;
+import no.nav.data.polly.purpose.domain.InformationTypePurposeResponse;
 import org.hibernate.annotations.Type;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import javax.persistence.Column;
@@ -51,7 +52,7 @@ public class Policy extends Auditable<String> {
     private UUID id;
 
     @NotNull
-    @Column(nullable = false, updatable = false)
+    @Column(name = "PURPOSE_CODE", nullable = false, updatable = false)
     private String purposeCode;
 
     @Column(name = "SUBJECT_CATEGORIES")
@@ -80,7 +81,7 @@ public class Policy extends Auditable<String> {
     private UUID informationTypeId;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "PROCESS_ID", nullable = false, updatable = false)
     private Process process;
 
@@ -98,8 +99,8 @@ public class Policy extends Auditable<String> {
         }
     }
 
-    public InformationTypeBehandlingsgrunnlagResponse convertToBehandlingsgrunnlagResponse() {
-        return new InformationTypeBehandlingsgrunnlagResponse(informationType.getId(), informationTypeName, convert(legalBases, LegalBasis::convertToResponse));
+    public InformationTypePurposeResponse convertToPurposeResponse() {
+        return new InformationTypePurposeResponse(informationType.getId(), informationTypeName, convert(legalBases, LegalBasis::convertToResponse));
     }
 
     public boolean isActive() {

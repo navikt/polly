@@ -2,7 +2,7 @@ package no.nav.data.polly.policy.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.data.polly.AppStarter;
-import no.nav.data.polly.behandlingsgrunnlag.BehandlingsgrunnlagService;
+import no.nav.data.polly.process.ProcessService;
 import no.nav.data.polly.codelist.CodeResponse;
 import no.nav.data.polly.common.rest.PageParameters;
 import no.nav.data.polly.informationtype.InformationTypeService;
@@ -71,7 +71,7 @@ class PolicyRestControllerTest {
     @MockBean
     private InformationTypeService informationTypeService;
     @MockBean
-    private BehandlingsgrunnlagService behandlingsgrunnlagService;
+    private ProcessService processService;
 
     @Test
     void getAllPolicies() throws Exception {

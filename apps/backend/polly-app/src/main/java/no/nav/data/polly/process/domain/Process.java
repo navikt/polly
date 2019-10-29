@@ -1,4 +1,4 @@
-package no.nav.data.polly.process;
+package no.nav.data.polly.process.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,6 +38,10 @@ public class Process extends Auditable<String> {
     @NotNull
     @Column(name = "NAME", nullable = false)
     private String name;
+
+    @NotNull
+    @Column(name = "PURPOSE_CODE", nullable = false)
+    private String purposeCode;
 
     @Builder.Default
     @OneToMany(mappedBy = "informationType")

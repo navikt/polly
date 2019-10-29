@@ -1,6 +1,7 @@
 package no.nav.data.polly;
 
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
+import no.nav.data.polly.avro.ProcessUpdate;
 import no.nav.data.polly.kafka.KafkaContainer;
 import no.nav.data.polly.kafka.SchemaRegistryContainer;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -27,15 +28,15 @@ public class KafkaIntegrationTestBase extends IntegrationTestBase {
         schemaRegistryContainer.start();
     }
 
-    protected Consumer<String, Behandlingsgrunnlag> behandlingsgrunnlagConsumer() {
+    protected Consumer<String, ProcessUpdate> processUpdateConsumer() {
         Map<String, Object> configs = new HashMap<>(KafkaTestUtils.consumerProps(kafkaContainer.getBootstrapServers(), "policy-itest", "false"));
         configs.put("specific.avro.reader", "true");
-        configs.put("schema.registry.url", schemaRegistryContainer.getAddress());
+        configs.put("schema.registry.url", SchemaRegistryContainer.getAddress());
         configs.put(ConsumerConfig.CLIENT_ID_CONFIG, "policy");
         configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         configs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class.getName());
         configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        var consumer = new DefaultKafkaConsumerFactory<>(configs, (Deserializer<String>) null, (Deserializer<Behandlingsgrunnlag>) null).createConsumer();
+        var consumer = new DefaultKafkaConsumerFactory<>(configs, (Deserializer<String>) null, (Deserializer<ProcessUpdate>) null).createConsumer();
         consumer.subscribe(Collections.singleton(topicProperties.getBehandlingsgrunnlag()));
         return consumer;
     }

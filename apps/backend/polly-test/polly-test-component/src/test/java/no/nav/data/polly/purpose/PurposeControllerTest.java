@@ -1,8 +1,8 @@
-package no.nav.data.polly.behandlingsgrunnlag;
+package no.nav.data.polly.purpose;
 
 import no.nav.data.polly.AppStarter;
-import no.nav.data.polly.behandlingsgrunnlag.domain.InformationTypeBehandlingsgrunnlagResponse;
 import no.nav.data.polly.legalbasis.LegalBasisResponse;
+import no.nav.data.polly.purpose.domain.InformationTypePurposeResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,24 +23,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(BehandlingsgrunnlagController.class)
+@WebMvcTest(PurposeController.class)
 @ContextConfiguration(classes = AppStarter.class)
 @ActiveProfiles("test")
-class BehandlingsgrunnlagControllerTest {
+class PurposeControllerTest {
 
     @Autowired
     private MockMvc mvc;
     @MockBean
-    private BehandlingsgrunnlagService behandlingsgrunnlagService;
+    private PurposeService purposeService;
 
     @Test
     void hentBehandlingsgrunnlag() throws Exception {
-        given(behandlingsgrunnlagService.findBehandlingForPurpose("the-purpose"))
-                .willReturn(List.of(new InformationTypeBehandlingsgrunnlagResponse(UUID.fromString("ebd6296f-dbfb-4be3-82ea-16f2cc64f031"),
+        given(purposeService.findPurpose("the-purpose"))
+                .willReturn(List.of(new InformationTypePurposeResponse(UUID.fromString("ebd6296f-dbfb-4be3-82ea-16f2cc64f031"),
                         "name", List.of(LegalBasisResponse.builder().gdpr("gdpr").nationalLaw("law").description("legaldesc").build()))
                 ));
 
-        mvc.perform(get("/behandlingsgrunnlag/purpose/{purpose}", "the-purpose"))
+        mvc.perform(get("/purpose/{purpose}", "the-purpose"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.purpose", is("the-purpose")))
                 .andExpect(jsonPath("$.informationTypes[0].id", is("ebd6296f-dbfb-4be3-82ea-16f2cc64f031")))

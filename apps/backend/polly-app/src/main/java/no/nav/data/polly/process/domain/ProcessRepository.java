@@ -1,4 +1,4 @@
-package no.nav.data.polly.process;
+package no.nav.data.polly.process.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

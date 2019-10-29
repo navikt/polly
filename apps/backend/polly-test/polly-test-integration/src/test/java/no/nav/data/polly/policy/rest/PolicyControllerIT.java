@@ -2,7 +2,7 @@ package no.nav.data.polly.policy.rest;
 
 import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import no.nav.data.polly.IntegrationTestBase;
-import no.nav.data.polly.behandlingsgrunnlag.domain.BehandlingsgrunnlagDistribution;
+import no.nav.data.polly.process.domain.ProcessDistribution;
 import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.LegalBasisRequest;
@@ -46,7 +46,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     @BeforeEach
     void setUp() {
-        behandlingsgrunnlagDistributionRepository.deleteAll();
+        processDistributionRepository.deleteAll();
     }
 
     @Test
@@ -239,9 +239,9 @@ class PolicyControllerIT extends IntegrationTestBase {
     }
 
     private void assertBehandlingsgrunnlagDistribusjon(int count) {
-        List<BehandlingsgrunnlagDistribution> all = behandlingsgrunnlagDistributionRepository.findAll();
+        List<ProcessDistribution> all = processDistributionRepository.findAll();
         assertThat(all, hasSize(count));
-        assertThat(all.get(0).getPurpose(), is(PURPOSE_CODE1));
+        assertThat(all.get(0).getPurposeCode(), is(PURPOSE_CODE1));
     }
 
     @Test

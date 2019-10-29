@@ -9,8 +9,8 @@ import no.nav.data.polly.policy.domain.InformationTypeNameResponse;
 import no.nav.data.polly.policy.domain.PolicyRequest;
 import no.nav.data.polly.policy.domain.PolicyResponse;
 import no.nav.data.polly.policy.entities.Policy;
-import no.nav.data.polly.process.Process;
-import no.nav.data.polly.process.ProcessRepository;
+import no.nav.data.polly.process.domain.Process;
+import no.nav.data.polly.process.domain.ProcessRepository;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -42,7 +42,7 @@ public class PolicyMapper {
             policy.setId(UUID.randomUUID());
         }
         processRepository.findByName(policyRequest.getProcess())
-                .orElseGet(() -> processRepository.save(Process.builder().generateId().name(policyRequest.getProcess()).build()))
+                .orElseGet(() -> processRepository.save(createProcess(policyRequest)))
                 .addPolicy(policy);
         return policy;
     }
@@ -62,6 +62,10 @@ public class PolicyMapper {
         response.setActive(policy.isActive());
         response.setLegalBases(convert(policy.getLegalBases(), LegalBasis::convertToResponse));
         return response;
+    }
+
+    private Process createProcess(PolicyRequest policyRequest) {
+        return Process.builder().generateId().name(policyRequest.getProcess()).purposeCode(policyRequest.getPurposeCode()).build();
     }
 
     private LocalDate parse(String date, LocalDate defaultValue) {

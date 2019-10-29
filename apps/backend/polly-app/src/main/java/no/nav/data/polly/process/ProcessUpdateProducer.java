@@ -1,9 +1,9 @@
-package no.nav.data.polly.behandlingsgrunnlag;
+package no.nav.data.polly.process;
 
 import io.prometheus.client.Collector;
 import io.prometheus.client.Counter;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.polly.Behandlingsgrunnlag;
+import no.nav.data.polly.avro.ProcessUpdate;
 import no.nav.data.polly.kafka.KafkaTopicProperties;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -16,29 +16,29 @@ import static no.nav.data.polly.common.utils.MetricUtils.counter;
 
 @Slf4j
 @Component
-public class BehandlingsgrunnlagProducer {
+public class ProcessUpdateProducer {
 
     private Counter counter;
     private final String topic;
-    private final KafkaTemplate<String, Behandlingsgrunnlag> kafkaTemplate;
+    private final KafkaTemplate<String, ProcessUpdate> kafkaTemplate;
 
     @SuppressWarnings("unchecked")
-    public BehandlingsgrunnlagProducer(
+    public ProcessUpdateProducer(
             KafkaTopicProperties topics,
             KafkaTemplate kafkaTemplate
     ) {
         this.topic = topics.getBehandlingsgrunnlag();
-        this.kafkaTemplate = (KafkaTemplate<String, Behandlingsgrunnlag>) kafkaTemplate;
+        this.kafkaTemplate = (KafkaTemplate<String, ProcessUpdate>) kafkaTemplate;
 
         initMetrics();
     }
 
-    boolean sendBehandlingsgrunnlag(String purpose, List<String> informationTypeNames) {
-        var behandlingsgrunnlag = new Behandlingsgrunnlag(purpose, new ArrayList<>(informationTypeNames));
-        log.info("Sender behandlingsgrunnlag {} på topic {}", behandlingsgrunnlag, topic);
+    boolean sendProcess(String processName, String purposeCode, List<String> informationTypeNames) {
+        var process = new ProcessUpdate(processName, purposeCode, new ArrayList<>(informationTypeNames));
+        log.info("Sender behandlingsgrunnlag {} på topic {}", process, topic);
 
         try {
-            kafkaTemplate.send(topic, purpose, behandlingsgrunnlag).get();
+            kafkaTemplate.send(topic, processName + "-" + purposeCode, process).get();
             counter.labels("ok").inc();
             return true;
         } catch (Exception e) {

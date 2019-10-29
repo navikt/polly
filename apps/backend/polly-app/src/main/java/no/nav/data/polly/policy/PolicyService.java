@@ -34,6 +34,7 @@ public class PolicyService {
     }
 
     public void validateRequests(List<PolicyRequest> requests, boolean isUpdate) {
+        // TODO validate process, and that process/purposecode from request matches existing process
         PolicyRequest.initialize(requests, isUpdate);
         List<ValidationError> validations = new ArrayList<>();
         Map<String, Integer> titlesUsedInRequest = new HashMap<>();

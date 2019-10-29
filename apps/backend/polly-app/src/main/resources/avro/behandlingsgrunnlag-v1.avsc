@@ -1,9 +1,26 @@
 {
-  "namespace": "no.nav.data.polly",
+  "namespace": "no.nav.data.polly.avro",
   "type": "record",
-  "name": "Behandlingsgrunnlag",
+  "name": "ProcessUpdate",
+  "doc": "Behandlingsgrunnlag",
   "fields": [
-    {"name": "purpose", "type": "string"},
-    {"name": "informationTypes", "type": {"type": "array", "items": "string"}}
+    {
+      "name": "processName",
+      "type": "string",
+      "doc": "Behandling"
+    },
+    {
+      "name": "purposeCode",
+      "type": "string",
+      "doc": "Formål"
+    },
+    {
+      "name": "informationTypes",
+      "type": {
+        "type": "array",
+        "items": "string"
+      },
+      "doc": "Opplysningstyper"
+    }
   ]
 }

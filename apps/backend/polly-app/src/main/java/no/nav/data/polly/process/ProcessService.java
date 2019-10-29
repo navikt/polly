@@ -1,10 +1,11 @@
-package no.nav.data.polly.behandlingsgrunnlag;
+package no.nav.data.polly.process;
 
-import no.nav.data.polly.behandlingsgrunnlag.domain.BehandlingsgrunnlagDistribution;
-import no.nav.data.polly.behandlingsgrunnlag.domain.InformationTypeBehandlingsgrunnlagResponse;
 import no.nav.data.polly.common.nais.LeaderElectionService;
 import no.nav.data.polly.policy.PolicyService;
 import no.nav.data.polly.policy.entities.Policy;
+import no.nav.data.polly.process.domain.Process;
+import no.nav.data.polly.process.domain.ProcessDistribution;
+import no.nav.data.polly.process.domain.ProcessDistributionRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
@@ -16,51 +17,44 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toList;
 import static no.nav.data.polly.common.utils.MdcUtils.wrapAsync;
 
 @Service
-public class BehandlingsgrunnlagService {
+public class ProcessService {
 
-    private final BehandlingsgrunnlagDistributionRepository distributionRepository;
-    private final BehandlingsgrunnlagProducer behandlingsgrunnlagProducer;
+    private final ProcessDistributionRepository distributionRepository;
+    private final ProcessUpdateProducer processUpdateProducer;
     private final PolicyService policyService;
     private final LeaderElectionService leaderElectionService;
 
-    public BehandlingsgrunnlagService(BehandlingsgrunnlagDistributionRepository distributionRepository,
-            PolicyService policyService, BehandlingsgrunnlagProducer behandlingsgrunnlagProducer,
+    public ProcessService(ProcessDistributionRepository distributionRepository,
+            PolicyService policyService, ProcessUpdateProducer processUpdateProducer,
             LeaderElectionService leaderElectionService,
             @Value("${behandlingsgrunnlag.distribute.rate.seconds}") Integer rateSeconds) {
         this.distributionRepository = distributionRepository;
         this.policyService = policyService;
-        this.behandlingsgrunnlagProducer = behandlingsgrunnlagProducer;
+        this.processUpdateProducer = processUpdateProducer;
         this.leaderElectionService = leaderElectionService;
         scheduleDistributions(rateSeconds);
     }
 
-    List<InformationTypeBehandlingsgrunnlagResponse> findBehandlingForPurpose(String purpose) {
-        return policyService.findActiveByPurposeCode(purpose).stream()
-                .map(Policy::convertToBehandlingsgrunnlagResponse)
-                .collect(toList());
-    }
-
-    public void scheduleDistributeForPurpose(String purpose) {
-        distributionRepository.save(BehandlingsgrunnlagDistribution.newForPurpose(purpose));
+    public void scheduleDistributeForPurpose(Process process) {
+        distributionRepository.save(ProcessDistribution.newForPurpose(process.getName(), process.getPurposeCode()));
     }
 
     public void distributeAll() {
         if (!leaderElectionService.isLeader()) {
             return;
         }
-        distributionRepository.findAll().stream().collect(groupingBy(BehandlingsgrunnlagDistribution::getPurpose)).forEach(this::distribute);
+        distributionRepository.findAll().stream().collect(groupingBy(ProcessDistribution::convertToProcess)).forEach(this::distribute);
     }
 
-    private void distribute(String purpose, List<BehandlingsgrunnlagDistribution> behandlingsgrunnlagDistributions) {
-        List<String> informationTypeNames = policyService.findActiveByPurposeCode(purpose).stream()
+    private void distribute(Process process, List<ProcessDistribution> processDistributions) {
+        List<String> informationTypeNames = policyService.findActiveByPurposeCode(process.getPurposeCode()).stream()
                 .map(Policy::getInformationTypeName)
                 .collect(Collectors.toList());
-        if (behandlingsgrunnlagProducer.sendBehandlingsgrunnlag(purpose, informationTypeNames)) {
-            behandlingsgrunnlagDistributions.forEach(bd -> distributionRepository.deleteById(bd.getId()));
+        if (processUpdateProducer.sendProcess(process.getName(), process.getPurposeCode(), informationTypeNames)) {
+            processDistributions.forEach(bd -> distributionRepository.deleteById(bd.getId()));
         }
     }
 

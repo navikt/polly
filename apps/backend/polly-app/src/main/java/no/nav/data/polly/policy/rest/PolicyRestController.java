@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.polly.behandlingsgrunnlag.BehandlingsgrunnlagService;
 import no.nav.data.polly.common.exceptions.PollyNotFoundException;
 import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.rest.PageParameters;
@@ -18,6 +17,7 @@ import no.nav.data.polly.policy.domain.PolicyResponse;
 import no.nav.data.polly.policy.entities.Policy;
 import no.nav.data.polly.policy.mapper.PolicyMapper;
 import no.nav.data.polly.policy.repository.PolicyRepository;
+import no.nav.data.polly.process.ProcessService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,15 +54,15 @@ public class PolicyRestController {
     private final PolicyService service;
     private final PolicyMapper mapper;
     private final PolicyRepository policyRepository;
-    private final BehandlingsgrunnlagService behandlingsgrunnlagService;
+    private final ProcessService processService;
     private final InformationTypeService informationTypeService;
 
     public PolicyRestController(PolicyService service, PolicyMapper mapper, PolicyRepository policyRepository,
-            BehandlingsgrunnlagService behandlingsgrunnlagService, InformationTypeService informationTypeService) {
+            ProcessService processService, InformationTypeService informationTypeService) {
         this.service = service;
         this.mapper = mapper;
         this.policyRepository = policyRepository;
-        this.behandlingsgrunnlagService = behandlingsgrunnlagService;
+        this.processService = processService;
         this.informationTypeService = informationTypeService;
     }
 
@@ -222,7 +222,7 @@ public class PolicyRestController {
     }
 
     private void onChange(List<Policy> policies) {
-        policies.stream().map(Policy::getPurposeCode).distinct().forEach(behandlingsgrunnlagService::scheduleDistributeForPurpose);
+        policies.stream().map(Policy::getProcess).distinct().forEach(processService::scheduleDistributeForPurpose);
         informationTypeService.sync(policies.stream().map(Policy::getInformationTypeId).collect(toList()));
     }
 }

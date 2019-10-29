@@ -1,7 +1,10 @@
-package no.nav.data.polly.behandlingsgrunnlag;
+package no.nav.data.polly.purpose;
 
-import no.nav.data.polly.Behandlingsgrunnlag;
 import no.nav.data.polly.KafkaIntegrationTestBase;
+import no.nav.data.polly.avro.ProcessUpdate;
+import no.nav.data.polly.process.ProcessService;
+import no.nav.data.polly.process.domain.Process;
+import no.nav.data.polly.process.domain.ProcessDistributionRepository;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.awaitility.Duration;
@@ -16,18 +19,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class BehandlingsgrunnlagIT extends KafkaIntegrationTestBase {
+class ProcessUpdateIT extends KafkaIntegrationTestBase {
 
     @Autowired
-    private BehandlingsgrunnlagService behandlingsgrunnlagService;
+    private ProcessService processService;
     @Autowired
-    private BehandlingsgrunnlagDistributionRepository repository;
-    private Consumer<String, Behandlingsgrunnlag> consumer;
+    private ProcessDistributionRepository repository;
+    private Consumer<String, ProcessUpdate> consumer;
 
     @BeforeEach
     void setUp() {
         repository.deleteAll();
-        consumer = behandlingsgrunnlagConsumer();
+        consumer = processUpdateConsumer();
         // Clean out topic
         KafkaTestUtils.getRecords(consumer, 0L);
     }
@@ -45,15 +48,16 @@ class BehandlingsgrunnlagIT extends KafkaIntegrationTestBase {
             }
         });
 
-        behandlingsgrunnlagService.scheduleDistributeForPurpose(PURPOSE_CODE1);
-        behandlingsgrunnlagService.distributeAll();
+        processService.scheduleDistributeForPurpose(Process.builder().name(PROCESS_NAME_1).purposeCode(PURPOSE_CODE1).build());
+        processService.distributeAll();
 
         await().atMost(Duration.TEN_SECONDS).untilAsserted(() -> assertEquals(0L, repository.count()));
 
-        ConsumerRecord<String, Behandlingsgrunnlag> singleRecord = KafkaTestUtils.getSingleRecord(consumer, topicProperties.getBehandlingsgrunnlag());
+        ConsumerRecord<String, ProcessUpdate> singleRecord = KafkaTestUtils.getSingleRecord(consumer, topicProperties.getBehandlingsgrunnlag());
 
-        assertEquals(PURPOSE_CODE1, singleRecord.key());
-        assertEquals(PURPOSE_CODE1, singleRecord.value().getPurpose());
+        assertEquals(PROCESS_NAME_1 + "-" + PURPOSE_CODE1, singleRecord.key());
+        assertEquals(PROCESS_NAME_1, singleRecord.value().getProcessName());
+        assertEquals(PURPOSE_CODE1, singleRecord.value().getPurposeCode());
         assertThat(singleRecord.value().getInformationTypes()).contains(INFORMATION_TYPE_NAME, INFORMATION_TYPE_NAME + "2");
     }
 }

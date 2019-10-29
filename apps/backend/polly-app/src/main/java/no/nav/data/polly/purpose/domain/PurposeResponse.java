@@ -1,4 +1,4 @@
-package no.nav.data.polly.behandlingsgrunnlag.domain;
+package no.nav.data.polly.purpose.domain;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Value;
@@ -7,8 +7,8 @@ import java.util.List;
 
 @Value
 @JsonPropertyOrder({"purpose", "informationTypes"})
-public class BehandlingsgrunnlagResponse {
+public class PurposeResponse {
 
     private String purpose;
-    private List<InformationTypeBehandlingsgrunnlagResponse> informationTypes;
+    private List<InformationTypePurposeResponse> informationTypes;
 }
