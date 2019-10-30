@@ -35,6 +35,7 @@ type TablePurposeProps = {
 };
 
 const TablePurpose = ({ datasets }: TablePurposeProps) => {
+  const [useCss, theme] = useStyletron();
   const [titleDirection, setTitleDirection] = React.useState<any>(null);
   const [userDirection, setUserDirection] = React.useState<any>(null);
   const [legalBasisDirection, setLegalBasisDirection] = React.useState<any>(null);
@@ -107,10 +108,10 @@ const TablePurpose = ({ datasets }: TablePurposeProps) => {
 
     return datasets;
   };
-  
+
   return (
     <React.Fragment>
-      <StyledTable>
+      <StyledTable className={useCss({ overflow: "hidden !important"})}>
         <StyledHeader>
           <SortableHeadCell
             title="Opplysningstype"

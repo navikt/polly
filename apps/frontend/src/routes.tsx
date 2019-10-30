@@ -8,12 +8,15 @@ import PurposePage from './pages/PurposePage'
 import TempCreatePage from './pages/temp/TempCreatePage'
 import TempPurposePage from './pages/temp/TempPurposePage'
 import TempPurposePageSec from './pages/temp/TempPurposePageSec'
+import TempPurposePageThird from './pages/temp/TempPurposePageThird'
+
 const Routes = (): JSX.Element => (
     <Root>
         <Switch>
             <Route exact path="/temp" component={TempCreatePage} />
             <Route exact path="/tempPurpose" component={TempPurposePage} />
             <Route exact path="/tempPurpose2" component={TempPurposePageSec} />
+            <Route exact path="/tempPurpose3" component={TempPurposePageThird} />
 
             <Route exact path="/create" component={CreatePage} />
             <Route exact path="/edit/:id" component={EditPage} />
