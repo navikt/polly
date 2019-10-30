@@ -46,7 +46,7 @@ const TempPurposePage = () => {
                     onChange={(event) => handleChangePurpose(event.option ? event.option.id : null)}
                 />
             </Block>
-
+            
             {showResult && currentPurpose ? (
                 <React.Fragment>
                     <Block marginTop="3rem">
@@ -54,7 +54,11 @@ const TempPurposePage = () => {
                         <Paragraph2>{currentPurpose.description}</Paragraph2>
                     </Block>
 
-                    <Block marginTop="3rem">
+                    <Block marginTop="4rem">
+                    <Block display="flex" justifyContent="flex-end">
+                        <Label2 font="font400" marginBottom="1rem">Behandlinger</Label2>
+                    </Block>
+
                         <Accordion>
                             {currentPurpose.behandlinger.map((behandling: any) => (
                                 <Panel title={behandling.title} key={behandling.title}>
