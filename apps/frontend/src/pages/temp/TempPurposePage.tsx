@@ -55,7 +55,7 @@ const TempPurposePage = () => {
                     </Block>
 
                     <Block marginTop="4rem">
-                    <Block display="flex" justifyContent="flex-end">
+                    <Block display="flex">
                         <Label2 font="font400" marginBottom="1rem">Behandlinger</Label2>
                     </Block>
 
