@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.purpose.dto.PurposeResponse;
@@ -40,7 +42,8 @@ public class PurposeController {
     @GetMapping("/{purpose}")
     @Transactional
     public ResponseEntity<PurposeResponse> getPurpose(@PathVariable String purpose) {
-        var processes = processRepository.findByPurposeCode(purpose).stream().map(Process::convertToResponseWithInformationTypes).collect(toList());
+        String purposeCode = CodelistService.getCodelist(ListName.PURPOSE, purpose).getCode();
+        var processes = processRepository.findByPurposeCode(purposeCode).stream().map(Process::convertToResponseWithInformationTypes).collect(toList());
         return ResponseEntity.ok(new PurposeResponse(purpose, processes));
     }
 }
