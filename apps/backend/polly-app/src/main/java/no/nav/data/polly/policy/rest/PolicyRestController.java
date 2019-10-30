@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
@@ -111,17 +110,18 @@ public class PolicyRestController {
 
     @ApiOperation(value = "Create Policy", tags = {"Policies"})
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Policy successfully created", response = PolicyResponse.class, responseContainer = "List"),
+            @ApiResponse(code = 201, message = "Policy successfully created", response = PolicyPage.class),
             @ApiResponse(code = 400, message = "Illegal arguments"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<List<PolicyResponse>> createPolicy(@Valid @RequestBody List<PolicyRequest> policyRequests) {
+    public ResponseEntity<RestResponsePage<PolicyResponse>> createPolicy(@Valid @RequestBody List<PolicyRequest> policyRequests) {
         log.debug("Received request to create Policies");
         service.validateRequests(policyRequests, false);
         List<Policy> policies = policyRequests.stream().map(mapper::mapRequestToPolicy).collect(toList());
         onChange(policies);
-        return new ResponseEntity<>(policyRepository.saveAll(policies).stream().map(mapper::mapPolicyToResponse).collect(Collectors.toList()), HttpStatus.CREATED);
+        List<PolicyResponse> responses = policyRepository.saveAll(policies).stream().map(mapper::mapPolicyToResponse).collect(toList());
+        return new ResponseEntity<>(new RestResponsePage<>(responses), HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "Get Policy", tags = {"Policies"})
@@ -199,16 +199,17 @@ public class PolicyRestController {
 
     @ApiOperation(value = "Update Policies", tags = {"Policies"})
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Polices updated", response = PolicyResponse.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "Polices updated", response = PolicyPage.class),
             @ApiResponse(code = 404, message = "Policy not found"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @PutMapping
-    public ResponseEntity<List<PolicyResponse>> updatePolicies(@Valid @RequestBody List<PolicyRequest> policyRequests) {
+    public ResponseEntity<RestResponsePage<PolicyResponse>> updatePolicies(@Valid @RequestBody List<PolicyRequest> policyRequests) {
         log.debug("Received requests to update Policies");
         service.validateRequests(policyRequests, true);
         List<Policy> policies = policyRequests.stream().map(mapper::mapRequestToPolicy).collect(toList());
         onChange(policies);
-        return ResponseEntity.ok(policyRepository.saveAll(policies).stream().map(mapper::mapPolicyToResponse).collect(Collectors.toList()));
+        List<PolicyResponse> response = policyRepository.saveAll(policies).stream().map(mapper::mapPolicyToResponse).collect(toList());
+        return ResponseEntity.ok(new RestResponsePage<>(response));
     }
 
     private RuntimeException notFoundError(UUID id) {
@@ -217,7 +218,7 @@ public class PolicyRestController {
         throw new PollyNotFoundException(message);
     }
 
-    private static final class PolicyPage extends RestResponsePage<PolicyResponse> {
+    static final class PolicyPage extends RestResponsePage<PolicyResponse> {
 
     }
 

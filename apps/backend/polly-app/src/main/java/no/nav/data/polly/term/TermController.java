@@ -138,7 +138,7 @@ public class TermController {
 
     @ApiOperation(value = "Update Term")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Accepted one Term to be updated", response = Term.class),
+            @ApiResponse(code = 200, message = "Accepted one Term to be updated", response = TermResponse.class),
             @ApiResponse(code = 400, message = "Illegal arguments"),
             @ApiResponse(code = 404, message = "Term not found"),
             @ApiResponse(code = 500, message = "Internal server error")})
@@ -164,11 +164,11 @@ public class TermController {
 
     @ApiOperation(value = "Delete Term")
     @ApiResponses(value = {
-            @ApiResponse(code = 202, message = "Term deleted"),
+            @ApiResponse(code = 202, message = "Term deleted", response = TermResponse.class),
             @ApiResponse(code = 404, message = "Term not found"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteTermById(@PathVariable UUID id) {
+    public ResponseEntity<TermResponse> deleteTermById(@PathVariable UUID id) {
         log.info("Received a request to delete Term with id={}", id);
         Optional<Term> fromRepository = repository.findById(id);
         if (fromRepository.isEmpty()) {

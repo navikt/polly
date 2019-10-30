@@ -2,7 +2,6 @@ package no.nav.data.polly.policy.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.data.polly.AppStarter;
-import no.nav.data.polly.process.ProcessService;
 import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.common.rest.PageParameters;
 import no.nav.data.polly.informationtype.InformationTypeService;
@@ -10,12 +9,13 @@ import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 import no.nav.data.polly.policy.PolicyService;
+import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.policy.dto.InformationTypeNameResponse;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
-import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.mapper.PolicyMapper;
-import no.nav.data.polly.policy.domain.PolicyRepository;
+import no.nav.data.polly.process.ProcessService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,7 +148,7 @@ class PolicyRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(request)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.*", hasSize(1)));
+                .andExpect(jsonPath("$.content", hasSize(1)));
 
         verify(informationTypeService).sync(List.of(INFORMATION_TYPE_ID_1));
     }
@@ -168,7 +168,7 @@ class PolicyRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(request)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.*", hasSize(2)));
+                .andExpect(jsonPath("$.content", hasSize(2)));
         verify(informationTypeService).sync(List.of(INFORMATION_TYPE_ID_1, INFORMATION_TYPE_ID_2));
     }
 
@@ -208,7 +208,7 @@ class PolicyRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.*", hasSize(2)));
+                .andExpect(jsonPath("$.content", hasSize(2)));
         verify(informationTypeService).sync(List.of(INFORMATION_TYPE_ID_1, INFORMATION_TYPE_ID_2));
     }
 

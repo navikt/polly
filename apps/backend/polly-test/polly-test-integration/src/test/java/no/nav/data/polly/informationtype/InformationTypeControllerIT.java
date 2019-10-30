@@ -4,6 +4,7 @@ import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus;
+import no.nav.data.polly.informationtype.InformationTypeController.InformationTypePage;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
@@ -92,10 +93,11 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         req1.setTerm("existingterm");
         InformationTypeRequest req2 = createRequest("createName2");
 
-        ResponseEntity<List> responseEntity = restTemplate.exchange("/informationtype", HttpMethod.POST, new HttpEntity<>(List.of(req1, req2)), List.class);
+        ResponseEntity<InformationTypePage> responseEntity = restTemplate
+                .exchange("/informationtype", HttpMethod.POST, new HttpEntity<>(List.of(req1, req2)), InformationTypePage.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(responseEntity.getBody().size()).isEqualTo(2);
+        assertThat(responseEntity.getBody().getTotalElements()).isEqualTo(2);
         assertThat(informationTypeRepository.count()).isEqualTo(2L);
         assertThat(informationTypeRepository.findByName("createName1")).isPresent();
         assertThat(informationTypeRepository.findByName("createName2")).isPresent();
@@ -126,11 +128,11 @@ class InformationTypeControllerIT extends IntegrationTestBase {
 
         requests.forEach(request -> request.setDescription("UPDATED DESCRIPTION"));
 
-        ResponseEntity<List> responseEntity = restTemplate.exchange(
-                "/informationtype", HttpMethod.PUT, new HttpEntity<>(requests), List.class);
+        ResponseEntity<InformationTypePage> responseEntity = restTemplate.exchange(
+                "/informationtype", HttpMethod.PUT, new HttpEntity<>(requests), InformationTypePage.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody().size()).isEqualTo(3);
+        assertThat(responseEntity.getBody().getTotalElements()).isEqualTo(3);
         assertThat(informationTypeRepository.count()).isEqualTo(3L);
         assertThat(informationTypeRepository.findByName("InformationType_nr1")
                 .get()
