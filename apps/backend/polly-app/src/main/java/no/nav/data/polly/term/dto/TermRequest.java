@@ -9,9 +9,6 @@ import lombok.experimental.FieldNameConstants;
 import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
 
 @Data
 @Builder
@@ -27,14 +24,6 @@ public class TermRequest implements RequestElement {
     private int requestIndex;
     @JsonIgnore
     private boolean update;
-
-    public static void initiateRequests(List<TermRequest> requests, boolean update) {
-        AtomicInteger i = new AtomicInteger(1);
-        requests.forEach(req -> {
-            req.setUpdate(update);
-            req.setRequestIndex(i.getAndIncrement());
-        });
-    }
 
     @Override
     public String getIdentifyingFields() {

@@ -114,8 +114,7 @@ public class TermController {
     public ResponseEntity<RestResponsePage<TermResponse>> createTerms(@RequestBody List<TermRequest> requests) {
         log.info("Received requests to create Terms");
         requests = StreamUtils.nullToEmptyList(requests);
-        TermRequest.initiateRequests(requests, false);
-        service.validateRequest(requests);
+        service.validateRequest(requests, false);
         List<Term> terms = convert(requests, Term::convertFromNewRequest);
 
         return new ResponseEntity<>(new RestResponsePage<>(repository.saveAll(terms).stream().map(Term::convertToResponse).collect(Collectors.toList())), HttpStatus.CREATED);
@@ -130,8 +129,7 @@ public class TermController {
     public ResponseEntity<RestResponsePage<TermResponse>> updateTerms(@RequestBody List<TermRequest> requestsIn) {
         log.info("Received requests to update Terms");
         var requests = StreamUtils.nullToEmptyList(requestsIn);
-        TermRequest.initiateRequests(requests, true);
-        service.validateRequest(requests);
+        service.validateRequest(requests, true);
         List<Term> all = repository.findAllByNameIn(convert(requests, TermRequest::getName));
         all.forEach(term -> term.convertFromRequest(requests.stream().filter(r -> r.getName().equals(term.getName())).findFirst().orElseThrow()));
 
@@ -156,8 +154,7 @@ public class TermController {
         if (!existingName.equals(request.getName())) {
             throw new ValidationException(String.format("Cannot change name of term in update, id=%s has name=%s", id, existingName));
         }
-        TermRequest.initiateRequests(List.of(request), true);
-        service.validateRequest(List.of(request));
+        service.validateRequest(List.of(request), true);
 
         Term term = byId.get().convertFromRequest(request);
 

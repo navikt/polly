@@ -5,11 +5,13 @@ import no.nav.data.polly.common.exceptions.ValidationException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -98,5 +100,13 @@ public abstract class RequestValidator<T extends RequestElement> {
             log.error("The request was not accepted. The following errors occurred during validation: {}", validationErrors);
             throw new ValidationException(validationErrors, "The request was not accepted. The following errors occurred during validation: ");
         }
+    }
+
+    protected void initialize(Collection<? extends RequestElement> requests, boolean update) {
+        AtomicInteger requestIndex = new AtomicInteger(1);
+        requests.forEach(req -> {
+            req.setUpdate(update);
+            req.setRequestIndex(requestIndex.getAndIncrement());
+        });
     }
 }

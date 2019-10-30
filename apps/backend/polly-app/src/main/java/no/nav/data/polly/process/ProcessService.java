@@ -1,12 +1,15 @@
 package no.nav.data.polly.process;
 
 import no.nav.data.polly.common.nais.LeaderElectionService;
+import no.nav.data.polly.common.utils.StreamUtils;
+import no.nav.data.polly.common.validator.RequestValidator;
 import no.nav.data.polly.policy.PolicyService;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessDistribution;
 import no.nav.data.polly.process.domain.ProcessDistributionRepository;
 import no.nav.data.polly.process.domain.ProcessRepository;
+import no.nav.data.polly.process.dto.ProcessRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
@@ -21,7 +24,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static no.nav.data.polly.common.utils.MdcUtils.wrapAsync;
 
 @Service
-public class ProcessService {
+public class ProcessService extends RequestValidator<ProcessRequest> {
 
     private final ProcessDistributionRepository distributionRepository;
     private final ProcessUpdateProducer processUpdateProducer;
@@ -72,4 +75,13 @@ public class ProcessService {
                 Instant.now().plus(1, ChronoUnit.MINUTES), Duration.ofSeconds(rate));
     }
 
+    public void validateRequest(List<ProcessRequest> requests) {
+        initialize(requests, false);
+        var validationErrors = StreamUtils.applyAll(requests,
+                req -> validateRepositoryValues(req, processRepository.findByName(req.getName()).isPresent()),
+                this::validateFields
+        );
+
+        checkForErrors(validationErrors);
+    }
 }

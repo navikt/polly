@@ -19,7 +19,8 @@ public class TermService extends RequestValidator<TermRequest> {
         this.termRepository = termRepository;
     }
 
-    void validateRequest(List<TermRequest> requests) {
+    void validateRequest(List<TermRequest> requests, boolean update) {
+        initialize(requests, update);
         var validationErrors = StreamUtils.applyAll(requests,
                 req -> validateRepositoryValues(req, termRepository.findByName(req.getName()).isPresent()),
                 this::validateFields

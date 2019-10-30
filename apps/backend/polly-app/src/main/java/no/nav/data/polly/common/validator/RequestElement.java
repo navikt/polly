@@ -16,8 +16,12 @@ public interface RequestElement {
     @JsonIgnore
     boolean isUpdate();
 
+    void setUpdate(boolean update);
+
     @JsonIgnore
     int getRequestIndex();
+
+    void setRequestIndex(int index);
 
     @JsonIgnore
     default String getReference() {
@@ -32,4 +36,5 @@ public interface RequestElement {
     }
 
     void validate(FieldValidator validator);
+
 }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import no.nav.data.polly.common.auditing.Auditable;
 import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import org.hibernate.annotations.Type;
 
@@ -74,6 +75,10 @@ public class Process extends Auditable<String> {
                 .purposeCode(purposeCode)
                 .informationTypes(convert(policies, Policy::convertToPurposeResponse))
                 .build();
+    }
+
+    public void convertFromRequest(ProcessRequest request) {
+
     }
 
     public static class ProcessBuilder {

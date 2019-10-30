@@ -4,6 +4,7 @@ import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.dto.LegalBasisResponse;
 import no.nav.data.polly.process.ProcessController.ProcessPage;
+import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.purpose.dto.InformationTypePurposeResponse;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,7 +26,7 @@ class ProcessControllerIT extends IntegrationTestBase {
     void hentProcess() {
         Policy policy = createPolicy(PURPOSE_CODE1, createInformationType());
 
-        ResponseEntity<ProcessResponse> resp = restTemplate.getForEntity("/process/{processName}", ProcessResponse.class, "Auto_" + PURPOSE_CODE1);
+        ResponseEntity<ProcessResponse> resp = restTemplate.getForEntity("/process/{id}", ProcessResponse.class, policy.getProcess().getId());
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         ProcessResponse processResponse = resp.getBody();
@@ -59,5 +62,12 @@ class ProcessControllerIT extends IntegrationTestBase {
                 .id(policy2.getProcess().getId().toString())
                 .name("Auto_" + PURPOSE_CODE1 + 2).purposeCode(PURPOSE_CODE1 + 2)
                 .build());
+    }
+
+    @Test
+    void createProcess() {
+        ResponseEntity<ProcessPage> resp = restTemplate
+                .postForEntity("/process", List.of(ProcessRequest.builder().name("newprocess").purposeCode("AAP").build()), ProcessPage.class);
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 }
