@@ -16,11 +16,13 @@ public interface RequestElement {
     @JsonIgnore
     boolean isUpdate();
 
+    @JsonIgnore
     void setUpdate(boolean update);
 
     @JsonIgnore
     int getRequestIndex();
 
+    @JsonIgnore
     void setRequestIndex(int index);
 
     @JsonIgnore

@@ -6,18 +6,22 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldNameConstants;
+import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.common.validator.FieldValidator;
+import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.policy.domain.Policy;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldNameConstants
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PolicyRequest {
+public class PolicyRequest implements RequestElement {
 
     private String id;
     private String purposeCode;
@@ -29,24 +33,30 @@ public class PolicyRequest {
     private String end;
 
     @JsonIgnore
-    private int requestId;
+    private int requestIndex;
     @JsonIgnore
-    private boolean isUpdate;
+    private boolean update;
     @JsonIgnore
     private InformationType informationType;
     @JsonIgnore
     private Policy existingPolicy;
+
+    @Override
+    public String getIdentifyingFields() {
+        return process + "-" + purposeCode + "-" + subjectCategories;
+    }
 
     @JsonIgnore
     public String getReference() {
         return getInformationTypeName() + "/" + getPurposeCode();
     }
 
-    public static void initialize(List<PolicyRequest> requests, boolean isUpdate) {
-        AtomicInteger i = new AtomicInteger(1);
-        requests.forEach(req -> {
-            req.setUpdate(isUpdate);
-            req.setRequestId(i.getAndIncrement());
-        });
+    @Override
+    public void validate(FieldValidator validator) {
+        validator.checkCodelist(Fields.purposeCode, purposeCode, ListName.PURPOSE);
+        validator.checkBlank(Fields.informationTypeName, informationTypeName);
+        validator.checkBlank(Fields.process, process);
+        validator.checkBlank(Fields.subjectCategories, subjectCategories);
     }
+
 }

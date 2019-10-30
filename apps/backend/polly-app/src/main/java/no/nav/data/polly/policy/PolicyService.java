@@ -4,12 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.exceptions.ValidationException;
+import no.nav.data.polly.common.validator.RequestValidator;
 import no.nav.data.polly.common.validator.ValidationError;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
-import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
+import no.nav.data.polly.policy.dto.PolicyRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class PolicyService {
+public class PolicyService extends RequestValidator<PolicyRequest> {
 
     private final PolicyRepository policyRepository;
     private final InformationTypeRepository informationTypeRepository;
@@ -35,7 +36,7 @@ public class PolicyService {
 
     public void validateRequests(List<PolicyRequest> requests, boolean isUpdate) {
         // TODO validate process, and that process/purposecode from request matches existing process
-        PolicyRequest.initialize(requests, isUpdate);
+        initialize(requests, isUpdate);
         List<ValidationError> validations = new ArrayList<>();
         Map<String, Integer> titlesUsedInRequest = new HashMap<>();
         final AtomicInteger i = new AtomicInteger(1);
