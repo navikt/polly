@@ -25,8 +25,10 @@ public class ElasticsearchIndexingSchedulerConfig implements SchedulingConfigure
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-        long syncIntervalInMillis = TimeUnit.SECONDS.toMillis(syncIntervalSeconds);
-        taskRegistrar.addFixedRateTask(syncTask(syncIntervalInMillis, 1000L));
+        if (syncIntervalSeconds > 0) {
+            long syncIntervalInMillis = TimeUnit.SECONDS.toMillis(syncIntervalSeconds);
+            taskRegistrar.addFixedRateTask(syncTask(syncIntervalInMillis, 1000L));
+        }
     }
 
     IntervalTask syncTask(long interval, long initialDelay) {
