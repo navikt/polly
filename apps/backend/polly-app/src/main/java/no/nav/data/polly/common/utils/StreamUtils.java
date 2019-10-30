@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -75,4 +76,7 @@ public final class StreamUtils {
                 .collect(Collectors.toList());
     }
 
+    public static <T> List<T> filter(Collection<T> objects, Predicate<T> filter) {
+        return safeStream(objects).filter(filter).collect(Collectors.toList());
+    }
 }
