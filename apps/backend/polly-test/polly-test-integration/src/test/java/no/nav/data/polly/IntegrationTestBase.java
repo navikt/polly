@@ -13,7 +13,8 @@ import no.nav.data.polly.informationtype.domain.InformationTypeData;
 import no.nav.data.polly.kafka.KafkaContainer;
 import no.nav.data.polly.kafka.KafkaTopicProperties;
 import no.nav.data.polly.kafka.SchemaRegistryContainer;
-import no.nav.data.polly.policy.domain.LegalBasis;
+import no.nav.data.polly.legalbasis.domain.LegalBasis;
+import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.process.domain.Process;
@@ -36,7 +37,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiConsumer;
@@ -121,10 +121,11 @@ public abstract class IntegrationTestBase {
         Policy policy = Policy.builder()
                 .generateId()
                 .purposeCode(purpose)
-                .legalBases(List.of(new LegalBasis("a", "b", "desc")))
+                .legalBasis(createLegalBasis())
                 .informationType(informationType).informationTypeName(informationType.getData().getName())
                 .subjectCategories("Bror")
-                .start(LocalDate.now()).end(LocalDate.now()).build();
+                .activeToday()
+                .build();
         createProcess(purpose).addPolicy(policy);
         return policyRepository.save(policy);
     }
@@ -153,7 +154,16 @@ public abstract class IntegrationTestBase {
     }
 
     protected Process createProcess(String purpose) {
-        return process.computeIfAbsent(purpose, (p) -> processRepository.save(Process.builder().generateId().name("Auto_" + purpose).purposeCode(purpose).build()));
+        return process.computeIfAbsent(purpose,
+                (p) -> processRepository.save(Process.builder().generateId().name("Auto_" + purpose).purposeCode(purpose).legalBasis(createLegalBasis()).build()));
+    }
+
+    private LegalBasis createLegalBasis() {
+        return LegalBasis.builder().gdpr("a").nationalLaw("b").description("desc").activeToday().build();
+    }
+
+    protected LegalBasisResponse legalBasisResponse() {
+        return LegalBasisResponse.builder().gdpr("a").nationalLaw("b").description("desc").start(LocalDate.now()).end(LocalDate.now()).build();
     }
 
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {

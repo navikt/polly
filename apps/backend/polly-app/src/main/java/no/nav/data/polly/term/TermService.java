@@ -2,6 +2,7 @@ package no.nav.data.polly.term;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.utils.StreamUtils;
+import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.common.validator.RequestValidator;
 import no.nav.data.polly.term.domain.TermRepository;
 import no.nav.data.polly.term.dto.TermRequest;
@@ -23,7 +24,7 @@ public class TermService extends RequestValidator<TermRequest> {
         initialize(requests, update);
         var validationErrors = StreamUtils.applyAll(requests,
                 req -> validateRepositoryValues(req, termRepository.findByName(req.getName()).isPresent()),
-                this::validateFields
+                RequestElement::validateFields
         );
 
         checkForErrors(validationErrors);

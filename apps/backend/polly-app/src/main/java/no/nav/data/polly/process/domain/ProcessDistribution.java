@@ -4,7 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,6 +34,6 @@ public class ProcessDistribution {
     }
 
     public Process convertToProcess() {
-        return new Process(null, process, purposeCode, Collections.emptySet());
+        return new Process(null, process, purposeCode, List.of(), Set.of());
     }
 }

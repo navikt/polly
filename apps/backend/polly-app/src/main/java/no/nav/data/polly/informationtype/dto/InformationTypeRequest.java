@@ -41,10 +41,9 @@ public class InformationTypeRequest implements RequestElement {
     private List<String> sources;
     private List<String> keywords;
 
-    @JsonIgnore
     private boolean update;
-    @JsonIgnore
     private int requestIndex;
+
     @JsonIgnore
     private InformationTypeMaster informationTypeMaster;
     @JsonIgnore

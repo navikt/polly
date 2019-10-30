@@ -16,4 +16,6 @@ public class LegalBasisElasticSearch {
     private String gdpr;
     private String nationalLaw;
     private String description;
+    private String start;
+    private String end;
 }

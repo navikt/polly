@@ -5,7 +5,7 @@ import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.process.domain.ProcessDistribution;
 import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.informationtype.domain.InformationType;
-import no.nav.data.polly.policy.dto.LegalBasisRequest;
+import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.policy.domain.Policy;

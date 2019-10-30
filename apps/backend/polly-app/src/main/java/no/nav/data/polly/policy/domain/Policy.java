@@ -8,12 +8,14 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.auditing.Auditable;
+import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.elasticsearch.dto.PolicyElasticsearch;
 import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.purpose.dto.InformationTypePurposeResponse;
 import org.hibernate.annotations.Type;
@@ -84,7 +86,6 @@ public class Policy extends Auditable<String> {
     private Process process;
 
     @Valid
-    @Builder.Default
     @Type(type = "jsonb")
     @Column(name = "LEGAL_BASES", nullable = false)
     private List<LegalBasis> legalBases = new ArrayList<>();
@@ -98,12 +99,11 @@ public class Policy extends Auditable<String> {
     }
 
     public InformationTypePurposeResponse convertToPurposeResponse() {
-        return new InformationTypePurposeResponse(informationTypeId, informationTypeName, convert(legalBases, LegalBasis::convertToResponse));
+        return isActive() ? new InformationTypePurposeResponse(informationTypeId, informationTypeName, convert(legalBases, LegalBasis::convertToResponse)) : null;
     }
 
     public boolean isActive() {
-        return (start == null || start.minusDays(1).isBefore(LocalDate.now())) &&
-                (end == null || end.plusDays(1).isAfter(LocalDate.now()));
+        return DateUtil.isNow(start, end);
     }
 
     public PolicyElasticsearch convertToElasticsearch() {
@@ -136,6 +136,12 @@ public class Policy extends Auditable<String> {
             if (informationType != null) {
                 this.informationTypeId = informationType.getId();
             }
+            return this;
+        }
+
+        public PolicyBuilder activeToday() {
+            start = LocalDate.now();
+            end = LocalDate.now();
             return this;
         }
     }

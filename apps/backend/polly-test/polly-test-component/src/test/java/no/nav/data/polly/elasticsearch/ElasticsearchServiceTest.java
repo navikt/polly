@@ -8,7 +8,7 @@ import no.nav.data.polly.elasticsearch.domain.ElasticsearchRepository;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
-import no.nav.data.polly.policy.domain.LegalBasis;
+import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import org.junit.jupiter.api.AfterEach;

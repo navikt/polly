@@ -36,9 +36,7 @@ public class CodelistRequest implements RequestElement {
                 .build();
     }
 
-    @JsonIgnore
     private boolean update;
-    @JsonIgnore
     private int requestIndex;
 
     @Override

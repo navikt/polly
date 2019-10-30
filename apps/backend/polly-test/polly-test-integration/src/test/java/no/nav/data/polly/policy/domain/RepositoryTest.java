@@ -1,6 +1,7 @@
 package no.nav.data.polly.policy.domain;
 
 import no.nav.data.polly.IntegrationTestBase;
+import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

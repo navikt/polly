@@ -140,7 +140,7 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
 
         requests.forEach(request -> {
             request.toUpperCaseAndTrim();
-            validationErrors.addAll(validateFields(request));
+            validationErrors.addAll(request.validateFields());
 
             if (request.getListAsListName() != null) {
                 boolean existInRepository = repository.findByListAndNormalizedCode(request.getListAsListName(), Codelist.normalize(request.getCode())).isPresent();

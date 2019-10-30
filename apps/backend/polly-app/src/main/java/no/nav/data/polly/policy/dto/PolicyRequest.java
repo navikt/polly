@@ -1,7 +1,6 @@
 package no.nav.data.polly.policy.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +10,7 @@ import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
 
 import java.util.List;
@@ -20,22 +20,20 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldNameConstants
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class PolicyRequest implements RequestElement {
 
     private String id;
-    private String purposeCode;
-    private String informationTypeName;
     private String process;
+    private String purposeCode;
     private String subjectCategories;
-    private List<LegalBasisRequest> legalBases;
+    private String informationTypeName;
     private String start;
     private String end;
+    private List<LegalBasisRequest> legalBases;
 
-    @JsonIgnore
     private int requestIndex;
-    @JsonIgnore
     private boolean update;
+
     @JsonIgnore
     private InformationType informationType;
     @JsonIgnore

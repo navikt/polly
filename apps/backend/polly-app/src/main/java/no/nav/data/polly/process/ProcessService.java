@@ -2,6 +2,7 @@ package no.nav.data.polly.process;
 
 import no.nav.data.polly.common.nais.LeaderElectionService;
 import no.nav.data.polly.common.utils.StreamUtils;
+import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.common.validator.RequestValidator;
 import no.nav.data.polly.policy.PolicyService;
 import no.nav.data.polly.policy.domain.Policy;
@@ -79,7 +80,7 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
         initialize(requests, false);
         var validationErrors = StreamUtils.applyAll(requests,
                 req -> validateRepositoryValues(req, processRepository.findByName(req.getName()).isPresent()),
-                this::validateFields
+                RequestElement::validateFields
         );
 
         checkForErrors(validationErrors);

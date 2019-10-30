@@ -132,7 +132,7 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
         List<ValidationError> validationErrors = new ArrayList<>(validateNoDuplicates(requests));
 
         requests.forEach(request -> {
-            validationErrors.addAll(validateFields(request));
+            validationErrors.addAll(request.validateFields());
             request.format();
             validationErrors.addAll(validateInformationTypeRepositoryValues(request));
         });

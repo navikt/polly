@@ -7,13 +7,15 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import no.nav.data.polly.common.auditing.Auditable;
+import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.process.dto.ProcessPolicyResponse;
-import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import org.hibernate.annotations.Type;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Column;
@@ -21,6 +23,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
@@ -48,6 +51,11 @@ public class Process extends Auditable<String> {
     @Column(name = "PURPOSE_CODE", nullable = false)
     private String purposeCode;
 
+    @Valid
+    @Type(type = "jsonb")
+    @Column(name = "LEGAL_BASES", nullable = false)
+    private List<LegalBasis> legalBases = new ArrayList<>();
+
     @Builder.Default
     @OneToMany(mappedBy = "process")
     private Set<Policy> policies = new HashSet<>();
@@ -66,6 +74,7 @@ public class Process extends Auditable<String> {
                 .id(id.toString())
                 .name(name)
                 .purposeCode(purposeCode)
+                .legalBases(convert(legalBases, LegalBasis::convertToResponse))
                 .build();
     }
 
@@ -74,18 +83,23 @@ public class Process extends Auditable<String> {
                 .id(id.toString())
                 .name(name)
                 .purposeCode(purposeCode)
+                .legalBases(convert(legalBases, LegalBasis::convertToResponse))
                 .informationTypes(convert(policies, Policy::convertToPurposeResponse))
                 .build();
     }
 
-    public void convertFromRequest(ProcessRequest request) {
-
-    }
-
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static class ProcessBuilder {
+
+        private List<LegalBasis> legalBases = new ArrayList<>();
 
         public ProcessBuilder generateId() {
             id = UUID.randomUUID();
+            return this;
+        }
+
+        public ProcessBuilder legalBasis(LegalBasis legalBasis) {
+            legalBases.add(legalBasis);
             return this;
         }
     }

@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
-import no.nav.data.polly.policy.dto.LegalBasisResponse;
+import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 
 import java.util.List;
 import java.util.UUID;

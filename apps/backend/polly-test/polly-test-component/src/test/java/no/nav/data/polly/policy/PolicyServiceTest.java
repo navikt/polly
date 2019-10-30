@@ -5,7 +5,7 @@ import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
-import no.nav.data.polly.policy.dto.LegalBasisRequest;
+import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;

@@ -1,24 +1,29 @@
-package no.nav.data.polly.policy.dto;
+package no.nav.data.polly.legalbasis.dto;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.data.polly.common.utils.DateUtil;
 
-import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"gdpr", "nationalLaw", "description"})
+@JsonPropertyOrder({"gdpr", "nationalLaw", "description", "start", "end", "active"})
 public class LegalBasisResponse {
 
-    @NotNull
     private String gdpr;
     private String nationalLaw;
-    @NotNull
     private String description;
+    private LocalDate start;
+    private LocalDate end;
+
+    public boolean isActive() {
+        return DateUtil.isNow(start, end);
+    }
 
 }

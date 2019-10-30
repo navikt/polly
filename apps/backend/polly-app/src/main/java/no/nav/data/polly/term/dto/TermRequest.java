@@ -1,6 +1,5 @@
 package no.nav.data.polly.term.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,9 +19,7 @@ public class TermRequest implements RequestElement {
     private String name;
     private String description;
 
-    @JsonIgnore
     private int requestIndex;
-    @JsonIgnore
     private boolean update;
 
     @Override

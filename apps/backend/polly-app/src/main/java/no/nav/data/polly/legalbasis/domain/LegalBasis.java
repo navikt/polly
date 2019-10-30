@@ -1,13 +1,15 @@
-package no.nav.data.polly.policy.domain;
+package no.nav.data.polly.legalbasis.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.elasticsearch.dto.LegalBasisElasticSearch;
-import no.nav.data.polly.policy.dto.LegalBasisResponse;
+import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -21,9 +23,17 @@ public class LegalBasis implements Serializable {
     private String nationalLaw;
     @NotNull
     private String description;
+    @NotNull
+    private LocalDate start;
+    @NotNull
+    private LocalDate end;
+
+    public boolean isActive() {
+        return DateUtil.isNow(start, end);
+    }
 
     public LegalBasisResponse convertToResponse() {
-        return new LegalBasisResponse(gdpr, nationalLaw, description);
+        return new LegalBasisResponse(gdpr, nationalLaw, description, start, end);
     }
 
     public LegalBasisElasticSearch convertToElasticsearch() {
@@ -31,6 +41,17 @@ public class LegalBasis implements Serializable {
                 .gdpr(gdpr)
                 .nationalLaw(nationalLaw)
                 .description(description)
+                .start(DateUtil.formatDate(start))
+                .end(DateUtil.formatDate(end))
                 .build();
+    }
+
+    public static class LegalBasisBuilder {
+
+        public LegalBasisBuilder activeToday() {
+            start = LocalDate.now();
+            end = LocalDate.now();
+            return this;
+        }
     }
 }

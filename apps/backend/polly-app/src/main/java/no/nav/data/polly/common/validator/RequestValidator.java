@@ -52,7 +52,6 @@ public abstract class RequestValidator<T extends RequestElement> {
         return validationErrors;
     }
 
-
     private List<ValidationError> validateThatElementsDoNotUseTheSameIdentifyingFieldsInTheRequest(List<T> requests) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
@@ -65,10 +64,6 @@ public abstract class RequestValidator<T extends RequestElement> {
                                         .getIdentifyingFields()))));
 
         return validationErrors.stream().distinct().collect(Collectors.toList());
-    }
-
-    protected List<ValidationError> validateFields(T request) {
-        return request.validateFields().getErrors();
     }
 
     protected List<ValidationError> validateRepositoryValues(T request, boolean existInRepository) {
