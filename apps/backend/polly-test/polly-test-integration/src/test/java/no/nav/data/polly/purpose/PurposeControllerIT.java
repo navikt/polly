@@ -3,7 +3,7 @@ package no.nav.data.polly.purpose;
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.dto.LegalBasisResponse;
-import no.nav.data.polly.process.dto.ProcessResponse;
+import no.nav.data.polly.process.dto.ProcessPolicyResponse;
 import no.nav.data.polly.purpose.dto.InformationTypePurposeResponse;
 import no.nav.data.polly.purpose.dto.PurposeResponse;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ class PurposeControllerIT extends IntegrationTestBase {
 
         assertThat(purposeResponse).isEqualTo(PurposeResponse.builder()
                 .purpose(PURPOSE_CODE1)
-                .process(ProcessResponse.builder()
+                .process(ProcessPolicyResponse.builder()
                         .id(policy.getProcess().getId().toString())
                         .name("Auto_" + PURPOSE_CODE1).purposeCode(PURPOSE_CODE1)
                         .informationType(InformationTypePurposeResponse.builder()

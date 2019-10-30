@@ -4,6 +4,7 @@ import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.dto.LegalBasisResponse;
 import no.nav.data.polly.process.ProcessController.ProcessPage;
+import no.nav.data.polly.process.dto.ProcessPolicyResponse;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.purpose.dto.InformationTypePurposeResponse;
@@ -26,13 +27,13 @@ class ProcessControllerIT extends IntegrationTestBase {
     void hentProcess() {
         Policy policy = createPolicy(PURPOSE_CODE1, createInformationType());
 
-        ResponseEntity<ProcessResponse> resp = restTemplate.getForEntity("/process/{id}", ProcessResponse.class, policy.getProcess().getId());
+        ResponseEntity<ProcessPolicyResponse> resp = restTemplate.getForEntity("/process/{id}", ProcessPolicyResponse.class, policy.getProcess().getId());
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        ProcessResponse processResponse = resp.getBody();
+        ProcessPolicyResponse processResponse = resp.getBody();
         assertThat(processResponse).isNotNull();
 
-        assertThat(processResponse).isEqualTo(ProcessResponse.builder()
+        assertThat(processResponse).isEqualTo(ProcessPolicyResponse.builder()
                 .id(policy.getProcess().getId().toString())
                 .name("Auto_" + PURPOSE_CODE1).purposeCode(PURPOSE_CODE1)
                 .informationType(InformationTypePurposeResponse.builder()

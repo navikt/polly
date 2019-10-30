@@ -11,6 +11,7 @@ import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessRepository;
+import no.nav.data.polly.process.dto.ProcessPolicyResponse;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import org.springframework.data.domain.Page;
@@ -62,11 +63,11 @@ public class ProcessController {
 
     @ApiOperation(value = "Get Process with InformationTypes")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Process fetched", response = ProcessResponse.class),
+            @ApiResponse(code = 200, message = "Process fetched", response = ProcessPolicyResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/name/{processName}")
     @Transactional
-    public ResponseEntity<ProcessResponse> getProcess(@PathVariable String processName) {
+    public ResponseEntity<ProcessPolicyResponse> getProcess(@PathVariable String processName) {
         log.info("Received request for Process with name={}", processName);
         var process = repository.findByName(processName).map(Process::convertToResponseWithInformationTypes);
         if (process.isEmpty()) {
@@ -78,16 +79,16 @@ public class ProcessController {
         return ResponseEntity.ok(process.get());
     }
 
-    @ApiOperation(value = "Get Process")
+    @ApiOperation(value = "Get Process with InformationTypes")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Process fetched", response = ProcessResponse.class),
+            @ApiResponse(code = 200, message = "Process fetched", response = ProcessPolicyResponse.class),
             @ApiResponse(code = 404, message = "Process not found"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/{id}")
     @Transactional
-    public ResponseEntity<ProcessResponse> findForId(@PathVariable UUID id) {
+    public ResponseEntity<ProcessPolicyResponse> findForId(@PathVariable UUID id) {
         log.info("Received request for Process with id={}", id);
-        Optional<ProcessResponse> process = repository.findById(id).map(Process::convertToResponseWithInformationTypes);
+        Optional<ProcessPolicyResponse> process = repository.findById(id).map(Process::convertToResponseWithInformationTypes);
         if (process.isEmpty()) {
             log.info("Cannot find the Process with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
-import no.nav.data.polly.process.dto.ProcessResponse;
+import no.nav.data.polly.process.dto.ProcessPolicyResponse;
 
 import java.util.List;
 
@@ -19,5 +19,5 @@ public class PurposeResponse {
 
     private String purpose;
     @Singular
-    private List<ProcessResponse> processes;
+    private List<ProcessPolicyResponse> processes;
 }
