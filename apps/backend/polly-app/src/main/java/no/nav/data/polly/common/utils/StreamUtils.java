@@ -45,8 +45,8 @@ public final class StreamUtils {
         return new CollectionDifference<>(before, after, removed, shared, added);
     }
 
-    public static <T> CollectionDifference<T> difference(List<T> before, List<T> after) {
-        return difference(before, after, (Comparator<T>) Comparator.comparing(Function.identity()));
+    public static <T extends Comparable<T>> CollectionDifference<T> difference(List<T> before, List<T> after) {
+        return difference(before, after, Comparator.comparing(Function.identity()));
     }
 
     public static <T> List<T> nullToEmptyList(List<T> list) {

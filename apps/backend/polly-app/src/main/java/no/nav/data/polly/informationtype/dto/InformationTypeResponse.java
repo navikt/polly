@@ -7,9 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
 import no.nav.data.polly.informationtype.domain.InformationTypeMaster;
@@ -51,7 +51,7 @@ public class InformationTypeResponse {
         setPii(data.getPii());
         setSensitivity(data.getSensitivity());
         setCategories(CodelistService.getCodeResponseForCodelistItems(ListName.CATEGORY, data.getCategories()));
-        setSources(CodelistService.getCodeResponseForCodelistItems(ListName.PROVENANCE, data.getSources()));
+        setSources(CodelistService.getCodeResponseForCodelistItems(ListName.SOURCE, data.getSources()));
         setKeywords(copyOf(data.getKeywords()));
         setInformationTypeMaster(data.getInformationTypeMaster());
     }
