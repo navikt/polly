@@ -98,7 +98,7 @@ public class Policy extends Auditable<String> {
         }
     }
 
-    public InformationTypePurposeResponse convertToPurposeResponse() {
+    public InformationTypePurposeResponse convertToInformationTypePurposeResponse() {
         return isActive() ? new InformationTypePurposeResponse(informationTypeId, informationTypeName, convert(legalBases, LegalBasis::convertToResponse)) : null;
     }
 

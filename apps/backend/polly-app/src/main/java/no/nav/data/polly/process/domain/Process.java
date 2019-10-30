@@ -85,7 +85,7 @@ public class Process extends Auditable<String> {
                 .name(name)
                 .purposeCode(purposeCode)
                 .legalBases(convert(legalBases, LegalBasis::convertToResponse))
-                .informationTypes(convert(filter(policies, Policy::isActive), Policy::convertToPurposeResponse))
+                .informationTypes(convert(filter(policies, Policy::isActive), Policy::convertToInformationTypePurposeResponse))
                 .build();
     }
 
