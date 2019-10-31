@@ -32,6 +32,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
+import static java.util.stream.Collectors.toList;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Slf4j
@@ -47,36 +48,6 @@ public class ProcessController {
     public ProcessController(ProcessService service, ProcessRepository repository) {
         this.service = service;
         this.repository = repository;
-    }
-
-    @ApiOperation(value = "Get All Processes")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "All Processes fetched", response = ProcessPage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
-    @GetMapping
-    public ResponseEntity<RestResponsePage<ProcessResponse>> getAllProcesses(PageParameters pageParameters) {
-        log.info("Received request for all Processes");
-        Page<ProcessResponse> all = repository.findAll(pageParameters.createIdSortedPage()).map(Process::convertToResponse);
-        log.info("Returned {} Processes", all.getNumberOfElements());
-        return ResponseEntity.ok(new RestResponsePage<>(all));
-    }
-
-    @ApiOperation(value = "Get Process with InformationTypes")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Process fetched", response = ProcessPolicyResponse.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
-    @GetMapping("/name/{processName}")
-    @Transactional
-    public ResponseEntity<ProcessPolicyResponse> getProcess(@PathVariable String processName) {
-        log.info("Received request for Process with name={}", processName);
-        var process = repository.findByName(processName).map(Process::convertToResponseWithInformationTypes);
-        if (process.isEmpty()) {
-            log.info("Cannot find the Process with name={}", processName);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        log.info("Returned Process");
-
-        return ResponseEntity.ok(process.get());
     }
 
     @ApiOperation(value = "Get Process with InformationTypes")
@@ -95,6 +66,31 @@ public class ProcessController {
         }
         log.info("Returned Process");
         return ResponseEntity.ok(process.get());
+    }
+
+    @ApiOperation(value = "Get All Processes")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "All Processes fetched", response = ProcessPage.class),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @GetMapping
+    public ResponseEntity<RestResponsePage<ProcessResponse>> getAllProcesses(PageParameters pageParameters) {
+        log.info("Received request for all Processes");
+        Page<ProcessResponse> all = repository.findAll(pageParameters.createIdSortedPage()).map(Process::convertToResponse);
+        log.info("Returned {} Processes", all.getNumberOfElements());
+        return ResponseEntity.ok(new RestResponsePage<>(all));
+    }
+
+    @ApiOperation(value = "Get Processes for name with InformationTypes")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Process fetched", response = ProcessPolicyPage.class),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @GetMapping("/name/{processName}")
+    @Transactional
+    public ResponseEntity<RestResponsePage<ProcessPolicyResponse>> getProcess(@PathVariable String processName) {
+        log.info("Received request for Processes with name={}", processName);
+        var processes = repository.findByName(processName).stream().map(Process::convertToResponseWithInformationTypes).collect(toList());
+        log.info("Returned {} Processes", processes.size());
+        return ResponseEntity.ok(new RestResponsePage<>(processes));
     }
 
     @ApiOperation(value = "Count all Processes")
@@ -143,6 +139,10 @@ public class ProcessController {
     }
 
     static class ProcessPage extends RestResponsePage<ProcessResponse> {
+
+    }
+
+    static class ProcessPolicyPage extends RestResponsePage<ProcessPolicyResponse> {
 
     }
 }

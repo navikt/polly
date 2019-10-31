@@ -17,7 +17,7 @@ import no.nav.data.polly.elasticsearch.dto.PolicyElasticsearch;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.process.domain.Process;
-import no.nav.data.polly.purpose.dto.InformationTypePurposeResponse;
+import no.nav.data.polly.process.dto.InformationTypePurposeResponse;
 import org.hibernate.annotations.Type;
 
 import java.time.LocalDate;

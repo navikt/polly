@@ -5,9 +5,9 @@ import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
+import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
-import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.mapper.PolicyMapper;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessRepository;
@@ -49,7 +49,7 @@ class PolicyMapperTest {
 
     @Test
     void shouldMapToPolicy() {
-        given(processRepository.findByName("process")).willReturn(Optional.of(Process.builder().name("process").build()));
+        given(processRepository.findByNameAndPurposeCode("process", PURPOSE_CODE1)).willReturn(Optional.of(Process.builder().name("process").build()));
         InformationType informationType = createBasicTestdata();
         PolicyRequest request = PolicyRequest.builder()
                 .process("process")

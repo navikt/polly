@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
-import no.nav.data.polly.purpose.dto.InformationTypePurposeResponse;
 
 import java.util.List;
 

@@ -38,7 +38,7 @@ public class PolicyMapper {
         if (policy.getId() == null) {
             policy.setId(UUID.randomUUID());
         }
-        processRepository.findByName(policyRequest.getProcess())
+        processRepository.findByNameAndPurposeCode(policyRequest.getProcess(), policyRequest.getPurposeCode())
                 .orElseGet(() -> processRepository.save(createProcess(policyRequest)))
                 .addPolicy(policy);
         return policy;

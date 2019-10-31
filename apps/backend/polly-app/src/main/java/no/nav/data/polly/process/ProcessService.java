@@ -79,7 +79,7 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
     public void validateRequest(List<ProcessRequest> requests) {
         initialize(requests, false);
         var validationErrors = StreamUtils.applyAll(requests,
-                req -> validateRepositoryValues(req, processRepository.findByName(req.getName()).isPresent()),
+                req -> validateRepositoryValues(req, processRepository.findByNameAndPurposeCode(req.getName(), req.getPurposeCode()).isPresent()),
                 RequestElement::validateFields
         );
 

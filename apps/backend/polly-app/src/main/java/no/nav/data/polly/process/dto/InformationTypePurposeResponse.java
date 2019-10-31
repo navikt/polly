@@ -1,4 +1,4 @@
-package no.nav.data.polly.purpose.dto;
+package no.nav.data.polly.process.dto;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;

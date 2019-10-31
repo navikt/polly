@@ -1,10 +1,10 @@
-package no.nav.data.polly.purpose;
+package no.nav.data.polly.process;
 
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.process.ProcessController.ProcessPolicyPage;
+import no.nav.data.polly.process.dto.InformationTypePurposeResponse;
 import no.nav.data.polly.process.dto.ProcessPolicyResponse;
-import no.nav.data.polly.purpose.dto.InformationTypePurposeResponse;
-import no.nav.data.polly.purpose.dto.PurposeResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -22,15 +22,15 @@ class PurposeControllerIT extends IntegrationTestBase {
     void hentBehandlingsgrunnlag() {
         Policy policy = createPolicy(PURPOSE_CODE1, createInformationType());
 
-        ResponseEntity<PurposeResponse> resp = restTemplate.getForEntity("/purpose/{purpose}", PurposeResponse.class, PURPOSE_CODE1);
+        ResponseEntity<ProcessPolicyPage> resp = restTemplate.getForEntity("/process/purpose/{purpose}", ProcessPolicyPage.class, PURPOSE_CODE1);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        PurposeResponse purposeResponse = resp.getBody();
+        ProcessPolicyPage purposeResponse = resp.getBody();
         assertThat(purposeResponse).isNotNull();
 
-        assertThat(purposeResponse).isEqualTo(PurposeResponse.builder()
-                .purpose(PURPOSE_CODE1)
-                .process(ProcessPolicyResponse.builder()
+        assertThat(purposeResponse.getReturnedElements()).isOne();
+        assertThat(purposeResponse.getContent().get(0)).isEqualTo(
+                ProcessPolicyResponse.builder()
                         .id(policy.getProcess().getId().toString())
                         .name("Auto_" + PURPOSE_CODE1)
                         .purposeCode(PURPOSE_CODE1)
@@ -40,7 +40,7 @@ class PurposeControllerIT extends IntegrationTestBase {
                                 .name(INFORMATION_TYPE_NAME)
                                 .legalBasis(legalBasisResponse())
                                 .build())
-                        .build())
-                .build());
+                        .build());
+
     }
 }

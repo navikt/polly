@@ -8,7 +8,9 @@ import java.util.UUID;
 
 public interface ProcessRepository extends JpaRepository<Process, UUID> {
 
-    Optional<Process> findByName(String name);
+    Optional<Process> findByNameAndPurposeCode(String name, String purposeCode);
+
+    List<Process> findByName(String name);
 
     List<Process> findByPurposeCode(String purpose);
 }
