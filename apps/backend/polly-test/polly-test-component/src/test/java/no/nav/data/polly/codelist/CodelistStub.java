@@ -7,15 +7,18 @@ public class CodelistStub {
 
     public static void initializeCodelist() {
         CodelistCache.init();
-        CodelistCache.set(create(ListName.PROVENANCE, "ARBEIDSGIVER", "Arbeidsgiver"));
-        CodelistCache.set(create(ListName.PROVENANCE, "SKATTEETATEN", "Skatteetaten"));
-        CodelistCache.set(create(ListName.PROVENANCE, "BRUKER", "BRUKER"));
+        CodelistCache.set(create(ListName.SOURCE, "ARBEIDSGIVER", "Arbeidsgiver"));
+        CodelistCache.set(create(ListName.SOURCE, "SKATTEETATEN", "Skatteetaten"));
+        CodelistCache.set(create(ListName.SOURCE, "BRUKER", "BRUKER"));
+        CodelistCache.set(create(ListName.SOURCE, "Skatt", "Skatteetaten"));
         CodelistCache.set(create(ListName.CATEGORY, "Personalia", "Personalia"));
         CodelistCache.set(create(ListName.CATEGORY, "ARBEIDSFORHOLD", "Arbeidsforhold"));
         CodelistCache.set(create(ListName.CATEGORY, "UTDANNING", "Utdanning"));
         CodelistCache.set(create(ListName.PURPOSE, "Kontroll", "Kontrollering"));
         CodelistCache.set(create(ListName.PURPOSE, "AAP", "Arbeidsavklaringspenger"));
-        CodelistCache.set(create(ListName.SOURCE, "Skatt", "Skatteetaten"));
+        CodelistCache.set(create(ListName.NATIONAL_LAW, "Samtykke", ""));
+        CodelistCache.set(create(ListName.NATIONAL_LAW, "Ftrl", "1997-02-28-19"));
+        CodelistCache.set(create(ListName.NATIONAL_LAW, "Ny alderspensjon", "2009-06-05-32"));
     }
 
     private static Codelist create(ListName list, String code, String description) {

@@ -67,20 +67,20 @@ class CodelistControllerTest {
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(returnedCodelist.size()).isEqualTo(CodelistCache.getAllAsMap().size());
-        assertThat(returnedCodelist.get("PROVENANCE").size()).isEqualTo(3);
-        assertThat(returnedCodelist.get("CATEGORY").size()).isEqualTo(3);
+        assertThat(returnedCodelist.get("SOURCE").size()).isEqualTo(CodelistCache.getAsMap(ListName.SOURCE).size());
+        assertThat(returnedCodelist.get("CATEGORY").size()).isEqualTo(CodelistCache.getAsMap(ListName.CATEGORY).size());
     }
 
     @Test
     void getCodelistByListName_shouldReturnCodelistForProducer() throws Exception {
-        String uri = "/codelist/PROVENANCE";
+        String uri = "/codelist/SOURCE";
 
         MockHttpServletResponse response = mvc.perform(get(uri))
                 .andExpect(status().isOk())
                 .andReturn().getResponse();
 
         Map mappedResponse = JsonUtils.toObject(response.getContentAsString(), HashMap.class);
-        assertThat(mappedResponse).isEqualTo(CodelistCache.getAsMap(ListName.PROVENANCE));
+        assertThat(mappedResponse).isEqualTo(CodelistCache.getAsMap(ListName.SOURCE));
     }
 
     @Test
@@ -98,7 +98,7 @@ class CodelistControllerTest {
 
     @Test
     void getDescriptionByListNameAndCode_shouldReturnDescriptionForARBEIDSGIVER() throws Exception {
-        String uri = "/codelist/PROVENANCE/ARBEIDSGIVER";
+        String uri = "/codelist/SOURCE/ARBEIDSGIVER";
 
         MockHttpServletResponse response = mvc.perform(get(uri))
                 .andExpect(status().isOk())
@@ -109,25 +109,25 @@ class CodelistControllerTest {
 
     @Test
     void getDescriptionByListNameAndCode_shouldReturnNotFound_whenUnknownCode() throws Exception {
-        String uri = "/codelist/PROVENANCE/UNKNOWN_CODE";
-        doThrow(new CodelistNotFoundException("The code=UNKNOWN_CODE does not exist in the list=PROVENANCE."))
+        String uri = "/codelist/SOURCE/UNKNOWN_CODE";
+        doThrow(new CodelistNotFoundException("The code=UNKNOWN_CODE does not exist in the list=SOURCE."))
                 .when(service).validateListNameAndCodeExists(anyString(), anyString());
 
         Exception exception = mvc.perform(get(uri))
                 .andExpect(status().isNotFound())
                 .andReturn().getResolvedException();
 
-        assertThat(exception.getLocalizedMessage()).isEqualTo("The code=UNKNOWN_CODE does not exist in the list=PROVENANCE.");
+        assertThat(exception.getLocalizedMessage()).isEqualTo("The code=UNKNOWN_CODE does not exist in the list=SOURCE.");
     }
 
     @Test
     void save_shouldSaveMultipleCodelists() throws Exception {
-        List<Codelist> codelists = List.of(CodelistService.getCodelist(ListName.PROVENANCE, "Arbeidsgiver"), CodelistService.getCodelist(ListName.PROVENANCE, "Bruker"));
+        List<Codelist> codelists = List.of(CodelistService.getCodelist(ListName.SOURCE, "Arbeidsgiver"), CodelistService.getCodelist(ListName.SOURCE, "Bruker"));
         when(service.save(anyList())).thenReturn(codelists);
 
         List<CodelistRequest> requests = IntStream.rangeClosed(1, 10)
                 .mapToObj(i -> CodelistRequest.builder()
-                        .list("PROVENANCE")
+                        .list("SOURCE")
                         .code("CODE_nr:" + i)
                         .description("Description")
                         .build())
@@ -144,12 +144,12 @@ class CodelistControllerTest {
 
     @Test
     void update_shouldUpdateCodelist() throws Exception {
-        List<Codelist> codelists = List.of(CodelistService.getCodelist(ListName.PROVENANCE, "Arbeidsgiver"), CodelistService.getCodelist(ListName.PROVENANCE, "Bruker"));
+        List<Codelist> codelists = List.of(CodelistService.getCodelist(ListName.SOURCE, "Arbeidsgiver"), CodelistService.getCodelist(ListName.SOURCE, "Bruker"));
         when(service.update(anyList())).thenReturn(codelists);
 
         List<CodelistRequest> requests = IntStream.rangeClosed(1, 10)
                 .mapToObj(i -> CodelistRequest.builder()
-                        .list("PROVENANCE")
+                        .list("SOURCE")
                         .code("CODE_nr:" + i)
                         .description("Description")
                         .build())
@@ -167,13 +167,13 @@ class CodelistControllerTest {
     @Test
     void delete_shouldDeleteCodelistItem() throws Exception {
         String code = "TEST_DELETE";
-        String uri = "/codelist/PROVENANCE/TEST_DELETE";
+        String uri = "/codelist/SOURCE/TEST_DELETE";
         MockHttpServletResponse response = mvc.perform(
                 delete(uri))
                 .andReturn().getResponse();
 
         assertThat(response.getStatus()).isEqualTo((HttpStatus.OK.value()));
-        verify(service).delete(ListName.PROVENANCE, code);
+        verify(service).delete(ListName.SOURCE, code);
     }
 
     @Test
@@ -181,10 +181,10 @@ class CodelistControllerTest {
         String code = "TEST_DELETE";
 
         MockHttpServletResponse response = mvc.perform(
-                delete("/codelist/provenance/test_DELETE"))
+                delete("/codelist/SOURCE/test_DELETE"))
                 .andReturn().getResponse();
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        verify(service).delete(ListName.PROVENANCE, code);
+        verify(service).delete(ListName.SOURCE, code);
     }
 }

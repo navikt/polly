@@ -51,10 +51,13 @@ public class PolicyRequest implements RequestElement {
 
     @Override
     public void validate(FieldValidator validator) {
-        validator.checkCodelist(Fields.purposeCode, purposeCode, ListName.PURPOSE);
+        validator.checkRequiredCodelist(Fields.purposeCode, purposeCode, ListName.PURPOSE);
         validator.checkBlank(Fields.informationTypeName, informationTypeName);
         validator.checkBlank(Fields.process, process);
         validator.checkBlank(Fields.subjectCategories, subjectCategories);
+        validator.checkDate(Fields.start, start);
+        validator.checkDate(Fields.end, end);
+        legalBases.forEach(lb -> lb.validate(validator));
     }
 
 }

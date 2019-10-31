@@ -3,6 +3,7 @@ package no.nav.data.polly.codelist.domain;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.common.auditing.Auditable;
@@ -20,6 +21,7 @@ import javax.persistence.Table;
 @Table(name = "CODELIST")
 @Data
 @Builder
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 @IdClass(Codelist.IdClass.class)
