@@ -20,6 +20,7 @@ import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessDistributionRepository;
 import no.nav.data.polly.process.domain.ProcessRepository;
+import no.nav.data.polly.term.domain.Term;
 import no.nav.data.polly.term.domain.TermRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -81,6 +82,7 @@ public abstract class IntegrationTestBase {
     }
 
     private Map<String, Process> process = new HashMap<>();
+    private Map<String, Term> terms = new HashMap<>();
     private InformationType informationType;
 
     @BeforeEach
@@ -151,12 +153,18 @@ public abstract class IntegrationTestBase {
                         .pii("loads")
                         .build())
                 .build();
+        createTerm("term").addInformationType(informationType);
         return informationTypeRepository.save(informationType);
     }
 
     protected Process createProcess(String purpose) {
         return process.computeIfAbsent(purpose,
                 (p) -> processRepository.save(Process.builder().generateId().name("Auto_" + purpose).purposeCode(purpose).legalBasis(createLegalBasis()).build()));
+    }
+
+    protected Term createTerm(String term) {
+        return terms.computeIfAbsent(term,
+                (t) -> termRepository.save(Term.builder().generateId().name("Auto_" + term).description("termdesc").build()));
     }
 
     private LegalBasis createLegalBasis() {

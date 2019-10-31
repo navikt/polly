@@ -37,7 +37,7 @@ public class InformationTypeResponse {
 
     public InformationTypeResponse(InformationType informationType) {
         id = informationType.getId().toString();
-        setTerm(informationType.getTerm().getName());
+        setTerm(informationType.getTerm() == null ? null : informationType.getTerm().getName());
         mapJsonFields(informationType.getData());
     }
 
