@@ -39,6 +39,7 @@ public class ProcessRequest implements RequestElement {
     public void validate(FieldValidator validator) {
         validator.checkBlank(Fields.name, name);
         validator.checkRequiredCodelist(Fields.purposeCode, purposeCode, ListName.PURPOSE);
+        validator.validateType(Fields.legalBases, legalBases);
     }
 
     public Process convertToProcess() {

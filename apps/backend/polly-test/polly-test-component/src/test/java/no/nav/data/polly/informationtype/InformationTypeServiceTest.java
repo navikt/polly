@@ -107,7 +107,7 @@ class InformationTypeServiceTest {
         request.setCategories(List.of("doesntexist"));
 
         Exception exception = assertThrows(Exception.class, () -> service.validateRequest(List.of(request)));
-        assertThat(exception).hasMessageContaining("Request:1 -- fieldIsInvalidCodelist -- categories: doesntexist code not found in codelist CATEGORY");
+        assertThat(exception).hasMessageContaining("Request:1 -- fieldIsInvalidCodelist -- categories[0]: doesntexist code not found in codelist CATEGORY");
     }
 
     @Test

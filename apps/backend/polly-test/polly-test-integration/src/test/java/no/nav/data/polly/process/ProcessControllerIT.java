@@ -1,6 +1,7 @@
 package no.nav.data.polly.process;
 
 import no.nav.data.polly.IntegrationTestBase;
+import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.process.ProcessController.ProcessPage;
 import no.nav.data.polly.process.dto.InformationTypePurposeResponse;
@@ -78,6 +79,16 @@ class ProcessControllerIT extends IntegrationTestBase {
         ResponseEntity<ProcessPage> resp = restTemplate
                 .postForEntity("/process", List.of(ProcessRequest.builder().name("newprocess").purposeCode("AAP").build()), ProcessPage.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
+
+    @Test
+    void createProcessValidationError() {
+        ResponseEntity<String> resp = restTemplate
+                .postForEntity("/process", List.of(ProcessRequest.builder().name("newprocess").purposeCode("AAP")
+                        .legalBases(List.of(LegalBasisRequest.builder().gdpr("hei").nationalLaw("eksisterer-ikke").description("desc").build()))
+                        .build()), String.class);
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(resp.getBody()).contains("legalBases[0].nationalLaw: eksisterer-ikke code not found in codelist NATIONAL_LAW");
     }
 
 }

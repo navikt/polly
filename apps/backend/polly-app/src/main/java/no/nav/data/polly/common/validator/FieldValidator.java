@@ -23,31 +23,37 @@ public class FieldValidator {
     private static final String ERROR_MESSAGE_ENUM = "%s: %s was invalid for type %s";
     private static final String ERROR_MESSAGE_CODELIST = "%s: %s code not found in codelist %s";
     private static final String ERROR_MESSAGE_DATE = "%s: %s date is not a valid format";
-    private final List<ValidationError> validationErrors;
+    private final List<ValidationError> validationErrors = new ArrayList<>();
     private final String reference;
+    private final String parentField;
 
 
     public FieldValidator(String reference) {
-        this.validationErrors = new ArrayList<>();
         this.reference = reference;
+        this.parentField = "";
+    }
+
+    public FieldValidator(String reference, String parentField) {
+        this.reference = reference;
+        this.parentField = StringUtils.appendIfMissing(parentField, ".");
     }
 
     public boolean checkBlank(String fieldName, String fieldValue) {
         if (StringUtils.isBlank(fieldValue)) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(ERROR_MESSAGE, fieldName)));
+            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(ERROR_MESSAGE, parentField + fieldName)));
             return true;
         }
         return false;
     }
 
-    public <T extends Enum<T>> void checkEnum(String fieldName, String fieldValue, Class<T> type) {
+    public <T extends Enum<T>> void checkRequiredEnum(String fieldName, String fieldValue, Class<T> type) {
         if (checkBlank(fieldName, fieldValue)) {
             return;
         }
         try {
             Enum.valueOf(type, fieldValue);
         } catch (IllegalArgumentException e) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE_ENUM, String.format(ERROR_MESSAGE_ENUM, fieldName, fieldValue, type.getSimpleName())));
+            validationErrors.add(new ValidationError(reference, ERROR_TYPE_ENUM, String.format(ERROR_MESSAGE_ENUM, parentField + fieldName, fieldValue, type.getSimpleName())));
         }
     }
 
@@ -67,12 +73,13 @@ public class FieldValidator {
 
     private void checkCode(String fieldName, String fieldValue, ListName listName) {
         if (CodelistService.getCodeResponseForCodelistItem(listName, fieldValue) == null) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE_CODELIST, String.format(ERROR_MESSAGE_CODELIST, fieldName, fieldValue, listName)));
+            validationErrors.add(new ValidationError(reference, ERROR_TYPE_CODELIST, String.format(ERROR_MESSAGE_CODELIST, parentField + fieldName, fieldValue, listName)));
         }
     }
 
     public void checkCodelists(String fieldName, Collection<String> values, ListName listName) {
-        safeStream(values).forEach(value -> checkRequiredCodelist(fieldName, value, listName));
+        AtomicInteger i = new AtomicInteger(0);
+        safeStream(values).forEach(value -> checkRequiredCodelist(String.format("%s[%d]", fieldName, i.getAndIncrement()), value, listName));
     }
 
     public void checkDate(String fieldName, String fieldValue) {
@@ -82,14 +89,18 @@ public class FieldValidator {
         try {
             LocalDate.parse(fieldValue);
         } catch (DateTimeParseException e) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE_DATE, String.format(ERROR_MESSAGE_DATE, fieldName, fieldValue)));
+            validationErrors.add(new ValidationError(reference, ERROR_TYPE_DATE, String.format(ERROR_MESSAGE_DATE, getFieldName(fieldName), fieldValue)));
         }
+    }
+
+    private String getFieldName(String fieldName) {
+        return parentField + fieldName;
     }
 
     public void validateType(String fieldName, Collection<? extends Validated> fieldValues) {
         AtomicInteger i = new AtomicInteger(0);
         safeStream(fieldValues).forEach(fieldValue -> {
-            FieldValidator fieldValidator = new FieldValidator(String.format("%s.%s[%d]", reference, fieldName, i.getAndIncrement()));
+            FieldValidator fieldValidator = new FieldValidator(reference, String.format("%s[%d]", fieldName, i.getAndIncrement()));
             fieldValue.validate(fieldValidator);
             validationErrors.addAll(fieldValidator.getErrors());
         });
