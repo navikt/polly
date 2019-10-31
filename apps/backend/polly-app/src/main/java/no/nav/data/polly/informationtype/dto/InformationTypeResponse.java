@@ -21,7 +21,7 @@ import static no.nav.data.polly.common.utils.StreamUtils.copyOf;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonPropertyOrder({"id", "name", "contet", "term", "description", "pii", "sensitivity", "categories", "sources", "keywords"})
+@JsonPropertyOrder({"id", "name", "context", "term", "description", "pii", "sensitivity", "categories", "sources", "keywords"})
 public class InformationTypeResponse {
 
     private String id;
