@@ -15,6 +15,16 @@ export interface DatasetFormValues {
     policies?: any | null;
 }
 
+export interface InformationtypeFormValues {
+    term: string;
+    pii: string | boolean | null;
+    name: string | null;
+    context: string | null;
+    sensitivity: string | null;
+    categories: string[] | null[] | null;
+    keywords: string[] | null[] | null;
+}
+
 export interface Codelist {
     PURPOSE: any | undefined | null;
     CATEGORY: any | undefined | null;
