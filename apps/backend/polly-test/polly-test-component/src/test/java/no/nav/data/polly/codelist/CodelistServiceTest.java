@@ -202,7 +202,7 @@ class CodelistServiceTest {
             fail();
         } catch (ValidationException e) {
             assertThat(e.get().size()).isEqualTo(1);
-            assertThat(e.toErrorString()).isEqualTo("Request:1 -- creatingExistingCodelist -- The codelist SOURCE-BRUKER already exists and therefore cannot be created");
+            assertThat(e.toErrorString()).isEqualTo("Request:1 -- creatingExistingCodelist -- The Codelist SOURCE-BRUKER already exists and therefore cannot be created");
         }
     }
 
@@ -245,7 +245,7 @@ class CodelistServiceTest {
         } catch (ValidationException e) {
             assertThat(e.get().size()).isEqualTo(1);
             assertThat(e.toErrorString())
-                    .isEqualTo("Request:1 -- updatingNonExistingCodelist -- The codelist SOURCE-UNKNOWNCODE does not exist and therefore cannot be updated");
+                    .isEqualTo("Request:1 -- updatingNonExistingCodelist -- The Codelist SOURCE-UNKNOWNCODE does not exist and therefore cannot be updated");
         }
     }
 
