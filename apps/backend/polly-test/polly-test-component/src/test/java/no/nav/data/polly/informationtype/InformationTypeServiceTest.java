@@ -54,7 +54,7 @@ class InformationTypeServiceTest {
 
     @Test
     void update_shouldUpdate_whenRequestIsValid() {
-        when(informationTypeRepository.findAllByName(Collections.singletonList("Name"))).thenReturn(Collections.singletonList(new InformationType()));
+        when(informationTypeRepository.findAllByNameIn(Collections.singletonList("Name"))).thenReturn(Collections.singletonList(new InformationType()));
         InformationTypeRequest request = createValidInformationTypeRequest("Name");
 
         service.updateAll(List.of(request));
