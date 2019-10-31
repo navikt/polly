@@ -82,7 +82,7 @@ class InformationTypeServiceTest {
 
         Exception exception = assertThrows(Exception.class, () -> service.validateRequest(requests));
         assertThat(exception)
-                .hasMessageContaining("Request:1 -- DuplicateElement -- The InformationType Name1-context is not unique (see request:3)");
+                .hasMessageContaining("Request:3 -- DuplicateElement -- The InformationType Name1-context is not unique because it has already been used in this request (see request:1)");
     }
 
     @Test
