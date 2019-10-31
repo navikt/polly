@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import static no.nav.data.polly.common.utils.Constants.HEADER_CALL_ID;
 import static no.nav.data.polly.common.utils.Constants.HEADER_CONSUMER_ID;
 import static no.nav.data.polly.common.utils.Constants.HEADER_CORRELATION_ID;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class CorrelationFilter extends OncePerRequestFilter {
 
@@ -39,6 +40,6 @@ public class CorrelationFilter extends OncePerRequestFilter {
     private String getPath(HttpServletRequest request) {
         String url = request.getRequestURL().toString();
         String queryString = request.getQueryString();
-        return url + "?" + queryString;
+        return url + Optional.ofNullable(queryString).map(s -> "?" + s).orElse(EMPTY);
     }
 }
