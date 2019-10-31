@@ -12,9 +12,6 @@ import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import static no.nav.data.polly.common.utils.StringUtils.ifNotNullToUppercaseAndTrim;
 
 @Data
@@ -57,19 +54,19 @@ public class CodelistRequest implements RequestElement {
         }
     }
 
-    public void toUpperCaseAndTrim() {
+    public void format() {
         setList(ifNotNullToUppercaseAndTrim(list));
         setCode(StringUtils.trim(code));
         setDescription(StringUtils.trim(description));
     }
 
-    public static void initiateRequests(List<CodelistRequest> codelistRequests, boolean update) {
-        AtomicInteger requestIndex = new AtomicInteger(1);
-        codelistRequests.forEach(request -> {
-            request.setUpdate(update);
-            request.setRequestIndex(requestIndex.getAndIncrement());
-        });
-    }
+//    public static void initiateRequests(List<CodelistRequest> codelistRequests, boolean update) {
+//        AtomicInteger requestIndex = new AtomicInteger(1);
+//        codelistRequests.forEach(request -> {
+//            request.setUpdate(update);
+//            request.setRequestIndex(requestIndex.getAndIncrement());
+//        });
+//    }
 
     @Override
     public void validate(FieldValidator validator) {
