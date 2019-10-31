@@ -60,14 +60,6 @@ public class CodelistRequest implements RequestElement {
         setDescription(StringUtils.trim(description));
     }
 
-//    public static void initiateRequests(List<CodelistRequest> codelistRequests, boolean update) {
-//        AtomicInteger requestIndex = new AtomicInteger(1);
-//        codelistRequests.forEach(request -> {
-//            request.setUpdate(update);
-//            request.setRequestIndex(requestIndex.getAndIncrement());
-//        });
-//    }
-
     @Override
     public void validate(FieldValidator validator) {
         validator.checkEnum(Fields.list, getList(), ListName.class);
