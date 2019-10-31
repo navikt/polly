@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.process.ProcessController.ProcessPolicyPage;
@@ -40,12 +41,19 @@ public class PurposeController {
     @ApiOperation(value = "Get InformationTypes for Purpose")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Processes fetched", response = ProcessPolicyPage.class),
+            @ApiResponse(code = 404, message = "Purpose not found"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/{purpose}")
     @Transactional
     public ResponseEntity<RestResponsePage<ProcessPolicyResponse>> getPurpose(@PathVariable String purpose) {
-        String purposeCode = CodelistService.getCodelist(ListName.PURPOSE, purpose).getCode();
+        log.info("Get processes for purpose={}", purpose);
+        Codelist codelist = CodelistService.getCodelist(ListName.PURPOSE, purpose);
+        if (codelist == null) {
+            return ResponseEntity.notFound().build();
+        }
+        String purposeCode = codelist.getCode();
         var processes = processRepository.findByPurposeCode(purposeCode).stream().map(Process::convertToResponseWithInformationTypes).collect(toList());
+        log.info("Got {} processes", processes.size());
         return ResponseEntity.ok(new RestResponsePage<>(processes));
     }
 }
