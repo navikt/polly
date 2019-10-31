@@ -65,33 +65,33 @@ class CodelistControllerIT extends IntegrationTestBase {
 
     @Test
     void getCodelistByListName_shouldReturnCodesAndDescriptionForListName() {
-        String url = "/codelist/PROVENANCE";
+        String url = "/codelist/SOURCE";
 
         ResponseEntity<Map> responseEntity = restTemplate.exchange(
                 url, HttpMethod.GET, HttpEntity.EMPTY, Map.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isEqualTo(CodelistCache.getAsMap(ListName.PROVENANCE));
+        assertThat(responseEntity.getBody()).isEqualTo(CodelistCache.getAsMap(ListName.SOURCE));
     }
 
     @Test
     void getDescriptionByListNameAndCode_shouldReturnDescriptionForCodeAndListName() {
-        CodelistCache.set(Codelist.builder().list(ListName.PROVENANCE).code("TEST_CODE").description("Test description").build());
-        String url = "/codelist/PROVENANCE/TEST_CODE";
+        CodelistCache.set(Codelist.builder().list(ListName.SOURCE).code("TEST_CODE").description("Test description").build());
+        String url = "/codelist/SOURCE/TEST_CODE";
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 url, HttpMethod.GET, HttpEntity.EMPTY, String.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isEqualTo(CodelistCache.getAsMap(ListName.PROVENANCE).get("TEST_CODE"));
+        assertThat(responseEntity.getBody()).isEqualTo(CodelistCache.getAsMap(ListName.SOURCE).get("TEST_CODE"));
     }
 
     @Test
     void save_shouldSaveNewCodelist() {
         String code = "Save Code";
         String description = "Test description";
-        List<CodelistRequest> requests = createRequest("PROVENANCE", code, description);
-        assertFalse(CodelistCache.contains(ListName.PROVENANCE, code));
+        List<CodelistRequest> requests = createRequest("SOURCE", code, description);
+        assertFalse(CodelistCache.contains(ListName.SOURCE, code));
 
         ResponseEntity<List<Codelist>> responseEntity = restTemplate.exchange(
                 "/codelist", HttpMethod.POST, new HttpEntity<>(requests), RESPONSE_TYPE);
@@ -101,8 +101,8 @@ class CodelistControllerIT extends IntegrationTestBase {
         assertThat(codelist.getDescription()).isEqualTo(description);
         assertThat(codelist.getCode()).isEqualTo(code);
 
-        assertTrue(CodelistCache.contains(ListName.PROVENANCE, code));
-        Codelist savecode = CodelistService.getCodelist(ListName.PROVENANCE, "savecode");
+        assertTrue(CodelistCache.contains(ListName.SOURCE, code));
+        Codelist savecode = CodelistService.getCodelist(ListName.SOURCE, "savecode");
         assertThat(savecode.getCode()).isEqualTo(code);
         assertThat(savecode.getNormalizedCode()).isEqualTo("SAVECODE");
         assertThat(savecode.getDescription()).isEqualTo(description);
@@ -127,21 +127,21 @@ class CodelistControllerIT extends IntegrationTestBase {
                 "/codelist", HttpMethod.POST, new HttpEntity<>(requests), RESPONSE_TYPE);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(CodelistCache.getAsMap(ListName.PROVENANCE).size()).isEqualTo(20);
+        assertThat(CodelistCache.getAsMap(ListName.SOURCE).size()).isEqualTo(20);
     }
 
     @Test
     void update_shouldUpdateOneCodelist() {
         String code = "UPDATE_CODE";
-        service.save(createRequest("PROVENANCE", code, "Test description"));
+        service.save(createRequest("SOURCE", code, "Test description"));
 
-        List<CodelistRequest> updatedCodelists = createRequest("PROVENANCE", code, "Updated codelists");
+        List<CodelistRequest> updatedCodelists = createRequest("SOURCE", code, "Updated codelists");
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 "/codelist", HttpMethod.PUT, new HttpEntity<>(updatedCodelists), String.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(CodelistCache.getAsMap(ListName.PROVENANCE).get(code)).isEqualTo(updatedCodelists.get(0).getDescription());
+        assertThat(CodelistCache.getAsMap(ListName.SOURCE).get(code)).isEqualTo(updatedCodelists.get(0).getDescription());
     }
 
     @Test
@@ -157,8 +157,8 @@ class CodelistControllerIT extends IntegrationTestBase {
                 });
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(CodelistCache.getAsMap(ListName.PROVENANCE).size()).isEqualTo(20);
-        Collection<String> descriptionList = CodelistCache.getAsMap(ListName.PROVENANCE).values();
+        assertThat(CodelistCache.getAsMap(ListName.SOURCE).size()).isEqualTo(20);
+        Collection<String> descriptionList = CodelistCache.getAsMap(ListName.SOURCE).values();
         descriptionList.forEach(description -> assertThat(description).isEqualTo("Updated codelists"));
     }
 
@@ -166,21 +166,21 @@ class CodelistControllerIT extends IntegrationTestBase {
     @Test
     void delete_shouldDeleteCodelist() {
         String code = "DELETE_CODE";
-        List<CodelistRequest> requests = createRequest("PROVENANCE", code, "Test description");
+        List<CodelistRequest> requests = createRequest("SOURCE", code, "Test description");
         service.save(requests);
-        assertNotNull(CodelistCache.getAsMap(ListName.PROVENANCE).get(code));
+        assertNotNull(CodelistCache.getAsMap(ListName.SOURCE).get(code));
 
-        String url = "/codelist/PROVENANCE/DELETE_CODE";
+        String url = "/codelist/SOURCE/DELETE_CODE";
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertFalse(CodelistCache.contains(ListName.PROVENANCE, code));
+        assertFalse(CodelistCache.contains(ListName.SOURCE, code));
     }
 
     private List<CodelistRequest> createNrOfRequests(String code, int nrOfRequests) {
         return IntStream.rangeClosed(1, nrOfRequests)
-                .mapToObj(i -> createOneRequest("PROVENANCE", code + "_nr_" + i, "Test description"))
+                .mapToObj(i -> createOneRequest("SOURCE", code + "_nr_" + i, "Test description"))
                 .collect(Collectors.toList());
 
     }

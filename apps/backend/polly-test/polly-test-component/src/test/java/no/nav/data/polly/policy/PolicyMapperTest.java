@@ -54,7 +54,7 @@ class PolicyMapperTest {
         PolicyRequest request = PolicyRequest.builder()
                 .process("process")
                 .subjectCategories("sc")
-                .legalBases(List.of(LegalBasisRequest.builder().gdpr("gdpr").nationalLaw("nl").description(LEGAL_BASIS_DESCRIPTION1).build()))
+                .legalBases(List.of(LegalBasisRequest.builder().gdpr("gdpr").nationalLaw("Ftrl").description(LEGAL_BASIS_DESCRIPTION1).build()))
                 .start("2019-02-04")
                 .end("2020-02-04")
                 .purposeCode(PURPOSE_CODE1)

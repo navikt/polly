@@ -17,7 +17,7 @@ public interface InformationTypeRepository extends JpaRepository<InformationType
     Optional<InformationType> findByName(String name);
 
     @Query(value = "select * from information_type where data ->>'name' in (?1)", nativeQuery = true)
-    List<InformationType> findAllByName(List<String> title);
+    List<InformationType> findAllByNameIn(List<String> names);
 
     List<InformationType> findByElasticsearchStatus(ElasticsearchStatus status);
 
@@ -30,8 +30,5 @@ public interface InformationTypeRepository extends JpaRepository<InformationType
     @Transactional
     @Query("update InformationType set elasticsearchStatus = ?2 where id = ?1")
     void updateStatusForInformationType(UUID informationTypeId, ElasticsearchStatus elasticsearchStatus);
-
-    @Query(value = "select *  from information_type where information_type_id in (select information_type_id from policy where policy_id in ?1)", nativeQuery = true)
-    List<InformationType> findByPolicyIdIn(List<UUID> ids);
 
 }

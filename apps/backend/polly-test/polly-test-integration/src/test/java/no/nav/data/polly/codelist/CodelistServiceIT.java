@@ -41,10 +41,10 @@ class CodelistServiceIT extends IntegrationTestBase {
         service.save(createListOfOneRequest());
 
         assertThat(repository.findAll().size()).isEqualTo(1);
-        assertTrue(repository.findByListAndNormalizedCode(ListName.PROVENANCE, "TESTCODE").isPresent());
-        assertThat(CodelistCache.getAsMap(ListName.PROVENANCE).get("TEST_CODE")).isEqualTo("Test description");
-        assertThat(CodelistService.getCodelist(ListName.PROVENANCE, "TEST_code").getDescription()).isEqualTo("Test description");
-        assertThat(repository.findByListAndNormalizedCode(ListName.PROVENANCE, "TESTCODE").get().getDescription()).isEqualTo("Test description");
+        assertTrue(repository.findByListAndNormalizedCode(ListName.SOURCE, "TESTCODE").isPresent());
+        assertThat(CodelistCache.getAsMap(ListName.SOURCE).get("TEST_CODE")).isEqualTo("Test description");
+        assertThat(CodelistService.getCodelist(ListName.SOURCE, "TEST_code").getDescription()).isEqualTo("Test description");
+        assertThat(repository.findByListAndNormalizedCode(ListName.SOURCE, "TESTCODE").get().getDescription()).isEqualTo("Test description");
     }
 
     @Test
@@ -58,12 +58,12 @@ class CodelistServiceIT extends IntegrationTestBase {
     void update_shouldUpdateCodelist() {
         service.save(createListOfOneRequest());
 
-        List<CodelistRequest> updatedRequest = createListOfOneRequest("PROVENANCE", "TEST_CODE", "Updated codelist");
+        List<CodelistRequest> updatedRequest = createListOfOneRequest("SOURCE", "TEST_CODE", "Updated codelist");
         service.update(updatedRequest);
 
-        assertThat(CodelistCache.getAsMap(ListName.PROVENANCE).get("TEST_CODE")).isEqualTo("Updated codelist");
-        assertThat(CodelistService.getCodelist(ListName.PROVENANCE, "TEST_code").getDescription()).isEqualTo("Updated codelist");
-        assertThat(repository.findByListAndNormalizedCode(ListName.PROVENANCE, "TESTCODE").get().getDescription()).isEqualTo("Updated codelist");
+        assertThat(CodelistCache.getAsMap(ListName.SOURCE).get("TEST_CODE")).isEqualTo("Updated codelist");
+        assertThat(CodelistService.getCodelist(ListName.SOURCE, "TEST_code").getDescription()).isEqualTo("Updated codelist");
+        assertThat(repository.findByListAndNormalizedCode(ListName.SOURCE, "TESTCODE").get().getDescription()).isEqualTo("Updated codelist");
     }
 
     @Test
@@ -71,22 +71,22 @@ class CodelistServiceIT extends IntegrationTestBase {
         List<CodelistRequest> request = createListOfOneRequest();
         service.save(request);
         assertThat(repository.findAll().size()).isEqualTo(1);
-        assertThat(CodelistCache.getAsMap(ListName.PROVENANCE).size()).isEqualTo(1);
+        assertThat(CodelistCache.getAsMap(ListName.SOURCE).size()).isEqualTo(1);
 
-        service.delete(ListName.PROVENANCE, "TEST_CODE");
+        service.delete(ListName.SOURCE, "TEST_CODE");
 
         assertThat(repository.findAll().size()).isEqualTo(0);
-        assertFalse(repository.findByListAndNormalizedCode(ListName.PROVENANCE, "TEST_CODE").isPresent());
-        assertThat(CodelistCache.getAsMap(ListName.PROVENANCE).size()).isEqualTo(0);
-        assertNull(CodelistCache.getAsMap(ListName.PROVENANCE).get("TEST_CODE"));
+        assertFalse(repository.findByListAndNormalizedCode(ListName.SOURCE, "TEST_CODE").isPresent());
+        assertThat(CodelistCache.getAsMap(ListName.SOURCE).size()).isEqualTo(0);
+        assertNull(CodelistCache.getAsMap(ListName.SOURCE).get("TEST_CODE"));
     }
 
     @Test
     void validateRequests_shouldValidateRequests() {
         List<CodelistRequest> requests = List.of(
-                createOneRequest("PROVENANCE", "CODE_1", "Description"),
-                createOneRequest("PROVENANCE", "code_2 ", "Description"),
-                createOneRequest("PROVENANCE", " Code_3 ", "Description "));
+                createOneRequest("SOURCE", "CODE_1", "Description"),
+                createOneRequest("SOURCE", "code_2 ", "Description"),
+                createOneRequest("SOURCE", " Code_3 ", "Description "));
 
         service.validateRequest(requests, false);
     }
@@ -115,7 +115,7 @@ class CodelistServiceIT extends IntegrationTestBase {
     }
 
     private List<CodelistRequest> createListOfOneRequest() {
-        return createListOfOneRequest("PROVENANCE", "TEST_CODE", "Test description");
+        return createListOfOneRequest("SOURCE", "TEST_CODE", "Test description");
     }
 
 }

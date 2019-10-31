@@ -15,8 +15,9 @@ import no.nav.data.polly.policy.domain.PolicyRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static no.nav.data.polly.common.utils.StreamUtils.convert;
+import static no.nav.data.polly.common.utils.StreamUtils.filter;
 import static no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus.SYNCED;
 import static no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus.TO_BE_CREATED;
 import static no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus.TO_BE_DELETED;
@@ -100,8 +101,7 @@ public class ElasticsearchService {
 
     public InformationTypeElasticsearch mapInformationType(InformationType informationType) {
         List<Policy> policies = policyRepository.findByInformationTypeId(informationType.getId());
-        var policiesES = policies.stream().map(Policy::convertToElasticsearch).collect(Collectors.toList());
-        return informationType.convertToElasticsearch(policiesES);
+        return informationType.convertToElasticsearch(convert(filter(policies, Policy::isActive), Policy::convertToElasticsearch));
     }
 
     private static Counter initCounter() {

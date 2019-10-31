@@ -29,8 +29,8 @@ public class ProcessDistribution {
     @Column(name = "PURPOSE_CODE", nullable = false, updatable = false)
     private String purposeCode;
 
-    public static ProcessDistribution newForPurpose(String process, String purpose) {
-        return new ProcessDistribution(UUID.randomUUID(), process, purpose);
+    public static ProcessDistribution newForProcess(Process process) {
+        return new ProcessDistribution(UUID.randomUUID(), process.getName(), process.getPurposeCode());
     }
 
     public Process convertToProcess() {

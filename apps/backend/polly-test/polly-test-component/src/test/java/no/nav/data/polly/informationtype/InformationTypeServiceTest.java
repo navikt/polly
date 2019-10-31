@@ -54,7 +54,7 @@ class InformationTypeServiceTest {
 
     @Test
     void update_shouldUpdate_whenRequestIsValid() {
-        when(informationTypeRepository.findAllByName(Collections.singletonList("Name"))).thenReturn(Collections.singletonList(new InformationType()));
+        when(informationTypeRepository.findAllByNameIn(Collections.singletonList("Name"))).thenReturn(Collections.singletonList(new InformationType()));
         InformationTypeRequest request = createValidInformationTypeRequest("Name");
 
         service.updateAll(List.of(request));
@@ -108,7 +108,7 @@ class InformationTypeServiceTest {
         request.setCategories(List.of("doesntexist"));
 
         Exception exception = assertThrows(Exception.class, () -> service.validateRequest(List.of(request)));
-        assertThat(exception).hasMessageContaining("Request:1 -- fieldIsInvalidCodelist -- categories: doesntexist code not found in codelist CATEGORY");
+        assertThat(exception).hasMessageContaining("Request:1 -- fieldIsInvalidCodelist -- categories[0]: doesntexist code not found in codelist CATEGORY");
     }
 
     @Test

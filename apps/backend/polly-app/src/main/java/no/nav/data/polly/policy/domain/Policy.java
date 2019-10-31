@@ -35,6 +35,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
+import static no.nav.data.polly.common.utils.StreamUtils.filter;
 
 @Data
 @Builder
@@ -112,7 +113,7 @@ public class Policy extends Auditable<String> {
                 .purpose(purpose.getCode())
                 .description(purpose.getDescription())
                 .subjectCategories(getSubjectCategories())
-                .legalbases(convert(legalBases, LegalBasis::convertToElasticsearch))
+                .legalbases(convert(filter(legalBases, LegalBasis::isActive), LegalBasis::convertToElasticsearch))
                 .build();
     }
 

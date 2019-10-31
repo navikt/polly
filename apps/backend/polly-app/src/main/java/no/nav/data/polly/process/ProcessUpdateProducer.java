@@ -18,7 +18,7 @@ import static no.nav.data.polly.common.utils.MetricUtils.counter;
 @Component
 public class ProcessUpdateProducer {
 
-    private Counter counter;
+    private final Counter counter;
     private final String topic;
     private final KafkaTemplate<String, ProcessUpdate> kafkaTemplate;
 
@@ -30,7 +30,7 @@ public class ProcessUpdateProducer {
         this.topic = topics.getProcessUpdate();
         this.kafkaTemplate = (KafkaTemplate<String, ProcessUpdate>) kafkaTemplate;
 
-        initMetrics();
+        counter = initMetrics();
     }
 
     boolean sendProcess(String processName, String purposeCode, List<String> informationTypeNames) {
@@ -48,8 +48,8 @@ public class ProcessUpdateProducer {
         }
     }
 
-    private void initMetrics() {
-        counter = counter()
+    private Counter initMetrics() {
+        return counter()
                 .labels("feil").labels("ok")
                 .name(Collector.sanitizeMetricName(String.format("polly_kafka_producer_%s_counter", topic)))
                 .help(String.format("Kafka melding lagt på topic %s", topic))

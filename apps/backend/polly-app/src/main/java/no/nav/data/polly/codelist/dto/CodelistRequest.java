@@ -62,7 +62,7 @@ public class CodelistRequest implements RequestElement {
 
     @Override
     public void validate(FieldValidator validator) {
-        validator.checkEnum(Fields.list, getList(), ListName.class);
+        validator.checkRequiredEnum(Fields.list, getList(), ListName.class);
         validator.checkBlank(Fields.code, getCode());
         validator.checkBlank(Fields.description, getDescription());
     }

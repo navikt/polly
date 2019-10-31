@@ -223,7 +223,7 @@ public class PolicyRestController {
     }
 
     private void onChange(List<Policy> policies) {
-        policies.stream().map(Policy::getProcess).distinct().forEach(processService::scheduleDistributeForPurpose);
+        policies.stream().map(Policy::getProcess).distinct().forEach(processService::scheduleDistributeForProcess);
         informationTypeService.sync(policies.stream().map(Policy::getInformationTypeId).collect(toList()));
     }
 }
