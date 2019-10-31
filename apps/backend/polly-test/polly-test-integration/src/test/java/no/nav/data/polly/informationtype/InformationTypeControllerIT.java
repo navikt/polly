@@ -2,7 +2,6 @@ package no.nav.data.polly.informationtype;
 
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.CodelistStub;
-import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus;
 import no.nav.data.polly.informationtype.InformationTypeController.InformationTypePage;
 import no.nav.data.polly.informationtype.domain.InformationType;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -63,9 +61,8 @@ class InformationTypeControllerIT extends IntegrationTestBase {
     void findAll() {
         createInformationTypeTestData(30);
 
-        ResponseEntity<RestResponsePage<InformationTypeResponse>> responseEntity = restTemplate.exchange("/informationtype/",
-                HttpMethod.GET, HttpEntity.EMPTY, new ParameterizedTypeReference<>() {
-                });
+        ResponseEntity<InformationTypePage> responseEntity = restTemplate.exchange("/informationtype/",
+                HttpMethod.GET, HttpEntity.EMPTY, InformationTypePage.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(informationTypeRepository.findAll().size()).isEqualTo(30);

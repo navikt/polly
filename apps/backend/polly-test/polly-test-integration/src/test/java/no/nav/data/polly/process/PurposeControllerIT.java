@@ -28,7 +28,7 @@ class PurposeControllerIT extends IntegrationTestBase {
         ProcessPolicyPage purposeResponse = resp.getBody();
         assertThat(purposeResponse).isNotNull();
 
-        assertThat(purposeResponse.getReturnedElements()).isOne();
+        assertThat(purposeResponse.getNumberOfElements()).isOne();
         assertThat(purposeResponse.getContent().get(0)).isEqualTo(
                 ProcessPolicyResponse.builder()
                         .id(policy.getProcess().getId().toString())

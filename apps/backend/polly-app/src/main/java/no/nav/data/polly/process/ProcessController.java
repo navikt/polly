@@ -75,9 +75,9 @@ public class ProcessController {
     @GetMapping
     public ResponseEntity<RestResponsePage<ProcessResponse>> getAllProcesses(PageParameters pageParameters) {
         log.info("Received request for all Processes");
-        Page<ProcessResponse> all = repository.findAll(pageParameters.createIdSortedPage()).map(Process::convertToResponse);
-        log.info("Returned {} Processes", all.getNumberOfElements());
-        return ResponseEntity.ok(new RestResponsePage<>(all));
+        Page<ProcessResponse> page = repository.findAll(pageParameters.createIdSortedPage()).map(Process::convertToResponse);
+        log.info("Returned {} Processes", page.getNumberOfElements());
+        return ResponseEntity.ok(new RestResponsePage<>(page));
     }
 
     @ApiOperation(value = "Get Processes for name with InformationTypes")

@@ -265,7 +265,7 @@ class PolicyControllerIT extends IntegrationTestBase {
         ResponseEntity<PolicyPage> responseEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT, HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), PolicyPage.class);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(responseEntity.getBody().getReturnedElements(), is(20L));
+        assertThat(responseEntity.getBody().getNumberOfElements(), is(20L));
         assertThat(responseEntity.getBody().getTotalElements(), is(100L));
         assertThat(responseEntity.getBody().getPageSize(), is(20L));
         assertThat(policyRepository.count(), is(100L));
@@ -279,7 +279,7 @@ class PolicyControllerIT extends IntegrationTestBase {
                 POLICY_REST_ENDPOINT + "?pageNumber=0&pageSize=100", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()),
                 PolicyPage.class);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(responseEntity.getBody().getReturnedElements(), is(100L));
+        assertThat(responseEntity.getBody().getNumberOfElements(), is(100L));
         assertThat(responseEntity.getBody().getTotalElements(), is(100L));
         assertThat(responseEntity.getBody().getPageSize(), is(100L));
         assertThat(policyRepository.count(), is(100L));
@@ -303,7 +303,7 @@ class PolicyControllerIT extends IntegrationTestBase {
                 POLICY_REST_ENDPOINT + "?pageNumber=1&pageSize=100", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()),
                 PolicyPage.class);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(responseEntity.getBody().getReturnedElements(), is(0L));
+        assertThat(responseEntity.getBody().getNumberOfElements(), is(0L));
         assertThat(policyRepository.count(), is(100L));
     }
 
