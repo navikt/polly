@@ -37,7 +37,7 @@ public class KafkaIntegrationTestBase extends IntegrationTestBase {
         configs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class.getName());
         configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         var consumer = new DefaultKafkaConsumerFactory<>(configs, (Deserializer<String>) null, (Deserializer<ProcessUpdate>) null).createConsumer();
-        consumer.subscribe(Collections.singleton(topicProperties.getBehandlingsgrunnlag()));
+        consumer.subscribe(Collections.singleton(topicProperties.getProcessUpdate()));
         return consumer;
     }
 

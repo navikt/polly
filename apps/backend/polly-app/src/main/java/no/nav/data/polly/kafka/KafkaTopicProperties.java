@@ -9,5 +9,5 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties("kafka.topics")
 public class KafkaTopicProperties {
 
-    private String behandlingsgrunnlag;
+    private String processUpdate;
 }

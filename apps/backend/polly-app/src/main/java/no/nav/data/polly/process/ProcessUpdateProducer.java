@@ -27,7 +27,7 @@ public class ProcessUpdateProducer {
             KafkaTopicProperties topics,
             KafkaTemplate kafkaTemplate
     ) {
-        this.topic = topics.getBehandlingsgrunnlag();
+        this.topic = topics.getProcessUpdate();
         this.kafkaTemplate = (KafkaTemplate<String, ProcessUpdate>) kafkaTemplate;
 
         initMetrics();

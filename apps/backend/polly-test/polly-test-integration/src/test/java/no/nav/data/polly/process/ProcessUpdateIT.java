@@ -52,7 +52,7 @@ class ProcessUpdateIT extends KafkaIntegrationTestBase {
 
         await().atMost(Duration.TEN_SECONDS).untilAsserted(() -> assertEquals(0L, repository.count()));
 
-        ConsumerRecord<String, ProcessUpdate> singleRecord = KafkaTestUtils.getSingleRecord(consumer, topicProperties.getBehandlingsgrunnlag());
+        ConsumerRecord<String, ProcessUpdate> singleRecord = KafkaTestUtils.getSingleRecord(consumer, topicProperties.getProcessUpdate());
 
         assertEquals(PROCESS_NAME_1 + "-" + PURPOSE_CODE1, singleRecord.key());
         assertEquals(PROCESS_NAME_1, singleRecord.value().getProcessName());
