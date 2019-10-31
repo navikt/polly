@@ -8,6 +8,7 @@ import lombok.experimental.FieldNameConstants;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.common.validator.FieldValidator;
+import no.nav.data.polly.common.validator.Validated;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 
 @Data
@@ -15,9 +16,7 @@ import no.nav.data.polly.legalbasis.domain.LegalBasis;
 @FieldNameConstants
 @NoArgsConstructor
 @AllArgsConstructor
-public class LegalBasisRequest {
-
-    private static final String LEGAL_BASIS_FIELD_PREFIX = "legalBasis.";
+public class LegalBasisRequest implements Validated {
 
     private String gdpr;
     private String nationalLaw;
@@ -36,10 +35,10 @@ public class LegalBasisRequest {
     }
 
     public void validate(FieldValidator validator) {
-        validator.checkBlank(LEGAL_BASIS_FIELD_PREFIX + Fields.gdpr, gdpr);
-        validator.checkCodelist(LEGAL_BASIS_FIELD_PREFIX + Fields.nationalLaw, nationalLaw, ListName.NATIONAL_LAW);
-        validator.checkBlank(LEGAL_BASIS_FIELD_PREFIX + Fields.description, description);
-        validator.checkDate(LEGAL_BASIS_FIELD_PREFIX + Fields.start, start);
-        validator.checkDate(LEGAL_BASIS_FIELD_PREFIX + Fields.end, end);
+        validator.checkBlank(Fields.gdpr, gdpr);
+        validator.checkCodelist(Fields.nationalLaw, nationalLaw, ListName.NATIONAL_LAW);
+        validator.checkBlank(Fields.description, description);
+        validator.checkDate(Fields.start, start);
+        validator.checkDate(Fields.end, end);
     }
 }

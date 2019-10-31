@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
-public interface RequestElement {
+public interface RequestElement extends Validated {
 
     @JsonIgnore
     String getIdentifyingFields();
@@ -38,7 +38,5 @@ public interface RequestElement {
         validate(validator);
         return validator.getErrors();
     }
-
-    void validate(FieldValidator validator);
 
 }

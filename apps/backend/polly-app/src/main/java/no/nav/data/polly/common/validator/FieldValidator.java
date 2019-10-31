@@ -9,6 +9,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 
@@ -85,7 +86,16 @@ public class FieldValidator {
         }
     }
 
-    public List<ValidationError> getErrors() {
+    public void validateType(String fieldName, Collection<? extends Validated> fieldValues) {
+        AtomicInteger i = new AtomicInteger(0);
+        safeStream(fieldValues).forEach(fieldValue -> {
+            FieldValidator fieldValidator = new FieldValidator(String.format("%s.%s[%d]", reference, fieldName, i.getAndIncrement()));
+            fieldValue.validate(fieldValidator);
+            validationErrors.addAll(fieldValidator.getErrors());
+        });
+    }
+
+    List<ValidationError> getErrors() {
         return validationErrors;
     }
 }

@@ -57,7 +57,7 @@ public class PolicyRequest implements RequestElement {
         validator.checkBlank(Fields.subjectCategories, subjectCategories);
         validator.checkDate(Fields.start, start);
         validator.checkDate(Fields.end, end);
-        legalBases.forEach(lb -> lb.validate(validator));
+        validator.validateType(Fields.legalBases, legalBases);
     }
 
 }
