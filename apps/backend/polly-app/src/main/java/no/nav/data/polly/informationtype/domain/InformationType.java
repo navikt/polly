@@ -65,7 +65,7 @@ public class InformationType extends Auditable<String> {
     @Column(name = "DATA")
     private InformationTypeData data = new InformationTypeData();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "TERM_ID")
     private Term term;
 
