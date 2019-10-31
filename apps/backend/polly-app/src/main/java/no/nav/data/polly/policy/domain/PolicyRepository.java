@@ -12,7 +12,7 @@ import javax.transaction.Transactional;
 @Repository
 public interface PolicyRepository extends JpaRepository<Policy, UUID> {
 
-    List<Policy> findByPurposeCode(String purposeCode);
+    List<Policy> findByPurposeCodeAndProcessName(String purposeCode, String processName);
 
     List<Policy> findByInformationTypeId(UUID informationTypeId);
 

@@ -36,18 +36,18 @@ class ProcessUpdateIT extends KafkaIntegrationTestBase {
 
     @Test
     void produserBehandlingsgrunnlag() {
-        createPolicy(3, (index, policy) -> {
-            // Inactive policy should not be sent
-            if (index == 1) {
-                policy.setPurposeCode("other-purpose");
-                policy.setInformationTypeName("other-title");
+        createPolicy(4, (index, policy) -> {
+            policy.setInformationTypeName(INFORMATION_TYPE_NAME + index);
+            policy.getProcess().setName(PROCESS_NAME_1);
+            if (index == 0) {
+                // Inactive policy should not be sent
                 policy.setEnd(LocalDate.now().minusDays(1));
-            } else if (index == 2) {
-                policy.setInformationTypeName(INFORMATION_TYPE_NAME + "2");
+            } else if (index == 1) {
+                policy.getProcess().setName("ignored process");
             }
         });
 
-        processService.scheduleDistributeForPurpose(Process.builder().name(PROCESS_NAME_1).purposeCode(PURPOSE_CODE1).build());
+        processService.scheduleDistributeForProcess(Process.builder().name(PROCESS_NAME_1).purposeCode(PURPOSE_CODE1).build());
         processService.distributeAll();
 
         await().atMost(Duration.TEN_SECONDS).untilAsserted(() -> assertEquals(0L, repository.count()));
@@ -57,6 +57,6 @@ class ProcessUpdateIT extends KafkaIntegrationTestBase {
         assertEquals(PROCESS_NAME_1 + "-" + PURPOSE_CODE1, singleRecord.key());
         assertEquals(PROCESS_NAME_1, singleRecord.value().getProcessName());
         assertEquals(PURPOSE_CODE1, singleRecord.value().getPurposeCode());
-        assertThat(singleRecord.value().getInformationTypes()).contains(INFORMATION_TYPE_NAME, INFORMATION_TYPE_NAME + "2");
+        assertThat(singleRecord.value().getInformationTypes()).contains(INFORMATION_TYPE_NAME + 2, INFORMATION_TYPE_NAME + 3);
     }
 }

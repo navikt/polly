@@ -45,8 +45,8 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
         scheduleDistributions(rateSeconds);
     }
 
-    public void scheduleDistributeForPurpose(Process process) {
-        distributionRepository.save(ProcessDistribution.newForPurpose(process.getName(), process.getPurposeCode()));
+    public void scheduleDistributeForProcess(Process process) {
+        distributionRepository.save(ProcessDistribution.newForProcess(process));
     }
 
     public void distributeAll() {
@@ -57,7 +57,7 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
     }
 
     private void distribute(Process process, List<ProcessDistribution> processDistributions) {
-        List<String> informationTypeNames = policyService.findActiveByPurposeCode(process.getPurposeCode()).stream()
+        List<String> informationTypeNames = policyService.findByPurposeCodeAndProcessName(process.getPurposeCode(), process.getName()).stream()
                 .map(Policy::getInformationTypeName)
                 .collect(Collectors.toList());
         if (processUpdateProducer.sendProcess(process.getName(), process.getPurposeCode(), informationTypeNames)) {

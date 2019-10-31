@@ -134,8 +134,8 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
         return policyRepository.findByInformationTypeIdAndPurposeCode(informationTypeId, purposeCode).stream().anyMatch(Policy::isActive);
     }
 
-    public List<Policy> findActiveByPurposeCode(String purpose) {
-        return policyRepository.findByPurposeCode(purpose).stream()
+    public List<Policy> findByPurposeCodeAndProcessName(String purpose, String processName) {
+        return policyRepository.findByPurposeCodeAndProcessName(purpose, processName).stream()
                 .filter(Policy::isActive)
                 .collect(Collectors.toList());
     }

@@ -114,6 +114,7 @@ public abstract class IntegrationTestBase {
             Policy policy = createPolicy(PURPOSE_CODE1, createInformationType());
             callback.accept(i, policy);
             policyRepository.save(policy);
+            processRepository.save(policy.getProcess());
         }
     }
 
