@@ -114,10 +114,7 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
     public void validateRequest(List<InformationTypeRequest> requests) {
         List<ValidationError> validationErrors = validateRequestsAndReturnErrors(requests);
 
-        if (!validationErrors.isEmpty()) {
-            log.error("The request was not accepted. The following errors occurred during validation: {}", validationErrors);
-            throw new ValidationException(validationErrors, "The request was not accepted. The following errors occurred during validation: ");
-        }
+        checkForErrors(validationErrors);
     }
 
     public List<ValidationError> validateRequestsAndReturnErrors(List<InformationTypeRequest> requests) {

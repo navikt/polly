@@ -124,10 +124,7 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     public void validateRequest(List<CodelistRequest> requests) {
         List<ValidationError> validationErrors = validateRequestsAndReturnErrors(requests);
 
-        if (!validationErrors.isEmpty()) {
-            log.error("The request was not accepted. The following errors occurred during validation: {}", validationErrors);
-            throw new ValidationException(validationErrors, "The request was not accepted. The following errors occurred during validation: ");
-        }
+        checkForErrors(validationErrors);
     }
 
     private List<ValidationError> validateRequestsAndReturnErrors(List<CodelistRequest> requests) {
