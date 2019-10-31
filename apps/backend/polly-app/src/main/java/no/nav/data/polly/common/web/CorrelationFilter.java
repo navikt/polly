@@ -24,6 +24,7 @@ public class CorrelationFilter extends OncePerRequestFilter {
 
         Optional.ofNullable(request.getHeader(HEADER_CONSUMER_ID)).ifPresent(MdcUtils::setConsumerId);
 
+        MdcUtils.setRequestPath(getPath(request));
         MdcUtils.createCorrelationId();
         try {
             filterChain.doFilter(request, response);
@@ -31,6 +32,13 @@ public class CorrelationFilter extends OncePerRequestFilter {
             MdcUtils.clearCorrelationId();
             MdcUtils.clearCallId();
             MdcUtils.clearConsumer();
+            MdcUtils.clearRequestPath();
         }
+    }
+
+    private String getPath(HttpServletRequest request) {
+        String url = request.getRequestURL().toString();
+        String queryString = request.getQueryString();
+        return url + "?" + queryString;
     }
 }

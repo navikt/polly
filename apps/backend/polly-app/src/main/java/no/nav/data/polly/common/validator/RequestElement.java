@@ -12,7 +12,7 @@ public interface RequestElement extends Validated {
 
     @JsonIgnore
     default String getRequestType() {
-        return StringUtils.substringBefore(getClass().getSimpleName(), "Request");
+        return StringUtils.substringBeforeLast(getClass().getSimpleName(), "Request");
     }
 
     @JsonIgnore
