@@ -27,7 +27,7 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 @RestController
 @CrossOrigin
-@Api(value = "Data Catalog Purpose", description = "REST API for Purpose", tags = {"Purpose"})
+@Api(value = "Data Catalog Purpose", description = "REST API for Purpose", tags = {"Purpose", "Process"})
 @RequestMapping("/process/purpose")
 public class PurposeController {
 
