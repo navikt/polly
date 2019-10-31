@@ -27,12 +27,34 @@ let initialFormValues = {
     description: ""
 };
 
-const InformationtypeCreatePage = () => {
+const reduceCategories = (list: any) => {
+    if (!list) return;
+    return list.reduce((acc: any, curr: any) => {
+        return [...acc, !curr ? null : curr.code];
+    }, []);
+};
+
+const initFormValues = (data: any) => {
+    console.log(data);
+    return {
+        term: data.name,
+        pii: data.pii,
+        name: data.name,
+        context: data.context,
+        categories: reduceCategories(data.categories),
+        sensitivity: data.sensitivity,
+        keywords: data.keywords,
+        description: data.description
+    };
+};
+
+const InformationtypeEditPage = (props: any) => {
     const [isLoading, setLoading] = React.useState(true);
     const [error, setError] = React.useState(null);
-    const [isCreated, setIsCreated] = React.useState(null);
+    const [isUpdated, setIsUpdated] = React.useState(null);
     const [errorSubmit, setErrorSubmit] = React.useState(null);
     const [codelist, setCodelist] = React.useState();
+    const [informationtype, setInformationType] = React.useState();
 
     const handleAxiosError = (error: any) => {
         if (error.response) {
@@ -54,19 +76,19 @@ const InformationtypeCreatePage = () => {
     };
 
     const handleSubmitResponse = (response: any) => {
-        setIsCreated(response);
+        setIsUpdated(response);
     };
 
     const handleSubmit = async (values: any) => {
-        console.log(values);
+        console.log(values, "VALI");
         if (!values) return;
 
         setErrorSubmit(null);
-        setIsCreated(null);
+        setIsUpdated(null);
         let body = [values];
 
         await axios
-            .post(`${server_polly}/informationtype`, body)
+            .put(`${server_polly}/informationtype`, body)
             .then(handleSubmitResponse)
             .catch(err => setErrorSubmit(err.message));
     };
@@ -74,6 +96,15 @@ const InformationtypeCreatePage = () => {
     React.useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
+
+            await axios
+                .get(`${server_polly}/informationtype/${props.match.params.id}`)
+                .then(res => {
+                    console.log(res);
+                    setInformationType(res.data);
+                })
+                .catch(handleAxiosError);
+
             await axios
                 .get(`${server_codelist}`)
                 .then(handleGetCodelistResponse)
@@ -90,24 +121,23 @@ const InformationtypeCreatePage = () => {
                 <Spinner size={30} />
             ) : (
                 <React.Fragment>
-                    <Banner title="Opprett ny opplysningstype" />
-                    {!error && codelist ? (
-                        <React.Fragment>
-                            <Centered>
-                                <InformationtypeForm
-                                    formInitialValues={initialFormValues}
-                                    submit={handleSubmit}
-                                    isEdit={false}
-                                    codelist={codelist}
-                                />
-                                {errorSubmit && <p>{errorSubmit}</p>}
-                                {isCreated && (
-                                    <p>Opplysningstypen er nå opprettet.</p>
+                    <Banner title={"Rediger (" + informationtype.name + ")"} />
+
+                    {!error && informationtype ? (
+                        <Centered>
+                            <InformationtypeForm
+                                formInitialValues={initFormValues(
+                                    informationtype
                                 )}
-                            </Centered>
-                        </React.Fragment>
+                                isEdit
+                                codelist={codelist}
+                                submit={handleSubmit}
+                            />
+                            {errorSubmit && <p>{errorSubmit}</p>}
+                            {isUpdated && <p>Opplysningstypen er oppdatert.</p>}
+                        </Centered>
                     ) : (
-                        <p>Feil i henting av codelist</p>
+                        <p>Kunne ikke laste inn siden.</p>
                     )}
                 </React.Fragment>
             )}
@@ -115,4 +145,4 @@ const InformationtypeCreatePage = () => {
     );
 };
 
-export default InformationtypeCreatePage;
+export default InformationtypeEditPage;

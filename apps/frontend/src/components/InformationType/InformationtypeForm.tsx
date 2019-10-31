@@ -10,7 +10,6 @@ import {
     FieldArrayRenderProps
 } from "formik";
 import { Label2 } from "baseui/typography";
-
 import { Input } from "baseui/input";
 import { BlockProps, Block } from "baseui/block";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
@@ -59,6 +58,7 @@ function renderTagList(
 type FormProps = {
     formInitialValues: InformationtypeFormValues | any;
     submit: Function;
+    isEdit: Boolean;
     codelist: {
         CATEGORY: any;
         PURPOSE: any;
@@ -69,6 +69,7 @@ type FormProps = {
 const InformationtypeForm = ({
     formInitialValues,
     submit,
+    isEdit,
     codelist
 }: FormProps) => {
     const [value, setValue] = React.useState<Value>([]);
@@ -111,92 +112,51 @@ const InformationtypeForm = ({
                             flexGridColumnGap="scale1000"
                             flexGridRowGap="scale1000"
                         >
-                            <FlexGridItem>
-                                <Field
-                                    name="term"
-                                    render={({
-                                        field
-                                    }: FieldProps<
-                                        InformationtypeFormValues
-                                    >) => (
-                                        <Block>
-                                            <Block {...labelProps}>
-                                                <Label2>Begrep</Label2>
-                                            </Block>
-                                            <Input
-                                                {...field}
-                                                placeholder="Skriv inn et begrep"
-                                            />
-                                        </Block>
-                                    )}
-                                />
-                            </FlexGridItem>
+                            {!isEdit && (
+                                <React.Fragment>
+                                    <FlexGridItem>
+                                        <Field
+                                            name="term"
+                                            render={({
+                                                field
+                                            }: FieldProps<
+                                                InformationtypeFormValues
+                                            >) => (
+                                                <Block>
+                                                    <Block {...labelProps}>
+                                                        <Label2>Begrep</Label2>
+                                                    </Block>
+                                                    <Input
+                                                        {...field}
+                                                        placeholder="Skriv inn et begrep"
+                                                    />
+                                                </Block>
+                                            )}
+                                        />
+                                    </FlexGridItem>
 
-                            <FlexGridItem>
-                                <Field
-                                    name="pii"
-                                    render={({
-                                        field,
-                                        form
-                                    }: FieldProps<
-                                        InformationtypeFormValues
-                                    >) => (
-                                        <Block>
-                                            <Block {...labelProps}>
-                                                <Label2>
-                                                    Personopplysning
-                                                </Label2>
-                                            </Block>
-
-                                            <RadioGroup
-                                                value={
-                                                    !formikBag.values.pii
-                                                        ? "false"
-                                                        : formikBag.values.pii.toString()
-                                                }
-                                                onChange={e => {
-                                                    (e.target as HTMLInputElement)
-                                                        .value === "true"
-                                                        ? form.setFieldValue(
-                                                              "pii",
-                                                              true
-                                                          )
-                                                        : form.setFieldValue(
-                                                              "pii",
-                                                              false
-                                                          );
-                                                }}
-                                                align="horizontal"
-                                            >
-                                                <Radio value="true">Ja</Radio>
-                                                <Block marginLeft="1rem"></Block>
-                                                <Radio value="false">Nei</Radio>
-                                            </RadioGroup>
-                                        </Block>
-                                    )}
-                                />
-                            </FlexGridItem>
-
-                            <FlexGridItem>
-                                <Field
-                                    name="name"
-                                    render={({
-                                        field
-                                    }: FieldProps<
-                                        InformationtypeFormValues
-                                    >) => (
-                                        <Block>
-                                            <Block {...labelProps}>
-                                                <Label2>Navn</Label2>
-                                            </Block>
-                                            <Input
-                                                {...field}
-                                                placeholder="Skriv inn navn"
-                                            />
-                                        </Block>
-                                    )}
-                                />
-                            </FlexGridItem>
+                                    <FlexGridItem>
+                                        <Field
+                                            name="name"
+                                            render={({
+                                                field
+                                            }: FieldProps<
+                                                InformationtypeFormValues
+                                            >) => (
+                                                <Block>
+                                                    <Block {...labelProps}>
+                                                        <Label2>Navn</Label2>
+                                                    </Block>
+                                                    <Input
+                                                        {...field}
+                                                        placeholder="Skriv inn navn"
+                                                    />
+                                                </Block>
+                                            )}
+                                        />
+                                    </FlexGridItem>
+                                </React.Fragment>
+                            )}
 
                             <FlexGridItem>
                                 <Field
@@ -278,28 +238,6 @@ const InformationtypeForm = ({
                             </FlexGridItem>
 
                             <FlexGridItem>
-                                <Field
-                                    name="description"
-                                    render={({
-                                        field
-                                    }: FieldProps<
-                                        InformationtypeFormValues
-                                    >) => (
-                                        <Block>
-                                            <Block {...labelProps}>
-                                                <Label2>Beskrivelse</Label2>
-                                            </Block>
-                                            <Textarea
-                                                {...field}
-                                                placeholder="Skriv inn beskrivelse av opplysningtypen"
-                                                rows={5}
-                                            />
-                                        </Block>
-                                    )}
-                                />
-                            </FlexGridItem>
-
-                            <FlexGridItem>
                                 <FieldArray
                                     name="keywords"
                                     render={arrayHelpers => (
@@ -337,6 +275,73 @@ const InformationtypeForm = ({
                                                 formikBag.values.keywords,
                                                 arrayHelpers
                                             )}
+                                        </Block>
+                                    )}
+                                />
+                            </FlexGridItem>
+
+                            <FlexGridItem>
+                                <Field
+                                    name="description"
+                                    render={({
+                                        field
+                                    }: FieldProps<
+                                        InformationtypeFormValues
+                                    >) => (
+                                        <Block>
+                                            <Block {...labelProps}>
+                                                <Label2>Beskrivelse</Label2>
+                                            </Block>
+                                            <Textarea
+                                                {...field}
+                                                placeholder="Skriv inn beskrivelse av opplysningtypen"
+                                                rows={5}
+                                            />
+                                        </Block>
+                                    )}
+                                />
+                            </FlexGridItem>
+
+                            <FlexGridItem>
+                                <Field
+                                    name="pii"
+                                    render={({
+                                        field,
+                                        form
+                                    }: FieldProps<
+                                        InformationtypeFormValues
+                                    >) => (
+                                        <Block>
+                                            <Block {...labelProps}>
+                                                <Label2>
+                                                    Personopplysning
+                                                </Label2>
+                                            </Block>
+
+                                            <RadioGroup
+                                                value={
+                                                    !formikBag.values.pii
+                                                        ? "Nei"
+                                                        : formikBag.values.pii.toString()
+                                                }
+                                                onChange={e => {
+                                                    (e.target as HTMLInputElement)
+                                                        .value === "Ja"
+                                                        ? form.setFieldValue(
+                                                              "pii",
+                                                              "Ja"
+                                                          )
+                                                        : form.setFieldValue(
+                                                              "pii",
+                                                              "Nei"
+                                                          );
+                                                }}
+                                                align="horizontal"
+                                            >
+                                                <Radio value="Ja">Ja</Radio>
+                                                <Block marginLeft="1rem"></Block>
+                                                <Radio value="Nei">Nei</Radio>
+                                            </RadioGroup>
                                         </Block>
                                     )}
                                 />
