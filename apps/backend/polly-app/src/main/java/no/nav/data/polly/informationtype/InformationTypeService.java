@@ -1,7 +1,8 @@
 package no.nav.data.polly.informationtype;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.polly.common.exceptions.ValidationException;
+import no.nav.data.polly.common.utils.StreamUtils;
+import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.common.validator.RequestValidator;
 import no.nav.data.polly.common.validator.ValidationError;
 import no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus;
@@ -14,7 +15,6 @@ import no.nav.data.polly.term.domain.Term;
 import no.nav.data.polly.term.domain.TermRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -30,25 +30,25 @@ import static no.nav.data.polly.common.utils.StreamUtils.nullToEmptyList;
 @Service
 public class InformationTypeService extends RequestValidator<InformationTypeRequest> {
 
-    private final InformationTypeRepository repository;
+    private final InformationTypeRepository informationTypeRepository;
     private final TermRepository termRepository;
     private final PolicyRepository policyRepository;
 
-    public InformationTypeService(InformationTypeRepository repository, TermRepository termRepository, PolicyRepository policyRepository) {
-        this.repository = repository;
+    public InformationTypeService(InformationTypeRepository informationTypeRepository, TermRepository termRepository, PolicyRepository policyRepository) {
+        this.informationTypeRepository = informationTypeRepository;
         this.termRepository = termRepository;
         this.policyRepository = policyRepository;
     }
 
     @Transactional
     public InformationType save(InformationTypeRequest request, InformationTypeMaster master) {
-        return repository.save(convertNew(request, master));
+        return informationTypeRepository.save(convertNew(request, master));
     }
 
     @Transactional
     public List<InformationType> saveAll(List<InformationTypeRequest> requests, InformationTypeMaster master) {
         List<InformationType> informationTypes = requests.stream().map(request -> convertNew(request, master)).collect(toList());
-        return repository.saveAll(informationTypes);
+        return informationTypeRepository.saveAll(informationTypes);
     }
 
     @Transactional
@@ -58,7 +58,7 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
 
     @Transactional
     public List<InformationType> updateAll(List<InformationTypeRequest> requests) {
-        List<InformationType> informationTypes = repository.findAllByName(requests.stream()
+        List<InformationType> informationTypes = informationTypeRepository.findAllByName(requests.stream()
                 .map(InformationTypeRequest::getName)
                 .collect(Collectors.toList()));
 
@@ -70,12 +70,12 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
                     request.ifPresent(informationTypeRequest -> convertUpdate(informationTypeRequest, ds));
                 });
 
-        return repository.saveAll(informationTypes);
+        return informationTypeRepository.saveAll(informationTypes);
     }
 
     @Transactional
     public InformationType delete(InformationTypeRequest request) {
-        Optional<InformationType> fromRepository = repository.findByName(request.getName());
+        Optional<InformationType> fromRepository = informationTypeRepository.findByName(request.getName());
         if (fromRepository.isEmpty()) {
             log.warn("Cannot find InformationType with title={} for deletion", request.getName());
             return null;
@@ -126,19 +126,18 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
             throw new IllegalStateException("missing InformationTypeMaster on request");
         }
 
-        List<ValidationError> validationErrors = new ArrayList<>(validateNoDuplicates(requests));
+        var validationErrors = validateNoDuplicates(requests);
+        requests.forEach(InformationTypeRequest::format);
 
-        requests.forEach(request -> {
-            validationErrors.addAll(request.validateFields());
-            request.format();
-            validationErrors.addAll(validateInformationTypeRepositoryValues(request));
-        });
+        validationErrors.addAll(StreamUtils.applyAll(requests,
+                RequestElement::validateFields,
+                this::validateInformationTypeRepositoryValues));
         return validationErrors;
     }
 
     private List<ValidationError> validateInformationTypeRepositoryValues(InformationTypeRequest request) {
-        Optional<InformationType> existingInformationType = repository.findByName(request.getName());
-        List<ValidationError> validationErrors = new ArrayList<>(validateRepositoryValues(request, existingInformationType.isPresent()));
+        var existingInformationType = informationTypeRepository.findByName(request.getName());
+        var validationErrors = validateRepositoryValues(request, existingInformationType.isPresent());
 
         if (updatingExistingElement(request.isUpdate(), existingInformationType.isPresent())) {
             InformationTypeData existingInformationTypeData = existingInformationType.get().getData();
@@ -164,7 +163,7 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
     }
 
     public void sync(List<UUID> ids) {
-        int informationTypesUpdated = repository.setSyncForInformationTypeIds(ids);
+        int informationTypesUpdated = informationTypeRepository.setSyncForInformationTypeIds(ids);
         log.info("marked {} informationTypes for sync", informationTypesUpdated);
     }
 

@@ -9,10 +9,8 @@ import no.nav.data.polly.common.exceptions.CodelistNotFoundException;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.common.validator.RequestValidator;
-import no.nav.data.polly.common.validator.ValidationError;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -123,7 +121,7 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     public void validateRequest(List<CodelistRequest> requests, boolean update) {
         initialize(requests, update);
 
-        List<ValidationError> validationErrors = new ArrayList<>(validateNoDuplicates(requests));
+        var validationErrors = validateNoDuplicates(requests);
         requests.forEach(CodelistRequest::format);
 
         validationErrors.addAll(StreamUtils.applyAll(requests,
