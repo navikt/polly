@@ -5,9 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
@@ -31,6 +31,7 @@ public class InformationTypeElasticsearch {
     private String id;
     private String name;
     private String context;
+    private String term;
     private String description;
     private String pii;
     private String sensitivity;
@@ -53,6 +54,7 @@ public class InformationTypeElasticsearch {
 
     public InformationTypeElasticsearch(InformationType informationType, List<PolicyElasticsearch> policies) {
         setId(informationType.getId().toString());
+        setTerm(informationType.getTerm().getName());
 
         setCreated(DateUtil.formatDateTime(informationType.getCreatedDate()));
         setCreatedBy(informationType.getCreatedBy());
