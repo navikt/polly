@@ -17,7 +17,8 @@ import no.nav.data.polly.legalbasis.domain.LegalBasis;
 @AllArgsConstructor
 public class LegalBasisRequest {
 
-    private static final String LEGAL_BASIS_FIELD_PREFIX = "LegalBasis.";
+    private static final String LEGAL_BASIS_FIELD_PREFIX = "legalBasis.";
+
     private String gdpr;
     private String nationalLaw;
     private String description;
