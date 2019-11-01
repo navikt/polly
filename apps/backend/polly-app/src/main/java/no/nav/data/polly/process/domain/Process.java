@@ -27,7 +27,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
-import static no.nav.data.polly.common.utils.StreamUtils.filter;
 
 @Data
 @Builder
@@ -85,7 +84,7 @@ public class Process extends Auditable<String> {
                 .name(name)
                 .purposeCode(purposeCode)
                 .legalBases(convert(legalBases, LegalBasis::convertToResponse))
-                .policies(convert(filter(policies, Policy::isActive), Policy::convertToResponse))
+                .policies(convert(policies, Policy::convertToResponse))
                 .build();
     }
 
