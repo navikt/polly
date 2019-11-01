@@ -1,9 +1,11 @@
 package no.nav.data.polly.process;
 
 import no.nav.data.polly.IntegrationTestBase;
+import no.nav.data.polly.codelist.dto.CodeResponse;
+import no.nav.data.polly.informationtype.dto.InformationTypeNameResponse;
 import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.ProcessController.ProcessPolicyPage;
-import no.nav.data.polly.process.dto.ProcessInformationTypeResponse;
 import no.nav.data.polly.process.dto.ProcessPolicyResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +37,14 @@ class PurposeControllerIT extends IntegrationTestBase {
                         .name("Auto_" + PURPOSE_CODE1)
                         .purposeCode(PURPOSE_CODE1)
                         .legalBasis(legalBasisResponse())
-                        .informationType(ProcessInformationTypeResponse.builder()
-                                .id(createInformationType().getId())
-                                .policyId(policy.getId())
-                                .name(INFORMATION_TYPE_NAME)
+                        .policy(PolicyResponse.builder()
+                                .id(policy.getId())
+                                .process(policy.getProcess().getName())
+                                .purposeCode(new CodeResponse(PURPOSE_CODE1, "Kontrollering"))
+                                .informationType(new InformationTypeNameResponse(createInformationType().getId().toString(), INFORMATION_TYPE_NAME))
+                                .subjectCategories(policy.getSubjectCategories())
+                                .start(policy.getStart())
+                                .end(policy.getEnd())
                                 .legalBasis(legalBasisResponse())
                                 .build())
                         .build());

@@ -7,7 +7,7 @@ import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
-import no.nav.data.polly.policy.dto.InformationTypeNameResponse;
+import no.nav.data.polly.informationtype.dto.InformationTypeNameResponse;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.domain.Process;
@@ -47,20 +47,7 @@ public class PolicyMapper {
     }
 
     public PolicyResponse mapPolicyToResponse(Policy policy) {
-        PolicyResponse response = new PolicyResponse();
-        response.setId(policy.getId());
-        if (policy.getInformationType() != null) {
-            response.setInformationType(new InformationTypeNameResponse(policy.getInformationTypeId().toString(), policy.getInformationTypeName()));
-        }
-        CodeResponse purposeCode = CodelistService.getCodeResponseForCodelistItem(ListName.PURPOSE, policy.getPurposeCode());
-        response.setPurposeCode(purposeCode);
-        response.setSubjectCategories(policy.getSubjectCategories());
-        response.setProcess(policy.getProcess().getName());
-        response.setStart(policy.getStart());
-        response.setEnd(policy.getEnd());
-        response.setLegalBasesInherited(policy.isLegalBasesInherited());
-        response.setLegalBases(convert(policy.getLegalBases(), LegalBasis::convertToResponse));
-        return response;
+        return policy.convertToResponse();
     }
 
     private Process createProcess(PolicyRequest policyRequest) {

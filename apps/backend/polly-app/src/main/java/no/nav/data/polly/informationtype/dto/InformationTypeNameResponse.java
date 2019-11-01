@@ -1,6 +1,5 @@
-package no.nav.data.polly.policy.dto;
+package no.nav.data.polly.informationtype.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({"id", "name"})
 public class InformationTypeNameResponse {
 

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
+import no.nav.data.polly.policy.dto.PolicyResponse;
 
 import java.util.List;
 
@@ -23,6 +24,6 @@ public class ProcessPolicyResponse {
     @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;
     @Singular
-    private List<ProcessInformationTypeResponse> informationTypes;
+    private List<PolicyResponse> policies;
 
 }

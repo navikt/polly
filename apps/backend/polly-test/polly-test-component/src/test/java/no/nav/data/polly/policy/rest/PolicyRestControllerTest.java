@@ -11,7 +11,7 @@ import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 import no.nav.data.polly.policy.PolicyService;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
-import no.nav.data.polly.policy.dto.InformationTypeNameResponse;
+import no.nav.data.polly.informationtype.dto.InformationTypeNameResponse;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.policy.mapper.PolicyMapper;

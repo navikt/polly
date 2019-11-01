@@ -11,13 +11,15 @@ import lombok.ToString;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.common.auditing.Auditable;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.elasticsearch.dto.PolicyElasticsearch;
 import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.informationtype.dto.InformationTypeNameResponse;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
+import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.domain.Process;
-import no.nav.data.polly.process.dto.ProcessInformationTypeResponse;
 import org.hibernate.annotations.Type;
 
 import java.time.LocalDate;
@@ -104,12 +106,6 @@ public class Policy extends Auditable<String> {
         }
     }
 
-    public ProcessInformationTypeResponse convertToInformationTypePurposeResponse() {
-        return isActive() ?
-                new ProcessInformationTypeResponse(informationTypeId, id, informationTypeName, legalBasesInherited, convert(legalBases, LegalBasis::convertToResponse))
-                : null;
-    }
-
     public boolean isActive() {
         return DateUtil.isNow(start, end);
     }
@@ -122,6 +118,24 @@ public class Policy extends Auditable<String> {
                 .subjectCategories(getSubjectCategories())
                 .legalbases(convert(filter(legalBases, LegalBasis::isActive), LegalBasis::convertToElasticsearch))
                 .build();
+    }
+
+    public PolicyResponse convertToResponse() {
+        return PolicyResponse.builder()
+                .id(getId())
+                .purposeCode(CodelistService.getCodeResponseForCodelistItem(ListName.PURPOSE, getPurposeCode()))
+                .subjectCategories(getSubjectCategories())
+                .process(getProcess().getName())
+                .start(getStart())
+                .end(getEnd())
+                .informationType(convertInformationTypeNameResponse())
+                .legalBasesInherited(isLegalBasesInherited())
+                .legalBases(convert(getLegalBases(), LegalBasis::convertToResponse))
+                .build();
+    }
+
+    private InformationTypeNameResponse convertInformationTypeNameResponse() {
+        return getInformationType() != null ? new InformationTypeNameResponse(getInformationTypeId().toString(), getInformationTypeName()) : null;
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
