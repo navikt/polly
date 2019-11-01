@@ -71,6 +71,11 @@ public class Policy extends Auditable<String> {
     @Column(name = "INFORMATION_TYPE_NAME", nullable = false)
     private String informationTypeName;
 
+    @Builder.Default
+    @NotNull
+    @Column(name = "LEGAL_BASES_INHERITED", nullable = false)
+    private boolean legalBasesInherited = false;
+
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "INFORMATION_TYPE_ID", nullable = false, updatable = false)
@@ -136,6 +141,7 @@ public class Policy extends Auditable<String> {
             this.informationType = informationType;
             if (informationType != null) {
                 this.informationTypeId = informationType.getId();
+                this.informationTypeName = informationType.getData().getName();
             }
             return this;
         }

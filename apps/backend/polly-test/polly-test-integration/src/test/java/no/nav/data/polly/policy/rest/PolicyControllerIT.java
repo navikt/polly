@@ -376,5 +376,6 @@ class PolicyControllerIT extends IntegrationTestBase {
         assertThat(policy.getInformationType().getName(), is(INFORMATION_TYPE_NAME));
         assertThat(policy.getProcess(), is(process));
         assertThat(policy.getPurposeCode().getCode(), is(PURPOSE_CODE1));
+        assertThat(policy.isLegalBasesInherited(), is(false));
     }
 }

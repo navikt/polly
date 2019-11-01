@@ -2,6 +2,7 @@ package no.nav.data.polly.common.validator;
 
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDate;
@@ -40,7 +41,7 @@ public class FieldValidator {
 
     public boolean checkBlank(String fieldName, String fieldValue) {
         if (StringUtils.isBlank(fieldValue)) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(ERROR_MESSAGE, parentField + fieldName)));
+            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(ERROR_MESSAGE, getFieldName(fieldName))));
             return true;
         }
         return false;
@@ -53,7 +54,7 @@ public class FieldValidator {
         try {
             Enum.valueOf(type, fieldValue);
         } catch (IllegalArgumentException e) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE_ENUM, String.format(ERROR_MESSAGE_ENUM, parentField + fieldName, fieldValue, type.getSimpleName())));
+            validationErrors.add(new ValidationError(reference, ERROR_TYPE_ENUM, String.format(ERROR_MESSAGE_ENUM, getFieldName(fieldName), fieldValue, type.getSimpleName())));
         }
     }
 
@@ -73,7 +74,7 @@ public class FieldValidator {
 
     private void checkCode(String fieldName, String fieldValue, ListName listName) {
         if (CodelistService.getCodeResponseForCodelistItem(listName, fieldValue) == null) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE_CODELIST, String.format(ERROR_MESSAGE_CODELIST, parentField + fieldName, fieldValue, listName)));
+            validationErrors.add(new ValidationError(reference, ERROR_TYPE_CODELIST, String.format(ERROR_MESSAGE_CODELIST, getFieldName(fieldName), fieldValue, listName)));
         }
     }
 

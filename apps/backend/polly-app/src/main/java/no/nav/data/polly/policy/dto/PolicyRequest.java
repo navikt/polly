@@ -29,6 +29,7 @@ public class PolicyRequest implements RequestElement {
     private String informationTypeName;
     private String start;
     private String end;
+    private String legalBasesInherited;
     private List<LegalBasisRequest> legalBases;
 
     private int requestIndex;

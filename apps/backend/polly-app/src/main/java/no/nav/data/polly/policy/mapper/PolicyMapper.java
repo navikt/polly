@@ -12,6 +12,7 @@ import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessRepository;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -34,6 +35,7 @@ public class PolicyMapper {
         policy.setSubjectCategories(policyRequest.getSubjectCategories());
         policy.setStart(DateUtil.parseStart(policyRequest.getStart()));
         policy.setEnd(DateUtil.parseEnd(policyRequest.getEnd()));
+        policy.setLegalBasesInherited(BooleanUtils.toBoolean(policyRequest.getLegalBasesInherited()));
         policy.setLegalBases(convert(policyRequest.getLegalBases(), LegalBasisRequest::convertToLegalBasis));
         if (policy.getId() == null) {
             policy.setId(UUID.randomUUID());
@@ -56,6 +58,7 @@ public class PolicyMapper {
         response.setProcess(policy.getProcess().getName());
         response.setStart(policy.getStart());
         response.setEnd(policy.getEnd());
+        response.setLegalBasesInherited(policy.isLegalBasesInherited());
         response.setLegalBases(convert(policy.getLegalBases(), LegalBasis::convertToResponse));
         return response;
     }
