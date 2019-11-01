@@ -15,7 +15,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "name", "legalBases"})
+@JsonPropertyOrder({"id", "name", "legalBasesInherited", "legalBases"})
 public class InformationTypePurposeResponse {
 
     private UUID id;
