@@ -20,6 +20,7 @@ public class InformationTypePurposeResponse {
 
     private UUID id;
     private String name;
+    private boolean legalBasesInherited;
     @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;
 }
