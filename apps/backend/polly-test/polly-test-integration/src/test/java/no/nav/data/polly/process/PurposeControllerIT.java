@@ -3,7 +3,7 @@ package no.nav.data.polly.process;
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.process.ProcessController.ProcessPolicyPage;
-import no.nav.data.polly.process.dto.InformationTypePurposeResponse;
+import no.nav.data.polly.process.dto.ProcessInformationTypeResponse;
 import no.nav.data.polly.process.dto.ProcessPolicyResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +35,9 @@ class PurposeControllerIT extends IntegrationTestBase {
                         .name("Auto_" + PURPOSE_CODE1)
                         .purposeCode(PURPOSE_CODE1)
                         .legalBasis(legalBasisResponse())
-                        .informationType(InformationTypePurposeResponse.builder()
+                        .informationType(ProcessInformationTypeResponse.builder()
                                 .id(createInformationType().getId())
+                                .policyId(policy.getId())
                                 .name(INFORMATION_TYPE_NAME)
                                 .legalBasis(legalBasisResponse())
                                 .build())

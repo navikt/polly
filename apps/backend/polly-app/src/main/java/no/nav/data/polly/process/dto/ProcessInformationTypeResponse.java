@@ -15,10 +15,11 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "name", "legalBasesInherited", "legalBases"})
-public class InformationTypePurposeResponse {
+@JsonPropertyOrder({"id", "policyId", "name", "legalBasesInherited", "legalBases"})
+public class ProcessInformationTypeResponse {
 
     private UUID id;
+    private UUID policyId;
     private String name;
     private boolean legalBasesInherited;
     @Singular("legalBasis")

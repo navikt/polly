@@ -23,6 +23,6 @@ public class ProcessPolicyResponse {
     @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;
     @Singular
-    private List<InformationTypePurposeResponse> informationTypes;
+    private List<ProcessInformationTypeResponse> informationTypes;
 
 }
