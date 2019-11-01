@@ -35,7 +35,7 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
     }
 
     public void validateRequests(List<PolicyRequest> requests, boolean isUpdate) {
-        // TODO validate process, and that process/purposecode from request matches existing process
+        // TODO validate process, and that process/purposecode from request matches existing process on updates
         initialize(requests, isUpdate);
         List<ValidationError> validations = new ArrayList<>();
         Map<String, Integer> titlesUsedInRequest = new HashMap<>();
@@ -95,10 +95,10 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
         if (request.getInformationTypeName() == null) {
             validations.add(new ValidationError(request.getReference(), "informationTypeName", "informationTypeName cannot be null"));
         }
-        if (request.getLegalBases() == null) {
-            validations.add(new ValidationError(request.getReference(), "legalBases", "legalBases cannot be null"));
-            // todo validate content
-        }
+
+        // todo use this validation
+        request.validateFields();
+
         if (request.getPurposeCode() == null) {
             validations.add(new ValidationError(request.getReference(), "purposeCode", "purposeCode cannot be null"));
         } else {

@@ -68,10 +68,9 @@ class PolicyServiceTest {
             service.validateRequests(List.of(request), false);
             fail();
         } catch (ValidationException e) {
-            assertEquals(4, e.get().size(), JsonUtils.toJson(e.get()));
+            assertEquals(3, e.get().size(), JsonUtils.toJson(e.get()));
             assertEquals("informationTypeName cannot be null", e.get("informationTypeName").getErrorMessage());
             assertEquals("purposeCode cannot be null", e.get("purposeCode").getErrorMessage());
-            assertEquals("legalBases cannot be null", e.get("legalBases").getErrorMessage());
             assertEquals("process cannot be null", e.get("process").getErrorMessage());
         }
     }
@@ -122,11 +121,10 @@ class PolicyServiceTest {
             service.validateRequests(List.of(request), true);
             fail();
         } catch (ValidationException e) {
-            assertEquals(5, e.get().size(), JsonUtils.toJson(e.get()));
+            assertEquals(4, e.get().size(), JsonUtils.toJson(e.get()));
             assertEquals("Id is missing for update", e.get("missingIdForUpdate").getErrorMessage());
             assertEquals("informationTypeName cannot be null", e.get("informationTypeName").getErrorMessage());
             assertEquals("purposeCode cannot be null", e.get("purposeCode").getErrorMessage());
-            assertEquals("legalBases cannot be null", e.get("legalBases").getErrorMessage());
             assertEquals("process cannot be null", e.get("process").getErrorMessage());
         }
     }

@@ -61,7 +61,6 @@ class PolicyControllerIT extends IntegrationTestBase {
         assertThat(createEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
         assertThat(createEntity.getBody(), containsString("purposeCode cannot be null"));
         assertThat(createEntity.getBody(), containsString("informationTypeName cannot be null"));
-        assertThat(createEntity.getBody(), containsString("legalBases cannot be null"));
         assertThat(policyRepository.count(), is(0L));
     }
 
@@ -151,11 +150,11 @@ class PolicyControllerIT extends IntegrationTestBase {
         assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
 
         request.setId(createEntity.getBody().getContent().get(0).getId().toString());
-        request.setLegalBases(null);
+        request.setInformationTypeName(null);
         ResponseEntity<String> updateEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT + request.getId(), HttpMethod.PUT, new HttpEntity<>(request), String.class);
         assertThat(updateEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(updateEntity.getBody(), containsString("legalBases cannot be null"));
+        assertThat(updateEntity.getBody(), containsString("informationTypeName cannot be null"));
         assertThat(policyRepository.count(), is(1L));
     }
 
