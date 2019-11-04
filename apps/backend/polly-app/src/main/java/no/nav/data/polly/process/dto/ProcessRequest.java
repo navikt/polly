@@ -1,6 +1,7 @@
 package no.nav.data.polly.process.dto;
 
-import io.swagger.annotations.ApiParam;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,15 +23,16 @@ import static no.nav.data.polly.common.utils.StreamUtils.convert;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldNameConstants
+@JsonPropertyOrder({"id,", "name", "purposeCode", "start", "end", "legalBases"})
 public class ProcessRequest implements RequestElement {
 
     private String id;
     private String name;
-    @ApiParam(value = "Codelist")
+    @ApiModelProperty(value = "Codelist")
     private String purposeCode;
-    @ApiParam(format = "date")
+    @ApiModelProperty(dataType = DateUtil.LOCAL_DATE)
     private String start;
-    @ApiParam(format = "date")
+    @ApiModelProperty(dataType = DateUtil.LOCAL_DATE)
     private String end;
     private List<LegalBasisRequest> legalBases;
 

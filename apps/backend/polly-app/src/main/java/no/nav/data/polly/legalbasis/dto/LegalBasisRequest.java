@@ -1,6 +1,6 @@
 package no.nav.data.polly.legalbasis.dto;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,12 +20,12 @@ import no.nav.data.polly.legalbasis.domain.LegalBasis;
 public class LegalBasisRequest implements Validated {
 
     private String gdpr;
-    @ApiParam(value = "Codelist")
+    @ApiModelProperty(value = "Codelist")
     private String nationalLaw;
     private String description;
-    @ApiParam(format = "date")
+    @ApiModelProperty(dataType = DateUtil.LOCAL_DATE)
     private String start;
-    @ApiParam(format = "date")
+    @ApiModelProperty(dataType = DateUtil.LOCAL_DATE)
     private String end;
 
     public LegalBasis convertToLegalBasis() {

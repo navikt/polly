@@ -1,5 +1,6 @@
 package no.nav.data.polly.term.domain;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -42,6 +43,10 @@ public class Term extends Auditable<String> {
     @Column(name = "DESCRIPTION", nullable = false)
     private String description;
 
+    @Type(type = "jsonb")
+    @Column(name = "DATA")
+    private JsonNode data;
+
     @Builder.Default
     @OneToMany(mappedBy = "term")
     private Set<InformationType> informationTypes = new HashSet<>();
@@ -56,7 +61,7 @@ public class Term extends Auditable<String> {
     }
 
     public TermResponse convertToResponse() {
-        return new TermResponse(id.toString(), name, description);
+        return new TermResponse(id.toString(), name, description, data);
     }
 
     public static Term convertFromNewRequest(TermRequest request) {
@@ -64,12 +69,14 @@ public class Term extends Auditable<String> {
                 .generateId()
                 .name(request.getName())
                 .description(request.getDescription())
+                .data(request.getData())
                 .build();
     }
 
     public Term convertFromRequest(TermRequest request) {
         name = request.getName();
         description = request.getDescription();
+        data = request.getData();
         return this;
     }
 

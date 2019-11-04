@@ -1,7 +1,7 @@
 package no.nav.data.polly.informationtype.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,13 +35,13 @@ public class InformationTypeRequest implements RequestElement {
     private String name;
     private String description;
     private String term;
-    @ApiParam(type = "boolean")
+    @ApiModelProperty(dataType = "boolean")
     private String pii;
-    @ApiParam(value = "Codelist")
+    @ApiModelProperty(value = "Codelist")
     private String sensitivity;
-    @ApiParam(value = "Codelist")
+    @ApiModelProperty(value = "Codelist")
     private List<String> categories;
-    @ApiParam(value = "Codelist")
+    @ApiModelProperty(value = "Codelist")
     private List<String> sources;
     private List<String> keywords;
 

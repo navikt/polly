@@ -1,13 +1,14 @@
 package no.nav.data.polly.policy.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.informationtype.domain.InformationType;
@@ -26,14 +27,14 @@ public class PolicyRequest implements RequestElement {
     private String id;
     private String process;
     private String purposeCode;
-    @ApiParam(value = "Codelist")
+    @ApiModelProperty(value = "Codelist")
     private String subjectCategory;
     private String informationTypeName;
-    @ApiParam(format = "date")
+    @ApiModelProperty(dataType = DateUtil.LOCAL_DATE)
     private String start;
-    @ApiParam(format = "date")
+    @ApiModelProperty(dataType = DateUtil.LOCAL_DATE)
     private String end;
-    @ApiParam(type = "boolean")
+    @ApiModelProperty(dataType = "boolean")
     private String legalBasesInherited;
     private List<LegalBasisRequest> legalBases;
 

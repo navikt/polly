@@ -88,6 +88,8 @@ public class Process extends Auditable<String> {
                 .id(id.toString())
                 .name(name)
                 .purposeCode(purposeCode)
+                .start(start)
+                .end(end)
                 .legalBases(convert(legalBases, LegalBasis::convertToResponse))
                 .build();
     }

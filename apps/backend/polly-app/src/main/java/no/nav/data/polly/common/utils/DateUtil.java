@@ -6,6 +6,8 @@ import java.time.format.DateTimeFormatter;
 
 public final class DateUtil {
 
+    public static final String LOCAL_DATE = "java.time.LocalDate";
+
     private static final String DEFAULT_START = "0001-01-01";
     private static final String DEFAULT_END = "9999-12-31";
 

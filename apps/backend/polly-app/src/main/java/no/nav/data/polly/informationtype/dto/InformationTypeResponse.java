@@ -2,7 +2,6 @@ package no.nav.data.polly.informationtype.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +11,6 @@ import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
-import org.apache.commons.lang3.BooleanUtils;
 
 import java.util.List;
 import javax.validation.constraints.NotNull;
@@ -30,8 +28,7 @@ public class InformationTypeResponse {
     private String name;
     private String term;
     private String description;
-    @ApiParam(type = "boolean")
-    private String pii;
+    private boolean pii;
     private CodeResponse sensitivity;
     private List<CodeResponse> categories;
     private List<CodeResponse> sources;
@@ -46,7 +43,7 @@ public class InformationTypeResponse {
     private void mapJsonFields(@NotNull InformationTypeData data) {
         setName(data.getName());
         setDescription(data.getDescription());
-        setPii(BooleanUtils.toStringTrueFalse(data.isPii()));
+        setPii(data.isPii());
         setSensitivity(CodelistService.getCodeResponseForCodelistItem(ListName.SENSITIVITY, data.getSensitivity()));
         setCategories(CodelistService.getCodeResponseForCodelistItems(ListName.CATEGORY, data.getCategories()));
         setSources(CodelistService.getCodeResponseForCodelistItems(ListName.SOURCE, data.getSources()));

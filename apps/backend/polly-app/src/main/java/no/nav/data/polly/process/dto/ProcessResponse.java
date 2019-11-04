@@ -16,7 +16,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id,", "name", "purposeCode", "start", "end", "legalBases"})
+@JsonPropertyOrder({"id,", "name", "purposeCode", "start", "end", "active", "legalBases"})
 public class ProcessResponse {
 
     private String id;
