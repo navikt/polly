@@ -46,6 +46,7 @@ public class CodelistRequest implements RequestElement {
         return Codelist.normalize(code);
     }
 
+    @JsonIgnore
     public ListName getListAsListName() {
         try {
             return ListName.valueOf(list);

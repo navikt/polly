@@ -6,8 +6,8 @@ import java.time.format.DateTimeFormatter;
 
 public final class DateUtil {
 
-    private static final String DEFAULT_START = "0001-01-01";
-    private static final String DEFAULT_END = "9999-12-31";
+    public static final String DEFAULT_START = "0001-01-01";
+    public static final String DEFAULT_END = "9999-12-31";
 
     private DateUtil() {
     }

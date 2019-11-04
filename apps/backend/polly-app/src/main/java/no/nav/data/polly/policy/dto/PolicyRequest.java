@@ -18,6 +18,8 @@ import java.util.List;
 
 import static no.nav.data.polly.common.swagger.SwaggerConfig.BOOLEAN;
 import static no.nav.data.polly.common.swagger.SwaggerConfig.LOCAL_DATE;
+import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_END;
+import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_START;
 
 @Data
 @Builder
@@ -32,9 +34,9 @@ public class PolicyRequest implements RequestElement {
     @ApiModelProperty(value = "Codelist")
     private String subjectCategory;
     private String informationTypeName;
-    @ApiModelProperty(dataType = LOCAL_DATE, example = "2020-12-31")
+    @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_START)
     private String start;
-    @ApiModelProperty(dataType = LOCAL_DATE, example = "2020-12-31")
+    @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_END)
     private String end;
     @ApiModelProperty(dataType = BOOLEAN)
     private String legalBasesInherited;

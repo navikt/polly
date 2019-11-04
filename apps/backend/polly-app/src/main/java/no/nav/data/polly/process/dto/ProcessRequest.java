@@ -17,6 +17,8 @@ import no.nav.data.polly.process.domain.Process;
 import java.util.List;
 
 import static no.nav.data.polly.common.swagger.SwaggerConfig.LOCAL_DATE;
+import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_END;
+import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_START;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Data
@@ -31,9 +33,9 @@ public class ProcessRequest implements RequestElement {
     private String name;
     @ApiModelProperty(value = "Codelist")
     private String purposeCode;
-    @ApiModelProperty(dataType = LOCAL_DATE, example = "2020-12-31")
+    @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_START)
     private String start;
-    @ApiModelProperty(dataType = LOCAL_DATE, example = "2020-12-31")
+    @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_END)
     private String end;
     private List<LegalBasisRequest> legalBases;
 
