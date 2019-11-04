@@ -72,15 +72,17 @@ class InformationTypeServiceTest {
         service.validateRequest(requests);
     }
 
-    @Disabled("Until generic test for RequestValidation is written")
     @Test
     void validateRequest_shouldThrowValidationException_withDuplicatedElementInRequest() {
         InformationTypeRequest name1 = createValidInformationTypeRequest("Name1");
         InformationTypeRequest name2 = createValidInformationTypeRequest("Name2");
 
-        Exception exception = assertThrows(Exception.class, () -> service.validateRequest(new ArrayList<>(List.of(name1, name2, name1))));
+        var requests = new ArrayList<>(List.of(name1, name2, name1));
+        InformationTypeRequest.initiateRequests(requests, false, REST);
+
+        Exception exception = assertThrows(Exception.class, () -> service.validateRequest(requests));
         assertThat(exception)
-                .hasMessageContaining("Request:3 -- DuplicateElement -- The informationType Name1 is not unique because it has already been used in this request (see request:1)");
+                .hasMessageContaining("Request:3 -- DuplicateElement -- The InformationType Name1-context is not unique because it has already been used in this request (see request:1)");
     }
 
     @Test
@@ -94,7 +96,6 @@ class InformationTypeServiceTest {
         assertThat(exception).hasMessageContaining("Name1-context -- DuplicatedIdentifyingFields -- Multiple elements in this request are using the same unique fields (Name1-context)");
     }
 
-    @Disabled("Until generic test for RequestValidation is written")
     @Test
     void validateRequest_shouldThrowValidationException_whenFieldNameIsNull() {
         Exception exception = assertThrows(Exception.class, () -> service.validateRequest(List.of(createValidInformationTypeRequest(null))));

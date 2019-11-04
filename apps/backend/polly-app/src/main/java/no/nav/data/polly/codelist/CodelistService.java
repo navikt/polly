@@ -6,16 +6,13 @@ import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
 import no.nav.data.polly.common.exceptions.CodelistNotFoundException;
-import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.utils.StreamUtils;
+import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.common.validator.RequestValidator;
-import no.nav.data.polly.common.validator.ValidationError;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,10 +22,10 @@ import javax.annotation.PostConstruct;
 @Service
 public class CodelistService extends RequestValidator<CodelistRequest> {
 
-    private CodelistRepository repository;
+    private CodelistRepository codelistRepository;
 
-    public CodelistService(CodelistRepository repository) {
-        this.repository = repository;
+    public CodelistService(CodelistRepository codelistRepository) {
+        this.codelistRepository = codelistRepository;
     }
 
     public static Codelist getCodelist(ListName listName, String code) {
@@ -51,7 +48,7 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
 
     @PostConstruct
     public void refreshCache() {
-        List<Codelist> allCodelists = repository.findAll();
+        List<Codelist> allCodelists = codelistRepository.findAll();
         CodelistCache.init();
         allCodelists.forEach(CodelistCache::set);
     }
@@ -60,7 +57,7 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         List<Codelist> codelists = requests.stream()
                 .map(CodelistRequest::convert)
                 .collect(Collectors.toList());
-        List<Codelist> saved = repository.saveAll(codelists);
+        List<Codelist> saved = codelistRepository.saveAll(codelists);
         saved.forEach(CodelistCache::set);
         return saved;
     }
@@ -70,13 +67,13 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
                 .map(this::updateDescriptionInRepository)
                 .collect(Collectors.toList());
 
-        List<Codelist> saved = repository.saveAll(codelists);
+        List<Codelist> saved = codelistRepository.saveAll(codelists);
         saved.forEach(CodelistCache::set);
         return saved;
     }
 
     private Codelist updateDescriptionInRepository(CodelistRequest request) {
-        Optional<Codelist> optionalCodelist = repository.findByListAndNormalizedCode(request.getListAsListName(), request.getNormalizedCode());
+        Optional<Codelist> optionalCodelist = codelistRepository.findByListAndNormalizedCode(request.getListAsListName(), request.getNormalizedCode());
         if (optionalCodelist.isPresent()) {
             Codelist codelist = optionalCodelist.get();
             codelist.setDescription(request.getDescription());
@@ -88,9 +85,9 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     }
 
     public void delete(ListName name, String code) {
-        Optional<Codelist> toDelete = repository.findByListAndNormalizedCode(name, Codelist.normalize(code));
+        Optional<Codelist> toDelete = codelistRepository.findByListAndNormalizedCode(name, Codelist.normalize(code));
         if (toDelete.isPresent()) {
-            repository.delete(toDelete.get());
+            codelistRepository.delete(toDelete.get());
             CodelistCache.remove(name, code);
         } else {
             log.error("Cannot find a codelist to delete with code={} and listName={}", code, name);
@@ -121,34 +118,18 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         return optionalListName.isEmpty();
     }
 
-    public void validateRequest(List<CodelistRequest> requests) {
-        List<ValidationError> validationErrors = validateRequestsAndReturnErrors(requests);
+    public void validateRequest(List<CodelistRequest> requests, boolean update) {
+        initialize(requests, update);
 
-        if (!validationErrors.isEmpty()) {
-            log.error("The request was not accepted. The following errors occurred during validation: {}", validationErrors);
-            throw new ValidationException(validationErrors, "The request was not accepted. The following errors occurred during validation: ");
-        }
-    }
+        var validationErrors = validateNoDuplicates(requests);
+        requests.forEach(CodelistRequest::format);
 
-    private List<ValidationError> validateRequestsAndReturnErrors(List<CodelistRequest> requests) {
-        requests = StreamUtils.nullToEmptyList(requests);
-        if (requests.isEmpty()) {
-            return Collections.emptyList();
-        }
+        validationErrors.addAll(StreamUtils.applyAll(requests,
+                RequestElement::validateFields,
+                req -> validateRepositoryValues(req, codelistRepository.findByListAndNormalizedCode(req.getListAsListName(), req.getCode()).isPresent())
+        ));
 
-        List<ValidationError> validationErrors = new ArrayList<>(validateNoDuplicates(requests));
-
-        requests.forEach(request -> {
-            request.toUpperCaseAndTrim();
-            validationErrors.addAll(request.validateFields());
-
-            if (request.getListAsListName() != null) {
-                boolean existInRepository = repository.findByListAndNormalizedCode(request.getListAsListName(), Codelist.normalize(request.getCode())).isPresent();
-                validationErrors.addAll(validateRepositoryValues(request, existInRepository));
-            }
-        });
-
-        return validationErrors;
+        checkForErrors(validationErrors);
     }
 
 }

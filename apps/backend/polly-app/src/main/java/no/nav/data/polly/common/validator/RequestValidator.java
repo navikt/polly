@@ -36,10 +36,11 @@ public abstract class RequestValidator<T extends RequestElement> {
     private List<ValidationError> recordDuplicatedElementsInTheRequest(List<T> requests) {
         List<ValidationError> validationErrors = new ArrayList<>();
         Map<String, Integer> identToIndex = new HashMap<>();
+        AtomicInteger currentIndex = new AtomicInteger(1);
 
         requests.forEach(request -> {
             String ident = request.getIdentifyingFields();
-            int index = request.getRequestIndex();
+            int index = currentIndex.getAndIncrement();
             if (identToIndex.containsKey(ident)) {
                 validationErrors.add(new ValidationError("Request:" + index, "DuplicateElement",
                         String.format("The %s %s is not unique because it has already been used in this request (see request:%s)",

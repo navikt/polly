@@ -88,8 +88,7 @@ public class CodelistController {
     public List<CodelistResponse> save(@Valid @RequestBody List<CodelistRequest> requests) {
         log.info("Received a requests to create codelists");
         requests = StreamUtils.nullToEmptyList(requests);
-        CodelistRequest.initiateRequests(requests, false);
-        service.validateRequest(requests);
+        service.validateRequest(requests, false);
 
         return service.save(requests).stream().map(Codelist::convertToResponse).collect(Collectors.toList());
     }
@@ -103,8 +102,7 @@ public class CodelistController {
     public List<CodelistResponse> update(@Valid @RequestBody List<CodelistRequest> requests) {
         log.info("Received a request to update codelists");
         requests = StreamUtils.nullToEmptyList(requests);
-        CodelistRequest.initiateRequests(requests, true);
-        service.validateRequest(requests);
+        service.validateRequest(requests, false);
 
         return service.update(requests).stream().map(Codelist::convertToResponse).collect(Collectors.toList());
     }

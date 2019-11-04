@@ -5,7 +5,6 @@ import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
 import no.nav.data.polly.common.exceptions.CodelistNotFoundException;
 import no.nav.data.polly.common.exceptions.ValidationException;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
@@ -158,7 +157,6 @@ class CodelistServiceTest {
         }
     }
 
-    @Disabled("Until generic test for RequestValidation is written")
     @Test
     void validateThatAllFieldsHaveValidValues_shouldValidate_whenSaveAndRequestItemDoesNotExist() {
         //TODO: HelperFunctions
@@ -166,21 +164,9 @@ class CodelistServiceTest {
                 createRequestWithListName("SOURCE"),
                 createRequestWithListName("CATEGORY"));
 
-//        List<CodelistRequest> requests = new ArrayList<>();
-//        requests.add(CodelistRequest.builder()
-//                .list("SOURCE")
-//                .code("TEST")
-//                .description("Informasjon oppgitt av tester")
-//                .build());
-//        requests.add(CodelistRequest.builder()
-//                .list("CATEGORY")
-//                .code("TEST")
-//                .description("Informasjon oppgitt av tester")
-//                .build());
-//        CodelistRequest.initiateRequests(requests, false);
         when(repository.findByListAndNormalizedCode(any(ListName.class), anyString())).thenReturn(Optional.empty());
 
-        service.validateRequest(requests);
+        service.validateRequest(requests, false);
     }
 
     private List<CodelistRequest> createListOfRequests(CodelistRequest... requests) {
@@ -198,21 +184,12 @@ class CodelistServiceTest {
     }
 
 
-    @Disabled("Until generic test for RequestValidation is written")
     @Test
     void validate_shouldValidateWithoutAnyProcessing_whenRequestIsEmpty() {
         List<CodelistRequest> requests = new ArrayList<>(Collections.emptyList());
-        service.validateRequest(requests);
+        service.validateRequest(requests, false);
     }
 
-    @Disabled("Until generic test for RequestValidation is written")
-    @Test
-    void validate_shouldValidateWithoutAnyProcessing_whenRequestIsNull() {
-        List<CodelistRequest> requests = null;
-        service.validateRequest(requests);
-    }
-
-    @Disabled("Until generic test for RequestValidation is written")
     @Test
     void validateThatAllFieldsHaveValidValues_shouldThrowValidationException_whenSaveAndRequestItemExist() {
         List<CodelistRequest> requests = createListOfRequests(createRequestWithListNameAndCode("SOURCE", "BRUKER"));
@@ -221,11 +198,11 @@ class CodelistServiceTest {
         when(repository.findByListAndNormalizedCode(ListName.SOURCE, "BRUKER")).thenReturn(Optional.of(expectedCodelist));
 
         try {
-            service.validateRequest(requests);
+            service.validateRequest(requests, false);
             fail();
         } catch (ValidationException e) {
             assertThat(e.get().size()).isEqualTo(1);
-            assertThat(e.toErrorString()).isEqualTo("Request:1 -- creatingExistingCodelist -- The codelist SOURCE-BRUKER already exists and therefore cannot be created");
+            assertThat(e.toErrorString()).isEqualTo("Request:1 -- creatingExistingCodelist -- The Codelist SOURCE-BRUKER already exists and therefore cannot be created");
         }
     }
 
@@ -239,7 +216,6 @@ class CodelistServiceTest {
         return request;
     }
 
-    @Disabled("Until generic test for RequestValidation is written")
     @Test
     void validateThatAllFieldsHaveValidValues_shouldValidate_whenUpdateAndRequestItemExist() {
         //TODO: HelperFunctions
@@ -250,32 +226,29 @@ class CodelistServiceTest {
                 .description("Informasjon oppgitt av tester")
                 .build());
         Codelist codelist = requests.get(0).convert();
-        CodelistRequest.initiateRequests(requests, true);
 
         CodelistCache.set(Codelist.builder().list(ListName.SOURCE).code("TEST").description("Informasjon oppgitt av tester").build());
 
         when(repository.findByListAndNormalizedCode(ListName.SOURCE, "TEST")).thenReturn(Optional.of(codelist));
 
-        service.validateRequest(requests);
+        service.validateRequest(requests, true);
     }
 
-    @Disabled("Until generic test for RequestValidation is written")
     @Test
     void validateThatAllFieldsHaveValidValues_shouldThrowValidationException_whenUpdateAndRequestItemDoesNotExist() {
         List<CodelistRequest> requests = createListOfRequests(createRequestWithListNameAndCode("SOURCE", "unknownCode"));
-        requests.forEach(r -> r.setUpdate(true));
+//        requests.forEach(r -> r.setUpdate(true));
 
         try {
-            service.validateRequest(requests);
+            service.validateRequest(requests, true);
             fail();
         } catch (ValidationException e) {
             assertThat(e.get().size()).isEqualTo(1);
             assertThat(e.toErrorString())
-                    .isEqualTo("Request:1 -- updatingNonExistingCodelist -- The codelist SOURCE-UNKNOWNCODE does not exist and therefore cannot be updated");
+                    .isEqualTo("Request:1 -- updatingNonExistingCodelist -- The Codelist SOURCE-UNKNOWNCODE does not exist and therefore cannot be updated");
         }
     }
 
-    @Disabled("Until normalized code is in use and deprecated methods are removed")
     @Test
     void validateThatAllFieldsHaveValidValues_shouldChangeInputInRequestToCorrectFormat() {
         List<CodelistRequest> requests = List.of(CodelistRequest.builder()
@@ -284,7 +257,7 @@ class CodelistServiceTest {
                 .description("   Trim av description                      ")
                 .build());
         when(repository.saveAll(anyList())).thenAnswer(AdditionalAnswers.returnsFirstArg());
-        service.validateRequest(requests);
+        service.validateRequest(requests, false);
         service.save(requests);
         assertTrue(CodelistCache.contains(ListName.CATEGORY, "CORRECTFORMAT"));
         assertThat(CodelistService.getCodelist(ListName.CATEGORY, "CORRECTFORMAT").getDescription()).isEqualTo("Trim av description");

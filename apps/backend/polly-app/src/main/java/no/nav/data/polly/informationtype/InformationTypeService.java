@@ -1,7 +1,8 @@
 package no.nav.data.polly.informationtype;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.polly.common.exceptions.ValidationException;
+import no.nav.data.polly.common.utils.StreamUtils;
+import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.common.validator.RequestValidator;
 import no.nav.data.polly.common.validator.ValidationError;
 import no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus;
@@ -101,10 +102,7 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
     public void validateRequest(List<InformationTypeRequest> requests) {
         List<ValidationError> validationErrors = validateRequestsAndReturnErrors(requests);
 
-        if (!validationErrors.isEmpty()) {
-            log.error("The request was not accepted. The following errors occurred during validation: {}", validationErrors);
-            throw new ValidationException(validationErrors, "The request was not accepted. The following errors occurred during validation: ");
-        }
+        checkForErrors(validationErrors);
     }
 
     public List<ValidationError> validateRequestsAndReturnErrors(List<InformationTypeRequest> requests) {
@@ -116,13 +114,12 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
             throw new IllegalStateException("missing InformationTypeMaster on request");
         }
 
-        List<ValidationError> validationErrors = new ArrayList<>(validateNoDuplicates(requests));
+        var validationErrors = validateNoDuplicates(requests);
+        requests.forEach(InformationTypeRequest::format);
 
-        requests.forEach(request -> {
-            validationErrors.addAll(request.validateFields());
-            request.format();
-            validationErrors.addAll(validateInformationTypeRepositoryValues(request));
-        });
+        validationErrors.addAll(StreamUtils.applyAll(requests,
+                RequestElement::validateFields,
+                this::validateInformationTypeRepositoryValues));
         return validationErrors;
     }
 
