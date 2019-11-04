@@ -18,6 +18,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,6 +42,8 @@ class ProcessControllerIT extends IntegrationTestBase {
                 .id(policy.getProcess().getId().toString())
                 .name("Auto_" + PURPOSE_CODE1)
                 .purposeCode(PURPOSE_CODE1)
+                .start(LocalDate.now())
+                .end(LocalDate.now())
                 .legalBasis(legalBasisResponse())
                 .policy(PolicyResponse.builder()
                         .id(policy.getId())
@@ -72,12 +75,16 @@ class ProcessControllerIT extends IntegrationTestBase {
                         .id(policy.getProcess().getId().toString())
                         .name("Auto_" + PURPOSE_CODE1)
                         .purposeCode(PURPOSE_CODE1)
+                        .start(LocalDate.now())
+                        .end(LocalDate.now())
                         .legalBasis(legalBasisResponse())
                         .build(),
                 ProcessResponse.builder()
                         .id(policy2.getProcess().getId().toString())
                         .name("Auto_" + PURPOSE_CODE1 + 2)
                         .purposeCode(PURPOSE_CODE1 + 2)
+                        .start(LocalDate.now())
+                        .end(LocalDate.now())
                         .legalBasis(legalBasisResponse())
                         .build()
         );
