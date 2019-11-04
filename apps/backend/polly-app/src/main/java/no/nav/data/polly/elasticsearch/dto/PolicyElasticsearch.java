@@ -18,7 +18,7 @@ public class PolicyElasticsearch {
 
     private String purpose;
     private String description;
-    private String subjectCategories;
-    private List<LegalBasisElasticSearch> legalbases = new ArrayList<>();
+    private String subjectCategory;
+    private List<LegalBasisElasticsearch> legalbases = new ArrayList<>();
 
 }

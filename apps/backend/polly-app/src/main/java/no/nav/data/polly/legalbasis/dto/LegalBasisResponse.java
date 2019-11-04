@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.common.utils.DateUtil;
 
 import java.time.LocalDate;
@@ -17,7 +18,7 @@ import java.time.LocalDate;
 public class LegalBasisResponse {
 
     private String gdpr;
-    private String nationalLaw;
+    private CodeResponse nationalLaw;
     private String description;
     private LocalDate start;
     private LocalDate end;

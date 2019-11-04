@@ -1,6 +1,7 @@
 package no.nav.data.polly.policy.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,10 +26,14 @@ public class PolicyRequest implements RequestElement {
     private String id;
     private String process;
     private String purposeCode;
-    private String subjectCategories;
+    @ApiParam(value = "Codelist")
+    private String subjectCategory;
     private String informationTypeName;
+    @ApiParam(format = "date")
     private String start;
+    @ApiParam(format = "date")
     private String end;
+    @ApiParam(type = "boolean")
     private String legalBasesInherited;
     private List<LegalBasisRequest> legalBases;
 
@@ -42,7 +47,7 @@ public class PolicyRequest implements RequestElement {
 
     @Override
     public String getIdentifyingFields() {
-        return process + "-" + purposeCode + "-" + subjectCategories;
+        return process + "-" + purposeCode + "-" + subjectCategory + "-" + informationTypeName;
     }
 
     @JsonIgnore
@@ -55,7 +60,7 @@ public class PolicyRequest implements RequestElement {
         validator.checkRequiredCodelist(Fields.purposeCode, purposeCode, ListName.PURPOSE);
         validator.checkBlank(Fields.informationTypeName, informationTypeName);
         validator.checkBlank(Fields.process, process);
-        validator.checkBlank(Fields.subjectCategories, subjectCategories);
+        validator.checkRequiredCodelist(Fields.subjectCategory, subjectCategory, ListName.SUBJECT_CATEGORY);
         validator.checkDate(Fields.start, start);
         validator.checkDate(Fields.end, end);
         validator.validateType(Fields.legalBases, legalBases);

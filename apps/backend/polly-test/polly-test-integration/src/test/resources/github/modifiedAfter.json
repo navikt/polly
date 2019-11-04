@@ -2,10 +2,9 @@
   {
     "name": "modified_changed",
     "term": "someterm",
-    "context": "cont",
     "description": "description",
     "pii": "her og der",
-    "sensitivity": "mindre enn forventet",
+    "sensitivity": "Personopplysning",
     "categories": [
       "PERSONALIA"
     ],
@@ -20,10 +19,9 @@
   {
     "name": "modified_added",
     "term": "someterm",
-    "context": "cont",
     "description": "description",
     "pii": "her og der",
-    "sensitivity": "mindre enn forventet",
+    "sensitivity": "Personopplysning",
     "categories": [
       "PERSONALIA"
     ],

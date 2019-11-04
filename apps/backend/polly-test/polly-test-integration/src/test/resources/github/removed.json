@@ -2,10 +2,9 @@
   {
     "name": "removed",
     "term": "someterm",
-    "context": "cont",
     "description": "description",
     "pii": "her og der",
-    "sensitivity": "mindre enn forventet",
+    "sensitivity": "Personopplysning",
     "categories": [
       "PERSONALIA"
     ],

@@ -11,7 +11,6 @@ import lombok.ToString;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
-import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.common.auditing.Auditable;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.elasticsearch.dto.PolicyElasticsearch;
@@ -59,7 +58,7 @@ public class Policy extends Auditable<String> {
     private String purposeCode;
 
     @Column(name = "SUBJECT_CATEGORIES")
-    private String subjectCategories;
+    private String subjectCategory;
 
     @NotNull
     @Column(name = "START_DATE", nullable = false)
@@ -115,7 +114,7 @@ public class Policy extends Auditable<String> {
         return PolicyElasticsearch.builder()
                 .purpose(purpose.getCode())
                 .description(purpose.getDescription())
-                .subjectCategories(getSubjectCategories())
+                .subjectCategory(getSubjectCategory())
                 .legalbases(convert(filter(legalBases, LegalBasis::isActive), LegalBasis::convertToElasticsearch))
                 .build();
     }
@@ -124,7 +123,7 @@ public class Policy extends Auditable<String> {
         return PolicyResponse.builder()
                 .id(getId())
                 .purposeCode(CodelistService.getCodeResponseForCodelistItem(ListName.PURPOSE, getPurposeCode()))
-                .subjectCategories(getSubjectCategories())
+                .subjectCategory(CodelistService.getCodeResponseForCodelistItem(ListName.SUBJECT_CATEGORY, getSubjectCategory()))
                 .process(getProcess().getName())
                 .start(getStart())
                 .end(getEnd())

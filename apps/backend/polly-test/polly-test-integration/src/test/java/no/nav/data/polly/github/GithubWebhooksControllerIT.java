@@ -4,11 +4,11 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus;
+import no.nav.data.polly.github.domain.status.GithubStatus;
+import no.nav.data.polly.github.domain.status.GithubStatusRepository;
 import no.nav.data.polly.github.dto.GithubAccount;
 import no.nav.data.polly.github.dto.GithubInstallation;
 import no.nav.data.polly.github.dto.GithubInstallationToken;
-import no.nav.data.polly.github.domain.status.GithubStatus;
-import no.nav.data.polly.github.domain.status.GithubStatusRepository;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
@@ -167,7 +167,7 @@ class GithubWebhooksControllerIT extends IntegrationTestBase {
         verify(postRequestedFor(urlPathEqualTo(String.format("/api/v3/repos/navikt/pol-datasett/statuses/%s", head)))
                 .withRequestBody(matchingJsonPath("$.context", equalTo("polly-validation")))
                 .withRequestBody(matchingJsonPath("$.description",
-                        containing("added-cont -- DuplicatedIdentifyingFields -- Multiple elements in this request are using the same unique fields (added-cont)")))
+                        containing("added -- DuplicatedIdentifyingFields -- Multiple elements in this request are using the same unique fields (added)")))
                 .withRequestBody(matchingJsonPath("$.state", equalTo("failure")))
         );
     }
@@ -249,7 +249,6 @@ class GithubWebhooksControllerIT extends IntegrationTestBase {
         InformationType InformationType = new InformationType().convertNewFromRequest(InformationTypeRequest.builder()
                 .term("someterm")
                 .name(removed)
-                .context("context")
                 .description("desc")
                 .build(), GITHUB);
         InformationType.setElasticsearchStatus(ElasticsearchStatus.SYNCED);

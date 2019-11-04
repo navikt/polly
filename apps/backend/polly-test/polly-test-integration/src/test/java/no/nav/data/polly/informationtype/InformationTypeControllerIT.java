@@ -227,11 +227,10 @@ class InformationTypeControllerIT extends IntegrationTestBase {
     private InformationTypeRequest createRequest(String name) {
         return InformationTypeRequest.builder()
                 .name(name)
-                .context("default")
                 .term("someterm")
                 .description("InformationTypeDescription")
-                .pii("litt")
-                .sensitivity("lite")
+                .pii("true")
+                .sensitivity("Personopplysning")
                 .categories(List.of("PERSONALIA"))
                 .sources(List.of("Skatt"))
                 .keywords(List.of("keyword"))

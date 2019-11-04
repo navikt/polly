@@ -93,10 +93,12 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
     }
 
     private void attachDependencies(InformationType informationType, InformationTypeRequest request) {
-        Term term = termRepository.findByName(request.getTerm())
-                .orElseGet(() -> termRepository.save(Term.builder().generateId().name(request.getTerm()).description("autogenerert").build()));
+        if (request.getTerm() != null) {
+            Term term = termRepository.findByName(request.getTerm())
+                    .orElseGet(() -> termRepository.save(Term.builder().generateId().name(request.getTerm()).description("autogenerert").build()));
 
-        term.addInformationType(informationType);
+            term.addInformationType(informationType);
+        }
     }
 
     public void validateRequest(List<InformationTypeRequest> requests) {

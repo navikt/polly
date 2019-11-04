@@ -4,5 +4,7 @@ public enum ListName {
     PURPOSE,
     CATEGORY,
     SOURCE,
-    NATIONAL_LAW
+    NATIONAL_LAW,
+    SENSITIVITY,
+    SUBJECT_CATEGORY
 }

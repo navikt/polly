@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.auditing.Auditable;
 import no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus;
 import no.nav.data.polly.elasticsearch.dto.InformationTypeElasticsearch;
@@ -14,6 +16,7 @@ import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.term.domain.Term;
+import org.apache.commons.lang3.BooleanUtils;
 import org.hibernate.annotations.Type;
 
 import java.util.HashSet;
@@ -102,13 +105,12 @@ public class InformationType extends Auditable<String> {
 
     private void convertFromRequest(InformationTypeRequest request) {
         data.setName(request.getName());
-        data.setContext(request.getContext());
         data.setDescription(request.getDescription());
-        data.setCategories(copyOf(request.getCategories()));
-        data.setSources(copyOf(request.getSources()));
+        data.setCategories(CodelistService.format(ListName.CATEGORY, request.getCategories()));
+        data.setSources(CodelistService.format(ListName.SOURCE, request.getSources()));
         data.setKeywords(copyOf(request.getKeywords()));
-        data.setPii(request.getPii());
-        data.setSensitivity(request.getSensitivity());
+        data.setPii(BooleanUtils.toBoolean(request.getPii()));
+        data.setSensitivity(CodelistService.format(ListName.SENSITIVITY, request.getSensitivity()));
     }
 
     public InformationTypeElasticsearch convertToElasticsearch(List<PolicyElasticsearch> policiesES) {

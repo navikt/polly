@@ -7,12 +7,14 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import no.nav.data.polly.common.auditing.Auditable;
+import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.process.dto.ProcessPolicyResponse;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import org.hibernate.annotations.Type;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -51,6 +53,14 @@ public class Process extends Auditable<String> {
     @Column(name = "PURPOSE_CODE", nullable = false)
     private String purposeCode;
 
+    @NotNull
+    @Column(name = "START_DATE", nullable = false)
+    private LocalDate start;
+
+    @NotNull
+    @Column(name = "END_DATE", nullable = false)
+    private LocalDate end;
+
     @Valid
     @Type(type = "jsonb")
     @Column(name = "LEGAL_BASES", nullable = false)
@@ -67,6 +77,10 @@ public class Process extends Auditable<String> {
             policy.setProcess(this);
         }
         return this;
+    }
+
+    public boolean isActive() {
+        return DateUtil.isNow(start, end);
     }
 
     public ProcessResponse convertToResponse() {

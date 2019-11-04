@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -52,12 +54,13 @@ class PolicyServiceTest {
     void shouldValidateInsertRequest() {
         PolicyRequest request = PolicyRequest.builder()
                 .process("process")
+                .subjectCategory("Bruker")
                 .informationTypeName(INFTYPE_NAME)
-                .legalBases(List.of(LegalBasisRequest.builder().description(LEGALBASISDESCRIPTION).build()))
+                .legalBases(List.of(LegalBasisRequest.builder().gdpr("6e").description(LEGALBASISDESCRIPTION).build()))
                 .purposeCode(PURPOSECODE)
                 .build();
         when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.of(InformationType.builder().id(UUID.fromString(INFTYPE_ID_1)).build()));
-        when(policyRepository.findByInformationTypeIdAndPurposeCodeAndProcessName(any(UUID.class), anyString(), anyString())).thenReturn(List.of());
+        when(policyRepository.findByInformationTypeIdAndPurposeCodeAndSubjectCategoryAndProcessName(any(UUID.class), anyString(), anyString(), anyString())).thenReturn(List.of());
         service.validateRequests(List.of(request), false);
     }
 
@@ -68,10 +71,11 @@ class PolicyServiceTest {
             service.validateRequests(List.of(request), false);
             fail();
         } catch (ValidationException e) {
-            assertEquals(3, e.get().size(), JsonUtils.toJson(e.get()));
-            assertEquals("informationTypeName cannot be null", e.get("informationTypeName").getErrorMessage());
-            assertEquals("purposeCode cannot be null", e.get("purposeCode").getErrorMessage());
-            assertEquals("process cannot be null", e.get("process").getErrorMessage());
+            assertEquals(4, e.get().size(), JsonUtils.toJson(e.get()));
+            assertThat(e.getMessage()).contains("informationTypeName was null or missing");
+            assertThat(e.getMessage()).contains("purposeCode was null or missing");
+            assertThat(e.getMessage()).contains("process was null or missing");
+            assertThat(e.getMessage()).contains("subjectCategory was null or missing");
         }
     }
 
@@ -80,6 +84,7 @@ class PolicyServiceTest {
         PolicyRequest request = PolicyRequest.builder()
                 .process("process")
                 .informationTypeName(INFTYPE_NAME)
+                .subjectCategory("Bruker")
                 .legalBases(List.of(LegalBasisRequest.builder().description(LEGALBASISDESCRIPTION).build()))
                 .purposeCode("wrong")
                 .build();
@@ -88,9 +93,8 @@ class PolicyServiceTest {
             service.validateRequests(List.of(request), false);
             fail();
         } catch (ValidationException e) {
-            assertEquals(2, e.get().size(), JsonUtils.toJson(e.get()));
-            assertEquals("The purposeCode wrong was not found in the PURPOSE codelist.", e.get("purposeCode").getErrorMessage());
-            assertEquals("An InformationType with name " + INFTYPE_NAME + " does not exist", e.get("informationTypeName").getErrorMessage());
+            assertThat(e.getMessage()).contains("purposeCode: wrong code not found in codelist PURPOSE");
+            assertThat(e.getMessage()).contains("An InformationType with name " + INFTYPE_NAME + " does not exist");
         }
     }
 
@@ -99,19 +103,19 @@ class PolicyServiceTest {
         PolicyRequest request = PolicyRequest.builder()
                 .process("process")
                 .informationTypeName(INFTYPE_NAME)
-                .legalBases(List.of(LegalBasisRequest.builder().description(LEGALBASISDESCRIPTION).build()))
+                .subjectCategory("Bruker")
+                .legalBases(List.of(LegalBasisRequest.builder().gdpr("6a").description(LEGALBASISDESCRIPTION).build()))
                 .purposeCode(PURPOSECODE)
                 .build();
         when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.of(InformationType.builder().id(UUID.fromString(INFTYPE_ID_1)).build()));
-        when(policyRepository.findByInformationTypeIdAndPurposeCodeAndProcessName(any(UUID.class), anyString(), anyString()))
+        when(policyRepository.findByInformationTypeIdAndPurposeCodeAndSubjectCategoryAndProcessName(any(UUID.class), anyString(), anyString(), anyString()))
                 .thenReturn(List.of(Policy.builder().start(LocalDate.now()).end(LocalDate.now()).build()));
         try {
             service.validateRequests(List.of(request), false);
             fail();
         } catch (ValidationException e) {
             assertEquals(1, e.get().size(), JsonUtils.toJson(e.get()));
-            assertEquals("A policy combining InformationType: Personalia and Process: process Purpose: Kontroll already exists",
-                    e.get("informationTypeAndPurpose").getErrorMessage());
+            assertThat(e.getMessage()).contains("A policy combining InformationType: Personalia and Process: process Purpose: Kontroll SubjectCategory: Bruker already exists");
         }
     }
 
@@ -122,11 +126,12 @@ class PolicyServiceTest {
             service.validateRequests(List.of(request), true);
             fail();
         } catch (ValidationException e) {
-            assertEquals(4, e.get().size(), JsonUtils.toJson(e.get()));
-            assertEquals("Id is missing for update", e.get("missingIdForUpdate").getErrorMessage());
-            assertEquals("informationTypeName cannot be null", e.get("informationTypeName").getErrorMessage());
-            assertEquals("purposeCode cannot be null", e.get("purposeCode").getErrorMessage());
-            assertEquals("process cannot be null", e.get("process").getErrorMessage());
+            assertAll(
+                    () -> assertThat(e.getMessage()).contains("Id is missing for update"),
+                    () -> assertThat(e.getMessage()).contains("informationTypeName was null or missing"),
+                    () -> assertThat(e.getMessage()).contains("purposeCode was null or missing"),
+                    () -> assertThat(e.getMessage()).contains("process was null or missing")
+            );
         }
     }
 
@@ -135,8 +140,9 @@ class PolicyServiceTest {
         PolicyRequest request = PolicyRequest.builder()
                 .id("1-1-1-1-1")
                 .process("process")
+                .subjectCategory("Bruker")
                 .informationTypeName(INFTYPE_NAME)
-                .legalBases(List.of(LegalBasisRequest.builder().description(LEGALBASISDESCRIPTION).build()))
+                .legalBases(List.of(LegalBasisRequest.builder().gdpr("6a").description(LEGALBASISDESCRIPTION).build()))
                 .purposeCode("wrong")
                 .build();
         when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.empty());
@@ -146,8 +152,8 @@ class PolicyServiceTest {
             fail();
         } catch (ValidationException e) {
             assertEquals(2, e.get().size(), JsonUtils.toJson(e.get()));
-            assertEquals("The purposeCode wrong was not found in the PURPOSE codelist.", e.get("purposeCode").getErrorMessage());
-            assertEquals("An InformationType with name " + INFTYPE_NAME + " does not exist", e.get("informationTypeName").getErrorMessage());
+            assertThat(e.getMessage()).contains("purposeCode: wrong code not found in codelist PURPOSE");
+            assertThat(e.getMessage()).contains("An InformationType with name " + INFTYPE_NAME + " does not exist");
         }
     }
 
@@ -156,8 +162,9 @@ class PolicyServiceTest {
         PolicyRequest request = PolicyRequest.builder()
                 .process("process")
                 .id("1-1-1-1-1")
+                .subjectCategory("Bruker")
                 .informationTypeName(INFTYPE_NAME)
-                .legalBases(List.of(LegalBasisRequest.builder().description(LEGALBASISDESCRIPTION).build()))
+                .legalBases(List.of(LegalBasisRequest.builder().gdpr("6a").description(LEGALBASISDESCRIPTION).build()))
                 .purposeCode(PURPOSECODE)
                 .build();
         when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.of(InformationType.builder().id(UUID.fromString(INFTYPE_ID_1)).build()));
@@ -167,7 +174,7 @@ class PolicyServiceTest {
             fail();
         } catch (ValidationException e) {
             assertEquals(1, e.get().size(), JsonUtils.toJson(e.get()));
-            assertEquals("Cannot change purpose from otherpurpose to Kontroll for policy 1-1-1-1-1", e.get("cannotChangePurpose").getErrorMessage());
+            assertThat(e.getMessage()).contains("Cannot change purpose from otherpurpose to Kontroll for policy 1-1-1-1-1");
         }
     }
 
@@ -175,8 +182,9 @@ class PolicyServiceTest {
     void shouldNotThrowAlreadyExistsValidationExceptionOnInsert() {
         PolicyRequest request = PolicyRequest.builder()
                 .process("process")
+                .subjectCategory("Bruker")
                 .informationTypeName(INFTYPE_NAME)
-                .legalBases(List.of(LegalBasisRequest.builder().description(LEGALBASISDESCRIPTION).build()))
+                .legalBases(List.of(LegalBasisRequest.builder().gdpr("6a").description(LEGALBASISDESCRIPTION).build()))
                 .purposeCode(PURPOSECODE)
                 .id("1-1-1-1-1")
                 .build();

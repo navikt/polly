@@ -124,9 +124,8 @@ class ElasticsearchServiceIT extends IntegrationTestBase {
         var informationType = JsonUtils.toObject(json, InformationTypeElasticsearch.class);
 
         assertThat(informationType.getName()).isEqualTo(INFORMATION_TYPE_NAME);
-        assertThat(informationType.getContext()).isEqualTo("context");
         assertThat(informationType.getDescription()).isEqualTo("desc");
-        assertThat(informationType.getPii()).isEqualTo("loads");
+        assertThat(informationType.getPii()).isEqualTo("true");
         assertThat(informationType.getSources().get(0).getCode()).isEqualTo("Skatt");
         assertThat(informationType.getCategories().get(0).getCode()).isEqualTo("Personalia");
         List<PolicyElasticsearch> policies = informationType.getPolicies();

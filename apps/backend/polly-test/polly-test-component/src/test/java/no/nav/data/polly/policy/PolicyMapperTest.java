@@ -53,7 +53,7 @@ class PolicyMapperTest {
         InformationType informationType = createBasicTestdata();
         PolicyRequest request = PolicyRequest.builder()
                 .process("process")
-                .subjectCategories("sc")
+                .subjectCategory("Bruker")
                 .legalBases(List.of(LegalBasisRequest.builder().gdpr("gdpr").nationalLaw("Ftrl").description(LEGAL_BASIS_DESCRIPTION1).build()))
                 .start("2019-02-04")
                 .end("2020-02-04")
@@ -62,7 +62,7 @@ class PolicyMapperTest {
                 .build();
         Policy policy = mapper.mapRequestToPolicy(request);
         assertThat(policy.getProcess().getName(), is("process"));
-        assertThat(policy.getSubjectCategories(), is("sc"));
+        assertThat(policy.getSubjectCategory(), is("Bruker"));
         assertThat(policy.getPurposeCode(), is(PURPOSE_CODE1));
         assertThat(policy.getInformationType(), is(informationType));
         assertThat(policy.getInformationTypeId(), is(informationType.getId()));
@@ -81,12 +81,13 @@ class PolicyMapperTest {
         assertThat(policyResponse.getPurposeCode(), notNullValue());
         assertThat(policyResponse.getPurposeCode().getCode(), is(PURPOSE_CODE1));
         assertThat(policyResponse.getPurposeCode().getDescription(), is(DESC));
+        assertThat(policyResponse.getSubjectCategory().getCode(), is("Bruker"));
     }
 
     private Policy createPolicy(InformationType informationType) {
         return Policy.builder().id(UUID.randomUUID())
                 .process(Process.builder().name("process").build())
-                .subjectCategories("sc")
+                .subjectCategory("Bruker")
                 .legalBases(List.of(LegalBasis.builder().gdpr("gdpr").nationalLaw("nl").description(LEGAL_BASIS_DESCRIPTION1).build()))
                 .start(LocalDate.parse("2019-02-04"))
                 .end(LocalDate.parse("2020-02-04"))

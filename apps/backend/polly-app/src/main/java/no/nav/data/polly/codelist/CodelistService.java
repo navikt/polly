@@ -10,6 +10,7 @@ import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.common.validator.RequestValidator;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,6 +18,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
+
+import static no.nav.data.polly.common.utils.StreamUtils.convert;
+import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 
 @Slf4j
 @Service
@@ -41,9 +45,22 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     }
 
     public static List<CodeResponse> getCodeResponseForCodelistItems(ListName listName, Collection<String> codes) {
-        return StreamUtils.safeStream(codes)
+        return safeStream(codes)
                 .map(code -> getCodeResponseForCodelistItem(listName, code))
                 .collect(Collectors.toList());
+    }
+
+    public static List<String> format(ListName listName, List<String> codes) {
+        return convert(codes, code -> format(listName, code));
+    }
+
+    public static String format(ListName listName, String code) {
+        if (code == null) {
+            return null;
+        }
+        Codelist codelist = getCodelist(listName, code);
+        Assert.notNull(codelist, "Code " + listName + " " + code + " does not exist");
+        return codelist.getCode();
     }
 
     @PostConstruct

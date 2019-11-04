@@ -1,21 +1,24 @@
 package no.nav.data.polly.elasticsearch.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.data.polly.codelist.dto.CodeResponse;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class LegalBasisElasticSearch {
+public class LegalBasisElasticsearch {
 
     private String gdpr;
-    private String nationalLaw;
+    private CodeResponse nationalLaw;
     private String description;
     private String start;
     private String end;
+
+    public String toShortForm() {
+        return "gdpr " + gdpr + " " + nationalLaw + " " + description;
+    }
 }

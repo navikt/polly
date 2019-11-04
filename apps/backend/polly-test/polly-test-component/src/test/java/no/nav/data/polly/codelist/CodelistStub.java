@@ -19,6 +19,9 @@ public class CodelistStub {
         CodelistCache.set(create(ListName.NATIONAL_LAW, "Samtykke", ""));
         CodelistCache.set(create(ListName.NATIONAL_LAW, "Ftrl", "1997-02-28-19"));
         CodelistCache.set(create(ListName.NATIONAL_LAW, "Ny alderspensjon", "2009-06-05-32"));
+        CodelistCache.set(create(ListName.SENSITIVITY, "Særskilte personopplysninger", "Særskilte personopplysninger"));
+        CodelistCache.set(create(ListName.SENSITIVITY, "Personopplysning", "Personopplysning"));
+        CodelistCache.set(create(ListName.SUBJECT_CATEGORY, "Bruker", "Bruker"));
     }
 
     private static Codelist create(ListName list, String code, String description) {

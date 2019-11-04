@@ -1,10 +1,9 @@
 {
   "term": "someterm",
   "name": "added",
-  "context": "cont",
   "description": "description",
-  "pii": "her og der",
-  "sensitivity": "mindre enn forventet",
+  "pii": "true",
+  "sensitivity": "Personopplysning",
   "categories": [
     "PERSONALIA"
   ],

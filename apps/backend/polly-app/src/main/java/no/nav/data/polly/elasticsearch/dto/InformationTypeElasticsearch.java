@@ -11,6 +11,7 @@ import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -30,7 +31,6 @@ public class InformationTypeElasticsearch {
 
     private String id;
     private String name;
-    private String context;
     private String term;
     private String description;
     private String pii;
@@ -64,7 +64,7 @@ public class InformationTypeElasticsearch {
         setPolicies(policies);
         policies.forEach(policy -> {
             getPurpose().add(policy.getPurpose());
-            getLegalbasis().add(safeStream(policy.getLegalbases()).map(LegalBasisElasticSearch::getNationalLaw).collect(Collectors.joining(", ")));
+            getLegalbasis().add(safeStream(policy.getLegalbases()).map(LegalBasisElasticsearch::toShortForm).collect(Collectors.joining(", ")));
         });
 
         mapJsonFields(informationType.getData());
@@ -72,9 +72,8 @@ public class InformationTypeElasticsearch {
 
     private void mapJsonFields(InformationTypeData data) {
         setName(data.getName());
-        setContext(data.getContext());
         setDescription(data.getDescription());
-        setPii(data.getPii());
+        setPii(BooleanUtils.toStringTrueFalse(data.isPii()));
         setSensitivity(data.getSensitivity());
         setCategories(CodelistService.getCodeResponseForCodelistItems(ListName.CATEGORY, data.getCategories()));
         setSources(CodelistService.getCodeResponseForCodelistItems(ListName.SOURCE, data.getSources()));

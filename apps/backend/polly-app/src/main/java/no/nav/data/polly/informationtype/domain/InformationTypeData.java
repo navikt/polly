@@ -20,10 +20,8 @@ public class InformationTypeData {
 
     @NotNull
     private String name;
-    @NotNull
-    private String context;
     private String description;
-    private String pii;
+    private boolean pii;
     private String sensitivity;
     private List<String> categories = new ArrayList<>();
     private List<String> sources = new ArrayList<>();

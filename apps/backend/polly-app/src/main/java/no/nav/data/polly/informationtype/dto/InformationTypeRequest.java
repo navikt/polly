@@ -1,6 +1,7 @@
 package no.nav.data.polly.informationtype.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,13 +32,16 @@ import static no.nav.data.polly.informationtype.domain.InformationTypeMaster.RES
 @FieldNameConstants
 public class InformationTypeRequest implements RequestElement {
 
-    private String term;
     private String name;
-    private String context;
     private String description;
+    private String term;
+    @ApiParam(type = "boolean")
     private String pii;
+    @ApiParam(value = "Codelist")
     private String sensitivity;
+    @ApiParam(value = "Codelist")
     private List<String> categories;
+    @ApiParam(value = "Codelist")
     private List<String> sources;
     private List<String> keywords;
 
@@ -51,7 +55,7 @@ public class InformationTypeRequest implements RequestElement {
 
     @Override
     public String getIdentifyingFields() {
-        return name + "-" + context;
+        return name;
     }
 
     @Override
@@ -102,13 +106,12 @@ public class InformationTypeRequest implements RequestElement {
 
     @Override
     public void validate(FieldValidator validator) {
-        validator.checkBlank(Fields.term, getTerm());
         validator.checkBlank(Fields.name, getName());
-        validator.checkBlank(Fields.context, getContext());
         validator.checkBlank(Fields.description, getDescription());
 
         validator.checkCodelists(Fields.categories, getCategories(), ListName.CATEGORY);
         validator.checkCodelists(Fields.sources, getSources(), ListName.SOURCE);
+        validator.checkRequiredCodelist(Fields.sensitivity, getSensitivity(), ListName.SENSITIVITY);
     }
 
     @JsonIgnore

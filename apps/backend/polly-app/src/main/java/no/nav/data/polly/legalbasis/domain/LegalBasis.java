@@ -4,8 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.common.utils.DateUtil;
-import no.nav.data.polly.elasticsearch.dto.LegalBasisElasticSearch;
+import no.nav.data.polly.elasticsearch.dto.LegalBasisElasticsearch;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 
 import java.io.Serializable;
@@ -33,17 +36,21 @@ public class LegalBasis implements Serializable {
     }
 
     public LegalBasisResponse convertToResponse() {
-        return new LegalBasisResponse(gdpr, nationalLaw, description, start, end);
+        return new LegalBasisResponse(gdpr, nationalLawCodeResponse(), description, start, end);
     }
 
-    public LegalBasisElasticSearch convertToElasticsearch() {
-        return LegalBasisElasticSearch.builder()
+    public LegalBasisElasticsearch convertToElasticsearch() {
+        return LegalBasisElasticsearch.builder()
                 .gdpr(gdpr)
-                .nationalLaw(nationalLaw)
+                .nationalLaw(nationalLawCodeResponse())
                 .description(description)
                 .start(DateUtil.formatDate(start))
                 .end(DateUtil.formatDate(end))
                 .build();
+    }
+
+    private CodeResponse nationalLawCodeResponse() {
+        return CodelistService.getCodeResponseForCodelistItem(ListName.NATIONAL_LAW, nationalLaw);
     }
 
     public static class LegalBasisBuilder {

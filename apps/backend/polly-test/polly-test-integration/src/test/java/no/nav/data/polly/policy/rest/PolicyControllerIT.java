@@ -59,8 +59,8 @@ class PolicyControllerIT extends IntegrationTestBase {
         List<PolicyRequest> requestList = List.of(PolicyRequest.builder().build());
         ResponseEntity<String> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(createEntity.getBody(), containsString("purposeCode cannot be null"));
-        assertThat(createEntity.getBody(), containsString("informationTypeName cannot be null"));
+        assertThat(createEntity.getBody(), containsString("purposeCode was null or missing"));
+        assertThat(createEntity.getBody(), containsString("informationTypeName was null or missing"));
         assertThat(policyRepository.count(), is(0L));
     }
 
@@ -76,7 +76,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
         assertThat(createEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
         assertThat(createEntity.getBody(), containsString(
-                "A policy combining InformationType: " + INFORMATION_TYPE_NAME + " and Process: " + PROCESS_NAME_1 + " Purpose: " + PURPOSE_CODE1 + " already exists"));
+                "A policy combining InformationType: Sivilstand and Process: Saksbehandling Purpose: Kontroll SubjectCategory: Bruker already exists"));
         assertThat(policyRepository.count(), is(1L));
     }
 
@@ -88,7 +88,7 @@ class PolicyControllerIT extends IntegrationTestBase {
                 POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
         assertThat(createEntity.getBody(),
-                containsString("A request combining InformationType: " + INFORMATION_TYPE_NAME + " and Process: " + PROCESS_NAME_1 + " Purpose: " + PURPOSE_CODE1
+                containsString("A request combining InformationType: Sivilstand and Process: Saksbehandling Purpose: Kontroll SubjectCategory: Bruker"
                         + " is not unique because it is already used in this request"));
     }
 
@@ -96,12 +96,13 @@ class PolicyControllerIT extends IntegrationTestBase {
     void createPolicyThrowNotFoundValidationException() {
         createPolicyRequest(createInformationType());
         List<PolicyRequest> requestList = Arrays
-                .asList(PolicyRequest.builder().purposeCode("NOTFOUND").informationTypeName("NOTFOUND").build());
+                .asList(PolicyRequest.builder().subjectCategory("NOTFOUND").purposeCode("NOTFOUND").informationTypeName("NOTFOUND").build());
         ResponseEntity<String> createEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(createEntity.getBody(), containsString("The purposeCode NOTFOUND was not found in the PURPOSE codelist"));
+        assertThat(createEntity.getBody(), containsString("purposeCode: NOTFOUND code not found in codelist PURPOSE"));
         assertThat(createEntity.getBody(), containsString("An InformationType with name NOTFOUND does not exist"));
+        assertThat(createEntity.getBody(), containsString("subjectCategory: NOTFOUND code not found in codelist SUBJECT_CATEGORY"));
         assertThat(policyRepository.count(), is(0L));
     }
 
@@ -155,7 +156,7 @@ class PolicyControllerIT extends IntegrationTestBase {
         ResponseEntity<String> updateEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT + request.getId(), HttpMethod.PUT, new HttpEntity<>(request), String.class);
         assertThat(updateEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(updateEntity.getBody(), containsString("informationTypeName cannot be null"));
+        assertThat(updateEntity.getBody(), containsString("informationTypeName was null or missing"));
         assertThat(policyRepository.count(), is(1L));
     }
 
@@ -202,8 +203,8 @@ class PolicyControllerIT extends IntegrationTestBase {
         ResponseEntity<String> updateEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT, HttpMethod.PUT, new HttpEntity<>(requestList), String.class);
         assertThat(updateEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(updateEntity.getBody(), containsString("Sivilstand/Kontroll -- process -- process cannot be null"));
-        assertThat(updateEntity.getBody(), containsString("Postadresse/Kontroll -- process -- process cannot be null"));
+        assertThat(updateEntity.getBody(), containsString("Sivilstand/Kontroll -- fieldIsNullOrMissing -- process was null or missing"));
+        assertThat(updateEntity.getBody(), containsString("Postadresse/Kontroll -- fieldIsNullOrMissing -- process was null or missing"));
         // No error reported regarding Arbeidsforhold/TEST1
         assertFalse(updateEntity.getBody().contains("Arbeidsforhold/TEST1"));
         assertThat(policyRepository.count(), is(3L));
@@ -365,7 +366,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     private PolicyRequest createPolicyRequest(InformationType informationType) {
         return PolicyRequest.builder()
-                .subjectCategories("Person")
+                .subjectCategory("Bruker")
                 .process(PROCESS_NAME_1)
                 .informationTypeName(informationType.getData().getName())
                 .legalBases(List.of(LegalBasisRequest.builder().gdpr("9a").nationalLaw("Ftrl").description("§ 1-4").build()))

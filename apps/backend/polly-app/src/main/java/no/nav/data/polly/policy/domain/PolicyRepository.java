@@ -16,7 +16,7 @@ public interface PolicyRepository extends JpaRepository<Policy, UUID> {
 
     List<Policy> findByInformationTypeId(UUID informationTypeId);
 
-    List<Policy> findByInformationTypeIdAndPurposeCodeAndProcessName(UUID informationTypeId, String purposeCode, String processName);
+    List<Policy> findByInformationTypeIdAndPurposeCodeAndSubjectCategoryAndProcessName(UUID informationTypeId, String purposeCode, String subjectCategory, String processName);
 
     long countByInformationTypeId(UUID informationTypeId);
 

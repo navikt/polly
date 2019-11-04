@@ -5,6 +5,7 @@ import io.prometheus.client.CollectorRegistry;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.IntegrationTestBase.Initializer;
 import no.nav.data.polly.codelist.CodelistStub;
+import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.common.nais.LeaderElectionService;
 import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
@@ -126,7 +127,7 @@ public abstract class IntegrationTestBase {
                 .purposeCode(purpose)
                 .legalBasis(createLegalBasis())
                 .informationType(informationType).informationTypeName(informationType.getData().getName())
-                .subjectCategories("Bror")
+                .subjectCategory("Bruker")
                 .activeToday()
                 .build();
         createProcess(purpose).addPolicy(policy);
@@ -146,11 +147,10 @@ public abstract class IntegrationTestBase {
                 .elasticsearchStatus(SYNCED)
                 .data(InformationTypeData.builder()
                         .name(name)
-                        .context("context")
                         .description("desc")
                         .source("Skatt")
                         .category("PERSONALIA")
-                        .pii("loads")
+                        .pii(true)
                         .build())
                 .build();
         createTerm("term").addInformationType(informationType);
@@ -159,7 +159,9 @@ public abstract class IntegrationTestBase {
 
     protected Process createProcess(String purpose) {
         return process.computeIfAbsent(purpose,
-                (p) -> processRepository.save(Process.builder().generateId().name("Auto_" + purpose).purposeCode(purpose).legalBasis(createLegalBasis()).build()));
+                (p) -> processRepository
+                        .save(Process.builder().generateId().start(LocalDate.now()).end(LocalDate.now()).name("Auto_" + purpose).purposeCode(purpose).legalBasis(createLegalBasis())
+                                .build()));
     }
 
     protected Term createTerm(String term) {
@@ -168,11 +170,12 @@ public abstract class IntegrationTestBase {
     }
 
     private LegalBasis createLegalBasis() {
-        return LegalBasis.builder().gdpr("a").nationalLaw("b").description("desc").activeToday().build();
+        return LegalBasis.builder().gdpr("a").nationalLaw("Ftrl").description("desc").activeToday().build();
     }
 
     protected LegalBasisResponse legalBasisResponse() {
-        return LegalBasisResponse.builder().gdpr("a").nationalLaw("b").description("desc").start(LocalDate.now()).end(LocalDate.now()).build();
+        return LegalBasisResponse.builder().gdpr("a").nationalLaw(new CodeResponse("Ftrl", "1997-02-28-19")).description("desc").start(LocalDate.now()).end(LocalDate.now())
+                .build();
     }
 
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {

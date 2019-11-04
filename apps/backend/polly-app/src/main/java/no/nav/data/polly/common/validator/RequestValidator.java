@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -58,7 +59,7 @@ public abstract class RequestValidator<T extends RequestElement> {
 
         requests.stream()
                 .filter(element -> requests.stream() // filter out elements with the same identifying fields but not the same element
-                        .anyMatch(compare -> element.getIdentifyingFields().equals(compare.getIdentifyingFields()) && !element.equals(compare)))
+                        .anyMatch(compare -> Objects.equals(element.getIdentifyingFields(), compare.getIdentifyingFields()) && !element.equals(compare)))
                 .forEach(element -> validationErrors.add(
                         new ValidationError(element.getIdentifyingFields(), "DuplicatedIdentifyingFields",
                                 String.format("Multiple elements in this request are using the same unique fields (%s)", element

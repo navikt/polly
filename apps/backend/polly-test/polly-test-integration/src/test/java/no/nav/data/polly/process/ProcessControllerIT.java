@@ -47,7 +47,7 @@ class ProcessControllerIT extends IntegrationTestBase {
                         .process(policy.getProcess().getName())
                         .purposeCode(new CodeResponse(PURPOSE_CODE1, "Kontrollering"))
                         .informationType(new InformationTypeNameResponse(createInformationType().getId().toString(), INFORMATION_TYPE_NAME))
-                        .subjectCategories(policy.getSubjectCategories())
+                        .subjectCategory(CodelistService.getCodeResponseForCodelistItem(ListName.SUBJECT_CATEGORY, policy.getSubjectCategory()))
                         .start(policy.getStart())
                         .end(policy.getEnd())
                         .legalBasis(legalBasisResponse())
