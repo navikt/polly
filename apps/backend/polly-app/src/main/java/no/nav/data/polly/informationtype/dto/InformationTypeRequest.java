@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static no.nav.data.polly.common.swagger.SwaggerConfig.BOOLEAN;
 import static no.nav.data.polly.common.utils.StreamUtils.nullToEmptyList;
 import static no.nav.data.polly.informationtype.domain.InformationTypeMaster.REST;
 
@@ -35,7 +36,7 @@ public class InformationTypeRequest implements RequestElement {
     private String name;
     private String description;
     private String term;
-    @ApiModelProperty(dataType = "boolean")
+    @ApiModelProperty(dataType = BOOLEAN)
     private String pii;
     @ApiModelProperty(value = "Codelist")
     private String sensitivity;

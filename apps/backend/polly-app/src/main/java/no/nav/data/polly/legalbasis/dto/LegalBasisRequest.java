@@ -12,6 +12,8 @@ import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.Validated;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 
+import static no.nav.data.polly.common.swagger.SwaggerConfig.LOCAL_DATE;
+
 @Data
 @Builder
 @FieldNameConstants
@@ -23,9 +25,9 @@ public class LegalBasisRequest implements Validated {
     @ApiModelProperty(value = "Codelist")
     private String nationalLaw;
     private String description;
-    @ApiModelProperty(dataType = DateUtil.LOCAL_DATE)
+    @ApiModelProperty(dataType = LOCAL_DATE, example = "2020-12-31")
     private String start;
-    @ApiModelProperty(dataType = DateUtil.LOCAL_DATE)
+    @ApiModelProperty(dataType = LOCAL_DATE, example = "2020-12-31")
     private String end;
 
     public LegalBasis convertToLegalBasis() {

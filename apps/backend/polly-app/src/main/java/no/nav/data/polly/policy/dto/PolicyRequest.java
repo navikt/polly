@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
 import no.nav.data.polly.codelist.domain.ListName;
-import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.informationtype.domain.InformationType;
@@ -16,6 +15,9 @@ import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
 
 import java.util.List;
+
+import static no.nav.data.polly.common.swagger.SwaggerConfig.BOOLEAN;
+import static no.nav.data.polly.common.swagger.SwaggerConfig.LOCAL_DATE;
 
 @Data
 @Builder
@@ -30,11 +32,11 @@ public class PolicyRequest implements RequestElement {
     @ApiModelProperty(value = "Codelist")
     private String subjectCategory;
     private String informationTypeName;
-    @ApiModelProperty(dataType = DateUtil.LOCAL_DATE)
+    @ApiModelProperty(dataType = LOCAL_DATE, example = "2020-12-31")
     private String start;
-    @ApiModelProperty(dataType = DateUtil.LOCAL_DATE)
+    @ApiModelProperty(dataType = LOCAL_DATE, example = "2020-12-31")
     private String end;
-    @ApiModelProperty(dataType = "boolean")
+    @ApiModelProperty(dataType = BOOLEAN)
     private String legalBasesInherited;
     private List<LegalBasisRequest> legalBases;
 

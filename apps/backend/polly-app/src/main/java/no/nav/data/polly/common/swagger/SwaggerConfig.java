@@ -26,6 +26,10 @@ import static springfox.documentation.builders.RequestHandlerSelectors.basePacka
 @EnableSwagger2
 public class SwaggerConfig {
 
+    public static final String JSON = "java.lang.String";
+    public static final String LOCAL_DATE = "java.sql.Date";
+    public static final String BOOLEAN = "java.lang.Boolean";
+
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
