@@ -43,7 +43,7 @@ public class Term extends Auditable<String> {
     @Column(name = "DESCRIPTION", nullable = false)
     private String description;
 
-    @Type(type = "jsonb")
+    @Type(type = "jsonb-node")
     @Column(name = "DATA")
     private JsonNode data;
 
