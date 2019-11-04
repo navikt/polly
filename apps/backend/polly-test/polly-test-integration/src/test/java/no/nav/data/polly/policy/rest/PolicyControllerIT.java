@@ -50,7 +50,7 @@ class PolicyControllerIT extends IntegrationTestBase {
                 POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), PolicyPage.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
         assertThat(policyRepository.count(), is(1L));
-        assertPolicy(createEntity.getBody().getContent().get(0), "AAP");
+        assertPolicy(createEntity.getBody().getContent().get(0), PROCESS_NAME_1);
         assertBehandlingsgrunnlagDistribusjon(1);
     }
 
@@ -75,7 +75,8 @@ class PolicyControllerIT extends IntegrationTestBase {
                 POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
 
         assertThat(createEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(createEntity.getBody(), containsString("A policy combining InformationType " + INFORMATION_TYPE_NAME + " and Purpose " + PURPOSE_CODE1 + " already exists"));
+        assertThat(createEntity.getBody(), containsString(
+                "A policy combining InformationType: " + INFORMATION_TYPE_NAME + " and Process: " + PROCESS_NAME_1 + " Purpose: " + PURPOSE_CODE1 + " already exists"));
         assertThat(policyRepository.count(), is(1L));
     }
 
@@ -87,7 +88,7 @@ class PolicyControllerIT extends IntegrationTestBase {
                 POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
         assertThat(createEntity.getBody(),
-                containsString("A request combining InformationType: " + INFORMATION_TYPE_NAME + " and Purpose: " + PURPOSE_CODE1
+                containsString("A request combining InformationType: " + INFORMATION_TYPE_NAME + " and Process: " + PROCESS_NAME_1 + " Purpose: " + PURPOSE_CODE1
                         + " is not unique because it is already used in this request"));
     }
 
@@ -113,7 +114,7 @@ class PolicyControllerIT extends IntegrationTestBase {
         ResponseEntity<PolicyResponse> getEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT + createEntity.getBody().getContent().get(0).getId(), HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), PolicyResponse.class);
         assertThat(getEntity.getStatusCode(), is(HttpStatus.OK));
-        assertPolicy(getEntity.getBody(), "AAP");
+        assertPolicy(getEntity.getBody(), PROCESS_NAME_1);
         assertThat(policyRepository.count(), is(1L));
     }
 
@@ -365,7 +366,7 @@ class PolicyControllerIT extends IntegrationTestBase {
     private PolicyRequest createPolicyRequest(InformationType informationType) {
         return PolicyRequest.builder()
                 .subjectCategories("Person")
-                .process("AAP")
+                .process(PROCESS_NAME_1)
                 .informationTypeName(informationType.getData().getName())
                 .legalBases(List.of(LegalBasisRequest.builder().gdpr("9a").nationalLaw("Ftrl").description("§ 1-4").build()))
                 .purposeCode(PURPOSE_CODE1).build();

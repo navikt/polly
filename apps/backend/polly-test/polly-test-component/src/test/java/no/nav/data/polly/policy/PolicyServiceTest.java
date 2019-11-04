@@ -6,9 +6,9 @@ import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
-import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
+import no.nav.data.polly.policy.dto.PolicyRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -57,7 +57,7 @@ class PolicyServiceTest {
                 .purposeCode(PURPOSECODE)
                 .build();
         when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.of(InformationType.builder().id(UUID.fromString(INFTYPE_ID_1)).build()));
-        when(policyRepository.findByInformationTypeIdAndPurposeCode(any(UUID.class), anyString())).thenReturn(List.of());
+        when(policyRepository.findByInformationTypeIdAndPurposeCodeAndProcessName(any(UUID.class), anyString(), anyString())).thenReturn(List.of());
         service.validateRequests(List.of(request), false);
     }
 
@@ -103,14 +103,15 @@ class PolicyServiceTest {
                 .purposeCode(PURPOSECODE)
                 .build();
         when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.of(InformationType.builder().id(UUID.fromString(INFTYPE_ID_1)).build()));
-        when(policyRepository.findByInformationTypeIdAndPurposeCode(any(UUID.class), anyString()))
+        when(policyRepository.findByInformationTypeIdAndPurposeCodeAndProcessName(any(UUID.class), anyString(), anyString()))
                 .thenReturn(List.of(Policy.builder().start(LocalDate.now()).end(LocalDate.now()).build()));
         try {
             service.validateRequests(List.of(request), false);
             fail();
         } catch (ValidationException e) {
             assertEquals(1, e.get().size(), JsonUtils.toJson(e.get()));
-            assertEquals("A policy combining InformationType Personalia and Purpose Kontroll already exists", e.get("informationTypeAndPurpose").getErrorMessage());
+            assertEquals("A policy combining InformationType: Personalia and Process: process Purpose: Kontroll already exists",
+                    e.get("informationTypeAndPurpose").getErrorMessage());
         }
     }
 

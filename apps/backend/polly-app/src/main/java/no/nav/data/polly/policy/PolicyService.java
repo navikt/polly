@@ -44,13 +44,15 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
             List<ValidationError> requestValidations = validatePolicyRequest(request);
             String informationTypeName = request.getInformationTypeName();
             String purposeCode = request.getPurposeCode();
-            if (titlesUsedInRequest.containsKey(informationTypeName + purposeCode)) {
+            String process = request.getProcess();
+            String key = informationTypeName + purposeCode + process;
+            if (titlesUsedInRequest.containsKey(key)) {
                 requestValidations.add(new ValidationError(request.getReference(), "combinationNotUniqueInThisRequest", String.format(
-                        "A request combining InformationType: %s and Purpose: %s is not unique because " +
+                        "A request combining InformationType: %s and Process: %s Purpose: %s is not unique because " +
                                 "it is already used in this request (see request nr:%s)",
-                        informationTypeName, purposeCode, titlesUsedInRequest.get(informationTypeName + purposeCode))));
+                        informationTypeName, process, purposeCode, titlesUsedInRequest.get(key))));
             } else if (informationTypeName != null && purposeCode != null) {
-                titlesUsedInRequest.put(informationTypeName + purposeCode, i.intValue());
+                titlesUsedInRequest.put(key, i.intValue());
             }
             if (request.isUpdate()) {
                 validateUpdate(request, validations);
@@ -118,9 +120,10 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
                 request.setInformationType(informationType);
             }
 
-            if (!request.isUpdate() && informationType != null && exists(informationType.getId(), request.getPurposeCode())) {
+            if (!request.isUpdate() && informationType != null && exists(informationType.getId(), request.getPurposeCode(), request.getProcess())) {
                 validations.add(new ValidationError(request.getReference(), "informationTypeAndPurpose",
-                        String.format("A policy combining InformationType %s and Purpose %s already exists", request.getInformationTypeName(), request.getPurposeCode())));
+                        String.format("A policy combining InformationType: %s and Process: %s Purpose: %s already exists",
+                                request.getInformationTypeName(), request.getProcess(), request.getPurposeCode())));
             }
         }
 
@@ -130,8 +133,8 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
         return validations;
     }
 
-    private boolean exists(UUID informationTypeId, String purposeCode) {
-        return policyRepository.findByInformationTypeIdAndPurposeCode(informationTypeId, purposeCode).stream().anyMatch(Policy::isActive);
+    private boolean exists(UUID informationTypeId, String purposeCode, String processName) {
+        return policyRepository.findByInformationTypeIdAndPurposeCodeAndProcessName(informationTypeId, purposeCode,processName).stream().anyMatch(Policy::isActive);
     }
 
     public List<Policy> findByPurposeCodeAndProcessName(String purpose, String processName) {
