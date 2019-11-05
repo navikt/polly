@@ -92,7 +92,7 @@ const PurposePage = () => {
             {isLoading ? null : (
                 <Block marginBottom="3rem">
                     {error ? (
-                        <p>Feil i henting av formål fra codelist.</p>
+                        <p>Feil i henting av formål fra codelist</p>
                     ) : (
                             <StatefulSelect
                                 options={getPurposeSelectItems()}
