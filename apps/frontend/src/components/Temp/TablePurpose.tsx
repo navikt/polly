@@ -111,7 +111,7 @@ const TablePurpose = ({ datasets }: TablePurposeProps) => {
 
   return (
     <React.Fragment>
-      <StyledTable className={useCss({ overflow: "hidden !important"})}>
+      <StyledTable className={useCss({ overflow: "hidden !important" })}>
         <StyledHeader>
           <SortableHeadCell
             title="Opplysningstype"

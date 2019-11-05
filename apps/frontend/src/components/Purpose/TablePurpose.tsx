@@ -25,19 +25,14 @@ const CustomStyledRow = withStyle(StyledRow, {
 });
 
 type TablePurposeProps = {
-    datasets:
-        | Array<{
-              id: string;
-              title: string | null;
-          }>
-        | Array<any>;
+    policies: Array<any>;
 };
 
-const TablePurpose = ({ datasets }: TablePurposeProps) => {
-    const [titleDirection, settitleDirection] = React.useState<any>(null);
-    const [legalBasisDirection, setLegalBasisDirection] = React.useState<any>(
-        null
-    );
+const TablePurpose = ({ policies }: TablePurposeProps) => {
+    const [useCss, theme] = useStyletron();
+    const [titleDirection, setTitleDirection] = React.useState<any>(null);
+    const [userDirection, setUserDirection] = React.useState<any>(null);
+    const [legalBasisDirection, setLegalBasisDirection] = React.useState<any>(null);
 
     const handleSort = (title: string, prevDirection: string) => {
         let nextDirection = null;
@@ -47,20 +42,30 @@ const TablePurpose = ({ datasets }: TablePurposeProps) => {
 
         if (prevDirection === null) nextDirection = "ASC";
 
-        if (title === "datasetTitle") {
-            settitleDirection(nextDirection);
+        if (title === "Opplysningstype") {
+            setTitleDirection(nextDirection);
+            setUserDirection(null)
             setLegalBasisDirection(null);
         }
-        if (title === "legalBasisDescription") {
+
+        if (title === "Personkategori") {
+            setTitleDirection(null);
+            setUserDirection(nextDirection)
+            setLegalBasisDirection(null);
+        }
+
+        if (title === "Rettslig Grunnlag") {
             setLegalBasisDirection(nextDirection);
-            settitleDirection(null);
+            setUserDirection(null)
+            setTitleDirection(null);
         }
         return;
     };
 
     const getSortedData = () => {
+        console.log(titleDirection)
         if (titleDirection) {
-            const sorted = datasets
+            const sorted = policies
                 .slice(0)
                 .sort((a: any, b: any) => a[1] - b[1]);
             if (titleDirection === SORT_DIRECTION.ASC) {
@@ -71,8 +76,20 @@ const TablePurpose = ({ datasets }: TablePurposeProps) => {
             }
         }
 
+        if (userDirection) {
+            const sorted = policies
+                .slice(0)
+                .sort((a: any, b: any) => a[1] - b[1]);
+            if (userDirection === SORT_DIRECTION.ASC) {
+                return sorted;
+            }
+            if (userDirection === SORT_DIRECTION.DESC) {
+                return sorted.reverse();
+            }
+        }
+
         if (legalBasisDirection) {
-            const sorted = datasets
+            const sorted = policies
                 .slice(0)
                 .sort((a: any, b: any) => a[1] - b[1]);
             if (legalBasisDirection === SORT_DIRECTION.ASC) {
@@ -83,37 +100,56 @@ const TablePurpose = ({ datasets }: TablePurposeProps) => {
             }
         }
 
-        return datasets;
+        return policies;
     };
 
     return (
         <React.Fragment>
-            <StyledTable>
+            <StyledTable className={useCss({ overflow: "hidden !important" })}>
                 <StyledHeader>
                     <SortableHeadCell
-                        title="Datasett"
+                        title="Opplysningstype"
                         direction={titleDirection}
                         onSort={() =>
-                            handleSort("datasetTitle", titleDirection)
+                            handleSort('Opplysningstype', titleDirection)
                         }
+                        fillClickTarget
                     />
+
+                    <SortableHeadCell
+                        title="Personkategori"
+                        direction={userDirection}
+                        onSort={() =>
+                            handleSort('Personkategori', userDirection)
+                        }
+                        fillClickTarget
+                    />
+
                     <SortableHeadCell
                         title="Rettslig Grunnlag"
                         direction={legalBasisDirection}
                         onSort={() =>
-                            handleSort(
-                                "legalBasisDescription",
-                                legalBasisDirection
-                            )
+                            handleSort('Rettslig Grunnlag', legalBasisDirection)
                         }
                     />
                 </StyledHeader>
                 <StyledBody>
                     {getSortedData().map((row: any, index: number) => (
                         <CustomStyledRow key={index}>
-                            <StyledCell>{row.title}</StyledCell>
+                            <StyledCell>{row.informationType.name}</StyledCell>
+                            <StyledCell>{row.subjectCategory && (row.subjectCategory.code)}</StyledCell>
 
-                            <StyledCell>{row.legalBasisDescription}</StyledCell>
+                            <StyledCell>
+                                {row.legalBases && row.legalBases.length > 0 && (
+                                    <ul>
+                                        {row.legalBases.map((legalBasis: any) => (
+                                            <li>
+                                                {legalBasis.gdpr}: {legalBasis.nationalLaw} {legalBasis.description}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </StyledCell>
                         </CustomStyledRow>
                     ))}
                 </StyledBody>
