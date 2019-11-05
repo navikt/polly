@@ -10,14 +10,12 @@ import {
 } from "baseui/table";
 import { withStyle, useStyletron } from "baseui";
 
-// Styling for table header
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",
     boxShadow: "none",
     borderBottom: "2px solid #E9E7E7"
 });
 
-// Styling for rows in table
 const CustomStyledRow = withStyle(StyledRow, {
     borderBottom: "1px solid #E9E7E7",
     padding: "8px",
@@ -27,6 +25,16 @@ const CustomStyledRow = withStyle(StyledRow, {
 type TablePurposeProps = {
     policies: Array<any>;
 };
+
+const renderListItem = (legalBasis: any | object) => {
+    let gdpr = legalBasis.gdpr
+    let nationalLaw = legalBasis.nationalLaw && legalBasis.nationalLaw.code
+    return (
+        <li>
+            {gdpr && gdpr + ': '} {nationalLaw && nationalLaw} {legalBasis.description}
+        </li>
+    )
+}
 
 const TablePurpose = ({ policies }: TablePurposeProps) => {
     const [useCss, theme] = useStyletron();
@@ -143,9 +151,7 @@ const TablePurpose = ({ policies }: TablePurposeProps) => {
                                 {row.legalBases && row.legalBases.length > 0 && (
                                     <ul>
                                         {row.legalBases.map((legalBasis: any) => (
-                                            <li>
-                                                {legalBasis.gdpr}: {legalBasis.nationalLaw} {legalBasis.description}
-                                            </li>
+                                            <li>{renderListItem(legalBasis)}</li>
                                         ))}
                                     </ul>
                                 )}

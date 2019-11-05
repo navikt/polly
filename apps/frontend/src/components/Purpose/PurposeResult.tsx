@@ -22,6 +22,16 @@ const rowPanelContent: BlockProps = {
     marginBottom: '2rem'
 }
 
+const renderListItem = (legalBasis: any | object) => {
+    let gdpr = legalBasis.gdpr
+    let nationalLaw = legalBasis.nationalLaw && legalBasis.nationalLaw.code
+    return (
+        <li>
+            {gdpr && gdpr + ': '} {nationalLaw && nationalLaw} {legalBasis.description}
+        </li>
+    )
+}
+
 const renderLegalBasisList = (list: any) => {
     if (!list) return null
     if (list.length < 1)
@@ -29,12 +39,7 @@ const renderLegalBasisList = (list: any) => {
 
     return (
         <ul>
-            {list.map((legalBasis: any) => (
-                <li>
-                    {legalBasis.gdpr}:
-                            {legalBasis.nationalLaw && legalBasis.nationalLaw.code} {legalBasis.description}
-                </li>
-            ))}
+            {list.map((legalBasis: any) => <li>{renderListItem(legalBasis)}</li>)}
         </ul>
     )
 }

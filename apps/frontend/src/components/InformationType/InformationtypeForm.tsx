@@ -85,8 +85,6 @@ const InformationtypeForm = ({
     const [sensitivityValue, setSensitivityValue] = React.useState<Value>(initialValueSensitivity());
     const [currentKeywordValue, setCurrentKeywordValue] = React.useState("");
 
-
-
     const getParsedOptions = (codelist: object | undefined | null, values: any | undefined) => {
         if (!codelist) return [];
 
