@@ -116,12 +116,12 @@ class InformationTypeControllerIT extends IntegrationTestBase {
 
     @Test
     void updateInformationTypes() {
-        createInformationTypeTestData(3);
+        List<InformationType> list = createInformationTypeTestData(3);
 
         List<InformationTypeRequest> requests = new ArrayList<>();
-        requests.add(createRequest("InformationType_nr1"));
-        requests.add(createRequest("InformationType_nr2"));
-        requests.add(createRequest("InformationType_nr3"));
+        requests.add(createRequest("InformationType_nr1", list.get(0).getId().toString()));
+        requests.add(createRequest("InformationType_nr2", list.get(1).getId().toString()));
+        requests.add(createRequest("InformationType_nr3", list.get(2).getId().toString()));
 
         requests.forEach(request -> request.setDescription("UPDATED DESCRIPTION"));
 
@@ -150,7 +150,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         createInformationTypeTestData(3);
         UUID id = informationTypeRepository.findByName("InformationType_nr2").get().getId();
 
-        InformationTypeRequest request = createRequest("InformationType_nr2");
+        InformationTypeRequest request = createRequest("InformationType_nr2", id.toString());
         request.setDescription("UPDATED DESCRIPTION");
 
         ResponseEntity<InformationTypeResponse> responseEntity = restTemplate.exchange(
@@ -217,15 +217,20 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         assertThat(informationTypeRepository.findById(it.getId()).get().getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_UPDATED);
     }
 
-    private void createInformationTypeTestData(int nrOfRows) {
-        informationTypeRepository.saveAll(IntStream.rangeClosed(1, nrOfRows)
+    private List<InformationType> createInformationTypeTestData(int nrOfRows) {
+        return informationTypeRepository.saveAll(IntStream.rangeClosed(1, nrOfRows)
                 .mapToObj(i -> new InformationType()
                         .convertNewFromRequest(createRequest("InformationType_nr" + i), REST))
                 .collect(toList()));
     }
 
     private InformationTypeRequest createRequest(String name) {
+        return createRequest(name, null);
+    }
+
+    private InformationTypeRequest createRequest(String name, String id) {
         return InformationTypeRequest.builder()
+                .id(id)
                 .name(name)
                 .term("someterm")
                 .description("InformationTypeDescription")

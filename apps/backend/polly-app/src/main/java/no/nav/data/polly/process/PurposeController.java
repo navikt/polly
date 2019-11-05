@@ -13,7 +13,9 @@ import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.process.ProcessController.ProcessPolicyPage;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessRepository;
+import no.nav.data.polly.process.domain.PurposeCount;
 import no.nav.data.polly.process.dto.ProcessPolicyResponse;
+import no.nav.data.polly.process.dto.PurposeCountResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,9 +23,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import javax.transaction.Transactional;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 @Slf4j
 @RestController
@@ -55,5 +61,20 @@ public class PurposeController {
         var processes = processRepository.findByPurposeCode(purposeCode).stream().map(Process::convertToResponseWithInformationTypes).collect(toList());
         log.info("Got {} processes", processes.size());
         return ResponseEntity.ok(new RestResponsePage<>(processes));
+    }
+
+    @ApiOperation(value = "Get Purpose count")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Purposes fetched", response = PurposeCountResponse.class),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @GetMapping("/")
+    public ResponseEntity<PurposeCountResponse> getPurpose() {
+        log.info("Get purpose count");
+        List<PurposeCount> purposeCounts = processRepository.countByPurposeCode();
+        Map<String, Long> counts = purposeCounts.stream()
+                .map(c -> Map.entry(c.getPurposeCode(), c.getCount()))
+                .collect(toMap(Entry::getKey, Entry::getValue));
+        log.info("Got {} purposes with process", counts.size());
+        return ResponseEntity.ok(new PurposeCountResponse(counts));
     }
 }

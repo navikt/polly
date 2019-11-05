@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @JsonPropertyOrder({"gdpr", "nationalLaw", "description", "start", "end", "active"})
 public class LegalBasisResponse {
 
-    private String gdpr;
+    private CodeResponse gdpr;
     private CodeResponse nationalLaw;
     private String description;
     private LocalDate start;

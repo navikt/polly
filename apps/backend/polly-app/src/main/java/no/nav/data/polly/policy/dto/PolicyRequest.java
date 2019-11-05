@@ -69,6 +69,7 @@ public class PolicyRequest implements RequestElement {
         validator.checkDate(Fields.start, start);
         validator.checkDate(Fields.end, end);
         validator.validateType(Fields.legalBases, legalBases);
+        validator.checkId(this);
     }
 
 }

@@ -36,6 +36,12 @@ public class CodelistRequest implements RequestElement {
     private boolean update;
     private int requestIndex;
 
+    @JsonIgnore
+    @Override
+    public String getId() {
+        return code;
+    }
+
     @Override
     public String getIdentifyingFields() {
         return list + "-" + getNormalizedCode();

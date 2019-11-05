@@ -20,6 +20,7 @@ import static no.nav.data.polly.common.swagger.SwaggerConfig.JSON;
 @AllArgsConstructor
 public class TermRequest implements RequestElement {
 
+    private String id;
     private String name;
     private String description;
     @ApiModelProperty(dataType = JSON, value = "json", example = "{\"field\": \"value\"}")
@@ -37,5 +38,6 @@ public class TermRequest implements RequestElement {
     public void validate(FieldValidator validator) {
         validator.checkBlank(Fields.name, name);
         validator.checkBlank(Fields.description, description);
+        validator.checkId(this);
     }
 }

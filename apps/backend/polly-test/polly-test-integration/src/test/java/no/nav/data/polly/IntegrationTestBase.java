@@ -170,11 +170,11 @@ public abstract class IntegrationTestBase {
     }
 
     private LegalBasis createLegalBasis() {
-        return LegalBasis.builder().gdpr("a").nationalLaw("Ftrl").description("desc").activeToday().build();
+        return LegalBasis.builder().gdpr("6a").nationalLaw("Ftrl").description("desc").activeToday().build();
     }
 
     protected LegalBasisResponse legalBasisResponse() {
-        return LegalBasisResponse.builder().gdpr("a").nationalLaw(new CodeResponse("Ftrl", "1997-02-28-19")).description("desc").start(LocalDate.now()).end(LocalDate.now())
+        return LegalBasisResponse.builder().gdpr(new CodeResponse("6a", "6a")).nationalLaw(new CodeResponse("Ftrl", "1997-02-28-19")).description("desc").start(LocalDate.now()).end(LocalDate.now())
                 .build();
     }
 

@@ -1,6 +1,7 @@
 package no.nav.data.polly.informationtype;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.common.exceptions.PollyNotFoundException;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.common.validator.RequestValidator;
@@ -10,13 +11,13 @@ import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
 import no.nav.data.polly.informationtype.domain.InformationTypeMaster;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
+import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.term.domain.Term;
 import no.nav.data.polly.term.domain.TermRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,10 +34,12 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
 
     private final InformationTypeRepository repository;
     private final TermRepository termRepository;
+    private final PolicyRepository policyRepository;
 
-    public InformationTypeService(InformationTypeRepository repository, TermRepository termRepository) {
+    public InformationTypeService(InformationTypeRepository repository, TermRepository termRepository, PolicyRepository policyRepository) {
         this.repository = repository;
         this.termRepository = termRepository;
+        this.policyRepository = policyRepository;
     }
 
     public InformationType save(InformationTypeRequest request, InformationTypeMaster master) {
@@ -53,22 +56,23 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
     }
 
     public List<InformationType> updateAll(List<InformationTypeRequest> requests) {
-        List<String> names = convert(requests, InformationTypeRequest::getName);
-        List<InformationType> informationTypes = repository.findAllByNameIn(names);
+        List<UUID> ids = convert(requests, InformationTypeRequest::getIdAsUUID);
+        List<InformationType> informationTypes = repository.findAllById(ids);
 
-        requests.forEach(request -> find(informationTypes, request.getName()).ifPresent(informationType -> convertUpdate(request, informationType)));
+        requests.forEach(request -> find(informationTypes, request.getIdAsUUID()).ifPresent(informationType -> convertUpdate(request, informationType)));
         return repository.saveAll(informationTypes);
     }
 
-    public InformationType delete(InformationTypeRequest request) {
-        Optional<InformationType> optional = repository.findByName(request.getName());
-        optional.ifPresent(request::assertMaster);
-        optional.ifPresent(it -> it.setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED));
-        return optional.orElse(null);
+    public InformationType delete(UUID id, InformationTypeMaster master) {
+        InformationType infoType = repository.findById(id).orElseThrow(() -> new PollyNotFoundException("Fant ikke id=" + id));
+        InformationTypeRequest.assertMasters(infoType, master);
+        infoType.setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED);
+        log.info("InformationType with id={} has been set to be deleted during the next scheduled task", id);
+        return infoType;
     }
 
-    public void deleteAll(Collection<InformationTypeRequest> requests) {
-        requests.forEach(this::delete);
+    public void deleteAll(Collection<UUID> ids, InformationTypeMaster master) {
+        ids.forEach(id -> delete(id, master));
     }
 
     public void sync(List<UUID> ids) {
@@ -76,8 +80,8 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
         log.info("marked {} informationTypes for sync", informationTypesUpdated);
     }
 
-    private Optional<InformationType> find(List<InformationType> informationTypes, String name) {
-        return informationTypes.stream().filter(informationType -> name.equals(informationType.getData().getName())).findFirst();
+    private Optional<InformationType> find(List<InformationType> informationTypes, UUID id) {
+        return informationTypes.stream().filter(informationType -> id.equals(informationType.getId())).findFirst();
     }
 
     private InformationType convertNew(InformationTypeRequest request, InformationTypeMaster master) {
@@ -87,6 +91,9 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
     }
 
     private void convertUpdate(InformationTypeRequest request, InformationType informationType) {
+        if (!request.getName().equals(informationType.getData().getName())) {
+            policyRepository.updateInformationTypeName(request.getIdAsUUID(), request.getName());
+        }
         request.assertMaster(informationType);
         informationType.convertUpdateFromRequest(request);
         attachDependencies(informationType, request);
@@ -101,7 +108,9 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
         }
     }
 
-    public void validateRequest(List<InformationTypeRequest> requests) {
+    public void validateRequest(List<InformationTypeRequest> requests, boolean isUpdate, InformationTypeMaster master) {
+        requests = nullToEmptyList(requests);
+        InformationTypeRequest.initiateRequests(requests, isUpdate, master);
         List<ValidationError> validationErrors = validateRequestsAndReturnErrors(requests);
 
         checkForErrors(validationErrors);
@@ -109,9 +118,6 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
 
     public List<ValidationError> validateRequestsAndReturnErrors(List<InformationTypeRequest> requests) {
         requests = nullToEmptyList(requests);
-        if (requests.isEmpty()) {
-            return Collections.emptyList();
-        }
         if (requests.stream().anyMatch(r -> r.getInformationTypeMaster() == null)) {
             throw new IllegalStateException("missing InformationTypeMaster on request");
         }
@@ -121,16 +127,28 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
 
         validationErrors.addAll(StreamUtils.applyAll(requests,
                 RequestElement::validateFields,
-                this::validateInformationTypeRepositoryValues));
+                this::validateInformationTypeRepositoryValues)
+        );
         return validationErrors;
     }
 
     private List<ValidationError> validateInformationTypeRepositoryValues(InformationTypeRequest request) {
-        Optional<InformationType> existingInformationType = repository.findByName(request.getName());
-        List<ValidationError> validationErrors = new ArrayList<>(validateRepositoryValues(request, existingInformationType.isPresent()));
+        var existingInformationType = Optional.ofNullable(request.getIdAsUUID()).flatMap(repository::findById);
+        List<ValidationError> validationErrors = new ArrayList<>();
+        validationErrors.addAll(validateRepositoryValues(request, existingInformationType.isPresent()));
 
-        if (updatingExistingElement(request.isUpdate(), existingInformationType.isPresent())) {
+        if (!request.isUpdate() && repository.findByName(request.getName()).isPresent()) {
+            validationErrors.add(new ValidationError(request.getReference(), "nameAlreadyExists"
+                    , String.format("The InformationType %s already exists", request.getIdentifyingFields())));
+        }
+
+        if (request.isUpdate() && existingInformationType.isPresent()) {
             InformationTypeData existingInformationTypeData = existingInformationType.get().getData();
+
+            if (!existingInformationTypeData.getName().equals(request.getName()) && repository.findByName(request.getName()).isPresent()) {
+                validationErrors.add(new ValidationError(request.getReference(), "nameAlreadyExistsNameChange"
+                        , String.format("Cannot change name, InformationType %s already exists", request.getIdentifyingFields())));
+            }
 
             if (existingInformationTypeData.getInformationTypeMaster() == null) {
                 validationErrors.add(new ValidationError(request.getReference(), "missingMasterInExistingInformationType"
@@ -142,10 +160,6 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
             }
         }
         return validationErrors;
-    }
-
-    private boolean updatingExistingElement(boolean isUpdate, boolean existInRepository) {
-        return isUpdate && existInRepository;
     }
 
     private boolean correlatingMaster(InformationTypeMaster existingMaster, InformationTypeMaster requestMaster) {

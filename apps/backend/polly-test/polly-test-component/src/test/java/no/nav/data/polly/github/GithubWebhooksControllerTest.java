@@ -3,9 +3,9 @@ package no.nav.data.polly.github;
 import no.nav.data.polly.AppStarter;
 import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.common.validator.ValidationError;
-import no.nav.data.polly.github.dto.RepoModification;
 import no.nav.data.polly.github.domain.status.GithubStatus;
 import no.nav.data.polly.github.domain.status.GithubStatusRepository;
+import no.nav.data.polly.github.dto.RepoModification;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.InformationTypeService;
 import no.nav.data.polly.informationtype.domain.InformationType;
@@ -187,7 +187,7 @@ class GithubWebhooksControllerTest {
     @Test
     void updateOnPush() throws Exception {
         when(githubConsumer.compare("internalbefore", "head")).thenReturn(repoModification);
-        when(repository.findByName("removed")).then(i -> Optional.of(new InformationType()));
+        when(repository.findByName("removed")).then(i -> Optional.of(InformationType.builder().generateId().build()));
         String payload = JsonUtils.toJson(push);
 
         mvc.perform(post(GithubWebhooksController.BACKEND_WEBHOOKS)
@@ -200,7 +200,7 @@ class GithubWebhooksControllerTest {
         verify(service, times(2)).validateRequestsAndReturnErrors(anyList());
         verify(service).saveAll(anyList(), eq(GITHUB));
         verify(service).updateAll(anyList());
-        verify(service).deleteAll(anyList());
+        verify(service).deleteAll(anyList(), eq(GITHUB));
     }
 
     @Test

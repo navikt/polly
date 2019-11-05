@@ -137,8 +137,7 @@ public class InformationTypeController {
     public ResponseEntity<RestResponsePage<InformationTypeResponse>> createInformationTypes(@RequestBody List<InformationTypeRequest> requests) {
         log.info("Received requests to create InformationTypes");
         requests = StreamUtils.nullToEmptyList(requests);
-        InformationTypeRequest.initiateRequests(requests, false, REST);
-        service.validateRequest(requests);
+        service.validateRequest(requests, false, REST);
 
         List<InformationTypeResponse> responses = service.saveAll(requests, REST).stream().map(InformationType::convertToResponse).collect(Collectors.toList());
         return new ResponseEntity<>(new RestResponsePage<>(responses), HttpStatus.CREATED);
@@ -153,8 +152,7 @@ public class InformationTypeController {
     public ResponseEntity<RestResponsePage<InformationTypeResponse>> updateInformationTypes(@RequestBody List<InformationTypeRequest> requests) {
         log.info("Received requests to update InformationTypes");
         requests = StreamUtils.nullToEmptyList(requests);
-        InformationTypeRequest.initiateRequests(requests, true, REST);
-        service.validateRequest(requests);
+        service.validateRequest(requests, true, REST);
 
         List<InformationTypeResponse> responses = service.updateAll(requests).stream().map(InformationType::convertToResponse).collect(Collectors.toList());
         return ResponseEntity.ok(new RestResponsePage<>(responses));
@@ -169,17 +167,15 @@ public class InformationTypeController {
     @PutMapping("/{id}")
     public ResponseEntity<InformationTypeResponse> updateOneInformationTypeById(@PathVariable UUID id, @Valid @RequestBody InformationTypeRequest request) {
         log.info("Received a request to update InformationType with id={}", id);
+        if (!id.equals(request.getIdAsUUID())) {
+            throw new ValidationException(String.format("Mismatch between path and request id, id=%s request id=%s", id, request.getId()));
+        }
         Optional<InformationType> byId = repository.findById(id);
         if (byId.isEmpty()) {
             log.info("Cannot find InformationType with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        String existingName = byId.get().getData().getName();
-        if (!existingName.equals(request.getName())) {
-            throw new ValidationException(String.format("Cannot change name of informationType in update, id=%s has name=%s", id, existingName));
-        }
-        InformationTypeRequest.initiateRequests(List.of(request), true, REST);
-        service.validateRequest(List.of(request));
+        service.validateRequest(List.of(request), true, REST);
 
         InformationType informationType = service.update(request);
 
@@ -196,14 +192,11 @@ public class InformationTypeController {
     @Transactional
     public ResponseEntity<InformationTypeResponse> deleteInformationTypeById(@PathVariable UUID id) {
         log.info("Received a request to delete InformationType with id={}", id);
-        Optional<InformationType> fromRepository = repository.findById(id);
-        if (fromRepository.isEmpty()) {
-            log.info("Cannot find InformationType with id={}", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (id == null) {
+            log.info("id missing");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        log.info("InformationType with id={} has been set to be deleted during the next scheduled task", id);
-        InformationTypeRequest deleteRequest = InformationTypeRequest.builder().informationTypeMaster(REST).name(fromRepository.get().getData().getName()).build();
-        return new ResponseEntity<>(service.delete(deleteRequest).convertToResponse(), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(service.delete(id, REST).convertToResponse(), HttpStatus.ACCEPTED);
     }
 
     @ApiOperation(value = "Trigger InformationType Sync mot elasticsearch")

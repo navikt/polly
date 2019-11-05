@@ -130,8 +130,8 @@ public class TermController {
         log.info("Received requests to update Terms");
         var requests = StreamUtils.nullToEmptyList(requestsIn);
         service.validateRequest(requests, true);
-        List<Term> all = repository.findAllByNameIn(convert(requests, TermRequest::getName));
-        all.forEach(term -> term.convertFromRequest(requests.stream().filter(r -> r.getName().equals(term.getName())).findFirst().orElseThrow()));
+        List<Term> all = repository.findAllById(convert(requests, TermRequest::getIdAsUUID));
+        all.forEach(term -> term.convertFromRequest(requests.stream().filter(r -> r.getIdAsUUID().equals(term.getId())).findFirst().orElseThrow()));
 
         return ResponseEntity.ok(new RestResponsePage<>(repository.saveAll(all).stream().map(Term::convertToResponse).collect(Collectors.toList())));
     }
@@ -145,14 +145,13 @@ public class TermController {
     @PutMapping("/{id}")
     public ResponseEntity<TermResponse> updateOneTermById(@PathVariable UUID id, @Valid @RequestBody TermRequest request) {
         log.info("Received a request to update Term with id={}", id);
+        if (!id.equals(request.getIdAsUUID())) {
+            throw new ValidationException(String.format("Mismatch between path and request id, id=%s request id=%s", id, request.getId()));
+        }
         Optional<Term> byId = repository.findById(id);
         if (byId.isEmpty()) {
             log.info("Cannot find Term with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        String existingName = byId.get().getName();
-        if (!existingName.equals(request.getName())) {
-            throw new ValidationException(String.format("Cannot change name of term in update, id=%s has name=%s", id, existingName));
         }
         service.validateRequest(List.of(request), true);
 

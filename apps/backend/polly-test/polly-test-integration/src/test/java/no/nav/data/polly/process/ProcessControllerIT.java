@@ -101,7 +101,7 @@ class ProcessControllerIT extends IntegrationTestBase {
     void createProcessValidationError() {
         ResponseEntity<String> resp = restTemplate
                 .postForEntity("/process", List.of(ProcessRequest.builder().name("newprocess").purposeCode("AAP")
-                        .legalBases(List.of(LegalBasisRequest.builder().gdpr("hei").nationalLaw("eksisterer-ikke").description("desc").build()))
+                        .legalBases(List.of(LegalBasisRequest.builder().gdpr("6a").nationalLaw("eksisterer-ikke").description("desc").build()))
                         .build()), String.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(resp.getBody()).contains("legalBases[0].nationalLaw: eksisterer-ikke code not found in codelist NATIONAL_LAW");

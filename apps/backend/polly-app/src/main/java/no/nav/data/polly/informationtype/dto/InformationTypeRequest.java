@@ -33,6 +33,7 @@ import static no.nav.data.polly.informationtype.domain.InformationTypeMaster.RES
 @FieldNameConstants
 public class InformationTypeRequest implements RequestElement {
 
+    private String id;
     private String name;
     private String description;
     private String term;
@@ -98,21 +99,27 @@ public class InformationTypeRequest implements RequestElement {
     }
 
     public void assertMaster(InformationType informationType) {
-        if (getInformationTypeMaster() != informationType.getData().getInformationTypeMaster()) {
+        assertMasters(informationType, informationTypeMaster);
+    }
+
+    public static void assertMasters(InformationType informationType, InformationTypeMaster informationTypeMaster) {
+        if (informationType.getData().getInformationTypeMaster() != informationTypeMaster) {
             throw new ValidationException(
                     String.format("Master mismatch for update, informationType is mastered by=%s request came from %s", informationType.getData().getInformationTypeMaster(),
-                            getInformationTypeMaster()));
+                            informationType));
         }
     }
 
     @Override
     public void validate(FieldValidator validator) {
+        validator.checkUUID(Fields.id, id);
         validator.checkBlank(Fields.name, getName());
         validator.checkBlank(Fields.description, getDescription());
 
         validator.checkCodelists(Fields.categories, getCategories(), ListName.CATEGORY);
         validator.checkCodelists(Fields.sources, getSources(), ListName.SOURCE);
         validator.checkRequiredCodelist(Fields.sensitivity, getSensitivity(), ListName.SENSITIVITY);
+        validator.checkId(this);
     }
 
     @JsonIgnore

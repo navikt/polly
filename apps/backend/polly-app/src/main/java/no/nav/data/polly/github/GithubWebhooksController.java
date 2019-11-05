@@ -11,9 +11,9 @@ import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.common.utils.MdcUtils;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.common.validator.ValidationError;
-import no.nav.data.polly.github.dto.RepoModification;
 import no.nav.data.polly.github.domain.status.GithubStatus;
 import no.nav.data.polly.github.domain.status.GithubStatusRepository;
+import no.nav.data.polly.github.dto.RepoModification;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.InformationTypeService;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
@@ -38,6 +38,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import static java.util.Arrays.asList;
+import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static no.nav.data.polly.github.GithubConsumer.REFS_HEADS_MASTER;
 import static no.nav.data.polly.informationtype.domain.InformationTypeMaster.GITHUB;
 
@@ -159,6 +160,7 @@ public class GithubWebhooksController {
         githubStatusRepository.save(new GithubStatus(payload.getHead()));
     }
 
+    // github requests do not have Id and do not support rename
     private List<ValidationError> validate(CollectionDifference<InformationTypeRequest> difference) {
         List<ValidationError> validationErrors = new ArrayList<>();
         // TODO validate deletes, at least master, how does kafka delete?
@@ -178,7 +180,13 @@ public class GithubWebhooksController {
         CollectionDifference<InformationTypeRequest> difference = repoModification.toChangelist();
         log.info("Add: {} Modify: {} Remove: {}", difference.getAdded().size(), difference.getShared()
                 .size(), difference.getRemoved().size());
+        findIdForNames(difference.getRemoved());
+        findIdForNames(difference.getShared());
         return difference;
+    }
+
+    private void findIdForNames(List<InformationTypeRequest> requests) {
+        requests.forEach(r -> repository.findByName(r.getName()).ifPresent(infoType -> r.setId(infoType.getId().toString())));
     }
 
     private void modify(List<InformationTypeRequest> requests) {
@@ -194,7 +202,7 @@ public class GithubWebhooksController {
             return;
         }
         log.info("The following list of InformationTypes have been set to be deleted during the next scheduled task: {}", requests);
-        service.deleteAll(requests);
+        service.deleteAll(convert(requests, InformationTypeRequest::getIdAsUUID), GITHUB);
     }
 
     private void add(List<InformationTypeRequest> requests) {

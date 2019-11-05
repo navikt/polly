@@ -12,13 +12,13 @@ import no.nav.data.polly.codelist.dto.CodeResponse;
 @NoArgsConstructor
 public class LegalBasisElasticsearch {
 
-    private String gdpr;
+    private CodeResponse gdpr;
     private CodeResponse nationalLaw;
     private String description;
     private String start;
     private String end;
 
     public String toShortForm() {
-        return "gdpr " + gdpr + " " + nationalLaw + " " + description;
+        return gdpr + " " + nationalLaw + " " + description;
     }
 }

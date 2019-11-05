@@ -36,17 +36,21 @@ public class LegalBasis implements Serializable {
     }
 
     public LegalBasisResponse convertToResponse() {
-        return new LegalBasisResponse(gdpr, nationalLawCodeResponse(), description, start, end);
+        return new LegalBasisResponse(gdprCodeResponse(), nationalLawCodeResponse(), description, start, end);
     }
 
     public LegalBasisElasticsearch convertToElasticsearch() {
         return LegalBasisElasticsearch.builder()
-                .gdpr(gdpr)
+                .gdpr(gdprCodeResponse())
                 .nationalLaw(nationalLawCodeResponse())
                 .description(description)
                 .start(DateUtil.formatDate(start))
                 .end(DateUtil.formatDate(end))
                 .build();
+    }
+
+    private CodeResponse gdprCodeResponse() {
+        return CodelistService.getCodeResponseForCodelistItem(ListName.GDPR_ARTICLE, nationalLaw);
     }
 
     private CodeResponse nationalLawCodeResponse() {

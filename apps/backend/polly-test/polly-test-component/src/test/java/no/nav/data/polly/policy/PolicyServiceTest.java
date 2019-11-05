@@ -186,7 +186,6 @@ class PolicyServiceTest {
                 .informationTypeName(INFTYPE_NAME)
                 .legalBases(List.of(LegalBasisRequest.builder().gdpr("6a").description(LEGALBASISDESCRIPTION).build()))
                 .purposeCode(PURPOSECODE)
-                .id("1-1-1-1-1")
                 .build();
         when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.of(InformationType.builder().id(UUID.fromString(INFTYPE_ID_1)).build()));
 

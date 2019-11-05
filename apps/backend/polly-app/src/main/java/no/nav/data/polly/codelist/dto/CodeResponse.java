@@ -18,4 +18,9 @@ public class CodeResponse {
 
     private String code;
     private String description;
+
+    @Override
+    public String toString() {
+        return code + " - " + description;
+    }
 }

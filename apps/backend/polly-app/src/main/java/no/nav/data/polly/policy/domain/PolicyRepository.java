@@ -27,4 +27,8 @@ public interface PolicyRepository extends JpaRepository<Policy, UUID> {
     @Query("select p.informationTypeId from Policy p where p.id in ?1")
     List<UUID> getInformationTypeIdsByIdIn(List<UUID> policyIds);
 
+    @Modifying
+    @Transactional
+    @Query("update Policy p set p.informationTypeName = ?2 where p.informationTypeId = ?1")
+    void updateInformationTypeName(UUID informationTypeId, String name);
 }

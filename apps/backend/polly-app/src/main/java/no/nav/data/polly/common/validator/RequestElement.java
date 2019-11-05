@@ -4,8 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface RequestElement extends Validated {
+
+    String getId();
 
     @JsonIgnore
     String getIdentifyingFields();
@@ -37,6 +40,15 @@ public interface RequestElement extends Validated {
         FieldValidator validator = new FieldValidator(getReference());
         validate(validator);
         return validator.getErrors();
+    }
+
+    @JsonIgnore
+    default UUID getIdAsUUID() {
+        try {
+            return getId() == null ? null : UUID.fromString(getId());
+        } catch (IllegalArgumentException ignored) {
+            return null;
+        }
     }
 
 }

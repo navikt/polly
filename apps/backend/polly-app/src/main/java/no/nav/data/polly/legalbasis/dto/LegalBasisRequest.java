@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
+import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.common.validator.FieldValidator;
@@ -34,8 +35,8 @@ public class LegalBasisRequest implements Validated {
 
     public LegalBasis convertToLegalBasis() {
         return LegalBasis.builder()
-                .gdpr(gdpr)
-                .nationalLaw(nationalLaw)
+                .gdpr(CodelistService.format(ListName.GDPR_ARTICLE, gdpr))
+                .nationalLaw(CodelistService.format(ListName.NATIONAL_LAW, nationalLaw))
                 .description(description)
                 .start(DateUtil.parseStart(start))
                 .end(DateUtil.parseEnd(end))
@@ -43,7 +44,7 @@ public class LegalBasisRequest implements Validated {
     }
 
     public void validate(FieldValidator validator) {
-        validator.checkBlank(Fields.gdpr, gdpr);
+        validator.checkRequiredCodelist(Fields.gdpr, gdpr, ListName.GDPR_ARTICLE);
         validator.checkCodelist(Fields.nationalLaw, nationalLaw, ListName.NATIONAL_LAW);
         validator.checkBlank(Fields.description, description);
         validator.checkDate(Fields.start, start);

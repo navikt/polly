@@ -9,6 +9,7 @@ import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.ProcessController.ProcessPolicyPage;
 import no.nav.data.polly.process.dto.ProcessPolicyResponse;
+import no.nav.data.polly.process.dto.PurposeCountResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -55,5 +57,18 @@ class PurposeControllerIT extends IntegrationTestBase {
                                 .build())
                         .build());
 
+    }
+
+    @Test
+    void countPurposes() {
+        createPolicy(PURPOSE_CODE1, createInformationType());
+        createPolicy(PURPOSE_CODE1 + 2, createInformationType());
+
+        ResponseEntity<PurposeCountResponse> resp = restTemplate.getForEntity("/process/purpose/", PurposeCountResponse.class);
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        PurposeCountResponse purposeResponse = resp.getBody();
+        assertThat(purposeResponse).isNotNull();
+
+        assertThat(purposeResponse).isEqualTo(new PurposeCountResponse(Map.of(PURPOSE_CODE1, 1L, PURPOSE_CODE1 + 2, 1L)));
     }
 }
