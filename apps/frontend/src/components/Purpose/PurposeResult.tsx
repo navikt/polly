@@ -1,12 +1,11 @@
 import * as React from "react";
 import { Block, BlockProps } from "baseui/block";
-import { ListItem, ListItemLabel, ARTWORK_SIZES } from 'baseui/list';
 import { Accordion, Panel } from 'baseui/accordion';
-import { ChevronRight, Search } from 'baseui/icon';
 import _includes from 'lodash/includes'
 import { Label2, Paragraph2 } from "baseui/typography";
 
 import TablePurpose from './TablePurpose'
+import ModalPolicy from './ModalPolicy'
 
 type PurposeViewProps = {
     description: string | any | null;
@@ -65,6 +64,8 @@ const renderAllSubjectCategories = (processObj: any) => {
 }
 
 const PurposeResult = ({ description, purpose }: PurposeViewProps) => {
+    const [isOpen, setIsOpen] = React.useState<any>(false);
+
     return (
         <React.Fragment>
             <React.Fragment>
@@ -88,12 +89,17 @@ const PurposeResult = ({ description, purpose }: PurposeViewProps) => {
                                         <Block>
                                             <Label2>Kategorier av personer</Label2>
                                             {renderAllSubjectCategories(process)}
+
                                         </Block>
                                     </Block>
 
                                     {process.policies && (
                                         <Block >
-                                            <Label2 marginBottom="1rem">Opplysningstyper</Label2>
+                                            <Block display="flex" justifyContent="space-between" marginBottom="1rem">
+                                                <Label2>Opplysningstyper</Label2>
+                                                <button onClick={() => setIsOpen(true)}>Legg til ny</button>
+                                                <ModalPolicy ></ModalPolicy>
+                                            </Block>
                                             <TablePurpose policies={process.policies} />
                                         </Block>
                                     )}
