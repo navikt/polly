@@ -50,7 +50,7 @@ public class LegalBasis implements Serializable {
     }
 
     private CodeResponse gdprCodeResponse() {
-        return CodelistService.getCodeResponseForCodelistItem(ListName.GDPR_ARTICLE, nationalLaw);
+        return CodelistService.getCodeResponseForCodelistItem(ListName.GDPR_ARTICLE, gdpr);
     }
 
     private CodeResponse nationalLawCodeResponse() {
