@@ -184,7 +184,7 @@ const InformationtypeForm = ({
                                                 labelKey="id"
                                                 valueKey="id"
                                                 value={sensitivityValue}
-                                                placeholder="Select color"
+                                                placeholder="Velg sensitivitet"
                                                 onChange={(params: any) => {
                                                     setSensitivityValue(params.value[0])
                                                     form.setFieldValue('sensitivity', params.value[0].code)
