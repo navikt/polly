@@ -17,11 +17,11 @@ export interface DatasetFormValues {
 
 export interface InformationtypeFormValues {
     term: string;
-    pii: string | boolean | null;
+    pii: boolean | null | undefined;
     name: string | null;
-    context: string | null;
     sensitivity: string | null;
     categories: string[] | null[] | null;
+    sources: string[] | null[] | null;
     keywords: string[] | null[] | null;
 }
 

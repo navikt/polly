@@ -16,18 +16,8 @@ const Centered = styled("div", {
     paddingBottom: "10rem"
 });
 
-let initialFormValues = {
-    term: "",
-    pii: null,
-    name: "",
-    context: "",
-    sensitivity: "",
-    keywords: [],
-    categories: [],
-    description: ""
-};
 
-const reduceCategories = (list: any) => {
+const reduceCodelist = (list: any) => {
     if (!list) return;
     return list.reduce((acc: any, curr: any) => {
         return [...acc, !curr ? null : curr.code];
@@ -37,14 +27,14 @@ const reduceCategories = (list: any) => {
 const initFormValues = (data: any) => {
     console.log(data);
     return {
-        term: data.name,
+        term: data.term,
         pii: data.pii,
         name: data.name,
-        context: data.context,
-        categories: reduceCategories(data.categories),
-        sensitivity: data.sensitivity,
+        categories: reduceCodelist(data.categories),
+        sources: reduceCodelist(data.sources),
+        sensitivity: data.sensitivity.code,
         keywords: data.keywords,
-        description: data.description
+        description: data.description,
     };
 };
 
@@ -80,15 +70,14 @@ const InformationtypeEditPage = (props: any) => {
     };
 
     const handleSubmit = async (values: any) => {
-        console.log(values, "VALI");
         if (!values) return;
 
         setErrorSubmit(null);
         setIsUpdated(null);
-        let body = [values];
+        let body = { ...values, id: props.match.params.id };
 
         await axios
-            .put(`${server_polly}/informationtype`, body)
+            .put(`${server_polly}/informationtype`, [body])
             .then(handleSubmitResponse)
             .catch(err => setErrorSubmit(err.message));
     };
@@ -120,27 +109,27 @@ const InformationtypeEditPage = (props: any) => {
             {isLoading ? (
                 <Spinner size={30} />
             ) : (
-                <React.Fragment>
-                    <Banner title={"Rediger (" + informationtype.name + ")"} />
+                    <React.Fragment>
+                        <Banner title="Rediger" />
 
-                    {!error && informationtype ? (
-                        <Centered>
-                            <InformationtypeForm
-                                formInitialValues={initFormValues(
-                                    informationtype
-                                )}
-                                isEdit
-                                codelist={codelist}
-                                submit={handleSubmit}
-                            />
-                            {errorSubmit && <p>{errorSubmit}</p>}
-                            {isUpdated && <p>Opplysningstypen er oppdatert.</p>}
-                        </Centered>
-                    ) : (
-                        <p>Kunne ikke laste inn siden.</p>
-                    )}
-                </React.Fragment>
-            )}
+                        {!error && informationtype ? (
+                            <Centered>
+                                <InformationtypeForm
+                                    formInitialValues={initFormValues(
+                                        informationtype
+                                    )}
+                                    isEdit
+                                    codelist={codelist}
+                                    submit={handleSubmit}
+                                />
+                                {errorSubmit && <p>{errorSubmit}</p>}
+                                {isUpdated && <p>Opplysningstypen er oppdatert.</p>}
+                            </Centered>
+                        ) : (
+                                <p>Kunne ikke laste inn siden.</p>
+                            )}
+                    </React.Fragment>
+                )}
         </React.Fragment>
     );
 };

@@ -18,12 +18,12 @@ const Centered = styled("div", {
 
 let initialFormValues = {
     term: "",
-    pii: null,
+    pii: false,
     name: "",
-    context: "",
-    sensitivity: "",
+    sensitivity: null,
     keywords: [],
     categories: [],
+    sources: [],
     description: ""
 };
 
@@ -58,7 +58,6 @@ const InformationtypeCreatePage = () => {
     };
 
     const handleSubmit = async (values: any) => {
-        console.log(values);
         if (!values) return;
 
         setErrorSubmit(null);
@@ -89,28 +88,28 @@ const InformationtypeCreatePage = () => {
             {isLoading ? (
                 <Spinner size={30} />
             ) : (
-                <React.Fragment>
-                    <Banner title="Opprett ny opplysningstype" />
-                    {!error && codelist ? (
-                        <React.Fragment>
-                            <Centered>
-                                <InformationtypeForm
-                                    formInitialValues={initialFormValues}
-                                    submit={handleSubmit}
-                                    isEdit={false}
-                                    codelist={codelist}
-                                />
-                                {errorSubmit && <p>{errorSubmit}</p>}
-                                {isCreated && (
-                                    <p>Opplysningstypen er nå opprettet.</p>
-                                )}
-                            </Centered>
-                        </React.Fragment>
-                    ) : (
-                        <p>Feil i henting av codelist</p>
-                    )}
-                </React.Fragment>
-            )}
+                    <React.Fragment>
+                        <Banner title="Opprett ny opplysningstype" />
+                        {!error && codelist ? (
+                            <React.Fragment>
+                                <Centered>
+                                    <InformationtypeForm
+                                        formInitialValues={initialFormValues}
+                                        submit={handleSubmit}
+                                        isEdit={false}
+                                        codelist={codelist}
+                                    />
+                                    {errorSubmit && <p>{errorSubmit}</p>}
+                                    {isCreated && (
+                                        <p>Opplysningstypen er nå opprettet.</p>
+                                    )}
+                                </Centered>
+                            </React.Fragment>
+                        ) : (
+                                <p>Feil i henting av codelist</p>
+                            )}
+                    </React.Fragment>
+                )}
         </React.Fragment>
     );
 };
