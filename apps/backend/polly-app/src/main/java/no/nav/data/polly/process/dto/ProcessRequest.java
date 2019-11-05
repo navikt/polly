@@ -49,12 +49,13 @@ public class ProcessRequest implements RequestElement {
 
     @Override
     public void validate(FieldValidator validator) {
+        validator.checkUUID(Fields.id, id);
+        validator.checkId(this);
         validator.checkBlank(Fields.name, name);
         validator.checkRequiredCodelist(Fields.purposeCode, purposeCode, ListName.PURPOSE);
         validator.checkDate(Fields.start, start);
         validator.checkDate(Fields.end, end);
         validator.validateType(Fields.legalBases, legalBases);
-        validator.checkId(this);
     }
 
     public Process convertToProcess() {

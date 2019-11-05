@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -38,7 +39,8 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
         Map<String, Integer> titlesUsedInRequest = new HashMap<>();
         final AtomicInteger i = new AtomicInteger(1);
         requests.forEach(request -> {
-            List<ValidationError> requestValidations = validatePolicyRequest(request);
+            List<ValidationError> requestValidations = new ArrayList<>(request.validateFields());
+            requestValidations.addAll(validateRepositoryForPolicyRequest(request));
             if (titlesUsedInRequest.containsKey(request.getIdentifyingFields())) {
                 requestValidations.add(new ValidationError(request.getReference(), "combinationNotUniqueInThisRequest", String.format(
                         "A request combining %s is not unique because it is already used in this request (see request nr:%s)",
@@ -58,24 +60,12 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
         }
     }
 
-    private String identifiers(PolicyRequest request) {
-        return String.format("InformationType: %s and Process: %s Purpose: %s SubjectCategory: %s",
-                request.getInformationTypeName(), request.getProcess(), request.getPurposeCode(), request.getSubjectCategory());
-    }
-
     private void validateUpdate(PolicyRequest request, List<ValidationError> validations) {
         if (request.getId() == null) {
             validations.add(new ValidationError(request.getReference(), "missingIdForUpdate", "Id is missing for update"));
             return;
         }
-        UUID uuid;
-        try {
-            uuid = UUID.fromString(request.getId());
-        } catch (IllegalArgumentException e) {
-            validations.add(new ValidationError(request.getReference(), "invalidIdForUpdate", "Id is invalid for update"));
-            return;
-        }
-        Policy policy = policyRepository.findById(uuid).orElse(null);
+        Policy policy = Optional.ofNullable(request.getIdAsUUID()).flatMap(policyRepository::findById).orElse(null);
         if (policy == null) {
             validations.add(new ValidationError(request.getReference(), "notFound", String.format("A policy with id: %s was not found", request.getId())));
         } else if (!StringUtils.equals(policy.getPurposeCode(), request.getPurposeCode())) {
@@ -86,8 +76,8 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
         }
     }
 
-    private List<ValidationError> validatePolicyRequest(PolicyRequest request) {
-        List<ValidationError> validations = new ArrayList<>(request.validateFields());
+    private List<ValidationError> validateRepositoryForPolicyRequest(PolicyRequest request) {
+        List<ValidationError> validations = new ArrayList<>();
         if (request.getInformationTypeName() != null) {
             InformationType informationType = informationTypeRepository.findByName(request.getInformationTypeName()).orElse(null);
             if (informationType == null) {
@@ -102,11 +92,12 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
                 }
             }
         }
-
-        if (!validations.isEmpty()) {
-            log.error("Validation errors occurred when validating PolicyRequest: {}", validations);
-        }
         return validations;
+    }
+
+    private String identifiers(PolicyRequest request) {
+        return String.format("InformationType: %s and Process: %s Purpose: %s SubjectCategory: %s",
+                request.getInformationTypeName(), request.getProcess(), request.getPurposeCode(), request.getSubjectCategory());
     }
 
     private boolean exists(UUID informationTypeId, String purposeCode, String subjectCategory, String processName) {

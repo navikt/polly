@@ -62,6 +62,7 @@ public class PolicyRequest implements RequestElement {
 
     @Override
     public void validate(FieldValidator validator) {
+        validator.checkUUID(Fields.id, id);
         validator.checkRequiredCodelist(Fields.purposeCode, purposeCode, ListName.PURPOSE);
         validator.checkBlank(Fields.informationTypeName, informationTypeName);
         validator.checkBlank(Fields.process, process);

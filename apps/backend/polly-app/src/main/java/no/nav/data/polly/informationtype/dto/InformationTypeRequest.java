@@ -113,13 +113,13 @@ public class InformationTypeRequest implements RequestElement {
     @Override
     public void validate(FieldValidator validator) {
         validator.checkUUID(Fields.id, id);
+        validator.checkId(this);
         validator.checkBlank(Fields.name, getName());
         validator.checkBlank(Fields.description, getDescription());
 
         validator.checkCodelists(Fields.categories, getCategories(), ListName.CATEGORY);
         validator.checkCodelists(Fields.sources, getSources(), ListName.SOURCE);
         validator.checkRequiredCodelist(Fields.sensitivity, getSensitivity(), ListName.SENSITIVITY);
-        validator.checkId(this);
     }
 
     @JsonIgnore

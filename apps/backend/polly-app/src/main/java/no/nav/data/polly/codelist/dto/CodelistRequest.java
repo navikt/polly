@@ -39,7 +39,7 @@ public class CodelistRequest implements RequestElement {
     @JsonIgnore
     @Override
     public String getId() {
-        return code;
+        return getIdentifyingFields();
     }
 
     @Override

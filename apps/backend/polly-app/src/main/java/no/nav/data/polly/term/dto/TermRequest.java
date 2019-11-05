@@ -36,8 +36,9 @@ public class TermRequest implements RequestElement {
 
     @Override
     public void validate(FieldValidator validator) {
+        validator.checkUUID(Fields.id, id);
+        validator.checkId(this);
         validator.checkBlank(Fields.name, name);
         validator.checkBlank(Fields.description, description);
-        validator.checkId(this);
     }
 }
