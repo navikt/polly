@@ -58,7 +58,7 @@ public class PurposeController {
             return ResponseEntity.notFound().build();
         }
         String purposeCode = codelist.getCode();
-        var processes = processRepository.findByPurposeCode(purposeCode).stream().map(Process::convertToResponseWithInformationTypes).collect(toList());
+        var processes = processRepository.findByPurposeCode(purposeCode).stream().map(Process::convertToResponseWithPolicies).collect(toList());
         log.info("Got {} processes", processes.size());
         return ResponseEntity.ok(new RestResponsePage<>(processes));
     }

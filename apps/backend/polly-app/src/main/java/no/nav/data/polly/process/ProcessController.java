@@ -59,7 +59,7 @@ public class ProcessController {
     @Transactional
     public ResponseEntity<ProcessPolicyResponse> findForId(@PathVariable UUID id) {
         log.info("Received request for Process with id={}", id);
-        Optional<ProcessPolicyResponse> process = repository.findById(id).map(Process::convertToResponseWithInformationTypes);
+        Optional<ProcessPolicyResponse> process = repository.findById(id).map(Process::convertToResponseWithPolicies);
         if (process.isEmpty()) {
             log.info("Cannot find the Process with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -88,7 +88,7 @@ public class ProcessController {
     @Transactional
     public ResponseEntity<RestResponsePage<ProcessPolicyResponse>> getProcess(@PathVariable String processName) {
         log.info("Received request for Processes with name={}", processName);
-        var processes = repository.findByName(processName).stream().map(Process::convertToResponseWithInformationTypes).collect(toList());
+        var processes = repository.findByName(processName).stream().map(Process::convertToResponseWithPolicies).collect(toList());
         log.info("Returned {} Processes", processes.size());
         return ResponseEntity.ok(new RestResponsePage<>(processes));
     }

@@ -56,7 +56,8 @@ public class Policy extends Auditable<String> {
     @Column(name = "PURPOSE_CODE", nullable = false, updatable = false)
     private String purposeCode;
 
-    @Column(name = "SUBJECT_CATEGORIES")
+    @NotNull
+    @Column(name = "SUBJECT_CATEGORIES", nullable = false)
     private String subjectCategory;
 
     @NotNull
@@ -68,13 +69,13 @@ public class Policy extends Auditable<String> {
     private LocalDate end;
 
     @NotNull
-    @Column(name = "INFORMATION_TYPE_NAME", nullable = false)
-    private String informationTypeName;
-
-    @Builder.Default
-    @NotNull
     @Column(name = "LEGAL_BASES_INHERITED", nullable = false)
     private boolean legalBasesInherited = false;
+
+    @Valid
+    @Type(type = "jsonb")
+    @Column(name = "LEGAL_BASES", nullable = false)
+    private List<LegalBasis> legalBases = new ArrayList<>();
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
@@ -87,14 +88,13 @@ public class Policy extends Auditable<String> {
     private UUID informationTypeId;
 
     @NotNull
+    @Column(name = "INFORMATION_TYPE_NAME", nullable = false)
+    private String informationTypeName;
+
+    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "PROCESS_ID", nullable = false, updatable = false)
     private Process process;
-
-    @Valid
-    @Type(type = "jsonb")
-    @Column(name = "LEGAL_BASES", nullable = false)
-    private List<LegalBasis> legalBases = new ArrayList<>();
 
     public void setInformationType(InformationType informationType) {
         this.informationType = informationType;

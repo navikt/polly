@@ -18,6 +18,8 @@ public class ProcessElasticsearch {
     private String name;
     private String purpose;
     private String purposeDescription;
+    private String department;
+    private String subDepartment;
     private String start;
     private String end;
     private boolean active;

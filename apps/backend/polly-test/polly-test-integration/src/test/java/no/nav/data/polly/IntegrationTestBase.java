@@ -20,6 +20,7 @@ import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.process.domain.Process;
+import no.nav.data.polly.process.domain.ProcessData;
 import no.nav.data.polly.process.domain.ProcessDistributionRepository;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.term.domain.Term;
@@ -162,7 +163,10 @@ public abstract class IntegrationTestBase {
     protected Process createProcess(String purpose) {
         return process.computeIfAbsent(purpose,
                 (p) -> processRepository
-                        .save(Process.builder().generateId().start(LocalDate.now()).end(LocalDate.now()).name("Auto_" + purpose).purposeCode(purpose).legalBasis(createLegalBasis())
+                        .save(Process.builder().generateId().name("Auto_" + purpose).purposeCode(purpose)
+                                .data(ProcessData.builder()
+                                        .start(LocalDate.now()).end(LocalDate.now()).legalBasis(createLegalBasis())
+                                        .build())
                                 .build()));
     }
 
@@ -176,7 +180,8 @@ public abstract class IntegrationTestBase {
     }
 
     protected LegalBasisResponse legalBasisResponse() {
-        return LegalBasisResponse.builder().gdpr(new CodeResponse("6a", "6a")).nationalLaw(new CodeResponse("Ftrl", "1997-02-28-19")).description("desc").start(LocalDate.now()).end(LocalDate.now())
+        return LegalBasisResponse.builder().gdpr(new CodeResponse("6a", "6a")).nationalLaw(new CodeResponse("Ftrl", "1997-02-28-19")).description("desc").start(LocalDate.now())
+                .end(LocalDate.now())
                 .build();
     }
 

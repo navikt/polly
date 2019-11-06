@@ -17,12 +17,14 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "name", "purposeCode", "start", "end", "active", "legalBases", "policies"})
+@JsonPropertyOrder({"id", "name", "purposeCode", "department", "subDepartment", "start", "end", "active", "legalBases", "policies"})
 public class ProcessPolicyResponse {
 
     private String id;
     private String name;
     private String purposeCode;
+    private String department;
+    private String subDepartment;
     private LocalDate start;
     private LocalDate end;
     @Singular("legalBasis")

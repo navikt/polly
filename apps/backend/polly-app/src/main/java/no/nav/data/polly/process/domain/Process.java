@@ -18,8 +18,6 @@ import no.nav.data.polly.process.dto.ProcessPolicyResponse;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import org.hibernate.annotations.Type;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -57,18 +55,12 @@ public class Process extends Auditable<String> {
     @Column(name = "PURPOSE_CODE", nullable = false)
     private String purposeCode;
 
-    @NotNull
-    @Column(name = "START_DATE", nullable = false)
-    private LocalDate start;
-
-    @NotNull
-    @Column(name = "END_DATE", nullable = false)
-    private LocalDate end;
-
     @Valid
+    @Builder.Default
+    @NotNull
     @Type(type = "jsonb")
-    @Column(name = "LEGAL_BASES", nullable = false)
-    private List<LegalBasis> legalBases = new ArrayList<>();
+    @Column(name = "DATA", nullable = false)
+    private ProcessData data = new ProcessData();
 
     @Builder.Default
     @OneToMany(mappedBy = "process")
@@ -84,7 +76,7 @@ public class Process extends Auditable<String> {
     }
 
     public boolean isActive() {
-        return DateUtil.isNow(start, end);
+        return DateUtil.isNow(data.getStart(), data.getEnd());
     }
 
     public ProcessResponse convertToResponse() {
@@ -92,20 +84,24 @@ public class Process extends Auditable<String> {
                 .id(id.toString())
                 .name(name)
                 .purposeCode(purposeCode)
-                .start(start)
-                .end(end)
-                .legalBases(convert(legalBases, LegalBasis::convertToResponse))
+                .department(data.getDepartment())
+                .subDepartment(data.getSubDepartment())
+                .start(data.getStart())
+                .end(data.getEnd())
+                .legalBases(convert(data.getLegalBases(), LegalBasis::convertToResponse))
                 .build();
     }
 
-    public ProcessPolicyResponse convertToResponseWithInformationTypes() {
+    public ProcessPolicyResponse convertToResponseWithPolicies() {
         return ProcessPolicyResponse.builder()
                 .id(id.toString())
                 .name(name)
                 .purposeCode(purposeCode)
-                .start(start)
-                .end(end)
-                .legalBases(convert(legalBases, LegalBasis::convertToResponse))
+                .department(data.getDepartment())
+                .subDepartment(data.getSubDepartment())
+                .start(data.getStart())
+                .end(data.getEnd())
+                .legalBases(convert(data.getLegalBases(), LegalBasis::convertToResponse))
                 .policies(convert(policies, Policy::convertToResponse))
                 .build();
     }
@@ -117,27 +113,23 @@ public class Process extends Auditable<String> {
                 .name(name)
                 .purpose(purpose.getCode())
                 .purposeDescription(purpose.getDescription())
-                .start(DateUtil.formatDate(start))
-                .end(DateUtil.formatDate(end))
+                .department(data.getDepartment())
+                .subDepartment(data.getSubDepartment())
+                .start(DateUtil.formatDate(data.getStart()))
+                .end(DateUtil.formatDate(data.getEnd()))
                 .active(isActive())
+                .legalbases(convert(data.getLegalBases(), LegalBasis::convertToElasticsearch))
                 .policies(convert(policies, Policy::convertToElasticsearch))
-                .legalbases(convert(legalBases, LegalBasis::convertToElasticsearch))
                 .build();
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static class ProcessBuilder {
 
-        private List<LegalBasis> legalBases = new ArrayList<>();
-
         public ProcessBuilder generateId() {
             id = UUID.randomUUID();
             return this;
         }
 
-        public ProcessBuilder legalBasis(LegalBasis legalBasis) {
-            legalBases.add(legalBasis);
-            return this;
-        }
     }
 }

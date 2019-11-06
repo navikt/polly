@@ -13,6 +13,7 @@ import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.process.domain.Process;
+import no.nav.data.polly.process.domain.ProcessData;
 
 import java.util.List;
 
@@ -33,6 +34,8 @@ public class ProcessRequest implements RequestElement {
     private String name;
     @ApiModelProperty(value = "Codelist")
     private String purposeCode;
+    private String department;
+    private String subDepartment;
     @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_START)
     private String start;
     @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_END)
@@ -63,9 +66,14 @@ public class ProcessRequest implements RequestElement {
                 .generateId()
                 .name(name)
                 .purposeCode(purposeCode)
-                .start(DateUtil.parseStart(start))
-                .end(DateUtil.parseEnd(end))
-                .legalBases(convert(legalBases, LegalBasisRequest::convertToLegalBasis))
+                .data(ProcessData.builder()
+                        .department(department)
+                        .subDepartment(subDepartment)
+                        .start(DateUtil.parseStart(start))
+                        .end(DateUtil.parseEnd(end))
+                        .legalBases(convert(legalBases, LegalBasisRequest::convertToLegalBasis))
+                        .build()
+                )
                 .build();
     }
 }
