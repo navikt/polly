@@ -13,8 +13,10 @@ import no.nav.data.polly.common.auditing.Auditable;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.elasticsearch.dto.ProcessElasticsearch;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
+import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.process.dto.ProcessPolicyResponse;
+import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import org.hibernate.annotations.Type;
 
@@ -121,6 +123,20 @@ public class Process extends Auditable<String> {
                 .legalbases(convert(data.getLegalBases(), LegalBasis::convertToElasticsearch))
                 .policies(convert(policies, Policy::convertToElasticsearch))
                 .build();
+    }
+
+    public Process convertFromRequest(ProcessRequest request) {
+        if (!request.isUpdate()) {
+            id = UUID.randomUUID();
+        }
+        setName(request.getName());
+        setPurposeCode(request.getPurposeCode());
+        data.setDepartment(request.getDepartment());
+        data.setSubDepartment(request.getSubDepartment());
+        data.setStart(DateUtil.parseStart(request.getStart()));
+        data.setEnd(DateUtil.parseEnd(request.getEnd()));
+        data.setLegalBases(convert(request.getLegalBases(), LegalBasisRequest::convertToLegalBasis));
+        return this;
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")

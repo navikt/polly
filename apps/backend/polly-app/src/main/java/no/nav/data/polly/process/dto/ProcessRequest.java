@@ -8,19 +8,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
 import no.nav.data.polly.codelist.domain.ListName;
-import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
-import no.nav.data.polly.process.domain.Process;
-import no.nav.data.polly.process.domain.ProcessData;
 
 import java.util.List;
 
 import static no.nav.data.polly.common.swagger.SwaggerConfig.LOCAL_DATE;
 import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_END;
 import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_START;
-import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Data
 @Builder
@@ -61,19 +57,4 @@ public class ProcessRequest implements RequestElement {
         validator.validateType(Fields.legalBases, legalBases);
     }
 
-    public Process convertToProcess() {
-        return Process.builder()
-                .generateId()
-                .name(name)
-                .purposeCode(purposeCode)
-                .data(ProcessData.builder()
-                        .department(department)
-                        .subDepartment(subDepartment)
-                        .start(DateUtil.parseStart(start))
-                        .end(DateUtil.parseEnd(end))
-                        .legalBases(convert(legalBases, LegalBasisRequest::convertToLegalBasis))
-                        .build()
-                )
-                .build();
-    }
 }

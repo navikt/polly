@@ -4,6 +4,7 @@ import no.nav.data.polly.common.nais.LeaderElectionService;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.common.validator.RequestValidator;
+import no.nav.data.polly.common.validator.ValidationError;
 import no.nav.data.polly.policy.PolicyService;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.process.domain.Process;
@@ -18,9 +19,13 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.lang.String.format;
 import static java.util.stream.Collectors.groupingBy;
 import static no.nav.data.polly.common.utils.MdcUtils.wrapAsync;
 
@@ -76,13 +81,41 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
                 Instant.now().plus(1, ChronoUnit.MINUTES), Duration.ofSeconds(rate));
     }
 
-    public void validateRequest(List<ProcessRequest> requests) {
-        initialize(requests, false);
+    public void validateRequests(List<ProcessRequest> requests, boolean update) {
+        initialize(requests, update);
         var validationErrors = StreamUtils.applyAll(requests,
-                req -> validateRepositoryValues(req, processRepository.findByNameAndPurposeCode(req.getName(), req.getPurposeCode()).isPresent()),
-                RequestElement::validateFields
+                RequestElement::validateFields,
+                this::validateProcessRepositoryValues
         );
 
         checkForErrors(validationErrors);
     }
+
+    private List<ValidationError> validateProcessRepositoryValues(ProcessRequest request) {
+        var validations = new ArrayList<ValidationError>();
+        if (request.isUpdate()) {
+            var repoValue = Optional.ofNullable(request.getIdAsUUID()).flatMap(processRepository::findById);
+            validations.addAll(validateRepositoryValues(request, repoValue.isPresent()));
+
+            if (repoValue.isPresent()) {
+                Process process = repoValue.get();
+                if (!Objects.equals(process.getName(), request.getName())) {
+                    validations.add(new ValidationError(request.getReference(), "nameChanged",
+                            format("Cannot change name from %s to %s", process.getName(), request.getName())));
+                }
+                if (!Objects.equals(process.getPurposeCode(), request.getPurposeCode())) {
+                    validations.add(new ValidationError(request.getReference(), "purposeChanged",
+                            format("Cannot change purpose from %s to %s", process.getPurposeCode(), request.getPurposeCode())));
+                }
+            }
+        } else {
+            validations.addAll(validateRepositoryValues(request, false));
+            if (processRepository.findByNameAndPurposeCode(request.getName(), request.getPurposeCode()).isPresent()) {
+                validations.add(new ValidationError(request.getReference(), "nameAndPurposeExists",
+                        format("Process with name %s and Purpose %s already exists", request.getName(), request.getPurposeCode())));
+            }
+        }
+        return validations;
+    }
+
 }

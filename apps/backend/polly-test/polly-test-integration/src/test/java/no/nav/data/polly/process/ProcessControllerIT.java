@@ -15,6 +15,8 @@ import no.nav.data.polly.process.dto.ProcessResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -95,6 +97,8 @@ class ProcessControllerIT extends IntegrationTestBase {
         ResponseEntity<ProcessPage> resp = restTemplate
                 .postForEntity("/process", List.of(ProcessRequest.builder().name("newprocess").purposeCode("AAP").build()), ProcessPage.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(resp.getBody()).isNotNull();
+        assertThat(resp.getBody().getContent().get(0).getName()).isEqualTo("newprocess");
     }
 
     @Test
@@ -107,4 +111,44 @@ class ProcessControllerIT extends IntegrationTestBase {
         assertThat(resp.getBody()).contains("legalBases[0].nationalLaw: eksisterer-ikke code not found in codelist NATIONAL_LAW");
     }
 
+    @Test
+    void createProcessDuplicate() {
+        var request = ProcessRequest.builder().name("newprocess").purposeCode("AAP").build();
+        ResponseEntity<ProcessPage> resp = restTemplate.postForEntity("/process", List.of(request), ProcessPage.class);
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        ResponseEntity<String> errorResp = restTemplate.postForEntity("/process", List.of(request), String.class);
+        assertThat(errorResp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResp.getBody()).contains("nameAndPurposeExists");
+    }
+
+    @Test
+    void updateProcess() {
+        ResponseEntity<ProcessPage> resp = restTemplate
+                .postForEntity("/process", List.of(ProcessRequest.builder().name("newprocess").purposeCode("AAP").build()), ProcessPage.class);
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(resp.getBody()).isNotNull();
+
+        String id = resp.getBody().getContent().get(0).getId();
+        ProcessRequest update = ProcessRequest.builder().id(id).name("newprocess").purposeCode("AAP").department("dep").build();
+        resp = restTemplate.exchange("/process", HttpMethod.PUT, new HttpEntity<>(List.of(update)), ProcessPage.class, id);
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(resp.getBody()).isNotNull();
+        assertThat(resp.getBody().getContent().get(0).getDepartment()).isEqualTo("dep");
+    }
+
+    @Test
+    void updateProcessValidationError() {
+        ResponseEntity<ProcessPage> resp = restTemplate
+                .postForEntity("/process", List.of(ProcessRequest.builder().name("newprocess").purposeCode("AAP").build()), ProcessPage.class);
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(resp.getBody()).isNotNull();
+
+        String id = resp.getBody().getContent().get(0).getId();
+        ProcessRequest update = ProcessRequest.builder().id(id).name("changedName").purposeCode("AAP").department("dep").build();
+        var errorResp = restTemplate.exchange("/process", HttpMethod.PUT, new HttpEntity<>(List.of(update)), String.class, id);
+        assertThat(errorResp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResp.getBody()).isNotNull();
+        assertThat(errorResp.getBody()).contains("Cannot change name from newprocess to changedName");
+    }
 }

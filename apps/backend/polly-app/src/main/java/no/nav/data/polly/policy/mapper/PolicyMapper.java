@@ -49,11 +49,10 @@ public class PolicyMapper {
     }
 
     private Process createProcess(PolicyRequest policyRequest) {
-        return ProcessRequest.builder()
+        return new Process().convertFromRequest(ProcessRequest.builder()
                 .name(policyRequest.getProcess())
                 .purposeCode(policyRequest.getPurposeCode())
-                .build()
-                .convertToProcess();
+                .build());
     }
 
 }

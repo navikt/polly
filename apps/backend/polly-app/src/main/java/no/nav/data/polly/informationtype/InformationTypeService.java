@@ -130,8 +130,8 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
 
         validationErrors.addAll(StreamUtils.applyAll(requests,
                 RequestElement::validateFields,
-                this::validateInformationTypeRepositoryValues)
-        );
+                this::validateInformationTypeRepositoryValues
+        ));
         return validationErrors;
     }
 
