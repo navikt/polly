@@ -13,15 +13,6 @@ type PurposeViewProps = {
     purpose: Array<any> | any | null;
 };
 
-const blockProps: BlockProps = {
-    marginBottom: "3rem"
-};
-
-const rowPanelContent: BlockProps = {
-    display: 'flex',
-    marginBottom: '2rem'
-}
-
 const renderListItem = (legalBasis: any | object) => {
     let gdpr = legalBasis.gdpr && legalBasis.gdpr.code
     let nationalLaw = legalBasis.nationalLaw && legalBasis.nationalLaw.code
@@ -43,6 +34,17 @@ const renderLegalBasisList = (list: any) => {
         </ul>
     )
 }
+
+const blockProps: BlockProps = {
+    marginBottom: "3rem"
+};
+
+const rowPanelContent: BlockProps = {
+    display: 'flex',
+    marginBottom: '2rem'
+}
+
+
 
 const renderAllSubjectCategories = (processObj: any) => {
     const notFound = (<Paragraph2>Fant ingen kategorier av personer</Paragraph2>)

@@ -23,10 +23,6 @@ const CustomStyledRow = withStyle(StyledRow, {
     fontSize: "24px"
 });
 
-type TablePurposeProps = {
-    policies: Array<any>;
-};
-
 const renderListItem = (legalBasis: any | object) => {
     console.log("midlertid")
     let gdpr = legalBasis.gdpr && legalBasis.gdpr.code
@@ -37,6 +33,10 @@ const renderListItem = (legalBasis: any | object) => {
         </li>
     )
 }
+
+type TablePurposeProps = {
+    policies: Array<any>;
+};
 
 const TablePurpose = ({ policies }: TablePurposeProps) => {
     const [useCss, theme] = useStyletron();
