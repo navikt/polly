@@ -85,7 +85,7 @@ class PolicyServiceTest {
                 .process("process")
                 .informationTypeName(INFTYPE_NAME)
                 .subjectCategory("Bruker")
-                .legalBases(List.of(LegalBasisRequest.builder().description(LEGALBASISDESCRIPTION).build()))
+                .legalBases(List.of(LegalBasisRequest.builder().gdpr("6a").description(LEGALBASISDESCRIPTION).build()))
                 .purposeCode("wrong")
                 .build();
         when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.empty());

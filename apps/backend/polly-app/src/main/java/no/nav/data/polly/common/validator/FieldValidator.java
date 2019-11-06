@@ -76,7 +76,7 @@ public class FieldValidator {
     }
 
     private void checkCode(String fieldName, String fieldValue, ListName listName) {
-        if (CodelistService.getCodeResponseForCodelistItem(listName, fieldValue) == null) {
+        if (CodelistService.getCodelist(listName, fieldValue) == null) {
             validationErrors.add(new ValidationError(reference, ERROR_TYPE_CODELIST, String.format(ERROR_MESSAGE_CODELIST, getFieldName(fieldName), fieldValue, listName)));
         }
     }
