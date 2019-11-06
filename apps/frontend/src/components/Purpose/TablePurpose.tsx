@@ -27,7 +27,7 @@ type TablePurposeProps = {
 };
 
 const renderListItem = (legalBasis: any | object) => {
-    console.log("midlertidig")
+    console.log("midlertid")
     let gdpr = legalBasis.gdpr && legalBasis.gdpr.code
     let nationalLaw = legalBasis.nationalLaw && legalBasis.nationalLaw.code
     return (
