@@ -1,5 +1,7 @@
 package no.nav.data.polly.codelist.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,5 +24,10 @@ public class CodeResponse {
     @Override
     public String toString() {
         return code + " - " + description;
+    }
+
+    @JsonInclude(Include.NON_NULL)
+    public Boolean isInvalidCode() {
+        return description == null ? Boolean.TRUE : null;
     }
 }
