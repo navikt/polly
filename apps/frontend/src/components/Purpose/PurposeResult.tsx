@@ -100,11 +100,6 @@ const PurposeResult = ({ description, purpose }: PurposeViewProps) => {
                                         <Block >
                                             <Block display="flex" justifyContent="space-between" marginBottom="1rem">
                                                 <Label2>Opplysningstyper</Label2>
-                                                <button onClick={() => setIsOpen(true)}>Legg til ny</button>
-                                                <ModalPolicy
-                                                    onClose={() => setIsOpen(false)}
-                                                    isOpen={isOpen}
-                                                />
                                             </Block>
                                             <TablePurpose policies={process.policies} />
                                         </Block>
