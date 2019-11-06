@@ -8,16 +8,20 @@ import no.nav.data.polly.common.utils.MetricUtils;
 import no.nav.data.polly.elasticsearch.domain.ElasticsearchDocument;
 import no.nav.data.polly.elasticsearch.domain.ElasticsearchRepository;
 import no.nav.data.polly.elasticsearch.dto.InformationTypeElasticsearch;
+import no.nav.data.polly.elasticsearch.dto.ProcessElasticsearch;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
+import no.nav.data.polly.process.domain.Process;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import static no.nav.data.polly.common.utils.StreamUtils.convert;
-import static no.nav.data.polly.common.utils.StreamUtils.filter;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 import static no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus.SYNCED;
 import static no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus.TO_BE_CREATED;
 import static no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus.TO_BE_DELETED;
@@ -91,8 +95,6 @@ public class ElasticsearchService {
         List<InformationType> informationTypes = repository.findByElasticsearchStatus(TO_BE_DELETED);
         for (InformationType informationType : informationTypes) {
             elasticsearch.deleteById(ElasticsearchDocument.newDocumentId(informationType.getId().toString(), elasticsearchProperties.getIndex()));
-            long deletes = policyRepository.deleteByInformationTypeId(informationType.getId());
-            log.debug("Deleted {} policies", deletes);
             repository.deleteById(informationType.getId());
             counter.labels("delete").inc();
         }
@@ -101,7 +103,15 @@ public class ElasticsearchService {
 
     public InformationTypeElasticsearch mapInformationType(InformationType informationType) {
         List<Policy> policies = policyRepository.findByInformationTypeId(informationType.getId());
-        return informationType.convertToElasticsearch(convert(filter(policies, Policy::isActive), Policy::convertToElasticsearch));
+        return informationType.convertToElasticsearch(convertToElasticsearchProcess(policies));
+    }
+
+    private List<ProcessElasticsearch> convertToElasticsearchProcess(List<Policy> policies) {
+        Map<Process, List<Policy>> processes = policies.stream().collect(Collectors.groupingBy(Policy::getProcess));
+        return processes.keySet().stream()
+                .map(process -> process.convertToElasticsearch(processes.get(process)))
+                .sorted(comparing(ProcessElasticsearch::getName))
+                .collect(toList());
     }
 
     private static Counter initCounter() {

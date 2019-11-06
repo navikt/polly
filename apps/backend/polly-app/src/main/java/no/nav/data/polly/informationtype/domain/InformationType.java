@@ -11,7 +11,7 @@ import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.auditing.Auditable;
 import no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus;
 import no.nav.data.polly.elasticsearch.dto.InformationTypeElasticsearch;
-import no.nav.data.polly.elasticsearch.dto.PolicyElasticsearch;
+import no.nav.data.polly.elasticsearch.dto.ProcessElasticsearch;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
 import no.nav.data.polly.policy.domain.Policy;
@@ -113,8 +113,8 @@ public class InformationType extends Auditable<String> {
         data.setSensitivity(CodelistService.format(ListName.SENSITIVITY, request.getSensitivity()));
     }
 
-    public InformationTypeElasticsearch convertToElasticsearch(List<PolicyElasticsearch> policiesES) {
-        return new InformationTypeElasticsearch(this, policiesES);
+    public InformationTypeElasticsearch convertToElasticsearch(List<ProcessElasticsearch> processes) {
+        return new InformationTypeElasticsearch(this, processes);
     }
 
     public static class InformationTypeBuilder {

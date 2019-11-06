@@ -46,6 +46,7 @@ public class LegalBasis implements Serializable {
                 .description(description)
                 .start(DateUtil.formatDate(start))
                 .end(DateUtil.formatDate(end))
+                .active(isActive())
                 .build();
     }
 

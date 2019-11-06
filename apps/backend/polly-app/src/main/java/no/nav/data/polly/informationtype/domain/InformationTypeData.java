@@ -28,7 +28,7 @@ public class InformationTypeData {
     private List<String> keywords = new ArrayList<>();
 
     // Keep?
-    private InformationTypeMaster InformationTypeMaster;
+    private InformationTypeMaster informationTypeMaster;
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static class InformationTypeDataBuilder {

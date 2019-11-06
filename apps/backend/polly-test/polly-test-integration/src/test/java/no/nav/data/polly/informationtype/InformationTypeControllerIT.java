@@ -201,7 +201,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         assertThat(informationTypeRepository.findByName("InformationType_nr1")
                 .get()
                 .getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.SYNCED);
-        assertThat(informationTypeRepository.findByName("InformationType_nr2")
+        assertThat(informationTypeRepository.findByName("InformationType_nr2 (To be deleted)")
                 .get()
                 .getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_DELETED);
         assertThat(informationTypeRepository.findByName("InformationType_nr3")

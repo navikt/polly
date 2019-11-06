@@ -17,6 +17,7 @@ public class LegalBasisElasticsearch {
     private String description;
     private String start;
     private String end;
+    private boolean active;
 
     public String toShortForm() {
         return gdpr + " " + nationalLaw + " " + description;

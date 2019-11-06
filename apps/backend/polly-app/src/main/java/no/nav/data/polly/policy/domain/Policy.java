@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import no.nav.data.polly.codelist.CodelistService;
-import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.auditing.Auditable;
 import no.nav.data.polly.common.utils.DateUtil;
@@ -110,11 +109,11 @@ public class Policy extends Auditable<String> {
     }
 
     public PolicyElasticsearch convertToElasticsearch() {
-        Codelist purpose = CodelistService.getCodelist(ListName.PURPOSE, purposeCode);
         return PolicyElasticsearch.builder()
-                .purpose(purpose.getCode())
-                .description(purpose.getDescription())
-                .subjectCategory(getSubjectCategory())
+                .start(DateUtil.formatDate(start))
+                .end(DateUtil.formatDate(end))
+                .active(isActive())
+                .subjectCategory(CodelistService.getCodeResponseForCodelistItem(ListName.SUBJECT_CATEGORY, getSubjectCategory()))
                 .legalbases(convert(filter(legalBases, LegalBasis::isActive), LegalBasis::convertToElasticsearch))
                 .build();
     }

@@ -15,4 +15,9 @@ public class ElasticsearchProperties {
     private String index;
     private String user;
     private String password;
+    private int indexingIntervalSeconds;
+
+    public boolean indexingDisabled() {
+        return indexingIntervalSeconds <= 0;
+    }
 }

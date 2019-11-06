@@ -102,8 +102,8 @@ class GithubWebhooksControllerIT extends IntegrationTestBase {
         assertThat(all.size()).isEqualTo(5);
 
         Optional<InformationType> added = repository.findByName("added");
-        Optional<InformationType> removed = repository.findByName("removed");
-        Optional<InformationType> modifiedRemoved = repository.findByName("modified_removed");
+        Optional<InformationType> removed = repository.findByName("removed (To be deleted)");
+        Optional<InformationType> modifiedRemoved = repository.findByName("modified_removed (To be deleted)");
         Optional<InformationType> modifiedChanged = repository.findByName("modified_changed");
         Optional<InformationType> modifiedAdded = repository.findByName("modified_added");
 

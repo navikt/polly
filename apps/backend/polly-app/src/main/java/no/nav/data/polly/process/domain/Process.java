@@ -6,8 +6,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.domain.Codelist;
+import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.auditing.Auditable;
 import no.nav.data.polly.common.utils.DateUtil;
+import no.nav.data.polly.elasticsearch.dto.ProcessElasticsearch;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.process.dto.ProcessPolicyResponse;
@@ -103,6 +107,21 @@ public class Process extends Auditable<String> {
                 .end(end)
                 .legalBases(convert(legalBases, LegalBasis::convertToResponse))
                 .policies(convert(policies, Policy::convertToResponse))
+                .build();
+    }
+
+    public ProcessElasticsearch convertToElasticsearch(List<Policy> policies) {
+        Codelist purpose = CodelistService.getCodelist(ListName.PURPOSE, purposeCode);
+        return ProcessElasticsearch.builder()
+                .id(id.toString())
+                .name(name)
+                .purpose(purpose.getCode())
+                .purposeDescription(purpose.getDescription())
+                .start(DateUtil.formatDate(start))
+                .end(DateUtil.formatDate(end))
+                .active(isActive())
+                .policies(convert(policies, Policy::convertToElasticsearch))
+                .legalbases(convert(legalBases, LegalBasis::convertToElasticsearch))
                 .build();
     }
 

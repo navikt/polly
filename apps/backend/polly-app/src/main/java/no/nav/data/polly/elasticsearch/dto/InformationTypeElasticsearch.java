@@ -1,6 +1,5 @@
 package no.nav.data.polly.elasticsearch.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,11 +10,11 @@ import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static no.nav.data.polly.common.utils.StreamUtils.copyOf;
@@ -26,15 +25,14 @@ import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class InformationTypeElasticsearch {
 
-    private String id;
+    private UUID id;
     private String name;
     private String term;
     private String description;
-    private String pii;
-    private String sensitivity;
+    private boolean pii;
+    private CodeResponse sensitivity;
     private List<CodeResponse> categories = new ArrayList<>();
     private List<CodeResponse> sources = new ArrayList<>();
     private List<String> keywords = new ArrayList<>();
@@ -44,7 +42,7 @@ public class InformationTypeElasticsearch {
     private String created;
     private String createdBy;
 
-    private List<PolicyElasticsearch> policies = new ArrayList<>();
+    private List<ProcessElasticsearch> processes = new ArrayList<>();
     // Mapped from policies
     private List<String> purpose = new ArrayList<>();
     private List<String> legalbasis = new ArrayList<>();
@@ -52,8 +50,8 @@ public class InformationTypeElasticsearch {
     // Mapped
     private String suggest;
 
-    public InformationTypeElasticsearch(InformationType informationType, List<PolicyElasticsearch> policies) {
-        setId(informationType.getId().toString());
+    public InformationTypeElasticsearch(InformationType informationType, List<ProcessElasticsearch> processes) {
+        setId(informationType.getId());
         setTerm(informationType.getTerm() == null ? null : informationType.getTerm().getName());
 
         setCreated(DateUtil.formatDateTime(informationType.getCreatedDate()));
@@ -61,10 +59,13 @@ public class InformationTypeElasticsearch {
         setModified(DateUtil.formatDateTime(informationType.getLastModifiedDate()));
         setModifiedBy(informationType.getLastModifiedBy());
 
-        setPolicies(policies);
-        policies.forEach(policy -> {
-            getPurpose().add(policy.getPurpose());
-            getLegalbasis().add(safeStream(policy.getLegalbases()).map(LegalBasisElasticsearch::toShortForm).collect(Collectors.joining(", ")));
+        setProcesses(processes);
+        processes.forEach(process -> {
+            getPurpose().add(process.getPurpose());
+            getLegalbasis().add(safeStream(process.getLegalbases()).filter(LegalBasisElasticsearch::isActive)
+                    .map(LegalBasisElasticsearch::toShortForm).collect(Collectors.joining(", ")));
+            getLegalbasis().add(safeStream(process.getPolicies()).flatMap(policy -> policy.getLegalbases().stream()).filter(LegalBasisElasticsearch::isActive)
+                    .map(LegalBasisElasticsearch::toShortForm).collect(Collectors.joining(", ")));
         });
 
         mapJsonFields(informationType.getData());
@@ -73,8 +74,8 @@ public class InformationTypeElasticsearch {
     private void mapJsonFields(InformationTypeData data) {
         setName(data.getName());
         setDescription(data.getDescription());
-        setPii(BooleanUtils.toStringTrueFalse(data.isPii()));
-        setSensitivity(data.getSensitivity());
+        setPii(data.isPii());
+        setSensitivity(CodelistService.getCodeResponseForCodelistItem(ListName.SENSITIVITY, data.getSensitivity()));
         setCategories(CodelistService.getCodeResponseForCodelistItems(ListName.CATEGORY, data.getCategories()));
         setSources(CodelistService.getCodeResponseForCodelistItems(ListName.SOURCE, data.getSources()));
         setKeywords(copyOf(data.getKeywords()));

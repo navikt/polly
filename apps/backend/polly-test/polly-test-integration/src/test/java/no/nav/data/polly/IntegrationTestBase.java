@@ -11,6 +11,7 @@ import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
+import no.nav.data.polly.informationtype.domain.InformationTypeMaster;
 import no.nav.data.polly.kafka.KafkaContainer;
 import no.nav.data.polly.kafka.KafkaTopicProperties;
 import no.nav.data.polly.kafka.SchemaRegistryContainer;
@@ -151,6 +152,7 @@ public abstract class IntegrationTestBase {
                         .source("Skatt")
                         .category("PERSONALIA")
                         .pii(true)
+                        .informationTypeMaster(InformationTypeMaster.REST)
                         .build())
                 .build();
         createTerm("term").addInformationType(informationType);

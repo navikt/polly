@@ -14,7 +14,7 @@ public class ElasticsearchDocument {
     private String index;
 
     public static ElasticsearchDocument newDocument(InformationTypeElasticsearch data, String index) {
-        return new ElasticsearchDocument(data.getId(), JsonUtils.toJson(data), index);
+        return new ElasticsearchDocument(data.getId().toString(), JsonUtils.toJson(data), index);
     }
 
     public static ElasticsearchDocument newDocumentId(String id, String index) {

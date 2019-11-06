@@ -67,7 +67,10 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
         InformationType infoType = repository.findById(id).orElseThrow(() -> new PollyNotFoundException("Fant ikke id=" + id));
         InformationTypeRequest.assertMasters(infoType, master);
         infoType.setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED);
+        long deletes = policyRepository.deleteByInformationTypeId(id);
+        log.debug("Deleted {} policies", deletes);
         log.info("InformationType with id={} has been set to be deleted during the next scheduled task", id);
+        infoType.getData().setName(infoType.getData().getName() + " (To be deleted)");
         return infoType;
     }
 
