@@ -14,6 +14,7 @@ const modalBlockProps: BlockProps = {
     width: '800px'
 }
 
+
 const ModalPolicy = (props: any) => {
     const [isOpen, setIsOpen] = React.useState(false);
 

@@ -25,14 +25,13 @@ const reduceCodelist = (list: any) => {
 };
 
 const initFormValues = (data: any) => {
-    console.log(data);
     return {
         term: data.term,
         pii: data.pii,
         name: data.name,
         categories: reduceCodelist(data.categories),
         sources: reduceCodelist(data.sources),
-        sensitivity: data.sensitivity.code,
+        sensitivity: !data.sensitivity ? '' : data.sensitivity.code,
         keywords: data.keywords,
         description: data.description,
     };

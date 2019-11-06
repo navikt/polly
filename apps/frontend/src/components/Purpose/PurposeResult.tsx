@@ -22,11 +22,11 @@ const rowPanelContent: BlockProps = {
 }
 
 const renderListItem = (legalBasis: any | object) => {
-    let gdpr = legalBasis.gdpr
+    let gdpr = legalBasis.gdpr && legalBasis.gdpr.code
     let nationalLaw = legalBasis.nationalLaw && legalBasis.nationalLaw.code
     return (
         <li>
-            {gdpr && gdpr + ': '} {nationalLaw && nationalLaw} {legalBasis.description}
+            <Paragraph2>{gdpr && gdpr + ': '} {nationalLaw && nationalLaw} {legalBasis.description}</Paragraph2>
         </li>
     )
 }

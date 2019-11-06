@@ -19,7 +19,7 @@ export interface InformationtypeFormValues {
     term: string;
     pii: boolean | null | undefined;
     name: string | null;
-    sensitivity: string | null;
+    sensitivity: string | object | null;
     categories: string[] | null[] | null;
     sources: string[] | null[] | null;
     keywords: string[] | null[] | null;
