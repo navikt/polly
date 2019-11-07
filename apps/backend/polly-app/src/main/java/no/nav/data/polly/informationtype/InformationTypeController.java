@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,6 +34,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import static java.util.Comparator.comparing;
 import static no.nav.data.polly.common.utils.StartsWithComparator.startsWith;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static no.nav.data.polly.informationtype.domain.InformationTypeMaster.REST;
@@ -120,7 +120,7 @@ public class InformationTypeController {
             throw new ValidationException("Search term must be at least 3 characters");
         }
         List<InformationType> infoTypes = repository.findByNameLike(name);
-        infoTypes.sort(Comparator.comparing(it -> it.getData().getName(), startsWith(name)));
+        infoTypes.sort(comparing(it -> it.getData().getName(), startsWith(name)));
         log.info("Returned {} InformationTypes", infoTypes.size());
         return new ResponseEntity<>(new RestResponsePage<>(convert(infoTypes, InformationType::convertToResponse)), HttpStatus.OK);
     }

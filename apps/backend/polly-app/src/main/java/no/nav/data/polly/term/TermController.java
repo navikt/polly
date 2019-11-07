@@ -27,13 +27,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 
+import static java.util.Comparator.comparing;
 import static no.nav.data.polly.common.utils.StartsWithComparator.startsWith;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
@@ -97,7 +97,7 @@ public class TermController {
             throw new ValidationException("Search term must be at least 3 characters");
         }
         List<TermSlim> terms = repository.findByNameContainingIgnoreCase(name);
-        terms.sort(Comparator.comparing(TermSlim::getName, startsWith(name)));
+        terms.sort(comparing(TermSlim::getName, startsWith(name)));
         log.info("Returned {} terms", terms.size());
         return new ResponseEntity<>(new RestResponsePage<>(convert(terms, TermSlim::convertToResponse)), HttpStatus.OK);
     }

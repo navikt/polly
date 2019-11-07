@@ -1,9 +1,9 @@
 package no.nav.data.polly.common.utils;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Comparator;
 import java.util.function.Function;
+
+import static org.apache.commons.lang3.StringUtils.startsWithIgnoreCase;
 
 public class StartsWithComparator implements Comparator<String> {
 
@@ -19,8 +19,8 @@ public class StartsWithComparator implements Comparator<String> {
 
     @Override
     public int compare(String o1, String o2) {
-        boolean o1Start = org.apache.commons.lang3.StringUtils.startsWithIgnoreCase(o1, str);
-        boolean o2Start = StringUtils.startsWithIgnoreCase(o2, str);
+        boolean o1Start = startsWithIgnoreCase(o1, str);
+        boolean o2Start = startsWithIgnoreCase(o2, str);
         if (o1Start == o2Start) {
             return 0;
         } else {
