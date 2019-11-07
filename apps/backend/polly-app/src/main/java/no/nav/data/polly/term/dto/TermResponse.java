@@ -1,5 +1,7 @@
 package no.nav.data.polly.term.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,6 +22,7 @@ public class TermResponse {
     private String id;
     private String name;
     private String description;
+    @JsonInclude(Include.NON_NULL)
     @ApiModelProperty(dataType = JSON, value = "json", example = "{\"field\": \"value\"}")
     private JsonNode data;
 }
