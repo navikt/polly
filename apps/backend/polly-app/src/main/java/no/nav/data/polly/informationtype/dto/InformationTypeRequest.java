@@ -15,6 +15,7 @@ import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.github.GithubReference;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeMaster;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -81,6 +82,9 @@ public class InformationTypeRequest implements RequestElement {
         setSources(nullToEmptyList(sources).stream()
                 .map(String::trim)
                 .collect(Collectors.toList()));
+        if (StringUtils.isBlank(term)) {
+            setTerm(null);
+        }
     }
 
     public static void initiateRequests(List<InformationTypeRequest> requests, boolean update, InformationTypeMaster master) {
