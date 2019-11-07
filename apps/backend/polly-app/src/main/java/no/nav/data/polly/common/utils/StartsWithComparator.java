@@ -1,8 +1,8 @@
 package no.nav.data.polly.common.utils;
 
 import java.util.Comparator;
-import java.util.function.Function;
 
+import static java.lang.String.CASE_INSENSITIVE_ORDER;
 import static org.apache.commons.lang3.StringUtils.startsWithIgnoreCase;
 
 public class StartsWithComparator implements Comparator<String> {
@@ -10,7 +10,7 @@ public class StartsWithComparator implements Comparator<String> {
     private final String str;
 
     public static Comparator<String> startsWith(String str) {
-        return new StartsWithComparator(str).thenComparing((Function<String, String>) String::toLowerCase);
+        return new StartsWithComparator(str).thenComparing(CASE_INSENSITIVE_ORDER);
     }
 
     private StartsWithComparator(String str) {
