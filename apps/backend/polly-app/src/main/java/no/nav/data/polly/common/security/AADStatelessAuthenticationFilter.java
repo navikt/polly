@@ -17,7 +17,6 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Collections;
 import java.util.List;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -57,9 +56,10 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
 
         if (hasText(authHeader) && authHeader.startsWith(TOKEN_TYPE)) {
             try {
-                Credential credential = getCredential(authHeader);
-                UserPrincipal principal = buildUserPrincipal(credential.getAccessToken());
-                var authentication = new PreAuthenticatedAuthenticationToken(principal, credential, Collections.emptyList());
+                var credential = getCredential(authHeader);
+                var principal = buildUserPrincipal(credential.getAccessToken());
+                var grantedAuthorities = azureTokenProvider.getGrantedAuthorities(credential.getAccessToken());
+                var authentication = new PreAuthenticatedAuthenticationToken(principal, credential, grantedAuthorities);
                 authentication.setAuthenticated(true);
                 log.info("Request token verification success for subject {}.", principal.getSubject());
                 SecurityContextHolder.getContext().setAuthentication(authentication);

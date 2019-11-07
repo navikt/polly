@@ -6,11 +6,17 @@ import com.microsoft.aad.adal4j.AuthenticationContext;
 import com.microsoft.aad.adal4j.AuthenticationResult;
 import com.microsoft.aad.adal4j.ClientCredential;
 import com.microsoft.azure.spring.autoconfigure.aad.AADAuthenticationProperties;
+import com.microsoft.azure.spring.autoconfigure.aad.AzureADGraphClient;
+import com.microsoft.azure.spring.autoconfigure.aad.ServiceEndpointsProperties;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.exceptions.PollyTechnicalException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
@@ -21,19 +27,29 @@ public class AzureTokenProvider {
     private static final String TOKEN_TYPE = "Bearer ";
 
     private final Cache<String, AuthenticationResult> accessTokenCache;
-    private final AADAuthenticationProperties aadAuthProps;
+    private final Cache<String, Set<GrantedAuthority>> grantedAuthorityCache;
+
     private final AuthenticationContext authenticationContext;
+    private final AzureADGraphClient graphClient;
+
+    private final AADAuthenticationProperties aadAuthProps;
     private final ClientCredential credential;
     private final boolean enableClientAuth;
 
-    public AzureTokenProvider(AADAuthenticationProperties aadAuthProps, AuthenticationContext authenticationContext,
+    public AzureTokenProvider(AADAuthenticationProperties aadAuthProps, AuthenticationContext authenticationContext, ServiceEndpointsProperties serviceEndpointsProperties,
             @Value("${security.client.enabled:true}") boolean enableClientAuth) {
-        this.aadAuthProps = aadAuthProps;
-        this.authenticationContext = authenticationContext;
-        this.enableClientAuth = enableClientAuth;
         this.credential = new ClientCredential(aadAuthProps.getClientId(), aadAuthProps.getClientSecret());
+        this.aadAuthProps = aadAuthProps;
+        this.enableClientAuth = enableClientAuth;
+
+        this.authenticationContext = authenticationContext;
+        this.graphClient = new AzureADGraphClient(credential, aadAuthProps, serviceEndpointsProperties);
+
         this.accessTokenCache = Caffeine.newBuilder()
                 .expireAfter(new AuthResultExpiry())
+                .maximumSize(1000).build();
+        this.grantedAuthorityCache = Caffeine.newBuilder()
+                .expireAfterAccess(Duration.ofMinutes(10))
                 .maximumSize(1000).build();
     }
 
@@ -49,6 +65,20 @@ public class AzureTokenProvider {
 
     public String getAccessToken(String refreshToken) {
         return getAccessTokenForResource(refreshToken, aadAuthProps.getClientId());
+    }
+
+    public Set<GrantedAuthority> getGrantedAuthorities(String token) {
+        return grantedAuthorityCache.get(token, this::lookupGrantedAuthorities);
+    }
+
+    private Set<GrantedAuthority> lookupGrantedAuthorities(String token) {
+        try {
+            String graphToken = graphClient.acquireTokenForGraphApi(token, aadAuthProps.getTenantId()).getAccessToken();
+            return graphClient.convertGroupsToGrantedAuthorities(graphClient.getGroups(graphToken));
+        } catch (Exception e) {
+            log.error("Failed to get groups for token", e);
+            throw new PollyTechnicalException("Failed to get groups for token", e);
+        }
     }
 
     private String getApplicationTokenForResource(String resource) {
