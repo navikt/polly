@@ -61,7 +61,7 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
                 var grantedAuthorities = azureTokenProvider.getGrantedAuthorities(credential.getAccessToken());
                 var authentication = new PreAuthenticatedAuthenticationToken(principal, credential, grantedAuthorities);
                 authentication.setAuthenticated(true);
-                log.info("Request token verification success for subject {}.", principal.getSubject());
+                log.info("Request token verification success for subject {} with roles {}.", principal.getSubject(), grantedAuthorities);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 cleanupRequired = true;
             } catch (BadJWTException ex) {
