@@ -18,13 +18,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
-
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.Proxy.Type;
 
 @Slf4j
 @Configuration
@@ -45,14 +40,9 @@ public class CommonConfig {
 
     @Bean
     @Profile("!test & !local")
-    public RestTemplate externalRestTemplate(RestTemplateBuilder builder, Proxy proxy) {
+    public RestTemplate externalRestTemplate(RestTemplateBuilder builder) {
         return builder
                 .additionalInterceptors(TraceHeaderRequestInterceptor.correlationInterceptor())
-                .requestFactory(() -> {
-                    SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-                    factory.setProxy(proxy);
-                    return factory;
-                })
                 .build();
     }
 
@@ -75,11 +65,6 @@ public class CommonConfig {
                         new HttpHost(properties.getHost(), properties.getPort(), properties.getSchema())
                 ).setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider))
         );
-    }
-
-    @Bean
-    public Proxy proxy(NavProperties navProperties) {
-        return new Proxy(Type.HTTP, new InetSocketAddress(navProperties.getProxyHost(), navProperties.getProxyPort()));
     }
 
     /**

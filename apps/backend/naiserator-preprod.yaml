@@ -32,3 +32,4 @@ spec:
     enabled: true
     path: internal/metrics
   leaderElection: true
+  webproxy: true
