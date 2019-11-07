@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.net.MalformedURLException;
-import java.util.concurrent.ExecutorService;
 
 @Configuration
 public class SecurityConfig {
@@ -28,8 +27,12 @@ public class SecurityConfig {
     public AuthenticationContext authenticationContext(AADAuthenticationProperties aadAuthProps, ServiceEndpointsProperties serviceEndpointsProps) throws MalformedURLException {
         ServiceEndpoints serviceEndpoints = serviceEndpointsProps.getServiceEndpoints(aadAuthProps.getEnvironment());
         String uri = serviceEndpoints.getAadSigninUri() + aadAuthProps.getTenantId();
-        ExecutorService executor = MdcExecutor.newThreadPool(5, "adal");
-        return new AuthenticationContext(uri, true, executor);
+        return new AuthenticationContext(uri, true, adalExecutorService());
+    }
+
+    @Bean
+    public MdcExecutor adalExecutorService() {
+        return MdcExecutor.newThreadPool(5, "adal");
     }
 
     @Bean
