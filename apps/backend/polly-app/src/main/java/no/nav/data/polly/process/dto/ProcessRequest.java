@@ -52,6 +52,8 @@ public class ProcessRequest implements RequestElement {
         validator.checkId(this);
         validator.checkBlank(Fields.name, name);
         validator.checkRequiredCodelist(Fields.purposeCode, purposeCode, ListName.PURPOSE);
+        validator.checkCodelist(Fields.department, department, ListName.DEPARTMENT);
+        validator.checkCodelist(Fields.subDepartment, subDepartment, ListName.SUB_DEPARTMENT);
         validator.checkDate(Fields.start, start);
         validator.checkDate(Fields.end, end);
         validator.validateType(Fields.legalBases, legalBases);

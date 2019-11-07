@@ -9,6 +9,7 @@ import lombok.ToString;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.common.auditing.Auditable;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.elasticsearch.dto.ProcessElasticsearch;
@@ -86,8 +87,8 @@ public class Process extends Auditable<String> {
                 .id(id.toString())
                 .name(name)
                 .purposeCode(purposeCode)
-                .department(data.getDepartment())
-                .subDepartment(data.getSubDepartment())
+                .department(getDepartmentCode())
+                .subDepartment(getSubDepartmentCode())
                 .start(data.getStart())
                 .end(data.getEnd())
                 .legalBases(convert(data.getLegalBases(), LegalBasis::convertToResponse))
@@ -99,8 +100,8 @@ public class Process extends Auditable<String> {
                 .id(id.toString())
                 .name(name)
                 .purposeCode(purposeCode)
-                .department(data.getDepartment())
-                .subDepartment(data.getSubDepartment())
+                .department(getDepartmentCode())
+                .subDepartment(getSubDepartmentCode())
                 .start(data.getStart())
                 .end(data.getEnd())
                 .legalBases(convert(data.getLegalBases(), LegalBasis::convertToResponse))
@@ -115,8 +116,8 @@ public class Process extends Auditable<String> {
                 .name(name)
                 .purpose(purpose.getCode())
                 .purposeDescription(purpose.getDescription())
-                .department(data.getDepartment())
-                .subDepartment(data.getSubDepartment())
+                .department(getDepartmentCode())
+                .subDepartment(getSubDepartmentCode())
                 .start(DateUtil.formatDate(data.getStart()))
                 .end(DateUtil.formatDate(data.getEnd()))
                 .active(isActive())
@@ -131,12 +132,20 @@ public class Process extends Auditable<String> {
         }
         setName(request.getName());
         setPurposeCode(request.getPurposeCode());
-        data.setDepartment(request.getDepartment());
-        data.setSubDepartment(request.getSubDepartment());
+        data.setDepartment(CodelistService.format(ListName.DEPARTMENT, request.getDepartment()));
+        data.setSubDepartment(CodelistService.format(ListName.SUB_DEPARTMENT, request.getSubDepartment()));
         data.setStart(DateUtil.parseStart(request.getStart()));
         data.setEnd(DateUtil.parseEnd(request.getEnd()));
         data.setLegalBases(convert(request.getLegalBases(), LegalBasisRequest::convertToLegalBasis));
         return this;
+    }
+
+    private CodeResponse getSubDepartmentCode() {
+        return CodelistService.getCodeResponse(ListName.SUB_DEPARTMENT, data.getSubDepartment());
+    }
+
+    private CodeResponse getDepartmentCode() {
+        return CodelistService.getCodeResponse(ListName.DEPARTMENT, data.getDepartment());
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")

@@ -8,7 +8,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.auditing.Auditable;
 import no.nav.data.polly.common.utils.DateUtil;
@@ -34,6 +33,7 @@ import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import static no.nav.data.polly.codelist.CodelistService.getCodeResponse;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static no.nav.data.polly.common.utils.StreamUtils.filter;
 
@@ -113,7 +113,7 @@ public class Policy extends Auditable<String> {
                 .start(DateUtil.formatDate(start))
                 .end(DateUtil.formatDate(end))
                 .active(isActive())
-                .subjectCategory(CodelistService.getCodeResponseForCodelistItem(ListName.SUBJECT_CATEGORY, getSubjectCategory()))
+                .subjectCategory(getCodeResponse(ListName.SUBJECT_CATEGORY, getSubjectCategory()))
                 .legalbases(convert(filter(legalBases, LegalBasis::isActive), LegalBasis::convertToElasticsearch))
                 .build();
     }
@@ -121,8 +121,8 @@ public class Policy extends Auditable<String> {
     public PolicyResponse convertToResponse() {
         return PolicyResponse.builder()
                 .id(getId())
-                .purposeCode(CodelistService.getCodeResponseForCodelistItem(ListName.PURPOSE, getPurposeCode()))
-                .subjectCategory(CodelistService.getCodeResponseForCodelistItem(ListName.SUBJECT_CATEGORY, getSubjectCategory()))
+                .purposeCode(getCodeResponse(ListName.PURPOSE, getPurposeCode()))
+                .subjectCategory(getCodeResponse(ListName.SUBJECT_CATEGORY, getSubjectCategory()))
                 .process(getProcess().getName())
                 .start(getStart())
                 .end(getEnd())

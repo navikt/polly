@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
+import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 import no.nav.data.polly.policy.dto.PolicyResponse;
@@ -23,8 +24,8 @@ public class ProcessPolicyResponse {
     private String id;
     private String name;
     private String purposeCode;
-    private String department;
-    private String subDepartment;
+    private CodeResponse department;
+    private CodeResponse subDepartment;
     private LocalDate start;
     private LocalDate end;
     @Singular("legalBasis")

@@ -7,5 +7,7 @@ public enum ListName {
     NATIONAL_LAW,
     SENSITIVITY,
     SUBJECT_CATEGORY,
-    GDPR_ARTICLE
+    GDPR_ARTICLE,
+    DEPARTMENT,
+    SUB_DEPARTMENT
 }

@@ -36,7 +36,7 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         return CodelistCache.getCodelist(listName, code);
     }
 
-    public static CodeResponse getCodeResponseForCodelistItem(ListName listName, String code) {
+    public static CodeResponse getCodeResponse(ListName listName, String code) {
         Codelist codelist = getCodelist(listName, code);
         if (codelist == null) {
             return new CodeResponse(code, null);
@@ -44,9 +44,9 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         return new CodeResponse(codelist.getCode(), codelist.getDescription());
     }
 
-    public static List<CodeResponse> getCodeResponseForCodelistItems(ListName listName, Collection<String> codes) {
+    public static List<CodeResponse> getCodeResponseList(ListName listName, Collection<String> codes) {
         return safeStream(codes)
-                .map(code -> getCodeResponseForCodelistItem(listName, code))
+                .map(code -> getCodeResponse(listName, code))
                 .collect(Collectors.toList());
     }
 

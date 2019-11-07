@@ -75,9 +75,9 @@ public class InformationTypeElasticsearch {
         setName(data.getName());
         setDescription(data.getDescription());
         setPii(data.isPii());
-        setSensitivity(CodelistService.getCodeResponseForCodelistItem(ListName.SENSITIVITY, data.getSensitivity()));
-        setCategories(CodelistService.getCodeResponseForCodelistItems(ListName.CATEGORY, data.getCategories()));
-        setSources(CodelistService.getCodeResponseForCodelistItems(ListName.SOURCE, data.getSources()));
+        setSensitivity(CodelistService.getCodeResponse(ListName.SENSITIVITY, data.getSensitivity()));
+        setCategories(CodelistService.getCodeResponseList(ListName.CATEGORY, data.getCategories()));
+        setSources(CodelistService.getCodeResponseList(ListName.SOURCE, data.getSources()));
         setKeywords(copyOf(data.getKeywords()));
 
         setSuggest(String.format("%s %s %s", name, StringUtils.trimToEmpty(description), String.join(" ", nullToEmptyList(keywords))));

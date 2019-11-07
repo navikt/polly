@@ -51,11 +51,11 @@ public class LegalBasis implements Serializable {
     }
 
     private CodeResponse gdprCodeResponse() {
-        return CodelistService.getCodeResponseForCodelistItem(ListName.GDPR_ARTICLE, gdpr);
+        return CodelistService.getCodeResponse(ListName.GDPR_ARTICLE, gdpr);
     }
 
     private CodeResponse nationalLawCodeResponse() {
-        return CodelistService.getCodeResponseForCodelistItem(ListName.NATIONAL_LAW, nationalLaw);
+        return CodelistService.getCodeResponse(ListName.NATIONAL_LAW, nationalLaw);
     }
 
     public static class LegalBasisBuilder {

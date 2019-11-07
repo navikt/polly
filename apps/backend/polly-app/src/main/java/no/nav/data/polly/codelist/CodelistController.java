@@ -75,7 +75,7 @@ public class CodelistController {
     public String getDescriptionByListNameAndCode(@PathVariable String listName, @PathVariable String code) {
         log.info("Received a request for the description of code={} in list={}", code, listName);
         service.validateListNameAndCodeExists(listName, code);
-        return Objects.requireNonNull(CodelistService.getCodeResponseForCodelistItem(ListName.valueOf(listName.toUpperCase()), code)).getDescription();
+        return Objects.requireNonNull(CodelistService.getCodeResponse(ListName.valueOf(listName.toUpperCase()), code)).getDescription();
     }
 
     @ApiOperation(value = "Create Codelist", tags = {"Codelist"})
