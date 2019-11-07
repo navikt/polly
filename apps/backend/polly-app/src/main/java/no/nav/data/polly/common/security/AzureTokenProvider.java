@@ -5,8 +5,10 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.microsoft.aad.adal4j.AuthenticationContext;
 import com.microsoft.aad.adal4j.AuthenticationResult;
 import com.microsoft.aad.adal4j.ClientCredential;
+import com.microsoft.aad.adal4j.UserAssertion;
 import com.microsoft.azure.spring.autoconfigure.aad.AADAuthenticationProperties;
 import com.microsoft.azure.spring.autoconfigure.aad.AzureADGraphClient;
+import com.microsoft.azure.spring.autoconfigure.aad.ServiceEndpoints;
 import com.microsoft.azure.spring.autoconfigure.aad.ServiceEndpointsProperties;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.exceptions.PollyTechnicalException;
@@ -32,6 +34,7 @@ public class AzureTokenProvider {
     private final AuthenticationContext authenticationContext;
     private final AzureADGraphClient graphClient;
 
+    private final ServiceEndpoints serviceEndpoints;
     private final AADAuthenticationProperties aadAuthProps;
     private final ClientCredential credential;
     private final boolean enableClientAuth;
@@ -41,6 +44,7 @@ public class AzureTokenProvider {
         this.credential = new ClientCredential(aadAuthProps.getClientId(), aadAuthProps.getClientSecret());
         this.aadAuthProps = aadAuthProps;
         this.enableClientAuth = enableClientAuth;
+        this.serviceEndpoints = serviceEndpointsProperties.getServiceEndpoints(aadAuthProps.getEnvironment());
 
         this.authenticationContext = authenticationContext;
         this.graphClient = new AzureADGraphClient(credential, aadAuthProps, serviceEndpointsProperties);
@@ -73,7 +77,7 @@ public class AzureTokenProvider {
 
     private Set<GrantedAuthority> lookupGrantedAuthorities(String token) {
         try {
-            String graphToken = graphClient.acquireTokenForGraphApi(token, aadAuthProps.getTenantId()).getAccessToken();
+            String graphToken = acquireGraphToken(token).getAccessToken();
             return graphClient.convertGroupsToGrantedAuthorities(graphClient.getGroups(graphToken));
         } catch (Exception e) {
             log.error("Failed to get groups for token", e);
@@ -106,6 +110,15 @@ public class AzureTokenProvider {
             return authenticationContext.acquireToken(resource, credential, null).get();
         } catch (Exception e) {
             throw new PollyTechnicalException("Failed to get access token for credential", e);
+        }
+    }
+
+    private AuthenticationResult acquireGraphToken(String token) {
+        try {
+            log.debug("Looking up graph token");
+            return authenticationContext.acquireToken(serviceEndpoints.getAadGraphApiUri(), new UserAssertion(token), credential, null).get();
+        } catch (Exception e) {
+            throw new PollyTechnicalException("Failed to get graph token", e);
         }
     }
 
