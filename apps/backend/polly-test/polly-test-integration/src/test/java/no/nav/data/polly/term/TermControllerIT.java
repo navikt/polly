@@ -30,6 +30,18 @@ class TermControllerIT extends IntegrationTestBase {
     }
 
     @Test
+    void searchTerm() {
+        template.postForEntity("/term", List.of(TermRequest.builder().name("new term").description("some description").build(),
+                TermRequest.builder().name("term old").description("some description").build()), TermPage.class);
+        var response = template.getForEntity("/term/search/term", TermPage.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getContent().get(0).getName()).isEqualTo("term old");
+        assertThat(response.getBody().getContent().get(1).getName()).isEqualTo("new term");
+    }
+
+    @Test
     void createTermValidationFail() {
         ResponseEntity<String> response = template
                 .postForEntity("/term", List.of(TermRequest.builder().name("new-term").build()), String.class);

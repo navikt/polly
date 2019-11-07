@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,6 +35,8 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import static no.nav.data.polly.common.utils.StartsWithComparator.startsWith;
+import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static no.nav.data.polly.informationtype.domain.InformationTypeMaster.REST;
 
 @Slf4j
@@ -104,6 +107,22 @@ public class InformationTypeController {
         }
         log.info("Returned InformationType");
         return new ResponseEntity<>(informationType.get().convertToResponse(), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Search InformationTypes")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "InformationTypes fetched", response = InformationTypePage.class),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @GetMapping("/search/{name}")
+    public ResponseEntity<RestResponsePage<InformationTypeResponse>> searchInformationTypeByName(@PathVariable String name) {
+        log.info("Received request for InformationTypes with the name like {}", name);
+        if (name.length() < 3) {
+            throw new ValidationException("Search term must be at least 3 characters");
+        }
+        List<InformationType> infoTypes = repository.findByNameLike(name);
+        infoTypes.sort(Comparator.comparing(it -> it.getData().getName(), startsWith(name)));
+        log.info("Returned {} InformationTypes", infoTypes.size());
+        return new ResponseEntity<>(new RestResponsePage<>(convert(infoTypes, InformationType::convertToResponse)), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Get All InformationTypes")

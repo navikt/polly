@@ -19,6 +19,9 @@ public interface InformationTypeRepository extends JpaRepository<InformationType
     @Query(value = "select * from information_type where data ->>'name' in (?1)", nativeQuery = true)
     List<InformationType> findAllByNameIn(List<String> names);
 
+    @Query(value = "select * from information_type where data ->>'name' ilike %?1%", nativeQuery = true)
+    List<InformationType> findByNameLike(String name);
+
     List<InformationType> findByElasticsearchStatus(ElasticsearchStatus status);
 
     @Modifying

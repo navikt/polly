@@ -11,6 +11,7 @@ import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.term.domain.Term;
 import no.nav.data.polly.term.domain.TermRepository;
+import no.nav.data.polly.term.domain.TermSlim;
 import no.nav.data.polly.term.dto.TermRequest;
 import no.nav.data.polly.term.dto.TermResponse;
 import org.springframework.data.domain.Page;
@@ -26,12 +27,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 
+import static no.nav.data.polly.common.utils.StartsWithComparator.startsWith;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Slf4j
@@ -81,6 +84,22 @@ public class TermController {
         }
         log.info("Returned Term");
         return new ResponseEntity<>(term.get().convertToResponse(), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Search Terms", notes = "Does not include data")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Terms fetched", response = TermPage.class),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @GetMapping("/search/{name}")
+    public ResponseEntity<RestResponsePage<TermResponse>> searchTermByName(@PathVariable String name) {
+        log.info("Received request for Term with the name like {}", name);
+        if (name.length() < 3) {
+            throw new ValidationException("Search term must be at least 3 characters");
+        }
+        List<TermSlim> terms = repository.findByNameContainingIgnoreCase(name);
+        terms.sort(Comparator.comparing(TermSlim::getName, startsWith(name)));
+        log.info("Returned {} terms", terms.size());
+        return new ResponseEntity<>(new RestResponsePage<>(convert(terms, TermSlim::convertToResponse)), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Get All Terms")

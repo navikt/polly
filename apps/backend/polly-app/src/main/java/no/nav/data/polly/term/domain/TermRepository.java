@@ -10,5 +10,7 @@ public interface TermRepository extends JpaRepository<Term, UUID> {
 
     Optional<Term> findByName(String name);
 
+    List<TermSlim> findByNameContainingIgnoreCase(String name);
+
     List<Term> findAllByNameIn(List<String> title);
 }

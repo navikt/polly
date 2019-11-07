@@ -58,6 +58,20 @@ class InformationTypeControllerIT extends IntegrationTestBase {
     }
 
     @Test
+    void searchInformationTypeByName() {
+        informationTypeRepository.save(createInformationType(UUID.randomUUID(), "InformationTypeData"));
+        informationTypeRepository.save(createInformationType(UUID.randomUUID(), "TypeData"));
+        ResponseEntity<InformationTypePage> responseEntity = restTemplate.exchange(
+                "/informationtype/search/typedata", HttpMethod.GET, HttpEntity.EMPTY, InformationTypePage.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isNotNull();
+        assertThat(responseEntity.getBody().getNumberOfElements()).isEqualTo(2L);
+        assertThat(responseEntity.getBody().getContent().get(0).getName()).isEqualTo("TypeData");
+        assertThat(responseEntity.getBody().getContent().get(1).getName()).isEqualTo("InformationTypeData");
+    }
+
+    @Test
     void findAll() {
         createInformationTypeTestData(30);
 
