@@ -134,7 +134,7 @@ class ProcessControllerIT extends IntegrationTestBase {
         resp = restTemplate.exchange("/process", HttpMethod.PUT, new HttpEntity<>(List.of(update)), ProcessPage.class, id);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody().getContent().get(0).getDepartment()).isEqualTo("dep");
+        assertThat(resp.getBody().getContent().get(0).getDepartment().getCode()).isEqualTo("dep");
     }
 
     @Test

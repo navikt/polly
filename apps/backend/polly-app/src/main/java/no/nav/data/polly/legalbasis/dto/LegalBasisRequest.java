@@ -24,8 +24,9 @@ import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_START;
 @AllArgsConstructor
 public class LegalBasisRequest implements Validated {
 
+    @ApiModelProperty(value = "Codelist", example = "CODELIST")
     private String gdpr;
-    @ApiModelProperty(value = "Codelist")
+    @ApiModelProperty(value = "Codelist", example = "CODELIST")
     private String nationalLaw;
     private String description;
     @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_START)

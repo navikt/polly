@@ -28,9 +28,11 @@ public class ProcessRequest implements RequestElement {
 
     private String id;
     private String name;
-    @ApiModelProperty(value = "Codelist")
+    @ApiModelProperty(value = "Codelist", example = "CODELIST")
     private String purposeCode;
+    @ApiModelProperty(value = "Codelist", example = "CODELIST")
     private String department;
+    @ApiModelProperty(value = "Codelist", example = "CODELIST")
     private String subDepartment;
     @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_START)
     private String start;

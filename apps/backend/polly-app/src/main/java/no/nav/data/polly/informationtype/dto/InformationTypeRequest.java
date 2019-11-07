@@ -40,11 +40,11 @@ public class InformationTypeRequest implements RequestElement {
     private String term;
     @ApiModelProperty(dataType = BOOLEAN)
     private String pii;
-    @ApiModelProperty(value = "Codelist")
+    @ApiModelProperty(value = "Codelist", example = "CODELIST")
     private String sensitivity;
-    @ApiModelProperty(value = "Codelist")
+    @ApiModelProperty(value = "Codelist", example = "[\"CODELIST\"]")
     private List<String> categories;
-    @ApiModelProperty(value = "Codelist")
+    @ApiModelProperty(value = "Codelist", example = "[\"CODELIST\"]")
     private List<String> sources;
     private List<String> keywords;
 

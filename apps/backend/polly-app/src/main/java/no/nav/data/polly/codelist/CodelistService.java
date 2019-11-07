@@ -37,6 +37,9 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     }
 
     public static CodeResponse getCodeResponse(ListName listName, String code) {
+        if (code == null) {
+            return null;
+        }
         Codelist codelist = getCodelist(listName, code);
         if (codelist == null) {
             return new CodeResponse(code, null);

@@ -25,6 +25,8 @@ public class CodelistStub {
         CodelistCache.set(create(ListName.GDPR_ARTICLE, "6a", "6a"));
         CodelistCache.set(create(ListName.GDPR_ARTICLE, "6e", "6e"));
         CodelistCache.set(create(ListName.GDPR_ARTICLE, "9a", "9a"));
+        CodelistCache.set(create(ListName.DEPARTMENT, "dep", "mdep"));
+        CodelistCache.set(create(ListName.SUB_DEPARTMENT, "subdep", "sdep"));
     }
 
     private static Codelist create(ListName list, String code, String description) {
