@@ -1,6 +1,5 @@
 package no.nav.data.polly.github.domain.status;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +15,6 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 @Table(name = "GITHUB_STATUS")
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class GithubStatus {
 
     public GithubStatus(String githubSha) {
