@@ -15,6 +15,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Helper to create metrics
+ * - avoid registring metrics multiple times during test
+ * - instantiate labels up front to initialize them in prometheus/grafana
+ */
 @Slf4j
 public final class MetricUtils {
 

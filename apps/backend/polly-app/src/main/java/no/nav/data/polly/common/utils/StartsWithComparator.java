@@ -5,6 +5,9 @@ import java.util.Comparator;
 import static java.lang.String.CASE_INSENSITIVE_ORDER;
 import static org.apache.commons.lang3.StringUtils.startsWithIgnoreCase;
 
+/**
+ * String comparator that first sorts strings that start with a given prefix, then alphabetically
+ */
 public class StartsWithComparator implements Comparator<String> {
 
     private final String str;

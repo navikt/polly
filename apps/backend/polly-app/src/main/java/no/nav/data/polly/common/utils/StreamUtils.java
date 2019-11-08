@@ -11,6 +11,9 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Comparator.comparing;
+import static java.util.function.Function.identity;
+
 public final class StreamUtils {
 
     private StreamUtils() {
@@ -28,7 +31,7 @@ public final class StreamUtils {
      * @param comparator function to compare if elements are equal
      * @param <T> the type of the collections
      */
-    public static <T> CollectionDifference<T> difference(List<T> before, List<T> after, Comparator<T> comparator) {
+    public static <T> CollectionDifference<T> difference(List<T> before, List<T> after, Comparator<? super T> comparator) {
         List<T> removed = new ArrayList<>(before);
         List<T> shared = new ArrayList<>();
         List<T> added = new ArrayList<>(after);
@@ -46,7 +49,7 @@ public final class StreamUtils {
     }
 
     public static <T extends Comparable<T>> CollectionDifference<T> difference(List<T> before, List<T> after) {
-        return difference(before, after, Comparator.comparing(Function.identity()));
+        return difference(before, after, comparing(identity()));
     }
 
     public static <T> List<T> nullToEmptyList(List<T> list) {
