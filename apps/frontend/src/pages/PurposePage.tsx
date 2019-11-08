@@ -1,6 +1,5 @@
 import * as React from "react";
 import axios from "axios";
-import { Select, Value, TYPE } from "baseui/select";
 import { StatefulSelect } from 'baseui/select';
 
 import PurposeResult from "../components/Purpose/PurposeResult";
@@ -43,7 +42,6 @@ const PurposePage = () => {
     };
 
     const handleChangePurpose = async (value: any) => {
-        console.log(value, "CHANGED")
         setLoadingPurpose(true);
         if (!value) setCurrentPurposeValue(null);
 
@@ -53,7 +51,6 @@ const PurposePage = () => {
             .get(`${server_polly}/process/purpose/${value}`)
             .then(handleGetPurposeResponse)
             .catch(handleAxiosError);
-
 
         setLoadingPurpose(false);
     };
@@ -111,6 +108,7 @@ const PurposePage = () => {
                     <PurposeResult
                         purpose={purposeData}
                         description={getPurposeDescription()}
+                        codelist={codelist}
                     />
                 </React.Fragment>
             ) : null}

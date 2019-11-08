@@ -3,14 +3,22 @@ import * as React from "react";
 import { Block, BlockProps } from "baseui/block";
 import { Accordion, Panel } from 'baseui/accordion';
 import _includes from 'lodash/includes'
+import { Plus } from "baseui/icon";
 import { Label2, Paragraph2 } from "baseui/typography";
+import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
+import axios from "axios";
 
+
+import { Codelist } from '../../constants'
 import TablePurpose from './TablePurpose'
 import ModalPolicy from './ModalPolicy'
+
+const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 type PurposeViewProps = {
     description: string | any | null;
     purpose: Array<any> | any | null;
+    codelist: Codelist;
 };
 
 const renderListItem = (legalBasis: any | object) => {
@@ -44,8 +52,6 @@ const rowPanelContent: BlockProps = {
     marginBottom: '2rem'
 }
 
-
-
 const renderAllSubjectCategories = (processObj: any) => {
     const notFound = (<Paragraph2>Fant ingen kategorier av personer</Paragraph2>)
     if (!processObj) return notFound
@@ -66,8 +72,31 @@ const renderAllSubjectCategories = (processObj: any) => {
     return (<Paragraph2>{subjectCategories.join(', ')}</Paragraph2>)
 }
 
-const PurposeResult = ({ description, purpose }: PurposeViewProps) => {
+const PurposeResult = ({ description, purpose, codelist }: PurposeViewProps) => {
     const [isOpen, setIsOpen] = React.useState<any>(false);
+    const [errorCreatePolicy, setErrorCreatePolicy] = React.useState()
+
+    const handleCreatePolicy = async (values: any, process: any) => {
+        if (!values) return
+
+        let body = [{
+            ...values,
+            process: process.name,
+            purposeCode: process.purposeCode
+        }]
+        await axios
+            .post(`${server_polly}/policy`, body)
+            .then(((res: any) => {
+                console.log(res)
+                process.policies.push(res.data.content[0])
+                setErrorCreatePolicy(null)
+                setIsOpen(false)
+            }))
+            .catch((err: any) => {
+                setErrorCreatePolicy(err.message)
+            });
+    }
+
 
     return (
         <React.Fragment>
@@ -81,7 +110,7 @@ const PurposeResult = ({ description, purpose }: PurposeViewProps) => {
                     <Block {...blockProps}>
                         <Block marginBottom="1rem"><Label2 font="font400">Behandlingsoversikt</Label2></Block>
                         <Accordion>
-                            {purpose.map((process: any) => (
+                            {purpose.map((process: any, index: any) => (
                                 <Panel title={process.name} key={process.name}>
                                     <Block {...rowPanelContent}>
                                         <Block marginRight="6rem">
@@ -99,7 +128,27 @@ const PurposeResult = ({ description, purpose }: PurposeViewProps) => {
                                     {process.policies && (
                                         <Block >
                                             <Block display="flex" justifyContent="space-between" marginBottom="1rem">
-                                                <Label2>Opplysningstyper</Label2>
+                                                <Label2 alignSelf="center">Opplysningstyper</Label2>
+                                                <Button
+                                                    size={ButtonSize.compact}
+                                                    kind={KIND.secondary}
+                                                    onClick={() => setIsOpen(true)}
+                                                    startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
+                                                >
+                                                    Legg til nytt rettslig grunnlag
+                                                </Button>
+                                                <ModalPolicy
+                                                    onClose={() => {
+                                                        setIsOpen(false)
+                                                        setErrorCreatePolicy(null)
+                                                    }}
+                                                    isOpen={isOpen}
+                                                    createPolicySubmit={(values: any) => {
+                                                        handleCreatePolicy(values, process)
+                                                    }}
+                                                    codelist={codelist}
+                                                    errorOnCreate={errorCreatePolicy}
+                                                />
                                             </Block>
                                             <TablePurpose policies={process.policies} />
                                         </Block>

@@ -24,7 +24,6 @@ const CustomStyledRow = withStyle(StyledRow, {
 });
 
 const renderListItem = (legalBasis: any | object) => {
-    console.log("midlertid")
     let gdpr = legalBasis.gdpr && legalBasis.gdpr.code
     let nationalLaw = legalBasis.nationalLaw && legalBasis.nationalLaw.code
     return (
@@ -73,7 +72,6 @@ const TablePurpose = ({ policies }: TablePurposeProps) => {
     };
 
     const getSortedData = () => {
-        console.log(titleDirection)
         if (titleDirection) {
             const sorted = policies
                 .slice(0)
