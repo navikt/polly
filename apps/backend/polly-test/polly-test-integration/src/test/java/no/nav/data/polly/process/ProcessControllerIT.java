@@ -8,7 +8,7 @@ import no.nav.data.polly.informationtype.dto.InformationTypeNameResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.dto.PolicyResponse;
-import no.nav.data.polly.process.ProcessController.ProcessPage;
+import no.nav.data.polly.process.ProcessReadController.ProcessPage;
 import no.nav.data.polly.process.dto.ProcessPolicyResponse;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;

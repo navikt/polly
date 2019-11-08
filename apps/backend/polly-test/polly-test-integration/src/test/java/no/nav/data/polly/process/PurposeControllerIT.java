@@ -7,7 +7,7 @@ import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.informationtype.dto.InformationTypeNameResponse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.dto.PolicyResponse;
-import no.nav.data.polly.process.ProcessController.ProcessPolicyPage;
+import no.nav.data.polly.process.ProcessReadController.ProcessPolicyPage;
 import no.nav.data.polly.process.dto.ProcessPolicyResponse;
 import no.nav.data.polly.process.dto.PurposeCountResponse;
 import org.junit.jupiter.api.Test;

@@ -10,7 +10,7 @@ import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.rest.RestResponsePage;
-import no.nav.data.polly.process.ProcessController.ProcessPolicyPage;
+import no.nav.data.polly.process.ProcessReadController.ProcessPolicyPage;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.process.domain.PurposeCount;
