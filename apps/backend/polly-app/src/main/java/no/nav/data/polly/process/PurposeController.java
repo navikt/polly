@@ -35,7 +35,7 @@ import static java.util.stream.Collectors.toMap;
 @RestController
 @CrossOrigin
 @Api(value = "Data Catalog Purpose", description = "REST API for Purpose", tags = {"Purpose", "Process"})
-@RequestMapping("/process/purpose")
+@RequestMapping("/process")
 public class PurposeController {
 
     private final ProcessRepository processRepository;
@@ -49,7 +49,7 @@ public class PurposeController {
             @ApiResponse(code = 200, message = "Processes fetched", response = ProcessPolicyPage.class),
             @ApiResponse(code = 404, message = "Purpose not found"),
             @ApiResponse(code = 500, message = "Internal server error")})
-    @GetMapping("/{purpose}")
+    @GetMapping("/purpose/{purpose}")
     @Transactional
     public ResponseEntity<RestResponsePage<ProcessPolicyResponse>> getPurpose(@PathVariable String purpose) {
         log.info("Get processes for purpose={}", purpose);
@@ -67,7 +67,7 @@ public class PurposeController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Purposes fetched", response = PurposeCountResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")})
-    @GetMapping("/")
+    @GetMapping("/count/purpose")
     public ResponseEntity<PurposeCountResponse> getPurpose() {
         log.info("Get purpose count");
         List<PurposeCount> purposeCounts = processRepository.countByPurposeCode();

@@ -64,7 +64,7 @@ class PurposeControllerIT extends IntegrationTestBase {
         createPolicy(PURPOSE_CODE1, createInformationType());
         createPolicy(PURPOSE_CODE1 + 2, createInformationType());
 
-        ResponseEntity<PurposeCountResponse> resp = restTemplate.getForEntity("/process/purpose/", PurposeCountResponse.class);
+        ResponseEntity<PurposeCountResponse> resp = restTemplate.getForEntity("/process/count/purpose", PurposeCountResponse.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         PurposeCountResponse purposeResponse = resp.getBody();
         assertThat(purposeResponse).isNotNull();
