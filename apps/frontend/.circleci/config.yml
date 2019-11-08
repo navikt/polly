@@ -52,10 +52,10 @@ workflows:
     version: 2
     build_and_deploy:
         jobs:
-            - build:
-                  filters:
-                      branches:
-                          only: master
+            - build
             - deploy-nais:
-                  requires:
+                filters:
+                    branches:
+                        only: master
+                requires:
                       - build
