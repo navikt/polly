@@ -135,7 +135,7 @@ const PurposeResult = ({ description, purpose, codelist }: PurposeViewProps) => 
                                                     onClick={() => setIsOpen(true)}
                                                     startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
                                                 >
-                                                    Legg til nytt rettslig grunnlag
+                                                    Legg til ny
                                                 </Button>
                                                 <ModalPolicy
                                                     onClose={() => {
