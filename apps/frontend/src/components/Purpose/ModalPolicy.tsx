@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import {
     Modal,
@@ -25,7 +24,8 @@ import { Plus } from "baseui/icon";
 import { StatefulSelect } from 'baseui/select';
 
 import CardLegalBasis from './CardLegalBasis'
-import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
+import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
+import { Codelist, codelist, ICodelist } from "../../codelist";
 
 export interface PolicyFormValues {
     informationTypeName: string;
@@ -46,7 +46,7 @@ const rowBlockProps: BlockProps = {
     marginTop: '1rem'
 }
 
-const getParsedOptions = (codelist: any) => {
+const getParsedOptions = (codelist: ICodelist | null) => {
     if (!codelist) return []
     return Object.keys(codelist).reduce((acc: any, curr: any) => {
         return [...acc, { id: codelist[curr], code: curr }];
@@ -72,7 +72,7 @@ const FieldSubjectCategory = (props: any) => (
         name="subjectCategory"
         render={({ form }: FieldProps<PolicyFormValues>) => (
             <StatefulSelect
-                options={getParsedOptions(props.codelist["SUBJECT_CATEGORY"])}
+                options={getParsedOptions(codelist.getCodes(Codelist.SUBJECT_CATEGORY))}
                 labelKey="id"
                 valueKey="id"
                 onChange={event => form.setFieldValue('subjectCategory',
@@ -142,7 +142,7 @@ const ModalPolicy = (props: any) => {
                                 </Block>
                                 <Block {...rowBlockProps}>
                                     {renderLabel('Personkategorier')}
-                                    <FieldSubjectCategory codelist={codelist} />
+                                    <FieldSubjectCategory  />
                                 </Block>
                                 <Block {...rowBlockProps}>
                                     {renderLabel('Rettslig grunnlag')}
@@ -159,7 +159,7 @@ const ModalPolicy = (props: any) => {
                                             <React.Fragment>
                                                 {showLegalbasesFields ? (
                                                     <Block width="100%" marginTop="2rem">
-                                                        <CardLegalBasis codelist={codelist} submit={(values: any) => {
+                                                        <CardLegalBasis  submit={(values: any) => {
                                                             if (!values) return
                                                             else {
                                                                 arrayHelpers.push(values)

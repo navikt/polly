@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import {
     Formik,
@@ -21,7 +20,8 @@ import { Tag, VARIANT } from "baseui/tag";
 import { StatefulSelect, Select, TYPE, Value } from "baseui/select";
 import { Radio, RadioGroup } from "baseui/radio";
 
-import { InformationtypeFormValues } from "../../constants";
+import {InformationtypeFormValues} from "../../constants";
+import {codelist, ICodelist,Codelist} from "../../codelist";
 
 const labelProps: BlockProps = {
     marginBottom: "8px",
@@ -60,24 +60,17 @@ type FormProps = {
     formInitialValues: InformationtypeFormValues | any;
     submit: Function;
     isEdit: Boolean;
-    codelist: {
-        CATEGORY: any;
-        PURPOSE: any;
-        SENSITIVITY: any;
-        SOURCE: any;
-    };
 };
 
 const InformationtypeForm = ({
     formInitialValues,
     submit,
-    isEdit,
-    codelist
+    isEdit
 }: FormProps) => {
     const initialValueSensitivity = () => {
-        if (!formInitialValues.sensitivity || !codelist) return []
+        if (!formInitialValues.sensitivity || !codelist.isLoaded()) return []
         return [{
-            id: codelist['SENSITIVITY'][formInitialValues.sensitivity],
+            id: codelist.getDescription(Codelist.SENSITIVITY, formInitialValues.sensitivity),
             code: formInitialValues.sensitivity
         }]
     }
@@ -86,7 +79,7 @@ const InformationtypeForm = ({
     const [sensitivityValue, setSensitivityValue] = React.useState<Value>(initialValueSensitivity());
     const [currentKeywordValue, setCurrentKeywordValue] = React.useState("");
 
-    const getParsedOptions = (codelist: object | undefined | null, values: any | undefined) => {
+    const getParsedOptions = (codelist: ICodelist | undefined | null, values: any | undefined) => {
         if (!codelist) return [];
 
         let parsedOptions = Object.keys(codelist).reduce(
@@ -103,7 +96,7 @@ const InformationtypeForm = ({
         }
     };
 
-    const getParsedOptionsSensitivity = (codelist: any) => {
+    const getParsedOptionsSensitivity = (codelist: ICodelist | null) => {
         if (!codelist) return []
         return Object.keys(codelist).reduce((acc: any, curr: any) => {
             return [...acc, { id: codelist[curr], code: curr }];
@@ -181,7 +174,7 @@ const InformationtypeForm = ({
                                             </Block>
 
                                             <Select
-                                                options={getParsedOptionsSensitivity(codelist.SENSITIVITY)}
+                                                options={getParsedOptionsSensitivity(codelist.getCodes(Codelist.SENSITIVITY))}
                                                 labelKey="id"
                                                 valueKey="id"
                                                 value={sensitivityValue}
@@ -205,7 +198,7 @@ const InformationtypeForm = ({
                                                 <Label2>Kategorier</Label2>
                                             </Block>
                                             <Select
-                                                options={getParsedOptions(codelist.CATEGORY, formikBag.values.categories)}
+                                                options={getParsedOptions(codelist.getCodes(Codelist.SENSITIVITY), formikBag.values.categories)}
                                                 placeholder="Skriv inn og legg til kategorier"
                                                 type={TYPE.search}
                                                 labelKey="id"
@@ -239,7 +232,7 @@ const InformationtypeForm = ({
                                                 <Label2>Kilder</Label2>
                                             </Block>
                                             <Select
-                                                options={getParsedOptions(codelist.SOURCE, formikBag.values.sources)}
+                                                options={getParsedOptions(codelist.getCodes(Codelist.SOURCE), formikBag.values.sources)}
                                                 placeholder="Skriv inn og legg til kilder"
                                                 type={TYPE.search}
                                                 labelKey="id"

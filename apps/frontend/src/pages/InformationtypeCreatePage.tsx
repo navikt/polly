@@ -5,9 +5,9 @@ import axios from "axios";
 
 import InformationtypeForm from "../components/InformationType/InformationtypeForm";
 import Banner from "../components/Banner";
+import {codelist} from "../codelist";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
-const server_codelist = process.env.REACT_APP_CODELIST_ENDPOINT;
 
 const Centered = styled("div", {
     height: "100%",
@@ -32,7 +32,6 @@ const InformationtypeCreatePage = () => {
     const [error, setError] = React.useState(null);
     const [isCreated, setIsCreated] = React.useState(null);
     const [errorSubmit, setErrorSubmit] = React.useState(null);
-    const [codelist, setCodelist] = React.useState();
 
     const handleAxiosError = (error: any) => {
         if (error.response) {
@@ -42,14 +41,6 @@ const InformationtypeCreatePage = () => {
         } else {
             console.log(error.message);
             setError(error.message);
-        }
-    };
-
-    const handleGetCodelistResponse = (response: any) => {
-        if (typeof response.data === "object" && response.data !== null) {
-            setCodelist(response.data);
-        } else {
-            setError(response.data);
         }
     };
 
@@ -73,11 +64,7 @@ const InformationtypeCreatePage = () => {
     React.useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
-            await axios
-                .get(`${server_codelist}`)
-                .then(handleGetCodelistResponse)
-                .catch(err => setError(err.message));
-
+            await codelist.wait();
             setLoading(false);
         };
         fetchData();
@@ -97,7 +84,6 @@ const InformationtypeCreatePage = () => {
                                         formInitialValues={initialFormValues}
                                         submit={handleSubmit}
                                         isEdit={false}
-                                        codelist={codelist}
                                     />
                                     {errorSubmit && <p>{errorSubmit}</p>}
                                     {isCreated && (

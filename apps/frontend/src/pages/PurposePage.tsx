@@ -6,12 +6,11 @@ import PurposeResult from "../components/Purpose/PurposeResult";
 import Banner from "../components/Banner";
 
 import { Block } from "baseui/block";
+import { Codelist, codelist } from "../codelist";
 
-const server_codelist = process.env.REACT_APP_CODELIST_ENDPOINT;
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 const PurposePage = () => {
-    const [codelist, setCodelist] = React.useState();
     const [currentPurposeValue, setCurrentPurposeValue] = React.useState();
     const [purposeData, setPurposeData] = React.useState();
     const [isLoading, setLoading] = React.useState(false);
@@ -56,8 +55,8 @@ const PurposePage = () => {
     };
 
     const getPurposeSelectItems = () => {
-        if (!codelist) return [];
-        return Object.keys(codelist["PURPOSE"]).reduce(
+        if (!codelist.isLoaded()) return [];
+        return Object.keys(codelist.getCodes(Codelist.PURPOSE)).reduce(
             (acc: any, curr: any) => {
                 return [...acc, { id: curr }];
             },
@@ -66,18 +65,14 @@ const PurposePage = () => {
     };
 
     const getPurposeDescription = () => {
-        if (!codelist) return null;
-        return codelist["PURPOSE"][currentPurposeValue];
+        if (!codelist.isLoaded()) return null;
+        return codelist.getDescription(Codelist.PURPOSE, currentPurposeValue);
     };
 
     React.useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
-            await axios
-                .get(`${server_codelist}`)
-                .then((res => setCodelist(res.data)))
-                .catch(handleAxiosError);
-
+            await codelist.wait();
             setLoading(false);
         };
         fetchData();
@@ -108,7 +103,7 @@ const PurposePage = () => {
                     <PurposeResult
                         purpose={purposeData}
                         description={getPurposeDescription()}
-                        codelist={codelist}
+
                     />
                 </React.Fragment>
             ) : null}

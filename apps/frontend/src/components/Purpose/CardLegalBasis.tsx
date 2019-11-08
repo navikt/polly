@@ -5,6 +5,7 @@ import { Card } from 'baseui/card'
 import { Input, StatefulInput } from 'baseui/input';
 import { Label2 } from 'baseui/typography';
 import { Button, KIND, SIZE as ButtonSize } from 'baseui/button';
+import { ICodelist } from "../../codelist";
 
 const rowBlockBrops: BlockProps = {
     display: 'flex',
@@ -12,7 +13,7 @@ const rowBlockBrops: BlockProps = {
 }
 
 
-const getParsedOptions = (codelist: any) => {
+const getParsedOptions = (codelist: ICodelist | null) => {
     if (!codelist) return []
     return Object.keys(codelist).reduce((acc: any, curr: any) => {
         return [...acc, { id: codelist[curr], code: curr }];

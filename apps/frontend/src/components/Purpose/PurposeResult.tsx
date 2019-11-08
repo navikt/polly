@@ -9,7 +9,6 @@ import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
 import axios from "axios";
 
 
-import { Codelist } from '../../constants'
 import TablePurpose from './TablePurpose'
 import ModalPolicy from './ModalPolicy'
 
@@ -18,7 +17,6 @@ const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 type PurposeViewProps = {
     description: string | any | null;
     purpose: Array<any> | any | null;
-    codelist: Codelist;
 };
 
 const renderListItem = (legalBasis: any | object) => {
@@ -72,7 +70,7 @@ const renderAllSubjectCategories = (processObj: any) => {
     return (<Paragraph2>{subjectCategories.join(', ')}</Paragraph2>)
 }
 
-const PurposeResult = ({ description, purpose, codelist }: PurposeViewProps) => {
+const PurposeResult = ({ description, purpose }: PurposeViewProps) => {
     const [isOpen, setIsOpen] = React.useState<any>(false);
     const [errorCreatePolicy, setErrorCreatePolicy] = React.useState()
 
@@ -146,11 +144,10 @@ const PurposeResult = ({ description, purpose, codelist }: PurposeViewProps) => 
                                                     createPolicySubmit={(values: any) => {
                                                         handleCreatePolicy(values, process)
                                                     }}
-                                                    codelist={codelist}
                                                     errorOnCreate={errorCreatePolicy}
                                                 />
                                             </Block>
-                                            <TablePurpose codelist={codelist} policies={process.policies} />
+                                            <TablePurpose policies={process.policies} />
                                         </Block>
                                     )}
                                 </Panel>
