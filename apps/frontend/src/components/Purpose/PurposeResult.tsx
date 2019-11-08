@@ -150,7 +150,7 @@ const PurposeResult = ({ description, purpose, codelist }: PurposeViewProps) => 
                                                     errorOnCreate={errorCreatePolicy}
                                                 />
                                             </Block>
-                                            <TablePurpose policies={process.policies} />
+                                            <TablePurpose codelist={codelist} policies={process.policies} />
                                         </Block>
                                     )}
                                 </Panel>

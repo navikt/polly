@@ -10,6 +10,7 @@ import {
     SORT_DIRECTION
 } from "baseui/table";
 import { withStyle, useStyletron } from "baseui";
+import {Codelist} from "../../constants";
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",
@@ -23,21 +24,29 @@ const CustomStyledRow = withStyle(StyledRow, {
     fontSize: "24px"
 });
 
-const renderListItem = (legalBasis: any | object) => {
+const lovdata_base = process.env.REACT_APP_LOVDATA_BASE_URL;
+
+const injectLegalLinks = (codelist: Codelist, law: string, text: string) => {
+    return text.replace(/§.(\d+(-\d+)?)/g, ` <a href="${lovdata_base + codelist.NATIONAL_LAW[law]}/§$1" target="_blank">§ $1</a>`)
+};
+
+const renderListItem = (codelist: Codelist, legalBasis: any | object) => {
     let gdpr = legalBasis.gdpr && legalBasis.gdpr.code
     let nationalLaw = legalBasis.nationalLaw && legalBasis.nationalLaw.code
+
+    let innerHtml = (gdpr && (gdpr + ': ')) + (nationalLaw && nationalLaw) + injectLegalLinks(codelist, nationalLaw, legalBasis.description)
+
     return (
-        <li>
-            {gdpr && gdpr + ': '} {nationalLaw && nationalLaw} {legalBasis.description}
-        </li>
+        <li dangerouslySetInnerHTML={{__html: innerHtml}}/>
     )
 }
 
 type TablePurposeProps = {
     policies: Array<any>;
+    codelist: Codelist;
 };
 
-const TablePurpose = ({ policies }: TablePurposeProps) => {
+const TablePurpose = ({ codelist, policies }: TablePurposeProps) => {
     const [useCss, theme] = useStyletron();
     const [titleDirection, setTitleDirection] = React.useState<any>(null);
     const [userDirection, setUserDirection] = React.useState<any>(null);
@@ -151,7 +160,7 @@ const TablePurpose = ({ policies }: TablePurposeProps) => {
                                 {row.legalBases && row.legalBases.length > 0 && (
                                     <ul>
                                         {row.legalBases.map((legalBasis: any) => (
-                                            <li>{renderListItem(legalBasis)}</li>
+                                            <li>{renderListItem(codelist, legalBasis)}</li>
                                         ))}
                                     </ul>
                                 )}
