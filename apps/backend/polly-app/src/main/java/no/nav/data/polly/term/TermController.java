@@ -9,9 +9,12 @@ import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.rest.PageParameters;
 import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.common.utils.StreamUtils;
+import no.nav.data.polly.informationtype.InformationTypeRepository;
+import no.nav.data.polly.informationtype.domain.TermCount;
 import no.nav.data.polly.term.domain.Term;
 import no.nav.data.polly.term.domain.TermRepository;
 import no.nav.data.polly.term.domain.TermSlim;
+import no.nav.data.polly.term.dto.TermCountResponse;
 import no.nav.data.polly.term.dto.TermRequest;
 import no.nav.data.polly.term.dto.TermResponse;
 import org.springframework.data.domain.Page;
@@ -28,12 +31,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toMap;
 import static no.nav.data.polly.common.utils.StartsWithComparator.startsWith;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
@@ -45,10 +51,12 @@ import static no.nav.data.polly.common.utils.StreamUtils.convert;
 public class TermController {
 
     private final TermRepository repository;
+    private final InformationTypeRepository informationTypeRepository;
     private final TermService service;
 
-    public TermController(TermRepository repository, TermService service) {
+    public TermController(TermRepository repository, InformationTypeRepository informationTypeRepository, TermService service) {
         this.repository = repository;
+        this.informationTypeRepository = informationTypeRepository;
         this.service = service;
     }
 
@@ -122,6 +130,21 @@ public class TermController {
     public Long countAllTerms() {
         log.info("Received request for count all Terms");
         return repository.count();
+    }
+
+    @ApiOperation(value = "Count by InformationType")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Terms fetched", response = TermCountResponse.class),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @GetMapping("/count/informationtype")
+    public ResponseEntity<TermCountResponse> getInformationTypeCount() {
+        log.info("Get term count by InformationType");
+        List<TermCount> purposeCounts = informationTypeRepository.countByTerm();
+        Map<String, Long> counts = purposeCounts.stream()
+                .map(c -> Map.entry(c.getTerm(), c.getCount()))
+                .collect(toMap(Entry::getKey, Entry::getValue));
+        log.info("Got {} terms with InformationTypes", counts.size());
+        return ResponseEntity.ok(new TermCountResponse(counts));
     }
 
     @ApiOperation(value = "Create Terms")

@@ -125,6 +125,19 @@ public class InformationTypeController {
         return new ResponseEntity<>(new RestResponsePage<>(convert(infoTypes, InformationType::convertToResponse)), HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Get InformationTypes by term")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "InformationTypes fetched", response = InformationTypePage.class),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @GetMapping("/term/{term}")
+    public ResponseEntity<RestResponsePage<InformationTypeResponse>> findInformationTypesByTerm(@PathVariable String term) {
+        log.info("Received request for InformationTypes with the term {}", term);
+        List<InformationType> infoTypes = repository.findByTermName(term);
+        infoTypes.sort(comparing(it -> it.getData().getName(), String.CASE_INSENSITIVE_ORDER));
+        log.info("Returned {} InformationTypes", infoTypes.size());
+        return new ResponseEntity<>(new RestResponsePage<>(convert(infoTypes, InformationType::convertToResponse)), HttpStatus.OK);
+    }
+
     @ApiOperation(value = "Get All InformationTypes")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "InformationTypes fetched", response = InformationTypePage.class),
