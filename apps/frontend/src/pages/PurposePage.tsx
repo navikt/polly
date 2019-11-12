@@ -106,7 +106,7 @@ const PurposePage = () => {
             {currentPurposeValue ? (
                 <React.Fragment>
                     <PurposeResult
-                        processList={purposeData}
+                        processList={!purposeData ? [] : purposeData}
                         purpose={currentPurposeValue}
                         description={getPurposeDescription()}
                         codelist={codelist}
