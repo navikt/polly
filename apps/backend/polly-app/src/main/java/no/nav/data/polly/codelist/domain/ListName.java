@@ -9,5 +9,6 @@ public enum ListName {
     SUBJECT_CATEGORY,
     GDPR_ARTICLE,
     DEPARTMENT,
-    SUB_DEPARTMENT
+    SUB_DEPARTMENT,
+    SYSTEM
 }
