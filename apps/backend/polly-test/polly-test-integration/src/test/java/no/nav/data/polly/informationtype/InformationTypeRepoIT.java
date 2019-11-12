@@ -29,6 +29,7 @@ class InformationTypeRepoIT extends IntegrationTestBase {
                         .category("cat")
                         .source("source")
                         .keyword("keyword")
+                        .navMaster("TPS")
                         .build()
                 )
                 .build();

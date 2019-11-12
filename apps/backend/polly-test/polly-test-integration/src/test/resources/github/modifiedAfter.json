@@ -14,7 +14,8 @@
     "keywords": [
       "SKATTEETATEN",
       "bruker"
-    ]
+    ],
+    "navMaster": "TPS"
   },
   {
     "name": "modified_added",
@@ -31,6 +32,7 @@
     "keywords": [
       "SKATTEETATEN",
       "bruker"
-    ]
+    ],
+    "navMaster": "PESYS"
   }
 ]

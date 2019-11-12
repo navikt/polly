@@ -253,6 +253,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
                 .categories(List.of("PERSONALIA"))
                 .sources(List.of("Skatt"))
                 .keywords(List.of("keyword"))
+                .navMaster("TPS")
                 .build();
     }
 }

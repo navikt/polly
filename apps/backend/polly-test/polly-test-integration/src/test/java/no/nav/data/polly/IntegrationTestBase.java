@@ -154,6 +154,8 @@ public abstract class IntegrationTestBase {
                         .category("PERSONALIA")
                         .pii(true)
                         .informationTypeMaster(InformationTypeMaster.REST)
+                        .sensitivity("Personopplysning")
+                        .navMaster("TPS")
                         .build())
                 .build();
         createTerm("term").addInformationType(informationType);
