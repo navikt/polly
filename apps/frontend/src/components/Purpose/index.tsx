@@ -87,6 +87,8 @@ const PurposeResult = ({ description, purpose, processList, codelist }: PurposeV
             process: process.name,
             purposeCode: process.purposeCode
         }]
+        console.log(body, "BODY")
+
         await axios
             .post(`${server_polly}/policy`, body)
             .then(((res: any) => {
@@ -108,6 +110,7 @@ const PurposeResult = ({ description, purpose, processList, codelist }: PurposeV
         await axios
             .post(`${server_polly}/process`, body)
             .then(((res: any) => {
+                res.data.content[0].policies = []
                 processList.push(res.data.content[0])
                 setErrorCreateProcess(null)
                 setShowProcessModal(false)
