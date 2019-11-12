@@ -35,6 +35,7 @@ public class InformationTypeResponse {
     private List<CodeResponse> sources;
     private List<String> keywords;
     private boolean toBeDeleted;
+    private CodeResponse navMaster;
 
     public InformationTypeResponse(InformationType informationType) {
         id = informationType.getId().toString();
@@ -51,6 +52,7 @@ public class InformationTypeResponse {
         setCategories(CodelistService.getCodeResponseList(ListName.CATEGORY, data.getCategories()));
         setSources(CodelistService.getCodeResponseList(ListName.SOURCE, data.getSources()));
         setKeywords(copyOf(data.getKeywords()));
+        setNavMaster(CodelistService.getCodeResponse(ListName.SYSTEM, data.getNavMaster()));
     }
 
 }

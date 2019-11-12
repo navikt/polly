@@ -26,6 +26,7 @@ public class InformationTypeData {
     private List<String> categories = new ArrayList<>();
     private List<String> sources = new ArrayList<>();
     private List<String> keywords = new ArrayList<>();
+    private String navMaster;  // Will adding this be confusing if we keep informationTypeMaster?
 
     // Keep?
     private InformationTypeMaster informationTypeMaster;

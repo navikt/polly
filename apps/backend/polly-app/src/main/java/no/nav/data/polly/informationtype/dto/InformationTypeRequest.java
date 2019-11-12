@@ -47,6 +47,8 @@ public class InformationTypeRequest implements RequestElement {
     @ApiModelProperty(value = "Codelist", example = "[\"CODELIST\"]")
     private List<String> sources;
     private List<String> keywords;
+    @ApiModelProperty(value = "Codelist", example = "CODELIST")
+    private String navMaster;
 
     private boolean update;
     private int requestIndex;
@@ -124,6 +126,7 @@ public class InformationTypeRequest implements RequestElement {
         validator.checkCodelists(Fields.categories, getCategories(), ListName.CATEGORY);
         validator.checkCodelists(Fields.sources, getSources(), ListName.SOURCE);
         validator.checkRequiredCodelist(Fields.sensitivity, getSensitivity(), ListName.SENSITIVITY);
+        validator.checkRequiredCodelist(Fields.navMaster, getNavMaster(), ListName.SYSTEM);
     }
 
     @JsonIgnore
