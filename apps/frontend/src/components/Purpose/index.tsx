@@ -12,13 +12,16 @@ import axios from "axios";
 import { Codelist } from '../../constants'
 import TablePurpose from './TablePurpose'
 import ModalPolicy from './ModalPolicy'
+import ModalProcess from './ModalProcess'
+import { Card } from "baseui/card";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 type PurposeViewProps = {
     description: string | any | null;
-    purpose: Array<any> | any | null;
+    purpose: string;
     codelist: Codelist;
+    processList: Array<any> | any | null;
 };
 
 const renderListItem = (legalBasis: any | object) => {
@@ -72,9 +75,11 @@ const renderAllSubjectCategories = (processObj: any) => {
     return (<Paragraph2>{subjectCategories.join(', ')}</Paragraph2>)
 }
 
-const PurposeResult = ({ description, purpose, codelist }: PurposeViewProps) => {
+const PurposeResult = ({ description, purpose, processList, codelist }: PurposeViewProps) => {
     const [isOpen, setIsOpen] = React.useState<any>(false);
+    const [showProcessModal, setShowProcessModal] = React.useState(false)
     const [errorCreatePolicy, setErrorCreatePolicy] = React.useState()
+    const [errorCreateProcess, setErrorCreateProcess] = React.useState()
 
     const handleCreatePolicy = async (values: any, process: any) => {
         if (!values) return
@@ -92,11 +97,25 @@ const PurposeResult = ({ description, purpose, codelist }: PurposeViewProps) => 
                 setErrorCreatePolicy(null)
                 setIsOpen(false)
             }))
-            .catch((err: any) => {
-                setErrorCreatePolicy(err.message)
-            });
+            .catch((err: any) => setErrorCreatePolicy(err.message));
     }
 
+    const handleCreateProcess = async (values: any) => {
+        if (!values) return
+        let body = [{
+            ...values,
+            purposeCode: purpose
+        }]
+
+        await axios
+            .post(`${server_polly}/process`, body)
+            .then(((res: any) => {
+                processList.push(res.data.content[0])
+                setErrorCreateProcess(null)
+                setShowProcessModal(false)
+            }))
+            .catch((err: any) => setErrorCreateProcess(err.message));
+    }
 
     return (
         <React.Fragment>
@@ -106,53 +125,72 @@ const PurposeResult = ({ description, purpose, codelist }: PurposeViewProps) => 
                     <Paragraph2>{description}</Paragraph2>
                 </Block>
 
-                {purpose && (
+                {processList && (
                     <Block {...blockProps}>
-                        <Block marginBottom="1rem"><Label2 font="font400">Behandlingsoversikt</Label2></Block>
+                        <Block marginBottom="1rem" display="flex" justifyContent="space-between">
+                            <Label2 font="font400">Behandlingsoversikt</Label2>
+                            <Button
+                                size={ButtonSize.compact}
+                                kind={KIND.minimal}
+                                onClick={() => setShowProcessModal(true)}
+                                startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
+                            >
+                                Legg til ny behandling
+                            </Button>
+                            <ModalProcess
+                                onClose={() => setShowProcessModal(false)}
+                                isOpen={showProcessModal}
+                                submit={(values: any) => {
+                                    handleCreateProcess(values)
+                                }}
+                                errorOnCreate={errorCreateProcess}
+                                codelist={codelist}
+                            />
+                        </Block>
+
                         <Accordion>
-                            {purpose.map((process: any, index: any) => (
+                            {processList.map((process: any, index: any) => (
                                 <Panel title={process.name} key={process.name}>
                                     <Block {...rowPanelContent}>
                                         <Block marginRight="6rem">
                                             <Label2>Rettslig Grunnlag</Label2>
                                             {renderLegalBasisList(process.legalBases)}
-
                                         </Block>
                                         <Block>
                                             <Label2>Kategorier av personer</Label2>
                                             {renderAllSubjectCategories(process)}
-
                                         </Block>
                                     </Block>
 
+                                    <Block display="flex" justifyContent="space-between" marginBottom="1rem">
+                                        <Label2 alignSelf="center">Opplysningstyper</Label2>
+                                        <Button
+                                            size={ButtonSize.compact}
+                                            kind={KIND.secondary}
+                                            onClick={() => setIsOpen(true)}
+                                            startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
+                                        >
+                                            Legg til ny
+                                        </Button>
+                                        <ModalPolicy
+                                            onClose={() => {
+                                                setIsOpen(false)
+                                                setErrorCreatePolicy(null)
+                                            }}
+                                            isOpen={isOpen}
+                                            createPolicySubmit={(values: any) => {
+                                                handleCreatePolicy(values, process)
+                                            }}
+                                            codelist={codelist}
+                                            errorOnCreate={errorCreatePolicy}
+                                        />
+                                    </Block>
                                     {process.policies && (
                                         <Block >
-                                            <Block display="flex" justifyContent="space-between" marginBottom="1rem">
-                                                <Label2 alignSelf="center">Opplysningstyper</Label2>
-                                                <Button
-                                                    size={ButtonSize.compact}
-                                                    kind={KIND.secondary}
-                                                    onClick={() => setIsOpen(true)}
-                                                    startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
-                                                >
-                                                    Legg til ny
-                                                </Button>
-                                                <ModalPolicy
-                                                    onClose={() => {
-                                                        setIsOpen(false)
-                                                        setErrorCreatePolicy(null)
-                                                    }}
-                                                    isOpen={isOpen}
-                                                    createPolicySubmit={(values: any) => {
-                                                        handleCreatePolicy(values, process)
-                                                    }}
-                                                    codelist={codelist}
-                                                    errorOnCreate={errorCreatePolicy}
-                                                />
-                                            </Block>
                                             <TablePurpose codelist={codelist} policies={process.policies} />
                                         </Block>
                                     )}
+
                                 </Panel>
                             ))}
                         </Accordion>

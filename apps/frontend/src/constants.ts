@@ -35,3 +35,9 @@ export interface Codelist {
     DEPARTMENT: any | undefined | null;
     SUB_DEPARTMENT: any | undefined | null;
 }
+
+export interface ProcessFormValues {
+    name: string;
+    department: string;
+    legalBases: Array<any>;
+}
