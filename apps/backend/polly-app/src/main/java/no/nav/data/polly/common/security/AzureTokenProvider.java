@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
+import java.net.URI;
 import java.time.Duration;
 import java.util.Set;
 
@@ -75,6 +76,15 @@ public class AzureTokenProvider {
         return grantedAuthorityCache.get(token, this::lookupGrantedAuthorities);
     }
 
+    public AuthenticationResult acquireRefreshTokenForCode(String token, String redirectUri) {
+        try {
+            log.debug("Looking up graph token");
+            return authenticationContext.acquireTokenByAuthorizationCode(token, new URI(redirectUri), credential, aadAuthProps.getClientId(), null).get();
+        } catch (Exception e) {
+            throw new PollyTechnicalException("Failed to get graph token", e);
+        }
+    }
+
     private Set<GrantedAuthority> lookupGrantedAuthorities(String token) {
         try {
             String graphToken = acquireGraphToken(token).getAccessToken();
@@ -122,4 +132,7 @@ public class AzureTokenProvider {
         }
     }
 
+    public void revokeRefreshToken() {
+        // todo
+    }
 }

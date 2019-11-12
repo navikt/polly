@@ -145,9 +145,23 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-client</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.microsoft.azure</groupId>
 			<artifactId>azure-active-directory-spring-boot-starter</artifactId>
 			<version>${azure.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.nimbusds</groupId>
+					<artifactId>oauth2-oidc-sdk</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 

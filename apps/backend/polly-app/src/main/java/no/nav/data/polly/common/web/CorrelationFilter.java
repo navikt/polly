@@ -1,6 +1,7 @@
 package no.nav.data.polly.common.web;
 
 import no.nav.data.polly.common.utils.MdcUtils;
+import org.springframework.security.web.util.UrlUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -13,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import static no.nav.data.polly.common.utils.Constants.HEADER_CALL_ID;
 import static no.nav.data.polly.common.utils.Constants.HEADER_CONSUMER_ID;
 import static no.nav.data.polly.common.utils.Constants.HEADER_CORRELATION_ID;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class CorrelationFilter extends OncePerRequestFilter {
 
@@ -25,7 +25,7 @@ public class CorrelationFilter extends OncePerRequestFilter {
 
         Optional.ofNullable(request.getHeader(HEADER_CONSUMER_ID)).ifPresent(MdcUtils::setConsumerId);
 
-        MdcUtils.setRequestPath(getPath(request));
+        MdcUtils.setRequestPath(UrlUtils.buildFullRequestUrl(request));
         MdcUtils.createCorrelationId();
         try {
             filterChain.doFilter(request, response);
@@ -35,11 +35,5 @@ public class CorrelationFilter extends OncePerRequestFilter {
             MdcUtils.clearConsumer();
             MdcUtils.clearRequestPath();
         }
-    }
-
-    private String getPath(HttpServletRequest request) {
-        String url = request.getRequestURL().toString();
-        String queryString = request.getQueryString();
-        return url + Optional.ofNullable(queryString).map(s -> "?" + s).orElse(EMPTY);
     }
 }

@@ -10,24 +10,36 @@ import no.nav.data.polly.common.utils.MdcExecutor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
 
 import java.net.MalformedURLException;
 
+import static org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI;
+
+@PropertySource("classpath:/aad-oauth2-common.properties")
 @Configuration
 public class SecurityConfig {
 
     @Bean
     public AADStatelessAuthenticationFilter aadStatelessAuthenticationFilter(ResourceRetriever resourceRetriever, AADAuthenticationProperties aadAuthProps,
-            ServiceEndpointsProperties serviceEndpointsProps, AzureTokenProvider azureTokenProvider, AppIdMapping appIdMapping) {
+            ServiceEndpointsProperties serviceEndpointsProps, AzureTokenProvider azureTokenProvider, AppIdMapping appIdMapping,
+            Encryptor refreshTokenEncryptor) {
         var userPrincipalManager = new UserPrincipalManager(serviceEndpointsProps, aadAuthProps, resourceRetriever, true);
-        return new AADStatelessAuthenticationFilter(userPrincipalManager, azureTokenProvider, appIdMapping);
+        return new AADStatelessAuthenticationFilter(refreshTokenEncryptor, userPrincipalManager, azureTokenProvider, appIdMapping);
     }
 
     @Bean
-    public AuthenticationContext authenticationContext(AADAuthenticationProperties aadAuthProps, ServiceEndpointsProperties serviceEndpointsProps) throws MalformedURLException {
-        ServiceEndpoints serviceEndpoints = serviceEndpointsProps.getServiceEndpoints(aadAuthProps.getEnvironment());
+    public AuthenticationContext authenticationContext(AADAuthenticationProperties aadAuthProps, ServiceEndpoints serviceEndpoints) throws MalformedURLException {
         String uri = serviceEndpoints.getAadSigninUri() + aadAuthProps.getTenantId();
         return new AuthenticationContext(uri, true, adalExecutorService());
+    }
+
+    @Bean
+    public ServiceEndpoints serviceEndpoints(AADAuthenticationProperties aadAuthProps, ServiceEndpointsProperties serviceEndpointsProps) {
+        return serviceEndpointsProps.getServiceEndpoints(aadAuthProps.getEnvironment());
     }
 
     @Bean
@@ -38,5 +50,15 @@ public class SecurityConfig {
     @Bean
     public AppIdMapping appIdMapping(@Value("${azure.activedirectory.allowed.app-id.mappings}") String mappings) {
         return new AppIdMapping(mappings);
+    }
+
+    @Bean
+    public OAuth2AuthorizationRequestResolver resolver(ClientRegistrationRepository repository) {
+        return new DefaultOAuth2AuthorizationRequestResolver(repository, DEFAULT_AUTHORIZATION_REQUEST_BASE_URI);
+    }
+
+    @Bean
+    public Encryptor refreshTokenEncryptor(@Value("${azure.activedirectory.token.enc.key}") String refreshTokenKey) {
+        return new Encryptor(refreshTokenKey);
     }
 }
