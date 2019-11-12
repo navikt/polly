@@ -27,6 +27,9 @@ public class CodelistStub {
         CodelistCache.set(create(ListName.GDPR_ARTICLE, "9a", "9a"));
         CodelistCache.set(create(ListName.DEPARTMENT, "dep", "mdep"));
         CodelistCache.set(create(ListName.SUB_DEPARTMENT, "subdep", "sdep"));
+        CodelistCache.set(create(ListName.SYSTEM, "TPS", "Tjenestebasert PersondataSystem"));
+        CodelistCache.set(create(ListName.SYSTEM, "PESYS", "Pensjonssystem"));
+        CodelistCache.set(create(ListName.SYSTEM, "AA-REG", "Arbeidsgiver / Arbeidstaker register"));
     }
 
     private static Codelist create(ListName list, String code, String description) {

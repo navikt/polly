@@ -184,6 +184,7 @@ class InformationTypeServiceTest {
                 .sources(List.of("Skatt"))
                 .keywords(List.of("Keywords"))
                 .requestIndex(1)
+                .navMaster("TPS")
                 .build();
     }
 
