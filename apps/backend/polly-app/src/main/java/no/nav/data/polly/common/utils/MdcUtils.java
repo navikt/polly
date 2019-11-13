@@ -1,8 +1,6 @@
 package no.nav.data.polly.common.utils;
 
-import com.microsoft.azure.spring.autoconfigure.aad.UserPrincipal;
-import no.nav.data.polly.common.security.AADStatelessAuthenticationFilter;
-import no.nav.data.polly.common.security.AppIdMapping;
+import no.nav.data.polly.common.security.dto.UserInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.security.core.Authentication;
@@ -10,8 +8,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 import java.util.UUID;
-
-import static no.nav.data.polly.common.security.AADStatelessAuthenticationFilter.APPID_CLAIM;
 
 public final class MdcUtils {
 
@@ -101,22 +97,9 @@ public final class MdcUtils {
     private static String getCurrentSecurityContextUser() {
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .filter(Authentication::isAuthenticated)
-                .map(authentication -> authentication.getPrincipal() instanceof UserPrincipal ? (UserPrincipal) authentication.getPrincipal() : null)
-                .map(principal -> StringUtils.isBlank(principal.getName()) ? getAppId(principal) : formatUser(principal))
+                .map(authentication -> authentication.getDetails() instanceof UserInfo ? (UserInfo) authentication.getDetails() : null)
+                .map(userInfo -> StringUtils.isBlank(userInfo.getName()) ? userInfo.getAppName() : userInfo.formatUser())
                 .orElse("no-auth");
-    }
-
-    private static String getAppId(UserPrincipal principal) {
-        return AppIdMapping.getAppNameForAppId((String) principal.getClaim(APPID_CLAIM));
-    }
-
-    private static String formatUser(UserPrincipal principal) {
-        return String.format("%s - %s", getNAVident(principal), principal.getName());
-    }
-
-    private static String getNAVident(UserPrincipal principal) {
-        Object navClaim = principal.getClaim(AADStatelessAuthenticationFilter.NAV_IDENT_CLAIM);
-        return navClaim == null ? "missing-ident" : ((String) navClaim);
     }
 
     private static void clearMdc() {

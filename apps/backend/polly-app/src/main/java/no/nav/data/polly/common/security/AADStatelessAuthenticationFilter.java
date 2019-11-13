@@ -8,6 +8,8 @@ import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jwt.proc.BadJWTException;
 import io.prometheus.client.Counter;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.common.security.dto.Credential;
+import no.nav.data.polly.common.security.dto.UserInfo;
 import no.nav.data.polly.common.utils.MetricUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
@@ -35,9 +37,6 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
 
     private static final String TOKEN_TYPE = "Bearer ";
 
-    public static final String APPID_CLAIM = "appid";
-    public static final String NAV_IDENT_CLAIM = "NAVident";
-
     private final Encryptor refreshTokenEncryptor;
     private final UserPrincipalManager principalManager;
     private final AzureTokenProvider azureTokenProvider;
@@ -60,7 +59,7 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
 
         if (!StringUtils.startsWith(request.getServletPath(), "/login")) {
             counter.labels("login").inc();
-            cleanupRequired = authenticate(request, cleanupRequired);
+            cleanupRequired = authenticate(request);
         }
 
         try {
@@ -72,18 +71,18 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
         }
     }
 
-    private boolean authenticate(HttpServletRequest request, boolean cleanupRequired) throws ServletException {
+    private boolean authenticate(HttpServletRequest request) throws ServletException {
         Credential credential = getCredential(request);
         if (credential != null) {
-            boolean cleanupRequired1;
             try {
                 var principal = buildUserPrincipal(credential.getAccessToken());
                 var grantedAuthorities = azureTokenProvider.getGrantedAuthorities(credential.getAccessToken());
                 var authentication = new PreAuthenticatedAuthenticationToken(principal, credential, grantedAuthorities);
+                authentication.setDetails(new UserInfo(principal, grantedAuthorities));
                 authentication.setAuthenticated(true);
                 log.info("Request token verification success for subject {} with roles {}.", principal.getSubject(), grantedAuthorities);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                cleanupRequired1 = true;
+                return true;
             } catch (BadJWTException ex) {
                 String errorMessage = "Invalid JWT. Either expired or not yet valid. " + ex.getMessage();
                 log.warn(errorMessage);
@@ -92,13 +91,12 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
                 log.error("Failed to initialize UserPrincipal.", ex);
                 throw new ServletException(ex);
             }
-            cleanupRequired = cleanupRequired1;
         } else {
             if (!StringUtils.startsWith(request.getServletPath(), "/internal")) {
                 counter.labels("no_auth").inc();
             }
         }
-        return cleanupRequired;
+        return false;
     }
 
     private Credential getCredential(HttpServletRequest request) {
@@ -130,7 +128,7 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
     }
 
     private void validate(UserPrincipal principal) throws BadJWTException {
-        String appidClaim = (String) principal.getClaim(APPID_CLAIM);
+        String appidClaim = (String) principal.getClaim(UserInfo.APPID_CLAIM);
         if (appidClaim == null || !allowedAppIds.contains(appidClaim)) {
             throw new BadJWTException("Invalid token appid. Provided value " + appidClaim + " does not match allowed appid");
         }

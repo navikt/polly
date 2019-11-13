@@ -1,4 +1,4 @@
-package no.nav.data.polly.common.security;
+package no.nav.data.polly.common.security.dto;
 
 import lombok.Value;
 import org.springframework.security.core.Authentication;

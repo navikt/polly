@@ -1,8 +1,9 @@
-package no.nav.data.polly.common.security;
+package no.nav.data.polly.common.security.dto;
 
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.data.polly.common.security.Encryptor;
 import no.nav.data.polly.common.utils.JsonUtils;
 import org.springframework.util.Assert;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -16,36 +17,36 @@ import static org.springframework.security.web.util.UrlUtils.isValidRedirectUrl;
  */
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-class OAuthState {
+public class OAuthState {
 
     private String redirectUri;
     private String errorUri;
 
-    OAuthState(String redirectUri) {
+    public OAuthState(String redirectUri) {
         this(redirectUri, null);
     }
 
-    OAuthState(String redirectUri, String errorUri) {
+    public OAuthState(String redirectUri, String errorUri) {
         this.redirectUri = redirectUri;
         this.errorUri = errorUri != null ? errorUri : redirectUri;
         validate();
     }
 
-    String errorRedirect(String error, String errorDesc) {
+    public String errorRedirect(String error, String errorDesc) {
         return UriComponentsBuilder.fromUriString(getErrorUri())
                 .queryParam(ERROR, error)
                 .queryParam(ERROR_DESCRIPTION, errorDesc)
                 .build().toUriString();
     }
 
-    static OAuthState fromJson(String encryptedJson, Encryptor encryptor) {
+    public static OAuthState fromJson(String encryptedJson, Encryptor encryptor) {
         var json = encryptor.decrypt(encryptedJson);
         OAuthState state = JsonUtils.toObject(json, OAuthState.class);
         state.validate();
         return state;
     }
 
-    String toJson(Encryptor encryptor) {
+    public String toJson(Encryptor encryptor) {
         String json = JsonUtils.toJson(this);
         return encryptor.encrypt(json);
     }

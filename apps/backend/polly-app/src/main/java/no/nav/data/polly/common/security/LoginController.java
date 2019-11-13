@@ -8,6 +8,12 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.exceptions.PollyTechnicalException;
+import no.nav.data.polly.common.security.dto.OAuthState;
+import no.nav.data.polly.common.security.dto.UserInfo;
+import no.nav.data.polly.common.security.dto.UserInfoResponse;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.web.DefaultRedirectStrategy;
@@ -97,7 +103,7 @@ public class LoginController {
         if (StringUtils.hasText(code)) {
             var refreshToken = azureTokenProvider.acquireTokenForAuthCode(code, fullRequestUrlWithoutQuery(request));
             log.debug("Refreshtoken fetched for {}", refreshToken.getUserInfo().getUniqueId());
-            response.addCookie(createTokenCookie(refreshToken));
+            response.addCookie(createTokenCookie(refreshToken, request));
             redirectStrategy.sendRedirect(request, response, state.getRedirectUri());
         } else {
             String errorRedirect = state.errorRedirect(error, errorDesc);
@@ -115,10 +121,22 @@ public class LoginController {
             @RequestParam(value = REDIRECT_URI, required = false) String redirectUri
     ) throws IOException {
         log.debug("Request to logout");
-        response.addCookie(createCookie(null, 0));
+        response.addCookie(createCookie(null, 0, request));
         if (redirectUri != null) {
             redirectStrategy.sendRedirect(request, response, new OAuthState(redirectUri).getRedirectUri());
         }
+    }
+
+    @ApiOperation(value = "User info")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "userinfo returned", response = UserInfoResponse.class),
+            @ApiResponse(code = 500, message = "internal error")
+    })
+    @GetMapping("/userinfo")
+    public ResponseEntity<UserInfoResponse> userinfo() {
+        log.debug("Request to userinfo");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return ResponseEntity.ok(((UserInfo) authentication.getDetails()).convertToResponse());
     }
 
     private String createAuthRequestRedirectUrl(HttpServletRequest request, String redirectUri, String errorUri) {
@@ -127,17 +145,17 @@ public class LoginController {
                 .build().getAuthorizationRequestUri();
     }
 
-    private Cookie createTokenCookie(AuthenticationResult refreshToken) {
+    private Cookie createTokenCookie(AuthenticationResult refreshToken, HttpServletRequest request) {
         String encryptedToken = encryptor.encrypt(refreshToken.getRefreshToken());
-        return createCookie(encryptedToken, (int) Duration.ofDays(14).toSeconds());
+        return createCookie(encryptedToken, (int) Duration.ofDays(14).toSeconds(), request);
     }
 
-    private Cookie createCookie(String value, int maxAge) {
+    private Cookie createCookie(String value, int maxAge, HttpServletRequest request) {
         Cookie cookie = new Cookie(POLLY_TOKEN_COOKIE_NAME, value);
         cookie.setMaxAge(maxAge);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+        cookie.setSecure(!"localhost".equals(request.getServerName()));
         return cookie;
     }
 
