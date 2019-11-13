@@ -33,10 +33,10 @@ public class InformationTypeElasticsearch {
     private String description;
     private boolean pii;
     private CodeResponse sensitivity;
+    private CodeResponse navMaster;
     private List<CodeResponse> categories = new ArrayList<>();
     private List<CodeResponse> sources = new ArrayList<>();
     private List<String> keywords = new ArrayList<>();
-    private CodeResponse navMaster;
 
     private String modified;
     private String modifiedBy;
@@ -77,10 +77,10 @@ public class InformationTypeElasticsearch {
         setDescription(data.getDescription());
         setPii(data.isPii());
         setSensitivity(CodelistService.getCodeResponse(ListName.SENSITIVITY, data.getSensitivity()));
+        setNavMaster(CodelistService.getCodeResponse(ListName.SYSTEM, data.getNavMaster()));
         setCategories(CodelistService.getCodeResponseList(ListName.CATEGORY, data.getCategories()));
         setSources(CodelistService.getCodeResponseList(ListName.SOURCE, data.getSources()));
         setKeywords(copyOf(data.getKeywords()));
-        setNavMaster(CodelistService.getCodeResponse(ListName.SYSTEM, data.getNavMaster()));
 
         setSuggest(String.format("%s %s %s", name, StringUtils.trimToEmpty(description), String.join(" ", nullToEmptyList(keywords))));
     }

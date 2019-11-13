@@ -23,10 +23,10 @@ public class InformationTypeData {
     private String description;
     private boolean pii;
     private String sensitivity;
+    private String navMaster;
     private List<String> categories = new ArrayList<>();
     private List<String> sources = new ArrayList<>();
     private List<String> keywords = new ArrayList<>();
-    private String navMaster;  // Will adding this be confusing if we keep informationTypeMaster?
 
     // Keep?
     private InformationTypeMaster informationTypeMaster;

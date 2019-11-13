@@ -5,6 +5,7 @@
     "description": "description",
     "pii": "her og der",
     "sensitivity": "Personopplysning",
+    "navMaster": "AA-REG",
     "categories": [
       "PERSONALIA"
     ],
@@ -14,8 +15,7 @@
     "keywords": [
       "SKATTEETATEN",
       "bruker"
-    ],
-    "navMaster": "AA-REG"
+    ]
   },
   {
     "name": "modified_changed",
@@ -23,6 +23,7 @@
     "description": "description",
     "pii": "her og der",
     "sensitivity": "Personopplysning",
+    "navMaster": "TPS",
     "categories": [
       "PERSONALIA"
     ],
@@ -32,7 +33,6 @@
     "keywords": [
       "SKATTEETATEN",
       "bruker"
-    ],
-    "navMaster": "TPS"
+    ]
   }
 ]

@@ -4,6 +4,7 @@
   "description": "description",
   "pii": "true",
   "sensitivity": "Personopplysning",
+  "navMaster": "TPS",
   "categories": [
     "PERSONALIA"
   ],
@@ -13,6 +14,5 @@
   "keywords": [
     "SKATTEETATEN",
     "bruker"
-  ],
-  "navMaster": "TPS"
+  ]
 }

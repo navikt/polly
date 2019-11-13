@@ -42,13 +42,13 @@ public class InformationTypeRequest implements RequestElement {
     private String pii;
     @ApiModelProperty(value = "Codelist", example = "CODELIST")
     private String sensitivity;
+    @ApiModelProperty(value = "Codelist", example = "CODELIST")
+    private String navMaster;
     @ApiModelProperty(value = "Codelist", example = "[\"CODELIST\"]")
     private List<String> categories;
     @ApiModelProperty(value = "Codelist", example = "[\"CODELIST\"]")
     private List<String> sources;
     private List<String> keywords;
-    @ApiModelProperty(value = "Codelist", example = "CODELIST")
-    private String navMaster;
 
     private boolean update;
     private int requestIndex;
