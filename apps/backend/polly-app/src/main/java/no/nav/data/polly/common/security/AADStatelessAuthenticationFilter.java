@@ -58,6 +58,21 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         boolean cleanupRequired = false;
 
+        if (!StringUtils.startsWith(request.getServletPath(), "/login")) {
+            counter.labels("login").inc();
+            cleanupRequired = authenticate(request, cleanupRequired);
+        }
+
+        try {
+            filterChain.doFilter(request, response);
+        } finally {
+            if (cleanupRequired) {
+                SecurityContextHolder.clearContext();
+            }
+        }
+    }
+
+    private boolean authenticate(HttpServletRequest request, boolean cleanupRequired) throws ServletException {
         Credential credential = getCredential(request);
         if (credential != null) {
             boolean cleanupRequired1;
@@ -83,14 +98,7 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
                 counter.labels("no_auth").inc();
             }
         }
-
-        try {
-            filterChain.doFilter(request, response);
-        } finally {
-            if (cleanupRequired) {
-                SecurityContextHolder.clearContext();
-            }
-        }
+        return cleanupRequired;
     }
 
     private Credential getCredential(HttpServletRequest request) {
@@ -130,7 +138,7 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
 
     private static Counter initCounter() {
         return MetricUtils.counter()
-                .labels("no_auth").labels("refresh_cookie").labels("direct_token")
+                .labels("no_auth").labels("refresh_cookie").labels("direct_token").labels("login")
                 .name("polly_adal_auth_counter")
                 .help("Counter for authentication events")
                 .labelNames("action")
