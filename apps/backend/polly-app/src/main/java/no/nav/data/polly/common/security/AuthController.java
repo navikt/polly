@@ -11,6 +11,7 @@ import no.nav.data.polly.common.exceptions.PollyTechnicalException;
 import no.nav.data.polly.common.security.dto.OAuthState;
 import no.nav.data.polly.common.security.dto.UserInfo;
 import no.nav.data.polly.common.security.dto.UserInfoResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,7 +49,7 @@ import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterN
 @CrossOrigin
 @RequestMapping
 @Api(tags = {"auth"})
-public class LoginController {
+public class AuthController {
 
     static final String POLLY_TOKEN_COOKIE_NAME = "polly-token";
     private static final String REGISTRATION_ID = "azure";
@@ -58,7 +59,7 @@ public class LoginController {
     private final OAuth2AuthorizationRequestResolver resolver;
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
-    public LoginController(AzureTokenProvider azureTokenProvider, Encryptor refreshTokenEncryptor, OAuth2AuthorizationRequestResolver resolver) {
+    public AuthController(AzureTokenProvider azureTokenProvider, Encryptor refreshTokenEncryptor, OAuth2AuthorizationRequestResolver resolver) {
         this.azureTokenProvider = azureTokenProvider;
         this.encryptor = refreshTokenEncryptor;
         this.resolver = resolver;
@@ -136,6 +137,9 @@ public class LoginController {
     public ResponseEntity<UserInfoResponse> userinfo() {
         log.debug("Request to userinfo");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         return ResponseEntity.ok(((UserInfo) authentication.getDetails()).convertToResponse());
     }
 

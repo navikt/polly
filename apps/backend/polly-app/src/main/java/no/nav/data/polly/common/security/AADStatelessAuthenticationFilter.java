@@ -102,7 +102,7 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
     private Credential getCredential(HttpServletRequest request) {
         if (request.getCookies() != null) {
             Optional<Cookie> cookie = Stream.of(request.getCookies())
-                    .filter(c -> c.getName().equals(LoginController.POLLY_TOKEN_COOKIE_NAME))
+                    .filter(c -> c.getName().equals(AuthController.POLLY_TOKEN_COOKIE_NAME))
                     .findFirst();
             if (cookie.isPresent()) {
                 String token = refreshTokenEncryptor.decrypt(cookie.get().getValue());
