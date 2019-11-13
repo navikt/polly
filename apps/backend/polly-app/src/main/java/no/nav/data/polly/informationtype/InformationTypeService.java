@@ -9,7 +9,6 @@ import no.nav.data.polly.common.validator.ValidationError;
 import no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
-import no.nav.data.polly.informationtype.domain.InformationTypeMaster;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.term.domain.Term;
@@ -42,16 +41,16 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
         this.policyRepository = policyRepository;
     }
 
-    public InformationType save(InformationTypeRequest request, InformationTypeMaster master) {
-        return saveAll(List.of(request), master).get(0);
+    public InformationType save(InformationTypeRequest request) {
+        return saveAll(List.of(request)).get(0);
     }
 
     public InformationType update(InformationTypeRequest request) {
         return updateAll(List.of(request)).get(0);
     }
 
-    public List<InformationType> saveAll(List<InformationTypeRequest> requests, InformationTypeMaster master) {
-        List<InformationType> informationTypes = requests.stream().map(request -> convertNew(request, master)).collect(toList());
+    public List<InformationType> saveAll(List<InformationTypeRequest> requests) {
+        List<InformationType> informationTypes = requests.stream().map(this::convertNew).collect(toList());
         return repository.saveAll(informationTypes);
     }
 
@@ -63,9 +62,8 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
         return repository.saveAll(informationTypes);
     }
 
-    public InformationType delete(UUID id, InformationTypeMaster master) {
+    public InformationType delete(UUID id) {
         InformationType infoType = repository.findById(id).orElseThrow(() -> new PollyNotFoundException("Fant ikke id=" + id));
-        InformationTypeRequest.assertMasters(infoType, master);
         infoType.setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED);
         long deletes = policyRepository.deleteByInformationTypeId(id);
         log.debug("Deleted {} policies", deletes);
@@ -74,8 +72,8 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
         return infoType;
     }
 
-    public void deleteAll(Collection<UUID> ids, InformationTypeMaster master) {
-        ids.forEach(id -> delete(id, master));
+    public void deleteAll(Collection<UUID> ids) {
+        ids.forEach(this::delete);
     }
 
     public void sync(List<UUID> ids) {
@@ -87,8 +85,8 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
         return informationTypes.stream().filter(informationType -> id.equals(informationType.getId())).findFirst();
     }
 
-    private InformationType convertNew(InformationTypeRequest request, InformationTypeMaster master) {
-        InformationType informationType = new InformationType().convertNewFromRequest(request, master);
+    private InformationType convertNew(InformationTypeRequest request) {
+        InformationType informationType = new InformationType().convertNewFromRequest(request);
         attachDependencies(informationType, request);
         return informationType;
     }
@@ -97,7 +95,6 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
         if (!request.getName().equals(informationType.getData().getName())) {
             policyRepository.updateInformationTypeName(request.getIdAsUUID(), request.getName());
         }
-        request.assertMaster(informationType);
         informationType.convertUpdateFromRequest(request);
         attachDependencies(informationType, request);
     }
@@ -111,9 +108,9 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
         }
     }
 
-    public void validateRequest(List<InformationTypeRequest> requests, boolean isUpdate, InformationTypeMaster master) {
+    public void validateRequest(List<InformationTypeRequest> requests, boolean isUpdate) {
         requests = nullToEmptyList(requests);
-        InformationTypeRequest.initiateRequests(requests, isUpdate, master);
+        InformationTypeRequest.initiateRequests(requests, isUpdate);
         List<ValidationError> validationErrors = validateRequestsAndReturnErrors(requests);
 
         checkForErrors(validationErrors);
@@ -121,9 +118,6 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
 
     public List<ValidationError> validateRequestsAndReturnErrors(List<InformationTypeRequest> requests) {
         requests = nullToEmptyList(requests);
-        if (requests.stream().anyMatch(r -> r.getInformationTypeMaster() == null)) {
-            throw new IllegalStateException("missing InformationTypeMaster on request");
-        }
 
         var validationErrors = validateNoDuplicates(requests);
         requests.forEach(InformationTypeRequest::format);
@@ -152,21 +146,7 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
                 validationErrors.add(new ValidationError(request.getReference(), "nameAlreadyExistsNameChange"
                         , String.format("Cannot change name, InformationType %s already exists", request.getIdentifyingFields())));
             }
-
-            if (existingInformationTypeData.getInformationTypeMaster() == null) {
-                validationErrors.add(new ValidationError(request.getReference(), "missingMasterInExistingInformationType"
-                        , String.format("The InformationType %s has not defined where it is mastered", request.getIdentifyingFields())));
-            } else if (!correlatingMaster(existingInformationTypeData.getInformationTypeMaster(), request.getInformationTypeMaster())) {
-                validationErrors.add(new ValidationError(request.getReference(), "nonCorrelatingMaster",
-                        String.format("The InformationType %s is mastered in %s and therefore cannot be updated from %s",
-                                request.getIdentifyingFields(), existingInformationTypeData.getInformationTypeMaster(), request.getInformationTypeMaster())));
-            }
         }
         return validationErrors;
     }
-
-    private boolean correlatingMaster(InformationTypeMaster existingMaster, InformationTypeMaster requestMaster) {
-        return existingMaster.equals(requestMaster);
-    }
-
 }

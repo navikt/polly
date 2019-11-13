@@ -43,9 +43,7 @@ import static no.nav.data.polly.github.GithubWebhooksController.HEADER_GITHUB_ID
 import static no.nav.data.polly.github.GithubWebhooksController.HEADER_GITHUB_SIGNATURE;
 import static no.nav.data.polly.github.GithubWebhooksController.PULL_REQUEST_EVENT;
 import static no.nav.data.polly.github.GithubWebhooksController.PUSH_EVENT;
-import static no.nav.data.polly.informationtype.domain.InformationTypeMaster.GITHUB;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -198,9 +196,9 @@ class GithubWebhooksControllerTest {
         ).andExpect(status().isOk());
 
         verify(service, times(2)).validateRequestsAndReturnErrors(anyList());
-        verify(service).saveAll(anyList(), eq(GITHUB));
+        verify(service).saveAll(anyList());
         verify(service).updateAll(anyList());
-        verify(service).deleteAll(anyList(), eq(GITHUB));
+        verify(service).deleteAll(anyList());
     }
 
     @Test

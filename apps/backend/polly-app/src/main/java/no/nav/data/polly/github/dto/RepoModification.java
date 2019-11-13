@@ -15,7 +15,6 @@ import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
 import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
-import static no.nav.data.polly.informationtype.domain.InformationTypeMaster.GITHUB;
 
 @Builder
 @Data
@@ -36,9 +35,9 @@ public class RepoModification {
         List<InformationTypeRequest> currentItems = mapToInformationTypeRequest(added, modifiedAfter);
 
         CollectionDifference<InformationTypeRequest> difference = StreamUtils.difference(previousItems, currentItems, comparing(InformationTypeRequest::getIdentifyingFields));
-        InformationTypeRequest.initiateRequests(difference.getRemoved(), true, GITHUB);
-        InformationTypeRequest.initiateRequests(difference.getShared(), true, GITHUB);
-        InformationTypeRequest.initiateRequests(difference.getAdded(), false, GITHUB);
+        InformationTypeRequest.initiateRequests(difference.getRemoved(), true);
+        InformationTypeRequest.initiateRequests(difference.getShared(), true);
+        InformationTypeRequest.initiateRequests(difference.getAdded(), false);
         return difference;
     }
 

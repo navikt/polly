@@ -37,7 +37,6 @@ import javax.validation.Valid;
 import static java.util.Comparator.comparing;
 import static no.nav.data.polly.common.utils.StartsWithComparator.startsWith;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
-import static no.nav.data.polly.informationtype.domain.InformationTypeMaster.REST;
 
 @Slf4j
 @RestController
@@ -169,9 +168,9 @@ public class InformationTypeController {
     public ResponseEntity<RestResponsePage<InformationTypeResponse>> createInformationTypes(@RequestBody List<InformationTypeRequest> requests) {
         log.info("Received requests to create InformationTypes");
         requests = StreamUtils.nullToEmptyList(requests);
-        service.validateRequest(requests, false, REST);
+        service.validateRequest(requests, false);
 
-        List<InformationTypeResponse> responses = service.saveAll(requests, REST).stream().map(InformationType::convertToResponse).collect(Collectors.toList());
+        List<InformationTypeResponse> responses = service.saveAll(requests).stream().map(InformationType::convertToResponse).collect(Collectors.toList());
         return new ResponseEntity<>(new RestResponsePage<>(responses), HttpStatus.CREATED);
     }
 
@@ -184,7 +183,7 @@ public class InformationTypeController {
     public ResponseEntity<RestResponsePage<InformationTypeResponse>> updateInformationTypes(@RequestBody List<InformationTypeRequest> requests) {
         log.info("Received requests to update InformationTypes");
         requests = StreamUtils.nullToEmptyList(requests);
-        service.validateRequest(requests, true, REST);
+        service.validateRequest(requests, true);
 
         List<InformationTypeResponse> responses = service.updateAll(requests).stream().map(InformationType::convertToResponse).collect(Collectors.toList());
         return ResponseEntity.ok(new RestResponsePage<>(responses));
@@ -207,7 +206,7 @@ public class InformationTypeController {
             log.info("Cannot find InformationType with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        service.validateRequest(List.of(request), true, REST);
+        service.validateRequest(List.of(request), true);
 
         InformationType informationType = service.update(request);
 
@@ -228,7 +227,7 @@ public class InformationTypeController {
             log.info("id missing");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(service.delete(id, REST).convertToResponse(), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(service.delete(id).convertToResponse(), HttpStatus.ACCEPTED);
     }
 
     @ApiOperation(value = "Trigger InformationType Sync mot elasticsearch")

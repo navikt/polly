@@ -53,7 +53,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static java.util.Collections.singletonList;
 import static no.nav.data.polly.TestUtil.readFile;
 import static no.nav.data.polly.common.utils.JsonUtils.toJson;
-import static no.nav.data.polly.informationtype.domain.InformationTypeMaster.GITHUB;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -250,7 +249,7 @@ class GithubWebhooksControllerIT extends IntegrationTestBase {
                 .term("someterm")
                 .name(removed)
                 .description("desc")
-                .build(), GITHUB);
+                .build());
         InformationType.setElasticsearchStatus(ElasticsearchStatus.SYNCED);
         return InformationType;
     }

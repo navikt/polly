@@ -40,7 +40,6 @@ import javax.transaction.Transactional;
 import static java.util.Arrays.asList;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static no.nav.data.polly.github.GithubConsumer.REFS_HEADS_MASTER;
-import static no.nav.data.polly.informationtype.domain.InformationTypeMaster.GITHUB;
 
 @Slf4j
 @Transactional
@@ -202,7 +201,7 @@ public class GithubWebhooksController {
             return;
         }
         log.info("The following list of InformationTypes have been set to be deleted during the next scheduled task: {}", requests);
-        service.deleteAll(convert(requests, InformationTypeRequest::getIdAsUUID), GITHUB);
+        service.deleteAll(convert(requests, InformationTypeRequest::getIdAsUUID));
     }
 
     private void add(List<InformationTypeRequest> requests) {
@@ -210,7 +209,7 @@ public class GithubWebhooksController {
             return;
         }
         log.info("The following list of InformationTypes have been set to be added during the next scheduled task: {}", requests);
-        service.saveAll(requests, GITHUB);
+        service.saveAll(requests);
     }
 
     private String getPushAuthor(PushPayload payload) {

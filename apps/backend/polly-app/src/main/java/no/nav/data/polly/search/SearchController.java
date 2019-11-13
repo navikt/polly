@@ -21,7 +21,7 @@ public class SearchController {
 	@Autowired
 	private ElasticsearchProperties properties;
 
-	@GetMapping(value = "/field/{fieldName}/{fieldValue}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@GetMapping(value = "/field/{fieldName}/{fieldValue}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public SearchResult searchByField(@PathVariable String fieldName, @PathVariable String fieldValue) {
 
 		SearchResponse searchResponse = repository.searchInformationTypesByField(fieldName, fieldValue, properties.getIndex());
