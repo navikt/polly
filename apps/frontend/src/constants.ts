@@ -41,3 +41,12 @@ export interface ProcessFormValues {
     department: string;
     legalBases: Array<any>;
 }
+
+export interface UserInfo {
+    navIdent: String;
+    name: String;
+    givenName: String;
+    familyName: String;
+    email: String;
+    groups: [String];
+}
