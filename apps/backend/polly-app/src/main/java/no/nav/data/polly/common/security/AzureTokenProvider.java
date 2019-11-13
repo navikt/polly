@@ -37,18 +37,18 @@ public class AzureTokenProvider {
 
     private final ServiceEndpoints serviceEndpoints;
     private final AADAuthenticationProperties aadAuthProps;
-    private final ClientCredential credential;
+    private final ClientCredential azureCredential;
     private final boolean enableClientAuth;
 
     public AzureTokenProvider(AADAuthenticationProperties aadAuthProps, AuthenticationContext authenticationContext, ServiceEndpointsProperties serviceEndpointsProperties,
             @Value("${security.client.enabled:true}") boolean enableClientAuth) {
-        this.credential = new ClientCredential(aadAuthProps.getClientId(), aadAuthProps.getClientSecret());
+        this.azureCredential = new ClientCredential(aadAuthProps.getClientId(), aadAuthProps.getClientSecret());
         this.aadAuthProps = aadAuthProps;
         this.enableClientAuth = enableClientAuth;
         this.serviceEndpoints = serviceEndpointsProperties.getServiceEndpoints(aadAuthProps.getEnvironment());
 
         this.authenticationContext = authenticationContext;
-        this.graphClient = new AzureADGraphClient(credential, aadAuthProps, serviceEndpointsProperties);
+        this.graphClient = new AzureADGraphClient(azureCredential, aadAuthProps, serviceEndpointsProperties);
 
         this.accessTokenCache = Caffeine.newBuilder()
                 .expireAfter(new AuthResultExpiry())
@@ -76,12 +76,12 @@ public class AzureTokenProvider {
         return grantedAuthorityCache.get(token, this::lookupGrantedAuthorities);
     }
 
-    public AuthenticationResult acquireRefreshTokenForCode(String token, String redirectUri) {
+    public AuthenticationResult acquireTokenForAuthCode(String code, String redirectUri) {
         try {
-            log.debug("Looking up graph token");
-            return authenticationContext.acquireTokenByAuthorizationCode(token, new URI(redirectUri), credential, aadAuthProps.getClientId(), null).get();
+            log.debug("Looking up token for auth code");
+            return authenticationContext.acquireTokenByAuthorizationCode(code, new URI(redirectUri), azureCredential, aadAuthProps.getClientId(), null).get();
         } catch (Exception e) {
-            throw new PollyTechnicalException("Failed to get graph token", e);
+            throw new PollyTechnicalException("Failed to get token for auth code", e);
         }
     }
 
@@ -108,7 +108,7 @@ public class AzureTokenProvider {
     private AuthenticationResult acquireTokenByRefreshToken(String refreshToken, String resource) {
         try {
             log.debug("Looking up access token for resource {}", resource);
-            return authenticationContext.acquireTokenByRefreshToken(refreshToken, credential, resource, null).get();
+            return authenticationContext.acquireTokenByRefreshToken(refreshToken, azureCredential, resource, null).get();
         } catch (Exception e) {
             throw new PollyTechnicalException("Failed to get access token for refreshToken", e);
         }
@@ -117,7 +117,7 @@ public class AzureTokenProvider {
     private AuthenticationResult acquireTokenByCredential(String resource) {
         try {
             log.debug("Looking up application token for resource {}", resource);
-            return authenticationContext.acquireToken(resource, credential, null).get();
+            return authenticationContext.acquireToken(resource, azureCredential, null).get();
         } catch (Exception e) {
             throw new PollyTechnicalException("Failed to get access token for credential", e);
         }
@@ -126,13 +126,9 @@ public class AzureTokenProvider {
     private AuthenticationResult acquireGraphToken(String token) {
         try {
             log.debug("Looking up graph token");
-            return authenticationContext.acquireToken(serviceEndpoints.getAadGraphApiUri(), new UserAssertion(token), credential, null).get();
+            return authenticationContext.acquireToken(serviceEndpoints.getAadGraphApiUri(), new UserAssertion(token), azureCredential, null).get();
         } catch (Exception e) {
             throw new PollyTechnicalException("Failed to get graph token", e);
         }
-    }
-
-    public void revokeRefreshToken() {
-        // todo
     }
 }

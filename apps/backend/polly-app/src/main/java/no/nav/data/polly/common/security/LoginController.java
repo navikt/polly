@@ -25,7 +25,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.time.Instant;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -68,6 +67,7 @@ public class LoginController {
             @RequestParam(value = REDIRECT_URI, required = false) String redirectUri,
             @RequestParam(value = ERROR_URI, required = false) String errorUri
     ) throws IOException {
+        log.debug("Request to login");
         var usedRedirect = redirectUri != null ? redirectUri : substringBefore(fullRequestUrlWithoutQuery(request), "/login");
         String redirectUrl = createAuthRequestRedirectUrl(request, usedRedirect, errorUri);
         redirectStrategy.sendRedirect(request, response, redirectUrl);
@@ -86,6 +86,7 @@ public class LoginController {
             @RequestParam(value = ERROR_DESCRIPTION, required = false) String errorDesc,
             @RequestParam(STATE) String stateJson
     ) throws IOException {
+        log.debug("Request to auth");
         Assert.isTrue(REGISTRATION_ID.equals(registrationId), "Invaid registrationId");
         OAuthState state;
         try {
@@ -94,7 +95,8 @@ public class LoginController {
             throw new PollyTechnicalException("invalid state", e);
         }
         if (StringUtils.hasText(code)) {
-            var refreshToken = azureTokenProvider.acquireRefreshTokenForCode(code, fullRequestUrlWithoutQuery(request));
+            var refreshToken = azureTokenProvider.acquireTokenForAuthCode(code, fullRequestUrlWithoutQuery(request));
+            log.debug("Refreshtoken fetched for {}", refreshToken.getUserInfo().getUniqueId());
             response.addCookie(createTokenCookie(refreshToken));
             redirectStrategy.sendRedirect(request, response, state.getRedirectUri());
         } else {
@@ -112,7 +114,7 @@ public class LoginController {
     public void logout(HttpServletRequest request, HttpServletResponse response,
             @RequestParam(value = REDIRECT_URI, required = false) String redirectUri
     ) throws IOException {
-        azureTokenProvider.revokeRefreshToken();
+        log.debug("Request to logout");
         response.addCookie(createCookie(null, 0));
         if (redirectUri != null) {
             redirectStrategy.sendRedirect(request, response, new OAuthState(redirectUri).getRedirectUri());
@@ -127,8 +129,7 @@ public class LoginController {
 
     private Cookie createTokenCookie(AuthenticationResult refreshToken) {
         String encryptedToken = encryptor.encrypt(refreshToken.getRefreshToken());
-        long maxAge = Duration.between(Instant.now(), refreshToken.getExpiresOnDate().toInstant()).toSeconds();
-        return createCookie(encryptedToken, (int) maxAge);
+        return createCookie(encryptedToken, (int) Duration.ofDays(14).toSeconds());
     }
 
     private Cookie createCookie(String value, int maxAge) {
@@ -136,6 +137,7 @@ public class LoginController {
         cookie.setMaxAge(maxAge);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
+        cookie.setSecure(true);
         return cookie;
     }
 
