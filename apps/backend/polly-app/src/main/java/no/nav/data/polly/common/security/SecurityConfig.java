@@ -71,6 +71,8 @@ public class SecurityConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**").allowedOrigins(
                         "http://localhost:3000",
+                        "https://data-search.nais.adeo.no",
+                        "https://data-search.nais.preprod.local",
                         "https://data-catalog-editor.nais.preprod.local",
                         "https://data-catalog-editor.nais.adeo.no")
                         .allowCredentials(true);
