@@ -5,6 +5,7 @@
     "description": "description",
     "pii": "her og der",
     "sensitivity": "Personopplysning",
+    "navMaster": "AA-REG",
     "categories": [
       "PERSONALIA"
     ],

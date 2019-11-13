@@ -111,6 +111,7 @@ public class InformationType extends Auditable<String> {
         data.setKeywords(copyOf(request.getKeywords()));
         data.setPii(BooleanUtils.toBoolean(request.getPii()));
         data.setSensitivity(CodelistService.format(ListName.SENSITIVITY, request.getSensitivity()));
+        data.setNavMaster(CodelistService.format(ListName.SYSTEM, request.getNavMaster()));
     }
 
     public InformationTypeElasticsearch convertToElasticsearch(List<ProcessElasticsearch> processes) {

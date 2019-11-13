@@ -5,6 +5,7 @@
     "description": "description",
     "pii": "her og der",
     "sensitivity": "Personopplysning",
+    "navMaster": "TPS",
     "categories": [
       "PERSONALIA"
     ],
@@ -22,6 +23,7 @@
     "description": "description",
     "pii": "her og der",
     "sensitivity": "Personopplysning",
+    "navMaster": "PESYS",
     "categories": [
       "PERSONALIA"
     ],
@@ -39,6 +41,7 @@
     "description": "description",
     "pii": "her og der",
     "sensitivity": "Personopplysning",
+    "navMaster": "TPS",
     "categories": [
       "PERSONALIA"
     ],

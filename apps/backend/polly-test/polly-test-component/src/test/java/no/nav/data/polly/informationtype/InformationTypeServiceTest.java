@@ -180,6 +180,7 @@ class InformationTypeServiceTest {
                 .description("Description")
                 .pii("false")
                 .sensitivity("Personopplysning")
+                .navMaster("TPS")
                 .categories(List.of("Personalia"))
                 .sources(List.of("Skatt"))
                 .keywords(List.of("Keywords"))
