@@ -1,6 +1,5 @@
 package no.nav.data.polly.informationtype.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,11 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
-import no.nav.data.polly.github.GithubReference;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -48,9 +45,6 @@ public class InformationTypeRequest implements RequestElement {
 
     private boolean update;
     private int requestIndex;
-
-    @JsonIgnore
-    private GithubReference githubReference;
 
     @Override
     public String getIdentifyingFields() {
@@ -88,10 +82,5 @@ public class InformationTypeRequest implements RequestElement {
         validator.checkCodelists(Fields.sources, getSources(), ListName.SOURCE);
         validator.checkRequiredCodelist(Fields.sensitivity, getSensitivity(), ListName.SENSITIVITY);
         validator.checkRequiredCodelist(Fields.navMaster, getNavMaster(), ListName.SYSTEM);
-    }
-
-    @JsonIgnore
-    private Optional<String> getRequestReference() {
-        return githubReference == null ? Optional.empty() : Optional.ofNullable(githubReference.toString());
     }
 }
