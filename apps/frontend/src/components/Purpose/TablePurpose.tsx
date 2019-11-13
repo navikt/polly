@@ -1,16 +1,8 @@
-
 import * as React from "react";
-import {
-    StyledTable,
-    StyledHead,
-    StyledBody,
-    StyledRow,
-    StyledCell,
-    SortableHeadCell,
-    SORT_DIRECTION
-} from "baseui/table";
-import { withStyle, useStyletron } from "baseui";
-import {Codelist} from "../../constants";
+import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, StyledTable } from "baseui/table";
+import { useStyletron, withStyle } from "baseui";
+import { Codelist } from "../../constants";
+import { legalBasisLinkProcessor } from "../../util/string-processor"
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",
@@ -24,20 +16,14 @@ const CustomStyledRow = withStyle(StyledRow, {
     fontSize: "24px"
 });
 
-const lovdata_base = process.env.REACT_APP_LOVDATA_BASE_URL;
-
-const injectLegalLinks = (codelist: Codelist, law: string, text: string) => {
-    return text.replace(/§.(\d+(-\d+)?)/g, ` <a href="${lovdata_base + codelist.NATIONAL_LAW[law]}/§$1" target="_blank">§ $1</a>`)
-};
-
 const renderListItem = (codelist: Codelist, legalBasis: any | object) => {
     let gdpr = legalBasis.gdpr && legalBasis.gdpr.code
     let nationalLaw = legalBasis.nationalLaw && legalBasis.nationalLaw.code
 
-    let innerHtml = (gdpr && (gdpr + ': ')) + (nationalLaw && nationalLaw) + injectLegalLinks(codelist, nationalLaw, legalBasis.description)
+    let description = legalBasisLinkProcessor(codelist, nationalLaw, legalBasis.description)
 
     return (
-        <li dangerouslySetInnerHTML={{__html: innerHtml}}/>
+        <li> {gdpr && (gdpr + ', ')} {nationalLaw && nationalLaw} {description}</li>
     )
 }
 

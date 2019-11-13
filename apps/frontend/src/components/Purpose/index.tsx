@@ -14,6 +14,7 @@ import TablePurpose from './TablePurpose'
 import ModalPolicy from './ModalPolicy'
 import ModalProcess from './ModalProcess'
 import { Card } from "baseui/card";
+import { legalBasisLinkProcessor } from "../../util/string-processor"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -33,23 +34,24 @@ const rowPanelContent: BlockProps = {
     marginBottom: '2rem'
 }
 
-const renderListItem = (legalBasis: any | object) => {
+const renderListItem = (codelist:Codelist, legalBasis: any | object) => {
     let gdpr = legalBasis.gdpr && legalBasis.gdpr.code
     let nationalLaw = legalBasis.nationalLaw && legalBasis.nationalLaw.code
+    let description = legalBasisLinkProcessor(codelist, nationalLaw, legalBasis.description)
     return (
         <li>
-            <Paragraph2>{gdpr && gdpr + ': '} {nationalLaw && nationalLaw} {legalBasis.description}</Paragraph2>
+            <Paragraph2>{gdpr && gdpr + ': '} {nationalLaw && nationalLaw} {description}</Paragraph2>
         </li>
     )
 }
-const renderLegalBasisList = (list: any) => {
+const renderLegalBasisList = (codelist: Codelist, list: any) => {
     if (!list) return null
     if (list.length < 1)
         return (<Paragraph2>Fant ingen rettslige grunnlag</Paragraph2>)
 
     return (
         <ul>
-            {list.map((legalBasis: any) => <li>{renderListItem(legalBasis)}</li>)}
+            {list.map((legalBasis: any) => <li>{renderListItem(codelist, legalBasis)}</li>)}
         </ul>
     )
 }
@@ -152,7 +154,7 @@ const PurposeResult = ({ description, purpose, processList, codelist }: PurposeV
                                 <Block {...rowPanelContent}>
                                     <Block marginRight="6rem">
                                         <Label2>Rettslig Grunnlag</Label2>
-                                        {renderLegalBasisList(process.legalBases)}
+                                        {renderLegalBasisList(codelist, process.legalBases)}
                                     </Block>
                                     <Block>
                                         <Label2>Kategorier av personer</Label2>
