@@ -117,6 +117,7 @@ public class AuthController {
             @ApiResponse(code = 200, message = "Logged out"),
             @ApiResponse(code = 302, message = "Logged out")
     })
+    @CrossOrigin
     @GetMapping("/logout")
     public void logout(HttpServletRequest request, HttpServletResponse response,
             @RequestParam(value = REDIRECT_URI, required = false) String redirectUri
@@ -133,11 +134,12 @@ public class AuthController {
             @ApiResponse(code = 200, message = "userinfo returned", response = UserInfoResponse.class),
             @ApiResponse(code = 500, message = "internal error")
     })
+    @CrossOrigin
     @GetMapping("/userinfo")
     public ResponseEntity<UserInfoResponse> userinfo() {
         log.debug("Request to userinfo");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
+        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         return ResponseEntity.ok(((UserInfo) authentication.getDetails()).convertToResponse());
