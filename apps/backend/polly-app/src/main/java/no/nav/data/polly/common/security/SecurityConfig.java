@@ -69,7 +69,11 @@ public class SecurityConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("http://localhost:3000", "*.preprod.local", "*.adeo.no").allowCredentials(true);
+                registry.addMapping("/**").allowedOrigins(
+                        "http://localhost:3000",
+                        "https://data-catalog-editor.nais.preprod.local",
+                        "https://data-catalog-editor.nais.adeo.no")
+                        .allowCredentials(true);
             }
         };
     }
