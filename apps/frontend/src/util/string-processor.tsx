@@ -2,7 +2,7 @@ import { Codelist } from "../constants"
 import * as React from "react"
 
 const reactProcessString = require("react-process-string")
-export const processString = reactProcessString as (converters: { regex: RegExp, fn: (key: string, result: string[]) => JSX.Element }[]) => ((input: string) => JSX.Element)
+export const processString = reactProcessString as (converters: { regex: RegExp, fn: (key: string, result: string[]) => JSX.Element }[]) => ((input: string) => JSX.Element[])
 
 const lovdata_base = process.env.REACT_APP_LOVDATA_BASE_URL;
 
