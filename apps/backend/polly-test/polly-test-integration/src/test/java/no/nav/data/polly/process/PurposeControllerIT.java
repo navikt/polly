@@ -4,7 +4,7 @@ import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodeResponse;
-import no.nav.data.polly.informationtype.dto.InformationTypeNameResponse;
+import no.nav.data.polly.informationtype.dto.InformationTypeIdNameResponse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.ProcessReadController.ProcessPolicyPage;
@@ -39,7 +39,7 @@ class PurposeControllerIT extends IntegrationTestBase {
         assertThat(purposeResponse.getNumberOfElements()).isOne();
         assertThat(purposeResponse.getContent().get(0)).isEqualTo(
                 ProcessPolicyResponse.builder()
-                        .id(policy.getProcess().getId().toString())
+                        .id(policy.getProcess().getId())
                         .name("Auto_" + PURPOSE_CODE1)
                         .purposeCode(PURPOSE_CODE1)
                         .start(LocalDate.now())
@@ -47,9 +47,9 @@ class PurposeControllerIT extends IntegrationTestBase {
                         .legalBasis(legalBasisResponse())
                         .policy(PolicyResponse.builder()
                                 .id(policy.getId())
-                                .process(policy.getProcess().getName())
+                                .process(policy.getProcess().convertToIdNameResponse())
                                 .purposeCode(new CodeResponse(PURPOSE_CODE1, "Kontrollering"))
-                                .informationType(new InformationTypeNameResponse(createInformationType().getId().toString(), INFORMATION_TYPE_NAME))
+                                .informationType(new InformationTypeIdNameResponse(createInformationType().getId(), INFORMATION_TYPE_NAME))
                                 .subjectCategory(CodelistService.getCodeResponse(ListName.SUBJECT_CATEGORY, policy.getSubjectCategory()))
                                 .start(policy.getStart())
                                 .end(policy.getEnd())

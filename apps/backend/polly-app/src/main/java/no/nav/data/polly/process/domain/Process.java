@@ -16,6 +16,7 @@ import no.nav.data.polly.elasticsearch.dto.ProcessElasticsearch;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.process.dto.ProcessIdNameResponse;
 import no.nav.data.polly.process.dto.ProcessPolicyResponse;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
@@ -82,9 +83,13 @@ public class Process extends Auditable<String> {
         return DateUtil.isNow(data.getStart(), data.getEnd());
     }
 
+    public ProcessIdNameResponse convertToIdNameResponse() {
+        return new ProcessIdNameResponse(id, name);
+    }
+
     public ProcessResponse convertToResponse() {
         return ProcessResponse.builder()
-                .id(id.toString())
+                .id(id)
                 .name(name)
                 .purposeCode(purposeCode)
                 .department(getDepartmentCode())
@@ -97,7 +102,7 @@ public class Process extends Auditable<String> {
 
     public ProcessPolicyResponse convertToResponseWithPolicies() {
         return ProcessPolicyResponse.builder()
-                .id(id.toString())
+                .id(id)
                 .name(name)
                 .purposeCode(purposeCode)
                 .department(getDepartmentCode())
@@ -112,7 +117,7 @@ public class Process extends Auditable<String> {
     public ProcessElasticsearch convertToElasticsearch(List<Policy> policies) {
         Codelist purpose = CodelistService.getCodelist(ListName.PURPOSE, purposeCode);
         return ProcessElasticsearch.builder()
-                .id(id.toString())
+                .id(id)
                 .name(name)
                 .purpose(purpose.getCode())
                 .purposeDescription(purpose.getDescription())

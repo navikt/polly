@@ -8,6 +8,7 @@ import no.nav.data.polly.codelist.dto.CodeResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Builder
@@ -15,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ProcessElasticsearch {
 
-    private String id;
+    private UUID id;
     private String name;
     private String purpose;
     private String purposeDescription;

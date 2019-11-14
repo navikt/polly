@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import no.nav.data.polly.common.auditing.Auditable;
 import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.term.dto.TermIdNameResponse;
 import no.nav.data.polly.term.dto.TermRequest;
 import no.nav.data.polly.term.dto.TermResponse;
 import org.hibernate.annotations.Type;
@@ -61,7 +62,11 @@ public class Term extends Auditable<String> {
     }
 
     public TermResponse convertToResponse() {
-        return new TermResponse(id.toString(), name, description, data);
+        return new TermResponse(id, name, description, data);
+    }
+
+    public TermIdNameResponse convertToIdNameResponse() {
+        return new TermIdNameResponse(id, name);
     }
 
     public static Term convertFromNewRequest(TermRequest request) {

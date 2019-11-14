@@ -8,8 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Singular;
 import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.common.utils.DateUtil;
-import no.nav.data.polly.informationtype.dto.InformationTypeNameResponse;
+import no.nav.data.polly.informationtype.dto.InformationTypeIdNameResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
+import no.nav.data.polly.process.dto.ProcessIdNameResponse;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -23,13 +24,13 @@ import java.util.UUID;
 public class PolicyResponse {
 
     private UUID id;
-    private String process;
+    private ProcessIdNameResponse process;
     private CodeResponse purposeCode;
     private CodeResponse subjectCategory;
     private LocalDate start;
     private LocalDate end;
     private boolean legalBasesInherited;
-    private InformationTypeNameResponse informationType;
+    private InformationTypeIdNameResponse informationType;
     @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;
 

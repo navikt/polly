@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 import static no.nav.data.polly.common.swagger.SwaggerConfig.JSON;
 
 @Data
@@ -19,7 +21,7 @@ import static no.nav.data.polly.common.swagger.SwaggerConfig.JSON;
 @JsonPropertyOrder({"id", "name", "description", "data"})
 public class TermResponse {
 
-    private String id;
+    private UUID id;
     private String name;
     private String description;
     @JsonInclude(Include.NON_NULL)

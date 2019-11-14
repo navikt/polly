@@ -177,7 +177,7 @@ class PolicyControllerIT extends IntegrationTestBase {
         assertThat(updateEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(updateEntity.getBody().getTotalElements(), is(2L));
         assertPolicy(updateEntity.getBody().getContent().get(0), "UPDATED");
-        assertThat(updateEntity.getBody().getContent().get(1).getProcess(), is("UPDATED"));
+        assertThat(updateEntity.getBody().getContent().get(1).getProcess().getName(), is("UPDATED"));
         assertThat(policyRepository.count(), is(2L));
         assertBehandlingsgrunnlagDistribusjon(2);
     }
@@ -375,7 +375,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     private void assertPolicy(PolicyResponse policy, String process) {
         assertThat(policy.getInformationType().getName(), is(INFORMATION_TYPE_NAME));
-        assertThat(policy.getProcess(), is(process));
+        assertThat(policy.getProcess().getName(), is(process));
         assertThat(policy.getPurposeCode().getCode(), is(PURPOSE_CODE1));
         assertThat(policy.isLegalBasesInherited(), is(false));
     }

@@ -13,6 +13,6 @@ public interface TermSlim {
     String getDescription();
 
     default TermResponse convertToResponse() {
-        return new TermResponse(getId().toString(), getName(), getDescription(), null);
+        return new TermResponse(getId(), getName(), getDescription(), null);
     }
 }

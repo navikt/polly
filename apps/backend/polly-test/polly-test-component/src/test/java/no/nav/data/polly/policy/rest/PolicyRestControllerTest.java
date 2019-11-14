@@ -6,12 +6,12 @@ import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.common.rest.PageParameters;
 import no.nav.data.polly.informationtype.InformationTypeService;
 import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.informationtype.dto.InformationTypeIdNameResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 import no.nav.data.polly.policy.PolicyService;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
-import no.nav.data.polly.informationtype.dto.InformationTypeNameResponse;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.policy.mapper.PolicyMapper;
@@ -246,7 +246,7 @@ class PolicyRestControllerTest {
     }
 
     private PolicyResponse createPolicyResponse(String purpose, String desc, UUID id) {
-        return PolicyResponse.builder().id(id).purposeCode(new CodeResponse(purpose, "")).informationType(new InformationTypeNameResponse())
+        return PolicyResponse.builder().id(id).purposeCode(new CodeResponse(purpose, "")).informationType(new InformationTypeIdNameResponse())
                 .legalBases(List.of(LegalBasisResponse.builder().description(desc).build()))
                 .build();
     }

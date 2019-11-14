@@ -12,8 +12,10 @@ import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
+import no.nav.data.polly.term.dto.TermIdNameResponse;
 
 import java.util.List;
+import java.util.UUID;
 import javax.validation.constraints.NotNull;
 
 import static no.nav.data.polly.common.utils.StreamUtils.copyOf;
@@ -25,9 +27,9 @@ import static no.nav.data.polly.common.utils.StreamUtils.copyOf;
 @JsonPropertyOrder({"id", "name", "term", "description", "pii", "sensitivity", "navMaster", "categories", "sources", "keywords", "toBeDeleted"})
 public class InformationTypeResponse {
 
-    private String id;
+    private UUID id;
     private String name;
-    private String term;
+    private TermIdNameResponse term;
     private String description;
     private boolean pii;
     private CodeResponse sensitivity;
@@ -38,8 +40,8 @@ public class InformationTypeResponse {
     private boolean toBeDeleted;
 
     public InformationTypeResponse(InformationType informationType) {
-        id = informationType.getId().toString();
-        setTerm(informationType.getTerm() == null ? null : informationType.getTerm().getName());
+        id = informationType.getId();
+        setTerm(informationType.getTerm() == null ? null : informationType.getTerm().convertToIdNameResponse());
         setToBeDeleted(informationType.getElasticsearchStatus() == ElasticsearchStatus.TO_BE_DELETED);
         mapJsonFields(informationType.getData());
     }

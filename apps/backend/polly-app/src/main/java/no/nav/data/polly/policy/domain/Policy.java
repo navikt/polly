@@ -13,7 +13,7 @@ import no.nav.data.polly.common.auditing.Auditable;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.elasticsearch.dto.PolicyElasticsearch;
 import no.nav.data.polly.informationtype.domain.InformationType;
-import no.nav.data.polly.informationtype.dto.InformationTypeNameResponse;
+import no.nav.data.polly.informationtype.dto.InformationTypeIdNameResponse;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.domain.Process;
@@ -123,7 +123,7 @@ public class Policy extends Auditable<String> {
                 .id(getId())
                 .purposeCode(getCodeResponse(ListName.PURPOSE, getPurposeCode()))
                 .subjectCategory(getCodeResponse(ListName.SUBJECT_CATEGORY, getSubjectCategory()))
-                .process(getProcess().getName())
+                .process(getProcess().convertToIdNameResponse())
                 .start(getStart())
                 .end(getEnd())
                 .informationType(convertInformationTypeNameResponse())
@@ -132,8 +132,8 @@ public class Policy extends Auditable<String> {
                 .build();
     }
 
-    private InformationTypeNameResponse convertInformationTypeNameResponse() {
-        return getInformationType() != null ? new InformationTypeNameResponse(getInformationTypeId().toString(), getInformationTypeName()) : null;
+    private InformationTypeIdNameResponse convertInformationTypeNameResponse() {
+        return getInformationType() != null ? new InformationTypeIdNameResponse(getInformationTypeId(), getInformationTypeName()) : null;
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")

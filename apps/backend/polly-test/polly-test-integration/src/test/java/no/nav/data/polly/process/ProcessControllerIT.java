@@ -4,7 +4,7 @@ import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodeResponse;
-import no.nav.data.polly.informationtype.dto.InformationTypeNameResponse;
+import no.nav.data.polly.informationtype.dto.InformationTypeIdNameResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.dto.PolicyResponse;
@@ -41,7 +41,7 @@ class ProcessControllerIT extends IntegrationTestBase {
         assertThat(processResponse).isNotNull();
 
         assertThat(processResponse).isEqualTo(ProcessPolicyResponse.builder()
-                .id(policy.getProcess().getId().toString())
+                .id(policy.getProcess().getId())
                 .name("Auto_" + PURPOSE_CODE1)
                 .purposeCode(PURPOSE_CODE1)
                 .start(LocalDate.now())
@@ -49,9 +49,9 @@ class ProcessControllerIT extends IntegrationTestBase {
                 .legalBasis(legalBasisResponse())
                 .policy(PolicyResponse.builder()
                         .id(policy.getId())
-                        .process(policy.getProcess().getName())
+                        .process(policy.getProcess().convertToIdNameResponse())
                         .purposeCode(new CodeResponse(PURPOSE_CODE1, "Kontrollering"))
-                        .informationType(new InformationTypeNameResponse(createInformationType().getId().toString(), INFORMATION_TYPE_NAME))
+                        .informationType(new InformationTypeIdNameResponse(createInformationType().getId(), INFORMATION_TYPE_NAME))
                         .subjectCategory(CodelistService.getCodeResponse(ListName.SUBJECT_CATEGORY, policy.getSubjectCategory()))
                         .start(policy.getStart())
                         .end(policy.getEnd())
@@ -74,7 +74,7 @@ class ProcessControllerIT extends IntegrationTestBase {
         assertThat(processPage.getContent()).hasSize(2);
         assertThat(processPage.getContent()).contains(
                 ProcessResponse.builder()
-                        .id(policy.getProcess().getId().toString())
+                        .id(policy.getProcess().getId())
                         .name("Auto_" + PURPOSE_CODE1)
                         .purposeCode(PURPOSE_CODE1)
                         .start(LocalDate.now())
@@ -82,7 +82,7 @@ class ProcessControllerIT extends IntegrationTestBase {
                         .legalBasis(legalBasisResponse())
                         .build(),
                 ProcessResponse.builder()
-                        .id(policy2.getProcess().getId().toString())
+                        .id(policy2.getProcess().getId())
                         .name("Auto_" + PURPOSE_CODE1 + 2)
                         .purposeCode(PURPOSE_CODE1 + 2)
                         .start(LocalDate.now())
@@ -129,7 +129,7 @@ class ProcessControllerIT extends IntegrationTestBase {
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(resp.getBody()).isNotNull();
 
-        String id = resp.getBody().getContent().get(0).getId();
+        String id = resp.getBody().getContent().get(0).getId().toString();
         ProcessRequest update = ProcessRequest.builder().id(id).name("newprocess").purposeCode("AAP").department("dep").build();
         resp = restTemplate.exchange("/process", HttpMethod.PUT, new HttpEntity<>(List.of(update)), ProcessPage.class, id);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -144,7 +144,7 @@ class ProcessControllerIT extends IntegrationTestBase {
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(resp.getBody()).isNotNull();
 
-        String id = resp.getBody().getContent().get(0).getId();
+        String id = resp.getBody().getContent().get(0).getId().toString();
         ProcessRequest update = ProcessRequest.builder().id(id).name("changedName").purposeCode("AAP").department("dep").build();
         var errorResp = restTemplate.exchange("/process", HttpMethod.PUT, new HttpEntity<>(List.of(update)), String.class, id);
         assertThat(errorResp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);

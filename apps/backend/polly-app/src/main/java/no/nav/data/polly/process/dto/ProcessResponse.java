@@ -12,6 +12,7 @@ import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @SuperBuilder
@@ -20,7 +21,7 @@ import java.util.List;
 @JsonPropertyOrder({"id,", "name", "purposeCode", "department", "subDepartment", "start", "end", "active", "legalBases"})
 public class ProcessResponse {
 
-    private String id;
+    private UUID id;
     private String name;
     private String purposeCode;
     private CodeResponse department;
