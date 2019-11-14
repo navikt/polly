@@ -6,6 +6,7 @@ import axios from "axios";
 
 import InformationtypeForm from "../components/InformationType/InformationtypeForm";
 import Banner from "../components/Banner";
+import { InformationtypeFormValues } from "../constants"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 const server_codelist = process.env.REACT_APP_CODELIST_ENDPOINT;
@@ -27,16 +28,16 @@ const reduceCodelist = (list: any) => {
 
 const initFormValues = (data: any) => {
     return {
-        term: data.term,
-        pii: data.pii,
         name: data.name,
-        navMaster: data.navMaster,
+        term: !data.term ? '' : data.term.name,
+        pii: data.pii,
+        navMaster: !data.navMaster ? '' : data.navMaster.code,
         categories: reduceCodelist(data.categories),
         sources: reduceCodelist(data.sources),
         sensitivity: !data.sensitivity ? '' : data.sensitivity.code,
         keywords: data.keywords,
         description: data.description,
-    };
+    } as InformationtypeFormValues;
 };
 
 const InformationtypeEditPage = (props: any) => {
