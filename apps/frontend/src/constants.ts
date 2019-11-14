@@ -32,6 +32,11 @@ export interface Term {
     description: string;
 }
 
+export interface InformationTypeIdName {
+    id: string;
+    name: string;
+}
+
 export interface Codelist {
     PURPOSE: any | undefined | null;
     CATEGORY: any | undefined | null;
