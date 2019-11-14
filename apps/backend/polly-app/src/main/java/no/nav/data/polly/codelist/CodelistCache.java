@@ -6,6 +6,7 @@ import org.springframework.util.Assert;
 
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -30,6 +31,10 @@ final class CodelistCache {
             codelists.put(listName, new HashMap<>());
             codelistLegacy.put(listName, new HashMap<>());
         });
+    }
+
+    public static List<Codelist> getCodelist(ListName name) {
+        return List.copyOf(codelists.get(name).values());
     }
 
     static Codelist getCodelist(ListName listName, String code) {

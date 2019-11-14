@@ -74,6 +74,7 @@ public class PurposeController {
         Map<String, Long> counts = purposeCounts.stream()
                 .map(c -> Map.entry(c.getPurposeCode(), c.getCount()))
                 .collect(toMap(Entry::getKey, Entry::getValue));
+        CodelistService.getCodelist(ListName.PURPOSE).stream().filter(c -> !counts.containsKey(c.getCode())).forEach(c -> counts.put(c.getCode(), 0L));
         log.info("Got {} purposes with process", counts.size());
         return ResponseEntity.ok(new PurposeCountResponse(counts));
     }

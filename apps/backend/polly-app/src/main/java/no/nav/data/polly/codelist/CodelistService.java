@@ -66,6 +66,10 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         return codelist.getCode();
     }
 
+    public static List<Codelist> getCodelist(ListName name) {
+        return CodelistCache.getCodelist(name);
+    }
+
     @PostConstruct
     public void refreshCache() {
         List<Codelist> allCodelists = codelistRepository.findAll();
