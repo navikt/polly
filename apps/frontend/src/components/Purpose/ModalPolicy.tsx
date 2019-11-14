@@ -79,13 +79,13 @@ const FieldInformationTypeName = (props: {
                 searchable={true}
                 type={TYPE.search}
                 options={props.informationTypes}
-                placeholder="Skriv inn et begrep"
+                placeholder="Søk opplysningstyper"
                 value={props.value}
                 onInputChange={event => props.searchInformationType(event.currentTarget.value)}
                 onChange={(params: any) => {
-                  let term = params.value[0]
-                  props.setValue(term)
-                  form.setFieldValue('informationTypeName', term.id)
+                  let infoType = params.value[0]
+                  props.setValue(infoType)
+                  form.setFieldValue('informationTypeName', infoType.id)
                 }}
             />
         )}
