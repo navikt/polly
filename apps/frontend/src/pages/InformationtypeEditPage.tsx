@@ -30,6 +30,7 @@ const initFormValues = (data: any) => {
         term: data.term,
         pii: data.pii,
         name: data.name,
+        navMaster: data.navMaster,
         categories: reduceCodelist(data.categories),
         sources: reduceCodelist(data.sources),
         sensitivity: !data.sensitivity ? '' : data.sensitivity.code,

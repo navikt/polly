@@ -19,10 +19,17 @@ export interface InformationtypeFormValues {
     term: string;
     pii: boolean | null | undefined;
     name: string | null;
+    navMaster: string | null;
     sensitivity: string | object | null;
     categories: string[] | null[] | null;
     sources: string[] | null[] | null;
     keywords: string[] | null[] | null;
+}
+
+export interface Term {
+    id: string;
+    name: string;
+    description: string;
 }
 
 export interface Codelist {
@@ -34,6 +41,7 @@ export interface Codelist {
     GDPR_ARTICLE: any | undefined | null;
     DEPARTMENT: any | undefined | null;
     SUB_DEPARTMENT: any | undefined | null;
+    SYSTEM: any | undefined | null;
 }
 
 export interface ProcessFormValues {
@@ -49,4 +57,13 @@ export interface UserInfo {
     familyName: String;
     email: String;
     groups: [String];
+}
+
+export interface PageResponse<T> {
+    pageNumber: number;
+    pageSize: number;
+    pages: number;
+    numberOfElements: number;
+    totalElements: number;
+    content: T[];
 }
