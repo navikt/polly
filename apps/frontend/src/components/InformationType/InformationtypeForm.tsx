@@ -1,28 +1,20 @@
-
 import * as React from "react";
-import {
-    Formik,
-    FormikActions,
-    FormikProps,
-    Form,
-    Field,
-    FieldProps,
-    FieldArray,
-    FieldArrayRenderProps
-} from "formik";
+import { useEffect } from "react";
+import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikActions, FormikProps } from "formik";
 import { Label2 } from "baseui/typography";
 import { Input } from "baseui/input";
-import { BlockProps, Block } from "baseui/block";
+import { Block, BlockProps } from "baseui/block";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 import { Textarea } from "baseui/textarea";
-import { Button, SHAPE, KIND as ButtonKind } from "baseui/button";
+import { Button, SHAPE } from "baseui/button";
 import { Plus } from "baseui/icon";
 import { Tag, VARIANT } from "baseui/tag";
-import { StatefulSelect, Select, TYPE, Value, Option } from "baseui/select";
+import { Option, Select, TYPE, Value } from "baseui/select";
 import { Radio, RadioGroup } from "baseui/radio";
+import axios from "axios"
 
 import { InformationtypeFormValues, PageResponse, Term } from "../../constants";
-import axios from "axios"
+import { useDebouncedState } from "../../util/debounce"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -100,7 +92,9 @@ const InformationtypeForm = ({
         }]
     }
 
+    const [termSearch, setTermSearch] = useDebouncedState<string>('', 200);
     const [termSearchResult, setTermSearchResult] = React.useState<Option[]>([]);
+
     const [value, setValue] = React.useState<Value>([]);
     const [sensitivityValue, setSensitivityValue] = React.useState<Value>(initialValueSensitivity());
     const [termValue, setTermValue] = React.useState<Value>(initialValueTerm());
@@ -130,6 +124,17 @@ const InformationtypeForm = ({
             return [...acc, { id: codelist[curr], code: curr }];
         }, []);
     }
+
+    useEffect(() => {
+      if (termSearch && termSearch.length > 2) {
+        axios
+        .get(`${server_polly}/term/search/${termSearch}`)
+        .then((res: { data: PageResponse<Term> }) => {
+          let options: Option[] = res.data.content.map((term: Term) => ({id: term.name, label: term.name + ' - ' + term.description}))
+          return setTermSearchResult(options)
+        })
+      }
+    }, [termSearch])
 
     return (
         <React.Fragment>
@@ -182,17 +187,7 @@ const InformationtypeForm = ({
                                                 options={termSearchResult}
                                                 placeholder="Skriv inn et begrep"
                                                 value={termValue}
-                                                onInputChange={(event) => {
-                                                    let term = event.currentTarget.value
-                                                    if (term.length > 2) {
-                                                        axios
-                                                            .get(`${server_polly}/term/search/${term}`)
-                                                            .then((res: { data: PageResponse<Term> }) => {
-                                                                let options: Option[] = res.data.content.map((term: Term) => ({ id: term.name, label: term.name + ' - ' + term.description }))
-                                                                return setTermSearchResult(options)
-                                                            })
-                                                    }
-                                                }}
+                                                onInputChange={event => setTermSearch(event.currentTarget.value)}
                                                 onChange={(params: any) => {
                                                     let term = params.value[0]
                                                     setTermValue(term)
