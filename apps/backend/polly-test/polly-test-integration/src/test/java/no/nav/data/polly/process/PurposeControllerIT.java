@@ -69,6 +69,6 @@ class PurposeControllerIT extends IntegrationTestBase {
         PurposeCountResponse purposeResponse = resp.getBody();
         assertThat(purposeResponse).isNotNull();
 
-        assertThat(purposeResponse).isEqualTo(new PurposeCountResponse(Map.of(PURPOSE_CODE1, 1L, PURPOSE_CODE1 + 2, 1L)));
+        assertThat(purposeResponse).isEqualTo(new PurposeCountResponse(Map.of(PURPOSE_CODE1, 1L, PURPOSE_CODE1 + 2, 1L, PURPOSE_CODE2, 0L)));
     }
 }

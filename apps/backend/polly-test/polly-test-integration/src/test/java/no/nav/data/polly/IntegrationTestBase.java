@@ -62,6 +62,7 @@ public abstract class IntegrationTestBase {
     protected static final String LEGAL_BASIS_DESCRIPTION1 = "Legal basis 1";
     protected static final String PROCESS_NAME_1 = "Saksbehandling";
     protected static final String PURPOSE_CODE1 = "Kontroll";
+    protected static final String PURPOSE_CODE2 = "AAP";
     protected static final String INFORMATION_TYPE_NAME = "Sivilstand";
 
     private static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:10.4");
