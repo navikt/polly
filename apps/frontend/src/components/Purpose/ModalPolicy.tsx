@@ -64,7 +64,12 @@ const renderLabel = (label: any | string) => (
     </Block>
 )
 
-const FieldInformationTypeName = (props: any) => (
+const FieldInformationTypeName = (props: {
+  informationTypes: Option[],
+  searchInformationType: (name: string) => void,
+  value: Value | undefined,
+  setValue: (v: Value) => void
+}) => (
     <Field
         name="informationTypeName"
         render={({form}: FieldProps<PolicyFormValues>) => (
