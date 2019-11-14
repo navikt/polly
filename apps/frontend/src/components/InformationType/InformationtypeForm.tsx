@@ -86,11 +86,11 @@ const InformationtypeForm = ({
         }]
     }
     const initialValueMaster = () => {
-      if (!formInitialValues.navMaster || !codelist) return []
-      return [{
-        id: codelist['SYSTEM'][formInitialValues.navMaster],
-        code: formInitialValues.navMaster
-      }]
+        if (!formInitialValues.navMaster || !codelist) return []
+        return [{
+            id: codelist['SYSTEM'][formInitialValues.navMaster],
+            code: formInitialValues.navMaster
+        }]
     }
     const initialValueTerm = () => {
         if (!formInitialValues.term || !codelist) return []
@@ -153,54 +153,55 @@ const InformationtypeForm = ({
                             <FlexGridItem>
                                 <Field
                                     name="name"
-                                    render={({field}: FieldProps<InformationtypeFormValues>) => (
-                                            <Block>
-                                                <Block {...labelProps}>
-                                                    <Label2>Navn</Label2>
-                                                </Block>
-                                                <Input
-                                                    {...field}
-                                                    placeholder="Skriv inn navn"
-                                                />
+                                    render={({ field }: FieldProps<InformationtypeFormValues>) => (
+                                        <Block>
+                                            <Block {...labelProps}>
+                                                <Label2>Navn</Label2>
                                             </Block>
-                                        )}
+                                            <Input
+                                                {...field}
+                                                placeholder="Skriv inn navn"
+                                            />
+                                        </Block>
+                                    )}
                                 />
                             </FlexGridItem>
 
                             <FlexGridItem>
-                              <Field
-                                  name="term"
-                                  render={({form}: FieldProps<InformationtypeFormValues>) => (
-                                      <Block>
-                                        <Block {...labelProps}>
-                                          <Label2>Begrep</Label2>
+                                <Field
+                                    name="term"
+                                    render={({ form }: FieldProps<InformationtypeFormValues>) => (
+                                        <Block>
+                                            <Block {...labelProps}>
+                                                <Label2>Begrep</Label2>
+                                            </Block>
+                                            <Select
+                                                maxDropdownHeight="350px"
+                                                searchable={true}
+                                                type={TYPE.search}
+                                                options={termSearchResult}
+                                                placeholder="Skriv inn et begrep"
+                                                value={termValue}
+                                                onInputChange={(event) => {
+                                                    let term = event.currentTarget.value
+                                                    if (term.length > 2) {
+                                                        axios
+                                                            .get(`${server_polly}/term/search/${term}`)
+                                                            .then((res: { data: PageResponse<Term> }) => {
+                                                                let options: Option[] = res.data.content.map((term: Term) => ({ id: term.name, label: term.name + ' - ' + term.description }))
+                                                                return setTermSearchResult(options)
+                                                            })
+                                                    }
+                                                }}
+                                                onChange={(params: any) => {
+                                                    let term = params.value[0]
+                                                    setTermValue(term)
+                                                    form.setFieldValue('term', term.id)
+                                                }}
+                                            />
                                         </Block>
-                                        <Select
-                                            searchable={true}
-                                            type={TYPE.search}
-                                            options={termSearchResult}
-                                            placeholder="Skriv inn et begrep"
-                                            value={termValue}
-                                            onInputChange={(event) => {
-                                              let term = event.currentTarget.value
-                                              if (term.length > 2) {
-                                                axios
-                                                .get(`${server_polly}/term/search/${term}`)
-                                                .then((res: { data: PageResponse<Term> }) => {
-                                                  let options: Option[] = res.data.content.map((term: Term) => ({id: term.name, label: term.name}))
-                                                  return setTermSearchResult(options)
-                                                })
-                                              }
-                                            }}
-                                            onChange={(params: any) => {
-                                              let term = params.value[0]
-                                              setTermValue(term)
-                                              form.setFieldValue('term', term.id)
-                                            }}
-                                        />
-                                      </Block>
-                                  )}
-                              />
+                                    )}
+                                />
                             </FlexGridItem>
 
                             <FlexGridItem>
@@ -359,21 +360,21 @@ const InformationtypeForm = ({
                                     name="navMaster"
                                     render={({ form }: FieldProps<InformationtypeFormValues>) => (
                                         <Block marginBottom="1em">
-                                          <Block {...labelProps}>
-                                            <Label2>Master</Label2>
-                                          </Block>
+                                            <Block {...labelProps}>
+                                                <Label2>Master</Label2>
+                                            </Block>
 
-                                          <Select
-                                              options={getParsedOptionsSensitivity(codelist.SYSTEM)}
-                                              labelKey="id"
-                                              valueKey="id"
-                                              value={masterValue}
-                                              placeholder="Velg master"
-                                              onChange={(params: any) => {
-                                                setMasterValue(params.value[0])
-                                                form.setFieldValue('navMaster', params.value[0].code)
-                                              }}
-                                          />
+                                            <Select
+                                                options={getParsedOptionsSensitivity(codelist.SYSTEM)}
+                                                labelKey="id"
+                                                valueKey="id"
+                                                value={masterValue}
+                                                placeholder="Velg master"
+                                                onChange={(params: any) => {
+                                                    setMasterValue(params.value[0])
+                                                    form.setFieldValue('navMaster', params.value[0].code)
+                                                }}
+                                            />
                                         </Block>
                                     )}
                                 />
