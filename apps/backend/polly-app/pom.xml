@@ -76,22 +76,6 @@
 			<version>${hibernate-types-52.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.github.ben-manes.caffeine</groupId>
-			<artifactId>caffeine</artifactId>
-		</dependency>
-
-		<!-- GitHub -->
-		<dependency>
-			<groupId>org.eclipse.mylyn.github</groupId>
-			<artifactId>org.eclipse.egit.github.core</artifactId>
-			<version>${org.eclipse.egit.github.core.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-		</dependency>
-
 		<!-- Swagger -->
 		<dependency>
 			<groupId>io.springfox</groupId>
