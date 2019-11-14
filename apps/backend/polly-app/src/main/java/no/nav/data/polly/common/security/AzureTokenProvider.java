@@ -10,6 +10,7 @@ import com.microsoft.azure.spring.autoconfigure.aad.AADAuthenticationProperties;
 import com.microsoft.azure.spring.autoconfigure.aad.AzureADGraphClient;
 import com.microsoft.azure.spring.autoconfigure.aad.ServiceEndpoints;
 import com.microsoft.azure.spring.autoconfigure.aad.ServiceEndpointsProperties;
+import com.microsoft.azure.spring.autoconfigure.aad.UserGroup;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.exceptions.PollyTechnicalException;
 import no.nav.data.polly.common.security.dto.Credential;
@@ -20,9 +21,11 @@ import org.springframework.stereotype.Service;
 
 import java.net.URI;
 import java.time.Duration;
+import java.util.List;
 import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
+import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Slf4j
 @Service
@@ -89,7 +92,9 @@ public class AzureTokenProvider {
     private Set<GrantedAuthority> lookupGrantedAuthorities(String token) {
         try {
             String graphToken = acquireGraphToken(token).getAccessToken();
-            return graphClient.convertGroupsToGrantedAuthorities(graphClient.getGroups(graphToken));
+            List<UserGroup> groups = graphClient.getGroups(graphToken);
+            log.debug("groups {}", convert(groups, UserGroup::getDisplayName));
+            return graphClient.convertGroupsToGrantedAuthorities(groups);
         } catch (Exception e) {
             log.error("Failed to get groups for token", e);
             throw new PollyTechnicalException("Failed to get groups for token", e);
