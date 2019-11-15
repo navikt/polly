@@ -1,9 +1,9 @@
 package no.nav.data.polly.common.security;
 
+import no.nav.data.polly.common.security.dto.PollyRole;
 import no.nav.data.polly.common.web.CorrelationFilter;
 import no.nav.data.polly.common.web.UserFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,8 +20,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired(required = false)
     private AADStatelessAuthenticationFilter aadAuthFilter;
-    @Value("${security.enabled:true}")
-    private boolean enable;
+    @Autowired(required = false)
+    private SecurityProperties securityProperties;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -30,7 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         addFilters(http);
 
-        if (!enable) {
+        if (securityProperties == null || !securityProperties.isEnabled()) {
             return;
         }
         http.authorizeRequests().antMatchers("/login/**").permitAll();
@@ -48,7 +48,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(HttpMethod.GET, "/term/**").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.GET, "/records/search").permitAll();
 
-        http.authorizeRequests().anyRequest().authenticated();
+        http.authorizeRequests().antMatchers("/codelist/**").hasRole(PollyRole.POLLY_ADMIN.name());
+        http.authorizeRequests().anyRequest().hasRole(PollyRole.POLLY_WRITE.name());
     }
 
     private void addFilters(HttpSecurity http) {

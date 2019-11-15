@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 import java.util.List;
 import java.util.Set;
 
+import static no.nav.data.polly.common.security.dto.PollyRole.ROLE_PREFIX;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static no.nav.data.polly.common.utils.StreamUtils.copyOf;
 
@@ -38,7 +39,7 @@ public class UserInfo {
         this.familyName = getClaim(principal, StandardClaimNames.FAMILY_NAME);
         this.email = principal.getUniqueName();
 
-        groups = convert(grantedAuthorities, grantedAuthority -> StringUtils.substringAfter(grantedAuthority.getAuthority(), "ROLE_"));
+        groups = convert(grantedAuthorities, grantedAuthority -> StringUtils.substringAfter(grantedAuthority.getAuthority(), ROLE_PREFIX));
     }
 
     public String formatUser() {

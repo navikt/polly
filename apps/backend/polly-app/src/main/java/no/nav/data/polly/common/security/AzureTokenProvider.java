@@ -14,17 +14,21 @@ import com.microsoft.azure.spring.autoconfigure.aad.UserGroup;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.exceptions.PollyTechnicalException;
 import no.nav.data.polly.common.security.dto.Credential;
+import no.nav.data.polly.common.security.dto.PollyRole;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
+import static no.nav.data.polly.common.security.dto.PollyRole.ROLE_PREFIX;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Slf4j
@@ -42,13 +46,13 @@ public class AzureTokenProvider {
     private final ServiceEndpoints serviceEndpoints;
     private final AADAuthenticationProperties aadAuthProps;
     private final ClientCredential azureCredential;
-    private final boolean enableClientAuth;
+    private final SecurityProperties securityProperties;
 
     public AzureTokenProvider(AADAuthenticationProperties aadAuthProps, AuthenticationContext authenticationContext, ServiceEndpointsProperties serviceEndpointsProperties,
-            @Value("${security.client.enabled:true}") boolean enableClientAuth) {
+            SecurityProperties securityProperties) {
         this.azureCredential = new ClientCredential(aadAuthProps.getClientId(), aadAuthProps.getClientSecret());
         this.aadAuthProps = aadAuthProps;
-        this.enableClientAuth = enableClientAuth;
+        this.securityProperties = securityProperties;
         this.serviceEndpoints = serviceEndpointsProperties.getServiceEndpoints(aadAuthProps.getEnvironment());
 
         this.authenticationContext = authenticationContext;
@@ -63,7 +67,7 @@ public class AzureTokenProvider {
     }
 
     public String getConsumerToken(String resource, String appIdUri) {
-        if (!enableClientAuth) {
+        if (!securityProperties.isClientEnabled()) {
             return StringUtils.EMPTY;
         }
         return Credential.getCredential()
@@ -94,11 +98,34 @@ public class AzureTokenProvider {
             String graphToken = acquireGraphToken(token).getAccessToken();
             List<UserGroup> groups = graphClient.getGroups(graphToken);
             log.debug("groups {}", convert(groups, UserGroup::getDisplayName));
-            return graphClient.convertGroupsToGrantedAuthorities(groups);
+            Set<GrantedAuthority> roles = groups.stream()
+                    .map(this::roleFor)
+                    .filter(Objects::nonNull)
+                    .map(this::convertAuthority)
+                    .collect(Collectors.toSet());
+            roles.add(convertAuthority(PollyRole.POLLY_READ.name()));
+            log.debug("roles {}", convert(roles, GrantedAuthority::getAuthority));
+            return roles;
         } catch (Exception e) {
             log.error("Failed to get groups for token", e);
             throw new PollyTechnicalException("Failed to get groups for token", e);
         }
+    }
+
+    private String roleFor(UserGroup group) {
+        var groupName = group.getDisplayName();
+        if (securityProperties.getWriteGroups().contains(groupName)) {
+            return PollyRole.POLLY_WRITE.name();
+        }
+        if (securityProperties.getAdminGroups().contains(groupName)) {
+            return PollyRole.POLLY_ADMIN.name();
+        }
+        // for future - add team -> system roles here
+        return null;
+    }
+
+    private SimpleGrantedAuthority convertAuthority(String role) {
+        return new SimpleGrantedAuthority(ROLE_PREFIX + role);
     }
 
     private String getApplicationTokenForResource(String resource) {

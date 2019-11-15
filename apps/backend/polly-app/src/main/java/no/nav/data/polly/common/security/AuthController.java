@@ -50,7 +50,6 @@ import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterN
 @Api(tags = {"auth"})
 public class AuthController {
 
-    static final String POLLY_TOKEN_COOKIE_NAME = "polly-token";
     private static final String REGISTRATION_ID = "azure";
 
     private final AzureTokenProvider azureTokenProvider;
@@ -122,7 +121,7 @@ public class AuthController {
             @RequestParam(value = REDIRECT_URI, required = false) String redirectUri
     ) throws IOException {
         log.debug("Request to logout");
-        response.addCookie(createCookie(null, 0, request));
+        response.addCookie(AADStatelessAuthenticationFilter.createCookie(null, 0, request));
         if (redirectUri != null) {
             redirectStrategy.sendRedirect(request, response, new OAuthState(redirectUri).getRedirectUri());
         }
@@ -152,16 +151,7 @@ public class AuthController {
 
     private Cookie createTokenCookie(AuthenticationResult refreshToken, HttpServletRequest request) {
         String encryptedToken = encryptor.encrypt(refreshToken.getRefreshToken());
-        return createCookie(encryptedToken, (int) Duration.ofDays(14).toSeconds(), request);
-    }
-
-    private Cookie createCookie(String value, int maxAge, HttpServletRequest request) {
-        Cookie cookie = new Cookie(POLLY_TOKEN_COOKIE_NAME, value);
-        cookie.setMaxAge(maxAge);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setSecure(!"localhost".equals(request.getServerName()));
-        return cookie;
+        return AADStatelessAuthenticationFilter.createCookie(encryptedToken, (int) Duration.ofDays(14).toSeconds(), request);
     }
 
     private String fullRequestUrlWithoutQuery(HttpServletRequest request) {

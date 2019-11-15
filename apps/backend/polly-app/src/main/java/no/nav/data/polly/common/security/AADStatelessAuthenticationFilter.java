@@ -35,6 +35,7 @@ import static org.springframework.util.StringUtils.hasText;
 @Slf4j
 public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthenticationFilter {
 
+    private static final String POLLY_TOKEN_COOKIE_NAME = "polly-token";
     private static final String TOKEN_TYPE = "Bearer ";
 
     private final Encryptor refreshTokenEncryptor;
@@ -59,7 +60,7 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
 
         if (!StringUtils.startsWith(request.getServletPath(), "/login")) {
             counter.labels("login").inc();
-            cleanupRequired = authenticate(request);
+            cleanupRequired = authenticate(request, response);
         }
 
         try {
@@ -71,8 +72,8 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
         }
     }
 
-    private boolean authenticate(HttpServletRequest request) throws ServletException {
-        Credential credential = getCredential(request);
+    private boolean authenticate(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        Credential credential = getCredential(request, response);
         if (credential != null) {
             try {
                 var principal = buildUserPrincipal(credential.getAccessToken());
@@ -99,16 +100,22 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
         return false;
     }
 
-    private Credential getCredential(HttpServletRequest request) {
+    private Credential getCredential(HttpServletRequest request, HttpServletResponse response) {
         if (request.getCookies() != null) {
             Optional<Cookie> cookie = Stream.of(request.getCookies())
-                    .filter(c -> c.getName().equals(AuthController.POLLY_TOKEN_COOKIE_NAME))
+                    .filter(c -> c.getName().equals(POLLY_TOKEN_COOKIE_NAME))
                     .findFirst();
             if (cookie.isPresent()) {
-                String token = refreshTokenEncryptor.decrypt(cookie.get().getValue());
-                String accessToken = azureTokenProvider.getAccessToken(token);
-                counter.labels("refresh_cookie").inc();
-                return new Credential(accessToken, token);
+                try {
+                    String token = refreshTokenEncryptor.decrypt(cookie.get().getValue());
+                    String accessToken = azureTokenProvider.getAccessToken(token);
+                    counter.labels("refresh_cookie").inc();
+                    return new Credential(accessToken, token);
+                } catch (Exception e) {
+                    log.warn("Invalid auth cookie", e);
+                    response.addCookie(createCookie(null, 0, request));
+                    return null;
+                }
             }
         }
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
@@ -132,6 +139,15 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
         if (appidClaim == null || !allowedAppIds.contains(appidClaim)) {
             throw new BadJWTException("Invalid token appid. Provided value " + appidClaim + " does not match allowed appid");
         }
+    }
+
+    static Cookie createCookie(String value, int maxAge, HttpServletRequest request) {
+        Cookie cookie = new Cookie(POLLY_TOKEN_COOKIE_NAME, value);
+        cookie.setMaxAge(maxAge);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setSecure(!"localhost".equals(request.getServerName()));
+        return cookie;
     }
 
     private static Counter initCounter() {

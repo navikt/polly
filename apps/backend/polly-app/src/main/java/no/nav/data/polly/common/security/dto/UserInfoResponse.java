@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -21,10 +22,20 @@ public class UserInfoResponse {
     private String givenName;
     private String familyName;
     private String email;
-    private List<String> groups;
+    private List<String> groups = new ArrayList<>();
 
     public static UserInfoResponse noUser() {
-        return UserInfoResponse.builder().loggedIn(false).build();
+        return UserInfoResponse.builder().loggedIn(false).pollyRole(PollyRole.POLLY_READ).build();
     }
 
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    public static class UserInfoResponseBuilder {
+
+        private List<String> groups = new ArrayList<>();
+
+        public UserInfoResponseBuilder pollyRole(PollyRole pollyRole) {
+            this.groups.add(pollyRole.name());
+            return this;
+        }
+    }
 }

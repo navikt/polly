@@ -7,7 +7,6 @@ import com.microsoft.azure.spring.autoconfigure.aad.ServiceEndpointsProperties;
 import com.microsoft.azure.spring.autoconfigure.aad.UserPrincipalManager;
 import com.nimbusds.jose.util.ResourceRetriever;
 import no.nav.data.polly.common.utils.MdcExecutor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -50,8 +49,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AppIdMapping appIdMapping(@Value("${azure.activedirectory.allowed.app-id.mappings}") String mappings) {
-        return new AppIdMapping(mappings);
+    public AppIdMapping appIdMapping(SecurityProperties securityProperties) {
+        return new AppIdMapping(securityProperties.getAllowedAppIdMappings());
     }
 
     @Bean
@@ -60,8 +59,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public Encryptor refreshTokenEncryptor(@Value("${azure.activedirectory.token.enc.key}") String refreshTokenKey) {
-        return new Encryptor(refreshTokenKey);
+    public Encryptor refreshTokenEncryptor(SecurityProperties securityProperties) {
+        return new Encryptor(securityProperties.getEncKey());
     }
 
     @Bean
