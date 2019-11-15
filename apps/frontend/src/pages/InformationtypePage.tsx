@@ -7,7 +7,7 @@ import InformationtypeMetadata from "../components/InformationType/Informationty
 import { useDebouncedState } from "../util/debounce"
 import { Option, Select, TYPE } from "baseui/select"
 import { InformationTypeIdName, PageResponse } from "../constants"
-import { codelist } from "../codelist"
+import { codelist } from "../listName"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 const server_codelist = process.env.REACT_APP_CODELIST_ENDPOINT;

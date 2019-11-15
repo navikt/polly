@@ -10,7 +10,7 @@ import { Plus } from "baseui/icon";
 
 import { ProcessFormValues } from "../../constants";
 import CardLegalBasis from './CardLegalBasis'
-import { Codelist, codelist } from "../../codelist"
+import { ListName, codelist } from "../../listName"
 
 const modalBlockProps: BlockProps = {
     width: '700px',
@@ -58,7 +58,7 @@ const FieldDepartment = () => (
         name="department"
         render={({ form }: FieldProps<ProcessFormValues>) => (
             <StatefulSelect
-                options={getParsedOptions(codelist.getCodes(Codelist.DEPARTMENT))}
+                options={getParsedOptions(codelist.getCodes(ListName.DEPARTMENT))}
                 labelKey="id"
                 valueKey="id"
                 onChange={event => {
@@ -75,7 +75,7 @@ const FieldSubDepartment = () => (
         name="subDepartment"
         render={({ form }: FieldProps<ProcessFormValues>) => (
             <StatefulSelect
-                options={getParsedOptions(codelist.getCodes(Codelist.SUB_DEPARTMENT))}
+                options={getParsedOptions(codelist.getCodes(ListName.SUB_DEPARTMENT))}
                 labelKey="id"
                 valueKey="id"
                 onChange={event => form.setFieldValue('subDepartment',

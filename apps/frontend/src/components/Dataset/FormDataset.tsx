@@ -22,7 +22,7 @@ import { Label1 } from "baseui/typography";
 import { Radio, RadioGroup } from "baseui/radio";
 
 import { DatasetFormValues } from "../../constants";
-import { Codelist, codelist, ICodelist } from "../../codelist";
+import { ListName, codelist, ICodelist } from "../../listName";
 
 type FormProps = {
     formInitialValues: DatasetFormValues | any;
@@ -229,7 +229,7 @@ const DatasetForm = ({
                                                 </Label1>
                                                 <Select
                                                     options={getParsedOptions(
-                                                        codelist.getCodes(Codelist.CATEGORY),
+                                                        codelist.getCodes(ListName.CATEGORY),
                                                         formikBag.values
                                                             .categories
                                                     )}
@@ -268,7 +268,7 @@ const DatasetForm = ({
                                                 </Label1>
                                                 <Select
                                                     options={getParsedOptions(
-                                                        codelist.getCodes(Codelist.SOURCE),
+                                                        codelist.getCodes(ListName.SOURCE),
                                                         formikBag.values
                                                             .provenances
                                                     )}

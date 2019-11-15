@@ -6,7 +6,7 @@ import PurposeResult from "../components/Purpose";
 import Banner from "../components/Banner";
 
 import { Block } from "baseui/block";
-import { Codelist, codelist } from "../codelist";
+import { ListName, codelist } from "../listName";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -56,7 +56,7 @@ const PurposePage = () => {
 
     const getPurposeSelectItems = () => {
         if (!codelist.isLoaded()) return [];
-        return Object.keys(codelist.getCodes(Codelist.PURPOSE)).reduce(
+        return Object.keys(codelist.getCodes(ListName.PURPOSE)).reduce(
             (acc: any, curr: any) => {
                 return [...acc, { id: curr }];
             },
@@ -66,7 +66,7 @@ const PurposePage = () => {
 
     const getPurposeDescription = () => {
         if (!codelist.isLoaded()) return null;
-        return codelist.getDescription(Codelist.PURPOSE, currentPurposeValue);
+        return codelist.getDescription(ListName.PURPOSE, currentPurposeValue);
     };
 
     React.useEffect(() => {

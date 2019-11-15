@@ -13,7 +13,7 @@ import { Option, Select, TYPE, Value } from "baseui/select";
 import { Radio, RadioGroup } from "baseui/radio";
 import axios from "axios"
 
-import { codelist, Codelist, ICodelist } from "../../codelist";
+import { codelist, ListName, ICodelist } from "../../listName";
 import { InformationtypeFormValues, PageResponse, Term } from "../../constants";
 import { useDebouncedState } from "../../util/debounce"
 
@@ -65,14 +65,14 @@ const InformationtypeForm = ({
     const initialValueSensitivity = () => {
         if (!formInitialValues.sensitivity || !codelist.isLoaded()) return []
         return [{
-            id: codelist.getDescription(Codelist.SENSITIVITY, formInitialValues.sensitivity),
+            id: codelist.getDescription(ListName.SENSITIVITY, formInitialValues.sensitivity),
             code: formInitialValues.sensitivity
         }]
     }
     const initialValueMaster = () => {
         if (!formInitialValues.navMaster || !codelist) return []
         return [{
-            id: codelist.getDescription(Codelist.SYSTEM, formInitialValues.navMaster),
+            id: codelist.getDescription(ListName.SYSTEM, formInitialValues.navMaster),
             code: formInitialValues.navMaster
         }]
     }
@@ -201,7 +201,7 @@ const InformationtypeForm = ({
                                             </Block>
 
                                             <Select
-                                                options={getParsedOptionsSensitivity(codelist.getCodes(Codelist.SENSITIVITY))}
+                                                options={getParsedOptionsSensitivity(codelist.getCodes(ListName.SENSITIVITY))}
                                                 labelKey="id"
                                                 valueKey="id"
                                                 value={sensitivityValue}
@@ -225,7 +225,7 @@ const InformationtypeForm = ({
                                                 <Label2>Kategorier</Label2>
                                             </Block>
                                             <Select
-                                                options={getParsedOptions(codelist.getCodes(Codelist.CATEGORY), formikBag.values.categories)}
+                                                options={getParsedOptions(codelist.getCodes(ListName.CATEGORY), formikBag.values.categories)}
                                                 placeholder="Skriv inn og legg til kategorier"
                                                 type={TYPE.search}
                                                 labelKey="id"
@@ -259,7 +259,7 @@ const InformationtypeForm = ({
                                                 <Label2>Kilder</Label2>
                                             </Block>
                                             <Select
-                                                options={getParsedOptions(codelist.getCodes(Codelist.SOURCE), formikBag.values.sources)}
+                                                options={getParsedOptions(codelist.getCodes(ListName.SOURCE), formikBag.values.sources)}
                                                 placeholder="Skriv inn og legg til kilder"
                                                 type={TYPE.search}
                                                 labelKey="id"
@@ -352,7 +352,7 @@ const InformationtypeForm = ({
                                             </Block>
 
                                             <Select
-                                                options={getParsedOptionsSensitivity(codelist.getCodes(Codelist.SYSTEM))}
+                                                options={getParsedOptionsSensitivity(codelist.getCodes(ListName.SYSTEM))}
                                                 labelKey="id"
                                                 valueKey="id"
                                                 value={masterValue}

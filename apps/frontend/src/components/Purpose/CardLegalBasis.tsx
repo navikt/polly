@@ -5,7 +5,7 @@ import { Card } from 'baseui/card'
 import { StatefulInput } from 'baseui/input';
 import { Label2 } from 'baseui/typography';
 import { Button, KIND, SIZE as ButtonSize } from 'baseui/button';
-import { codelist, Codelist, ICodelist } from "../../codelist";
+import { codelist, ListName, ICodelist } from "../../listName";
 
 const rowBlockBrops: BlockProps = {
     display: 'flex',
@@ -48,7 +48,7 @@ const CardLegalBasis = (props: any) => {
 
             <Block {...rowBlockBrops} width="100%">
                 <Select
-                    options={getParsedOptions(codelist.getCodes(Codelist.GDPR_ARTICLE))}
+                    options={getParsedOptions(codelist.getCodes(ListName.GDPR_ARTICLE))}
                     labelKey="code"
                     valueKey="code"
                     placeholder="Velg GDPR artikkel"
@@ -60,7 +60,7 @@ const CardLegalBasis = (props: any) => {
             </Block>
             <Block {...rowBlockBrops}>
                 <Select
-                    options={getParsedOptions(codelist.getCodes(Codelist.NATIONAL_LAW))}
+                    options={getParsedOptions(codelist.getCodes(ListName.NATIONAL_LAW))}
                     labelKey="code"
                     valueKey="code"
                     placeholder="Velg nasjonal lov"

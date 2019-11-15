@@ -27,11 +27,11 @@ class CodelistService {
     }
   };
 
-  getCodes(list: Codelist): ICodelist {
+  getCodes(list: ListName): ICodelist {
     return (this.lists && this.lists[list]) as { [key: string]: string };
   }
 
-  getDescription(list: Codelist, name: string): string {
+  getDescription(list: ListName, name: string): string {
     return this.getCodes(list)[name] as string;
   }
 
@@ -52,7 +52,7 @@ export interface ICodelist {
   [code: string]: string
 }
 
-export enum Codelist {
+export enum ListName {
   PURPOSE = "PURPOSE",
   CATEGORY = "CATEGORY",
   SOURCE = "SOURCE",
