@@ -9,7 +9,6 @@ import no.nav.data.polly.elasticsearch.dto.PolicyElasticsearch;
 import no.nav.data.polly.elasticsearch.dto.ProcessElasticsearch;
 import no.nav.data.polly.informationtype.InformationTypeService;
 import no.nav.data.polly.informationtype.domain.InformationType;
-import no.nav.data.polly.informationtype.domain.InformationTypeMaster;
 import org.awaitility.Duration;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -104,7 +103,7 @@ class ElasticsearchServiceIT extends IntegrationTestBase {
                 assertThat(esRepository.getAllInformationTypes("index").getHits().totalHits).isEqualTo(1L));
 
         assertThat(informationTypeRepository.findAll().size()).isEqualTo(1);
-        informationTypeService.deleteAll(convert(informationTypeRepository.findAll(), InformationType::getId), InformationTypeMaster.REST);
+        informationTypeService.deleteAll(convert(informationTypeRepository.findAll(), InformationType::getId));
         String json = esRepository.getById(newDocumentId(INFORMATION_TYPE_ID_1.toString(), "index"));
         assertInformationType(json);
 

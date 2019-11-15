@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static no.nav.data.polly.informationtype.domain.InformationTypeMaster.GITHUB;
-import static no.nav.data.polly.informationtype.domain.InformationTypeMaster.REST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -50,7 +48,7 @@ class InformationTypeServiceTest {
         when(termRepository.findByName("term")).thenReturn(Optional.of(new Term()));
         InformationTypeRequest request = createValidInformationTypeRequest("Name");
 
-        service.saveAll(List.of(request), REST);
+        service.saveAll(List.of(request));
         verify(informationTypeRepository, times(1)).saveAll(anyList());
     }
 
@@ -65,13 +63,13 @@ class InformationTypeServiceTest {
 
     @Test
     void validateRequest_shouldValidateWithoutAnyProcessing_whenListOfRequestsIsNull() {
-        service.validateRequest(null, false, null);
+        service.validateRequest(null, false);
     }
 
     @Test
     void validateRequest_shouldValidateWithoutAnyProcessing_whenListOfRequestsIsEmpty() {
         List<InformationTypeRequest> requests = Collections.emptyList();
-        service.validateRequest(requests, false, null);
+        service.validateRequest(requests, false);
     }
 
     @Test
@@ -81,7 +79,7 @@ class InformationTypeServiceTest {
 
         var requests = new ArrayList<>(List.of(name1, name2, name1));
 
-        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(requests, false, REST));
+        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(requests, false));
         assertThat(exception)
                 .hasMessageContaining("Request:3 -- DuplicateElement -- The InformationType Name1 is not unique because it has already been used in this request (see request:1)");
     }
@@ -89,13 +87,13 @@ class InformationTypeServiceTest {
     @Test
     void validateRequest_shouldThrowValidationException_withChangeNameToAlreadyExistRequest() {
         InformationTypeRequest request = createValidInformationTypeUpdateRequest();
-        InformationType existingInformationTypeByName = new InformationType().convertNewFromRequest(createValidInformationTypeRequest("Name"), REST);
-        InformationType existingInformationTypeById = new InformationType().convertNewFromRequest(createValidInformationTypeRequest("Name0"), REST);
+        InformationType existingInformationTypeByName = new InformationType().convertNewFromRequest(createValidInformationTypeRequest("Name"));
+        InformationType existingInformationTypeById = new InformationType().convertNewFromRequest(createValidInformationTypeRequest("Name0"));
 
         when(informationTypeRepository.findById(request.getIdAsUUID())).thenReturn(Optional.of(existingInformationTypeById));
         when(informationTypeRepository.findByName("Name")).thenReturn(Optional.of(existingInformationTypeByName));
 
-        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), true, REST));
+        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), true));
         assertThat(exception).hasMessageContaining("Request:1 -- nameAlreadyExistsNameChange -- Cannot change name, InformationType Name already exists");
     }
 
@@ -106,13 +104,13 @@ class InformationTypeServiceTest {
         InformationTypeRequest name3 = createValidInformationTypeRequest("Name1");
         name3.setDescription("Not equal object as the request1");
 
-        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(name1, name2, name3), false, REST));
+        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(name1, name2, name3), false));
         assertThat(exception).hasMessageContaining("Name1 -- DuplicatedIdentifyingFields -- Multiple elements in this request are using the same unique fields (Name1)");
     }
 
     @Test
     void validateRequest_shouldThrowValidationException_whenFieldNameIsNull() {
-        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(createValidInformationTypeRequest(null)), false, REST));
+        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(createValidInformationTypeRequest(null)), false));
         assertThat(exception).hasMessageContaining("Request:1 -- fieldIsNullOrMissing -- name was null or missing");
     }
 
@@ -121,7 +119,7 @@ class InformationTypeServiceTest {
         InformationTypeRequest request = createValidInformationTypeRequest("Name1");
         request.setCategories(List.of("doesntexist"));
 
-        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), false, REST));
+        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), false));
         assertThat(exception).hasMessageContaining("Request:1 -- fieldIsInvalidCodelist -- categories[0]: doesntexist code not found in codelist CATEGORY");
     }
 
@@ -129,18 +127,18 @@ class InformationTypeServiceTest {
     void validateRequest_shouldThrowValidationException_whenFieldNameIsEmpty() {
         InformationTypeRequest request = createValidInformationTypeRequest("");
 
-        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), false, REST));
+        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), false));
         assertThat(exception).hasMessageContaining("Request:1 -- fieldIsNullOrMissing -- name was null or missing");
     }
 
     @Test
     void validateRequest_shouldThrowValidationException_whenCreatingExistingInformationType() {
         InformationTypeRequest request = createValidInformationTypeRequest("Name");
-        InformationType existingInformationType = new InformationType().convertNewFromRequest(request, REST);
+        InformationType existingInformationType = new InformationType().convertNewFromRequest(request);
 
         when(informationTypeRepository.findByName("Name")).thenReturn(Optional.of(existingInformationType));
 
-        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), false, REST));
+        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), false));
         assertThat(exception).hasMessageContaining("Request:1 -- nameAlreadyExists -- The InformationType Name already exists");
     }
 
@@ -149,22 +147,9 @@ class InformationTypeServiceTest {
         when(informationTypeRepository.findById(any())).thenReturn(Optional.empty());
 
         InformationTypeRequest request = createValidInformationTypeUpdateRequest();
-        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), true, REST));
+        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), true));
         assertThat(exception).hasMessageContaining("Request:1 -- updatingNonExistingInformationType --");
         assertThat(exception).hasMessageContaining("The InformationType Name does not exist and therefore cannot be updated");
-    }
-
-    @Test
-    void validateRequest_shouldThrowValidationException_whenNonCorrelatingMaster() {
-        InformationTypeRequest request = createValidInformationTypeUpdateRequest();
-
-        InformationType existingInformationType = new InformationType().convertNewFromRequest(request, GITHUB);
-
-        when(informationTypeRepository.findById(request.getIdAsUUID())).thenReturn(Optional.of(existingInformationType));
-
-        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), true, REST));
-        assertThat(exception).hasMessageContaining("Request:1 -- nonCorrelatingMaster --");
-        assertThat(exception).hasMessageContaining("The InformationType Name is mastered in GITHUB and therefore cannot be updated from REST");
     }
 
     private InformationTypeRequest createValidInformationTypeUpdateRequest() {

@@ -1,6 +1,5 @@
 package no.nav.data.polly.informationtype.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,22 +8,16 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.codelist.domain.ListName;
-import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
-import no.nav.data.polly.github.GithubReference;
-import no.nav.data.polly.informationtype.domain.InformationType;
-import no.nav.data.polly.informationtype.domain.InformationTypeMaster;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static no.nav.data.polly.common.swagger.SwaggerConfig.BOOLEAN;
 import static no.nav.data.polly.common.utils.StreamUtils.nullToEmptyList;
-import static no.nav.data.polly.informationtype.domain.InformationTypeMaster.REST;
 
 @Slf4j
 @Data
@@ -53,28 +46,9 @@ public class InformationTypeRequest implements RequestElement {
     private boolean update;
     private int requestIndex;
 
-    @JsonIgnore
-    private InformationTypeMaster informationTypeMaster;
-    @JsonIgnore
-    private GithubReference githubReference;
-
     @Override
     public String getIdentifyingFields() {
         return name;
-    }
-
-    @Override
-    public String getReference() {
-        switch (informationTypeMaster) {
-            case GITHUB:
-                return getRequestReference().orElse("");
-            case REST:
-                return "Request:" + requestIndex;
-            case KAFKA:
-                return "Kafka";
-            default:
-                throw new IllegalStateException("Unexpected value: " + informationTypeMaster);
-        }
     }
 
     public void format() {
@@ -89,31 +63,12 @@ public class InformationTypeRequest implements RequestElement {
         }
     }
 
-    public static void initiateRequests(List<InformationTypeRequest> requests, boolean update, InformationTypeMaster master) {
-        requests.forEach(informationTypeRequest -> {
-            informationTypeRequest.setInformationTypeMaster(master);
-            informationTypeRequest.setUpdate(update);
-        });
-        if (master == REST) {
-            assignIds(requests);
-        }
-    }
-
-    public static void assignIds(List<InformationTypeRequest> requests) {
+    public static void initiateRequests(List<InformationTypeRequest> requests, boolean update) {
         AtomicInteger requestIndex = new AtomicInteger(1);
-        requests.forEach(request -> request.setRequestIndex(requestIndex.getAndIncrement()));
-    }
-
-    public void assertMaster(InformationType informationType) {
-        assertMasters(informationType, informationTypeMaster);
-    }
-
-    public static void assertMasters(InformationType informationType, InformationTypeMaster informationTypeMaster) {
-        if (informationType.getData().getInformationTypeMaster() != informationTypeMaster) {
-            throw new ValidationException(
-                    String.format("Master mismatch for update, informationType is mastered by=%s request came from %s", informationType.getData().getInformationTypeMaster(),
-                            informationType));
-        }
+        requests.forEach(request -> {
+            request.setUpdate(update);
+            request.setRequestIndex(requestIndex.getAndIncrement());
+        });
     }
 
     @Override
@@ -127,10 +82,5 @@ public class InformationTypeRequest implements RequestElement {
         validator.checkCodelists(Fields.sources, getSources(), ListName.SOURCE);
         validator.checkRequiredCodelist(Fields.sensitivity, getSensitivity(), ListName.SENSITIVITY);
         validator.checkRequiredCodelist(Fields.navMaster, getNavMaster(), ListName.SYSTEM);
-    }
-
-    @JsonIgnore
-    private Optional<String> getRequestReference() {
-        return githubReference == null ? Optional.empty() : Optional.ofNullable(githubReference.toString());
     }
 }

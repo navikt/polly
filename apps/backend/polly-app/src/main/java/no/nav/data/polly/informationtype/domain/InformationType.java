@@ -89,10 +89,9 @@ public class InformationType extends Auditable<String> {
         return new InformationTypeResponse(this);
     }
 
-    public InformationType convertNewFromRequest(InformationTypeRequest request, InformationTypeMaster master) {
+    public InformationType convertNewFromRequest(InformationTypeRequest request) {
         id = UUID.randomUUID();
         elasticsearchStatus = TO_BE_CREATED;
-        data.setInformationTypeMaster(master);
         convertFromRequest(request);
         return this;
     }

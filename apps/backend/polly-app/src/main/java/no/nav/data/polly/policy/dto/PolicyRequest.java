@@ -57,6 +57,7 @@ public class PolicyRequest implements RequestElement {
     }
 
     @JsonIgnore
+    @Override
     public String getReference() {
         return getInformationTypeName() + "/" + getPurposeCode();
     }

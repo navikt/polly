@@ -24,7 +24,6 @@ import java.util.UUID;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.data.polly.informationtype.domain.InformationTypeMaster.REST;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class InformationTypeControllerIT extends IntegrationTestBase {
@@ -234,7 +233,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
     private List<InformationType> createInformationTypeTestData(int nrOfRows) {
         return informationTypeRepository.saveAll(IntStream.rangeClosed(1, nrOfRows)
                 .mapToObj(i -> new InformationType()
-                        .convertNewFromRequest(createRequest("InformationType_nr" + i), REST))
+                        .convertNewFromRequest(createRequest("InformationType_nr" + i)))
                 .collect(toList()));
     }
 
