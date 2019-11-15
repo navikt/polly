@@ -5,9 +5,10 @@ import axios from "axios";
 
 import InformationtypeForm from "../components/InformationType/InformationtypeForm";
 import Banner from "../components/Banner";
+import {codelist} from "../codelist";
+import { InformationTypeIdName, PageResponse } from "../constants"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
-const server_codelist = process.env.REACT_APP_CODELIST_ENDPOINT;
 
 const Centered = styled("div", {
     height: "100%",
@@ -28,12 +29,10 @@ let initialFormValues = {
     description: ""
 };
 
-const InformationtypeCreatePage = () => {
+const InformationtypeCreatePage = (props: any) => {
     const [isLoading, setLoading] = React.useState(true);
     const [error, setError] = React.useState(null);
-    const [isCreated, setIsCreated] = React.useState(null);
     const [errorSubmit, setErrorSubmit] = React.useState(null);
-    const [codelist, setCodelist] = React.useState();
 
     const handleAxiosError = (error: any) => {
         if (error.response) {
@@ -46,23 +45,14 @@ const InformationtypeCreatePage = () => {
         }
     };
 
-    const handleGetCodelistResponse = (response: any) => {
-        if (typeof response.data === "object" && response.data !== null) {
-            setCodelist(response.data);
-        } else {
-            setError(response.data);
-        }
-    };
-
-    const handleSubmitResponse = (response: any) => {
-        setIsCreated(response);
+    const handleSubmitResponse = (response: { data: PageResponse<InformationTypeIdName> }) => {
+        props.history.push(`/informationtype/${response.data.content[0].id}`)
     };
 
     const handleSubmit = async (values: any) => {
         if (!values) return;
 
         setErrorSubmit(null);
-        setIsCreated(null);
         let body = [values];
 
         await axios
@@ -74,11 +64,7 @@ const InformationtypeCreatePage = () => {
     React.useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
-            await axios
-                .get(`${server_codelist}`)
-                .then(handleGetCodelistResponse)
-                .catch(err => setError(err.message));
-
+            await codelist.wait();
             setLoading(false);
         };
         fetchData();
@@ -98,12 +84,8 @@ const InformationtypeCreatePage = () => {
                                         formInitialValues={initialFormValues}
                                         submit={handleSubmit}
                                         isEdit={false}
-                                        codelist={codelist}
                                     />
                                     {errorSubmit && <p>{errorSubmit}</p>}
-                                    {isCreated && (
-                                        <p>Opplysningstypen er nå opprettet.</p>
-                                    )}
                                 </Centered>
                             </React.Fragment>
                         ) : (

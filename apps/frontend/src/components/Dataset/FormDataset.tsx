@@ -21,17 +21,13 @@ import { Select, TYPE, Value } from "baseui/select";
 import { Label1 } from "baseui/typography";
 import { Radio, RadioGroup } from "baseui/radio";
 
-import { DatasetFormValues, Codelist } from "../../constants";
+import { DatasetFormValues } from "../../constants";
+import { ListName, codelist, ICodelist } from "../../codelist";
 
 type FormProps = {
     formInitialValues: DatasetFormValues | any;
     submit: Function;
     isEdit?: boolean;
-    codelist: {
-        CATEGORY: any;
-        PURPOSE: any;
-        PROVENANCE: any;
-    };
 };
 
 const rowBlockProps: BlockProps = {
@@ -78,8 +74,7 @@ function renderTagList(
 const DatasetForm = ({
     formInitialValues,
     submit,
-    isEdit,
-    codelist
+    isEdit
 }: FormProps) => {
     const [value, setValue] = React.useState<Value>([]);
     const [piValue, setPiValue] = React.useState();
@@ -89,7 +84,7 @@ const DatasetForm = ({
     const [currentKeywordValue, setCurrentKeywordValue] = React.useState("");
 
     const getParsedOptions = (
-        codelist: object | undefined | null,
+        codelist: ICodelist | null,
         provenances: any | undefined
     ) => {
         if (!codelist) return [];
@@ -234,7 +229,7 @@ const DatasetForm = ({
                                                 </Label1>
                                                 <Select
                                                     options={getParsedOptions(
-                                                        codelist.CATEGORY,
+                                                        codelist.getCodes(ListName.CATEGORY),
                                                         formikBag.values
                                                             .categories
                                                     )}
@@ -273,7 +268,7 @@ const DatasetForm = ({
                                                 </Label1>
                                                 <Select
                                                     options={getParsedOptions(
-                                                        codelist.PROVENANCE,
+                                                        codelist.getCodes(ListName.SOURCE),
                                                         formikBag.values
                                                             .provenances
                                                     )}

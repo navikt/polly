@@ -1,7 +1,6 @@
 import * as React from "react";
 import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, StyledTable } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
-import { Codelist } from "../../constants";
 import { legalBasisLinkProcessor } from "../../util/string-processor"
 import { StyledLink } from 'baseui/link'
 
@@ -17,11 +16,11 @@ const CustomStyledRow = withStyle(StyledRow, {
     fontSize: "24px"
 });
 
-const renderListItem = (codelist: Codelist, legalBasis: any | object) => {
+const renderListItem = (legalBasis: any | object) => {
     let gdpr = legalBasis.gdpr && legalBasis.gdpr.code
     let nationalLaw = legalBasis.nationalLaw && legalBasis.nationalLaw.code
 
-    let description = legalBasisLinkProcessor(codelist, nationalLaw, legalBasis.description)
+    let description = legalBasisLinkProcessor(nationalLaw, legalBasis.description)
 
     return (
         <li> {gdpr && (gdpr + ', ')} {nationalLaw && nationalLaw} {description}</li>
@@ -30,10 +29,9 @@ const renderListItem = (codelist: Codelist, legalBasis: any | object) => {
 
 type TablePurposeProps = {
     policies: Array<any>;
-    codelist: Codelist;
 };
 
-const TablePurpose = ({ codelist, policies }: TablePurposeProps) => {
+const TablePurpose = ({ policies }: TablePurposeProps) => {
     const [useCss, theme] = useStyletron();
     const [titleDirection, setTitleDirection] = React.useState<any>(null);
     const [userDirection, setUserDirection] = React.useState<any>(null);
@@ -152,7 +150,7 @@ const TablePurpose = ({ codelist, policies }: TablePurposeProps) => {
                                 {row.legalBases && row.legalBases.length > 0 && (
                                     <ul>
                                         {row.legalBases.map((legalBasis: any) => (
-                                            <li>{renderListItem(codelist, legalBasis)}</li>
+                                            <li>{renderListItem(legalBasis)}</li>
                                         ))}
                                     </ul>
                                 )}

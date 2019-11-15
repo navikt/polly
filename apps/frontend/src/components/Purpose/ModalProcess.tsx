@@ -1,31 +1,16 @@
 import * as React from 'react'
-import {
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    ModalButton,
-    SIZE,
-    ROLE
-} from "baseui/modal";
-import {
-    Formik,
-    FormikProps,
-    Form,
-    Field,
-    FieldProps,
-    FieldArray,
-} from "formik";
-import { BlockProps, Block } from "baseui/block";
+import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
+import { Field, FieldArray, FieldProps, Form, Formik, FormikProps, } from "formik";
+import { Block, BlockProps } from "baseui/block";
 import { Input, SIZE as InputSIZE } from "baseui/input";
 import { Label2 } from "baseui/typography";
-import { Radio, RadioGroup } from "baseui/radio";
 import { StatefulSelect } from 'baseui/select';
-import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
+import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { Plus } from "baseui/icon";
 
 import { ProcessFormValues } from "../../constants";
 import CardLegalBasis from './CardLegalBasis'
+import { ListName, codelist } from "../../codelist"
 
 const modalBlockProps: BlockProps = {
     width: '700px',
@@ -68,12 +53,12 @@ const FieldName = () => (
 )
 
 
-const FieldDepartment = (props: any) => (
+const FieldDepartment = () => (
     <Field
         name="department"
         render={({ form }: FieldProps<ProcessFormValues>) => (
             <StatefulSelect
-                options={getParsedOptions(props.codelist["DEPARTMENT"])}
+                options={getParsedOptions(codelist.getCodes(ListName.DEPARTMENT))}
                 labelKey="id"
                 valueKey="id"
                 onChange={event => {
@@ -85,12 +70,12 @@ const FieldDepartment = (props: any) => (
     />
 )
 
-const FieldSubDepartment = (props: any) => (
+const FieldSubDepartment = () => (
     <Field
         name="subDepartment"
         render={({ form }: FieldProps<ProcessFormValues>) => (
             <StatefulSelect
-                options={getParsedOptions(props.codelist["SUB_DEPARTMENT"])}
+                options={getParsedOptions(codelist.getCodes(ListName.SUB_DEPARTMENT))}
                 labelKey="id"
                 valueKey="id"
                 onChange={event => form.setFieldValue('subDepartment',
@@ -115,7 +100,7 @@ const ListLegalBases = (props: any) => {
 
 const ModalProcess = (props: any) => {
     const [showLegalBasisFields, setShowLegalbasesFields] = React.useState(false)
-    const { codelist, submit, errorOnCreate } = props
+    const { submit, errorOnCreate } = props
 
     const showSubDepartment = (department: any) => {
         if (department === 'ØSA' || department === 'YTA' || department === 'ATA')
@@ -151,13 +136,13 @@ const ModalProcess = (props: any) => {
 
                                 <Block {...rowBlockProps}>
                                     {renderLabel('Avdeling')}
-                                    <FieldDepartment codelist={codelist} />
+                                    <FieldDepartment />
                                 </Block>
 
                                 {showSubDepartment(formikBag.values.department) && (
                                     <Block {...rowBlockProps}>
                                         {renderLabel('Linja (Ytre etat)')}
-                                        <FieldSubDepartment codelist={codelist} />
+                                        <FieldSubDepartment />
                                     </Block>
                                 )}
 
@@ -183,7 +168,7 @@ const ModalProcess = (props: any) => {
                                         name="legalBases"
                                         render={arrayHelpers => (
                                             <Block width="100%">
-                                                <CardLegalBasis codelist={codelist} submit={(values: any) => {
+                                                <CardLegalBasis submit={(values: any) => {
                                                     if (!values) return
                                                     else {
                                                         arrayHelpers.push(values)

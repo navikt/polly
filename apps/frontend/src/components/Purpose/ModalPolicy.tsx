@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import {
     Modal,
@@ -24,6 +23,7 @@ import { Plus } from "baseui/icon";
 import { Option, Select, StatefulSelect, TYPE, Value } from 'baseui/select';
 
 import CardLegalBasis from './CardLegalBasis'
+import { ListName, codelist, ICodelist } from "../../codelist";
 import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
 import { useDebouncedState } from "../../util/debounce"
 import { useEffect } from "react"
@@ -51,7 +51,7 @@ const rowBlockProps: BlockProps = {
     marginTop: '1rem'
 }
 
-const getParsedOptions = (codelist: any) => {
+const getParsedOptions = (codelist: ICodelist | null) => {
     if (!codelist) return []
     return Object.keys(codelist).reduce((acc: any, curr: any) => {
         return [...acc, { id: codelist[curr], code: curr }];
@@ -97,7 +97,7 @@ const FieldSubjectCategory = (props: any) => (
         name="subjectCategory"
         render={({ form }: FieldProps<PolicyFormValues>) => (
             <StatefulSelect
-                options={getParsedOptions(props.codelist["SUBJECT_CATEGORY"])}
+                options={getParsedOptions(codelist.getCodes(ListName.SUBJECT_CATEGORY))}
                 labelKey="id"
                 valueKey="id"
                 onChange={event => form.setFieldValue('subjectCategory',
@@ -138,7 +138,7 @@ const FieldLegalBasisInherited = (props: any) => {
 const ModalPolicy = (props: any) => {
     const [currentChecked, setCurrentChecked] = React.useState();
     const [showLegalbasesFields, setShowLegalbasesFields] = React.useState<boolean>(true);
-    const { codelist, errorOnCreate, onClose } = props
+    const { errorOnCreate, onClose } = props
 
     const [infoTypeValue, setInfoTypeValue] = React.useState<Value>();
     const [infoTypeSearch, setInfoTypeSearch] = useDebouncedState<string>('', 200);
@@ -183,7 +183,7 @@ const ModalPolicy = (props: any) => {
                                 </Block>
                                 <Block {...rowBlockProps}>
                                     {renderLabel('Personkategorier')}
-                                    <FieldSubjectCategory codelist={codelist} />
+                                    <FieldSubjectCategory  />
                                 </Block>
                                 <Block {...rowBlockProps}>
                                     {renderLabel('Rettslig grunnlag')}
@@ -200,7 +200,7 @@ const ModalPolicy = (props: any) => {
                                             <React.Fragment>
                                                 {showLegalbasesFields ? (
                                                     <Block width="100%" marginTop="2rem">
-                                                        <CardLegalBasis codelist={codelist} submit={(values: any) => {
+                                                        <CardLegalBasis  submit={(values: any) => {
                                                             if (!values) return
                                                             else {
                                                                 arrayHelpers.push(values)

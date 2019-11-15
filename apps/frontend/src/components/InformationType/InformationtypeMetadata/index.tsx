@@ -66,7 +66,7 @@ const renderMetadata = (informationtype: any) => {
 }
 
 const InformationtypeMetadata = (props: any) => {
-    const { informationtype, purposeMap, codelist } = props
+    const { informationtype, purposeMap } = props
 
     return (
         <React.Fragment>
@@ -76,7 +76,7 @@ const InformationtypeMetadata = (props: any) => {
 
                     <Block {...purposeBlockProps}>
                         <Label2 marginBottom="2rem" font="font450">Brukes til formål</Label2>
-                        <AccordionInformationtype purposeMap={purposeMap} codelist={codelist} />
+                        <AccordionInformationtype purposeMap={purposeMap} />
                     </Block>
                 </React.Fragment>
             )}

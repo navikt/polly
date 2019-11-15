@@ -6,12 +6,11 @@ import PurposeResult from "../components/Purpose";
 import Banner from "../components/Banner";
 
 import { Block } from "baseui/block";
+import { ListName, codelist } from "../codelist";
 
-const server_codelist = process.env.REACT_APP_CODELIST_ENDPOINT;
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 const PurposePage = (props: any) => {
-    const [codelist, setCodelist] = React.useState();
     const [currentPurposeValue, setCurrentPurposeValue] = React.useState();
     const [purposeData, setPurposeData] = React.useState();
     const [isLoading, setLoading] = React.useState(false);
@@ -56,8 +55,8 @@ const PurposePage = (props: any) => {
     };
 
     const getPurposeSelectItems = () => {
-        if (!codelist) return [];
-        return Object.keys(codelist["PURPOSE"]).reduce(
+        if (!codelist.isLoaded()) return [];
+        return Object.keys(codelist.getCodes(ListName.PURPOSE)).reduce(
             (acc: any, curr: any) => {
                 return [...acc, { id: curr }];
             },
@@ -66,22 +65,14 @@ const PurposePage = (props: any) => {
     };
 
     const getPurposeDescription = () => {
-        if (!codelist) return null;
-        return codelist["PURPOSE"][currentPurposeValue];
+        if (!codelist.isLoaded()) return null;
+        return codelist.getDescription(ListName.PURPOSE, currentPurposeValue);
     };
 
     React.useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
-            await axios
-                .get(`${server_codelist}`)
-                .then((res => setCodelist(res.data)))
-                .catch(handleAxiosError);
-
-            if (!error && props.match.params.id) {
-                getPurpose(props.match.params.id)
-            }
-
+            await codelist.wait();
             setLoading(false);
         };
         fetchData();
@@ -113,8 +104,8 @@ const PurposePage = (props: any) => {
                         processList={!purposeData ? [] : purposeData}
                         purpose={currentPurposeValue}
                         description={getPurposeDescription()}
-                        codelist={codelist}
                         defaultExpandedPanelId={props.match.params.processid}
+
                     />
                 </React.Fragment>
             ) : null}

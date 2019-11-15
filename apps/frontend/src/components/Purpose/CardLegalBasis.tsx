@@ -2,9 +2,10 @@ import * as React from 'react';
 import { Select, TYPE, Value } from 'baseui/select';
 import { Block, BlockProps } from 'baseui/block'
 import { Card } from 'baseui/card'
-import { Input, StatefulInput } from 'baseui/input';
+import { StatefulInput } from 'baseui/input';
 import { Label2 } from 'baseui/typography';
 import { Button, KIND, SIZE as ButtonSize } from 'baseui/button';
+import { codelist, ListName, ICodelist } from "../../codelist";
 
 const rowBlockBrops: BlockProps = {
     display: 'flex',
@@ -12,7 +13,7 @@ const rowBlockBrops: BlockProps = {
 }
 
 
-const getParsedOptions = (codelist: any) => {
+const getParsedOptions = (codelist: ICodelist | null) => {
     if (!codelist) return []
     return Object.keys(codelist).reduce((acc: any, curr: any) => {
         return [...acc, { id: codelist[curr], code: curr }];
@@ -25,7 +26,7 @@ const CardLegalBasis = (props: any) => {
     const [description, setDescription] = React.useState("");
     const [error, setError] = React.useState()
 
-    const { codelist, submit } = props
+    const { submit } = props
 
     const getValues = () => {
         if (gdpr.length < 1 && nationalLaw.length < 1 && description === "") {
@@ -47,7 +48,7 @@ const CardLegalBasis = (props: any) => {
 
             <Block {...rowBlockBrops} width="100%">
                 <Select
-                    options={getParsedOptions(codelist.GDPR_ARTICLE)}
+                    options={getParsedOptions(codelist.getCodes(ListName.GDPR_ARTICLE))}
                     labelKey="code"
                     valueKey="code"
                     placeholder="Velg GDPR artikkel"
@@ -59,7 +60,7 @@ const CardLegalBasis = (props: any) => {
             </Block>
             <Block {...rowBlockBrops}>
                 <Select
-                    options={getParsedOptions(codelist.NATIONAL_LAW)}
+                    options={getParsedOptions(codelist.getCodes(ListName.NATIONAL_LAW))}
                     labelKey="code"
                     valueKey="code"
                     placeholder="Velg nasjonal lov"

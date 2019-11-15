@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { styled } from "baseui";
 import { Spinner } from "baseui/spinner";
@@ -7,9 +6,9 @@ import axios from "axios";
 import InformationtypeForm from "../components/InformationType/InformationtypeForm";
 import Banner from "../components/Banner";
 import { InformationtypeFormValues } from "../constants"
+import { codelist } from "../codelist";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
-const server_codelist = process.env.REACT_APP_CODELIST_ENDPOINT;
 
 const Centered = styled("div", {
     height: "100%",
@@ -45,7 +44,6 @@ const InformationtypeEditPage = (props: any) => {
     const [error, setError] = React.useState(null);
     const [isUpdated, setIsUpdated] = React.useState(null);
     const [errorSubmit, setErrorSubmit] = React.useState(null);
-    const [codelist, setCodelist] = React.useState();
     const [informationtype, setInformationType] = React.useState();
 
     const handleAxiosError = (error: any) => {
@@ -56,14 +54,6 @@ const InformationtypeEditPage = (props: any) => {
         } else {
             console.log(error.message);
             setError(error.message);
-        }
-    };
-
-    const handleGetCodelistResponse = (response: any) => {
-        if (typeof response.data === "object" && response.data !== null) {
-            setCodelist(response.data);
-        } else {
-            setError(response.data);
         }
     };
 
@@ -96,10 +86,7 @@ const InformationtypeEditPage = (props: any) => {
                 })
                 .catch(handleAxiosError);
 
-            await axios
-                .get(`${server_codelist}`)
-                .then(handleGetCodelistResponse)
-                .catch(err => setError(err.message));
+            await codelist.wait();
 
             setLoading(false);
         };
@@ -121,7 +108,6 @@ const InformationtypeEditPage = (props: any) => {
                                         informationtype
                                     )}
                                     isEdit
-                                    codelist={codelist}
                                     submit={handleSubmit}
                                 />
                                 {errorSubmit && <p>{errorSubmit}</p>}
