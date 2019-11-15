@@ -40,9 +40,6 @@ const Main = () => {
           Datacatalog id parameter missing. Format https://url/id
         </div>
       </div>
-      <div>
-        Datacatalog id parameter missing. Format https://url/id
-        </div>
     </div>
   )
 }
