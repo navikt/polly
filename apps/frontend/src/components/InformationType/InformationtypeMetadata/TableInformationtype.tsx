@@ -1,7 +1,6 @@
 import * as React from "react";
 import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, StyledTable } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
-import { Codelist } from "../../../constants";
 import { legalBasisLinkProcessor } from "../../../util/string-processor"
 
 const StyledHeader = withStyle(StyledHead, {
@@ -16,11 +15,11 @@ const CustomStyledRow = withStyle(StyledRow, {
     fontSize: "24px"
 });
 
-const renderListItem = (codelist: Codelist, legalBasis: any | object) => {
+const renderListItem = (legalBasis: any | object) => {
     let gdpr = legalBasis.gdpr && legalBasis.gdpr.code
     let nationalLaw = legalBasis.nationalLaw && legalBasis.nationalLaw.code
 
-    let description = legalBasisLinkProcessor(codelist, nationalLaw, legalBasis.description)
+    let description = legalBasisLinkProcessor(nationalLaw, legalBasis.description)
 
     return (
         <li> {gdpr && (gdpr + ', ')} {nationalLaw && nationalLaw} {description}</li>
@@ -29,10 +28,9 @@ const renderListItem = (codelist: Codelist, legalBasis: any | object) => {
 
 type TableInformationtypeProps = {
     list: Array<any>;
-    codelist: Codelist;
 };
 
-const TableInformationtype = ({ codelist, list }: TableInformationtypeProps) => {
+const TableInformationtype = ({ list }: TableInformationtypeProps) => {
     const [useCss, theme] = useStyletron();
     const [processDirection, setProcessDirection] = React.useState<any>(null);
     const [subjectCategoryDirection, setSubjectCategoryDirection] = React.useState<any>(null);
@@ -135,7 +133,7 @@ const TableInformationtype = ({ codelist, list }: TableInformationtypeProps) => 
                                 {!row.legallegalBasesInherited && row.legalBases && row.legalBases.length > 0 && (
                                     <ul>
                                         {row.legalBases.map((legalBasis: any) => (
-                                            <li>{renderListItem(codelist, legalBasis)}</li>
+                                            <li>{renderListItem(legalBasis)}</li>
                                         ))}
                                     </ul>
                                 )}
@@ -143,7 +141,7 @@ const TableInformationtype = ({ codelist, list }: TableInformationtypeProps) => 
                                 {row.legalBasesInherited && row.process.legalBases && (
                                     <ul>
                                         {row.process.legalBases.map((legalBasis: any) => (
-                                            <li>{renderListItem(codelist, legalBasis)}</li>
+                                            <li>{renderListItem(legalBasis)}</li>
                                         ))}
                                     </ul>
                                 )}

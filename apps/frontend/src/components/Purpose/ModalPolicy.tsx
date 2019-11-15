@@ -138,7 +138,7 @@ const FieldLegalBasisInherited = (props: any) => {
 const ModalPolicy = (props: any) => {
     const [currentChecked, setCurrentChecked] = React.useState();
     const [showLegalbasesFields, setShowLegalbasesFields] = React.useState<boolean>(true);
-    const { codelist, errorOnCreate, onClose } = props
+    const { errorOnCreate, onClose } = props
 
     const [infoTypeValue, setInfoTypeValue] = React.useState<Value>();
     const [infoTypeSearch, setInfoTypeSearch] = useDebouncedState<string>('', 200);

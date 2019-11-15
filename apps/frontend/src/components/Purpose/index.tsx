@@ -9,11 +9,9 @@ import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
 import axios from "axios";
 
 
-import { Codelist } from '../../constants'
 import TablePurpose from './TablePurpose'
 import ModalPolicy from './ModalPolicy'
 import ModalProcess from './ModalProcess'
-import { Card } from "baseui/card";
 import { legalBasisLinkProcessor } from "../../util/string-processor"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
@@ -21,7 +19,6 @@ const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 type PurposeViewProps = {
     description: string | any | null;
     purpose: string;
-    codelist: Codelist;
     processList: Array<any> | any | null;
 };
 
@@ -34,24 +31,24 @@ const rowPanelContent: BlockProps = {
     marginBottom: '2rem'
 }
 
-const renderListItem = (codelist: Codelist, legalBasis: any | object) => {
+const renderListItem = (legalBasis: any | object) => {
     let gdpr = legalBasis.gdpr && legalBasis.gdpr.code
     let nationalLaw = legalBasis.nationalLaw && legalBasis.nationalLaw.code
-    let description = legalBasisLinkProcessor(codelist, nationalLaw, legalBasis.description)
+    let description = legalBasisLinkProcessor(nationalLaw, legalBasis.description)
     return (
         <li>
             <Paragraph2>{gdpr && gdpr + ': '} {nationalLaw && nationalLaw} {description}</Paragraph2>
         </li>
     )
 }
-const renderLegalBasisList = (codelist: Codelist, list: any) => {
+const renderLegalBasisList = (list: any) => {
     if (!list) return null
     if (list.length < 1)
         return (<Paragraph2>Fant ingen rettslige grunnlag</Paragraph2>)
 
     return (
         <ul>
-            {list.map((legalBasis: any) => <li>{renderListItem(codelist, legalBasis)}</li>)}
+            {list.map((legalBasis: any) => <li>{renderListItem(legalBasis)}</li>)}
         </ul>
     )
 }
@@ -75,7 +72,7 @@ const renderAllSubjectCategories = (processObj: any) => {
     return (<Paragraph2>{subjectCategories.join(', ')}</Paragraph2>)
 }
 
-const PurposeResult = ({ description, purpose, processList, codelist }: PurposeViewProps) => {
+const PurposeResult = ({ description, purpose, processList }: PurposeViewProps) => {
     const [isOpen, setIsOpen] = React.useState<any>(false);
     const [showProcessModal, setShowProcessModal] = React.useState(false)
     const [errorCreatePolicy, setErrorCreatePolicy] = React.useState()
@@ -143,7 +140,6 @@ const PurposeResult = ({ description, purpose, processList, codelist }: PurposeV
                         isOpen={showProcessModal}
                         submit={(values: any) => handleCreateProcess(values)}
                         errorOnCreate={errorCreateProcess}
-                        codelist={codelist}
                     />
                 </Block>
 
@@ -154,7 +150,7 @@ const PurposeResult = ({ description, purpose, processList, codelist }: PurposeV
                                 <Block {...rowPanelContent}>
                                     <Block marginRight="6rem">
                                         <Label2>Rettslig grunnlag for behandlingen</Label2>
-                                        {renderLegalBasisList(codelist, process.legalBases)}
+                                        {renderLegalBasisList(process.legalBases)}
                                     </Block>
                                     <Block>
                                         <Label2>Kategorier av personer</Label2>
@@ -181,13 +177,12 @@ const PurposeResult = ({ description, purpose, processList, codelist }: PurposeV
                                         createPolicySubmit={(values: any) => {
                                             handleCreatePolicy(values, process)
                                         }}
-                                        codelist={codelist}
                                         errorOnCreate={errorCreatePolicy}
                                     />
                                 </Block>
                                 {process.policies && (
                                     <Block >
-                                        <TablePurpose codelist={codelist} policies={process.policies} />
+                                        <TablePurpose policies={process.policies} />
                                     </Block>
                                 )}
                             </Panel>

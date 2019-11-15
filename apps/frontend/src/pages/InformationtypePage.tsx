@@ -7,6 +7,7 @@ import InformationtypeMetadata from "../components/InformationType/Informationty
 import { useDebouncedState } from "../util/debounce"
 import { Option, Select, TYPE } from "baseui/select"
 import { InformationTypeIdName, PageResponse } from "../constants"
+import { codelist } from "../codelist"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 const server_codelist = process.env.REACT_APP_CODELIST_ENDPOINT;
@@ -30,21 +31,12 @@ const reducePolicylist = (list: any) => {
 const InformationtypePage = (props: any) => {
     const [isLoading, setLoading] = React.useState(false);
     const [error, setError] = React.useState(null);
-    const [codelist, setCodelist] = React.useState();
     const [informationTypeId, setInformationTypeId] = React.useState(props.match.params.id)
     const [informationtype, setInformationtype] = React.useState()
     const [purposeMap, setPurposeMap] = React.useState([])
 
     const [infoTypeSearch, setInfoTypeSearch] = useDebouncedState<string>('', 200);
     const [infoTypeSearchResult, setInfoTypeSearchResult] = React.useState<Option[]>([]);
-
-    const handleGetCodelistResponse = (response: any) => {
-        if (typeof response.data === "object" && response.data !== null) {
-            setCodelist(response.data);
-        } else {
-            setError(response.data);
-        }
-    };
 
     useEffect(() => {
         if (infoTypeSearch && infoTypeSearch.length > 2) {
@@ -79,10 +71,7 @@ const InformationtypePage = (props: any) => {
                 })
                 .catch(err => setError(err.message));
 
-            await axios
-                .get(`${server_codelist}`)
-                .then((res => setCodelist(res.data)))
-                .catch((err) => setError(err.message));
+            await codelist.wait();
             props.history.push(`/informationtype/${informationTypeId}`)
             setLoading(false);
         };
@@ -97,7 +86,7 @@ const InformationtypePage = (props: any) => {
                     <React.Fragment>
                         <Banner title="Opplysningstype" />
                         {!error && informationtype && (
-                            <InformationtypeMetadata informationtype={informationtype} purposeMap={purposeMap} codelist={codelist} />
+                            <InformationtypeMetadata informationtype={informationtype} purposeMap={purposeMap} />
                         )}
 
                         {error && (<p>{error}</p>)}

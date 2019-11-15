@@ -1,18 +1,6 @@
 import * as React from "react";
-import {
-    StyledTable,
-    StyledHead,
-    StyledBody,
-    StyledRow,
-    StyledCell,
-    SortableHeadCell,
-    SORT_DIRECTION
-} from "baseui/table";
-import { withStyle, useStyletron } from "baseui";
-import { Codelist, codelist } from "../../codelist";
 import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, StyledTable } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
-import { Codelist } from "../../constants";
 import { legalBasisLinkProcessor } from "../../util/string-processor"
 import { StyledLink } from 'baseui/link'
 
@@ -28,11 +16,11 @@ const CustomStyledRow = withStyle(StyledRow, {
     fontSize: "24px"
 });
 
-const renderListItem = (codelist: Codelist, legalBasis: any | object) => {
+const renderListItem = (legalBasis: any | object) => {
     let gdpr = legalBasis.gdpr && legalBasis.gdpr.code
     let nationalLaw = legalBasis.nationalLaw && legalBasis.nationalLaw.code
 
-    let description = legalBasisLinkProcessor(codelist, nationalLaw, legalBasis.description)
+    let description = legalBasisLinkProcessor(nationalLaw, legalBasis.description)
 
     return (
         <li> {gdpr && (gdpr + ', ')} {nationalLaw && nationalLaw} {description}</li>

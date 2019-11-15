@@ -62,6 +62,7 @@ export enum Codelist {
   GDPR_ARTICLE = "GDPR_ARTICLE",
   DEPARTMENT = "DEPARTMENT",
   SUB_DEPARTMENT = "SUB_DEPARTMENT",
+  SYSTEM = "SYSTEM",
 }
 
 export const codelist = new CodelistService();

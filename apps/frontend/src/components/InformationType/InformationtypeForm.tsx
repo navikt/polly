@@ -13,7 +13,7 @@ import { Option, Select, TYPE, Value } from "baseui/select";
 import { Radio, RadioGroup } from "baseui/radio";
 import axios from "axios"
 
-import {codelist, ICodelist,Codelist} from "../../codelist";
+import { codelist, Codelist, ICodelist } from "../../codelist";
 import { InformationtypeFormValues, PageResponse, Term } from "../../constants";
 import { useDebouncedState } from "../../util/debounce"
 
@@ -72,7 +72,7 @@ const InformationtypeForm = ({
     const initialValueMaster = () => {
         if (!formInitialValues.navMaster || !codelist) return []
         return [{
-            id: codelist['SYSTEM'][formInitialValues.navMaster],
+            id: codelist.getDescription(Codelist.SYSTEM, formInitialValues.navMaster),
             code: formInitialValues.navMaster
         }]
     }
@@ -225,7 +225,7 @@ const InformationtypeForm = ({
                                                 <Label2>Kategorier</Label2>
                                             </Block>
                                             <Select
-                                                options={getParsedOptions(codelist.getCodes(Codelist.SENSITIVITY), formikBag.values.categories)}
+                                                options={getParsedOptions(codelist.getCodes(Codelist.CATEGORY), formikBag.values.categories)}
                                                 placeholder="Skriv inn og legg til kategorier"
                                                 type={TYPE.search}
                                                 labelKey="id"
@@ -352,7 +352,7 @@ const InformationtypeForm = ({
                                             </Block>
 
                                             <Select
-                                                options={getParsedOptionsSensitivity(codelist.SYSTEM)}
+                                                options={getParsedOptionsSensitivity(codelist.getCodes(Codelist.SYSTEM))}
                                                 labelKey="id"
                                                 valueKey="id"
                                                 value={masterValue}
