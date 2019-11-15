@@ -1,10 +1,12 @@
 import * as React from "react";
+import { useEffect } from "react";
 import { Spinner } from "baseui/spinner";
 import axios from "axios";
-import { Block } from 'baseui/block'
 import Banner from "../components/Banner";
-import { Card } from "baseui/card";
 import InformationtypeMetadata from "../components/InformationType/InformationtypeMetadata/";
+import { useDebouncedState } from "../util/debounce"
+import { Option, Select, TYPE } from "baseui/select"
+import { InformationTypeIdName, PageResponse } from "../constants"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 const server_codelist = process.env.REACT_APP_CODELIST_ENDPOINT;
@@ -26,12 +28,15 @@ const reducePolicylist = (list: any) => {
 
 
 const InformationtypePage = (props: any) => {
-    const [isLoading, setLoading] = React.useState(true);
+    const [isLoading, setLoading] = React.useState(false);
     const [error, setError] = React.useState(null);
     const [codelist, setCodelist] = React.useState();
+    const [informationTypeId, setInformationTypeId] = React.useState(props.match.params.id)
     const [informationtype, setInformationtype] = React.useState()
     const [purposeMap, setPurposeMap] = React.useState([])
 
+    const [infoTypeSearch, setInfoTypeSearch] = useDebouncedState<string>('', 200);
+    const [infoTypeSearchResult, setInfoTypeSearchResult] = React.useState<Option[]>([]);
 
     const handleGetCodelistResponse = (response: any) => {
         if (typeof response.data === "object" && response.data !== null) {
@@ -41,11 +46,25 @@ const InformationtypePage = (props: any) => {
         }
     };
 
-    React.useEffect(() => {
+    useEffect(() => {
+        if (infoTypeSearch && infoTypeSearch.length > 2) {
+            axios
+            .get(`${server_polly}/informationtype/search/${infoTypeSearch}`)
+            .then((res: { data: PageResponse<InformationTypeIdName> }) => {
+                let options: Option[] = res.data.content.map((it: InformationTypeIdName) => ({id: it.id, label: it.name}))
+                return setInfoTypeSearchResult(options)
+            })
+        }
+    }, [infoTypeSearch])
+
+    useEffect(() => {
         const fetchData = async () => {
+            if (!informationTypeId) {
+                return;
+            }
             setLoading(true);
             await axios
-                .get(`${server_polly}/informationtype/${props.match.params.id}`)
+                .get(`${server_polly}/informationtype/${informationTypeId}`)
                 .then(res => {
                     console.log(res)
                     setInformationtype(res.data)
@@ -53,7 +72,7 @@ const InformationtypePage = (props: any) => {
                 .catch(err => setError(err.message));
 
             await axios
-                .get(`${server_polly}/policy/?informationTypeId=${props.match.params.id}&pageSize=250`)
+                .get(`${server_polly}/policy/?informationTypeId=${informationTypeId}&pageSize=250`)
                 .then(res => {
                     console.log(res, "POLIC")
                     setPurposeMap(reducePolicylist(res.data.content))
@@ -64,17 +83,17 @@ const InformationtypePage = (props: any) => {
                 .get(`${server_codelist}`)
                 .then((res => setCodelist(res.data)))
                 .catch((err) => setError(err.message));
-
+            props.history.push(`/informationtype/${informationTypeId}`)
             setLoading(false);
         };
         fetchData();
-    }, []);
+    }, [informationTypeId]);
 
     return (
         <React.Fragment>
             {isLoading ? (
                 <Spinner size={30} />
-            ) : (
+            ) : ( informationTypeId ?
                     <React.Fragment>
                         <Banner title="Opplysningstype" />
                         {!error && informationtype && (
@@ -83,6 +102,16 @@ const InformationtypePage = (props: any) => {
 
                         {error && (<p>{error}</p>)}
                     </React.Fragment>
+                    :  <Select
+                        autoFocus
+                        maxDropdownHeight="400px"
+                        searchable={true}
+                        type={TYPE.search}
+                        options={infoTypeSearchResult}
+                        placeholder="Søk opplysningstyper"
+                        onInputChange={event => setInfoTypeSearch(event.currentTarget.value)}
+                        onChange={(params: any) => setInformationTypeId(params.value[0].id)}
+                    />
                 )}
         </React.Fragment>
     );

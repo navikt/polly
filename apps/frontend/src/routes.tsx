@@ -37,7 +37,9 @@ const Main = () => {
           {loggedIn && user && <p>Hei {user.navIdent} {user.givenName} {user.familyName} <a href={`${server_polly}/logout?redirect_uri=${window.location.href}`}>logout</a></p>}
         </div>
         <div>
-          Datacatalog id parameter missing. Format https://url/id
+          <p><a href="/informationtype">Opplysningstyper</a></p>
+          <p><a href="/informationtype/create">Ny Opplysningstype</a></p>
+          <p><a href="/informationtype/purpose">Formål</a></p>
         </div>
       </div>
     </div>
@@ -56,7 +58,7 @@ const Routes = (): JSX.Element => (
       />
       <Route
         exact
-        path="/informationtype/:id"
+        path="/informationtype/:id?"
         component={InformationtypePage}
       />
       <Route
