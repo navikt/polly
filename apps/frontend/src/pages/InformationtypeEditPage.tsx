@@ -6,7 +6,7 @@ import axios from "axios";
 import InformationtypeForm from "../components/InformationType/InformationtypeForm";
 import Banner from "../components/Banner";
 import { InformationtypeFormValues } from "../constants"
-import { codelist } from "../listName";
+import { codelist } from "../codelist";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 

@@ -5,7 +5,7 @@ import { Card } from 'baseui/card'
 import { StatefulInput } from 'baseui/input';
 import { Label2 } from 'baseui/typography';
 import { Button, KIND, SIZE as ButtonSize } from 'baseui/button';
-import { codelist, ListName, ICodelist } from "../../listName";
+import { codelist, ListName, ICodelist } from "../../codelist";
 
 const rowBlockBrops: BlockProps = {
     display: 'flex',

@@ -13,7 +13,7 @@ import { Option, Select, TYPE, Value } from "baseui/select";
 import { Radio, RadioGroup } from "baseui/radio";
 import axios from "axios"
 
-import { codelist, ListName, ICodelist } from "../../listName";
+import { codelist, ListName, ICodelist } from "../../codelist";
 import { InformationtypeFormValues, PageResponse, Term } from "../../constants";
 import { useDebouncedState } from "../../util/debounce"
 

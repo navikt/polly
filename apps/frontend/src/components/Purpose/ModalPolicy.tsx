@@ -23,7 +23,7 @@ import { Plus } from "baseui/icon";
 import { Option, Select, StatefulSelect, TYPE, Value } from 'baseui/select';
 
 import CardLegalBasis from './CardLegalBasis'
-import { ListName, codelist, ICodelist } from "../../listName";
+import { ListName, codelist, ICodelist } from "../../codelist";
 import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
 import { useDebouncedState } from "../../util/debounce"
 import { useEffect } from "react"

@@ -22,7 +22,7 @@ import { Label1 } from "baseui/typography";
 import { Radio, RadioGroup } from "baseui/radio";
 
 import { DatasetFormValues } from "../../constants";
-import { ListName, codelist, ICodelist } from "../../listName";
+import { ListName, codelist, ICodelist } from "../../codelist";
 
 type FormProps = {
     formInitialValues: DatasetFormValues | any;

@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Accordion, Panel } from 'baseui/accordion'
 import { Paragraph2 } from 'baseui/typography'
 import TableInformationtype from './TableInformationtype'
-import { codelist } from "../../../listName"
+import { codelist } from "../../../codelist"
 
 const AccordionInformationtype = (props: any) => {
     if (!props) return null

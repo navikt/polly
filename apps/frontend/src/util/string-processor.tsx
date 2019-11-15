@@ -1,4 +1,4 @@
-import { ListName, codelist } from "../listName"
+import { ListName, codelist } from "../codelist"
 import React from "react"
 
 const reactProcessString = require("react-process-string")
