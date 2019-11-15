@@ -10,7 +10,7 @@ import { Block } from "baseui/block";
 const server_codelist = process.env.REACT_APP_CODELIST_ENDPOINT;
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
-const PurposePage = () => {
+const PurposePage = (props: any) => {
     const [codelist, setCodelist] = React.useState();
     const [currentPurposeValue, setCurrentPurposeValue] = React.useState();
     const [purposeData, setPurposeData] = React.useState();
@@ -41,7 +41,7 @@ const PurposePage = () => {
         }
     };
 
-    const handleChangePurpose = async (value: any) => {
+    const getPurpose = async (value: any) => {
         setLoadingPurpose(true);
         if (!value) setCurrentPurposeValue(null);
 
@@ -78,6 +78,10 @@ const PurposePage = () => {
                 .then((res => setCodelist(res.data)))
                 .catch(handleAxiosError);
 
+            if (!error && props.match.params.id) {
+                getPurpose(props.match.params.id)
+            }
+
             setLoading(false);
         };
         fetchData();
@@ -97,7 +101,7 @@ const PurposePage = () => {
                                 valueKey="id"
                                 placeholder="Velg formål"
                                 maxDropdownHeight="250px"
-                                onChange={(event) => handleChangePurpose(event.option ? event.option.id : null)}
+                                onChange={(event) => getPurpose(event.option ? event.option.id : null)}
                             />
                         )}
                 </Block>
@@ -110,6 +114,7 @@ const PurposePage = () => {
                         purpose={currentPurposeValue}
                         description={getPurposeDescription()}
                         codelist={codelist}
+                        defaultExpandedPanelId={props.match.params.processid}
                     />
                 </React.Fragment>
             ) : null}

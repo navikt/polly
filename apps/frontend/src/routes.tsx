@@ -49,7 +49,7 @@ const Main = () => {
 const Routes = (): JSX.Element => (
   <Root>
     <Switch>
-      <Route exact path="/purpose" component={PurposePage} />
+      <Route exact path="/purpose/:id?/:processid?" component={PurposePage} />
 
       <Route
         exact

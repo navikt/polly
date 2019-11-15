@@ -3,6 +3,7 @@ import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, S
 import { useStyletron, withStyle } from "baseui";
 import { Codelist } from "../../../constants";
 import { legalBasisLinkProcessor } from "../../../util/string-processor"
+import { StyledLink } from "baseui/link";
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",
@@ -128,7 +129,13 @@ const TableInformationtype = ({ codelist, list }: TableInformationtypeProps) => 
                 <StyledBody>
                     {getSortedData().map((row: any, index: number) => (
                         <CustomStyledRow key={index}>
-                            <StyledCell>{row.process ? row.process.name : ''}</StyledCell>
+                            <StyledCell>
+                                <StyledLink href={`/purpose/${row.purposeCode.code}/${row.process.id}`}>
+                                    {row.process && row.process.name}
+                                </StyledLink>
+
+                            </StyledCell>
+
                             <StyledCell>{row.subjectCategory && (row.subjectCategory.code)}</StyledCell>
 
                             <StyledCell>

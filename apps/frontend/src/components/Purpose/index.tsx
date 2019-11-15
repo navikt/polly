@@ -23,6 +23,7 @@ type PurposeViewProps = {
     purpose: string;
     codelist: Codelist;
     processList: Array<any> | any | null;
+    defaultExpandedPanelId: string | null | undefined;
 };
 
 const blockProps: BlockProps = {
@@ -75,8 +76,9 @@ const renderAllSubjectCategories = (processObj: any) => {
     return (<Paragraph2>{subjectCategories.join(', ')}</Paragraph2>)
 }
 
-const PurposeResult = ({ description, purpose, processList, codelist }: PurposeViewProps) => {
+const PurposeResult = ({ description, purpose, processList, codelist, defaultExpandedPanelId }: PurposeViewProps) => {
     const [isOpen, setIsOpen] = React.useState<any>(false);
+    const [currentExpanded, setCurrentExpanded] = React.useState<any>();
     const [showProcessModal, setShowProcessModal] = React.useState(false)
     const [errorCreatePolicy, setErrorCreatePolicy] = React.useState()
     const [errorCreateProcess, setErrorCreateProcess] = React.useState()
@@ -120,6 +122,16 @@ const PurposeResult = ({ description, purpose, processList, codelist }: PurposeV
             .catch((err: any) => setErrorCreateProcess(err.message));
     }
 
+    const isExpanded = (process: any) => {
+        if (process.id === defaultExpandedPanelId && !currentExpanded) {
+            setCurrentExpanded([process.name])
+            return true
+        }
+        if (!currentExpanded) return false
+        else if (process.name === currentExpanded[0]) return true
+        else return false
+    }
+
     return (
         <React.Fragment>
             <React.Fragment>
@@ -148,9 +160,13 @@ const PurposeResult = ({ description, purpose, processList, codelist }: PurposeV
                 </Block>
 
                 {processList && (
-                    <Accordion>
+                    <Accordion onChange={({ expanded }) => {
+                        defaultExpandedPanelId = null
+                        setCurrentExpanded(expanded)
+                    }}>
+
                         {processList.map((process: any, index: any) => (
-                            <Panel title={process.name} key={process.name}>
+                            <Panel title={process.name} key={process.name} expanded={isExpanded(process)}>
                                 <Block {...rowPanelContent}>
                                     <Block marginRight="6rem">
                                         <Label2>Rettslig grunnlag for behandlingen</Label2>
