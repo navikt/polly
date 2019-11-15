@@ -34,7 +34,7 @@ const rowPanelContent: BlockProps = {
     marginBottom: '2rem'
 }
 
-const renderListItem = (codelist:Codelist, legalBasis: any | object) => {
+const renderListItem = (codelist: Codelist, legalBasis: any | object) => {
     let gdpr = legalBasis.gdpr && legalBasis.gdpr.code
     let nationalLaw = legalBasis.nationalLaw && legalBasis.nationalLaw.code
     let description = legalBasisLinkProcessor(codelist, nationalLaw, legalBasis.description)
@@ -153,7 +153,7 @@ const PurposeResult = ({ description, purpose, processList, codelist }: PurposeV
                             <Panel title={process.name} key={process.name}>
                                 <Block {...rowPanelContent}>
                                     <Block marginRight="6rem">
-                                        <Label2>Rettslig Grunnlag</Label2>
+                                        <Label2>Rettslig grunnlag for behandlingen</Label2>
                                         {renderLegalBasisList(codelist, process.legalBases)}
                                     </Block>
                                     <Block>

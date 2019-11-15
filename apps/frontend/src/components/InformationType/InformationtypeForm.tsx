@@ -20,7 +20,6 @@ const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 const labelProps: BlockProps = {
     marginBottom: "8px",
-    width: "20%",
     alignSelf: "center"
 };
 
@@ -126,14 +125,14 @@ const InformationtypeForm = ({
     }
 
     useEffect(() => {
-      if (termSearch && termSearch.length > 2) {
-        axios
-        .get(`${server_polly}/term/search/${termSearch}`)
-        .then((res: { data: PageResponse<Term> }) => {
-          let options: Option[] = res.data.content.map((term: Term) => ({id: term.name, label: term.name + ' - ' + term.description}))
-          return setTermSearchResult(options)
-        })
-      }
+        if (termSearch && termSearch.length > 2) {
+            axios
+                .get(`${server_polly}/term/search/${termSearch}`)
+                .then((res: { data: PageResponse<Term> }) => {
+                    let options: Option[] = res.data.content.map((term: Term) => ({ id: term.name, label: term.name + ' - ' + term.description }))
+                    return setTermSearchResult(options)
+                })
+        }
     }, [termSearch])
 
     return (
@@ -205,7 +204,7 @@ const InformationtypeForm = ({
                                     render={({ form }: FieldProps<InformationtypeFormValues>) => (
                                         <Block>
                                             <Block {...labelProps}>
-                                                <Label2>Sensitivitet</Label2>
+                                                <Label2>Type personopplysning</Label2>
                                             </Block>
 
                                             <Select
