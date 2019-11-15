@@ -21,7 +21,6 @@ const renderListItem = (codelist: Codelist, legalBasis: any | object) => {
     let nationalLaw = legalBasis.nationalLaw && legalBasis.nationalLaw.code
 
     let description = legalBasisLinkProcessor(codelist, nationalLaw, legalBasis.description)
-    console.log(description, "description")
 
     return (
         <li> {gdpr && (gdpr + ', ')} {nationalLaw && nationalLaw} {description}</li>
