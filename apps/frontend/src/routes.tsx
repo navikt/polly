@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Link, Route, Switch } from "react-router-dom";
 import axios from "axios"
 
 import Root from "./components/Root";
@@ -37,9 +37,9 @@ const Main = () => {
           {loggedIn && user && <p>Hei {user.navIdent} {user.givenName} {user.familyName} <a href={`${server_polly}/logout?redirect_uri=${window.location.href}`}>logout</a></p>}
         </div>
         <div>
-          <p><a href="/informationtype">Opplysningstyper</a></p>
-          <p><a href="/informationtype/create">Ny Opplysningstype</a></p>
-          <p><a href="/purpose">Formål</a></p>
+          <p><Link to="/informationtype">Opplysningstyper</Link></p>
+          <p><Link to="/informationtype/create">Ny Opplysningstype</Link></p>
+          <p><Link to="/purpose">Formål</Link></p>
         </div>
       </div>
     </div>
