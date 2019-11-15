@@ -6,6 +6,7 @@ import axios from "axios";
 import InformationtypeForm from "../components/InformationType/InformationtypeForm";
 import Banner from "../components/Banner";
 import {codelist} from "../codelist";
+import { InformationTypeIdName, PageResponse } from "../constants"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -28,10 +29,9 @@ let initialFormValues = {
     description: ""
 };
 
-const InformationtypeCreatePage = () => {
+const InformationtypeCreatePage = (props: any) => {
     const [isLoading, setLoading] = React.useState(true);
     const [error, setError] = React.useState(null);
-    const [isCreated, setIsCreated] = React.useState(null);
     const [errorSubmit, setErrorSubmit] = React.useState(null);
 
     const handleAxiosError = (error: any) => {
@@ -45,15 +45,14 @@ const InformationtypeCreatePage = () => {
         }
     };
 
-    const handleSubmitResponse = (response: any) => {
-        setIsCreated(response);
+    const handleSubmitResponse = (response: { data: PageResponse<InformationTypeIdName> }) => {
+        props.history.push(`/informationtype/${response.data.content[0].id}`)
     };
 
     const handleSubmit = async (values: any) => {
         if (!values) return;
 
         setErrorSubmit(null);
-        setIsCreated(null);
         let body = [values];
 
         await axios
@@ -87,9 +86,6 @@ const InformationtypeCreatePage = () => {
                                         isEdit={false}
                                     />
                                     {errorSubmit && <p>{errorSubmit}</p>}
-                                    {isCreated && (
-                                        <p>Opplysningstypen er nå opprettet.</p>
-                                    )}
                                 </Centered>
                             </React.Fragment>
                         ) : (
