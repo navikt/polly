@@ -34,6 +34,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             return;
         }
         http.authorizeRequests().antMatchers("/login/**").permitAll();
+        http.authorizeRequests().antMatchers("/userinfo").permitAll();
         http.authorizeRequests().antMatchers("/internal/**").permitAll();
 
         // Swagger ui

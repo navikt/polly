@@ -11,7 +11,6 @@ import no.nav.data.polly.common.exceptions.PollyTechnicalException;
 import no.nav.data.polly.common.security.dto.OAuthState;
 import no.nav.data.polly.common.security.dto.UserInfo;
 import no.nav.data.polly.common.security.dto.UserInfoResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -140,7 +139,7 @@ public class AuthController {
         log.debug("Request to userinfo");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.ok(UserInfoResponse.noUser());
         }
         return ResponseEntity.ok(((UserInfo) authentication.getDetails()).convertToResponse());
     }

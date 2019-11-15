@@ -61,6 +61,7 @@ public class UserInfo {
 
     public UserInfoResponse convertToResponse() {
         return UserInfoResponse.builder()
+                .loggedIn(true)
                 .navIdent(navIdent)
                 .name(name)
                 .givenName(givenName)

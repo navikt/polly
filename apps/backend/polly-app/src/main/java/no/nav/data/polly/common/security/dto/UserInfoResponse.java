@@ -12,14 +12,19 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"navIdent", "name", "givenName", "familyName", "email", "groups"})
+@JsonPropertyOrder({"loggedIn", "navIdent", "name", "givenName", "familyName", "email", "groups"})
 public class UserInfoResponse {
 
+    private boolean loggedIn;
     private String navIdent;
     private String name;
     private String givenName;
     private String familyName;
     private String email;
     private List<String> groups;
+
+    public static UserInfoResponse noUser() {
+        return UserInfoResponse.builder().loggedIn(false).build();
+    }
 
 }
