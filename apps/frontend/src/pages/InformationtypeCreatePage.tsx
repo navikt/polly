@@ -21,6 +21,7 @@ let initialFormValues = {
     pii: false,
     name: "",
     sensitivity: null,
+    navMaster: null,
     keywords: [],
     categories: [],
     sources: [],

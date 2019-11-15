@@ -17,15 +17,20 @@ import {
     FieldArray,
 } from "formik";
 import { BlockProps, Block } from "baseui/block";
-import { Input, SIZE as InputSIZE } from "baseui/input";
 import { Label2 } from "baseui/typography";
 import { Radio, RadioGroup } from "baseui/radio";
 import { Plus } from "baseui/icon";
-import { StatefulSelect } from 'baseui/select';
+import { Option, Select, StatefulSelect, TYPE, Value } from 'baseui/select';
 
 import CardLegalBasis from './CardLegalBasis'
-import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { Codelist, codelist, ICodelist } from "../../codelist";
+import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
+import { useDebouncedState } from "../../util/debounce"
+import { useEffect } from "react"
+import axios from "axios"
+import { InformationTypeIdName, PageResponse } from "../../constants"
+
+const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 export interface PolicyFormValues {
     informationTypeName: string;
@@ -59,14 +64,34 @@ const renderLabel = (label: any | string) => (
     </Block>
 )
 
-const FieldInformationTypeName = () => (
+const FieldInformationTypeName = (props: {
+  informationTypes: Option[],
+  searchInformationType: (name: string) => void,
+  value: Value | undefined,
+  setValue: (v: Value) => void
+}) => (
     <Field
         name="informationTypeName"
-        render={({ field }: FieldProps<PolicyFormValues>) => (
-            <Input {...field} size={InputSIZE.default} autoFocus />
+        render={({form}: FieldProps<PolicyFormValues>) => (
+            <Select
+                autoFocus
+                maxDropdownHeight="400px"
+                searchable={true}
+                type={TYPE.search}
+                options={props.informationTypes}
+                placeholder="Søk opplysningstyper"
+                value={props.value}
+                onInputChange={event => props.searchInformationType(event.currentTarget.value)}
+                onChange={(params: any) => {
+                  let infoType = params.value[0]
+                  props.setValue(infoType)
+                  form.setFieldValue('informationTypeName', infoType.id)
+                }}
+            />
         )}
     />
 )
+
 const FieldSubjectCategory = (props: any) => (
     <Field
         name="subjectCategory"
@@ -115,6 +140,21 @@ const ModalPolicy = (props: any) => {
     const [showLegalbasesFields, setShowLegalbasesFields] = React.useState<boolean>(true);
     const { codelist, errorOnCreate, onClose } = props
 
+    const [infoTypeValue, setInfoTypeValue] = React.useState<Value>();
+    const [infoTypeSearch, setInfoTypeSearch] = useDebouncedState<string>('', 200);
+    const [infoTypeSearchResult, setInfoTypeSearchResult] = React.useState<Option[]>([]);
+
+    useEffect(() => {
+      if (infoTypeSearch && infoTypeSearch.length > 2) {
+        axios
+        .get(`${server_polly}/informationtype/search/${infoTypeSearch}`)
+        .then((res: { data: PageResponse<InformationTypeIdName> }) => {
+          let options: Option[] = res.data.content.map((it: InformationTypeIdName) => ({id: it.name, label: it.name}))
+          return setInfoTypeSearchResult(options)
+        })
+      }
+    }, [infoTypeSearch])
+
     return (
         <Modal
             {...props}
@@ -138,7 +178,8 @@ const ModalPolicy = (props: any) => {
                             <ModalBody>
                                 <Block {...rowBlockProps}>
                                     {renderLabel('Opplysningstype')}
-                                    <FieldInformationTypeName />
+                                    <FieldInformationTypeName informationTypes={infoTypeSearchResult} searchInformationType={setInfoTypeSearch}
+                                                            value={infoTypeValue} setValue={setInfoTypeValue}/>
                                 </Block>
                                 <Block {...rowBlockProps}>
                                     {renderLabel('Personkategorier')}

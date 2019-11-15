@@ -1,20 +1,8 @@
 import * as React from "react";
-import {
-    StyledTable,
-    StyledHead,
-    StyledBody,
-    StyledRow,
-    StyledCell,
-    SortableHeadCell,
-    SORT_DIRECTION
-} from "baseui/table";
-import { withStyle, useStyletron } from "baseui";
-import { Codelist, codelist } from "../../codelist";
 import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, StyledTable } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
-import { Codelist } from "../../constants";
-import { legalBasisLinkProcessor } from "../../util/string-processor"
-import { StyledLink } from 'baseui/link'
+import { Codelist } from "../../../constants";
+import { legalBasisLinkProcessor } from "../../../util/string-processor"
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",
@@ -39,14 +27,15 @@ const renderListItem = (codelist: Codelist, legalBasis: any | object) => {
     )
 }
 
-type TablePurposeProps = {
-    policies: Array<any>;
+type TableInformationtypeProps = {
+    list: Array<any>;
+    codelist: Codelist;
 };
 
-const TablePurpose = ({ policies }: TablePurposeProps) => {
+const TableInformationtype = ({ codelist, list }: TableInformationtypeProps) => {
     const [useCss, theme] = useStyletron();
-    const [titleDirection, setTitleDirection] = React.useState<any>(null);
-    const [userDirection, setUserDirection] = React.useState<any>(null);
+    const [processDirection, setProcessDirection] = React.useState<any>(null);
+    const [subjectCategoryDirection, setSubjectCategoryDirection] = React.useState<any>(null);
     const [legalBasisDirection, setLegalBasisDirection] = React.useState<any>(null);
 
     const handleSort = (title: string, prevDirection: string) => {
@@ -57,55 +46,49 @@ const TablePurpose = ({ policies }: TablePurposeProps) => {
 
         if (prevDirection === null) nextDirection = "ASC";
 
-        if (title === "Opplysningstype") {
-            setTitleDirection(nextDirection);
-            setUserDirection(null)
+        if (title === "Behandling") {
+            setProcessDirection(nextDirection);
+            setSubjectCategoryDirection(null)
             setLegalBasisDirection(null);
         }
 
         if (title === "Personkategori") {
-            setTitleDirection(null);
-            setUserDirection(nextDirection)
+            setProcessDirection(null);
+            setSubjectCategoryDirection(nextDirection)
             setLegalBasisDirection(null);
         }
 
         if (title === "Rettslig Grunnlag") {
             setLegalBasisDirection(nextDirection);
-            setUserDirection(null)
-            setTitleDirection(null);
+            setSubjectCategoryDirection(null)
+            setProcessDirection(null);
         }
         return;
     };
 
     const getSortedData = () => {
-        if (titleDirection) {
-            const sorted = policies
-                .slice(0)
-                .sort((a: any, b: any) => a[1] - b[1]);
-            if (titleDirection === SORT_DIRECTION.ASC) {
+        if (processDirection) {
+            const sorted = list.slice(0).sort((a: any, b: any) => a[1] - b[1]);
+            if (processDirection === SORT_DIRECTION.ASC) {
                 return sorted;
             }
-            if (titleDirection === SORT_DIRECTION.DESC) {
+            if (processDirection === SORT_DIRECTION.DESC) {
                 return sorted.reverse();
             }
         }
 
-        if (userDirection) {
-            const sorted = policies
-                .slice(0)
-                .sort((a: any, b: any) => a[1] - b[1]);
-            if (userDirection === SORT_DIRECTION.ASC) {
+        if (subjectCategoryDirection) {
+            const sorted = list.slice(0).sort((a: any, b: any) => a[1] - b[1]);
+            if (subjectCategoryDirection === SORT_DIRECTION.ASC) {
                 return sorted;
             }
-            if (userDirection === SORT_DIRECTION.DESC) {
+            if (subjectCategoryDirection === SORT_DIRECTION.DESC) {
                 return sorted.reverse();
             }
         }
 
         if (legalBasisDirection) {
-            const sorted = policies
-                .slice(0)
-                .sort((a: any, b: any) => a[1] - b[1]);
+            const sorted = list.slice(0).sort((a: any, b: any) => a[2] - b[2]);
             if (legalBasisDirection === SORT_DIRECTION.ASC) {
                 return sorted;
             }
@@ -114,7 +97,7 @@ const TablePurpose = ({ policies }: TablePurposeProps) => {
             }
         }
 
-        return policies;
+        return list;
     };
 
     return (
@@ -122,47 +105,45 @@ const TablePurpose = ({ policies }: TablePurposeProps) => {
             <StyledTable className={useCss({ overflow: "hidden !important" })}>
                 <StyledHeader>
                     <SortableHeadCell
-                        title="Opplysningstype"
-                        direction={titleDirection}
-                        onSort={() =>
-                            handleSort('Opplysningstype', titleDirection)
-                        }
+                        title="Behandling"
+                        direction={processDirection}
+                        onSort={() => handleSort('Behandling', processDirection)}
                         fillClickTarget
                     />
 
                     <SortableHeadCell
                         title="Personkategori"
-                        direction={userDirection}
-                        onSort={() =>
-                            handleSort('Personkategori', userDirection)
-                        }
+                        direction={subjectCategoryDirection}
+                        onSort={() => handleSort('Personkategori', subjectCategoryDirection)}
                         fillClickTarget
                     />
 
                     <SortableHeadCell
-                        title="Rettslig Grunnlag"
+                        title="Rettslig grunnlag"
                         direction={legalBasisDirection}
-                        onSort={() =>
-                            handleSort('Rettslig Grunnlag', legalBasisDirection)
-                        }
+                        onSort={() => handleSort('Rettslig Grunnlag', legalBasisDirection)}
                     />
                 </StyledHeader>
+
                 <StyledBody>
                     {getSortedData().map((row: any, index: number) => (
                         <CustomStyledRow key={index}>
-                            <StyledCell>
-                                <StyledLink href={`/informationtype/${row.informationType.id}`}>
-                                    {row.informationType.name}
-                                </StyledLink>
-                            </StyledCell>
-
+                            <StyledCell>{row.process ? row.process.name : ''}</StyledCell>
                             <StyledCell>{row.subjectCategory && (row.subjectCategory.code)}</StyledCell>
 
                             <StyledCell>
-                                {row.legalBases && row.legalBases.length > 0 && (
+                                {!row.legallegalBasesInherited && row.legalBases && row.legalBases.length > 0 && (
                                     <ul>
                                         {row.legalBases.map((legalBasis: any) => (
-                                            <li>{renderListItem(legalBasis)}</li>
+                                            <li>{renderListItem(codelist, legalBasis)}</li>
+                                        ))}
+                                    </ul>
+                                )}
+
+                                {row.legalBasesInherited && row.process.legalBases && (
+                                    <ul>
+                                        {row.process.legalBases.map((legalBasis: any) => (
+                                            <li>{renderListItem(codelist, legalBasis)}</li>
                                         ))}
                                     </ul>
                                 )}
@@ -175,4 +156,4 @@ const TablePurpose = ({ policies }: TablePurposeProps) => {
     );
 };
 
-export default TablePurpose;
+export default TableInformationtype;

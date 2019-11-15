@@ -2,7 +2,7 @@ import * as React from "react";
 import axios from "axios";
 import { StatefulSelect } from 'baseui/select';
 
-import PurposeResult from "../components/Purpose/PurposeResult";
+import PurposeResult from "../components/Purpose";
 import Banner from "../components/Banner";
 
 import { Block } from "baseui/block";
@@ -101,7 +101,8 @@ const PurposePage = () => {
             {currentPurposeValue ? (
                 <React.Fragment>
                     <PurposeResult
-                        purpose={purposeData}
+                        processList={!purposeData ? [] : purposeData}
+                        purpose={currentPurposeValue}
                         description={getPurposeDescription()}
 
                     />

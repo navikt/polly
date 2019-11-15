@@ -1,31 +1,26 @@
 import * as React from "react";
-import {
-    Formik,
-    FormikActions,
-    FormikProps,
-    Form,
-    Field,
-    FieldProps,
-    FieldArray,
-    FieldArrayRenderProps
-} from "formik";
+import { useEffect } from "react";
+import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikActions, FormikProps } from "formik";
 import { Label2 } from "baseui/typography";
 import { Input } from "baseui/input";
-import { BlockProps, Block } from "baseui/block";
+import { Block, BlockProps } from "baseui/block";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 import { Textarea } from "baseui/textarea";
-import { Button, SHAPE, KIND as ButtonKind } from "baseui/button";
+import { Button, SHAPE } from "baseui/button";
 import { Plus } from "baseui/icon";
 import { Tag, VARIANT } from "baseui/tag";
-import { StatefulSelect, Select, TYPE, Value } from "baseui/select";
+import { Option, Select, TYPE, Value } from "baseui/select";
 import { Radio, RadioGroup } from "baseui/radio";
+import axios from "axios"
 
-import {InformationtypeFormValues} from "../../constants";
 import {codelist, ICodelist,Codelist} from "../../codelist";
+import { InformationtypeFormValues, PageResponse, Term } from "../../constants";
+import { useDebouncedState } from "../../util/debounce"
+
+const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 const labelProps: BlockProps = {
     marginBottom: "8px",
-    width: "20%",
     alignSelf: "center"
 };
 
@@ -74,9 +69,28 @@ const InformationtypeForm = ({
             code: formInitialValues.sensitivity
         }]
     }
+    const initialValueMaster = () => {
+        if (!formInitialValues.navMaster || !codelist) return []
+        return [{
+            id: codelist['SYSTEM'][formInitialValues.navMaster],
+            code: formInitialValues.navMaster
+        }]
+    }
+    const initialValueTerm = () => {
+        if (!formInitialValues.term || !codelist) return []
+        return [{
+            id: formInitialValues.term,
+            label: formInitialValues.term
+        }]
+    }
+
+    const [termSearch, setTermSearch] = useDebouncedState<string>('', 200);
+    const [termSearchResult, setTermSearchResult] = React.useState<Option[]>([]);
 
     const [value, setValue] = React.useState<Value>([]);
     const [sensitivityValue, setSensitivityValue] = React.useState<Value>(initialValueSensitivity());
+    const [termValue, setTermValue] = React.useState<Value>(initialValueTerm());
+    const [masterValue, setMasterValue] = React.useState<Value>(initialValueMaster());
     const [currentKeywordValue, setCurrentKeywordValue] = React.useState("");
 
     const getParsedOptions = (codelist: ICodelist | undefined | null, values: any | undefined) => {
@@ -103,6 +117,17 @@ const InformationtypeForm = ({
         }, []);
     }
 
+    useEffect(() => {
+        if (termSearch && termSearch.length > 2) {
+            axios
+                .get(`${server_polly}/term/search/${termSearch}`)
+                .then((res: { data: PageResponse<Term> }) => {
+                    let options: Option[] = res.data.content.map((term: Term) => ({ id: term.name, label: term.name + ' - ' + term.description }))
+                    return setTermSearchResult(options)
+                })
+        }
+    }, [termSearch])
+
     return (
         <React.Fragment>
             <Formik
@@ -125,42 +150,44 @@ const InformationtypeForm = ({
                             <FlexGridItem>
                                 <Field
                                     name="name"
-                                    render={({
-                                        field
-                                    }: FieldProps<
-                                        InformationtypeFormValues
-                                    >) => (
-                                            <Block>
-                                                <Block {...labelProps}>
-                                                    <Label2>Navn</Label2>
-                                                </Block>
-                                                <Input
-                                                    {...field}
-                                                    placeholder="Skriv inn navn"
-                                                />
+                                    render={({ field }: FieldProps<InformationtypeFormValues>) => (
+                                        <Block>
+                                            <Block {...labelProps}>
+                                                <Label2>Navn</Label2>
                                             </Block>
-                                        )}
+                                            <Input
+                                                {...field}
+                                                placeholder="Skriv inn navn"
+                                            />
+                                        </Block>
+                                    )}
                                 />
                             </FlexGridItem>
 
                             <FlexGridItem>
                                 <Field
                                     name="term"
-                                    render={({
-                                        field
-                                    }: FieldProps<
-                                        InformationtypeFormValues
-                                    >) => (
-                                            <Block>
-                                                <Block {...labelProps}>
-                                                    <Label2>Begrep</Label2>
-                                                </Block>
-                                                <Input
-                                                    {...field}
-                                                    placeholder="Skriv inn et begrep"
-                                                />
+                                    render={({ form }: FieldProps<InformationtypeFormValues>) => (
+                                        <Block>
+                                            <Block {...labelProps}>
+                                                <Label2>Begrep</Label2>
                                             </Block>
-                                        )}
+                                            <Select
+                                                maxDropdownHeight="350px"
+                                                searchable={true}
+                                                type={TYPE.search}
+                                                options={termSearchResult}
+                                                placeholder="Skriv inn et begrep"
+                                                value={termValue}
+                                                onInputChange={event => setTermSearch(event.currentTarget.value)}
+                                                onChange={(params: any) => {
+                                                    let term = params.value[0]
+                                                    setTermValue(term)
+                                                    form.setFieldValue('term', term.id)
+                                                }}
+                                            />
+                                        </Block>
+                                    )}
                                 />
                             </FlexGridItem>
 
@@ -170,7 +197,7 @@ const InformationtypeForm = ({
                                     render={({ form }: FieldProps<InformationtypeFormValues>) => (
                                         <Block>
                                             <Block {...labelProps}>
-                                                <Label2>Sensitivitet</Label2>
+                                                <Label2>Type personopplysning</Label2>
                                             </Block>
 
                                             <Select
@@ -316,6 +343,29 @@ const InformationtypeForm = ({
                             </FlexGridItem>
 
                             <FlexGridItem>
+                                <Field
+                                    name="navMaster"
+                                    render={({ form }: FieldProps<InformationtypeFormValues>) => (
+                                        <Block marginBottom="1em">
+                                            <Block {...labelProps}>
+                                                <Label2>Master</Label2>
+                                            </Block>
+
+                                            <Select
+                                                options={getParsedOptionsSensitivity(codelist.SYSTEM)}
+                                                labelKey="id"
+                                                valueKey="id"
+                                                value={masterValue}
+                                                placeholder="Velg master"
+                                                onChange={(params: any) => {
+                                                    setMasterValue(params.value[0])
+                                                    form.setFieldValue('navMaster', params.value[0].code)
+                                                }}
+                                            />
+                                        </Block>
+                                    )}
+                                />
+
                                 <Field
                                     name="pii"
                                     render={({
