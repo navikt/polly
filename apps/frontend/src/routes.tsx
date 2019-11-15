@@ -39,7 +39,7 @@ const Main = () => {
         <div>
           <p><a href="/informationtype">Opplysningstyper</a></p>
           <p><a href="/informationtype/create">Ny Opplysningstype</a></p>
-          <p><a href="/informationtype/purpose">Formål</a></p>
+          <p><a href="/purpose">Formål</a></p>
         </div>
       </div>
     </div>
