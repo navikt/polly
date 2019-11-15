@@ -28,11 +28,17 @@ const Main = () => {
     fetchData();
   }, []);
 
+  let loggedIn = user && user.loggedIn;
   return (
     <div>
       <div>
-        {!user && <p><a href={`${server_polly}/login?redirect_uri=${window.location.href}`}>login</a></p>}
-        {user && <p>Hei {user.navIdent} {user.givenName} {user.familyName} <a href={`${server_polly}/logout?redirect_uri=${window.location.href}`}>logout</a></p>}
+        <div>
+          {!loggedIn && <p><a href={`${server_polly}/login?redirect_uri=${window.location.href}`}>login</a></p>}
+          {loggedIn && user && <p>Hei {user.navIdent} {user.givenName} {user.familyName} <a href={`${server_polly}/logout?redirect_uri=${window.location.href}`}>logout</a></p>}
+        </div>
+        <div>
+          Datacatalog id parameter missing. Format https://url/id
+        </div>
       </div>
       <div>
         Datacatalog id parameter missing. Format https://url/id

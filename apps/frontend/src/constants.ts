@@ -56,6 +56,7 @@ export interface ProcessFormValues {
 }
 
 export interface UserInfo {
+    loggedIn: boolean;
     navIdent: String;
     name: String;
     givenName: String;
