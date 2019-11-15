@@ -73,6 +73,7 @@ const PurposePage = (props: any) => {
         const fetchData = async () => {
             setLoading(true);
             await codelist.wait();
+            if (props.match.params.id) getPurpose(props.match.params.id)
             setLoading(false);
         };
         fetchData();
