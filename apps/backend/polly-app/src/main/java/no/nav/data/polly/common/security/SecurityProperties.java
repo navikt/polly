@@ -17,5 +17,6 @@ public class SecurityProperties {
     private String encKey = "";
     private List<String> writeGroups;
     private List<String> adminGroups;
+    private List<String> corsOrigins;
 
 }

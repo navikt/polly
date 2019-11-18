@@ -64,18 +64,12 @@ public class SecurityConfig {
     }
 
     @Bean
-    public WebMvcConfigurer corsConfigurer() {
+    public WebMvcConfigurer corsConfigurer(SecurityProperties securityProperties) {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins(
-                        "http://localhost:3000",
-                        "https://data-catalog-term-viewer.nais.adeo.no",
-                        "https://data-catalog-term-viewer.nais.preprod.local",
-                        "https://data-search.nais.adeo.no",
-                        "https://data-search.nais.preprod.local",
-                        "https://data-catalog-editor.nais.preprod.local",
-                        "https://data-catalog-editor.nais.adeo.no")
+                registry.addMapping("/**")
+                        .allowedOrigins(securityProperties.getCorsOrigins().toArray(new String[]{}))
                         .allowCredentials(true);
             }
         };
