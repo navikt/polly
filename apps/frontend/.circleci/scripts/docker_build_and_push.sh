@@ -4,7 +4,7 @@ set -e
 # Generate docker image tag
 DATE=$(date +%Y-%m-%d)
 GIT_HASH=$(git rev-parse --short HEAD)
-echo "export IMAGE_TAG=${DATE}--${GIT_HASH}" >> $BASH_ENV
+echo "export IMAGE_TAG=${DATE}--${GIT_HASH}--${CIRCLE_BRANCH}" >> $BASH_ENV
 source $BASH_ENV
 
 # write current tag to file

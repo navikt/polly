@@ -10,6 +10,7 @@ jobs:
             - run:
                   name: Build application
                   command: |
+                      cp .env.${CIRCLE_BRANCH} .env || echo "found no env"
                       yarn
                       CI=false yarn run build
             - run:
@@ -21,8 +22,7 @@ jobs:
                   root: img_tag
                   paths:
                       - ./docker_img_tag
-
-    deploy-nais:
+    deploy-nais-dev:
         docker:
             - image: navikt/deployment-cli:v0.1.8
         steps:
@@ -38,6 +38,13 @@ jobs:
                       --resource=naiserator.yaml
                       --version=`cat img_tag/docker_img_tag`
                       --vars=config-dev-fss.json
+    deploy-nais-prod:
+        docker:
+            - image: navikt/deployment-cli:v0.1.8
+        steps:
+            - checkout
+            - attach_workspace:
+                  at: img_tag
             - run:
                   name: Deploy to NAIS prod-fss
                   command: deployment-cli deploy create
@@ -53,9 +60,15 @@ workflows:
     build_and_deploy:
         jobs:
             - build
-            - deploy-nais:
+            - deploy-nais-dev:
                 filters:
                     branches:
                         only: master
+                requires:
+                      - build
+            - deploy-nais-prod:
+                filters:
+                    branches:
+                        only: prod
                 requires:
                       - build
