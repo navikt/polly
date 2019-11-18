@@ -1,6 +1,6 @@
 import * as React from "react";
 import axios from "axios";
-import { StatefulSelect } from 'baseui/select';
+import { Option, StatefulSelect, Value } from 'baseui/select';
 
 import PurposeResult from "../components/Purpose";
 import Banner from "../components/Banner";
@@ -11,7 +11,7 @@ import { ListName, codelist } from "../codelist";
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 const PurposePage = (props: any) => {
-    const [currentPurposeValue, setCurrentPurposeValue] = React.useState();
+    const [currentPurposeValue, setCurrentPurposeValue] = React.useState<string | null>();
     const [purposeData, setPurposeData] = React.useState();
     const [isLoading, setLoading] = React.useState(false);
     const [isLoadingPurpose, setLoadingPurpose] = React.useState(false);
@@ -58,14 +58,14 @@ const PurposePage = (props: any) => {
         if (!codelist.isLoaded()) return [];
         return Object.keys(codelist.getCodes(ListName.PURPOSE)).reduce(
             (acc: any, curr: any) => {
-                return [...acc, { id: curr }];
+                return [...acc, { id: curr, label: curr}];
             },
             []
         );
     };
 
     const getPurposeDescription = () => {
-        if (!codelist.isLoaded()) return null;
+        if (!codelist.isLoaded() || !currentPurposeValue) return null;
         return codelist.getDescription(ListName.PURPOSE, currentPurposeValue);
     };
 
@@ -73,7 +73,7 @@ const PurposePage = (props: any) => {
         const fetchData = async () => {
             setLoading(true);
             await codelist.wait();
-            if (props.match.params.id) getPurpose(props.match.params.id)
+            if (props.match.params.id) await getPurpose(props.match.params.id)
             setLoading(false);
         };
         fetchData();
@@ -89,8 +89,7 @@ const PurposePage = (props: any) => {
                     ) : (
                             <StatefulSelect
                                 options={getPurposeSelectItems()}
-                                labelKey="id"
-                                valueKey="id"
+                                initialState={{value:[{id: currentPurposeValue, label: currentPurposeValue} as Option]}}
                                 placeholder="Velg formål"
                                 maxDropdownHeight="250px"
                                 onChange={(event) => getPurpose(event.option ? event.option.id : null)}

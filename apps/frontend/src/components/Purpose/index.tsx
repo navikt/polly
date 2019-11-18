@@ -38,7 +38,7 @@ const renderListItem = (legalBasis: any | object) => {
     let description = legalBasisLinkProcessor(nationalLaw, legalBasis.description)
     return (
         <li>
-            <Paragraph2>{gdpr && gdpr + ': '} {nationalLaw && nationalLaw} {description}</Paragraph2>
+            <Paragraph2>{gdpr && gdpr + ', '} {nationalLaw && nationalLaw} {description}</Paragraph2>
         </li>
     )
 }
@@ -49,7 +49,7 @@ const renderLegalBasisList = (list: any) => {
 
     return (
         <ul>
-            {list.map((legalBasis: any) => <li>{renderListItem(legalBasis)}</li>)}
+            {list.map((legalBasis: any, i: number) => <li key={i}>{renderListItem(legalBasis)}</li>)}
         </ul>
     )
 }
