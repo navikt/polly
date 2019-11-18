@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const server_codelist = process.env.REACT_APP_CODELIST_ENDPOINT;
+const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 // TODO show error
 class CodelistService {
@@ -14,7 +14,7 @@ class CodelistService {
 
   private fetchData = async () => {
     return axios
-    .get(`${server_codelist}`)
+    .get(`${server_polly}/codelist`)
     .then(this.handleGetCodelistResponse)
     .catch(err => this.error = err.message);
   };
