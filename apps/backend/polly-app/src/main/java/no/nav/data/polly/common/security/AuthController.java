@@ -52,12 +52,15 @@ public class AuthController {
 
     private static final String REGISTRATION_ID = "azure";
 
+    private final SecurityProperties securityProperties;
     private final AzureTokenProvider azureTokenProvider;
     private final Encryptor encryptor;
     private final OAuth2AuthorizationRequestResolver resolver;
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
-    public AuthController(AzureTokenProvider azureTokenProvider, Encryptor refreshTokenEncryptor, OAuth2AuthorizationRequestResolver resolver) {
+    public AuthController(SecurityProperties securityProperties, AzureTokenProvider azureTokenProvider, Encryptor refreshTokenEncryptor,
+            OAuth2AuthorizationRequestResolver resolver) {
+        this.securityProperties = securityProperties;
         this.azureTokenProvider = azureTokenProvider;
         this.encryptor = refreshTokenEncryptor;
         this.resolver = resolver;
@@ -65,7 +68,8 @@ public class AuthController {
 
     @ApiOperation(value = "Login using azure sso")
     @ApiResponses(value = {
-            @ApiResponse(code = 302, message = "Redirect to azure")
+            @ApiResponse(code = 302, message = "Redirect to azure"),
+            @ApiResponse(code = 400, message = "Invalid request")
     })
     @GetMapping("/login")
     public void login(HttpServletRequest request, HttpServletResponse response,
@@ -73,6 +77,8 @@ public class AuthController {
             @RequestParam(value = ERROR_URI, required = false) String errorUri
     ) throws IOException {
         log.debug("Request to login");
+        Assert.isTrue(securityProperties.isValidRedirectUri(redirectUri), "Illegal redirect_uri " + redirectUri);
+        Assert.isTrue(securityProperties.isValidRedirectUri(errorUri), "Illegal error_uri " + errorUri);
         var usedRedirect = redirectUri != null ? redirectUri : substringBefore(fullRequestUrlWithoutQuery(request), "/login");
         String redirectUrl = createAuthRequestRedirectUrl(request, usedRedirect, errorUri);
         redirectStrategy.sendRedirect(request, response, redirectUrl);
@@ -113,7 +119,8 @@ public class AuthController {
     @ApiOperation(value = "Logout")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Logged out"),
-            @ApiResponse(code = 302, message = "Logged out")
+            @ApiResponse(code = 302, message = "Logged out"),
+            @ApiResponse(code = 400, message = "Invalid request")
     })
     @CrossOrigin
     @GetMapping("/logout")
@@ -121,6 +128,7 @@ public class AuthController {
             @RequestParam(value = REDIRECT_URI, required = false) String redirectUri
     ) throws IOException {
         log.debug("Request to logout");
+        Assert.isTrue(securityProperties.isValidRedirectUri(redirectUri), "Illegal redirect_uri " + redirectUri);
         response.addCookie(AADStatelessAuthenticationFilter.createCookie(null, 0, request));
         if (redirectUri != null) {
             redirectStrategy.sendRedirect(request, response, new OAuthState(redirectUri).getRedirectUri());
