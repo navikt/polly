@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import no.nav.data.polly.codelist.dto.CodeResponse;
+import no.nav.data.polly.codelist.dto.CodelistResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class PolicyElasticsearch {
     private String start;
     private String end;
     private boolean active;
-    private CodeResponse subjectCategory;
+    private CodelistResponse subjectCategory;
     private List<LegalBasisElasticsearch> legalbases = new ArrayList<>();
 
 }

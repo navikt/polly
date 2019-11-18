@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import static no.nav.data.polly.common.swagger.SwaggerConfig.BOOLEAN;
 import static no.nav.data.polly.common.utils.StreamUtils.nullToEmptyList;
+import static no.nav.data.polly.common.utils.StringUtils.ifNotNullToUppercaseAndTrim;
 
 @Slf4j
 @Data
@@ -54,10 +55,14 @@ public class InformationTypeRequest implements RequestElement {
     public void format() {
         setCategories(nullToEmptyList(categories).stream()
                 .map(String::trim)
+                .map(String::toUpperCase)
                 .collect(Collectors.toList()));
         setSources(nullToEmptyList(sources).stream()
                 .map(String::trim)
+                .map(String::toUpperCase)
                 .collect(Collectors.toList()));
+        setSensitivity(ifNotNullToUppercaseAndTrim(getSensitivity()));
+        setNavMaster(ifNotNullToUppercaseAndTrim(getNavMaster()));
         if (StringUtils.isBlank(term)) {
             setTerm(null);
         }

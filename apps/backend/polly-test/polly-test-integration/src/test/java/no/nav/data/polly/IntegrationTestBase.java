@@ -4,8 +4,9 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import io.prometheus.client.CollectorRegistry;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.IntegrationTestBase.Initializer;
+import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.CodelistStub;
-import no.nav.data.polly.codelist.dto.CodeResponse;
+import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.nais.LeaderElectionService;
 import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
@@ -58,9 +59,8 @@ public abstract class IntegrationTestBase {
     public static final int ELASTICSEARCH_PORT = SocketUtils.findAvailableTcpPort();
 
     protected static final UUID INFORMATION_TYPE_ID_1 = UUID.fromString("fe566351-da4d-43b0-a2e9-b09e41ff8aa7");
-    protected static final String LEGAL_BASIS_DESCRIPTION1 = "Legal basis 1";
     protected static final String PROCESS_NAME_1 = "Saksbehandling";
-    protected static final String PURPOSE_CODE1 = "Kontroll";
+    protected static final String PURPOSE_CODE1 = "KONTROLL";
     protected static final String PURPOSE_CODE2 = "AAP";
     protected static final String INFORMATION_TYPE_NAME = "Sivilstand";
 
@@ -129,7 +129,7 @@ public abstract class IntegrationTestBase {
                 .purposeCode(purpose)
                 .legalBasis(createLegalBasis())
                 .informationType(informationType).informationTypeName(informationType.getData().getName())
-                .subjectCategory("Bruker")
+                .subjectCategory("BRUKER")
                 .activeToday()
                 .build();
         createProcess(purpose).addPolicy(policy);
@@ -150,10 +150,10 @@ public abstract class IntegrationTestBase {
                 .data(InformationTypeData.builder()
                         .name(name)
                         .description("desc")
-                        .source("Skatt")
+                        .source("SKATT")
                         .category("PERSONALIA")
                         .pii(true)
-                        .sensitivity("Personopplysning")
+                        .sensitivity("PERSONOPPLYSNING")
                         .navMaster("TPS")
                         .build())
                 .build();
@@ -177,11 +177,15 @@ public abstract class IntegrationTestBase {
     }
 
     private LegalBasis createLegalBasis() {
-        return LegalBasis.builder().gdpr("6a").nationalLaw("Ftrl").description("desc").activeToday().build();
+        return LegalBasis.builder().gdpr("6A").nationalLaw("FTRL").description("desc").activeToday().build();
     }
 
     protected LegalBasisResponse legalBasisResponse() {
-        return LegalBasisResponse.builder().gdpr(new CodeResponse("6a", "6a")).nationalLaw(new CodeResponse("Ftrl", "1997-02-28-19")).description("desc").start(LocalDate.now())
+        return LegalBasisResponse.builder()
+                .gdpr(CodelistService.getCodelistResponse(ListName.GDPR_ARTICLE, "6A"))
+                .nationalLaw(CodelistService.getCodelistResponse(ListName.NATIONAL_LAW, "FTRL"))
+                .description("desc")
+                .start(LocalDate.now())
                 .end(LocalDate.now())
                 .build();
     }

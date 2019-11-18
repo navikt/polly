@@ -76,7 +76,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
         assertThat(createEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
         assertThat(createEntity.getBody(), containsString(
-                "A policy combining InformationType: Sivilstand and Process: Saksbehandling Purpose: Kontroll SubjectCategory: Bruker already exists"));
+                "A policy combining InformationType: Sivilstand and Process: Saksbehandling Purpose: KONTROLL SubjectCategory: BRUKER already exists"));
         assertThat(policyRepository.count(), is(1L));
     }
 
@@ -88,7 +88,7 @@ class PolicyControllerIT extends IntegrationTestBase {
                 POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
         assertThat(createEntity.getBody(),
-                containsString("A request combining InformationType: Sivilstand and Process: Saksbehandling Purpose: Kontroll SubjectCategory: Bruker"
+                containsString("A request combining InformationType: Sivilstand and Process: Saksbehandling Purpose: KONTROLL SubjectCategory: BRUKER"
                         + " is not unique because it is already used in this request"));
     }
 
@@ -203,8 +203,8 @@ class PolicyControllerIT extends IntegrationTestBase {
         ResponseEntity<String> updateEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT, HttpMethod.PUT, new HttpEntity<>(requestList), String.class);
         assertThat(updateEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(updateEntity.getBody(), containsString("Sivilstand/Kontroll -- fieldIsNullOrMissing -- process was null or missing"));
-        assertThat(updateEntity.getBody(), containsString("Postadresse/Kontroll -- fieldIsNullOrMissing -- process was null or missing"));
+        assertThat(updateEntity.getBody(), containsString("Sivilstand/KONTROLL -- fieldIsNullOrMissing -- process was null or missing"));
+        assertThat(updateEntity.getBody(), containsString("Postadresse/KONTROLL -- fieldIsNullOrMissing -- process was null or missing"));
         // No error reported regarding Arbeidsforhold/TEST1
         assertFalse(updateEntity.getBody().contains("Arbeidsforhold/TEST1"));
         assertThat(policyRepository.count(), is(3L));

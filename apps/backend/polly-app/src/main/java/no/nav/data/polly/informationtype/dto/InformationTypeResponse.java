@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
-import no.nav.data.polly.codelist.dto.CodeResponse;
+import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
@@ -32,10 +32,10 @@ public class InformationTypeResponse {
     private TermIdNameResponse term;
     private String description;
     private boolean pii;
-    private CodeResponse sensitivity;
-    private CodeResponse navMaster;
-    private List<CodeResponse> categories;
-    private List<CodeResponse> sources;
+    private CodelistResponse sensitivity;
+    private CodelistResponse navMaster;
+    private List<CodelistResponse> categories;
+    private List<CodelistResponse> sources;
     private List<String> keywords;
     private boolean toBeDeleted;
 
@@ -50,10 +50,10 @@ public class InformationTypeResponse {
         setName(data.getName());
         setDescription(data.getDescription());
         setPii(data.isPii());
-        setSensitivity(CodelistService.getCodeResponse(ListName.SENSITIVITY, data.getSensitivity()));
-        setNavMaster(CodelistService.getCodeResponse(ListName.SYSTEM, data.getNavMaster()));
-        setCategories(CodelistService.getCodeResponseList(ListName.CATEGORY, data.getCategories()));
-        setSources(CodelistService.getCodeResponseList(ListName.SOURCE, data.getSources()));
+        setSensitivity(CodelistService.getCodelistResponse(ListName.SENSITIVITY, data.getSensitivity()));
+        setNavMaster(CodelistService.getCodelistResponse(ListName.SYSTEM, data.getNavMaster()));
+        setCategories(CodelistService.getCodelistResponseList(ListName.CATEGORY, data.getCategories()));
+        setSources(CodelistService.getCodelistResponseList(ListName.SOURCE, data.getSources()));
         setKeywords(copyOf(data.getKeywords()));
     }
 

@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import no.nav.data.polly.codelist.CodelistService;
-import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.auditing.Auditable;
 import no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus;
 import no.nav.data.polly.elasticsearch.dto.InformationTypeElasticsearch;
@@ -105,12 +103,12 @@ public class InformationType extends Auditable<String> {
     private void convertFromRequest(InformationTypeRequest request) {
         data.setName(request.getName());
         data.setDescription(request.getDescription());
-        data.setCategories(CodelistService.format(ListName.CATEGORY, request.getCategories()));
-        data.setSources(CodelistService.format(ListName.SOURCE, request.getSources()));
+        data.setCategories(request.getCategories());
+        data.setSources(request.getSources());
         data.setKeywords(copyOf(request.getKeywords()));
         data.setPii(BooleanUtils.toBoolean(request.getPii()));
-        data.setSensitivity(CodelistService.format(ListName.SENSITIVITY, request.getSensitivity()));
-        data.setNavMaster(CodelistService.format(ListName.SYSTEM, request.getNavMaster()));
+        data.setSensitivity(request.getSensitivity());
+        data.setNavMaster(request.getNavMaster());
     }
 
     public InformationTypeElasticsearch convertToElasticsearch(List<ProcessElasticsearch> processes) {

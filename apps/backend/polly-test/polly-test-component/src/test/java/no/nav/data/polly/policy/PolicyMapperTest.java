@@ -37,7 +37,7 @@ class PolicyMapperTest {
     private PolicyMapper mapper;
 
     private static final String LEGAL_BASIS_DESCRIPTION1 = "Legal basis 1";
-    private static final String PURPOSE_CODE1 = "Kontroll";
+    private static final String PURPOSE_CODE1 = "KONTROLL";
     private static final String DESC = "Kontrollering";
     private static final String INF_TYPE_NAME_1 = "DatasetTitle 1";
     private static final UUID INF_TYPE_ID_1 = UUID.fromString("cd7f037e-374e-4e68-b705-55b61966b2fc");

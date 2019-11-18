@@ -75,7 +75,7 @@ public class CodelistController {
     public String getDescriptionByListNameAndCode(@PathVariable String listName, @PathVariable String code) {
         log.info("Received a request for the description of code={} in list={}", code, listName);
         service.validateListNameAndCodeExists(listName, code);
-        return Objects.requireNonNull(CodelistService.getCodeResponse(ListName.valueOf(listName.toUpperCase()), code)).getDescription();
+        return Objects.requireNonNull(CodelistService.getCodelistResponse(ListName.valueOf(listName.toUpperCase()), code)).getDescription();
     }
 
     @ApiOperation(value = "Create Codelist", tags = {"Codelist"})
@@ -102,7 +102,7 @@ public class CodelistController {
     public List<CodelistResponse> update(@Valid @RequestBody List<CodelistRequest> requests) {
         log.info("Received a request to update codelists");
         requests = StreamUtils.nullToEmptyList(requests);
-        service.validateRequest(requests, false);
+        service.validateRequest(requests, true);
 
         return service.update(requests).stream().map(Codelist::convertToResponse).collect(Collectors.toList());
     }

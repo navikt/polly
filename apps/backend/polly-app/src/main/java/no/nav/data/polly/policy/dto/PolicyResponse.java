@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
-import no.nav.data.polly.codelist.dto.CodeResponse;
+import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.informationtype.dto.InformationTypeIdNameResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
@@ -24,8 +24,8 @@ public class PolicyResponse {
 
     private UUID id;
     private PolicyProcessResponse process;
-    private CodeResponse purposeCode;
-    private CodeResponse subjectCategory;
+    private CodelistResponse purposeCode;
+    private CodelistResponse subjectCategory;
     private LocalDate start;
     private LocalDate end;
     private boolean legalBasesInherited;

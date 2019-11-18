@@ -93,7 +93,7 @@ class PolicyServiceTest {
             service.validateRequests(List.of(request), false);
             fail();
         } catch (ValidationException e) {
-            assertThat(e.getMessage()).contains("purposeCode: wrong code not found in codelist PURPOSE");
+            assertThat(e.getMessage()).contains("purposeCode: WRONG code not found in codelist PURPOSE");
             assertThat(e.getMessage()).contains("An InformationType with name " + INFTYPE_NAME + " does not exist");
         }
     }
@@ -115,7 +115,7 @@ class PolicyServiceTest {
             fail();
         } catch (ValidationException e) {
             assertEquals(1, e.get().size(), JsonUtils.toJson(e.get()));
-            assertThat(e.getMessage()).contains("A policy combining InformationType: Personalia and Process: process Purpose: Kontroll SubjectCategory: Bruker already exists");
+            assertThat(e.getMessage()).contains("A policy combining InformationType: Personalia and Process: process Purpose: KONTROLL SubjectCategory: BRUKER already exists");
         }
     }
 
@@ -140,19 +140,19 @@ class PolicyServiceTest {
         PolicyRequest request = PolicyRequest.builder()
                 .id("1-1-1-1-1")
                 .process("process")
-                .subjectCategory("Bruker")
+                .subjectCategory("BRUKER")
                 .informationTypeName(INFTYPE_NAME)
                 .legalBases(List.of(LegalBasisRequest.builder().gdpr("6a").description(LEGALBASISDESCRIPTION).build()))
-                .purposeCode("wrong")
+                .purposeCode("WRONG")
                 .build();
         when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.empty());
-        when(policyRepository.findById(UUID.fromString(request.getId()))).thenReturn(Optional.of(Policy.builder().purposeCode("wrong").build()));
+        when(policyRepository.findById(UUID.fromString(request.getId()))).thenReturn(Optional.of(Policy.builder().purposeCode("WRONG").build()));
         try {
             service.validateRequests(List.of(request), true);
             fail();
         } catch (ValidationException e) {
             assertEquals(2, e.get().size(), JsonUtils.toJson(e.get()));
-            assertThat(e.getMessage()).contains("purposeCode: wrong code not found in codelist PURPOSE");
+            assertThat(e.getMessage()).contains("purposeCode: WRONG code not found in codelist PURPOSE");
             assertThat(e.getMessage()).contains("An InformationType with name " + INFTYPE_NAME + " does not exist");
         }
     }
@@ -168,13 +168,13 @@ class PolicyServiceTest {
                 .purposeCode(PURPOSECODE)
                 .build();
         when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.of(InformationType.builder().id(UUID.fromString(INFTYPE_ID_1)).build()));
-        when(policyRepository.findById(UUID.fromString(request.getId()))).thenReturn(Optional.of(Policy.builder().purposeCode("otherpurpose").build()));
+        when(policyRepository.findById(UUID.fromString(request.getId()))).thenReturn(Optional.of(Policy.builder().purposeCode("OTHERPURPOSE").build()));
         try {
             service.validateRequests(List.of(request), true);
             fail();
         } catch (ValidationException e) {
             assertEquals(1, e.get().size(), JsonUtils.toJson(e.get()));
-            assertThat(e.getMessage()).contains("Cannot change purpose from otherpurpose to Kontroll for policy 1-1-1-1-1");
+            assertThat(e.getMessage()).contains("Cannot change purpose from OTHERPURPOSE to KONTROLL for policy 1-1-1-1-1");
         }
     }
 

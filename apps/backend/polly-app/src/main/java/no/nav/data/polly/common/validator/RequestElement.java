@@ -37,6 +37,7 @@ public interface RequestElement extends Validated {
 
     @JsonIgnore
     default List<ValidationError> validateFields() {
+        format();
         FieldValidator validator = new FieldValidator(getReference());
         validate(validator);
         return validator.getErrors();

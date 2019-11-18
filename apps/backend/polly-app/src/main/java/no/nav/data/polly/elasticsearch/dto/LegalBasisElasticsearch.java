@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.data.polly.codelist.dto.CodeResponse;
+import no.nav.data.polly.codelist.dto.CodelistResponse;
 
 @Data
 @Builder
@@ -12,8 +12,8 @@ import no.nav.data.polly.codelist.dto.CodeResponse;
 @NoArgsConstructor
 public class LegalBasisElasticsearch {
 
-    private CodeResponse gdpr;
-    private CodeResponse nationalLaw;
+    private CodelistResponse gdpr;
+    private CodelistResponse nationalLaw;
     private String description;
     private String start;
     private String end;

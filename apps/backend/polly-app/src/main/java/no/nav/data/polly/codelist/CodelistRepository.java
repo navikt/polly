@@ -11,6 +11,6 @@ import java.util.Optional;
 @Repository
 public interface CodelistRepository extends JpaRepository<Codelist, Integer> {
 
-    Optional<Codelist> findByListAndNormalizedCode(@Param("list") ListName list, @Param("normalizedCode") String code);
+    Optional<Codelist> findByListAndCode(@Param("list") ListName list, @Param("code") String code);
 
 }

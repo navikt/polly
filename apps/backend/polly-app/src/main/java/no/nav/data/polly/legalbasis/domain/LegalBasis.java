@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
-import no.nav.data.polly.codelist.dto.CodeResponse;
+import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.elasticsearch.dto.LegalBasisElasticsearch;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
@@ -36,13 +36,13 @@ public class LegalBasis implements Serializable {
     }
 
     public LegalBasisResponse convertToResponse() {
-        return new LegalBasisResponse(gdprCodeResponse(), nationalLawCodeResponse(), description, start, end);
+        return new LegalBasisResponse(gdprCodelistResponse(), nationalLawCodelistResponse(), description, start, end);
     }
 
     public LegalBasisElasticsearch convertToElasticsearch() {
         return LegalBasisElasticsearch.builder()
-                .gdpr(gdprCodeResponse())
-                .nationalLaw(nationalLawCodeResponse())
+                .gdpr(gdprCodelistResponse())
+                .nationalLaw(nationalLawCodelistResponse())
                 .description(description)
                 .start(DateUtil.formatDate(start))
                 .end(DateUtil.formatDate(end))
@@ -50,12 +50,12 @@ public class LegalBasis implements Serializable {
                 .build();
     }
 
-    private CodeResponse gdprCodeResponse() {
-        return CodelistService.getCodeResponse(ListName.GDPR_ARTICLE, gdpr);
+    private CodelistResponse gdprCodelistResponse() {
+        return CodelistService.getCodelistResponse(ListName.GDPR_ARTICLE, gdpr);
     }
 
-    private CodeResponse nationalLawCodeResponse() {
-        return CodelistService.getCodeResponse(ListName.NATIONAL_LAW, nationalLaw);
+    private CodelistResponse nationalLawCodelistResponse() {
+        return CodelistService.getCodelistResponse(ListName.NATIONAL_LAW, nationalLaw);
     }
 
     public static class LegalBasisBuilder {

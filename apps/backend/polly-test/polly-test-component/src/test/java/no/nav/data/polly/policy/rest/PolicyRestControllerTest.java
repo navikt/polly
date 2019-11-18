@@ -2,7 +2,7 @@ package no.nav.data.polly.policy.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.data.polly.AppStarter;
-import no.nav.data.polly.codelist.dto.CodeResponse;
+import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.common.rest.PageParameters;
 import no.nav.data.polly.informationtype.InformationTypeService;
 import no.nav.data.polly.informationtype.domain.InformationType;
@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static no.nav.data.polly.codelist.domain.ListName.PURPOSE;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
@@ -235,7 +236,6 @@ class PolicyRestControllerTest {
         Policy policy = new Policy();
         policy.setId(POLICY_ID_1);
         policy.setInformationType(InformationType.builder().id(informationTypeId).build());
-//        policy.setLegalBasisDescription("Description");
         return policy;
     }
 
@@ -246,7 +246,7 @@ class PolicyRestControllerTest {
     }
 
     private PolicyResponse createPolicyResponse(String purpose, String desc, UUID id) {
-        return PolicyResponse.builder().id(id).purposeCode(new CodeResponse(purpose, "")).informationType(new InformationTypeIdNameResponse())
+        return PolicyResponse.builder().id(id).purposeCode(new CodelistResponse(PURPOSE, purpose, "", "")).informationType(new InformationTypeIdNameResponse())
                 .legalBases(List.of(LegalBasisResponse.builder().description(desc).build()))
                 .build();
     }

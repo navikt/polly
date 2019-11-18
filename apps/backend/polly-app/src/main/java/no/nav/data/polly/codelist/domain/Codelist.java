@@ -36,21 +36,17 @@ public class Codelist extends Auditable<String> {
     @Column(name = "CODE")
     private String code;
 
-    @Column(name = "NORMALIZED_CODE")
-    private String normalizedCode;
+    @Column(name = "SHORT_NAME")
+    private String shortName;
 
     @Column(name = "DESCRIPTION")
     private String description;
-
-    public static String normalize(String code) {
-        return code == null ? null : code.toUpperCase().replaceAll("[^A-ZÆØÅ0-9]*", "");
-    }
 
     public CodelistResponse convertToResponse() {
         return CodelistResponse.builder()
                 .list(list)
                 .code(code)
-                .normalizedCode(normalizedCode)
+                .shortName(shortName)
                 .description(description)
                 .build();
     }
@@ -63,12 +59,4 @@ public class Codelist extends Auditable<String> {
 
     }
 
-    public static class CodelistBuilder {
-
-        public CodelistBuilder code(String code) {
-            this.code = code;
-            this.normalizedCode = Codelist.normalize(code);
-            return this;
-        }
-    }
 }

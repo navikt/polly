@@ -23,12 +23,14 @@ public class CodelistRequest implements RequestElement {
 
     private String list;
     private String code;
+    private String shortName;
     private String description;
 
     public Codelist convert() {
         return Codelist.builder()
                 .list(ListName.valueOf(list))
                 .code(code)
+                .shortName(shortName)
                 .description(description)
                 .build();
     }
@@ -44,12 +46,7 @@ public class CodelistRequest implements RequestElement {
 
     @Override
     public String getIdentifyingFields() {
-        return list + "-" + getNormalizedCode();
-    }
-
-    @JsonIgnore
-    public String getNormalizedCode() {
-        return Codelist.normalize(code);
+        return list + "-" + code;
     }
 
     @JsonIgnore
@@ -63,14 +60,16 @@ public class CodelistRequest implements RequestElement {
 
     public void format() {
         setList(ifNotNullToUppercaseAndTrim(list));
-        setCode(StringUtils.trim(code));
+        setCode(ifNotNullToUppercaseAndTrim(code));
+        setShortName(StringUtils.trim(shortName));
         setDescription(StringUtils.trim(description));
     }
 
     @Override
     public void validate(FieldValidator validator) {
         validator.checkRequiredEnum(Fields.list, getList(), ListName.class);
-        validator.checkBlank(Fields.code, getCode());
+        validator.checkCodelistCode(Fields.code, getCode());
+        validator.checkBlank(Fields.shortName, getShortName());
         validator.checkBlank(Fields.description, getDescription());
     }
 

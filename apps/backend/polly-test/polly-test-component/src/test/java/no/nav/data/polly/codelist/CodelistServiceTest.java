@@ -41,34 +41,29 @@ class CodelistServiceTest {
 
     @Test
     void save_shouldSaveCodelist_whenRequestIsValid() {
-        CodelistRequest request = CodelistRequest.builder()
-                .list("CATEGORY")
-                .code("TEST_CREATE")
-                .description("Test av kategorien TEST_CREATE")
-                .build();
         when(repository.saveAll(anyList())).thenAnswer(AdditionalAnswers.returnsFirstArg());
-        service.save(List.of(request));
+        service.save(List.of(createRequest()));
         verify(repository, times(1)).saveAll(anyList());
-        assertThat(CodelistService.getCodelist(ListName.CATEGORY, "TEST_CREATE").getDescription()).isEqualTo("Test av kategorien TEST_CREATE");
+        assertThat(CodelistService.getCodelist(ListName.SOURCE, "TEST_CODE").getDescription()).isEqualTo("Test description");
     }
 
     @Test
     void update_shouldUpdateCodelist_whenRequestIsValid() {
-        CodelistCache.set(Codelist.builder().list(ListName.SOURCE).code("test_update").description("Original description").build());
+        CodelistCache.set(createRequest().convert());
 
-        CodelistRequest request = CodelistRequest.builder()
-                .list("SOURCE")
-                .code("test_update")
-                .description("Updated description")
-                .build();
+        CodelistRequest request = createRequest();
+        request.setShortName("name2");
+        request.setDescription("desc2");
 
-        when(repository.findByListAndNormalizedCode(ListName.SOURCE, "TESTUPDATE")).thenReturn(Optional.of(request.convert()));
+        when(repository.findByListAndCode(ListName.SOURCE, "TEST_CODE")).thenReturn(Optional.of(request.convert()));
         when(repository.saveAll(List.of(request.convert()))).thenReturn(List.of(request.convert()));
 
         service.update(List.of(request));
 
         verify(repository, times(1)).saveAll(anyList());
-        assertThat(CodelistService.getCodelist(ListName.SOURCE, request.getCode()).getDescription()).isEqualTo("Updated description");
+        Codelist codelist = CodelistService.getCodelist(ListName.SOURCE, request.getCode());
+        assertThat(codelist.getShortName()).isEqualTo("name2");
+        assertThat(codelist.getDescription()).isEqualTo("desc2");
     }
 
     @Test
@@ -88,28 +83,19 @@ class CodelistServiceTest {
 
     @Test
     void delete_shouldDelete_whenListAndCodeExists() {
-        ListName listName = ListName.CATEGORY;
-        String code = "TEST_DELETE";
-        String description = "Test delete description";
+        Codelist codelist = createRequest().convert();
+        CodelistCache.set(codelist);
+        when(repository.findByListAndCode(codelist.getList(), codelist.getCode())).thenReturn(Optional.of(createRequest().convert()));
 
-        CodelistCache.set(Codelist.builder().list(listName).code(code).description(description).build());
-
-        Codelist codelist = Codelist.builder()
-                .list(listName)
-                .code(code)
-                .description(description)
-                .build();
-        when(repository.findByListAndNormalizedCode(listName, codelist.getNormalizedCode())).thenReturn(Optional.of(codelist));
-
-        service.delete(listName, code);
+        service.delete(codelist.getList(), codelist.getCode());
 
         verify(repository, times(1)).delete(any(Codelist.class));
-        assertNull(CodelistService.getCodelist(listName, code));
+        assertNull(CodelistService.getCodelist(codelist.getList(), codelist.getCode()));
     }
 
     @Test
     void delete_shouldThrowIllegalArgumentException_whenCodeDoesNotExist() {
-        when(repository.findByListAndNormalizedCode(ListName.SOURCE, "UNKNOWNCODE")).thenReturn(Optional.empty());
+        when(repository.findByListAndCode(ListName.SOURCE, "UNKNOWN_CODE")).thenReturn(Optional.empty());
 
         try {
             service.delete(ListName.SOURCE, "UNKNOWN_CODE");
@@ -121,7 +107,7 @@ class CodelistServiceTest {
 
     @Test
     void validateListNameExistsAndValidateListNameAndCodeExists_nothingShouldHappenWhenValuesExists() {
-        CodelistCache.set(Codelist.builder().list(ListName.PURPOSE).code("CODE").description("Description").build());
+        CodelistCache.set(Codelist.builder().list(ListName.PURPOSE).code("CODE").shortName("name").description("Description").build());
 
         service.validateListNameExists("PURPOSE");
         service.validateListNameAndCodeExists("PURPOSE", "CODE");
@@ -164,7 +150,7 @@ class CodelistServiceTest {
                 createRequestWithListName("SOURCE"),
                 createRequestWithListName("CATEGORY"));
 
-        when(repository.findByListAndNormalizedCode(any(ListName.class), anyString())).thenReturn(Optional.empty());
+        when(repository.findByListAndCode(any(ListName.class), anyString())).thenReturn(Optional.empty());
 
         service.validateRequest(requests, false);
     }
@@ -173,16 +159,20 @@ class CodelistServiceTest {
         return Arrays.stream(requests).collect(Collectors.toList());
     }
 
+    private CodelistRequest createRequest() {
+        return createRequestWithListName(ListName.SOURCE.name());
+    }
+
     private CodelistRequest createRequestWithListName(String listName) {
         return CodelistRequest.builder()
                 .list(listName)
                 .code("TEST_CODE")
+                .shortName("name")
                 .description("Test description")
                 .update(false)
                 .requestIndex(0)
                 .build();
     }
-
 
     @Test
     void validate_shouldValidateWithoutAnyProcessing_whenRequestIsEmpty() {
@@ -195,7 +185,7 @@ class CodelistServiceTest {
         List<CodelistRequest> requests = createListOfRequests(createRequestWithListNameAndCode("SOURCE", "BRUKER"));
         Codelist expectedCodelist = createCodelistWithListNameAndCode(ListName.SOURCE, "BRUKER");
 
-        when(repository.findByListAndNormalizedCode(ListName.SOURCE, "BRUKER")).thenReturn(Optional.of(expectedCodelist));
+        when(repository.findByListAndCode(ListName.SOURCE, "BRUKER")).thenReturn(Optional.of(expectedCodelist));
 
         try {
             service.validateRequest(requests, false);
@@ -207,7 +197,7 @@ class CodelistServiceTest {
     }
 
     private Codelist createCodelistWithListNameAndCode(ListName listName, String code) {
-        return Codelist.builder().list(listName).code(code).normalizedCode(Codelist.normalize(code)).description("description").build();
+        return Codelist.builder().list(listName).code(code).shortName(code + " shortname").description("description").build();
     }
 
     private CodelistRequest createRequestWithListNameAndCode(String source, String code) {
@@ -223,13 +213,14 @@ class CodelistServiceTest {
         requests.add(CodelistRequest.builder()
                 .list("SOURCE")
                 .code("TEST")
+                .shortName("name")
                 .description("Informasjon oppgitt av tester")
                 .build());
         Codelist codelist = requests.get(0).convert();
 
-        CodelistCache.set(Codelist.builder().list(ListName.SOURCE).code("TEST").description("Informasjon oppgitt av tester").build());
+        CodelistCache.set(Codelist.builder().list(ListName.SOURCE).code("TEST").shortName("name").description("Informasjon oppgitt av tester").build());
 
-        when(repository.findByListAndNormalizedCode(ListName.SOURCE, "TEST")).thenReturn(Optional.of(codelist));
+        when(repository.findByListAndCode(ListName.SOURCE, "TEST")).thenReturn(Optional.of(codelist));
 
         service.validateRequest(requests, true);
     }
@@ -254,6 +245,7 @@ class CodelistServiceTest {
         List<CodelistRequest> requests = List.of(CodelistRequest.builder()
                 .list("     category      ")
                 .code("    cOrRecTFormAT  ")
+                .shortName("  name ")
                 .description("   Trim av description                      ")
                 .build());
         when(repository.saveAll(anyList())).thenAnswer(AdditionalAnswers.returnsFirstArg());

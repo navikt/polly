@@ -33,7 +33,7 @@ import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import static no.nav.data.polly.codelist.CodelistService.getCodeResponse;
+import static no.nav.data.polly.codelist.CodelistService.getCodelistResponse;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static no.nav.data.polly.common.utils.StreamUtils.filter;
 
@@ -113,7 +113,7 @@ public class Policy extends Auditable<String> {
                 .start(DateUtil.formatDate(start))
                 .end(DateUtil.formatDate(end))
                 .active(isActive())
-                .subjectCategory(getCodeResponse(ListName.SUBJECT_CATEGORY, getSubjectCategory()))
+                .subjectCategory(getCodelistResponse(ListName.SUBJECT_CATEGORY, getSubjectCategory()))
                 .legalbases(convert(filter(legalBases, LegalBasis::isActive), LegalBasis::convertToElasticsearch))
                 .build();
     }
@@ -121,8 +121,8 @@ public class Policy extends Auditable<String> {
     public PolicyResponse convertToResponse() {
         return PolicyResponse.builder()
                 .id(getId())
-                .purposeCode(getCodeResponse(ListName.PURPOSE, getPurposeCode()))
-                .subjectCategory(getCodeResponse(ListName.SUBJECT_CATEGORY, getSubjectCategory()))
+                .purposeCode(getCodelistResponse(ListName.PURPOSE, getPurposeCode()))
+                .subjectCategory(getCodelistResponse(ListName.SUBJECT_CATEGORY, getSubjectCategory()))
                 .process(getProcess().convertToIdNameResponse())
                 .start(getStart())
                 .end(getEnd())

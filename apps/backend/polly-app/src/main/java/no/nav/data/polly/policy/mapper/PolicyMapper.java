@@ -1,7 +1,5 @@
 package no.nav.data.polly.policy.mapper;
 
-import no.nav.data.polly.codelist.CodelistService;
-import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
@@ -29,8 +27,8 @@ public class PolicyMapper {
     public Policy mapRequestToPolicy(PolicyRequest policyRequest) {
         Policy policy = policyRequest.getExistingPolicy() != null ? policyRequest.getExistingPolicy() : new Policy();
         policyRequest.getInformationType().addPolicy(policy);
-        policy.setPurposeCode(CodelistService.format(ListName.PURPOSE, policyRequest.getPurposeCode()));
-        policy.setSubjectCategory(CodelistService.format(ListName.SUBJECT_CATEGORY, policyRequest.getSubjectCategory()));
+        policy.setPurposeCode(policyRequest.getPurposeCode());
+        policy.setSubjectCategory(policyRequest.getSubjectCategory());
         policy.setStart(DateUtil.parseStart(policyRequest.getStart()));
         policy.setEnd(DateUtil.parseEnd(policyRequest.getEnd()));
         policy.setLegalBasesInherited(BooleanUtils.toBoolean(policyRequest.getLegalBasesInherited()));

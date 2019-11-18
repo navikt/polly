@@ -61,10 +61,10 @@ class ElasticsearchServiceTest {
     void setUp() {
         CodelistStub.initializeCodelist();
         policy = Policy.builder().id(UUID.randomUUID())
-                .legalBasis(LegalBasis.builder().gdpr("6a").nationalLaw("ftrl§4").description("hmmm").build())
-                .purposeCode("Kontroll")
+                .legalBasis(LegalBasis.builder().gdpr("6A").nationalLaw("FTRL").description("§4").build())
+                .purposeCode("KONTROLL")
                 .build();
-        Process.builder().generateId().name("process").purposeCode("Kontroll").build().addPolicy(policy);
+        Process.builder().generateId().name("process").purposeCode("KONTROLL").build().addPolicy(policy);
 
         informationType = InformationType.builder()
                 .id(UUID.randomUUID())

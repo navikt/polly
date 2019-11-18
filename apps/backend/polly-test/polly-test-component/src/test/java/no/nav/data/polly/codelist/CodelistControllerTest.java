@@ -66,7 +66,7 @@ class CodelistControllerTest {
         HashMap<String, HashMap<String, String>> returnedCodelist = JsonUtils.toObject(response.getContentAsString(), HashMap.class);
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(returnedCodelist.size()).isEqualTo(CodelistCache.getAllAsMap().size());
+        assertThat(returnedCodelist.size()).isEqualTo(ListName.values().length);
         assertThat(returnedCodelist.get("SOURCE").size()).isEqualTo(CodelistCache.getAsMap(ListName.SOURCE).size());
         assertThat(returnedCodelist.get("CATEGORY").size()).isEqualTo(CodelistCache.getAsMap(ListName.CATEGORY).size());
     }
@@ -122,7 +122,7 @@ class CodelistControllerTest {
 
     @Test
     void save_shouldSaveMultipleCodelists() throws Exception {
-        List<Codelist> codelists = List.of(CodelistService.getCodelist(ListName.SOURCE, "Arbeidsgiver"), CodelistService.getCodelist(ListName.SOURCE, "Bruker"));
+        List<Codelist> codelists = List.of(CodelistService.getCodelist(ListName.SOURCE, "ARBEIDSGIVER"), CodelistService.getCodelist(ListName.SOURCE, "BRUKER"));
         when(service.save(anyList())).thenReturn(codelists);
 
         List<CodelistRequest> requests = IntStream.rangeClosed(1, 10)
@@ -144,7 +144,7 @@ class CodelistControllerTest {
 
     @Test
     void update_shouldUpdateCodelist() throws Exception {
-        List<Codelist> codelists = List.of(CodelistService.getCodelist(ListName.SOURCE, "Arbeidsgiver"), CodelistService.getCodelist(ListName.SOURCE, "Bruker"));
+        List<Codelist> codelists = List.of(CodelistService.getCodelist(ListName.SOURCE, "ARBEIDSGIVER"), CodelistService.getCodelist(ListName.SOURCE, "BRUKER"));
         when(service.update(anyList())).thenReturn(codelists);
 
         List<CodelistRequest> requests = IntStream.rangeClosed(1, 10)

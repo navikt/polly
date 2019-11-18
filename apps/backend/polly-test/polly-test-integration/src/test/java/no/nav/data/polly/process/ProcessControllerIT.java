@@ -3,7 +3,6 @@ package no.nav.data.polly.process;
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
-import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.informationtype.dto.InformationTypeIdNameResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
@@ -50,9 +49,9 @@ class ProcessControllerIT extends IntegrationTestBase {
                 .policy(PolicyResponse.builder()
                         .id(policy.getId())
                         .process(policy.getProcess().convertToIdNameResponse())
-                        .purposeCode(new CodeResponse(PURPOSE_CODE1, "Kontrollering"))
+                        .purposeCode(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1))
                         .informationType(new InformationTypeIdNameResponse(createInformationType().getId(), INFORMATION_TYPE_NAME))
-                        .subjectCategory(CodelistService.getCodeResponse(ListName.SUBJECT_CATEGORY, policy.getSubjectCategory()))
+                        .subjectCategory(CodelistService.getCodelistResponse(ListName.SUBJECT_CATEGORY, policy.getSubjectCategory()))
                         .start(policy.getStart())
                         .end(policy.getEnd())
                         .legalBasis(legalBasisResponse())
@@ -108,7 +107,7 @@ class ProcessControllerIT extends IntegrationTestBase {
                         .legalBases(List.of(LegalBasisRequest.builder().gdpr("6a").nationalLaw("eksisterer-ikke").description("desc").build()))
                         .build()), String.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(resp.getBody()).contains("legalBases[0].nationalLaw: eksisterer-ikke code not found in codelist NATIONAL_LAW");
+        assertThat(resp.getBody()).contains("legalBases[0].nationalLaw: EKSISTERER-IKKE code not found in codelist NATIONAL_LAW");
     }
 
     @Test
@@ -134,7 +133,7 @@ class ProcessControllerIT extends IntegrationTestBase {
         resp = restTemplate.exchange("/process", HttpMethod.PUT, new HttpEntity<>(List.of(update)), ProcessPage.class, id);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody().getContent().get(0).getDepartment().getCode()).isEqualTo("dep");
+        assertThat(resp.getBody().getContent().get(0).getDepartment().getCode()).isEqualTo("DEP");
     }
 
     @Test

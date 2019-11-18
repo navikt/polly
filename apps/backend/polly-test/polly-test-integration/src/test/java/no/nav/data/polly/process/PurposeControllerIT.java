@@ -3,7 +3,6 @@ package no.nav.data.polly.process;
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
-import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.informationtype.dto.InformationTypeIdNameResponse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.dto.PolicyResponse;
@@ -48,9 +47,9 @@ class PurposeControllerIT extends IntegrationTestBase {
                         .policy(PolicyResponse.builder()
                                 .id(policy.getId())
                                 .process(policy.getProcess().convertToIdNameResponse())
-                                .purposeCode(new CodeResponse(PURPOSE_CODE1, "Kontrollering"))
+                                .purposeCode(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1))
                                 .informationType(new InformationTypeIdNameResponse(createInformationType().getId(), INFORMATION_TYPE_NAME))
-                                .subjectCategory(CodelistService.getCodeResponse(ListName.SUBJECT_CATEGORY, policy.getSubjectCategory()))
+                                .subjectCategory(CodelistService.getCodelistResponse(ListName.SUBJECT_CATEGORY, policy.getSubjectCategory()))
                                 .start(policy.getStart())
                                 .end(policy.getEnd())
                                 .legalBasis(legalBasisResponse())

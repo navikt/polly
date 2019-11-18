@@ -118,7 +118,7 @@ class ElasticsearchServiceIT extends IntegrationTestBase {
         InformationType informationType = createInformationType();
         informationType.setElasticsearchStatus(esStatus);
         informationTypeRepository.save(informationType);
-        createPolicy("Kontroll", informationType);
+        createPolicy("KONTROLL", informationType);
         createPolicy("AAP", informationType);
     }
 
@@ -128,8 +128,8 @@ class ElasticsearchServiceIT extends IntegrationTestBase {
         assertThat(informationType.getName()).isEqualTo(INFORMATION_TYPE_NAME);
         assertThat(informationType.getDescription()).isEqualTo("desc");
         assertThat(informationType.isPii()).isEqualTo(true);
-        assertThat(informationType.getSources().get(0).getCode()).isEqualTo("Skatt");
-        assertThat(informationType.getCategories().get(0).getCode()).isEqualTo("Personalia");
+        assertThat(informationType.getSources().get(0).getCode()).isEqualTo("SKATT");
+        assertThat(informationType.getCategories().get(0).getCode()).isEqualTo("PERSONALIA");
         List<ProcessElasticsearch> processes = informationType.getProcesses();
         assertThat(processes).hasSize(2);
         assertProcess0(processes.get(0));
@@ -145,7 +145,7 @@ class ElasticsearchServiceIT extends IntegrationTestBase {
     }
 
     private void assertProcess1(ProcessElasticsearch process) {
-        assertThat(process.getPurpose()).isEqualTo("Kontroll");
+        assertThat(process.getPurpose()).isEqualTo("KONTROLL");
         assertThat(process.getPurposeDescription()).isEqualTo("Kontrollering");
         List<PolicyElasticsearch> policies = process.getPolicies();
         assertThat(policies.size()).isEqualTo(1);

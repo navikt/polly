@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.data.polly.codelist.dto.CodeResponse;
+import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.common.utils.DateUtil;
 
 import java.time.LocalDate;
@@ -17,8 +17,8 @@ import java.time.LocalDate;
 @JsonPropertyOrder({"gdpr", "nationalLaw", "description", "start", "end", "active"})
 public class LegalBasisResponse {
 
-    private CodeResponse gdpr;
-    private CodeResponse nationalLaw;
+    private CodelistResponse gdpr;
+    private CodelistResponse nationalLaw;
     private String description;
     private LocalDate start;
     private LocalDate end;

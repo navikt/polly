@@ -119,20 +119,18 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
     public List<ValidationError> validateRequestsAndReturnErrors(List<InformationTypeRequest> requests) {
         requests = nullToEmptyList(requests);
 
-        var validationErrors = validateNoDuplicates(requests);
-        requests.forEach(InformationTypeRequest::format);
-
-        validationErrors.addAll(StreamUtils.applyAll(requests,
+        var validationErrors = StreamUtils.applyAll(requests,
                 RequestElement::validateFields,
                 this::validateInformationTypeRepositoryValues
-        ));
+        );
+        validationErrors.addAll(validateNoDuplicates(requests));
+
         return validationErrors;
     }
 
     private List<ValidationError> validateInformationTypeRepositoryValues(InformationTypeRequest request) {
         var existingInformationType = Optional.ofNullable(request.getIdAsUUID()).flatMap(repository::findById);
-        List<ValidationError> validationErrors = new ArrayList<>();
-        validationErrors.addAll(validateRepositoryValues(request, existingInformationType.isPresent()));
+        List<ValidationError> validationErrors = new ArrayList<>(validateRepositoryValues(request, existingInformationType.isPresent()));
 
         if (!request.isUpdate() && repository.findByName(request.getName()).isPresent()) {
             validationErrors.add(new ValidationError(request.getReference(), "nameAlreadyExists"

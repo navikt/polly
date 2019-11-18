@@ -3,14 +3,13 @@ package no.nav.data.polly.codelist;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
-import no.nav.data.polly.codelist.dto.CodeResponse;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
+import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.common.exceptions.CodelistNotFoundException;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.common.validator.RequestValidator;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,7 +18,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 
-import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 
 @Slf4j
@@ -36,34 +34,21 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         return CodelistCache.getCodelist(listName, code);
     }
 
-    public static CodeResponse getCodeResponse(ListName listName, String code) {
+    public static CodelistResponse getCodelistResponse(ListName listName, String code) {
         if (code == null) {
             return null;
         }
         Codelist codelist = getCodelist(listName, code);
         if (codelist == null) {
-            return new CodeResponse(code, null);
+            return new CodelistResponse(listName, code, null, null);
         }
-        return new CodeResponse(codelist.getCode(), codelist.getDescription());
+        return codelist.convertToResponse();
     }
 
-    public static List<CodeResponse> getCodeResponseList(ListName listName, Collection<String> codes) {
+    public static List<CodelistResponse> getCodelistResponseList(ListName listName, Collection<String> codes) {
         return safeStream(codes)
-                .map(code -> getCodeResponse(listName, code))
+                .map(code -> getCodelistResponse(listName, code))
                 .collect(Collectors.toList());
-    }
-
-    public static List<String> format(ListName listName, List<String> codes) {
-        return convert(codes, code -> format(listName, code));
-    }
-
-    public static String format(ListName listName, String code) {
-        if (code == null) {
-            return null;
-        }
-        Codelist codelist = getCodelist(listName, code);
-        Assert.notNull(codelist, "Code " + listName + " " + code + " does not exist");
-        return codelist.getCode();
     }
 
     public static List<Codelist> getCodelist(ListName name) {
@@ -97,9 +82,10 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     }
 
     private Codelist updateDescriptionInRepository(CodelistRequest request) {
-        Optional<Codelist> optionalCodelist = codelistRepository.findByListAndNormalizedCode(request.getListAsListName(), request.getNormalizedCode());
+        Optional<Codelist> optionalCodelist = codelistRepository.findByListAndCode(request.getListAsListName(), request.getCode());
         if (optionalCodelist.isPresent()) {
             Codelist codelist = optionalCodelist.get();
+            codelist.setShortName(request.getShortName());
             codelist.setDescription(request.getDescription());
             return codelist;
         }
@@ -109,7 +95,7 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     }
 
     public void delete(ListName name, String code) {
-        Optional<Codelist> toDelete = codelistRepository.findByListAndNormalizedCode(name, Codelist.normalize(code));
+        Optional<Codelist> toDelete = codelistRepository.findByListAndCode(name, code);
         if (toDelete.isPresent()) {
             codelistRepository.delete(toDelete.get());
             CodelistCache.remove(name, code);
@@ -145,12 +131,12 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     public void validateRequest(List<CodelistRequest> requests, boolean update) {
         initialize(requests, update);
 
-        var validationErrors = validateNoDuplicates(requests);
         requests.forEach(CodelistRequest::format);
+        var validationErrors = validateNoDuplicates(requests);
 
         validationErrors.addAll(StreamUtils.applyAll(requests,
                 RequestElement::validateFields,
-                req -> validateRepositoryValues(req, codelistRepository.findByListAndNormalizedCode(req.getListAsListName(), req.getCode()).isPresent())
+                req -> validateRepositoryValues(req, codelistRepository.findByListAndCode(req.getListAsListName(), req.getCode()).isPresent())
         ));
 
         checkForErrors(validationErrors);

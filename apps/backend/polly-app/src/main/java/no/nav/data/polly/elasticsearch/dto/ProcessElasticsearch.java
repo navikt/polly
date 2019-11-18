@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import no.nav.data.polly.codelist.dto.CodeResponse;
+import no.nav.data.polly.codelist.dto.CodelistResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +20,8 @@ public class ProcessElasticsearch {
     private String name;
     private String purpose;
     private String purposeDescription;
-    private CodeResponse department;
-    private CodeResponse subDepartment;
+    private CodelistResponse department;
+    private CodelistResponse subDepartment;
     private String start;
     private String end;
     private boolean active;

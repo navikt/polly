@@ -41,10 +41,8 @@ class CodelistServiceIT extends IntegrationTestBase {
         service.save(createListOfOneRequest());
 
         assertThat(repository.findAll().size()).isEqualTo(1);
-        assertTrue(repository.findByListAndNormalizedCode(ListName.SOURCE, "TESTCODE").isPresent());
-        assertThat(CodelistCache.getAsMap(ListName.SOURCE).get("TEST_CODE")).isEqualTo("Test description");
-        assertThat(CodelistService.getCodelist(ListName.SOURCE, "TEST_code").getDescription()).isEqualTo("Test description");
-        assertThat(repository.findByListAndNormalizedCode(ListName.SOURCE, "TESTCODE").get().getDescription()).isEqualTo("Test description");
+        assertTrue(repository.findByListAndCode(ListName.SOURCE, "TEST_CODE").isPresent());
+        assertThat(CodelistService.getCodelist(ListName.SOURCE, "TEST_CODE").getDescription()).isEqualTo("Test description");
     }
 
     @Test
@@ -61,9 +59,8 @@ class CodelistServiceIT extends IntegrationTestBase {
         List<CodelistRequest> updatedRequest = createListOfOneRequest("SOURCE", "TEST_CODE", "Updated codelist");
         service.update(updatedRequest);
 
-        assertThat(CodelistCache.getAsMap(ListName.SOURCE).get("TEST_CODE")).isEqualTo("Updated codelist");
-        assertThat(CodelistService.getCodelist(ListName.SOURCE, "TEST_code").getDescription()).isEqualTo("Updated codelist");
-        assertThat(repository.findByListAndNormalizedCode(ListName.SOURCE, "TESTCODE").get().getDescription()).isEqualTo("Updated codelist");
+        assertThat(CodelistService.getCodelist(ListName.SOURCE, "TEST_CODE").getDescription()).isEqualTo("Updated codelist");
+        assertThat(repository.findByListAndCode(ListName.SOURCE, "TEST_CODE").get().getDescription()).isEqualTo("Updated codelist");
     }
 
     @Test
@@ -71,14 +68,14 @@ class CodelistServiceIT extends IntegrationTestBase {
         List<CodelistRequest> request = createListOfOneRequest();
         service.save(request);
         assertThat(repository.findAll().size()).isEqualTo(1);
-        assertThat(CodelistCache.getAsMap(ListName.SOURCE).size()).isEqualTo(1);
+        assertThat(CodelistService.getCodelist(ListName.SOURCE).size()).isEqualTo(1);
 
         service.delete(ListName.SOURCE, "TEST_CODE");
 
         assertThat(repository.findAll().size()).isEqualTo(0);
-        assertFalse(repository.findByListAndNormalizedCode(ListName.SOURCE, "TEST_CODE").isPresent());
-        assertThat(CodelistCache.getAsMap(ListName.SOURCE).size()).isEqualTo(0);
-        assertNull(CodelistCache.getAsMap(ListName.SOURCE).get("TEST_CODE"));
+        assertFalse(repository.findByListAndCode(ListName.SOURCE, "TEST_CODE").isPresent());
+        assertThat(CodelistService.getCodelist(ListName.SOURCE).size()).isEqualTo(0);
+        assertNull(CodelistService.getCodelist(ListName.SOURCE, "TEST_CODE"));
     }
 
     @Test
@@ -102,16 +99,13 @@ class CodelistServiceIT extends IntegrationTestBase {
         return CodelistRequest.builder()
                 .list(listName)
                 .code(code)
+                .shortName(code + " name")
                 .description(description)
                 .build();
     }
 
     private List<CodelistRequest> createListOfOneRequest(String listName, String code, String description) {
-        return List.of(CodelistRequest.builder()
-                .list(listName)
-                .code(code)
-                .description(description)
-                .build());
+        return List.of(createOneRequest(listName, code, description));
     }
 
     private List<CodelistRequest> createListOfOneRequest() {

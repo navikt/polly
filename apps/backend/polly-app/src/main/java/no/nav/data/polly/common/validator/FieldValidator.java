@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
 
 import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 
@@ -19,13 +20,17 @@ public class FieldValidator {
     private static final String ERROR_TYPE = "fieldIsNullOrMissing";
     private static final String ERROR_TYPE_ENUM = "fieldIsInvalidEnum";
     private static final String ERROR_TYPE_CODELIST = "fieldIsInvalidCodelist";
+    private static final String ERROR_TYPE_CODELIST_CODE = "fieldIsInvalidCodelistCode";
     private static final String ERROR_TYPE_DATE = "fieldIsInvalidDate";
     private static final String ERROR_TYPE_UUID = "fieldIsInvalidUUID";
     private static final String ERROR_MESSAGE = "%s was null or missing";
     private static final String ERROR_MESSAGE_ENUM = "%s: %s was invalid for type %s";
     private static final String ERROR_MESSAGE_CODELIST = "%s: %s code not found in codelist %s";
+    private static final String ERROR_MESSAGE_CODELIST_CODE = "%s: %s code has invalid format (alphanumeric and underscore)";
     private static final String ERROR_MESSAGE_DATE = "%s: %s date is not a valid format";
     private static final String ERROR_MESSAGE_UUID = "%s: %s uuid is not a valid format";
+
+    private static final Pattern CODE_PATTERN = Pattern.compile("^[A-Z0-9_]+$");
 
     private final List<ValidationError> validationErrors = new ArrayList<>();
     private final String reference;
@@ -48,6 +53,15 @@ public class FieldValidator {
             return true;
         }
         return false;
+    }
+
+    public void checkCodelistCode(String fieldName, String fieldValue) {
+        if (checkBlank(fieldName, fieldValue)) {
+            return;
+        }
+        if (!CODE_PATTERN.matcher(fieldValue).matches()) {
+            validationErrors.add(new ValidationError(reference, ERROR_TYPE_CODELIST_CODE, String.format(ERROR_MESSAGE_CODELIST_CODE, getFieldName(fieldName), fieldValue)));
+        }
     }
 
     public <T extends Enum<T>> void checkRequiredEnum(String fieldName, String fieldValue, Class<T> type) {
@@ -127,6 +141,7 @@ public class FieldValidator {
         AtomicInteger i = new AtomicInteger(0);
         safeStream(fieldValues).forEach(fieldValue -> {
             FieldValidator fieldValidator = new FieldValidator(reference, String.format("%s[%d]", fieldName, i.getAndIncrement()));
+            fieldValue.format();
             fieldValue.validate(fieldValidator);
             validationErrors.addAll(fieldValidator.getErrors());
         });

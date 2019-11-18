@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
-import no.nav.data.polly.codelist.dto.CodeResponse;
+import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
@@ -32,10 +32,10 @@ public class InformationTypeElasticsearch {
     private String term;
     private String description;
     private boolean pii;
-    private CodeResponse sensitivity;
-    private CodeResponse navMaster;
-    private List<CodeResponse> categories = new ArrayList<>();
-    private List<CodeResponse> sources = new ArrayList<>();
+    private CodelistResponse sensitivity;
+    private CodelistResponse navMaster;
+    private List<CodelistResponse> categories = new ArrayList<>();
+    private List<CodelistResponse> sources = new ArrayList<>();
     private List<String> keywords = new ArrayList<>();
 
     private String modified;
@@ -76,10 +76,10 @@ public class InformationTypeElasticsearch {
         setName(data.getName());
         setDescription(data.getDescription());
         setPii(data.isPii());
-        setSensitivity(CodelistService.getCodeResponse(ListName.SENSITIVITY, data.getSensitivity()));
-        setNavMaster(CodelistService.getCodeResponse(ListName.SYSTEM, data.getNavMaster()));
-        setCategories(CodelistService.getCodeResponseList(ListName.CATEGORY, data.getCategories()));
-        setSources(CodelistService.getCodeResponseList(ListName.SOURCE, data.getSources()));
+        setSensitivity(CodelistService.getCodelistResponse(ListName.SENSITIVITY, data.getSensitivity()));
+        setNavMaster(CodelistService.getCodelistResponse(ListName.SYSTEM, data.getNavMaster()));
+        setCategories(CodelistService.getCodelistResponseList(ListName.CATEGORY, data.getCategories()));
+        setSources(CodelistService.getCodelistResponseList(ListName.SOURCE, data.getSources()));
         setKeywords(copyOf(data.getKeywords()));
 
         setSuggest(String.format("%s %s %s", name, StringUtils.trimToEmpty(description), String.join(" ", nullToEmptyList(keywords))));

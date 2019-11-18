@@ -38,15 +38,15 @@ final class CodelistCache {
     }
 
     static Codelist getCodelist(ListName listName, String code) {
-        return codelists.get(listName).get(Codelist.normalize(code));
+        return codelists.get(listName).get(code);
     }
 
     static boolean contains(ListName listName, String code) {
-        return codelists.get(listName).containsKey(Codelist.normalize(code));
+        return codelists.get(listName).containsKey(code);
     }
 
     static void remove(ListName listName, String code) {
-        Codelist remove = codelists.get(listName).remove(Codelist.normalize(code));
+        Codelist remove = codelists.get(listName).remove(code);
         if (remove != null) {
             codelistLegacy.get(listName).remove(remove.getCode());
         }
@@ -55,9 +55,9 @@ final class CodelistCache {
     static void set(Codelist codelist) {
         Assert.notNull(codelist.getList(), "listName cannot be null");
         Assert.notNull(codelist.getCode(), "code cannot be null");
-        Assert.notNull(codelist.getNormalizedCode(), "normalizedCode cannot be null");
+        Assert.notNull(codelist.getShortName(), "shortName cannot be null");
         Assert.notNull(codelist.getDescription(), "description cannot be null");
-        codelists.get(codelist.getList()).put(codelist.getNormalizedCode(), codelist);
+        codelists.get(codelist.getList()).put(codelist.getCode(), codelist);
         codelistLegacy.get(codelist.getList()).put(codelist.getCode(), codelist.getDescription());
     }
 
