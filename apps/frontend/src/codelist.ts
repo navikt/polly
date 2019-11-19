@@ -14,7 +14,7 @@ class CodelistService {
 
   private fetchData = async () => {
     return axios
-    .get(`${server_polly}/codelist`)
+    .get(`${server_polly}/codelist/legacy`)
     .then(this.handleGetCodelistResponse)
     .catch(err => this.error = err.message);
   };
