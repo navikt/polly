@@ -41,15 +41,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/swagger*/**").permitAll();
         http.authorizeRequests().antMatchers("/webjars/springfox-swagger-ui/**").permitAll();
 
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/codelist/**").permitAll();
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/informationtype/**").permitAll();
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/policy/**").permitAll();
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/process/**").permitAll();
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/term/**").permitAll();
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/records/search").permitAll();
+        allowGetAndOptions(http,
+                "/codelist/**",
+                "/informationtype/**",
+                "/policy/**",
+                "/process/**",
+                "/term/**"
+        );
 
         http.authorizeRequests().antMatchers("/codelist/**").hasRole(PollyRole.POLLY_ADMIN.name());
         http.authorizeRequests().anyRequest().hasRole(PollyRole.POLLY_WRITE.name());
+    }
+
+    private void allowGetAndOptions(HttpSecurity http, String... paths) throws Exception {
+        for (String path : paths) {
+            http.authorizeRequests().antMatchers(HttpMethod.GET, path).permitAll();
+            http.authorizeRequests().antMatchers(HttpMethod.OPTIONS, path).permitAll();
+        }
     }
 
     private void addFilters(HttpSecurity http) {
