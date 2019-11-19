@@ -13,8 +13,6 @@ import TablePurpose from './TablePurpose'
 import ModalPolicy from './ModalPolicy'
 import ModalProcess from './ModalProcess'
 import { legalBasisLinkProcessor } from "../../util/string-processor"
-import { async } from "q";
-import { valueToNode } from "@babel/types";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -93,7 +91,6 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
             process: process.name,
             purposeCode: process.purposeCode
         }]
-        console.log(body, "BODY")
 
         await axios
             .post(`${server_polly}/policy`, body)
@@ -125,18 +122,17 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
     }
 
     const handleEditProcess = async (values: any, id: any) => {
-        console.log(values, 'Valuea')
         let body = {
-            ...values,
             id: id,
+            name: values.name,
+            department: values.department ? values.department.code : null,
+            subDepartment: values.subDepartmant ? values.subDepartment.code : null,
             purposeCode: purpose
         }
-        console.log(body)
 
         await axios
             .put(`${server_polly}/process/${id}`, body)
             .then(((res: any) => {
-                console.log(res, "res")
                 processList.push(res.data.content[0])
                 setErrorCreateProcess(null)
                 setShowProcessModal(false)
@@ -152,6 +148,10 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
         if (!currentExpanded) return false
         else if (process.name === currentExpanded[0]) return true
         else return false
+    }
+
+    const getInitialValuesProcessEdit = (process: any) => {
+        return { name: process.name, department: process.department, subDepartment: process.subDepartment, legalBases: process.legalBases }
     }
 
     return (
@@ -215,7 +215,7 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
                                             submit={(values: any) => handleEditProcess(values, process.id)}
                                             errorOnCreate={errorCreateProcess}
                                             isEdit={true}
-                                            initialValues={{ name: process.name, department: process.department, subDepartment: process.subDepartment, legalBases: process.legalBases }}
+                                            initialValues={getInitialValuesProcessEdit(process)}
 
                                         />
                                     </Block>

@@ -69,7 +69,7 @@ const FieldDepartment = (props: any) => {
                     valueKey="id"
                     onChange={({ value }) => {
                         setValue(value)
-                        form.setFieldValue('department', value ? value[0].code : '')
+                        form.setFieldValue('department', value.length > 0 ? value[0].code : '')
                     }}
                     value={value}
                 />
@@ -93,7 +93,7 @@ const FieldSubDepartment = (props: any) => {
                     valueKey="id"
                     onChange={({ value }) => {
                         setValue(value)
-                        form.setFieldValue('subDepartment', value ? value[0].code : '')
+                        form.setFieldValue('subDepartment', value.length > 0 ? value[0].code : '')
                     }}
                     value={value}
                 />
@@ -104,7 +104,6 @@ const FieldSubDepartment = (props: any) => {
 }
 
 const ListLegalBases = (props: any) => {
-    console.log(props)
     const { legalBases } = props
     return (
         <ul>
@@ -132,7 +131,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
     const showSubDepartment = (department: any) => {
         if (!department) return false
 
-        if (department.code === 'ØSA' || department.code === 'YTA' || department.code === 'ATA')
+        if (department === 'ØSA' || department === 'YTA' || department === 'ATA')
             return true
         else return false
     }

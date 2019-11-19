@@ -12,7 +12,7 @@ import { Tag, VARIANT } from "baseui/tag";
 import { Option, Select, TYPE, Value } from "baseui/select";
 import axios from "axios"
 
-import { codelist, ListName, ICodelist } from "../../codelist";
+import { codelist, ListName, Code } from "../../codelist";
 import { InformationtypeFormValues, PageResponse, Term } from "../../constants";
 import { useDebouncedState } from "../../util/debounce"
 
@@ -64,15 +64,15 @@ const InformationtypeForm = ({
     const initialValueSensitivity = () => {
         if (!formInitialValues.sensitivity || !codelist.isLoaded()) return []
         return [{
-            id: codelist.getDescription(ListName.SENSITIVITY, formInitialValues.sensitivity),
-            code: formInitialValues.sensitivity
+            id: formInitialValues.sensitivity,
+            label: codelist.getShortname(ListName.SENSITIVITY, formInitialValues.sensitivity)
         }]
     }
     const initialValueMaster = () => {
         if (!formInitialValues.navMaster || !codelist) return []
         return [{
-            id: codelist.getDescription(ListName.SYSTEM, formInitialValues.navMaster),
-            code: formInitialValues.navMaster
+            id: formInitialValues.navMaster,
+            label: codelist.getShortname(ListName.SYSTEM, formInitialValues.navMaster)
         }]
     }
     const initialValueTerm = () => {
@@ -92,13 +92,10 @@ const InformationtypeForm = ({
     const [masterValue, setMasterValue] = React.useState<Value>(initialValueMaster());
     const [currentKeywordValue, setCurrentKeywordValue] = React.useState("");
 
-    const getParsedOptions = (codelist: ICodelist | undefined | null, values: any | undefined) => {
+    const getParsedOptions = (listName: ListName, values: any | undefined) => {
         if (!codelist) return [];
 
-        let parsedOptions = Object.keys(codelist).reduce(
-            (acc: any, curr: any) => {
-                return [...acc, { id: curr }];
-            }, []);
+        let parsedOptions = codelist.getParsedOptions(listName)
 
         if (!values) {
             return parsedOptions
@@ -108,13 +105,6 @@ const InformationtypeForm = ({
             );
         }
     };
-
-    const getParsedOptionsSensitivity = (codelist: ICodelist | null) => {
-        if (!codelist) return []
-        return Object.keys(codelist).reduce((acc: any, curr: any) => {
-            return [...acc, { id: codelist[curr], code: curr }];
-        }, []);
-    }
 
     useEffect(() => {
         if (termSearch && termSearch.length > 2) {
@@ -200,9 +190,7 @@ const InformationtypeForm = ({
                                             </Block>
 
                                             <Select
-                                                options={getParsedOptionsSensitivity(codelist.getCodes(ListName.SENSITIVITY))}
-                                                labelKey="id"
-                                                valueKey="id"
+                                                options={codelist.getParsedOptions(ListName.SENSITIVITY)}
                                                 value={sensitivityValue}
                                                 placeholder="Velg sensitivitet"
                                                 onChange={(params: any) => {
@@ -224,11 +212,9 @@ const InformationtypeForm = ({
                                                 <Label2>Kategorier</Label2>
                                             </Block>
                                             <Select
-                                                options={getParsedOptions(codelist.getCodes(ListName.CATEGORY), formikBag.values.categories)}
+                                                options={getParsedOptions(ListName.CATEGORY, formikBag.values.categories)}
                                                 placeholder="Skriv inn og legg til kategorier"
                                                 type={TYPE.search}
-                                                labelKey="id"
-                                                valueKey="id"
                                                 openOnClick={false}
                                                 maxDropdownHeight="300px"
                                                 onChange={({ option }) => {
@@ -258,11 +244,9 @@ const InformationtypeForm = ({
                                                 <Label2>Kilder</Label2>
                                             </Block>
                                             <Select
-                                                options={getParsedOptions(codelist.getCodes(ListName.SOURCE), formikBag.values.sources)}
+                                                options={getParsedOptions(ListName.SOURCE, formikBag.values.sources)}
                                                 placeholder="Skriv inn og legg til kilder"
                                                 type={TYPE.search}
-                                                labelKey="id"
-                                                valueKey="id"
                                                 openOnClick={false}
                                                 maxDropdownHeight="300px"
                                                 onChange={({ option }) => {
@@ -351,9 +335,7 @@ const InformationtypeForm = ({
                                             </Block>
 
                                             <Select
-                                                options={getParsedOptionsSensitivity(codelist.getCodes(ListName.SYSTEM))}
-                                                labelKey="id"
-                                                valueKey="id"
+                                                options={codelist.getParsedOptions(ListName.SYSTEM)}
                                                 value={masterValue}
                                                 placeholder="Velg master"
                                                 onChange={(params: any) => {

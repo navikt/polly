@@ -5,19 +5,11 @@ import { Card } from 'baseui/card'
 import { StatefulInput } from 'baseui/input';
 import { Label2 } from 'baseui/typography';
 import { Button, KIND, SIZE as ButtonSize } from 'baseui/button';
-import { codelist, ListName, ICodelist } from "../../codelist";
+import { codelist, ListName } from "../../codelist";
 
 const rowBlockBrops: BlockProps = {
     display: 'flex',
     marginBottom: '1rem'
-}
-
-
-const getParsedOptions = (codelist: ICodelist | null) => {
-    if (!codelist) return []
-    return Object.keys(codelist).reduce((acc: any, curr: any) => {
-        return [...acc, { id: codelist[curr], code: curr }];
-    }, []);
 }
 
 const CardLegalBasis = (props: any) => {
@@ -48,9 +40,7 @@ const CardLegalBasis = (props: any) => {
 
             <Block {...rowBlockBrops} width="100%">
                 <Select
-                    options={getParsedOptions(codelist.getCodes(ListName.GDPR_ARTICLE))}
-                    labelKey="code"
-                    valueKey="code"
+                    options={codelist.getParsedOptions(ListName.GDPR_ARTICLE)}
                     placeholder="Velg GDPR artikkel"
                     maxDropdownHeight="300px"
                     type={TYPE.search}
@@ -60,9 +50,7 @@ const CardLegalBasis = (props: any) => {
             </Block>
             <Block {...rowBlockBrops}>
                 <Select
-                    options={getParsedOptions(codelist.getCodes(ListName.NATIONAL_LAW))}
-                    labelKey="code"
-                    valueKey="code"
+                    options={codelist.getParsedOptions(ListName.NATIONAL_LAW)}
                     placeholder="Velg nasjonal lov"
                     maxDropdownHeight="300px"
                     type={TYPE.search}

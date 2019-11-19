@@ -23,7 +23,7 @@ import { Plus } from "baseui/icon";
 import { Option, Select, StatefulSelect, TYPE, Value } from 'baseui/select';
 
 import CardLegalBasis from './CardLegalBasis'
-import { ListName, codelist, ICodelist } from "../../codelist";
+import { ListName, codelist } from "../../codelist";
 import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
 import { useDebouncedState } from "../../util/debounce"
 import { useEffect } from "react"
@@ -49,13 +49,6 @@ const rowBlockProps: BlockProps = {
     display: 'flex',
     width: '100%',
     marginTop: '1rem'
-}
-
-const getParsedOptions = (codelist: ICodelist | null) => {
-    if (!codelist) return []
-    return Object.keys(codelist).reduce((acc: any, curr: any) => {
-        return [...acc, { id: codelist[curr], code: curr }];
-    }, []);
 }
 
 const renderLabel = (label: any | string) => (
@@ -97,9 +90,7 @@ const FieldSubjectCategory = (props: any) => (
         name="subjectCategory"
         render={({ form }: FieldProps<PolicyFormValues>) => (
             <StatefulSelect
-                options={getParsedOptions(codelist.getCodes(ListName.SUBJECT_CATEGORY))}
-                labelKey="id"
-                valueKey="id"
+                options={codelist.getParsedOptions(ListName.SUBJECT_CATEGORY)}
                 onChange={event => form.setFieldValue('subjectCategory',
                     event.option ? event.option.code : '')}
             />

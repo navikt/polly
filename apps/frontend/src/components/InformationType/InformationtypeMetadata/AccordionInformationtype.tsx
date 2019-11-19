@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Accordion, Panel } from 'baseui/accordion'
 import { Paragraph2 } from 'baseui/typography'
 import TableInformationtype from './TableInformationtype'
-import { codelist } from "../../../codelist"
+import { codelist, ListName } from "../../../codelist"
 
 const AccordionInformationtype = (props: any) => {
     if (!props) return null
@@ -18,7 +18,7 @@ const AccordionInformationtype = (props: any) => {
     return (
         <Accordion>
             {Object.keys(purposeMap).map((key: any) => (
-                <Panel title={key}>
+                <Panel title={codelist.getShortname(ListName.PURPOSE, key)}>
                     <TableInformationtype list={getPolicylistForPurpose(key)} />
                 </Panel>
             ))}

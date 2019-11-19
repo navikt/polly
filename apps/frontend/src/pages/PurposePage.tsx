@@ -54,21 +54,6 @@ const PurposePage = (props: any) => {
         setLoadingPurpose(false);
     };
 
-    const getPurposeSelectItems = () => {
-        if (!codelist.isLoaded()) return [];
-        return Object.keys(codelist.getCodes(ListName.PURPOSE)).reduce(
-            (acc: any, curr: any) => {
-                return [...acc, { id: curr, label: curr}];
-            },
-            []
-        );
-    };
-
-    const getPurposeDescription = () => {
-        if (!codelist.isLoaded() || !currentPurposeValue) return null;
-        return codelist.getDescription(ListName.PURPOSE, currentPurposeValue);
-    };
-
     React.useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
@@ -88,8 +73,8 @@ const PurposePage = (props: any) => {
                         <p>Feil i henting av formål fra codelist</p>
                     ) : (
                             <StatefulSelect
-                                options={getPurposeSelectItems()}
-                                initialState={{value:[{id: currentPurposeValue, label: currentPurposeValue} as Option]}}
+                                options={codelist.getParsedOptions(ListName.PURPOSE)}
+                                initialState={{ value: [{ id: currentPurposeValue, label: currentPurposeValue } as Option] }}
                                 placeholder="Velg formål"
                                 maxDropdownHeight="250px"
                                 onChange={(event) => getPurpose(event.option ? event.option.id : null)}
@@ -103,7 +88,7 @@ const PurposePage = (props: any) => {
                     <PurposeResult
                         processList={!purposeData ? [] : purposeData}
                         purpose={currentPurposeValue}
-                        description={getPurposeDescription()}
+                        description={codelist.getDescription(ListName.PURPOSE, currentPurposeValue)}
                         defaultExpandedPanelId={props.match.params.processid}
 
                     />

@@ -22,7 +22,6 @@ const reducePolicylist = (list: any) => {
 
         return acc
     }, {})
-    console.log(temp, "TEEEEEEEMP")
     return temp
 }
 
@@ -40,11 +39,11 @@ const InformationtypePage = (props: any) => {
     useEffect(() => {
         if (infoTypeSearch && infoTypeSearch.length > 2) {
             axios
-            .get(`${server_polly}/informationtype/search/${infoTypeSearch}`)
-            .then((res: { data: PageResponse<InformationTypeIdName> }) => {
-                let options: Option[] = res.data.content.map((it: InformationTypeIdName) => ({id: it.id, label: it.name}))
-                return setInfoTypeSearchResult(options)
-            })
+                .get(`${server_polly}/informationtype/search/${infoTypeSearch}`)
+                .then((res: { data: PageResponse<InformationTypeIdName> }) => {
+                    let options: Option[] = res.data.content.map((it: InformationTypeIdName) => ({ id: it.id, label: it.name }))
+                    return setInfoTypeSearchResult(options)
+                })
         }
     }, [infoTypeSearch])
 
@@ -65,7 +64,6 @@ const InformationtypePage = (props: any) => {
             await axios
                 .get(`${server_polly}/policy/?informationTypeId=${informationTypeId}&pageSize=250`)
                 .then(res => {
-                    console.log(res, "POLIC")
                     setPurposeMap(reducePolicylist(res.data.content))
                 })
                 .catch(err => setError(err.message));
@@ -81,25 +79,25 @@ const InformationtypePage = (props: any) => {
         <React.Fragment>
             {isLoading ? (
                 <Spinner size={30} />
-            ) : ( informationTypeId ?
-                    <React.Fragment>
-                        <Banner title="Opplysningstype" />
-                        {!error && informationtype && (
-                            <InformationtypeMetadata informationtype={informationtype} purposeMap={purposeMap} />
-                        )}
+            ) : (informationTypeId ?
+                <React.Fragment>
+                    <Banner title="Opplysningstype" />
+                    {!error && informationtype && (
+                        <InformationtypeMetadata informationtype={informationtype} purposeMap={purposeMap} />
+                    )}
 
-                        {error && (<p>{error}</p>)}
-                    </React.Fragment>
-                    :  <Select
-                        autoFocus
-                        maxDropdownHeight="400px"
-                        searchable={true}
-                        type={TYPE.search}
-                        options={infoTypeSearchResult}
-                        placeholder="Søk opplysningstyper"
-                        onInputChange={event => setInfoTypeSearch(event.currentTarget.value)}
-                        onChange={(params: any) => setInformationTypeId(params.value[0].id)}
-                    />
+                    {error && (<p>{error}</p>)}
+                </React.Fragment>
+                : <Select
+                    autoFocus
+                    maxDropdownHeight="400px"
+                    searchable={true}
+                    type={TYPE.search}
+                    options={infoTypeSearchResult}
+                    placeholder="Søk opplysningstyper"
+                    onInputChange={event => setInfoTypeSearch(event.currentTarget.value)}
+                    onChange={(params: any) => setInformationTypeId(params.value[0].id)}
+                />
                 )}
         </React.Fragment>
     );
