@@ -12,8 +12,6 @@ import { ProcessFormValues } from "../../constants";
 import CardLegalBasis from './CardLegalBasis'
 import { ListName, codelist } from "../../codelist"
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
 const modalBlockProps: BlockProps = {
     width: '700px',
     paddingRight: '2rem',
@@ -64,9 +62,7 @@ const FieldDepartment = (props: any) => {
             name="department"
             render={({ form }: FieldProps<ProcessFormValues>) => (
                 <Select
-                    options={getParsedOptions(codelist.getCodes(ListName.DEPARTMENT))}
-                    labelKey="id"
-                    valueKey="id"
+                    options={codelist.getParsedOptions(ListName.DEPARTMENT)}
                     onChange={({ value }) => {
                         setValue(value)
                         form.setFieldValue('department', value.length > 0 ? value[0].code : '')
@@ -88,9 +84,7 @@ const FieldSubDepartment = (props: any) => {
             name="subDepartment"
             render={({ form }: FieldProps<ProcessFormValues>) => (
                 <Select
-                    options={getParsedOptions(codelist.getCodes(ListName.SUB_DEPARTMENT))}
-                    labelKey="id"
-                    valueKey="id"
+                    options={codelist.getParsedOptions(ListName.SUB_DEPARTMENT)}
                     onChange={({ value }) => {
                         setValue(value)
                         form.setFieldValue('subDepartment', value.length > 0 ? value[0].code : '')
