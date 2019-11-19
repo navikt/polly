@@ -6,13 +6,14 @@ import * as React from "react"
 const lovdata_base = process.env.REACT_APP_LOVDATA_BASE_URL;
 
 export const renderLegalBasis = (legalBasis: LegalBasis) => {
-  let gdpr = codelist.getDescription(ListName.GDPR_ARTICLE, legalBasis.gdpr.code) || legalBasis.gdpr.code
-  let nationalLaw = codelist.getDescription(ListName.NATIONAL_LAW, legalBasis.nationalLaw.code) || legalBasis.nationalLaw.code
+  let gdpr = codelist.getShortname(ListName.GDPR_ARTICLE, legalBasis.gdpr.code)
+  let nationalLaw = legalBasis.nationalLaw && codelist.getShortname(ListName.NATIONAL_LAW, legalBasis.nationalLaw.code)
+  let nationalLawId = legalBasis.nationalLaw && !legalBasis.nationalLaw.invalidCode && codelist.getDescription(ListName.NATIONAL_LAW, legalBasis.nationalLaw.code)
 
-  let description = legalBasis.nationalLaw.invalidCode ? legalBasis.description : legalBasisLinkProcessor(nationalLaw, legalBasis.description)
+  let description = nationalLawId ? legalBasisLinkProcessor(nationalLawId, legalBasis.description) : legalBasis.description
 
   return (
-      <span> {gdpr && (gdpr + ', ')} {nationalLaw && nationalLaw} {description}</span>
+      <span> {gdpr + ', '} {nationalLaw && nationalLaw} {description}</span>
   )
 }
 

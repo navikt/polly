@@ -38,12 +38,12 @@ class CodelistService {
 
     getShortname(list: ListName, codeName: string) {
         let code = this.getCode(list, codeName);
-        return code ? code.shortName : "";
+        return code ? code.shortName : codeName;
     }
 
     getDescription(list: ListName, codeName: string) {
         let code = this.getCode(list, codeName);
-        return code ? code.description : "";
+        return code ? code.description : codeName;
     }
 
     getParsedOptions(listName: ListName) {

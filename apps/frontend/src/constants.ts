@@ -39,7 +39,7 @@ export interface LegalBasis {
     start: Date;
     end: Date;
     gdpr: Code;
-    nationalLaw: Code;
+    nationalLaw?: Code;
 }
 
 export interface InformationTypeIdName {
