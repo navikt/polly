@@ -10,7 +10,6 @@ import { InformationTypeIdName, PageResponse } from "../constants"
 import { codelist } from "../codelist"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
-const server_codelist = process.env.REACT_APP_CODELIST_ENDPOINT;
 
 const reducePolicylist = (list: any) => {
     const temp = list.reduce((acc: any, curr: any) => {

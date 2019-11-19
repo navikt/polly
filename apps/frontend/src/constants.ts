@@ -17,7 +17,6 @@ export interface DatasetFormValues {
 
 export interface InformationtypeFormValues {
     term: string;
-    pii: boolean | null | undefined;
     name: string | null;
     navMaster: string | null;
     sensitivity: string | object | null;
