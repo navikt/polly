@@ -38,8 +38,9 @@ export interface InformationTypeIdName {
 }
 export interface ProcessFormValues {
     name: string;
-    department: string;
-    legalBases: Array<any>;
+    department: string | null | undefined;
+    subDepartment: string | null | undefined;
+    legalBases: Array<any> | null | undefined;
 }
 
 export interface UserInfo {

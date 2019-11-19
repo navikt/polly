@@ -4,13 +4,15 @@ import { Field, FieldArray, FieldProps, Form, Formik, FormikProps, } from "formi
 import { Block, BlockProps } from "baseui/block";
 import { Input, SIZE as InputSIZE } from "baseui/input";
 import { Label2 } from "baseui/typography";
-import { StatefulSelect } from 'baseui/select';
+import { StatefulSelect, Select, Value } from 'baseui/select';
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { Plus } from "baseui/icon";
 
 import { ProcessFormValues } from "../../constants";
 import CardLegalBasis from './CardLegalBasis'
 import { ListName, codelist } from "../../codelist"
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const modalBlockProps: BlockProps = {
     width: '700px',
@@ -53,64 +55,92 @@ const FieldName = () => (
 )
 
 
-const FieldDepartment = () => (
-    <Field
-        name="department"
-        render={({ form }: FieldProps<ProcessFormValues>) => (
-            <StatefulSelect
-                options={getParsedOptions(codelist.getCodes(ListName.DEPARTMENT))}
-                labelKey="id"
-                valueKey="id"
-                onChange={event => {
-                    form.setFieldValue('department', event.option ? event.option.code : '')
+const FieldDepartment = (props: any) => {
+    const { department } = props
+    const [value, setValue] = React.useState<Value>(department ? [{ id: department.description, code: department.code }] : []);
 
-                }}
-            />
-        )}
-    />
-)
+    return (
+        <Field
+            name="department"
+            render={({ form }: FieldProps<ProcessFormValues>) => (
+                <Select
+                    options={getParsedOptions(codelist.getCodes(ListName.DEPARTMENT))}
+                    labelKey="id"
+                    valueKey="id"
+                    onChange={({ value }) => {
+                        setValue(value)
+                        form.setFieldValue('department', value ? value[0].code : '')
+                    }}
+                    value={value}
+                />
+            )}
+        />
+    )
 
-const FieldSubDepartment = () => (
-    <Field
-        name="subDepartment"
-        render={({ form }: FieldProps<ProcessFormValues>) => (
-            <StatefulSelect
-                options={getParsedOptions(codelist.getCodes(ListName.SUB_DEPARTMENT))}
-                labelKey="id"
-                valueKey="id"
-                onChange={event => form.setFieldValue('subDepartment',
-                    event.option ? event.option.code : '')}
-            />
-        )}
-    />
-)
+}
+
+const FieldSubDepartment = (props: any) => {
+    const { subDepartment } = props
+    const [value, setValue] = React.useState<Value>(subDepartment ? [{ id: subDepartment.description, code: subDepartment.code }] : []);
+
+    return (
+        <Field
+            name="subDepartment"
+            render={({ form }: FieldProps<ProcessFormValues>) => (
+                <Select
+                    options={getParsedOptions(codelist.getCodes(ListName.SUB_DEPARTMENT))}
+                    labelKey="id"
+                    valueKey="id"
+                    onChange={({ value }) => {
+                        setValue(value)
+                        form.setFieldValue('subDepartment', value ? value[0].code : '')
+                    }}
+                    value={value}
+                />
+            )}
+        />
+    )
+
+}
 
 const ListLegalBases = (props: any) => {
+    console.log(props)
     const { legalBases } = props
     return (
         <ul>
             {legalBases.map((legalBase: any) => (
                 <li>
-                    <p>{legalBase.gdpr && (legalBase.gdpr + ":")} {legalBase.nationalLaw} {legalBase.description}</p>
+                    <p>{legalBase.gdpr && (legalBase.gdpr.code + ":")} {legalBase.nationalLaw && legalBase.nationalLaw.code + ' '} {legalBase.description}</p>
                 </li>
             ))}
         </ul>
     )
 }
 
-const ModalProcess = (props: any) => {
+type ModalProcessProps = {
+    onClose: Function;
+    isOpen: boolean;
+    isEdit?: boolean;
+    initialValues: ProcessFormValues;
+    submit: Function;
+    errorOnCreate: any | undefined;
+};
+
+const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialValues }: ModalProcessProps) => {
     const [showLegalBasisFields, setShowLegalbasesFields] = React.useState(false)
-    const { submit, errorOnCreate } = props
 
     const showSubDepartment = (department: any) => {
-        if (department === 'ØSA' || department === 'YTA' || department === 'ATA')
+        if (!department) return false
+
+        if (department.code === 'ØSA' || department.code === 'YTA' || department.code === 'ATA')
             return true
         else return false
     }
 
     return (
         <Modal
-            {...props}
+            onClose={() => onClose()}
+            isOpen={isOpen}
             closeable
             animate
             size={SIZE.auto}
@@ -118,7 +148,7 @@ const ModalProcess = (props: any) => {
         >
             <Block {...modalBlockProps}>
                 <Formik
-                    initialValues={{ name: '', department: '', legalBases: [] }}
+                    initialValues={initialValues}
                     onSubmit={(values) => submit(values)}
                     render={(formikBag: FormikProps<ProcessFormValues>) => (
                         <Form>
@@ -136,13 +166,13 @@ const ModalProcess = (props: any) => {
 
                                 <Block {...rowBlockProps}>
                                     {renderLabel('Avdeling')}
-                                    <FieldDepartment />
+                                    <FieldDepartment department={formikBag.values.department} />
                                 </Block>
 
                                 {showSubDepartment(formikBag.values.department) && (
                                     <Block {...rowBlockProps}>
                                         {renderLabel('Linja (Ytre etat)')}
-                                        <FieldSubDepartment />
+                                        <FieldSubDepartment subDepartment={formikBag.values.subDepartment} />
                                     </Block>
                                 )}
 
@@ -193,7 +223,7 @@ const ModalProcess = (props: any) => {
                             <ModalFooter>
                                 <Block display="flex" justifyContent="flex-end">
                                     <Block alignSelf="flex-end">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
-                                    <Button type="button" kind={KIND.minimal} onClick={() => props.onClose()}>Avbryt</Button>
+                                    <Button type="button" kind={KIND.minimal} onClick={() => onClose}>Avbryt</Button>
                                     <ModalButton type="submit">Lagre</ModalButton>
                                 </Block>
                             </ModalFooter>

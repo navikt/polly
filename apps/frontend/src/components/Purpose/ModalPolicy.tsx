@@ -65,32 +65,32 @@ const renderLabel = (label: any | string) => (
 )
 
 const FieldInformationTypeName = (props: {
-  informationTypes: Option[],
-  searchInformationType: (name: string) => void,
-  value: Value | undefined,
-  setValue: (v: Value) => void
+    informationTypes: Option[],
+    searchInformationType: (name: string) => void,
+    value: Value | undefined,
+    setValue: (v: Value) => void
 }) => (
-    <Field
-        name="informationTypeName"
-        render={({form}: FieldProps<PolicyFormValues>) => (
-            <Select
-                autoFocus
-                maxDropdownHeight="400px"
-                searchable={true}
-                type={TYPE.search}
-                options={props.informationTypes}
-                placeholder="Søk opplysningstyper"
-                value={props.value}
-                onInputChange={event => props.searchInformationType(event.currentTarget.value)}
-                onChange={(params: any) => {
-                  let infoType = params.value[0]
-                  props.setValue(infoType)
-                  form.setFieldValue('informationTypeName', infoType.id)
-                }}
-            />
-        )}
-    />
-)
+        <Field
+            name="informationTypeName"
+            render={({ form }: FieldProps<PolicyFormValues>) => (
+                <Select
+                    autoFocus
+                    maxDropdownHeight="400px"
+                    searchable={true}
+                    type={TYPE.search}
+                    options={props.informationTypes}
+                    placeholder="Søk opplysningstyper"
+                    value={props.value}
+                    onInputChange={event => props.searchInformationType(event.currentTarget.value)}
+                    onChange={(params: any) => {
+                        let infoType = params.value[0]
+                        props.setValue(infoType)
+                        form.setFieldValue('informationTypeName', infoType.id)
+                    }}
+                />
+            )}
+        />
+    )
 
 const FieldSubjectCategory = (props: any) => (
     <Field
@@ -145,14 +145,14 @@ const ModalPolicy = (props: any) => {
     const [infoTypeSearchResult, setInfoTypeSearchResult] = React.useState<Option[]>([]);
 
     useEffect(() => {
-      if (infoTypeSearch && infoTypeSearch.length > 2) {
-        axios
-        .get(`${server_polly}/informationtype/search/${infoTypeSearch}`)
-        .then((res: { data: PageResponse<InformationTypeIdName> }) => {
-          let options: Option[] = res.data.content.map((it: InformationTypeIdName) => ({id: it.name, label: it.name}))
-          return setInfoTypeSearchResult(options)
-        })
-      }
+        if (infoTypeSearch && infoTypeSearch.length > 2) {
+            axios
+                .get(`${server_polly}/informationtype/search/${infoTypeSearch}`)
+                .then((res: { data: PageResponse<InformationTypeIdName> }) => {
+                    let options: Option[] = res.data.content.map((it: InformationTypeIdName) => ({ id: it.name, label: it.name }))
+                    return setInfoTypeSearchResult(options)
+                })
+        }
     }, [infoTypeSearch])
 
     return (
@@ -178,12 +178,16 @@ const ModalPolicy = (props: any) => {
                             <ModalBody>
                                 <Block {...rowBlockProps}>
                                     {renderLabel('Opplysningstype')}
-                                    <FieldInformationTypeName informationTypes={infoTypeSearchResult} searchInformationType={setInfoTypeSearch}
-                                                            value={infoTypeValue} setValue={setInfoTypeValue}/>
+                                    <FieldInformationTypeName
+                                        informationTypes={infoTypeSearchResult}
+                                        searchInformationType={setInfoTypeSearch}
+                                        value={infoTypeValue}
+                                        setValue={setInfoTypeValue}
+                                    />
                                 </Block>
                                 <Block {...rowBlockProps}>
                                     {renderLabel('Personkategorier')}
-                                    <FieldSubjectCategory  />
+                                    <FieldSubjectCategory />
                                 </Block>
                                 <Block {...rowBlockProps}>
                                     {renderLabel('Rettslig grunnlag')}
@@ -200,7 +204,7 @@ const ModalPolicy = (props: any) => {
                                             <React.Fragment>
                                                 {showLegalbasesFields ? (
                                                     <Block width="100%" marginTop="2rem">
-                                                        <CardLegalBasis  submit={(values: any) => {
+                                                        <CardLegalBasis submit={(values: any) => {
                                                             if (!values) return
                                                             else {
                                                                 arrayHelpers.push(values)

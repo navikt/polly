@@ -13,6 +13,8 @@ import TablePurpose from './TablePurpose'
 import ModalPolicy from './ModalPolicy'
 import ModalProcess from './ModalProcess'
 import { legalBasisLinkProcessor } from "../../util/string-processor"
+import { async } from "q";
+import { valueToNode } from "@babel/types";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -29,7 +31,8 @@ const blockProps: BlockProps = {
 
 const rowPanelContent: BlockProps = {
     display: 'flex',
-    marginBottom: '2rem'
+    marginBottom: '2rem',
+    justifyContent: 'space-between'
 }
 
 const renderListItem = (legalBasis: any | object) => {
@@ -78,6 +81,7 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
     const [isOpen, setIsOpen] = React.useState<any>(false);
     const [currentExpanded, setCurrentExpanded] = React.useState<any>();
     const [showProcessModal, setShowProcessModal] = React.useState(false)
+    const [showEditProcessModal, setShowEditProcessModal] = React.useState(false)
     const [errorCreatePolicy, setErrorCreatePolicy] = React.useState()
     const [errorCreateProcess, setErrorCreateProcess] = React.useState()
 
@@ -120,6 +124,26 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
             .catch((err: any) => setErrorCreateProcess(err.message));
     }
 
+    const handleEditProcess = async (values: any, id: any) => {
+        console.log(values, 'Valuea')
+        let body = {
+            ...values,
+            id: id,
+            purposeCode: purpose
+        }
+        console.log(body)
+
+        await axios
+            .put(`${server_polly}/process/${id}`, body)
+            .then(((res: any) => {
+                console.log(res, "res")
+                processList.push(res.data.content[0])
+                setErrorCreateProcess(null)
+                setShowProcessModal(false)
+            }))
+            .catch((err: any) => setErrorCreateProcess(err.message));
+    }
+
     const isExpanded = (process: any) => {
         if (process.id === defaultExpandedPanelId && !currentExpanded) {
             setCurrentExpanded([process.name])
@@ -153,6 +177,8 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
                         isOpen={showProcessModal}
                         submit={(values: any) => handleCreateProcess(values)}
                         errorOnCreate={errorCreateProcess}
+                        isEdit={false}
+                        initialValues={{ name: '', department: '', subDepartment: '', legalBases: [] }}
                     />
                 </Block>
 
@@ -165,21 +191,41 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
                         {processList.map((process: any, index: any) => (
                             <Panel title={process.name} key={process.name} expanded={isExpanded(process)}>
                                 <Block {...rowPanelContent}>
-                                    <Block marginRight="6rem">
-                                        <Label2>Rettslig grunnlag for behandlingen</Label2>
-                                        {renderLegalBasisList(process.legalBases)}
+                                    <Block display="flex">
+                                        <Block marginRight="6rem">
+                                            <Label2>Rettslig grunnlag for behandlingen</Label2>
+                                            {renderLegalBasisList(process.legalBases)}
+                                        </Block>
+                                        <Block>
+                                            <Label2>Kategorier av personer</Label2>
+                                            {renderAllSubjectCategories(process)}
+                                        </Block>
                                     </Block>
                                     <Block>
-                                        <Label2>Kategorier av personer</Label2>
-                                        {renderAllSubjectCategories(process)}
+                                        <Button
+                                            size={ButtonSize.compact}
+                                            kind={KIND.secondary}
+                                            onClick={() => setShowEditProcessModal(true)}
+                                        >
+                                            Rediger behandling
+                                        </Button>
+                                        <ModalProcess
+                                            onClose={() => setShowEditProcessModal(false)}
+                                            isOpen={showEditProcessModal}
+                                            submit={(values: any) => handleEditProcess(values, process.id)}
+                                            errorOnCreate={errorCreateProcess}
+                                            isEdit={true}
+                                            initialValues={{ name: process.name, department: process.department, subDepartment: process.subDepartment, legalBases: process.legalBases }}
+
+                                        />
                                     </Block>
                                 </Block>
 
-                                <Block display="flex" justifyContent="space-between" marginBottom="1rem">
+                                <Block {...rowPanelContent}>
                                     <Label2 alignSelf="center">Opplysningstyper</Label2>
                                     <Button
                                         size={ButtonSize.compact}
-                                        kind={KIND.secondary}
+                                        kind={KIND.tertiary}
                                         onClick={() => setIsOpen(true)}
                                         startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
                                     >
