@@ -3,7 +3,9 @@ package no.nav.data.polly.codelist;
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.codelist.dto.AllCodelistResponse;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
+import no.nav.data.polly.codelist.dto.CodelistResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -28,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CodelistControllerIT extends IntegrationTestBase {
 
-    private static final ParameterizedTypeReference<List<Codelist>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    private static final ParameterizedTypeReference<List<CodelistResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
     @Autowired
     protected TestRestTemplate restTemplate;
@@ -51,38 +52,43 @@ class CodelistControllerIT extends IntegrationTestBase {
 
     @Test
     void findAll_shouldReturnAllCodelists() {
-        ResponseEntity<Map> responseEntity = restTemplate.exchange(
-                "/codelist", HttpMethod.GET, HttpEntity.EMPTY, Map.class);
+        CodelistStub.initializeCodelist();
+        ResponseEntity<AllCodelistResponse> responseEntity = restTemplate.exchange(
+                "/codelist", HttpMethod.GET, HttpEntity.EMPTY, AllCodelistResponse.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody().size()).isEqualTo(ListName.values().length);
+        assertThat(responseEntity.getBody()).isNotNull();
+        assertThat(responseEntity.getBody().getCodelist().size()).isEqualTo(ListName.values().length);
 
         Arrays.stream(ListName.values())
-                .forEach(listName -> assertThat(responseEntity.getBody()
-                        .get(listName.toString())).isEqualTo(CodelistCache.getAsMap(listName)));
+                .forEach(listName -> assertThat(responseEntity.getBody().getCodelist()
+                        .get(listName)).isEqualTo(CodelistService.getCodelistResponseList(listName)));
     }
 
     @Test
-    void getCodelistByListName_shouldReturnCodesAndDescriptionForListName() {
+    void getCodelistByListName() {
+        CodelistStub.initializeCodelist();
         String url = "/codelist/SOURCE";
 
-        ResponseEntity<Map> responseEntity = restTemplate.exchange(
-                url, HttpMethod.GET, HttpEntity.EMPTY, Map.class);
+        ResponseEntity<List<CodelistResponse>> responseEntity = restTemplate.exchange(
+                url, HttpMethod.GET, HttpEntity.EMPTY, RESPONSE_TYPE);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isEqualTo(CodelistCache.getAsMap(ListName.SOURCE));
+        assertThat(responseEntity.getBody()).isNotNull();
+        assertThat(responseEntity.getBody()).isEqualTo(CodelistService.getCodelistResponseList(ListName.SOURCE));
     }
 
     @Test
-    void getDescriptionByListNameAndCode_shouldReturnDescriptionForCodeAndListName() {
-        CodelistCache.set(createOneRequest("SOURCE","TEST_CODE","desc").convert());
+    void getByListNameAndCode() {
+        CodelistCache.set(createOneRequest("SOURCE", "TEST_CODE", "desc").convert());
         String url = "/codelist/SOURCE/TEST_CODE";
 
-        ResponseEntity<String> responseEntity = restTemplate.exchange(
-                url, HttpMethod.GET, HttpEntity.EMPTY, String.class);
-        
+        ResponseEntity<CodelistResponse> responseEntity = restTemplate.exchange(
+                url, HttpMethod.GET, HttpEntity.EMPTY, CodelistResponse.class);
+
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isEqualTo(CodelistService.getCodelist(ListName.SOURCE, "TEST_CODE").getDescription());
+        assertThat(responseEntity.getBody()).isNotNull();
+        assertThat(responseEntity.getBody().getDescription()).isEqualTo(CodelistService.getCodelist(ListName.SOURCE, "TEST_CODE").getDescription());
     }
 
     @Test
@@ -92,11 +98,11 @@ class CodelistControllerIT extends IntegrationTestBase {
         List<CodelistRequest> requests = createRequest("SOURCE", code, description);
         assertFalse(CodelistCache.contains(ListName.SOURCE, code));
 
-        ResponseEntity<List<Codelist>> responseEntity = restTemplate.exchange(
+        ResponseEntity<List<CodelistResponse>> responseEntity = restTemplate.exchange(
                 "/codelist", HttpMethod.POST, new HttpEntity<>(requests), RESPONSE_TYPE);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        Codelist codelist = responseEntity.getBody().get(0);
+        CodelistResponse codelist = responseEntity.getBody().get(0);
         assertThat(codelist.getDescription()).isEqualTo(description);
         assertThat(codelist.getCode()).isEqualTo("SAVECODE");
 
@@ -122,7 +128,7 @@ class CodelistControllerIT extends IntegrationTestBase {
     void save_shouldSave20Codelist() {
         List<CodelistRequest> requests = createNrOfRequests("shouldSave20Codelists", 20);
 
-        ResponseEntity<List<Codelist>> responseEntity = restTemplate.exchange(
+        ResponseEntity<List<CodelistResponse>> responseEntity = restTemplate.exchange(
                 "/codelist", HttpMethod.POST, new HttpEntity<>(requests), RESPONSE_TYPE);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);

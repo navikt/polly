@@ -3,6 +3,7 @@ package no.nav.data.polly.codelist;
 import no.nav.data.polly.AppStarter;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.codelist.dto.AllCodelistResponse;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
 import no.nav.data.polly.common.exceptions.CodelistNotFoundException;
 import no.nav.data.polly.common.utils.JsonUtils;
@@ -21,6 +22,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,16 +61,30 @@ class CodelistControllerTest {
     }
 
     @Test
-    void findAll_shouldReturnTheInitiatedCodelist() throws Exception {
+    void findAll() throws Exception {
         MockHttpServletResponse response = mvc.perform(get("/codelist"))
                 .andReturn().getResponse();
 
+        AllCodelistResponse returnedCodelist = JsonUtils.toObject(response.getContentAsString(), AllCodelistResponse.class);
+
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(returnedCodelist.getCodelist().size()).isEqualTo(ListName.values().length);
+        assertThat(returnedCodelist.getCodelist().get(ListName.SOURCE).size()).isEqualTo(CodelistService.getCodelist(ListName.SOURCE).size());
+        assertThat(returnedCodelist.getCodelist().get(ListName.CATEGORY).size()).isEqualTo(CodelistService.getCodelist(ListName.CATEGORY).size());
+    }
+
+    @Test
+    void findAllLegacy_shouldReturnTheInitiatedCodelist() throws Exception {
+        MockHttpServletResponse response = mvc.perform(get("/codelist/legacy"))
+                .andReturn().getResponse();
+
+        @SuppressWarnings("unchecked")
         HashMap<String, HashMap<String, String>> returnedCodelist = JsonUtils.toObject(response.getContentAsString(), HashMap.class);
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(returnedCodelist.size()).isEqualTo(ListName.values().length);
-        assertThat(returnedCodelist.get("SOURCE").size()).isEqualTo(CodelistCache.getAsMap(ListName.SOURCE).size());
-        assertThat(returnedCodelist.get("CATEGORY").size()).isEqualTo(CodelistCache.getAsMap(ListName.CATEGORY).size());
+        assertThat(returnedCodelist.get("SOURCE").size()).isEqualTo(CodelistService.getCodelist(ListName.SOURCE).size());
+        assertThat(returnedCodelist.get("CATEGORY").size()).isEqualTo(CodelistService.getCodelist(ListName.CATEGORY).size());
     }
 
     @Test
@@ -79,8 +95,9 @@ class CodelistControllerTest {
                 .andExpect(status().isOk())
                 .andReturn().getResponse();
 
-        Map mappedResponse = JsonUtils.toObject(response.getContentAsString(), HashMap.class);
-        assertThat(mappedResponse).isEqualTo(CodelistCache.getAsMap(ListName.SOURCE));
+        @SuppressWarnings("unchecked")
+        List<Map> mappedResponse = JsonUtils.toObject(response.getContentAsString(), ArrayList.class);
+        assertThat(mappedResponse).hasSize(CodelistService.getCodelist(ListName.SOURCE).size());
     }
 
     @Test
@@ -97,14 +114,14 @@ class CodelistControllerTest {
     }
 
     @Test
-    void getDescriptionByListNameAndCode_shouldReturnDescriptionForARBEIDSGIVER() throws Exception {
+    void getByListNameAndCode_shouldReturnForARBEIDSGIVER() throws Exception {
         String uri = "/codelist/SOURCE/ARBEIDSGIVER";
 
         MockHttpServletResponse response = mvc.perform(get(uri))
                 .andExpect(status().isOk())
                 .andReturn().getResponse();
 
-        assertThat(response.getContentAsString()).isEqualTo("Arbeidsgiver");
+        assertThat(response.getContentAsString()).isEqualTo(JsonUtils.toJson(CodelistService.getCodelistResponse(ListName.SOURCE, "ARBEIDSGIVER")));
     }
 
     @Test

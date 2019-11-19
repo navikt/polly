@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.codelist.dto.AllCodelistResponse;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.common.utils.StreamUtils;
@@ -24,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -42,43 +42,55 @@ public class CodelistController {
         this.service = service;
     }
 
-    @ApiOperation(value = "Get the entire Codelist", tags = {"Codelist"})
+    @ApiOperation(value = "Get the entire Codelist")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Entire Codelist fetched", response = Map.class),
             @ApiResponse(code = 500, message = "Internal server error")})
-    @GetMapping
-    public Map<ListName, Map<String, String>> findAll() {
+    @GetMapping("/legacy")
+    @Deprecated
+    public Map<ListName, Map<String, String>> findAllLegacy() {
         log.info("Received a request for and returned the entire Codelist");
-        //TODO: Deprecated -- getCodelist()
         return CodelistCache.getAllAsMap();
     }
 
-    @ApiOperation(value = "Get codes and descriptions for listName", tags = {"Codelist"})
+    @ApiOperation(value = "Get the entire Codelist")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Fetched codes with description for listName", response = Map.class),
+            @ApiResponse(code = 200, message = "Entire Codelist fetched", response = AllCodelistResponse.class),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @GetMapping
+    public AllCodelistResponse findAll() {
+        log.info("Received a request for and returned the entire Codelist");
+        return new AllCodelistResponse(CodelistService.getAll().stream().map(Codelist::convertToResponse).collect(Collectors.groupingBy(CodelistResponse::getList)));
+    }
+
+    @ApiOperation(value = "Get codes and descriptions for listName")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Fetched codes for listName", response = CodelistResponse.class, responseContainer = "List"),
             @ApiResponse(code = 404, message = "ListName not found"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/{listName}")
-    public Map<String, String> getCodelistByListName(@PathVariable String listName) {
-        log.info("Received a request for the codelist with listName={}", listName);
-        service.validateListNameExists(listName);
-        //TODO: Deprecated -- getCodelistsByListName(String listName)
-        return CodelistCache.getAsMap(ListName.valueOf(listName.toUpperCase()));
+    public List<CodelistResponse> getByListName(@PathVariable String listName) {
+        String listUpper = listName.toUpperCase();
+        log.info("Received a request for the codelist with listName={}", listUpper);
+        service.validateListNameExists(listUpper);
+        return CodelistService.getCodelistResponseList(ListName.valueOf(listUpper));
     }
 
-    @ApiOperation(value = "Get description for code in listName", tags = {"Codelist"})
+    @ApiOperation(value = "Get for code in listName")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Description fetched", response = String.class),
+            @ApiResponse(code = 200, message = "Codelist fetched", response = CodelistResponse.class),
             @ApiResponse(code = 404, message = "Code or listName not found"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/{listName}/{code}")
-    public String getDescriptionByListNameAndCode(@PathVariable String listName, @PathVariable String code) {
-        log.info("Received a request for the description of code={} in list={}", code, listName);
-        service.validateListNameAndCodeExists(listName, code);
-        return Objects.requireNonNull(CodelistService.getCodelistResponse(ListName.valueOf(listName.toUpperCase()), code)).getDescription();
+    public CodelistResponse getByListNameAndCode(@PathVariable String listName, @PathVariable String code) {
+        String listUpper = listName.toUpperCase();
+        String codeUpper = code.toUpperCase();
+        log.info("Received a request for the description of code={} in list={}", codeUpper, listUpper);
+        service.validateListNameAndCodeExists(listUpper, codeUpper);
+        return CodelistService.getCodelistResponse(ListName.valueOf(listUpper), codeUpper);
     }
 
-    @ApiOperation(value = "Create Codelist", tags = {"Codelist"})
+    @ApiOperation(value = "Create Codelist")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Codelist successfully created", response = Codelist.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Illegal arguments"),
@@ -93,7 +105,7 @@ public class CodelistController {
         return service.save(requests).stream().map(Codelist::convertToResponse).collect(Collectors.toList());
     }
 
-    @ApiOperation(value = "Update Codelist", tags = {"Codelist"})
+    @ApiOperation(value = "Update Codelist")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Codelist updated", response = Codelist.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Illegal arguments"),
@@ -107,7 +119,7 @@ public class CodelistController {
         return service.update(requests).stream().map(Codelist::convertToResponse).collect(Collectors.toList());
     }
 
-    @ApiOperation(value = "Delete Codelist", tags = {"Codelist"})
+    @ApiOperation(value = "Delete Codelist")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Codelist deleted"),
             @ApiResponse(code = 400, message = "Illegal arguments"),
@@ -123,7 +135,7 @@ public class CodelistController {
         log.info("Deleted code={} in the list={}", code, listName);
     }
 
-    @ApiOperation(value = "Refresh Codelist", tags = {"Codelist"})
+    @ApiOperation(value = "Refresh Codelist")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Codelist refreshed"),
             @ApiResponse(code = 500, message = "Internal server error")})

@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 
-import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
+import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Slf4j
 @Service
@@ -45,14 +45,20 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         return codelist.convertToResponse();
     }
 
+    public static List<CodelistResponse> getCodelistResponseList(ListName listName) {
+        return convert(CodelistCache.getCodelist(listName), Codelist::convertToResponse);
+    }
+
     public static List<CodelistResponse> getCodelistResponseList(ListName listName, Collection<String> codes) {
-        return safeStream(codes)
-                .map(code -> getCodelistResponse(listName, code))
-                .collect(Collectors.toList());
+        return convert(codes, code -> getCodelistResponse(listName, code));
     }
 
     public static List<Codelist> getCodelist(ListName name) {
         return CodelistCache.getCodelist(name);
+    }
+
+    public static List<Codelist> getAll() {
+        return CodelistCache.getAll();
     }
 
     @PostConstruct

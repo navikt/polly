@@ -2,12 +2,14 @@ package no.nav.data.polly.codelist;
 
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.codelist.dto.CodelistResponse;
 import org.springframework.util.Assert;
 
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -33,7 +35,11 @@ final class CodelistCache {
         });
     }
 
-    public static List<Codelist> getCodelist(ListName name) {
+    static List<Codelist> getAll() {
+        return codelists.values().stream().flatMap(e -> e.values().stream()).collect(Collectors.toList());
+    }
+
+    static List<Codelist> getCodelist(ListName name) {
         return List.copyOf(codelists.get(name).values());
     }
 
