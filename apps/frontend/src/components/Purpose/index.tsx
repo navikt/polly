@@ -12,7 +12,7 @@ import axios from "axios";
 import TablePurpose from './TablePurpose'
 import ModalPolicy from './ModalPolicy'
 import ModalProcess from './ModalProcess'
-import { legalBasisLinkProcessor } from "../../util/string-processor"
+import { renderLegalBasis } from "../../util/LegalBasis"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -34,12 +34,9 @@ const rowPanelContent: BlockProps = {
 }
 
 const renderListItem = (legalBasis: any | object) => {
-    let gdpr = legalBasis.gdpr && legalBasis.gdpr.code
-    let nationalLaw = legalBasis.nationalLaw && legalBasis.nationalLaw.code
-    let description = legalBasisLinkProcessor(nationalLaw, legalBasis.description)
     return (
         <li>
-            <Paragraph2>{gdpr && gdpr + ', '} {nationalLaw && nationalLaw} {description}</Paragraph2>
+            <Paragraph2>{renderLegalBasis(legalBasis)}</Paragraph2>
         </li>
     )
 }

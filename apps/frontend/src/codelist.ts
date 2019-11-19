@@ -91,6 +91,7 @@ export interface Code {
     code: string;
     shortName: string;
     description: string;
+    invalidCode?: boolean;
 }
 
 // Example

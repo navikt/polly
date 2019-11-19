@@ -1,3 +1,5 @@
+import { Code } from "./codelist"
+
 export interface Policy {
     id?: string | number | null;
     datasetTitle: string;
@@ -29,6 +31,15 @@ export interface Term {
     id: string;
     name: string;
     description: string;
+}
+
+export interface LegalBasis {
+    active: boolean;
+    description: string;
+    start: Date;
+    end: Date;
+    gdpr: Code;
+    nationalLaw: Code;
 }
 
 export interface InformationTypeIdName {

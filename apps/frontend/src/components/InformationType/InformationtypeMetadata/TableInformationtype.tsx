@@ -1,8 +1,8 @@
 import * as React from "react";
 import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, StyledTable } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
-import { legalBasisLinkProcessor } from "../../../util/string-processor"
 import { StyledLink } from "baseui/link";
+import { renderLegalBasis } from "../../../util/LegalBasis"
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",
@@ -15,17 +15,6 @@ const CustomStyledRow = withStyle(StyledRow, {
     padding: "8px",
     fontSize: "24px"
 });
-
-const renderListItem = (legalBasis: any | object) => {
-    let gdpr = legalBasis.gdpr && legalBasis.gdpr.code
-    let nationalLaw = legalBasis.nationalLaw && legalBasis.nationalLaw.code
-
-    let description = legalBasisLinkProcessor(nationalLaw, legalBasis.description)
-
-    return (
-        <li> {gdpr && (gdpr + ', ')} {nationalLaw && nationalLaw} {description}</li>
-    )
-}
 
 type TableInformationtypeProps = {
     list: Array<any>;
@@ -139,16 +128,16 @@ const TableInformationtype = ({ list }: TableInformationtypeProps) => {
                             <StyledCell>
                                 {!row.legallegalBasesInherited && row.legalBases && row.legalBases.length > 0 && (
                                     <ul>
-                                        {row.legalBases.map((legalBasis: any) => (
-                                            <li>{renderListItem(legalBasis)}</li>
+                                        {row.legalBases.map((legalBasis: any, i: number) => (
+                                            <li key={i}> {renderLegalBasis(legalBasis)}</li>
                                         ))}
                                     </ul>
                                 )}
 
                                 {row.legalBasesInherited && row.process.legalBases && (
                                     <ul>
-                                        {row.process.legalBases.map((legalBasis: any) => (
-                                            <li>{renderListItem(legalBasis)}</li>
+                                        {row.process.legalBases.map((legalBasis: any, i: number) => (
+                                            <li key={i}> {renderLegalBasis(legalBasis)}</li>
                                         ))}
                                     </ul>
                                 )}
