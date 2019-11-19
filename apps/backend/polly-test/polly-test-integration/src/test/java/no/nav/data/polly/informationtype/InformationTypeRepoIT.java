@@ -24,7 +24,6 @@ class InformationTypeRepoIT extends IntegrationTestBase {
                 .data(InformationTypeData.builder()
                         .name("name")
                         .description("desc")
-                        .pii(true)
                         .sensitivity("much")
                         .navMaster("TPS")
                         .category("cat")

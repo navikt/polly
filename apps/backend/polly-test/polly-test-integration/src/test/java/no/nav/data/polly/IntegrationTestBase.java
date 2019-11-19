@@ -152,7 +152,6 @@ public abstract class IntegrationTestBase {
                         .description("desc")
                         .source("SKATT")
                         .category("PERSONALIA")
-                        .pii(true)
                         .sensitivity("PERSONOPPLYSNING")
                         .navMaster("TPS")
                         .build())

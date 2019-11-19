@@ -19,7 +19,6 @@ public class InformationTypeData {
     @NotNull
     private String name;
     private String description;
-    private boolean pii;
     private String sensitivity;
     private String navMaster;
     private List<String> categories = new ArrayList<>();

@@ -14,7 +14,6 @@ import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.term.domain.Term;
-import org.apache.commons.lang3.BooleanUtils;
 import org.hibernate.annotations.Type;
 
 import java.util.HashSet;
@@ -106,7 +105,6 @@ public class InformationType extends Auditable<String> {
         data.setCategories(request.getCategories());
         data.setSources(request.getSources());
         data.setKeywords(copyOf(request.getKeywords()));
-        data.setPii(BooleanUtils.toBoolean(request.getPii()));
         data.setSensitivity(request.getSensitivity());
         data.setNavMaster(request.getNavMaster());
     }

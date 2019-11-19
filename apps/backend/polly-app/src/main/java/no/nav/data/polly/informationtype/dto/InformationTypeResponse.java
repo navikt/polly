@@ -24,14 +24,13 @@ import static no.nav.data.polly.common.utils.StreamUtils.copyOf;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonPropertyOrder({"id", "name", "term", "description", "pii", "sensitivity", "navMaster", "categories", "sources", "keywords", "toBeDeleted"})
+@JsonPropertyOrder({"id", "name", "term", "description", "sensitivity", "navMaster", "categories", "sources", "keywords", "toBeDeleted"})
 public class InformationTypeResponse {
 
     private UUID id;
     private String name;
     private TermIdNameResponse term;
     private String description;
-    private boolean pii;
     private CodelistResponse sensitivity;
     private CodelistResponse navMaster;
     private List<CodelistResponse> categories;
@@ -49,7 +48,6 @@ public class InformationTypeResponse {
     private void mapJsonFields(@NotNull InformationTypeData data) {
         setName(data.getName());
         setDescription(data.getDescription());
-        setPii(data.isPii());
         setSensitivity(CodelistService.getCodelistResponse(ListName.SENSITIVITY, data.getSensitivity()));
         setNavMaster(CodelistService.getCodelistResponse(ListName.SYSTEM, data.getNavMaster()));
         setCategories(CodelistService.getCodelistResponseList(ListName.CATEGORY, data.getCategories()));

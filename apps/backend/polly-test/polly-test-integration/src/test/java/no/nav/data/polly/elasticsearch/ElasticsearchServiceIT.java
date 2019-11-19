@@ -127,7 +127,6 @@ class ElasticsearchServiceIT extends IntegrationTestBase {
 
         assertThat(informationType.getName()).isEqualTo(INFORMATION_TYPE_NAME);
         assertThat(informationType.getDescription()).isEqualTo("desc");
-        assertThat(informationType.isPii()).isEqualTo(true);
         assertThat(informationType.getSources().get(0).getCode()).isEqualTo("SKATT");
         assertThat(informationType.getCategories().get(0).getCode()).isEqualTo("PERSONALIA");
         List<ProcessElasticsearch> processes = informationType.getProcesses();

@@ -247,7 +247,6 @@ class InformationTypeControllerIT extends IntegrationTestBase {
                 .name(name)
                 .term("someterm")
                 .description("InformationTypeDescription")
-                .pii("true")
                 .sensitivity("Personopplysning")
                 .navMaster("TPS")
                 .categories(List.of("PERSONALIA"))

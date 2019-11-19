@@ -163,7 +163,6 @@ class InformationTypeServiceTest {
                 .name(name)
                 .term("term")
                 .description("Description")
-                .pii("false")
                 .sensitivity("Personopplysning")
                 .navMaster("TPS")
                 .categories(List.of("Personalia"))

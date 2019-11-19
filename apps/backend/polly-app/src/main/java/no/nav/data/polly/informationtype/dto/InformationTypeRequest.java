@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import static no.nav.data.polly.common.swagger.SwaggerConfig.BOOLEAN;
 import static no.nav.data.polly.common.utils.StreamUtils.nullToEmptyList;
 import static no.nav.data.polly.common.utils.StringUtils.ifNotNullToUppercaseAndTrim;
 
@@ -32,8 +31,6 @@ public class InformationTypeRequest implements RequestElement {
     private String name;
     private String description;
     private String term;
-    @ApiModelProperty(dataType = BOOLEAN)
-    private String pii;
     @ApiModelProperty(value = "Codelist", example = "CODELIST")
     private String sensitivity;
     @ApiModelProperty(value = "Codelist", example = "CODELIST")
@@ -52,6 +49,7 @@ public class InformationTypeRequest implements RequestElement {
         return name;
     }
 
+    @Override
     public void format() {
         setCategories(nullToEmptyList(categories).stream()
                 .map(String::trim)

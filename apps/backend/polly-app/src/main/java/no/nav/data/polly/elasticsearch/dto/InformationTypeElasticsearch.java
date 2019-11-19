@@ -31,7 +31,6 @@ public class InformationTypeElasticsearch {
     private String name;
     private String term;
     private String description;
-    private boolean pii;
     private CodelistResponse sensitivity;
     private CodelistResponse navMaster;
     private List<CodelistResponse> categories = new ArrayList<>();
@@ -75,7 +74,6 @@ public class InformationTypeElasticsearch {
     private void mapJsonFields(InformationTypeData data) {
         setName(data.getName());
         setDescription(data.getDescription());
-        setPii(data.isPii());
         setSensitivity(CodelistService.getCodelistResponse(ListName.SENSITIVITY, data.getSensitivity()));
         setNavMaster(CodelistService.getCodelistResponse(ListName.SYSTEM, data.getNavMaster()));
         setCategories(CodelistService.getCodelistResponseList(ListName.CATEGORY, data.getCategories()));
