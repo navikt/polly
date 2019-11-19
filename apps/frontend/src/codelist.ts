@@ -66,3 +66,35 @@ export enum ListName {
 }
 
 export const codelist = new CodelistService();
+
+
+// new objects from /codelist
+
+export interface AllCodelists {
+  codelist: List
+}
+
+export interface List {
+  [name: string]: Code[]
+}
+
+export interface Code {
+  list: ListName;
+  code: string;
+  shortName: string;
+  description: string;
+}
+
+// Example
+let code: AllCodelists = {
+  codelist: {
+    "PURPOSE": [
+      {
+        list: ListName.PURPOSE,
+        code: "ABC_CODE",
+        shortName: "Abc Code",
+        description: "The codes of abc"
+      }
+    ]
+  }
+}
