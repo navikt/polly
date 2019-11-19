@@ -29,7 +29,6 @@ const initFormValues = (data: any) => {
     return {
         name: data.name,
         term: !data.term ? '' : data.term.name,
-        pii: data.pii,
         navMaster: !data.navMaster ? '' : data.navMaster.code,
         categories: reduceCodelist(data.categories),
         sources: reduceCodelist(data.sources),

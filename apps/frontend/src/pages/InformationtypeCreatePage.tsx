@@ -19,7 +19,6 @@ const Centered = styled("div", {
 
 let initialFormValues = {
     term: "",
-    pii: false,
     name: "",
     sensitivity: null,
     navMaster: null,

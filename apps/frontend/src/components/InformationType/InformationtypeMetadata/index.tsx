@@ -57,7 +57,6 @@ const renderMetadata = (informationtype: any) => {
                     {renderTextWithLabel('Kilder', reduceToList(informationtype.sources).join(', '))}
                     {renderTextWithLabel('Kategorier', reduceToList(informationtype.categories).join(', '))}
                     {renderTextWithLabel('Nøkkelord', arrayToString(informationtype.keywords))}
-                    {renderTextWithLabel('Personopplysning', informationtype.pii ? 'Ja' : 'Nei')}
                     {renderTextWithLabel('Type personopplysning', informationtype.sensitivity.description)}
                 </Card>
             </Block>

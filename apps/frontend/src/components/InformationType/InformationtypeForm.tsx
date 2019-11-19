@@ -10,7 +10,6 @@ import { Button, SHAPE } from "baseui/button";
 import { Plus } from "baseui/icon";
 import { Tag, VARIANT } from "baseui/tag";
 import { Option, Select, TYPE, Value } from "baseui/select";
-import { Radio, RadioGroup } from "baseui/radio";
 import axios from "axios"
 
 import { codelist, ListName, ICodelist } from "../../codelist";
@@ -364,38 +363,6 @@ const InformationtypeForm = ({
                                             />
                                         </Block>
                                     )}
-                                />
-
-                                <Field
-                                    name="pii"
-                                    render={({
-                                        field,
-                                        form
-                                    }: FieldProps<
-                                        InformationtypeFormValues
-                                    >) => (
-                                            <Block>
-                                                <Block {...labelProps}>
-                                                    <Label2>
-                                                        Personopplysning
-                                                </Label2>
-                                                </Block>
-
-                                                <RadioGroup
-                                                    value={formikBag.values.pii ? "Ja" : "Nei"}
-                                                    align="horizontal"
-                                                    onChange={e =>
-                                                        (e.target as HTMLInputElement).value === "Ja"
-                                                            ? form.setFieldValue("pii", true)
-                                                            : form.setFieldValue("pii", false)
-                                                    }
-                                                >
-                                                    <Radio value="Ja">Ja</Radio>
-                                                    <Block marginLeft="1rem"></Block>
-                                                    <Radio value="Nei">Nei</Radio>
-                                                </RadioGroup>
-                                            </Block>
-                                        )}
                                 />
                             </FlexGridItem>
 
