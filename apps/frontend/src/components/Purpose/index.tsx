@@ -13,6 +13,7 @@ import TablePurpose from './TablePurpose'
 import ModalPolicy from './ModalPolicy'
 import ModalProcess from './ModalProcess'
 import { renderLegalBasis } from "../../util/LegalBasis"
+import { codelist, ListName } from "../../codelist"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -60,7 +61,7 @@ const renderAllSubjectCategories = (processObj: any) => {
     if (policies.length < 1) return notFound
 
     const subjectCategories = policies.reduce((acc: any, curr: any) => {
-        const subjectCategory = curr.subjectCategory && (curr.subjectCategory.code)
+        const subjectCategory = codelist.getShortname(ListName.SUBJECT_CATEGORY, curr.subjectCategory.code)
         if (!_includes(acc, subjectCategory) && subjectCategory)
             acc = [...acc, subjectCategory]
         return acc
