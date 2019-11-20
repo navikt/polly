@@ -15,6 +15,7 @@ import axios from "axios"
 import { codelist, ListName } from "../../codelist";
 import { InformationtypeFormValues, PageResponse, Term } from "../../constants";
 import { useDebouncedState } from "../../util/debounce"
+import { KeyboardEvent } from "react"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -82,6 +83,7 @@ const InformationtypeForm = ({
             label: formInitialValues.term
         }]
     }
+    const keywordsRef = React.useRef<HTMLInputElement>(null);
 
     const [termSearch, setTermSearch] = useDebouncedState<string>('', 200);
     const [termSearchResult, setTermSearchResult] = React.useState<Option[]>([]);
@@ -116,6 +118,16 @@ const InformationtypeForm = ({
         }
     }, [termSearch])
 
+    const disableEnter = (e: KeyboardEvent) => {
+        if (e.key === 'Enter') e.preventDefault()
+    }
+    const onAddKeyword = (arrayHelpers: FieldArrayRenderProps) => {
+        arrayHelpers.push(currentKeywordValue);
+        setCurrentKeywordValue("");
+        if (keywordsRef && keywordsRef.current) {
+            keywordsRef.current.focus();
+        }
+    }
     return (
         <React.Fragment>
             <Formik
@@ -129,7 +141,7 @@ const InformationtypeForm = ({
                     actions.setSubmitting(false);
                 }}
                 render={(formikBag: FormikProps<InformationtypeFormValues>) => (
-                    <Form>
+                    <Form onKeyDown={disableEnter}>
                         <FlexGrid
                             flexGridColumnCount={2}
                             flexGridColumnGap="scale1000"
@@ -272,18 +284,18 @@ const InformationtypeForm = ({
                                                             .value
                                                     )
                                                 }
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') onAddKeyword(arrayHelpers)
+                                                }}
+                                                inputRef={keywordsRef}
                                                 overrides={{
                                                     After: () => (
                                                         <Button
                                                             type="button"
                                                             shape={SHAPE.square}
-                                                            onClick={() =>
-                                                                arrayHelpers.push(
-                                                                    currentKeywordValue
-                                                                )
-                                                            }
+                                                            onClick={() => onAddKeyword(arrayHelpers)}
                                                         >
-                                                            <Plus />
+                                                            <Plus/>
                                                         </Button>
                                                     )
                                                 }}
