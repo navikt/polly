@@ -29,6 +29,7 @@ const modalHeaderProps: BlockProps = {
     justifyContent: 'center',
     marginBottom: '2rem'
 }
+
 const renderLabel = (label: any | string) => (
     <Block width="30%" alignSelf="center">
         <Label2 marginBottom="8px" font="font300">{label.toString()}</Label2>
@@ -46,7 +47,7 @@ const FieldName = () => (
 
 const FieldDepartment = (props: any) => {
     const { department } = props
-    const [value, setValue] = React.useState<Value>(department ? [{ id: department.description, code: department.code }] : []);
+    const [value, setValue] = React.useState<Value>(department ? [{ id: department, label: codelist.getShortname(ListName.DEPARTMENT, department) }] : []);
 
     return (
         <Field
@@ -63,12 +64,13 @@ const FieldDepartment = (props: any) => {
             )}
         />
     )
-
 }
 
 const FieldSubDepartment = (props: any) => {
     const { subDepartment } = props
-    const [value, setValue] = React.useState<Value>(subDepartment ? [{ id: subDepartment.description, code: subDepartment.code }] : []);
+    const [value, setValue] = React.useState<Value>(subDepartment
+        ? [{ id: subDepartment, label: codelist.getShortname(ListName.SUB_DEPARTMENT, subDepartment) }]
+        : []);
 
     return (
         <Field

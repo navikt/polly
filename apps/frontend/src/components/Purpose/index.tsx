@@ -122,17 +122,20 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
         let body = {
             id: id,
             name: values.name,
-            department: values.department ? values.department.code : null,
-            subDepartment: values.subDepartmant ? values.subDepartment.code : null,
+            department: values.department ? values.department : null,
+            subDepartment: values.subDepartment ? values.subDepartment : null,
+            legalBases: values.legalBases ? values.legalBases : [],
             purposeCode: purpose
         }
 
         await axios
             .put(`${server_polly}/process/${id}`, body)
             .then(((res: any) => {
-                processList.push(res.data.content[0])
+                let index = processList.findIndex((process: any) => process.name === res.data.name)
+                let policies = processList[index].policies
+                processList[index] = { ...res.data, policies: policies }
                 setErrorCreateProcess(null)
-                setShowProcessModal(false)
+                setShowEditProcessModal(false)
             }))
             .catch((err: any) => setErrorCreateProcess(err.message));
     }
@@ -148,11 +151,18 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
     }
 
     const getInitialValuesProcessEdit = (process: any) => {
+        const { name, department, subDepartment, legalBases } = process
+        let parsedLegalBases = legalBases && legalBases.map((legalBasis: any) => ({
+            gdpr: legalBasis.gdpr && legalBasis.gdpr.code,
+            nationalLaw: legalBasis.nationalLaw && legalBasis.nationalLaw.code,
+            description: legalBasis.description
+        }))
+
         return {
-            name: process.name,
-            department: process.department,
-            subDepartment: process.subDepartment,
-            legalBases: process.legalBases
+            name: name,
+            department: department && department.code,
+            subDepartment: subDepartment && subDepartment.code,
+            legalBases: parsedLegalBases
         }
     }
 

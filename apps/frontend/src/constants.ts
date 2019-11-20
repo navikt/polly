@@ -1,4 +1,4 @@
-import { Code } from "./codelist"
+import { Code } from "./codelist";
 
 export interface Policy {
     id?: string | number | null;
@@ -34,10 +34,10 @@ export interface Term {
 }
 
 export interface LegalBasis {
-    active: boolean;
+    active?: boolean;
     description: string;
-    start: Date;
-    end: Date;
+    start?: Date;
+    end?: Date;
     gdpr: Code;
     nationalLaw?: Code;
 }
@@ -50,7 +50,7 @@ export interface ProcessFormValues {
     name: string;
     department: string | null | undefined;
     subDepartment: string | null | undefined;
-    legalBases: Array<any> | null | undefined;
+    legalBases: Array<LegalBasis> | null | undefined;
 }
 
 export interface UserInfo {
