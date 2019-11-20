@@ -3,6 +3,7 @@ import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, S
 import { useStyletron, withStyle } from "baseui";
 import { StyledLink } from "baseui/link";
 import { renderLegalBasis } from "../../../util/LegalBasis"
+import { codelist, ListName } from "../../../codelist"
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",
@@ -123,7 +124,7 @@ const TableInformationtype = ({ list }: TableInformationtypeProps) => {
 
                             </StyledCell>
 
-                            <StyledCell>{row.subjectCategory && (row.subjectCategory.code)}</StyledCell>
+                            <StyledCell>{codelist.getShortname(ListName.SUBJECT_CATEGORY, row.subjectCategory.code)}</StyledCell>
 
                             <StyledCell>
                                 {!row.legallegalBasesInherited && row.legalBases && row.legalBases.length > 0 && (
