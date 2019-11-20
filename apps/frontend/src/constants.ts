@@ -1,4 +1,4 @@
-import { Code } from "./codelist";
+import { Code } from "./service/Codelist";
 
 export interface Policy {
     id?: string | number | null;
@@ -75,12 +75,12 @@ export interface ProcessFormValues {
 
 export interface UserInfo {
     loggedIn: boolean;
-    navIdent: String;
-    name: String;
-    givenName: String;
-    familyName: String;
-    email: String;
-    groups: [String];
+    groups: string[];
+    navIdent?: string;
+    name?: string;
+    givenName?: string;
+    familyName?: string;
+    email?: string;
 }
 
 export interface PageResponse<T> {

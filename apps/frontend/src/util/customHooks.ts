@@ -18,3 +18,8 @@ export function useDebouncedState<T>(initialValue: T, delay: number): [T, Dispat
 
   return [debouncedValue, setValue];
 }
+
+export function useForceUpdate() {
+  const [val, setVal] = useState(true);
+  return () => setVal(!val);
+}

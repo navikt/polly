@@ -6,7 +6,7 @@ import PurposeResult from "../components/Purpose";
 import Banner from "../components/Banner";
 
 import { Block } from "baseui/block";
-import { ListName, codelist } from "../codelist";
+import { ListName, codelist } from "../service/Codelist";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 

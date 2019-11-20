@@ -23,9 +23,9 @@ import { Plus } from "baseui/icon";
 import { Option, Select, StatefulSelect, TYPE, Value } from 'baseui/select';
 
 import CardLegalBasis from './CardLegalBasis'
-import { ListName, codelist } from "../../codelist";
+import { ListName, codelist } from "../../service/Codelist";
 import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
-import { useDebouncedState } from "../../util/debounce"
+import { useDebouncedState } from "../../util/customHooks"
 import { useEffect } from "react"
 import axios from "axios"
 import { InformationTypeIdName, PageResponse } from "../../constants"

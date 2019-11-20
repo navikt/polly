@@ -1,5 +1,5 @@
 import { LegalBasis } from "../constants"
-import { codelist, ListName } from "../codelist"
+import { codelist, ListName } from "../service/Codelist"
 import { processString } from "./string-processor"
 import * as React from "react"
 

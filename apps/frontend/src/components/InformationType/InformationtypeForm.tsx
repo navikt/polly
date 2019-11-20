@@ -12,9 +12,9 @@ import { Tag, VARIANT } from "baseui/tag";
 import { Option, Select, TYPE, Value } from "baseui/select";
 import axios from "axios"
 
-import { codelist, ListName } from "../../codelist";
+import { codelist, ListName } from "../../service/Codelist";
 import { InformationtypeFormValues, PageResponse, Term } from "../../constants";
-import { useDebouncedState } from "../../util/debounce"
+import { useDebouncedState } from "../../util/customHooks"
 import { KeyboardEvent } from "react"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;

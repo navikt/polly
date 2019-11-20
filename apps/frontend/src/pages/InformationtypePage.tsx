@@ -4,10 +4,10 @@ import { Spinner } from "baseui/spinner";
 import axios from "axios";
 import Banner from "../components/Banner";
 import InformationtypeMetadata from "../components/InformationType/InformationtypeMetadata/";
-import { useDebouncedState } from "../util/debounce"
+import { useDebouncedState } from "../util/customHooks"
 import { Option, Select, TYPE } from "baseui/select"
 import { InformationTypeIdName, PageResponse } from "../constants"
-import { codelist } from "../codelist"
+import { codelist } from "../service/Codelist"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 

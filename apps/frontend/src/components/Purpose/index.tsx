@@ -13,7 +13,7 @@ import TablePurpose from './TablePurpose'
 import ModalPolicy from './ModalPolicy'
 import ModalProcess from './ModalProcess'
 import { renderLegalBasis } from "../../util/LegalBasis"
-import { codelist, ListName } from "../../codelist"
+import { codelist, ListName } from "../../service/Codelist"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
