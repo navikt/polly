@@ -12,7 +12,7 @@ import { Tag, VARIANT } from "baseui/tag";
 import { Option, Select, TYPE, Value } from "baseui/select";
 import axios from "axios"
 
-import { codelist, ListName, Code } from "../../codelist";
+import { codelist, ListName } from "../../codelist";
 import { InformationtypeFormValues, PageResponse, Term } from "../../constants";
 import { useDebouncedState } from "../../util/debounce"
 
@@ -24,7 +24,7 @@ const labelProps: BlockProps = {
 };
 
 function renderTagList(
-    list: any[] | null,
+    list: string[],
     arrayHelpers: FieldArrayRenderProps
 ) {
     return (
@@ -51,7 +51,7 @@ function renderTagList(
 }
 
 type FormProps = {
-    formInitialValues: InformationtypeFormValues | any;
+    formInitialValues: InformationtypeFormValues;
     submit: Function;
     isEdit: Boolean;
 };
@@ -86,13 +86,12 @@ const InformationtypeForm = ({
     const [termSearch, setTermSearch] = useDebouncedState<string>('', 200);
     const [termSearchResult, setTermSearchResult] = React.useState<Option[]>([]);
 
-    const [value, setValue] = React.useState<Value>([]);
-    const [sensitivityValue, setSensitivityValue] = React.useState<Value>(initialValueSensitivity());
-    const [termValue, setTermValue] = React.useState<Value>(initialValueTerm());
-    const [masterValue, setMasterValue] = React.useState<Value>(initialValueMaster());
+    const [sensitivityValue, setSensitivityValue] = React.useState<Option>(initialValueSensitivity());
+    const [termValue, setTermValue] = React.useState<Option>(initialValueTerm());
+    const [masterValue, setMasterValue] = React.useState<Option>(initialValueMaster());
     const [currentKeywordValue, setCurrentKeywordValue] = React.useState("");
 
-    const getParsedOptions = (listName: ListName, values: any | undefined) => {
+    const getParsedOptions = (listName: ListName, values: string[]) => {
         if (!codelist) return [];
 
         let parsedOptions = codelist.getParsedOptions(listName)
@@ -167,9 +166,9 @@ const InformationtypeForm = ({
                                                 type={TYPE.search}
                                                 options={termSearchResult}
                                                 placeholder="Skriv inn et begrep"
-                                                value={termValue}
+                                                value={termValue as Value}
                                                 onInputChange={event => setTermSearch(event.currentTarget.value)}
-                                                onChange={(params: any) => {
+                                                onChange={(params) => {
                                                     let term = params.value[0]
                                                     setTermValue(term)
                                                     form.setFieldValue('term', term.id)
@@ -191,11 +190,11 @@ const InformationtypeForm = ({
 
                                             <Select
                                                 options={codelist.getParsedOptions(ListName.SENSITIVITY)}
-                                                value={sensitivityValue}
+                                                value={sensitivityValue as Value}
                                                 placeholder="Velg sensitivitet"
-                                                onChange={(params: any) => {
+                                                onChange={(params) => {
                                                     setSensitivityValue(params.value[0])
-                                                    form.setFieldValue('sensitivity', params.value[0].code)
+                                                    form.setFieldValue('sensitivity', params.value[0].id)
                                                 }}
                                             />
                                         </Block>
@@ -224,12 +223,8 @@ const InformationtypeForm = ({
                                                             : null
                                                     );
                                                 }}
-                                                value={value}
                                             />
-                                            {renderTagList(
-                                                formikBag.values.categories,
-                                                arrayHelpers
-                                            )}
+                                          {renderTagList(codelist.getShortnames(ListName.CATEGORY, formikBag.values.categories), arrayHelpers)}
                                         </Block>
                                     )}
                                 />
@@ -252,9 +247,8 @@ const InformationtypeForm = ({
                                                 onChange={({ option }) => {
                                                     arrayHelpers.push(option ? option.id : null);
                                                 }}
-                                                value={value}
                                             />
-                                            {renderTagList(formikBag.values.sources, arrayHelpers)}
+                                            {renderTagList(codelist.getShortnames(ListName.SOURCE, formikBag.values.sources), arrayHelpers)}
                                         </Block>
                                     )}
                                 />
@@ -294,10 +288,7 @@ const InformationtypeForm = ({
                                                     )
                                                 }}
                                             />
-                                            {renderTagList(
-                                                formikBag.values.keywords,
-                                                arrayHelpers
-                                            )}
+                                          {renderTagList(formikBag.values.keywords, arrayHelpers)}
                                         </Block>
                                     )}
                                 />
@@ -336,11 +327,11 @@ const InformationtypeForm = ({
 
                                             <Select
                                                 options={codelist.getParsedOptions(ListName.SYSTEM)}
-                                                value={masterValue}
+                                                value={masterValue as Value}
                                                 placeholder="Velg master"
                                                 onChange={(params: any) => {
                                                     setMasterValue(params.value[0])
-                                                    form.setFieldValue('navMaster', params.value[0].code)
+                                                    form.setFieldValue('navMaster', params.value[0].id)
                                                 }}
                                             />
                                         </Block>

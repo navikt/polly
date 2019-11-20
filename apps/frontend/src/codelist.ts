@@ -40,6 +40,10 @@ class CodelistService {
         return code ? code.shortName : codeName;
     }
 
+    getShortnames(list: ListName, codeNames: string[]) {
+        return codeNames.map(codeName => this.getShortname(list, codeName))
+    }
+
     getDescription(list: ListName, codeName: string) {
         let code = this.getCode(list, codeName);
         return code ? code.description : codeName;

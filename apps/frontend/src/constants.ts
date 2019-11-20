@@ -18,13 +18,14 @@ export interface DatasetFormValues {
 }
 
 export interface InformationtypeFormValues {
-    term: string;
-    name: string | null;
-    navMaster: string | null;
-    sensitivity: string | object | null;
-    categories: string[] | null[] | null;
-    sources: string[] | null[] | null;
-    keywords: string[] | null[] | null;
+    term?: string;
+    name?: string;
+    description?: string;
+    navMaster?: string;
+    sensitivity?: string;
+    categories: string[];
+    sources: string[];
+    keywords: string[];
 }
 
 export interface Term {
@@ -46,6 +47,25 @@ export interface InformationTypeIdName {
     id: string;
     name: string;
 }
+
+export interface InformationType {
+    id: string;
+    name: string;
+    term?: TermIdName;
+    description: string;
+    sensitivity: Code;
+    navMaster: Code;
+    keywords: string[];
+    sources: Code[];
+    categories: Code[];
+    toBeDeleted: boolean;
+}
+
+export interface TermIdName {
+    id: string;
+    name: string;
+}
+
 export interface ProcessFormValues {
     name: string;
     department: string | null | undefined;

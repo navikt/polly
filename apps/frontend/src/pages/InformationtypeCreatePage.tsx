@@ -6,7 +6,7 @@ import axios from "axios";
 import InformationtypeForm from "../components/InformationType/InformationtypeForm";
 import Banner from "../components/Banner";
 import {codelist} from "../codelist";
-import { InformationTypeIdName, PageResponse } from "../constants"
+import { InformationtypeFormValues, InformationTypeIdName, PageResponse } from "../constants"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -17,11 +17,11 @@ const Centered = styled("div", {
     paddingBottom: "10rem"
 });
 
-let initialFormValues = {
+let initialFormValues: InformationtypeFormValues = {
     term: "",
     name: "",
-    sensitivity: null,
-    navMaster: null,
+    sensitivity: undefined,
+    navMaster: undefined,
     keywords: [],
     categories: [],
     sources: [],

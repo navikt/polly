@@ -5,8 +5,8 @@ import axios from "axios";
 
 import InformationtypeForm from "../components/InformationType/InformationtypeForm";
 import Banner from "../components/Banner";
-import { InformationtypeFormValues } from "../constants"
-import { codelist } from "../codelist";
+import { InformationType, InformationtypeFormValues } from "../constants"
+import { Code, codelist } from "../codelist";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -17,15 +17,14 @@ const Centered = styled("div", {
     paddingBottom: "10rem"
 });
 
-
-const reduceCodelist = (list: any) => {
+const reduceCodelist = (list: Code[]) => {
     if (!list) return;
     return list.reduce((acc: any, curr: any) => {
         return [...acc, !curr ? null : curr.code];
     }, []);
 };
 
-const initFormValues = (data: any) => {
+const initFormValues = (data: InformationType) => {
     return {
         name: data.name,
         term: !data.term ? '' : data.term.name,
@@ -43,7 +42,7 @@ const InformationtypeEditPage = (props: any) => {
     const [error, setError] = React.useState(null);
     const [isUpdated, setIsUpdated] = React.useState(null);
     const [errorSubmit, setErrorSubmit] = React.useState(null);
-    const [informationtype, setInformationType] = React.useState();
+    const [informationtype, setInformationType] = React.useState<InformationType>();
 
     const handleAxiosError = (error: any) => {
         if (error.response) {
