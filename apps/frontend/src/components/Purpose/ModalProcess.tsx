@@ -29,14 +29,6 @@ const modalHeaderProps: BlockProps = {
     justifyContent: 'center',
     marginBottom: '2rem'
 }
-
-const getParsedOptions = (codelist: any) => {
-    if (!codelist) return []
-    return Object.keys(codelist).reduce((acc: any, curr: any) => {
-        return [...acc, { id: codelist[curr], code: curr }];
-    }, []);
-}
-
 const renderLabel = (label: any | string) => (
     <Block width="30%" alignSelf="center">
         <Label2 marginBottom="8px" font="font300">{label.toString()}</Label2>
@@ -52,7 +44,6 @@ const FieldName = () => (
     />
 )
 
-
 const FieldDepartment = (props: any) => {
     const { department } = props
     const [value, setValue] = React.useState<Value>(department ? [{ id: department.description, code: department.code }] : []);
@@ -65,7 +56,7 @@ const FieldDepartment = (props: any) => {
                     options={codelist.getParsedOptions(ListName.DEPARTMENT)}
                     onChange={({ value }) => {
                         setValue(value)
-                        form.setFieldValue('department', value.length > 0 ? value[0].code : '')
+                        form.setFieldValue('department', value.length > 0 ? value[0].id : '')
                     }}
                     value={value}
                 />
@@ -87,7 +78,7 @@ const FieldSubDepartment = (props: any) => {
                     options={codelist.getParsedOptions(ListName.SUB_DEPARTMENT)}
                     onChange={({ value }) => {
                         setValue(value)
-                        form.setFieldValue('subDepartment', value.length > 0 ? value[0].code : '')
+                        form.setFieldValue('subDepartment', value.length > 0 ? value[0].id : '')
                     }}
                     value={value}
                 />
@@ -99,11 +90,16 @@ const FieldSubDepartment = (props: any) => {
 
 const ListLegalBases = (props: any) => {
     const { legalBases } = props
+    if (!legalBases) return null
+
     return (
         <ul>
             {legalBases.map((legalBase: any) => (
                 <li>
-                    <p>{legalBase.gdpr && (legalBase.gdpr.code + ":")} {legalBase.nationalLaw && legalBase.nationalLaw.code + ' '} {legalBase.description}</p>
+                    <p> {legalBase.gdpr && codelist.getShortname(ListName.GDPR_ARTICLE, legalBase.gdpr) + ": "}
+                        {legalBase.nationalLaw && codelist.getShortname(ListName.NATIONAL_LAW, legalBase.nationalLaw) + ' '}
+                        {legalBase.description}
+                    </p>
                 </li>
             ))}
         </ul>
@@ -220,7 +216,6 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                                     <ModalButton type="submit">Lagre</ModalButton>
                                 </Block>
                             </ModalFooter>
-
                         </Form>
                     )}
                 />

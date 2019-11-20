@@ -20,7 +20,6 @@ class CodelistService {
     };
 
     handleGetCodelistResponse = (response: any) => {
-        console.log(response, "RESPONSE");
         if (typeof response.data === "object" && response.data !== null) {
             this.lists = response.data;
         } else {

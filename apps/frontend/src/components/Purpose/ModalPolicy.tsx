@@ -91,8 +91,9 @@ const FieldSubjectCategory = (props: any) => (
         render={({ form }: FieldProps<PolicyFormValues>) => (
             <StatefulSelect
                 options={codelist.getParsedOptions(ListName.SUBJECT_CATEGORY)}
-                onChange={event => form.setFieldValue('subjectCategory',
-                    event.option ? event.option.code : '')}
+                onChange={event => {
+                    form.setFieldValue('subjectCategory', event.option ? event.option.id : '')
+                }}
             />
         )}
     />
@@ -123,6 +124,24 @@ const FieldLegalBasisInherited = (props: any) => {
 
             )}
         />
+    )
+}
+
+const ListLegalBases = (props: any) => {
+    const { legalBases } = props
+    if (!legalBases) return null
+
+    return (
+        <ul>
+            {legalBases.map((legalBase: any) => (
+                <li>
+                    <p> {legalBase.gdpr && codelist.getShortname(ListName.GDPR_ARTICLE, legalBase.gdpr) + ": "}
+                        {legalBase.nationalLaw && codelist.getShortname(ListName.NATIONAL_LAW, legalBase.nationalLaw) + ' '}
+                        {legalBase.description}
+                    </p>
+                </li>
+            ))}
+        </ul>
     )
 }
 
@@ -215,14 +234,7 @@ const ModalPolicy = (props: any) => {
                                                                 >
                                                                     Legg til nytt rettslig grunnlag
                                                                 </Button>
-
-                                                                <ul>
-                                                                    {formikBag.values.legalBases.map((legalBase: any) => (
-                                                                        <li>
-                                                                            <p>{legalBase.gdpr && (legalBase.gdpr + ":")} {legalBase.nationalLaw} {legalBase.description}</p>
-                                                                        </li>
-                                                                    ))}
-                                                                </ul>
+                                                                <ListLegalBases legalBases={formikBag.values.legalBases} />
                                                             </Block>
                                                         </Block>
                                                     )}

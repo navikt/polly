@@ -25,11 +25,9 @@ const CardLegalBasis = (props: any) => {
             setError("Kunne ikke legge til. Fyll ut minst ett felt.")
             return null
         }
-
-        setError(null)
         return {
-            gdpr: gdpr.length > 0 ? gdpr[0].code : null,
-            nationalLaw: nationalLaw.length > 0 ? nationalLaw[0].code : null,
+            gdpr: gdpr.length > 0 ? gdpr[0].id : null,
+            nationalLaw: nationalLaw.length > 0 ? nationalLaw[0].id : null,
             description: description
         }
     }

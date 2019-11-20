@@ -29,7 +29,7 @@ const blockProps: BlockProps = {
 
 const rowPanelContent: BlockProps = {
     display: 'flex',
-    marginBottom: '2rem',
+    marginBottom: '1rem',
     justifyContent: 'space-between'
 }
 
@@ -148,7 +148,12 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
     }
 
     const getInitialValuesProcessEdit = (process: any) => {
-        return { name: process.name, department: process.department, subDepartment: process.subDepartment, legalBases: process.legalBases }
+        return {
+            name: process.name,
+            department: process.department,
+            subDepartment: process.subDepartment,
+            legalBases: process.legalBases
+        }
     }
 
     return (
@@ -187,7 +192,7 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
 
                         {processList.map((process: any, index: any) => (
                             <Panel title={process.name} key={process.name} expanded={isExpanded(process)}>
-                                <Block {...rowPanelContent}>
+                                <Block {...rowPanelContent} marginBottom="2rem">
                                     <Block display="flex">
                                         <Block marginRight="6rem">
                                             <Label2>Rettslig grunnlag for behandlingen</Label2>
