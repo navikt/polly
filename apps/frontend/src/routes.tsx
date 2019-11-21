@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useEffect } from "react";
 import { Link, Route, Switch } from "react-router-dom";
 
 import Root from "./components/Root";
@@ -8,19 +7,12 @@ import InformationtypeCreatePage from "./pages/InformationtypeCreatePage";
 import InformationtypeEditPage from "./pages/InformationtypeEditPage";
 import InformationtypePage from './pages/InformationtypePage'
 import { user } from "./service/User"
-import { useForceUpdate } from "./util/customHooks"
+import { useAwait } from "./util/customHooks"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 const Main = () => {
-  const update = useForceUpdate()
-
-  useEffect(() => {
-    (async () => {
-      await user.wait()
-      update()
-    })()
-  }, [])
+  useAwait(user.wait())
 
   return (
       <div>

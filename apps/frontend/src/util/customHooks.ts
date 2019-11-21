@@ -23,3 +23,14 @@ export function useForceUpdate() {
   const [val, setVal] = useState(true);
   return () => setVal(!val);
 }
+
+export function useAwait<T>(p: Promise<T>) {
+  const update = useForceUpdate()
+
+  useEffect(() => {
+    (async () => {
+      await p
+      update()
+    })()
+  }, [])
+}
