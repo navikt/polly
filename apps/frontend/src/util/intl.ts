@@ -100,6 +100,7 @@ const strings = {
 }
 
 type IIntl = LocalizedStringsMethods & IStrings
+
 interface LocalizedStringsFactory {
   new<T>(props: GlobalStrings<T>, options?: { customLanguageInterface: () => string }): IIntl;
 }
@@ -107,10 +108,11 @@ interface LocalizedStringsFactory {
 export const intl: IIntl = new (LocalizedStrings as LocalizedStringsFactory)(strings as any, {customLanguageInterface: () => defaultLang})
 
 export const useLang = () => {
-  const [lang, setLang] = React.useState(defaultLang);
+  const [lang, setLang] = React.useState<string>((localStorage && localStorage.getItem('polly-lang')) as string || defaultLang);
   const update = useForceUpdate()
   useEffect(() => {
     intl.setLanguage(lang)
+    localStorage && localStorage.setItem('polly-lang', lang);
     update()
   }, [lang])
 
