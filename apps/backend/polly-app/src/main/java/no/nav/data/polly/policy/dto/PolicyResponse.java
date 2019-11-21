@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Singular;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.common.utils.DateUtil;
-import no.nav.data.polly.informationtype.dto.InformationTypeIdNameResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 
 import java.time.LocalDate;
@@ -29,7 +28,7 @@ public class PolicyResponse {
     private LocalDate start;
     private LocalDate end;
     private boolean legalBasesInherited;
-    private InformationTypeIdNameResponse informationType;
+    private PolicyInformationTypeResponse informationType;
     @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;
 

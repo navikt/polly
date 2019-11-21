@@ -13,8 +13,8 @@ import no.nav.data.polly.common.auditing.Auditable;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.elasticsearch.dto.PolicyElasticsearch;
 import no.nav.data.polly.informationtype.domain.InformationType;
-import no.nav.data.polly.informationtype.dto.InformationTypeIdNameResponse;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
+import no.nav.data.polly.policy.dto.PolicyInformationTypeResponse;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.domain.Process;
 import org.hibernate.annotations.Type;
@@ -132,8 +132,9 @@ public class Policy extends Auditable<String> {
                 .build();
     }
 
-    private InformationTypeIdNameResponse convertInformationTypeNameResponse() {
-        return getInformationType() != null ? new InformationTypeIdNameResponse(getInformationTypeId(), getInformationTypeName()) : null;
+    private PolicyInformationTypeResponse convertInformationTypeNameResponse() {
+        return getInformationType() == null ? null :
+                new PolicyInformationTypeResponse(getInformationTypeId(), getInformationTypeName(), getInformationType().getData().sensitivityCode());
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
