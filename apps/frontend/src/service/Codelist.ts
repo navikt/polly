@@ -28,7 +28,7 @@ class CodelistService {
     };
 
     getCodes(list: ListName): Code[] {
-        return this.lists ? this.lists.codelist[list] : [];
+        return this.lists && this.lists.codelist[list] ? this.lists.codelist[list] : [];
     }
 
     getCode(list: ListName, codeName: string): Code | undefined {
