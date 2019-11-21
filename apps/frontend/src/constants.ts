@@ -1,22 +1,5 @@
 import { Code } from "./service/Codelist";
 
-export interface Policy {
-    id?: string | number | null;
-    datasetTitle: string;
-    legalbasisDescription: string | null;
-}
-
-export interface DatasetFormValues {
-    title: string;
-    contentType: string | null;
-    pi: string | boolean | null;
-    description: string | null;
-    categories: string[] | null[] | null;
-    provenances: string[] | null[] | null;
-    keywords: string[] | null[] | null;
-    policies?: any | null;
-}
-
 export interface InformationtypeFormValues {
     term?: string;
     name?: string;
@@ -43,11 +26,6 @@ export interface LegalBasis {
     nationalLaw?: Code;
 }
 
-export interface InformationTypeIdName {
-    id: string;
-    name: string;
-}
-
 export interface InformationType {
     id: string;
     name: string;
@@ -59,6 +37,44 @@ export interface InformationType {
     sources: Code[];
     categories: Code[];
     toBeDeleted: boolean;
+}
+
+export interface Policy {
+    id: string;
+    informationType: PolicyInformationType;
+    process: PolicyProcess;
+    purposeCode: Code;
+    subjectCategory: Code;
+    legalBasesInherited: boolean;
+    legalBases: LegalBasis[];
+    active: boolean;
+    start: Date;
+    end: Date;
+}
+
+export interface PolicyInformationType {
+    id: string;
+    name: string;
+    sensitivity: Code;
+}
+
+export interface PolicyProcess {
+    id: string;
+    name: string;
+    legalBases: LegalBasis[];
+}
+
+export interface Process {
+    id: string;
+    name: string;
+    legalBases: LegalBasis[];
+    active: boolean;
+    start: Date;
+    end: Date;
+    department: Code;
+    subDepartment: Code;
+    policies: Policy[];
+    purposeCode: string;
 }
 
 export interface TermIdName {
@@ -92,7 +108,7 @@ export interface PageResponse<T> {
     content: T[];
 }
 
-// Refers to SENSITIVITY clodelist
+// Refers to SENSITIVITY codelist
 export enum SensitivityLevel {
     ART6 = "PERSONOPPLYSNING",
     ART9 = "SÆRLIGEPERSONOPPLYSNINGER",

@@ -7,7 +7,7 @@ import AccordionInformationtype from './AccordionInformationtype'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { IconDefinition } from "@fortawesome/fontawesome-common-types"
 import { faTag, faUserShield } from "@fortawesome/free-solid-svg-icons"
-import { sensitivityColor } from "../../../util/theme"
+import { sensitivityColor } from "../Sensitivity"
 
 const row: BlockProps = {
     display: 'flex',

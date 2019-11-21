@@ -28,7 +28,7 @@ import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
 import { useDebouncedState } from "../../util/customHooks"
 import { useEffect } from "react"
 import axios from "axios"
-import { InformationTypeIdName, PageResponse } from "../../constants"
+import { PageResponse, InformationType } from "../../constants"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -158,8 +158,8 @@ const ModalPolicy = (props: any) => {
         if (infoTypeSearch && infoTypeSearch.length > 2) {
             axios
                 .get(`${server_polly}/informationtype/search/${infoTypeSearch}`)
-                .then((res: { data: PageResponse<InformationTypeIdName> }) => {
-                    let options: Option[] = res.data.content.map((it: InformationTypeIdName) => ({ id: it.name, label: it.name }))
+                .then((res: { data: PageResponse<InformationType> }) => {
+                    let options: Option[] = res.data.content.map((it: InformationType) => ({ id: it.name, label: it.name }))
                     return setInfoTypeSearchResult(options)
                 })
         }

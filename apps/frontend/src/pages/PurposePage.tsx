@@ -1,18 +1,19 @@
 import * as React from "react";
 import axios from "axios";
-import { Option, StatefulSelect, Value } from 'baseui/select';
+import { Option, StatefulSelect } from 'baseui/select';
 
 import PurposeResult from "../components/Purpose";
 import Banner from "../components/Banner";
 
 import { Block } from "baseui/block";
 import { ListName, codelist } from "../service/Codelist";
+import { Process } from "../constants"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 const PurposePage = (props: any) => {
     const [currentPurposeValue, setCurrentPurposeValue] = React.useState<string | null>();
-    const [purposeData, setPurposeData] = React.useState();
+    const [purposeData, setPurposeData] = React.useState<Process[] | null>();
     const [isLoading, setLoading] = React.useState(false);
     const [isLoadingPurpose, setLoadingPurpose] = React.useState(false);
     const [error, setError] = React.useState(null);

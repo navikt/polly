@@ -14,13 +14,14 @@ import ModalPolicy from './ModalPolicy'
 import ModalProcess from './ModalProcess'
 import { renderLegalBasis } from "../../util/LegalBasis"
 import { codelist, ListName } from "../../service/Codelist"
+import { Process } from "../../constants"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 type PurposeViewProps = {
     description: string | any | null;
     purpose: string;
-    processList: Array<any> | any | null;
+    processList: Array<Process> | any | null;
     defaultExpandedPanelId: string | null | undefined;
 };
 
@@ -34,13 +35,6 @@ const rowPanelContent: BlockProps = {
     justifyContent: 'space-between'
 }
 
-const renderListItem = (legalBasis: any | object) => {
-    return (
-        <li>
-            <Paragraph2>{renderLegalBasis(legalBasis)}</Paragraph2>
-        </li>
-    )
-}
 const renderLegalBasisList = (list: any) => {
     if (!list) return null
     if (list.length < 1)
@@ -48,10 +42,11 @@ const renderLegalBasisList = (list: any) => {
 
     return (
         <ul>
-            {list.map((legalBasis: any, i: number) => <li key={i}>{renderListItem(legalBasis)}</li>)}
+            {list.map((legalBasis: any, i: number) => <li key={i}><Paragraph2>{renderLegalBasis(legalBasis)}</Paragraph2></li>)}
         </ul>
     )
 }
+
 const renderAllSubjectCategories = (processObj: any) => {
     const notFound = (<Paragraph2>Fant ingen kategorier av personer</Paragraph2>)
     if (!processObj) return notFound
@@ -201,7 +196,7 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
                         setCurrentExpanded(expanded)
                     }}>
 
-                        {processList.map((process: any, index: any) => (
+                        {processList.map((process: Process, index: any) => (
                             <Panel title={process.name} key={process.name} expanded={isExpanded(process)}>
                                 <Block {...rowPanelContent} marginBottom="2rem">
                                     <Block display="flex">

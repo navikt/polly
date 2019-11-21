@@ -4,6 +4,10 @@ import { useStyletron, withStyle } from "baseui";
 import { StyledLink } from 'baseui/link'
 import { renderLegalBasis } from "../../util/LegalBasis"
 import { codelist, ListName } from "../../service/Codelist"
+import { Policy, PolicyInformationType } from "../../constants"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faUserShield } from "@fortawesome/free-solid-svg-icons"
+import { Sensitivity, sensitivityColor } from "../InformationType/Sensitivity"
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",
@@ -20,7 +24,7 @@ const CustomStyledRow = withStyle(StyledRow, {
 
 
 type TablePurposeProps = {
-    policies: Array<any>;
+    policies: Array<Policy>;
 };
 
 const TablePurpose = ({ policies }: TablePurposeProps) => {
@@ -128,9 +132,10 @@ const TablePurpose = ({ policies }: TablePurposeProps) => {
                     />
                 </StyledHeader>
                 <StyledBody>
-                    {getSortedData().map((row: any, index: number) => (
+                    {getSortedData().map((row: Policy, index: number) => (
                         <CustomStyledRow key={index}>
                             <StyledCell>
+                                <Sensitivity sensitivity={row.informationType.sensitivity} />&nbsp;
                                 <StyledLink href={`/informationtype/${row.informationType.id}`}>
                                     {row.informationType.name}
                                 </StyledLink>

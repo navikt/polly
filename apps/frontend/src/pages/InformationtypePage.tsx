@@ -6,7 +6,7 @@ import Banner from "../components/Banner";
 import InformationtypeMetadata from "../components/InformationType/InformationtypeMetadata/";
 import { useDebouncedState } from "../util/customHooks"
 import { Option, Select, TYPE } from "baseui/select"
-import { InformationTypeIdName, PageResponse } from "../constants"
+import { InformationType, PageResponse } from "../constants"
 import { codelist } from "../service/Codelist"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
@@ -40,8 +40,8 @@ const InformationtypePage = (props: any) => {
         if (infoTypeSearch && infoTypeSearch.length > 2) {
             axios
                 .get(`${server_polly}/informationtype/search/${infoTypeSearch}`)
-                .then((res: { data: PageResponse<InformationTypeIdName> }) => {
-                    let options: Option[] = res.data.content.map((it: InformationTypeIdName) => ({ id: it.id, label: it.name }))
+                .then((res: { data: PageResponse<InformationType> }) => {
+                    let options: Option[] = res.data.content.map((it: InformationType) => ({ id: it.id, label: it.name }))
                     return setInfoTypeSearchResult(options)
                 })
         }

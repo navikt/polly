@@ -6,7 +6,7 @@ import axios from "axios";
 import InformationtypeForm from "../components/InformationType/InformationtypeForm";
 import Banner from "../components/Banner";
 import {codelist} from "../service/Codelist";
-import { InformationtypeFormValues, InformationTypeIdName, PageResponse } from "../constants"
+import { InformationType, InformationtypeFormValues, PageResponse } from "../constants"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -44,7 +44,7 @@ const InformationtypeCreatePage = (props: any) => {
         }
     };
 
-    const handleSubmitResponse = (response: { data: PageResponse<InformationTypeIdName> }) => {
+    const handleSubmitResponse = (response: { data: PageResponse<InformationType> }) => {
         props.history.push(`/informationtype/${response.data.content[0].id}`)
     };
 
