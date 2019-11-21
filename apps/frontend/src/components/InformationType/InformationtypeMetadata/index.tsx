@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { IconDefinition } from "@fortawesome/fontawesome-common-types"
 import { faTag, faUserShield } from "@fortawesome/free-solid-svg-icons"
 import { sensitivityColor } from "../Sensitivity"
+import { Link } from "react-router-dom"
 
 const row: BlockProps = {
     display: 'flex',
@@ -53,6 +54,7 @@ const renderMetadata = (informationtype: any) => {
                     {renderTextWithLabel('Definisjon i Begrepskatalogen: ', informationtype.term ? informationtype.term.name : '')}
                     {renderTextWithLabel('Beskrivelse', informationtype.description)}
 
+                    <Block position="relative" $style={{float:"right"}}><Link to={`/informationtype/edit/${informationtype.id}`}>Rediger</Link></Block>
                 </Card>
             </Block>
             <Block width="60%">

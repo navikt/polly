@@ -8,6 +8,12 @@ import { useDebouncedState } from "../util/customHooks"
 import { Option, Select, TYPE } from "baseui/select"
 import { InformationType, PageResponse } from "../constants"
 import { codelist } from "../service/Codelist"
+import { Link } from "react-router-dom"
+import { Button, SHAPE } from "baseui/button"
+import { Plus } from "baseui/icon"
+import { Block } from "baseui/block"
+import { faPlusCircle } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -88,17 +94,26 @@ const InformationtypePage = (props: any) => {
 
                     {error && (<p>{error}</p>)}
                 </React.Fragment>
-                : <Select
-                    autoFocus
-                    maxDropdownHeight="400px"
-                    searchable={true}
-                    type={TYPE.search}
-                    options={infoTypeSearchResult}
-                    placeholder="Søk opplysningstyper"
-                    onInputChange={event => setInfoTypeSearch(event.currentTarget.value)}
-                    onChange={(params: any) => setInformationTypeId(params.value[0].id)}
-                />
-                )}
+                    : <Block display="flex" justifyContent="space-between">
+                        <Block width="80%">
+                        <Select
+                            autoFocus
+                            maxDropdownHeight="400px"
+                            searchable={true}
+                            type={TYPE.search}
+                            options={infoTypeSearchResult}
+                            placeholder="Søk opplysningstyper"
+                            onInputChange={event => setInfoTypeSearch(event.currentTarget.value)}
+                            onChange={(params: any) => setInformationTypeId(params.value[0].id)}
+                        />
+                        </Block>
+                        <Block>
+                        <Button type="button" shape={SHAPE.square} onClick={() => props.history.push("/informationtype/create")}>
+                            <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;Opprett ny
+                        </Button>
+                        </Block>
+                    </Block>
+            )}
         </React.Fragment>
     );
 };
