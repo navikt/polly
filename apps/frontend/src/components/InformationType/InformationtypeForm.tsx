@@ -170,14 +170,14 @@ const InformationtypeForm = ({
                                     render={({ form }: FieldProps<InformationtypeFormValues>) => (
                                         <Block>
                                             <Block {...labelProps}>
-                                                <Label2>Begrep</Label2>
+                                                <Label2>Definisjon i Begrepskatalogen</Label2>
                                             </Block>
                                             <Select
                                                 maxDropdownHeight="350px"
                                                 searchable={true}
                                                 type={TYPE.search}
                                                 options={termSearchResult}
-                                                placeholder="Skriv inn et begrep"
+                                                placeholder="Skriv inn en definisjon"
                                                 value={termValue as Value}
                                                 onInputChange={event => setTermSearch(event.currentTarget.value)}
                                                 onChange={(params) => {

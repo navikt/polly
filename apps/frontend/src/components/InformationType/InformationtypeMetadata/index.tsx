@@ -50,7 +50,7 @@ const renderMetadata = (informationtype: any) => {
             <Block width="40%" marginRight="5rem">
                 <Card>
                     {renderTextWithLabel('Navn: ', informationtype.name, faTag)}
-                    {renderTextWithLabel('Begrep: ', informationtype.term ? informationtype.term.name : '')}
+                    {renderTextWithLabel('Definisjon i Begrepskatalogen: ', informationtype.term ? informationtype.term.name : '')}
                     {renderTextWithLabel('Beskrivelse', informationtype.description)}
 
                 </Card>
