@@ -10,6 +10,7 @@ import { faTag, faUserShield } from "@fortawesome/free-solid-svg-icons"
 import { sensitivityColor } from "../Sensitivity"
 import { Link } from "react-router-dom"
 import { InformationType } from "../../../constants"
+import { intl } from "../../../util/intl"
 
 const row: BlockProps = {
     display: 'flex',
@@ -51,20 +52,20 @@ const renderMetadata = (informationtype: InformationType) => {
         <Block display="flex" width="100%" marginBottom="5rem">
             <Block width="40%" marginRight="5rem">
                 <Card>
-                    {renderTextWithLabel('Navn: ', informationtype.name, faTag)}
-                    {renderTextWithLabel('Begrepsdefinisjon: ', informationtype.term ? informationtype.term.description || informationtype.term.name : '')}
-                    {renderTextWithLabel('Beskrivelse', informationtype.description)}
+                    {renderTextWithLabel(intl.name, informationtype.name, faTag)}
+                    {renderTextWithLabel(intl.termDefinition, informationtype.term ? informationtype.term.description || informationtype.term.name : '')}
+                    {renderTextWithLabel(intl.description, informationtype.description)}
 
                     <Block position="relative" $style={{float:"right"}}><Link to={`/informationtype/edit/${informationtype.id}`}>Rediger</Link></Block>
                 </Card>
             </Block>
             <Block width="60%">
                 <Card>
-                    {renderTextWithLabel('Master i NAV', informationtype.navMaster ? informationtype.navMaster.description : '')}
-                    {renderTextWithLabel('Kilder', reduceToList(informationtype.sources).join(', '))}
-                    {renderTextWithLabel('Kategorier', reduceToList(informationtype.categories).join(', '))}
-                    {renderTextWithLabel('Nøkkelord', arrayToString(informationtype.keywords))}
-                    {renderTextWithLabel('Type personopplysning', informationtype.sensitivity.description, faUserShield, sensitivityColor(informationtype.sensitivity.code))}
+                    {renderTextWithLabel(intl.navMaster, informationtype.navMaster ? informationtype.navMaster.description : '')}
+                    {renderTextWithLabel(intl.sources, reduceToList(informationtype.sources).join(', '))}
+                    {renderTextWithLabel(intl.categories, reduceToList(informationtype.categories).join(', '))}
+                    {renderTextWithLabel(intl.keywords, arrayToString(informationtype.keywords))}
+                    {renderTextWithLabel(intl.sensitivity, informationtype.sensitivity.description, faUserShield, sensitivityColor(informationtype.sensitivity.code))}
                 </Card>
             </Block>
         </Block>

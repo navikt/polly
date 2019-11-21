@@ -9,7 +9,7 @@ import InformationtypePage from './pages/InformationtypePage'
 import { Main } from "./pages/MainPage"
 
 
-const Routes = (): JSX.Element => (
+const Routes = (props: any): JSX.Element => (
   <Root>
     <Switch>
       <Route exact path="/purpose/:id?/:processid?" component={PurposePage} />
@@ -29,9 +29,9 @@ const Routes = (): JSX.Element => (
         path="/informationtype/edit/:id"
         component={InformationtypeEditPage}
       />
-      <Route
-        component={Main}
-      />
+      <Route>
+        <Main setLang={props.setLang}/>
+      </Route>
     </Switch>
   </Root>
 );

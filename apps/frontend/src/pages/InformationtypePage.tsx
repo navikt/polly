@@ -8,12 +8,11 @@ import { useDebouncedState } from "../util/customHooks"
 import { Option, Select, TYPE } from "baseui/select"
 import { InformationType, PageResponse } from "../constants"
 import { codelist } from "../service/Codelist"
-import { Link } from "react-router-dom"
 import { Button, SHAPE } from "baseui/button"
-import { Plus } from "baseui/icon"
 import { Block } from "baseui/block"
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { intl } from "../util/intl"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -87,7 +86,7 @@ const InformationtypePage = (props: any) => {
                 <Spinner size={30} />
             ) : (informationTypeId ?
                 <React.Fragment>
-                    <Banner title="Opplysningstype" />
+                    <Banner title={intl.informationType} />
                     {!error && informationtype && (
                         <InformationtypeMetadata informationtype={informationtype} purposeMap={purposeMap} />
                     )}
@@ -102,14 +101,14 @@ const InformationtypePage = (props: any) => {
                             searchable={true}
                             type={TYPE.search}
                             options={infoTypeSearchResult}
-                            placeholder="Søk opplysningstyper"
+                            placeholder={intl.informationTypeSearch}
                             onInputChange={event => setInfoTypeSearch(event.currentTarget.value)}
                             onChange={(params: any) => setInformationTypeId(params.value[0].id)}
                         />
                         </Block>
                         <Block>
                         <Button type="button" shape={SHAPE.square} onClick={() => props.history.push("/informationtype/create")}>
-                            <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;Opprett ny
+                            <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;{intl.createNew}
                         </Button>
                         </Block>
                     </Block>
