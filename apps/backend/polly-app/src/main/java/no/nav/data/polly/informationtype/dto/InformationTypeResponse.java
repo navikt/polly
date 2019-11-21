@@ -12,7 +12,6 @@ import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
-import no.nav.data.polly.term.dto.TermIdNameResponse;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,7 +28,7 @@ public class InformationTypeResponse {
 
     private UUID id;
     private String name;
-    private TermIdNameResponse term;
+    private InfoTypeTermResponse term;
     private String description;
     private CodelistResponse sensitivity;
     private CodelistResponse navMaster;
