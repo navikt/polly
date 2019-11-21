@@ -6,7 +6,7 @@ import { useForceUpdate } from "./customHooks"
 // Controls starting language as well as fallback language if a text is missing in chosen language
 const defaultLang = 'no'
 
-export interface IStrings {
+interface IStrings {
 
   informationType: string;
   informationTypes: string;
@@ -107,14 +107,26 @@ interface LocalizedStringsFactory {
 
 export const intl: IIntl = new (LocalizedStrings as LocalizedStringsFactory)(strings as any, {customLanguageInterface: () => defaultLang})
 
+const localStorageAvailable = storageAvailable();
+
 export const useLang = () => {
-  const [lang, setLang] = React.useState<string>((localStorage && localStorage.getItem('polly-lang')) as string || defaultLang);
+  const [lang, setLang] = React.useState<string>((localStorageAvailable && localStorage.getItem('polly-lang')) as string || defaultLang);
   const update = useForceUpdate()
   useEffect(() => {
     intl.setLanguage(lang)
-    localStorage && localStorage.setItem('polly-lang', lang);
+    localStorageAvailable && localStorage.setItem('polly-lang', lang);
     update()
   }, [lang])
 
   return setLang
+}
+
+function storageAvailable() {
+  try {
+    localStorage.setItem('ptab', 'aye');
+    localStorage.removeItem('ptab');
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
