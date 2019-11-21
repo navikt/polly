@@ -91,3 +91,10 @@ export interface PageResponse<T> {
     totalElements: number;
     content: T[];
 }
+
+// Refers to SENSITIVITY clodelist
+export enum SensitivityLevel {
+    ART6 = "PERSONOPPLYSNING",
+    ART9 = "SÆRLIGEPERSONOPPLYSNINGER",
+    ART10 = "STRAFFEDOMMEROGLOVOVERTREDELSER"
+}

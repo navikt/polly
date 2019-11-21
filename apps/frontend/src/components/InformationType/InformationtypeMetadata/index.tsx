@@ -1,9 +1,13 @@
 import * as React from "react";
 import { Block, BlockProps } from 'baseui/block'
 import { Card } from 'baseui/card'
-import { Label2, Paragraph2, Label1 } from "baseui/typography";
+import { Label2, Paragraph2 } from "baseui/typography";
 
 import AccordionInformationtype from './AccordionInformationtype'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { IconDefinition } from "@fortawesome/fontawesome-common-types"
+import { faTag, faUserShield } from "@fortawesome/free-solid-svg-icons"
+import { sensitivityColor } from "../../../util/theme"
 
 const row: BlockProps = {
     display: 'flex',
@@ -29,11 +33,11 @@ const arrayToString = (list: any) => {
     return list.join(', ')
 }
 
-const renderTextWithLabel = (label: string, text: string) => {
+const renderTextWithLabel = (label: string, text: string, icon?: IconDefinition, iconColor?: string) => {
     return (
         <Block display="flex">
-            <Block width="20%" alignSelf="center">
-                <Label2>{label}</Label2>
+            <Block width="25%" alignSelf="center">
+                <Label2>{icon && <FontAwesomeIcon icon={icon} color={iconColor} />} {label}</Label2>
             </Block>
             <Paragraph2>{text}</Paragraph2>
         </Block>
@@ -45,7 +49,7 @@ const renderMetadata = (informationtype: any) => {
         <Block display="flex" width="100%" marginBottom="5rem">
             <Block width="40%" marginRight="5rem">
                 <Card>
-                    {renderTextWithLabel('Navn: ', informationtype.name)}
+                    {renderTextWithLabel('Navn: ', informationtype.name, faTag)}
                     {renderTextWithLabel('Begrep: ', informationtype.term ? informationtype.term.name : '')}
                     {renderTextWithLabel('Beskrivelse', informationtype.description)}
 
@@ -57,7 +61,7 @@ const renderMetadata = (informationtype: any) => {
                     {renderTextWithLabel('Kilder', reduceToList(informationtype.sources).join(', '))}
                     {renderTextWithLabel('Kategorier', reduceToList(informationtype.categories).join(', '))}
                     {renderTextWithLabel('Nøkkelord', arrayToString(informationtype.keywords))}
-                    {renderTextWithLabel('Type personopplysning', informationtype.sensitivity.description)}
+                    {renderTextWithLabel('Type personopplysning', informationtype.sensitivity.description, faUserShield, sensitivityColor(informationtype.sensitivity.code))}
                 </Card>
             </Block>
         </Block>

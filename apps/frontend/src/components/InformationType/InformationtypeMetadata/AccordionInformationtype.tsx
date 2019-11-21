@@ -3,6 +3,8 @@ import { Accordion, Panel } from 'baseui/accordion'
 import { Paragraph2 } from 'baseui/typography'
 import TableInformationtype from './TableInformationtype'
 import { codelist, ListName } from "../../../service/Codelist"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faUsersCog } from "@fortawesome/free-solid-svg-icons"
 
 const AccordionInformationtype = (props: any) => {
     if (!props) return null
@@ -18,7 +20,7 @@ const AccordionInformationtype = (props: any) => {
     return (
         <Accordion>
             {Object.keys(purposeMap).map((key: any) => (
-                <Panel title={codelist.getShortname(ListName.PURPOSE, key)}>
+                <Panel title={<span><FontAwesomeIcon icon={faUsersCog}  /> {codelist.getShortname(ListName.PURPOSE, key)}</span>}>
                     <TableInformationtype list={getPolicylistForPurpose(key)} />
                 </Panel>
             ))}

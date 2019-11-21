@@ -5,6 +5,7 @@ import { ThemeProvider } from "@data-catalog/theme";
 import { Header } from "@data-catalog/header";
 
 import Routes from "./routes";
+import {theme} from "./util/theme"
 
 class Main extends React.Component {
   render() {
@@ -12,7 +13,7 @@ class Main extends React.Component {
 
     return (
       <React.Fragment>
-        <ThemeProvider>
+        <ThemeProvider theme={theme}>
           <Block margin="scale600">
             <Header nav about />
           </Block>
