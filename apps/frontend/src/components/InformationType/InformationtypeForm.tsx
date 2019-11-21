@@ -170,7 +170,7 @@ const InformationtypeForm = ({
                                     render={({ form }: FieldProps<InformationtypeFormValues>) => (
                                         <Block>
                                             <Block {...labelProps}>
-                                                <Label2>Definisjon i Begrepskatalogen</Label2>
+                                                <Label2>Begrepsdefinisjon</Label2>
                                             </Block>
                                             <Select
                                                 maxDropdownHeight="350px"
