@@ -68,13 +68,14 @@ const renderAllSubjectCategories = (processObj: any) => {
 }
 
 const PurposeResult = ({ description, purpose, processList, defaultExpandedPanelId }: PurposeViewProps) => {
-
     const [isOpen, setIsOpen] = React.useState<any>(false);
     const [currentExpanded, setCurrentExpanded] = React.useState<any>();
     const [showProcessModal, setShowProcessModal] = React.useState(false)
     const [showEditProcessModal, setShowEditProcessModal] = React.useState(false)
+    const [showEditPolicyModal, setShowEditPolicyModal] = React.useState()
     const [errorCreatePolicy, setErrorCreatePolicy] = React.useState()
     const [errorCreateProcess, setErrorCreateProcess] = React.useState()
+    const [errorEditPolicy, setErrorEditPolicy] = React.useState()
 
     const handleCreatePolicy = async (values: any, process: any) => {
         if (!values) return
@@ -135,6 +136,28 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
             }))
             .catch((err: any) => setErrorCreateProcess(err.message));
     }
+    const handleEditPolicy = async (values: any) => {
+        console.log(values, "VALUES EDIT POLICY")
+        let body = [{
+            ...values,
+            legalBases: values.legalBasesInherited ? [] : values.legalBases
+        }]
+        await axios
+            .put(`${server_polly}/policy`, body)
+            .then(((res: any) => {
+                console.log(res)
+                let processIndex = processList.findIndex((process: any) => process.name === res.data.content[0].process.name)
+                let process = processList[processIndex]
+                let policyIndex = process.policies.findIndex((policy: any) => policy.id === values.id)
+                process.policies[policyIndex] = { ...res.data.content[0] }
+                setErrorEditPolicy(null)
+                setShowEditPolicyModal(false)
+            }))
+            .catch((err: any) => {
+                setShowEditPolicyModal(true)
+                setErrorEditPolicy(err.message)
+            });
+    }
 
     const isExpanded = (process: any) => {
         if (process.id === defaultExpandedPanelId && !currentExpanded) {
@@ -181,6 +204,7 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
                         Legg til ny behandling
                     </Button>
                     <ModalProcess
+                        title="Opprett nytt behandlingsrunnlag"
                         onClose={() => setShowProcessModal(false)}
                         isOpen={showProcessModal}
                         submit={(values: any) => handleCreateProcess(values)}
@@ -218,6 +242,7 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
                                             Rediger behandling
                                         </Button>
                                         <ModalProcess
+                                            title="Rediger behandlingsgrunnlag"
                                             onClose={() => setShowEditProcessModal(false)}
                                             isOpen={showEditProcessModal}
                                             submit={(values: any) => handleEditProcess(values, process.id)}
@@ -240,20 +265,27 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
                                         Legg til ny
                                     </Button>
                                     <ModalPolicy
+                                        title="Opprett behandlingsgrunnlag for opplysningstype"
+                                        initialValues={{ informationTypeName: '', subjectCategory: '', legalBasesInherited: false, legalBases: [] }}
+                                        isEdit={false}
                                         onClose={() => {
                                             setIsOpen(false)
                                             setErrorCreatePolicy(null)
                                         }}
                                         isOpen={isOpen}
-                                        createPolicySubmit={(values: any) => {
-                                            handleCreatePolicy(values, process)
-                                        }}
+                                        submit={(values: any) => handleCreatePolicy(values, process)}
                                         errorOnCreate={errorCreatePolicy}
                                     />
                                 </Block>
                                 {process.policies && (
                                     <Block >
-                                        <TablePurpose policies={process.policies} />
+                                        <TablePurpose
+                                            policies={process.policies}
+                                            onSubmitEdit={handleEditPolicy}
+                                            errorOnSubmitEdit={errorEditPolicy}
+                                            showEditModal={showEditPolicyModal}
+                                            setShowEditModal={setShowEditPolicyModal}
+                                        />
                                     </Block>
                                 )}
                             </Panel>

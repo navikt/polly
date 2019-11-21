@@ -1,37 +1,67 @@
 import * as React from "react";
-import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, StyledTable } from "baseui/table";
+import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, StyledTable, StyledSortableLabel, StyledHeadCell } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
 import { StyledLink } from 'baseui/link'
 import { renderLegalBasis } from "../../util/LegalBasis"
 import { codelist, ListName } from "../../service/Codelist"
-import { Policy, PolicyInformationType } from "../../constants"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faUserShield } from "@fortawesome/free-solid-svg-icons"
-import { Sensitivity, sensitivityColor } from "../InformationType/Sensitivity"
+import { Policy } from "../../constants"
+import { Sensitivity } from "../InformationType/Sensitivity"
+import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
+import { Block } from "baseui/block";
+import ModalPolicy, { PolicyFormValues } from "./ModalPolicy";
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",
     boxShadow: "none",
     borderBottom: "2px solid #E9E7E7"
 });
-
 const CustomStyledRow = withStyle(StyledRow, {
     borderBottom: "1px solid #E9E7E7",
     padding: "8px",
     fontSize: "24px"
 });
 
-
+const SmallerStyledCell = withStyle(StyledCell, {
+    maxWidth: '15%'
+})
+const SmallerStyledHeadCell = withStyle(StyledHeadCell, {
+    maxWidth: '15%'
+})
 
 type TablePurposeProps = {
-    policies: Array<Policy>;
+    policies: Array<any>;
+    onSubmitEdit: Function;
+    errorOnSubmitEdit: any;
+    showEditModal: boolean;
+    setShowEditModal: Function;
 };
 
-const TablePurpose = ({ policies }: TablePurposeProps) => {
+
+
+const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal, setShowEditModal }: TablePurposeProps) => {
     const [useCss, theme] = useStyletron();
+    const [currentPolicy, setCurrentPolicy] = React.useState()
     const [titleDirection, setTitleDirection] = React.useState<any>(null);
     const [userDirection, setUserDirection] = React.useState<any>(null);
     const [legalBasisDirection, setLegalBasisDirection] = React.useState<any>(null);
+
+    const getInitialValuesModal = (policy: any): PolicyFormValues => {
+        let parsedLegalBases = policy.legalBases && policy.legalBases.map((legalBasis: any) => ({
+            gdpr: legalBasis.gdpr && legalBasis.gdpr.code,
+            nationalLaw: legalBasis.nationalLaw && legalBasis.nationalLaw.code,
+            description: legalBasis.description
+        }))
+
+        return {
+            id: policy.id,
+            process: policy.process.name,
+            purposeCode: policy.purposeCode.code,
+            informationTypeName: policy.informationType.name,
+            subjectCategory: policy.subjectCategory ? policy.subjectCategory.code : '',
+            legalBasesInherited: policy.legalBasesInherited,
+            legalBases: parsedLegalBases
+        }
+    }
 
     const handleSort = (title: string, prevDirection: string) => {
         let nextDirection = null;
@@ -62,6 +92,7 @@ const TablePurpose = ({ policies }: TablePurposeProps) => {
     };
 
     const getSortedData = () => {
+        console.log(policies, "POLICIES")
         if (titleDirection) {
             const sorted = policies
                 .slice(0)
@@ -108,41 +139,33 @@ const TablePurpose = ({ policies }: TablePurposeProps) => {
                     <SortableHeadCell
                         title="Opplysningstype"
                         direction={titleDirection}
-                        onSort={() =>
-                            handleSort('Opplysningstype', titleDirection)
-                        }
+                        onSort={() => handleSort('Opplysningstype', titleDirection)}
                         fillClickTarget
                     />
-
                     <SortableHeadCell
                         title="Personkategori"
                         direction={userDirection}
-                        onSort={() =>
-                            handleSort('Personkategori', userDirection)
-                        }
+                        onSort={() => handleSort('Personkategori', userDirection)}
                         fillClickTarget
                     />
-
                     <SortableHeadCell
                         title="Rettslig Grunnlag"
                         direction={legalBasisDirection}
-                        onSort={() =>
-                            handleSort('Rettslig Grunnlag', legalBasisDirection)
-                        }
+                        onSort={() => handleSort('Rettslig Grunnlag', legalBasisDirection)}
                     />
+                    <SmallerStyledHeadCell></SmallerStyledHeadCell>
                 </StyledHeader>
                 <StyledBody>
                     {getSortedData().map((row: Policy, index: number) => (
                         <CustomStyledRow key={index}>
                             <StyledCell>
                                 <Sensitivity sensitivity={row.informationType.sensitivity} />&nbsp;
-                                <StyledLink href={`/informationtype/${row.informationType.id}`}>
+                                <StyledLink href={`/informationtype/${row.informationType.id}`} width="25%">
                                     {row.informationType.name}
                                 </StyledLink>
                             </StyledCell>
 
                             <StyledCell>{codelist.getShortname(ListName.SUBJECT_CATEGORY, row.subjectCategory.code)}</StyledCell>
-
                             <StyledCell>
                                 {row.legalBases && row.legalBases.length > 0 && (
                                     <ul>
@@ -152,10 +175,39 @@ const TablePurpose = ({ policies }: TablePurposeProps) => {
                                     </ul>
                                 )}
                             </StyledCell>
+                            <SmallerStyledCell>
+                                <Block display="flex" justifyContent="flex-end" width="100%">
+                                    <Button
+                                        size={ButtonSize.compact}
+                                        kind={KIND.secondary}
+                                        onClick={() => {
+                                            setCurrentPolicy(row)
+                                            setShowEditModal(true)
+                                        }}
+                                    >
+                                        Rediger
+                                    </Button>
+                                </Block>
+                            </SmallerStyledCell>
                         </CustomStyledRow>
                     ))}
                 </StyledBody>
+                {showEditModal && (
+                    <ModalPolicy
+                        title="Rediger behandlingsgrunnlag for opplysningstype"
+                        initialValues={getInitialValuesModal(currentPolicy)}
+                        onClose={() => { setShowEditModal(false) }}
+                        isOpen={showEditModal}
+                        isEdit={true}
+                        submit={(values: any) => {
+                            onSubmitEdit(values)
+                        }}
+                        errorOnCreate={errorOnSubmitEdit}
+                    />
+                )}
+
             </StyledTable>
+
         </React.Fragment>
     );
 };

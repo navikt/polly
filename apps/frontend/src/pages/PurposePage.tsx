@@ -91,7 +91,6 @@ const PurposePage = (props: any) => {
                         purpose={currentPurposeValue}
                         description={codelist.getDescription(ListName.PURPOSE, currentPurposeValue)}
                         defaultExpandedPanelId={props.match.params.processid}
-
                     />
                 </React.Fragment>
             ) : null}

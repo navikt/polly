@@ -4,7 +4,7 @@ import { Field, FieldArray, FieldProps, Form, Formik, FormikProps, } from "formi
 import { Block, BlockProps } from "baseui/block";
 import { Input, SIZE as InputSIZE } from "baseui/input";
 import { Label2 } from "baseui/typography";
-import { StatefulSelect, Select, Value } from 'baseui/select';
+import { Select, Value } from 'baseui/select';
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { Plus } from "baseui/icon";
 
@@ -109,15 +109,16 @@ const ListLegalBases = (props: any) => {
 }
 
 type ModalProcessProps = {
-    onClose: Function;
+    title: string;
     isOpen: boolean;
     isEdit?: boolean;
     initialValues: ProcessFormValues;
-    submit: Function;
     errorOnCreate: any | undefined;
+    submit: Function;
+    onClose: Function;
 };
 
-const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialValues }: ModalProcessProps) => {
+const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialValues, title }: ModalProcessProps) => {
     const [showLegalBasisFields, setShowLegalbasesFields] = React.useState(false)
 
     const showSubDepartment = (department: any) => {
@@ -145,7 +146,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                         <Form>
                             <ModalHeader>
                                 <Block {...modalHeaderProps}>
-                                    Opprett nytt behandlingsrunnlag
+                                    {title}
                                 </Block>
                             </ModalHeader>
 
@@ -214,7 +215,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                             <ModalFooter>
                                 <Block display="flex" justifyContent="flex-end">
                                     <Block alignSelf="flex-end">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
-                                    <Button type="button" kind={KIND.minimal} onClick={() => onClose}>Avbryt</Button>
+                                    <Button type="button" kind={KIND.minimal} onClick={() => onClose()}>Avbryt</Button>
                                     <ModalButton type="submit">Lagre</ModalButton>
                                 </Block>
                             </ModalFooter>

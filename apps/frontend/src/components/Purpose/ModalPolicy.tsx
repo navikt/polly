@@ -33,6 +33,9 @@ import { PageResponse, InformationType } from "../../constants"
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 export interface PolicyFormValues {
+    id?: string;
+    process?: string;
+    purposeCode?: string;
     informationTypeName: string;
     subjectCategory: string;
     legalBasesInherited: boolean;
@@ -85,35 +88,41 @@ const FieldInformationTypeName = (props: {
         />
     )
 
-const FieldSubjectCategory = (props: any) => (
-    <Field
-        name="subjectCategory"
-        render={({ form }: FieldProps<PolicyFormValues>) => (
-            <StatefulSelect
-                options={codelist.getParsedOptions(ListName.SUBJECT_CATEGORY)}
-                onChange={event => {
-                    form.setFieldValue('subjectCategory', event.option ? event.option.id : '')
-                }}
-            />
-        )}
-    />
-)
+const FieldSubjectCategory = (props: { value: string }) => {
+    const [value, setValue] = React.useState<Value>(props.value ? [{ id: props.value, label: codelist.getShortname(ListName.SUBJECT_CATEGORY, props.value) }] : []);
 
-const FieldLegalBasisInherited = (props: any) => {
-    let { current, setCurrent } = props
+    return (
+        <Field
+            name="subjectCategory"
+            render={({ form }: FieldProps<PolicyFormValues>) => (
+                <Select
+                    options={codelist.getParsedOptions(ListName.SUBJECT_CATEGORY)}
+                    onChange={({ value }) => {
+                        setValue(value)
+                        form.setFieldValue('subjectCategory', value.length > 0 ? value[0].id : null)
+                    }}
+                    value={value}
+                />
+            )}
+        />
+
+    )
+}
+
+const FieldLegalBasisInherited = (props: { current: any, setCurrent: Function }) => {
     return (
         <Field
             name="legalBasesInherited"
             render={({ form }: FieldProps<PolicyFormValues>) => (
                 <Block width="100%">
                     <RadioGroup
-                        value={current}
+                        value={props.current}
                         align="vertical"
                         onChange={e => {
                             (e.target as HTMLInputElement).value === "Ja" ? (
                                 form.setFieldValue("legalBasesInherited", true)
                             ) : form.setFieldValue("legalBasesInherited", false)
-                            setCurrent((e.target as HTMLInputElement).value)
+                            props.setCurrent((e.target as HTMLInputElement).value)
                         }}
                     >
                         <Radio value="Ja">Bruker behandlingens rettslig grunnlag</Radio>
@@ -145,14 +154,42 @@ const ListLegalBases = (props: any) => {
     )
 }
 
-const ModalPolicy = (props: any) => {
-    const [currentChecked, setCurrentChecked] = React.useState();
-    const [showLegalbasesFields, setShowLegalbasesFields] = React.useState<boolean>(true);
-    const { errorOnCreate, onClose } = props
+const getInitialCheckedValue = (initialValues: PolicyFormValues) => {
+    let { legalBasesInherited, legalBases } = initialValues
+    if (legalBasesInherited) return 'Ja'
+    else {
+        if (!legalBases) return 'Nei'
+        if (legalBases.length < 1) return 'Nei'
+        return 'Annet'
+    }
+}
+const setInitialShowLegalBasesValue = (initialValues: PolicyFormValues) => {
+    const { legalBasesInherited, legalBases } = initialValues
+    if (!legalBases) return false
+    if (legalBasesInherited) return false
 
-    const [infoTypeValue, setInfoTypeValue] = React.useState<Value>();
+    return legalBases.length > 0 ? false : true
+}
+
+type ModalPolicyProps = {
+    title?: string;
+    isOpen: boolean;
+    isEdit: boolean;
+    initialValues: PolicyFormValues;
+    errorOnCreate: any | undefined;
+    submit: Function;
+    onClose: Function;
+};
+
+const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialValues, title }: ModalPolicyProps) => {
+    const [currentChecked, setCurrentChecked] = React.useState(isEdit && getInitialCheckedValue(initialValues));
+    const [showLegalbasesFields, setShowLegalbasesFields] = React.useState<boolean>(isEdit && setInitialShowLegalBasesValue(initialValues));
+
+    const [infoTypeValue, setInfoTypeValue] = React.useState<Value>(isEdit ? ([{ id: initialValues.informationTypeName, label: initialValues.informationTypeName }]) : []);
     const [infoTypeSearch, setInfoTypeSearch] = useDebouncedState<string>('', 200);
     const [infoTypeSearchResult, setInfoTypeSearchResult] = React.useState<Option[]>([]);
+
+
 
     useEffect(() => {
         if (infoTypeSearch && infoTypeSearch.length > 2) {
@@ -163,11 +200,13 @@ const ModalPolicy = (props: any) => {
                     return setInfoTypeSearchResult(options)
                 })
         }
+
     }, [infoTypeSearch])
 
     return (
         <Modal
-            {...props}
+            onClose={() => onClose()}
+            isOpen={isOpen}
             closeable
             animate
             size={SIZE.auto}
@@ -175,13 +214,13 @@ const ModalPolicy = (props: any) => {
         >
             <Block {...modalBlockProps}>
                 <Formik
-                    initialValues={{ informationTypeName: '', subjectCategory: '', legalBasesInherited: false, legalBases: [] }}
-                    onSubmit={(values) => props.createPolicySubmit(values)}
+                    initialValues={initialValues}
+                    onSubmit={(values) => submit(values)}
                     render={(formikBag: FormikProps<PolicyFormValues>) => (
                         <Form>
                             <ModalHeader>
                                 <Block display="flex" justifyContent="center" marginBottom="2rem">
-                                    Opprett behandlingsgrunnlag for opplysningstype
+                                    {title}
                                 </Block>
                             </ModalHeader>
 
@@ -197,12 +236,11 @@ const ModalPolicy = (props: any) => {
                                 </Block>
                                 <Block {...rowBlockProps}>
                                     {renderLabel('Personkategorier')}
-                                    <FieldSubjectCategory />
+                                    <FieldSubjectCategory value={formikBag.values.subjectCategory} />
                                 </Block>
                                 <Block {...rowBlockProps}>
                                     {renderLabel('Rettslig grunnlag')}
                                     <FieldLegalBasisInherited
-                                        formikBag={formikBag}
                                         current={currentChecked}
                                         setCurrent={setCurrentChecked} />
                                 </Block>
@@ -247,7 +285,7 @@ const ModalPolicy = (props: any) => {
                             <ModalFooter>
                                 <Block display="flex" justifyContent="flex-end">
                                     <Block alignSelf="flex-end">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
-                                    <Button type="button" kind={KIND.minimal} onClick={() => props.onClose()}>Avbryt</Button>
+                                    <Button type="button" kind={KIND.minimal} onClick={() => onClose()}>Avbryt</Button>
                                     <ModalButton type="submit">Lagre</ModalButton>
                                 </Block>
                             </ModalFooter>
