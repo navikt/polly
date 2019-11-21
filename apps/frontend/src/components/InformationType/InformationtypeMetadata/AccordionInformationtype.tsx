@@ -20,7 +20,7 @@ const AccordionInformationtype = (props: any) => {
     return (
         <Accordion>
             {Object.keys(purposeMap).map((key: any) => (
-                <Panel title={<span><FontAwesomeIcon icon={faUsersCog}  /> {codelist.getShortname(ListName.PURPOSE, key)}</span>}>
+                <Panel title={<span><FontAwesomeIcon icon={faUsersCog}  /> {codelist.getShortname(ListName.PURPOSE, key)}</span>} key={key}>
                     <TableInformationtype list={getPolicylistForPurpose(key)} />
                 </Panel>
             ))}
