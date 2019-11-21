@@ -29,7 +29,7 @@ export interface LegalBasis {
 export interface InformationType {
     id: string;
     name: string;
-    term?: TermIdName;
+    term?: Term;
     description: string;
     sensitivity: Code;
     navMaster: Code;
@@ -75,11 +75,6 @@ export interface Process {
     subDepartment: Code;
     policies: Policy[];
     purposeCode: string;
-}
-
-export interface TermIdName {
-    id: string;
-    name: string;
 }
 
 export interface ProcessFormValues {

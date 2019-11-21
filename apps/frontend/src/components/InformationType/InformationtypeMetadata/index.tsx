@@ -9,6 +9,7 @@ import { IconDefinition } from "@fortawesome/fontawesome-common-types"
 import { faTag, faUserShield } from "@fortawesome/free-solid-svg-icons"
 import { sensitivityColor } from "../Sensitivity"
 import { Link } from "react-router-dom"
+import { InformationType } from "../../../constants"
 
 const row: BlockProps = {
     display: 'flex',
@@ -45,7 +46,7 @@ const renderTextWithLabel = (label: string, text: string, icon?: IconDefinition,
     )
 }
 
-const renderMetadata = (informationtype: any) => {
+const renderMetadata = (informationtype: InformationType) => {
     return (
         <Block display="flex" width="100%" marginBottom="5rem">
             <Block width="40%" marginRight="5rem">
@@ -70,7 +71,7 @@ const renderMetadata = (informationtype: any) => {
     )
 }
 
-const InformationtypeMetadata = (props: any) => {
+const InformationtypeMetadata = (props: { informationtype: InformationType, purposeMap: any}) => {
     const { informationtype, purposeMap } = props
 
     return (
