@@ -11,6 +11,7 @@ import { sensitivityColor } from "../Sensitivity"
 import { Link } from "react-router-dom"
 import { InformationType } from "../../../constants"
 import { intl } from "../../../util/intl"
+import { StyledLink } from "baseui/link";
 
 const row: BlockProps = {
     display: 'flex',
@@ -52,11 +53,11 @@ const renderMetadata = (informationtype: InformationType) => {
         <Block display="flex" width="100%" marginBottom="5rem">
             <Block width="40%" marginRight="5rem">
                 <Card>
+                    <Block position="relative" $style={{ float: "right", fontSize: '1.1rem' }}><StyledLink href={`/informationtype/edit/${informationtype.id}`}>{intl.edit}</StyledLink></Block>
+
                     {renderTextWithLabel(intl.name, informationtype.name, faTag)}
                     {renderTextWithLabel(intl.term, informationtype.term ? informationtype.term.description || informationtype.term.name : '')}
                     {renderTextWithLabel(intl.description, informationtype.description)}
-
-                    <Block position="relative" $style={{ float: "right" }}><Link to={`/informationtype/edit/${informationtype.id}`}>{intl.edit}</Link></Block>
                 </Card>
             </Block>
             <Block width="60%">
