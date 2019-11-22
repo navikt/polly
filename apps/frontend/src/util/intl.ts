@@ -1,7 +1,4 @@
-import LocalizedStrings, {
-    GlobalStrings,
-    LocalizedStringsMethods
-} from "react-localization";
+import LocalizedStrings, { GlobalStrings, LocalizedStringsMethods } from "react-localization";
 import * as React from "react";
 import { useEffect } from "react";
 import { useForceUpdate } from "./customHooks";
@@ -20,6 +17,7 @@ interface IStrings {
     process: string;
     legalBasis: string;
     legalBasisShort: string;
+    legalBasesShort: string;
     subjectCategories: string;
     nationalLaw: string;
     navMaster: string;
@@ -53,9 +51,9 @@ interface IStrings {
     descriptionWrite: string;
     definitionWrite: string;
     subjectCategoriesNotFound: string;
-    legalBasisProcess: string;
-    legalBasisUndecided: string;
-    legalBasisOwn: string;
+    legalBasesProcess: string;
+    legalBasesOwn: string;
+    legalBasesUndecided: string;
     legalBasesUndecidedWarning: string;
 
     // generic
@@ -90,6 +88,7 @@ const no: IStrings = {
     process: "Behandling",
     legalBasis: "Rettslig grunnlag for behandlingen",
     legalBasisShort: "Rettslig grunnlag",
+    legalBasesShort: "Rettslig grunnlag",
     subjectCategories: "Kategorier av personer",
     nationalLaw: "Nasjonal lov",
 
@@ -123,9 +122,9 @@ const no: IStrings = {
     descriptionWrite: "Skriv inn beskrivelse",
     definitionWrite: "Skriv inn en definisjon",
     subjectCategoriesNotFound: "Fant ingen kategorier av personer",
-    legalBasisProcess: "Bruker behandlingens rettslig grunnlag",
-    legalBasisUndecided: "Uavklart",
-    legalBasisOwn: "Har eget rettslig grunnlag",
+    legalBasesProcess: "Bruker behandlingens rettslig grunnlag",
+    legalBasesUndecided: "Uavklart",
+    legalBasesOwn: "Har eget rettslig grunnlag",
     legalBasesUndecidedWarning: "Rettslig grunn er ikke avklart",
 
     department: "Avdeling",
@@ -148,80 +147,84 @@ const no: IStrings = {
     administrate: "Administrere"
 };
 
+let en: IStrings = {
+    informationType: "Information type",
+    informationTypes: "Information types",
+    informationTypeSearch: "Information type search",
+    term: "Term definition",
+    purpose: "Purpose",
+    sensitivity: "Type of personal data",
+    processingActivities: "Processing activities",
+    process: "Process",
+    navMaster: "Master in NAV",
+    legalBasis: "Legal basis for process",
+    legalBasisShort: "Legal basis",
+    legalBasesShort: "Legal bases",
+    nationalLaw: "National law",
+    subjectCategories: "Subject Categories",
+
+    loggedInStatus: "You are logged in and can",
+    notLoggedInStatus: "You are not logged in but you can still",
+    couldntLoad: "Couldn't load the page",
+    informationTypeUpdated: "Information type updated",
+    informationTypeCreate: "Create new information type",
+    sensitivitySelect: "Select type of personal data",
+    nameWrite: "Enter name",
+    categoriesWrite: "Enter and add categories",
+    sourcesWrite: "Enter and add sources",
+    keywordsWrite: "Enter and add keywords",
+    navMasterSelect: "Select master",
+    purposeSelect: "Select purpose",
+    purposeNotFound: "Found no purposes",
+    purposeUse: "Used for purposes",
+    policyEdit: "Edit purpose for information type",
+    policyNew: "Create new process for information type",
+    processNew: "Add new process",
+    legalBasisNotFound: "Found no legal bases",
+    processEdit: "Edit process for information type",
+    processingActivitiesNew: "Create new processing activity",
+    processingActivitiesEdit: "Edit processing activity",
+    legalBasisNew: "New legal basis",
+    legalBasisAdd: "Add new legal basis",
+    gdprSelect: "Select GDPR article",
+    nationalLawSelect: "Select national law",
+    descriptionWrite: "Enter description",
+    definitionWrite: "Enter definition",
+    subjectCategoriesNotFound: "Found no subject categories",
+    legalBasesProcess: "Use legal bases from process",
+    legalBasesUndecided: "Undecided",
+    legalBasesOwn: "Use explicit legal bases",
+    legalBasesUndecidedWarning: "Legal bases missing",
+
+    department: "Department",
+    subDepartment: "Linja (Ytre etat)",
+    save: "Save",
+    abort: "Cancel",
+    login: "Login",
+    logout: "Logout",
+    hi: "Hi",
+    addNew: "Add new",
+    createNew: "Create new",
+    name: "Name",
+    description: "Description",
+    edit: "Edit",
+    sources: "Sources",
+    categories: "Categories",
+    keywords: "Keywords",
+    read: "Read",
+    write: "Write",
+    administrate: "Administrate"
+}
+
 const strings = {
     no: no,
-    en: {
-        informationType: "Information type",
-        informationTypes: "Information types",
-        informationTypeSearch: "Information type search",
-        term: "Term definition",
-        purpose: "Purpose",
-        sensitivity: "Type of personal data",
-        processingActivities: "Processing activities",
-        process: "Process",
-        navMaster: "Master in NAV",
-        legalBasis: "Legal basis for process",
-        legalBasisShort: "Legal bases",
-        subjectCategories: "Subject Categories",
-
-        loggedInStatus: "You are logged in and can",
-        notLoggedInStatus: "You are not logged in but you can still",
-        couldntLoad: "Couldn't load the page",
-        informationTypeUpdated: "Information type updated",
-        informationTypeCreate: "Create new information type",
-        sensitivitySelect: "Select type of personal data",
-        nameWrite: "Enter name",
-        categoriesWrite: "Enter and add categories",
-        sourcesWrite: "Enter and add sources",
-        keywordsWrite: "Enter and add keywords",
-        navMasterSelect: "Select master",
-        purposeSelect: "Select purpose",
-        purposeNotFound: "Found no purposes",
-        purposeUse: "Used for purposes",
-        policyEdit: "Edit purpose for information type",
-        policyNew: "Create new process for information type",
-        processNew: "Add new process",
-        legalBasisNotFound: "Found no legal bases",
-        processEdit: "Edit process for information type",
-        processingActivitiesNew: "Create new processing activity",
-        processingActivitiesEdit: "Edit processing activity",
-        legalBasisNew: "New legal basis",
-        legalBasisAdd: "Add new legal basis",
-        gdprSelect: "Select GDPR article",
-        nationalLawSelect: "Select national law",
-        descriptionWrite: "Enter description",
-        definitionWrite: "Enter definition",
-        subjectCategoriesNotFound: "Found no subject categories",
-        legalBasisProcess: "Use legal bases from process",
-        legalBasisUndecided: "Undecided",
-        legalBasisOwn: "Use explicit legal bases",
-        legalBasesUndecidedWarning: "Legal bases missing",
-
-        department: "Department",
-        subDepartment: "Linja (Ytre etat)",
-        save: "Save",
-        abort: "Abort",
-        login: "Login",
-        logout: "Logout",
-        hi: "Hi",
-        addNew: "Add new",
-        createNew: "Create new",
-        name: "Name",
-        description: "Description",
-        edit: "Edit",
-        sources: "Sources",
-        categories: "Categories",
-        keywords: "Keywords",
-        read: "Read",
-        write: "Write",
-        administrate: "Administrate"
-    }
+    en: en
 };
 
 type IIntl = LocalizedStringsMethods & IStrings;
 
 interface LocalizedStringsFactory {
-    new <T>(
+    new<T>(
         props: GlobalStrings<T>,
         options?: { customLanguageInterface: () => string }
     ): IIntl;
@@ -229,7 +232,7 @@ interface LocalizedStringsFactory {
 
 export const intl: IIntl = new (LocalizedStrings as LocalizedStringsFactory)(
     strings as any,
-    { customLanguageInterface: () => defaultLang }
+    {customLanguageInterface: () => defaultLang}
 );
 
 const localStorageAvailable = storageAvailable();

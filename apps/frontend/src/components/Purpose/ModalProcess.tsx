@@ -181,7 +181,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                                                 onClick={() => setShowLegalbasesFields(true)}
                                                 startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
                                             >
-                                                Legg til nytt rettslig grunnlag
+                                              {intl.legalBasisAdd}
                                             </Button>
                                         </Block>
                                     )}

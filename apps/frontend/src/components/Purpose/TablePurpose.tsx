@@ -73,19 +73,19 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
 
         if (prevDirection === null) nextDirection = "ASC";
 
-        if (title === "Opplysningstype") {
+        if (title === intl.informationType) {
             setTitleDirection(nextDirection);
             setUserDirection(null)
             setLegalBasisDirection(null);
         }
 
-        if (title === "Personkategori") {
+        if (title === intl.subjectCategories) {
             setTitleDirection(null);
             setUserDirection(nextDirection)
             setLegalBasisDirection(null);
         }
 
-        if (title === "Rettslig Grunnlag") {
+        if (title === intl.legalBasisShort) {
             setLegalBasisDirection(nextDirection);
             setUserDirection(null)
             setTitleDirection(null);
@@ -140,19 +140,19 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
                     <SortableHeadCell
                         title={intl.informationType}
                         direction={titleDirection}
-                        onSort={() => handleSort('Opplysningstype', titleDirection)}
+                        onSort={() => handleSort(intl.informationType, titleDirection)}
                         fillClickTarget
                     />
                     <SortableHeadCell
                         title={intl.subjectCategories}
                         direction={userDirection}
-                        onSort={() => handleSort('Personkategori', userDirection)}
+                        onSort={() => handleSort(intl.subjectCategories, userDirection)}
                         fillClickTarget
                     />
                     <SortableHeadCell
                         title={intl.legalBasisShort}
                         direction={legalBasisDirection}
-                        onSort={() => handleSort('Rettslig Grunnlag', legalBasisDirection)}
+                        onSort={() => handleSort(intl.legalBasisShort, legalBasisDirection)}
                     />
                     <SmallerStyledHeadCell></SmallerStyledHeadCell>
                 </StyledHeader>

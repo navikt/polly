@@ -126,9 +126,9 @@ const FieldLegalBasisInherited = (props: { current: any, setCurrent: Function })
                             props.setCurrent((e.target as HTMLInputElement).value)
                         }}
                     >
-                        <Radio value="Ja">{intl.legalBasisProcess}</Radio>
-                        <Radio value="Nei">{intl.legalBasisUndecided}</Radio>
-                        <Radio value="Annet">{intl.legalBasisOwn}</Radio>
+                        <Radio value="Ja">{intl.legalBasesProcess}</Radio>
+                        <Radio value="Nei">{intl.legalBasesUndecided}</Radio>
+                        <Radio value="Annet">{intl.legalBasesOwn}</Radio>
                     </RadioGroup>
                 </Block>
 
@@ -240,7 +240,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                                     <FieldSubjectCategory value={formikBag.values.subjectCategory} />
                                 </Block>
                                 <Block {...rowBlockProps}>
-                                    {renderLabel(intl.legalBasisShort)}
+                                    {renderLabel(intl.legalBasesShort)}
                                     <FieldLegalBasisInherited
                                         current={currentChecked}
                                         setCurrent={setCurrentChecked} />

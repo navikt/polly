@@ -4,6 +4,7 @@ import { useStyletron, withStyle } from "baseui";
 import { StyledLink } from "baseui/link";
 import { renderLegalBasis, LegalBasesNotClarified } from "../../../util/LegalBasis"
 import { codelist, ListName } from "../../../service/Codelist"
+import { intl } from "../../../util/intl"
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",
@@ -35,19 +36,19 @@ const TableInformationtype = ({ list }: TableInformationtypeProps) => {
 
         if (prevDirection === null) nextDirection = "ASC";
 
-        if (title === "Behandling") {
+        if (title === intl.process) {
             setProcessDirection(nextDirection);
             setSubjectCategoryDirection(null)
             setLegalBasisDirection(null);
         }
 
-        if (title === "Personkategori") {
+        if (title === intl.subjectCategories) {
             setProcessDirection(null);
             setSubjectCategoryDirection(nextDirection)
             setLegalBasisDirection(null);
         }
 
-        if (title === "Rettslig Grunnlag") {
+        if (title === intl.legalBasisShort) {
             setLegalBasisDirection(nextDirection);
             setSubjectCategoryDirection(null)
             setProcessDirection(null);
@@ -94,23 +95,23 @@ const TableInformationtype = ({ list }: TableInformationtypeProps) => {
             <StyledTable className={useCss({ overflow: "hidden !important" })}>
                 <StyledHeader>
                     <SortableHeadCell
-                        title="Behandling"
+                        title={intl.process}
                         direction={processDirection}
-                        onSort={() => handleSort('Behandling', processDirection)}
+                        onSort={() => handleSort(intl.process, processDirection)}
                         fillClickTarget
                     />
 
                     <SortableHeadCell
-                        title="Personkategori"
+                        title={intl.subjectCategories}
                         direction={subjectCategoryDirection}
-                        onSort={() => handleSort('Personkategori', subjectCategoryDirection)}
+                        onSort={() => handleSort(intl.subjectCategories, subjectCategoryDirection)}
                         fillClickTarget
                     />
 
                     <SortableHeadCell
-                        title="Rettslig grunnlag"
+                        title={intl.legalBasisShort}
                         direction={legalBasisDirection}
-                        onSort={() => handleSort('Rettslig Grunnlag', legalBasisDirection)}
+                        onSort={() => handleSort(intl.legalBasisShort, legalBasisDirection)}
                     />
                 </StyledHeader>
 
