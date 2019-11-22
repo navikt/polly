@@ -312,7 +312,7 @@ interface Langs {
 
 export const langs: Langs = {
     en: {flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', name: 'English'},
-    no: {flag: '🇳🇴', name: 'Norge'},
+    no: {flag: '🇳🇴', name: 'Norsk'},
     ta: {flag: '🇱🇰', name: 'தமிழ்'}
 }
 
