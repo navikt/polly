@@ -53,7 +53,7 @@ const renderMetadata = (informationtype: InformationType) => {
             <Block width="40%" marginRight="5rem">
                 <Card>
                     {renderTextWithLabel(intl.name, informationtype.name, faTag)}
-                    {renderTextWithLabel(intl.termDefinition, informationtype.term ? informationtype.term.description || informationtype.term.name : '')}
+                    {renderTextWithLabel(intl.term, informationtype.term ? informationtype.term.description || informationtype.term.name : '')}
                     {renderTextWithLabel(intl.description, informationtype.description)}
 
                     <Block position="relative" $style={{float:"right"}}><Link to={`/informationtype/edit/${informationtype.id}`}>Rediger</Link></Block>
@@ -82,7 +82,7 @@ const InformationtypeMetadata = (props: { informationtype: InformationType, purp
                     {renderMetadata(informationtype)}
 
                     <Block {...purposeBlockProps}>
-                        <Label2 marginBottom="2rem" font="font450">Brukes til formål</Label2>
+                        <Label2 marginBottom="2rem" font="font450">{intl.purposeUse}</Label2>
                         <AccordionInformationtype purposeMap={purposeMap} />
                     </Block>
                 </React.Fragment>

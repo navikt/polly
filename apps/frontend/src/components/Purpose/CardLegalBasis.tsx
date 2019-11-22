@@ -6,6 +6,7 @@ import { StatefulInput } from 'baseui/input';
 import { Label2 } from 'baseui/typography';
 import { Button, KIND, SIZE as ButtonSize } from 'baseui/button';
 import { codelist, ListName } from "../../service/Codelist";
+import { intl } from "../../util/intl"
 
 const rowBlockBrops: BlockProps = {
     display: 'flex',
@@ -34,12 +35,12 @@ const CardLegalBasis = (props: any) => {
 
     return (
         <Card>
-            <Label2 marginBottom="1rem">Nytt rettslig grunnlag</Label2>
+            <Label2 marginBottom="1rem">{intl.legalBasisNew}</Label2>
 
             <Block {...rowBlockBrops} width="100%">
                 <Select
                     options={codelist.getParsedOptions(ListName.GDPR_ARTICLE)}
-                    placeholder="Velg GDPR artikkel"
+                    placeholder={intl.gdprSelect}
                     maxDropdownHeight="300px"
                     type={TYPE.search}
                     onChange={({ value }) => setGdpr(value)}
@@ -49,7 +50,7 @@ const CardLegalBasis = (props: any) => {
             <Block {...rowBlockBrops}>
                 <Select
                     options={codelist.getParsedOptions(ListName.NATIONAL_LAW)}
-                    placeholder="Velg nasjonal lov"
+                    placeholder={intl.nationalLawSelect}
                     maxDropdownHeight="300px"
                     type={TYPE.search}
                     onChange={({ value }) => setNationalLaw(value)}
@@ -57,12 +58,12 @@ const CardLegalBasis = (props: any) => {
                 />
             </Block>
             <Block {...rowBlockBrops}>
-                <StatefulInput placeholder="Skriv inn beskrivelse" onChange={(event) => setDescription((event.target as HTMLInputElement).value)} />
+                <StatefulInput placeholder={intl.descriptionWrite} onChange={(event) => setDescription((event.target as HTMLInputElement).value)} />
             </Block>
 
             <Block width="100%" display="flex" justifyContent="space-between">
                 <Button type='button' kind={KIND.secondary} size={ButtonSize.compact} onClick={() => submit(getValues())}>
-                    Legg til rettslig grunnlag
+                  {intl.legalBasisAdd}
                 </Button>
                 {error && <p>{error}</p>}
             </Block>

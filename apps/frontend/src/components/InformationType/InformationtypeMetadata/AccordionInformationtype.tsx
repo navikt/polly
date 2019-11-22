@@ -5,11 +5,12 @@ import TableInformationtype from './TableInformationtype'
 import { codelist, ListName } from "../../../service/Codelist"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUsersCog } from "@fortawesome/free-solid-svg-icons"
+import { intl } from "../../../util/intl"
 
 const AccordionInformationtype = (props: any) => {
     if (!props) return null
-    if (!props.purposeMap) return <Paragraph2>Fant ingen formål</Paragraph2>
-    if (!codelist.isLoaded()) return <Paragraph2>Fikk ikke lastet inn codelist</Paragraph2>
+    if (!props.purposeMap) return <Paragraph2>{intl.purposeNotFound}</Paragraph2>
+    if (!codelist.isLoaded()) return <Paragraph2>{intl.couldntLoad}</Paragraph2>
 
     const { purposeMap } = props
 

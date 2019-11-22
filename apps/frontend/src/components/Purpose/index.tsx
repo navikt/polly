@@ -15,6 +15,7 @@ import ModalProcess from './ModalProcess'
 import { renderLegalBasis } from "../../util/LegalBasis"
 import { codelist, ListName } from "../../service/Codelist"
 import { Process } from "../../constants"
+import { intl } from "../../util/intl"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -38,7 +39,7 @@ const rowPanelContent: BlockProps = {
 const renderLegalBasisList = (list: any) => {
     if (!list) return null
     if (list.length < 1)
-        return (<Paragraph2>Fant ingen rettslige grunnlag</Paragraph2>)
+        return (<Paragraph2>{intl.legalBasisNotFound}</Paragraph2>)
 
     return (
         <ul>
@@ -48,7 +49,7 @@ const renderLegalBasisList = (list: any) => {
 }
 
 const renderAllSubjectCategories = (processObj: any) => {
-    const notFound = (<Paragraph2>Fant ingen kategorier av personer</Paragraph2>)
+    const notFound = (<Paragraph2>{intl.subjectCategoriesNotFound}</Paragraph2>)
     if (!processObj) return notFound
 
     const { policies } = processObj
@@ -189,22 +190,22 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
         <React.Fragment>
             <React.Fragment>
                 <Block {...blockProps}>
-                    <Label2 font="font400">Beskrivelse</Label2>
+                    <Label2 font="font400">{intl.description}</Label2>
                     <Paragraph2>{description}</Paragraph2>
                 </Block>
 
                 <Block marginBottom="1rem" display="flex" justifyContent="space-between">
-                    <Label2 font="font400">Behandlingsoversikt</Label2>
+                    <Label2 font="font400">{intl.processingActivities}</Label2>
                     <Button
                         size={ButtonSize.compact}
                         kind={KIND.minimal}
                         onClick={() => setShowProcessModal(true)}
                         startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
                     >
-                        Legg til ny behandling
+                        {intl.processingActivitiesNew}
                     </Button>
                     <ModalProcess
-                        title="Opprett nytt behandlingsrunnlag"
+                        title={intl.processingActivitiesNew}
                         onClose={() => setShowProcessModal(false)}
                         isOpen={showProcessModal}
                         submit={(values: any) => handleCreateProcess(values)}
@@ -225,11 +226,11 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
                                 <Block {...rowPanelContent} marginBottom="2rem">
                                     <Block display="flex">
                                         <Block marginRight="6rem">
-                                            <Label2>Rettslig grunnlag for behandlingen</Label2>
+                                            <Label2>{intl.legalBasis}</Label2>
                                             {renderLegalBasisList(process.legalBases)}
                                         </Block>
                                         <Block>
-                                            <Label2>Kategorier av personer</Label2>
+                                            <Label2>{intl.subjectCategories}</Label2>
                                             {renderAllSubjectCategories(process)}
                                         </Block>
                                     </Block>
@@ -239,10 +240,10 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
                                             kind={KIND.secondary}
                                             onClick={() => setShowEditProcessModal(true)}
                                         >
-                                            Rediger behandling
+                                            {intl.processingActivitiesEdit}
                                         </Button>
                                         <ModalProcess
-                                            title="Rediger behandlingsgrunnlag"
+                                            title={intl.processingActivitiesEdit}
                                             onClose={() => setShowEditProcessModal(false)}
                                             isOpen={showEditProcessModal}
                                             submit={(values: any) => handleEditProcess(values, process.id)}
@@ -255,17 +256,17 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
                                 </Block>
 
                                 <Block {...rowPanelContent}>
-                                    <Label2 alignSelf="center">Opplysningstyper</Label2>
+                                    <Label2 alignSelf="center">{intl.informationTypes}</Label2>
                                     <Button
                                         size={ButtonSize.compact}
                                         kind={KIND.tertiary}
                                         onClick={() => setIsOpen(true)}
                                         startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
                                     >
-                                        Legg til ny
+                                        {intl.addNew}
                                     </Button>
                                     <ModalPolicy
-                                        title="Opprett behandlingsgrunnlag for opplysningstype"
+                                        title={intl.policyNew}
                                         initialValues={{ informationTypeName: '', subjectCategory: '', legalBasesInherited: false, legalBases: [] }}
                                         isEdit={false}
                                         onClose={() => {

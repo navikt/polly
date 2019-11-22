@@ -7,6 +7,7 @@ import InformationtypeForm from "../components/InformationType/InformationtypeFo
 import Banner from "../components/Banner";
 import {codelist} from "../service/Codelist";
 import { InformationType, InformationtypeFormValues, PageResponse } from "../constants"
+import { intl } from "../util/intl"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -75,7 +76,7 @@ const InformationtypeCreatePage = (props: any) => {
                 <Spinner size={30} />
             ) : (
                     <React.Fragment>
-                        <Banner title="Opprett ny opplysningstype" />
+                        <Banner title={intl.informationTypeCreate} />
                         {!error && codelist ? (
                             <React.Fragment>
                                 <Centered>

@@ -11,6 +11,7 @@ import { Plus } from "baseui/icon";
 import { ProcessFormValues } from "../../constants";
 import CardLegalBasis from './CardLegalBasis'
 import { ListName, codelist } from "../../service/Codelist"
+import { intl } from "../../util/intl"
 
 const modalBlockProps: BlockProps = {
     width: '700px',
@@ -124,6 +125,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
     const showSubDepartment = (department: any) => {
         if (!department) return false
 
+      // todo make enum in constants etc
         if (department === 'ØSA' || department === 'YTA' || department === 'ATA')
             return true
         else return false
@@ -152,18 +154,18 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
 
                             <ModalBody>
                                 <Block {...rowBlockProps}>
-                                    {renderLabel('Navn')}
+                                    {renderLabel(intl.name)}
                                     <FieldName />
                                 </Block>
 
                                 <Block {...rowBlockProps}>
-                                    {renderLabel('Avdeling')}
+                                    {renderLabel(intl.department)}
                                     <FieldDepartment department={formikBag.values.department} />
                                 </Block>
 
                                 {showSubDepartment(formikBag.values.department) && (
                                     <Block {...rowBlockProps}>
-                                        {renderLabel('Linja (Ytre etat)')}
+                                        {renderLabel(intl.subDepartment)}
                                         <FieldSubDepartment subDepartment={formikBag.values.subDepartment} />
                                     </Block>
                                 )}
@@ -215,8 +217,8 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                             <ModalFooter>
                                 <Block display="flex" justifyContent="flex-end">
                                     <Block alignSelf="flex-end">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
-                                    <Button type="button" kind={KIND.minimal} onClick={() => onClose()}>Avbryt</Button>
-                                    <ModalButton type="submit">Lagre</ModalButton>
+                                    <Button type="button" kind={KIND.minimal} onClick={() => onClose()}>{intl.abort}</Button>
+                                    <ModalButton type="submit">{intl.save}</ModalButton>
                                 </Block>
                             </ModalFooter>
                         </Form>

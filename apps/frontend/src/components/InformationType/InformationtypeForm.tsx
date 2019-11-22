@@ -16,6 +16,7 @@ import { codelist, ListName } from "../../service/Codelist";
 import { InformationtypeFormValues, PageResponse, Term } from "../../constants";
 import { useDebouncedState } from "../../util/customHooks"
 import { KeyboardEvent } from "react"
+import { intl } from "../../util/intl"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -153,11 +154,11 @@ const InformationtypeForm = ({
                                     render={({ field }: FieldProps<InformationtypeFormValues>) => (
                                         <Block>
                                             <Block {...labelProps}>
-                                                <Label2>Navn</Label2>
+                                                <Label2>{intl.name}</Label2>
                                             </Block>
                                             <Input
                                                 {...field}
-                                                placeholder="Skriv inn navn"
+                                                placeholder={intl.nameWrite}
                                             />
                                         </Block>
                                     )}
@@ -170,14 +171,14 @@ const InformationtypeForm = ({
                                     render={({ form }: FieldProps<InformationtypeFormValues>) => (
                                         <Block>
                                             <Block {...labelProps}>
-                                                <Label2>Begrepsdefinisjon</Label2>
+                                                <Label2>{intl.term}</Label2>
                                             </Block>
                                             <Select
                                                 maxDropdownHeight="350px"
                                                 searchable={true}
                                                 type={TYPE.search}
                                                 options={termSearchResult}
-                                                placeholder="Skriv inn en definisjon"
+                                                placeholder={intl.definitionWrite}
                                                 value={termValue as Value}
                                                 onInputChange={event => setTermSearch(event.currentTarget.value)}
                                                 onChange={(params) => {
@@ -197,13 +198,13 @@ const InformationtypeForm = ({
                                     render={({ form }: FieldProps<InformationtypeFormValues>) => (
                                         <Block>
                                             <Block {...labelProps}>
-                                                <Label2>Type personopplysning</Label2>
+                                                <Label2>{intl.sensitivity}</Label2>
                                             </Block>
 
                                             <Select
                                                 options={codelist.getParsedOptions(ListName.SENSITIVITY)}
                                                 value={sensitivityValue as Value}
-                                                placeholder="Velg sensitivitet"
+                                                placeholder={intl.sensitivitySelect}
                                                 onChange={(params) => {
                                                     setSensitivityValue(params.value[0])
                                                     form.setFieldValue('sensitivity', params.value[0].id)
@@ -220,11 +221,11 @@ const InformationtypeForm = ({
                                     render={arrayHelpers => (
                                         <Block>
                                             <Block {...labelProps}>
-                                                <Label2>Kategorier</Label2>
+                                                <Label2>{intl.categories}</Label2>
                                             </Block>
                                             <Select
                                                 options={getParsedOptions(ListName.CATEGORY, formikBag.values.categories)}
-                                                placeholder="Skriv inn og legg til kategorier"
+                                                placeholder={intl.categoriesWrite}
                                                 type={TYPE.search}
                                                 openOnClick={false}
                                                 maxDropdownHeight="300px"
@@ -252,7 +253,7 @@ const InformationtypeForm = ({
                                             </Block>
                                             <Select
                                                 options={getParsedOptions(ListName.SOURCE, formikBag.values.sources)}
-                                                placeholder="Skriv inn og legg til kilder"
+                                                placeholder={intl.sourcesWrite}
                                                 type={TYPE.search}
                                                 openOnClick={false}
                                                 maxDropdownHeight="300px"
@@ -272,11 +273,11 @@ const InformationtypeForm = ({
                                     render={arrayHelpers => (
                                         <Block>
                                             <Block {...labelProps}>
-                                                <Label2>Nøkkelord</Label2>
+                                                <Label2>{intl.keywords}</Label2>
                                             </Block>
                                             <Input
                                                 type="text"
-                                                placeholder="Legg til nøkkelord"
+                                                placeholder={intl.keywordsWrite}
                                                 value={currentKeywordValue}
                                                 onChange={event =>
                                                     setCurrentKeywordValue(
@@ -316,11 +317,11 @@ const InformationtypeForm = ({
                                     >) => (
                                             <Block>
                                                 <Block {...labelProps}>
-                                                    <Label2>Beskrivelse</Label2>
+                                                    <Label2>{intl.description}</Label2>
                                                 </Block>
                                                 <Textarea
                                                     {...field}
-                                                    placeholder="Skriv inn beskrivelse av opplysningtypen"
+                                                    placeholder={intl.descriptionWrite}
                                                     rows={5}
                                                 />
                                             </Block>
@@ -334,13 +335,13 @@ const InformationtypeForm = ({
                                     render={({ form }: FieldProps<InformationtypeFormValues>) => (
                                         <Block marginBottom="1em">
                                             <Block {...labelProps}>
-                                                <Label2>Master</Label2>
+                                                <Label2>{intl.navMaster}</Label2>
                                             </Block>
 
                                             <Select
                                                 options={codelist.getParsedOptions(ListName.SYSTEM)}
                                                 value={masterValue as Value}
-                                                placeholder="Velg master"
+                                                placeholder={intl.navMasterSelect}
                                                 onChange={(params: any) => {
                                                     setMasterValue(params.value[0])
                                                     form.setFieldValue('navMaster', params.value[0].id)
@@ -368,7 +369,7 @@ const InformationtypeForm = ({
                                     }
                                 }}
                             >
-                                Lagre
+                                {intl.save}
                             </Button>
                         </Block>
                     </Form>

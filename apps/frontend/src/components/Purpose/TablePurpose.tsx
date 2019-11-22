@@ -9,6 +9,7 @@ import { Sensitivity } from "../InformationType/Sensitivity"
 import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
 import { Block } from "baseui/block";
 import ModalPolicy, { PolicyFormValues } from "./ModalPolicy";
+import { intl } from "../../util/intl"
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",
@@ -137,19 +138,19 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
             <StyledTable className={useCss({ overflow: "hidden !important" })}>
                 <StyledHeader>
                     <SortableHeadCell
-                        title="Opplysningstype"
+                        title={intl.informationType}
                         direction={titleDirection}
                         onSort={() => handleSort('Opplysningstype', titleDirection)}
                         fillClickTarget
                     />
                     <SortableHeadCell
-                        title="Personkategori"
+                        title={intl.subjectCategories}
                         direction={userDirection}
                         onSort={() => handleSort('Personkategori', userDirection)}
                         fillClickTarget
                     />
                     <SortableHeadCell
-                        title="Rettslig Grunnlag"
+                        title={intl.legalBasisShort}
                         direction={legalBasisDirection}
                         onSort={() => handleSort('Rettslig Grunnlag', legalBasisDirection)}
                     />
@@ -185,7 +186,7 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
                                             setShowEditModal(true)
                                         }}
                                     >
-                                        Rediger
+                                        {intl.edit}
                                     </Button>
                                 </Block>
                             </SmallerStyledCell>
@@ -194,7 +195,7 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
                 </StyledBody>
                 {showEditModal && (
                     <ModalPolicy
-                        title="Rediger behandlingsgrunnlag for opplysningstype"
+                        title={intl.policyEdit}
                         initialValues={getInitialValuesModal(currentPolicy)}
                         onClose={() => { setShowEditModal(false) }}
                         isOpen={showEditModal}

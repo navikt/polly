@@ -7,6 +7,7 @@ import InformationtypeForm from "../components/InformationType/InformationtypeFo
 import Banner from "../components/Banner";
 import { InformationType, InformationtypeFormValues } from "../constants"
 import { Code, codelist } from "../service/Codelist";
+import { intl } from "../util/intl"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -97,7 +98,7 @@ const InformationtypeEditPage = (props: any) => {
                 <Spinner size={30} />
             ) : (
                     <React.Fragment>
-                        <Banner title="Rediger" />
+                        <Banner title={intl.edit} />
 
                         {!error && informationtype ? (
                             <Centered>
@@ -109,10 +110,10 @@ const InformationtypeEditPage = (props: any) => {
                                     submit={handleSubmit}
                                 />
                                 {errorSubmit && <p>{errorSubmit}</p>}
-                                {isUpdated && <p>Opplysningstypen er oppdatert.</p>}
+                                {isUpdated && <p>{intl.informationTypeUpdated}</p>}
                             </Centered>
                         ) : (
-                                <p>Kunne ikke laste inn siden.</p>
+                                <p>{intl.couldntLoad}</p>
                             )}
                     </React.Fragment>
                 )}
