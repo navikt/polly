@@ -29,6 +29,7 @@ import { useDebouncedState } from "../../util/customHooks"
 import { useEffect } from "react"
 import axios from "axios"
 import { PageResponse, InformationType } from "../../constants"
+import { intl } from "../../util/intl"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -125,9 +126,9 @@ const FieldLegalBasisInherited = (props: { current: any, setCurrent: Function })
                             props.setCurrent((e.target as HTMLInputElement).value)
                         }}
                     >
-                        <Radio value="Ja">Bruker behandlingens rettslig grunnlag</Radio>
-                        <Radio value="Nei">Uavklart</Radio>
-                        <Radio value="Annet">Har eget rettslig grunnlag</Radio>
+                        <Radio value="Ja">{intl.legalBasisProcess}</Radio>
+                        <Radio value="Nei">{intl.legalBasisUndecided}</Radio>
+                        <Radio value="Annet">{intl.legalBasisOwn}</Radio>
                     </RadioGroup>
                 </Block>
 
@@ -226,7 +227,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
 
                             <ModalBody>
                                 <Block {...rowBlockProps}>
-                                    {renderLabel('Opplysningstype')}
+                                    {renderLabel(intl.informationType)}
                                     <FieldInformationTypeName
                                         informationTypes={infoTypeSearchResult}
                                         searchInformationType={setInfoTypeSearch}
@@ -235,11 +236,11 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                                     />
                                 </Block>
                                 <Block {...rowBlockProps}>
-                                    {renderLabel('Personkategorier')}
+                                    {renderLabel(intl.subjectCategories)}
                                     <FieldSubjectCategory value={formikBag.values.subjectCategory} />
                                 </Block>
                                 <Block {...rowBlockProps}>
-                                    {renderLabel('Rettslig grunnlag')}
+                                    {renderLabel(intl.legalBasisShort)}
                                     <FieldLegalBasisInherited
                                         current={currentChecked}
                                         setCurrent={setCurrentChecked} />
@@ -270,7 +271,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                                                                     onClick={() => setShowLegalbasesFields(true)}
                                                                     startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
                                                                 >
-                                                                    Legg til nytt rettslig grunnlag
+                                                                  {intl.legalBasisAdd}
                                                                 </Button>
                                                                 <ListLegalBases legalBases={formikBag.values.legalBases} />
                                                             </Block>
@@ -285,8 +286,8 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                             <ModalFooter>
                                 <Block display="flex" justifyContent="flex-end">
                                     <Block alignSelf="flex-end">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
-                                    <Button type="button" kind={KIND.minimal} onClick={() => onClose()}>Avbryt</Button>
-                                    <ModalButton type="submit">Lagre</ModalButton>
+                                    <Button type="button" kind={KIND.minimal} onClick={() => onClose()}>{intl.abort}</Button>
+                                    <ModalButton type="submit">{intl.save}</ModalButton>
                                 </Block>
                             </ModalFooter>
                         </Form>

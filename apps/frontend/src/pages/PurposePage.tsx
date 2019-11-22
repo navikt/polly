@@ -8,6 +8,7 @@ import Banner from "../components/Banner";
 import { Block } from "baseui/block";
 import { ListName, codelist } from "../service/Codelist";
 import { Process } from "../constants"
+import { intl } from "../util/intl"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -67,7 +68,7 @@ const PurposePage = (props: any) => {
 
     return (
         <React.Fragment>
-            <Banner title="Formål" />
+            <Banner title={intl.purpose} />
             {isLoading ? null : (
                 <Block marginBottom="3rem">
                     {error ? (
@@ -76,7 +77,7 @@ const PurposePage = (props: any) => {
                             <StatefulSelect
                                 options={codelist.getParsedOptions(ListName.PURPOSE)}
                                 initialState={{ value: [{ id: currentPurposeValue, label: currentPurposeValue } as Option] }}
-                                placeholder="Velg formål"
+                                placeholder={intl.purposeSelect}
                                 maxDropdownHeight="250px"
                                 onChange={(event) => getPurpose(event.option ? event.option.id : null)}
                             />
