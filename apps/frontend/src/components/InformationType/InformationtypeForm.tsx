@@ -237,7 +237,7 @@ const InformationtypeForm = ({
                                                     );
                                                 }}
                                             />
-                                          {renderTagList(codelist.getShortnames(ListName.CATEGORY, formikBag.values.categories), arrayHelpers)}
+                                            {renderTagList(codelist.getShortnames(ListName.CATEGORY, formikBag.values.categories), arrayHelpers)}
                                         </Block>
                                     )}
                                 />
@@ -296,12 +296,12 @@ const InformationtypeForm = ({
                                                             shape={SHAPE.square}
                                                             onClick={() => onAddKeyword(arrayHelpers)}
                                                         >
-                                                            <Plus/>
+                                                            <Plus />
                                                         </Button>
                                                     )
                                                 }}
                                             />
-                                          {renderTagList(formikBag.values.keywords, arrayHelpers)}
+                                            {renderTagList(formikBag.values.keywords, arrayHelpers)}
                                         </Block>
                                     )}
                                 />
@@ -368,9 +368,31 @@ const InformationtypeForm = ({
                                         }
                                     }
                                 }}
+
                             >
                                 {intl.save}
                             </Button>
+                            {isEdit && (
+                                <Button
+                                    type="button"
+                                    kind="secondary"
+                                    overrides={{
+                                        BaseButton: {
+                                            style: ({ $theme }) => {
+                                                return {
+                                                    alignContent: "center",
+                                                    marginLeft: "1rem",
+                                                    paddingRight: "4rem",
+                                                    paddingLeft: "4rem"
+                                                };
+                                            }
+                                        }
+                                    }}
+                                    onClick={() => window.history.back()}
+                                >
+                                    {intl.abort}
+                                </Button>
+                            )}
                         </Block>
                     </Form>
                 )}
