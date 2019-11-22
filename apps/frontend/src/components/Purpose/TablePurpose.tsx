@@ -2,13 +2,14 @@ import * as React from "react";
 import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, StyledTable, StyledSortableLabel, StyledHeadCell } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
 import { StyledLink } from 'baseui/link'
-import { renderLegalBasis } from "../../util/LegalBasis"
+import { renderLegalBasis, LegalBasesNotClarified } from "../../util/LegalBasis"
 import { codelist, ListName } from "../../service/Codelist"
 import { Policy } from "../../constants"
 import { Sensitivity } from "../InformationType/Sensitivity"
 import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
 import { Block } from "baseui/block";
 import ModalPolicy, { PolicyFormValues } from "./ModalPolicy";
+import { theme } from "../../util/theme"
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",
@@ -20,6 +21,7 @@ const CustomStyledRow = withStyle(StyledRow, {
     padding: "8px",
     fontSize: "24px"
 });
+
 
 const SmallerStyledCell = withStyle(StyledCell, {
     maxWidth: '15%'
@@ -92,7 +94,6 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
     };
 
     const getSortedData = () => {
-        console.log(policies, "POLICIES")
         if (titleDirection) {
             const sorted = policies
                 .slice(0)
@@ -157,7 +158,7 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
                 </StyledHeader>
                 <StyledBody>
                     {getSortedData().map((row: Policy, index: number) => (
-                        <CustomStyledRow key={index}>
+                        <CustomStyledRow key={index} >
                             <StyledCell>
                                 <Sensitivity sensitivity={row.informationType.sensitivity} />&nbsp;
                                 <StyledLink href={`/informationtype/${row.informationType.id}`} width="25%">
@@ -167,12 +168,22 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
 
                             <StyledCell>{codelist.getShortname(ListName.SUBJECT_CATEGORY, row.subjectCategory.code)}</StyledCell>
                             <StyledCell>
+                                {!row.legalBasesInherited && row.legalBases.length < 1 && (
+                                    <Block display="flex" color={theme.colors.warning400}>
+                                        <LegalBasesNotClarified />&nbsp;
+                                        Rettslig grunnlag er ikke avklart
+                                    </Block>
+                                )}
+
                                 {row.legalBases && row.legalBases.length > 0 && (
-                                    <ul>
-                                        {row.legalBases.map((legalBasis: any, i: number) => (
-                                            <li key={i}> {renderLegalBasis(legalBasis)}</li>
-                                        ))}
-                                    </ul>
+                                    <Block>
+                                        {
+                                            row.legalBases.map((legalBasis: any, i: number) => (
+                                                <li key={i}> {renderLegalBasis(legalBasis)}</li>
+                                            ))
+                                        }
+                                    </Block>
+
                                 )}
                             </StyledCell>
                             <SmallerStyledCell>

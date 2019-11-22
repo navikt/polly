@@ -17,8 +17,8 @@ export function sensitivityColor(code: string) {
 
 export const Sensitivity = (props: { sensitivity: Code }) => {
   return (
-      <StatefulTooltip content={() => `${codelist.getDescription(ListName.SENSITIVITY, props.sensitivity.code)}`}>
-        <span><FontAwesomeIcon icon={faUserShield} color={sensitivityColor(props.sensitivity.code)}/></span>
-      </StatefulTooltip>
+    <StatefulTooltip content={() => `${codelist.getDescription(ListName.SENSITIVITY, props.sensitivity.code)}`}>
+      <span><FontAwesomeIcon icon={faUserShield} color={sensitivityColor(props.sensitivity.code)} /></span>
+    </StatefulTooltip>
   )
 }

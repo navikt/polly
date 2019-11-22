@@ -1,7 +1,11 @@
+import * as React from "react"
 import { LegalBasis } from "../constants"
 import { codelist, ListName } from "../service/Codelist"
 import { processString } from "./string-processor"
-import * as React from "react"
+import { theme } from "../util/theme"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { StatefulTooltip } from "baseui/tooltip"
+import { faExclamation } from "@fortawesome/free-solid-svg-icons"
 
 const lovdata_base = process.env.REACT_APP_LOVDATA_BASE_URL;
 
@@ -13,14 +17,22 @@ export const renderLegalBasis = (legalBasis: LegalBasis) => {
   let description = nationalLawId ? legalBasisLinkProcessor(nationalLawId, legalBasis.description) : legalBasis.description
 
   return (
-      <span> {gdpr + ', '} {nationalLaw && nationalLaw} {description}</span>
+    <span> {gdpr + ', '} {nationalLaw && nationalLaw} {description}</span>
   )
 }
 
 const legalBasisLinkProcessor = (law: string, text: string) => processString([{
   regex: /(§+).?(\d+(-\d+)?)/g,
   fn: (key: string, result: string[]) =>
-      <a key={key} href={`${lovdata_base + codelist.getDescription(ListName.NATIONAL_LAW, law)}/§${result[2]}`} target="_blank" rel="noopener noreferrer">
-        {result[1]} {result[2]}
-      </a>
+    <a key={key} href={`${lovdata_base + codelist.getDescription(ListName.NATIONAL_LAW, law)}/§${result[2]}`} target="_blank" rel="noopener noreferrer">
+      {result[1]} {result[2]}
+    </a>
 }])(text)
+
+export const LegalBasesNotClarified = () => {
+  return (
+    <StatefulTooltip content={() => `Rettslig grunn er ikke avklart`}>
+      <span><FontAwesomeIcon icon={faExclamation} color={theme.colors.warning400} /></span>
+    </StatefulTooltip>
+  )
+}
