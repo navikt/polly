@@ -91,23 +91,6 @@ public class InformationTypeController {
         return new ResponseEntity<>(elasticsearchService.mapInformationType(informationTypeResponse.get()), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get InformationType")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "InformationType fetched", response = InformationTypeResponse.class),
-            @ApiResponse(code = 404, message = "InformationType not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
-    @GetMapping("/name/{name}")
-    public ResponseEntity<InformationTypeResponse> getInformationTypeByName(@PathVariable String name) {
-        log.info("Received request for InformationType with the name={}", name);
-        Optional<InformationType> informationType = repository.findByName(name);
-        if (informationType.isEmpty()) {
-            log.info("Cannot find the InformationType with name={}", name);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        log.info("Returned InformationType");
-        return new ResponseEntity<>(informationType.get().convertToResponse(), HttpStatus.OK);
-    }
-
     @ApiOperation(value = "Search InformationTypes")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "InformationTypes fetched", response = InformationTypePage.class),

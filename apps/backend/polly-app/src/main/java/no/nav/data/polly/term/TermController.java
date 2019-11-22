@@ -77,23 +77,6 @@ public class TermController {
         return new ResponseEntity<>(termResponse.get(), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get Term")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Term fetched", response = TermResponse.class),
-            @ApiResponse(code = 404, message = "Term not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
-    @GetMapping("/name/{name}")
-    public ResponseEntity<TermResponse> getTermByName(@PathVariable String name) {
-        log.info("Received request for Term with the name={}", name);
-        Optional<Term> term = repository.findByName(name);
-        if (term.isEmpty()) {
-            log.info("Cannot find the Term with name={}", name);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        log.info("Returned Term");
-        return new ResponseEntity<>(term.get().convertToResponse(), HttpStatus.OK);
-    }
-
     @ApiOperation(value = "Search Terms", notes = "Does not include data")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Terms fetched", response = TermPage.class),

@@ -47,16 +47,6 @@ class InformationTypeControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void getInformationTypeByName() {
-        var informationType = informationTypeRepository.save(createInformationType(UUID.randomUUID(), "InformationTypeData"));
-        ResponseEntity<Map> responseEntity = restTemplate.exchange(
-                "/informationtype/name/InformationTypeData", HttpMethod.GET, HttpEntity.EMPTY, Map.class);
-
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody().get("name")).isEqualTo(informationType.getData().getName());
-    }
-
-    @Test
     void searchInformationTypeByName() {
         informationTypeRepository.save(createInformationType(UUID.randomUUID(), "InformationTypeData"));
         informationTypeRepository.save(createInformationType(UUID.randomUUID(), "TypeData"));

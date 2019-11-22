@@ -65,18 +65,27 @@ public class PolicyRestController {
         this.informationTypeService = informationTypeService;
     }
 
-    @ApiOperation(value = "Get all Policies, get for informationTypeId will always return all policies", tags = {"Policies"})
+    @ApiOperation(value = "Get all Policies, filtered  request will always return all policies", tags = {"Policies"})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "All policies fetched", response = PolicyPage.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping
     public ResponseEntity<RestResponsePage<PolicyResponse>> getPolicies(PageParameters pageParameters,
             @RequestParam(required = false) UUID informationTypeId,
+            @RequestParam(required = false) UUID processId,
             @ApiParam("If fetching for a InformationType, include inactive policies. For all policies, inactive will always be included")
             @RequestParam(required = false, defaultValue = "false") Boolean includeInactive) {
         if (informationTypeId != null) {
             log.debug("Received request for Policies related to InformationType with id={}", informationTypeId);
             var policies = policyRepository.findByInformationTypeId(informationTypeId).stream()
+                    .filter(policy -> includeInactive || policy.isActive())
+                    .filter(policy -> processId == null || policy.getProcess().getId().equals(processId))
+                    .map(mapper::mapPolicyToResponse)
+                    .collect(toList());
+            return ResponseEntity.ok(new RestResponsePage<>(policies));
+        } else if (processId != null) {
+            log.debug("Received request for Policies related to Process with id={}", processId);
+            var policies = policyRepository.findByProcessId(processId).stream()
                     .filter(policy -> includeInactive || policy.isActive())
                     .map(mapper::mapPolicyToResponse)
                     .collect(toList());

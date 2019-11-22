@@ -25,8 +25,6 @@ import java.util.Optional;
 import java.util.UUID;
 import javax.transaction.Transactional;
 
-import static java.util.stream.Collectors.toList;
-
 @Slf4j
 @RestController
 @CrossOrigin
@@ -70,35 +68,6 @@ public class ProcessReadController {
         Page<ProcessResponse> page = repository.findAll(pageParameters.createIdSortedPage()).map(Process::convertToResponse);
         log.info("Returned {} Processes", page.getNumberOfElements());
         return ResponseEntity.ok(new RestResponsePage<>(page));
-    }
-
-    @ApiOperation(value = "Get Processes for name with InformationTypes")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Process fetched", response = ProcessPolicyPage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
-    @GetMapping("/name/{processName}")
-    @Transactional
-    public ResponseEntity<RestResponsePage<ProcessPolicyResponse>> getProcess(@PathVariable String processName) {
-        log.info("Received request for Processes with name={}", processName);
-        var processes = repository.findByName(processName).stream().map(Process::convertToResponseWithPolicies).collect(toList());
-        log.info("Returned {} Processes", processes.size());
-        return ResponseEntity.ok(new RestResponsePage<>(processes));
-    }
-
-    @ApiOperation(value = "Get Process for name and purpose with InformationTypes")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Process fetched", response = ProcessPolicyResponse.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
-    @GetMapping("/name/{processName}/{purposeCode}")
-    @Transactional
-    public ResponseEntity<ProcessPolicyResponse> getProcess(@PathVariable String processName, @PathVariable String purposeCode) {
-        log.info("Received request for Processes with name={}", processName);
-        var process = repository.findByNameAndPurposeCode(processName, purposeCode).map(Process::convertToResponseWithPolicies);
-        if (process.isEmpty()) {
-            log.info("Cannot find the Process with name={} purpose={}", processName, purposeCode);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return ResponseEntity.ok(process.get());
     }
 
     @ApiOperation(value = "Count all Processes")

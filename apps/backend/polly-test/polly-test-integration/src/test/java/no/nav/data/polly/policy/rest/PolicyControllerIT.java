@@ -309,6 +309,18 @@ class PolicyControllerIT extends IntegrationTestBase {
     }
 
     @Test
+    void getPolicyForProcess() {
+        List<Policy> policies = createPolicy(5);
+
+        ResponseEntity<PolicyPage> responseEntity = restTemplate.exchange(
+                POLICY_REST_ENDPOINT + "?processId={id}", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()),
+                PolicyPage.class, policies.get(0).getProcess().getId());
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(responseEntity.getBody().getTotalElements(), is(5L));
+        assertThat(policyRepository.count(), is(5L));
+    }
+
+    @Test
     void getPolicyForInformationType1() {
         createPolicy(5);
 
@@ -357,7 +369,7 @@ class PolicyControllerIT extends IntegrationTestBase {
     private void create5PoliciesWith2Inactive() {
         createPolicy(5, (i, p) -> {
             p.setInformationTypeName(INFORMATION_TYPE_NAME);
-            if (i > 3) {
+            if (i > 2) {
                 p.setStart(LocalDate.now().minusDays(2));
                 p.setEnd(LocalDate.now().minusDays(1));
             }

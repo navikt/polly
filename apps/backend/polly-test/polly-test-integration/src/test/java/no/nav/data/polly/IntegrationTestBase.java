@@ -41,9 +41,12 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
@@ -108,19 +111,19 @@ public abstract class IntegrationTestBase {
         CollectorRegistry.defaultRegistry.clear();
     }
 
-    protected void createPolicy(int rows) {
-        createPolicy(rows, (i, p) -> {
+    protected List<Policy> createPolicy(int rows) {
+        return createPolicy(rows, (i, p) -> {
         });
     }
 
-    protected void createPolicy(int rows, BiConsumer<Integer, Policy> callback) {
-        int i = 0;
-        while (i++ < rows) {
+    protected List<Policy> createPolicy(int rows, BiConsumer<Integer, Policy> callback) {
+        return IntStream.range(0, rows).mapToObj(i -> {
             Policy policy = createPolicy(PURPOSE_CODE1, createInformationType());
             callback.accept(i, policy);
             policyRepository.save(policy);
             processRepository.save(policy.getProcess());
-        }
+            return policy;
+        }).collect(Collectors.toList());
     }
 
     protected Policy createPolicy(String purpose, InformationType informationType) {
