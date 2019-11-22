@@ -216,11 +216,6 @@ let en: IStrings = {
     administrate: "Administrate"
 }
 
-const strings = {
-    no: no,
-    en: en
-};
-
 type IIntl = LocalizedStringsMethods & IStrings;
 
 interface LocalizedStringsFactory {
@@ -230,10 +225,28 @@ interface LocalizedStringsFactory {
     ): IIntl;
 }
 
+const strings = {
+    no, en
+};
+
 export const intl: IIntl = new (LocalizedStrings as LocalizedStringsFactory)(
     strings as any,
     {customLanguageInterface: () => defaultLang}
 );
+
+interface Langs {
+    [lang: string]: {
+        flag: string;
+        name: string;
+    };
+}
+
+export const langs: Langs = {
+    en: {flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', name: 'English'},
+    no: {flag: '🇳🇴', name: 'Norge'}
+}
+
+// hooks
 
 const localStorageAvailable = storageAvailable();
 
