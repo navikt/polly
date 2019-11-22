@@ -169,10 +169,7 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
                             <StyledCell>{codelist.getShortname(ListName.SUBJECT_CATEGORY, row.subjectCategory.code)}</StyledCell>
                             <StyledCell>
                                 {!row.legalBasesInherited && row.legalBases.length < 1 && (
-                                    <Block display="flex" color={theme.colors.warning400}>
-                                        <LegalBasesNotClarified />&nbsp;
-                                        Rettslig grunnlag er ikke avklart
-                                    </Block>
+                                    <LegalBasesNotClarified />
                                 )}
 
                                 {row.legalBases && row.legalBases.length > 0 && (

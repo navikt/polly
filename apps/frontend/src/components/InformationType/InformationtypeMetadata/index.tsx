@@ -56,7 +56,7 @@ const renderMetadata = (informationtype: InformationType) => {
                     {renderTextWithLabel(intl.term, informationtype.term ? informationtype.term.description || informationtype.term.name : '')}
                     {renderTextWithLabel(intl.description, informationtype.description)}
 
-                    <Block position="relative" $style={{float:"right"}}><Link to={`/informationtype/edit/${informationtype.id}`}>Rediger</Link></Block>
+                    <Block position="relative" $style={{ float: "right" }}><Link to={`/informationtype/edit/${informationtype.id}`}>{intl.edit}</Link></Block>
                 </Card>
             </Block>
             <Block width="60%">
@@ -72,7 +72,7 @@ const renderMetadata = (informationtype: InformationType) => {
     )
 }
 
-const InformationtypeMetadata = (props: { informationtype: InformationType, purposeMap: any}) => {
+const InformationtypeMetadata = (props: { informationtype: InformationType, purposeMap: any }) => {
     const { informationtype, purposeMap } = props
 
     return (

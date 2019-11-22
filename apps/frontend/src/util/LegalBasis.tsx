@@ -4,8 +4,9 @@ import { codelist, ListName } from "../service/Codelist"
 import { processString } from "./string-processor"
 import { theme } from "../util/theme"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { StatefulTooltip } from "baseui/tooltip"
 import { faExclamation } from "@fortawesome/free-solid-svg-icons"
+import { Block } from 'baseui/block'
+import { intl } from '../util/intl'
 
 const lovdata_base = process.env.REACT_APP_LOVDATA_BASE_URL;
 
@@ -31,8 +32,10 @@ const legalBasisLinkProcessor = (law: string, text: string) => processString([{
 
 export const LegalBasesNotClarified = () => {
   return (
-    <StatefulTooltip content={() => `Rettslig grunn er ikke avklart`}>
-      <span><FontAwesomeIcon icon={faExclamation} color={theme.colors.warning400} /></span>
-    </StatefulTooltip>
+    <Block display="flex" color={theme.colors.warning400} >
+      <span><FontAwesomeIcon icon={faExclamation} color={theme.colors.warning400} />&nbsp;</span>
+      {intl.legalBasesUndecidedWarning}
+    </Block>
+
   )
 }

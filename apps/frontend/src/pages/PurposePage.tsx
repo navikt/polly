@@ -76,7 +76,7 @@ const PurposePage = (props: any) => {
                     ) : (
                             <StatefulSelect
                                 options={codelist.getParsedOptions(ListName.PURPOSE)}
-                                initialState={{ value: [{ id: currentPurposeValue, label: currentPurposeValue } as Option] }}
+                                initialState={{ value: currentPurposeValue ? [{ id: currentPurposeValue, label: currentPurposeValue } as Option] : [] }}
                                 placeholder={intl.purposeSelect}
                                 maxDropdownHeight="250px"
                                 onChange={(event) => getPurpose(event.option ? event.option.id : null)}
