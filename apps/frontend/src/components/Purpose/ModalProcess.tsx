@@ -7,11 +7,11 @@ import { Label2 } from "baseui/typography";
 import { Select, Value } from 'baseui/select';
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { Plus } from "baseui/icon";
-import { Notification, KIND as NKIND } from "baseui/notification";
+import { KIND as NKIND, Notification } from "baseui/notification";
 
 import { ProcessFormValues } from "../../constants";
 import CardLegalBasis from './CardLegalBasis'
-import { ListName, codelist } from "../../service/Codelist"
+import { codelist, ListName } from "../../service/Codelist"
 import { intl } from "../../util/intl/intl"
 import * as yup from "yup"
 
@@ -38,7 +38,7 @@ const Error = (props: { fieldName: string }) => (
         {msg => (
             <Block display="flex" width="100%" marginTop=".2rem">
                 {renderLabel('')}
-                <Block width="100%" >
+                <Block width="100%">
                     <Notification overrides={{Body: {style: {width: 'auto', padding: 0, marginTop: 0}}}} kind={NKIND.negative}>{msg}</Notification>
                 </Block>
             </Block>
@@ -56,22 +56,22 @@ const FieldName = () => (
     <Field
         name="name"
         render={({field, form}: FieldProps<ProcessFormValues>) => (
-            <Input {...field} type="input" size={InputSIZE.default} autoFocus error={!!form.errors.name}/>
+            <Input {...field} type="input" size={InputSIZE.default} autoFocus error={!!form.errors.name && form.touched.name}/>
         )}
     />
 )
 
 const FieldDepartment = (props: any) => {
-    const { department } = props
-    const [value, setValue] = React.useState<Value>(department ? [{ id: department, label: codelist.getShortname(ListName.DEPARTMENT, department) }] : []);
+    const {department} = props
+    const [value, setValue] = React.useState<Value>(department ? [{id: department, label: codelist.getShortname(ListName.DEPARTMENT, department)}] : []);
 
     return (
         <Field
             name="department"
-            render={({ form }: FieldProps<ProcessFormValues>) => (
+            render={({form}: FieldProps<ProcessFormValues>) => (
                 <Select
                     options={codelist.getParsedOptions(ListName.DEPARTMENT)}
-                    onChange={({ value }) => {
+                    onChange={({value}) => {
                         setValue(value)
                         form.setFieldValue('department', value.length > 0 ? value[0].id : '')
                     }}
@@ -83,18 +83,18 @@ const FieldDepartment = (props: any) => {
 }
 
 const FieldSubDepartment = (props: any) => {
-    const { subDepartment } = props
+    const {subDepartment} = props
     const [value, setValue] = React.useState<Value>(subDepartment
-        ? [{ id: subDepartment, label: codelist.getShortname(ListName.SUB_DEPARTMENT, subDepartment) }]
+        ? [{id: subDepartment, label: codelist.getShortname(ListName.SUB_DEPARTMENT, subDepartment)}]
         : []);
 
     return (
         <Field
             name="subDepartment"
-            render={({ form }: FieldProps<ProcessFormValues>) => (
+            render={({form}: FieldProps<ProcessFormValues>) => (
                 <Select
                     options={codelist.getParsedOptions(ListName.SUB_DEPARTMENT)}
-                    onChange={({ value }) => {
+                    onChange={({value}) => {
                         setValue(value)
                         form.setFieldValue('subDepartment', value.length > 0 ? value[0].id : '')
                     }}
@@ -107,7 +107,7 @@ const FieldSubDepartment = (props: any) => {
 }
 
 const ListLegalBases = (props: any) => {
-    const { legalBases } = props
+    const {legalBases} = props
     if (!legalBases) return null
 
     return (
@@ -134,22 +134,29 @@ type ModalProcessProps = {
     onClose: Function;
 };
 
-const schema = yup.object({
-    name: yup.string().max(40, intl.formatString(intl.maxChars, 40) as string).required(intl.required),
-    department: yup.string(),
-    subDepartment: yup.string(),
-    legalBases: yup.array(yup.object({
+const max = 60
+const maxError = () => intl.formatString(intl.maxChars, max) as string
 
-    })),
+export const legalBasisSchema = () => yup.object({
+    gdpr: yup.string().required(intl.required),
+    nationalLaw: yup.string(),
+    description: yup.string().required(intl.required),
 })
 
-const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialValues, title }: ModalProcessProps) => {
+const schema = () => yup.object({
+    name: yup.string().max(max, maxError()).required(intl.required),
+    department: yup.string(),
+    subDepartment: yup.string(),
+    legalBases: yup.array(legalBasisSchema())
+})
+
+const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, isEdit, initialValues, title}: ModalProcessProps) => {
     const [showLegalBasisFields, setShowLegalbasesFields] = React.useState(false)
 
     const showSubDepartment = (department: any) => {
         if (!department) return false
 
-      // todo make enum in constants etc
+        // todo make enum in constants etc
         if (department === 'ØSA' || department === 'YTA' || department === 'ATA')
             return true
         else return false
@@ -167,7 +174,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
             <Block {...modalBlockProps}>
                 <Formik
                     initialValues={initialValues}
-                    onSubmit={(values) => submit(values)} validationSchema={schema}
+                    onSubmit={(values) => submit(values)} validationSchema={schema()}
                     render={(formikBag: FormikProps<ProcessFormValues>) => (
                         <Form>
                             <ModalHeader>
@@ -179,19 +186,19 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                             <ModalBody>
                                 <Block {...rowBlockProps}>
                                     {renderLabel(intl.name)}
-                                    <FieldName />
+                                    <FieldName/>
                                 </Block>
                                 <Error fieldName="name"/>
 
                                 <Block {...rowBlockProps}>
                                     {renderLabel(intl.department)}
-                                    <FieldDepartment department={formikBag.values.department} />
+                                    <FieldDepartment department={formikBag.values.department}/>
                                 </Block>
 
                                 {showSubDepartment(formikBag.values.department) && (
                                     <Block {...rowBlockProps}>
                                         {renderLabel(intl.subDepartment)}
-                                        <FieldSubDepartment subDepartment={formikBag.values.subDepartment} />
+                                        <FieldSubDepartment subDepartment={formikBag.values.subDepartment}/>
                                     </Block>
                                 )}
 
@@ -204,9 +211,9 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                                                 size={ButtonSize.compact}
                                                 kind={KIND.minimal}
                                                 onClick={() => setShowLegalbasesFields(true)}
-                                                startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
+                                                startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
                                             >
-                                              {intl.legalBasisAdd}
+                                                {intl.legalBasisAdd}
                                             </Button>
                                         </Block>
                                     )}
@@ -223,7 +230,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                                                         arrayHelpers.push(values)
                                                         setShowLegalbasesFields(false)
                                                     }
-                                                }} />
+                                                }}/>
                                             </Block>
                                         )}
                                     />
@@ -233,7 +240,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                                     <Block display="flex">
                                         {renderLabel('')}
                                         <Block width="100%">
-                                            <ListLegalBases legalBases={formikBag.values.legalBases} />
+                                            <ListLegalBases legalBases={formikBag.values.legalBases}/>
                                         </Block>
                                     </Block>
                                 )}

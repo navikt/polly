@@ -138,7 +138,10 @@ export const en = {
     keywords: "Keywords",
     read: "Read",
     write: "Write",
-    administrate: "Administrate"
+    administrate: "Administrate",
+
+    maxChars: 'Max {0} characters',
+    required: 'Field is required'
 };
 
 export const ta = {

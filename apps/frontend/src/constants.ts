@@ -11,12 +11,19 @@ export interface InformationtypeFormValues {
     keywords: string[];
 }
 
+export interface LegalBasisFormValues {
+    gdpr?: string;
+    nationalLaw?: string;
+    description?: string;
+    end?: Date;
+    start?: Date;
+}
+
 export interface Term {
     id: string;
     name: string;
     description: string;
 }
-
 export interface LegalBasis {
     active?: boolean;
     description: string;
