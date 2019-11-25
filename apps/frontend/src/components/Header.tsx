@@ -9,10 +9,6 @@ import { StyledLink } from "baseui/link";
 import { useStyletron } from 'baseui'
 import { Block } from 'baseui/block'
 import { intl } from '../util/intl/intl'
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faUser } from "@fortawesome/free-solid-svg-icons"
-import { StatefulPopover, PLACEMENT } from 'baseui/popover';
-import { StatefulMenu } from 'baseui/menu';
 import { useAwait } from "../util/customHooks"
 import { user } from "../service/User"
 
@@ -77,6 +73,7 @@ export default () => {
                 </StyledNavigationItem>
                 <StyledNavigationItem></StyledNavigationItem>
             </StyledNavigationList>
+
             <StyledNavigationList $align={ALIGN.center} />
             <StyledNavigationList $align={ALIGN.right}>
                 <StyledNavigationItem>

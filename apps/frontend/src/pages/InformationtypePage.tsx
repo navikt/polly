@@ -86,15 +86,15 @@ const InformationtypePage = (props: any) => {
                 <Spinner size={30} />
             ) : (informationTypeId ?
                 <React.Fragment>
-                    <Banner title={intl.informationType} />
+                    <Banner title={intl.informationType} informationtypeId={informationTypeId} />
                     {!error && informationtype && (
                         <InformationtypeMetadata informationtype={informationtype} purposeMap={purposeMap} />
                     )}
 
                     {error && (<p>{error}</p>)}
                 </React.Fragment>
-                    : <Block display="flex" justifyContent="space-between">
-                        <Block width="80%">
+                : <Block display="flex" justifyContent="space-between">
+                    <Block width="80%">
                         <Select
                             autoFocus
                             maxDropdownHeight="400px"
@@ -105,14 +105,14 @@ const InformationtypePage = (props: any) => {
                             onInputChange={event => setInfoTypeSearch(event.currentTarget.value)}
                             onChange={(params: any) => setInformationTypeId(params.value[0].id)}
                         />
-                        </Block>
-                        <Block>
-                        <Button type="button" shape={SHAPE.square} onClick={() => props.history.push("/informationtype/create")}>
-                            <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;{intl.createNew}
-                        </Button>
-                        </Block>
                     </Block>
-            )}
+                    <Block>
+                        <Button type="button" shape={SHAPE.square} onClick={() => props.history.push("/informationtype/create")}>
+                            <FontAwesomeIcon icon={faPlusCircle} />&nbsp;{intl.createNew}
+                        </Button>
+                    </Block>
+                </Block>
+                )}
         </React.Fragment>
     );
 };

@@ -138,7 +138,6 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
             .catch((err: any) => setErrorCreateProcess(err.message));
     }
     const handleEditPolicy = async (values: any) => {
-        console.log(values, "VALUES EDIT POLICY")
         let body = [{
             ...values,
             legalBases: values.legalBasesInherited ? [] : values.legalBases
