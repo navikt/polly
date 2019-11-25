@@ -9,11 +9,12 @@ import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { Plus } from "baseui/icon";
 import { KIND as NKIND, Notification } from "baseui/notification";
 
-import { ProcessFormValues } from "../../constants";
+import { LegalBasisFormValues, ProcessFormValues } from "../../constants";
 import CardLegalBasis from './CardLegalBasis'
 import { codelist, ListName } from "../../service/Codelist"
 import { intl } from "../../util/intl/intl"
 import * as yup from "yup"
+import { legalBasisSchema, ListLegalBases } from "../common/LegalBasis"
 
 const modalBlockProps: BlockProps = {
     width: '700px',
@@ -106,24 +107,6 @@ const FieldSubDepartment = (props: any) => {
 
 }
 
-const ListLegalBases = (props: any) => {
-    const {legalBases} = props
-    if (!legalBases) return null
-
-    return (
-        <ul>
-            {legalBases.map((legalBase: any, i: number) => (
-                <li key={i}>
-                    <p> {legalBase.gdpr && codelist.getShortname(ListName.GDPR_ARTICLE, legalBase.gdpr) + ": "}
-                        {legalBase.nationalLaw && codelist.getShortname(ListName.NATIONAL_LAW, legalBase.nationalLaw) + ' '}
-                        {legalBase.description}
-                    </p>
-                </li>
-            ))}
-        </ul>
-    )
-}
-
 type ModalProcessProps = {
     title: string;
     isOpen: boolean;
@@ -137,13 +120,7 @@ type ModalProcessProps = {
 const max = 60
 const maxError = () => intl.formatString(intl.maxChars, max) as string
 
-export const legalBasisSchema = () => yup.object({
-    gdpr: yup.string().required(intl.required),
-    nationalLaw: yup.string(),
-    description: yup.string().required(intl.required),
-})
-
-const schema = () => yup.object({
+const processSchema = () => yup.object({
     name: yup.string().max(max, maxError()).required(intl.required),
     department: yup.string(),
     subDepartment: yup.string(),
@@ -179,7 +156,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
             <Block {...modalBlockProps}>
                 <Formik
                     initialValues={initialValues}
-                    onSubmit={(values) => submit(values)} validationSchema={schema()}
+                    onSubmit={(values) => submit(values)} validationSchema={processSchema()}
                     render={(formikBag: FormikProps<ProcessFormValues>) => (
                         <Form>
                             <ModalHeader>
@@ -245,7 +222,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                                     <Block display="flex">
                                         {renderLabel('')}
                                         <Block width="100%">
-                                            <ListLegalBases legalBases={formikBag.values.legalBases}/>
+                                            <ListLegalBases legalBases={formikBag.values.legalBases as LegalBasisFormValues[] | undefined}/>
                                         </Block>
                                     </Block>
                                 )}

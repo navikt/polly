@@ -1,35 +1,21 @@
 import * as React from "react";
-import {
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    ModalButton,
-    SIZE,
-    ROLE
-} from "baseui/modal";
-import {
-    Formik,
-    FormikProps,
-    Form,
-    Field,
-    FieldProps,
-    FieldArray,
-} from "formik";
-import { BlockProps, Block } from "baseui/block";
+import { useEffect } from "react";
+import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
+import { Field, FieldArray, FieldProps, Form, Formik, FormikProps, } from "formik";
+import { Block, BlockProps } from "baseui/block";
 import { Label2 } from "baseui/typography";
 import { Radio, RadioGroup } from "baseui/radio";
 import { Plus } from "baseui/icon";
-import { Option, Select, StatefulSelect, TYPE, Value } from 'baseui/select';
+import { Option, Select, TYPE, Value } from 'baseui/select';
 
 import CardLegalBasis from './CardLegalBasis'
-import { ListName, codelist } from "../../service/Codelist";
-import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
+import { codelist, ListName } from "../../service/Codelist";
+import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { useDebouncedState } from "../../util/customHooks"
-import { useEffect } from "react"
 import axios from "axios"
-import { PageResponse, InformationType } from "../../constants"
+import { InformationType, PageResponse } from "../../constants"
 import { intl } from "../../util/intl/intl"
+import { ListLegalBases } from "../common/LegalBasis"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -134,24 +120,6 @@ const FieldLegalBasisInherited = (props: { current: any, setCurrent: Function })
 
             )}
         />
-    )
-}
-
-const ListLegalBases = (props: any) => {
-    const { legalBases } = props
-    if (!legalBases) return null
-
-    return (
-        <ul>
-            {legalBases.map((legalBase: any, i: number) => (
-                <li key={i}>
-                    <p> {legalBase.gdpr && codelist.getShortname(ListName.GDPR_ARTICLE, legalBase.gdpr) + ": "}
-                        {legalBase.nationalLaw && codelist.getShortname(ListName.NATIONAL_LAW, legalBase.nationalLaw) + ' '}
-                        {legalBase.description}
-                    </p>
-                </li>
-            ))}
-        </ul>
     )
 }
 

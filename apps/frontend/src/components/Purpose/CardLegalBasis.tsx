@@ -10,7 +10,7 @@ import { intl } from "../../util/intl/intl"
 import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from "formik"
 import { KIND as NKIND, Notification } from "baseui/notification"
 import { LegalBasisFormValues } from "../../constants"
-import { legalBasisSchema } from "./ModalProcess"
+import { legalBasisSchema } from "../common/LegalBasis"
 
 const rowBlockBrops: BlockProps = {
     display: 'flex',

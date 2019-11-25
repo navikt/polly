@@ -12,7 +12,7 @@ import axios from "axios";
 import TablePurpose from './TablePurpose'
 import ModalPolicy from './ModalPolicy'
 import ModalProcess from './ModalProcess'
-import { renderLegalBasis } from "../../util/LegalBasis"
+import { renderLegalBasis } from "../common/LegalBasis"
 import { codelist, ListName } from "../../service/Codelist"
 import { Process } from "../../constants"
 import { intl } from "../../util/intl/intl"
