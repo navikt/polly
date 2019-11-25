@@ -73,6 +73,9 @@ export interface IStrings {
     read: string;
     write: string;
     administrate: string;
+
+    maxChars: string;
+    required: string;
 }
 
 export const langs: Langs = {

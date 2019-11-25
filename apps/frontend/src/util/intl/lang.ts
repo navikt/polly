@@ -66,7 +66,10 @@ export const no: IStrings = {
     keywords: "Nøkkelord",
     read: "Lese",
     write: "Skrive",
-    administrate: "Administrere"
+    administrate: "Administrere",
+
+    maxChars: 'Maks {0} tegn',
+    required: 'Feltet er påkrevd'
 };
 
 export const en = {

@@ -1,17 +1,19 @@
 import * as React from 'react'
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
-import { Field, FieldArray, FieldProps, Form, Formik, FormikProps, } from "formik";
+import { ErrorMessage, Field, FieldArray, FieldProps, Form, Formik, FormikProps, } from "formik";
 import { Block, BlockProps } from "baseui/block";
 import { Input, SIZE as InputSIZE } from "baseui/input";
 import { Label2 } from "baseui/typography";
 import { Select, Value } from 'baseui/select';
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { Plus } from "baseui/icon";
+import { Notification, KIND as NKIND } from "baseui/notification";
 
 import { ProcessFormValues } from "../../constants";
 import CardLegalBasis from './CardLegalBasis'
 import { ListName, codelist } from "../../service/Codelist"
 import { intl } from "../../util/intl/intl"
+import * as yup from "yup"
 
 const modalBlockProps: BlockProps = {
     width: '700px',
@@ -31,6 +33,19 @@ const modalHeaderProps: BlockProps = {
     marginBottom: '2rem'
 }
 
+const Error = (props: { fieldName: string }) => (
+    <ErrorMessage name={props.fieldName}>
+        {msg => (
+            <Block display="flex" width="100%" marginTop=".2rem">
+                {renderLabel('')}
+                <Block width="100%" >
+                    <Notification overrides={{Body: {style: {width: 'auto', padding: 0, marginTop: 0}}}} kind={NKIND.negative}>{msg}</Notification>
+                </Block>
+            </Block>
+        )}
+    </ErrorMessage>
+)
+
 const renderLabel = (label: any | string) => (
     <Block width="30%" alignSelf="center">
         <Label2 marginBottom="8px" font="font300">{label.toString()}</Label2>
@@ -40,8 +55,8 @@ const renderLabel = (label: any | string) => (
 const FieldName = () => (
     <Field
         name="name"
-        render={({ field }: FieldProps<ProcessFormValues>) => (
-            <Input {...field} type="input" size={InputSIZE.default} autoFocus />
+        render={({field, form}: FieldProps<ProcessFormValues>) => (
+            <Input {...field} type="input" size={InputSIZE.default} autoFocus error={!!form.errors.name}/>
         )}
     />
 )
@@ -119,6 +134,15 @@ type ModalProcessProps = {
     onClose: Function;
 };
 
+const schema = yup.object({
+    name: yup.string().max(40, intl.formatString(intl.maxChars, 40) as string).required(intl.required),
+    department: yup.string(),
+    subDepartment: yup.string(),
+    legalBases: yup.array(yup.object({
+
+    })),
+})
+
 const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialValues, title }: ModalProcessProps) => {
     const [showLegalBasisFields, setShowLegalbasesFields] = React.useState(false)
 
@@ -143,7 +167,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
             <Block {...modalBlockProps}>
                 <Formik
                     initialValues={initialValues}
-                    onSubmit={(values) => submit(values)}
+                    onSubmit={(values) => submit(values)} validationSchema={schema}
                     render={(formikBag: FormikProps<ProcessFormValues>) => (
                         <Form>
                             <ModalHeader>
@@ -157,6 +181,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                                     {renderLabel(intl.name)}
                                     <FieldName />
                                 </Block>
+                                <Error fieldName="name"/>
 
                                 <Block {...rowBlockProps}>
                                     {renderLabel(intl.department)}
