@@ -4,7 +4,7 @@ import { useStyletron, withStyle } from "baseui";
 import { StyledLink } from "baseui/link";
 import { renderLegalBasis, LegalBasesNotClarified } from "../../../util/LegalBasis"
 import { codelist, ListName } from "../../../service/Codelist"
-import { intl } from "../../../util/intl"
+import { intl } from "../../../util/intl/intl"
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",

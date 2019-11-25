@@ -6,7 +6,7 @@ import { StatefulInput } from 'baseui/input';
 import { Label2 } from 'baseui/typography';
 import { Button, KIND, SIZE as ButtonSize } from 'baseui/button';
 import { codelist, ListName } from "../../service/Codelist";
-import { intl } from "../../util/intl"
+import { intl } from "../../util/intl/intl"
 
 const rowBlockBrops: BlockProps = {
     display: 'flex',

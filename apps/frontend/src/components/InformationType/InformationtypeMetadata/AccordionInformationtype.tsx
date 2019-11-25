@@ -5,7 +5,7 @@ import TableInformationtype from './TableInformationtype'
 import { codelist, ListName } from "../../../service/Codelist"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUsersCog } from "@fortawesome/free-solid-svg-icons"
-import { intl } from "../../../util/intl"
+import { intl } from "../../../util/intl/intl"
 
 const AccordionInformationtype = (props: any) => {
     if (!props) return null

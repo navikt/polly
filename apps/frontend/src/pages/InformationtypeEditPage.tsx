@@ -7,7 +7,7 @@ import InformationtypeForm from "../components/InformationType/InformationtypeFo
 import Banner from "../components/Banner";
 import { InformationType, InformationtypeFormValues } from "../constants"
 import { Code, codelist } from "../service/Codelist";
-import { intl } from "../util/intl"
+import { intl } from "../util/intl/intl"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 

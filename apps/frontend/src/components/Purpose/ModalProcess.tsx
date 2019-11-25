@@ -11,7 +11,7 @@ import { Plus } from "baseui/icon";
 import { ProcessFormValues } from "../../constants";
 import CardLegalBasis from './CardLegalBasis'
 import { ListName, codelist } from "../../service/Codelist"
-import { intl } from "../../util/intl"
+import { intl } from "../../util/intl/intl"
 
 const modalBlockProps: BlockProps = {
     width: '700px',

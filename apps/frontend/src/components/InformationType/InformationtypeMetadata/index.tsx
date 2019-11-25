@@ -10,7 +10,7 @@ import { faTag, faUserShield } from "@fortawesome/free-solid-svg-icons"
 import { sensitivityColor } from "../Sensitivity"
 import { Link } from "react-router-dom"
 import { InformationType } from "../../../constants"
-import { intl } from "../../../util/intl"
+import { intl } from "../../../util/intl/intl"
 import { StyledLink } from "baseui/link";
 
 const row: BlockProps = {

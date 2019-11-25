@@ -9,7 +9,7 @@ import { Sensitivity } from "../InformationType/Sensitivity"
 import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
 import { Block } from "baseui/block";
 import ModalPolicy, { PolicyFormValues } from "./ModalPolicy";
-import { intl } from "../../util/intl"
+import { intl } from "../../util/intl/intl"
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",

@@ -12,7 +12,7 @@ import { Button, SHAPE } from "baseui/button"
 import { Block } from "baseui/block"
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { intl } from "../util/intl"
+import { intl } from "../util/intl/intl"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 

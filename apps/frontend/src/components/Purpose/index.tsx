@@ -15,7 +15,7 @@ import ModalProcess from './ModalProcess'
 import { renderLegalBasis } from "../../util/LegalBasis"
 import { codelist, ListName } from "../../service/Codelist"
 import { Process } from "../../constants"
-import { intl } from "../../util/intl"
+import { intl } from "../../util/intl/intl"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 

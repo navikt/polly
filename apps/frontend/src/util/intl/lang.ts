@@ -1,83 +1,6 @@
-import LocalizedStrings, { GlobalStrings, LocalizedStringsMethods } from "react-localization";
-import * as React from "react";
-import { useEffect } from "react";
-import { useForceUpdate } from "./customHooks";
+import { IStrings } from "./intl"
 
-// Controls starting language as well as fallback language if a text is missing in chosen language
-const defaultLang = "no";
-
-interface IStrings {
-    informationType: string;
-    informationTypes: string;
-    informationTypeSearch: string;
-    term: string;
-    purpose: string;
-    sensitivity: string;
-    processingActivities: string;
-    process: string;
-    legalBasis: string;
-    legalBasisShort: string;
-    legalBasesShort: string;
-    subjectCategories: string;
-    nationalLaw: string;
-    navMaster: string;
-
-    // sentence
-    loggedInStatus: string;
-    notLoggedInStatus: string;
-    couldntLoad: string;
-    informationTypeUpdated: string;
-    informationTypeCreate: string;
-    sensitivitySelect: string;
-    nameWrite: string;
-    categoriesWrite: string;
-    sourcesWrite: string;
-    keywordsWrite: string;
-    navMasterSelect: string;
-    purposeSelect: string;
-    purposeNotFound: string;
-    purposeUse: string;
-    policyEdit: string;
-    policyNew: string;
-    legalBasisNotFound: string;
-    processEdit: string;
-    processingActivitiesNew: string;
-    processingActivitiesEdit: string;
-    processNew: string;
-    legalBasisNew: string;
-    legalBasisAdd: string;
-    gdprSelect: string;
-    nationalLawSelect: string;
-    descriptionWrite: string;
-    definitionWrite: string;
-    subjectCategoriesNotFound: string;
-    legalBasesProcess: string;
-    legalBasesOwn: string;
-    legalBasesUndecided: string;
-    legalBasesUndecidedWarning: string;
-
-    // generic
-    department: string;
-    subDepartment: string;
-    save: string;
-    abort: string;
-    login: string;
-    logout: string;
-    hi: string;
-    addNew: string;
-    createNew: string;
-    name: string;
-    description: string;
-    edit: string;
-    sources: string;
-    categories: string;
-    keywords: string;
-    read: string;
-    write: string;
-    administrate: string;
-}
-
-const no: IStrings = {
+export const no: IStrings = {
     informationType: "Opplysningstype",
     informationTypes: "Opplysningstyper",
     informationTypeSearch: "Søk opplysningstyper",
@@ -91,7 +14,6 @@ const no: IStrings = {
     legalBasesShort: "Rettslig grunnlag",
     subjectCategories: "Kategorier av personer",
     nationalLaw: "Nasjonal lov",
-
     navMaster: "Master i NAV",
 
     loggedInStatus: "Du er logget inn og kan",
@@ -147,7 +69,7 @@ const no: IStrings = {
     administrate: "Administrere"
 };
 
-let en: IStrings = {
+export const en = {
     informationType: "Information type",
     informationTypes: "Information types",
     informationTypeSearch: "Information type search",
@@ -216,7 +138,8 @@ let en: IStrings = {
     administrate: "Administrate"
 }
 
-let ta: IStrings = {
+
+export const ta = {
     informationType: "தகவல் வகை",
     informationTypes: "தகவல் வகைகள்",
     informationTypeSearch: "தகவல் வகை தேடல்",
@@ -283,64 +206,4 @@ let ta: IStrings = {
     read: "படிக்க",
     write: "எழுது",
     administrate: "நிர்வாகி"
-}
-
-type IIntl = LocalizedStringsMethods & IStrings;
-
-interface LocalizedStringsFactory {
-    new<T>(
-        props: GlobalStrings<T>,
-        options?: { customLanguageInterface: () => string }
-    ): IIntl;
-}
-
-const strings = {
-    no, en, ta
-};
-
-export const intl: IIntl = new (LocalizedStrings as LocalizedStringsFactory)(
-    strings as any,
-    {customLanguageInterface: () => defaultLang}
-);
-
-interface Langs {
-    [lang: string]: {
-        flag: string;
-        name: string;
-    };
-}
-
-export const langs: Langs = {
-    en: {flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', name: 'English'},
-    no: {flag: '🇳🇴', name: 'Norsk'},
-    ta: {flag: '🇱🇰', name: 'தமிழ்'}
-}
-
-// hooks
-
-const localStorageAvailable = storageAvailable();
-
-export const useLang = () => {
-    const [lang, setLang] = React.useState<string>(
-        ((localStorageAvailable &&
-            localStorage.getItem("polly-lang")) as string) || defaultLang
-    );
-    const update = useForceUpdate();
-    useEffect(() => {
-        intl.setLanguage(lang);
-        localStorageAvailable && localStorage.setItem("polly-lang", lang);
-        update();
-    }, [lang]);
-
-    return setLang;
-};
-
-function storageAvailable() {
-    try {
-        localStorage.setItem("ptab", "aye");
-        localStorage.removeItem("ptab");
-        return true;
-    } catch (e) {
-        return false;
-    }
 }

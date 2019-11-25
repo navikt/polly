@@ -6,7 +6,7 @@ import {Header} from "@data-catalog/header";
 
 import Routes from "./routes";
 import {theme} from "./util/theme"
-import {useLang} from "./util/intl"
+import {useLang} from "./util/intl/intl"
 
 const Main = (props) => {
   const {history} = props;

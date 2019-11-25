@@ -6,7 +6,7 @@ import { theme } from "../util/theme"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faExclamation } from "@fortawesome/free-solid-svg-icons"
 import { Block } from 'baseui/block'
-import { intl } from '../util/intl'
+import { intl } from './intl/intl'
 
 const lovdata_base = process.env.REACT_APP_LOVDATA_BASE_URL;
 

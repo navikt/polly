@@ -8,7 +8,7 @@ import Banner from "../components/Banner";
 import { Block } from "baseui/block";
 import { ListName, codelist } from "../service/Codelist";
 import { Process } from "../constants"
-import { intl } from "../util/intl"
+import { intl } from "../util/intl/intl"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 

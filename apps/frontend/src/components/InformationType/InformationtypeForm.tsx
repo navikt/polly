@@ -16,7 +16,7 @@ import { codelist, ListName } from "../../service/Codelist";
 import { InformationtypeFormValues, PageResponse, Term } from "../../constants";
 import { useDebouncedState } from "../../util/customHooks"
 import { KeyboardEvent } from "react"
-import { intl } from "../../util/intl"
+import { intl } from "../../util/intl/intl"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
