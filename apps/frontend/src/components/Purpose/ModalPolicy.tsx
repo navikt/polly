@@ -143,8 +143,8 @@ const ListLegalBases = (props: any) => {
 
     return (
         <ul>
-            {legalBases.map((legalBase: any) => (
-                <li>
+            {legalBases.map((legalBase: any, i: number) => (
+                <li key={i}>
                     <p> {legalBase.gdpr && codelist.getShortname(ListName.GDPR_ARTICLE, legalBase.gdpr) + ": "}
                         {legalBase.nationalLaw && codelist.getShortname(ListName.NATIONAL_LAW, legalBase.nationalLaw) + ' '}
                         {legalBase.description}

@@ -13,7 +13,7 @@ export function useDebouncedState<T>(initialValue: T, delay: number): [T, Dispat
           clearTimeout(handler);
         };
       },
-      [value]
+      [value, delay]
   );
 
   return [debouncedValue, setValue];

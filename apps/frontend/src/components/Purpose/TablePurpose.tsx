@@ -174,11 +174,13 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
 
                                 {row.legalBases && row.legalBases.length > 0 && (
                                     <Block>
+                                        <ul>
                                         {
                                             row.legalBases.map((legalBasis: any, i: number) => (
                                                 <li key={i}> {renderLegalBasis(legalBasis)}</li>
                                             ))
                                         }
+                                        </ul>
                                     </Block>
 
                                 )}
