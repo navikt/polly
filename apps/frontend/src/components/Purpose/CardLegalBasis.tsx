@@ -43,8 +43,9 @@ const CardLegalBasis = ({submit}: CardLegalBasisProps) => {
 
                         <Block {...rowBlockBrops}>
                             <Field name="gdpr"
-                                   render={() => (
+                                   render={({field}: FieldProps<LegalBasisFormValues>) => (
                                        <Select
+                                           onBlur={field.onBlur}
                                            autoFocus={true}
                                            options={codelist.getParsedOptions(ListName.GDPR_ARTICLE)}
                                            placeholder={intl.gdprSelect}

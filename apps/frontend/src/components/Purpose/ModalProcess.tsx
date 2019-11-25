@@ -162,9 +162,14 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
         else return false
     }
 
+    const onCloseModal = () => {
+        setShowLegalbasesFields(false)
+        onClose()
+    }
+
     return (
         <Modal
-            onClose={() => onClose()}
+            onClose={onCloseModal}
             isOpen={isOpen}
             closeable
             animate
@@ -249,7 +254,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                             <ModalFooter>
                                 <Block display="flex" justifyContent="flex-end">
                                     <Block alignSelf="flex-end">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
-                                    <Button type="button" kind={KIND.minimal} onClick={() => onClose()}>{intl.abort}</Button>
+                                    <Button type="button" kind={KIND.minimal} onClick={onCloseModal}>{intl.abort}</Button>
                                     <ModalButton type="submit">{intl.save}</ModalButton>
                                 </Block>
                             </ModalFooter>
