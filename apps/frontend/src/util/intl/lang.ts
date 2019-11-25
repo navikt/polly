@@ -1,4 +1,4 @@
-import { IStrings } from "./intl"
+import { IStrings } from "./intl";
 
 export const no: IStrings = {
     informationType: "Opplysningstype",
@@ -20,7 +20,7 @@ export const no: IStrings = {
     notLoggedInStatus: "Du er ikke logget inn men kan",
     couldntLoad: "Kunne ikke laste inn siden",
     informationTypeUpdated: "Opplysningstypen er oppdatert",
-    informationTypeCreate: "Opprett ny opplysningstype",
+    informationTypeCreate: "Opprett opplysningstype",
     sensitivitySelect: "Velg type personopplysning",
     nameWrite: "Skriv inn navn",
     categoriesWrite: "Skriv inn og legg til kategorier",
@@ -136,8 +136,7 @@ export const en = {
     read: "Read",
     write: "Write",
     administrate: "Administrate"
-}
-
+};
 
 export const ta = {
     informationType: "தகவல் வகை",
@@ -156,7 +155,8 @@ export const ta = {
     subjectCategories: "பொருள் வகைகள்",
 
     loggedInStatus: "நீங்கள் உள்நுழைந்துள்ளீர்கள், முடியும்",
-    notLoggedInStatus: "நீங்கள் உள்நுழைந்திருக்கவில்லை, ஆனால் நீங்கள் இன்னும் முடியும்",
+    notLoggedInStatus:
+        "நீங்கள் உள்நுழைந்திருக்கவில்லை, ஆனால் நீங்கள் இன்னும் முடியும்",
     couldntLoad: "பக்கத்தை ஏற்ற முடியவில்லை",
     informationTypeUpdated: "தகவல் வகை புதுப்பிக்கப்பட்டது",
     informationTypeCreate: "புதிய தகவல் வகையை உருவாக்கு",
@@ -206,4 +206,4 @@ export const ta = {
     read: "படிக்க",
     write: "எழுது",
     administrate: "நிர்வாகி"
-}
+};
