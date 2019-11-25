@@ -11,6 +11,23 @@ export interface InformationtypeFormValues {
     keywords: string[];
 }
 
+export interface PolicyFormValues {
+    id?: string;
+    process?: string;
+    purposeCode?: string;
+    informationTypeName?: string;
+    subjectCategory?: string;
+    legalBasesInherited?: boolean;
+    legalBases: Array<LegalBasisFormValues>;
+}
+
+export interface ProcessFormValues {
+    name: string;
+    department: string | null | undefined;
+    subDepartment: string | null | undefined;
+    legalBases: Array<LegalBasis> | null | undefined;
+}
+
 export interface LegalBasisFormValues {
     gdpr?: string;
     nationalLaw?: string;
@@ -82,13 +99,6 @@ export interface Process {
     subDepartment: Code;
     policies: Policy[];
     purposeCode: string;
-}
-
-export interface ProcessFormValues {
-    name: string;
-    department: string | null | undefined;
-    subDepartment: string | null | undefined;
-    legalBases: Array<LegalBasis> | null | undefined;
 }
 
 export interface UserInfo {

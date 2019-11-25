@@ -266,7 +266,7 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
                                     </Button>
                                     <ModalPolicy
                                         title={intl.policyNew}
-                                        initialValues={{ informationTypeName: '', subjectCategory: '', legalBasesInherited: false, legalBases: [] }}
+                                        initialValues={{ legalBases: [] }}
                                         isEdit={false}
                                         onClose={() => {
                                             setIsOpen(false)

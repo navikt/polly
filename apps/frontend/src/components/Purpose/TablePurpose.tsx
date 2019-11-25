@@ -4,11 +4,11 @@ import { useStyletron, withStyle } from "baseui";
 import { StyledLink } from 'baseui/link'
 import { renderLegalBasis, LegalBasesNotClarified } from "../common/LegalBasis"
 import { codelist, ListName } from "../../service/Codelist"
-import { Policy } from "../../constants"
+import { Policy, PolicyFormValues } from "../../constants"
 import { Sensitivity } from "../InformationType/Sensitivity"
 import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
 import { Block } from "baseui/block";
-import ModalPolicy, { PolicyFormValues } from "./ModalPolicy";
+import ModalPolicy from "./ModalPolicy";
 import { intl } from "../../util/intl/intl"
 
 const StyledHeader = withStyle(StyledHead, {

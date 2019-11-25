@@ -43,9 +43,9 @@ const CardLegalBasis = ({submit}: CardLegalBasisProps) => {
 
                         <Block {...rowBlockBrops}>
                             <Field name="gdpr"
-                                   render={({field}: FieldProps<LegalBasisFormValues>) => (
+                                   render={() => (
                                        <Select
-                                           onBlur={field.onBlur}
+                                           onBlur={() => form.setFieldTouched('gdpr')}
                                            autoFocus={true}
                                            options={codelist.getParsedOptions(ListName.GDPR_ARTICLE)}
                                            placeholder={intl.gdprSelect}
@@ -75,6 +75,7 @@ const CardLegalBasis = ({submit}: CardLegalBasisProps) => {
                                                form.setFieldValue('nationalLaw', value.length > 0 ? value[0].id : undefined)
                                            }}
                                            value={nationalLaw}
+                                           onBlur={() => form.setFieldTouched('nationalLaw')}
                                            error={!!form.errors.nationalLaw && (form.touched.nationalLaw || !!form.submitCount)}
                                        />
                                    )}/>
