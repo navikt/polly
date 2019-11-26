@@ -2,6 +2,7 @@ package no.nav.data.polly.codelist;
 
 
 import no.nav.data.polly.IntegrationTestBase;
+import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
 import org.junit.jupiter.api.AfterEach;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Collections;
 import java.util.List;
 
+import static no.nav.data.polly.codelist.CodelistUtils.createCodelistRequest;
+import static no.nav.data.polly.codelist.CodelistUtils.createListOfRequests;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -38,11 +41,13 @@ class CodelistServiceIT extends IntegrationTestBase {
 
     @Test
     void save_shouldSaveNewCodelist() {
-        service.save(createListOfOneRequest());
+        service.save(createListOfRequests(createCodelistRequest("SOURCE", "TEST_CODE", "Test shortName", "Test description")));
 
         assertThat(repository.findAll().size()).isEqualTo(1);
         assertTrue(repository.findByListAndCode(ListName.SOURCE, "TEST_CODE").isPresent());
-        assertThat(CodelistService.getCodelist(ListName.SOURCE, "TEST_CODE").getDescription()).isEqualTo("Test description");
+        Codelist actualCodelist = CodelistService.getCodelist(ListName.SOURCE, "TEST_CODE");
+        assertThat(actualCodelist.getShortName()).isEqualTo("Test shortName");
+        assertThat(actualCodelist.getDescription()).isEqualTo("Test description");
     }
 
     @Test
@@ -54,36 +59,41 @@ class CodelistServiceIT extends IntegrationTestBase {
 
     @Test
     void update_shouldUpdateCodelist() {
-        service.save(createListOfOneRequest());
+        service.save(createListOfRequests(createCodelistRequest("SOURCE", "UPDATE_CODE", "shortName", "description")));
 
-        List<CodelistRequest> updatedRequest = createListOfOneRequest("SOURCE", "TEST_CODE", "Updated codelist");
+        List<CodelistRequest> updatedRequest = createListOfRequests(createCodelistRequest("SOURCE", "UPDATE_CODE", "Updated shortName", "Updated description"));
         service.update(updatedRequest);
 
-        assertThat(CodelistService.getCodelist(ListName.SOURCE, "TEST_CODE").getDescription()).isEqualTo("Updated codelist");
-        assertThat(repository.findByListAndCode(ListName.SOURCE, "TEST_CODE").get().getDescription()).isEqualTo("Updated codelist");
+        Codelist serviceCodelist = CodelistService.getCodelist(ListName.SOURCE, "UPDATE_CODE");
+        Codelist repositoryCodelist = repository.findByListAndCode(ListName.SOURCE, "UPDATE_CODE").get();
+
+        assertThat(serviceCodelist.getShortName()).isEqualTo("Updated shortName");
+        assertThat(serviceCodelist.getDescription()).isEqualTo("Updated description");
+        assertThat(repositoryCodelist.getShortName()).isEqualTo("Updated shortName");
+        assertThat(repositoryCodelist.getDescription()).isEqualTo("Updated description");
     }
 
     @Test
     void delete_shouldDeleteCodelist() {
-        List<CodelistRequest> request = createListOfOneRequest();
+        List<CodelistRequest> request = createListOfRequests(createCodelistRequest("SOURCE", "DELETE_CODE"));
         service.save(request);
         assertThat(repository.findAll().size()).isEqualTo(1);
         assertThat(CodelistService.getCodelist(ListName.SOURCE).size()).isEqualTo(1);
 
-        service.delete(ListName.SOURCE, "TEST_CODE");
+        service.delete(ListName.SOURCE, "DELETE_CODE");
 
         assertThat(repository.findAll().size()).isEqualTo(0);
-        assertFalse(repository.findByListAndCode(ListName.SOURCE, "TEST_CODE").isPresent());
+        assertFalse(repository.findByListAndCode(ListName.SOURCE, "DELETE_CODE").isPresent());
         assertThat(CodelistService.getCodelist(ListName.SOURCE).size()).isEqualTo(0);
-        assertNull(CodelistService.getCodelist(ListName.SOURCE, "TEST_CODE"));
+        assertNull(CodelistService.getCodelist(ListName.SOURCE, "DELETE_CODE"));
     }
 
     @Test
     void validateRequests_shouldValidateRequests() {
-        List<CodelistRequest> requests = List.of(
-                createOneRequest("SOURCE", "CODE_1", "Description"),
-                createOneRequest("SOURCE", "code_2 ", "Description"),
-                createOneRequest("SOURCE", " Code_3 ", "Description "));
+        List<CodelistRequest> requests = createListOfRequests(
+                createCodelistRequest("SOURCE", "CODE_1"),
+                createCodelistRequest("SOURCE", "code_2 "),
+                createCodelistRequest("SOURCE", " Code_3 "));
 
         service.validateRequest(requests, false);
     }
@@ -94,23 +104,5 @@ class CodelistServiceIT extends IntegrationTestBase {
 
         service.validateRequest(requests, false);
     }
-
-    private CodelistRequest createOneRequest(String listName, String code, String description) {
-        return CodelistRequest.builder()
-                .list(listName)
-                .code(code)
-                .shortName(code + " name")
-                .description(description)
-                .build();
-    }
-
-    private List<CodelistRequest> createListOfOneRequest(String listName, String code, String description) {
-        return List.of(createOneRequest(listName, code, description));
-    }
-
-    private List<CodelistRequest> createListOfOneRequest() {
-        return createListOfOneRequest("SOURCE", "TEST_CODE", "Test description");
-    }
-
 }
 
