@@ -89,12 +89,6 @@ export default () => {
                 </StyledNavigationItem>
 
                 <StyledNavigationItem>
-                    <StyledLink href="/informationtype/create" className={link}>
-                        {intl.informationTypeCreate}
-                    </StyledLink>
-                </StyledNavigationItem>
-
-                <StyledNavigationItem>
                     {user.isLoggedIn() && (
                         <StyledLink href={`${server_polly}/logout?redirect_uri=${window.location.href}`} className={link}>
                             <Block marginRight="2rem">
