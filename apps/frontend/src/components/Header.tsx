@@ -2,15 +2,19 @@ import * as React from "react";
 import { ALIGN, HeaderNavigation, StyledNavigationItem, StyledNavigationList } from "baseui/header-navigation";
 import { StyledLink } from "baseui/link";
 import { useStyletron } from 'baseui'
-import { Block } from 'baseui/block'
+import { Block, BlockProps } from 'baseui/block'
 import { intl, Lang, langs, langsArray } from '../util/intl/intl'
 import { useAwait } from "../util/customHooks"
 import { user } from "../service/User"
 import { Button } from "baseui/button"
-import { Popover } from "baseui/popover"
+import { StatefulPopover } from "baseui/popover"
 import { OptionProfile, StatefulMenu } from "baseui/menu"
 import { TriangleDown } from "baseui/icon"
 import { theme } from "../util/theme"
+import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { Label2 } from "baseui/typography"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -57,16 +61,13 @@ const FlagWithName = (props: { langCode: string }) => (
 )
 
 const LangDropdown = (props: { setLang: (lang: string) => void }) => {
-    const [isOpen, setIsOpen] = React.useState(false);
     return (
-        <Popover
-            isOpen={isOpen}
-            onClick={() => setIsOpen(s => !s)}
-            content={
+        <StatefulPopover
+            content={({close}) =>
                 <StatefulMenu
                     items={langsArray.filter(l => l.langCode !== intl.getLanguage())}
                     onItemSelect={({item}) => {
-                        setIsOpen(false)
+                        close()
                         props.setLang(item.langCode)
                     }}
                     overrides={{
@@ -107,12 +108,42 @@ const LangDropdown = (props: { setLang: (lang: string) => void }) => {
             <Button endEnhancer={() => <TriangleDown size={24}/>} size="compact" kind="tertiary">
                 <FlagWithName langCode={intl.getLanguage()}/>
             </Button>
-        </Popover>
+        </StatefulPopover>
     );
 }
 
-export default (props: { setLang: (lang: string) => void }) => {
-    const [useCss, theme] = useStyletron()
+const LoggedInHeader = () => {
+    const blockStyle : BlockProps = {
+        display: 'flex',
+        width: '100%',
+        padding: theme.sizing.scale100
+    }
+    return (
+        <StatefulPopover
+            content={
+                <React.Fragment>
+                    <Label2 {...blockStyle}>{intl.name}: {user.getFamilyName()}, {user.getGivenName()}</Label2>
+                    <Label2 {...blockStyle} alignContent="space-between">{intl.email}: {user.getEmail()}</Label2>
+                    <Label2 {...blockStyle}>{intl.groups}: {user.getGroups()}</Label2>
+                    <Block {...blockStyle}>
+                        <StyledLink href={`${server_polly}/logout?redirect_uri=${window.location.href}`}>
+                            {intl.logout}
+                        </StyledLink>
+                    </Block>
+                </React.Fragment>
+            }
+        >
+            <Button kind="tertiary" size="compact" endEnhancer={() => <FontAwesomeIcon icon={faUser}/>}>{user.getNavIdent()}</Button>
+        </StatefulPopover>
+    )
+}
+
+interface HeaderProps {
+    setLang: (lang: string) => void
+}
+
+const Header = (props: HeaderProps & RouteComponentProps<any>) => {
+    const [useCss] = useStyletron()
     const link = useCss({ textDecoration: 'none' });
     useAwait(user.wait())
 
@@ -134,7 +165,6 @@ export default (props: { setLang: (lang: string) => void }) => {
                 <StyledNavigationItem>
                     <StyledLink href="/" className={link}>{logo}</StyledLink>
                 </StyledNavigationItem>
-                <StyledNavigationItem></StyledNavigationItem>
             </StyledNavigationList>
 
             <StyledNavigationList $align={ALIGN.center} />
@@ -152,26 +182,24 @@ export default (props: { setLang: (lang: string) => void }) => {
                 </StyledNavigationItem>
 
                 <StyledNavigationItem>
-                    <LangDropdown setLang={props.setLang}/>
-                </StyledNavigationItem>
-
-                <StyledNavigationItem>
                     {user.isLoggedIn() && (
-                        <StyledLink href={`${server_polly}/logout?redirect_uri=${window.location.href}`} className={link}>
-                            <Block marginRight="2rem">
-                                {intl.logout}
-                            </Block>
-                        </StyledLink>
+                        <LoggedInHeader />
                     )}
                     {!user.isLoggedIn() && (
                         <StyledLink href={`${server_polly}/login?redirect_uri=${window.location.href}`} className={link}>
-                            <Block marginRight="2rem">
-                                {intl.login}
-                            </Block>
+                            {intl.login}
                         </StyledLink>
                     )}
+                </StyledNavigationItem>
+
+                <StyledNavigationItem>
+                    <Block marginRight="2rem">
+                        <LangDropdown setLang={props.setLang}/>
+                    </Block>
                 </StyledNavigationItem>
             </StyledNavigationList>
         </HeaderNavigation>
     );
 }
+
+export default withRouter(Header)

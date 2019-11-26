@@ -15,12 +15,12 @@ const Main = props => {
     return (
         <React.Fragment>
             <ThemeProvider theme={theme}>
-                <Header setLang={setLang}/>
-                <Block margin="0 auto" width="80%" height="100%">
-                    <Router history={history}>
-                        <Routes />
-                    </Router>
-                </Block>
+                <Router history={history}>
+                    <Header setLang={setLang} history={history}/>
+                    <Block margin="0 auto" width="80%" height="100%">
+                        <Routes/>
+                    </Block>
+                </Router>
             </ThemeProvider>
         </React.Fragment>
     );

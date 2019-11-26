@@ -69,6 +69,8 @@ export interface IStrings {
     addNew: string;
     createNew: string;
     name: string;
+    email: string;
+    groups: string;
     description: string;
     edit: string;
     sources: string;
