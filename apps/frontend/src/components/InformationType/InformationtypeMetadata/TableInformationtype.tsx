@@ -2,7 +2,7 @@ import * as React from "react";
 import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, StyledTable } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
 import { StyledLink } from "baseui/link";
-import { renderLegalBasis, LegalBasesNotClarified } from "../../../util/LegalBasis"
+import { renderLegalBasis, LegalBasesNotClarified } from "../../common/LegalBasis"
 import { codelist, ListName } from "../../../service/Codelist"
 import { intl } from "../../../util/intl/intl"
 

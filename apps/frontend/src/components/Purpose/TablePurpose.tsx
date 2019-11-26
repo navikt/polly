@@ -2,13 +2,13 @@ import * as React from "react";
 import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, StyledTable, StyledSortableLabel, StyledHeadCell } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
 import { StyledLink } from 'baseui/link'
-import { renderLegalBasis, LegalBasesNotClarified } from "../../util/LegalBasis"
+import { renderLegalBasis, LegalBasesNotClarified } from "../common/LegalBasis"
 import { codelist, ListName } from "../../service/Codelist"
-import { Policy } from "../../constants"
+import { Policy, PolicyFormValues } from "../../constants"
 import { Sensitivity } from "../InformationType/Sensitivity"
 import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
 import { Block } from "baseui/block";
-import ModalPolicy, { PolicyFormValues } from "./ModalPolicy";
+import ModalPolicy from "./ModalPolicy";
 import { intl } from "../../util/intl/intl"
 
 const StyledHeader = withStyle(StyledHead, {
@@ -174,11 +174,13 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
 
                                 {row.legalBases && row.legalBases.length > 0 && (
                                     <Block>
+                                        <ul>
                                         {
                                             row.legalBases.map((legalBasis: any, i: number) => (
                                                 <li key={i}> {renderLegalBasis(legalBasis)}</li>
                                             ))
                                         }
+                                        </ul>
                                     </Block>
 
                                 )}

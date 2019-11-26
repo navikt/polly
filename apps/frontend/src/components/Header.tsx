@@ -84,7 +84,7 @@ export default () => {
 
                 <StyledNavigationItem>
                     <StyledLink href="/informationtype" className={link}>
-                        {intl.informationType}
+                        {intl.informationTypes}
                     </StyledLink>
                 </StyledNavigationItem>
 

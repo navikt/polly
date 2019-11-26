@@ -26,7 +26,7 @@ export const Main = (props: { setLang: (lang: string) => void }) => {
                 {!user.isLoggedIn() && <p><a href={`${server_polly}/login?redirect_uri=${window.location.href}`}>{intl.login}</a></p>}
                 <ButtonGroup selected={intl.getAvailableLanguages().indexOf(intl.getLanguage())}>
                     {intl.getAvailableLanguages().map(lang =>
-                        <Button onClick={() => props.setLang(lang)}><span role="img" aria-label={langs[lang].name}>{langs[lang].flag} {langs[lang].name}</span></Button>
+                        <Button key={lang} onClick={() => props.setLang(lang)}><span role="img" aria-label={langs[lang].name}>{langs[lang].flag} {langs[lang].name}</span></Button>
                     )}
                 </ButtonGroup>
             </Block>

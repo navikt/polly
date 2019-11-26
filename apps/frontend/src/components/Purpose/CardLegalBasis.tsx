@@ -10,7 +10,7 @@ import { intl } from "../../util/intl/intl"
 import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from "formik"
 import { KIND as NKIND, Notification } from "baseui/notification"
 import { LegalBasisFormValues } from "../../constants"
-import { legalBasisSchema } from "./ModalProcess"
+import { legalBasisSchema } from "../common/LegalBasis"
 
 const rowBlockBrops: BlockProps = {
     display: 'flex',
@@ -45,6 +45,7 @@ const CardLegalBasis = ({submit}: CardLegalBasisProps) => {
                             <Field name="gdpr"
                                    render={() => (
                                        <Select
+                                           onBlur={() => form.setFieldTouched('gdpr')}
                                            autoFocus={true}
                                            options={codelist.getParsedOptions(ListName.GDPR_ARTICLE)}
                                            placeholder={intl.gdprSelect}
@@ -74,6 +75,7 @@ const CardLegalBasis = ({submit}: CardLegalBasisProps) => {
                                                form.setFieldValue('nationalLaw', value.length > 0 ? value[0].id : undefined)
                                            }}
                                            value={nationalLaw}
+                                           onBlur={() => form.setFieldTouched('nationalLaw')}
                                            error={!!form.errors.nationalLaw && (form.touched.nationalLaw || !!form.submitCount)}
                                        />
                                    )}/>

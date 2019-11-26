@@ -1,47 +1,25 @@
 import * as React from "react";
-import {
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    ModalButton,
-    SIZE,
-    ROLE
-} from "baseui/modal";
-import {
-    Formik,
-    FormikProps,
-    Form,
-    Field,
-    FieldProps,
-    FieldArray,
-} from "formik";
-import { BlockProps, Block } from "baseui/block";
+import { useEffect } from "react";
+import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
+import { ErrorMessage, Field, FieldArray, FieldProps, Form, Formik, FormikProps, } from "formik";
+import { Block, BlockProps } from "baseui/block";
 import { Label2 } from "baseui/typography";
 import { Radio, RadioGroup } from "baseui/radio";
 import { Plus } from "baseui/icon";
-import { Option, Select, StatefulSelect, TYPE, Value } from 'baseui/select';
+import { Option, Select, TYPE, Value } from 'baseui/select';
+import * as yup from "yup"
 
 import CardLegalBasis from './CardLegalBasis'
-import { ListName, codelist } from "../../service/Codelist";
-import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
+import { codelist, ListName } from "../../service/Codelist";
+import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { useDebouncedState } from "../../util/customHooks"
-import { useEffect } from "react"
 import axios from "axios"
-import { PageResponse, InformationType } from "../../constants"
+import { InformationType, PageResponse, PolicyFormValues } from "../../constants"
 import { intl } from "../../util/intl/intl"
+import { legalBasisSchema, ListLegalBases } from "../common/LegalBasis"
+import { KIND as NKIND, Notification } from "baseui/notification"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
-
-export interface PolicyFormValues {
-    id?: string;
-    process?: string;
-    purposeCode?: string;
-    informationTypeName: string;
-    subjectCategory: string;
-    legalBasesInherited: boolean;
-    legalBases: Array<any>;
-}
 
 const modalBlockProps: BlockProps = {
     width: '700px',
@@ -54,6 +32,19 @@ const rowBlockProps: BlockProps = {
     width: '100%',
     marginTop: '1rem'
 }
+
+const Error = (props: { fieldName: string }) => (
+    <ErrorMessage name={props.fieldName}>
+        {msg => (
+            <Block display="flex" width="100%" marginTop=".2rem">
+                {renderLabel('')}
+                <Block width="100%">
+                    <Notification overrides={{Body: {style: {width: 'auto', padding: 0, marginTop: 0}}}} kind={NKIND.negative}>{msg}</Notification>
+                </Block>
+            </Block>
+        )}
+    </ErrorMessage>
+)
 
 const renderLabel = (label: any | string) => (
     <Block width="30%" alignSelf="center">
@@ -84,12 +75,14 @@ const FieldInformationTypeName = (props: {
                         props.setValue(infoType)
                         form.setFieldValue('informationTypeName', infoType.id)
                     }}
+                    onBlur={() => form.setFieldTouched('informationTypeName')}
+                    error={!!form.errors.informationTypeName && !!form.submitCount}
                 />
             )}
         />
     )
 
-const FieldSubjectCategory = (props: { value: string }) => {
+const FieldSubjectCategory = (props: { value?: string }) => {
     const [value, setValue] = React.useState<Value>(props.value ? [{ id: props.value, label: codelist.getShortname(ListName.SUBJECT_CATEGORY, props.value) }] : []);
 
     return (
@@ -100,9 +93,11 @@ const FieldSubjectCategory = (props: { value: string }) => {
                     options={codelist.getParsedOptions(ListName.SUBJECT_CATEGORY)}
                     onChange={({ value }) => {
                         setValue(value)
-                        form.setFieldValue('subjectCategory', value.length > 0 ? value[0].id : null)
+                        form.setFieldValue('subjectCategory', value.length > 0 ? value[0].id : undefined)
                     }}
                     value={value}
+                    onBlur={() => form.setFieldTouched('subjectCategory')}
+                    error={!!form.errors.subjectCategory && !!form.submitCount}
                 />
             )}
         />
@@ -114,44 +109,28 @@ const FieldLegalBasisInherited = (props: { current: any, setCurrent: Function })
     return (
         <Field
             name="legalBasesInherited"
-            render={({ form }: FieldProps<PolicyFormValues>) => (
-                <Block width="100%">
-                    <RadioGroup
-                        value={props.current}
-                        align="vertical"
-                        onChange={e => {
-                            (e.target as HTMLInputElement).value === "Ja" ? (
-                                form.setFieldValue("legalBasesInherited", true)
-                            ) : form.setFieldValue("legalBasesInherited", false)
-                            props.setCurrent((e.target as HTMLInputElement).value)
-                        }}
-                    >
-                        <Radio value="Ja">{intl.legalBasesProcess}</Radio>
-                        <Radio value="Nei">{intl.legalBasesUndecided}</Radio>
-                        <Radio value="Annet">{intl.legalBasesOwn}</Radio>
-                    </RadioGroup>
-                </Block>
-
-            )}
+            render={({form}: FieldProps<PolicyFormValues>) => {
+                !form.touched.legalBasesInherited && form.submitCount && form.setFieldTouched('legalBasesInherited')
+                return (
+                    <Block width="100%">
+                        <RadioGroup
+                            value={props.current}
+                            align="vertical" isError={!!form.errors.legalBasesInherited && !!form.submitCount}
+                            onChange={e => {
+                                (e.target as HTMLInputElement).value === "Ja" ? (
+                                    form.setFieldValue("legalBasesInherited", true)
+                                ) : form.setFieldValue("legalBasesInherited", false)
+                                props.setCurrent((e.target as HTMLInputElement).value)
+                            }}
+                        >
+                            <Radio value="Ja">{intl.legalBasesProcess}</Radio>
+                            <Radio value="Nei">{intl.legalBasesUndecided}</Radio>
+                            <Radio value="Annet">{intl.legalBasesOwn}</Radio>
+                        </RadioGroup>
+                    </Block>
+                )
+            }}
         />
-    )
-}
-
-const ListLegalBases = (props: any) => {
-    const { legalBases } = props
-    if (!legalBases) return null
-
-    return (
-        <ul>
-            {legalBases.map((legalBase: any) => (
-                <li>
-                    <p> {legalBase.gdpr && codelist.getShortname(ListName.GDPR_ARTICLE, legalBase.gdpr) + ": "}
-                        {legalBase.nationalLaw && codelist.getShortname(ListName.NATIONAL_LAW, legalBase.nationalLaw) + ' '}
-                        {legalBase.description}
-                    </p>
-                </li>
-            ))}
-        </ul>
     )
 }
 
@@ -169,8 +148,15 @@ const setInitialShowLegalBasesValue = (initialValues: PolicyFormValues) => {
     if (!legalBases) return false
     if (legalBasesInherited) return false
 
-    return legalBases.length > 0 ? false : true
+    return legalBases.length <= 0
 }
+
+const policySchema = () => yup.object({
+    informationTypeName: yup.string().required(intl.required),
+    subjectCategory: yup.string().required(intl.required),
+    legalBasesInherited: yup.boolean().required(intl.required),
+    legalBases: yup.array(legalBasisSchema())
+})
 
 type ModalPolicyProps = {
     title?: string;
@@ -190,8 +176,6 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
     const [infoTypeSearch, setInfoTypeSearch] = useDebouncedState<string>('', 200);
     const [infoTypeSearchResult, setInfoTypeSearchResult] = React.useState<Option[]>([]);
 
-
-
     useEffect(() => {
         if (infoTypeSearch && infoTypeSearch.length > 2) {
             axios
@@ -204,9 +188,18 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
 
     }, [infoTypeSearch])
 
+    const onCloseModal = () => {
+        setInfoTypeValue([])
+        setInfoTypeSearch('')
+        setInfoTypeSearchResult([])
+        setShowLegalbasesFields(false)
+        setCurrentChecked(false)
+        onClose()
+    }
+
     return (
         <Modal
-            onClose={() => onClose()}
+            onClose={onCloseModal}
             isOpen={isOpen}
             closeable
             animate
@@ -215,8 +208,11 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
         >
             <Block {...modalBlockProps}>
                 <Formik
-                    initialValues={initialValues}
-                    onSubmit={(values) => submit(values)}
+                    initialValues={initialValues} validationSchema={policySchema()}
+                    onSubmit={(values) => {
+                        submit(values)
+                        onCloseModal()
+                    }}
                     render={(formikBag: FormikProps<PolicyFormValues>) => (
                         <Form>
                             <ModalHeader>
@@ -235,16 +231,21 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                                         setValue={setInfoTypeValue}
                                     />
                                 </Block>
+                                <Error fieldName="informationTypeName"/>
+
                                 <Block {...rowBlockProps}>
                                     {renderLabel(intl.subjectCategories)}
                                     <FieldSubjectCategory value={formikBag.values.subjectCategory} />
                                 </Block>
+                                <Error fieldName="subjectCategory"/>
+
                                 <Block {...rowBlockProps}>
                                     {renderLabel(intl.legalBasesShort)}
                                     <FieldLegalBasisInherited
                                         current={currentChecked}
                                         setCurrent={setCurrentChecked} />
                                 </Block>
+                                <Error fieldName="legalBasesInherited"/>
 
                                 {currentChecked === "Annet" && (
                                     <FieldArray
@@ -286,7 +287,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                             <ModalFooter>
                                 <Block display="flex" justifyContent="flex-end">
                                     <Block alignSelf="flex-end">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
-                                    <Button type="button" kind={KIND.minimal} onClick={() => onClose()}>{intl.abort}</Button>
+                                    <Button type="button" kind={KIND.minimal} onClick={onCloseModal}>{intl.abort}</Button>
                                     <ModalButton type="submit">{intl.save}</ModalButton>
                                 </Block>
                             </ModalFooter>
