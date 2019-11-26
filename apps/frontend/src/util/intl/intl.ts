@@ -80,14 +80,18 @@ export interface IStrings {
     write: string;
     administrate: string;
 
+    prevButton: string;
+    nextButton: string;
+    rows: string;
+
     maxChars: string;
     required: string;
 }
 
 export const langs: Langs = {
-    no: { flag: "🇳🇴", name: "Norsk", langCode: "no", texts: no },
-    en: { flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", name: "English", langCode: "en", texts: en },
-    ta: { flag: "🇱🇰", name: "தமிழ்", langCode: "ta", texts: ta }
+    no: {flag: "🇳🇴", name: "Norsk", langCode: "no", texts: no},
+    en: {flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", name: "English", langCode: "en", texts: en},
+    ta: {flag: "🇱🇰", name: "தமிழ்", langCode: "ta", texts: ta}
 };
 
 export const langsArray: Lang[] = Object.keys(langs).map(lang => langs[lang])
@@ -98,7 +102,7 @@ const defaultLang = langs.no;
 type IIntl = LocalizedStringsMethods & IStrings;
 
 interface LocalizedStringsFactory {
-    new <T>(
+    new<T>(
         props: GlobalStrings<T>,
         options?: { customLanguageInterface: () => string }
     ): IIntl;
@@ -110,7 +114,7 @@ Object.keys(langs).forEach(lang => (strings[lang] = langs[lang].texts));
 
 export const intl: IIntl = new (LocalizedStrings as LocalizedStringsFactory)(
     strings as any,
-    { customLanguageInterface: () => defaultLang.langCode }
+    {customLanguageInterface: () => defaultLang.langCode}
 );
 
 interface IntlLangs {
@@ -136,7 +140,7 @@ export const useLang = () => {
     const [lang, setLang] = React.useState<string>(
         ((localStorageAvailable &&
             localStorage.getItem("polly-lang")) as string) ||
-            defaultLang.langCode
+        defaultLang.langCode
     );
     const update = useForceUpdate();
     useEffect(() => {
