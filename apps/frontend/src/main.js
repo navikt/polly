@@ -15,10 +15,10 @@ const Main = props => {
     return (
         <React.Fragment>
             <ThemeProvider theme={theme}>
-                <Header />
+                <Header setLang={setLang}/>
                 <Block margin="0 auto" width="80%" height="100%">
                     <Router history={history}>
-                        <Routes setLang={setLang} />
+                        <Routes />
                     </Router>
                 </Block>
             </ThemeProvider>

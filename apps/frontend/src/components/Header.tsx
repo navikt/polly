@@ -1,16 +1,16 @@
 import * as React from "react";
-import {
-    HeaderNavigation,
-    ALIGN,
-    StyledNavigationList,
-    StyledNavigationItem
-} from "baseui/header-navigation";
+import { ALIGN, HeaderNavigation, StyledNavigationItem, StyledNavigationList } from "baseui/header-navigation";
 import { StyledLink } from "baseui/link";
 import { useStyletron } from 'baseui'
 import { Block } from 'baseui/block'
-import { intl } from '../util/intl/intl'
+import { intl, Lang, langs, langsArray } from '../util/intl/intl'
 import { useAwait } from "../util/customHooks"
 import { user } from "../service/User"
+import { Button } from "baseui/button"
+import { Popover } from "baseui/popover"
+import { OptionProfile, StatefulMenu } from "baseui/menu"
+import { TriangleDown } from "baseui/icon"
+import { theme } from "../util/theme"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -48,7 +48,70 @@ const Brand = (props: any) => {
     )
 };
 
-export default () => {
+const Flag = (props: { langCode: string }) => (
+    <span role="img" aria-label={langs[props.langCode].name}>{langs[props.langCode].flag}</span>
+)
+
+const FlagWithName = (props: { langCode: string }) => (
+    <span><Flag langCode={props.langCode}/> {langs[props.langCode].name}</span>
+)
+
+const LangDropdown = (props: { setLang: (lang: string) => void }) => {
+    const [isOpen, setIsOpen] = React.useState(false);
+    return (
+        <Popover
+            isOpen={isOpen}
+            onClick={() => setIsOpen(s => !s)}
+            content={
+                <StatefulMenu
+                    items={langsArray.filter(l => l.langCode !== intl.getLanguage())}
+                    onItemSelect={({item}) => {
+                        setIsOpen(false)
+                        props.setLang(item.langCode)
+                    }}
+                    overrides={{
+                        Option: {
+                            component: OptionProfile,
+                            props: {
+                                getProfileItemLabels: (lang: Lang) => ({
+                                    title: lang.name,
+                                    subtitle: lang.langCode
+                                }),
+                                getProfileItemImg: (lang: Lang) => () => <Flag langCode={lang.langCode}/>,
+                                overrides: {
+                                    ListItemProfile: {
+                                        props: {
+                                            style: {
+                                                paddingTop: theme.sizing.scale100,
+                                                paddingBottom: theme.sizing.scale100,
+                                                paddingLeft: theme.sizing.scale600,
+                                                paddingRight: theme.sizing.scale800
+                                            }
+                                        }
+                                    },
+                                    ProfileImgContainer: {
+                                        props: {
+                                            style: {
+                                                height: theme.sizing.scale900,
+                                                width: theme.sizing.scale900
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }}
+                />
+            }
+        >
+            <Button endEnhancer={() => <TriangleDown size={24}/>} size={"compact"}>
+                <FlagWithName langCode={intl.getLanguage()}/>
+            </Button>
+        </Popover>
+    );
+}
+
+export default (props: { setLang: (lang: string) => void }) => {
     const [useCss, theme] = useStyletron()
     const link = useCss({ textDecoration: 'none' });
     useAwait(user.wait())
@@ -86,6 +149,10 @@ export default () => {
                     <StyledLink href="/informationtype" className={link}>
                         {intl.informationTypes}
                     </StyledLink>
+                </StyledNavigationItem>
+
+                <StyledNavigationItem>
+                    <LangDropdown setLang={props.setLang}/>
                 </StyledNavigationItem>
 
                 <StyledNavigationItem>

@@ -88,6 +88,8 @@ export const langs: Langs = {
     ta: { flag: "🇱🇰", name: "தமிழ்", langCode: "ta", texts: ta }
 };
 
+export const langsArray: Lang[] = Object.keys(langs).map(lang => langs[lang])
+
 // Controls starting language as well as fallback language if a text is missing in chosen language
 const defaultLang = langs.no;
 
@@ -113,13 +115,15 @@ interface IntlLangs {
     [lang: string]: IStrings;
 }
 
+export interface Lang {
+    flag: string;
+    name: string;
+    langCode: string;
+    texts: any;
+}
+
 interface Langs {
-    [lang: string]: {
-        flag: string;
-        name: string;
-        langCode: string;
-        texts: any;
-    };
+    [lang: string]: Lang;
 }
 
 // hooks

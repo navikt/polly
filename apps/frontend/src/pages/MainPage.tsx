@@ -4,14 +4,12 @@ import { Link } from "react-router-dom"
 import * as React from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faDragon } from "@fortawesome/free-solid-svg-icons"
-import { intl, langs } from "../util/intl/intl"
-import { Button } from "baseui/button"
+import { intl } from "../util/intl/intl"
 import { Block } from "baseui/block"
-import { ButtonGroup } from "baseui/button-group"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
-export const Main = (props: { setLang: (lang: string) => void }) => {
+export const Main = () => {
     useAwait(user.wait())
 
     return (
@@ -24,11 +22,6 @@ export const Main = (props: { setLang: (lang: string) => void }) => {
                 <p>{intl.hi} {user.getNavIdent()} {<FontAwesomeIcon icon={faDragon}/>} {user.getGivenName()} {user.getFamilyName()} <a
                     href={`${server_polly}/logout?redirect_uri=${window.location.href}`}>{intl.logout}</a></p>}
                 {!user.isLoggedIn() && <p><a href={`${server_polly}/login?redirect_uri=${window.location.href}`}>{intl.login}</a></p>}
-                <ButtonGroup selected={intl.getAvailableLanguages().indexOf(intl.getLanguage())}>
-                    {intl.getAvailableLanguages().map(lang =>
-                        <Button key={lang} onClick={() => props.setLang(lang)}><span role="img" aria-label={langs[lang].name}>{langs[lang].flag} {langs[lang].name}</span></Button>
-                    )}
-                </ButtonGroup>
             </Block>
             <Block>
                 <p><Link to="/informationtype">{intl.informationTypes}</Link></p>
