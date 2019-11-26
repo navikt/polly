@@ -2,7 +2,7 @@ import * as React from "react";
 import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, StyledTable } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
 import { StyledLink } from "baseui/link";
-import { renderLegalBasis, LegalBasesNotClarified } from "../../common/LegalBasis"
+import { LegalBasesNotClarified, ListLegalBasesInTable } from "../../common/LegalBasis"
 import { codelist, ListName } from "../../../service/Codelist"
 import { intl } from "../../../util/intl/intl"
 
@@ -129,19 +129,11 @@ const TableInformationtype = ({ list }: TableInformationtypeProps) => {
 
                             <StyledCell>
                                 {!row.legallegalBasesInherited && row.legalBases && row.legalBases.length > 0 && (
-                                    <ul>
-                                        {row.legalBases.map((legalBasis: any, i: number) => (
-                                            <li key={i}> {renderLegalBasis(legalBasis)}</li>
-                                        ))}
-                                    </ul>
+                                    <ListLegalBasesInTable legalBases={row.legalBases} />
                                 )}
 
                                 {row.legalBasesInherited && row.process.legalBases && (
-                                    <ul>
-                                        {row.process.legalBases.map((legalBasis: any, i: number) => (
-                                            <li key={i}> {renderLegalBasis(legalBasis)}</li>
-                                        ))}
-                                    </ul>
+                                    <ListLegalBasesInTable legalBases={row.process.legalBases} />
                                 )}
 
                                 {!row.legalBasesInherited && row.legalBases.length < 1 && (

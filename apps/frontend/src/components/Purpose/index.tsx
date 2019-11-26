@@ -42,9 +42,9 @@ const renderLegalBasisList = (list: any) => {
         return (<Paragraph2>{intl.legalBasisNotFound}</Paragraph2>)
 
     return (
-        <ul>
+        <React.Fragment>
             {list.map((legalBasis: any, i: number) => <li key={i}><Paragraph2>{renderLegalBasis(legalBasis)}</Paragraph2></li>)}
-        </ul>
+        </React.Fragment>
     )
 }
 
@@ -222,7 +222,7 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
 
                         {processList.map((process: Process, index: any) => (
                             <Panel title={process.name} key={process.name} expanded={isExpanded(process)}>
-                                <Block {...rowPanelContent} marginBottom="2rem">
+                                <Block {...rowPanelContent} marginBottom="2rem" padding="1rem">
                                     <Block display="flex">
                                         <Block marginRight="6rem">
                                             <Label2>{intl.legalBasis}</Label2>

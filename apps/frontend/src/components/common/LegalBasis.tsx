@@ -34,7 +34,7 @@ const legalBasisLinkProcessor = (law: string, text: string) => processString([{
 export const LegalBasesNotClarified = () => {
     return (
         <Block display="flex" color={theme.colors.warning400}>
-            <span><FontAwesomeIcon icon={faExclamation} color={theme.colors.warning400}/>&nbsp;</span>
+            <span><FontAwesomeIcon icon={faExclamation} color={theme.colors.warning400} />&nbsp;</span>
             {intl.legalBasesUndecidedWarning}
         </Block>
 
@@ -42,7 +42,7 @@ export const LegalBasesNotClarified = () => {
 }
 
 export const ListLegalBases = (props: { legalBases?: LegalBasisFormValues[] }) => {
-    const {legalBases} = props
+    const { legalBases } = props
     if (!legalBases) return null
 
     return (
@@ -59,8 +59,20 @@ export const ListLegalBases = (props: { legalBases?: LegalBasisFormValues[] }) =
     )
 }
 
+export const ListLegalBasesInTable = (props: { legalBases: LegalBasis[] }) => {
+    const { legalBases } = props
+    return (
+        <Block>
+            {legalBases.map((legalBasis: any, i: number) => (
+                <Block marginBottom="8px"><li key={i}> {renderLegalBasis(legalBasis)}</li></Block>
+            ))}
+        </Block>
+
+    )
+}
+
 export const legalBasisSchema = () => yup.object({
-  gdpr: yup.string().required(intl.required),
-  nationalLaw: yup.string(),
-  description: yup.string().required(intl.required),
+    gdpr: yup.string().required(intl.required),
+    nationalLaw: yup.string(),
+    description: yup.string().required(intl.required),
 })

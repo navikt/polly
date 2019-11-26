@@ -2,7 +2,7 @@ import * as React from "react";
 import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, StyledTable, StyledSortableLabel, StyledHeadCell } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
 import { StyledLink } from 'baseui/link'
-import { renderLegalBasis, LegalBasesNotClarified } from "../common/LegalBasis"
+import { renderLegalBasis, LegalBasesNotClarified, ListLegalBasesInTable } from "../common/LegalBasis"
 import { codelist, ListName } from "../../service/Codelist"
 import { Policy, PolicyFormValues } from "../../constants"
 import { Sensitivity } from "../InformationType/Sensitivity"
@@ -173,16 +173,7 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
                                 )}
 
                                 {row.legalBases && row.legalBases.length > 0 && (
-                                    <Block>
-                                        <ul>
-                                        {
-                                            row.legalBases.map((legalBasis: any, i: number) => (
-                                                <li key={i}> {renderLegalBasis(legalBasis)}</li>
-                                            ))
-                                        }
-                                        </ul>
-                                    </Block>
-
+                                    <ListLegalBasesInTable legalBases={row.legalBases} />
                                 )}
                             </StyledCell>
                             <SmallerStyledCell>
