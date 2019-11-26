@@ -78,7 +78,10 @@ public class FieldValidator {
     }
 
     public <T extends Enum<T>> void checkIfCodelistIsImmutable(String list) {
-        if (!list.isEmpty() && (list.equals(ListName.GDPR_ARTICLE.toString()) || list.equals(ListName.SENSITIVITY.toString()))) {
+        if (StringUtils.isBlank(list)) {
+            return;
+        }
+        if (list.equals(ListName.GDPR_ARTICLE.toString()) || list.equals(ListName.SENSITIVITY.toString())) {
             validationErrors.add(new ValidationError(reference, ERROR_TYPE_IMMUTABLE_CODELIST, String.format(ERROR_MESSAGE_IMMUTABLE_CODELIST, list)));
         }
     }
