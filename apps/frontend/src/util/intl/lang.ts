@@ -48,6 +48,7 @@ export const no: IStrings = {
     legalBasesUndecided: "Uavklart",
     legalBasesOwn: "Har eget rettslig grunnlag",
     legalBasesUndecidedWarning: "Rettslig grunn er ikke avklart",
+    notAllowedMessage: "Du har ikke tilgang til denne siden.",
 
     department: "Avdeling",
     subDepartment: "Linja (Ytre etat)",
@@ -68,8 +69,8 @@ export const no: IStrings = {
     write: "Skrive",
     administrate: "Administrere",
 
-    maxChars: 'Maks {0} tegn',
-    required: 'Feltet er påkrevd'
+    maxChars: "Maks {0} tegn",
+    required: "Feltet er påkrevd"
 };
 
 export const en = {
@@ -120,6 +121,7 @@ export const en = {
     legalBasesUndecided: "Undecided",
     legalBasesOwn: "Use explicit legal bases",
     legalBasesUndecidedWarning: "Legal bases missing",
+    notAllowedMessage: "You don't have access to this page",
 
     department: "Department",
     subDepartment: "Sub department",
@@ -140,8 +142,8 @@ export const en = {
     write: "Write",
     administrate: "Administrate",
 
-    maxChars: 'Max {0} characters',
-    required: 'Field is required'
+    maxChars: "Max {0} characters",
+    required: "Field is required"
 };
 
 export const ta = {

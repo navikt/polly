@@ -4,7 +4,7 @@ import { Spinner } from "baseui/spinner";
 import axios from "axios";
 import Banner from "../components/Banner";
 import InformationtypeMetadata from "../components/InformationType/InformationtypeMetadata/";
-import { useDebouncedState } from "../util/customHooks"
+import { useDebouncedState, useAwait } from "../util/customHooks"
 import { Option, Select, TYPE } from "baseui/select"
 import { InformationType, PageResponse } from "../constants"
 import { codelist } from "../service/Codelist"
@@ -13,6 +13,7 @@ import { Block } from "baseui/block"
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { intl } from "../util/intl/intl"
+import { user } from "../service/User";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -40,6 +41,8 @@ const InformationtypePage = (props: any) => {
 
     const [infoTypeSearch, setInfoTypeSearch] = useDebouncedState<string>('', 200);
     const [infoTypeSearchResult, setInfoTypeSearchResult] = React.useState<Option[]>([]);
+
+    useAwait(user.wait())
 
     useEffect(() => {
         if (infoTypeSearch && infoTypeSearch.length > 2) {
@@ -86,7 +89,7 @@ const InformationtypePage = (props: any) => {
                 <Spinner size={30} />
             ) : (informationTypeId ?
                 <React.Fragment>
-                    <Banner title={intl.informationType} informationtypeId={informationTypeId} />
+                    <Banner title={intl.informationType} informationtypeId={user.isLoggedIn() && informationTypeId} />
                     {!error && informationtype && (
                         <InformationtypeMetadata informationtype={informationtype} purposeMap={purposeMap} />
                     )}

@@ -1,8 +1,11 @@
-import LocalizedStrings, { GlobalStrings, LocalizedStringsMethods } from "react-localization";
+import LocalizedStrings, {
+    GlobalStrings,
+    LocalizedStringsMethods
+} from "react-localization";
 import * as React from "react";
 import { useEffect } from "react";
 import { useForceUpdate } from "../customHooks";
-import { en, no, ta } from "./lang"
+import { en, no, ta } from "./lang";
 
 export interface IStrings {
     informationType: string;
@@ -53,6 +56,7 @@ export interface IStrings {
     legalBasesOwn: string;
     legalBasesUndecided: string;
     legalBasesUndecidedWarning: string;
+    notAllowedMessage: string;
 
     // generic
     department: string;
@@ -79,10 +83,10 @@ export interface IStrings {
 }
 
 export const langs: Langs = {
-    no: {flag: '🇳🇴', name: 'Norsk', langCode: 'no', texts: no},
-    en: {flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', name: 'English', langCode: 'en', texts: en},
-    ta: {flag: '🇱🇰', name: 'தமிழ்', langCode: 'ta', texts: ta}
-}
+    no: { flag: "🇳🇴", name: "Norsk", langCode: "no", texts: no },
+    en: { flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", name: "English", langCode: "en", texts: en },
+    ta: { flag: "🇱🇰", name: "தமிழ்", langCode: "ta", texts: ta }
+};
 
 // Controls starting language as well as fallback language if a text is missing in chosen language
 const defaultLang = langs.no;
@@ -90,7 +94,7 @@ const defaultLang = langs.no;
 type IIntl = LocalizedStringsMethods & IStrings;
 
 interface LocalizedStringsFactory {
-    new<T>(
+    new <T>(
         props: GlobalStrings<T>,
         options?: { customLanguageInterface: () => string }
     ): IIntl;
@@ -98,15 +102,15 @@ interface LocalizedStringsFactory {
 
 const strings: IntlLangs = {};
 
-Object.keys(langs).forEach(lang => strings[lang] = langs[lang].texts)
+Object.keys(langs).forEach(lang => (strings[lang] = langs[lang].texts));
 
 export const intl: IIntl = new (LocalizedStrings as LocalizedStringsFactory)(
     strings as any,
-    {customLanguageInterface: () => defaultLang.langCode}
+    { customLanguageInterface: () => defaultLang.langCode }
 );
 
 interface IntlLangs {
-    [lang: string]: IStrings
+    [lang: string]: IStrings;
 }
 
 interface Langs {
@@ -123,7 +127,11 @@ interface Langs {
 const localStorageAvailable = storageAvailable();
 
 export const useLang = () => {
-    const [lang, setLang] = React.useState<string>(((localStorageAvailable && localStorage.getItem("polly-lang")) as string) || defaultLang.langCode);
+    const [lang, setLang] = React.useState<string>(
+        ((localStorageAvailable &&
+            localStorage.getItem("polly-lang")) as string) ||
+            defaultLang.langCode
+    );
     const update = useForceUpdate();
     useEffect(() => {
         intl.setLanguage(lang);
@@ -136,7 +144,7 @@ export const useLang = () => {
 
 function storageAvailable() {
     try {
-        let key = "ptab"
+        let key = "ptab";
         localStorage.setItem(key, key);
         localStorage.removeItem(key);
         return true;

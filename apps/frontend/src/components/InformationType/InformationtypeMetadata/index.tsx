@@ -53,7 +53,6 @@ const renderMetadata = (informationtype: InformationType) => {
         <Block display="flex" width="100%" marginBottom="5rem">
             <Block width="40%" marginRight="5rem">
                 <Card>
-
                     {renderTextWithLabel(intl.name, informationtype.name, faTag)}
                     {renderTextWithLabel(intl.term, informationtype.term ? informationtype.term.description || informationtype.term.name : '')}
                     {renderTextWithLabel(intl.description, informationtype.description)}

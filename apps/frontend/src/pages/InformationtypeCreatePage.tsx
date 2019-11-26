@@ -5,9 +5,12 @@ import axios from "axios";
 
 import InformationtypeForm from "../components/InformationType/InformationtypeForm";
 import Banner from "../components/Banner";
-import {codelist} from "../service/Codelist";
+import { codelist } from "../service/Codelist";
 import { InformationType, InformationtypeFormValues, PageResponse } from "../constants"
 import { intl } from "../util/intl/intl"
+import { useAwait } from "../util/customHooks";
+import { user } from "../service/User";
+import ErrorNotAllowed from "../components/common/ErrorNotAllowed";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -34,17 +37,6 @@ const InformationtypeCreatePage = (props: any) => {
     const [error, setError] = React.useState(null);
     const [errorSubmit, setErrorSubmit] = React.useState(null);
 
-    const handleAxiosError = (error: any) => {
-        if (error.response) {
-            console.log(error.response.data);
-            console.log(error.response.status);
-            console.log(error.response.headers);
-        } else {
-            console.log(error.message);
-            setError(error.message);
-        }
-    };
-
     const handleSubmitResponse = (response: { data: PageResponse<InformationType> }) => {
         props.history.push(`/informationtype/${response.data.content[0].id}`)
     };
@@ -61,6 +53,8 @@ const InformationtypeCreatePage = (props: any) => {
             .catch(err => setErrorSubmit(err.message));
     };
 
+    useAwait(user.wait())
+
     React.useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
@@ -72,27 +66,33 @@ const InformationtypeCreatePage = (props: any) => {
 
     return (
         <React.Fragment>
-            {isLoading ? (
-                <Spinner size={30} />
-            ) : (
+            {!user.isLoggedIn() ? (<ErrorNotAllowed />)
+                : (
                     <React.Fragment>
-                        <Banner title={intl.informationTypeCreate} />
-                        {!error && codelist ? (
-                            <React.Fragment>
-                                <Centered>
-                                    <InformationtypeForm
-                                        formInitialValues={initialFormValues}
-                                        submit={handleSubmit}
-                                        isEdit={false}
-                                    />
-                                    {errorSubmit && <p>{errorSubmit}</p>}
-                                </Centered>
-                            </React.Fragment>
+                        {isLoading ? (
+                            <Spinner size={30} />
                         ) : (
-                                <p>Feil i henting av codelist</p>
+                                <React.Fragment>
+                                    <Banner title={intl.informationTypeCreate} />
+                                    {!error && codelist ? (
+                                        <React.Fragment>
+                                            <Centered>
+                                                <InformationtypeForm
+                                                    formInitialValues={initialFormValues}
+                                                    submit={handleSubmit}
+                                                    isEdit={false}
+                                                />
+                                                {errorSubmit && <p>{errorSubmit}</p>}
+                                            </Centered>
+                                        </React.Fragment>
+                                    ) : (
+                                            <p>Feil i henting av codelist</p>
+                                        )}
+                                </React.Fragment>
                             )}
                     </React.Fragment>
-                )}
+                )
+            }
         </React.Fragment>
     );
 };
