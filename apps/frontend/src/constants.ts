@@ -23,9 +23,9 @@ export interface PolicyFormValues {
 
 export interface ProcessFormValues {
     name: string;
-    department: string | null | undefined;
-    subDepartment: string | null | undefined;
-    legalBases: Array<LegalBasis> | null | undefined;
+    department: string | undefined;
+    subDepartment: string | undefined;
+    legalBases: Array<LegalBasisFormValues>;
 }
 
 export interface LegalBasisFormValues {

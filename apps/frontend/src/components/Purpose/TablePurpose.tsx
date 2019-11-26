@@ -2,7 +2,7 @@ import * as React from "react";
 import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, StyledTable, StyledSortableLabel, StyledHeadCell } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
 import { StyledLink } from 'baseui/link'
-import { renderLegalBasis, LegalBasesNotClarified, ListLegalBasesInTable } from "../common/LegalBasis"
+import { LegalBasesNotClarified, ListLegalBasesInTable } from "../common/LegalBasis"
 import { codelist, ListName } from "../../service/Codelist"
 import { Policy, PolicyFormValues } from "../../constants"
 import { Sensitivity } from "../InformationType/Sensitivity"
