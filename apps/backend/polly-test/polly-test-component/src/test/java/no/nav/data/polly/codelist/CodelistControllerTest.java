@@ -26,9 +26,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
+import static no.nav.data.polly.codelist.CodelistUtils.createCodelist;
+import static no.nav.data.polly.codelist.CodelistUtils.createCodelistRequest;
+import static no.nav.data.polly.codelist.CodelistUtils.createListOfCodelists;
+import static no.nav.data.polly.codelist.CodelistUtils.createListOfRequests;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -61,19 +63,6 @@ class CodelistControllerTest {
     }
 
     @Test
-    void findAll() throws Exception {
-        MockHttpServletResponse response = mvc.perform(get("/codelist"))
-                .andReturn().getResponse();
-
-        AllCodelistResponse returnedCodelist = JsonUtils.toObject(response.getContentAsString(), AllCodelistResponse.class);
-
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(returnedCodelist.getCodelist().size()).isEqualTo(ListName.values().length);
-        assertThat(returnedCodelist.getCodelist().get(ListName.SOURCE).size()).isEqualTo(CodelistService.getCodelist(ListName.SOURCE).size());
-        assertThat(returnedCodelist.getCodelist().get(ListName.CATEGORY).size()).isEqualTo(CodelistService.getCodelist(ListName.CATEGORY).size());
-    }
-
-    @Test
     void findAllLegacy_shouldReturnTheInitiatedCodelist() throws Exception {
         MockHttpServletResponse response = mvc.perform(get("/codelist/legacy"))
                 .andReturn().getResponse();
@@ -85,6 +74,19 @@ class CodelistControllerTest {
         assertThat(returnedCodelist.size()).isEqualTo(ListName.values().length);
         assertThat(returnedCodelist.get("SOURCE").size()).isEqualTo(CodelistService.getCodelist(ListName.SOURCE).size());
         assertThat(returnedCodelist.get("CATEGORY").size()).isEqualTo(CodelistService.getCodelist(ListName.CATEGORY).size());
+    }
+
+    @Test
+    void findAll() throws Exception {
+        MockHttpServletResponse response = mvc.perform(get("/codelist"))
+                .andReturn().getResponse();
+
+        AllCodelistResponse returnedCodelist = JsonUtils.toObject(response.getContentAsString(), AllCodelistResponse.class);
+
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(returnedCodelist.getCodelist().size()).isEqualTo(ListName.values().length);
+        assertThat(returnedCodelist.getCodelist().get(ListName.SOURCE).size()).isEqualTo(CodelistService.getCodelist(ListName.SOURCE).size());
+        assertThat(returnedCodelist.getCodelist().get(ListName.CATEGORY).size()).isEqualTo(CodelistService.getCodelist(ListName.CATEGORY).size());
     }
 
     @Test
@@ -139,69 +141,51 @@ class CodelistControllerTest {
 
     @Test
     void save_shouldSaveMultipleCodelists() throws Exception {
-        List<Codelist> codelists = List.of(CodelistService.getCodelist(ListName.SOURCE, "ARBEIDSGIVER"), CodelistService.getCodelist(ListName.SOURCE, "BRUKER"));
+        List<Codelist> codelists = createListOfCodelists(createCodelist(ListName.SOURCE, "ARBEIDSGIVER"), createCodelist(ListName.SOURCE, "BRUKER"));
         when(service.save(anyList())).thenReturn(codelists);
 
-        List<CodelistRequest> requests = IntStream.rangeClosed(1, 10)
-                .mapToObj(i -> CodelistRequest.builder()
-                        .list("SOURCE")
-                        .code("CODE_nr:" + i)
-                        .description("Description")
-                        .build())
-                .collect(Collectors.toList());
-
+        List<CodelistRequest> requests = createListOfRequests(createCodelistRequest("SOURCE", "ARBEIDSGIVER"), createCodelistRequest("SOURCE", "BRUKER"));
         String inputJson = JsonUtils.toJson(requests);
 
         mvc.perform(post("/codelist")
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(inputJson))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.length()").value(2));
+        verify(service).save(requests);
     }
 
     @Test
     void update_shouldUpdateCodelist() throws Exception {
-        List<Codelist> codelists = List.of(CodelistService.getCodelist(ListName.SOURCE, "ARBEIDSGIVER"), CodelistService.getCodelist(ListName.SOURCE, "BRUKER"));
+        List<Codelist> codelists = createListOfCodelists(createCodelist(ListName.SOURCE, "ARBEIDSGIVER"), createCodelist(ListName.SOURCE, "BRUKER"));
         when(service.update(anyList())).thenReturn(codelists);
 
-        List<CodelistRequest> requests = IntStream.rangeClosed(1, 10)
-                .mapToObj(i -> CodelistRequest.builder()
-                        .list("SOURCE")
-                        .code("CODE_nr:" + i)
-                        .description("Description")
-                        .build())
-                .collect(Collectors.toList());
-
+        List<CodelistRequest> requests = createListOfRequests(createCodelistRequest("SOURCE", "ARBEIDSGIVER"), createCodelistRequest("SOURCE", "BRUKER"));
         String inputJson = JsonUtils.toJson(requests);
 
         mvc.perform(put("/codelist")
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(inputJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2));
+        verify(service).update(requests);
     }
 
     @Test
     void delete_shouldDeleteCodelistItem() throws Exception {
-        String code = "TEST_DELETE";
-        String uri = "/codelist/SOURCE/TEST_DELETE";
-        MockHttpServletResponse response = mvc.perform(
-                delete(uri))
-                .andReturn().getResponse();
+        MockHttpServletResponse response = mvc.perform(delete("/codelist/SOURCE/TEST_DELETE")).andReturn().getResponse();
 
         assertThat(response.getStatus()).isEqualTo((HttpStatus.OK.value()));
-        verify(service).delete(ListName.SOURCE, code);
+        verify(service).delete(ListName.SOURCE, "TEST_DELETE");
     }
 
     @Test
     void delete_shouldDelete_withoutCorrectFormat() throws Exception {
-        String code = "TEST_DELETE";
-
         MockHttpServletResponse response = mvc.perform(
-                delete("/codelist/SOURCE/test_DELETE"))
+                delete("/codelist/source/test_delete"))
                 .andReturn().getResponse();
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        verify(service).delete(ListName.SOURCE, code);
+        verify(service).delete(ListName.SOURCE, "TEST_DELETE");
     }
 }
