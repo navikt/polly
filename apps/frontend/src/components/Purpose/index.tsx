@@ -16,6 +16,7 @@ import { renderLegalBasis } from "../common/LegalBasis"
 import { codelist, ListName } from "../../service/Codelist"
 import { Process } from "../../constants"
 import { intl } from "../../util/intl/intl"
+import { useForceUpdate } from "../../util/customHooks"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -77,6 +78,7 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
     const [errorCreatePolicy, setErrorCreatePolicy] = React.useState()
     const [errorCreateProcess, setErrorCreateProcess] = React.useState()
     const [errorEditPolicy, setErrorEditPolicy] = React.useState()
+    const update = useForceUpdate()
 
     const handleCreatePolicy = async (values: any, process: any) => {
         if (!values) return
@@ -94,6 +96,7 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
                 process.policies.push(res.data.content[0])
                 setErrorCreatePolicy(null)
                 setIsOpen(false)
+                update()
             }))
             .catch((err: any) => setErrorCreatePolicy(err.message));
     }
