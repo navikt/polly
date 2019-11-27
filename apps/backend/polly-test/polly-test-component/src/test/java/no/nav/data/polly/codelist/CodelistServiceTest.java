@@ -71,18 +71,6 @@ class CodelistServiceTest {
     }
 
     @Test
-    void update_shouldThrowNotFound_whenCodeDoesNotExist() {
-        CodelistRequest request = createCodelistRequest("SOURCE", "UNKNOWN_CODE", "Unknown shortName", "Updated description");
-
-        try {
-            service.update(List.of(request));
-            fail();
-        } catch (CodelistNotFoundException e) {
-            assertThat(e.getLocalizedMessage()).isEqualTo("Cannot find codelist with code=UNKNOWN_CODE in list=SOURCE");
-        }
-    }
-
-    @Test
     void delete_shouldDelete_whenListAndCodeExists() {
         when(repository.findByListAndCode(ListName.SOURCE, "DELETE_CODE")).thenReturn(Optional.of(createCodelist(ListName.SOURCE, "DELETE_CODE")));
 
