@@ -1,7 +1,6 @@
 package no.nav.data.polly.common.utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -82,9 +81,5 @@ public final class StreamUtils {
 
     public static <T> List<T> filter(Collection<T> objects, Predicate<T> filter) {
         return safeStream(objects).filter(filter).collect(Collectors.toList());
-    }
-
-    public static <T> List<T> collectInList(T... vars){
-        return Arrays.stream(vars).collect(Collectors.toList());
     }
 }
