@@ -178,15 +178,15 @@ public abstract class IntegrationTestBase {
                 (t) -> termRepository.save(Term.builder().generateId().name("Auto_" + term).description("termdesc").build()));
     }
 
-    private LegalBasis createLegalBasis() {
-        return LegalBasis.builder().gdpr("6A").nationalLaw("FTRL").description("desc").activeToday().build();
+    protected LegalBasis createLegalBasis() {
+        return LegalBasis.builder().gdpr("ART61A").nationalLaw("FTRL").description("§ 2-1").activeToday().build();
     }
 
     protected LegalBasisResponse legalBasisResponse() {
         return LegalBasisResponse.builder()
-                .gdpr(CodelistService.getCodelistResponse(ListName.GDPR_ARTICLE, "6A"))
+                .gdpr(CodelistService.getCodelistResponse(ListName.GDPR_ARTICLE, "ART61A"))
                 .nationalLaw(CodelistService.getCodelistResponse(ListName.NATIONAL_LAW, "FTRL"))
-                .description("desc")
+                .description("§ 2-1")
                 .start(LocalDate.now())
                 .end(LocalDate.now())
                 .build();
