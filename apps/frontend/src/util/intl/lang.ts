@@ -71,6 +71,10 @@ export const no: IStrings = {
     write: "Skrive",
     administrate: "Administrere",
 
+    prevButton: 'Forrige',
+    nextButton: 'Neste',
+    rows: 'Rader',
+
     maxChars: "Maks {0} tegn",
     required: "Feltet er påkrevd"
 };
@@ -145,6 +149,10 @@ export const en = {
     read: "Read",
     write: "Write",
     administrate: "Administrate",
+
+    prevButton: 'Prev',
+    nextButton: 'Next',
+    rows: 'Rows',
 
     maxChars: "Max {0} characters",
     required: "Field is required"
