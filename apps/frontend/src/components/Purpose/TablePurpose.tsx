@@ -250,7 +250,6 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
                                 {intl.abort}
                             </Button>
                             <Button onClick={() => {
-                                console.log(currentPolicy)
                                 onDeletePolicy(currentPolicy)
                             }
                             }>{intl.delete}</Button>
