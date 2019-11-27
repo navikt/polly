@@ -2,6 +2,8 @@ package no.nav.data.polly.common.validator;
 
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.common.exceptions.CodelistNotFoundException;
+import no.nav.data.polly.common.exceptions.ValidationException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDate;
@@ -12,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 
@@ -160,5 +163,26 @@ public class FieldValidator {
 
     List<ValidationError> getErrors() {
         return validationErrors;
+    }
+
+    public <T extends Enum<T>> void throwCodelistNotFoundExceptionIfEnumError(String fieldName, String fieldValue, Class<T> type) {
+        checkRequiredEnum(fieldName, fieldValue, type);
+        if (!validationErrors.isEmpty()) {
+            throw new CodelistNotFoundException(validationErrors.stream().map(ValidationError::toString).collect(Collectors.joining()));
+        }
+    }
+
+    public void throwCodelistNotFoundExceptionIfCodeError(String fieldName, String fieldValue, ListName listName) {
+        checkRequiredCodelist(fieldName, fieldValue, listName);
+        if (!validationErrors.isEmpty()) {
+            throw new CodelistNotFoundException(validationErrors.stream().map(ValidationError::toString).collect(Collectors.joining()));
+        }
+    }
+
+    public void throwValidationExceptionIfImmutableCodelistError(String listName) {
+        checkIfCodelistIsImmutable(listName);
+        if (!validationErrors.isEmpty()) {
+            throw new ValidationException(getErrors(), "The request was not accepted. The following errors occurred during validation: ");
+        }
     }
 }
