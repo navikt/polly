@@ -11,10 +11,6 @@ import java.util.stream.IntStream;
 
 public class CodelistUtils {
 
-    public static List<Codelist> createListOfCodelists(Codelist... codelists) {
-        return Arrays.stream(codelists).collect(Collectors.toList());
-    }
-
     public static Codelist createCodelist() {
         return createCodelist(ListName.SOURCE, "CODE", "shortName", "description");
     }
@@ -34,10 +30,6 @@ public class CodelistUtils {
                 .shortName(shortName)
                 .description(description)
                 .build();
-    }
-
-    public static List<CodelistRequest> createListOfRequests(CodelistRequest... requests) {
-        return Arrays.stream(requests).collect(Collectors.toList());
     }
 
     public static CodelistRequest createCodelistRequest() {
