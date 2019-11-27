@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -40,17 +39,6 @@ public class CodelistController {
 
     public CodelistController(CodelistService service) {
         this.service = service;
-    }
-
-    @ApiOperation(value = "Get the entire Codelist")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Entire Codelist fetched", response = Map.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
-    @GetMapping("/legacy")
-    @Deprecated
-    public Map<ListName, Map<String, String>> findAllLegacy() {
-        log.info("Received a request for and returned the entire Codelist");
-        return CodelistCache.getAllAsMap();
     }
 
     @ApiOperation(value = "Get the entire Codelist")
