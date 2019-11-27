@@ -29,8 +29,6 @@ import java.util.Map;
 
 import static no.nav.data.polly.codelist.CodelistUtils.createCodelist;
 import static no.nav.data.polly.codelist.CodelistUtils.createCodelistRequest;
-import static no.nav.data.polly.codelist.CodelistUtils.createListOfCodelists;
-import static no.nav.data.polly.codelist.CodelistUtils.createListOfRequests;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -141,10 +139,10 @@ class CodelistControllerTest {
 
     @Test
     void save_shouldSaveMultipleCodelists() throws Exception {
-        List<Codelist> codelists = createListOfCodelists(createCodelist(ListName.SOURCE, "ARBEIDSGIVER"), createCodelist(ListName.SOURCE, "BRUKER"));
+        List<Codelist> codelists = List.of(createCodelist(ListName.SOURCE, "ARBEIDSGIVER"), createCodelist(ListName.SOURCE, "BRUKER"));
         when(service.save(anyList())).thenReturn(codelists);
 
-        List<CodelistRequest> requests = createListOfRequests(createCodelistRequest("SOURCE", "ARBEIDSGIVER"), createCodelistRequest("SOURCE", "BRUKER"));
+        List<CodelistRequest> requests = List.of(createCodelistRequest("SOURCE", "ARBEIDSGIVER"), createCodelistRequest("SOURCE", "BRUKER"));
         String inputJson = JsonUtils.toJson(requests);
 
         mvc.perform(post("/codelist")
@@ -157,10 +155,10 @@ class CodelistControllerTest {
 
     @Test
     void update_shouldUpdateCodelist() throws Exception {
-        List<Codelist> codelists = createListOfCodelists(createCodelist(ListName.SOURCE, "ARBEIDSGIVER"), createCodelist(ListName.SOURCE, "BRUKER"));
+        List<Codelist> codelists = List.of(createCodelist(ListName.SOURCE, "ARBEIDSGIVER"), createCodelist(ListName.SOURCE, "BRUKER"));
         when(service.update(anyList())).thenReturn(codelists);
 
-        List<CodelistRequest> requests = createListOfRequests(createCodelistRequest("SOURCE", "ARBEIDSGIVER"), createCodelistRequest("SOURCE", "BRUKER"));
+        List<CodelistRequest> requests = List.of(createCodelistRequest("SOURCE", "ARBEIDSGIVER"), createCodelistRequest("SOURCE", "BRUKER"));
         String inputJson = JsonUtils.toJson(requests);
 
         mvc.perform(put("/codelist")

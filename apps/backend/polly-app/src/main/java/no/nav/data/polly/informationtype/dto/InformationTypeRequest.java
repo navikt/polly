@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static no.nav.data.polly.common.utils.StreamUtils.nullToEmptyList;
-import static no.nav.data.polly.common.utils.StringUtils.ifNotNullToUppercaseAndTrim;
+import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
 
 @Slf4j
 @Data
@@ -59,8 +59,8 @@ public class InformationTypeRequest implements RequestElement {
                 .map(String::trim)
                 .map(String::toUpperCase)
                 .collect(Collectors.toList()));
-        setSensitivity(ifNotNullToUppercaseAndTrim(getSensitivity()));
-        setNavMaster(ifNotNullToUppercaseAndTrim(getNavMaster()));
+        setSensitivity(toUpperCaseAndTrim(getSensitivity()));
+        setNavMaster(toUpperCaseAndTrim(getNavMaster()));
         if (StringUtils.isBlank(term)) {
             setTerm(null);
         }

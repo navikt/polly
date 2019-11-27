@@ -4,16 +4,11 @@ import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class CodelistUtils {
-
-    public static List<Codelist> createListOfCodelists(Codelist... codelists) {
-        return Arrays.stream(codelists).collect(Collectors.toList());
-    }
 
     public static Codelist createCodelist() {
         return createCodelist(ListName.SOURCE, "CODE", "shortName", "description");
@@ -34,10 +29,6 @@ public class CodelistUtils {
                 .shortName(shortName)
                 .description(description)
                 .build();
-    }
-
-    public static List<CodelistRequest> createListOfRequests(CodelistRequest... requests) {
-        return Arrays.stream(requests).collect(Collectors.toList());
     }
 
     public static CodelistRequest createCodelistRequest() {

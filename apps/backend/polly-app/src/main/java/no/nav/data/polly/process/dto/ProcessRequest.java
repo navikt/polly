@@ -17,7 +17,7 @@ import java.util.List;
 import static no.nav.data.polly.common.swagger.SwaggerConfig.LOCAL_DATE;
 import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_END;
 import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_START;
-import static no.nav.data.polly.common.utils.StringUtils.ifNotNullToUppercaseAndTrim;
+import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
 
 @Data
 @Builder
@@ -51,9 +51,9 @@ public class ProcessRequest implements RequestElement {
 
     @Override
     public void format() {
-        setPurposeCode(ifNotNullToUppercaseAndTrim(getPurposeCode()));
-        setDepartment(ifNotNullToUppercaseAndTrim(getDepartment()));
-        setSubDepartment(ifNotNullToUppercaseAndTrim(getSubDepartment()));
+        setPurposeCode(toUpperCaseAndTrim(getPurposeCode()));
+        setDepartment(toUpperCaseAndTrim(getDepartment()));
+        setSubDepartment(toUpperCaseAndTrim(getSubDepartment()));
     }
 
     @Override
