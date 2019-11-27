@@ -44,7 +44,7 @@ const reducePolicylist = (list: any) => {
 
 const InformationTypeTable = (props: RouteComponentProps) => {
     const [page, setPage] = React.useState(1);
-    const [limit, setLimit] = React.useState(10);
+    const [limit, setLimit] = React.useState(25);
     const [total, setTotal] = React.useState(0);
     const [loading, setLoading] = React.useState(true);
     const [data, setData] = React.useState<ReactNode[][]>([]);
@@ -98,17 +98,12 @@ const InformationTypeTable = (props: RouteComponentProps) => {
 
     return (
         <React.Fragment>
-            <Block display="flex" justifyContent="space-between">
-                <H3 marginTop={theme.sizing.scale1000} marginBottom={theme.sizing.scale600}>{intl.informationTypes}</H3>
-            </Block>
-            <Block height={`${parseInt(theme.sizing.scale4800) * 2.5}px`}>
-                <Table columns={columns} data={data} isLoading={loading}/>
-            </Block>
+            <Table columns={columns} data={data} isLoading={loading} />
             <Block paddingTop={theme.sizing.scale600} display="flex" justifyContent="space-between">
                 <StatefulPopover
                     content={({close}) => (
                         <StatefulMenu
-                            items={[5, 10, 20, 30, 40, 50, 75, 100].map((i) => ({
+                            items={[5, 10, 15, 20, 25, 50, 75, 100].map((i) => ({
                                 label: i,
                             }))}
                             onItemSelect={({item}) => {
@@ -207,6 +202,7 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string }>) => {
                         {error && (<p>{error}</p>)}
                     </React.Fragment>
                     : <React.Fragment>
+                        <H3 marginTop={theme.sizing.scale200} marginBottom={theme.sizing.scale400}>{intl.informationTypes}</H3>
                         <Block display="flex" justifyContent="space-between">
                             <Block width="80%">
                                 <Select
