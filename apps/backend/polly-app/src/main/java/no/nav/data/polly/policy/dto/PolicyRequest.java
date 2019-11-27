@@ -20,7 +20,7 @@ import static no.nav.data.polly.common.swagger.SwaggerConfig.BOOLEAN;
 import static no.nav.data.polly.common.swagger.SwaggerConfig.LOCAL_DATE;
 import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_END;
 import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_START;
-import static no.nav.data.polly.common.utils.StringUtils.ifNotNullToUppercaseAndTrim;
+import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
 
 @Data
 @Builder
@@ -65,8 +65,8 @@ public class PolicyRequest implements RequestElement {
 
     @Override
     public void format() {
-        setPurposeCode(ifNotNullToUppercaseAndTrim(getPurposeCode()));
-        setSubjectCategory(ifNotNullToUppercaseAndTrim(getSubjectCategory()));
+        setPurposeCode(toUpperCaseAndTrim(getPurposeCode()));
+        setSubjectCategory(toUpperCaseAndTrim(getSubjectCategory()));
     }
 
     @Override

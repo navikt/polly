@@ -5,7 +5,6 @@ import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
 import no.nav.data.polly.common.exceptions.CodelistNotFoundException;
 import no.nav.data.polly.common.exceptions.ValidationException;
-import no.nav.data.polly.common.utils.StreamUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -154,7 +153,7 @@ class CodelistServiceTest {
 
     @Test
     void validateThatAllFieldsHaveValidValues_shouldValidate_whenSaveAndRequestItemDoesNotExist() {
-        List<CodelistRequest> requests = StreamUtils.collectInList(
+        List<CodelistRequest> requests = List.of(
                 createCodelistRequest("SOURCE"),
                 createCodelistRequest("CATEGORY"));
 
@@ -171,7 +170,7 @@ class CodelistServiceTest {
 
     @Test
     void validateThatAllFieldsHaveValidValues_shouldThrowValidationException_whenSaveAndRequestItemExist() {
-        List<CodelistRequest> requests = StreamUtils.collectInList(createCodelistRequest("SOURCE", "BRUKER"));
+        List<CodelistRequest> requests = List.of(createCodelistRequest("SOURCE", "BRUKER"));
         Codelist expectedCodelist = createCodelist(ListName.SOURCE, "BRUKER");
 
         when(repository.findByListAndCode(ListName.SOURCE, "BRUKER")).thenReturn(Optional.of(expectedCodelist));
@@ -190,14 +189,14 @@ class CodelistServiceTest {
         saveCodelist(createCodelist(ListName.SOURCE, "TEST", "name", "description"));
         when(repository.findByListAndCode(ListName.SOURCE, "TEST")).thenReturn(Optional.of(CodelistCache.getCodelist(ListName.SOURCE, "TEST")));
 
-        List<CodelistRequest> requests = StreamUtils.collectInList(createCodelistRequest("SOURCE", "TEST", "name", "Informasjon oppgitt av tester"));
+        List<CodelistRequest> requests = List.of(createCodelistRequest("SOURCE", "TEST", "name", "Informasjon oppgitt av tester"));
 
         service.validateRequest(requests, true);
     }
 
     @Test
     void validateThatAllFieldsHaveValidValues_shouldThrowValidationException_whenUpdateAndRequestItemDoesNotExist() {
-        List<CodelistRequest> requests = StreamUtils.collectInList(createCodelistRequest("SOURCE", "unknownCode"));
+        List<CodelistRequest> requests = List.of(createCodelistRequest("SOURCE", "unknownCode"));
 
         try {
             service.validateRequest(requests, true);
@@ -211,7 +210,7 @@ class CodelistServiceTest {
 
     @Test
     void validateThatAllFieldsHaveValidValues_shouldChangeInputInRequestToCorrectFormat() {
-        List<CodelistRequest> requests = StreamUtils.collectInList(
+        List<CodelistRequest> requests = List.of(
                 createCodelistRequest("     category      ", "    cOrRecTFormAT  ", "  name ", "   Trim av description                      "));
         when(repository.saveAll(anyList())).thenAnswer(AdditionalAnswers.returnsFirstArg());
         service.validateRequest(requests, false);

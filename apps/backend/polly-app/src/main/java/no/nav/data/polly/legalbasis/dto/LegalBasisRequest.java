@@ -15,7 +15,7 @@ import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import static no.nav.data.polly.common.swagger.SwaggerConfig.LOCAL_DATE;
 import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_END;
 import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_START;
-import static no.nav.data.polly.common.utils.StringUtils.ifNotNullToUppercaseAndTrim;
+import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
 
 @Data
 @Builder
@@ -46,8 +46,8 @@ public class LegalBasisRequest implements Validated {
 
     @Override
     public void format() {
-        setGdpr(ifNotNullToUppercaseAndTrim(getGdpr()));
-        setNationalLaw(ifNotNullToUppercaseAndTrim(getNationalLaw()));
+        setGdpr(toUpperCaseAndTrim(getGdpr()));
+        setNationalLaw(toUpperCaseAndTrim(getNationalLaw()));
     }
 
     @Override

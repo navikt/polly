@@ -5,7 +5,6 @@ import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
-import no.nav.data.polly.common.utils.StreamUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,7 +40,7 @@ class CodelistServiceIT extends IntegrationTestBase {
 
     @Test
     void save_shouldSaveNewCodelist() {
-        service.save(StreamUtils.collectInList(createCodelistRequest("SOURCE", "TEST_CODE", "Test shortName", "Test description")));
+        service.save(List.of(createCodelistRequest("SOURCE", "TEST_CODE", "Test shortName", "Test description")));
 
         assertThat(repository.findAll().size()).isEqualTo(1);
         assertTrue(repository.findByListAndCode(ListName.SOURCE, "TEST_CODE").isPresent());
@@ -59,9 +58,9 @@ class CodelistServiceIT extends IntegrationTestBase {
 
     @Test
     void update_shouldUpdateCodelist() {
-        service.save(StreamUtils.collectInList(createCodelistRequest("SOURCE", "UPDATE_CODE", "shortName", "description")));
+        service.save(List.of(createCodelistRequest("SOURCE", "UPDATE_CODE", "shortName", "description")));
 
-        List<CodelistRequest> updatedRequest = StreamUtils.collectInList(createCodelistRequest("SOURCE", "UPDATE_CODE", "Updated shortName", "Updated description"));
+        List<CodelistRequest> updatedRequest = List.of(createCodelistRequest("SOURCE", "UPDATE_CODE", "Updated shortName", "Updated description"));
         service.update(updatedRequest);
 
         Codelist serviceCodelist = CodelistService.getCodelist(ListName.SOURCE, "UPDATE_CODE");
@@ -75,7 +74,7 @@ class CodelistServiceIT extends IntegrationTestBase {
 
     @Test
     void delete_shouldDeleteCodelist() {
-        List<CodelistRequest> request = StreamUtils.collectInList(createCodelistRequest("SOURCE", "DELETE_CODE"));
+        List<CodelistRequest> request = List.of(createCodelistRequest("SOURCE", "DELETE_CODE"));
         service.save(request);
         assertThat(repository.findAll().size()).isEqualTo(1);
         assertThat(CodelistService.getCodelist(ListName.SOURCE).size()).isEqualTo(1);
@@ -90,7 +89,7 @@ class CodelistServiceIT extends IntegrationTestBase {
 
     @Test
     void validateRequests_shouldValidateRequests() {
-        List<CodelistRequest> requests = StreamUtils.collectInList(
+        List<CodelistRequest> requests = List.of(
                 createCodelistRequest("SOURCE", "CODE_1"),
                 createCodelistRequest("SOURCE", "code_2 "),
                 createCodelistRequest("SOURCE", " Code_3 "));

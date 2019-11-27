@@ -12,7 +12,7 @@ import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
 import org.apache.commons.lang3.StringUtils;
 
-import static no.nav.data.polly.common.utils.StringUtils.ifNotNullToUppercaseAndTrim;
+import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
 
 @Data
 @Builder
@@ -58,9 +58,10 @@ public class CodelistRequest implements RequestElement {
         }
     }
 
+    @Override
     public void format() {
-        setList(ifNotNullToUppercaseAndTrim(list));
-        setCode(ifNotNullToUppercaseAndTrim(code));
+        setList(toUpperCaseAndTrim(list));
+        setCode(toUpperCaseAndTrim(code));
         setShortName(StringUtils.trim(shortName));
         setDescription(StringUtils.trim(description));
     }

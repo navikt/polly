@@ -6,7 +6,6 @@ import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.AllCodelistResponse;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
-import no.nav.data.polly.common.utils.StreamUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -96,7 +95,7 @@ class CodelistControllerIT extends IntegrationTestBase {
 
     @Test
     void save_shouldSaveNewCodelist() {
-        List<CodelistRequest> requests = StreamUtils.collectInList(createCodelistRequest("SOURCE", "SaveCode", "SaveShortName", "SaveDescription"));
+        List<CodelistRequest> requests = List.of(createCodelistRequest("SOURCE", "SaveCode", "SaveShortName", "SaveDescription"));
         assertFalse(CodelistCache.contains(ListName.SOURCE, "SaveCode"));
 
         ResponseEntity<List<CodelistResponse>> responseEntity = restTemplate.exchange(
@@ -118,7 +117,7 @@ class CodelistControllerIT extends IntegrationTestBase {
 
     @Test
     void save_shouldInvalidateWrongListname() {
-        List<CodelistRequest> requests = StreamUtils.collectInList(createCodelistRequest("PROVENAANCE", "SaveCode"));
+        List<CodelistRequest> requests = List.of(createCodelistRequest("PROVENAANCE", "SaveCode"));
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 "/codelist", HttpMethod.POST, new HttpEntity<>(requests), String.class);
@@ -130,7 +129,7 @@ class CodelistControllerIT extends IntegrationTestBase {
     @ParameterizedTest
     @ValueSource(strings = {"GDPR_ARTICLE", "SENSITIVITY"})
     void save_shouldInvalidateCreatingImmutableCodelist(String testValue) {
-        List<CodelistRequest> requests = StreamUtils.collectInList(createCodelistRequest(testValue));
+        List<CodelistRequest> requests = List.of(createCodelistRequest(testValue));
 
         ResponseEntity<String> responseEntity = restTemplate.exchange("/codelist", HttpMethod.POST, new HttpEntity<>(requests), String.class);
 
@@ -142,7 +141,7 @@ class CodelistControllerIT extends IntegrationTestBase {
     @ValueSource(strings = {"GDPR_ARTICLE", "SENSITIVITY"})
     void update_shouldInvalidateUpdatingGDPR_ARTICLE(String testValue) {
         saveCodelist(createCodelist(ListName.valueOf(testValue)));
-        List<CodelistRequest> requests = StreamUtils.collectInList(createCodelistRequest(testValue));
+        List<CodelistRequest> requests = List.of(createCodelistRequest(testValue));
 
         ResponseEntity<String> responseEntity = restTemplate.exchange("/codelist", HttpMethod.PUT, new HttpEntity<>(requests), String.class);
 
@@ -178,7 +177,7 @@ class CodelistControllerIT extends IntegrationTestBase {
         assertThat(CodelistService.getCodelist(ListName.SOURCE, "CODE").getShortName()).isEqualTo("SavedShortName");
         assertThat(CodelistService.getCodelist(ListName.SOURCE, "CODE").getDescription()).isEqualTo("SavedDescription");
 
-        List<CodelistRequest> updatedCodelists = StreamUtils.collectInList(
+        List<CodelistRequest> updatedCodelists = List.of(
                 createCodelistRequest("SOURCE", "CODE", "UpdatedShortName", "UpdatedDescription"));
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(

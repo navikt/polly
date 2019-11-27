@@ -1,11 +1,11 @@
 package no.nav.data.polly.common.utils;
 
-public class StringUtils {
+public final class StringUtils {
 
     private StringUtils() {
     }
 
-    public static String ifNotNullToUppercaseAndTrim(String field) {
+    public static String toUpperCaseAndTrim(String field) {
         return field == null ? null : field.toUpperCase().trim();
     }
 }

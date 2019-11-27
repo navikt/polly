@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static no.nav.data.polly.common.utils.StreamUtils.nullToEmptyList;
-import static no.nav.data.polly.common.utils.StringUtils.ifNotNullToUppercaseAndTrim;
+import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
 
 @Slf4j
 @Data
@@ -59,8 +59,8 @@ public class InformationTypeRequest implements RequestElement {
                 .map(String::trim)
                 .map(String::toUpperCase)
                 .collect(Collectors.toList()));
-        setSensitivity(ifNotNullToUppercaseAndTrim(getSensitivity()));
-        setNavMaster(ifNotNullToUppercaseAndTrim(getNavMaster()));
+        setSensitivity(toUpperCaseAndTrim(getSensitivity()));
+        setNavMaster(toUpperCaseAndTrim(getNavMaster()));
         if (StringUtils.isBlank(term)) {
             setTerm(null);
         }
@@ -84,6 +84,6 @@ public class InformationTypeRequest implements RequestElement {
         validator.checkCodelists(Fields.categories, getCategories(), ListName.CATEGORY);
         validator.checkCodelists(Fields.sources, getSources(), ListName.SOURCE);
         validator.checkRequiredCodelist(Fields.sensitivity, getSensitivity(), ListName.SENSITIVITY);
-        validator.checkRequiredCodelist(Fields.navMaster, getNavMaster(), ListName.SYSTEM);
+        validator.checkCodelist(Fields.navMaster, getNavMaster(), ListName.SYSTEM);
     }
 }
