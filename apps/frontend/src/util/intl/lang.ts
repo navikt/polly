@@ -53,6 +53,10 @@ export const no: IStrings = {
     confirmDeletePolicyText:
         "Bekreft sletting av behandlingsgrunnlaget for opplysningstypen",
 
+    POLLY_READ: 'Les',
+    POLLY_WRITE: 'Skriv',
+    POLLY_ADMIN: 'Admin',
+
     department: "Avdeling",
     subDepartment: "Linja (Ytre etat)",
     save: "Lagre",

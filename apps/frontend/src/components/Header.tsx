@@ -123,9 +123,8 @@ const LoggedInHeader = () => {
         <StatefulPopover
             content={
                 <React.Fragment>
-                    <Label2 {...blockStyle}>{intl.name}: {user.getFamilyName()}, {user.getGivenName()}</Label2>
-                    <Label2 {...blockStyle} alignContent="space-between">{intl.email}: {user.getEmail()}</Label2>
-                    <Label2 {...blockStyle}>{intl.groups}: {user.getGroups()}</Label2>
+                    <Label2 {...blockStyle}>{intl.name}: {user.getName()}</Label2>
+                    <Label2 {...blockStyle}>{intl.groups}: {user.getGroupsHumanReadable().join(', ')}</Label2>
                     <Block {...blockStyle}>
                         <StyledLink href={`${server_polly}/logout?redirect_uri=${window.location.href}`}>
                             {intl.logout}

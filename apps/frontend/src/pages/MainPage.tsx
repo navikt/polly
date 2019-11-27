@@ -1,6 +1,5 @@
 import { useAwait } from "../util/customHooks"
 import { user } from "../service/User"
-import { Link } from "react-router-dom"
 import * as React from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faDragon } from "@fortawesome/free-solid-svg-icons"

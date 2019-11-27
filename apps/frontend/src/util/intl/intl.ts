@@ -60,6 +60,11 @@ export interface IStrings {
     confirmDeletePolicyHeader: string;
     confirmDeletePolicyText: string;
 
+    // groups
+    POLLY_READ: string;
+    POLLY_WRITE: string;
+    POLLY_ADMIN: string;
+
     // generic
     department: string;
     subDepartment: string;

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { UserInfo } from "../constants"
+import { intl } from "../util/intl/intl"
 
 axios.defaults.withCredentials = true;
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
@@ -66,6 +67,10 @@ class UserService {
 
   public getGroups(): string[] {
     return this.userInfo.groups
+  }
+
+  public getGroupsHumanReadable(): string[] {
+    return this.userInfo.groups.map(group => (intl as any)[group] || group)
   }
 
   public hasGroup(group: string): boolean {

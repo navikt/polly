@@ -50,11 +50,10 @@ const Banner = ({ title, informationtypeId }: BannerProps) => {
     return (
         <Block {...bannerBlockProps}>
             <Block {...bannerContentProps} justifyContent="space-between">
-                <Block></Block>
                 <HeadingLevel>
                     <Heading styleLevel={5}>{title}</Heading>
                 </HeadingLevel>
-                {user.isLoggedIn() && informationtypeId ? (
+                {user.canWrite() && informationtypeId ? (
                     <EditInformationtypeButton id={informationtypeId} />
                 ) : <Block></Block>}
             </Block>
