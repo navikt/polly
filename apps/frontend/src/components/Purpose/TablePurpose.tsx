@@ -10,6 +10,10 @@ import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
 import { Block } from "baseui/block";
 import ModalPolicy from "./ModalPolicy";
 import { intl } from "../../util/intl/intl"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faPoop, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "baseui/modal";
+import { Paragraph2 } from "baseui/typography";
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",
@@ -32,15 +36,17 @@ const SmallerStyledHeadCell = withStyle(StyledHeadCell, {
 
 type TablePurposeProps = {
     policies: Array<any>;
-    onSubmitEdit: Function;
     errorOnSubmitEdit: any;
     showEditModal: boolean;
+    showDeleteModal: boolean;
+    isLoggedIn: boolean;
+    onSubmitEdit: Function;
     setShowEditModal: Function;
+    setShowDeleteModal: Function;
+    onDeletePolicy: Function;
 };
 
-
-
-const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal, setShowEditModal }: TablePurposeProps) => {
+const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal, showDeleteModal, setShowEditModal, setShowDeleteModal, isLoggedIn, onDeletePolicy }: TablePurposeProps) => {
     const [useCss, theme] = useStyletron();
     const [currentPolicy, setCurrentPolicy] = React.useState()
     const [titleDirection, setTitleDirection] = React.useState<any>(null);
@@ -154,7 +160,8 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
                         direction={legalBasisDirection}
                         onSort={() => handleSort(intl.legalBasisShort, legalBasisDirection)}
                     />
-                    <SmallerStyledHeadCell></SmallerStyledHeadCell>
+                    {isLoggedIn && <SmallerStyledHeadCell></SmallerStyledHeadCell>}
+
                 </StyledHeader>
                 <StyledBody>
                     {getSortedData().map((row: Policy, index: number) => (
@@ -176,20 +183,35 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
                                     <ListLegalBasesInTable legalBases={row.legalBases} />
                                 )}
                             </StyledCell>
-                            <SmallerStyledCell>
-                                <Block display="flex" justifyContent="flex-end" width="100%">
-                                    <Button
-                                        size={ButtonSize.compact}
-                                        kind={KIND.secondary}
-                                        onClick={() => {
-                                            setCurrentPolicy(row)
-                                            setShowEditModal(true)
-                                        }}
-                                    >
-                                        {intl.edit}
-                                    </Button>
-                                </Block>
-                            </SmallerStyledCell>
+                            {isLoggedIn && (
+                                <SmallerStyledCell>
+                                    <Block display="flex" justifyContent="flex-end" width="100%">
+                                        <Button
+                                            size={ButtonSize.compact}
+                                            kind={KIND.secondary}
+                                            overrides={{
+                                                BaseButton: { style: { marginRight: '8px' } }
+                                            }}
+                                            onClick={() => {
+                                                setCurrentPolicy(row)
+                                                setShowEditModal(true)
+                                            }}
+                                        >
+                                            <FontAwesomeIcon icon={faEdit} />
+                                        </Button>
+                                        <Button
+                                            size={ButtonSize.compact}
+                                            kind={KIND.secondary}
+                                            onClick={() => {
+                                                setCurrentPolicy(row)
+                                                setShowDeleteModal(true)
+                                            }}
+                                        >
+                                            <FontAwesomeIcon icon={faTrash} />
+                                        </Button>
+                                    </Block>
+                                </SmallerStyledCell>
+                            )}
                         </CustomStyledRow>
                     ))}
                 </StyledBody>
@@ -205,6 +227,34 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
                         }}
                         errorOnCreate={errorOnSubmitEdit}
                     />
+                )}
+
+                {showDeleteModal && (
+                    <Modal
+                        onClose={() => setShowDeleteModal(false)}
+                        isOpen={showDeleteModal}
+                        animate
+                        size="default"
+                    >
+                        <ModalHeader>{intl.confirmDeletePolicyHeader}</ModalHeader>
+                        <ModalBody>
+                            <Paragraph2>{intl.confirmDeletePolicyText} {currentPolicy.informationType.name}</Paragraph2>
+                        </ModalBody>
+
+                        <ModalFooter>
+                            <Button
+                                kind="secondary"
+                                onClick={() => setShowDeleteModal(false)}
+                                overrides={{ BaseButton: { style: { marginRight: '1rem' } } }}
+                            >
+                                {intl.abort}
+                            </Button>
+                            <Button onClick={() => {
+                                onDeletePolicy(currentPolicy)
+                            }
+                            }>{intl.delete}</Button>
+                        </ModalFooter>
+                    </Modal>
                 )}
 
             </StyledTable>
