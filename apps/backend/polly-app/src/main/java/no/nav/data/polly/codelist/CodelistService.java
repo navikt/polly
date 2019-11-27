@@ -90,17 +90,11 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     }
 
     private Codelist updateDescriptionInRepository(CodelistRequest request) {
-        Optional<Codelist> optionalCodelist = codelistRepository.findByListAndCode(request.getListAsListName(), request.getCode());
-        if (optionalCodelist.isPresent()) {
-            Codelist codelist = optionalCodelist.get();
-            codelist.setShortName(request.getShortName());
-            codelist.setDescription(request.getDescription());
-            return codelist;
-        }
-        //TODO: These should never be reached since list of request has been validated. Ok to remove?
-        log.error("Cannot find codelist with code={} in list={}", request.getCode(), request.getList());
-        throw new CodelistNotFoundException(String.format(
-                "Cannot find codelist with code=%s in list=%s", request.getCode(), request.getList()));
+        Codelist codelist = codelistRepository.findByListAndCode(request.getListAsListName(), request.getCode()).get();
+        codelist.setShortName(request.getShortName());
+        codelist.setDescription(request.getDescription());
+        return codelist;
+
     }
 
     public void delete(ListName name, String code) {
