@@ -130,7 +130,7 @@ public class CodelistController {
         listName = listName.toUpperCase().trim();
         code = code.toUpperCase().trim();
         log.info("Received a request to delete code={} in the list={}", code, listName);
-        service.validateListNameAndCodeExists(listName, code);
+        service.validateListNameAndCodeExistsAndNotImmutable(listName, code);
         service.delete(ListName.valueOf(listName), code);
         log.info("Deleted code={} in the list={}", code, listName);
     }

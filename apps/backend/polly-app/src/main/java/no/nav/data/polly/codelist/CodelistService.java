@@ -6,9 +6,11 @@ import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.common.exceptions.CodelistNotFoundException;
+import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.common.validator.RequestValidator;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -112,7 +114,15 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         }
     }
 
+    private void checkBlankListName(String listName) {
+        if (StringUtils.isBlank(listName)) {
+            log.error("listName was null or missing");
+            throw new CodelistNotFoundException("listName was null or missing");
+        }
+    }
+
     public void validateListNameExists(String listName) {
+        checkBlankListName(listName);
         if (nonValidListName(listName)) {
             log.error("Codelist with listName={} does not exits", listName);
             throw new CodelistNotFoundException(String.format("Codelist with listName=%s does not exist", listName));
@@ -124,6 +134,14 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         if (!CodelistCache.contains(ListName.valueOf(listName.toUpperCase()), code)) {
             log.error("The code={} does not exist in the list={}.", code, listName);
             throw new CodelistNotFoundException(String.format("The code=%s does not exist in the list=%s.", code, listName));
+        }
+    }
+
+    //TODO: Use class FieldValidator to validate listName (and code) in all validation methods
+    public void validateListNameAndCodeExistsAndNotImmutable(String listName, String code) {
+        validateListNameAndCodeExists(listName, code);
+        if (listName.equals(ListName.GDPR_ARTICLE.toString()) || listName.equals(ListName.SENSITIVITY.toString())) {
+            throw new ValidationException(String.format("%s is an immutable type of codelist. For amendments, please contact team #dataplatform", listName));
         }
     }
 

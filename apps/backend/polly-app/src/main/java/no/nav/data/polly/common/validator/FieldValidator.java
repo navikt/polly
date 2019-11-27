@@ -29,6 +29,8 @@ public class FieldValidator {
     private static final String ERROR_MESSAGE_CODELIST_CODE = "%s: %s code has invalid format (alphanumeric and underscore)";
     private static final String ERROR_MESSAGE_DATE = "%s: %s date is not a valid format";
     private static final String ERROR_MESSAGE_UUID = "%s: %s uuid is not a valid format";
+    private static final String ERROR_TYPE_IMMUTABLE_CODELIST = "codelistIsOfImmutableType";
+    private static final String ERROR_MESSAGE_IMMUTABLE_CODELIST = "%s is an immutable type of codelist. For amendments, please contact team #dataplatform";
 
     private static final Pattern CODE_PATTERN = Pattern.compile("^[A-Z0-9_]+$");
 
@@ -72,6 +74,15 @@ public class FieldValidator {
             Enum.valueOf(type, fieldValue);
         } catch (IllegalArgumentException e) {
             validationErrors.add(new ValidationError(reference, ERROR_TYPE_ENUM, String.format(ERROR_MESSAGE_ENUM, getFieldName(fieldName), fieldValue, type.getSimpleName())));
+        }
+    }
+
+    public <T extends Enum<T>> void checkIfCodelistIsImmutable(String list) {
+        if (StringUtils.isBlank(list)) {
+            return;
+        }
+        if (list.equals(ListName.GDPR_ARTICLE.toString()) || list.equals(ListName.SENSITIVITY.toString())) {
+            validationErrors.add(new ValidationError(reference, ERROR_TYPE_IMMUTABLE_CODELIST, String.format(ERROR_MESSAGE_IMMUTABLE_CODELIST, list)));
         }
     }
 
