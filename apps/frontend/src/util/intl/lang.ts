@@ -49,6 +49,9 @@ export const no: IStrings = {
     legalBasesOwn: "Har eget rettslig grunnlag",
     legalBasesUndecidedWarning: "Rettslig grunn er ikke avklart",
     notAllowedMessage: "Du har ikke tilgang til denne siden.",
+    confirmDeletePolicyHeader: "Bekreft sletting",
+    confirmDeletePolicyText:
+        "Bekreft sletting av behandlingsgrunnlaget for opplysningstypen",
 
     department: "Avdeling",
     subDepartment: "Linja (Ytre etat)",
@@ -70,6 +73,7 @@ export const no: IStrings = {
     read: "Lese",
     write: "Skrive",
     administrate: "Administrere",
+    delete: "Slett",
 
     maxChars: "Maks {0} tegn",
     required: "Feltet er påkrevd"
@@ -124,6 +128,8 @@ export const en = {
     legalBasesOwn: "Use explicit legal bases",
     legalBasesUndecidedWarning: "Legal bases missing",
     notAllowedMessage: "You don't have access to this page",
+    confirmDeletePolicyHeader: "Confirm delete",
+    confirmDeletePolicyText: "Please confirm deleting the policy for",
 
     department: "Department",
     subDepartment: "Sub department",
@@ -145,6 +151,7 @@ export const en = {
     read: "Read",
     write: "Write",
     administrate: "Administrate",
+    delete: "Delete",
 
     maxChars: "Max {0} characters",
     required: "Field is required"

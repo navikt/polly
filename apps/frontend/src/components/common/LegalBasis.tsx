@@ -44,18 +44,18 @@ export const LegalBasesNotClarified = () => {
 export const ListLegalBases = (props: { legalBases?: LegalBasisFormValues[] }) => {
     const { legalBases } = props
     if (!legalBases) return null
-
     return (
-        <ul>
+        <React.Fragment>
             {legalBases.map((legalBase: any, i: number) => (
                 <li key={i}>
-                    <p> {legalBase.gdpr && codelist.getShortname(ListName.GDPR_ARTICLE, legalBase.gdpr) + ": "}
+                    <span> {legalBase.gdpr && codelist.getShortname(ListName.GDPR_ARTICLE, legalBase.gdpr) + ": "}
                         {legalBase.nationalLaw && codelist.getShortname(ListName.NATIONAL_LAW, legalBase.nationalLaw) + ' '}
                         {legalBase.description}
-                    </p>
+                    </span>
                 </li>
             ))}
-        </ul>
+        </React.Fragment>
+
     )
 }
 

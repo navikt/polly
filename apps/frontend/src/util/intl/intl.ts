@@ -57,6 +57,8 @@ export interface IStrings {
     legalBasesUndecided: string;
     legalBasesUndecidedWarning: string;
     notAllowedMessage: string;
+    confirmDeletePolicyHeader: string;
+    confirmDeletePolicyText: string;
 
     // generic
     department: string;
@@ -79,6 +81,7 @@ export interface IStrings {
     read: string;
     write: string;
     administrate: string;
+    delete: string;
 
     maxChars: string;
     required: string;
@@ -90,7 +93,7 @@ export const langs: Langs = {
     ta: { flag: "🇱🇰", name: "தமிழ்", langCode: "ta", texts: ta }
 };
 
-export const langsArray: Lang[] = Object.keys(langs).map(lang => langs[lang])
+export const langsArray: Lang[] = Object.keys(langs).map(lang => langs[lang]);
 
 // Controls starting language as well as fallback language if a text is missing in chosen language
 const defaultLang = langs.no;

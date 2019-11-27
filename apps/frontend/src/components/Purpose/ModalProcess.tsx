@@ -9,7 +9,7 @@ import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { Plus } from "baseui/icon";
 import { KIND as NKIND, Notification } from "baseui/notification";
 
-import { LegalBasisFormValues, ProcessFormValues } from "../../constants";
+import { ProcessFormValues } from "../../constants";
 import CardLegalBasis from './CardLegalBasis'
 import { codelist, ListName } from "../../service/Codelist"
 import { intl } from "../../util/intl/intl"
@@ -206,13 +206,15 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                                         name="legalBases"
                                         render={arrayHelpers => (
                                             <Block width="100%">
-                                                <CardLegalBasis submit={(values: any) => {
-                                                    if (!values) return
-                                                    else {
-                                                        arrayHelpers.push(values)
-                                                        setShowLegalbasesFields(false)
-                                                    }
-                                                }} />
+                                                <CardLegalBasis
+                                                    hideCard={() => setShowLegalbasesFields(false)}
+                                                    submit={(values: any) => {
+                                                        if (!values) return
+                                                        else {
+                                                            arrayHelpers.push(values)
+                                                            setShowLegalbasesFields(false)
+                                                        }
+                                                    }} />
                                             </Block>
                                         )}
                                     />

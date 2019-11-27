@@ -22,83 +22,87 @@ const Error = (props: { fieldName: string }) => (
     <ErrorMessage name={props.fieldName}>
         {msg => (
             <Block {...rowBlockBrops} marginTop=".2rem">
-                <Notification overrides={{Body: {style: {width: 'auto', padding: 0, marginTop: 0}}}} kind={NKIND.negative}>{msg}</Notification>
+                <Notification overrides={{ Body: { style: { width: 'auto', padding: 0, marginTop: 0 } } }} kind={NKIND.negative}>{msg}</Notification>
             </Block>
         )}
     </ErrorMessage>
 )
 
 interface CardLegalBasisProps {
+    hideCard: Function;
     submit: (val: LegalBasisFormValues) => void
 }
 
-const CardLegalBasis = ({submit}: CardLegalBasisProps) => {
+const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
     const [gdpr, setGdpr] = React.useState<Value>([]);
     const [nationalLaw, setNationalLaw] = React.useState<Value>([]);
     return (
         <Formik onSubmit={(values) => submit(values)} validationSchema={legalBasisSchema()} initialValues={{}}
-                render={(form: FormikProps<LegalBasisFormValues>) => (
-                    <Card>
-                        <Label2 marginBottom="1rem">{intl.legalBasisNew}</Label2>
+            render={(form: FormikProps<LegalBasisFormValues>) => (
+                <Card>
+                    <Label2 marginBottom="1rem">{intl.legalBasisNew}</Label2>
 
-                        <Block {...rowBlockBrops}>
-                            <Field name="gdpr"
-                                   render={() => (
-                                       <Select
-                                           onBlur={() => form.setFieldTouched('gdpr')}
-                                           autoFocus={true}
-                                           options={codelist.getParsedOptions(ListName.GDPR_ARTICLE)}
-                                           placeholder={intl.gdprSelect}
-                                           maxDropdownHeight="300px"
-                                           type={TYPE.search}
-                                           onChange={({value}) => {
-                                               setGdpr(value)
-                                               form.setFieldValue('gdpr', value.length > 0 ? value[0].id : undefined)
-                                           }}
-                                           value={gdpr}
-                                           error={!!form.errors.gdpr && (form.touched.gdpr || !!form.submitCount)}
-                                       />
-                                   )}/>
-                        </Block>
-                        <Error fieldName="gdpr"/>
+                    <Block {...rowBlockBrops}>
+                        <Field name="gdpr"
+                            render={() => (
+                                <Select
+                                    onBlur={() => form.setFieldTouched('gdpr')}
+                                    autoFocus={true}
+                                    options={codelist.getParsedOptions(ListName.GDPR_ARTICLE)}
+                                    placeholder={intl.gdprSelect}
+                                    maxDropdownHeight="300px"
+                                    type={TYPE.search}
+                                    onChange={({ value }) => {
+                                        setGdpr(value)
+                                        form.setFieldValue('gdpr', value.length > 0 ? value[0].id : undefined)
+                                    }}
+                                    value={gdpr}
+                                    error={!!form.errors.gdpr && (form.touched.gdpr || !!form.submitCount)}
+                                />
+                            )} />
+                    </Block>
+                    <Error fieldName="gdpr" />
 
-                        <Block {...rowBlockBrops}>
-                            <Field name="nationalLaw"
-                                   render={() => (
-                                       <Select
-                                           options={codelist.getParsedOptions(ListName.NATIONAL_LAW)}
-                                           placeholder={intl.nationalLawSelect}
-                                           maxDropdownHeight="300px"
-                                           type={TYPE.search}
-                                           onChange={({value}) => {
-                                               setNationalLaw(value)
-                                               form.setFieldValue('nationalLaw', value.length > 0 ? value[0].id : undefined)
-                                           }}
-                                           value={nationalLaw}
-                                           onBlur={() => form.setFieldTouched('nationalLaw')}
-                                           error={!!form.errors.nationalLaw && (form.touched.nationalLaw || !!form.submitCount)}
-                                       />
-                                   )}/>
-                        </Block>
-                        <Error fieldName="nationalLaw"/>
+                    <Block {...rowBlockBrops}>
+                        <Field name="nationalLaw"
+                            render={() => (
+                                <Select
+                                    options={codelist.getParsedOptions(ListName.NATIONAL_LAW)}
+                                    placeholder={intl.nationalLawSelect}
+                                    maxDropdownHeight="300px"
+                                    type={TYPE.search}
+                                    onChange={({ value }) => {
+                                        setNationalLaw(value)
+                                        form.setFieldValue('nationalLaw', value.length > 0 ? value[0].id : undefined)
+                                    }}
+                                    value={nationalLaw}
+                                    onBlur={() => form.setFieldTouched('nationalLaw')}
+                                    error={!!form.errors.nationalLaw && (form.touched.nationalLaw || !!form.submitCount)}
+                                />
+                            )} />
+                    </Block>
+                    <Error fieldName="nationalLaw" />
 
-                        <Block {...rowBlockBrops}>
-                            <Field name="description"
-                                   render={({field}: FieldProps<LegalBasisFormValues>) => (
-                                       <StatefulInput {...field} placeholder={intl.descriptionWrite}
-                                                      error={!!form.errors.description && (form.touched.description || !!form.submitCount)}
-                                       />
-                                   )}/>
-                        </Block>
-                        <Error fieldName="description"/>
+                    <Block {...rowBlockBrops}>
+                        <Field name="description"
+                            render={({ field }: FieldProps<LegalBasisFormValues>) => (
+                                <StatefulInput {...field} placeholder={intl.descriptionWrite}
+                                    error={!!form.errors.description && (form.touched.description || !!form.submitCount)}
+                                />
+                            )} />
+                    </Block>
+                    <Error fieldName="description" />
 
-                        <Block {...rowBlockBrops} justifyContent="space-between">
-                            <Button type='button' kind={KIND.secondary} size={ButtonSize.compact} onClick={form.submitForm}>
-                                {intl.legalBasisAdd}
-                            </Button>
-                        </Block>
-                    </Card>
-                )}/>
+                    <Block {...rowBlockBrops} justifyContent="space-between">
+                        <Button type='button' kind={KIND.secondary} size={ButtonSize.compact} onClick={form.submitForm}>
+                            {intl.legalBasisAdd}
+                        </Button>
+                        <Button type='button' kind={KIND.minimal} size={ButtonSize.compact} onClick={() => hideCard()}>
+                            {intl.abort}
+                        </Button>
+                    </Block>
+                </Card>
+            )} />
     )
 }
 

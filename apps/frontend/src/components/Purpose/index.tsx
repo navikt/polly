@@ -8,7 +8,6 @@ import { Label2, Paragraph2 } from "baseui/typography";
 import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
 import axios from "axios";
 
-
 import TablePurpose from './TablePurpose'
 import ModalPolicy from './ModalPolicy'
 import ModalProcess from './ModalProcess'
@@ -17,6 +16,8 @@ import { codelist, ListName } from "../../service/Codelist"
 import { Process } from "../../constants"
 import { intl } from "../../util/intl/intl"
 import { useForceUpdate } from "../../util/customHooks"
+import { user } from "../../service/User";
+import { useAwait } from "../../util/customHooks";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -75,6 +76,7 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
     const [showProcessModal, setShowProcessModal] = React.useState(false)
     const [showEditProcessModal, setShowEditProcessModal] = React.useState(false)
     const [showEditPolicyModal, setShowEditPolicyModal] = React.useState()
+    const [showDeleteModal, setShowDeleteModal] = React.useState()
     const [errorCreatePolicy, setErrorCreatePolicy] = React.useState()
     const [errorCreateProcess, setErrorCreateProcess] = React.useState()
     const [errorEditPolicy, setErrorEditPolicy] = React.useState()
@@ -100,7 +102,6 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
             }))
             .catch((err: any) => setErrorCreatePolicy(err.message));
     }
-
     const handleCreateProcess = async (values: any) => {
         if (!values) return
         let body = [{
@@ -118,7 +119,6 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
             }))
             .catch((err: any) => setErrorCreateProcess(err.message));
     }
-
     const handleEditProcess = async (values: any, id: any) => {
         let body = {
             id: id,
@@ -161,6 +161,27 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
                 setErrorEditPolicy(err.message)
             });
     }
+    const handleDeletePolicy = async (values: any) => {
+        await axios
+            .delete(`${server_polly}/policy/${values.id}`)
+            .then(((res: any) => {
+                console.log(res, "RES")
+                let processIndex = processList.findIndex((process: any) => process.name === values.process.name)
+                let process = processList[processIndex]
+                process.policies = process.policies.filter((policy: any) => policy.id !== values.id)
+                setShowDeleteModal(false)
+            }))
+            .catch((err: any) => {
+                console.log(err)
+                setShowDeleteModal(false)
+            });
+    }
+    const hasAccess = () => {
+        if (user.isLoggedIn())
+            return user.canWrite()
+        return false
+    }
+
 
     const isExpanded = (process: any) => {
         if (process.id === defaultExpandedPanelId && !currentExpanded) {
@@ -188,6 +209,8 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
         }
     }
 
+    useAwait(user.wait())
+
     return (
         <React.Fragment>
             <React.Fragment>
@@ -198,23 +221,27 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
 
                 <Block marginBottom="1rem" display="flex" justifyContent="space-between">
                     <Label2 font="font400">{intl.processingActivities}</Label2>
-                    <Button
-                        size={ButtonSize.compact}
-                        kind={KIND.minimal}
-                        onClick={() => setShowProcessModal(true)}
-                        startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
-                    >
-                        {intl.processingActivitiesNew}
-                    </Button>
-                    <ModalProcess
-                        title={intl.processingActivitiesNew}
-                        onClose={() => setShowProcessModal(false)}
-                        isOpen={showProcessModal}
-                        submit={(values: any) => handleCreateProcess(values)}
-                        errorOnCreate={errorCreateProcess}
-                        isEdit={false}
-                        initialValues={{ name: '', department: '', subDepartment: '', legalBases: [] }}
-                    />
+                    {hasAccess() && (
+                        <React.Fragment>
+                            <Button
+                                size={ButtonSize.compact}
+                                kind={KIND.minimal}
+                                onClick={() => setShowProcessModal(true)}
+                                startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
+                            >
+                                {intl.processingActivitiesNew}
+                            </Button>
+                            <ModalProcess
+                                title={intl.processingActivitiesNew}
+                                onClose={() => setShowProcessModal(false)}
+                                isOpen={showProcessModal}
+                                submit={(values: any) => handleCreateProcess(values)}
+                                errorOnCreate={errorCreateProcess}
+                                isEdit={false}
+                                initialValues={{ name: '', department: '', subDepartment: '', legalBases: [] }}
+                            />
+                        </React.Fragment>
+                    )}
                 </Block>
 
                 {processList && (
@@ -236,49 +263,55 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
                                             {renderAllSubjectCategories(process)}
                                         </Block>
                                     </Block>
-                                    <Block>
-                                        <Button
-                                            size={ButtonSize.compact}
-                                            kind={KIND.secondary}
-                                            onClick={() => setShowEditProcessModal(true)}
-                                        >
-                                            {intl.processingActivitiesEdit}
-                                        </Button>
-                                        <ModalProcess
-                                            title={intl.processingActivitiesEdit}
-                                            onClose={() => setShowEditProcessModal(false)}
-                                            isOpen={showEditProcessModal}
-                                            submit={(values: any) => handleEditProcess(values, process.id)}
-                                            errorOnCreate={errorCreateProcess}
-                                            isEdit={true}
-                                            initialValues={getInitialValuesProcessEdit(process)}
+                                    {hasAccess() && (
+                                        <Block>
+                                            <Button
+                                                size={ButtonSize.compact}
+                                                kind={KIND.secondary}
+                                                onClick={() => setShowEditProcessModal(true)}
+                                            >
+                                                {intl.processingActivitiesEdit}
+                                            </Button>
+                                            <ModalProcess
+                                                title={intl.processingActivitiesEdit}
+                                                onClose={() => setShowEditProcessModal(false)}
+                                                isOpen={showEditProcessModal}
+                                                submit={(values: any) => handleEditProcess(values, process.id)}
+                                                errorOnCreate={errorCreateProcess}
+                                                isEdit={true}
+                                                initialValues={getInitialValuesProcessEdit(process)}
 
-                                        />
-                                    </Block>
+                                            />
+                                        </Block>
+                                    )}
                                 </Block>
 
                                 <Block {...rowPanelContent}>
                                     <Label2 alignSelf="center">{intl.informationTypes}</Label2>
-                                    <Button
-                                        size={ButtonSize.compact}
-                                        kind={KIND.tertiary}
-                                        onClick={() => setIsOpen(true)}
-                                        startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
-                                    >
-                                        {intl.addNew}
-                                    </Button>
-                                    <ModalPolicy
-                                        title={intl.policyNew}
-                                        initialValues={{ legalBases: [] }}
-                                        isEdit={false}
-                                        onClose={() => {
-                                            setIsOpen(false)
-                                            setErrorCreatePolicy(null)
-                                        }}
-                                        isOpen={isOpen}
-                                        submit={(values: any) => handleCreatePolicy(values, process)}
-                                        errorOnCreate={errorCreatePolicy}
-                                    />
+                                    {hasAccess() && (
+                                        <React.Fragment>
+                                            <Button
+                                                size={ButtonSize.compact}
+                                                kind={KIND.tertiary}
+                                                onClick={() => setIsOpen(true)}
+                                                startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
+                                            >
+                                                {intl.addNew}
+                                            </Button>
+                                            <ModalPolicy
+                                                title={intl.policyNew}
+                                                initialValues={{ legalBases: [] }}
+                                                isEdit={false}
+                                                onClose={() => {
+                                                    setIsOpen(false)
+                                                    setErrorCreatePolicy(null)
+                                                }}
+                                                isOpen={isOpen}
+                                                submit={(values: any) => handleCreatePolicy(values, process)}
+                                                errorOnCreate={errorCreatePolicy}
+                                            />
+                                        </React.Fragment>
+                                    )}
                                 </Block>
                                 {process.policies && (
                                     <Block >
@@ -287,7 +320,11 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
                                             onSubmitEdit={handleEditPolicy}
                                             errorOnSubmitEdit={errorEditPolicy}
                                             showEditModal={showEditPolicyModal}
+                                            showDeleteModal={showDeleteModal}
                                             setShowEditModal={setShowEditPolicyModal}
+                                            setShowDeleteModal={setShowDeleteModal}
+                                            isLoggedIn={hasAccess()}
+                                            onDeletePolicy={handleDeletePolicy}
                                         />
                                     </Block>
                                 )}

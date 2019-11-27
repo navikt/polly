@@ -8,17 +8,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { IconDefinition } from "@fortawesome/fontawesome-common-types"
 import { faTag, faUserShield } from "@fortawesome/free-solid-svg-icons"
 import { sensitivityColor } from "../Sensitivity"
-import { Link } from "react-router-dom"
 import { InformationType } from "../../../constants"
 import { intl } from "../../../util/intl/intl"
-import { StyledLink } from "baseui/link";
-
-const row: BlockProps = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginBottom: '2rem',
-    width: '100%'
-}
 
 const purposeBlockProps: BlockProps = {
     marginTop: '3rem'
