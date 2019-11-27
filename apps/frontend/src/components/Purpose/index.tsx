@@ -116,6 +116,7 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
                 processList.push(res.data.content[0])
                 setErrorCreateProcess(null)
                 setShowProcessModal(false)
+                update()
             }))
             .catch((err: any) => setErrorCreateProcess(err.message));
     }
@@ -137,6 +138,7 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
                 processList[index] = { ...res.data, policies: policies }
                 setErrorCreateProcess(null)
                 setShowEditProcessModal(false)
+                update()
             }))
             .catch((err: any) => setErrorCreateProcess(err.message));
     }
@@ -151,10 +153,12 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
                 console.log(res)
                 let processIndex = processList.findIndex((process: any) => process.name === res.data.content[0].process.name)
                 let process = processList[processIndex]
+                if (!process.policies) process.policies = []
                 let policyIndex = process.policies.findIndex((policy: any) => policy.id === values.id)
                 process.policies[policyIndex] = { ...res.data.content[0] }
                 setErrorEditPolicy(null)
                 setShowEditPolicyModal(false)
+                update()
             }))
             .catch((err: any) => {
                 setShowEditPolicyModal(true)
@@ -165,7 +169,6 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
         await axios
             .delete(`${server_polly}/policy/${values.id}`)
             .then(((res: any) => {
-                console.log(res, "RES")
                 let processIndex = processList.findIndex((process: any) => process.name === values.process.name)
                 let process = processList[processIndex]
                 process.policies = process.policies.filter((policy: any) => policy.id !== values.id)
