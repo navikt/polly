@@ -28,7 +28,7 @@ class CodelistService {
     };
 
     getCodes(list: ListName): Code[] {
-        return this.lists && this.lists.codelist[list] ? this.lists.codelist[list] : [];
+        return this.lists && this.lists.codelist[list] ? this.lists.codelist[list].sort((c1, c2) => c1.shortName.localeCompare(c2.shortName)) : [];
     }
 
     getCode(list: ListName, codeName: string): Code | undefined {
