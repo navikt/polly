@@ -87,7 +87,8 @@ export interface IStrings {
     write: string;
     administrate: string;
     delete: string;
-    header: string;
+    appName: string;
+    beta: string;
 
     prevButton: string;
     nextButton: string;

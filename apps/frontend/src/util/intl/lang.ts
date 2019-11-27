@@ -78,7 +78,8 @@ export const no: IStrings = {
     write: "Skrive",
     administrate: "Administrere",
     delete: "Slett",
-    header: "Behandlingskatalog",
+    appName: "Behandlingskatalog",
+    beta: "beta",
 
     prevButton: "Forrige",
     nextButton: "Neste",
@@ -161,7 +162,8 @@ export const en = {
     write: "Write",
     administrate: "Administrate",
     delete: "Delete",
-    header: "Process catalog",
+    appName: "Process catalog",
+    beta: "beta",
 
     prevButton: "Prev",
     nextButton: "Next",

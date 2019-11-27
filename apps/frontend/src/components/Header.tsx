@@ -12,7 +12,7 @@ import { OptionProfile, StatefulMenu } from "baseui/menu"
 import { TriangleDown } from "baseui/icon"
 import { theme } from "../util/theme"
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { Label2, H5 } from "baseui/typography"
+import { Label2, H5, H6 } from "baseui/typography"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons"
 import { Heading, HeadingLevel } from "baseui/heading";
@@ -165,7 +165,8 @@ const Header = (props: HeaderProps & RouteComponentProps<any>) => {
                 <StyledNavigationItem>
                     <Block display="flex" alignItems="center">
                         <StyledLink href="/" className={link}>{logo}</StyledLink>
-                        <H5 marginLeft="1rem">Behandlingskatalog</H5>
+                        <H5 marginLeft={theme.sizing.scale400}>{intl.appName}</H5>
+                        <H6 marginLeft={theme.sizing.scale200} color={theme.colors.negative400}>({intl.beta})</H6>
                     </Block>
                 </StyledNavigationItem>
             </StyledNavigationList>
