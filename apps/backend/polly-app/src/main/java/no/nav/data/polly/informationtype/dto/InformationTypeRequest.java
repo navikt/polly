@@ -84,6 +84,6 @@ public class InformationTypeRequest implements RequestElement {
         validator.checkCodelists(Fields.categories, getCategories(), ListName.CATEGORY);
         validator.checkCodelists(Fields.sources, getSources(), ListName.SOURCE);
         validator.checkRequiredCodelist(Fields.sensitivity, getSensitivity(), ListName.SENSITIVITY);
-        validator.checkRequiredCodelist(Fields.navMaster, getNavMaster(), ListName.SYSTEM);
+        validator.checkCodelist(Fields.navMaster, getNavMaster(), ListName.SYSTEM);
     }
 }
