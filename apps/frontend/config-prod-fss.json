@@ -2,5 +2,5 @@
   "application_name": "data-catalog-editor",
   "image_name": "data-catalog-editor",
   "org_name": "navikt",
-  "ingress": "https://data-catalog-editor.nais.adeo.no"
+  "ingress": "https://behandlingskatalog.nais.adeo.no"
 }

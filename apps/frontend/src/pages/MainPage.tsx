@@ -23,11 +23,6 @@ export const Main = () => {
                     href={`${server_polly}/logout?redirect_uri=${window.location.href}`}>{intl.logout}</a></p>}
                 {!user.isLoggedIn() && <p><a href={`${server_polly}/login?redirect_uri=${window.location.href}`}>{intl.login}</a></p>}
             </Block>
-            <Block>
-                <p><Link to="/informationtype">{intl.informationTypes}</Link></p>
-                <p><Link to="/informationtype/create">{intl.createNew} {intl.informationType}</Link></p>
-                <p><Link to="/purpose">{intl.purpose}</Link></p>
-            </Block>
         </Block>
     )
 }

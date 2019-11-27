@@ -64,7 +64,7 @@ const InformationTypeTable = (props: RouteComponentProps) => {
             setLoading(true);
             await axios
             .get(`${server_polly}/informationtype/?pageNumber=${page - 1}&pageSize=${limit}`)
-            .then(res => {
+            .then((res: { data: PageResponse<InformationType> }) => {
                 console.log(res);
                 setTotal(res.data.totalElements)
                 let content: InformationType[] = res.data.content
