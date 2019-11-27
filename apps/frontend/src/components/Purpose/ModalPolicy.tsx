@@ -22,7 +22,7 @@ import { KIND as NKIND, Notification } from "baseui/notification"
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 const modalBlockProps: BlockProps = {
-    width: '700px',
+    width: '750px',
     paddingRight: '2rem',
     paddingLeft: '2rem'
 }
@@ -47,7 +47,7 @@ const Error = (props: { fieldName: string }) => (
 )
 
 const renderLabel = (label: any | string) => (
-    <Block width="30%" alignSelf="center">
+    <Block width="25%" alignSelf="center">
         <Label2 marginBottom="8px" font="font300">{label.toString()}</Label2>
     </Block>
 )
@@ -277,7 +277,10 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                                                                     {intl.legalBasisAdd}
                                                                 </Button>
                                                                 <Block marginTop="1rem">
-                                                                    <ListLegalBases legalBases={formikBag.values.legalBases} />
+                                                                    <ListLegalBases
+                                                                        legalBases={formikBag.values.legalBases}
+                                                                        onRemove={(index: any) => arrayHelpers.remove(index)}
+                                                                    />
                                                                 </Block>
                                                             </Block>
                                                         </Block>

@@ -12,9 +12,10 @@ import { OptionProfile, StatefulMenu } from "baseui/menu"
 import { TriangleDown } from "baseui/icon"
 import { theme } from "../util/theme"
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { Label2 } from "baseui/typography"
+import { Label2, H5 } from "baseui/typography"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons"
+import { Heading, HeadingLevel } from "baseui/heading";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -57,16 +58,16 @@ const Flag = (props: { langCode: string }) => (
 )
 
 const FlagWithName = (props: { langCode: string }) => (
-    <span><Flag langCode={props.langCode}/> {langs[props.langCode].name}</span>
+    <span><Flag langCode={props.langCode} /> {langs[props.langCode].name}</span>
 )
 
 const LangDropdown = (props: { setLang: (lang: string) => void }) => {
     return (
         <StatefulPopover
-            content={({close}) =>
+            content={({ close }) =>
                 <StatefulMenu
                     items={langsArray.filter(l => l.langCode !== intl.getLanguage())}
-                    onItemSelect={({item}) => {
+                    onItemSelect={({ item }) => {
                         close()
                         props.setLang(item.langCode)
                     }}
@@ -78,7 +79,7 @@ const LangDropdown = (props: { setLang: (lang: string) => void }) => {
                                     title: lang.name,
                                     subtitle: lang.langCode
                                 }),
-                                getProfileItemImg: (lang: Lang) => () => <Flag langCode={lang.langCode}/>,
+                                getProfileItemImg: (lang: Lang) => () => <Flag langCode={lang.langCode} />,
                                 overrides: {
                                     ListItemProfile: {
                                         props: {
@@ -105,15 +106,15 @@ const LangDropdown = (props: { setLang: (lang: string) => void }) => {
                 />
             }
         >
-            <Button endEnhancer={() => <TriangleDown size={24}/>} size="compact" kind="tertiary">
-                <FlagWithName langCode={intl.getLanguage()}/>
+            <Button endEnhancer={() => <TriangleDown size={24} />} size="compact" kind="tertiary">
+                <FlagWithName langCode={intl.getLanguage()} />
             </Button>
         </StatefulPopover>
     );
 }
 
 const LoggedInHeader = () => {
-    const blockStyle : BlockProps = {
+    const blockStyle: BlockProps = {
         display: 'flex',
         width: '100%',
         padding: theme.sizing.scale100
@@ -133,7 +134,7 @@ const LoggedInHeader = () => {
                 </React.Fragment>
             }
         >
-            <Button kind="tertiary" size="compact" endEnhancer={() => <FontAwesomeIcon icon={faUser}/>}>{user.getNavIdent()}</Button>
+            <Button kind="tertiary" size="compact" endEnhancer={() => <FontAwesomeIcon icon={faUser} />}>{user.getNavIdent()}</Button>
         </StatefulPopover>
     )
 }
@@ -163,7 +164,10 @@ const Header = (props: HeaderProps & RouteComponentProps<any>) => {
         >
             <StyledNavigationList $align={ALIGN.left}>
                 <StyledNavigationItem>
-                    <StyledLink href="/" className={link}>{logo}</StyledLink>
+                    <Block display="flex" alignItems="center">
+                        <StyledLink href="/" className={link}>{logo}</StyledLink>
+                        <H5 marginLeft="1rem">Behandlingskatalog</H5>
+                    </Block>
                 </StyledNavigationItem>
             </StyledNavigationList>
 
@@ -194,7 +198,7 @@ const Header = (props: HeaderProps & RouteComponentProps<any>) => {
 
                 <StyledNavigationItem>
                     <Block marginRight="2rem">
-                        <LangDropdown setLang={props.setLang}/>
+                        <LangDropdown setLang={props.setLang} />
                     </Block>
                 </StyledNavigationItem>
             </StyledNavigationList>

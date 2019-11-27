@@ -17,7 +17,7 @@ import * as yup from "yup"
 import { legalBasisSchema, ListLegalBases } from "../common/LegalBasis"
 
 const modalBlockProps: BlockProps = {
-    width: '700px',
+    width: '750px',
     paddingRight: '2rem',
     paddingLeft: '2rem'
 }
@@ -48,7 +48,7 @@ const Error = (props: { fieldName: string }) => (
 )
 
 const renderLabel = (label: any | string) => (
-    <Block width="30%" alignSelf="center">
+    <Block width="25%" alignSelf="center">
         <Label2 marginBottom="8px" font="font300">{label.toString()}</Label2>
     </Block>
 )
@@ -201,33 +201,39 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                                     )}
                                 </Block>
 
-                                {showLegalBasisFields && (
-                                    <FieldArray
-                                        name="legalBases"
-                                        render={arrayHelpers => (
-                                            <Block width="100%">
-                                                <CardLegalBasis
-                                                    hideCard={() => setShowLegalbasesFields(false)}
-                                                    submit={(values: any) => {
-                                                        if (!values) return
-                                                        else {
-                                                            arrayHelpers.push(values)
-                                                            setShowLegalbasesFields(false)
-                                                        }
-                                                    }} />
-                                            </Block>
-                                        )}
-                                    />
-                                )}
+                                <FieldArray
+                                    name="legalBases"
+                                    render={arrayHelpers => (
+                                        <React.Fragment>
+                                            {showLegalBasisFields && (
+                                                <Block width="100%">
+                                                    <CardLegalBasis
+                                                        hideCard={() => setShowLegalbasesFields(false)}
+                                                        submit={(values: any) => {
+                                                            if (!values) return
+                                                            else {
+                                                                arrayHelpers.push(values)
+                                                                setShowLegalbasesFields(false)
+                                                            }
+                                                        }} />
+                                                </Block>
+                                            )}
+                                            {!showLegalBasisFields && (
+                                                <Block display="flex">
+                                                    {renderLabel('')}
+                                                    <Block width="100%">
+                                                        <ListLegalBases
+                                                            legalBases={formikBag.values.legalBases}
+                                                            onRemove={(index: any) => arrayHelpers.remove(index)}
+                                                        />
+                                                    </Block>
+                                                </Block>
+                                            )}
+                                        </React.Fragment>
+                                    )}
+                                />
 
-                                {!showLegalBasisFields && (
-                                    <Block display="flex">
-                                        {renderLabel('')}
-                                        <Block width="100%">
-                                            <ListLegalBases legalBases={formikBag.values.legalBases} />
-                                        </Block>
-                                    </Block>
-                                )}
+
                             </ModalBody>
 
                             <ModalFooter>
