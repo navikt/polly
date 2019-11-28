@@ -41,7 +41,6 @@ const initFormValues = (data: InformationType) => {
 const InformationtypeEditPage = (props: any) => {
     const [isLoading, setLoading] = React.useState(true);
     const [error, setError] = React.useState(null);
-    const [isUpdated, setIsUpdated] = React.useState(null);
     const [errorSubmit, setErrorSubmit] = React.useState(null);
     const [informationtype, setInformationType] = React.useState<InformationType>();
 
@@ -57,14 +56,13 @@ const InformationtypeEditPage = (props: any) => {
     };
 
     const handleSubmitResponse = (response: any) => {
-        setIsUpdated(response);
+        props.history.push(`/informationtype/${props.match.params.id}`)
     };
 
     const handleSubmit = async (values: any) => {
         if (!values) return;
 
         setErrorSubmit(null);
-        setIsUpdated(null);
         let body = { ...values, id: props.match.params.id };
 
         await axios
@@ -110,7 +108,6 @@ const InformationtypeEditPage = (props: any) => {
                                     submit={handleSubmit}
                                 />
                                 {errorSubmit && <p>{errorSubmit}</p>}
-                                {isUpdated && <p>{intl.informationTypeUpdated}</p>}
                             </Centered>
                         ) : (
                                 <p>{intl.couldntLoad}</p>

@@ -27,7 +27,6 @@ export interface IStrings {
     loggedInStatus: string;
     notLoggedInStatus: string;
     couldntLoad: string;
-    informationTypeUpdated: string;
     informationTypeCreate: string;
     sensitivitySelect: string;
     nameWrite: string;
