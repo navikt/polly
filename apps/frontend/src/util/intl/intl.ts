@@ -115,7 +115,7 @@ export const langs: Langs = {
 export const langsArray: Lang[] = Object.keys(langs).map(lang => langs[lang]);
 
 // Controls starting language as well as fallback language if a text is missing in chosen language
-const defaultLang = langs.no;
+const defaultLang = langs.nb;
 
 type IIntl = LocalizedStringsMethods & IStrings;
 
