@@ -6,6 +6,9 @@ import * as React from "react";
 import { useEffect } from "react";
 import { useForceUpdate } from "../customHooks";
 import { en, no, ta } from "./lang";
+import * as moment from "moment";
+import 'moment/locale/nb'
+import 'moment/locale/ta'
 
 export interface IStrings {
     informationType: string;
@@ -90,6 +93,9 @@ export interface IStrings {
     appName: string;
     beta: string;
     all: string;
+    startDate: string;
+    endDate: string;
+    inactive: string;
 
     prevButton: string;
     nextButton: string;
@@ -99,6 +105,7 @@ export interface IStrings {
     required: string;
 }
 
+// Remember import moment locales up top
 export const langs: Langs = {
     no: { flag: "🇳🇴", name: "Norsk", langCode: "no", texts: no },
     en: { flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", name: "English", langCode: "en", texts: en },
@@ -121,12 +128,12 @@ interface LocalizedStringsFactory {
 
 const strings: IntlLangs = {};
 
-Object.keys(langs).forEach(lang => (strings[lang] = langs[lang].texts));
+Object.keys(langs).forEach(lang => strings[lang] = langs[lang].texts);
 
 export const intl: IIntl = new (LocalizedStrings as LocalizedStringsFactory)(
     strings as any,
     { customLanguageInterface: () => defaultLang.langCode }
-);
+)
 
 interface IntlLangs {
     [lang: string]: IStrings;
@@ -156,6 +163,9 @@ export const useLang = () => {
     const update = useForceUpdate();
     useEffect(() => {
         intl.setLanguage(lang);
+        let prevMoment = moment.locale()
+        let momentlocale = moment.locale(lang)
+        if (prevMoment === momentlocale) console.warn('moment locale missing', momentlocale)
         localStorageAvailable && localStorage.setItem("polly-lang", lang);
         update();
     }, [lang]);
