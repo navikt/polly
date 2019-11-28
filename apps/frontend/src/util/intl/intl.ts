@@ -107,7 +107,7 @@ export interface IStrings {
 
 // Remember import moment locales up top
 export const langs: Langs = {
-    no: { flag: "🇳🇴", name: "Norsk", langCode: "no", texts: no },
+    nb: { flag: "🇳🇴", name: "Norsk", langCode: "nb", texts: no },
     en: { flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", name: "English", langCode: "en", texts: en },
     ta: { flag: "🇱🇰", name: "தமிழ்", langCode: "ta", texts: ta }
 };
@@ -163,9 +163,8 @@ export const useLang = () => {
     const update = useForceUpdate();
     useEffect(() => {
         intl.setLanguage(lang);
-        let prevMoment = moment.locale()
         let momentlocale = moment.locale(lang)
-        if (prevMoment === momentlocale) console.warn('moment locale missing', momentlocale)
+        if (lang !== momentlocale) console.warn('moment locale missing', lang)
         localStorageAvailable && localStorage.setItem("polly-lang", lang);
         update();
     }, [lang]);
