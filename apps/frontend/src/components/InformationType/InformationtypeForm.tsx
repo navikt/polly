@@ -17,6 +17,7 @@ import { InformationtypeFormValues, PageResponse, Term } from "../../constants";
 import { useDebouncedState } from "../../util/customHooks"
 import { KeyboardEvent } from "react"
 import { intl } from "../../util/intl/intl"
+import * as yup from "yup"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -51,6 +52,17 @@ function renderTagList(
         </React.Fragment>
     );
 }
+
+const infoTypeSchema = () => yup.object({
+    name: yup.string().required(intl.required),
+    term: yup.string(),
+    sensitivity: yup.string().required(intl.required),
+    categories: yup.array(yup.string()),
+    sources: yup.array(yup.string()),
+    keywords: yup.array(yup.string()),
+    navMaster: yup.string(),
+    description: yup.string().required(intl.required)
+})
 
 type FormProps = {
     formInitialValues: InformationtypeFormValues;
@@ -132,6 +144,7 @@ const InformationtypeForm = ({
     return (
         <React.Fragment>
             <Formik
+                validationSchema={infoTypeSchema()}
                 initialValues={formInitialValues}
                 enableReinitialize
                 onSubmit={(
@@ -151,7 +164,7 @@ const InformationtypeForm = ({
                             <FlexGridItem>
                                 <Field
                                     name="name"
-                                    render={({ field }: FieldProps<InformationtypeFormValues>) => (
+                                    render={({ form, field }: FieldProps<InformationtypeFormValues>) => (
                                         <Block>
                                             <Block {...labelProps}>
                                                 <Label2>{intl.name}</Label2>
@@ -159,6 +172,7 @@ const InformationtypeForm = ({
                                             <Input
                                                 {...field}
                                                 placeholder={intl.nameWrite}
+                                                error={!!form.errors.name && !!form.submitCount}
                                             />
                                         </Block>
                                     )}
@@ -182,10 +196,11 @@ const InformationtypeForm = ({
                                                 value={termValue as Value}
                                                 onInputChange={event => setTermSearch(event.currentTarget.value)}
                                                 onChange={(params) => {
-                                                    let term = params.value[0]
-                                                    setTermValue(term)
-                                                    form.setFieldValue('term', term.id)
+                                                    let term = params.value.length ? params.value[0] : undefined
+                                                    setTermValue(term as Option)
+                                                    form.setFieldValue('term', term ? term.id : undefined)
                                                 }}
+                                                error={!!form.errors.term && !!form.submitCount}
                                             />
                                         </Block>
                                     )}
@@ -206,9 +221,11 @@ const InformationtypeForm = ({
                                                 value={sensitivityValue as Value}
                                                 placeholder={intl.sensitivitySelect}
                                                 onChange={(params) => {
-                                                    setSensitivityValue(params.value[0])
-                                                    form.setFieldValue('sensitivity', params.value[0].id)
+                                                    let sensitivity = params.value.length ? params.value[0] : undefined
+                                                    setSensitivityValue(sensitivity as Option)
+                                                    form.setFieldValue('sensitivity', sensitivity ? sensitivity.id : undefined)
                                                 }}
+                                                error={!!form.errors.sensitivity && !!form.submitCount}
                                             />
                                         </Block>
                                     )}
@@ -236,6 +253,7 @@ const InformationtypeForm = ({
                                                             : null
                                                     );
                                                 }}
+                                                error={!!arrayHelpers.form.errors.categories && !!arrayHelpers.form.submitCount}
                                             />
                                             {renderTagList(codelist.getShortnames(ListName.CATEGORY, formikBag.values.categories), arrayHelpers)}
                                         </Block>
@@ -260,6 +278,7 @@ const InformationtypeForm = ({
                                                 onChange={({ option }) => {
                                                     arrayHelpers.push(option ? option.id : null);
                                                 }}
+                                                error={!!arrayHelpers.form.errors.sources && !!arrayHelpers.form.submitCount}
                                             />
                                             {renderTagList(codelist.getShortnames(ListName.SOURCE, formikBag.values.sources), arrayHelpers)}
                                         </Block>
@@ -300,6 +319,7 @@ const InformationtypeForm = ({
                                                         </Button>
                                                     )
                                                 }}
+                                                error={!!arrayHelpers.form.errors.keywords && !!arrayHelpers.form.submitCount}
                                             />
                                             {renderTagList(formikBag.values.keywords, arrayHelpers)}
                                         </Block>
@@ -311,7 +331,7 @@ const InformationtypeForm = ({
                                 <Field
                                     name="description"
                                     render={({
-                                        field
+                                        field, form
                                     }: FieldProps<
                                         InformationtypeFormValues
                                     >) => (
@@ -323,6 +343,7 @@ const InformationtypeForm = ({
                                                     {...field}
                                                     placeholder={intl.descriptionWrite}
                                                     rows={5}
+                                                    error={!!form.errors.description && !!form.submitCount}
                                                 />
                                             </Block>
                                         )}
@@ -342,10 +363,12 @@ const InformationtypeForm = ({
                                                 options={codelist.getParsedOptions(ListName.SYSTEM)}
                                                 value={masterValue as Value}
                                                 placeholder={intl.navMasterSelect}
-                                                onChange={(params: any) => {
-                                                    setMasterValue(params.value[0])
-                                                    form.setFieldValue('navMaster', params.value[0].id)
+                                                onChange={(params) => {
+                                                    let master = params.value.length ? params.value[0] : undefined
+                                                    setMasterValue(master as Option)
+                                                    form.setFieldValue('navMaster', master ? master.id : undefined)
                                                 }}
+                                                error={!!form.errors.navMaster && !!form.submitCount}
                                             />
                                         </Block>
                                     )}

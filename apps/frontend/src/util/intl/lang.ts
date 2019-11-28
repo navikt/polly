@@ -19,7 +19,6 @@ export const no: IStrings = {
     loggedInStatus: "Du er logget inn og kan",
     notLoggedInStatus: "Du er ikke logget inn men kan",
     couldntLoad: "Kunne ikke laste inn siden",
-    informationTypeUpdated: "Opplysningstypen er oppdatert",
     informationTypeCreate: "Opprett opplysningstype",
     sensitivitySelect: "Velg type personopplysning",
     nameWrite: "Skriv inn navn",
@@ -108,7 +107,6 @@ export const en = {
     loggedInStatus: "You are logged in and can",
     notLoggedInStatus: "You are not logged in but you can still",
     couldntLoad: "Couldn't load the page",
-    informationTypeUpdated: "Information type updated",
     informationTypeCreate: "Create new information type",
     sensitivitySelect: "Select type of personal data",
     nameWrite: "Enter name",
@@ -193,7 +191,6 @@ export const ta = {
     notLoggedInStatus:
         "நீங்கள் உள்நுழைந்திருக்கவில்லை, ஆனால் நீங்கள் இன்னும் முடியும்",
     couldntLoad: "பக்கத்தை ஏற்ற முடியவில்லை",
-    informationTypeUpdated: "தகவல் வகை புதுப்பிக்கப்பட்டது",
     informationTypeCreate: "புதிய தகவல் வகையை உருவாக்கு",
     sensitivitySelect: "தனிப்பட்ட தரவின் வகையைத் தேர்ந்தெடுக்கவும்",
     nameWrite: "பெயரை உள்ளிடுக",
