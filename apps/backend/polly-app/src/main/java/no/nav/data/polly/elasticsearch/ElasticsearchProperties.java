@@ -16,6 +16,7 @@ public class ElasticsearchProperties {
     private String user;
     private String password;
     private int indexingIntervalSeconds;
+    private boolean deleteOnly;
 
     public boolean indexingDisabled() {
         return indexingIntervalSeconds <= 0;

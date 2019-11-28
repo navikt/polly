@@ -27,6 +27,11 @@ public interface InformationTypeRepository extends JpaRepository<InformationType
 
     @Modifying
     @Transactional
+    @Query("delete from InformationType where elasticsearchStatus = 'TO_BE_UPDATED'")
+    int deleteToBeDeleted();
+
+    @Modifying
+    @Transactional
     @Query("update InformationType set elasticsearchStatus = 'TO_BE_UPDATED' where id in ?1")
     int setSyncForInformationTypeIds(List<UUID> ids);
 
