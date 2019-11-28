@@ -74,6 +74,7 @@ export const ListLegalBases = (props: { legalBases?: LegalBasisFormValues[], onR
                     artworkSize={ARTWORK_SIZES.SMALL}
                     endEnhancer={() => <Button type="button" kind="minimal" size="compact" onClick={() => onRemove(i)}><FontAwesomeIcon icon={faTrash}/></Button>}
                     sublist
+                    key={i}
                 >
                     <ListItemLabel sublist>
                         {legalBase.gdpr && codelist.getShortname(ListName.GDPR_ARTICLE, legalBase.gdpr) + ", "}
@@ -86,16 +87,17 @@ export const ListLegalBases = (props: { legalBases?: LegalBasisFormValues[], onR
     )
 }
 
-
 export const ListLegalBasesInTable = (props: { legalBases: LegalBasis[] }) => {
     const {legalBases} = props
     return (
         <Block>
-            {legalBases.map((legalBasis: any, i: number) => (
-                <Block marginBottom="8px">
-                    <li key={i}> {renderLegalBasis(legalBasis)}</li>
-                </Block>
-            ))}
+            <ul>
+                {legalBases.map((legalBasis: any, i: number) => (
+                    <Block marginBottom="8px" key={i}>
+                        <li> {renderLegalBasis(legalBasis)}</li>
+                    </Block>
+                ))}
+            </ul>
         </Block>
 
     )
