@@ -62,8 +62,15 @@ const renderMetadata = (informationtype: InformationType) => {
     )
 }
 
-const InformationtypeMetadata = (props: { informationtype: InformationType, purposeMap: any }) => {
-    const { informationtype, purposeMap } = props
+interface InformationtypeMetadataProps {
+    informationtype: InformationType;
+    purposeMap: any;
+    expanded: string[];
+    onSelectPurpose: (purpose: string) => void
+}
+
+const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
+    const {informationtype, purposeMap, expanded, onSelectPurpose} = props
 
     return (
         <React.Fragment>
@@ -73,7 +80,8 @@ const InformationtypeMetadata = (props: { informationtype: InformationType, purp
 
                     <Block {...purposeBlockProps}>
                         <Label2 marginBottom="2rem" font="font450">{intl.purposeUse}</Label2>
-                        <AccordionInformationtype purposeMap={purposeMap} />
+                        <AccordionInformationtype purposeMap={purposeMap} expaneded={expanded}
+                                                  onChange={args => args.expanded.length && onSelectPurpose(args.expanded[0] as string)}/>
                     </Block>
                 </React.Fragment>
             )}
