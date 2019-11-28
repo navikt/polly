@@ -57,6 +57,11 @@ public class ElasticsearchService {
             log.info("Skip sync to ElasticSearch, not leader");
             return;
         }
+        if (elasticsearchProperties.isDeleteOnly()) {
+            int deleted = repository.deleteToBeDeleted();
+            log.info("Deleted {} information types", deleted);
+            return;
+        }
         counter.labels("sync").inc();
         summary.time(() -> {
             log.info("Starting sync to ElasticSearch");

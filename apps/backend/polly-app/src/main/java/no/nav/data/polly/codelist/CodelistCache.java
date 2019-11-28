@@ -2,7 +2,6 @@ package no.nav.data.polly.codelist;
 
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
-import no.nav.data.polly.codelist.dto.CodelistResponse;
 import org.springframework.util.Assert;
 
 import java.util.EnumMap;
@@ -20,8 +19,6 @@ final class CodelistCache {
     private CodelistCache() {
     }
 
-    // Preserve backwards compatibility for rest for now
-    private static final Map<ListName, Map<String, String>> codelistLegacy = new EnumMap<>(ListName.class);
     private static final Map<ListName, Map<String, Codelist>> codelists = new EnumMap<>(ListName.class);
 
     static {
@@ -29,10 +26,7 @@ final class CodelistCache {
     }
 
     static void init() {
-        Stream.of(ListName.values()).forEach(listName -> {
-            codelists.put(listName, new HashMap<>());
-            codelistLegacy.put(listName, new HashMap<>());
-        });
+        Stream.of(ListName.values()).forEach(listName -> codelists.put(listName, new HashMap<>()));
     }
 
     static List<Codelist> getAll() {
@@ -52,10 +46,7 @@ final class CodelistCache {
     }
 
     static void remove(ListName listName, String code) {
-        Codelist remove = codelists.get(listName).remove(code);
-        if (remove != null) {
-            codelistLegacy.get(listName).remove(remove.getCode());
-        }
+        codelists.get(listName).remove(code);
     }
 
     static void set(Codelist codelist) {
@@ -64,16 +55,5 @@ final class CodelistCache {
         Assert.notNull(codelist.getShortName(), "shortName cannot be null");
         Assert.notNull(codelist.getDescription(), "description cannot be null");
         codelists.get(codelist.getList()).put(codelist.getCode(), codelist);
-        codelistLegacy.get(codelist.getList()).put(codelist.getCode(), codelist.getDescription());
-    }
-
-    @Deprecated
-    static Map<ListName, Map<String, String>> getAllAsMap() {
-        return codelistLegacy;
-    }
-
-    @Deprecated
-    static Map<String, String> getAsMap(ListName listName) {
-        return codelistLegacy.get(listName);
     }
 }

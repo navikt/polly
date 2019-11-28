@@ -140,7 +140,7 @@ class ElasticsearchServiceIT extends IntegrationTestBase {
         assertThat(process.getPurposeDescription()).isEqualTo("Arbeidsavklaringspenger");
         List<PolicyElasticsearch> policies = process.getPolicies();
         assertThat(policies.size()).isEqualTo(1);
-        assertThat(process.getPolicies().get(0).getLegalbases().get(0).getDescription()).isEqualTo("desc");
+        assertThat(process.getPolicies().get(0).getLegalbases().get(0).getDescription()).isEqualTo("§ 2-1");
     }
 
     private void assertProcess1(ProcessElasticsearch process) {
@@ -148,6 +148,6 @@ class ElasticsearchServiceIT extends IntegrationTestBase {
         assertThat(process.getPurposeDescription()).isEqualTo("Kontrollering");
         List<PolicyElasticsearch> policies = process.getPolicies();
         assertThat(policies.size()).isEqualTo(1);
-        assertThat(policies.get(0).getLegalbases().get(0).getDescription()).isEqualTo("desc");
+        assertThat(policies.get(0).getLegalbases().get(0).getDescription()).isEqualTo("§ 2-1");
     }
 }

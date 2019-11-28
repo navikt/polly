@@ -61,20 +61,6 @@ class CodelistControllerTest {
     }
 
     @Test
-    void findAllLegacy_shouldReturnTheInitiatedCodelist() throws Exception {
-        MockHttpServletResponse response = mvc.perform(get("/codelist/legacy"))
-                .andReturn().getResponse();
-
-        @SuppressWarnings("unchecked")
-        HashMap<String, HashMap<String, String>> returnedCodelist = JsonUtils.toObject(response.getContentAsString(), HashMap.class);
-
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(returnedCodelist.size()).isEqualTo(ListName.values().length);
-        assertThat(returnedCodelist.get("SOURCE").size()).isEqualTo(CodelistService.getCodelist(ListName.SOURCE).size());
-        assertThat(returnedCodelist.get("CATEGORY").size()).isEqualTo(CodelistService.getCodelist(ListName.CATEGORY).size());
-    }
-
-    @Test
     void findAll() throws Exception {
         MockHttpServletResponse response = mvc.perform(get("/codelist"))
                 .andReturn().getResponse();
