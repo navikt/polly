@@ -81,6 +81,9 @@ export const no: IStrings = {
     appName: "Behandlingskatalog",
     beta: "beta",
     all: "Alle",
+    startDate: "Fom dato",
+    endDate: "Tom dato",
+    inactive: "Inaktiv",
 
     prevButton: "Forrige",
     nextButton: "Neste",
@@ -170,6 +173,9 @@ export const en = {
     appName: "Process catalog",
     beta: "beta",
     all: "All",
+    startDate: "Start date",
+    endDate: "End date",
+    inactive: "Inactive",
 
     prevButton: "Prev",
     nextButton: "Next",
@@ -179,7 +185,29 @@ export const en = {
     required: "Field is required"
 };
 
-export const ta = {
+export const ta : IStrings = {
+    POLLY_ADMIN: "நிர்வாகம்",
+    POLLY_READ: "படிக்க",
+    POLLY_WRITE: "எழுது",
+    all: "அனைத்து",
+    appName: "செயல்முறை பட்டியல்",
+    beta: "பீட்டா",
+    confirmDeletePolicyHeader: "நீக்கு என்பதை உறுதிப்படுத்தவும்",
+    confirmDeletePolicyText: "இதற்கான கொள்கையை நீக்குவதை உறுதிப்படுத்தவும்",
+    delete: "அழி",
+    email: "மின்னஞ்சல்",
+    endDate: "கடைசி தேதி",
+    groups: "குழுக்கள்",
+    inactive: "செயல்படா",
+    maxChars: "அதிகபட்ச {0} எழுத்துக்கள்",
+    nextButton: "அடுத்த",
+    notAllowedMessage: "",
+    prevButton: "முந்தைய",
+    processes: "செயல்முறைகள்",
+    required: "தேவையான",
+    rows: "வரிசைகள்",
+    startDate: "தொடக்க தேதி",
+
     informationType: "தகவல் வகை",
     informationTypes: "தகவல் வகைகள்",
     informationTypeSearch: "தகவல் வகை தேடல்",
