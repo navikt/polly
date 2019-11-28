@@ -80,6 +80,7 @@ export const no: IStrings = {
     delete: "Slett",
     appName: "Behandlingskatalog",
     beta: "beta",
+    all: "Alle",
 
     prevButton: "Forrige",
     nextButton: "Neste",
@@ -168,6 +169,7 @@ export const en = {
     delete: "Delete",
     appName: "Process catalog",
     beta: "beta",
+    all: "All",
 
     prevButton: "Prev",
     nextButton: "Next",

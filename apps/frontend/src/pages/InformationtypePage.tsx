@@ -24,7 +24,7 @@ import { codelist, ListName } from "../service/Codelist"
 import Banner from "../components/Banner";
 import { intl } from "../util/intl/intl"
 import { user } from "../service/User";
-import { H3 } from "baseui/typography"
+import { H3, H6 } from "baseui/typography"
 import { theme } from "../util/theme"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
@@ -98,7 +98,8 @@ const InformationTypeTable = (props: RouteComponentProps) => {
 
     return (
         <React.Fragment>
-            <Table columns={columns} data={data} isLoading={loading} />
+            <H6 display="flex" justifyContent="space-between" marginBottom={theme.sizing.scale400} paddingLeft={theme.sizing.scale200}>{intl.all} {intl.informationTypes}</H6>
+            <Table columns={columns} data={data} isLoading={loading}/>
             <Block paddingTop={theme.sizing.scale600} display="flex" justifyContent="space-between">
                 <StatefulPopover
                     content={({close}) => (

@@ -89,6 +89,7 @@ export interface IStrings {
     delete: string;
     appName: string;
     beta: string;
+    all: string;
 
     prevButton: string;
     nextButton: string;
