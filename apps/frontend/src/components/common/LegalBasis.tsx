@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faExclamation, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { Block } from 'baseui/block'
 import { intl } from '../../util/intl/intl'
-import { ListItem, ListItemLabel, ARTWORK_SIZES } from "baseui/list";
+import { ARTWORK_SIZES, ListItem, ListItemLabel } from "baseui/list";
 import * as yup from "yup"
 import { Button } from "baseui/button"
 
@@ -25,18 +25,26 @@ export const renderLegalBasis = (legalBasis: LegalBasis) => {
     )
 }
 
-const legalBasisLinkProcessor = (law: string, text: string) => processString([{
-    regex: /(§+).?(\d+(-\d+)?)/g,
-    fn: (key: string, result: string[]) =>
-        <a key={key} href={`${lovdata_base + codelist.getDescription(ListName.NATIONAL_LAW, law)}/§${result[2]}`} target="_blank" rel="noopener noreferrer">
-            {result[1]} {result[2]}
-        </a>
-}])(text)
+const legalBasisLinkProcessor = (law: string, text: string) => processString([
+    {
+        regex: /(§+).?(\d+(-\d+)?)/g,
+        fn: (key: string, result: string[]) =>
+            <a key={key} href={`${lovdata_base + codelist.getDescription(ListName.NATIONAL_LAW, law)}/§${result[2]}`} target="_blank" rel="noopener noreferrer">
+                {result[1]} {result[2]}
+            </a>
+    }, {
+        regex: /kap(ittel)?.?(\d+)/gi,
+        fn: (key: string, result: string[]) =>
+            <a key={key} href={`${lovdata_base + codelist.getDescription(ListName.NATIONAL_LAW, law)}/KAPITTEL_${result[2]}`} target="_blank" rel="noopener noreferrer">
+                Kapittel {result[2]}
+            </a>
+    }
+])(text)
 
 export const LegalBasesNotClarified = () => {
     return (
         <Block display="flex" color={theme.colors.warning400}>
-            <span><FontAwesomeIcon icon={faExclamation} color={theme.colors.warning400} />&nbsp;</span>
+            <span><FontAwesomeIcon icon={faExclamation} color={theme.colors.warning400}/>&nbsp;</span>
             {intl.legalBasesUndecidedWarning}
         </Block>
 
@@ -44,14 +52,14 @@ export const LegalBasesNotClarified = () => {
 }
 
 export const ListLegalBases = (props: { legalBases?: LegalBasisFormValues[], onRemove: Function }) => {
-    const { legalBases, onRemove } = props
+    const {legalBases, onRemove} = props
     if (!legalBases) return null
     return (
         <React.Fragment>
             {legalBases.map((legalBase: any, i: number) => (
                 <ListItem
                     artworkSize={ARTWORK_SIZES.SMALL}
-                    endEnhancer={() => <Button type="button" kind="minimal" size="compact" onClick={() => onRemove(i)}><FontAwesomeIcon icon={faTrash} /></Button>}
+                    endEnhancer={() => <Button type="button" kind="minimal" size="compact" onClick={() => onRemove(i)}><FontAwesomeIcon icon={faTrash}/></Button>}
                     sublist
                 >
                     <ListItemLabel sublist>
@@ -67,11 +75,13 @@ export const ListLegalBases = (props: { legalBases?: LegalBasisFormValues[], onR
 
 
 export const ListLegalBasesInTable = (props: { legalBases: LegalBasis[] }) => {
-    const { legalBases } = props
+    const {legalBases} = props
     return (
         <Block>
             {legalBases.map((legalBasis: any, i: number) => (
-                <Block marginBottom="8px"><li key={i}> {renderLegalBasis(legalBasis)}</li></Block>
+                <Block marginBottom="8px">
+                    <li key={i}> {renderLegalBasis(legalBasis)}</li>
+                </Block>
             ))}
         </Block>
 
