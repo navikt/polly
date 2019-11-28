@@ -78,7 +78,7 @@ const PurposePage = (props: any) => {
     const purposeLabelView = (option: Option) => {
         return {
             ...option,
-            label: <Block display="flex" justifyContent="space-between">
+            label: <Block display="flex" justifyContent="space-between" width="100%">
                 <span>{option.label}</span>
                 <Block $style={{opacity:.5}}>{option.id && `${intl.processes}: ${purposeCount[option.id]}`}</Block>
             </Block>
@@ -97,8 +97,15 @@ const PurposePage = (props: any) => {
                                 options={codelist.getParsedOptions(ListName.PURPOSE).map(purposeLabelView)}
                                 initialState={{ value: currentPurposeValue ? [{ id: currentPurposeValue, label: currentPurposeValue } as Option] : [] }}
                                 placeholder={intl.purposeSelect}
-                                maxDropdownHeight="250px"
+                                maxDropdownHeight="350px"
                                 onChange={(event) => getPurpose(event.option ? event.option.id : null)}
+                                overrides={{
+                                    SingleValue: {
+                                        style: {
+                                            width: '100%'
+                                        }
+                                    }
+                                }}
                             />
                         )}
                 </Block>
