@@ -15,6 +15,7 @@ const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 const PurposePage = (props: any) => {
     const [currentPurposeValue, setCurrentPurposeValue] = React.useState<string | null>();
     const [purposeData, setPurposeData] = React.useState<Process[] | null>();
+    const [purposeCount, setPurposeCount] = React.useState<{[purpose:string]:number}>(({}));
     const [isLoading, setLoading] = React.useState(false);
     const [isLoadingPurpose, setLoadingPurpose] = React.useState(false);
     const [error, setError] = React.useState(null);
@@ -31,7 +32,6 @@ const PurposePage = (props: any) => {
     };
 
     const handleGetPurposeResponse = (response: any) => {
-        console.log(response)
         if (typeof response.data === "object" && response.data !== null) {
             if (response.data.content.length > 0)
                 setPurposeData(response.data.content);
@@ -39,6 +39,12 @@ const PurposePage = (props: any) => {
                 setPurposeData(null)
         } else {
             setError(response.data);
+        }
+    };
+
+    const handleGetPurposeCountResponse = (response: any) => {
+        if (typeof response.data === "object" && response.data !== null) {
+            setPurposeCount(response.data.purposes)
         }
     };
 
@@ -60,11 +66,24 @@ const PurposePage = (props: any) => {
         const fetchData = async () => {
             setLoading(true);
             await codelist.wait();
+            await axios
+                .get(`${server_polly}/process/count/purpose`)
+                .then(handleGetPurposeCountResponse)
             if (props.match.params.id) await getPurpose(props.match.params.id)
             setLoading(false);
         };
         fetchData();
     }, []);
+
+    const purposeLabelView = (option: Option) => {
+        return {
+            ...option,
+            label: <Block display="flex" justifyContent="space-between">
+                <span>{option.label}</span>
+                <Block $style={{opacity:.5}}>{option.id && `${intl.processes}: ${purposeCount[option.id]}`}</Block>
+            </Block>
+        }
+    }
 
     return (
         <React.Fragment>
@@ -75,7 +94,7 @@ const PurposePage = (props: any) => {
                         <p>Feil i henting av formål fra codelist</p>
                     ) : (
                             <StatefulSelect
-                                options={codelist.getParsedOptions(ListName.PURPOSE)}
+                                options={codelist.getParsedOptions(ListName.PURPOSE).map(purposeLabelView)}
                                 initialState={{ value: currentPurposeValue ? [{ id: currentPurposeValue, label: currentPurposeValue } as Option] : [] }}
                                 placeholder={intl.purposeSelect}
                                 maxDropdownHeight="250px"

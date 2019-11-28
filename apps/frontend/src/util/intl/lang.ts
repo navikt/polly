@@ -9,6 +9,7 @@ export const no: IStrings = {
     sensitivity: "Type personopplysning",
     processingActivities: "Behandlingsoversikt",
     process: "Behandling",
+    processes: "Behandlinger",
     legalBasis: "Rettslig grunnlag for behandlingen",
     legalBasisShort: "Rettslig grunnlag",
     legalBasesShort: "Rettslig grunnlag",
@@ -97,6 +98,7 @@ export const en = {
     sensitivity: "Type of personal data",
     processingActivities: "Processing activities",
     process: "Process",
+    processes: "Processes",
     navMaster: "Master in NAV",
     legalBasis: "Legal basis for process",
     legalBasisShort: "Legal basis",
@@ -138,6 +140,10 @@ export const en = {
     notAllowedMessage: "You don't have access to this page",
     confirmDeletePolicyHeader: "Confirm delete",
     confirmDeletePolicyText: "Please confirm deleting the policy for",
+
+    POLLY_READ: 'Read',
+    POLLY_WRITE: 'Write',
+    POLLY_ADMIN: 'Admin',
 
     department: "Department",
     subDepartment: "Sub department",
