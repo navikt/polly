@@ -136,7 +136,7 @@ const InformationTypeTable = (props: RouteComponentProps) => {
 }
 
 
-const InformationtypePage = (props: RouteComponentProps<{ id?: string }>) => {
+const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?: string }>) => {
     const [isLoading, setLoading] = React.useState(false);
     const [error, setError] = React.useState(null);
     const [informationTypeId, setInformationTypeId] = React.useState(props.match.params.id)
@@ -183,7 +183,7 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string }>) => {
             .catch(err => setError(err.message));
 
             await codelist.wait();
-            props.history.push(`/informationtype/${informationTypeId}`)
+            if (!props.match.params.id) props.history.push(`/informationtype/${informationTypeId}`)
             setLoading(false);
         };
         fetchData();
@@ -197,7 +197,10 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string }>) => {
                     <React.Fragment>
                         <Banner title={intl.informationType} informationtypeId={informationTypeId}/>
                         {!error && informationtype && (
-                            <InformationtypeMetadata informationtype={informationtype} purposeMap={purposeMap}/>
+                            <InformationtypeMetadata informationtype={informationtype} purposeMap={purposeMap}
+                                                     expanded={props.match.params.purpose ? [props.match.params.purpose] : []}
+                                                     onSelectPurpose={purpose => props.history.push(`/informationtype/${informationTypeId}/${purpose}`)}
+                            />
                         )}
 
                         {error && (<p>{error}</p>)}
