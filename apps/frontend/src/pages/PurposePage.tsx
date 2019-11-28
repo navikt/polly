@@ -9,6 +9,7 @@ import { Block } from "baseui/block";
 import { ListName, codelist } from "../service/Codelist";
 import { Process } from "../constants"
 import { intl } from "../util/intl/intl"
+import { theme } from "../util/theme"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -102,7 +103,8 @@ const PurposePage = (props: any) => {
                                 overrides={{
                                     SingleValue: {
                                         style: {
-                                            width: '100%'
+                                            width: '100%',
+                                            paddingRight: theme.sizing.scale600
                                         }
                                     }
                                 }}
