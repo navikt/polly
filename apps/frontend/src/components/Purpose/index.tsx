@@ -44,9 +44,9 @@ const renderLegalBasisList = (list: any) => {
         return (<Paragraph2>{intl.legalBasisNotFound}</Paragraph2>)
 
     return (
-        <React.Fragment>
+        <ul style={{listStyle: "none", paddingInlineStart: 0}}>
             {list.map((legalBasis: any, i: number) => <li key={i}><Paragraph2>{renderLegalBasis(legalBasis)}</Paragraph2></li>)}
-        </React.Fragment>
+        </ul>
     )
 }
 
