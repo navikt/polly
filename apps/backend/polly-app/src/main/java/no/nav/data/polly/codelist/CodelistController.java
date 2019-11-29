@@ -61,7 +61,7 @@ public class CodelistController {
     @GetMapping("/{listName}")
     public List<CodelistResponse> getByListName(@PathVariable String listName) {
         String listUpper = toUpperCaseAndTrim(listName);
-        log.info("Received a request for the codelist with listName={}", listUpper);
+        log.info("Received a request for all codelists with listName={}", listUpper);
         service.validateListName(listUpper);
         return CodelistService.getCodelistResponseList(ListName.valueOf(listUpper));
     }
@@ -75,7 +75,7 @@ public class CodelistController {
     public CodelistResponse getByListNameAndCode(@PathVariable String listName, @PathVariable String code) {
         String listUpper = toUpperCaseAndTrim(listName);
         String codeUpper = toUpperCaseAndTrim(code);
-        log.info("Received a request for the description of code={} in list={}", codeUpper, listUpper);
+        log.info("Received a request for the codelist with the code={} in listName={}", codeUpper, listUpper);
         service.validateListNameAndCode(listUpper, codeUpper);
         return CodelistService.getCodelistResponse(ListName.valueOf(listUpper), codeUpper);
     }
