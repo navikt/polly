@@ -26,6 +26,7 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
 
     private static final String FIELD_NAME_LIST = "list";
     private static final String FIELD_NAME_CODE = "code";
+    private static final String REFERENCE = "Validate Codelist";
     private CodelistRepository codelistRepository;
 
     public CodelistService(CodelistRepository codelistRepository) {
@@ -100,30 +101,41 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     public void delete(ListName name, String code) {
         Optional<Codelist> toDelete = codelistRepository.findByListAndCode(name, code);
         if (toDelete.isPresent()) {
+            validateNonImmutableTypeOfCodelist(name);
             codelistRepository.delete(toDelete.get());
             CodelistCache.remove(name, code);
         } else {
             log.error("Cannot find a codelist to delete with code={} and listName={}", code, name);
-            throw new IllegalArgumentException(
+            throw new CodelistNotFoundException(
                     String.format("Cannot find a codelist to delete with code=%s and listName=%s", code, name));
         }
     }
 
-    public void validateListNameExists(String listName) {
-        FieldValidator validator = new FieldValidator("listName");
-        validator.throwCodelistNotFoundExceptionIfEnumError(FIELD_NAME_LIST, listName, ListName.class);
+    public void validateNonImmutableTypeOfCodelist(ListName listName) {
+        FieldValidator validator = new FieldValidator(REFERENCE);
+        validator.checkIfCodelistIsOfImmutableType(listName);
+        ifErrorsThrowCodelistNotFoundException(validator.getErrors());
     }
 
-    public void validateListNameAndCodeExists(String listName, String code) {
-        validateListNameExists(listName);
-        FieldValidator validator = new FieldValidator("code");
-        validator.throwCodelistNotFoundExceptionIfCodeError(FIELD_NAME_CODE, code, ListName.valueOf(listName));
+    public void validateListName(String listName) {
+        FieldValidator validator = new FieldValidator(REFERENCE);
+        validator.checkRequiredEnum(FIELD_NAME_LIST, listName, ListName.class);
+        ifErrorsThrowCodelistNotFoundException(validator.getErrors());
     }
 
-    public void validateListNameAndCodeExistsAndNotImmutable(String listName, String code) {
-        validateListNameAndCodeExists(listName, code);
-        FieldValidator validator = new FieldValidator("immutable codelist");
-        validator.throwValidationExceptionIfImmutableCodelistError(listName);
+    public void validateListNameAndCode(String listName, String code) {
+        FieldValidator validator = new FieldValidator(REFERENCE);
+        checkValidCode(listName, code, validator);
+        ifErrorsThrowCodelistNotFoundException(validator.getErrors());
+    }
+
+    private void checkValidListName(String listName, FieldValidator validator) {
+        validator.checkRequiredEnum(FIELD_NAME_LIST, listName, ListName.class);
+    }
+
+    private void checkValidCode(String listName, String code, FieldValidator validator) {
+        checkValidListName(listName, validator);
+        validator.checkRequiredCodelist(FIELD_NAME_CODE, code, ListName.valueOf(listName));
     }
 
     public void validateRequest(List<CodelistRequest> requests, boolean update) {
@@ -137,7 +149,7 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
                 req -> validateRepositoryValues(req, codelistRepository.findByListAndCode(req.getListAsListName(), req.getCode()).isPresent())
         ));
 
-        checkForErrors(validationErrors);
+        ifErrorsThrowValidationException(validationErrors);
     }
 
 }

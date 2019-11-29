@@ -28,6 +28,8 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
+
 @Slf4j
 @RestController
 @CrossOrigin
@@ -58,9 +60,9 @@ public class CodelistController {
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/{listName}")
     public List<CodelistResponse> getByListName(@PathVariable String listName) {
-        String listUpper = listName.toUpperCase();
+        String listUpper = toUpperCaseAndTrim(listName);
         log.info("Received a request for the codelist with listName={}", listUpper);
-        service.validateListNameExists(listUpper);
+        service.validateListName(listUpper);
         return CodelistService.getCodelistResponseList(ListName.valueOf(listUpper));
     }
 
@@ -71,10 +73,10 @@ public class CodelistController {
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/{listName}/{code}")
     public CodelistResponse getByListNameAndCode(@PathVariable String listName, @PathVariable String code) {
-        String listUpper = listName.toUpperCase();
-        String codeUpper = code.toUpperCase();
+        String listUpper = toUpperCaseAndTrim(listName);
+        String codeUpper = toUpperCaseAndTrim(code);
         log.info("Received a request for the description of code={} in list={}", codeUpper, listUpper);
-        service.validateListNameAndCodeExists(listUpper, codeUpper);
+        service.validateListNameAndCode(listUpper, codeUpper);
         return CodelistService.getCodelistResponse(ListName.valueOf(listUpper), codeUpper);
     }
 
@@ -115,10 +117,9 @@ public class CodelistController {
     @DeleteMapping("/{listName}/{code}")
     @Transactional
     public void delete(@PathVariable String listName, @PathVariable String code) {
-        listName = listName.toUpperCase().trim();
-        code = code.toUpperCase().trim();
+        listName = toUpperCaseAndTrim(listName);
+        code = toUpperCaseAndTrim(code);
         log.info("Received a request to delete code={} in the list={}", code, listName);
-        service.validateListNameAndCodeExistsAndNotImmutable(listName, code);
         service.delete(ListName.valueOf(listName), code);
         log.info("Deleted code={} in the list={}", code, listName);
     }

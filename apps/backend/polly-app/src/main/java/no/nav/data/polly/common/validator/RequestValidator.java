@@ -1,6 +1,7 @@
 package no.nav.data.polly.common.validator;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.common.exceptions.CodelistNotFoundException;
 import no.nav.data.polly.common.exceptions.ValidationException;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public abstract class RequestValidator<T extends RequestElement> {
 
-    public List<ValidationError> validateNoDuplicates(List<T> requests) {
+    protected List<ValidationError> validateNoDuplicates(List<T> requests) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
         validationErrors.addAll(validateThatTheSameElementIsNotDuplicatedInTheRequest(requests));
@@ -92,10 +93,18 @@ public abstract class RequestValidator<T extends RequestElement> {
         return isUpdate && !existInRepository;
     }
 
-    protected void checkForErrors(List<ValidationError> validationErrors) {
+    protected void ifErrorsThrowValidationException(List<ValidationError> validationErrors) {
         if (!validationErrors.isEmpty()) {
-            log.error("The request was not accepted. The following errors occurred during validation: {}", validationErrors);
-            throw new ValidationException(validationErrors, "The request was not accepted. The following errors occurred during validation: ");
+            log.error("The request was not accepted. The following errors occurred during validation:{}", validationErrors);
+            throw new ValidationException(validationErrors, "The request was not accepted. The following errors occurred during validation:");
+        }
+    }
+
+    protected void ifErrorsThrowCodelistNotFoundException(List<ValidationError> validationErrors) {
+        if (!validationErrors.isEmpty()) {
+            String errorMessage = validationErrors.stream().map(ValidationError::toString).collect(Collectors.joining());
+            log.error(errorMessage);
+            throw new CodelistNotFoundException(errorMessage);
         }
     }
 
