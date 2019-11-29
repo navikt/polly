@@ -90,7 +90,11 @@ export const no: IStrings = {
     rows: "Rader",
 
     maxChars: "Maks {0} tegn",
-    required: "Feltet er påkrevd"
+    required: "Feltet er påkrevd",
+    datePickStart: "Velg fra og med dato",
+    datePickEnd: "Velg til og med dato",
+    dateFormat: "Feil dato format, eksempel: 2018-08-22",
+    useDates: "Velg datoer"
 };
 
 export const en = {
@@ -185,7 +189,7 @@ export const en = {
     required: "Field is required"
 };
 
-export const ta : IStrings = {
+export const ta = {
     POLLY_ADMIN: "நிர்வாகம்",
     POLLY_READ: "படிக்க",
     POLLY_WRITE: "எழுது",

@@ -103,6 +103,10 @@ export interface IStrings {
 
     maxChars: string;
     required: string;
+    dateFormat: string;
+    datePickStart: string;
+    datePickEnd: string;
+    useDates: string;
 }
 
 // Remember import moment locales up top

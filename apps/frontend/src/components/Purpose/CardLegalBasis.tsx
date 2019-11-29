@@ -6,11 +6,13 @@ import { StatefulInput } from 'baseui/input';
 import { Label2 } from 'baseui/typography';
 import { Button, KIND, SIZE as ButtonSize } from 'baseui/button';
 import { codelist, ListName } from "../../service/Codelist";
-import { intl } from "../../util/intl/intl"
+import { intl, theme } from "../../util"
 import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from "formik"
 import { KIND as NKIND, Notification } from "baseui/notification"
 import { LegalBasisFormValues } from "../../constants"
 import { legalBasisSchema } from "../common/LegalBasis"
+import { Datepicker } from "baseui/datepicker"
+import moment from 'moment';
 
 const rowBlockBrops: BlockProps = {
     display: 'flex',
@@ -36,8 +38,13 @@ interface CardLegalBasisProps {
 const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
     const [gdpr, setGdpr] = React.useState<Value>([]);
     const [nationalLaw, setNationalLaw] = React.useState<Value>([]);
+    const [useDates, setUseDates] = React.useState(false);
     return (
-        <Formik onSubmit={(values) => submit(values)} validationSchema={legalBasisSchema()} initialValues={{}}
+        <Formik onSubmit={(values, form) => {
+            form.setFieldTouched('gdpr')
+            form.setFieldTouched('nationalLaw')
+            submit(values)
+        }} validationSchema={legalBasisSchema()} initialValues={{}}
             render={(form: FormikProps<LegalBasisFormValues>) => (
                 <Card>
                     <Label2 marginBottom="1rem">{intl.legalBasisNew}</Label2>
@@ -46,7 +53,6 @@ const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
                         <Field name="gdpr"
                             render={() => (
                                 <Select
-                                    onBlur={() => form.setFieldTouched('gdpr')}
                                     autoFocus={true}
                                     options={codelist.getParsedOptions(ListName.GDPR_ARTICLE)}
                                     placeholder={intl.gdprSelect}
@@ -57,7 +63,7 @@ const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
                                         form.setFieldValue('gdpr', value.length > 0 ? value[0].id : undefined)
                                     }}
                                     value={gdpr}
-                                    error={!!form.errors.gdpr && (form.touched.gdpr || !!form.submitCount)}
+                                    error={!!form.errors.gdpr && !!form.submitCount}
                                 />
                             )} />
                     </Block>
@@ -76,8 +82,7 @@ const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
                                         form.setFieldValue('nationalLaw', value.length > 0 ? value[0].id : undefined)
                                     }}
                                     value={nationalLaw}
-                                    onBlur={() => form.setFieldTouched('nationalLaw')}
-                                    error={!!form.errors.nationalLaw && (form.touched.nationalLaw || !!form.submitCount)}
+                                    error={!!form.errors.nationalLaw && !!form.submitCount}
                                 />
                             )} />
                     </Block>
@@ -87,11 +92,45 @@ const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
                         <Field name="description"
                             render={({ field }: FieldProps<LegalBasisFormValues>) => (
                                 <StatefulInput {...field} placeholder={intl.descriptionWrite}
-                                    error={!!form.errors.description && (form.touched.description || !!form.submitCount)}
+                                    error={!!form.errors.description && !!form.submitCount}
                                 />
                             )} />
                     </Block>
                     <Error fieldName="description" />
+
+                    {!useDates ?
+                        <Block marginTop={theme.sizing.scale200}><Button size="compact" onClick={() => setUseDates(true)}>{intl.useDates}</Button></Block>
+                        : <>
+                            <Block {...rowBlockBrops}>
+                                <Field name="start"
+                                       render={({field, form}: FieldProps<LegalBasisFormValues>) => (
+                                           <Datepicker placeholder={intl.datePickStart} value={field.value && new Date(field.value)}
+                                                       onChange={({date}) => {
+                                                           const moment1 = moment(date as Date)
+                                                           form.setFieldValue('start', moment1.format(moment.HTML5_FMT.DATE));
+                                                       }}
+                                                       formatString={'yyyy-MM-dd'}
+                                                       error={!!form.errors.start && (form.touched.start || !!form.submitCount)}
+                                           />
+                                       )}/>
+                            </Block>
+                            <Error fieldName="start"/>
+
+                            <Block {...rowBlockBrops}>
+                                <Field name="end"
+                                       render={({field, form}: FieldProps<LegalBasisFormValues>) => (
+                                           <Datepicker placeholder={intl.datePickEnd} value={field.value && new Date(field.value)}
+                                                       onChange={({date}) => {
+                                                           const moment1 = moment(date as Date)
+                                                           form.setFieldValue('end', moment1.format(moment.HTML5_FMT.DATE));
+                                                       }}
+                                                       formatString={'yyyy-MM-dd'}
+                                                       error={!!form.errors.end && (form.touched.end || !!form.submitCount)}
+                                           />
+                                       )}/>
+                            </Block>
+                            <Error fieldName="end"/>
+                        </>}
 
                     <Block {...rowBlockBrops} justifyContent="space-between">
                         <Button type='button' kind={KIND.secondary} size={ButtonSize.compact} onClick={form.submitForm}>

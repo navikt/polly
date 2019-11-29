@@ -96,4 +96,6 @@ export const legalBasisSchema = () => yup.object({
     gdpr: yup.string().required(intl.required),
     nationalLaw: yup.string(),
     description: yup.string().required(intl.required),
+    start: yup.string().matches(/\d{4}-\d{2}-\d{2}/, intl.dateFormat),
+    end: yup.string().matches(/\d{4}-\d{2}-\d{2}/, intl.dateFormat)
 })
