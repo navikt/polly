@@ -63,6 +63,7 @@ export interface IStrings {
     confirmDeletePolicyHeader: string;
     confirmDeletePolicyText: string;
     startIllustration: string;
+    treasureIllustration: string;
 
     // groups
     POLLY_READ: string;

@@ -52,6 +52,8 @@ export const no: IStrings = {
     confirmDeletePolicyHeader: "Bekreft sletting",
     confirmDeletePolicyText:
         "Bekreft sletting av behandlingsgrunnlaget for opplysningstypen",
+    startIllustration: "Illustrasjon av en prosess",
+    treasureIllustration: "Illustration av en skatt",
 
     POLLY_READ: 'Les',
     POLLY_WRITE: 'Skriv',
@@ -94,8 +96,7 @@ export const no: IStrings = {
     datePickStart: "Velg fra og med dato",
     datePickEnd: "Velg til og med dato",
     dateFormat: "Feil dato format, eksempel: 2018-08-22",
-    useDates: "Velg datoer",
-    startIllustration: "Illustrasjon av en prosess"
+    useDates: "Velg datoer"
 };
 
 export const en = {
@@ -149,6 +150,8 @@ export const en = {
     notAllowedMessage: "You don't have access to this page",
     confirmDeletePolicyHeader: "Confirm delete",
     confirmDeletePolicyText: "Please confirm deleting the policy for",
+    startIllustration: "Process illustration",
+    treasureIllustration: "Treasure illustration",
 
     POLLY_READ: 'Read',
     POLLY_WRITE: 'Write',
@@ -187,8 +190,7 @@ export const en = {
     rows: "Rows",
 
     maxChars: "Max {0} characters",
-    required: "Field is required",
-    startIllustration: "Process illustration"
+    required: "Field is required"
 };
 
 export const ta = {
