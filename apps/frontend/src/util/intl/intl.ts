@@ -109,7 +109,7 @@ export interface IStrings {
 export const langs: Langs = {
     nb: { flag: "🇳🇴", name: "Norsk", langCode: "nb", texts: no },
     en: { flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", name: "English", langCode: "en", texts: en },
-    ta: { flag: "🇱🇰", name: "தமிழ்", langCode: "ta", texts: ta }
+    // ta: { flag: "🇱🇰", name: "தமிழ்", langCode: "ta", texts: ta }
 };
 
 export const langsArray: Lang[] = Object.keys(langs).map(lang => langs[lang]);
