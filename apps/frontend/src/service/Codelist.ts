@@ -55,6 +55,16 @@ class CodelistService {
         });
     }
 
+    makeIdLabelForAllCodeLists() {
+        if (!this.lists) return [];
+        const { codelist } = this.lists;
+        return Object
+            .keys(codelist)
+            .map((key) => ({
+                id: key as string,
+                label: key as string}));
+    }
+
     async wait() {
         await this.promise;
     }
