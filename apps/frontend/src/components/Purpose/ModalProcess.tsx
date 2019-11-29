@@ -1,20 +1,19 @@
 import * as React from 'react'
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
-import { ErrorMessage, Field, FieldArray, FieldProps, Form, Formik, FormikProps, } from "formik";
-import { Block, BlockProps } from "baseui/block";
-import { Input, SIZE as InputSIZE } from "baseui/input";
-import { Label2 } from "baseui/typography";
-import { Select, Value } from 'baseui/select';
-import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
-import { Plus } from "baseui/icon";
-import { KIND as NKIND, Notification } from "baseui/notification";
+import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
+import {Field, FieldArray, FieldProps, Form, Formik, FormikProps,} from "formik";
+import {Block, BlockProps} from "baseui/block";
+import {Input, SIZE as InputSIZE} from "baseui/input";
+import {Select, Value} from 'baseui/select';
+import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
+import {Plus} from "baseui/icon";
 
-import { LegalBasisFormValues, ProcessFormValues } from "../../constants";
+import {ProcessFormValues} from "../../constants";
 import CardLegalBasis from './CardLegalBasis'
-import { codelist, ListName } from "../../service/Codelist"
-import { intl } from "../../util/intl/intl"
+import {codelist, ListName} from "../../service/Codelist"
+import {intl} from "../../util/intl/intl"
 import * as yup from "yup"
-import { legalBasisSchema, ListLegalBases } from "../common/LegalBasis"
+import {legalBasisSchema, ListLegalBases} from "../common/LegalBasis"
+import {Error, renderLabel} from "../common/ModalSchema";
 
 const modalBlockProps: BlockProps = {
     width: '700px',
@@ -33,25 +32,6 @@ const modalHeaderProps: BlockProps = {
     justifyContent: 'center',
     marginBottom: '2rem'
 }
-
-const Error = (props: { fieldName: string }) => (
-    <ErrorMessage name={props.fieldName}>
-        {msg => (
-            <Block display="flex" width="100%" marginTop=".2rem">
-                {renderLabel('')}
-                <Block width="100%">
-                    <Notification overrides={{ Body: { style: { width: 'auto', padding: 0, marginTop: 0 } } }} kind={NKIND.negative}>{msg}</Notification>
-                </Block>
-            </Block>
-        )}
-    </ErrorMessage>
-)
-
-const renderLabel = (label: any | string) => (
-    <Block width="30%" alignSelf="center">
-        <Label2 marginBottom="8px" font="font300">{label.toString()}</Label2>
-    </Block>
-)
 
 const FieldName = () => (
     <Field
