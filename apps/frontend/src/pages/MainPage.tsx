@@ -1,6 +1,5 @@
 import { useAwait } from "../util/customHooks"
 import { user } from "../service/User"
-import { Link } from "react-router-dom"
 import * as React from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faDragon } from "@fortawesome/free-solid-svg-icons"
@@ -22,11 +21,6 @@ export const Main = () => {
                 <p>{intl.hi} {user.getNavIdent()} {<FontAwesomeIcon icon={faDragon}/>} {user.getGivenName()} {user.getFamilyName()} <a
                     href={`${server_polly}/logout?redirect_uri=${window.location.href}`}>{intl.logout}</a></p>}
                 {!user.isLoggedIn() && <p><a href={`${server_polly}/login?redirect_uri=${window.location.href}`}>{intl.login}</a></p>}
-            </Block>
-            <Block>
-                <p><Link to="/informationtype">{intl.informationTypes}</Link></p>
-                <p><Link to="/informationtype/create">{intl.createNew} {intl.informationType}</Link></p>
-                <p><Link to="/purpose">{intl.purpose}</Link></p>
             </Block>
         </Block>
     )

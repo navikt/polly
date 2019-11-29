@@ -21,7 +21,7 @@ const Routes = (props: any): JSX.Element => (
       />
       <Route
         exact
-        path="/informationtype/:id?"
+        path="/informationtype/:id?/:purpose?"
         component={InformationtypePage}
       />
       <Route

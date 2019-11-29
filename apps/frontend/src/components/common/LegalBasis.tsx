@@ -1,17 +1,21 @@
 import * as React from "react"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faExclamation, faTrash } from "@fortawesome/free-solid-svg-icons"
+import { ARTWORK_SIZES, ListItem, ListItemLabel } from "baseui/list";
+import { Block } from 'baseui/block'
+import * as yup from "yup"
+import { Button } from "baseui/button"
+
 import { LegalBasis, LegalBasisFormValues } from "../../constants"
 import { codelist, ListName } from "../../service/Codelist"
 import { processString } from "../../util/string-processor"
-import { theme } from "../../util/theme"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faExclamation } from "@fortawesome/free-solid-svg-icons"
-import { Block } from 'baseui/block'
-import { intl } from '../../util/intl/intl'
-import * as yup from "yup"
+import { intl, theme } from "../../util"
+import { ActiveIndicator } from "./Durations"
 
 const lovdata_base = process.env.REACT_APP_LOVDATA_BASE_URL;
 
-export const renderLegalBasis = (legalBasis: LegalBasis) => {
+export const LegalBasisView = (props: { legalBasis: LegalBasis }) => {
+    const {legalBasis} = props
     let gdpr = codelist.getShortname(ListName.GDPR_ARTICLE, legalBasis.gdpr.code)
     let nationalLaw = legalBasis.nationalLaw && codelist.getShortname(ListName.NATIONAL_LAW, legalBasis.nationalLaw.code)
     let nationalLawId = legalBasis.nationalLaw && !legalBasis.nationalLaw.invalidCode && codelist.getDescription(ListName.NATIONAL_LAW, legalBasis.nationalLaw.code)
@@ -19,53 +23,70 @@ export const renderLegalBasis = (legalBasis: LegalBasis) => {
     let description = nationalLawId ? legalBasisLinkProcessor(nationalLawId, legalBasis.description) : legalBasis.description
 
     return (
-        <span> {gdpr + ', '} {nationalLaw && nationalLaw} {description}</span>
+        <span><ActiveIndicator {...legalBasis}/> {gdpr + ', '} {nationalLaw && nationalLaw} {description}</span>
     )
 }
 
-const legalBasisLinkProcessor = (law: string, text: string) => processString([{
-    regex: /(§+).?(\d+(-\d+)?)/g,
-    fn: (key: string, result: string[]) =>
-        <a key={key} href={`${lovdata_base + codelist.getDescription(ListName.NATIONAL_LAW, law)}/§${result[2]}`} target="_blank" rel="noopener noreferrer">
-            {result[1]} {result[2]}
-        </a>
-}])(text)
+const legalBasisLinkProcessor = (law: string, text: string) => processString([
+    {
+        regex: /(§+).?(\d+(-\d+)?)/g,
+        fn: (key: string, result: string[]) =>
+            <a key={key} href={`${lovdata_base + codelist.getDescription(ListName.NATIONAL_LAW, law)}/§${result[2]}`} target="_blank" rel="noopener noreferrer">
+                {result[1]} {result[2]}
+            </a>
+    }, {
+        regex: /kap(ittel)?.?(\d+)/gi,
+        fn: (key: string, result: string[]) =>
+            <a key={key} href={`${lovdata_base + codelist.getDescription(ListName.NATIONAL_LAW, law)}/KAPITTEL_${result[2]}`} target="_blank" rel="noopener noreferrer">
+                Kapittel {result[2]}
+            </a>
+    }
+])(text)
 
 export const LegalBasesNotClarified = () => {
     return (
         <Block display="flex" color={theme.colors.warning400}>
-            <span><FontAwesomeIcon icon={faExclamation} color={theme.colors.warning400} />&nbsp;</span>
+            <span><FontAwesomeIcon icon={faExclamation} color={theme.colors.warning400}/>&nbsp;</span>
             {intl.legalBasesUndecidedWarning}
         </Block>
 
     )
 }
 
-export const ListLegalBases = (props: { legalBases?: LegalBasisFormValues[] }) => {
-    const { legalBases } = props
+export const ListLegalBases = (props: { legalBases?: LegalBasisFormValues[], onRemove: Function }) => {
+    const {legalBases, onRemove} = props
     if (!legalBases) return null
-
     return (
-        <ul>
+        <React.Fragment>
             {legalBases.map((legalBase: any, i: number) => (
-                <li key={i}>
-                    <p> {legalBase.gdpr && codelist.getShortname(ListName.GDPR_ARTICLE, legalBase.gdpr) + ": "}
+                <ListItem
+                    artworkSize={ARTWORK_SIZES.SMALL}
+                    endEnhancer={() => <Button type="button" kind="minimal" size="compact" onClick={() => onRemove(i)}><FontAwesomeIcon icon={faTrash}/></Button>}
+                    sublist
+                    key={i}
+                >
+                    <ListItemLabel sublist>
+                        {legalBase.gdpr && codelist.getShortname(ListName.GDPR_ARTICLE, legalBase.gdpr) + ", "}
                         {legalBase.nationalLaw && codelist.getShortname(ListName.NATIONAL_LAW, legalBase.nationalLaw) + ' '}
                         {legalBase.description}
-                    </p>
-                </li>
+                    </ListItemLabel>
+                </ListItem>
             ))}
-        </ul>
+        </React.Fragment>
     )
 }
 
 export const ListLegalBasesInTable = (props: { legalBases: LegalBasis[] }) => {
-    const { legalBases } = props
+    const {legalBases} = props
     return (
         <Block>
-            {legalBases.map((legalBasis: any, i: number) => (
-                <Block marginBottom="8px"><li key={i}> {renderLegalBasis(legalBasis)}</li></Block>
-            ))}
+            <ul style={{listStyle: "none", paddingInlineStart: 0}}>
+                {legalBases.map((legalBasis: any, i: number) => (
+                    <Block marginBottom="8px" key={i}>
+                        <li><LegalBasisView legalBasis={legalBasis}/></li>
+                    </Block>
+                ))}
+            </ul>
         </Block>
 
     )
@@ -75,4 +96,6 @@ export const legalBasisSchema = () => yup.object({
     gdpr: yup.string().required(intl.required),
     nationalLaw: yup.string(),
     description: yup.string().required(intl.required),
+    start: yup.string().matches(/\d{4}-\d{2}-\d{2}/, intl.dateFormat),
+    end: yup.string().matches(/\d{4}-\d{2}-\d{2}/, intl.dateFormat)
 })

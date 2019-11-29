@@ -22,7 +22,7 @@ import {Error, renderLabel} from "../common/ModalSchema";
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 const modalBlockProps: BlockProps = {
-    width: '700px',
+    width: '750px',
     paddingRight: '2rem',
     paddingLeft: '2rem'
 }
@@ -90,7 +90,7 @@ const FieldLegalBasisInherited = (props: { current: any, setCurrent: Function })
     return (
         <Field
             name="legalBasesInherited"
-            render={({form}: FieldProps<PolicyFormValues>) => {
+            render={({ form }: FieldProps<PolicyFormValues>) => {
                 !form.touched.legalBasesInherited && form.submitCount && form.setFieldTouched('legalBasesInherited')
                 return (
                     <Block width="100%">
@@ -212,13 +212,13 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                                         setValue={setInfoTypeValue}
                                     />
                                 </Block>
-                                <Error fieldName="informationTypeName"/>
+                                <Error fieldName="informationTypeName" />
 
                                 <Block {...rowBlockProps}>
                                     {renderLabel(intl.subjectCategories)}
                                     <FieldSubjectCategory value={formikBag.values.subjectCategory} />
                                 </Block>
-                                <Error fieldName="subjectCategory"/>
+                                <Error fieldName="subjectCategory" />
 
                                 <Block {...rowBlockProps}>
                                     {renderLabel(intl.legalBasesShort)}
@@ -226,7 +226,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                                         current={currentChecked}
                                         setCurrent={setCurrentChecked} />
                                 </Block>
-                                <Error fieldName="legalBasesInherited"/>
+                                <Error fieldName="legalBasesInherited" />
 
                                 {currentChecked === "Annet" && (
                                     <FieldArray
@@ -235,13 +235,15 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                                             <React.Fragment>
                                                 {showLegalbasesFields ? (
                                                     <Block width="100%" marginTop="2rem">
-                                                        <CardLegalBasis submit={(values: any) => {
-                                                            if (!values) return
-                                                            else {
-                                                                arrayHelpers.push(values)
-                                                                setShowLegalbasesFields(false)
-                                                            }
-                                                        }} />
+                                                        <CardLegalBasis
+                                                            hideCard={() => setShowLegalbasesFields(false)}
+                                                            submit={(values: any) => {
+                                                                if (!values) return
+                                                                else {
+                                                                    arrayHelpers.push(values)
+                                                                    setShowLegalbasesFields(false)
+                                                                }
+                                                            }} />
                                                     </Block>
                                                 ) : (
                                                         <Block {...rowBlockProps}>
@@ -253,9 +255,14 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                                                                     onClick={() => setShowLegalbasesFields(true)}
                                                                     startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
                                                                 >
-                                                                  {intl.legalBasisAdd}
+                                                                    {intl.legalBasisAdd}
                                                                 </Button>
-                                                                <ListLegalBases legalBases={formikBag.values.legalBases} />
+                                                                <Block marginTop="1rem">
+                                                                    <ListLegalBases
+                                                                        legalBases={formikBag.values.legalBases}
+                                                                        onRemove={(index: any) => arrayHelpers.remove(index)}
+                                                                    />
+                                                                </Block>
                                                             </Block>
                                                         </Block>
                                                     )}

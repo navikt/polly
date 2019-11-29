@@ -16,7 +16,7 @@ import {legalBasisSchema, ListLegalBases} from "../common/LegalBasis"
 import {Error, renderLabel} from "../common/ModalSchema";
 
 const modalBlockProps: BlockProps = {
-    width: '700px',
+    width: '750px',
     paddingRight: '2rem',
     paddingLeft: '2rem'
 }
@@ -181,31 +181,39 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                                     )}
                                 </Block>
 
-                                {showLegalBasisFields && (
-                                    <FieldArray
-                                        name="legalBases"
-                                        render={arrayHelpers => (
-                                            <Block width="100%">
-                                                <CardLegalBasis submit={(values: any) => {
-                                                    if (!values) return
-                                                    else {
-                                                        arrayHelpers.push(values)
-                                                        setShowLegalbasesFields(false)
-                                                    }
-                                                }} />
-                                            </Block>
-                                        )}
-                                    />
-                                )}
+                                <FieldArray
+                                    name="legalBases"
+                                    render={arrayHelpers => (
+                                        <React.Fragment>
+                                            {showLegalBasisFields && (
+                                                <Block width="100%">
+                                                    <CardLegalBasis
+                                                        hideCard={() => setShowLegalbasesFields(false)}
+                                                        submit={(values: any) => {
+                                                            if (!values) return
+                                                            else {
+                                                                arrayHelpers.push(values)
+                                                                setShowLegalbasesFields(false)
+                                                            }
+                                                        }} />
+                                                </Block>
+                                            )}
+                                            {!showLegalBasisFields && (
+                                                <Block display="flex">
+                                                    {renderLabel('')}
+                                                    <Block width="100%">
+                                                        <ListLegalBases
+                                                            legalBases={formikBag.values.legalBases}
+                                                            onRemove={(index: any) => arrayHelpers.remove(index)}
+                                                        />
+                                                    </Block>
+                                                </Block>
+                                            )}
+                                        </React.Fragment>
+                                    )}
+                                />
 
-                                {!showLegalBasisFields && (
-                                    <Block display="flex">
-                                        {renderLabel('')}
-                                        <Block width="100%">
-                                            <ListLegalBases legalBases={formikBag.values.legalBases} />
-                                        </Block>
-                                    </Block>
-                                )}
+
                             </ModalBody>
 
                             <ModalFooter>

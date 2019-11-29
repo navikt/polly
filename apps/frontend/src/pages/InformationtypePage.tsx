@@ -1,19 +1,31 @@
 import * as React from "react";
-import { useEffect } from "react";
+import { ReactNode, useEffect } from "react";
 import { Spinner } from "baseui/spinner";
 import axios from "axios";
-import Banner from "../components/Banner";
-import InformationtypeMetadata from "../components/InformationType/InformationtypeMetadata/";
-import { useDebouncedState, useAwait } from "../util/customHooks"
-import { Option, Select, TYPE } from "baseui/select"
-import { InformationType, PageResponse } from "../constants"
-import { codelist } from "../service/Codelist"
-import { Button, SHAPE } from "baseui/button"
+import { Button, KIND, SHAPE } from "baseui/button"
 import { Block } from "baseui/block"
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { Table } from "baseui/table"
+import { StatefulPopover } from "baseui/popover"
+import { StatefulMenu } from "baseui/menu"
+import { PLACEMENT } from "baseui/tooltip"
+import { TriangleDown } from "baseui/icon"
+import { Pagination } from "baseui/pagination"
+import { StyledLink } from "baseui/link"
+import { Option, Select, TYPE } from "baseui/select"
+import { RouteComponentProps } from "react-router-dom"
+
+
+import InformationtypeMetadata from "../components/InformationType/InformationtypeMetadata/";
+import { useAwait, useDebouncedState } from "../util/customHooks"
+import { InformationType, PageResponse } from "../constants"
+import { codelist, ListName } from "../service/Codelist"
+import Banner from "../components/Banner";
 import { intl } from "../util/intl/intl"
 import { user } from "../service/User";
+import { H3, H6 } from "baseui/typography"
+import { theme } from "../util/theme"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -21,8 +33,7 @@ const reducePolicylist = (list: any) => {
     const temp = list.reduce((acc: any, curr: any) => {
         if (!acc[curr.purposeCode.code]) {
             acc[curr.purposeCode.code] = [curr]
-        }
-        else {
+        } else {
             acc[curr.purposeCode.code].push(curr)
         }
 
@@ -31,8 +42,101 @@ const reducePolicylist = (list: any) => {
     return temp
 }
 
+const InformationTypeTable = (props: RouteComponentProps) => {
+    const [page, setPage] = React.useState(1);
+    const [limit, setLimit] = React.useState(25);
+    const [total, setTotal] = React.useState(0);
+    const [loading, setLoading] = React.useState(true);
+    const [data, setData] = React.useState<ReactNode[][]>([]);
 
-const InformationtypePage = (props: any) => {
+    const columns = [
+        intl.name,
+        intl.categories
+    ]
+
+    const mapInformationTypeToTable = (infoType: InformationType) => [
+        (<StyledLink href="#" onClick={() => props.history.push(`/informationtype/${infoType.id}`)}>{infoType.name}</StyledLink>),
+        infoType.categories.map(cat => codelist.getShortname(ListName.CATEGORY, cat.code)).join(', ')
+    ]
+
+    React.useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            await axios
+            .get(`${server_polly}/informationtype/?pageNumber=${page - 1}&pageSize=${limit}`)
+            .then((res: { data: PageResponse<InformationType> }) => {
+                console.log(res);
+                setTotal(res.data.totalElements)
+                let content: InformationType[] = res.data.content
+                setData(content.map(mapInformationTypeToTable));
+
+            });
+            setLoading(false);
+        };
+        fetchData();
+    }, [page, limit]);
+
+    const handlePageChange = (nextPage: number) => {
+        if (nextPage < 1) {
+            return;
+        }
+        if (nextPage > Math.ceil(total / limit)) {
+            return;
+        }
+        setPage(nextPage);
+    };
+
+    const handleLimitChange = (nextLimit: number) => {
+        const nextPageNum = Math.ceil(total / nextLimit);
+        if (nextPageNum < page) {
+            setLimit(nextLimit);
+            setPage(nextPageNum);
+        } else {
+            setLimit(nextLimit);
+        }
+    };
+
+    return (
+        <React.Fragment>
+            <H6 display="flex" justifyContent="space-between" marginBottom={theme.sizing.scale400} paddingLeft={theme.sizing.scale200}>{intl.all} {intl.informationTypes}</H6>
+            <Table columns={columns} data={data} isLoading={loading}/>
+            <Block paddingTop={theme.sizing.scale600} display="flex" justifyContent="space-between">
+                <StatefulPopover
+                    content={({close}) => (
+                        <StatefulMenu
+                            items={[5, 10, 15, 20, 25, 50, 75, 100].map((i) => ({
+                                label: i,
+                            }))}
+                            onItemSelect={({item}) => {
+                                handleLimitChange(item.label);
+                                close();
+                            }}
+                            overrides={{
+                                List: {
+                                    style: {height: '150px', width: '100px'},
+                                },
+                            }}
+                        />
+                    )}
+                    placement={PLACEMENT.bottom}
+                >
+                    <Button kind={KIND.tertiary} endEnhancer={TriangleDown}>
+                        {`${limit} ${intl.rows}`}
+                    </Button>
+                </StatefulPopover>
+                <Pagination
+                    currentPage={page}
+                    numPages={Math.ceil(total / limit)}
+                    onPageChange={({nextPage}) => handlePageChange(nextPage)}
+                    labels={{prevButton: intl.prevButton, nextButton: intl.nextButton}}
+                />
+            </Block>
+        </React.Fragment>
+    )
+}
+
+
+const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?: string }>) => {
     const [isLoading, setLoading] = React.useState(false);
     const [error, setError] = React.useState(null);
     const [informationTypeId, setInformationTypeId] = React.useState(props.match.params.id)
@@ -44,14 +148,16 @@ const InformationtypePage = (props: any) => {
 
     useAwait(user.wait())
 
+    useEffect(() => setInformationTypeId(props.match.params.id), [props.match.params.id]);
+
     useEffect(() => {
         if (infoTypeSearch && infoTypeSearch.length > 2) {
             axios
-                .get(`${server_polly}/informationtype/search/${infoTypeSearch}`)
-                .then((res: { data: PageResponse<InformationType> }) => {
-                    let options: Option[] = res.data.content.map((it: InformationType) => ({ id: it.id, label: it.name }))
-                    return setInfoTypeSearchResult(options)
-                })
+            .get(`${server_polly}/informationtype/search/${infoTypeSearch}`)
+            .then((res: { data: PageResponse<InformationType> }) => {
+                let options: Option[] = res.data.content.map((it: InformationType) => ({id: it.id, label: it.name}))
+                return setInfoTypeSearchResult(options)
+            })
         }
     }, [infoTypeSearch])
 
@@ -62,22 +168,22 @@ const InformationtypePage = (props: any) => {
             }
             setLoading(true);
             await axios
-                .get(`${server_polly}/informationtype/${informationTypeId}`)
-                .then(res => {
-                    console.log(res)
-                    setInformationtype(res.data)
-                })
-                .catch(err => setError(err.message));
+            .get(`${server_polly}/informationtype/${informationTypeId}`)
+            .then(res => {
+                console.log(res)
+                setInformationtype(res.data)
+            })
+            .catch(err => setError(err.message));
 
             await axios
-                .get(`${server_polly}/policy/?informationTypeId=${informationTypeId}&pageSize=250`)
-                .then(res => {
-                    setPurposeMap(reducePolicylist(res.data.content))
-                })
-                .catch(err => setError(err.message));
+            .get(`${server_polly}/policy/?informationTypeId=${informationTypeId}&pageSize=250`)
+            .then(res => {
+                setPurposeMap(reducePolicylist(res.data.content))
+            })
+            .catch(err => setError(err.message));
 
             await codelist.wait();
-            props.history.push(`/informationtype/${informationTypeId}`)
+            if (!props.match.params.id) props.history.push(`/informationtype/${informationTypeId}`)
             setLoading(false);
         };
         fetchData();
@@ -86,36 +192,44 @@ const InformationtypePage = (props: any) => {
     return (
         <React.Fragment>
             {isLoading ? (
-                <Spinner size={30} />
+                <Spinner size={30}/>
             ) : (informationTypeId ?
-                <React.Fragment>
-                    <Banner title={intl.informationType} informationtypeId={user.isLoggedIn() && informationTypeId} />
-                    {!error && informationtype && (
-                        <InformationtypeMetadata informationtype={informationtype} purposeMap={purposeMap} />
-                    )}
+                    <React.Fragment>
+                        <Banner title={intl.informationType} informationtypeId={informationTypeId}/>
+                        {!error && informationtype && (
+                            <InformationtypeMetadata informationtype={informationtype} purposeMap={purposeMap}
+                                                     expanded={props.match.params.purpose ? [props.match.params.purpose] : []}
+                                                     onSelectPurpose={purpose => props.history.push(`/informationtype/${informationTypeId}/${purpose}`)}
+                            />
+                        )}
 
-                    {error && (<p>{error}</p>)}
-                </React.Fragment>
-                : <Block display="flex" justifyContent="space-between">
-                    <Block width="80%">
-                        <Select
-                            autoFocus
-                            maxDropdownHeight="400px"
-                            searchable={true}
-                            type={TYPE.search}
-                            options={infoTypeSearchResult}
-                            placeholder={intl.informationTypeSearch}
-                            onInputChange={event => setInfoTypeSearch(event.currentTarget.value)}
-                            onChange={(params: any) => setInformationTypeId(params.value[0].id)}
-                        />
-                    </Block>
-                    <Block>
-                        <Button type="button" shape={SHAPE.square} onClick={() => props.history.push("/informationtype/create")}>
-                            <FontAwesomeIcon icon={faPlusCircle} />&nbsp;{intl.createNew}
-                        </Button>
-                    </Block>
-                </Block>
-                )}
+                        {error && (<p>{error}</p>)}
+                    </React.Fragment>
+                    : <React.Fragment>
+                        <H3 marginTop={theme.sizing.scale200} marginBottom={theme.sizing.scale400}>{intl.informationTypes}</H3>
+                        <Block display="flex" justifyContent="space-between">
+                            <Block width="80%">
+                                <Select
+                                    autoFocus
+                                    maxDropdownHeight="400px"
+                                    searchable={true}
+                                    type={TYPE.search}
+                                    options={infoTypeSearchResult}
+                                    placeholder={intl.informationTypeSearch}
+                                    onInputChange={event => setInfoTypeSearch(event.currentTarget.value)}
+                                    onChange={(params: any) => setInformationTypeId(params.value[0].id)}
+                                />
+                            </Block>
+                            <Block>
+                                <Button type="button" shape={SHAPE.square} onClick={() => props.history.push("/informationtype/create")}>
+                                    <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;{intl.createNew}
+                                </Button>
+                            </Block>
+                        </Block>
+                        <InformationTypeTable {...props}/>
+                    </React.Fragment>
+
+            )}
         </React.Fragment>
     );
 };

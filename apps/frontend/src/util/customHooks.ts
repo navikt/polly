@@ -20,8 +20,8 @@ export function useDebouncedState<T>(
 }
 
 export function useForceUpdate() {
-    const [val, setVal] = useState(true);
-    return () => setVal(!val);
+    const [val, setVal] = useState(0);
+    return () => setVal(val + 1);
 }
 
 export function useAwait<T>(p: Promise<T>) {

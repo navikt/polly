@@ -9,6 +9,7 @@ export const no: IStrings = {
     sensitivity: "Type personopplysning",
     processingActivities: "Behandlingsoversikt",
     process: "Behandling",
+    processes: "Behandlinger",
     legalBasis: "Rettslig grunnlag for behandlingen",
     legalBasisShort: "Rettslig grunnlag",
     legalBasesShort: "Rettslig grunnlag",
@@ -19,7 +20,6 @@ export const no: IStrings = {
     loggedInStatus: "Du er logget inn og kan",
     notLoggedInStatus: "Du er ikke logget inn men kan",
     couldntLoad: "Kunne ikke laste inn siden",
-    informationTypeUpdated: "Opplysningstypen er oppdatert",
     informationTypeCreate: "Opprett opplysningstype",
     sensitivitySelect: "Velg type personopplysning",
     nameWrite: "Skriv inn navn",
@@ -49,6 +49,13 @@ export const no: IStrings = {
     legalBasesOwn: "Har eget rettslig grunnlag",
     legalBasesUndecidedWarning: "Rettslig grunn er ikke avklart",
     notAllowedMessage: "Du har ikke tilgang til denne siden.",
+    confirmDeletePolicyHeader: "Bekreft sletting",
+    confirmDeletePolicyText:
+        "Bekreft sletting av behandlingsgrunnlaget for opplysningstypen",
+
+    POLLY_READ: 'Les',
+    POLLY_WRITE: 'Skriv',
+    POLLY_ADMIN: 'Admin',
 
     department: "Avdeling",
     subDepartment: "Linja (Ytre etat)",
@@ -70,9 +77,24 @@ export const no: IStrings = {
     read: "Lese",
     write: "Skrive",
     administrate: "Administrere",
+    delete: "Slett",
+    appName: "Behandlingskatalog",
+    beta: "beta",
+    all: "Alle",
+    startDate: "Fom dato",
+    endDate: "Tom dato",
+    inactive: "Inaktiv",
+
+    prevButton: "Forrige",
+    nextButton: "Neste",
+    rows: "Rader",
 
     maxChars: "Maks {0} tegn",
-    required: "Feltet er påkrevd"
+    required: "Feltet er påkrevd",
+    datePickStart: "Velg fra og med dato",
+    datePickEnd: "Velg til og med dato",
+    dateFormat: "Feil dato format, eksempel: 2018-08-22",
+    useDates: "Velg datoer"
 };
 
 export const en = {
@@ -84,6 +106,7 @@ export const en = {
     sensitivity: "Type of personal data",
     processingActivities: "Processing activities",
     process: "Process",
+    processes: "Processes",
     navMaster: "Master in NAV",
     legalBasis: "Legal basis for process",
     legalBasisShort: "Legal basis",
@@ -94,7 +117,6 @@ export const en = {
     loggedInStatus: "You are logged in and can",
     notLoggedInStatus: "You are not logged in but you can still",
     couldntLoad: "Couldn't load the page",
-    informationTypeUpdated: "Information type updated",
     informationTypeCreate: "Create new information type",
     sensitivitySelect: "Select type of personal data",
     nameWrite: "Enter name",
@@ -124,6 +146,12 @@ export const en = {
     legalBasesOwn: "Use explicit legal bases",
     legalBasesUndecidedWarning: "Legal bases missing",
     notAllowedMessage: "You don't have access to this page",
+    confirmDeletePolicyHeader: "Confirm delete",
+    confirmDeletePolicyText: "Please confirm deleting the policy for",
+
+    POLLY_READ: 'Read',
+    POLLY_WRITE: 'Write',
+    POLLY_ADMIN: 'Admin',
 
     department: "Department",
     subDepartment: "Sub department",
@@ -145,12 +173,45 @@ export const en = {
     read: "Read",
     write: "Write",
     administrate: "Administrate",
+    delete: "Delete",
+    appName: "Process catalog",
+    beta: "beta",
+    all: "All",
+    startDate: "Start date",
+    endDate: "End date",
+    inactive: "Inactive",
+
+    prevButton: "Prev",
+    nextButton: "Next",
+    rows: "Rows",
 
     maxChars: "Max {0} characters",
     required: "Field is required"
 };
 
 export const ta = {
+    POLLY_ADMIN: "நிர்வாகம்",
+    POLLY_READ: "படிக்க",
+    POLLY_WRITE: "எழுது",
+    all: "அனைத்து",
+    appName: "செயல்முறை பட்டியல்",
+    beta: "பீட்டா",
+    confirmDeletePolicyHeader: "நீக்கு என்பதை உறுதிப்படுத்தவும்",
+    confirmDeletePolicyText: "இதற்கான கொள்கையை நீக்குவதை உறுதிப்படுத்தவும்",
+    delete: "அழி",
+    email: "மின்னஞ்சல்",
+    endDate: "கடைசி தேதி",
+    groups: "குழுக்கள்",
+    inactive: "செயல்படா",
+    maxChars: "அதிகபட்ச {0} எழுத்துக்கள்",
+    nextButton: "அடுத்த",
+    notAllowedMessage: "",
+    prevButton: "முந்தைய",
+    processes: "செயல்முறைகள்",
+    required: "தேவையான",
+    rows: "வரிசைகள்",
+    startDate: "தொடக்க தேதி",
+
     informationType: "தகவல் வகை",
     informationTypes: "தகவல் வகைகள்",
     informationTypeSearch: "தகவல் வகை தேடல்",
@@ -170,7 +231,6 @@ export const ta = {
     notLoggedInStatus:
         "நீங்கள் உள்நுழைந்திருக்கவில்லை, ஆனால் நீங்கள் இன்னும் முடியும்",
     couldntLoad: "பக்கத்தை ஏற்ற முடியவில்லை",
-    informationTypeUpdated: "தகவல் வகை புதுப்பிக்கப்பட்டது",
     informationTypeCreate: "புதிய தகவல் வகையை உருவாக்கு",
     sensitivitySelect: "தனிப்பட்ட தரவின் வகையைத் தேர்ந்தெடுக்கவும்",
     nameWrite: "பெயரை உள்ளிடுக",

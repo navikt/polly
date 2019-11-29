@@ -53,6 +53,12 @@ const InformationtypeCreatePage = (props: any) => {
             .catch(err => setErrorSubmit(err.message));
     };
 
+    const hasAccess = () => {
+        if (user.isLoggedIn())
+            return user.canWrite()
+        return false
+    }
+
     useAwait(user.wait())
 
     React.useEffect(() => {
@@ -66,7 +72,7 @@ const InformationtypeCreatePage = (props: any) => {
 
     return (
         <React.Fragment>
-            {!user.isLoggedIn() ? (<ErrorNotAllowed />)
+            {!hasAccess() ? (<ErrorNotAllowed />)
                 : (
                     <React.Fragment>
                         {isLoading ? (

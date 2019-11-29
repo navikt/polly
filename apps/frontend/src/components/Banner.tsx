@@ -7,6 +7,7 @@ import { intl } from '../util/intl/intl'
 import { Button } from "baseui/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import { user } from "../service/User"
 
 
 type BannerProps = {
@@ -49,11 +50,10 @@ const Banner = ({ title, informationtypeId }: BannerProps) => {
     return (
         <Block {...bannerBlockProps}>
             <Block {...bannerContentProps} justifyContent="space-between">
-                <Block></Block>
                 <HeadingLevel>
                     <Heading styleLevel={5}>{title}</Heading>
                 </HeadingLevel>
-                {informationtypeId ? (
+                {user.canWrite() && informationtypeId ? (
                     <EditInformationtypeButton id={informationtypeId} />
                 ) : <Block></Block>}
             </Block>

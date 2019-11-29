@@ -12,9 +12,10 @@ import { OptionProfile, StatefulMenu } from "baseui/menu"
 import { TriangleDown } from "baseui/icon"
 import { theme } from "../util/theme"
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { Label2 } from "baseui/typography"
+import { Label2, H5, H6 } from "baseui/typography"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons"
+import { FlagIcon } from "./common/Flag"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -53,20 +54,20 @@ const Brand = (props: any) => {
 };
 
 const Flag = (props: { langCode: string }) => (
-    <span role="img" aria-label={langs[props.langCode].name}>{langs[props.langCode].flag}</span>
+    <span role="img" aria-label={langs[props.langCode].name}><FlagIcon country={langs[props.langCode].flag}/></span>
 )
 
 const FlagWithName = (props: { langCode: string }) => (
-    <span><Flag langCode={props.langCode}/> {langs[props.langCode].name}</span>
+    <span><Flag langCode={props.langCode} /> {langs[props.langCode].name}</span>
 )
 
 const LangDropdown = (props: { setLang: (lang: string) => void }) => {
     return (
         <StatefulPopover
-            content={({close}) =>
+            content={({ close }) =>
                 <StatefulMenu
                     items={langsArray.filter(l => l.langCode !== intl.getLanguage())}
-                    onItemSelect={({item}) => {
+                    onItemSelect={({ item }) => {
                         close()
                         props.setLang(item.langCode)
                     }}
@@ -78,7 +79,7 @@ const LangDropdown = (props: { setLang: (lang: string) => void }) => {
                                     title: lang.name,
                                     subtitle: lang.langCode
                                 }),
-                                getProfileItemImg: (lang: Lang) => () => <Flag langCode={lang.langCode}/>,
+                                getProfileItemImg: (lang: Lang) => () => <Flag langCode={lang.langCode} />,
                                 overrides: {
                                     ListItemProfile: {
                                         props: {
@@ -105,15 +106,15 @@ const LangDropdown = (props: { setLang: (lang: string) => void }) => {
                 />
             }
         >
-            <Button endEnhancer={() => <TriangleDown size={24}/>} size="compact" kind="tertiary">
-                <FlagWithName langCode={intl.getLanguage()}/>
+            <Button endEnhancer={() => <TriangleDown size={24} />} size="compact" kind="tertiary">
+                <FlagWithName langCode={intl.getLanguage()} />
             </Button>
         </StatefulPopover>
     );
 }
 
 const LoggedInHeader = () => {
-    const blockStyle : BlockProps = {
+    const blockStyle: BlockProps = {
         display: 'flex',
         width: '100%',
         padding: theme.sizing.scale100
@@ -122,9 +123,8 @@ const LoggedInHeader = () => {
         <StatefulPopover
             content={
                 <React.Fragment>
-                    <Label2 {...blockStyle}>{intl.name}: {user.getFamilyName()}, {user.getGivenName()}</Label2>
-                    <Label2 {...blockStyle} alignContent="space-between">{intl.email}: {user.getEmail()}</Label2>
-                    <Label2 {...blockStyle}>{intl.groups}: {user.getGroups()}</Label2>
+                    <Label2 {...blockStyle}>{intl.name}: {user.getName()}</Label2>
+                    <Label2 {...blockStyle}>{intl.groups}: {user.getGroupsHumanReadable().join(', ')}</Label2>
                     <Block {...blockStyle}>
                         <StyledLink href={`${server_polly}/logout?redirect_uri=${window.location.href}`}>
                             {intl.logout}
@@ -133,7 +133,7 @@ const LoggedInHeader = () => {
                 </React.Fragment>
             }
         >
-            <Button kind="tertiary" size="compact" endEnhancer={() => <FontAwesomeIcon icon={faUser}/>}>{user.getNavIdent()}</Button>
+            <Button kind="tertiary" size="compact" endEnhancer={() => <FontAwesomeIcon icon={faUser} />}>{user.getNavIdent()}</Button>
         </StatefulPopover>
     )
 }
@@ -163,7 +163,11 @@ const Header = (props: HeaderProps & RouteComponentProps<any>) => {
         >
             <StyledNavigationList $align={ALIGN.left}>
                 <StyledNavigationItem>
-                    <StyledLink href="/" className={link}>{logo}</StyledLink>
+                    <Block display="flex" alignItems="center">
+                        <StyledLink href="/" className={link}>{logo}</StyledLink>
+                        <H5 marginLeft={theme.sizing.scale400}>{intl.appName}</H5>
+                        <H6 marginLeft={theme.sizing.scale200} color={theme.colors.negative400}>({intl.beta})</H6>
+                    </Block>
                 </StyledNavigationItem>
             </StyledNavigationList>
 
@@ -194,7 +198,7 @@ const Header = (props: HeaderProps & RouteComponentProps<any>) => {
 
                 <StyledNavigationItem>
                     <Block marginRight="2rem">
-                        <LangDropdown setLang={props.setLang}/>
+                        <LangDropdown setLang={props.setLang} />
                     </Block>
                 </StyledNavigationItem>
             </StyledNavigationList>
