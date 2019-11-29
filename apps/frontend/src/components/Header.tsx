@@ -15,7 +15,7 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { Label2, H5, H6 } from "baseui/typography"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons"
-import { Heading, HeadingLevel } from "baseui/heading";
+import { FlagIcon } from "./common/Flag"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -54,7 +54,7 @@ const Brand = (props: any) => {
 };
 
 const Flag = (props: { langCode: string }) => (
-    <span role="img" aria-label={langs[props.langCode].name}>{langs[props.langCode].flag}</span>
+    <span role="img" aria-label={langs[props.langCode].name}><FlagIcon country={langs[props.langCode].flag}/></span>
 )
 
 const FlagWithName = (props: { langCode: string }) => (
