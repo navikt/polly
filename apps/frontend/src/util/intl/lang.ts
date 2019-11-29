@@ -94,7 +94,8 @@ export const no: IStrings = {
     datePickStart: "Velg fra og med dato",
     datePickEnd: "Velg til og med dato",
     dateFormat: "Feil dato format, eksempel: 2018-08-22",
-    useDates: "Velg datoer"
+    useDates: "Velg datoer",
+    startIllustration: "Illustrasjon av en prosess"
 };
 
 export const en = {
@@ -186,7 +187,8 @@ export const en = {
     rows: "Rows",
 
     maxChars: "Max {0} characters",
-    required: "Field is required"
+    required: "Field is required",
+    startIllustration: "Process illustration"
 };
 
 export const ta = {

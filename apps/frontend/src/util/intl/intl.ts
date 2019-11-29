@@ -62,6 +62,7 @@ export interface IStrings {
     notAllowedMessage: string;
     confirmDeletePolicyHeader: string;
     confirmDeletePolicyText: string;
+    startIllustration: string;
 
     // groups
     POLLY_READ: string;
