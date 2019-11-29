@@ -32,8 +32,8 @@ export interface LegalBasisFormValues {
     gdpr?: string;
     nationalLaw?: string;
     description?: string;
-    end?: Date;
-    start?: Date;
+    end?: string;
+    start?: string;
 }
 
 export interface Term {
@@ -41,11 +41,9 @@ export interface Term {
     name: string;
     description: string;
 }
-export interface LegalBasis {
-    active?: boolean;
+
+export interface LegalBasis extends IDurationed {
     description: string;
-    start?: Date;
-    end?: Date;
     gdpr: Code;
     nationalLaw?: Code;
 }
@@ -63,7 +61,7 @@ export interface InformationType {
     toBeDeleted: boolean;
 }
 
-export interface Policy {
+export interface Policy extends IDurationed {
     id: string;
     informationType: PolicyInformationType;
     process: PolicyProcess;
@@ -71,9 +69,6 @@ export interface Policy {
     subjectCategory: Code;
     legalBasesInherited: boolean;
     legalBases: LegalBasis[];
-    active: boolean;
-    start: Date;
-    end: Date;
 }
 
 export interface PolicyInformationType {
@@ -88,13 +83,10 @@ export interface PolicyProcess {
     legalBases: LegalBasis[];
 }
 
-export interface Process {
+export interface Process extends IDurationed {
     id: string;
     name: string;
     legalBases: LegalBasis[];
-    active: boolean;
-    start: Date;
-    end: Date;
     department: Code;
     subDepartment: Code;
     policies: Policy[];
@@ -118,6 +110,12 @@ export interface PageResponse<T> {
     numberOfElements: number;
     totalElements: number;
     content: T[];
+}
+
+export interface IDurationed {
+    active: boolean;
+    start: string;
+    end: string;
 }
 
 // Refers to SENSITIVITY codelist
