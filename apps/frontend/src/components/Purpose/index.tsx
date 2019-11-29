@@ -21,10 +21,10 @@ import { LegalBasisView } from "../common/LegalBasis"
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 type PurposeViewProps = {
-    description: string | any | null;
+    description?: string;
     purpose: string;
-    processList: Array<Process> | any | null;
-    defaultExpandedPanelId: string | null | undefined;
+    processList: Array<Process>;
+    defaultExpandedPanelId?: string;
 };
 
 const blockProps: BlockProps = {
@@ -123,8 +123,8 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
         let body = {
             id: id,
             name: values.name,
-            department: values.department ? values.department : null,
-            subDepartment: values.subDepartment ? values.subDepartment : null,
+            department: values.department ? values.department : undefined,
+            subDepartment: values.subDepartment ? values.subDepartment : undefined,
             legalBases: values.legalBases ? values.legalBases : [],
             purposeCode: purpose
         }
@@ -199,8 +199,10 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
         const { name, department, subDepartment, legalBases } = process
         let parsedLegalBases = legalBases && legalBases.map((legalBasis: any) => ({
             gdpr: legalBasis.gdpr && legalBasis.gdpr.code,
-            nationalLaw: legalBasis.nationalLaw && legalBasis.nationalLaw.code,
-            description: legalBasis.description
+            nationalLaw: (legalBasis.nationalLaw && legalBasis.nationalLaw.code) || undefined,
+            description: legalBasis.description,
+            start: legalBasis.start || undefined,
+            end: legalBasis.end || undefined
         }))
 
         return {
@@ -248,7 +250,7 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
 
                 {processList && (
                     <Accordion onChange={({ expanded }) => {
-                        defaultExpandedPanelId = null
+                        defaultExpandedPanelId = undefined
                         setCurrentExpanded(expanded)
                     }}>
 

@@ -14,7 +14,7 @@ import { legalBasisSchema } from "../common/LegalBasis"
 import { Datepicker } from "baseui/datepicker"
 import moment from 'moment';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCalendar, faPen } from "@fortawesome/free-solid-svg-icons"
+import { faCalendar, faPen, faTimesCircle } from "@fortawesome/free-solid-svg-icons"
 
 const rowBlockBrops: BlockProps = {
     display: 'flex',
@@ -103,7 +103,7 @@ const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
                     <Error fieldName="description" />
 
                     {!useDates ?
-                        <Block marginTop={theme.sizing.scale200}><Button size="compact" onClick={() => setUseDates(true)}>{intl.useDates}</Button></Block>
+                        <Block {...rowBlockBrops}><Button size="compact" onClick={() => setUseDates(true)}>{intl.useDates}</Button></Block>
                         : <>
                             <Block {...rowBlockBrops}>
                                 <Field name="start"
@@ -115,7 +115,17 @@ const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
                                                        }}
                                                        formatString={'yyyy-MM-dd'}
                                                        error={!!form.errors.start && (form.touched.start || !!form.submitCount)}
-                                                       overrides={{Input: {props: {startEnhancer: () => <FontAwesomeIcon icon={faCalendar}/>}}}}
+                                                       overrides={{
+                                                           Input: {
+                                                               props: {
+                                                                   startEnhancer: () => <FontAwesomeIcon icon={faCalendar}/>,
+                                                                   endEnhancer: () =>
+                                                                       <Button size="compact" kind="tertiary" type="button" onClick={() => form.setFieldValue('start', undefined)}>
+                                                                           <FontAwesomeIcon icon={faTimesCircle}/>
+                                                                       </Button>
+                                                               }
+                                                           }
+                                                       }}
                                            />
                                        )}/>
                             </Block>
@@ -131,7 +141,17 @@ const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
                                                        }}
                                                        formatString={'yyyy-MM-dd'}
                                                        error={!!form.errors.end && (form.touched.end || !!form.submitCount)}
-                                                       overrides={{Input: {props: {startEnhancer: () => <FontAwesomeIcon icon={faCalendar}/>}}}}
+                                                       overrides={{
+                                                           Input: {
+                                                               props: {
+                                                                   startEnhancer: () => <FontAwesomeIcon icon={faCalendar}/>,
+                                                                   endEnhancer: () =>
+                                                                       <Button size="compact" kind="tertiary" type="button" onClick={() => form.setFieldValue('end', undefined)}>
+                                                                           <FontAwesomeIcon icon={faTimesCircle}/>
+                                                                       </Button>
+                                                               }
+                                                           }
+                                                       }}
                                            />
                                        )}/>
                             </Block>

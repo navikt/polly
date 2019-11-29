@@ -53,11 +53,13 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
     const [userDirection, setUserDirection] = React.useState<any>(null);
     const [legalBasisDirection, setLegalBasisDirection] = React.useState<any>(null);
 
-    const getInitialValuesModal = (policy: any): PolicyFormValues => {
+    const getInitialValuesModal = (policy: Policy): PolicyFormValues => {
         let parsedLegalBases = policy.legalBases && policy.legalBases.map((legalBasis: any) => ({
             gdpr: legalBasis.gdpr && legalBasis.gdpr.code,
-            nationalLaw: legalBasis.nationalLaw && legalBasis.nationalLaw.code,
-            description: legalBasis.description
+            nationalLaw: (legalBasis.nationalLaw && legalBasis.nationalLaw.code) || undefined,
+            description: legalBasis.description,
+            start: legalBasis.start || undefined,
+            end: legalBasis.end || undefined
         }))
 
         return {
