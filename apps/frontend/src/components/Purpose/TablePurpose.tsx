@@ -188,10 +188,7 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
                                     <Block display="flex" justifyContent="flex-end" width="100%">
                                         <Button
                                             size={ButtonSize.compact}
-                                            kind={KIND.secondary}
-                                            overrides={{
-                                                BaseButton: { style: { marginRight: '8px' } }
-                                            }}
+                                            kind={KIND.tertiary}
                                             onClick={() => {
                                                 setCurrentPolicy(row)
                                                 setShowEditModal(true)
@@ -201,7 +198,7 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
                                         </Button>
                                         <Button
                                             size={ButtonSize.compact}
-                                            kind={KIND.secondary}
+                                            kind={KIND.tertiary}
                                             onClick={() => {
                                                 setCurrentPolicy(row)
                                                 setShowDeleteModal(true)
