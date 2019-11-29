@@ -13,6 +13,8 @@ import { LegalBasisFormValues } from "../../constants"
 import { legalBasisSchema } from "../common/LegalBasis"
 import { Datepicker } from "baseui/datepicker"
 import moment from 'moment';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faCalendar, faPen } from "@fortawesome/free-solid-svg-icons"
 
 const rowBlockBrops: BlockProps = {
     display: 'flex',
@@ -93,6 +95,8 @@ const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
                             render={({ field }: FieldProps<LegalBasisFormValues>) => (
                                 <StatefulInput {...field} placeholder={intl.descriptionWrite}
                                     error={!!form.errors.description && !!form.submitCount}
+                                               startEnhancer={() => <FontAwesomeIcon icon={faPen}/>}
+
                                 />
                             )} />
                     </Block>
@@ -111,6 +115,7 @@ const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
                                                        }}
                                                        formatString={'yyyy-MM-dd'}
                                                        error={!!form.errors.start && (form.touched.start || !!form.submitCount)}
+                                                       overrides={{Input: {props: {startEnhancer: () => <FontAwesomeIcon icon={faCalendar}/>}}}}
                                            />
                                        )}/>
                             </Block>
@@ -126,6 +131,7 @@ const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
                                                        }}
                                                        formatString={'yyyy-MM-dd'}
                                                        error={!!form.errors.end && (form.touched.end || !!form.submitCount)}
+                                                       overrides={{Input: {props: {startEnhancer: () => <FontAwesomeIcon icon={faCalendar}/>}}}}
                                            />
                                        )}/>
                             </Block>
