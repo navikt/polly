@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { Block, BlockProps } from "baseui/block";
 import { Accordion, Panel } from 'baseui/accordion';
@@ -11,13 +10,13 @@ import axios from "axios";
 import TablePurpose from './TablePurpose'
 import ModalPolicy from './ModalPolicy'
 import ModalProcess from './ModalProcess'
-import { renderLegalBasis } from "../common/LegalBasis"
 import { codelist, ListName } from "../../service/Codelist"
 import { Process } from "../../constants"
 import { intl } from "../../util/intl/intl"
 import { useForceUpdate } from "../../util/customHooks"
 import { user } from "../../service/User";
 import { useAwait } from "../../util/customHooks";
+import { LegalBasisView } from "../common/LegalBasis"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -45,7 +44,7 @@ const renderLegalBasisList = (list: any) => {
 
     return (
         <ul style={{listStyle: "none", paddingInlineStart: 0}}>
-            {list.map((legalBasis: any, i: number) => <li key={i}><Paragraph2>{renderLegalBasis(legalBasis)}</Paragraph2></li>)}
+            {list.map((legalBasis: any, i: number) => <li key={i}><Paragraph2><LegalBasisView legalBasis={legalBasis}/></Paragraph2></li>)}
         </ul>
     )
 }

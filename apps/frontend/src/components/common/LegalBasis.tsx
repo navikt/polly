@@ -1,21 +1,21 @@
 import * as React from "react"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faExclamation, faTrash } from "@fortawesome/free-solid-svg-icons"
+import { ARTWORK_SIZES, ListItem, ListItemLabel } from "baseui/list";
+import { Block } from 'baseui/block'
+import * as yup from "yup"
+import { Button } from "baseui/button"
+
 import { LegalBasis, LegalBasisFormValues } from "../../constants"
 import { codelist, ListName } from "../../service/Codelist"
 import { processString } from "../../util/string-processor"
-import { theme } from "../../util/theme"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faExclamation, faExclamationCircle, faTrash } from "@fortawesome/free-solid-svg-icons"
-import { Block } from 'baseui/block'
-import { intl } from '../../util/intl/intl'
-import { ARTWORK_SIZES, ListItem, ListItemLabel } from "baseui/list";
-import * as yup from "yup"
-import { Button } from "baseui/button"
-import { StatefulTooltip } from "baseui/tooltip"
-import moment from "moment";
+import { intl, theme } from "../../util"
+import { ActiveIndicator } from "./Durations"
 
 const lovdata_base = process.env.REACT_APP_LOVDATA_BASE_URL;
 
-export const renderLegalBasis = (legalBasis: LegalBasis) => {
+export const LegalBasisView = (props: { legalBasis: LegalBasis }) => {
+    const {legalBasis} = props
     let gdpr = codelist.getShortname(ListName.GDPR_ARTICLE, legalBasis.gdpr.code)
     let nationalLaw = legalBasis.nationalLaw && codelist.getShortname(ListName.NATIONAL_LAW, legalBasis.nationalLaw.code)
     let nationalLawId = legalBasis.nationalLaw && !legalBasis.nationalLaw.invalidCode && codelist.getDescription(ListName.NATIONAL_LAW, legalBasis.nationalLaw.code)
@@ -23,18 +23,7 @@ export const renderLegalBasis = (legalBasis: LegalBasis) => {
     let description = nationalLawId ? legalBasisLinkProcessor(nationalLawId, legalBasis.description) : legalBasis.description
 
     return (
-        <span><ActiveIndicator legalBasis={legalBasis}/> {gdpr + ', '} {nationalLaw && nationalLaw} {description}</span>
-    )
-}
-
-const ActiveIndicator = (props: { legalBasis: LegalBasis }) => {
-    const {legalBasis} = props
-    return (
-        <StatefulTooltip content={(
-            <span>{intl.startDate}: {moment(legalBasis.start).format('LL')} - {intl.endDate}: {moment(legalBasis.end).format('LL')}</span>
-        )}>
-            <span><FontAwesomeIcon icon={faExclamationCircle} color={legalBasis.active ? theme.colors.positive300 : theme.colors.warning300}/></span>
-        </StatefulTooltip>
+        <span><ActiveIndicator {...legalBasis}/> {gdpr + ', '} {nationalLaw && nationalLaw} {description}</span>
     )
 }
 
@@ -94,7 +83,7 @@ export const ListLegalBasesInTable = (props: { legalBases: LegalBasis[] }) => {
             <ul style={{listStyle: "none", paddingInlineStart: 0}}>
                 {legalBases.map((legalBasis: any, i: number) => (
                     <Block marginBottom="8px" key={i}>
-                        <li> {renderLegalBasis(legalBasis)}</li>
+                        <li><LegalBasisView legalBasis={legalBasis}/></li>
                     </Block>
                 ))}
             </ul>
