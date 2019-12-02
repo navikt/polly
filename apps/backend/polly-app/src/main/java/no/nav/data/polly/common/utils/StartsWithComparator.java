@@ -1,9 +1,10 @@
 package no.nav.data.polly.common.utils;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Comparator;
 
 import static java.lang.String.CASE_INSENSITIVE_ORDER;
-import static org.apache.commons.lang3.StringUtils.startsWithIgnoreCase;
 
 /**
  * String comparator that first sorts strings that start with a given prefix, then alphabetically
@@ -22,12 +23,8 @@ public class StartsWithComparator implements Comparator<String> {
 
     @Override
     public int compare(String o1, String o2) {
-        boolean o1Start = startsWithIgnoreCase(o1, str);
-        boolean o2Start = startsWithIgnoreCase(o2, str);
-        if (o1Start == o2Start) {
-            return 0;
-        } else {
-            return o1Start ? -1 : 1;
-        }
+        var o1Start = StringUtils.indexOfIgnoreCase(o1, str);
+        var o2Start = StringUtils.indexOfIgnoreCase(o2, str);
+        return o1Start - o2Start;
     }
 }
