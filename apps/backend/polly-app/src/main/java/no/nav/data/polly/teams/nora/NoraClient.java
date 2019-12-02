@@ -12,6 +12,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.requireNonNull;
 import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 
 @Component
@@ -32,7 +33,7 @@ public class NoraClient {
 
     public List<String> getTeamNames() {
         NoraApps noraApps = appsCache.get("singleton", key -> getAppsResponse());
-        return safeStream(noraApps.getApps()).map(NoraApp::getTeam).distinct().sorted().collect(Collectors.toList());
+        return safeStream(requireNonNull(noraApps).getApps()).map(NoraApp::getTeam).distinct().sorted().collect(Collectors.toList());
     }
 
     private NoraApps getAppsResponse() {

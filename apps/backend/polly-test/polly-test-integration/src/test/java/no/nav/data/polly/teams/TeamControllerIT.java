@@ -1,7 +1,7 @@
 package no.nav.data.polly.teams;
 
 import no.nav.data.polly.IntegrationTestBase;
-import no.nav.data.polly.teams.TeamController.TeamsPage;
+import no.nav.data.polly.teams.TeamController.TeamPage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -16,7 +16,7 @@ class TeamControllerIT extends IntegrationTestBase {
 
     @Test
     void getTeams() {
-        ResponseEntity<TeamsPage> teams = restTemplate.getForEntity("/team", TeamsPage.class);
+        ResponseEntity<TeamPage> teams = restTemplate.getForEntity("/team", TeamPage.class);
         assertThat(teams.getBody()).isNotNull();
         assertThat(teams.getBody().getContent()).hasSize(1);
         assertThat(teams.getBody().getContent().get(0).getId()).isEqualTo("team");

@@ -41,6 +41,7 @@ public class SwaggerConfig {
                         basePackage("no.nav.data.polly.purpose"),
                         basePackage("no.nav.data.polly.process"),
                         basePackage("no.nav.data.polly.term"),
+                        basePackage("no.nav.data.polly.teams"),
                         basePackage("no.nav.data.polly.common.security")
                 ))
                 .paths(PathSelectors.any())
