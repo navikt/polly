@@ -88,7 +88,7 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
                 this::validateProcessRepositoryValues
         );
 
-        checkForErrors(validationErrors);
+        ifErrorsThrowValidationException(validationErrors);
     }
 
     private List<ValidationError> validateProcessRepositoryValues(ProcessRequest request) {

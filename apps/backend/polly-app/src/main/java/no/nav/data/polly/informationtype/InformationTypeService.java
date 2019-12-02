@@ -113,7 +113,7 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
         InformationTypeRequest.initiateRequests(requests, isUpdate);
         List<ValidationError> validationErrors = validateRequestsAndReturnErrors(requests);
 
-        checkForErrors(validationErrors);
+        ifErrorsThrowValidationException(validationErrors);
     }
 
     public List<ValidationError> validateRequestsAndReturnErrors(List<InformationTypeRequest> requests) {

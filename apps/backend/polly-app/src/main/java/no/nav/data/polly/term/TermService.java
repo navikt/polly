@@ -27,6 +27,6 @@ public class TermService extends RequestValidator<TermRequest> {
                 RequestElement::validateFields
         );
 
-        checkForErrors(validationErrors);
+        ifErrorsThrowValidationException(validationErrors);
     }
 }

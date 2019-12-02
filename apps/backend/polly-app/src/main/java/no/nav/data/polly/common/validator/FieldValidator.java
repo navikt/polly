@@ -2,6 +2,7 @@ package no.nav.data.polly.common.validator;
 
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDate;
@@ -77,12 +78,15 @@ public class FieldValidator {
         }
     }
 
-    public <T extends Enum<T>> void checkIfCodelistIsImmutable(String list) {
-        if (StringUtils.isBlank(list)) {
-            return;
+    public <T extends Enum<T>> void checkIfCodelistIsOfImmutableType(String list) {
+        if (EnumUtils.isValidEnum(ListName.class, list)) {
+            checkIfCodelistIsOfImmutableType(ListName.valueOf(list));
         }
-        if (list.equals(ListName.GDPR_ARTICLE.toString()) || list.equals(ListName.SENSITIVITY.toString())) {
-            validationErrors.add(new ValidationError(reference, ERROR_TYPE_IMMUTABLE_CODELIST, String.format(ERROR_MESSAGE_IMMUTABLE_CODELIST, list)));
+    }
+
+    public void checkIfCodelistIsOfImmutableType(ListName listName) {
+        if (listName.equals(ListName.GDPR_ARTICLE) || listName.equals(ListName.SENSITIVITY)) {
+            validationErrors.add(new ValidationError(reference, ERROR_TYPE_IMMUTABLE_CODELIST, String.format(ERROR_MESSAGE_IMMUTABLE_CODELIST, listName)));
         }
     }
 
@@ -158,7 +162,7 @@ public class FieldValidator {
         });
     }
 
-    List<ValidationError> getErrors() {
+    public List<ValidationError> getErrors() {
         return validationErrors;
     }
 }
