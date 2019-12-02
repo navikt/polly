@@ -25,6 +25,9 @@ public class StartsWithComparator implements Comparator<String> {
     public int compare(String o1, String o2) {
         var o1Start = StringUtils.indexOfIgnoreCase(o1, str);
         var o2Start = StringUtils.indexOfIgnoreCase(o2, str);
+        if (o1Start < 0 && o2Start >= 0) {
+            return 1;
+        }
         return o1Start - o2Start;
     }
 }

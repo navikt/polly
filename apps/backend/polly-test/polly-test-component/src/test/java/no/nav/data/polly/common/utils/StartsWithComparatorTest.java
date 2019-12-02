@@ -11,7 +11,7 @@ class StartsWithComparatorTest {
 
     @Test
     void testOrder() {
-        List<String> strings = Stream.of("hei på deg", "er du deg", "deg på hei", "deg, jeg og meg", "Degnasjon og helse")
+        List<String> strings = Stream.of("hei på deg", "er du deg", "deg på hei", "deg, jeg og meg", "Degnasjon og helse", "ingen treff her")
                 .sorted(StartsWithComparator.startsWith("deg"))
                 .collect(Collectors.toList());
 
@@ -21,7 +21,8 @@ class StartsWithComparatorTest {
                         "deg, jeg og meg",
                         "Degnasjon og helse",
                         "er du deg",
-                        "hei på deg"
+                        "hei på deg",
+                        "ingen treff her"
                 );
     }
 }
