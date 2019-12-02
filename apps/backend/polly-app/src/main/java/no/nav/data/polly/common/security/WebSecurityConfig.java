@@ -49,6 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/term/**"
         );
 
+        http.authorizeRequests().antMatchers("/logout/**").authenticated();
         http.authorizeRequests().antMatchers("/codelist/**").hasRole(PollyRole.POLLY_ADMIN.name());
         http.authorizeRequests().anyRequest().hasRole(PollyRole.POLLY_WRITE.name());
     }
