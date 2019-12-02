@@ -18,7 +18,7 @@ import java.util.UUID;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id,", "name", "purposeCode", "department", "subDepartment", "start", "end", "active", "legalBases"})
+@JsonPropertyOrder({"id,", "name", "purposeCode", "department", "subDepartment", "productTeam", "start", "end", "active", "legalBases"})
 public class ProcessResponse {
 
     private UUID id;
@@ -26,6 +26,7 @@ public class ProcessResponse {
     private String purposeCode;
     private CodelistResponse department;
     private CodelistResponse subDepartment;
+    private String productTeam;
     private LocalDate start;
     private LocalDate end;
     @Singular("legalBasis")

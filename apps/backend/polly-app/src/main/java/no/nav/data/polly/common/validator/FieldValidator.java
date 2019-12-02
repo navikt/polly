@@ -155,11 +155,15 @@ public class FieldValidator {
     public void validateType(String fieldName, Collection<? extends Validated> fieldValues) {
         AtomicInteger i = new AtomicInteger(0);
         safeStream(fieldValues).forEach(fieldValue -> {
-            FieldValidator fieldValidator = new FieldValidator(reference, String.format("%s[%d]", fieldName, i.getAndIncrement()));
-            fieldValue.format();
-            fieldValue.validate(fieldValidator);
-            validationErrors.addAll(fieldValidator.getErrors());
+            validateType(String.format("%s[%d]", fieldName, i.getAndIncrement()), fieldValue);
         });
+    }
+
+    public void validateType(String fieldName, Validated fieldValue) {
+        FieldValidator fieldValidator = new FieldValidator(reference, fieldName);
+        fieldValue.format();
+        fieldValue.validate(fieldValidator);
+        validationErrors.addAll(fieldValidator.getErrors());
     }
 
     public List<ValidationError> getErrors() {

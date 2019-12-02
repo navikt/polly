@@ -24,6 +24,7 @@ public class ProcessData {
     private LocalDate end;
     private String department;
     private String subDepartment;
+    private String productTeam;
     @Valid
     private List<LegalBasis> legalBases = new ArrayList<>();
 

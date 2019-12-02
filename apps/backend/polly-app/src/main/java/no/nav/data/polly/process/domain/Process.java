@@ -94,6 +94,7 @@ public class Process extends Auditable<String> {
                 .purposeCode(purposeCode)
                 .department(getDepartmentCode())
                 .subDepartment(getSubDepartmentCode())
+                .productTeam(data.getProductTeam())
                 .start(data.getStart())
                 .end(data.getEnd())
                 .legalBases(convert(data.getLegalBases(), LegalBasis::convertToResponse))
@@ -107,6 +108,7 @@ public class Process extends Auditable<String> {
                 .purposeCode(purposeCode)
                 .department(getDepartmentCode())
                 .subDepartment(getSubDepartmentCode())
+                .productTeam(data.getProductTeam())
                 .start(data.getStart())
                 .end(data.getEnd())
                 .legalBases(convert(data.getLegalBases(), LegalBasis::convertToResponse))
@@ -139,6 +141,7 @@ public class Process extends Auditable<String> {
         setPurposeCode(request.getPurposeCode());
         data.setDepartment(request.getDepartment());
         data.setSubDepartment(request.getSubDepartment());
+        data.setProductTeam(request.getProductTeam());
         data.setStart(DateUtil.parseStart(request.getStart()));
         data.setEnd(DateUtil.parseEnd(request.getEnd()));
         data.setLegalBases(convert(request.getLegalBases(), LegalBasisRequest::convertToLegalBasis));

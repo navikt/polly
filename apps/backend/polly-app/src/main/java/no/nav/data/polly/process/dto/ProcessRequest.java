@@ -35,6 +35,7 @@ public class ProcessRequest implements RequestElement {
     private String department;
     @ApiModelProperty(value = "Codelist", example = "CODELIST")
     private String subDepartment;
+    private String productTeam;
     @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_START)
     private String start;
     @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_END)

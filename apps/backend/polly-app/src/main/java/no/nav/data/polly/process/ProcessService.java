@@ -12,6 +12,8 @@ import no.nav.data.polly.process.domain.ProcessDistribution;
 import no.nav.data.polly.process.domain.ProcessDistributionRepository;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessRequest;
+import no.nav.data.polly.teams.TeamService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
@@ -37,16 +39,18 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
     private final PolicyService policyService;
     private final LeaderElectionService leaderElectionService;
     private final ProcessRepository processRepository;
+    private final TeamService teamService;
 
     public ProcessService(ProcessDistributionRepository distributionRepository,
             PolicyService policyService, ProcessUpdateProducer processUpdateProducer,
             LeaderElectionService leaderElectionService,
-            @Value("${behandlingsgrunnlag.distribute.rate.seconds}") Integer rateSeconds, ProcessRepository processRepository) {
+            @Value("${behandlingsgrunnlag.distribute.rate.seconds}") Integer rateSeconds, ProcessRepository processRepository, TeamService teamService) {
         this.distributionRepository = distributionRepository;
         this.policyService = policyService;
         this.processUpdateProducer = processUpdateProducer;
         this.leaderElectionService = leaderElectionService;
         this.processRepository = processRepository;
+        this.teamService = teamService;
         scheduleDistributions(rateSeconds);
     }
 
@@ -114,6 +118,9 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
                 validations.add(new ValidationError(request.getReference(), "nameAndPurposeExists",
                         format("Process with name %s and Purpose %s already exists", request.getName(), request.getPurposeCode())));
             }
+        }
+        if (StringUtils.isNotBlank(request.getProductTeam()) && !teamService.teamExists(request.getProductTeam())) {
+            validations.add(new ValidationError(request.getReference(), "invalidProductTeam", "Product team " + request.getProductTeam() + " does not exist"));
         }
         return validations;
     }
