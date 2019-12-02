@@ -47,7 +47,7 @@ export const no: IStrings = {
     legalBasesProcess: "Bruker behandlingens rettslig grunnlag",
     legalBasesUndecided: "Uavklart",
     legalBasesOwn: "Har eget rettslig grunnlag",
-    legalBasesUndecidedWarning: "Rettslig grunn er ikke avklart",
+    legalBasesUndecidedWarning: "Rettslig grunnlag er ikke avklart",
     notAllowedMessage: "Du har ikke tilgang til denne siden.",
     confirmDeletePolicyHeader: "Bekreft sletting",
     confirmDeletePolicyText:
