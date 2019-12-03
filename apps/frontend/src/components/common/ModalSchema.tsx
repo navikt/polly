@@ -18,7 +18,7 @@ export const Error = (props: { fieldName: string }) => (
 );
 
 export const renderLabel = (label: any | string) => (
-    <Block width="30%" alignSelf="center">
+    <Block width="25%" alignSelf="center">
         <Label2 marginBottom="8px" font="font300">{label.toString()}</Label2>
     </Block>
 );
