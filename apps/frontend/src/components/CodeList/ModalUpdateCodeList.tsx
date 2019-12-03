@@ -10,7 +10,7 @@ import {Textarea} from "baseui/textarea";
 import {Input, SIZE as InputSIZE} from "baseui/input";
 import {ProcessFormValues} from "../../constants";
 import * as yup from "yup";
-import {intl} from "../../util/intl/intl";
+import {intl} from "../../util";
 import {Error} from "../common/ModalSchema";
 
 const modalBlockProps: BlockProps = {
@@ -27,24 +27,24 @@ const rowBlockProps: BlockProps = {
 };
 
 type ModalUpdateProps = {
-    title: string;
+    title: string,
     list: string,
     code: string,
     shortName: string,
     description: string,
-    isOpen: boolean;
-    onClose: Function;
-    submit:Function;
+    isOpen: boolean,
+    errorOnUpdate: any | undefined,
+    onClose: Function,
+    submit:Function,
 };
 
 const codeListSchema = () => yup.object({
-    // code: yup.string().required(intl.required),
     shortName: yup.string().required(intl.required),
     description: yup.string().required(intl.required),
 
 });
 
-const UpdateCodeListModal = ({title, list, code, shortName, description, isOpen, onClose, submit}: ModalUpdateProps) => {
+const UpdateCodeListModal = ({title, list, code, shortName, description, errorOnUpdate, isOpen, onClose, submit}: ModalUpdateProps) => {
     return (
         <Modal
             onClose={() => onClose()}
@@ -107,7 +107,8 @@ const UpdateCodeListModal = ({title, list, code, shortName, description, isOpen,
                                 <Error fieldName="description" />
                             </ModalBody>
                             <ModalFooter>
-                                <Block>
+                                <Block display="flex" justifyContent="flex-end">
+                                    <Block marginRight="auto">{errorOnUpdate && <p>{errorOnUpdate}</p>}</Block>
                                     <Button
                                         type="button"
                                         kind={KIND.secondary}
