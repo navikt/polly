@@ -133,7 +133,7 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         validator.checkRequiredEnum(FIELD_NAME_LIST, listName, ListName.class);
     }
 
-    private void checkValidCode(String listName, String code, FieldValidator validator) {
+    public void checkValidCode(String listName, String code, FieldValidator validator) {
         checkValidListName(listName, validator);
         validator.checkRequiredCodelist(FIELD_NAME_CODE, code, ListName.valueOf(listName));
     }

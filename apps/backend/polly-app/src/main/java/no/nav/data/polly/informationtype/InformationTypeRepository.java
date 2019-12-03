@@ -23,6 +23,18 @@ public interface InformationTypeRepository extends JpaRepository<InformationType
     @Query(value = "select * from information_type where data ->>'name' ilike %?1%", nativeQuery = true)
     List<InformationType> findByNameLike(String name);
 
+    @Query(value = "select * from information_type where data ->>'sensitivity' = ?1", nativeQuery = true)
+    List<InformationType> findBySensitivity(String sensitivity);
+
+    @Query(value = "select * from information_type where data->>'navMaster' = ?1", nativeQuery = true)
+    List<InformationType> findByNavMaster(String navMaster);
+
+    @Query(value = "select * from information_type where data->'categories'->>'code' = ?1", nativeQuery = true)
+    List<InformationType> findByCategory(String category);
+
+    @Query(value = "select * from information_type where data->'sources'->>'code' = ?1", nativeQuery = true)
+    List<InformationType> findBySource(String source);
+
     List<InformationType> findByElasticsearchStatus(ElasticsearchStatus status);
 
     @Modifying

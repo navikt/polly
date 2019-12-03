@@ -1,5 +1,6 @@
 package no.nav.data.polly.process;
 
+import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.common.nais.LeaderElectionService;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.common.validator.RequestElement;
