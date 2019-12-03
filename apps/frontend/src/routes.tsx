@@ -21,16 +21,17 @@ const Routes = (): JSX.Element => (
       />
       <Route
         exact
-        path="/informationtype/:id?/:purpose?"
-        component={InformationtypePage}
-      />
-      <Route
-        exact
         path="/informationtype/edit/:id"
         component={InformationtypeEditPage}
       />
+      <Route
+        exact
+        path="/informationtype/:id?/:purpose?"
+        component={InformationtypePage}
+      />
+
       <Route>
-        <Main/>
+        <Main />
       </Route>
     </Switch>
   </Root>
