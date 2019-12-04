@@ -11,35 +11,35 @@ import CodelistPage from "./pages/CodelistPage"
 
 
 const Routes = (props: any): JSX.Element => (
-  <Root>
-    <Switch>
-      <Route exact path="/purpose/:id?/:processid?" component={PurposePage} />
-      <Route
-        exact
-        path="/informationtype/create"
-        component={InformationtypeCreatePage}
-      />
-      <Route
-        exact
-        path="/informationtype/:id?/:purpose?"
-        component={InformationtypePage}
-      />
-      <Route
-        exact
-        path="/informationtype/edit/:id"
-        component={InformationtypeEditPage}
-      />
-      <Route
-        exact
-        path="/admin/codelist"
-        component={CodelistPage}
-      />
-      <Route>
-        <Main/>
-      </Route>
+    <Root>
+        <Switch>
+            <Route exact path="/purpose/:id?/:processid?" component={PurposePage}/>
+            <Route
+                exact
+                path="/informationtype/create"
+                component={InformationtypeCreatePage}
+            />
+            <Route
+                exact
+                path="/informationtype/edit/:id"
+                component={InformationtypeEditPage}
+            />
+            <Route
+                exact
+                path="/informationtype/:id?/:purpose?"
+                component={InformationtypePage}
+            />
+            <Route
+                exact
+                path="/admin/codelist"
+                component={CodelistPage}
+            />
+            <Route>
+                <Main/>
+            </Route>
 
-    </Switch>
-  </Root>
+        </Switch>
+    </Root>
 );
 
 export default Routes;

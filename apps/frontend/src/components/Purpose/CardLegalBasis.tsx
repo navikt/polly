@@ -1,18 +1,20 @@
 import * as React from 'react';
-import { Select, TYPE, Value } from 'baseui/select';
-import { Block, BlockProps } from 'baseui/block'
-import { Card } from 'baseui/card'
-import { StatefulInput } from 'baseui/input';
-import { Label2 } from 'baseui/typography';
-import { Button, KIND, SIZE as ButtonSize } from 'baseui/button';
-import { codelist, ListName } from "../../service/Codelist";
-import { intl, theme } from "../../util"
-import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from "formik"
-import { KIND as NKIND, Notification } from "baseui/notification"
-import { LegalBasisFormValues } from "../../constants"
-import { legalBasisSchema } from "../common/LegalBasis"
-import { Datepicker } from "baseui/datepicker"
+import {Select, TYPE, Value} from 'baseui/select';
+import {Block, BlockProps} from 'baseui/block'
+import {Card} from 'baseui/card'
+import {StatefulInput} from 'baseui/input';
+import {Label2} from 'baseui/typography';
+import {Button, KIND, SIZE as ButtonSize} from 'baseui/button';
+import {codelist, ListName} from "../../service/Codelist";
+import {intl} from "../../util"
+import {ErrorMessage, Field, FieldProps, Formik, FormikProps} from "formik"
+import {KIND as NKIND, Notification} from "baseui/notification"
+import {LegalBasisFormValues} from "../../constants"
+import {legalBasisSchema} from "../common/LegalBasis"
+import {Datepicker} from "baseui/datepicker"
 import moment from 'moment';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import {faCalendar, faPen, faTimesCircle} from "@fortawesome/free-solid-svg-icons"
 
 const rowBlockBrops: BlockProps = {
     display: 'flex',
@@ -93,13 +95,15 @@ const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
                             render={({ field }: FieldProps<LegalBasisFormValues>) => (
                                 <StatefulInput {...field} placeholder={intl.descriptionWrite}
                                     error={!!form.errors.description && !!form.submitCount}
+                                               startEnhancer={() => <FontAwesomeIcon icon={faPen}/>}
+
                                 />
                             )} />
                     </Block>
                     <Error fieldName="description" />
 
                     {!useDates ?
-                        <Block marginTop={theme.sizing.scale200}><Button size="compact" onClick={() => setUseDates(true)}>{intl.useDates}</Button></Block>
+                        <Block {...rowBlockBrops}><Button size="compact" onClick={() => setUseDates(true)}>{intl.useDates}</Button></Block>
                         : <>
                             <Block {...rowBlockBrops}>
                                 <Field name="start"
@@ -111,6 +115,17 @@ const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
                                                        }}
                                                        formatString={'yyyy-MM-dd'}
                                                        error={!!form.errors.start && (form.touched.start || !!form.submitCount)}
+                                                       overrides={{
+                                                           Input: {
+                                                               props: {
+                                                                   startEnhancer: () => <FontAwesomeIcon icon={faCalendar}/>,
+                                                                   endEnhancer: () =>
+                                                                       <Button size="compact" kind="tertiary" type="button" onClick={() => form.setFieldValue('start', undefined)}>
+                                                                           <FontAwesomeIcon icon={faTimesCircle}/>
+                                                                       </Button>
+                                                               }
+                                                           }
+                                                       }}
                                            />
                                        )}/>
                             </Block>
@@ -126,6 +141,17 @@ const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
                                                        }}
                                                        formatString={'yyyy-MM-dd'}
                                                        error={!!form.errors.end && (form.touched.end || !!form.submitCount)}
+                                                       overrides={{
+                                                           Input: {
+                                                               props: {
+                                                                   startEnhancer: () => <FontAwesomeIcon icon={faCalendar}/>,
+                                                                   endEnhancer: () =>
+                                                                       <Button size="compact" kind="tertiary" type="button" onClick={() => form.setFieldValue('end', undefined)}>
+                                                                           <FontAwesomeIcon icon={faTimesCircle}/>
+                                                                       </Button>
+                                                               }
+                                                           }
+                                                       }}
                                            />
                                        )}/>
                             </Block>

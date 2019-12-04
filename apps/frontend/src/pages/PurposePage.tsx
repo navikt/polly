@@ -1,15 +1,16 @@
 import * as React from "react";
 import axios from "axios";
-import { Option, StatefulSelect } from 'baseui/select';
+import {Option, StatefulSelect} from 'baseui/select';
 
 import PurposeResult from "../components/Purpose";
 import Banner from "../components/Banner";
 
-import { Block } from "baseui/block";
-import { ListName, codelist } from "../service/Codelist";
-import { Process } from "../constants"
-import { intl } from "../util/intl/intl"
-import { theme } from "../util/theme"
+import {Block} from "baseui/block";
+import {codelist, ListName} from "../service/Codelist";
+import {Process} from "../constants"
+import {intl} from "../util/intl/intl"
+import {theme} from "../util/theme"
+import illustration from "../resources/purpose_illustration.svg"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -122,7 +123,11 @@ const PurposePage = (props: any) => {
                         defaultExpandedPanelId={props.match.params.processid}
                     />
                 </React.Fragment>
-            ) : null}
+            ) :
+                <Block display="flex" justifyContent="center" alignContent="center" marginTop={theme.sizing.scale2400}>
+                    <img src={illustration} alt={intl.treasureIllustration} style={{maxWidth: "65%"}}/>
+                </Block>
+            }
         </React.Fragment>
     );
 };

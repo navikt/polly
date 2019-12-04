@@ -1,4 +1,4 @@
-import { IStrings } from "./intl";
+import {IStrings} from "./intl";
 
 export const no: IStrings = {
     informationType: "Opplysningstype",
@@ -47,11 +47,13 @@ export const no: IStrings = {
     legalBasesProcess: "Bruker behandlingens rettslig grunnlag",
     legalBasesUndecided: "Uavklart",
     legalBasesOwn: "Har eget rettslig grunnlag",
-    legalBasesUndecidedWarning: "Rettslig grunn er ikke avklart",
+    legalBasesUndecidedWarning: "Rettslig grunnlag er ikke avklart",
     notAllowedMessage: "Du har ikke tilgang til denne siden.",
     confirmDeletePolicyHeader: "Bekreft sletting",
     confirmDeletePolicyText:
         "Bekreft sletting av behandlingsgrunnlaget for opplysningstypen",
+    startIllustration: "Illustrasjon av en prosess",
+    treasureIllustration: "Illustration av en skatt",
 
     POLLY_READ: 'Les',
     POLLY_WRITE: 'Skriv',
@@ -148,6 +150,8 @@ export const en = {
     notAllowedMessage: "You don't have access to this page",
     confirmDeletePolicyHeader: "Confirm delete",
     confirmDeletePolicyText: "Please confirm deleting the policy for",
+    startIllustration: "Process illustration",
+    treasureIllustration: "Treasure illustration",
 
     POLLY_READ: 'Read',
     POLLY_WRITE: 'Write',

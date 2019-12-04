@@ -1,30 +1,29 @@
 import * as React from "react";
-import { Block, BlockProps } from "baseui/block";
-import { Accordion, Panel } from 'baseui/accordion';
+import {Block, BlockProps} from "baseui/block";
+import {Accordion, Panel} from 'baseui/accordion';
 import _includes from 'lodash/includes'
-import { Plus } from "baseui/icon";
-import { Label2, Paragraph2 } from "baseui/typography";
-import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
+import {Plus} from "baseui/icon";
+import {Label2, Paragraph2} from "baseui/typography";
+import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
 import axios from "axios";
 
 import TablePurpose from './TablePurpose'
 import ModalPolicy from './ModalPolicy'
 import ModalProcess from './ModalProcess'
-import { codelist, ListName } from "../../service/Codelist"
-import { Process } from "../../constants"
-import { intl } from "../../util/intl/intl"
-import { useForceUpdate } from "../../util/customHooks"
-import { user } from "../../service/User";
-import { useAwait } from "../../util/customHooks";
-import { LegalBasisView } from "../common/LegalBasis"
+import {codelist, ListName} from "../../service/Codelist"
+import {Process} from "../../constants"
+import {intl} from "../../util/intl/intl"
+import {useAwait, useForceUpdate} from "../../util/customHooks"
+import {user} from "../../service/User";
+import {LegalBasisView} from "../common/LegalBasis"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 type PurposeViewProps = {
-    description: string | any | null;
+    description?: string;
     purpose: string;
-    processList: Array<Process> | any | null;
-    defaultExpandedPanelId: string | null | undefined;
+    processList: Array<Process>;
+    defaultExpandedPanelId?: string;
 };
 
 const blockProps: BlockProps = {
@@ -123,8 +122,8 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
         let body = {
             id: id,
             name: values.name,
-            department: values.department ? values.department : null,
-            subDepartment: values.subDepartment ? values.subDepartment : null,
+            department: values.department ? values.department : undefined,
+            subDepartment: values.subDepartment ? values.subDepartment : undefined,
             legalBases: values.legalBases ? values.legalBases : [],
             purposeCode: purpose
         }
@@ -199,8 +198,10 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
         const { name, department, subDepartment, legalBases } = process
         let parsedLegalBases = legalBases && legalBases.map((legalBasis: any) => ({
             gdpr: legalBasis.gdpr && legalBasis.gdpr.code,
-            nationalLaw: legalBasis.nationalLaw && legalBasis.nationalLaw.code,
-            description: legalBasis.description
+            nationalLaw: (legalBasis.nationalLaw && legalBasis.nationalLaw.code) || undefined,
+            description: legalBasis.description,
+            start: legalBasis.start || undefined,
+            end: legalBasis.end || undefined
         }))
 
         return {
@@ -248,7 +249,7 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
 
                 {processList && (
                     <Accordion onChange={({ expanded }) => {
-                        defaultExpandedPanelId = null
+                        defaultExpandedPanelId = undefined
                         setCurrentExpanded(expanded)
                     }}>
 

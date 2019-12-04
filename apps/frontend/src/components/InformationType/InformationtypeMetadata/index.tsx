@@ -1,15 +1,15 @@
 import * as React from "react";
-import { Block, BlockProps } from 'baseui/block'
-import { Card } from 'baseui/card'
-import { Label2, Paragraph2 } from "baseui/typography";
+import {Block, BlockProps} from 'baseui/block'
+import {Card} from 'baseui/card'
+import {Label2, Paragraph2} from "baseui/typography";
 
 import AccordionInformationtype from './AccordionInformationtype'
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { IconDefinition } from "@fortawesome/fontawesome-common-types"
-import { faTag, faUserShield } from "@fortawesome/free-solid-svg-icons"
-import { sensitivityColor } from "../Sensitivity"
-import { InformationType } from "../../../constants"
-import { intl } from "../../../util/intl/intl"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import {IconDefinition} from "@fortawesome/fontawesome-common-types"
+import {faTag, faUserShield} from "@fortawesome/free-solid-svg-icons"
+import {sensitivityColor} from "../Sensitivity"
+import {InformationType} from "../../../constants"
+import {intl} from "../../../util/intl/intl"
 
 const purposeBlockProps: BlockProps = {
     marginTop: '3rem'
@@ -18,7 +18,7 @@ const purposeBlockProps: BlockProps = {
 const reduceToList = (list: Array<any> | undefined | null) => {
     if (!list) return []
     return list.reduce((acc: any, curr: any) => {
-        acc = [...acc, curr.description]
+        acc = [...acc, curr.shortName]
         return acc
     }, [])
 }
@@ -31,7 +31,7 @@ const arrayToString = (list: any) => {
 const renderTextWithLabel = (label: string, text: string, icon?: IconDefinition, iconColor?: string) => {
     return (
         <Block display="flex">
-            <Block width="25%" alignSelf="center">
+            <Block width="25%" alignSelf="self-start" marginTop="1rem">
                 <Label2>{icon && <FontAwesomeIcon icon={icon} color={iconColor} />} {label}</Label2>
             </Block>
             <Paragraph2>{text}</Paragraph2>
@@ -70,7 +70,7 @@ interface InformationtypeMetadataProps {
 }
 
 const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
-    const {informationtype, purposeMap, expanded, onSelectPurpose} = props
+    const { informationtype, purposeMap, expanded, onSelectPurpose } = props
 
     return (
         <React.Fragment>
@@ -81,7 +81,7 @@ const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
                     <Block {...purposeBlockProps}>
                         <Label2 marginBottom="2rem" font="font450">{intl.purposeUse}</Label2>
                         <AccordionInformationtype purposeMap={purposeMap} expaneded={expanded}
-                                                  onChange={args => args.expanded.length && onSelectPurpose(args.expanded[0] as string)}/>
+                            onChange={args => args.expanded.length && onSelectPurpose(args.expanded[0] as string)} />
                     </Block>
                 </React.Fragment>
             )}

@@ -1,19 +1,28 @@
 import * as React from "react";
-import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, StyledTable, StyledSortableLabel, StyledHeadCell } from "baseui/table";
-import { useStyletron, withStyle } from "baseui";
-import { StyledLink } from 'baseui/link'
-import { LegalBasesNotClarified, ListLegalBasesInTable } from "../common/LegalBasis"
-import { codelist, ListName } from "../../service/Codelist"
-import { Policy, PolicyFormValues } from "../../constants"
-import { Sensitivity } from "../InformationType/Sensitivity"
-import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
-import { Block } from "baseui/block";
+import {
+    SORT_DIRECTION,
+    SortableHeadCell,
+    StyledBody,
+    StyledCell,
+    StyledHead,
+    StyledHeadCell,
+    StyledRow,
+    StyledTable
+} from "baseui/table";
+import {useStyletron, withStyle} from "baseui";
+import {StyledLink} from 'baseui/link'
+import {LegalBasesNotClarified, ListLegalBasesInTable} from "../common/LegalBasis"
+import {codelist, ListName} from "../../service/Codelist"
+import {Policy, PolicyFormValues} from "../../constants"
+import {Sensitivity} from "../InformationType/Sensitivity"
+import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
+import {Block} from "baseui/block";
 import ModalPolicy from "./ModalPolicy";
-import { intl } from "../../util/intl/intl"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faPoop, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "baseui/modal";
-import { Paragraph2 } from "baseui/typography";
+import {intl} from "../../util/intl/intl"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {Modal, ModalBody, ModalFooter, ModalHeader} from "baseui/modal";
+import {Paragraph2} from "baseui/typography";
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",
@@ -53,11 +62,13 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
     const [userDirection, setUserDirection] = React.useState<any>(null);
     const [legalBasisDirection, setLegalBasisDirection] = React.useState<any>(null);
 
-    const getInitialValuesModal = (policy: any): PolicyFormValues => {
+    const getInitialValuesModal = (policy: Policy): PolicyFormValues => {
         let parsedLegalBases = policy.legalBases && policy.legalBases.map((legalBasis: any) => ({
             gdpr: legalBasis.gdpr && legalBasis.gdpr.code,
-            nationalLaw: legalBasis.nationalLaw && legalBasis.nationalLaw.code,
-            description: legalBasis.description
+            nationalLaw: (legalBasis.nationalLaw && legalBasis.nationalLaw.code) || undefined,
+            description: legalBasis.description,
+            start: legalBasis.start || undefined,
+            end: legalBasis.end || undefined
         }))
 
         return {
@@ -188,10 +199,7 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
                                     <Block display="flex" justifyContent="flex-end" width="100%">
                                         <Button
                                             size={ButtonSize.compact}
-                                            kind={KIND.secondary}
-                                            overrides={{
-                                                BaseButton: { style: { marginRight: '8px' } }
-                                            }}
+                                            kind={KIND.tertiary}
                                             onClick={() => {
                                                 setCurrentPolicy(row)
                                                 setShowEditModal(true)
@@ -201,7 +209,7 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
                                         </Button>
                                         <Button
                                             size={ButtonSize.compact}
-                                            kind={KIND.secondary}
+                                            kind={KIND.tertiary}
                                             onClick={() => {
                                                 setCurrentPolicy(row)
                                                 setShowDeleteModal(true)
