@@ -16,10 +16,11 @@ import {
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
 import UpdateCodeListModal from "../components/CodeList/ModalUpdateCodeList";
 import CreateCodeListModal from "../components/CodeList/ModalCreateCodeList";
+import DeleteCodeListModal from "../components/CodeList/ModalDeleteCodeList";
 import axios from "axios";
 import {useStyletron, withStyle} from "baseui";
-import {faEdit} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {Plus} from "baseui/icon";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
@@ -45,6 +46,7 @@ const CodeListPage = () => {
 
     const [updateCodeListModal, setUpdateCodeListModal] = React.useState(false);
     const [createCodeListModal, setCreateCodeListModal] = React.useState(false);
+    const [deleteCodeListModal, setDeleteCodeListModal] = React.useState(false);
 
     const [codeDirection, setCodeDirection] = React.useState<any>(null);
     const [shortNameDirection, setShortNameDirection] = React.useState<any>(null);
@@ -192,6 +194,37 @@ const CodeListPage = () => {
             });
     };
 
+    const handleDeleteCodelist = async (values: any) => {
+        let {list, code} = values;
+        console.log(list);
+        console.log(code);
+        await axios
+            .delete(`${server_polly}/codelist/${list}/${code}`)
+            .then(((response: any) => {
+                console.log(response);
+                console.log("Shayan codelist:");
+                console.log(codelist);
+                // setErrorEditPolicy(null)
+                console.log(codelist.lists ? codelist.lists.codelist : "");
+                console.log(codeListsTable);
+                let codeListsTableTemp = codeListsTable.slice();
+                let deletedRowIndex = codeListsTableTemp
+                    .findIndex((codeList: any) =>
+                        codeList[0] === code
+                    );
+                codeListsTableTemp.splice(deletedRowIndex,1);
+                console.log("Index=", deletedRowIndex);
+                console.log(codeListsTableTemp[deletedRowIndex]);
+                setCodeListsTable(codeListsTableTemp);
+                setDeleteCodeListModal(false)
+            }))
+            .catch((error: any) => {
+                setDeleteCodeListModal(true);
+                setErrorOnResponse(error.message);
+                console.log(error.message);
+            });
+    };
+
     const makeTableRow = (codeList: any) => {
         return [
             codeList.code,
@@ -210,16 +243,18 @@ const CodeListPage = () => {
                 >
                     <FontAwesomeIcon icon={faEdit}/>
                 </Button>
-                {/*<Button*/}
-                {/*    size={ButtonSize.compact}*/}
-                {/*    kind={KIND.secondary}*/}
-                {/*    onClick={() => {*/}
-                {/*        setCurrentPolicy(row)*/}
-                {/*        setShowDeleteModal(true)*/}
-                {/*    }}*/}
-                {/*>*/}
-                {/*    <FontAwesomeIcon icon={faTrash} />*/}
-                {/*</Button>*/}
+                <Button
+                    size={ButtonSize.compact}
+                    kind={KIND.secondary}
+                    onClick={
+                        () => {
+                            setSelectedRow(codeList);
+                            setDeleteCodeListModal(true)
+                        }
+                    }
+                >
+                    <FontAwesomeIcon icon={faTrash} />
+                </Button>
             </Block>
         ];
     };
@@ -260,6 +295,18 @@ const CodeListPage = () => {
                         }}
                         errorOnUpdate={errorOnResponse}
                         submit={handleEditCodelist}
+                    />
+                    <DeleteCodeListModal
+                        title='Bekreft sletting'
+                        list={selectedValue ? selectedValue[0].id!.toString() : ""}
+                        code={selectedRow ? selectedRow.code : ""}
+                        isOpen={deleteCodeListModal}
+                        onClose={() => {
+                            setDeleteCodeListModal(!deleteCodeListModal);
+                            setErrorOnResponse(null);
+                        }}
+                        errorOnDelete={errorOnResponse}
+                        submit={handleDeleteCodelist}
                     />
                 </Block>
             )}
