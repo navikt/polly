@@ -1,7 +1,7 @@
-import * as React from 'react';
-import Banner from '../components/Banner';
+import * as React from "react";
+import Banner from "../components/Banner";
 import {codelist} from "../service/Codelist";
-import {Select} from 'baseui/select';
+import {Select} from "baseui/select";
 import {Block} from "baseui/block";
 import {
     SORT_DIRECTION,
@@ -12,7 +12,7 @@ import {
     StyledHeadCell,
     StyledRow,
     StyledTable
-} from 'baseui/table';
+} from "baseui/table";
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
 import UpdateCodeListModal from "../components/CodeList/ModalUpdateCodeList";
 import CreateCodeListModal from "../components/CodeList/ModalCreateCodeList";
@@ -22,19 +22,18 @@ import {useStyletron, withStyle} from "baseui";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {Plus} from "baseui/icon";
+import {user} from "../service/User";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 const SmallerHeadCell = withStyle(StyledHeadCell, {
-    maxWidth: '15%',
+    maxWidth: "15%",
     wordBreak: "break-word",
 });
 
 const SmallCell = withStyle(StyledCell, {
-    maxWidth: '15%',
+    maxWidth: "15%",
     wordBreak: "break-word",
-    paddingTop: "10",
-    paddingBottom: "10"
 });
 
 const CodeListPage = () => {
@@ -54,6 +53,12 @@ const CodeListPage = () => {
 
     const [errorOnResponse, setErrorOnResponse] = React.useState(null);
 
+    const hasAccess = () => {
+        if (user.isLoggedIn())
+            return user.isAdmin();
+        return false
+    };
+
     const handleSort = (title: string, prevDirection: string) => {
         let nextDirection = null;
         if (prevDirection === SORT_DIRECTION.ASC) {
@@ -65,19 +70,19 @@ const CodeListPage = () => {
         if (prevDirection === null) {
             nextDirection = SORT_DIRECTION.ASC;
         }
-        if (title === 'Code') {
+        if (title === "Code") {
             setCodeDirection(nextDirection);
             setShortNameDirection(null);
             setDescriptionDirection(null);
             return;
         }
-        if (title === 'Short Name') {
+        if (title === "Short Name") {
             setCodeDirection(null);
             setShortNameDirection(nextDirection);
             setDescriptionDirection(null);
             return;
         }
-        if (title === 'Description') {
+        if (title === "Description") {
             setCodeDirection(null);
             setShortNameDirection(null);
             setDescriptionDirection(nextDirection);
@@ -212,7 +217,7 @@ const CodeListPage = () => {
                     .findIndex((codeList: any) =>
                         codeList[0] === code
                     );
-                codeListsTableTemp.splice(deletedRowIndex,1);
+                codeListsTableTemp.splice(deletedRowIndex, 1);
                 console.log("Index=", deletedRowIndex);
                 console.log(codeListsTableTemp[deletedRowIndex]);
                 setCodeListsTable(codeListsTableTemp);
@@ -230,10 +235,10 @@ const CodeListPage = () => {
             codeList.code,
             codeList.shortName,
             codeList.description,
-            <Block display="flex" justifyContent="flex-end" width="100%">
+            (hasAccess() && <Block display="flex" justifyContent="flex-end" width="100%">
                 <Button
                     size={ButtonSize.compact}
-                    kind={KIND.secondary}
+                    kind={KIND.tertiary}
                     onClick={
                         () => {
                             setSelectedRow(codeList);
@@ -245,7 +250,7 @@ const CodeListPage = () => {
                 </Button>
                 <Button
                     size={ButtonSize.compact}
-                    kind={KIND.secondary}
+                    kind={KIND.tertiary}
                     onClick={
                         () => {
                             setSelectedRow(codeList);
@@ -253,9 +258,9 @@ const CodeListPage = () => {
                         }
                     }
                 >
-                    <FontAwesomeIcon icon={faTrash} />
+                    <FontAwesomeIcon icon={faTrash}/>
                 </Button>
-            </Block>
+            </Block>)
         ];
     };
 
@@ -283,7 +288,7 @@ const CodeListPage = () => {
                         value={selectedValue}
                     />
                     <UpdateCodeListModal
-                        title='Rediger codelist'
+                        title="Rediger codelist"
                         list={selectedValue ? selectedValue[0].id!.toString() : ""}
                         code={selectedRow ? selectedRow.code : ""}
                         shortName={selectedRow ? selectedRow.shortName : ""}
@@ -297,7 +302,7 @@ const CodeListPage = () => {
                         submit={handleEditCodelist}
                     />
                     <DeleteCodeListModal
-                        title='Bekreft sletting'
+                        title="Bekreft sletting"
                         list={selectedValue ? selectedValue[0].id!.toString() : ""}
                         code={selectedRow ? selectedRow.code : ""}
                         isOpen={deleteCodeListModal}
@@ -313,67 +318,93 @@ const CodeListPage = () => {
 
             {!getSortedData() ? null :
                 <React.Fragment>
-                    <Block display="flex" justifyContent="flex-end">
-                        <Button
-                            size={ButtonSize.compact}
-                            kind={KIND.minimal}
-                            onClick={() => setCreateCodeListModal(!createCodeListModal)}
-                            startEnhancer={
-                                () =>
-                                    <Block
-                                        display="flex"
-                                        justifyContent="center">
-                                        <Plus size={22}/>
-                                    </Block>}
-                        >
-                            Opprett nytt codelist
-                        </Button>
-                        <CreateCodeListModal
-                            title="Nytt codelist"
-                            list={selectedValue ? selectedValue[0].id!.toString() : ""}
-                            isOpen={createCodeListModal}
-                            errorOnCreate={errorOnResponse}
-                            onClose={
-                                () => {
-                                    setCreateCodeListModal(!createCodeListModal);
-                                    setErrorOnResponse(null);
+                    {hasAccess() && (
+                        <Block display="flex" justifyContent="flex-end">
+                            <Button
+                                $style={{
+                                    marginTop: "16px",
+                                    marginBottom: "16px",
+                                }}
+                                size={ButtonSize.compact}
+                                kind={KIND.minimal}
+                                onClick={() => setCreateCodeListModal(!createCodeListModal)}
+                                startEnhancer={
+                                    () =>
+                                        <Block
+                                            display="flex"
+                                            justifyContent="center">
+                                            <Plus size={22}/>
+                                        </Block>}
+                            >
+                                Opprett nytt codelist
+                            </Button>
+                            <CreateCodeListModal
+                                title="Nytt codelist"
+                                list={selectedValue ? selectedValue[0].id!.toString() : ""}
+                                isOpen={createCodeListModal}
+                                errorOnCreate={errorOnResponse}
+                                onClose={
+                                    () => {
+                                        setCreateCodeListModal(!createCodeListModal);
+                                        setErrorOnResponse(null);
+                                    }
                                 }
-                            }
-                            submit={handleCreateCodelist}
-                        />
-                    </Block>
-
+                                submit={handleCreateCodelist}
+                            />
+                        </Block>
+                    )}
                     <Block>
                         {/* eslint-disable-next-line react-hooks/rules-of-hooks */}
                         <StyledTable className={useCss({overflow: "hidden !important"})}>
                             <StyledHead>
                                 <SmallerHeadCell>
                                     <SortableHeadCell
+                                        overrides={{
+                                            HeadCell: {
+                                                style: {
+                                                    padding: "2px 16px 2px 0",
+                                                }
+                                            }
+                                        }}
                                         title="Code"
                                         direction={codeDirection}
                                         onSort={() =>
-                                            handleSort('Code', codeDirection)
+                                            handleSort("Code", codeDirection)
                                         }
                                     />
                                 </SmallerHeadCell>
                                 <SmallerHeadCell>
                                     <SortableHeadCell
+                                        overrides={{
+                                            HeadCell: {
+                                                style: {
+                                                    padding: "2px 16px 2px 0",
+                                                }
+                                            }
+                                        }}
                                         title="Short Name"
                                         direction={shortNameDirection}
                                         onSort={() =>
-                                            handleSort('Short Name', shortNameDirection)
+                                            handleSort("Short Name", shortNameDirection)
                                         }
                                     />
                                 </SmallerHeadCell>
                                 <StyledHeadCell styled={{
-                                    maxWidth: '55%',
-                                    minWidth: '24rem'
+                                    maxWidth: "55%",
+                                    minWidth: "24rem"
                                 }}>
                                     <SortableHeadCell
+                                        overrides={{
+                                            HeadCell: {
+                                                style: {
+                                                    padding: "2px 16px 2px 0",
+                                                }
+                                            }
+                                        }}
                                         title="Description"
                                         direction={descriptionDirection}
                                         onSort={() =>
-                                            handleSort('Description', descriptionDirection)
+                                            handleSort("Description", descriptionDirection)
                                         }
                                     />
                                 </StyledHeadCell>
@@ -388,8 +419,6 @@ const CodeListPage = () => {
                                             styled={{
                                                 maxWidth: "55%",
                                                 minWidth: "24rem",
-                                                paddingTop: "10",
-                                                paddingBottom: "10",
                                             }}
                                         >
                                             {row[2]}
