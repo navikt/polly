@@ -42,7 +42,7 @@ public class WiremockExtension implements Extension, BeforeAllCallback, BeforeEa
 
     private void stubCommon() {
         getWiremock().stubFor(get("/elector").willReturn(okJson(JsonUtils.toJson(LeaderElectionService.getHostInfo()))));
-        getWiremock().stubFor(get("/nora/apps/all?criteria=").willReturn(okJson(JsonUtils.toJson(noraMockResponse()))));
+        getWiremock().stubFor(get("/nora/apps").willReturn(okJson(JsonUtils.toJson(noraMockResponse()))));
     }
 
     static WireMockServer getWiremock() {
