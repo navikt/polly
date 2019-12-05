@@ -80,11 +80,11 @@ const CardMetadata = (props: { navMaster: Code, sources: Code[], categories: Cod
             flexGridColumnGap="scale1000"
             flexGridRowGap="scale400"
         >
-            <FlexGridItem>{renderTextWithLabelMetadata(intl.navMaster, props.navMaster.shortName, faTag)}</FlexGridItem>
+            <FlexGridItem>{renderTextWithLabelMetadata(intl.navMaster, props.navMaster ? props.navMaster.shortName : '', faTag)}</FlexGridItem>
             <FlexGridItem>{renderTextWithLabelMetadata(intl.sources, reduceToList(props.sources).join(', '))}</FlexGridItem>
             <FlexGridItem>{renderTextWithLabelMetadata(intl.categories, reduceToList(props.categories).join(', '))}</FlexGridItem>
             <FlexGridItem>{renderTextWithLabelMetadata(intl.keywords, arrayToString(props.keywords))}</FlexGridItem>
-            <FlexGridItem>{renderTextWithLabelMetadata(intl.sensitivity, props.sensitivity.shortName, faUserShield, sensitivityColor(props.sensitivity.code))}</FlexGridItem>
+            <FlexGridItem>{renderTextWithLabelMetadata(intl.sensitivity, props.sensitivity ? props.sensitivity.shortName : '', faUserShield, sensitivityColor(props.sensitivity.code))}</FlexGridItem>
         </FlexGrid>
     </Card>
 )
