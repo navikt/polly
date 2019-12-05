@@ -96,7 +96,11 @@ export const no: IStrings = {
     datePickStart: "Velg fra og med dato",
     datePickEnd: "Velg til og med dato",
     dateFormat: "Feil dato format, eksempel: 2018-08-22",
-    useDates: "Velg datoer"
+    useDates: "Velg datoer",
+
+    requiredArt9: "Opplysningstypen krever et rettslig grunnlag med artikkel 9",
+    requiredNationalLaw: "Artikkelen krever nasjonal lov",
+    requiredDescription: "Artikkelen krever ytterligere beskrivelse"
 };
 
 export const en = {
@@ -190,7 +194,11 @@ export const en = {
     rows: "Rows",
 
     maxChars: "Max {0} characters",
-    required: "Field is required"
+    required: "Field is required",
+
+    requiredArt9: "The information type requires a legal basis for article 9",
+    requiredNationalLaw: "The article requires national law",
+    requiredDescription: "The article requires additional description"
 };
 
 export const ta = {

@@ -42,12 +42,14 @@ const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
     const [nationalLaw, setNationalLaw] = React.useState<Value>([]);
     const [useDates, setUseDates] = React.useState(false);
     return (
-        <Formik onSubmit={(values, form) => {
-            form.setFieldTouched('gdpr')
-            form.setFieldTouched('nationalLaw')
-            submit(values)
-        }} validationSchema={legalBasisSchema()} initialValues={{}}
-            render={(form: FormikProps<LegalBasisFormValues>) => (
+        <Formik
+            onSubmit={(values, form) => submit(values)} validationSchema={legalBasisSchema()} initialValues={{}}
+            render={(form: FormikProps<LegalBasisFormValues>) => {
+                if (form.submitCount) {
+                    form.touched.gdpr || form.setFieldTouched('gdpr')
+                    form.touched.nationalLaw || form.setFieldTouched('nationalLaw')
+                }
+               return (
                 <Card>
                     <Label2 marginBottom="1rem">{intl.legalBasisNew}</Label2>
 
@@ -71,7 +73,7 @@ const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
                     </Block>
                     <Error fieldName="gdpr" />
 
-                    <Block {...rowBlockBrops}>
+                    <Block {...rowBlockBrops} display={codelist.requiresNationalLaw(form.values.gdpr) ? rowBlockBrops.display : 'none'}>
                         <Field name="nationalLaw"
                             render={() => (
                                 <Select
@@ -90,7 +92,7 @@ const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
                     </Block>
                     <Error fieldName="nationalLaw" />
 
-                    <Block {...rowBlockBrops}>
+                    <Block {...rowBlockBrops} display={codelist.requiresDescription(form.values.gdpr) ? rowBlockBrops.display : 'none'}>
                         <Field name="description"
                             render={({ field }: FieldProps<LegalBasisFormValues>) => (
                                 <StatefulInput {...field} placeholder={intl.descriptionWrite}
@@ -167,7 +169,7 @@ const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
                         </Button>
                     </Block>
                 </Card>
-            )} />
+            )}} />
     )
 }
 

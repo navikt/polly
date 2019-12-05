@@ -86,6 +86,7 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
 
         let body = [{
             ...values,
+            informationType: undefined,
             process: process.name,
             purposeCode: process.purposeCode
         }]
@@ -144,6 +145,7 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
     const handleEditPolicy = async (values: any) => {
         let body = [{
             ...values,
+            informationType: undefined,
             legalBases: values.legalBasesInherited ? [] : values.legalBases
         }]
         await axios

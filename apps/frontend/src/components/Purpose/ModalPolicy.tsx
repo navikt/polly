@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect } from "react";
+import { KeyboardEvent, useEffect } from "react";
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
 import { ErrorMessage, Field, FieldArray, FieldProps, Form, Formik, FormikProps, } from "formik";
 import { Block, BlockProps } from "baseui/block";
@@ -14,11 +14,10 @@ import { codelist, ListName } from "../../service/Codelist";
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { useDebouncedState } from "../../util/customHooks"
 import axios from "axios"
-import { InformationType, PageResponse, PolicyFormValues } from "../../constants"
+import { InformationType, PageResponse, PolicyFormValues, PolicyInformationType } from "../../constants"
 import { intl } from "../../util/intl/intl"
 import { legalBasisSchema, ListLegalBases } from "../common/LegalBasis"
 import { KIND as NKIND, Notification } from "baseui/notification"
-import { KeyboardEvent } from "react"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -74,10 +73,13 @@ const FieldInformationTypeName = (props: {
                     onChange={(params: any) => {
                         let infoType = params.value[0]
                         props.setValue(infoType)
-                        form.setFieldValue('informationTypeName', infoType.id)
+                        form.setFieldValue('informationTypeName', infoType.name)
+                        form.setFieldValue('informationType', infoType)
                     }}
                     onBlur={() => form.setFieldTouched('informationTypeName')}
                     error={!!form.errors.informationTypeName && !!form.submitCount}
+                    filterOptions={options => options}
+                    labelKey="name"
                 />
             )}
         />
@@ -152,7 +154,21 @@ const setInitialShowLegalBasesValue = (initialValues: PolicyFormValues) => {
     return legalBases.length <= 0
 }
 
+const missingArt9LegalBasisForSensitiveInfoType = (informationType: PolicyInformationType, policy: PolicyFormValues) => {
+    const reqArt9 = informationType && codelist.requiresArt9(informationType.sensitivity && informationType.sensitivity.code)
+    const missingArt9 = !policy.legalBases.filter((lb) => codelist.isArt9(lb.gdpr)).length
+    return reqArt9 && missingArt9
+}
+
 const policySchema = () => yup.object({
+    informationType: yup.object().test({
+        name: 'policyHasArt9',
+        message: intl.requiredArt9,
+        test: function (informationType) {
+            const {parent} = this
+            return !missingArt9LegalBasisForSensitiveInfoType(informationType, parent)
+        }
+    }),
     informationTypeName: yup.string().required(intl.required),
     subjectCategory: yup.string().required(intl.required),
     legalBasesInherited: yup.boolean().required(intl.required),
@@ -182,8 +198,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
             axios
                 .get(`${server_polly}/informationtype/search/${infoTypeSearch}`)
                 .then((res: { data: PageResponse<InformationType> }) => {
-                    let options: Option[] = res.data.content.map((it: InformationType) => ({ id: it.name, label: it.name }))
-                    return setInfoTypeSearchResult(options)
+                    return setInfoTypeSearchResult(res.data.content)
                 })
         }
 
@@ -294,6 +309,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                                         )}
                                     />
                                 )}
+                                <Error fieldName="informationType" />
                             </ModalBody>
 
                             <ModalFooter>

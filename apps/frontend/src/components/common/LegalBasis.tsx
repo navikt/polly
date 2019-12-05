@@ -94,8 +94,16 @@ export const ListLegalBasesInTable = (props: { legalBases: LegalBasis[] }) => {
 
 export const legalBasisSchema = () => yup.object({
     gdpr: yup.string().required(intl.required),
-    nationalLaw: yup.string(),
-    description: yup.string().required(intl.required),
+    nationalLaw: yup.string().when('gdpr', {
+        is: (gdprCode) => codelist.requiresNationalLaw(gdprCode),
+        then: yup.string().required(intl.requiredNationalLaw),
+        otherwise: yup.string()
+    }),
+    description: yup.string().when('gdpr', {
+        is: (gdprCode) =>  codelist.requiresDescription(gdprCode),
+        then: yup.string().required(intl.requiredDescription),
+        otherwise: yup.string()
+    }),
     start: yup.string().matches(/\d{4}-\d{2}-\d{2}/, intl.dateFormat),
     end: yup.string().matches(/\d{4}-\d{2}-\d{2}/, intl.dateFormat)
 })

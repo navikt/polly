@@ -109,6 +109,9 @@ export interface IStrings {
     datePickStart: string;
     datePickEnd: string;
     useDates: string;
+    requiredArt9: string;
+    requiredNationalLaw: string;
+    requiredDescription: string;
 }
 
 // Remember import moment locales up top
