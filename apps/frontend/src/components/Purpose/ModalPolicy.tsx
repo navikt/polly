@@ -18,6 +18,7 @@ import { InformationType, PageResponse, PolicyFormValues } from "../../constants
 import { intl } from "../../util/intl/intl"
 import { legalBasisSchema, ListLegalBases } from "../common/LegalBasis"
 import { KIND as NKIND, Notification } from "baseui/notification"
+import { KeyboardEvent } from "react"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -197,6 +198,10 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
         onClose()
     }
 
+    const disableEnter = (e: KeyboardEvent) => {
+        if (e.key === 'Enter') e.preventDefault()
+    }
+
     return (
         <Modal
             onClose={onCloseModal}
@@ -214,7 +219,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                         onCloseModal()
                     }}
                     render={(formikBag: FormikProps<PolicyFormValues>) => (
-                        <Form>
+                        <Form onKeyDown={disableEnter}>
                             <ModalHeader>
                                 <Block display="flex" justifyContent="center" marginBottom="2rem">
                                     {title}
