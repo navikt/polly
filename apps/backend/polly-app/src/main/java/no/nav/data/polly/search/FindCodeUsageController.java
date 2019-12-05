@@ -40,7 +40,7 @@ public class FindCodeUsageController {
     @GetMapping("/{list}/{code}")
     public ResponseEntity<FindCodeUsageResponse> findByListNameAndCode(@PathVariable String list, @PathVariable String code) {
         log.info("Received request to fetch all usage of code {} in list {}", code, list);
-        service.validateListNameAndCodeExists(list, code);
+        service.validateRequests(list, code);
 
         FindCodeUsageResponse response = service.findCodeUsageByListNameAndCode(list, code);
         if (response.isEmpty()) {

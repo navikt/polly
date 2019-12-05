@@ -37,19 +37,13 @@ public class FindCodeUsageService {
     }
 
 
-    void validateListNameAndCodeExists(String listName, String code) {
-        FieldValidator validator = new FieldValidator("validateListNameAndCodeExists");
-        codelistService.checkValidCode(listName, code, validator);
-        if (!validator.getErrors().isEmpty()) {
-            //TODO: ErrorHandling
-        }
+    void validateRequests(String listName, String code){
+        validateRequests(List.of(FindCodeUsageRequest.builder().listName(listName).code(code).build()));
     }
 
     void validateRequests(List<FindCodeUsageRequest> requests) {
         FieldValidator validator = new FieldValidator("validateRequests");
-        StreamUtils.safeStream(requests).forEach(request -> {
-            codelistService.checkValidCode(request.getListName(), request.getCode(), validator);
-        });
+        StreamUtils.safeStream(requests).forEach(request -> codelistService.checkValidCode(request.getListName(), request.getCode(), validator));
         if (!validator.getErrors().isEmpty()) {
             //TODO: ErrorHandling
         }
