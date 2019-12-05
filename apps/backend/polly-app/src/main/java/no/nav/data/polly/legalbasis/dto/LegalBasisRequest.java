@@ -54,7 +54,6 @@ public class LegalBasisRequest implements Validated {
     public void validate(FieldValidator validator) {
         validator.checkRequiredCodelist(Fields.gdpr, gdpr, ListName.GDPR_ARTICLE);
         validator.checkCodelist(Fields.nationalLaw, nationalLaw, ListName.NATIONAL_LAW);
-        validator.checkBlank(Fields.description, description);
         validator.checkDate(Fields.start, start);
         validator.checkDate(Fields.end, end);
     }
