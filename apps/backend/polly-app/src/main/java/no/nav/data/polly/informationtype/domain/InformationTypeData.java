@@ -28,6 +28,9 @@ public class InformationTypeData {
     private List<String> sources = new ArrayList<>();
     private List<String> keywords = new ArrayList<>();
 
+    // Søkefelt
+    private String suggest;
+
     public CodelistResponse sensitivityCode() {
         return CodelistService.getCodelistResponse(ListName.SENSITIVITY, sensitivity);
     }
