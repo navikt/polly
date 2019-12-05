@@ -58,7 +58,7 @@ public class InformationTypeRequest implements RequestElement {
         setSources(nullToEmptyList(sources).stream()
                 .map(String::trim)
                 .map(String::toUpperCase)
-                .filter(StringUtils::isNoneBlank)
+                .filter(StringUtils::isNotBlank)
                 .collect(Collectors.toList()));
         setSensitivity(toUpperCaseAndTrim(getSensitivity()));
         setNavMaster(toUpperCaseAndTrim(getNavMaster()));
