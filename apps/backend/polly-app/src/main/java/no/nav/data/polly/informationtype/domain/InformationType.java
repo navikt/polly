@@ -108,6 +108,10 @@ public class InformationType extends Auditable<String> {
         data.setSources(copyOf(request.getSources()));
         data.setKeywords(copyOf(request.getKeywords()));
 
+        preUpdate();
+    }
+
+    public void preUpdate() {
         data.setSuggest(data.getName() + " " + String.join(" ", data.getKeywords()) + " " + data.getDescription());
     }
 

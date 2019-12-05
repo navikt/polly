@@ -159,6 +159,7 @@ public abstract class IntegrationTestBase {
                         .navMaster("TPS")
                         .build())
                 .build();
+        informationType.preUpdate();
         createTerm("term").addInformationType(informationType);
         return informationTypeRepository.save(informationType);
     }
