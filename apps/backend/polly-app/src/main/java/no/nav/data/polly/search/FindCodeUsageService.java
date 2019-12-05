@@ -39,20 +39,16 @@ public class FindCodeUsageService {
 
     void validateListNameAndCodeExists(String listName, String code) {
         FieldValidator validator = new FieldValidator("validateListNameAndCodeExists");
-        checkValidCode(listName, code, validator);
+        codelistService.checkValidCode(listName, code, validator);
         if (!validator.getErrors().isEmpty()) {
             //TODO: ErrorHandling
         }
     }
 
-    private void checkValidCode(String listName, String code, FieldValidator validator) {
-        codelistService.checkValidCode(listName, code, validator);
-    }
-
     void validateRequests(List<FindCodeUsageRequest> requests) {
         FieldValidator validator = new FieldValidator("validateRequests");
         StreamUtils.safeStream(requests).forEach(request -> {
-            checkValidCode(request.getListName(), request.getCode(), validator);
+            codelistService.checkValidCode(request.getListName(), request.getCode(), validator);
         });
         if (!validator.getErrors().isEmpty()) {
             //TODO: ErrorHandling
