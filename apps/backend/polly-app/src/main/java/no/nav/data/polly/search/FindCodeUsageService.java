@@ -98,15 +98,15 @@ public class FindCodeUsageService {
     private List<ProcessResponse> findProcesses(ListName listName, String code) {
         switch (listName) {
             case PURPOSE:
-                return StreamUtils.safeStream(processRepository.findByPurposeCode(code)).map(Process::convertToResponse).collect(Collectors.toList());
+                return processRepository.findByPurposeCode(code).stream().map(Process::convertToResponse).collect(Collectors.toList());
             case DEPARTMENT:
-                return StreamUtils.safeStream(processRepository.findByDepartment(code)).map(Process::convertToResponse).collect(Collectors.toList());
+                return processRepository.findByDepartment(code).stream().map(Process::convertToResponse).collect(Collectors.toList());
             case SUB_DEPARTMENT:
-                return StreamUtils.safeStream(processRepository.findBySubDepartment(code)).map(Process::convertToResponse).collect(Collectors.toList());
+                return processRepository.findBySubDepartment(code).stream().map(Process::convertToResponse).collect(Collectors.toList());
             case GDPR_ARTICLE:
-                return StreamUtils.safeStream(processRepository.findByGDPRArticle(code)).map(Process::convertToResponse).collect(Collectors.toList());
+                return processRepository.findByGDPRArticle(code).stream().map(Process::convertToResponse).collect(Collectors.toList());
             case NATIONAL_LAW:
-                return StreamUtils.safeStream(processRepository.findByNationalLaw(code)).map(Process::convertToResponse).collect(Collectors.toList());
+                return processRepository.findByNationalLaw(code).stream().map(Process::convertToResponse).collect(Collectors.toList());
             default:
                 //TODO: ErrorHandling
                 return Collections.emptyList();
@@ -116,11 +116,11 @@ public class FindCodeUsageService {
     private List<PolicyResponse> findPolicies(ListName listName, String code) {
         switch (listName) {
             case SUBJECT_CATEGORY:
-                return StreamUtils.safeStream(policyRepository.findBySubjectCategory(code)).map(Policy::convertToResponse).collect(Collectors.toList());
+                return policyRepository.findBySubjectCategory(code).stream().map(Policy::convertToResponse).collect(Collectors.toList());
             case GDPR_ARTICLE:
-                return StreamUtils.safeStream(policyRepository.findByGDPRArticle(code)).map(Policy::convertToResponse).collect(Collectors.toList());
+                return policyRepository.findByGDPRArticle(code).stream().map(Policy::convertToResponse).collect(Collectors.toList());
             case NATIONAL_LAW:
-                return StreamUtils.safeStream(policyRepository.findByNationalLaw(code)).map(Policy::convertToResponse).collect(Collectors.toList());
+                return policyRepository.findByNationalLaw(code).stream().map(Policy::convertToResponse).collect(Collectors.toList());
             default:
                 //TODO: ErrorHandling
                 return Collections.emptyList();
@@ -130,13 +130,13 @@ public class FindCodeUsageService {
     private List<InformationTypeResponse> findInformationTypes(ListName listName, String code) {
         switch (listName) {
             case SENSITIVITY:
-                return StreamUtils.safeStream(informationTypeRepository.findBySensitivity(code)).map(InformationType::convertToResponse).collect(Collectors.toList());
+                return informationTypeRepository.findBySensitivity(code).stream().map(InformationType::convertToResponse).collect(Collectors.toList());
             case SYSTEM:
-                return StreamUtils.safeStream(informationTypeRepository.findByNavMaster(code)).map(InformationType::convertToResponse).collect(Collectors.toList());
+                return informationTypeRepository.findByNavMaster(code).stream().map(InformationType::convertToResponse).collect(Collectors.toList());
             case CATEGORY:
-                return StreamUtils.safeStream(informationTypeRepository.findByCategory(code)).map(InformationType::convertToResponse).collect(Collectors.toList());
+                return informationTypeRepository.findByCategory(code).stream().map(InformationType::convertToResponse).collect(Collectors.toList());
             case SOURCE:
-                return StreamUtils.safeStream(informationTypeRepository.findBySource(code)).map(InformationType::convertToResponse).collect(Collectors.toList());
+                return informationTypeRepository.findBySource(code).stream().map(InformationType::convertToResponse).collect(Collectors.toList());
             default:
                 //TODO: ErrorHandling
                 return Collections.emptyList();
