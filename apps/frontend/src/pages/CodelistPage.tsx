@@ -3,53 +3,28 @@ import Banner from "../components/Banner";
 import {codelist} from "../service/Codelist";
 import {Select} from "baseui/select";
 import {Block} from "baseui/block";
-import {
-    SORT_DIRECTION,
-    SortableHeadCell,
-    StyledBody,
-    StyledCell,
-    StyledHead,
-    StyledHeadCell,
-    StyledRow,
-    StyledTable
-} from "baseui/table";
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
 import UpdateCodeListModal from "../components/CodeList/ModalUpdateCodeList";
 import CreateCodeListModal from "../components/CodeList/ModalCreateCodeList";
 import DeleteCodeListModal from "../components/CodeList/ModalDeleteCodeList";
 import axios from "axios";
-import {useStyletron, withStyle} from "baseui";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {Plus} from "baseui/icon";
 import {user} from "../service/User";
+import CodeListTable from "../components/CodeList/CodeListStyledTable";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
-const SmallerHeadCell = withStyle(StyledHeadCell, {
-    maxWidth: "15%",
-    wordBreak: "break-word",
-});
-
-const SmallCell = withStyle(StyledCell, {
-    maxWidth: "15%",
-    wordBreak: "break-word",
-});
-
 const CodeListPage = () => {
     const [loading, setLoading] = React.useState(true);
-    const [useCss] = useStyletron();
-    const [codeListsTable, setCodeListsTable] = React.useState();
+    const [codeListsTableData, setCodeListsTableData] = React.useState();
     const [selectedRow, setSelectedRow] = React.useState();
     const [selectedValue, setSelectedValue] = React.useState();
 
     const [updateCodeListModal, setUpdateCodeListModal] = React.useState(false);
     const [createCodeListModal, setCreateCodeListModal] = React.useState(false);
     const [deleteCodeListModal, setDeleteCodeListModal] = React.useState(false);
-
-    const [codeDirection, setCodeDirection] = React.useState<any>(null);
-    const [shortNameDirection, setShortNameDirection] = React.useState<any>(null);
-    const [descriptionDirection, setDescriptionDirection] = React.useState<any>(null);
 
     const [errorOnResponse, setErrorOnResponse] = React.useState(null);
 
@@ -59,83 +34,13 @@ const CodeListPage = () => {
         return false
     };
 
-    const handleSort = (title: string, prevDirection: string) => {
-        let nextDirection = null;
-        if (prevDirection === SORT_DIRECTION.ASC) {
-            nextDirection = SORT_DIRECTION.DESC;
-        }
-        if (prevDirection === SORT_DIRECTION.DESC) {
-            nextDirection = null;
-        }
-        if (prevDirection === null) {
-            nextDirection = SORT_DIRECTION.ASC;
-        }
-        if (title === "Code") {
-            setCodeDirection(nextDirection);
-            setShortNameDirection(null);
-            setDescriptionDirection(null);
-            return;
-        }
-        if (title === "Short Name") {
-            setCodeDirection(null);
-            setShortNameDirection(nextDirection);
-            setDescriptionDirection(null);
-            return;
-        }
-        if (title === "Description") {
-            setCodeDirection(null);
-            setShortNameDirection(null);
-            setDescriptionDirection(nextDirection);
-            return;
-        }
-    };
-
-    const getSortedData = () => {
-        if (codeDirection) {
-            const sorted = codeListsTable.slice(0).sort((a: any, b: any) =>
-                a[0].localeCompare(b[0]),
-            );
-            if (codeDirection === SORT_DIRECTION.ASC) {
-                return sorted;
-            }
-            if (codeDirection === SORT_DIRECTION.DESC) {
-                return sorted.reverse();
-            }
-        }
-
-        if (shortNameDirection) {
-            const sorted = codeListsTable.slice(0).sort((a: any, b: any) =>
-                a[0].localeCompare(b[0]),
-            );
-            if (shortNameDirection === SORT_DIRECTION.ASC) {
-                return sorted;
-            }
-            if (shortNameDirection === SORT_DIRECTION.DESC) {
-                return sorted.reverse();
-            }
-        }
-
-        if (descriptionDirection) {
-            const sorted = codeListsTable.slice(0).sort((a: any, b: any) =>
-                a[0].localeCompare(b[0]),
-            );
-            if (descriptionDirection === SORT_DIRECTION.ASC) {
-                return sorted;
-            }
-            if (descriptionDirection === SORT_DIRECTION.DESC) {
-                return sorted.reverse();
-            }
-        }
-
-        return codeListsTable;
+    const fetchData = async () => {
+        setLoading(true);
+        await codelist.wait();
+        setLoading(false);
     };
 
     React.useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            await codelist.wait();
-            setLoading(false);
-        };
         fetchData();
     }, []);
 
@@ -150,10 +55,12 @@ const CodeListPage = () => {
                 console.log(response);
                 console.log("Shayan codelist:");
                 console.log(codelist);
+                codelist.refreshCodeLists();
+
                 // setErrorEditPolicy(null)
                 console.log(codelist.lists ? codelist.lists.codelist : "");
-                console.log(codeListsTable);
-                let codeListsTableTemp = codeListsTable.slice();
+                console.log(codeListsTableData);
+                let codeListsTableTemp = codeListsTableData.slice();
                 let editedRowIndex = codeListsTableTemp
                     .findIndex((codeList: any) =>
                         codeList[0] === values.code
@@ -162,7 +69,7 @@ const CodeListPage = () => {
                 console.log("Index=", editedRowIndex);
                 codeListsTableTemp[editedRowIndex] = makeTableRow(values);
                 console.log(codeListsTableTemp[editedRowIndex]);
-                setCodeListsTable(codeListsTableTemp);
+                setCodeListsTableData(codeListsTableTemp);
                 setUpdateCodeListModal(false)
             }))
             .catch((error: any) => {
@@ -184,12 +91,13 @@ const CodeListPage = () => {
                 console.log("Shayan codelist:");
                 console.log(codelist);
                 // setErrorEditPolicy(null)
+                codelist.refreshCodeLists();
                 console.log(codelist.lists ? codelist.lists.codelist : "");
-                console.log(codeListsTable);
-                let codeListsTableTemp = codeListsTable.slice();
+                console.log(codeListsTableData);
+                let codeListsTableTemp = codeListsTableData.slice();
                 codeListsTableTemp.push(makeTableRow(values));
                 console.log(codeListsTableTemp[codeListsTableTemp.length - 1]);
-                setCodeListsTable(codeListsTableTemp);
+                setCodeListsTableData(codeListsTableTemp);
                 setCreateCodeListModal(false)
             }))
             .catch((error: any) => {
@@ -210,9 +118,10 @@ const CodeListPage = () => {
                 console.log("Shayan codelist:");
                 console.log(codelist);
                 // setErrorEditPolicy(null)
+                codelist.refreshCodeLists();
                 console.log(codelist.lists ? codelist.lists.codelist : "");
-                console.log(codeListsTable);
-                let codeListsTableTemp = codeListsTable.slice();
+                console.log(codeListsTableData);
+                let codeListsTableTemp = codeListsTableData.slice();
                 let deletedRowIndex = codeListsTableTemp
                     .findIndex((codeList: any) =>
                         codeList[0] === code
@@ -220,8 +129,8 @@ const CodeListPage = () => {
                 codeListsTableTemp.splice(deletedRowIndex, 1);
                 console.log("Index=", deletedRowIndex);
                 console.log(codeListsTableTemp[deletedRowIndex]);
-                setCodeListsTable(codeListsTableTemp);
-                setDeleteCodeListModal(false)
+                setCodeListsTableData(codeListsTableTemp);
+                setDeleteCodeListModal(false);
             }))
             .catch((error: any) => {
                 setDeleteCodeListModal(true);
@@ -281,7 +190,7 @@ const CodeListPage = () => {
                                 .codelist[value[0].id!]
                                 .map(codeList => makeTableRow(codeList));
                             console.log(codeLists);
-                            setCodeListsTable(codeLists);
+                            setCodeListsTableData(codeLists);
                         }}
                         clearable={false}
                         placeholder="Velg codelist"
@@ -316,7 +225,7 @@ const CodeListPage = () => {
                 </Block>
             )}
 
-            {!getSortedData() ? null :
+            {codeListsTableData &&
                 <React.Fragment>
                     {hasAccess() && (
                         <Block display="flex" justifyContent="flex-end">
@@ -354,80 +263,7 @@ const CodeListPage = () => {
                         </Block>
                     )}
                     <Block>
-                        {/* eslint-disable-next-line react-hooks/rules-of-hooks */}
-                        <StyledTable className={useCss({overflow: "hidden !important"})}>
-                            <StyledHead>
-                                <SmallerHeadCell>
-                                    <SortableHeadCell
-                                        overrides={{
-                                            HeadCell: {
-                                                style: {
-                                                    padding: "2px 16px 2px 0",
-                                                }
-                                            }
-                                        }}
-                                        title="Code"
-                                        direction={codeDirection}
-                                        onSort={() =>
-                                            handleSort("Code", codeDirection)
-                                        }
-                                    />
-                                </SmallerHeadCell>
-                                <SmallerHeadCell>
-                                    <SortableHeadCell
-                                        overrides={{
-                                            HeadCell: {
-                                                style: {
-                                                    padding: "2px 16px 2px 0",
-                                                }
-                                            }
-                                        }}
-                                        title="Short Name"
-                                        direction={shortNameDirection}
-                                        onSort={() =>
-                                            handleSort("Short Name", shortNameDirection)
-                                        }
-                                    />
-                                </SmallerHeadCell>
-                                <StyledHeadCell styled={{
-                                    maxWidth: "55%",
-                                    minWidth: "24rem"
-                                }}>
-                                    <SortableHeadCell
-                                        overrides={{
-                                            HeadCell: {
-                                                style: {
-                                                    padding: "2px 16px 2px 0",
-                                                }
-                                            }
-                                        }}
-                                        title="Description"
-                                        direction={descriptionDirection}
-                                        onSort={() =>
-                                            handleSort("Description", descriptionDirection)
-                                        }
-                                    />
-                                </StyledHeadCell>
-                                <SmallerHeadCell/>
-                            </StyledHead>
-                            <StyledBody>
-                                {getSortedData().map((row: any, index: any) => (
-                                    <StyledRow key={index}>
-                                        <SmallCell>{row[0]}</SmallCell>
-                                        <SmallCell>{row[1]}</SmallCell>
-                                        <StyledCell
-                                            styled={{
-                                                maxWidth: "55%",
-                                                minWidth: "24rem",
-                                            }}
-                                        >
-                                            {row[2]}
-                                        </StyledCell>
-                                        <SmallCell>{row[3]}</SmallCell>
-                                    </StyledRow>
-                                ))}
-                            </StyledBody>
-                        </StyledTable>
+                        <CodeListTable tableData={codeListsTableData}/>
                     </Block>
                 </React.Fragment>
             }
