@@ -203,7 +203,7 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
         let parsedLegalBases = legalBases && legalBases.map((legalBasis: any) => ({
             gdpr: legalBasis.gdpr && legalBasis.gdpr.code,
             nationalLaw: (legalBasis.nationalLaw && legalBasis.nationalLaw.code) || undefined,
-            description: legalBasis.description,
+            description: legalBasis.description || undefined,
             start: legalBasis.start || undefined,
             end: legalBasis.end || undefined
         }))
