@@ -141,8 +141,8 @@ const missingArt9LegalBasisForSensitiveInfoType = (informationType: PolicyInform
     return !legalBasisInherited && reqArt9 && missingArt9 && processMissingArt9
 }
 
-const policySchema = () => yup.object({
-    informationType: yup.object().required(intl.required)
+const policySchema = () => yup.object<PolicyFormValues>({
+    informationType: yup.object<PolicyInformationType>().required(intl.required)
     .test({
         name: 'policyHasArt9',
         message: intl.requiredArt9,
@@ -152,9 +152,11 @@ const policySchema = () => yup.object({
         }
     }),
     subjectCategory: yup.string().required(intl.required),
-    legalBasesStatus: yup.string().required(intl.required),
+    legalBasesStatus: yup.mixed().oneOf(Object.values(LegalBasesStatus)).required(intl.required),
     legalBases: yup.array(legalBasisSchema()),
-    process: yup.object()
+    process: yup.object(),
+    purposeCode: yup.string(),
+    id: yup.string()
 })
 
 type ModalPolicyProps = {

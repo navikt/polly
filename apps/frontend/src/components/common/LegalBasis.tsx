@@ -93,7 +93,7 @@ export const ListLegalBasesInTable = (props: { legalBases: LegalBasis[] }) => {
     )
 }
 
-export const legalBasisSchema = () => yup.object({
+export const legalBasisSchema = () => yup.object<LegalBasisFormValues>({
     gdpr: yup.string().required(intl.required),
     nationalLaw: yup.string().when('gdpr', {
         is: (gdprCode) => codelist.requiresNationalLaw(gdprCode),
