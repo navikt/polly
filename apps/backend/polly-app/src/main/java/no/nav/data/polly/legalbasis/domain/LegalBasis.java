@@ -24,7 +24,6 @@ public class LegalBasis implements Serializable {
     @NotNull
     private String gdpr;
     private String nationalLaw;
-    @NotNull
     private String description;
     @NotNull
     private LocalDate start;
