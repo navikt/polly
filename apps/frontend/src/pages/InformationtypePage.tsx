@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Spinner } from "baseui/spinner";
 import axios from "axios";
 import { Button, KIND, SHAPE } from "baseui/button"
@@ -143,6 +143,7 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
     const [informationtype, setInformationtype] = React.useState()
     const [purposeMap, setPurposeMap] = React.useState([])
 
+    const [infoTypeLoading, setInfoTypeSearchLoading] = useState<boolean>(false);
     const [infoTypeSearch, setInfoTypeSearch] = useDebouncedState<string>('', 200);
     const [infoTypeSearchResult, setInfoTypeSearchResult] = React.useState<Option[]>([]);
 
@@ -152,12 +153,14 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
 
     useEffect(() => {
         if (infoTypeSearch && infoTypeSearch.length > 2) {
+            setInfoTypeSearchLoading(true)
             axios
             .get(`${server_polly}/informationtype/search/${infoTypeSearch}`)
             .then((res: { data: PageResponse<InformationType> }) => {
                 let options: Option[] = res.data.content.map((it: InformationType) => ({id: it.id, label: it.name}))
                 return setInfoTypeSearchResult(options)
             })
+            setInfoTypeSearchLoading(false)
         }
     }, [infoTypeSearch])
 
@@ -218,6 +221,8 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
                                     placeholder={intl.informationTypeSearch}
                                     onInputChange={event => setInfoTypeSearch(event.currentTarget.value)}
                                     onChange={(params: any) => setInformationTypeId(params.value[0].id)}
+                                    isLoading={infoTypeLoading}
+                                    filterOptions={options => options}
                                 />
                             </Block>
                             <Block>
