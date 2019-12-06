@@ -41,6 +41,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import static java.util.stream.Collectors.toList;
+import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Slf4j
 @RestController
@@ -65,7 +66,7 @@ public class PolicyRestController {
         this.informationTypeService = informationTypeService;
     }
 
-    @ApiOperation(value = "Get all Policies, filtered  request will always return all policies", tags = {"Policies"})
+    @ApiOperation(value = "Get all Policies, filtered  request will always return all policies")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "All policies fetched", response = PolicyPage.class),
             @ApiResponse(code = 500, message = "Internal server error")})
@@ -97,7 +98,7 @@ public class PolicyRestController {
         }
     }
 
-    @ApiOperation(value = "Count all Policies", tags = {"Policies"})
+    @ApiOperation(value = "Count all Policies")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Count policies fetched", response = Long.class),
             @ApiResponse(code = 500, message = "Internal server error")})
@@ -107,7 +108,7 @@ public class PolicyRestController {
         return ResponseEntity.ok(policyRepository.count());
     }
 
-    @ApiOperation(value = "Count Policies by InformationType", tags = {"Policies"})
+    @ApiOperation(value = "Count Policies by InformationType")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Count fetched", response = Long.class),
             @ApiResponse(code = 500, message = "Internal server error")})
@@ -117,7 +118,7 @@ public class PolicyRestController {
         return ResponseEntity.ok(policyRepository.countByInformationTypeId(informationTypeId));
     }
 
-    @ApiOperation(value = "Create Policy", tags = {"Policies"})
+    @ApiOperation(value = "Create Policy")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Policy successfully created", response = PolicyPage.class),
             @ApiResponse(code = 400, message = "Illegal arguments"),
@@ -133,7 +134,7 @@ public class PolicyRestController {
         return new ResponseEntity<>(new RestResponsePage<>(responses), HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "Get Policy", tags = {"Policies"})
+    @ApiOperation(value = "Get Policy")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Fetched policy", response = PolicyResponse.class),
             @ApiResponse(code = 404, message = "Policy not found"),
@@ -148,28 +149,30 @@ public class PolicyRestController {
         return ResponseEntity.ok(mapper.mapPolicyToResponse(optionalPolicy.get()));
     }
 
-    @ApiOperation(value = "Delete Policy", tags = {"Policies"})
+    @ApiOperation(value = "Delete Policy")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Policy deleted"),
+            @ApiResponse(code = 200, message = "Policy deleted", response = PolicyResponse.class),
             @ApiResponse(code = 404, message = "Policy not found"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @DeleteMapping("/{id}")
-    public void deletePolicy(@PathVariable UUID id) {
+    public ResponseEntity<PolicyResponse> deletePolicy(@PathVariable UUID id) {
         log.debug("Received request to delete Policy with id={}", id);
         Optional<Policy> optionalPolicy = policyRepository.findById(id);
         if (optionalPolicy.isEmpty()) {
             throw notFoundError(id);
         }
-        onChange(List.of(optionalPolicy.get()));
+        Policy policy = optionalPolicy.get();
+        onChange(List.of(policy));
         policyRepository.deleteById(id);
+        return ResponseEntity.ok(policy.convertToResponse());
     }
 
-    @ApiOperation(value = "Delete Policies by informationTypeId", tags = {"Policies"})
+    @ApiOperation(value = "Delete Policies by informationTypeId")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Policies deleted"),
+            @ApiResponse(code = 200, message = "Policies deleted", response = PolicyPage.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @DeleteMapping(params = {"informationTypeId"})
-    public void deletePoliciesByInformationType(@RequestParam UUID informationTypeId) {
+    public ResponseEntity<RestResponsePage<PolicyResponse>> deletePoliciesByInformationType(@RequestParam UUID informationTypeId) {
         log.debug("Received request to delete Policies with informationTypeId={}", informationTypeId);
         if (informationTypeId == null) {
             throw new ValidationException("Blank informationTypeId");
@@ -178,9 +181,10 @@ public class PolicyRestController {
         onChange(deletes);
         policyRepository.deleteAll(deletes);
         log.debug("Deleted {} policies", deletes);
+        return ResponseEntity.ok(new RestResponsePage<>(convert(deletes, Policy::convertToResponse)));
     }
 
-    @ApiOperation(value = "Update Policy", tags = {"Policies"})
+    @ApiOperation(value = "Update Policy")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Policy updated", response = PolicyResponse.class),
             @ApiResponse(code = 404, message = "Policy not found"),
@@ -206,7 +210,7 @@ public class PolicyRestController {
         return ResponseEntity.ok(mapper.mapPolicyToResponse(policyRepository.save(policy)));
     }
 
-    @ApiOperation(value = "Update Policies", tags = {"Policies"})
+    @ApiOperation(value = "Update Policies")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Polices updated", response = PolicyPage.class),
             @ApiResponse(code = 404, message = "Policy not found"),
