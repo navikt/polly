@@ -27,6 +27,10 @@ class CodelistService {
         }
     };
 
+    refreshCodeLists(){
+        this.promise = this.fetchData();
+    }
+
     getCodes(list: ListName): Code[] {
         return this.lists && this.lists.codelist[list] ? this.lists.codelist[list].sort((c1, c2) => c1.shortName.localeCompare(c2.shortName)) : [];
     }
