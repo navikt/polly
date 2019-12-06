@@ -16,7 +16,6 @@ export const no: IStrings = {
     subjectCategories: "Kategorier av personer",
     nationalLaw: "Nasjonal lov",
     navMaster: "Master i NAV",
-
     loggedInStatus: "Du er logget inn og kan",
     notLoggedInStatus: "Du er ikke logget inn men kan",
     couldntLoad: "Kunne ikke laste inn siden",
@@ -96,7 +95,10 @@ export const no: IStrings = {
     datePickStart: "Velg fra og med dato",
     datePickEnd: "Velg til og med dato",
     dateFormat: "Feil dato format, eksempel: 2018-08-22",
-    useDates: "Velg datoer"
+    useDates: "Velg datoer",
+
+    createCodeList: "Nytt codelist",
+    deleteCodeListConfirmationTitle: "Bekreft sletting",
 };
 
 export const en = {
@@ -190,7 +192,10 @@ export const en = {
     rows: "Rows",
 
     maxChars: "Max {0} characters",
-    required: "Field is required"
+    required: "Field is required",
+
+    createCodeList: "Create code list",
+    deleteCodeListConfirmationTitle: "Confirm deletion",
 };
 
 export const ta = {

@@ -106,6 +106,9 @@ export interface IStrings {
     datePickStart: string;
     datePickEnd: string;
     useDates: string;
+
+    createCodeList: string,
+    deleteCodeListConfirmationTitle: string,
 }
 
 // Remember import moment locales up top

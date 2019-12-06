@@ -1,5 +1,5 @@
 import * as React from "react";
-import {useEffect} from "react";
+import {KeyboardEvent, useEffect} from "react";
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
 import {Field, FieldArray, FieldProps, Form, Formik, FormikProps,} from "formik";
 import {Block, BlockProps} from "baseui/block";
@@ -13,11 +13,6 @@ import {codelist, ListName} from "../../service/Codelist";
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
 import {useDebouncedState} from "../../util/customHooks"
 import axios from "axios"
-import { InformationType, PageResponse, PolicyFormValues } from "../../constants"
-import { intl } from "../../util/intl/intl"
-import { legalBasisSchema, ListLegalBases } from "../common/LegalBasis"
-import { KIND as NKIND, Notification } from "baseui/notification"
-import { KeyboardEvent } from "react"
 import {InformationType, PageResponse, PolicyFormValues} from "../../constants"
 import {intl} from "../../util/intl/intl"
 import {legalBasisSchema, ListLegalBases} from "../common/LegalBasis"

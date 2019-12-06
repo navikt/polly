@@ -1,18 +1,11 @@
 import * as React from "react";
-import { Block, BlockProps } from 'baseui/block'
-import { Label2, Paragraph2 } from "baseui/typography";
 import {Block, BlockProps} from 'baseui/block'
-import {Card} from 'baseui/card'
-import {Label2, Paragraph2} from "baseui/typography";
+import {Label2} from "baseui/typography";
 
 import AccordionInformationtype from './AccordionInformationtype'
-import { InformationType } from "../../../constants"
-import { intl } from "../../../util/intl/intl"
+import {InformationType} from "../../../constants"
+import {intl} from "../../../util/intl/intl"
 import Metadata from "./Metadata";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {IconDefinition} from "@fortawesome/fontawesome-common-types"
-import {faTag, faUserShield} from "@fortawesome/free-solid-svg-icons"
-import {sensitivityColor} from "../Sensitivity"
 
 const purposeBlockProps: BlockProps = {
     marginTop: '3rem'

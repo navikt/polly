@@ -13,6 +13,7 @@ import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {Plus} from "baseui/icon";
 import {user} from "../service/User";
 import CodeListTable from "../components/CodeList/CodeListStyledTable";
+import {intl} from "../util";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -34,48 +35,34 @@ const CodeListPage = () => {
         return false
     };
 
-    const fetchData = async () => {
-        setLoading(true);
-        await codelist.wait();
-        setLoading(false);
-    };
-
     React.useEffect(() => {
-        fetchData();
+        (async () => {
+            setLoading(true);
+            await codelist.wait();
+            setLoading(false);
+        })();
     }, []);
 
     const handleEditCodelist = async (values: any) => {
         let body = [{
             ...values,
         }];
-        console.log(body);
         await axios
             .put(`${server_polly}/codelist`, body)
             .then(((response: any) => {
-                console.log(response);
-                console.log("Shayan codelist:");
-                console.log(codelist);
                 codelist.refreshCodeLists();
-
-                // setErrorEditPolicy(null)
-                console.log(codelist.lists ? codelist.lists.codelist : "");
-                console.log(codeListsTableData);
                 let codeListsTableTemp = codeListsTableData.slice();
                 let editedRowIndex = codeListsTableTemp
                     .findIndex((codeList: any) =>
                         codeList[0] === values.code
                     );
-
-                console.log("Index=", editedRowIndex);
                 codeListsTableTemp[editedRowIndex] = makeTableRow(values);
-                console.log(codeListsTableTemp[editedRowIndex]);
                 setCodeListsTableData(codeListsTableTemp);
                 setUpdateCodeListModal(false)
             }))
             .catch((error: any) => {
                 setUpdateCodeListModal(true);
                 setErrorOnResponse(error.message);
-                console.log(error.message)
             });
     };
 
@@ -83,59 +70,38 @@ const CodeListPage = () => {
         let body = [{
             ...values,
         }];
-        console.log(body);
         await axios
             .post(`${server_polly}/codelist`, body)
             .then(((response: any) => {
-                console.log(response);
-                console.log("Shayan codelist:");
-                console.log(codelist);
-                // setErrorEditPolicy(null)
                 codelist.refreshCodeLists();
-                console.log(codelist.lists ? codelist.lists.codelist : "");
-                console.log(codeListsTableData);
                 let codeListsTableTemp = codeListsTableData.slice();
                 codeListsTableTemp.push(makeTableRow(values));
-                console.log(codeListsTableTemp[codeListsTableTemp.length - 1]);
                 setCodeListsTableData(codeListsTableTemp);
                 setCreateCodeListModal(false)
             }))
             .catch((error: any) => {
                 setCreateCodeListModal(true);
                 setErrorOnResponse(error.message);
-                console.log(error.message);
             });
     };
 
     const handleDeleteCodelist = async (values: any) => {
-        let {list, code} = values;
-        console.log(list);
-        console.log(code);
         await axios
-            .delete(`${server_polly}/codelist/${list}/${code}`)
+            .delete(`${server_polly}/codelist/${values.list}/${values.code}`)
             .then(((response: any) => {
-                console.log(response);
-                console.log("Shayan codelist:");
-                console.log(codelist);
-                // setErrorEditPolicy(null)
                 codelist.refreshCodeLists();
-                console.log(codelist.lists ? codelist.lists.codelist : "");
-                console.log(codeListsTableData);
                 let codeListsTableTemp = codeListsTableData.slice();
                 let deletedRowIndex = codeListsTableTemp
                     .findIndex((codeList: any) =>
-                        codeList[0] === code
+                        codeList[0] === values.code
                     );
                 codeListsTableTemp.splice(deletedRowIndex, 1);
-                console.log("Index=", deletedRowIndex);
-                console.log(codeListsTableTemp[deletedRowIndex]);
                 setCodeListsTableData(codeListsTableTemp);
                 setDeleteCodeListModal(false);
             }))
             .catch((error: any) => {
                 setDeleteCodeListModal(true);
                 setErrorOnResponse(error.message);
-                console.log(error.message);
             });
     };
 
@@ -182,14 +148,11 @@ const CodeListPage = () => {
                         options={codelist.makeIdLabelForAllCodeLists()}
                         onChange={({value}) => {
                             setSelectedValue(value);
-                            console.log(value[0].id);
-                            console.log(value);
-                            console.log(codelist.lists!.codelist[value[0].id!]);
                             let codeLists = codelist
                                 .lists!
                                 .codelist[value[0].id!]
                                 .map(codeList => makeTableRow(codeList));
-                            console.log(codeLists);
+
                             setCodeListsTableData(codeLists);
                         }}
                         clearable={false}
@@ -211,7 +174,7 @@ const CodeListPage = () => {
                         submit={handleEditCodelist}
                     />
                     <DeleteCodeListModal
-                        title="Bekreft sletting"
+                        title={intl.deleteCodeListConfirmationTitle}
                         list={selectedValue ? selectedValue[0].id!.toString() : ""}
                         code={selectedRow ? selectedRow.code : ""}
                         isOpen={deleteCodeListModal}
@@ -226,46 +189,46 @@ const CodeListPage = () => {
             )}
 
             {codeListsTableData &&
-                <React.Fragment>
-                    {hasAccess() && (
-                        <Block display="flex" justifyContent="flex-end">
-                            <Button
-                                $style={{
-                                    marginTop: "16px",
-                                    marginBottom: "16px",
-                                }}
-                                size={ButtonSize.compact}
-                                kind={KIND.minimal}
-                                onClick={() => setCreateCodeListModal(!createCodeListModal)}
-                                startEnhancer={
-                                    () =>
-                                        <Block
-                                            display="flex"
-                                            justifyContent="center">
-                                            <Plus size={22}/>
-                                        </Block>}
-                            >
-                                Opprett nytt codelist
-                            </Button>
-                            <CreateCodeListModal
-                                title="Nytt codelist"
-                                list={selectedValue ? selectedValue[0].id!.toString() : ""}
-                                isOpen={createCodeListModal}
-                                errorOnCreate={errorOnResponse}
-                                onClose={
-                                    () => {
-                                        setCreateCodeListModal(!createCodeListModal);
-                                        setErrorOnResponse(null);
-                                    }
+            <React.Fragment>
+                {hasAccess() && (
+                    <Block display="flex" justifyContent="flex-end">
+                        <Button
+                            $style={{
+                                marginTop: "16px",
+                                marginBottom: "16px",
+                            }}
+                            size={ButtonSize.compact}
+                            kind={KIND.minimal}
+                            onClick={() => setCreateCodeListModal(!createCodeListModal)}
+                            startEnhancer={
+                                () =>
+                                    <Block
+                                        display="flex"
+                                        justifyContent="center">
+                                        <Plus size={22}/>
+                                    </Block>}
+                        >
+                            Opprett nytt codelist
+                        </Button>
+                        <CreateCodeListModal
+                            title={intl.createCodeList}
+                            list={selectedValue ? selectedValue[0].id!.toString() : ""}
+                            isOpen={createCodeListModal}
+                            errorOnCreate={errorOnResponse}
+                            onClose={
+                                () => {
+                                    setCreateCodeListModal(!createCodeListModal);
+                                    setErrorOnResponse(null);
                                 }
-                                submit={handleCreateCodelist}
-                            />
-                        </Block>
-                    )}
-                    <Block>
-                        <CodeListTable tableData={codeListsTableData}/>
+                            }
+                            submit={handleCreateCodelist}
+                        />
                     </Block>
-                </React.Fragment>
+                )}
+                <Block>
+                    <CodeListTable tableData={codeListsTableData}/>
+                </Block>
+            </React.Fragment>
             }
         </React.Fragment>
     )
