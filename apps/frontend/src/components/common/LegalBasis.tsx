@@ -23,7 +23,7 @@ export const LegalBasisView = (props: { legalBasis: LegalBasis }) => {
     let description = nationalLawId ? legalBasisLinkProcessor(nationalLawId, legalBasis.description) : legalBasis.description
 
     return (
-        <span><ActiveIndicator {...legalBasis}/> {gdpr + ', '} {nationalLaw && nationalLaw} {description}</span>
+        <span><ActiveIndicator {...legalBasis}/> {gdpr} {(nationalLaw || description) && ', '} {nationalLaw && nationalLaw} {description}</span>
     )
 }
 
