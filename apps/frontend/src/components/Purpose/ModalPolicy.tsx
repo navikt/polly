@@ -156,7 +156,8 @@ const setInitialShowLegalBasesValue = (initialValues: PolicyFormValues) => {
 const missingArt9LegalBasisForSensitiveInfoType = (informationType: PolicyInformationType, policy: PolicyFormValues) => {
     const reqArt9 = informationType && codelist.requiresArt9(informationType.sensitivity && informationType.sensitivity.code)
     const missingArt9 = !policy.legalBases.filter((lb) => codelist.isArt9(lb.gdpr)).length
-    return reqArt9 && missingArt9
+    const processMissingArt9 = !policy.process.legalBases.filter(lb => codelist.isArt9(lb.gdpr.code)).length
+    return reqArt9 && missingArt9 && processMissingArt9
 }
 
 const policySchema = () => yup.object({
@@ -171,7 +172,8 @@ const policySchema = () => yup.object({
     }),
     subjectCategory: yup.string().required(intl.required),
     legalBasesInherited: yup.boolean().required(intl.required),
-    legalBases: yup.array(legalBasisSchema())
+    legalBases: yup.array(legalBasisSchema()),
+    process: yup.object()
 })
 
 type ModalPolicyProps = {

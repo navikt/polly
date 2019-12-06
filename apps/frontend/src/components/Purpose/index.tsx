@@ -146,6 +146,7 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
             ...values,
             informationType: undefined,
             informationTypeName: values.informationType && values.informationType.name,
+            process: values.process.name,
             legalBases: values.legalBasesInherited ? [] : values.legalBases
         }]
         await axios
@@ -306,7 +307,14 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
                                             </Button>
                                             <ModalPolicy
                                                 title={intl.policyNew}
-                                                initialValues={{ legalBases: [] }}
+                                                initialValues={{
+                                                    informationType: undefined,
+                                                    legalBasesInherited: undefined,
+                                                    process: process,
+                                                    purposeCode: process.purposeCode,
+                                                    subjectCategory: undefined,
+                                                    legalBases: []
+                                                }}
                                                 isEdit={false}
                                                 onClose={() => {
                                                     setIsOpen(false)

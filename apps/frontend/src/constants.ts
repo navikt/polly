@@ -13,9 +13,9 @@ export interface InformationtypeFormValues {
 
 export interface PolicyFormValues {
     id?: string;
-    process?: string;
-    purposeCode?: string;
+    purposeCode: string;
     informationType?: PolicyInformationType;
+    process: PolicyProcess;
     subjectCategory?: string;
     legalBasesInherited?: boolean;
     legalBases: Array<LegalBasisFormValues>;

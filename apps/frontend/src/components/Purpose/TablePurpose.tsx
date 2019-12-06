@@ -64,7 +64,7 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
 
         return {
             id: policy.id,
-            process: policy.process.name,
+            process: policy.process,
             purposeCode: policy.purposeCode.code,
             informationType: policy.informationType,
             subjectCategory: policy.subjectCategory ? policy.subjectCategory.code : '',
