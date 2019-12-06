@@ -124,9 +124,3 @@ export interface IDurationed {
     end: string;
 }
 
-// Refers to SENSITIVITY codelist
-export enum SensitivityLevel {
-    ART6 = "POL",
-    ART9 = "SAERLIGE",
-    ART10 = "STRAFF"
-}
