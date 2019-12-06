@@ -7,7 +7,7 @@ import { Label2 } from 'baseui/typography';
 import { Button, KIND, SIZE as ButtonSize } from 'baseui/button';
 import { codelist, ListName } from "../../service/Codelist";
 import { intl, theme } from "../../util"
-import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from "formik"
+import { ErrorMessage, Field, FieldProps, Form, Formik, FormikProps } from "formik"
 import { KIND as NKIND, Notification } from "baseui/notification"
 import { LegalBasisFormValues } from "../../constants"
 import { legalBasisSchema } from "../common/LegalBasis"
@@ -41,14 +41,13 @@ const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
     const [gdpr, setGdpr] = React.useState<Value>([]);
     const [nationalLaw, setNationalLaw] = React.useState<Value>([]);
     const [useDates, setUseDates] = React.useState(false);
+
+    // Must be complete to acheive touched on submit
+    const initialValues = {gdpr: undefined, nationalLaw: undefined, description: undefined, start: undefined, end: undefined}
     return (
         <Formik
-            onSubmit={(values, form) => submit(values)} validationSchema={legalBasisSchema()} initialValues={{}}
+            onSubmit={(values, form) => submit(values)} validationSchema={legalBasisSchema()} initialValues={initialValues}
             render={(form: FormikProps<LegalBasisFormValues>) => {
-                if (form.submitCount) {
-                    form.touched.gdpr || form.setFieldTouched('gdpr')
-                    form.touched.nationalLaw || form.setFieldTouched('nationalLaw')
-                }
                return (
                 <Card>
                     <Label2 marginBottom="1rem">{intl.legalBasisNew}</Label2>

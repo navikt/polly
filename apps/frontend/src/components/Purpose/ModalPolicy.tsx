@@ -52,14 +52,14 @@ const renderLabel = (label: any | string) => (
     </Block>
 )
 
-const FieldInformationTypeName = (props: {
-    informationTypes: Option[],
+const FieldInformationType = (props: {
+    informationTypes: PolicyInformationType[],
     searchInformationType: (name: string) => void,
     value: Value | undefined,
     setValue: (v: Value) => void
 }) => (
         <Field
-            name="informationTypeName"
+            name="informationType"
             render={({ form }: FieldProps<PolicyFormValues>) => (
                 <Select
                     autoFocus
@@ -73,11 +73,10 @@ const FieldInformationTypeName = (props: {
                     onChange={(params: any) => {
                         let infoType = params.value[0]
                         props.setValue(infoType)
-                        form.setFieldValue('informationTypeName', infoType.name)
                         form.setFieldValue('informationType', infoType)
                     }}
-                    onBlur={() => form.setFieldTouched('informationTypeName')}
-                    error={!!form.errors.informationTypeName && !!form.submitCount}
+                    onBlur={() => form.setFieldTouched('informationType')}
+                    error={!!form.errors.informationType && !!form.submitCount}
                     filterOptions={options => options}
                     labelKey="name"
                 />
@@ -161,7 +160,8 @@ const missingArt9LegalBasisForSensitiveInfoType = (informationType: PolicyInform
 }
 
 const policySchema = () => yup.object({
-    informationType: yup.object().test({
+    informationType: yup.object().required(intl.required)
+    .test({
         name: 'policyHasArt9',
         message: intl.requiredArt9,
         test: function (informationType) {
@@ -169,7 +169,6 @@ const policySchema = () => yup.object({
             return !missingArt9LegalBasisForSensitiveInfoType(informationType, parent)
         }
     }),
-    informationTypeName: yup.string().required(intl.required),
     subjectCategory: yup.string().required(intl.required),
     legalBasesInherited: yup.boolean().required(intl.required),
     legalBases: yup.array(legalBasisSchema())
@@ -189,9 +188,9 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
     const [currentChecked, setCurrentChecked] = React.useState(isEdit && getInitialCheckedValue(initialValues));
     const [showLegalbasesFields, setShowLegalbasesFields] = React.useState<boolean>(isEdit && setInitialShowLegalBasesValue(initialValues));
 
-    const [infoTypeValue, setInfoTypeValue] = React.useState<Value>(isEdit ? ([{ id: initialValues.informationTypeName, label: initialValues.informationTypeName }]) : []);
+    const [infoTypeValue, setInfoTypeValue] = React.useState<Array<PolicyInformationType>>(isEdit && initialValues.informationType ? [initialValues.informationType] : []);
     const [infoTypeSearch, setInfoTypeSearch] = useDebouncedState<string>('', 200);
-    const [infoTypeSearchResult, setInfoTypeSearchResult] = React.useState<Option[]>([]);
+    const [infoTypeSearchResult, setInfoTypeSearchResult] = React.useState<PolicyInformationType[]>([]);
 
     useEffect(() => {
         if (infoTypeSearch && infoTypeSearch.length > 2) {
@@ -244,14 +243,14 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                             <ModalBody>
                                 <Block {...rowBlockProps}>
                                     {renderLabel(intl.informationType)}
-                                    <FieldInformationTypeName
+                                    <FieldInformationType
                                         informationTypes={infoTypeSearchResult}
                                         searchInformationType={setInfoTypeSearch}
                                         value={infoTypeValue}
-                                        setValue={setInfoTypeValue}
+                                        setValue={setInfoTypeValue as any}
                                     />
                                 </Block>
-                                <Error fieldName="informationTypeName" />
+                                <Error fieldName="informationType" />
 
                                 <Block {...rowBlockProps}>
                                     {renderLabel(intl.subjectCategories)}
@@ -309,7 +308,6 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                                         )}
                                     />
                                 )}
-                                <Error fieldName="informationType" />
                             </ModalBody>
 
                             <ModalFooter>

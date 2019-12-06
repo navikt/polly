@@ -4,18 +4,16 @@ import { Accordion, Panel } from 'baseui/accordion';
 import _includes from 'lodash/includes'
 import { Plus } from "baseui/icon";
 import { Label2, Paragraph2 } from "baseui/typography";
-import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
+import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import axios from "axios";
 
 import TablePurpose from './TablePurpose'
 import ModalPolicy from './ModalPolicy'
 import ModalProcess from './ModalProcess'
 import { codelist, ListName } from "../../service/Codelist"
-import { Process } from "../../constants"
-import { intl } from "../../util/intl/intl"
-import { useForceUpdate } from "../../util/customHooks"
+import { PolicyFormValues, Process } from "../../constants"
+import { intl, useAwait, useForceUpdate } from "../../util"
 import { user } from "../../service/User";
-import { useAwait } from "../../util/customHooks";
 import { LegalBasisView } from "../common/LegalBasis"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
@@ -81,12 +79,13 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
     const [errorEditPolicy, setErrorEditPolicy] = React.useState()
     const update = useForceUpdate()
 
-    const handleCreatePolicy = async (values: any, process: any) => {
+    const handleCreatePolicy = async (values: PolicyFormValues, process: Process) => {
         if (!values) return
 
         let body = [{
             ...values,
             informationType: undefined,
+            informationTypeName: values.informationType && values.informationType.name,
             process: process.name,
             purposeCode: process.purposeCode
         }]
@@ -142,10 +141,11 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
             }))
             .catch((err: any) => setErrorCreateProcess(err.message));
     }
-    const handleEditPolicy = async (values: any) => {
+    const handleEditPolicy = async (values: PolicyFormValues) => {
         let body = [{
             ...values,
             informationType: undefined,
+            informationTypeName: values.informationType && values.informationType.name,
             legalBases: values.legalBasesInherited ? [] : values.legalBases
         }]
         await axios
