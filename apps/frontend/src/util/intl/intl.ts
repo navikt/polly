@@ -106,6 +106,9 @@ export interface IStrings {
     datePickStart: string;
     datePickEnd: string;
     useDates: string;
+    requiredArt9: string;
+    requiredNationalLaw: string;
+    requiredDescription: string;
 
     createCodeList: string,
     deleteCodeListConfirmationTitle: string,

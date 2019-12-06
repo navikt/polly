@@ -1,4 +1,5 @@
 import axios from "axios";
+import { SensitivityLevel } from "../constants"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -59,6 +60,30 @@ class CodelistService {
         });
     }
 
+    requiresNationalLaw(gdprCode?: string) {
+        return gdprCode && this.nationalLawArticles().indexOf(gdprCode) >= 0
+    }
+
+    nationalLawArticles() {
+        return ['ART61C', 'ART61E']
+    }
+
+    requiresDescription(gdprCode?: string) {
+        return gdprCode && this.descriptionArticles().indexOf(gdprCode) >= 0
+    }
+
+    descriptionArticles() {
+        return ['ART61C', 'ART61E', 'ART61F']
+    }
+
+    requiresArt9(sensitivityCode?: string) {
+        return sensitivityCode === SensitivityLevel.ART9
+    }
+
+    isArt9(gdprCode?: string) {
+        return gdprCode && gdprCode.startsWith('ART9')
+    }
+
     makeIdLabelForAllCodeLists() {
         if (!this.lists) return [];
         const { codelist } = this.lists;
@@ -110,17 +135,3 @@ export interface Code {
     description: string;
     invalidCode?: boolean;
 }
-
-// Example
-let code: AllCodelists = {
-    codelist: {
-        PURPOSE: [
-            {
-                list: ListName.PURPOSE,
-                code: "ABC_CODE",
-                shortName: "Abc Code",
-                description: "The codes of abc"
-            }
-        ]
-    }
-};

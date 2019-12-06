@@ -1,23 +1,23 @@
 import * as React from "react";
-import {KeyboardEvent, useEffect} from "react";
-import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
-import {Field, FieldArray, FieldProps, Form, Formik, FormikProps,} from "formik";
-import {Block, BlockProps} from "baseui/block";
-import {Radio, RadioGroup} from "baseui/radio";
-import {Plus} from "baseui/icon";
-import {Option, Select, TYPE, Value} from 'baseui/select';
+import { KeyboardEvent, useEffect } from "react";
+import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
+import { ErrorMessage, Field, FieldArray, FieldProps, Form, Formik, FormikProps, } from "formik";
+import { Block, BlockProps } from "baseui/block";
+import { Label2 } from "baseui/typography";
+import { Radio, RadioGroup } from "baseui/radio";
+import { Plus } from "baseui/icon";
+import { Option, Select, TYPE, Value } from 'baseui/select';
 import * as yup from "yup"
 
 import CardLegalBasis from './CardLegalBasis'
-import {codelist, ListName} from "../../service/Codelist";
-import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
-import {useDebouncedState} from "../../util/customHooks"
+import { codelist, ListName } from "../../service/Codelist";
+import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
+import { useDebouncedState } from "../../util/customHooks"
 import axios from "axios"
-import {InformationType, PageResponse, PolicyFormValues} from "../../constants"
-import {intl} from "../../util/intl/intl"
-import {legalBasisSchema, ListLegalBases} from "../common/LegalBasis"
-import {Error, renderLabel} from "../common/ModalSchema";
-
+import { InformationType, PageResponse, PolicyFormValues, PolicyInformationType } from "../../constants"
+import { intl } from "../../util/intl/intl"
+import { legalBasisSchema, ListLegalBases } from "../common/LegalBasis"
+import { KIND as NKIND, Notification } from "baseui/notification"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -33,14 +33,33 @@ const rowBlockProps: BlockProps = {
     marginTop: '1rem'
 }
 
-const FieldInformationTypeName = (props: {
-    informationTypes: Option[],
+const Error = (props: { fieldName: string }) => (
+    <ErrorMessage name={props.fieldName}>
+        {msg => (
+            <Block display="flex" width="100%" marginTop=".2rem">
+                {renderLabel('')}
+                <Block width="100%">
+                    <Notification overrides={{ Body: { style: { width: 'auto', padding: 0, marginTop: 0 } } }} kind={NKIND.negative}>{msg}</Notification>
+                </Block>
+            </Block>
+        )}
+    </ErrorMessage>
+)
+
+const renderLabel = (label: any | string) => (
+    <Block width="25%" alignSelf="center">
+        <Label2 marginBottom="8px" font="font300">{label.toString()}</Label2>
+    </Block>
+)
+
+const FieldInformationType = (props: {
+    informationTypes: PolicyInformationType[],
     searchInformationType: (name: string) => void,
     value: Value | undefined,
     setValue: (v: Value) => void
 }) => (
         <Field
-            name="informationTypeName"
+            name="informationType"
             render={({ form }: FieldProps<PolicyFormValues>) => (
                 <Select
                     autoFocus
@@ -54,10 +73,12 @@ const FieldInformationTypeName = (props: {
                     onChange={(params: any) => {
                         let infoType = params.value[0]
                         props.setValue(infoType)
-                        form.setFieldValue('informationTypeName', infoType.id)
+                        form.setFieldValue('informationType', infoType)
                     }}
-                    onBlur={() => form.setFieldTouched('informationTypeName')}
-                    error={!!form.errors.informationTypeName && !!form.submitCount}
+                    onBlur={() => form.setFieldTouched('informationType')}
+                    error={!!form.errors.informationType && !!form.submitCount}
+                    filterOptions={options => options}
+                    labelKey="name"
                 />
             )}
         />
@@ -132,11 +153,27 @@ const setInitialShowLegalBasesValue = (initialValues: PolicyFormValues) => {
     return legalBases.length <= 0
 }
 
+const missingArt9LegalBasisForSensitiveInfoType = (informationType: PolicyInformationType, policy: PolicyFormValues) => {
+    const reqArt9 = informationType && codelist.requiresArt9(informationType.sensitivity && informationType.sensitivity.code)
+    const missingArt9 = !policy.legalBases.filter((lb) => codelist.isArt9(lb.gdpr)).length
+    const processMissingArt9 = !policy.process.legalBases.filter(lb => codelist.isArt9(lb.gdpr.code)).length
+    return reqArt9 && missingArt9 && processMissingArt9
+}
+
 const policySchema = () => yup.object({
-    informationTypeName: yup.string().required(intl.required),
+    informationType: yup.object().required(intl.required)
+    .test({
+        name: 'policyHasArt9',
+        message: intl.requiredArt9,
+        test: function (informationType) {
+            const {parent} = this
+            return !missingArt9LegalBasisForSensitiveInfoType(informationType, parent)
+        }
+    }),
     subjectCategory: yup.string().required(intl.required),
     legalBasesInherited: yup.boolean().required(intl.required),
-    legalBases: yup.array(legalBasisSchema())
+    legalBases: yup.array(legalBasisSchema()),
+    process: yup.object()
 })
 
 type ModalPolicyProps = {
@@ -153,17 +190,16 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
     const [currentChecked, setCurrentChecked] = React.useState(isEdit && getInitialCheckedValue(initialValues));
     const [showLegalbasesFields, setShowLegalbasesFields] = React.useState<boolean>(isEdit && setInitialShowLegalBasesValue(initialValues));
 
-    const [infoTypeValue, setInfoTypeValue] = React.useState<Value>(isEdit ? ([{ id: initialValues.informationTypeName, label: initialValues.informationTypeName }]) : []);
+    const [infoTypeValue, setInfoTypeValue] = React.useState<Array<PolicyInformationType>>(isEdit && initialValues.informationType ? [initialValues.informationType] : []);
     const [infoTypeSearch, setInfoTypeSearch] = useDebouncedState<string>('', 200);
-    const [infoTypeSearchResult, setInfoTypeSearchResult] = React.useState<Option[]>([]);
+    const [infoTypeSearchResult, setInfoTypeSearchResult] = React.useState<PolicyInformationType[]>([]);
 
     useEffect(() => {
         if (infoTypeSearch && infoTypeSearch.length > 2) {
             axios
                 .get(`${server_polly}/informationtype/search/${infoTypeSearch}`)
                 .then((res: { data: PageResponse<InformationType> }) => {
-                    let options: Option[] = res.data.content.map((it: InformationType) => ({ id: it.name, label: it.name }))
-                    return setInfoTypeSearchResult(options)
+                    return setInfoTypeSearchResult(res.data.content)
                 })
         }
 
@@ -209,14 +245,14 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                             <ModalBody>
                                 <Block {...rowBlockProps}>
                                     {renderLabel(intl.informationType)}
-                                    <FieldInformationTypeName
+                                    <FieldInformationType
                                         informationTypes={infoTypeSearchResult}
                                         searchInformationType={setInfoTypeSearch}
                                         value={infoTypeValue}
-                                        setValue={setInfoTypeValue}
+                                        setValue={setInfoTypeValue as any}
                                     />
                                 </Block>
-                                <Error fieldName="informationTypeName" />
+                                <Error fieldName="informationType" />
 
                                 <Block {...rowBlockProps}>
                                     {renderLabel(intl.subjectCategories)}

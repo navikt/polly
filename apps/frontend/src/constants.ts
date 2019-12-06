@@ -13,9 +13,9 @@ export interface InformationtypeFormValues {
 
 export interface PolicyFormValues {
     id?: string;
-    process?: string;
-    purposeCode?: string;
-    informationTypeName?: string;
+    purposeCode: string;
+    informationType?: PolicyInformationType;
+    process: PolicyProcess;
     subjectCategory?: string;
     legalBasesInherited?: boolean;
     legalBases: Array<LegalBasisFormValues>;
@@ -120,7 +120,7 @@ export interface IDurationed {
 
 // Refers to SENSITIVITY codelist
 export enum SensitivityLevel {
-    ART6 = "PERSONOPPLYSNING",
-    ART9 = "SÆRLIGEPERSONOPPLYSNINGER",
-    ART10 = "STRAFFEDOMMEROGLOVOVERTREDELSER"
+    ART6 = "POL",
+    ART9 = "SAERLIGE",
+    ART10 = "STRAFF"
 }

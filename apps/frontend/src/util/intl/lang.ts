@@ -16,6 +16,7 @@ export const no: IStrings = {
     subjectCategories: "Kategorier av personer",
     nationalLaw: "Nasjonal lov",
     navMaster: "Master i NAV",
+
     loggedInStatus: "Du er logget inn og kan",
     notLoggedInStatus: "Du er ikke logget inn men kan",
     couldntLoad: "Kunne ikke laste inn siden",
@@ -96,6 +97,10 @@ export const no: IStrings = {
     datePickEnd: "Velg til og med dato",
     dateFormat: "Feil dato format, eksempel: 2018-08-22",
     useDates: "Velg datoer",
+
+    requiredArt9: "Opplysningstypen krever et rettslig grunnlag med artikkel 9",
+    requiredNationalLaw: "Artikkelen krever nasjonal lov",
+    requiredDescription: "Artikkelen krever ytterligere beskrivelse",
 
     createCodeList: "Nytt codelist",
     deleteCodeListConfirmationTitle: "Bekreft sletting",
@@ -193,6 +198,10 @@ export const en = {
 
     maxChars: "Max {0} characters",
     required: "Field is required",
+
+    requiredArt9: "The information type requires a legal basis for article 9",
+    requiredNationalLaw: "The article requires national law",
+    requiredDescription: "The article requires additional description",
 
     createCodeList: "Create code list",
     deleteCodeListConfirmationTitle: "Confirm deletion",

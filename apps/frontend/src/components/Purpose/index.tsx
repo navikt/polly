@@ -2,9 +2,9 @@ import * as React from "react";
 import {Block, BlockProps} from "baseui/block";
 import {Accordion, Panel} from 'baseui/accordion';
 import _includes from 'lodash/includes'
-import {Plus} from "baseui/icon";
-import {Label2, Paragraph2} from "baseui/typography";
-import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
+import { Plus } from "baseui/icon";
+import { Label2, Paragraph2 } from "baseui/typography";
+import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import axios from "axios";
 
 import TablePurpose from './TablePurpose'
@@ -16,6 +16,11 @@ import {intl} from "../../util/intl/intl"
 import {useAwait, useForceUpdate} from "../../util/customHooks"
 import {user} from "../../service/User";
 import {LegalBasisView} from "../common/LegalBasis"
+import { codelist, ListName } from "../../service/Codelist"
+import { PolicyFormValues, Process } from "../../constants"
+import { intl, useAwait, useForceUpdate } from "../../util"
+import { user } from "../../service/User";
+import { LegalBasisView } from "../common/LegalBasis"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -80,11 +85,13 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
     const [errorEditPolicy, setErrorEditPolicy] = React.useState()
     const update = useForceUpdate()
 
-    const handleCreatePolicy = async (values: any, process: any) => {
+    const handleCreatePolicy = async (values: PolicyFormValues, process: Process) => {
         if (!values) return
 
         let body = [{
             ...values,
+            informationType: undefined,
+            informationTypeName: values.informationType && values.informationType.name,
             process: process.name,
             purposeCode: process.purposeCode
         }]
@@ -140,9 +147,12 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
             }))
             .catch((err: any) => setErrorCreateProcess(err.message));
     }
-    const handleEditPolicy = async (values: any) => {
+    const handleEditPolicy = async (values: PolicyFormValues) => {
         let body = [{
             ...values,
+            informationType: undefined,
+            informationTypeName: values.informationType && values.informationType.name,
+            process: values.process.name,
             legalBases: values.legalBasesInherited ? [] : values.legalBases
         }]
         await axios
@@ -199,7 +209,7 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
         let parsedLegalBases = legalBases && legalBases.map((legalBasis: any) => ({
             gdpr: legalBasis.gdpr && legalBasis.gdpr.code,
             nationalLaw: (legalBasis.nationalLaw && legalBasis.nationalLaw.code) || undefined,
-            description: legalBasis.description,
+            description: legalBasis.description || undefined,
             start: legalBasis.start || undefined,
             end: legalBasis.end || undefined
         }))
@@ -303,7 +313,14 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
                                             </Button>
                                             <ModalPolicy
                                                 title={intl.policyNew}
-                                                initialValues={{ legalBases: [] }}
+                                                initialValues={{
+                                                    informationType: undefined,
+                                                    legalBasesInherited: undefined,
+                                                    process: process,
+                                                    purposeCode: process.purposeCode,
+                                                    subjectCategory: undefined,
+                                                    legalBases: []
+                                                }}
                                                 isEdit={false}
                                                 onClose={() => {
                                                     setIsOpen(false)

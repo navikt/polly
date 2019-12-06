@@ -66,16 +66,16 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
         let parsedLegalBases = policy.legalBases && policy.legalBases.map((legalBasis: any) => ({
             gdpr: legalBasis.gdpr && legalBasis.gdpr.code,
             nationalLaw: (legalBasis.nationalLaw && legalBasis.nationalLaw.code) || undefined,
-            description: legalBasis.description,
+            description: legalBasis.description || undefined,
             start: legalBasis.start || undefined,
             end: legalBasis.end || undefined
         }))
 
         return {
             id: policy.id,
-            process: policy.process.name,
+            process: policy.process,
             purposeCode: policy.purposeCode.code,
-            informationTypeName: policy.informationType.name,
+            informationType: policy.informationType,
             subjectCategory: policy.subjectCategory ? policy.subjectCategory.code : '',
             legalBasesInherited: policy.legalBasesInherited,
             legalBases: parsedLegalBases
