@@ -15,11 +15,9 @@ const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 const CodeListPage = () => {
     const [loading, setLoading] = React.useState(true);
-    const [currentCodelist, setCurrentCodeList] = React.useState();
+    const [currentCodelist, setCurrentCodelist] = React.useState();
     const [selectedValue, setSelectedValue] = React.useState();
-
     const [createCodeListModal, setCreateCodeListModal] = React.useState(false);
-
     const [errorOnResponse, setErrorOnResponse] = React.useState(null);
 
     const hasAccess = () => {
@@ -37,7 +35,6 @@ const CodeListPage = () => {
     }, []);
 
     const handleCreateCodelist = async (values: Code) => {
-        console.log(values);
         let body = [{
             ...values,
         }];
@@ -45,7 +42,7 @@ const CodeListPage = () => {
             .post(`${server_polly}/codelist`, body)
             .then(((response: any) => {
                 codelist.refreshCodeLists();
-                setCurrentCodeList([...currentCodelist, response.data[0]]);
+                setCurrentCodelist([...currentCodelist, response.data[0]]);
                 setCreateCodeListModal(false)
             }))
             .catch((error: any) => {
@@ -65,9 +62,9 @@ const CodeListPage = () => {
                             setSelectedValue(value);
                             let codeLists = codelist
                                 .lists!
-                                .codelist[value[0].id!]
+                                .codelist[value[0].id!];
 
-                            setCurrentCodeList(codeLists);
+                            setCurrentCodelist(codeLists);
                         }}
                         clearable={false}
                         placeholder={intl.chooseCodeList}
@@ -118,7 +115,6 @@ const CodeListPage = () => {
                     <CodeListTable
                         tableData={currentCodelist}
                         hasAccess={hasAccess()}
-                        selectedCodelist={selectedValue ? selectedValue[0].id!.toString() : ""}
                     />
                 </Block>
             </React.Fragment>

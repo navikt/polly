@@ -10,7 +10,6 @@ import {
     StyledTable
 } from "baseui/table";
 import {useStyletron, withStyle} from "baseui";
-import {Policy, Process} from "../../constants";
 import {Code, codelist} from "../../service/Codelist";
 import {Block} from "baseui/block";
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
@@ -42,15 +41,14 @@ const headerStyle = {
 };
 
 type TableCodelistProps = {
-    selectedCodelist: string,
     tableData: Code[],
     hasAccess: boolean
 };
 
-const CodeListTable = ({ selectedCodelist, tableData, hasAccess }: TableCodelistProps) => {
+const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
     const [useCss] = useStyletron();
 
-    const [rows, setRows] = React.useState()
+    const [rows, setRows] = React.useState();
     const [selectedRow, setSelectedRow] = React.useState();
     const [showEditModal, setShowEditModal] = React.useState(false);
     const [showDeleteModal, setShowDeleteModal] = React.useState(false);
@@ -100,10 +98,10 @@ const CodeListTable = ({ selectedCodelist, tableData, hasAccess }: TableCodelist
         }];
         await axios
             .put(`${server_polly}/codelist`, body)
-            .then(((res: any) => {
-                let newRow = makeTableRow(res.data[0])
-                setRows([...rows.filter((row: any) => row[0] !== res.data[0].code), newRow])
-                setShowEditModal(false)
+            .then(((response: any) => {
+                let newRow = makeTableRow(response.data[0]);
+                setRows([...rows.filter((row: any) => row[0] !== response.data[0].code), newRow]);
+                setShowEditModal(false);
                 codelist.refreshCodeLists()
             }))
             .catch((error: any) => {
@@ -115,9 +113,9 @@ const CodeListTable = ({ selectedCodelist, tableData, hasAccess }: TableCodelist
     const handleDeleteCodelist = async (values: { list: string, code: string}) => {
         await axios
             .delete(`${server_polly}/codelist/${values.list}/${values.code}`)
-            .then(((res: any) => {
+            .then((() => {
                 codelist.refreshCodeLists();
-                setRows(rows.filter((row: any) => row[0] !== values.code))
+                setRows(rows.filter((row: any) => row[0] !== values.code));
                 setShowDeleteModal(false);
             }))
             .catch((error: any) => {
@@ -157,7 +155,7 @@ const CodeListTable = ({ selectedCodelist, tableData, hasAccess }: TableCodelist
         }
     };
 
-    const getSortedData = (tableData:any) => {
+    const getSortedData = () => {
         if (codeDirection) {
             const sorted = rows.slice(0).sort((a: any, b: any) =>
                 a[0].localeCompare(b[0]),
@@ -197,7 +195,6 @@ const CodeListTable = ({ selectedCodelist, tableData, hasAccess }: TableCodelist
     };
 
     React.useEffect(() => {
-        console.log(tableData, "Tabledata")
         setRows(tableData.map(row => makeTableRow(row)))
     }, [tableData]);
 
@@ -253,7 +250,7 @@ const CodeListTable = ({ selectedCodelist, tableData, hasAccess }: TableCodelist
                 <SmallerHeadCell/>
             </StyledHead>
             <StyledBody>
-                {rows && getSortedData(rows).map((row: any, index: any) => (
+                {rows && getSortedData().map((row: any, index: any) => (
                     <StyledRow key={index}>
                         <SmallCell>{row[0]}</SmallCell>
                         <SmallCell>{row[1]}</SmallCell>
