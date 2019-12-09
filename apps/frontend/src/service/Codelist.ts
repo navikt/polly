@@ -1,12 +1,36 @@
 import axios from "axios";
-import { SensitivityLevel } from "../constants"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
+export enum ListName {
+    PURPOSE = "PURPOSE",
+    CATEGORY = "CATEGORY",
+    SOURCE = "SOURCE",
+    SENSITIVITY = "SENSITIVITY",
+    NATIONAL_LAW = "NATIONAL_LAW",
+    SUBJECT_CATEGORY = "SUBJECT_CATEGORY",
+    GDPR_ARTICLE = "GDPR_ARTICLE",
+    DEPARTMENT = "DEPARTMENT",
+    SUB_DEPARTMENT = "SUB_DEPARTMENT",
+    SYSTEM = "SYSTEM"
+}
+
+// Refers to SENSITIVITY codelist
+export enum SensitivityLevel {
+    ART6 = "POL",
+    ART9 = "SAERLIGE",
+    ART10 = "STRAFF"
+}
+
+const ARTICLE_9_PREFIX = 'ART9'
+export const NATIONAL_LAW_GDPR_ARTICLES = ['ART61C', 'ART61E']
+export const DESCRIPTION_GDPR_ARTICLES = ['ART61C', 'ART61E', 'ART61F']
+
+
 // TODO show error
 class CodelistService {
-    lists: AllCodelists | null = null;
-    error: string | null = null;
+    lists?: AllCodelists;
+    error?: string;
     promise: Promise<any>;
 
     constructor() {
@@ -15,9 +39,9 @@ class CodelistService {
 
     private fetchData = async () => {
         return axios
-            .get(`${server_polly}/codelist`)
-            .then(this.handleGetCodelistResponse)
-            .catch(err => (this.error = err.message));
+        .get(`${server_polly}/codelist`)
+        .then(this.handleGetCodelistResponse)
+        .catch(err => (this.error = err.message));
     };
 
     handleGetCodelistResponse = (response: any) => {
@@ -30,6 +54,14 @@ class CodelistService {
 
     refreshCodeLists(){
         this.promise = this.fetchData();
+    }
+
+    async wait() {
+        await this.promise;
+    }
+
+    isLoaded() {
+        return this.lists || this.error;
     }
 
     getCodes(list: ListName): Code[] {
@@ -54,26 +86,18 @@ class CodelistService {
         return code ? code.description : codeName;
     }
 
-    getParsedOptions(listName: ListName) {
+    getParsedOptions(listName: ListName): { id: string, label: string }[] {
         return this.getCodes(listName).map((code: Code) => {
-            return { id: code.code, label: code.shortName };
+            return {id: code.code, label: code.shortName};
         });
     }
 
     requiresNationalLaw(gdprCode?: string) {
-        return gdprCode && this.nationalLawArticles().indexOf(gdprCode) >= 0
-    }
-
-    nationalLawArticles() {
-        return ['ART61C', 'ART61E']
+        return gdprCode && NATIONAL_LAW_GDPR_ARTICLES.indexOf(gdprCode) >= 0
     }
 
     requiresDescription(gdprCode?: string) {
-        return gdprCode && this.descriptionArticles().indexOf(gdprCode) >= 0
-    }
-
-    descriptionArticles() {
-        return ['ART61C', 'ART61E', 'ART61F']
+        return gdprCode && DESCRIPTION_GDPR_ARTICLES.indexOf(gdprCode) >= 0
     }
 
     requiresArt9(sensitivityCode?: string) {
@@ -81,7 +105,7 @@ class CodelistService {
     }
 
     isArt9(gdprCode?: string) {
-        return gdprCode && gdprCode.startsWith('ART9')
+        return gdprCode && gdprCode.startsWith(ARTICLE_9_PREFIX)
     }
 
     makeIdLabelForAllCodeLists() {
@@ -94,26 +118,6 @@ class CodelistService {
                 label: key as string}));
     }
 
-    async wait() {
-        await this.promise;
-    }
-
-    isLoaded() {
-        return this.lists !== null || this.error !== null;
-    }
-}
-
-export enum ListName {
-    PURPOSE = "PURPOSE",
-    CATEGORY = "CATEGORY",
-    SOURCE = "SOURCE",
-    SENSITIVITY = "SENSITIVITY",
-    NATIONAL_LAW = "NATIONAL_LAW",
-    SUBJECT_CATEGORY = "SUBJECT_CATEGORY",
-    GDPR_ARTICLE = "GDPR_ARTICLE",
-    DEPARTMENT = "DEPARTMENT",
-    SUB_DEPARTMENT = "SUB_DEPARTMENT",
-    SYSTEM = "SYSTEM"
 }
 
 export const codelist = new CodelistService();

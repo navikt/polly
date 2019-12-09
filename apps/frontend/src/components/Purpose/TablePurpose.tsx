@@ -1,4 +1,13 @@
 import * as React from "react";
+import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, StyledTable, StyledSortableLabel, StyledHeadCell } from "baseui/table";
+import { useStyletron, withStyle } from "baseui";
+import { StyledLink } from 'baseui/link'
+import { LegalBasesNotClarified, ListLegalBasesInTable } from "../common/LegalBasis"
+import { codelist, ListName } from "../../service/Codelist"
+import { LegalBasesStatus, LegalBasis, Policy, PolicyFormValues } from "../../constants"
+import { Sensitivity } from "../InformationType/Sensitivity"
+import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
+import { Block } from "baseui/block";
 import {
     SORT_DIRECTION,
     SortableHeadCell,
@@ -18,6 +27,11 @@ import {Sensitivity} from "../InformationType/Sensitivity"
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
 import {Block} from "baseui/block";
 import ModalPolicy from "./ModalPolicy";
+import { intl } from "../../util"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faPoop, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "baseui/modal";
+import { Paragraph2 } from "baseui/typography";
 import {intl} from "../../util/intl/intl"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
@@ -62,6 +76,14 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
     const [userDirection, setUserDirection] = React.useState<any>(null);
     const [legalBasisDirection, setLegalBasisDirection] = React.useState<any>(null);
 
+    const getInitialLegalBasesStatus = (legalBasesInherited: boolean, legalBases: LegalBasis[]) => {
+        if (legalBasesInherited) return LegalBasesStatus.INHERITED
+        else {
+            if (!legalBases || !legalBases.length) return LegalBasesStatus.UNKNOWN
+            return LegalBasesStatus.OWN
+        }
+    }
+
     const getInitialValuesModal = (policy: Policy): PolicyFormValues => {
         let parsedLegalBases = policy.legalBases && policy.legalBases.map((legalBasis: any) => ({
             gdpr: legalBasis.gdpr && legalBasis.gdpr.code,
@@ -77,7 +99,7 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
             purposeCode: policy.purposeCode.code,
             informationType: policy.informationType,
             subjectCategory: policy.subjectCategory ? policy.subjectCategory.code : '',
-            legalBasesInherited: policy.legalBasesInherited,
+            legalBasesStatus: getInitialLegalBasesStatus(policy.legalBasesInherited, policy.legalBases),
             legalBases: parsedLegalBases
         }
     }

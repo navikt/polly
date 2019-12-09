@@ -1,9 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUserShield } from "@fortawesome/free-solid-svg-icons"
 import * as React from "react"
-import { Code, codelist, ListName } from "../../service/Codelist"
+import { Code, codelist, ListName, SensitivityLevel } from "../../service/Codelist"
 import { StatefulTooltip } from "baseui/tooltip"
-import { SensitivityLevel } from "../../constants"
 import { theme } from "../../util/theme"
 
 export function sensitivityColor(code: string) {

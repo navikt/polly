@@ -17,8 +17,14 @@ export interface PolicyFormValues {
     informationType?: PolicyInformationType;
     process: PolicyProcess;
     subjectCategory?: string;
-    legalBasesInherited?: boolean;
+    legalBasesStatus?: LegalBasesStatus;
     legalBases: Array<LegalBasisFormValues>;
+}
+
+export enum LegalBasesStatus {
+    OWN = "OWN",
+    INHERITED = "INHERITED",
+    UNKNOWN = "UNKNOWN"
 }
 
 export interface ProcessFormValues {
@@ -118,9 +124,3 @@ export interface IDurationed {
     end: string;
 }
 
-// Refers to SENSITIVITY codelist
-export enum SensitivityLevel {
-    ART6 = "POL",
-    ART9 = "SAERLIGE",
-    ART10 = "STRAFF"
-}

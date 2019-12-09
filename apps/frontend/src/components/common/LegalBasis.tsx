@@ -23,7 +23,7 @@ export const LegalBasisView = (props: { legalBasis: LegalBasis }) => {
     let description = nationalLawId ? legalBasisLinkProcessor(nationalLawId, legalBasis.description) : legalBasis.description
 
     return (
-        <span><ActiveIndicator {...legalBasis}/> {gdpr + ', '} {nationalLaw && nationalLaw} {description}</span>
+        <span><ActiveIndicator {...legalBasis}/> {gdpr} {(nationalLaw || description) && ', '} {nationalLaw && nationalLaw} {description}</span>
     )
 }
 
@@ -58,7 +58,7 @@ export const ListLegalBases = (props: { legalBases?: LegalBasisFormValues[], onR
     if (!legalBases) return null
     return (
         <React.Fragment>
-            {legalBases.map((legalBase: any, i: number) => (
+            {legalBases.map((legalBasis: LegalBasisFormValues, i: number) => (
                 <ListItem
                     artworkSize={ARTWORK_SIZES.SMALL}
                     endEnhancer={() => <Button type="button" kind="minimal" size="compact" onClick={() => onRemove(i)}><FontAwesomeIcon icon={faTrash}/></Button>}
@@ -66,9 +66,10 @@ export const ListLegalBases = (props: { legalBases?: LegalBasisFormValues[], onR
                     key={i}
                 >
                     <ListItemLabel sublist>
-                        {legalBase.gdpr && codelist.getShortname(ListName.GDPR_ARTICLE, legalBase.gdpr) + ", "}
-                        {legalBase.nationalLaw && codelist.getShortname(ListName.NATIONAL_LAW, legalBase.nationalLaw) + ' '}
-                        {legalBase.description}
+                        {legalBasis.gdpr && codelist.getShortname(ListName.GDPR_ARTICLE, legalBasis.gdpr)}
+                        {(legalBasis.nationalLaw || legalBasis.description) && ", "}
+                        {legalBasis.nationalLaw && codelist.getShortname(ListName.NATIONAL_LAW, legalBasis.nationalLaw) + ' '}
+                        {legalBasis.description}
                     </ListItemLabel>
                 </ListItem>
             ))}
@@ -92,7 +93,7 @@ export const ListLegalBasesInTable = (props: { legalBases: LegalBasis[] }) => {
     )
 }
 
-export const legalBasisSchema = () => yup.object({
+export const legalBasisSchema = () => yup.object<LegalBasisFormValues>({
     gdpr: yup.string().required(intl.required),
     nationalLaw: yup.string().when('gdpr', {
         is: (gdprCode) => codelist.requiresNationalLaw(gdprCode),

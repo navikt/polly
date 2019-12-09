@@ -10,6 +10,11 @@ import axios from "axios";
 import TablePurpose from './TablePurpose'
 import ModalPolicy from './ModalPolicy'
 import ModalProcess from './ModalProcess'
+import { codelist, ListName } from "../../service/Codelist"
+import { LegalBasesStatus, PolicyFormValues, Process } from "../../constants"
+import { intl, useAwait, useForceUpdate } from "../../util"
+import { user } from "../../service/User";
+import { LegalBasisView } from "../common/LegalBasis"
 import {codelist, ListName} from "../../service/Codelist"
 import {PolicyFormValues, Process} from "../../constants"
 import {user} from "../../service/User";
@@ -79,16 +84,21 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
     const [errorEditPolicy, setErrorEditPolicy] = React.useState()
     const update = useForceUpdate()
 
-    const handleCreatePolicy = async (values: PolicyFormValues, process: Process) => {
-        if (!values) return
-
-        let body = [{
+    function mapPolicyFromForm(values: PolicyFormValues) {
+        return {
             ...values,
             informationType: undefined,
             informationTypeName: values.informationType && values.informationType.name,
-            process: process.name,
-            purposeCode: process.purposeCode
-        }]
+            process: values.process.name,
+            legalBases: values.legalBasesStatus !== LegalBasesStatus.OWN ? [] : values.legalBases,
+            legalBasesInherited: values.legalBasesStatus === LegalBasesStatus.INHERITED,
+            legalBasesStatus: undefined
+        }
+    }
+
+    const handleCreatePolicy = async (values: PolicyFormValues, process: Process) => {
+        if (!values) return
+        let body = [mapPolicyFromForm(values)]
 
         await axios
             .post(`${server_polly}/policy`, body)
@@ -142,13 +152,7 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
             .catch((err: any) => setErrorCreateProcess(err.message));
     }
     const handleEditPolicy = async (values: PolicyFormValues) => {
-        let body = [{
-            ...values,
-            informationType: undefined,
-            informationTypeName: values.informationType && values.informationType.name,
-            process: values.process.name,
-            legalBases: values.legalBasesInherited ? [] : values.legalBases
-        }]
+        let body = [mapPolicyFromForm(values)]
         await axios
             .put(`${server_polly}/policy`, body)
             .then(((res: any) => {
@@ -309,7 +313,7 @@ const PurposeResult = ({ description, purpose, processList, defaultExpandedPanel
                                                 title={intl.policyNew}
                                                 initialValues={{
                                                     informationType: undefined,
-                                                    legalBasesInherited: undefined,
+                                                    legalBasesStatus: undefined,
                                                     process: process,
                                                     purposeCode: process.purposeCode,
                                                     subjectCategory: undefined,

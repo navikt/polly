@@ -1,4 +1,12 @@
 import * as React from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
+import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
+import { ErrorMessage, Field, FieldArray, FieldProps, Form, Formik, FormikProps, } from "formik";
+import { Block, BlockProps } from "baseui/block";
+import { Label2 } from "baseui/typography";
+import { Radio, RadioGroup } from "baseui/radio";
+import { Plus } from "baseui/icon";
+import { Select, TYPE, Value } from 'baseui/select';
 import {KeyboardEvent, useEffect} from "react";
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
 import {Field, FieldArray, FieldProps, Form, Formik, FormikProps,} from "formik";
@@ -13,6 +21,10 @@ import {codelist, ListName} from "../../service/Codelist";
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
 import {useDebouncedState} from "../../util/customHooks"
 import axios from "axios"
+import { InformationType, LegalBasesStatus, PageResponse, PolicyFormValues, PolicyInformationType } from "../../constants"
+import { intl } from "../../util/intl/intl"
+import { legalBasisSchema, ListLegalBases } from "../common/LegalBasis"
+import { KIND as NKIND, Notification } from "baseui/notification"
 import {InformationType, PageResponse, PolicyFormValues, PolicyInformationType} from "../../constants"
 import {intl} from "../../util/intl/intl"
 import {legalBasisSchema, ListLegalBases} from "../common/LegalBasis"
@@ -55,7 +67,6 @@ const FieldInformationType = (props: {
                         props.setValue(infoType)
                         form.setFieldValue('informationType', infoType)
                     }}
-                    onBlur={() => form.setFieldTouched('informationType')}
                     error={!!form.errors.informationType && !!form.submitCount}
                     filterOptions={options => options}
                     labelKey="name"
@@ -78,7 +89,6 @@ const FieldSubjectCategory = (props: { value?: string }) => {
                         form.setFieldValue('subjectCategory', value.length > 0 ? value[0].id : undefined)
                     }}
                     value={value}
-                    onBlur={() => form.setFieldTouched('subjectCategory')}
                     error={!!form.errors.subjectCategory && !!form.submitCount}
                 />
             )}
@@ -87,27 +97,26 @@ const FieldSubjectCategory = (props: { value?: string }) => {
     )
 }
 
-const FieldLegalBasisInherited = (props: { current: any, setCurrent: Function }) => {
+const FieldLegalBasisStatus = (props: { legalBasesStatus?: LegalBasesStatus }) => {
+    const [value, setValue] = useState(props.legalBasesStatus);
     return (
         <Field
             name="legalBasesInherited"
-            render={({ form }: FieldProps<PolicyFormValues>) => {
-                !form.touched.legalBasesInherited && form.submitCount && form.setFieldTouched('legalBasesInherited')
+            render={({ field, form }: FieldProps<PolicyFormValues>) => {
                 return (
                     <Block width="100%">
                         <RadioGroup
-                            value={props.current}
-                            align="vertical" isError={!!form.errors.legalBasesInherited && !!form.submitCount}
+                            value={value}
+                            align="vertical" isError={!!form.errors.legalBasesStatus && !!form.submitCount}
                             onChange={e => {
-                                (e.target as HTMLInputElement).value === "Ja" ? (
-                                    form.setFieldValue("legalBasesInherited", true)
-                                ) : form.setFieldValue("legalBasesInherited", false)
-                                props.setCurrent((e.target as HTMLInputElement).value)
+                                const selected = (e.target as HTMLInputElement).value
+                                form.setFieldValue("legalBasesStatus", selected)
+                                setValue(selected as LegalBasesStatus)
                             }}
                         >
-                            <Radio value="Ja">{intl.legalBasesProcess}</Radio>
-                            <Radio value="Nei">{intl.legalBasesUndecided}</Radio>
-                            <Radio value="Annet">{intl.legalBasesOwn}</Radio>
+                            <Radio value={LegalBasesStatus.INHERITED}>{intl.legalBasesProcess}</Radio>
+                            <Radio value={LegalBasesStatus.UNKNOWN}>{intl.legalBasesUndecided}</Radio>
+                            <Radio value={LegalBasesStatus.OWN}>{intl.legalBasesOwn}</Radio>
                         </RadioGroup>
                     </Block>
                 )
@@ -116,32 +125,16 @@ const FieldLegalBasisInherited = (props: { current: any, setCurrent: Function })
     )
 }
 
-const getInitialCheckedValue = (initialValues: PolicyFormValues) => {
-    let { legalBasesInherited, legalBases } = initialValues
-    if (legalBasesInherited) return 'Ja'
-    else {
-        if (!legalBases) return 'Nei'
-        if (legalBases.length < 1) return 'Nei'
-        return 'Annet'
-    }
-}
-const setInitialShowLegalBasesValue = (initialValues: PolicyFormValues) => {
-    const { legalBasesInherited, legalBases } = initialValues
-    if (!legalBases) return false
-    if (legalBasesInherited) return false
-
-    return legalBases.length <= 0
-}
-
 const missingArt9LegalBasisForSensitiveInfoType = (informationType: PolicyInformationType, policy: PolicyFormValues) => {
+    const legalBasisInherited = policy.legalBasesStatus === LegalBasesStatus.INHERITED
     const reqArt9 = informationType && codelist.requiresArt9(informationType.sensitivity && informationType.sensitivity.code)
     const missingArt9 = !policy.legalBases.filter((lb) => codelist.isArt9(lb.gdpr)).length
     const processMissingArt9 = !policy.process.legalBases.filter(lb => codelist.isArt9(lb.gdpr.code)).length
-    return reqArt9 && missingArt9 && processMissingArt9
+    return !legalBasisInherited && reqArt9 && missingArt9 && processMissingArt9
 }
 
-const policySchema = () => yup.object({
-    informationType: yup.object().required(intl.required)
+const policySchema = () => yup.object<PolicyFormValues>({
+    informationType: yup.object<PolicyInformationType>().required(intl.required)
     .test({
         name: 'policyHasArt9',
         message: intl.requiredArt9,
@@ -151,9 +144,11 @@ const policySchema = () => yup.object({
         }
     }),
     subjectCategory: yup.string().required(intl.required),
-    legalBasesInherited: yup.boolean().required(intl.required),
+    legalBasesStatus: yup.mixed().oneOf(Object.values(LegalBasesStatus)).required(intl.required),
     legalBases: yup.array(legalBasisSchema()),
-    process: yup.object()
+    process: yup.object(),
+    purposeCode: yup.string(),
+    id: yup.string()
 })
 
 type ModalPolicyProps = {
@@ -167,8 +162,7 @@ type ModalPolicyProps = {
 };
 
 const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialValues, title }: ModalPolicyProps) => {
-    const [currentChecked, setCurrentChecked] = React.useState(isEdit && getInitialCheckedValue(initialValues));
-    const [showLegalbasesFields, setShowLegalbasesFields] = React.useState<boolean>(isEdit && setInitialShowLegalBasesValue(initialValues));
+    const [showLegalbasesFields, setShowLegalbasesFields] = React.useState<boolean>(false);
 
     const [infoTypeValue, setInfoTypeValue] = React.useState<Array<PolicyInformationType>>(isEdit && initialValues.informationType ? [initialValues.informationType] : []);
     const [infoTypeSearch, setInfoTypeSearch] = useDebouncedState<string>('', 200);
@@ -190,7 +184,6 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
         setInfoTypeSearch('')
         setInfoTypeSearchResult([])
         setShowLegalbasesFields(false)
-        setCurrentChecked(false)
         onClose()
     }
 
@@ -242,13 +235,11 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
 
                                 <Block {...rowBlockProps}>
                                     {renderLabel(intl.legalBasesShort)}
-                                    <FieldLegalBasisInherited
-                                        current={currentChecked}
-                                        setCurrent={setCurrentChecked} />
+                                    <FieldLegalBasisStatus legalBasesStatus={formikBag.values.legalBasesStatus}/>
                                 </Block>
-                                <Error fieldName="legalBasesInherited" />
+                                <Error fieldName="legalBasesStatus" />
 
-                                {currentChecked === "Annet" && (
+                                {formikBag.values.legalBasesStatus === LegalBasesStatus.OWN && (
                                     <FieldArray
                                         name="legalBases"
                                         render={arrayHelpers => (
