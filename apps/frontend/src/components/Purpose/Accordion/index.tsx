@@ -117,7 +117,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps) =>
     const getInitialValuesProcessEdit = (process: any) => {
         const { name, department, subDepartment, legalBases } = process
         let parsedLegalBases = legalBases && legalBases.map((legalBasis: any) => ({
-            gdpr: legalBasis.gdpr && legalBasis.gdpr.code,
+            gdpr: (legalBasis.gdpr && legalBasis.gdpr.code) || undefined,
             nationalLaw: (legalBasis.nationalLaw && legalBasis.nationalLaw.code) || undefined,
             description: legalBasis.description || undefined,
             start: legalBasis.start || undefined,
@@ -126,8 +126,8 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps) =>
 
         return {
             name: name,
-            department: department && department.code,
-            subDepartment: subDepartment && subDepartment.code,
+            department: (department && department.code) || undefined,
+            subDepartment: (subDepartment && subDepartment.code) || undefined,
             legalBases: parsedLegalBases
         }
     }
