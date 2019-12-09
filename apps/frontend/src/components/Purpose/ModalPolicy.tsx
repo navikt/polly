@@ -1,23 +1,22 @@
 import * as React from "react";
-import { KeyboardEvent, useEffect } from "react";
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
-import { ErrorMessage, Field, FieldArray, FieldProps, Form, Formik, FormikProps, } from "formik";
-import { Block, BlockProps } from "baseui/block";
-import { Label2 } from "baseui/typography";
-import { Radio, RadioGroup } from "baseui/radio";
-import { Plus } from "baseui/icon";
-import { Option, Select, TYPE, Value } from 'baseui/select';
+import {KeyboardEvent, useEffect} from "react";
+import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
+import {Field, FieldArray, FieldProps, Form, Formik, FormikProps,} from "formik";
+import {Block, BlockProps} from "baseui/block";
+import {Radio, RadioGroup} from "baseui/radio";
+import {Plus} from "baseui/icon";
+import {Select, TYPE, Value} from 'baseui/select';
 import * as yup from "yup"
 
 import CardLegalBasis from './CardLegalBasis'
-import { codelist, ListName } from "../../service/Codelist";
-import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
-import { useDebouncedState } from "../../util/customHooks"
+import {codelist, ListName} from "../../service/Codelist";
+import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
+import {useDebouncedState} from "../../util/customHooks"
 import axios from "axios"
-import { InformationType, PageResponse, PolicyFormValues, PolicyInformationType } from "../../constants"
-import { intl } from "../../util/intl/intl"
-import { legalBasisSchema, ListLegalBases } from "../common/LegalBasis"
-import { KIND as NKIND, Notification } from "baseui/notification"
+import {InformationType, PageResponse, PolicyFormValues, PolicyInformationType} from "../../constants"
+import {intl} from "../../util/intl/intl"
+import {legalBasisSchema, ListLegalBases} from "../common/LegalBasis"
+import {Error, renderLabel} from "../common/ModalSchema";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -32,25 +31,6 @@ const rowBlockProps: BlockProps = {
     width: '100%',
     marginTop: '1rem'
 }
-
-const Error = (props: { fieldName: string }) => (
-    <ErrorMessage name={props.fieldName}>
-        {msg => (
-            <Block display="flex" width="100%" marginTop=".2rem">
-                {renderLabel('')}
-                <Block width="100%">
-                    <Notification overrides={{ Body: { style: { width: 'auto', padding: 0, marginTop: 0 } } }} kind={NKIND.negative}>{msg}</Notification>
-                </Block>
-            </Block>
-        )}
-    </ErrorMessage>
-)
-
-const renderLabel = (label: any | string) => (
-    <Block width="25%" alignSelf="center">
-        <Label2 marginBottom="8px" font="font300">{label.toString()}</Label2>
-    </Block>
-)
 
 const FieldInformationType = (props: {
     informationTypes: PolicyInformationType[],

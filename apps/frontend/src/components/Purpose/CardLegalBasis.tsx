@@ -1,17 +1,4 @@
 import * as React from 'react';
-import { Select, TYPE, Value } from 'baseui/select';
-import { Block, BlockProps } from 'baseui/block'
-import { Card } from 'baseui/card'
-import { StatefulInput } from 'baseui/input';
-import { Label2 } from 'baseui/typography';
-import { Button, KIND, SIZE as ButtonSize } from 'baseui/button';
-import { codelist, ListName } from "../../service/Codelist";
-import { intl, theme } from "../../util"
-import { ErrorMessage, Field, FieldProps, Form, Formik, FormikProps } from "formik"
-import { KIND as NKIND, Notification } from "baseui/notification"
-import { LegalBasisFormValues } from "../../constants"
-import { legalBasisSchema } from "../common/LegalBasis"
-import { Datepicker } from "baseui/datepicker"
 import {Select, TYPE, Value} from 'baseui/select';
 import {Block, BlockProps} from 'baseui/block'
 import {Card} from 'baseui/card'

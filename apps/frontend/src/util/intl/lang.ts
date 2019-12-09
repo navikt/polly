@@ -102,8 +102,12 @@ export const no: IStrings = {
     requiredNationalLaw: "Artikkelen krever nasjonal lov",
     requiredDescription: "Artikkelen krever ytterligere beskrivelse",
 
-    createCodeList: "Nytt codelist",
+    createCodeListTitle: "Nytt codelist",
     deleteCodeListConfirmationTitle: "Bekreft sletting",
+    editCodeListTitle: "Rediger codelist",
+    manageCodeListTitle: "Adminstrering av codelist",
+    chooseCodeList: "Velg codelist",
+    createNewCodeList : "Opprett nytt codelist"
 };
 
 export const en = {
@@ -203,8 +207,12 @@ export const en = {
     requiredNationalLaw: "The article requires national law",
     requiredDescription: "The article requires additional description",
 
-    createCodeList: "Create code list",
+    createCodeListTitle: "Create code list",
     deleteCodeListConfirmationTitle: "Confirm deletion",
+    editCodeListTitle: "Edit code list",
+    manageCodeListTitle: "Manage code list",
+    chooseCodeList: "Choose code list",
+    createNewCodeList : "Create new code list"
 };
 
 export const ta = {

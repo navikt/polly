@@ -141,7 +141,7 @@ const CodeListPage = () => {
 
     return (
         <React.Fragment>
-            <Banner title="Adminstrering av codelist"/>
+            <Banner title={intl.manageCodeListTitle}/>
             {loading ? null : (
                 <Block>
                     <Select
@@ -156,11 +156,11 @@ const CodeListPage = () => {
                             setCodeListsTableData(codeLists);
                         }}
                         clearable={false}
-                        placeholder="Velg codelist"
+                        placeholder={intl.chooseCodeList}
                         value={selectedValue}
                     />
                     <UpdateCodeListModal
-                        title="Rediger codelist"
+                        title={intl.editCodeListTitle}
                         list={selectedValue ? selectedValue[0].id!.toString() : ""}
                         code={selectedRow ? selectedRow.code : ""}
                         shortName={selectedRow ? selectedRow.shortName : ""}
@@ -208,10 +208,10 @@ const CodeListPage = () => {
                                         <Plus size={22}/>
                                     </Block>}
                         >
-                            Opprett nytt codelist
+                            {intl.createNewCodeList}
                         </Button>
                         <CreateCodeListModal
-                            title={intl.createCodeList}
+                            title={intl.createCodeListTitle}
                             list={selectedValue ? selectedValue[0].id!.toString() : ""}
                             isOpen={createCodeListModal}
                             errorOnCreate={errorOnResponse}

@@ -2,25 +2,19 @@ import * as React from "react";
 import {Block, BlockProps} from "baseui/block";
 import {Accordion, Panel} from 'baseui/accordion';
 import _includes from 'lodash/includes'
-import { Plus } from "baseui/icon";
-import { Label2, Paragraph2 } from "baseui/typography";
-import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
+import {Plus} from "baseui/icon";
+import {Label2, Paragraph2} from "baseui/typography";
+import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
 import axios from "axios";
 
 import TablePurpose from './TablePurpose'
 import ModalPolicy from './ModalPolicy'
 import ModalProcess from './ModalProcess'
 import {codelist, ListName} from "../../service/Codelist"
-import {Process} from "../../constants"
-import {intl} from "../../util/intl/intl"
-import {useAwait, useForceUpdate} from "../../util/customHooks"
+import {PolicyFormValues, Process} from "../../constants"
 import {user} from "../../service/User";
 import {LegalBasisView} from "../common/LegalBasis"
-import { codelist, ListName } from "../../service/Codelist"
-import { PolicyFormValues, Process } from "../../constants"
-import { intl, useAwait, useForceUpdate } from "../../util"
-import { user } from "../../service/User";
-import { LegalBasisView } from "../common/LegalBasis"
+import {intl, useAwait, useForceUpdate} from "../../util"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 

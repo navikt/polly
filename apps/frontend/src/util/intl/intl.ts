@@ -110,8 +110,12 @@ export interface IStrings {
     requiredNationalLaw: string;
     requiredDescription: string;
 
-    createCodeList: string,
+    createCodeListTitle: string,
     deleteCodeListConfirmationTitle: string,
+    editCodeListTitle: string,
+    manageCodeListTitle: string,
+    chooseCodeList: string,
+    createNewCodeList: string,
 }
 
 // Remember import moment locales up top
