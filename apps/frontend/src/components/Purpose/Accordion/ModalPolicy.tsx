@@ -134,23 +134,36 @@ const FieldLegalBasisStatus = (props: { legalBasesStatus?: LegalBasesStatus }) =
 }
 
 const missingArt9LegalBasisForSensitiveInfoType = (informationType: PolicyInformationType, policy: PolicyFormValues) => {
-    const legalBasisInherited = policy.legalBasesStatus === LegalBasesStatus.INHERITED
+    const ownLegalBasis = policy.legalBasesStatus === LegalBasesStatus.OWN
     const reqArt9 = informationType && codelist.requiresArt9(informationType.sensitivity && informationType.sensitivity.code)
     const missingArt9 = !policy.legalBases.filter((lb) => codelist.isArt9(lb.gdpr)).length
     const processMissingArt9 = !policy.process.legalBases.filter(lb => codelist.isArt9(lb.gdpr.code)).length
-    return !legalBasisInherited && reqArt9 && missingArt9 && processMissingArt9
+    return ownLegalBasis && reqArt9 && missingArt9 && processMissingArt9
+}
+
+const missingArt6LegalBasisForInfoType = (policy: PolicyFormValues) => {
+    const ownLegalBasis = policy.legalBasesStatus === LegalBasesStatus.OWN
+    const missingArt6 = !policy.legalBases.filter((lb) => codelist.isArt6(lb.gdpr)).length
+    return ownLegalBasis && missingArt6
 }
 
 const policySchema = () => yup.object<PolicyFormValues>({
     informationType: yup.object<PolicyInformationType>().required(intl.required)
-        .test({
-            name: 'policyHasArt9',
-            message: intl.requiredArt9,
-            test: function (informationType) {
-                const { parent } = this
-                return !missingArt9LegalBasisForSensitiveInfoType(informationType, parent)
-            }
-        }),
+    .test({
+        name: 'policyHasArt9',
+        message: intl.requiredGdprArt9,
+        test: function (informationType) {
+            const {parent} = this
+            return !missingArt9LegalBasisForSensitiveInfoType(informationType, parent)
+        }
+    }).test({
+        name: 'policyHasArt6',
+        message: intl.requiredGdprArt6,
+        test: function (informationType) {
+            const {parent} = this
+            return !missingArt6LegalBasisForInfoType(parent)
+        }
+    }),
     subjectCategory: yup.string().required(intl.required),
     legalBasesStatus: yup.mixed().oneOf(Object.values(LegalBasesStatus)).required(intl.required),
     legalBases: yup.array(legalBasisSchema()),

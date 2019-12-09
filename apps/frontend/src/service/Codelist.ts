@@ -22,6 +22,7 @@ export enum SensitivityLevel {
     ART10 = "STRAFF"
 }
 
+const ARTICLE_6_PREFIX = 'ART6'
 const ARTICLE_9_PREFIX = 'ART9'
 export const NATIONAL_LAW_GDPR_ARTICLES = ['ART61C', 'ART61E']
 export const DESCRIPTION_GDPR_ARTICLES = ['ART61C', 'ART61E', 'ART61F']
@@ -98,6 +99,10 @@ class CodelistService {
 
     requiresArt9(sensitivityCode?: string) {
         return sensitivityCode === SensitivityLevel.ART9
+    }
+
+    isArt6(gdprCode?: string) {
+        return gdprCode && gdprCode.startsWith(ARTICLE_6_PREFIX)
     }
 
     isArt9(gdprCode?: string) {
