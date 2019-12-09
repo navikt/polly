@@ -14,3 +14,7 @@ export const searchInformationType = async (text: string) => {
 export const getInformationType = async (informationTypeId: string) => {
     return (await axios.get<InformationType>(`${server_polly}/informationtype/${informationTypeId}`)).data
 }
+
+export const updateInformationType = async (informationType: any) => {
+    return (await axios.put<InformationType>(`${server_polly}/informationtype`, [informationType])).data
+}
