@@ -1,19 +1,16 @@
 import * as React from "react";
-import axios from "axios";
-import { Option, StatefulSelect, Value } from 'baseui/select';
+import { Option, StatefulSelect } from 'baseui/select';
 import ProcessList from "../components/Purpose";
 import Banner from "../components/Banner";
 import { Block } from "baseui/block";
-import { ListName, codelist } from "../service/Codelist";
-import { Process } from "../constants"
-import { intl } from "../util/intl/intl"
-import { theme } from "../util/theme"
+import { codelist, ListName } from "../service/Codelist";
+import { ProcessPurposeCount } from "../constants"
+import { intl, theme } from "../util"
 import illustration from "../resources/purpose_illustration.svg"
 import { Spinner } from "baseui/spinner";
 import { Label2, Paragraph2 } from "baseui/typography";
 import { generatePath } from "react-router";
-
-const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
+import { getProcessPurposeCount } from "../api/ProcessApi"
 
 const renderDescription = (description: string) => (
     <Block marginBottom="scale1000">
@@ -35,20 +32,19 @@ const PurposePage = (props: any) => {
         else nextPath = generatePath(props.match.path, params)
         props.history.push(nextPath)
     }
-    const handleGetPurposeCountResponse = (response: any) => {
-        if (typeof response.data === "object" && response.data !== null) {
-            setProcessCount(response.data.purposes)
-        }
+
+    const handleGetPurposeCountResponse = (response: ProcessPurposeCount) => {
+        setProcessCount(response.purposes)
     };
+
     const handleChangePurpose = async (value: any) => {
         setLoadingPurpose(true);
         if (!value) {
             setCurrentPurposeValue(null);
             updatePath(null)
-        }
-        else {
+        } else {
             setCurrentPurposeValue(value)
-            updatePath({ id: value })
+            updatePath({id: value})
         }
         setLoadingPurpose(false);
     };
@@ -57,7 +53,7 @@ const PurposePage = (props: any) => {
             ...option,
             label: <Block display="flex" justifyContent="space-between" width="100%">
                 <span>{option.label}</span>
-                <Block $style={{ opacity: .5 }}>{option.id && `${intl.processes}: ${processCount[option.id]}`}</Block>
+                <Block $style={{opacity: .5}}>{option.id && `${intl.processes}: ${processCount[option.id]}`}</Block>
             </Block>
         }
     }
@@ -66,9 +62,7 @@ const PurposePage = (props: any) => {
         const fetchData = async () => {
             setLoading(true);
             await codelist.wait();
-            await axios
-                .get(`${server_polly}/process/count/purpose`)
-                .then(handleGetPurposeCountResponse)
+            handleGetPurposeCountResponse(await getProcessPurposeCount())
             if (props.match.params.id) await handleChangePurpose(props.match.params.id)
             setLoading(false);
         };
@@ -77,7 +71,7 @@ const PurposePage = (props: any) => {
 
     return (
         <React.Fragment>
-            <Banner title={intl.purpose} />
+            <Banner title={intl.purpose}/>
             {!isLoading && (
                 <Block marginBottom="3rem">
 
@@ -85,7 +79,7 @@ const PurposePage = (props: any) => {
                     {!error && (
                         <StatefulSelect
                             options={codelist.getParsedOptions(ListName.PURPOSE).map(purposeLabelView)}
-                            initialState={{ value: currentPurposeValue ? [{ id: currentPurposeValue, label: currentPurposeValue } as Option] : [] }}
+                            initialState={{value: currentPurposeValue ? [{id: currentPurposeValue, label: currentPurposeValue} as Option] : []}}
                             placeholder={intl.purposeSelect}
                             maxDropdownHeight="350px"
                             onChange={(event) => handleChangePurpose(event.option ? event.option.id : null)}
@@ -99,10 +93,10 @@ const PurposePage = (props: any) => {
                             }}
                         />
                     )}
-                </Block >
+                </Block>
             )}
 
-            {isLoadingPurpose && <Spinner />}
+            {isLoadingPurpose && <Spinner/>}
             {!isLoadingPurpose && currentPurposeValue && (
                 <React.Fragment>
                     {renderDescription(codelist.getDescription(ListName.PURPOSE, currentPurposeValue))}
@@ -114,7 +108,7 @@ const PurposePage = (props: any) => {
             }
             {!currentPurposeValue && (
                 <Block display="flex" justifyContent="center" alignContent="center" marginTop={theme.sizing.scale2400}>
-                    <img src={illustration} alt={intl.treasureIllustration} style={{ maxWidth: "65%" }} />
+                    <img src={illustration} alt={intl.treasureIllustration} style={{maxWidth: "65%"}}/>
                 </Block>
             )}
         </React.Fragment>
