@@ -78,7 +78,6 @@ const InformationtypeEditPage = (props: any) => {
             await axios
                 .get(`${server_polly}/informationtype/${props.match.params.id}`)
                 .then(res => {
-                    console.log(res);
                     setInformationType(res.data);
                 })
                 .catch(handleAxiosError);

@@ -1,6 +1,7 @@
 import { useAwait, useDebouncedState, useForceUpdate } from "./customHooks"
 import { theme } from "./theme"
 import { intl, langs } from "./intl/intl"
+import createBrowserHistory from 'history/createBrowserHistory'
 
 export {
     useForceUpdate,
@@ -8,5 +9,6 @@ export {
     useDebouncedState,
     theme,
     intl,
-    langs
+    langs,
+    createBrowserHistory
 }

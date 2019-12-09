@@ -4,7 +4,7 @@ import { useStyletron, withStyle } from "baseui";
 import { StyledLink } from 'baseui/link'
 import { LegalBasesNotClarified, ListLegalBasesInTable } from "../common/LegalBasis"
 import { codelist, ListName } from "../../service/Codelist"
-import { LegalBasesStatus, LegalBasis, Policy, PolicyFormValues } from "../../constants"
+import { LegalBasesStatus, LegalBasis, Policy, PolicyFormValues, Process } from "../../constants"
 import { Sensitivity } from "../InformationType/Sensitivity"
 import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
 import { Block } from "baseui/block";
@@ -14,6 +14,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faPoop, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "baseui/modal";
 import { Paragraph2 } from "baseui/typography";
+import axios from "axios";
+import { useForceUpdate } from "../../util";
+
+const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",
@@ -35,23 +39,36 @@ const SmallerStyledHeadCell = withStyle(StyledHeadCell, {
 })
 
 type TablePurposeProps = {
-    policies: Array<any>;
-    errorOnSubmitEdit: any;
-    showEditModal: boolean;
-    showDeleteModal: boolean;
+    process: Process;
     isLoggedIn: boolean;
-    onSubmitEdit: Function;
-    setShowEditModal: Function;
-    setShowDeleteModal: Function;
-    onDeletePolicy: Function;
+    updateProcess: Function;
 };
 
-const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal, showDeleteModal, setShowEditModal, setShowDeleteModal, isLoggedIn, onDeletePolicy }: TablePurposeProps) => {
+const TablePurpose = ({ process, isLoggedIn, updateProcess }: TablePurposeProps) => {
     const [useCss, theme] = useStyletron();
+    const [policies, setPolicies] = React.useState<Policy[]>(process.policies)
     const [currentPolicy, setCurrentPolicy] = React.useState()
     const [titleDirection, setTitleDirection] = React.useState<any>(null);
     const [userDirection, setUserDirection] = React.useState<any>(null);
     const [legalBasisDirection, setLegalBasisDirection] = React.useState<any>(null);
+    const [showEditModal, setShowEditModal] = React.useState(false)
+    const [errorEditModal, setErrorEditModal] = React.useState(false)
+    const [showDeleteModal, setShowDeleteModal] = React.useState(false)
+    const [errorDeleteModal, setErrorDeleteModal] = React.useState(false)
+
+    const update = useForceUpdate()
+
+    function mapPolicyFromForm(values: PolicyFormValues) {
+        return {
+            ...values,
+            informationType: undefined,
+            informationTypeName: values.informationType && values.informationType.name,
+            process: values.process.name,
+            legalBases: values.legalBasesStatus !== LegalBasesStatus.OWN ? [] : values.legalBases,
+            legalBasesInherited: values.legalBasesStatus === LegalBasesStatus.INHERITED,
+            legalBasesStatus: undefined
+        }
+    }
 
     const getInitialLegalBasesStatus = (legalBasesInherited: boolean, legalBases: LegalBasis[]) => {
         if (legalBasesInherited) return LegalBasesStatus.INHERITED
@@ -109,9 +126,9 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
         return;
     };
 
-    const getSortedData = () => {
+    const getSortedData = (policyList: Policy[]) => {
         if (titleDirection) {
-            const sorted = policies
+            const sorted = policyList
                 .slice(0)
                 .sort((a: any, b: any) => a[1] - b[1]);
             if (titleDirection === SORT_DIRECTION.ASC) {
@@ -123,7 +140,7 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
         }
 
         if (userDirection) {
-            const sorted = policies
+            const sorted = policyList
                 .slice(0)
                 .sort((a: any, b: any) => a[1] - b[1]);
             if (userDirection === SORT_DIRECTION.ASC) {
@@ -135,7 +152,7 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
         }
 
         if (legalBasisDirection) {
-            const sorted = policies
+            const sorted = policyList
                 .slice(0)
                 .sort((a: any, b: any) => a[1] - b[1]);
             if (legalBasisDirection === SORT_DIRECTION.ASC) {
@@ -146,8 +163,39 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
             }
         }
 
-        return policies;
+        return policyList;
     };
+
+    const handleEditPolicy = async (values: any) => {
+        let body = [mapPolicyFromForm(values)]
+        await axios
+            .put(`${server_polly}/policy`, body)
+            .then(((res: any) => {
+                setPolicies([...policies.filter((policy: Policy) => policy.id !== res.data.content[0].id), res.data.content[0]])
+                setShowEditModal(false)
+            }))
+            .catch((err: any) => {
+                setShowEditModal(true)
+                setErrorEditModal(err.message)
+            });
+    }
+
+    const handleDeletePolicy = async (policy: Policy) => {
+        await axios
+            .delete(`${server_polly}/policy/${policy.id}`)
+            .then(((res: any) => {
+                setPolicies(policies.filter((p: Policy) => p.id !== policy.id))
+                setShowDeleteModal(false)
+            }))
+            .catch((err: any) => {
+                setShowDeleteModal(true)
+                setErrorDeleteModal(err.message)
+            });
+    }
+
+    React.useEffect(() => {
+        setPolicies(process ? process.policies : [])
+    }, [process]);
 
     return (
         <React.Fragment>
@@ -174,7 +222,7 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
 
                 </StyledHeader>
                 <StyledBody>
-                    {getSortedData().map((row: Policy, index: number) => (
+                    {getSortedData(policies).map((row: Policy, index: number) => (
                         <CustomStyledRow key={index} >
                             <StyledCell>
                                 <Sensitivity sensitivity={row.informationType.sensitivity} />&nbsp;
@@ -230,9 +278,9 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
                         isOpen={showEditModal}
                         isEdit={true}
                         submit={(values: any) => {
-                            onSubmitEdit(values)
+                            handleEditPolicy(values)
                         }}
-                        errorOnCreate={errorOnSubmitEdit}
+                        errorOnCreate={errorEditModal}
                     />
                 )}
 
@@ -249,17 +297,20 @@ const TablePurpose = ({ policies, onSubmitEdit, errorOnSubmitEdit, showEditModal
                         </ModalBody>
 
                         <ModalFooter>
-                            <Button
-                                kind="secondary"
-                                onClick={() => setShowDeleteModal(false)}
-                                overrides={{ BaseButton: { style: { marginRight: '1rem' } } }}
-                            >
-                                {intl.abort}
-                            </Button>
-                            <Button onClick={() => {
-                                onDeletePolicy(currentPolicy)
-                            }
-                            }>{intl.delete}</Button>
+                            <Block display="flex" justifyContent="flex-end">
+                                <Block alignSelf="flex-end">{errorDeleteModal && <p>{errorDeleteModal}</p>}</Block>
+                                <Button
+                                    kind="secondary"
+                                    onClick={() => setShowDeleteModal(false)}
+                                    overrides={{ BaseButton: { style: { marginRight: '1rem', marginLeft: '1rem' } } }}
+                                >
+                                    {intl.abort}
+                                </Button>
+                                <Button onClick={() => {
+                                    handleDeletePolicy(currentPolicy)
+                                }
+                                }>{intl.delete}</Button>
+                            </Block>
                         </ModalFooter>
                     </Modal>
                 )}
