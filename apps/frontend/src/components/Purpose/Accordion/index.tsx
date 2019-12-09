@@ -1,18 +1,15 @@
 import * as React from 'react'
 import { Accordion, Panel } from 'baseui/accordion'
-import { withRouter, RouteComponentProps } from 'react-router'
-import { generatePath } from "react-router";
-import axios from 'axios';
-import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
+import { generatePath, RouteComponentProps, withRouter } from 'react-router'
+import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { Spinner } from 'baseui/spinner';
 import { Block, BlockProps } from 'baseui/block';
 import { Label2, Paragraph2 } from 'baseui/typography';
-import { intl } from '../../../util';
+import { intl, useAwait } from '../../../util';
 import _includes from 'lodash/includes'
 import { user } from "../../../service/User";
-import { useAwait } from "../../../util/customHooks";
 import { Plus } from 'baseui/icon'
-import { LegalBasesStatus, PolicyFormValues, Process } from "../../../constants"
+import { PolicyFormValues, Process, ProcessFormValues } from "../../../constants"
 
 
 import { LegalBasisView } from "../../common/LegalBasis"
@@ -20,8 +17,8 @@ import { codelist, ListName } from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
 import ModalPolicy from './ModalPolicy'
 import TablePurpose from './TablePurpose';
-
-const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
+import { createPolicy } from "../../../api"
+import { convertProcessToFormValues, getProcess, updateProcess } from "../../../api/ProcessApi"
 
 const rowPanelContent: BlockProps = {
     display: 'flex',
@@ -39,7 +36,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps) =>
     const [showEditProcessModal, setShowEditProcessModal] = React.useState(false)
     const [showCreatePolicyModal, setShowCreatePolicyModal] = React.useState(false)
     const [errorCreatePolicy, setErrorCreatePolicy] = React.useState(null)
-    const [process, setProcess] = React.useState<Process | null>(null)
+    const [process, setProcess] = React.useState<Process | undefined>()
     const { currentPurpose } = props
 
     const updatePath = (params: { id: string, processid?: string } | null) => {
@@ -48,53 +45,34 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps) =>
         else nextPath = generatePath(props.match.path, params)
         props.history.push(nextPath)
     }
-    function mapPolicyFromForm(values: PolicyFormValues) {
-        return {
-            ...values,
-            informationType: undefined,
-            informationTypeName: values.informationType && values.informationType.name,
-            process: values.process.name,
-            legalBases: values.legalBasesStatus !== LegalBasesStatus.OWN ? [] : values.legalBases,
-            legalBasesInherited: values.legalBasesStatus === LegalBasesStatus.INHERITED,
-            legalBasesStatus: undefined
+    // todo noe rar interasksjon mellom create policy og edit policy som gjør at vi bør reloade hele process (edit og create burde være samme sted?)
+
+    const handleEditProcess = async (values: ProcessFormValues) => {
+        try {
+            const updatedProcess = await updateProcess(values)
+            // todo backend for update burde nok returnere med policies
+            await getProcessById(updatedProcess.id)
+            setShowEditProcessModal(false)
+        } catch (err) {
+            console.log(err)
         }
     }
 
-    const handleEditProcess = async (values: any, id: any) => {
-        let body = {
-            id: id,
-            name: values.name,
-            department: values.department ? values.department : undefined,
-            subDepartment: values.subDepartment ? values.subDepartment : undefined,
-            legalBases: values.legalBases ? values.legalBases : [],
-            purposeCode: currentPurpose
+    const handleCreatePolicy = async (values: PolicyFormValues) => {
+        if (!values || !process) return
+
+        try {
+            const policy = await createPolicy(values)
+            // todo
+            await getProcessById(policy.process.id)
+            setErrorCreatePolicy(null)
+            setShowCreatePolicyModal(false)
+        } catch (err) {
+            setShowCreatePolicyModal(true)
+            setErrorCreatePolicy(err.message)
         }
-
-        await axios
-            .put(`${server_polly}/process/${id}`, body)
-            .then(((res: any) => {
-                let currentPolicies = process && process.policies ? process.policies : []
-                setProcess({ ...res.data, policies: currentPolicies })
-                setShowEditProcessModal(false)
-            }))
-            .catch((err: any) => console.log(err));
     }
-    const handleCreatePolicy = async (values: any, process: any) => {
-        if (!values) return
-        let body = [mapPolicyFromForm(values)]
 
-        await axios
-            .post(`${server_polly}/policy`, body)
-            .then(((res: any) => {
-                setProcess({ ...process, policies: [...process.policies, res.data.content[0]] })
-                setErrorCreatePolicy(null)
-                setShowCreatePolicyModal(false)
-            }))
-            .catch((err: any) => {
-                setShowCreatePolicyModal(true)
-                setErrorCreatePolicy(err.message)
-            });
-    }
     const handleChangePanel = async (value: string | null) => {
         if (!value)
             updatePath({ id: currentPurpose })
@@ -104,32 +82,14 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps) =>
         }
     }
 
-    const getProcessById = async (processid: string) => {
+    const getProcessById = async (processId: string) => {
         setLoading(true);
-        await axios
-            .get(`${server_polly}/process/${processid}`)
-            .then((res) => {
-                setProcess(res.data)
-            })
-            .catch((err) => console.log(err));
-        setLoading(false);
-    }
-    const getInitialValuesProcessEdit = (process: any) => {
-        const { name, department, subDepartment, legalBases } = process
-        let parsedLegalBases = legalBases && legalBases.map((legalBasis: any) => ({
-            gdpr: (legalBasis.gdpr && legalBasis.gdpr.code) || undefined,
-            nationalLaw: (legalBasis.nationalLaw && legalBasis.nationalLaw.code) || undefined,
-            description: legalBasis.description || undefined,
-            start: legalBasis.start || undefined,
-            end: legalBasis.end || undefined
-        }))
-
-        return {
-            name: name,
-            department: (department && department.code) || undefined,
-            subDepartment: (subDepartment && subDepartment.code) || undefined,
-            legalBases: parsedLegalBases
+        try {
+            setProcess(await getProcess(processId))
+        } catch (err) {
+            console.log(err)
         }
+        setLoading(false);
     }
 
     const renderLegalBasisListForProcess = (list: any) => (
@@ -240,10 +200,10 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps) =>
                                     title={intl.processingActivitiesEdit}
                                     onClose={() => setShowEditProcessModal(false)}
                                     isOpen={showEditProcessModal}
-                                    submit={(values: any) => handleEditProcess(values, process.id)}
+                                    submit={(values: ProcessFormValues) => handleEditProcess(values)}
                                     errorOnCreate={null}
                                     isEdit={true}
-                                    initialValues={getInitialValuesProcessEdit(process)}
+                                    initialValues={convertProcessToFormValues(process)}
                                 />
                                 <ModalPolicy
                                     title={intl.policyNew}
@@ -258,7 +218,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps) =>
                                     isEdit={false}
                                     onClose={() => setShowCreatePolicyModal(false)}
                                     isOpen={showCreatePolicyModal}
-                                    submit={(values: any) => handleCreatePolicy(values, process)}
+                                    submit={(values: PolicyFormValues) => handleCreatePolicy(values)}
                                     errorOnCreate={errorCreatePolicy}
                                 />
                             </React.Fragment>

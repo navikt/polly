@@ -17,6 +17,15 @@ import {LegalBasesStatus, LegalBasis, Policy, PolicyFormValues, Process} from ".
 import {Sensitivity} from "../../InformationType/Sensitivity"
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
 import {Block} from "baseui/block";
+import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from "baseui/table";
+import { useStyletron, withStyle } from "baseui";
+import { StyledLink } from 'baseui/link'
+import { LegalBasesNotClarified, ListLegalBasesInTable } from "../../common/LegalBasis"
+import { codelist, ListName } from "../../../service/Codelist"
+import { Policy, PolicyFormValues, Process } from "../../../constants"
+import { Sensitivity } from "../../InformationType/Sensitivity"
+import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
+import { Block } from "baseui/block";
 import ModalPolicy from "./ModalPolicy";
 import {intl, useForceUpdate} from "../../../util"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -24,8 +33,13 @@ import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "baseui/modal";
 import {Paragraph2} from "baseui/typography";
 import axios from "axios";
+import { intl } from "../../../util"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { Modal, ModalBody, ModalFooter, ModalHeader } from "baseui/modal";
+import { Paragraph2 } from "baseui/typography";
+import { convertPolicyToFormValues, deletePolicy, updatePolicy } from "../../../api"
 
-const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",
@@ -55,7 +69,7 @@ type TablePurposeProps = {
 const TablePurpose = ({ process, isLoggedIn, updateProcess }: TablePurposeProps) => {
     const [useCss, theme] = useStyletron();
     const [policies, setPolicies] = React.useState<Policy[]>(process.policies)
-    const [currentPolicy, setCurrentPolicy] = React.useState()
+    const [currentPolicy, setCurrentPolicy] = React.useState<Policy>()
     const [titleDirection, setTitleDirection] = React.useState<any>(null);
     const [userDirection, setUserDirection] = React.useState<any>(null);
     const [legalBasisDirection, setLegalBasisDirection] = React.useState<any>(null);
@@ -63,48 +77,6 @@ const TablePurpose = ({ process, isLoggedIn, updateProcess }: TablePurposeProps)
     const [errorEditModal, setErrorEditModal] = React.useState(false)
     const [showDeleteModal, setShowDeleteModal] = React.useState(false)
     const [errorDeleteModal, setErrorDeleteModal] = React.useState(false)
-
-    const update = useForceUpdate()
-
-    function mapPolicyFromForm(values: PolicyFormValues) {
-        return {
-            ...values,
-            informationType: undefined,
-            informationTypeName: values.informationType && values.informationType.name,
-            process: values.process.name,
-            legalBases: values.legalBasesStatus !== LegalBasesStatus.OWN ? [] : values.legalBases,
-            legalBasesInherited: values.legalBasesStatus === LegalBasesStatus.INHERITED,
-            legalBasesStatus: undefined
-        }
-    }
-
-    const getInitialLegalBasesStatus = (legalBasesInherited: boolean, legalBases: LegalBasis[]) => {
-        if (legalBasesInherited) return LegalBasesStatus.INHERITED
-        else {
-            if (!legalBases || !legalBases.length) return LegalBasesStatus.UNKNOWN
-            return LegalBasesStatus.OWN
-        }
-    }
-
-    const getInitialValuesModal = (policy: Policy): PolicyFormValues => {
-        let parsedLegalBases = policy.legalBases && policy.legalBases.map((legalBasis: any) => ({
-            gdpr: legalBasis.gdpr && legalBasis.gdpr.code,
-            nationalLaw: (legalBasis.nationalLaw && legalBasis.nationalLaw.code) || undefined,
-            description: legalBasis.description || undefined,
-            start: legalBasis.start || undefined,
-            end: legalBasis.end || undefined
-        }))
-
-        return {
-            id: policy.id,
-            process: policy.process,
-            purposeCode: policy.purposeCode.code,
-            informationType: policy.informationType,
-            subjectCategory: policy.subjectCategory ? policy.subjectCategory.code : '',
-            legalBasesStatus: getInitialLegalBasesStatus(policy.legalBasesInherited, policy.legalBases),
-            legalBases: parsedLegalBases
-        }
-    }
 
     const handleSort = (title: string, prevDirection: string) => {
         let nextDirection = null;
@@ -174,31 +146,27 @@ const TablePurpose = ({ process, isLoggedIn, updateProcess }: TablePurposeProps)
         return policyList;
     };
 
-    const handleEditPolicy = async (values: any) => {
-        let body = [mapPolicyFromForm(values)]
-        await axios
-            .put(`${server_polly}/policy`, body)
-            .then(((res: any) => {
-                setPolicies([...policies.filter((policy: Policy) => policy.id !== res.data.content[0].id), res.data.content[0]])
-                setShowEditModal(false)
-            }))
-            .catch((err: any) => {
-                setShowEditModal(true)
-                setErrorEditModal(err.message)
-            });
+    const handleEditPolicy = async (values: PolicyFormValues) => {
+        try {
+            const policy = await updatePolicy(values)
+            setPolicies([...policies.filter((p: Policy) => p.id !== policy.id), policy])
+            setShowEditModal(false)
+        } catch (err) {
+            setShowEditModal(true)
+            setErrorEditModal(err.message)
+        }
     }
 
-    const handleDeletePolicy = async (policy: Policy) => {
-        await axios
-            .delete(`${server_polly}/policy/${policy.id}`)
-            .then(((res: any) => {
-                setPolicies(policies.filter((p: Policy) => p.id !== policy.id))
-                setShowDeleteModal(false)
-            }))
-            .catch((err: any) => {
-                setShowDeleteModal(true)
-                setErrorDeleteModal(err.message)
-            });
+    const handleDeletePolicy = async (policy?: Policy) => {
+        if (!policy) return
+        try {
+            await deletePolicy(policy.id)
+            setPolicies(policies.filter((p: Policy) => p.id !== policy.id))
+            setShowDeleteModal(false)
+        } catch (err) {
+            setShowDeleteModal(true)
+            setErrorDeleteModal(err.message)
+        }
     }
 
     React.useEffect(() => {
@@ -278,10 +246,10 @@ const TablePurpose = ({ process, isLoggedIn, updateProcess }: TablePurposeProps)
                         </CustomStyledRow>
                     ))}
                 </StyledBody>
-                {showEditModal && (
+                {showEditModal && currentPolicy && (
                     <ModalPolicy
                         title={intl.policyEdit}
-                        initialValues={getInitialValuesModal(currentPolicy)}
+                        initialValues={convertPolicyToFormValues(currentPolicy)}
                         onClose={() => { setShowEditModal(false) }}
                         isOpen={showEditModal}
                         isEdit={true}
@@ -301,7 +269,7 @@ const TablePurpose = ({ process, isLoggedIn, updateProcess }: TablePurposeProps)
                     >
                         <ModalHeader>{intl.confirmDeletePolicyHeader}</ModalHeader>
                         <ModalBody>
-                            <Paragraph2>{intl.confirmDeletePolicyText} {currentPolicy.informationType.name}</Paragraph2>
+                            <Paragraph2>{intl.confirmDeletePolicyText} {currentPolicy && currentPolicy.informationType.name}</Paragraph2>
                         </ModalBody>
 
                         <ModalFooter>
