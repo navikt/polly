@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 import javax.transaction.Transactional;
 
-public interface InformationTypeRepository extends JpaRepository<InformationType, UUID> {
+public interface InformationTypeRepository extends JpaRepository<InformationType, UUID>, InformationTypeRepositoryCustom {
 
     @Query(value = "select * from information_type where data ->>'name' = ?1", nativeQuery = true)
     Optional<InformationType> findByName(String name);
@@ -28,12 +28,6 @@ public interface InformationTypeRepository extends JpaRepository<InformationType
 
     @Query(value = "select * from information_type where data->>'navMaster' = ?1", nativeQuery = true)
     List<InformationType> findByNavMaster(String navMaster);
-
-    @Query(value = "select * from information_type where data->'categories'->>'code' = ?1", nativeQuery = true)
-    List<InformationType> findByCategory(String category);
-
-    @Query(value = "select * from information_type where data->'sources'->>'code' = ?1", nativeQuery = true)
-    List<InformationType> findBySource(String source);
 
     List<InformationType> findByElasticsearchStatus(ElasticsearchStatus status);
 
