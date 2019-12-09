@@ -232,7 +232,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                                         </React.Fragment>
                                     )}
                                 />
-
+                                {JSON.stringify(formikBag.errors)}
 
                             </ModalBody>
 
