@@ -1,13 +1,9 @@
 package no.nav.data.polly.process;
 
 import no.nav.data.polly.IntegrationTestBase;
-import no.nav.data.polly.codelist.CodelistService;
-import no.nav.data.polly.codelist.domain.ListName;
-import no.nav.data.polly.policy.dto.PolicyInformationTypeResponse;
 import no.nav.data.polly.policy.domain.Policy;
-import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.ProcessReadController.ProcessPolicyPage;
-import no.nav.data.polly.process.dto.ProcessPolicyResponse;
+import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.PurposeCountResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,26 +33,14 @@ class PurposeControllerIT extends IntegrationTestBase {
 
         assertThat(purposeResponse.getNumberOfElements()).isOne();
         assertThat(purposeResponse.getContent().get(0)).isEqualTo(
-                ProcessPolicyResponse.builder()
+                ProcessResponse.builder()
                         .id(policy.getProcess().getId())
                         .name("Auto_" + PURPOSE_CODE1)
                         .purposeCode(PURPOSE_CODE1)
                         .start(LocalDate.now())
                         .end(LocalDate.now())
                         .legalBasis(legalBasisResponse())
-                        .policy(PolicyResponse.builder()
-                                .id(policy.getId())
-                                .process(policy.getProcess().convertToIdNameResponse())
-                                .purposeCode(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1))
-                                .informationType(new PolicyInformationTypeResponse(createInformationType().getId(), INFORMATION_TYPE_NAME,
-                                        createInformationType().getData().sensitivityCode()))
-                                .subjectCategory(CodelistService.getCodelistResponse(ListName.SUBJECT_CATEGORY, policy.getSubjectCategory()))
-                                .start(policy.getStart())
-                                .end(policy.getEnd())
-                                .legalBasis(legalBasisResponse())
-                                .build())
                         .build());
-
     }
 
     @Test

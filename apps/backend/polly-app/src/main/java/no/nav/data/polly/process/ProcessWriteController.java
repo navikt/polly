@@ -11,6 +11,7 @@ import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessRepository;
+import no.nav.data.polly.process.dto.ProcessPolicyResponse;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import org.springframework.http.HttpStatus;
@@ -91,7 +92,7 @@ public class ProcessWriteController {
             @ApiResponse(code = 404, message = "Process not found"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @PutMapping("/{id}")
-    public ResponseEntity<ProcessResponse> updateProcess(@PathVariable UUID id, @Valid @RequestBody ProcessRequest request) {
+    public ResponseEntity<ProcessPolicyResponse> updateProcess(@PathVariable UUID id, @Valid @RequestBody ProcessRequest request) {
         log.debug("Received request to update Process with id={}", id);
         if (!Objects.equals(id, request.getIdAsUUID())) {
             throw new ValidationException(String.format("id mismatch in request %s and path %s", request.getId(), id));
@@ -103,7 +104,7 @@ public class ProcessWriteController {
         }
         service.validateRequests(List.of(request), true);
         var process = fromRepository.get().convertFromRequest(request);
-        return ResponseEntity.ok(repository.save(process).convertToResponse());
+        return ResponseEntity.ok(repository.save(process).convertToResponseWithPolicies());
     }
 
     @ApiOperation(value = "Update Processes")
