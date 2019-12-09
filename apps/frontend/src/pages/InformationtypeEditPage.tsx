@@ -1,15 +1,14 @@
 import * as React from "react";
 import { styled } from "baseui";
 import { Spinner } from "baseui/spinner";
-import axios from "axios";
 
 import InformationtypeForm from "../components/InformationType/InformationtypeForm";
 import Banner from "../components/Banner";
 import { InformationType, InformationtypeFormValues } from "../constants"
 import { Code, codelist } from "../service/Codelist";
-import { intl } from "../util/intl/intl"
+import { intl } from "../util"
+import { getInformationType, updateInformationType } from "../api"
 
-const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 const Centered = styled("div", {
     height: "100%",
@@ -55,35 +54,29 @@ const InformationtypeEditPage = (props: any) => {
         }
     };
 
-    const handleSubmitResponse = (response: any) => {
-        props.history.push(`/informationtype/${props.match.params.id}`)
-    };
-
     const handleSubmit = async (values: any) => {
         if (!values) return;
-
         setErrorSubmit(null);
-        let body = { ...values, id: props.match.params.id };
+        let body = {...values, id: props.match.params.id};
 
-        await axios
-            .put(`${server_polly}/informationtype`, [body])
-            .then(handleSubmitResponse)
-            .catch(err => setErrorSubmit(err.message));
+        try {
+            await updateInformationType(body)
+            props.history.push(`/informationtype/${props.match.params.id}`)
+        } catch (e) {
+            setErrorSubmit(e.message)
+        }
     };
 
     React.useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
-
-            await axios
-                .get(`${server_polly}/informationtype/${props.match.params.id}`)
-                .then(res => {
-                    setInformationType(res.data);
-                })
-                .catch(handleAxiosError);
-
+            try {
+                const infoType = await getInformationType(props.match.params.id)
+                setInformationType(infoType)
+            } catch (e) {
+                handleAxiosError(e)
+            }
             await codelist.wait();
-
             setLoading(false);
         };
         fetchData();
@@ -92,27 +85,27 @@ const InformationtypeEditPage = (props: any) => {
     return (
         <React.Fragment>
             {isLoading ? (
-                <Spinner size={30} />
+                <Spinner size={30}/>
             ) : (
-                    <React.Fragment>
-                        <Banner title={intl.edit} />
+                <React.Fragment>
+                    <Banner title={intl.edit}/>
 
-                        {!error && informationtype ? (
-                            <Centered>
-                                <InformationtypeForm
-                                    formInitialValues={initFormValues(
-                                        informationtype
-                                    )}
-                                    isEdit
-                                    submit={handleSubmit}
-                                />
-                                {errorSubmit && <p>{errorSubmit}</p>}
-                            </Centered>
-                        ) : (
-                                <p>{intl.couldntLoad}</p>
-                            )}
-                    </React.Fragment>
-                )}
+                    {!error && informationtype ? (
+                        <Centered>
+                            <InformationtypeForm
+                                formInitialValues={initFormValues(
+                                    informationtype
+                                )}
+                                isEdit
+                                submit={handleSubmit}
+                            />
+                            {errorSubmit && <p>{errorSubmit}</p>}
+                        </Centered>
+                    ) : (
+                        <p>{intl.couldntLoad}</p>
+                    )}
+                </React.Fragment>
+            )}
         </React.Fragment>
     );
 };

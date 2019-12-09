@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect } from "react";
+import { KeyboardEvent } from "react";
 import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikActions, FormikProps } from "formik";
 import { Label2 } from "baseui/typography";
 import { Input } from "baseui/input";
@@ -10,16 +10,12 @@ import { Button, SHAPE } from "baseui/button";
 import { Plus } from "baseui/icon";
 import { Tag, VARIANT } from "baseui/tag";
 import { Option, Select, TYPE, Value } from "baseui/select";
-import axios from "axios"
 
 import { codelist, ListName } from "../../service/Codelist";
-import { InformationtypeFormValues, PageResponse, Term } from "../../constants";
-import { useDebouncedState } from "../../util/customHooks"
-import { KeyboardEvent } from "react"
-import { intl } from "../../util/intl/intl"
+import { InformationtypeFormValues } from "../../constants";
+import { intl } from "../../util"
 import * as yup from "yup"
-
-const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
+import { useTermSearch } from "../../api/TermApi"
 
 const labelProps: BlockProps = {
     marginBottom: "8px",
@@ -98,8 +94,7 @@ const InformationtypeForm = ({
     }
     const keywordsRef = React.useRef<HTMLInputElement>(null);
 
-    const [termSearch, setTermSearch] = useDebouncedState<string>('', 200);
-    const [termSearchResult, setTermSearchResult] = React.useState<Option[]>([]);
+    const [termSearchResult, setTermSearch, termSearchLoading] = useTermSearch()
 
     const [sensitivityValue, setSensitivityValue] = React.useState<Option>(initialValueSensitivity());
     const [termValue, setTermValue] = React.useState<Option>(initialValueTerm());
@@ -119,17 +114,6 @@ const InformationtypeForm = ({
             );
         }
     };
-
-    useEffect(() => {
-        if (termSearch && termSearch.length > 2) {
-            axios
-                .get(`${server_polly}/term/search/${termSearch}`)
-                .then((res: { data: PageResponse<Term> }) => {
-                    let options: Option[] = res.data.content.map((term: Term) => ({ id: term.name, label: term.name + ' - ' + term.description }))
-                    return setTermSearchResult(options)
-                })
-        }
-    }, [termSearch])
 
     const disableEnter = (e: KeyboardEvent) => {
         if (e.key === 'Enter') e.preventDefault()
@@ -201,6 +185,7 @@ const InformationtypeForm = ({
                                                     form.setFieldValue('term', term ? term.id : undefined)
                                                 }}
                                                 error={!!form.errors.term && !!form.submitCount}
+                                                isLoading={termSearchLoading}
                                             />
                                         </Block>
                                     )}

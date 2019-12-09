@@ -99,6 +99,10 @@ export interface Process extends IDurationed {
     purposeCode: string;
 }
 
+export interface ProcessPurposeCount {
+    purposes: { [purpose: string]: number }
+}
+
 export interface UserInfo {
     loggedIn: boolean;
     groups: string[];

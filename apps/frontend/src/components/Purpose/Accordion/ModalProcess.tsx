@@ -213,7 +213,6 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                                     )}
                                 />
 
-
                             </ModalBody>
 
                             <ModalFooter>

@@ -1,4 +1,12 @@
 import * as React from "react";
+import { KeyboardEvent, useState } from "react";
+import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
+import { ErrorMessage, Field, FieldArray, FieldProps, Form, Formik, FormikProps, } from "formik";
+import { Block, BlockProps } from "baseui/block";
+import { Label2 } from "baseui/typography";
+import { Radio, RadioGroup } from "baseui/radio";
+import { Plus } from "baseui/icon";
+import { Select, TYPE, Value } from 'baseui/select';
 import {KeyboardEvent, useEffect, useState} from "react";
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
 import {Field, FieldArray, FieldProps, Form, Formik, FormikProps,} from "formik";
@@ -9,6 +17,13 @@ import {Select, TYPE, Value} from 'baseui/select';
 import * as yup from "yup"
 
 import CardLegalBasis from './CardLegalBasis'
+import { codelist, ListName } from "../../../service/Codelist";
+import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
+import { LegalBasesStatus, PolicyFormValues, PolicyInformationType } from "../../../constants"
+import { intl } from "../../../util"
+import { legalBasisSchema, ListLegalBases } from "../../common/LegalBasis"
+import { KIND as NKIND, Notification } from "baseui/notification"
+import { useInfoTypeSearch } from "../../../api"
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
 import {codelist, ListName} from "../../../service/Codelist";
 import {useDebouncedState} from "../../../util/customHooks"
@@ -24,7 +39,6 @@ import {
 import {intl} from "../../../util/intl/intl"
 import {legalBasisSchema, ListLegalBases} from "../../common/LegalBasis"
 
-const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 const modalBlockProps: BlockProps = {
     width: '750px',
@@ -172,24 +186,11 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
     const [showLegalbasesFields, setShowLegalbasesFields] = React.useState<boolean>(false);
 
     const [infoTypeValue, setInfoTypeValue] = React.useState<Array<PolicyInformationType>>(isEdit && initialValues.informationType ? [initialValues.informationType] : []);
-    const [infoTypeSearch, setInfoTypeSearch] = useDebouncedState<string>('', 200);
-    const [infoTypeSearchResult, setInfoTypeSearchResult] = React.useState<PolicyInformationType[]>([]);
-
-    useEffect(() => {
-        if (infoTypeSearch && infoTypeSearch.length > 2) {
-            axios
-                .get(`${server_polly}/informationtype/search/${infoTypeSearch}`)
-                .then((res: { data: PageResponse<InformationType> }) => {
-                    return setInfoTypeSearchResult(res.data.content)
-                })
-        }
-
-    }, [infoTypeSearch])
+    const [infoTypeSearchResult, setInfoTypeSearch] = useInfoTypeSearch()
 
     const onCloseModal = () => {
         setInfoTypeValue([])
         setInfoTypeSearch('')
-        setInfoTypeSearchResult([])
         setShowLegalbasesFields(false)
         onClose()
     }

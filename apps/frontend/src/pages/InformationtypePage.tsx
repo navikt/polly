@@ -1,7 +1,6 @@
 import * as React from "react";
 import { ReactNode, useEffect, useState } from "react";
 import { Spinner } from "baseui/spinner";
-import axios from "axios";
 import { Button, KIND, SHAPE } from "baseui/button"
 import { Block } from "baseui/block"
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons"
@@ -18,18 +17,15 @@ import { RouteComponentProps } from "react-router-dom"
 
 
 import InformationtypeMetadata from "../components/InformationType/InformationtypeMetadata/";
-import { useAwait, useDebouncedState } from "../util/customHooks"
-import { InformationType, PageResponse } from "../constants"
+import { intl, theme, useAwait, useDebouncedState } from "../util"
+import { InformationType, Policy } from "../constants"
 import { codelist, ListName } from "../service/Codelist"
 import Banner from "../components/Banner";
-import { intl } from "../util/intl/intl"
 import { user } from "../service/User";
 import { H3, H6 } from "baseui/typography"
-import { theme } from "../util/theme"
+import { getInformationType, getInformationTypes, getPoliciesForInformationType, searchInformationType, useInfoTypeSearch } from "../api"
 
-const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
-
-const reducePolicylist = (list: any) => {
+const reducePolicylist = (list: Policy[]) => {
     const temp = list.reduce((acc: any, curr: any) => {
         if (!acc[curr.purposeCode.code]) {
             acc[curr.purposeCode.code] = [curr]
@@ -62,14 +58,9 @@ const InformationTypeTable = (props: RouteComponentProps) => {
     React.useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
-            await axios
-                .get(`${server_polly}/informationtype/?pageNumber=${page - 1}&pageSize=${limit}`)
-                .then((res: { data: PageResponse<InformationType> }) => {
-                    setTotal(res.data.totalElements)
-                    let content: InformationType[] = res.data.content
-                    setData(content.map(mapInformationTypeToTable));
-
-                });
+            let data = await getInformationTypes(page, limit)
+            setTotal(data.totalElements)
+            setData(data.content.map(mapInformationTypeToTable));
             setLoading(false);
         };
         fetchData();
@@ -142,26 +133,11 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
     const [informationtype, setInformationtype] = React.useState()
     const [purposeMap, setPurposeMap] = React.useState([])
 
-    const [infoTypeLoading, setInfoTypeSearchLoading] = useState<boolean>(false);
-    const [infoTypeSearch, setInfoTypeSearch] = useDebouncedState<string>('', 200);
-    const [infoTypeSearchResult, setInfoTypeSearchResult] = React.useState<Option[]>([]);
+    const [infoTypeSearchResult, setInfoTypeSearch, infoTypeSearchLoading] = useInfoTypeSearch()
 
     useAwait(user.wait())
 
     useEffect(() => setInformationTypeId(props.match.params.id), [props.match.params.id]);
-
-    useEffect(() => {
-        if (infoTypeSearch && infoTypeSearch.length > 2) {
-            setInfoTypeSearchLoading(true)
-            axios
-                .get(`${server_polly}/informationtype/search/${infoTypeSearch}`)
-                .then((res: { data: PageResponse<InformationType> }) => {
-                    let options: Option[] = res.data.content.map((it: InformationType) => ({ id: it.id, label: it.name }))
-                    return setInfoTypeSearchResult(options)
-                })
-            setInfoTypeSearchLoading(false)
-        }
-    }, [infoTypeSearch])
 
     useEffect(() => {
         const fetchData = async () => {
@@ -169,19 +145,14 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
                 return;
             }
             setLoading(true);
-            await axios
-                .get(`${server_polly}/informationtype/${informationTypeId}`)
-                .then(res => {
-                    setInformationtype(res.data)
-                })
-                .catch(err => setError(err.message));
-
-            await axios
-                .get(`${server_polly}/policy/?informationTypeId=${informationTypeId}&pageSize=250`)
-                .then(res => {
-                    setPurposeMap(reducePolicylist(res.data.content))
-                })
-                .catch(err => setError(err.message));
+            try {
+                const infoType = await getInformationType(informationTypeId)
+                const policies = await getPoliciesForInformationType(informationTypeId)
+                setInformationtype(infoType)
+                setPurposeMap(reducePolicylist(policies.content))
+            } catch (err) {
+                setError(err.message)
+            }
 
             await codelist.wait();
             if (!props.match.params.id) props.history.push(`/informationtype/${informationTypeId}`)
@@ -215,11 +186,11 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
                                 maxDropdownHeight="400px"
                                 searchable={true}
                                 type={TYPE.search}
-                                options={infoTypeSearchResult}
+                                options={infoTypeSearchResult.map(it => ({id: it.id, label: it.name}))}
                                 placeholder={intl.informationTypeSearch}
                                 onInputChange={event => setInfoTypeSearch(event.currentTarget.value)}
                                 onChange={(params: any) => setInformationTypeId(params.value[0].id)}
-                                isLoading={infoTypeLoading}
+                                isLoading={infoTypeSearchLoading}
                                 filterOptions={options => options}
                             />
                         </Block>
