@@ -111,6 +111,8 @@ export interface IStrings {
     requiredNationalLaw: string;
     requiredDescription: string;
 
+    code: string,
+    shortName: string,
     createCodeListTitle: string,
     deleteCodeListConfirmationTitle: string,
     editCodeListTitle: string,

@@ -46,23 +46,23 @@ class UserService {
   }
 
   public getNavIdent(): string {
-    return this.userInfo.navIdent ? this.userInfo.navIdent : ""
+    return this.userInfo.navIdent ?? ''
   }
 
   public getEmail(): string {
-    return this.userInfo.email ? this.userInfo.email : ""
+    return this.userInfo.email ?? ''
   }
 
   public getName(): string {
-    return this.userInfo.name ? this.userInfo.name : ""
+    return this.userInfo.name ?? ''
   }
 
   public getGivenName(): string {
-    return this.userInfo.givenName ? this.userInfo.givenName : ""
+    return this.userInfo.givenName ?? ''
   }
 
   public getFamilyName(): string {
-    return this.userInfo.familyName ? this.userInfo.familyName : ""
+    return this.userInfo.familyName ?? ''
   }
 
   public getGroups(): string[] {

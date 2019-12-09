@@ -22,10 +22,11 @@ export enum SensitivityLevel {
     ART10 = "STRAFF"
 }
 
+// Refers to GDPR_ARTICLE codelist
 const ARTICLE_6_PREFIX = 'ART6'
 const ARTICLE_9_PREFIX = 'ART9'
-export const NATIONAL_LAW_GDPR_ARTICLES = ['ART61C', 'ART61E']
-export const DESCRIPTION_GDPR_ARTICLES = ['ART61C', 'ART61E', 'ART61F']
+const NATIONAL_LAW_GDPR_ARTICLES = ['ART61C', 'ART61E']
+const DESCRIPTION_GDPR_ARTICLES = ['ART61C', 'ART61E', 'ART61F']
 
 
 // TODO show error
@@ -126,8 +127,6 @@ class CodelistService {
 }
 
 export const codelist = new CodelistService();
-
-// new objects from /codelist
 
 export interface AllCodelists {
     codelist: List;

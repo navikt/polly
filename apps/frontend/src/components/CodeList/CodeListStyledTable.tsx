@@ -135,19 +135,19 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
         if (prevDirection === null) {
             nextDirection = SORT_DIRECTION.ASC;
         }
-        if (title === "Code") {
+        if (title === intl.code) {
             setCodeDirection(nextDirection);
             setShortNameDirection(null);
             setDescriptionDirection(null);
             return;
         }
-        if (title === "Short Name") {
+        if (title === intl.shortName) {
             setCodeDirection(null);
             setShortNameDirection(nextDirection);
             setDescriptionDirection(null);
             return;
         }
-        if (title === "Description") {
+        if (title === intl.description) {
             setCodeDirection(null);
             setShortNameDirection(null);
             setDescriptionDirection(nextDirection);
@@ -209,10 +209,10 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
                                 style: headerStyle
                             }
                         }}
-                        title="Code"
+                        title={intl.code}
                         direction={codeDirection}
                         onSort={() =>
-                            handleSort("Code", codeDirection)
+                            handleSort(intl.code, codeDirection)
                         }
                     />
                 </SmallerHeadCell>
@@ -223,10 +223,10 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
                                 style: headerStyle
                             }
                         }}
-                        title="Short Name"
+                        title={intl.shortName}
                         direction={shortNameDirection}
                         onSort={() =>
-                            handleSort("Short Name", shortNameDirection)
+                            handleSort(intl.shortName, shortNameDirection)
                         }
                     />
                 </SmallerHeadCell>
@@ -240,10 +240,10 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
                                 style: headerStyle
                             }
                         }}
-                        title="Description"
+                        title={intl.description}
                         direction={descriptionDirection}
                         onSort={() =>
-                            handleSort("Description", descriptionDirection)
+                            handleSort(intl.description, descriptionDirection)
                         }
                     />
                 </StyledHeadCell>
