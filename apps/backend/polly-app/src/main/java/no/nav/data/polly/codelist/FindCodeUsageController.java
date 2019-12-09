@@ -5,9 +5,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.codelist.dto.FindCodeUsageRequest;
 import no.nav.data.polly.codelist.dto.FindCodeUsageResponse;
+import no.nav.data.polly.common.utils.StreamUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -42,7 +42,7 @@ public class FindCodeUsageController {
         log.info("Received request to fetch all usage of code {} in list {}", code, list);
         service.validateRequests(list, code);
 
-        FindCodeUsageResponse response = service.findCodeUsageByListNameAndCode(list, code);
+        FindCodeUsageResponse response = service.findCodeUsage(list, code);
         if (response.isEmpty()) {
             log.info("Cannot find data related to code {} in list {}", code, list);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -61,6 +61,6 @@ public class FindCodeUsageController {
         requests = StreamUtils.nullToEmptyList(requests);
         service.validateRequests(requests);
 
-        return service.findCodeUsageByRequests(requests);
+        return service.findCodeUsage(requests);
     }
 }

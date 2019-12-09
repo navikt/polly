@@ -1,9 +1,8 @@
 package no.nav.data.polly.codelist;
 
-import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
-import no.nav.data.polly.common.utils.StreamUtils;
-import no.nav.data.polly.common.validator.FieldValidator;
+import no.nav.data.polly.codelist.dto.FindCodeUsageRequest;
+import no.nav.data.polly.codelist.dto.FindCodeUsageResponse;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
@@ -13,8 +12,6 @@ import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessResponse;
-import no.nav.data.polly.codelist.dto.FindCodeUsageRequest;
-import no.nav.data.polly.codelist.dto.FindCodeUsageResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -37,28 +34,24 @@ public class FindCodeUsageService {
     }
 
 
-    void validateRequests(String listName, String code){
+    void validateRequests(String listName, String code) {
         validateRequests(List.of(FindCodeUsageRequest.builder().listName(listName).code(code).build()));
     }
 
     void validateRequests(List<FindCodeUsageRequest> requests) {
-        FieldValidator validator = new FieldValidator("validateRequests");
-        StreamUtils.safeStream(requests).forEach(request -> codelistService.checkValidCode(request.getListName(), request.getCode(), validator));
-        if (!validator.getErrors().isEmpty()) {
-            //TODO: ErrorHandling
-        }
+        codelistService.validateCodeUsageRequests(requests);
     }
 
-    FindCodeUsageResponse findCodeUsageByListNameAndCode(String listName, String code) {
-        return processByListName(ListName.valueOf(listName), code);
+    FindCodeUsageResponse findCodeUsage(String listName, String code) {
+        return findCodeUsage(List.of(FindCodeUsageRequest.builder().listName(listName).code(code).build())).get(0);
     }
 
-    List<FindCodeUsageResponse> findCodeUsageByRequests(List<FindCodeUsageRequest> requests) {
+    List<FindCodeUsageResponse> findCodeUsage(List<FindCodeUsageRequest> requests) {
         return requests.stream().map(request -> processByListName(request.getAsListName(), request.getCode())).collect(Collectors.toList());
     }
 
     private FindCodeUsageResponse processByListName(ListName listName, String code) {
-        FindCodeUsageResponse response = new FindCodeUsageResponse();
+        FindCodeUsageResponse response = new FindCodeUsageResponse(listName);
         switch (listName) {
             // process only
             case PURPOSE:
