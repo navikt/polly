@@ -9,7 +9,7 @@ import { Process } from "../../constants"
 import { intl, useAwait } from "../../util"
 import { user } from "../../service/User";
 import AccordionProcess from "./Accordion";
-import { createProcess, getProcessesForPurpose } from "../../api/ProcessApi"
+import { createProcess, getProcessesForPurpose } from "../../api"
 
 const rowBlockProps: BlockProps = {
     marginBottom: 'scale800',
