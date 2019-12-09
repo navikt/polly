@@ -1,5 +1,7 @@
 import axios from "axios"
-import { InformationType, PageResponse } from "../constants"
+import { InformationType, PageResponse, PolicyInformationType } from "../constants"
+import { default as React, Dispatch, SetStateAction, useEffect } from "react"
+import { useDebouncedState } from "../util"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -21,4 +23,24 @@ export const createInformationType = async (informationType: any) => {
 
 export const updateInformationType = async (informationType: any) => {
     return (await axios.put<PageResponse<InformationType>>(`${server_polly}/informationtype`, [informationType])).data.content[0]
+}
+
+export const useInfoTypeSearch = () => {
+    const [infoTypeSearch, setInfoTypeSearch] = useDebouncedState<string>('', 200);
+    const [infoTypeSearchResult, setInfoTypeSearchResult] = React.useState<PolicyInformationType[]>([]);
+    const [loading, setLoading] = React.useState<boolean>(false);
+
+    useEffect(() => {
+        const search = async () => {
+            if (infoTypeSearch && infoTypeSearch.length > 2) {
+                setLoading(true)
+                const res = await searchInformationType(infoTypeSearch)
+                setInfoTypeSearchResult(res.content)
+                setLoading(false)
+            }
+        }
+        search()
+    }, [infoTypeSearch])
+
+    return [infoTypeSearchResult, setInfoTypeSearch, loading] as [PolicyInformationType[], Dispatch<SetStateAction<string>>, boolean]
 }

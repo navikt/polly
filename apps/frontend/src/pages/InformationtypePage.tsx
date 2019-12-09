@@ -23,7 +23,7 @@ import { codelist, ListName } from "../service/Codelist"
 import Banner from "../components/Banner";
 import { user } from "../service/User";
 import { H3, H6 } from "baseui/typography"
-import { getInformationType, getInformationTypes, getPoliciesForInformationType, searchInformationType } from "../api"
+import { getInformationType, getInformationTypes, getPoliciesForInformationType, searchInformationType, useInfoTypeSearch } from "../api"
 
 const reducePolicylist = (list: Policy[]) => {
     const temp = list.reduce((acc: any, curr: any) => {
@@ -133,26 +133,11 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
     const [informationtype, setInformationtype] = React.useState()
     const [purposeMap, setPurposeMap] = React.useState([])
 
-    const [infoTypeLoading, setInfoTypeSearchLoading] = useState<boolean>(false);
-    const [infoTypeSearch, setInfoTypeSearch] = useDebouncedState<string>('', 200);
-    const [infoTypeSearchResult, setInfoTypeSearchResult] = React.useState<Option[]>([]);
+    const [infoTypeSearchResult, setInfoTypeSearch, infoTypeSearchLoading] = useInfoTypeSearch()
 
     useAwait(user.wait())
 
     useEffect(() => setInformationTypeId(props.match.params.id), [props.match.params.id]);
-
-    useEffect(() => {
-        const search = async () => {
-            if (infoTypeSearch && infoTypeSearch.length > 2) {
-                setInfoTypeSearchLoading(true)
-                const types = await searchInformationType(infoTypeSearch)
-                const options = types.content.map(it => ({id: it.id, label: it.name}))
-                setInfoTypeSearchResult(options)
-                setInfoTypeSearchLoading(false)
-            }
-        }
-        search()
-    }, [infoTypeSearch])
 
     useEffect(() => {
         const fetchData = async () => {
@@ -201,11 +186,11 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
                                 maxDropdownHeight="400px"
                                 searchable={true}
                                 type={TYPE.search}
-                                options={infoTypeSearchResult}
+                                options={infoTypeSearchResult.map(it => ({id: it.id, label: it.name}))}
                                 placeholder={intl.informationTypeSearch}
                                 onInputChange={event => setInfoTypeSearch(event.currentTarget.value)}
                                 onChange={(params: any) => setInformationTypeId(params.value[0].id)}
-                                isLoading={infoTypeLoading}
+                                isLoading={infoTypeSearchLoading}
                                 filterOptions={options => options}
                             />
                         </Block>

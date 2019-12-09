@@ -1,6 +1,6 @@
 import axios from "axios";
 import { UserInfo } from "../constants"
-import { intl } from "../util/intl/intl"
+import { intl } from "../util"
 
 axios.defaults.withCredentials = true;
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
