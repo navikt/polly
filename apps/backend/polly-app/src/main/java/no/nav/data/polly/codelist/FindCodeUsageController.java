@@ -1,4 +1,4 @@
-package no.nav.data.polly.search;
+package no.nav.data.polly.codelist;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -6,8 +6,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.utils.StreamUtils;
-import no.nav.data.polly.search.dto.FindCodeUsageRequest;
-import no.nav.data.polly.search.dto.FindCodeUsageResponse;
+import no.nav.data.polly.codelist.dto.FindCodeUsageRequest;
+import no.nav.data.polly.codelist.dto.FindCodeUsageResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;

@@ -1,4 +1,4 @@
-package no.nav.data.polly.search.dto;
+package no.nav.data.polly.codelist.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

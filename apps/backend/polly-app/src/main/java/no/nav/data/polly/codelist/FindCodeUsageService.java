@@ -1,4 +1,4 @@
-package no.nav.data.polly.search;
+package no.nav.data.polly.codelist;
 
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
@@ -13,8 +13,8 @@ import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessResponse;
-import no.nav.data.polly.search.dto.FindCodeUsageRequest;
-import no.nav.data.polly.search.dto.FindCodeUsageResponse;
+import no.nav.data.polly.codelist.dto.FindCodeUsageRequest;
+import no.nav.data.polly.codelist.dto.FindCodeUsageResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
