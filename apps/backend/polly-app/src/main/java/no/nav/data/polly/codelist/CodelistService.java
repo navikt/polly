@@ -5,6 +5,7 @@ import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
+import no.nav.data.polly.codelist.dto.FindCodeUsageRequest;
 import no.nav.data.polly.common.exceptions.CodelistNotFoundException;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.common.validator.FieldValidator;
@@ -126,6 +127,12 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     public void validateListNameAndCode(String listName, String code) {
         FieldValidator validator = new FieldValidator(REFERENCE);
         checkValidCode(listName, code, validator);
+        ifErrorsThrowCodelistNotFoundException(validator.getErrors());
+    }
+
+    public void validateCodeUsageRequests(List<FindCodeUsageRequest> requests) {
+        FieldValidator validator = new FieldValidator(REFERENCE);
+        StreamUtils.safeStream(requests).forEach(request -> checkValidCode(request.getListName(), request.getCode(), validator));
         ifErrorsThrowCodelistNotFoundException(validator.getErrors());
     }
 
