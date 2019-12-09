@@ -17,8 +17,7 @@ import { codelist, ListName } from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
 import ModalPolicy from './ModalPolicy'
 import TablePurpose from './TablePurpose';
-import { createPolicy } from "../../../api"
-import { convertProcessToFormValues, getProcess, updateProcess } from "../../../api/ProcessApi"
+import { convertProcessToFormValues, createPolicy, getProcess, updateProcess } from "../../../api"
 
 const rowPanelContent: BlockProps = {
     display: 'flex',
@@ -37,7 +36,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps) =>
     const [showCreatePolicyModal, setShowCreatePolicyModal] = React.useState(false)
     const [errorCreatePolicy, setErrorCreatePolicy] = React.useState(null)
     const [process, setProcess] = React.useState<Process | undefined>()
-    const { currentPurpose } = props
+    const {currentPurpose} = props
 
     const updatePath = (params: { id: string, processid?: string } | null) => {
         let nextPath
@@ -45,13 +44,10 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps) =>
         else nextPath = generatePath(props.match.path, params)
         props.history.push(nextPath)
     }
-    // todo noe rar interasksjon mellom create policy og edit policy som gjør at vi bør reloade hele process (edit og create burde være samme sted?)
 
     const handleEditProcess = async (values: ProcessFormValues) => {
         try {
-            const updatedProcess = await updateProcess(values)
-            // todo backend for update burde nok returnere med policies
-            await getProcessById(updatedProcess.id)
+            setProcess(await updateProcess(values))
             setShowEditProcessModal(false)
         } catch (err) {
             console.log(err)
@@ -63,7 +59,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps) =>
 
         try {
             const policy = await createPolicy(values)
-            // todo
+            // todo noe rar interasksjon mellom create policy og edit policy som gjør at vi bør reloade hele process (edit og create burde være samme sted?)
             await getProcessById(policy.process.id)
             setErrorCreatePolicy(null)
             setShowCreatePolicyModal(false)
@@ -75,9 +71,9 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps) =>
 
     const handleChangePanel = async (value: string | null) => {
         if (!value)
-            updatePath({ id: currentPurpose })
+            updatePath({id: currentPurpose})
         else {
-            updatePath({ id: currentPurpose, processid: value })
+            updatePath({id: currentPurpose, processid: value})
             await getProcessById(value)
         }
     }
@@ -97,8 +93,8 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps) =>
             <Label2>{intl.legalBasis}</Label2>
             {list && list.length < 1 && <Paragraph2>{intl.legalBasisNotFound}</Paragraph2>}
             {list && list.length > 0 && (
-                <ul style={{ listStyle: "none", paddingInlineStart: 0 }}>
-                    {list.map((legalBasis: any, i: number) => <li key={i}><Paragraph2><LegalBasisView legalBasis={legalBasis} /></Paragraph2></li>)}
+                <ul style={{listStyle: "none", paddingInlineStart: 0}}>
+                    {list.map((legalBasis: any, i: number) => <li key={i}><Paragraph2><LegalBasisView legalBasis={legalBasis}/></Paragraph2></li>)}
                 </ul>
             )}
         </Block>
@@ -144,7 +140,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps) =>
             size={ButtonSize.compact}
             kind={KIND.tertiary}
             onClick={() => setShowCreatePolicyModal(true)}
-            startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
+            startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
         >
             {intl.addNew}
         </Button>
@@ -159,10 +155,10 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps) =>
 
     return (
         <React.Fragment>
-            <Accordion onChange={({ expanded }) => handleChangePanel(expanded.length < 1 ? null : expanded[0].toString())}>
+            <Accordion onChange={({expanded}) => handleChangePanel(expanded.length < 1 ? null : expanded[0].toString())}>
                 {props.processList && props.processList.map((p: Process) => (
                     <Panel title={p.name} key={p.id}>
-                        {isLoading && <Spinner size={18} />}
+                        {isLoading && <Spinner size={18}/>}
 
                         {!isLoading && process && (
                             <React.Fragment>
