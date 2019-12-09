@@ -1,18 +1,15 @@
 import * as React from "react";
 import { styled } from "baseui";
 import { Spinner } from "baseui/spinner";
-import axios from "axios";
 
 import InformationtypeForm from "../components/InformationType/InformationtypeForm";
 import Banner from "../components/Banner";
 import { codelist } from "../service/Codelist";
-import { InformationType, InformationtypeFormValues, PageResponse } from "../constants"
-import { intl } from "../util/intl/intl"
-import { useAwait } from "../util/customHooks";
+import { InformationtypeFormValues } from "../constants"
+import { intl, useAwait } from "../util"
 import { user } from "../service/User";
 import ErrorNotAllowed from "../components/common/ErrorNotAllowed";
-
-const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
+import { createInformationType } from "../api"
 
 const Centered = styled("div", {
     height: "100%",
@@ -37,20 +34,16 @@ const InformationtypeCreatePage = (props: any) => {
     const [error, setError] = React.useState(null);
     const [errorSubmit, setErrorSubmit] = React.useState(null);
 
-    const handleSubmitResponse = (response: { data: PageResponse<InformationType> }) => {
-        props.history.push(`/informationtype/${response.data.content[0].id}`)
-    };
-
     const handleSubmit = async (values: any) => {
         if (!values) return;
 
         setErrorSubmit(null);
-        let body = [values];
-
-        await axios
-            .post(`${server_polly}/informationtype`, body)
-            .then(handleSubmitResponse)
-            .catch(err => setErrorSubmit(err.message));
+        try {
+            const infoType = await createInformationType(values)
+            props.history.push(`/informationtype/${infoType.id}`)
+        } catch (err) {
+            setErrorSubmit(err.message)
+        }
     };
 
     const hasAccess = () => {
@@ -72,30 +65,30 @@ const InformationtypeCreatePage = (props: any) => {
 
     return (
         <React.Fragment>
-            {!hasAccess() ? (<ErrorNotAllowed />)
+            {!hasAccess() ? (<ErrorNotAllowed/>)
                 : (
                     <React.Fragment>
                         {isLoading ? (
-                            <Spinner size={30} />
+                            <Spinner size={30}/>
                         ) : (
-                                <React.Fragment>
-                                    <Banner title={intl.informationTypeCreate} />
-                                    {!error && codelist ? (
-                                        <React.Fragment>
-                                            <Centered>
-                                                <InformationtypeForm
-                                                    formInitialValues={initialFormValues}
-                                                    submit={handleSubmit}
-                                                    isEdit={false}
-                                                />
-                                                {errorSubmit && <p>{errorSubmit}</p>}
-                                            </Centered>
-                                        </React.Fragment>
-                                    ) : (
-                                            <p>Feil i henting av codelist</p>
-                                        )}
-                                </React.Fragment>
-                            )}
+                            <React.Fragment>
+                                <Banner title={intl.informationTypeCreate}/>
+                                {!error && codelist ? (
+                                    <React.Fragment>
+                                        <Centered>
+                                            <InformationtypeForm
+                                                formInitialValues={initialFormValues}
+                                                submit={handleSubmit}
+                                                isEdit={false}
+                                            />
+                                            {errorSubmit && <p>{errorSubmit}</p>}
+                                        </Centered>
+                                    </React.Fragment>
+                                ) : (
+                                    <p>Feil i henting av codelist</p>
+                                )}
+                            </React.Fragment>
+                        )}
                     </React.Fragment>
                 )
             }

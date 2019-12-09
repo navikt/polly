@@ -15,6 +15,10 @@ export const getInformationType = async (informationTypeId: string) => {
     return (await axios.get<InformationType>(`${server_polly}/informationtype/${informationTypeId}`)).data
 }
 
+export const createInformationType = async (informationType: any) => {
+    return (await axios.post<PageResponse<InformationType>>(`${server_polly}/informationtype`, [informationType])).data.content[0]
+}
+
 export const updateInformationType = async (informationType: any) => {
-    return (await axios.put<InformationType>(`${server_polly}/informationtype`, [informationType])).data
+    return (await axios.put<PageResponse<InformationType>>(`${server_polly}/informationtype`, [informationType])).data.content[0]
 }

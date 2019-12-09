@@ -54,18 +54,14 @@ const InformationtypeEditPage = (props: any) => {
         }
     };
 
-    const handleSubmitResponse = (response: any) => {
-        props.history.push(`/informationtype/${props.match.params.id}`)
-    };
-
     const handleSubmit = async (values: any) => {
         if (!values) return;
         setErrorSubmit(null);
         let body = {...values, id: props.match.params.id};
 
         try {
-            const infoType = await updateInformationType(body)
-            handleSubmitResponse(infoType)
+            await updateInformationType(body)
+            props.history.push(`/informationtype/${props.match.params.id}`)
         } catch (e) {
             setErrorSubmit(e.message)
         }
