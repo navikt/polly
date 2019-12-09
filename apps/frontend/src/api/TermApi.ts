@@ -11,22 +11,22 @@ export const searchTerm = async (termSearch: string) => {
 }
 
 export const useTermSearch = () => {
-    const [infoTypeSearch, setSearch] = useDebouncedState<string>('', 200);
+    const [termSearch, setTermSearch] = useDebouncedState<string>('', 200);
     const [searchResult, setInfoTypeSearchResult] = React.useState<Option[]>([]);
     const [loading, setLoading] = React.useState<boolean>(false);
 
     useEffect(() => {
         const search = async () => {
-            if (infoTypeSearch && infoTypeSearch.length > 2) {
+            if (termSearch && termSearch.length > 2) {
                 setLoading(true)
-                const res = await searchTerm(infoTypeSearch)
+                const res = await searchTerm(termSearch)
                 let options: Option[] = res.content.map(term => ({id: term.name, label: term.name + ' - ' + term.description}))
                 setInfoTypeSearchResult(options)
                 setLoading(false)
             }
         }
         search()
-    }, [infoTypeSearch])
+    }, [termSearch])
 
-    return [searchResult, setSearch, loading] as [Option[], Dispatch<SetStateAction<string>>, boolean]
+    return [searchResult, setTermSearch, loading] as [Option[], Dispatch<SetStateAction<string>>, boolean]
 }
