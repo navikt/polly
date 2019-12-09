@@ -1,13 +1,5 @@
 import * as React from "react";
-import { KeyboardEvent, useState } from "react";
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
-import { ErrorMessage, Field, FieldArray, FieldProps, Form, Formik, FormikProps, } from "formik";
-import { Block, BlockProps } from "baseui/block";
-import { Label2 } from "baseui/typography";
-import { Radio, RadioGroup } from "baseui/radio";
-import { Plus } from "baseui/icon";
-import { Select, TYPE, Value } from 'baseui/select';
-import {KeyboardEvent, useEffect, useState} from "react";
+import {KeyboardEvent, useState} from "react";
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
 import {Field, FieldArray, FieldProps, Form, Formik, FormikProps,} from "formik";
 import {Block, BlockProps} from "baseui/block";
@@ -16,28 +8,14 @@ import {Plus} from "baseui/icon";
 import {Select, TYPE, Value} from 'baseui/select';
 import * as yup from "yup"
 
-import CardLegalBasis from './CardLegalBasis'
-import { codelist, ListName } from "../../../service/Codelist";
-import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
-import { LegalBasesStatus, PolicyFormValues, PolicyInformationType } from "../../../constants"
-import { intl } from "../../../util"
-import { legalBasisSchema, ListLegalBases } from "../../common/LegalBasis"
-import { KIND as NKIND, Notification } from "baseui/notification"
-import { useInfoTypeSearch } from "../../../api"
-import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
+import CardLegalBasis from "./CardLegalBasis"
 import {codelist, ListName} from "../../../service/Codelist";
-import {useDebouncedState} from "../../../util/customHooks"
-import axios from "axios"
-import {Error, renderLabel} from "../../common/ModalSchema";
-import {
-    InformationType,
-    LegalBasesStatus,
-    PageResponse,
-    PolicyFormValues,
-    PolicyInformationType
-} from "../../../constants"
-import {intl} from "../../../util/intl/intl"
+import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
+import {LegalBasesStatus, PolicyFormValues, PolicyInformationType} from "../../../constants"
 import {legalBasisSchema, ListLegalBases} from "../../common/LegalBasis"
+import {useInfoTypeSearch} from "../../../api"
+import {Error, renderLabel} from "../../common/ModalSchema";
+import {intl} from "../../../util/intl/intl"
 
 
 const modalBlockProps: BlockProps = {

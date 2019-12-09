@@ -3,22 +3,12 @@ import {Block, BlockProps} from "baseui/block";
 import {Plus} from "baseui/icon";
 import {Label2} from "baseui/typography";
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
-import axios from "axios";
 import {Process} from "../../constants"
 import {intl, useAwait} from "../../util"
 import {user} from "../../service/User";
 import ModalProcess from './Accordion/ModalProcess'
-import { Block, BlockProps } from "baseui/block";
-import { Plus } from "baseui/icon";
-import { Label2 } from "baseui/typography";
-import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
-
-import ModalProcess from './Accordion/ModalProcess'
-import { Process } from "../../constants"
-import { intl, useAwait } from "../../util"
-import { user } from "../../service/User";
 import AccordionProcess from "./Accordion";
-import { createProcess, getProcessesForPurpose } from "../../api"
+import {createProcess, getProcessesForPurpose} from "../../api"
 
 const rowBlockProps: BlockProps = {
     marginBottom: 'scale800',

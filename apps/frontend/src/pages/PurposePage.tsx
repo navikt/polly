@@ -1,27 +1,17 @@
 import * as React from "react";
-import { Option, StatefulSelect } from 'baseui/select';
-import axios from "axios";
 import {Option, StatefulSelect} from 'baseui/select';
 
 import ProcessList from "../components/Purpose";
 import Banner from "../components/Banner";
-import { Block } from "baseui/block";
-import { codelist, ListName } from "../service/Codelist";
-import { ProcessPurposeCount } from "../constants"
-import { intl, theme } from "../util"
-
 import {Block} from "baseui/block";
 import {codelist, ListName} from "../service/Codelist";
-import {intl} from "../util/intl/intl"
-import {theme} from "../util/theme"
+import {ProcessPurposeCount} from "../constants"
+import {intl, theme} from "../util"
 import illustration from "../resources/purpose_illustration.svg"
-import { Spinner } from "baseui/spinner";
-import { Label2, Paragraph2 } from "baseui/typography";
-import { generatePath } from "react-router";
-import { getProcessPurposeCount } from "../api/ProcessApi"
 import {Spinner} from "baseui/spinner";
 import {Label2, Paragraph2} from "baseui/typography";
 import {generatePath} from "react-router";
+import {getProcessPurposeCount} from "../api/ProcessApi"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 

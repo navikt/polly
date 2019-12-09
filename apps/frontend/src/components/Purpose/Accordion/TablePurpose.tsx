@@ -13,32 +13,17 @@ import {useStyletron, withStyle} from "baseui";
 import {StyledLink} from 'baseui/link'
 import {LegalBasesNotClarified, ListLegalBasesInTable} from "../../common/LegalBasis"
 import {codelist, ListName} from "../../../service/Codelist"
-import {LegalBasesStatus, LegalBasis, Policy, PolicyFormValues, Process} from "../../../constants"
+import {Policy, PolicyFormValues, Process} from "../../../constants"
 import {Sensitivity} from "../../InformationType/Sensitivity"
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
 import {Block} from "baseui/block";
-import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from "baseui/table";
-import { useStyletron, withStyle } from "baseui";
-import { StyledLink } from 'baseui/link'
-import { LegalBasesNotClarified, ListLegalBasesInTable } from "../../common/LegalBasis"
-import { codelist, ListName } from "../../../service/Codelist"
-import { Policy, PolicyFormValues, Process } from "../../../constants"
-import { Sensitivity } from "../../InformationType/Sensitivity"
-import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
-import { Block } from "baseui/block";
 import ModalPolicy from "./ModalPolicy";
-import {intl, useForceUpdate} from "../../../util"
+import {intl} from "../../../util"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "baseui/modal";
 import {Paragraph2} from "baseui/typography";
-import axios from "axios";
-import { intl } from "../../../util"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Modal, ModalBody, ModalFooter, ModalHeader } from "baseui/modal";
-import { Paragraph2 } from "baseui/typography";
-import { convertPolicyToFormValues, deletePolicy, updatePolicy } from "../../../api"
+import {convertPolicyToFormValues, deletePolicy, updatePolicy} from "../../../api"
 
 
 const StyledHeader = withStyle(StyledHead, {
@@ -46,6 +31,7 @@ const StyledHeader = withStyle(StyledHead, {
     boxShadow: "none",
     borderBottom: "2px solid #E9E7E7"
 });
+
 const CustomStyledRow = withStyle(StyledRow, {
     borderBottom: "1px solid #E9E7E7",
     padding: "8px",
