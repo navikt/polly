@@ -2,7 +2,7 @@ package no.nav.data.polly.process;
 
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.policy.domain.Policy;
-import no.nav.data.polly.process.ProcessReadController.ProcessPolicyPage;
+import no.nav.data.polly.process.ProcessReadController.ProcessPage;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.PurposeCountResponse;
 import org.junit.jupiter.api.Test;
@@ -25,10 +25,10 @@ class PurposeControllerIT extends IntegrationTestBase {
     void hentBehandlingsgrunnlag() {
         Policy policy = createPolicy(PURPOSE_CODE1, createInformationType());
 
-        ResponseEntity<ProcessPolicyPage> resp = restTemplate.getForEntity("/process/purpose/{purpose}", ProcessPolicyPage.class, PURPOSE_CODE1);
+        ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process/purpose/{purpose}", ProcessPage.class, PURPOSE_CODE1);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        ProcessPolicyPage purposeResponse = resp.getBody();
+        ProcessPage purposeResponse = resp.getBody();
         assertThat(purposeResponse).isNotNull();
 
         assertThat(purposeResponse.getNumberOfElements()).isOne();
