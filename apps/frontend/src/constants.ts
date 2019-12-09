@@ -28,9 +28,11 @@ export enum LegalBasesStatus {
 }
 
 export interface ProcessFormValues {
-    name: string;
-    department: string | undefined;
-    subDepartment: string | undefined;
+    id?: string;
+    purposeCode?: string;
+    name?: string;
+    department?: string;
+    subDepartment?: string;
     legalBases: Array<LegalBasisFormValues>;
 }
 

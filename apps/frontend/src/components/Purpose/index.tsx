@@ -1,18 +1,15 @@
 import * as React from "react";
 import { Block, BlockProps } from "baseui/block";
-import _includes from 'lodash/includes'
 import { Plus } from "baseui/icon";
-import { Label2, Paragraph2 } from "baseui/typography";
+import { Label2 } from "baseui/typography";
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
-import axios from "axios";
+
 import ModalProcess from './Accordion/ModalProcess'
 import { Process } from "../../constants"
-import { intl, useAwait, useForceUpdate } from "../../util"
+import { intl, useAwait } from "../../util"
 import { user } from "../../service/User";
 import AccordionProcess from "./Accordion";
-
-const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
-
+import { createProcess, getProcessesForPurpose } from "../../api/ProcessApi"
 
 const rowBlockProps: BlockProps = {
     marginBottom: 'scale800',
@@ -24,7 +21,7 @@ type ProcessListProps = {
     currentPurpose: string;
 }
 
-const ProcessList = ({ currentPurpose }: ProcessListProps) => {
+const ProcessList = ({currentPurpose}: ProcessListProps) => {
     const [showProcessModal, setShowProcessModal] = React.useState(false)
     const [errorProcessModal, setErrorProcessModal] = React.useState(null)
     const [processList, setProcessList] = React.useState<Process[]>([])
@@ -32,34 +29,26 @@ const ProcessList = ({ currentPurpose }: ProcessListProps) => {
 
     const getProcessListByPurpose = async (purpose: string) => {
         setIsLoadingProcessList(true)
-        await axios
-            .get(`${server_polly}/process/purpose/${currentPurpose}`)
-            .then((res) => {
-                setProcessList(res.data.content)
-            })
-            .catch((err) => console.log(err));
+        try {
+            setProcessList((await getProcessesForPurpose(purpose)).content)
+        } catch (err) {
+            console.log(err)
+        }
 
         setIsLoadingProcessList(false)
     }
 
     const handleCreateProcess = async (process: Process) => {
         if (!process) return
-        let body = [{
-            ...process,
-            purposeCode: currentPurpose
-        }]
-
-        await axios
-            .post(`${server_polly}/process`, body)
-            .then(((res: any) => {
-                setProcessList([...processList, res.data.content[0]])
-                setErrorProcessModal(null)
-                setShowProcessModal(false)
-            }))
-            .catch((err: any) => {
-                setShowProcessModal(false)
-                setErrorProcessModal(err.message)
-            });
+        try {
+            const newProcess = await createProcess(process)
+            setProcessList([...processList, newProcess])
+            setErrorProcessModal(null)
+            setShowProcessModal(false)
+        } catch (err) {
+            setShowProcessModal(false)
+            setErrorProcessModal(err.message)
+        }
     }
 
     const hasAccess = () => {
@@ -88,7 +77,7 @@ const ProcessList = ({ currentPurpose }: ProcessListProps) => {
                                 size={ButtonSize.compact}
                                 kind={KIND.minimal}
                                 onClick={() => setShowProcessModal(true)}
-                                startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
+                                startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
                             >
                                 {intl.processingActivitiesNew}
                             </Button>
@@ -97,7 +86,7 @@ const ProcessList = ({ currentPurpose }: ProcessListProps) => {
                 </Block>
 
                 {!isLoadingProcessList &&
-                    <AccordionProcess currentPurpose={currentPurpose} processList={processList} />
+                <AccordionProcess currentPurpose={currentPurpose} processList={processList}/>
                 }
 
 
@@ -108,7 +97,7 @@ const ProcessList = ({ currentPurpose }: ProcessListProps) => {
                     submit={(values: any) => handleCreateProcess(values)}
                     errorOnCreate={errorProcessModal}
                     isEdit={false}
-                    initialValues={{ name: '', department: '', subDepartment: '', legalBases: [] }}
+                    initialValues={{name: '', department: '', subDepartment: '', purposeCode: currentPurpose, legalBases: []}}
                 />
 
             </React.Fragment>
