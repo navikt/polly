@@ -106,7 +106,8 @@ export interface IStrings {
     datePickStart: string;
     datePickEnd: string;
     useDates: string;
-    requiredArt9: string;
+    requiredGdprArt6: string;
+    requiredGdprArt9: string;
     requiredNationalLaw: string;
     requiredDescription: string;
 

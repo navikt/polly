@@ -63,14 +63,13 @@ const InformationTypeTable = (props: RouteComponentProps) => {
         const fetchData = async () => {
             setLoading(true);
             await axios
-            .get(`${server_polly}/informationtype/?pageNumber=${page - 1}&pageSize=${limit}`)
-            .then((res: { data: PageResponse<InformationType> }) => {
-                console.log(res);
-                setTotal(res.data.totalElements)
-                let content: InformationType[] = res.data.content
-                setData(content.map(mapInformationTypeToTable));
+                .get(`${server_polly}/informationtype/?pageNumber=${page - 1}&pageSize=${limit}`)
+                .then((res: { data: PageResponse<InformationType> }) => {
+                    setTotal(res.data.totalElements)
+                    let content: InformationType[] = res.data.content
+                    setData(content.map(mapInformationTypeToTable));
 
-            });
+                });
             setLoading(false);
         };
         fetchData();
@@ -99,21 +98,21 @@ const InformationTypeTable = (props: RouteComponentProps) => {
     return (
         <React.Fragment>
             <H6 display="flex" justifyContent="space-between" marginBottom={theme.sizing.scale400} paddingLeft={theme.sizing.scale200}>{intl.all} {intl.informationTypes}</H6>
-            <Table columns={columns} data={data} isLoading={loading}/>
+            <Table columns={columns} data={data} isLoading={loading} />
             <Block paddingTop={theme.sizing.scale600} display="flex" justifyContent="space-between">
                 <StatefulPopover
-                    content={({close}) => (
+                    content={({ close }) => (
                         <StatefulMenu
                             items={[5, 10, 15, 20, 25, 50, 75, 100].map((i) => ({
                                 label: i,
                             }))}
-                            onItemSelect={({item}) => {
+                            onItemSelect={({ item }) => {
                                 handleLimitChange(item.label);
                                 close();
                             }}
                             overrides={{
                                 List: {
-                                    style: {height: '150px', width: '100px'},
+                                    style: { height: '150px', width: '100px' },
                                 },
                             }}
                         />
@@ -127,8 +126,8 @@ const InformationTypeTable = (props: RouteComponentProps) => {
                 <Pagination
                     currentPage={page}
                     numPages={Math.ceil(total / limit)}
-                    onPageChange={({nextPage}) => handlePageChange(nextPage)}
-                    labels={{prevButton: intl.prevButton, nextButton: intl.nextButton}}
+                    onPageChange={({ nextPage }) => handlePageChange(nextPage)}
+                    labels={{ prevButton: intl.prevButton, nextButton: intl.nextButton }}
                 />
             </Block>
         </React.Fragment>
@@ -155,11 +154,11 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
         if (infoTypeSearch && infoTypeSearch.length > 2) {
             setInfoTypeSearchLoading(true)
             axios
-            .get(`${server_polly}/informationtype/search/${infoTypeSearch}`)
-            .then((res: { data: PageResponse<InformationType> }) => {
-                let options: Option[] = res.data.content.map((it: InformationType) => ({id: it.id, label: it.name}))
-                return setInfoTypeSearchResult(options)
-            })
+                .get(`${server_polly}/informationtype/search/${infoTypeSearch}`)
+                .then((res: { data: PageResponse<InformationType> }) => {
+                    let options: Option[] = res.data.content.map((it: InformationType) => ({ id: it.id, label: it.name }))
+                    return setInfoTypeSearchResult(options)
+                })
             setInfoTypeSearchLoading(false)
         }
     }, [infoTypeSearch])
@@ -171,19 +170,18 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
             }
             setLoading(true);
             await axios
-            .get(`${server_polly}/informationtype/${informationTypeId}`)
-            .then(res => {
-                console.log(res)
-                setInformationtype(res.data)
-            })
-            .catch(err => setError(err.message));
+                .get(`${server_polly}/informationtype/${informationTypeId}`)
+                .then(res => {
+                    setInformationtype(res.data)
+                })
+                .catch(err => setError(err.message));
 
             await axios
-            .get(`${server_polly}/policy/?informationTypeId=${informationTypeId}&pageSize=250`)
-            .then(res => {
-                setPurposeMap(reducePolicylist(res.data.content))
-            })
-            .catch(err => setError(err.message));
+                .get(`${server_polly}/policy/?informationTypeId=${informationTypeId}&pageSize=250`)
+                .then(res => {
+                    setPurposeMap(reducePolicylist(res.data.content))
+                })
+                .catch(err => setError(err.message));
 
             await codelist.wait();
             if (!props.match.params.id) props.history.push(`/informationtype/${informationTypeId}`)
@@ -195,46 +193,46 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
     return (
         <React.Fragment>
             {isLoading ? (
-                <Spinner size={30}/>
+                <Spinner size={30} />
             ) : (informationTypeId ?
-                    <React.Fragment>
-                        <Banner title={intl.informationType} informationtypeId={informationTypeId}/>
-                        {!error && informationtype && (
-                            <InformationtypeMetadata informationtype={informationtype} purposeMap={purposeMap}
-                                                     expanded={props.match.params.purpose ? [props.match.params.purpose] : []}
-                                                     onSelectPurpose={purpose => props.history.push(`/informationtype/${informationTypeId}/${purpose}`)}
+                <React.Fragment>
+                    <Banner title={intl.informationType} informationtypeId={informationTypeId} />
+                    {!error && informationtype && (
+                        <InformationtypeMetadata informationtype={informationtype} purposeMap={purposeMap}
+                            expanded={props.match.params.purpose ? [props.match.params.purpose] : []}
+                            onSelectPurpose={purpose => props.history.push(`/informationtype/${informationTypeId}/${purpose}`)}
+                        />
+                    )}
+
+                    {error && (<p>{error}</p>)}
+                </React.Fragment>
+                : <React.Fragment>
+                    <H3 marginTop={theme.sizing.scale200} marginBottom={theme.sizing.scale400}>{intl.informationTypes}</H3>
+                    <Block display="flex" justifyContent="space-between">
+                        <Block width="80%">
+                            <Select
+                                autoFocus
+                                maxDropdownHeight="400px"
+                                searchable={true}
+                                type={TYPE.search}
+                                options={infoTypeSearchResult}
+                                placeholder={intl.informationTypeSearch}
+                                onInputChange={event => setInfoTypeSearch(event.currentTarget.value)}
+                                onChange={(params: any) => setInformationTypeId(params.value[0].id)}
+                                isLoading={infoTypeLoading}
+                                filterOptions={options => options}
                             />
-                        )}
-
-                        {error && (<p>{error}</p>)}
-                    </React.Fragment>
-                    : <React.Fragment>
-                        <H3 marginTop={theme.sizing.scale200} marginBottom={theme.sizing.scale400}>{intl.informationTypes}</H3>
-                        <Block display="flex" justifyContent="space-between">
-                            <Block width="80%">
-                                <Select
-                                    autoFocus
-                                    maxDropdownHeight="400px"
-                                    searchable={true}
-                                    type={TYPE.search}
-                                    options={infoTypeSearchResult}
-                                    placeholder={intl.informationTypeSearch}
-                                    onInputChange={event => setInfoTypeSearch(event.currentTarget.value)}
-                                    onChange={(params: any) => setInformationTypeId(params.value[0].id)}
-                                    isLoading={infoTypeLoading}
-                                    filterOptions={options => options}
-                                />
-                            </Block>
-                            <Block>
-                                <Button type="button" shape={SHAPE.square} onClick={() => props.history.push("/informationtype/create")}>
-                                    <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;{intl.createNew}
-                                </Button>
-                            </Block>
                         </Block>
-                        <InformationTypeTable {...props}/>
-                    </React.Fragment>
+                        <Block>
+                            <Button type="button" shape={SHAPE.square} onClick={() => props.history.push("/informationtype/create")}>
+                                <FontAwesomeIcon icon={faPlusCircle} />&nbsp;{intl.createNew}
+                            </Button>
+                        </Block>
+                    </Block>
+                    <InformationTypeTable {...props} />
+                </React.Fragment>
 
-            )}
+                )}
         </React.Fragment>
     );
 };

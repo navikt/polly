@@ -12,11 +12,18 @@ import CardLegalBasis from './CardLegalBasis'
 import {codelist, ListName} from "../../service/Codelist";
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
 import {useDebouncedState} from "../../util/customHooks"
+import { codelist, ListName } from "../../../service/Codelist";
+import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
+import { useDebouncedState } from "../../../util/customHooks"
 import axios from "axios"
 import {InformationType, LegalBasesStatus, PageResponse, PolicyFormValues, PolicyInformationType} from "../../constants"
 import {intl} from "../../util/intl/intl"
 import {legalBasisSchema, ListLegalBases} from "../common/LegalBasis"
 import {Error, renderLabel} from "../common/ModalSchema";
+import { InformationType, LegalBasesStatus, PageResponse, PolicyFormValues, PolicyInformationType } from "../../../constants"
+import { intl } from "../../../util/intl/intl"
+import { legalBasisSchema, ListLegalBases } from "../../common/LegalBasis"
+import { KIND as NKIND, Notification } from "baseui/notification"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -114,21 +121,34 @@ const FieldLegalBasisStatus = (props: { legalBasesStatus?: LegalBasesStatus }) =
 }
 
 const missingArt9LegalBasisForSensitiveInfoType = (informationType: PolicyInformationType, policy: PolicyFormValues) => {
-    const legalBasisInherited = policy.legalBasesStatus === LegalBasesStatus.INHERITED
+    const ownLegalBasis = policy.legalBasesStatus === LegalBasesStatus.OWN
     const reqArt9 = informationType && codelist.requiresArt9(informationType.sensitivity && informationType.sensitivity.code)
     const missingArt9 = !policy.legalBases.filter((lb) => codelist.isArt9(lb.gdpr)).length
     const processMissingArt9 = !policy.process.legalBases.filter(lb => codelist.isArt9(lb.gdpr.code)).length
-    return !legalBasisInherited && reqArt9 && missingArt9 && processMissingArt9
+    return ownLegalBasis && reqArt9 && missingArt9 && processMissingArt9
+}
+
+const missingArt6LegalBasisForInfoType = (policy: PolicyFormValues) => {
+    const ownLegalBasis = policy.legalBasesStatus === LegalBasesStatus.OWN
+    const missingArt6 = !policy.legalBases.filter((lb) => codelist.isArt6(lb.gdpr)).length
+    return ownLegalBasis && missingArt6
 }
 
 const policySchema = () => yup.object<PolicyFormValues>({
     informationType: yup.object<PolicyInformationType>().required(intl.required)
     .test({
         name: 'policyHasArt9',
-        message: intl.requiredArt9,
+        message: intl.requiredGdprArt9,
         test: function (informationType) {
             const {parent} = this
             return !missingArt9LegalBasisForSensitiveInfoType(informationType, parent)
+        }
+    }).test({
+        name: 'policyHasArt6',
+        message: intl.requiredGdprArt6,
+        test: function (informationType) {
+            const {parent} = this
+            return !missingArt6LegalBasisForInfoType(parent)
         }
     }),
     subjectCategory: yup.string().required(intl.required),
@@ -223,7 +243,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
 
                                 <Block {...rowBlockProps}>
                                     {renderLabel(intl.legalBasesShort)}
-                                    <FieldLegalBasisStatus legalBasesStatus={formikBag.values.legalBasesStatus}/>
+                                    <FieldLegalBasisStatus legalBasesStatus={formikBag.values.legalBasesStatus} />
                                 </Block>
                                 <Error fieldName="legalBasesStatus" />
 

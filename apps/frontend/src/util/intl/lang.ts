@@ -98,7 +98,8 @@ export const no: IStrings = {
     dateFormat: "Feil dato format, eksempel: 2018-08-22",
     useDates: "Velg datoer",
 
-    requiredArt9: "Opplysningstypen krever et rettslig grunnlag med artikkel 9",
+    requiredGdprArt6: "Opplysningstypen krever et rettslig grunnlag med artikkel 6",
+    requiredGdprArt9: "Opplysningstypen krever et rettslig grunnlag med artikkel 9",
     requiredNationalLaw: "Artikkelen krever nasjonal lov",
     requiredDescription: "Artikkelen krever ytterligere beskrivelse",
 
@@ -203,7 +204,8 @@ export const en = {
     maxChars: "Max {0} characters",
     required: "Field is required",
 
-    requiredArt9: "The information type requires a legal basis for article 9",
+    requiredGdprArt6: "The information type requires a legal basis for article 6",
+    requiredGdprArt9: "The information type requires a legal basis for article 9",
     requiredNationalLaw: "The article requires national law",
     requiredDescription: "The article requires additional description",
 

@@ -8,5 +8,5 @@ export {
     useDebouncedState,
     theme,
     intl,
-    langs
+    langs,
 }

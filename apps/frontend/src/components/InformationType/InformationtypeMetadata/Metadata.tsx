@@ -20,14 +20,8 @@ const labelBlockProps: BlockProps = {
     width: ['30%', '100%', '100%', '30%'],
     alignSelf: 'flex-start',
     marginTop: '1rem',
-    marginRight: '1rem'
 };
 
-const narrowItem: BlockProps = {
-    width: [`30% !important`, `100% !important`, `100% !important`, `30% !important`],
-    alignSelf: 'flex-start',
-    marginTop: '1rem',
-}
 const reduceToList = (list: Array<any> | undefined | null) => {
     if (!list) return []
     return list.reduce((acc: any, curr: any) => {
@@ -47,7 +41,7 @@ const renderTextWithLabelMetadata = (label: string, text: string, icon?: IconDef
             <Block {...labelBlockProps}>
                 <Label2>{icon && <FontAwesomeIcon icon={icon} color={iconColor} />} {label}</Label2>
             </Block>
-            <Paragraph2>{text}</Paragraph2>
+            <Block maxWidth="70%"><Paragraph2>{text}</Paragraph2></Block>
         </Block>
     )
 }
