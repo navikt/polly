@@ -9,21 +9,20 @@ import {Select, TYPE, Value} from 'baseui/select';
 import * as yup from "yup"
 
 import CardLegalBasis from './CardLegalBasis'
-import {codelist, ListName} from "../../service/Codelist";
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
-import {useDebouncedState} from "../../util/customHooks"
-import { codelist, ListName } from "../../../service/Codelist";
-import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
-import { useDebouncedState } from "../../../util/customHooks"
+import {codelist, ListName} from "../../../service/Codelist";
+import {useDebouncedState} from "../../../util/customHooks"
 import axios from "axios"
-import {InformationType, LegalBasesStatus, PageResponse, PolicyFormValues, PolicyInformationType} from "../../constants"
-import {intl} from "../../util/intl/intl"
-import {legalBasisSchema, ListLegalBases} from "../common/LegalBasis"
-import {Error, renderLabel} from "../common/ModalSchema";
-import { InformationType, LegalBasesStatus, PageResponse, PolicyFormValues, PolicyInformationType } from "../../../constants"
-import { intl } from "../../../util/intl/intl"
-import { legalBasisSchema, ListLegalBases } from "../../common/LegalBasis"
-import { KIND as NKIND, Notification } from "baseui/notification"
+import {Error, renderLabel} from "../../common/ModalSchema";
+import {
+    InformationType,
+    LegalBasesStatus,
+    PageResponse,
+    PolicyFormValues,
+    PolicyInformationType
+} from "../../../constants"
+import {intl} from "../../../util/intl/intl"
+import {legalBasisSchema, ListLegalBases} from "../../common/LegalBasis"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 

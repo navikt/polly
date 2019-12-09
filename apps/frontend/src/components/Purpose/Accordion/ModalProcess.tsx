@@ -7,17 +7,13 @@ import {Select, Value} from 'baseui/select';
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
 import {Plus} from "baseui/icon";
 
-import {ProcessFormValues} from "../../constants";
-import { ProcessFormValues } from "../../../constants";
+import {ProcessFormValues} from "../../../constants";
 import CardLegalBasis from './CardLegalBasis'
-import {codelist, ListName} from "../../service/Codelist"
-import {intl} from "../../util/intl/intl"
-import { codelist, ListName } from "../../../service/Codelist"
-import { intl } from "../../../util/intl/intl"
+import {codelist, ListName} from "../../../service/Codelist"
+import {intl} from "../../../util/intl/intl"
 import * as yup from "yup"
-import {legalBasisSchema, ListLegalBases} from "../common/LegalBasis"
-import {Error, renderLabel} from "../common/ModalSchema";
-import { legalBasisSchema, ListLegalBases } from "../../common/LegalBasis"
+import {Error, renderLabel} from "../../common/ModalSchema";
+import {legalBasisSchema, ListLegalBases} from "../../common/LegalBasis"
 
 const modalBlockProps: BlockProps = {
     width: '750px',

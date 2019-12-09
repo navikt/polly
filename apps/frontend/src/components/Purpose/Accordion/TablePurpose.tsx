@@ -1,13 +1,4 @@
 import * as React from "react";
-import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, StyledTable, StyledSortableLabel, StyledHeadCell } from "baseui/table";
-import { useStyletron, withStyle } from "baseui";
-import { StyledLink } from 'baseui/link'
-import { LegalBasesNotClarified, ListLegalBasesInTable } from "../../common/LegalBasis"
-import { codelist, ListName } from "../../../service/Codelist"
-import { LegalBasesStatus, LegalBasis, Policy, PolicyFormValues, Process } from "../../../constants"
-import { Sensitivity } from "../../InformationType/Sensitivity"
-import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
-import { Block } from "baseui/block";
 import {
     SORT_DIRECTION,
     SortableHeadCell,
@@ -20,27 +11,21 @@ import {
 } from "baseui/table";
 import {useStyletron, withStyle} from "baseui";
 import {StyledLink} from 'baseui/link'
-import {LegalBasesNotClarified, ListLegalBasesInTable} from "../common/LegalBasis"
-import {codelist, ListName} from "../../service/Codelist"
-import {LegalBasesStatus, LegalBasis, Policy, PolicyFormValues} from "../../constants"
-import {Sensitivity} from "../InformationType/Sensitivity"
+import {LegalBasesNotClarified, ListLegalBasesInTable} from "../../common/LegalBasis"
+import {codelist, ListName} from "../../../service/Codelist"
+import {LegalBasesStatus, LegalBasis, Policy, PolicyFormValues, Process} from "../../../constants"
+import {Sensitivity} from "../../InformationType/Sensitivity"
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
 import {Block} from "baseui/block";
 import ModalPolicy from "./ModalPolicy";
-import { intl } from "../../../util"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faPoop, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "baseui/modal";
-import { Paragraph2 } from "baseui/typography";
-import axios from "axios";
-import { useForceUpdate } from "../../../util";
-
-const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
-import {intl} from "../../util"
+import {intl, useForceUpdate} from "../../../util"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "baseui/modal";
 import {Paragraph2} from "baseui/typography";
+import axios from "axios";
+
+const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",

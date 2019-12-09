@@ -1,25 +1,13 @@
 import * as React from "react";
 import {Block, BlockProps} from "baseui/block";
-import {Accordion, Panel} from 'baseui/accordion';
-import { Block, BlockProps } from "baseui/block";
-import _includes from 'lodash/includes'
 import {Plus} from "baseui/icon";
-import {Label2, Paragraph2} from "baseui/typography";
+import {Label2} from "baseui/typography";
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
 import axios from "axios";
-
-import TablePurpose from './TablePurpose'
-import ModalPolicy from './ModalPolicy'
-import ModalProcess from './ModalProcess'
-import {codelist, ListName} from "../../service/Codelist"
-import {LegalBasesStatus, PolicyFormValues, Process} from "../../constants"
-import {intl, useAwait, useForceUpdate} from "../../util"
+import {Process} from "../../constants"
+import {intl, useAwait} from "../../util"
 import {user} from "../../service/User";
-import {LegalBasisView} from "../common/LegalBasis"
 import ModalProcess from './Accordion/ModalProcess'
-import { Process } from "../../constants"
-import { intl, useAwait, useForceUpdate } from "../../util"
-import { user } from "../../service/User";
 import AccordionProcess from "./Accordion";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
