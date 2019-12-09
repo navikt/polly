@@ -10,13 +10,13 @@ import { Select, TYPE, Value } from 'baseui/select';
 import * as yup from "yup"
 
 import CardLegalBasis from './CardLegalBasis'
-import { codelist, ListName } from "../../service/Codelist";
+import { codelist, ListName } from "../../../service/Codelist";
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
-import { useDebouncedState } from "../../util/customHooks"
+import { useDebouncedState } from "../../../util/customHooks"
 import axios from "axios"
-import { InformationType, LegalBasesStatus, PageResponse, PolicyFormValues, PolicyInformationType } from "../../constants"
-import { intl } from "../../util/intl/intl"
-import { legalBasisSchema, ListLegalBases } from "../common/LegalBasis"
+import { InformationType, LegalBasesStatus, PageResponse, PolicyFormValues, PolicyInformationType } from "../../../constants"
+import { intl } from "../../../util/intl/intl"
+import { legalBasisSchema, ListLegalBases } from "../../common/LegalBasis"
 import { KIND as NKIND, Notification } from "baseui/notification"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
@@ -143,14 +143,14 @@ const missingArt9LegalBasisForSensitiveInfoType = (informationType: PolicyInform
 
 const policySchema = () => yup.object<PolicyFormValues>({
     informationType: yup.object<PolicyInformationType>().required(intl.required)
-    .test({
-        name: 'policyHasArt9',
-        message: intl.requiredArt9,
-        test: function (informationType) {
-            const {parent} = this
-            return !missingArt9LegalBasisForSensitiveInfoType(informationType, parent)
-        }
-    }),
+        .test({
+            name: 'policyHasArt9',
+            message: intl.requiredArt9,
+            test: function (informationType) {
+                const { parent } = this
+                return !missingArt9LegalBasisForSensitiveInfoType(informationType, parent)
+            }
+        }),
     subjectCategory: yup.string().required(intl.required),
     legalBasesStatus: yup.mixed().oneOf(Object.values(LegalBasesStatus)).required(intl.required),
     legalBases: yup.array(legalBasisSchema()),
@@ -243,7 +243,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
 
                                 <Block {...rowBlockProps}>
                                     {renderLabel(intl.legalBasesShort)}
-                                    <FieldLegalBasisStatus legalBasesStatus={formikBag.values.legalBasesStatus}/>
+                                    <FieldLegalBasisStatus legalBasesStatus={formikBag.values.legalBasesStatus} />
                                 </Block>
                                 <Error fieldName="legalBasesStatus" />
 

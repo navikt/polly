@@ -7,16 +7,16 @@ import { Button, SIZE as ButtonSize, KIND } from "baseui/button";
 import { Spinner } from 'baseui/spinner';
 import { Block, BlockProps } from 'baseui/block';
 import { Label2, Paragraph2 } from 'baseui/typography';
-import { intl } from '../../util';
+import { intl } from '../../../util';
 import _includes from 'lodash/includes'
-import { user } from "../../service/User";
-import { useAwait } from "../../util/customHooks";
+import { user } from "../../../service/User";
+import { useAwait } from "../../../util/customHooks";
 import { Plus } from 'baseui/icon'
-import { LegalBasesStatus, PolicyFormValues, Process } from "../../constants"
+import { LegalBasesStatus, PolicyFormValues, Process } from "../../../constants"
 
 
-import { LegalBasisView } from "../common/LegalBasis"
-import { codelist, ListName } from "../../service/Codelist"
+import { LegalBasisView } from "../../common/LegalBasis"
+import { codelist, ListName } from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
 import ModalPolicy from './ModalPolicy'
 import TablePurpose from './TablePurpose';

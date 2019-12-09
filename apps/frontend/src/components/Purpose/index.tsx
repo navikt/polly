@@ -5,11 +5,11 @@ import { Plus } from "baseui/icon";
 import { Label2, Paragraph2 } from "baseui/typography";
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import axios from "axios";
-import ModalProcess from './ModalProcess'
+import ModalProcess from './Accordion/ModalProcess'
 import { Process } from "../../constants"
 import { intl, useAwait, useForceUpdate } from "../../util"
 import { user } from "../../service/User";
-import AccordionProcess from "./AccordionProcess";
+import AccordionProcess from "./Accordion";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
