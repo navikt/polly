@@ -43,7 +43,7 @@ public class FindCodeUsageController {
         service.validateRequests(list, code);
 
         FindCodeUsageResponse response = service.findCodeUsage(list, code);
-        if (response.isEmpty()) {
+        if (response.containsNoResponses()) {
             log.info("Cannot find data related to code {} in list {}", code, list);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

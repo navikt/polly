@@ -30,8 +30,13 @@ public class FindCodeUsageResponse {
     }
 
     @JsonIgnore
-    public boolean isEmpty() {
-        return processResponses.isEmpty() && policyResponses.isEmpty() && informationTypeResponses.isEmpty();
+    public boolean containsNoResponses() {
+        return ifNotNullCheckIfEmpty(processResponses) && ifNotNullCheckIfEmpty(policyResponses) && ifNotNullCheckIfEmpty(informationTypeResponses);
+    }
+
+    @JsonIgnore
+    private boolean ifNotNullCheckIfEmpty(List list) {
+        return list == null || list.isEmpty();
     }
 
     public String toString() {
