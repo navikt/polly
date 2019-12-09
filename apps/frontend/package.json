@@ -27,7 +27,7 @@
         "react-localization": "^1.0.15",
         "react-process-string": "^1.2.0",
         "react-router-dom": "^5.0.1",
-        "react-scripts": "3.0.1",
+        "react-scripts": "3.3.0",
         "styletron-engine-atomic": "^1.4.0",
         "styletron-react": "^5.2.0",
         "typescript": "^3.6.3",
