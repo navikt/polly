@@ -17,7 +17,7 @@ const itemBlockProps: BlockProps = {
 
 const labelBlockProps: BlockProps = {
     display: ['flex', 'block', 'block', 'flex'],
-    width: ['30% !important', '100%', '100%', '30% !important'],
+    width: ['30%', '100%', '100%', '30%'],
     alignSelf: 'flex-start',
     marginTop: '1rem',
 };
@@ -41,7 +41,7 @@ const renderTextWithLabelMetadata = (label: string, text: string, icon?: IconDef
             <Block {...labelBlockProps}>
                 <Label2>{icon && <FontAwesomeIcon icon={icon} color={iconColor} />} {label}</Label2>
             </Block>
-            <Block maxWidth="70% !important"><Paragraph2>{text}</Paragraph2></Block>
+            <Block maxWidth="70%"><Paragraph2>{text}</Paragraph2></Block>
         </Block>
     )
 }
