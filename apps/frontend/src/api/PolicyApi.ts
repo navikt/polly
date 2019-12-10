@@ -14,7 +14,7 @@ export const createPolicy = async (policy: PolicyFormValues) => {
 
 export const updatePolicy = async (policy: PolicyFormValues) => {
     let body = mapPolicyFromForm(policy)
-    return (await axios.put<PageResponse<Policy>>(`${server_polly}/policy`, [body])).data.content[0]
+    return (await axios.put<Policy>(`${server_polly}/policy/${policy.id}`, body)).data
 }
 
 export const deletePolicy = async (policyId: string) => {
