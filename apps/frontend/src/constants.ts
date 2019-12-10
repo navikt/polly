@@ -1,4 +1,4 @@
-import { Code } from "./service/Codelist";
+import {Code} from "./service/Codelist";
 
 export interface InformationtypeFormValues {
     term?: string;
@@ -130,3 +130,9 @@ export interface IDurationed {
     end: string;
 }
 
+export interface CodeListFormValues {
+    list: string,
+    code: string,
+    shortName?: string,
+    description ?: string
+}

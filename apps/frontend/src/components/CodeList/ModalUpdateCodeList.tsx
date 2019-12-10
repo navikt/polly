@@ -8,7 +8,7 @@ import {Block, BlockProps} from "baseui/block";
 import {Label2} from "baseui/typography";
 import {Textarea} from "baseui/textarea";
 import {Input, SIZE as InputSIZE} from "baseui/input";
-import {ProcessFormValues} from "../../constants";
+import {CodeListFormValues, ProcessFormValues} from "../../constants";
 import * as yup from "yup";
 import {intl} from "../../util";
 import {Error} from "../common/ModalSchema";
@@ -28,14 +28,11 @@ const rowBlockProps: BlockProps = {
 
 type ModalUpdateProps = {
     title: string,
-    list: string,
-    code: string,
-    shortName: string,
-    description: string,
+    initialValues: CodeListFormValues,
     isOpen: boolean,
     errorOnUpdate: any | undefined,
     onClose: Function,
-    submit:Function,
+    submit: Function,
 };
 
 const codeListSchema = () => yup.object({
@@ -44,7 +41,7 @@ const codeListSchema = () => yup.object({
 
 });
 
-const UpdateCodeListModal = ({title, list, code, shortName, description, errorOnUpdate, isOpen, onClose, submit}: ModalUpdateProps) => {
+const UpdateCodeListModal = ({title, initialValues, errorOnUpdate, isOpen, onClose, submit}: ModalUpdateProps) => {
     return (
         <Modal
             onClose={() => onClose()}
@@ -63,10 +60,10 @@ const UpdateCodeListModal = ({title, list, code, shortName, description, errorOn
                     }}
                     initialValues={
                         {
-                            list: list,
-                            code: code,
-                            shortName: shortName,
-                            description: description,
+                            list: initialValues.list,
+                            code: initialValues.code,
+                            shortName: initialValues.shortName,
+                            description: initialValues.description,
                         }
                     }
                     validationSchema={codeListSchema()}
@@ -80,7 +77,7 @@ const UpdateCodeListModal = ({title, list, code, shortName, description, errorOn
                                     </Label2>
                                     <Field
                                         name="shortName"
-                                        render={({ field }: FieldProps<ProcessFormValues>) => (
+                                        render={({field}: FieldProps<ProcessFormValues>) => (
                                             <Input
                                                 {...field}
                                                 type="input"
@@ -89,14 +86,14 @@ const UpdateCodeListModal = ({title, list, code, shortName, description, errorOn
                                         )}
                                     />
                                 </Block>
-                                <Error fieldName="shortName" />
+                                <Error fieldName="shortName"/>
                                 <Block {...rowBlockProps}>
                                     <Label2 marginRight={"1rem"} width="25%">
                                         Description:
                                     </Label2>
                                     <Field
                                         name="description"
-                                        render={({ field }: FieldProps<ProcessFormValues>) => (
+                                        render={({field}: FieldProps<ProcessFormValues>) => (
                                             <Textarea
                                                 {...field}
                                                 type="input"
@@ -104,7 +101,7 @@ const UpdateCodeListModal = ({title, list, code, shortName, description, errorOn
                                         )}
                                     />
                                 </Block>
-                                <Error fieldName="description" />
+                                <Error fieldName="description"/>
                             </ModalBody>
                             <ModalFooter>
                                 <Block display="flex" justifyContent="flex-end">

@@ -270,10 +270,12 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
             {showEditModal && (
                 <UpdateCodeListModal
                     title={intl.editCodeListTitle}
-                    list={selectedRow ? selectedRow.list : ""}
-                    code={selectedRow ? selectedRow.code : ""}
-                    shortName={selectedRow ? selectedRow.shortName : ""}
-                    description={selectedRow ? selectedRow.description : ""}
+                    initialValues={{
+                        list: selectedRow.list ?? "" ,
+                        code: selectedRow.code ?? "",
+                        shortName: selectedRow.shortName ?? "",
+                        description: selectedRow.description ?? ""
+                    }}
                     isOpen={showEditModal}
                     onClose={() => {
                         setShowEditModal(!showEditModal);
@@ -287,8 +289,10 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
             {showDeleteModal && (
                 <DeleteCodeListModal
                     title={intl.deleteCodeListConfirmationTitle}
-                    list={selectedRow ? selectedRow.list : ""}
-                    code={selectedRow ? selectedRow.code : ""}
+                    initialValues={{
+                        list: selectedRow.list ?? "" ,
+                        code: selectedRow.code ?? "",
+                    }}
                     isOpen={showDeleteModal}
                     onClose={() => {
                         setShowDeleteModal(!showDeleteModal);

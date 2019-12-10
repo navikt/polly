@@ -4,18 +4,18 @@ import {intl} from "../../util";
 import {Paragraph2} from "baseui/typography";
 import {Button} from "baseui/button";
 import {Block} from "baseui/block";
+import {CodeListFormValues} from "../../constants";
 
 type ModalDeleteProps = {
     title: string,
-    list: string,
-    code: string,
+    initialValues: CodeListFormValues,
     isOpen: boolean,
     errorOnDelete: any | undefined,
     submit: Function,
     onClose: Function,
 };
 
-const DeleteCodeListModal =({title, list, code, isOpen, errorOnDelete, submit, onClose}:ModalDeleteProps) => {
+const DeleteCodeListModal =({title, initialValues, isOpen, errorOnDelete, submit, onClose}:ModalDeleteProps) => {
     return(
         <Modal
             onClose={() => onClose()}
@@ -26,7 +26,7 @@ const DeleteCodeListModal =({title, list, code, isOpen, errorOnDelete, submit, o
         >
             <ModalHeader>{title}</ModalHeader>
             <ModalBody>
-                <Paragraph2> Bekreft sletting av code "{code}" fra "{list}".</Paragraph2>
+                <Paragraph2> Bekreft sletting av code "{initialValues.code}" fra "{initialValues.list}".</Paragraph2>
             </ModalBody>
 
             <ModalFooter>
@@ -40,7 +40,7 @@ const DeleteCodeListModal =({title, list, code, isOpen, errorOnDelete, submit, o
                         {intl.abort}
                     </Button>
                     <Button onClick={
-                        ()=>submit({list:list,code:code})
+                        ()=>submit({list:initialValues.list,code:initialValues.code})
                     }>
                         {intl.delete}
                     </Button>
