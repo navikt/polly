@@ -173,11 +173,11 @@ const Header = (props: HeaderProps & RouteComponentProps<any>) => {
 
             <StyledNavigationList $align={ALIGN.center} />
             <StyledNavigationList $align={ALIGN.right}>
-                <StyledNavigationItem>
+                {user.isAdmin() && <StyledNavigationItem>
                     <StyledLink href="/admin/codelist" className={link}>
                         {intl.manageCodeListTitle}
                     </StyledLink>
-                </StyledNavigationItem>
+                </StyledNavigationItem>}
 
                 <StyledNavigationItem>
                     <StyledLink href="/purpose" className={link}>
