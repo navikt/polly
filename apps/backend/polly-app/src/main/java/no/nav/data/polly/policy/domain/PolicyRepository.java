@@ -1,6 +1,5 @@
 package no.nav.data.polly.policy.domain;
 
-import no.nav.data.polly.process.domain.Process;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -11,7 +10,7 @@ import java.util.UUID;
 import javax.transaction.Transactional;
 
 @Repository
-public interface PolicyRepository extends JpaRepository<Policy, UUID> {
+public interface PolicyRepository extends JpaRepository<Policy, UUID>, PolicyRepositoryCustom {
 
     List<Policy> findByPurposeCodeAndProcessName(String purposeCode, String processName);
 
@@ -23,11 +22,7 @@ public interface PolicyRepository extends JpaRepository<Policy, UUID> {
 
     List<Policy> findBySubjectCategory(String subjectCategory);
 
-    @Query(value = "select * from policy where legal_bases->>'gdpr' = ?1", nativeQuery = true)
-    List<Policy> findByGDPRArticle(String gdpr);
-
-    @Query(value = "select * from policy where legal_bases->>'nationalLaw' = ?1", nativeQuery = true)
-    List<Policy> findByNationalLaw(String nationalLaw);
+    List<Policy> findByPurposeCode(String purposeCode);
 
     long countByInformationTypeId(UUID informationTypeId);
 

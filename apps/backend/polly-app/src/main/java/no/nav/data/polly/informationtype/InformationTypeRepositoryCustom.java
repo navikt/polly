@@ -7,5 +7,6 @@ import java.util.List;
 public interface InformationTypeRepositoryCustom {
 
     List<InformationType> findByCategory(String category);
+
     List<InformationType> findBySource(String source);
 }

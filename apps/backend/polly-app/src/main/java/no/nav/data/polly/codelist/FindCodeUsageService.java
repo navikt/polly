@@ -54,12 +54,12 @@ public class FindCodeUsageService {
         FindCodeUsageResponse response = new FindCodeUsageResponse(listName);
         switch (listName) {
             // process only
-            case PURPOSE:
             case DEPARTMENT:
             case SUB_DEPARTMENT:
                 response.setProcessResponses(findProcesses(listName, code));
                 break;
             // process and Policy
+            case PURPOSE:
             case GDPR_ARTICLE:
             case NATIONAL_LAW:
                 response.setProcessResponses(findProcesses(listName, code));
@@ -102,6 +102,8 @@ public class FindCodeUsageService {
 
     private List<PolicyResponse> findPolicies(ListName listName, String code) {
         switch (listName) {
+            case PURPOSE:
+                return policyRepository.findByPurposeCode(code).stream().map(Policy::convertToResponse).collect(Collectors.toList());
             case SUBJECT_CATEGORY:
                 return policyRepository.findBySubjectCategory(code).stream().map(Policy::convertToResponse).collect(Collectors.toList());
             case GDPR_ARTICLE:
