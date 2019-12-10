@@ -1,5 +1,6 @@
 package no.nav.data.polly.common.auditing;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
@@ -16,7 +17,8 @@ import javax.persistence.MappedSuperclass;
 @Getter
 @Setter
 @MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
+@JsonFilter("relationFilter")
+@EntityListeners({AuditingEntityListener.class, AuditVersionListener.class})
 public abstract class Auditable<U> {
 
     @CreatedBy

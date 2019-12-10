@@ -23,14 +23,16 @@ public final class JsonUtils {
     private JsonUtils() {
     }
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = createObjectMapper();
     private static final TypeReference<Map<String, Object>> MAP_TYPE_REFERENCE = new TypeReference<>() {
     };
 
-    static {
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    public static ObjectMapper createObjectMapper() {
+        var om = new ObjectMapper();
+        om.registerModule(new JavaTimeModule());
+        om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        om.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        return om;
     }
 
     public static ObjectMapper getObjectMapper() {
