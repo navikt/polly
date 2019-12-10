@@ -10,6 +10,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static java.util.Comparator.comparing;
 import static java.util.function.Function.identity;
@@ -19,8 +20,8 @@ public final class StreamUtils {
     private StreamUtils() {
     }
 
-    public static <T> Stream<T> safeStream(Collection<T> collection) {
-        return collection == null ? Stream.empty() : collection.stream();
+    public static <T> Stream<T> safeStream(Iterable<T> iterable) {
+        return iterable == null ? Stream.empty() : StreamSupport.stream(iterable.spliterator(), false);
     }
 
     /**
@@ -79,7 +80,11 @@ public final class StreamUtils {
                 .collect(Collectors.toList());
     }
 
-    public static <T> List<T> filter(Collection<T> objects, Predicate<T> filter) {
+    public static <T> List<T> filter(Iterable<T> objects, Predicate<T> filter) {
         return safeStream(objects).filter(filter).collect(Collectors.toList());
+    }
+
+    public static <T> T find(Iterable<T> objects, Predicate<T> filter) {
+        return safeStream(objects).filter(filter).findFirst().orElseThrow();
     }
 }

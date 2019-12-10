@@ -102,11 +102,17 @@ public class InformationType extends Auditable<String> {
     private void convertFromRequest(InformationTypeRequest request) {
         data.setName(request.getName());
         data.setDescription(request.getDescription());
-        data.setCategories(request.getCategories());
-        data.setSources(request.getSources());
-        data.setKeywords(copyOf(request.getKeywords()));
         data.setSensitivity(request.getSensitivity());
         data.setNavMaster(request.getNavMaster());
+        data.setCategories(copyOf(request.getCategories()));
+        data.setSources(copyOf(request.getSources()));
+        data.setKeywords(copyOf(request.getKeywords()));
+
+        preUpdate();
+    }
+
+    public void preUpdate() {
+        data.setSuggest(data.getName() + " " + String.join(" ", data.getKeywords()) + " " + data.getDescription());
     }
 
     public InformationTypeElasticsearch convertToElasticsearch(List<ProcessElasticsearch> processes) {

@@ -101,8 +101,8 @@ public class InformationTypeController {
         if (name.length() < 3) {
             throw new ValidationException("Search term must be at least 3 characters");
         }
-        List<InformationType> infoTypes = repository.findByNameLike(name);
-        infoTypes.sort(comparing(it -> it.getData().getName(), startsWith(name)));
+        List<InformationType> infoTypes = repository.findBySuggestLike(name);
+        infoTypes.sort(comparing(it -> it.getData().getSuggest(), startsWith(name)));
         log.info("Returned {} InformationTypes", infoTypes.size());
         return new ResponseEntity<>(new RestResponsePage<>(convert(infoTypes, InformationType::convertToResponse)), HttpStatus.OK);
     }

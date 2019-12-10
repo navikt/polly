@@ -29,6 +29,9 @@ public interface InformationTypeRepository extends JpaRepository<InformationType
     @Query(value = "select * from information_type where data->>'navMaster' = ?1", nativeQuery = true)
     List<InformationType> findByNavMaster(String navMaster);
 
+    @Query(value = "select * from information_type where data ->>'suggest' ilike %?1%", nativeQuery = true)
+    List<InformationType> findBySuggestLike(String name);
+
     List<InformationType> findByElasticsearchStatus(ElasticsearchStatus status);
 
     @Modifying

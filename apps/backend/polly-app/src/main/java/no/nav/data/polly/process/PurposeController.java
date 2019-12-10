@@ -14,7 +14,7 @@ import no.nav.data.polly.process.ProcessReadController.ProcessPolicyPage;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.process.domain.PurposeCount;
-import no.nav.data.polly.process.dto.ProcessPolicyResponse;
+import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.PurposeCountResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -51,14 +51,14 @@ public class PurposeController {
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/purpose/{purpose}")
     @Transactional
-    public ResponseEntity<RestResponsePage<ProcessPolicyResponse>> getPurpose(@PathVariable String purpose) {
+    public ResponseEntity<RestResponsePage<ProcessResponse>> getPurpose(@PathVariable String purpose) {
         log.info("Get processes for purpose={}", purpose);
         Codelist codelist = CodelistService.getCodelist(ListName.PURPOSE, purpose);
         if (codelist == null) {
             return ResponseEntity.notFound().build();
         }
         String purposeCode = codelist.getCode();
-        var processes = processRepository.findByPurposeCode(purposeCode).stream().map(Process::convertToResponseWithPolicies).collect(toList());
+        var processes = processRepository.findByPurposeCode(purposeCode).stream().map(Process::convertToResponse).collect(toList());
         log.info("Got {} processes", processes.size());
         return ResponseEntity.ok(new RestResponsePage<>(processes));
     }

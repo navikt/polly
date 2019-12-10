@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static no.nav.data.polly.common.utils.StreamUtils.nullToEmptyList;
+import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
 
 @Slf4j
@@ -51,19 +52,23 @@ public class InformationTypeRequest implements RequestElement {
 
     @Override
     public void format() {
+        setName(StringUtils.stripToNull(name));
+        setDescription(StringUtils.stripToNull(description));
+        setTerm(StringUtils.stripToNull(term));
+        setSensitivity(toUpperCaseAndTrim(getSensitivity()));
+        setNavMaster(toUpperCaseAndTrim(getNavMaster()));
         setCategories(nullToEmptyList(categories).stream()
-                .map(String::trim)
+                .map(StringUtils::stripToNull)
                 .map(String::toUpperCase)
                 .collect(Collectors.toList()));
         setSources(nullToEmptyList(sources).stream()
-                .map(String::trim)
+                .map(StringUtils::stripToNull)
                 .map(String::toUpperCase)
                 .collect(Collectors.toList()));
-        setSensitivity(toUpperCaseAndTrim(getSensitivity()));
-        setNavMaster(toUpperCaseAndTrim(getNavMaster()));
-        if (StringUtils.isBlank(term)) {
-            setTerm(null);
-        }
+        setKeywords(safeStream(keywords)
+                .map(StringUtils::stripToNull)
+                .filter(StringUtils::isNotBlank)
+                .collect(Collectors.toList()));
     }
 
     public static void initiateRequests(List<InformationTypeRequest> requests, boolean update) {

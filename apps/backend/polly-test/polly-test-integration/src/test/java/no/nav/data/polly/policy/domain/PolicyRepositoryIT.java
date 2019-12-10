@@ -1,19 +1,18 @@
 package no.nav.data.polly.policy.domain;
 
 import no.nav.data.polly.IntegrationTestBase;
-import no.nav.data.polly.legalbasis.domain.LegalBasis;
+import no.nav.data.polly.common.auditing.Action;
+import no.nav.data.polly.common.auditing.AuditVersion;
+import no.nav.data.polly.common.auditing.AuditVersionRepository;
+import no.nav.data.polly.common.utils.StreamUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalToObject;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class PolicyRepositoryIT extends IntegrationTestBase {
 
@@ -24,6 +23,9 @@ class PolicyRepositoryIT extends IntegrationTestBase {
 
     @Autowired
     private PolicyRepository policyRepository;
+
+    @Autowired
+    private AuditVersionRepository auditVersionRepository;
 
     @BeforeEach
     void setUp() {
@@ -37,36 +39,43 @@ class PolicyRepositoryIT extends IntegrationTestBase {
 
     @Test
     void getOne() {
+        auditVersionRepository.deleteAll();
+
         createTestdata(PURPOSE_CODE1, POLICY_ID_1);
-        assertThat(policyRepository.count(), is(1L));
+        assertThat(policyRepository.count()).isEqualTo(1L);
+
+        Iterable<AuditVersion> audits = auditVersionRepository.findAll();
+        var policyAudit = StreamUtils.find(audits, audit -> audit.getTable().equals("POLICY"));
+        assertThat(policyAudit).isNotNull();
+        assertThat(policyAudit.getAction()).isEqualTo(Action.CREATE);
     }
 
     @Test
     void getAll() {
         createTestdata(PURPOSE_CODE1, POLICY_ID_1);
         createTestdata(PURPOSE_CODE2, POLICY_ID_2);
-        assertThat(policyRepository.count(), is(2L));
+        assertThat(policyRepository.count()).isEqualTo(2L);
     }
 
     @Test
     void getByInformationTypeId() {
         createTestdata(PURPOSE_CODE1, POLICY_ID_1);
         createTestdata(PURPOSE_CODE2, POLICY_ID_2);
-        assertThat(policyRepository.findByInformationTypeId(INFORMATION_TYPE_ID_1).size(), is(2));
+        assertThat(policyRepository.findByInformationTypeId(INFORMATION_TYPE_ID_1).size()).isEqualTo(2L);
     }
 
     @Test
     void countByInformationTypeId() {
         createTestdata(PURPOSE_CODE1, POLICY_ID_1);
         createTestdata(PURPOSE_CODE2, POLICY_ID_2);
-        assertThat(policyRepository.countByInformationTypeId(INFORMATION_TYPE_ID_1), is(2L));
+        assertThat(policyRepository.countByInformationTypeId(INFORMATION_TYPE_ID_1)).isEqualTo(2L);
     }
 
     @Test
     void findByPurposeCodeAndProcessName() {
         Policy expectedPolicy = createTestdata(PURPOSE_CODE1, POLICY_ID_1);
         createTestdata(PURPOSE_CODE2, POLICY_ID_2);
-        assertThat(policyRepository.findByPurposeCodeAndProcessName(PURPOSE_CODE1, "Auto_" + PURPOSE_CODE1).get(0), equalToObject(expectedPolicy));
+        assertThat(policyRepository.findByPurposeCodeAndProcessName(PURPOSE_CODE1, "Auto_" + PURPOSE_CODE1).get(0)).isEqualTo(expectedPolicy);
     }
 
     private Policy createTestdata(String purposeCode, UUID datasetId) {

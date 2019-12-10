@@ -123,7 +123,7 @@ public class Policy extends Auditable<String> {
                 .id(getId())
                 .purposeCode(getCodelistResponse(ListName.PURPOSE, getPurposeCode()))
                 .subjectCategory(getCodelistResponse(ListName.SUBJECT_CATEGORY, getSubjectCategory()))
-                .process(getProcess().convertToIdNameResponse())
+                .process(getProcess() == null ? null : getProcess().convertToIdNameResponse())
                 .start(getStart())
                 .end(getEnd())
                 .informationType(convertInformationTypeNameResponse())
