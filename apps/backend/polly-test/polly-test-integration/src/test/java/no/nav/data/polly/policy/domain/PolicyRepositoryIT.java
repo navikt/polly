@@ -80,7 +80,7 @@ class PolicyRepositoryIT extends IntegrationTestBase {
                 .informationType(createInformationType())
                 .informationTypeId(INFORMATION_TYPE_ID_1)
                 .informationTypeName(INFORMATION_TYPE_NAME)
-                .process(createProcess(purposeCode))
+                .process(createAndSaveProcess(purposeCode))
                 .build();
         return policyRepository.save(policy);
     }

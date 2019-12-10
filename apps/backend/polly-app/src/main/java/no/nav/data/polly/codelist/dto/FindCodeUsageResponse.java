@@ -30,17 +30,30 @@ public class FindCodeUsageResponse {
     }
 
     @JsonIgnore
-    public boolean containsNoResponses() {
-        return ifNotNullCheckIfEmpty(processResponses) && ifNotNullCheckIfEmpty(policyResponses) && ifNotNullCheckIfEmpty(informationTypeResponses);
+    public boolean codelistIsInUse() {
+        return hasResponse(processResponses) || hasResponse(policyResponses) || hasResponse(informationTypeResponses);
     }
 
     @JsonIgnore
-    private boolean ifNotNullCheckIfEmpty(List list) {
-        return list == null || list.isEmpty();
+    private boolean hasResponse(List list) {
+        return list != null && !list.isEmpty();
     }
 
     public String toString() {
-        String lists = processResponses.toString() + policyResponses.toString() + informationTypeResponses.toString();
-        return listName + " - " + lists;
+        return String.format("listName: %s - responses: {%s}", listName, getResponses());
+    }
+
+    private String getResponses(){
+        String s = "";
+        if (hasResponse(processResponses)){
+            s += processResponses.toString();
+        }
+        if (hasResponse(policyResponses)){
+            s += policyResponses.toString();
+        }
+        if (hasResponse(informationTypeResponses)){
+            s += informationTypeResponses.toString();
+        }
+        return s;
     }
 }

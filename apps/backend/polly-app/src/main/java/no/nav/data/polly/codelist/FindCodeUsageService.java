@@ -95,7 +95,6 @@ public class FindCodeUsageService {
             case NATIONAL_LAW:
                 return processRepository.findByNationalLaw(code).stream().map(Process::convertToResponse).collect(Collectors.toList());
             default:
-                //TODO: ErrorHandling
                 return Collections.emptyList();
         }
     }
@@ -111,7 +110,6 @@ public class FindCodeUsageService {
             case NATIONAL_LAW:
                 return policyRepository.findByNationalLaw(code).stream().map(Policy::convertToResponse).collect(Collectors.toList());
             default:
-                //TODO: ErrorHandling
                 return Collections.emptyList();
         }
     }
@@ -127,7 +125,6 @@ public class FindCodeUsageService {
             case SOURCE:
                 return informationTypeRepository.findBySource(code).stream().map(InformationType::convertToResponse).collect(Collectors.toList());
             default:
-                //TODO: ErrorHandling
                 return Collections.emptyList();
         }
     }

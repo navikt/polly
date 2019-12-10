@@ -79,43 +79,6 @@ public class FindCodeUsageControllerIT extends IntegrationTestBase {
         }
     }
 
-//    @Nested
-//    class findByRequests {
-//
-//
-//        @ParameterizedTest
-//        @CsvSource({"PURPOSE,DAGPENGER,1", "DEPARTMENT,YTA,2", "SUB_DEPARTMENT,NAY,2", "GDPR_ARTICLE,ART61E,2", "NATIONAL_LAW,FTRL,2"})
-//        void findProcesses(String list, String code, int expectedCount) {
-//
-//            ResponseEntity<FindCodeUsageResponse> response = restTemplate.exchange("/findcodeusage", HttpMethod.GET, new HttpEntity<>(request), FindCodeUsageResponse.class);
-//            assertThat(response.getBody().getProcessResponses().size()).isEqualTo(expectedCount);
-//        }
-//
-//        @ParameterizedTest
-//        @CsvSource({"PURPOSE,DAGPENGER,1,1", "GDPR_ARTICLE,ART92A,1,0", "NATIONAL_LAW,FTRL,2,2"})
-//        void findProcessesAndPolicy(String list, String code, int expectedCountProcess, int expectedCountPolicy) {
-//            ResponseEntity<FindCodeUsageResponse> response = restTemplate.exchange(String.format("/findcodeusage/%s/%s", list, code), HttpMethod.GET, HttpEntity.EMPTY, FindCodeUsageResponse.class);
-//
-//            assertThat(response.getBody().getProcessResponses().size()).isEqualTo(expectedCountProcess);
-//            assertThat(response.getBody().getPolicyResponses().size()).isEqualTo(expectedCountPolicy);
-//        }
-//
-//        @ParameterizedTest
-//        @CsvSource({"PURPOSE,DAGPENGER,1", "SUBJECT_CATEGORY,BRUKER,2", "GDPR_ARTICLE,ART61E,2", "NATIONAL_LAW,FTRL,2"})
-//        void findPolicies(String list, String code, int expectedCount) {
-//            ResponseEntity<FindCodeUsageResponse> response = restTemplate.exchange(String.format("/findcodeusage/%s/%s", list, code), HttpMethod.GET, HttpEntity.EMPTY, FindCodeUsageResponse.class);
-//
-//            assertThat(response.getBody().getPolicyResponses().size()).isEqualTo(expectedCount);
-//        }
-//
-//        @ParameterizedTest
-//        @CsvSource({"SENSITIVITY,POL,2", "SYSTEM,TPS,1", "CATEGORY,PERSONALIA,1", "SOURCE,SKATTEETATEN,1"})
-//        void findInformationTypes(String list, String code, int expectedCount) {
-//            ResponseEntity<FindCodeUsageResponse> response = restTemplate.exchange(String.format("/findcodeusage/%s/%s", list, code), HttpMethod.GET, HttpEntity.EMPTY, FindCodeUsageResponse.class);
-//            assertThat(response.getBody().getInformationTypeResponses().size()).isEqualTo(expectedCount);
-//        }
-//    }
-
     private void createTestData() {
         createCodelistsByRequests();
 
