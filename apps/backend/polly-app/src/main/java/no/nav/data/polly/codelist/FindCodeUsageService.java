@@ -51,7 +51,7 @@ public class FindCodeUsageService {
     }
 
     private FindCodeUsageResponse processByListName(ListName listName, String code) {
-        FindCodeUsageResponse response = new FindCodeUsageResponse(listName);
+        FindCodeUsageResponse response = new FindCodeUsageResponse(listName, code);
         switch (listName) {
             // process only
             case DEPARTMENT:
