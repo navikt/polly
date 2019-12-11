@@ -40,20 +40,21 @@ public class FindCodeUsageResponse {
     }
 
     public String toString() {
-        return String.format("listName: %s - responses: {%s}", listName, getResponses());
+        return String.format("%s is used in: {%s}", listName, getResponses());
     }
 
     private String getResponses(){
         String s = "";
         if (hasResponse(processResponses)){
-            s += processResponses.toString();
+            s += String.format("Processes: {%s}",processResponses.toString());
         }
         if (hasResponse(policyResponses)){
-            s += policyResponses.toString();
+            s += String.format("Policies: {%s}",policyResponses.toString());
         }
         if (hasResponse(informationTypeResponses)){
-            s += informationTypeResponses.toString();
+            s += String.format("InformationTypes: {%s}",informationTypeResponses.toString());
         }
+
         return s;
     }
 }
