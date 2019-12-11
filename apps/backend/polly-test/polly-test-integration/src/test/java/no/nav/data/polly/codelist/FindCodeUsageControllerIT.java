@@ -2,7 +2,7 @@ package no.nav.data.polly.codelist;
 
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
-import no.nav.data.polly.codelist.dto.FindCodeUsageResponse;
+import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.process.domain.Process;
@@ -27,7 +27,7 @@ public class FindCodeUsageControllerIT extends IntegrationTestBase {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private FindCodeUsageService findCodeUsageService;
+    private CodeUsageService findCodeUsageService;
 
     @Autowired
     private CodelistService codelistService;
@@ -50,14 +50,14 @@ public class FindCodeUsageControllerIT extends IntegrationTestBase {
         @ParameterizedTest
         @CsvSource({"PURPOSE,DAGPENGER,1", "DEPARTMENT,YTA,2", "SUB_DEPARTMENT,NAY,2", "GDPR_ARTICLE,ART61E,2", "NATIONAL_LAW,FTRL,2"})
         void findProcesses(String list, String code, int expectedCount) {
-            ResponseEntity<FindCodeUsageResponse> response = restTemplate.exchange(String.format("/findcodeusage/%s/%s", list, code), HttpMethod.GET, HttpEntity.EMPTY, FindCodeUsageResponse.class);
+            ResponseEntity<CodeUsageResponse> response = restTemplate.exchange(String.format("/findcodeusage/%s/%s", list, code), HttpMethod.GET, HttpEntity.EMPTY, CodeUsageResponse.class);
             assertThat(response.getBody().getProcessResponses().size()).isEqualTo(expectedCount);
         }
 
         @ParameterizedTest
         @CsvSource({"PURPOSE,DAGPENGER,1,1", "GDPR_ARTICLE,ART92A,1,0", "NATIONAL_LAW,FTRL,2,2"})
         void findProcessesAndPolicy(String list, String code, int expectedCountProcess, int expectedCountPolicy) {
-            ResponseEntity<FindCodeUsageResponse> response = restTemplate.exchange(String.format("/findcodeusage/%s/%s", list, code), HttpMethod.GET, HttpEntity.EMPTY, FindCodeUsageResponse.class);
+            ResponseEntity<CodeUsageResponse> response = restTemplate.exchange(String.format("/findcodeusage/%s/%s", list, code), HttpMethod.GET, HttpEntity.EMPTY, CodeUsageResponse.class);
 
             assertThat(response.getBody().getProcessResponses().size()).isEqualTo(expectedCountProcess);
             assertThat(response.getBody().getPolicyResponses().size()).isEqualTo(expectedCountPolicy);
@@ -66,7 +66,7 @@ public class FindCodeUsageControllerIT extends IntegrationTestBase {
         @ParameterizedTest
         @CsvSource({"PURPOSE,DAGPENGER,1", "SUBJECT_CATEGORY,BRUKER,2", "GDPR_ARTICLE,ART61E,2", "NATIONAL_LAW,FTRL,2"})
         void findPolicies(String list, String code, int expectedCount) {
-            ResponseEntity<FindCodeUsageResponse> response = restTemplate.exchange(String.format("/findcodeusage/%s/%s", list, code), HttpMethod.GET, HttpEntity.EMPTY, FindCodeUsageResponse.class);
+            ResponseEntity<CodeUsageResponse> response = restTemplate.exchange(String.format("/findcodeusage/%s/%s", list, code), HttpMethod.GET, HttpEntity.EMPTY, CodeUsageResponse.class);
 
             assertThat(response.getBody().getPolicyResponses().size()).isEqualTo(expectedCount);
         }
@@ -74,7 +74,7 @@ public class FindCodeUsageControllerIT extends IntegrationTestBase {
         @ParameterizedTest
         @CsvSource({"SENSITIVITY,POL,2", "SYSTEM,TPS,1", "CATEGORY,PERSONALIA,1", "SOURCE,SKATTEETATEN,1"})
         void findInformationTypes(String list, String code, int expectedCount) {
-            ResponseEntity<FindCodeUsageResponse> response = restTemplate.exchange(String.format("/findcodeusage/%s/%s", list, code), HttpMethod.GET, HttpEntity.EMPTY, FindCodeUsageResponse.class);
+            ResponseEntity<CodeUsageResponse> response = restTemplate.exchange(String.format("/findcodeusage/%s/%s", list, code), HttpMethod.GET, HttpEntity.EMPTY, CodeUsageResponse.class);
             assertThat(response.getBody().getInformationTypeResponses().size()).isEqualTo(expectedCount);
         }
     }

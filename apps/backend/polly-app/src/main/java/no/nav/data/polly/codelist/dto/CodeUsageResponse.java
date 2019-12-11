@@ -18,14 +18,14 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonPropertyOrder({"listName", "processResponses", "policyResponses", "informationTypeResponses"})
-public class FindCodeUsageResponse {
+public class CodeUsageResponse {
 
     private ListName listName;
     private List<ProcessResponse> processResponses;
     private List<PolicyResponse> policyResponses;
     private List<InformationTypeResponse> informationTypeResponses;
 
-    public FindCodeUsageResponse(ListName listName) {
+    public CodeUsageResponse(ListName listName) {
         this.listName = listName;
     }
 

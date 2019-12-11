@@ -12,7 +12,7 @@ import no.nav.data.polly.codelist.domain.ListName;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldNameConstants
-public class FindCodeUsageRequest {
+public class CodeUsageRequest {
 
     private String listName;
     private String code;

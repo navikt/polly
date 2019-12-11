@@ -1,8 +1,8 @@
 package no.nav.data.polly.codelist;
 
 import no.nav.data.polly.codelist.domain.ListName;
-import no.nav.data.polly.codelist.dto.FindCodeUsageRequest;
-import no.nav.data.polly.codelist.dto.FindCodeUsageResponse;
+import no.nav.data.polly.codelist.dto.CodeUsageRequest;
+import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
@@ -19,14 +19,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class FindCodeUsageService {
+public class CodeUsageService {
 
     private CodelistService codelistService;
     private ProcessRepository processRepository;
     private PolicyRepository policyRepository;
     private InformationTypeRepository informationTypeRepository;
 
-    public FindCodeUsageService(CodelistService codelistService, ProcessRepository processRepository, PolicyRepository policyRepository, InformationTypeRepository informationTypeRepository) {
+    public CodeUsageService(CodelistService codelistService, ProcessRepository processRepository, PolicyRepository policyRepository, InformationTypeRepository informationTypeRepository) {
         this.codelistService = codelistService;
         this.processRepository = processRepository;
         this.policyRepository = policyRepository;
@@ -35,23 +35,23 @@ public class FindCodeUsageService {
 
 
     void validateRequests(String listName, String code) {
-        validateRequests(List.of(FindCodeUsageRequest.builder().listName(listName).code(code).build()));
+        validateRequests(List.of(CodeUsageRequest.builder().listName(listName).code(code).build()));
     }
 
-    void validateRequests(List<FindCodeUsageRequest> requests) {
+    void validateRequests(List<CodeUsageRequest> requests) {
         codelistService.validateCodeUsageRequests(requests);
     }
 
-    FindCodeUsageResponse findCodeUsage(String listName, String code) {
-        return findCodeUsage(List.of(FindCodeUsageRequest.builder().listName(listName).code(code).build())).get(0);
+    CodeUsageResponse findCodeUsage(String listName, String code) {
+        return findCodeUsage(List.of(CodeUsageRequest.builder().listName(listName).code(code).build())).get(0);
     }
 
-    List<FindCodeUsageResponse> findCodeUsage(List<FindCodeUsageRequest> requests) {
+    List<CodeUsageResponse> findCodeUsage(List<CodeUsageRequest> requests) {
         return requests.stream().map(request -> processByListName(request.getAsListName(), request.getCode())).collect(Collectors.toList());
     }
 
-    private FindCodeUsageResponse processByListName(ListName listName, String code) {
-        FindCodeUsageResponse response = new FindCodeUsageResponse(listName);
+    private CodeUsageResponse processByListName(ListName listName, String code) {
+        CodeUsageResponse response = new CodeUsageResponse(listName);
         switch (listName) {
             // process only
             case DEPARTMENT:
