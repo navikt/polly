@@ -14,6 +14,8 @@ import {intl} from "../../../util/intl/intl"
 import * as yup from "yup"
 import {Error, renderLabel} from "../../common/ModalSchema";
 import {legalBasisSchema, ListLegalBases} from "../../common/LegalBasis"
+import { DateModalFields } from "../DateModalFields"
+import { hasSpecifiedDate } from "../../common/Durations"
 
 const modalBlockProps: BlockProps = {
     width: '750px',
@@ -164,6 +166,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                                     </Block>
                                 )}
 
+                                <DateModalFields showDates={hasSpecifiedDate(initialValues)} showLabels={true} rowBlockBrops={rowBlockProps} />
 
                                 <Block {...rowBlockProps}>
                                     {renderLabel('')}

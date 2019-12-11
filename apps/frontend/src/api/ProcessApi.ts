@@ -25,7 +25,7 @@ export const updateProcess = async (process: ProcessFormValues) => {
 }
 
 export const convertProcessToFormValues = (process: Process) => {
-    const {id, purposeCode, name, department, subDepartment, legalBases} = process
+    const {id, purposeCode, name, department, subDepartment, legalBases, start, end} = process
     let parsedLegalBases = legalBases && legalBases.map(legalBasis => ({
         gdpr: (legalBasis.gdpr && legalBasis.gdpr.code) || undefined,
         nationalLaw: (legalBasis.nationalLaw && legalBasis.nationalLaw.code) || undefined,
@@ -40,7 +40,9 @@ export const convertProcessToFormValues = (process: Process) => {
         purposeCode: purposeCode,
         department: (department && department.code) || undefined,
         subDepartment: (subDepartment && subDepartment.code) || undefined,
-        legalBases: parsedLegalBases
+        legalBases: parsedLegalBases,
+        start: start || undefined,
+        end: end || undefined
     } as ProcessFormValues
 }
 

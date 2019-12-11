@@ -17,23 +17,26 @@ export const hasSpecifiedDate = (obj: { start?: string, end?: string }) => {
     return checkDate(startDate, endDate).hasDates
 }
 
-const checkDate = (startDate?: moment.Moment, endDate?: moment.Moment) => {
+const checkDate = (startDate?: moment.Moment, endDate?: moment.Moment, alwaysShow?: boolean) => {
+    if (alwaysShow) {
+        return {hasStart: true, hasEnd: true, hasDates: true}
+    }
     const hasStart = !!startDate && !defaultStart.isSame(startDate)
     const hasEnd = !!endDate && !defaultEnd.isSame(endDate)
     const hasDates = hasStart || hasEnd
     return {hasStart, hasEnd, hasDates}
 }
 
-export const ActiveIndicator = (props: IDurationed) => {
-    const {active, start, end} = props
+export const ActiveIndicator = (props: IDurationed & { alwaysShow?: boolean }) => {
+    const {active, start, end, alwaysShow} = props
     const startDate = moment(start)
     const endDate = moment(end)
-    const {hasStart, hasEnd, hasDates} = checkDate(startDate, endDate)
+    const {hasStart, hasEnd, hasDates} = checkDate(startDate, endDate, alwaysShow)
 
     return (hasDates ?
             <StatefulTooltip content={(<>
                 {hasStart && <>{intl.startDate}: {startDate.format(dateFormat)}</>}
-                {hasStart && hasEnd && '-'}
+                {hasStart && hasEnd && ' - '}
                 {hasEnd && <>{intl.endDate}: {endDate.format(dateFormat)}</>}
             </>)}>
                 <span><FontAwesomeIcon icon={faExclamationCircle} color={active ? theme.colors.positive300 : theme.colors.warning300}/></span>

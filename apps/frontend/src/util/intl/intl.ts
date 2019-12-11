@@ -94,6 +94,7 @@ export interface IStrings {
     all: string;
     startDate: string;
     endDate: string;
+    active: string;
     inactive: string;
 
     prevButton: string;

@@ -4,12 +4,12 @@ import { generatePath, RouteComponentProps, withRouter } from 'react-router'
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { Spinner } from 'baseui/spinner';
 import { Block, BlockProps } from 'baseui/block';
-import { Label2, Paragraph2 } from 'baseui/typography';
+import { Label1, Label2, Paragraph2 } from 'baseui/typography';
 import { intl, useAwait } from '../../../util';
 import _includes from 'lodash/includes'
 import { user } from "../../../service/User";
 import { Plus } from 'baseui/icon'
-import { PolicyFormValues, Process, ProcessFormValues } from "../../../constants"
+import { LegalBasis, PolicyFormValues, Process, ProcessFormValues } from "../../../constants"
 
 
 import { LegalBasisView } from "../../common/LegalBasis"
@@ -20,6 +20,7 @@ import TablePurpose from './TablePurpose';
 import { convertProcessToFormValues, createPolicy, getProcess, updateProcess } from "../../../api"
 import { PathParams } from "../../../pages/PurposePage"
 import { useEffect } from "react"
+import { ActiveIndicator } from "../../common/Durations"
 
 const rowPanelContent: BlockProps = {
     display: 'flex',
@@ -93,7 +94,13 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
         setLoading(false);
     }
 
-    const renderLegalBasisListForProcess = (list: any) => (
+    const renderActiveForProcess = (process: Process) =>
+        <Block marginRight="scale1200">
+            <Label2>{intl.active}</Label2>
+            <ActiveIndicator alwaysShow={true} {...process}/>
+        </Block>
+
+    const renderLegalBasisListForProcess = (list: LegalBasis[]) => (
         <Block marginRight="scale1200">
             <Label2>{intl.legalBasis}</Label2>
             {list && list.length < 1 && <Paragraph2>{intl.legalBasisNotFound}</Paragraph2>}
@@ -104,7 +111,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
             )}
         </Block>
     )
-    const renderSubjectCategoriesForProcess = (processObj: any) => {
+    const renderSubjectCategoriesForProcess = (processObj: Process) => {
         const notFound = (<Paragraph2>{intl.subjectCategoriesNotFound}</Paragraph2>)
         let display
         if (!processObj) display = notFound
@@ -113,7 +120,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
         } else {
             if (processObj.policies.length < 1) display = notFound
             else {
-                const subjectCategories = processObj.policies.reduce((acc: any, curr: any) => {
+                const subjectCategories = processObj.policies.reduce((acc: string[], curr) => {
                     const subjectCategory = codelist.getShortname(ListName.SUBJECT_CATEGORY, curr.subjectCategory.code)
                     if (!_includes(acc, subjectCategory) && subjectCategory)
                         acc = [...acc, subjectCategory]
@@ -125,7 +132,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
         }
 
         return (
-            <Block>
+            <Block marginRight="scale1200">
                 <Label2>{intl.subjectCategories}</Label2>
                 {display}
             </Block>
@@ -168,6 +175,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                     <Block display="flex">
                                         {renderLegalBasisListForProcess(process.legalBases)}
                                         {renderSubjectCategoriesForProcess(process)}
+                                        {renderActiveForProcess(process)}
                                     </Block>
                                     {hasAccess() && (
                                         <Block>
