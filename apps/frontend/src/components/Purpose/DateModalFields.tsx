@@ -9,7 +9,7 @@ import * as React from "react"
 
 import { intl } from "../../util"
 import { LegalBasisFormValues } from "../../constants"
-import { Error, renderLabel } from "../common/ModalSchema"
+import { Error, ModalLabel } from "../common/ModalSchema"
 
 interface DateModalProps {
     showDates: boolean;
@@ -27,7 +27,7 @@ export const DateModalFields = (props: DateModalProps) => {
                 <Block {...rowBlockBrops}><Button size="compact" onClick={() => setShowDates(true)}>{intl.useDates}</Button></Block>
                 : <>
                     <Block {...rowBlockBrops}>
-                        {showLabels && renderLabel(intl.startDate)}
+                        {showLabels && <ModalLabel label={intl.startDate}/>}
                         <Field name="start"
                                render={({field, form}: FieldProps<LegalBasisFormValues>) => (
                                    <Datepicker placeholder={intl.datePickStart} value={field.value && new Date(field.value)}
@@ -54,7 +54,7 @@ export const DateModalFields = (props: DateModalProps) => {
                     <Error fieldName="start"/>
 
                     <Block {...rowBlockBrops}>
-                        {showLabels && renderLabel(intl.endDate)}
+                        {showLabels && <ModalLabel label={intl.endDate}/>}
                         <Field name="end"
                                render={({field, form}: FieldProps<LegalBasisFormValues>) => (
                                    <Datepicker placeholder={intl.datePickEnd} value={field.value && new Date(field.value)}

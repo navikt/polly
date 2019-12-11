@@ -11,15 +11,11 @@ import * as yup from "yup"
 import CardLegalBasis from "./CardLegalBasis"
 import {codelist, ListName} from "../../../service/Codelist";
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
-import { LegalBasesStatus, LegalBasisFormValues, PolicyFormValues, PolicyInformationType } from "../../../constants"
+import { LegalBasesStatus, PolicyFormValues, PolicyInformationType } from "../../../constants"
 import {legalBasisSchema, ListLegalBases} from "../../common/LegalBasis"
 import {useInfoTypeSearch} from "../../../api"
-import {Error, renderLabel} from "../../common/ModalSchema";
-import {intl} from "../../../util/intl/intl"
-import { Datepicker } from "baseui/datepicker"
-import moment from "moment"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCalendar, faTimesCircle } from "@fortawesome/free-solid-svg-icons"
+import { Error, ModalLabel } from "../../common/ModalSchema";
+import {intl} from "../../../util"
 import { DateModalFields } from "../DateModalFields"
 import { hasSpecifiedDate } from "../../common/Durations"
 
@@ -210,7 +206,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
 
                             <ModalBody>
                                 <Block {...rowBlockProps}>
-                                    {renderLabel(intl.informationType)}
+                                    <ModalLabel label={intl.informationType}/>
                                     <FieldInformationType
                                         informationTypes={infoTypeSearchResult}
                                         searchInformationType={setInfoTypeSearch}
@@ -221,7 +217,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                                 <Error fieldName="informationType" />
 
                                 <Block {...rowBlockProps}>
-                                    {renderLabel(intl.subjectCategories)}
+                                    <ModalLabel label={intl.subjectCategories}/>
                                     <FieldSubjectCategory value={formikBag.values.subjectCategory} />
                                 </Block>
                                 <Error fieldName="subjectCategory" />
@@ -229,7 +225,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                                <DateModalFields showDates={showDates} showLabels={true} rowBlockBrops={rowBlockProps}/>
 
                                 <Block {...rowBlockProps}>
-                                    {renderLabel(intl.legalBasesShort)}
+                                    <ModalLabel label={intl.legalBasesShort}/>
                                     <FieldLegalBasisStatus legalBasesStatus={formikBag.values.legalBasesStatus} />
                                 </Block>
                                 <Error fieldName="legalBasesStatus" />
@@ -253,7 +249,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                                                     </Block>
                                                 ) : (
                                                         <Block {...rowBlockProps}>
-                                                            {renderLabel('')}
+                                                            <ModalLabel />
                                                             <Block width="100%">
                                                                 <Button
                                                                     size={ButtonSize.compact}

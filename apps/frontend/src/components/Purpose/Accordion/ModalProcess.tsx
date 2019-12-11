@@ -5,14 +5,14 @@ import {Block, BlockProps} from "baseui/block";
 import {Input, SIZE as InputSIZE} from "baseui/input";
 import {Select, Value} from 'baseui/select';
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
+import * as yup from "yup"
 import {Plus} from "baseui/icon";
 
 import {ProcessFormValues} from "../../../constants";
 import CardLegalBasis from './CardLegalBasis'
 import {codelist, ListName} from "../../../service/Codelist"
-import {intl} from "../../../util/intl/intl"
-import * as yup from "yup"
-import {Error, renderLabel} from "../../common/ModalSchema";
+import {intl} from "../../../util"
+import { Error, ModalLabel } from "../../common/ModalSchema";
 import {legalBasisSchema, ListLegalBases} from "../../common/LegalBasis"
 import { DateModalFields } from "../DateModalFields"
 import { hasSpecifiedDate } from "../../common/Durations"
@@ -149,19 +149,19 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
 
                             <ModalBody>
                                 <Block {...rowBlockProps}>
-                                    {renderLabel(intl.name)}
+                                    <ModalLabel label={intl.name}/>
                                     <FieldName />
                                 </Block>
                                 <Error fieldName="name" />
 
                                 <Block {...rowBlockProps}>
-                                    {renderLabel(intl.department)}
+                                    <ModalLabel label={intl.department}/>
                                     <FieldDepartment department={formikBag.values.department} />
                                 </Block>
 
                                 {showSubDepartment(formikBag.values.department) && (
                                     <Block {...rowBlockProps}>
-                                        {renderLabel(intl.subDepartment)}
+                                        <ModalLabel label={intl.subDepartment}/>
                                         <FieldSubDepartment subDepartment={formikBag.values.subDepartment} />
                                     </Block>
                                 )}
@@ -169,7 +169,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                                 <DateModalFields showDates={hasSpecifiedDate(initialValues)} showLabels={true} rowBlockBrops={rowBlockProps} />
 
                                 <Block {...rowBlockProps}>
-                                    {renderLabel('')}
+                                    <ModalLabel/>
                                     {!showLegalBasisFields && (
                                         <Block width="100%" marginBottom="1rem">
                                             <Button
@@ -203,7 +203,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                                             )}
                                             {!showLegalBasisFields && (
                                                 <Block display="flex">
-                                                    {renderLabel('')}
+                                                    <ModalLabel />
                                                     <Block width="100%">
                                                         <ListLegalBases
                                                             legalBases={formikBag.values.legalBases}
