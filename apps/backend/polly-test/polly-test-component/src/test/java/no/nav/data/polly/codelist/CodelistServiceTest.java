@@ -7,11 +7,6 @@ import no.nav.data.polly.codelist.dto.FindCodeUsageResponse;
 import no.nav.data.polly.common.exceptions.CodelistNotErasableException;
 import no.nav.data.polly.common.exceptions.CodelistNotFoundException;
 import no.nav.data.polly.common.exceptions.ValidationException;
-import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
-import no.nav.data.polly.policy.dto.PolicyResponse;
-import no.nav.data.polly.process.domain.Process;
-import no.nav.data.polly.process.dto.ProcessRequest;
-import no.nav.data.polly.process.dto.ProcessResponse;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +21,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static no.nav.data.polly.codelist.CodelistUtils.createCodelist;
 import static no.nav.data.polly.codelist.CodelistUtils.createCodelistRequest;
@@ -111,14 +105,13 @@ class CodelistServiceTest {
         void delete_shouldThrowCodelistNotErasableException_whenCodelistIsInUse() {
             when(repository.findByListAndCode(ListName.PURPOSE, "DELETE_CODE")).thenReturn(Optional.of(createCodelist(ListName.SOURCE, "DELETE_CODE")));
             when(findCodeUsageService.findCodeUsage("PURPOSE", "DELETE_CODE")).thenReturn(FindCodeUsageResponse.builder()
-                    .listName(ListName.PURPOSE).processResponses(List.of(CodelistUtils.createProcessResponse("DELETE_CODE"))).build());
+                    .listName(ListName.PURPOSE).code("DELETE_CODE").processResponses(List.of(CodelistUtils.createProcessResponse("DELETE_CODE"))).build());
 
             try {
                 service.delete(ListName.PURPOSE, "DELETE_CODE");
                 fail();
-            }
-            catch (CodelistNotErasableException e) {
-                assertThat(e.getLocalizedMessage()).contains("The code DELETE_CODE in list PURPOSE cannot be erased. PURPOSE is used in: ");
+            } catch (CodelistNotErasableException e) {
+                assertThat(e.getLocalizedMessage()).contains("The code DELETE_CODE in list PURPOSE cannot be erased. DELETE_CODE in PURPOSE is used in: ");
             }
         }
     }

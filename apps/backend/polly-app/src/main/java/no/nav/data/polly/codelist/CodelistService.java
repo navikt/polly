@@ -13,6 +13,7 @@ import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.common.validator.RequestValidator;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -33,7 +34,8 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     private CodelistRepository codelistRepository;
     private FindCodeUsageService findCodeUsageService;
 
-    public CodelistService(CodelistRepository codelistRepository, FindCodeUsageService findCodeUsageService) {
+    // @Lazy to avoid circular dependancy
+    public CodelistService(CodelistRepository codelistRepository, @Lazy FindCodeUsageService findCodeUsageService) {
         this.codelistRepository = codelistRepository;
         this.findCodeUsageService = findCodeUsageService;
     }
