@@ -69,7 +69,6 @@ public class AuditVersionListener {
             String data = wr.writeValueAsString(entity);
             AuditVersion auditVersion = new AuditVersion(action, tableName, id, data);
             repository.save(auditVersion);
-            log.info("AUDIT " + auditVersion.toString(), new RuntimeException());
         } catch (JsonProcessingException e) {
             log.error("failed to serialize object", e);
         }
