@@ -14,13 +14,13 @@ import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.term.domain.Term;
 import no.nav.data.polly.term.domain.TermRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import javax.transaction.Transactional;
 
 import static java.util.stream.Collectors.toList;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
