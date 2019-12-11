@@ -13,7 +13,7 @@ import CodelistPage from "./pages/CodelistPage"
 const Routes = (props: any): JSX.Element => (
     <Root>
         <Switch>
-            <Route exact path="/purpose/:id?/:processid?" component={PurposePage}/>
+            <Route exact path="/purpose/:purposeCode?/:processId?" component={PurposePage}/>
             <Route
                 exact
                 path="/informationtype/create"

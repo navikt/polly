@@ -18,6 +18,8 @@ import ModalProcess from './ModalProcess';
 import ModalPolicy from './ModalPolicy'
 import TablePurpose from './TablePurpose';
 import { convertProcessToFormValues, createPolicy, getProcess, updateProcess } from "../../../api"
+import { PathParams } from "../../../pages/PurposePage"
+import { useEffect } from "react"
 
 const rowPanelContent: BlockProps = {
     display: 'flex',
@@ -26,19 +28,19 @@ const rowPanelContent: BlockProps = {
 }
 
 type AccordionProcessProps = {
-    currentPurpose: string;
+    purposeCode: string;
     processList: Process[];
 }
 
-const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps) => {
+const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<PathParams>) => {
     const [isLoading, setLoading] = React.useState(false);
     const [showEditProcessModal, setShowEditProcessModal] = React.useState(false)
     const [showCreatePolicyModal, setShowCreatePolicyModal] = React.useState(false)
     const [errorCreatePolicy, setErrorCreatePolicy] = React.useState(null)
     const [process, setProcess] = React.useState<Process | undefined>()
-    const {currentPurpose} = props
+    const {purposeCode} = props
 
-    const updatePath = (params: { id: string, processid?: string } | null) => {
+    const updatePath = (params: PathParams | null) => {
         let nextPath
         if (!params) nextPath = generatePath(props.match.path)
         else nextPath = generatePath(props.match.path, params)
@@ -69,14 +71,17 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps) =>
         }
     }
 
-    const handleChangePanel = async (value: string | null) => {
-        if (!value)
-            updatePath({id: currentPurpose})
+    const handleChangePanel = async (processId?: string) => {
+        if (!processId)
+            updatePath({purposeCode: purposeCode})
         else {
-            updatePath({id: currentPurpose, processid: value})
-            await getProcessById(value)
+            updatePath({purposeCode: purposeCode, processId: processId})
         }
     }
+
+    useEffect(() => {
+        getProcessById(props.match.params.processId!)
+    }, [props.match.params.processId])
 
     const getProcessById = async (processId: string) => {
         setLoading(true);
@@ -151,7 +156,8 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps) =>
 
     return (
         <React.Fragment>
-            <Accordion onChange={({expanded}) => handleChangePanel(expanded.length < 1 ? null : expanded[0].toString())}>
+            <Accordion onChange={({expanded}) => handleChangePanel(expanded.length ? expanded[0].toString() : undefined)}
+                       initialState={{expanded: props.match.params.processId ? [props.match.params.processId] : []}} >
                 {props.processList && props.processList.map((p: Process) => (
                     <Panel title={p.name} key={p.id}>
                         {isLoading && <Spinner size={18}/>}

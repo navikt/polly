@@ -1,19 +1,18 @@
 import * as React from "react";
-import {Option, StatefulSelect} from 'baseui/select';
+import { Option, StatefulSelect } from 'baseui/select';
 
 import ProcessList from "../components/Purpose";
 import Banner from "../components/Banner";
-import {Block} from "baseui/block";
-import {codelist, ListName} from "../service/Codelist";
-import {ProcessPurposeCount} from "../constants"
-import {intl, theme} from "../util"
+import { Block } from "baseui/block";
+import { codelist, ListName } from "../service/Codelist";
+import { ProcessPurposeCount } from "../constants"
+import { intl, theme } from "../util"
 import illustration from "../resources/purpose_illustration.svg"
-import {Spinner} from "baseui/spinner";
-import {Label2, Paragraph2} from "baseui/typography";
-import {generatePath} from "react-router";
-import {getProcessPurposeCount} from "../api/ProcessApi"
-
-const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
+import { Spinner } from "baseui/spinner";
+import { Label2, Paragraph2 } from "baseui/typography";
+import { generatePath } from "react-router";
+import { getProcessPurposeCount } from "../api/ProcessApi"
+import { RouteComponentProps } from "react-router-dom";
 
 const renderDescription = (description: string) => (
     <Block marginBottom="scale1000">
@@ -22,35 +21,34 @@ const renderDescription = (description: string) => (
     </Block>
 )
 
-const PurposePage = (props: any) => {
+export type PathParams = { purposeCode?: string, processId?: string }
+
+const PurposePage = (props: RouteComponentProps<PathParams>) => {
     const [currentPurposeValue, setCurrentPurposeValue] = React.useState<string | null>(null);
     const [isLoading, setLoading] = React.useState(false);
     const [isLoadingPurpose, setLoadingPurpose] = React.useState(false);
     const [error, setError] = React.useState(null);
     const [processCount, setProcessCount] = React.useState<{ [purpose: string]: number }>(({}));
 
-    const updatePath = (params: { id: string } | null) => {
+    const updatePath = (params?: PathParams) => {
         let nextPath
         if (!params) nextPath = generatePath(props.match.path)
         else nextPath = generatePath(props.match.path, params)
         props.history.push(nextPath)
     }
 
-    const handleGetPurposeCountResponse = (response: ProcessPurposeCount) => {
-        setProcessCount(response.purposes)
-    };
-
-    const handleChangePurpose = async (value: any) => {
+    const handleChangePurpose = async (purposeCode?: string, processId?: string) => {
         setLoadingPurpose(true);
-        if (!value) {
+        if (!purposeCode) {
             setCurrentPurposeValue(null);
-            updatePath(null)
+            updatePath()
         } else {
-            setCurrentPurposeValue(value)
-            updatePath({id: value})
+            setCurrentPurposeValue(purposeCode)
+            updatePath({purposeCode: purposeCode, processId: processId})
         }
         setLoadingPurpose(false);
-    };
+    }
+
     const purposeLabelView = (option: Option) => {
         return {
             ...option,
@@ -65,8 +63,8 @@ const PurposePage = (props: any) => {
         const fetchData = async () => {
             setLoading(true);
             await codelist.wait();
-            handleGetPurposeCountResponse(await getProcessPurposeCount())
-            if (props.match.params.id) await handleChangePurpose(props.match.params.id)
+            setProcessCount((await getProcessPurposeCount()).purposes)
+            if (props.match.params.purposeCode) await handleChangePurpose(props.match.params.purposeCode, props.match.params.processId)
             setLoading(false);
         };
         fetchData();
@@ -85,7 +83,7 @@ const PurposePage = (props: any) => {
                             initialState={{value: currentPurposeValue ? [{id: currentPurposeValue, label: currentPurposeValue} as Option] : []}}
                             placeholder={intl.purposeSelect}
                             maxDropdownHeight="350px"
-                            onChange={(event) => handleChangePurpose(event.option ? event.option.id : null)}
+                            onChange={(event) => handleChangePurpose((event.option?.id) as string | undefined)}
                             overrides={{
                                 SingleValue: {
                                     style: {
@@ -103,9 +101,7 @@ const PurposePage = (props: any) => {
             {!isLoadingPurpose && currentPurposeValue && (
                 <React.Fragment>
                     {renderDescription(codelist.getDescription(ListName.PURPOSE, currentPurposeValue))}
-                    <ProcessList
-                        currentPurpose={currentPurposeValue}
-                    />
+                    <ProcessList purposeCode={currentPurposeValue} />
                 </React.Fragment>
             )
             }

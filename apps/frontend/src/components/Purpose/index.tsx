@@ -17,10 +17,10 @@ const rowBlockProps: BlockProps = {
 }
 
 type ProcessListProps = {
-    currentPurpose: string;
+    purposeCode: string;
 }
 
-const ProcessList = ({currentPurpose}: ProcessListProps) => {
+const ProcessList = ({purposeCode}: ProcessListProps) => {
     const [showProcessModal, setShowProcessModal] = React.useState(false)
     const [errorProcessModal, setErrorProcessModal] = React.useState(null)
     const [processList, setProcessList] = React.useState<Process[]>([])
@@ -56,10 +56,10 @@ const ProcessList = ({currentPurpose}: ProcessListProps) => {
 
     React.useEffect(() => {
         const fetchData = async () => {
-            await getProcessListByPurpose(currentPurpose)
+            await getProcessListByPurpose(purposeCode)
         };
         fetchData();
-    }, [currentPurpose]);
+    }, [purposeCode]);
 
     return (
         <React.Fragment>
@@ -81,7 +81,7 @@ const ProcessList = ({currentPurpose}: ProcessListProps) => {
                 </Block>
 
                 {!isLoadingProcessList &&
-                <AccordionProcess currentPurpose={currentPurpose} processList={processList}/>
+                <AccordionProcess purposeCode={purposeCode} processList={processList}/>
                 }
 
 
@@ -92,7 +92,7 @@ const ProcessList = ({currentPurpose}: ProcessListProps) => {
                     submit={(values: any) => handleCreateProcess(values)}
                     errorOnCreate={errorProcessModal}
                     isEdit={false}
-                    initialValues={{name: '', department: '', subDepartment: '', purposeCode: currentPurpose, legalBases: []}}
+                    initialValues={{name: '', department: '', subDepartment: '', purposeCode: purposeCode, legalBases: []}}
                 />
 
             </React.Fragment>
