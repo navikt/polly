@@ -24,6 +24,8 @@ import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {Modal, ModalBody, ModalFooter, ModalHeader} from "baseui/modal";
 import {Paragraph2} from "baseui/typography";
 import {convertPolicyToFormValues, deletePolicy, updatePolicy} from "../../../api"
+import { ActiveIndicator } from "../../common/Durations"
+import { StatefulTooltip } from "baseui/tooltip"
 
 
 const StyledHeader = withStyle(StyledHead, {
@@ -187,6 +189,7 @@ const TablePurpose = ({ process, hasAccess }: TablePurposeProps) => {
                         <CustomStyledRow key={index} >
                             <StyledCell>
                                 <Sensitivity sensitivity={row.informationType.sensitivity} />&nbsp;
+                                <ActiveIndicator {...row} /> &nbsp;
                                 <StyledLink href={`/informationtype/${row.informationType.id}`} width="25%">
                                     {row.informationType.name}
                                 </StyledLink>
@@ -205,26 +208,30 @@ const TablePurpose = ({ process, hasAccess }: TablePurposeProps) => {
                             {hasAccess && (
                                 <SmallerStyledCell>
                                     <Block display="flex" justifyContent="flex-end" width="100%">
-                                        <Button
-                                            size={ButtonSize.compact}
-                                            kind={KIND.tertiary}
-                                            onClick={() => {
-                                                setCurrentPolicy(row)
-                                                setShowEditModal(true)
-                                            }}
-                                        >
-                                            <FontAwesomeIcon icon={faEdit} />
-                                        </Button>
-                                        <Button
-                                            size={ButtonSize.compact}
-                                            kind={KIND.tertiary}
-                                            onClick={() => {
-                                                setCurrentPolicy(row)
-                                                setShowDeleteModal(true)
-                                            }}
-                                        >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </Button>
+                                        <StatefulTooltip content={intl.edit}>
+                                            <Button
+                                                size={ButtonSize.compact}
+                                                kind={KIND.tertiary}
+                                                onClick={() => {
+                                                    setCurrentPolicy(row)
+                                                    setShowEditModal(true)
+                                                }}
+                                            >
+                                                <FontAwesomeIcon icon={faEdit} />
+                                            </Button>
+                                        </StatefulTooltip>
+                                        <StatefulTooltip content={intl.delete}>
+                                            <Button
+                                                size={ButtonSize.compact}
+                                                kind={KIND.tertiary}
+                                                onClick={() => {
+                                                    setCurrentPolicy(row)
+                                                    setShowDeleteModal(true)
+                                                }}
+                                            >
+                                                <FontAwesomeIcon icon={faTrash} />
+                                            </Button>
+                                        </StatefulTooltip>
                                     </Block>
                                 </SmallerStyledCell>
                             )}

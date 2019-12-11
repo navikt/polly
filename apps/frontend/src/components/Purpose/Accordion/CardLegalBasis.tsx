@@ -6,15 +6,14 @@ import { StatefulInput } from 'baseui/input';
 import { Label2 } from 'baseui/typography';
 import { Button, KIND, SIZE as ButtonSize } from 'baseui/button';
 import { codelist, ListName } from "../../../service/Codelist";
-import { intl, theme } from "../../../util"
-import { ErrorMessage, Field, FieldProps, Form, Formik, FormikProps } from "formik"
+import { intl } from "../../../util"
+import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from "formik"
 import { KIND as NKIND, Notification } from "baseui/notification"
 import { LegalBasisFormValues } from "../../../constants"
 import { legalBasisSchema } from "../../common/LegalBasis"
-import { Datepicker } from "baseui/datepicker"
-import moment from 'moment';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCalendar, faPen, faTimesCircle } from "@fortawesome/free-solid-svg-icons"
+import { faPen } from "@fortawesome/free-solid-svg-icons"
+import { DateModalFields } from "../DateModalFields"
 
 const rowBlockBrops: BlockProps = {
     display: 'flex',
@@ -103,61 +102,7 @@ const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
                         </Block>
                         <Error fieldName="description" />
 
-                        {!useDates ?
-                            <Block {...rowBlockBrops}><Button size="compact" onClick={() => setUseDates(true)}>{intl.useDates}</Button></Block>
-                            : <>
-                                <Block {...rowBlockBrops}>
-                                    <Field name="start"
-                                        render={({ field, form }: FieldProps<LegalBasisFormValues>) => (
-                                            <Datepicker placeholder={intl.datePickStart} value={field.value && new Date(field.value)}
-                                                onChange={({ date }) => {
-                                                    const moment1 = moment(date as Date)
-                                                    form.setFieldValue('start', moment1.format(moment.HTML5_FMT.DATE));
-                                                }}
-                                                formatString={'yyyy-MM-dd'}
-                                                error={!!form.errors.start && (form.touched.start || !!form.submitCount)}
-                                                overrides={{
-                                                    Input: {
-                                                        props: {
-                                                            startEnhancer: () => <FontAwesomeIcon icon={faCalendar} />,
-                                                            endEnhancer: () =>
-                                                                <Button size="compact" kind="tertiary" type="button" onClick={() => form.setFieldValue('start', undefined)}>
-                                                                    <FontAwesomeIcon icon={faTimesCircle} />
-                                                                </Button>
-                                                        }
-                                                    }
-                                                }}
-                                            />
-                                        )} />
-                                </Block>
-                                <Error fieldName="start" />
-
-                                <Block {...rowBlockBrops}>
-                                    <Field name="end"
-                                        render={({ field, form }: FieldProps<LegalBasisFormValues>) => (
-                                            <Datepicker placeholder={intl.datePickEnd} value={field.value && new Date(field.value)}
-                                                onChange={({ date }) => {
-                                                    const moment1 = moment(date as Date)
-                                                    form.setFieldValue('end', moment1.format(moment.HTML5_FMT.DATE));
-                                                }}
-                                                formatString={'yyyy-MM-dd'}
-                                                error={!!form.errors.end && (form.touched.end || !!form.submitCount)}
-                                                overrides={{
-                                                    Input: {
-                                                        props: {
-                                                            startEnhancer: () => <FontAwesomeIcon icon={faCalendar} />,
-                                                            endEnhancer: () =>
-                                                                <Button size="compact" kind="tertiary" type="button" onClick={() => form.setFieldValue('end', undefined)}>
-                                                                    <FontAwesomeIcon icon={faTimesCircle} />
-                                                                </Button>
-                                                        }
-                                                    }
-                                                }}
-                                            />
-                                        )} />
-                                </Block>
-                                <Error fieldName="end" />
-                            </>}
+                        <DateModalFields rowBlockBrops={rowBlockBrops} showDates={useDates}/>
 
                         <Block {...rowBlockBrops} justifyContent="space-between">
                             <Button type='button' kind={KIND.secondary} size={ButtonSize.compact} onClick={form.submitForm}>

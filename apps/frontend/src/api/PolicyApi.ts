@@ -57,6 +57,8 @@ export const convertPolicyToFormValues = (policy: Policy): PolicyFormValues => {
         informationType: policy.informationType,
         subjectCategory: policy.subjectCategory ? policy.subjectCategory.code : '',
         legalBasesStatus: getInitialLegalBasesStatus(policy.legalBasesInherited, policy.legalBases),
-        legalBases: parsedLegalBases
+        legalBases: parsedLegalBases,
+        start: policy.start || undefined,
+        end: policy.end || undefined
     }
 }

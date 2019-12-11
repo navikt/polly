@@ -210,6 +210,8 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                         process: process,
                                         purposeCode: process.purposeCode,
                                         subjectCategory: undefined,
+                                        start: undefined,
+                                        end: undefined,
                                         legalBases: []
                                     }}
                                     isEdit={false}

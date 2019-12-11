@@ -19,6 +19,8 @@ export interface PolicyFormValues {
     subjectCategory?: string;
     legalBasesStatus?: LegalBasesStatus;
     legalBases: Array<LegalBasisFormValues>;
+    end?: string;
+    start?: string;
 }
 
 export enum LegalBasesStatus {
@@ -34,6 +36,8 @@ export interface ProcessFormValues {
     department?: string;
     subDepartment?: string;
     legalBases: Array<LegalBasisFormValues>;
+    end?: string;
+    start?: string;
 }
 
 export interface LegalBasisFormValues {
