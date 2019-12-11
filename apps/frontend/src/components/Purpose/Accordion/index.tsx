@@ -146,11 +146,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps) =>
         </Button>
     )
 
-    const hasAccess = () => {
-        if (user.isLoggedIn())
-            return user.canWrite()
-        return false
-    }
+    const hasAccess = () => user.canWrite()
     useAwait(user.wait())
 
     return (
@@ -186,8 +182,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps) =>
                                     <Block>
                                         <TablePurpose
                                             process={process}
-                                            isLoggedIn={hasAccess()}
-                                            updateProcess={() => getProcessById(process.id)}
+                                            hasAccess={hasAccess()}
                                         />
                                     </Block>
                                 )}

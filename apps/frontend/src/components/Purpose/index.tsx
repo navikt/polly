@@ -50,11 +50,7 @@ const ProcessList = ({currentPurpose}: ProcessListProps) => {
         }
     }
 
-    const hasAccess = () => {
-        if (user.isLoggedIn())
-            return user.canWrite()
-        return false
-    }
+    const hasAccess = () => user.canWrite()
 
     useAwait(user.wait())
 

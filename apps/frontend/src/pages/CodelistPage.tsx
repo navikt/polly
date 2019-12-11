@@ -20,11 +20,7 @@ const CodeListPage = () => {
     const [createCodeListModal, setCreateCodeListModal] = React.useState(false);
     const [errorOnResponse, setErrorOnResponse] = React.useState(null);
 
-    const hasAccess = () => {
-        if (user.isLoggedIn())
-            return user.isAdmin();
-        return false
-    };
+    const hasAccess = () => user.isAdmin();
 
     React.useEffect(() => {
         (async () => {

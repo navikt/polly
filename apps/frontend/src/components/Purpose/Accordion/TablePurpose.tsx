@@ -48,11 +48,10 @@ const SmallerStyledHeadCell = withStyle(StyledHeadCell, {
 
 type TablePurposeProps = {
     process: Process;
-    isLoggedIn: boolean;
-    updateProcess: Function;
+    hasAccess: boolean;
 };
 
-const TablePurpose = ({ process, isLoggedIn, updateProcess }: TablePurposeProps) => {
+const TablePurpose = ({ process, hasAccess }: TablePurposeProps) => {
     const [useCss, theme] = useStyletron();
     const [policies, setPolicies] = React.useState<Policy[]>(process.policies)
     const [currentPolicy, setCurrentPolicy] = React.useState<Policy>()
@@ -180,7 +179,7 @@ const TablePurpose = ({ process, isLoggedIn, updateProcess }: TablePurposeProps)
                         direction={legalBasisDirection}
                         onSort={() => handleSort(intl.legalBasisShort, legalBasisDirection)}
                     />
-                    {isLoggedIn && <SmallerStyledHeadCell></SmallerStyledHeadCell>}
+                    {hasAccess && <SmallerStyledHeadCell/>}
 
                 </StyledHeader>
                 <StyledBody>
@@ -203,7 +202,7 @@ const TablePurpose = ({ process, isLoggedIn, updateProcess }: TablePurposeProps)
                                     <ListLegalBasesInTable legalBases={row.legalBases} />
                                 )}
                             </StyledCell>
-                            {isLoggedIn && (
+                            {hasAccess && (
                                 <SmallerStyledCell>
                                     <Block display="flex" justifyContent="flex-end" width="100%">
                                         <Button
