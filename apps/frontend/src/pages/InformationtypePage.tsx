@@ -136,6 +136,7 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
     const [infoTypeSearchResult, setInfoTypeSearch, infoTypeSearchLoading] = useInfoTypeSearch()
 
     useAwait(user.wait())
+    useAwait(codelist.wait())
 
     useEffect(() => setInformationTypeId(props.match.params.id), [props.match.params.id]);
 
@@ -154,7 +155,6 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
                 setError(err.message)
             }
 
-            await codelist.wait();
             if (!props.match.params.id) props.history.push(`/informationtype/${informationTypeId}`)
             setLoading(false);
         };
