@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faExclamation, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { ARTWORK_SIZES, ListItem, ListItemLabel } from "baseui/list";
 import { Block } from 'baseui/block'
-import * as yup from "yup"
 import { Button } from "baseui/button"
 
 import { LegalBasis, LegalBasisFormValues } from "../../constants"
@@ -92,19 +91,3 @@ export const ListLegalBasesInTable = (props: { legalBases: LegalBasis[] }) => {
 
     )
 }
-
-export const legalBasisSchema = () => yup.object<LegalBasisFormValues>({
-    gdpr: yup.string().required(intl.required),
-    nationalLaw: yup.string().when('gdpr', {
-        is: (gdprCode) => codelist.requiresNationalLaw(gdprCode),
-        then: yup.string().required(intl.requiredNationalLaw),
-        otherwise: yup.string()
-    }),
-    description: yup.string().when('gdpr', {
-        is: (gdprCode) =>  codelist.requiresDescription(gdprCode),
-        then: yup.string().required(intl.requiredDescription),
-        otherwise: yup.string()
-    }),
-    start: yup.string().matches(/\d{4}-\d{2}-\d{2}/, intl.dateFormat),
-    end: yup.string().matches(/\d{4}-\d{2}-\d{2}/, intl.dateFormat)
-})

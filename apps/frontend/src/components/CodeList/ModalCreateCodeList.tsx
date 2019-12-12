@@ -9,7 +9,7 @@ import {Error} from "../common/ModalSchema";
 import {Textarea} from "baseui/textarea";
 import {Button, KIND} from "baseui/button";
 import {intl} from "../../util";
-import * as yup from "yup";
+import { codeListSchema } from "../common/schema"
 
 const modalBlockProps: BlockProps = {
     width: '700px',
@@ -32,13 +32,6 @@ type ModalCreateProps = {
     submit: Function,
     onClose: Function,
 };
-
-const codeListSchema = () => yup.object({
-    code: yup.string().required(intl.required),
-    shortName: yup.string().required(intl.required),
-    description: yup.string().required(intl.required),
-
-});
 
 const CreateCodeListModal = ({isOpen, title, list, errorOnCreate, onClose, submit}: ModalCreateProps) => {
     return (

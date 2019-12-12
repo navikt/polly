@@ -27,6 +27,7 @@ const ARTICLE_6_PREFIX = 'ART6'
 const ARTICLE_9_PREFIX = 'ART9'
 const NATIONAL_LAW_GDPR_ARTICLES = ['ART61C', 'ART61E']
 const DESCRIPTION_GDPR_ARTICLES = ['ART61C', 'ART61E', 'ART61F']
+const DEPARTMENTS_WITH_SUB_DEPARTMENTS = ['ØSA', 'YTA', 'ATA']
 
 
 // TODO show error
@@ -112,6 +113,10 @@ class CodelistService {
 
     isArt9(gdprCode?: string) {
         return gdprCode && gdprCode.startsWith(ARTICLE_9_PREFIX)
+    }
+
+    showSubDepartment(departmentCode?: string) {
+        return departmentCode && DEPARTMENTS_WITH_SUB_DEPARTMENTS.indexOf(departmentCode) >= 0
     }
 
     makeIdLabelForAllCodeLists() {

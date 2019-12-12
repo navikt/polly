@@ -6,18 +6,18 @@ import {Block, BlockProps} from "baseui/block";
 import {Radio, RadioGroup} from "baseui/radio";
 import {Plus} from "baseui/icon";
 import {Select, TYPE, Value} from 'baseui/select';
-import * as yup from "yup"
 
 import CardLegalBasis from "./CardLegalBasis"
 import {codelist, ListName} from "../../../service/Codelist";
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
 import { LegalBasesStatus, PolicyFormValues, PolicyInformationType } from "../../../constants"
-import {legalBasisSchema, ListLegalBases} from "../../common/LegalBasis"
+import { ListLegalBases} from "../../common/LegalBasis"
 import {useInfoTypeSearch} from "../../../api"
 import { Error, ModalLabel } from "../../common/ModalSchema";
 import {intl} from "../../../util"
 import { DateModalFields } from "../DateModalFields"
 import { hasSpecifiedDate } from "../../common/Durations"
+import { policySchema } from "../../common/schema"
 
 
 const modalBlockProps: BlockProps = {
@@ -112,45 +112,6 @@ const FieldLegalBasisStatus = (props: { legalBasesStatus?: LegalBasesStatus }) =
         />
     )
 }
-
-const missingArt9LegalBasisForSensitiveInfoType = (informationType: PolicyInformationType, policy: PolicyFormValues) => {
-    const ownLegalBasis = policy.legalBasesStatus === LegalBasesStatus.OWN
-    const reqArt9 = informationType && codelist.requiresArt9(informationType.sensitivity && informationType.sensitivity.code)
-    const missingArt9 = !policy.legalBases.filter((lb) => codelist.isArt9(lb.gdpr)).length
-    const processMissingArt9 = !policy.process.legalBases.filter(lb => codelist.isArt9(lb.gdpr.code)).length
-    return ownLegalBasis && reqArt9 && missingArt9 && processMissingArt9
-}
-
-const missingArt6LegalBasisForInfoType = (policy: PolicyFormValues) => {
-    const ownLegalBasis = policy.legalBasesStatus === LegalBasesStatus.OWN
-    const missingArt6 = !policy.legalBases.filter((lb) => codelist.isArt6(lb.gdpr)).length
-    return ownLegalBasis && missingArt6
-}
-
-const policySchema = () => yup.object<PolicyFormValues>({
-    informationType: yup.object<PolicyInformationType>().required(intl.required)
-    .test({
-        name: 'policyHasArt9',
-        message: intl.requiredGdprArt9,
-        test: function (informationType) {
-            const {parent} = this
-            return !missingArt9LegalBasisForSensitiveInfoType(informationType, parent)
-        }
-    }).test({
-        name: 'policyHasArt6',
-        message: intl.requiredGdprArt6,
-        test: function (informationType) {
-            const {parent} = this
-            return !missingArt6LegalBasisForInfoType(parent)
-        }
-    }),
-    subjectCategory: yup.string().required(intl.required),
-    legalBasesStatus: yup.mixed().oneOf(Object.values(LegalBasesStatus)).required(intl.required),
-    legalBases: yup.array(legalBasisSchema()),
-    process: yup.object(),
-    purposeCode: yup.string(),
-    id: yup.string()
-})
 
 type ModalPolicyProps = {
     title?: string;

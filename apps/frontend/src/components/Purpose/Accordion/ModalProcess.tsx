@@ -5,7 +5,6 @@ import {Block, BlockProps} from "baseui/block";
 import {Input, SIZE as InputSIZE} from "baseui/input";
 import {Select, Value} from 'baseui/select';
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
-import * as yup from "yup"
 import {Plus} from "baseui/icon";
 
 import {ProcessFormValues} from "../../../constants";
@@ -13,9 +12,10 @@ import CardLegalBasis from './CardLegalBasis'
 import {codelist, ListName} from "../../../service/Codelist"
 import {intl} from "../../../util"
 import { Error, ModalLabel } from "../../common/ModalSchema";
-import {legalBasisSchema, ListLegalBases} from "../../common/LegalBasis"
+import { ListLegalBases} from "../../common/LegalBasis"
 import { DateModalFields } from "../DateModalFields"
 import { hasSpecifiedDate } from "../../common/Durations"
+import { processSchema } from "../../common/schema"
 
 const modalBlockProps: BlockProps = {
     width: '750px',
@@ -99,27 +99,8 @@ type ModalProcessProps = {
     onClose: Function;
 };
 
-const max = 60
-const maxError = () => intl.formatString(intl.maxChars, max) as string
-
-const processSchema = () => yup.object({
-    name: yup.string().max(max, maxError()).required(intl.required),
-    department: yup.string(),
-    subDepartment: yup.string(),
-    legalBases: yup.array(legalBasisSchema())
-})
-
 const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialValues, title }: ModalProcessProps) => {
     const [showLegalBasisFields, setShowLegalbasesFields] = React.useState(false)
-
-    const showSubDepartment = (department: any) => {
-        if (!department) return false
-
-        // todo make enum in constants etc
-        if (department === 'ØSA' || department === 'YTA' || department === 'ATA')
-            return true
-        else return false
-    }
 
     const onCloseModal = () => {
         setShowLegalbasesFields(false)
@@ -159,7 +140,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                                     <FieldDepartment department={formikBag.values.department} />
                                 </Block>
 
-                                {showSubDepartment(formikBag.values.department) && (
+                                {codelist.showSubDepartment(formikBag.values.department) && (
                                     <Block {...rowBlockProps}>
                                         <ModalLabel label={intl.subDepartment}/>
                                         <FieldSubDepartment subDepartment={formikBag.values.subDepartment} />

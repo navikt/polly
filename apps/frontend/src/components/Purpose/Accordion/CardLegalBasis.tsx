@@ -10,11 +10,11 @@ import { intl, theme } from "../../../util"
 import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from "formik"
 import { KIND as NKIND, Notification } from "baseui/notification"
 import { LegalBasisFormValues } from "../../../constants"
-import { legalBasisSchema } from "../../common/LegalBasis"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { DateModalFields } from "../DateModalFields"
 import { faPen, faExclamationCircle } from "@fortawesome/free-solid-svg-icons"
 import { StatefulTooltip, PLACEMENT } from 'baseui/tooltip';
+import { legalBasisSchema } from "../../common/schema"
 
 const rowBlockBrops: BlockProps = {
     display: 'flex',

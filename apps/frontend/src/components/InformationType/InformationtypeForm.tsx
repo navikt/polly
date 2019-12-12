@@ -14,8 +14,8 @@ import { Option, Select, TYPE, Value } from "baseui/select";
 import { codelist, ListName } from "../../service/Codelist";
 import { InformationtypeFormValues } from "../../constants";
 import { intl } from "../../util"
-import * as yup from "yup"
-import { getTerm, mapTermToOption, useTermSearch } from "../../api/TermApi"
+import { getTerm, mapTermToOption, useTermSearch } from "../../api"
+import { infoTypeSchema } from "../common/schema"
 
 const labelProps: BlockProps = {
     marginBottom: "8px",
@@ -48,17 +48,6 @@ function renderTagList(
         </React.Fragment>
     );
 }
-
-const infoTypeSchema = () => yup.object({
-    name: yup.string().required(intl.required),
-    term: yup.string(),
-    sensitivity: yup.string().required(intl.required),
-    categories: yup.array(yup.string()),
-    sources: yup.array(yup.string()),
-    keywords: yup.array(yup.string()),
-    navMaster: yup.string(),
-    description: yup.string().required(intl.required)
-})
 
 type FormProps = {
     formInitialValues: InformationtypeFormValues;

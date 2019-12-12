@@ -9,9 +9,9 @@ import {Label2} from "baseui/typography";
 import {Textarea} from "baseui/textarea";
 import {Input, SIZE as InputSIZE} from "baseui/input";
 import {CodeListFormValues, ProcessFormValues} from "../../constants";
-import * as yup from "yup";
 import {intl} from "../../util";
 import {Error} from "../common/ModalSchema";
+import { codeListSchema } from "../common/schema"
 
 const modalBlockProps: BlockProps = {
     width: '700px',
@@ -34,12 +34,6 @@ type ModalUpdateProps = {
     onClose: Function,
     submit: Function,
 };
-
-const codeListSchema = () => yup.object({
-    shortName: yup.string().required(intl.required),
-    description: yup.string().required(intl.required),
-
-});
 
 const UpdateCodeListModal = ({title, initialValues, errorOnUpdate, isOpen, onClose, submit}: ModalUpdateProps) => {
     return (
