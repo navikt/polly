@@ -95,7 +95,7 @@ type ModalProcessProps = {
     isEdit?: boolean;
     initialValues: ProcessFormValues;
     errorOnCreate: any | undefined;
-    submit: Function;
+    submit: (process: ProcessFormValues) => void;
     onClose: Function;
 };
 

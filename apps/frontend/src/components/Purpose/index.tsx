@@ -3,12 +3,12 @@ import {Block, BlockProps} from "baseui/block";
 import {Plus} from "baseui/icon";
 import {Label2} from "baseui/typography";
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
-import {Process} from "../../constants"
+import { Process, ProcessFormValues } from "../../constants"
 import {intl, useAwait} from "../../util"
 import {user} from "../../service/User";
 import ModalProcess from './Accordion/ModalProcess'
 import AccordionProcess from "./Accordion";
-import {createProcess, getProcessesForPurpose} from "../../api"
+import { createProcess, getProcessesForPurpose, mapProcessFromForm } from "../../api"
 
 const rowBlockProps: BlockProps = {
     marginBottom: 'scale800',
@@ -37,7 +37,7 @@ const ProcessList = ({purposeCode}: ProcessListProps) => {
         setIsLoadingProcessList(false)
     }
 
-    const handleCreateProcess = async (process: Process) => {
+    const handleCreateProcess = async (process: ProcessFormValues) => {
         if (!process) return
         try {
             const newProcess = await createProcess(process)
@@ -89,7 +89,7 @@ const ProcessList = ({purposeCode}: ProcessListProps) => {
                     title={intl.processingActivitiesNew}
                     onClose={() => setShowProcessModal(false)}
                     isOpen={showProcessModal}
-                    submit={(values: any) => handleCreateProcess(values)}
+                    submit={(values: ProcessFormValues) => handleCreateProcess(values)}
                     errorOnCreate={errorProcessModal}
                     isEdit={false}
                     initialValues={{name: '', department: '', subDepartment: '', purposeCode: purposeCode, legalBases: []}}
