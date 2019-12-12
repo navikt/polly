@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTag, faUserShield } from '@fortawesome/free-solid-svg-icons'
 import { Code } from '../../../service/Codelist'
 import { sensitivityColor } from "../Sensitivity"
-import { getTerm } from "../../../api"
+import { getTerm, mapTermToOption } from "../../../api"
 
 const itemBlockProps: BlockProps = {
     display: ['flex', 'block', 'block', 'flex'],
@@ -91,7 +91,10 @@ const Metadata = (props: { informationtype: InformationType }) => {
 
     useEffect(() => {
         (async () => {
-            informationtype.term && setTerm((await getTerm(informationtype.term)).description)
+            if (informationtype.term) {
+                const term = await getTerm(informationtype.term)
+                setTerm(mapTermToOption(term).label)
+            }
         })()
     }, [informationtype.term])
 
