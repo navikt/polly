@@ -54,9 +54,9 @@ public class TermCatalogClient {
     }
 
     private GraphNode getFromCatalog(String termId) {
-        ResponseEntity<GraphNode> response = null;
+        ResponseEntity<GraphNode[]> response = null;
         try {
-            response = restTemplate.getForEntity(properties.getGetUrl(), GraphNode.class, termId);
+            response = restTemplate.getForEntity(properties.getGetUrl(), GraphNode[].class, termId);
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 log.debug("term {} not found", termId);
@@ -65,7 +65,13 @@ public class TermCatalogClient {
             throw e;
         }
         verifyResponse(response);
-        return response.getBody();
+        GraphNode[] body = requireNonNull(response.getBody());
+        if (body.length == 0) {
+            log.debug("term {} not found", termId);
+            return null;
+        }
+        Assert.isTrue(body.length == 1, "more than one result for id lookup");
+        return body[0];
     }
 
     private List<CatalogTerm> searchCatalog(String searchString) {
