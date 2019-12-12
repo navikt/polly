@@ -190,7 +190,7 @@ public abstract class IntegrationTestBase {
         WireMock.stubFor(get("/termcatalog/terms/search/term").willReturn(okJson(JsonUtils.toJson(List.of(termOne, termTwo)))));
 
         GraphNode termOneGraph = GraphNode.builder().propId("term").term("new term").description("descr1").build();
-        WireMock.stubFor(get("/termcatalog/node/prop/term").willReturn(okJson(List.of(JsonUtils.toJson(termOneGraph)))));
+        WireMock.stubFor(get("/termcatalog/node/prop/term").willReturn(okJson(JsonUtils.toJson(List.of(termOneGraph)))));
     }
 
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
