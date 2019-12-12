@@ -53,6 +53,8 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
         purposeCode: values.purposeCode,
         department: values.department ? values.department : undefined,
         subDepartment: values.subDepartment ? values.subDepartment : undefined,
-        legalBases: values.legalBases ? values.legalBases : []
+        legalBases: values.legalBases ? values.legalBases : [],
+        start: values.start,
+        end: values.end
     }
 }
