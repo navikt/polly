@@ -91,7 +91,7 @@ const Metadata = (props: { informationtype: InformationType }) => {
 
     useEffect(() => {
         (async () => {
-            informationtype.term && typeof informationtype.term === 'string' && setTerm((await getTerm(informationtype.term)).description)
+            informationtype.term && setTerm((await getTerm(informationtype.term)).description)
         })()
     }, [informationtype.term])
 

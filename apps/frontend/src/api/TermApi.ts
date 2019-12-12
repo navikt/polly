@@ -24,7 +24,7 @@ export const useTermSearch = () => {
             if (termSearch && termSearch.length > 2) {
                 setLoading(true)
                 const res = await searchTerm(termSearch)
-                let options: Option[] = res.content.map(term => ({id: term.name, label: term.name + ' - ' + term.description}))
+                let options: Option[] = res.content.map(term => ({id: term.id, label: term.name + ' - ' + term.description}))
                 setInfoTypeSearchResult(options)
                 setLoading(false)
             }

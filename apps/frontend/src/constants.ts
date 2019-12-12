@@ -63,7 +63,7 @@ export interface LegalBasis extends IDurationed {
 export interface InformationType {
     id: string;
     name: string;
-    term?: string | Term;
+    term?: string;
     description: string;
     sensitivity: Code;
     navMaster: Code;
