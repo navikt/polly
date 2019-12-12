@@ -195,9 +195,11 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
                             />
                         </Block>
                         <Block>
+                            {user.canWrite() &&
                             <Button type="button" shape={SHAPE.square} onClick={() => props.history.push("/informationtype/create")}>
-                                <FontAwesomeIcon icon={faPlusCircle} />&nbsp;{intl.createNew}
+                              <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;{intl.createNew}
                             </Button>
+                            }
                         </Block>
                     </Block>
                     <InformationTypeTable {...props} />
