@@ -1,11 +1,14 @@
-import LocalizedStrings, {GlobalStrings, LocalizedStringsMethods} from "react-localization";
+import LocalizedStrings, {
+    GlobalStrings,
+    LocalizedStringsMethods
+} from "react-localization";
 import * as React from "react";
-import {useEffect} from "react";
-import {useForceUpdate} from "../customHooks";
-import {en, no, ta} from "./lang";
+import { useEffect } from "react";
+import { useForceUpdate } from "../customHooks";
+import { en, no, ta } from "./lang";
 import * as moment from "moment";
-import 'moment/locale/nb'
-import 'moment/locale/ta'
+import "moment/locale/nb";
+import "moment/locale/ta";
 
 export interface IStrings {
     informationType: string;
@@ -50,6 +53,7 @@ export interface IStrings {
     gdprSelect: string;
     nationalLawSelect: string;
     descriptionWrite: string;
+    descriptionWriteLegalBases: string;
     definitionWrite: string;
     subjectCategoriesNotFound: string;
     legalBasesProcess: string;
@@ -61,6 +65,8 @@ export interface IStrings {
     confirmDeletePolicyText: string;
     startIllustration: string;
     treasureIllustration: string;
+    legalbasisGDPRArt9Info: string;
+    legalBasisInfo: string;
 
     // groups
     POLLY_READ: string;
@@ -112,24 +118,24 @@ export interface IStrings {
     requiredNationalLaw: string;
     requiredDescription: string;
 
-    code: string,
-    shortName: string,
-    createCodeListTitle: string,
-    deleteCodeListConfirmationTitle: string,
-    editCodeListTitle: string,
-    manageCodeListTitle: string,
-    chooseCodeList: string,
-    createNewCodeList: string,
+    code: string;
+    shortName: string;
+    createCodeListTitle: string;
+    deleteCodeListConfirmationTitle: string;
+    editCodeListTitle: string;
+    manageCodeListTitle: string;
+    chooseCodeList: string;
+    createNewCodeList: string;
 }
 
 // Remember import moment locales up top
 export const langs: Langs = {
-    nb: {flag: "no", name: "Norsk", langCode: "nb", texts: no},
-    en: {flag: "gb", name: "English", langCode: "en", texts: en}
+    nb: { flag: "no", name: "Norsk", langCode: "nb", texts: no },
+    en: { flag: "gb", name: "English", langCode: "en", texts: en }
 };
 
-if (window.location.hostname.indexOf('local') >= 0) {
-    langs['ta'] = {flag: "lk", name: "தமிழ்", langCode: "ta", texts: ta}
+if (window.location.hostname.indexOf("local") >= 0) {
+    langs["ta"] = { flag: "lk", name: "தமிழ்", langCode: "ta", texts: ta };
 }
 
 export const langsArray: Lang[] = Object.keys(langs).map(lang => langs[lang]);
@@ -140,7 +146,7 @@ const defaultLang = langs.nb;
 type IIntl = LocalizedStringsMethods & IStrings;
 
 interface LocalizedStringsFactory {
-    new<T>(
+    new <T>(
         props: GlobalStrings<T>,
         options?: { customLanguageInterface: () => string }
     ): IIntl;
@@ -148,12 +154,12 @@ interface LocalizedStringsFactory {
 
 const strings: IntlLangs = {};
 
-Object.keys(langs).forEach(lang => strings[lang] = langs[lang].texts);
+Object.keys(langs).forEach(lang => (strings[lang] = langs[lang].texts));
 
 export const intl: IIntl = new (LocalizedStrings as LocalizedStringsFactory)(
     strings as any,
-    {customLanguageInterface: () => defaultLang.langCode}
-)
+    { customLanguageInterface: () => defaultLang.langCode }
+);
 
 interface IntlLangs {
     [lang: string]: IStrings;
@@ -178,13 +184,13 @@ export const useLang = () => {
     const [lang, setLang] = React.useState<string>(
         ((localStorageAvailable &&
             localStorage.getItem("polly-lang")) as string) ||
-        defaultLang.langCode
+            defaultLang.langCode
     );
     const update = useForceUpdate();
     useEffect(() => {
         intl.setLanguage(lang);
-        let momentlocale = moment.locale(lang)
-        if (lang !== momentlocale) console.warn('moment locale missing', lang)
+        let momentlocale = moment.locale(lang);
+        if (lang !== momentlocale) console.warn("moment locale missing", lang);
         localStorageAvailable && localStorage.setItem("polly-lang", lang);
         update();
     }, [lang]);

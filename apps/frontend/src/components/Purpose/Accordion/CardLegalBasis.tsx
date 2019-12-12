@@ -6,14 +6,15 @@ import { StatefulInput } from 'baseui/input';
 import { Label2 } from 'baseui/typography';
 import { Button, KIND, SIZE as ButtonSize } from 'baseui/button';
 import { codelist, ListName } from "../../../service/Codelist";
-import { intl } from "../../../util"
+import { intl, theme } from "../../../util"
 import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from "formik"
 import { KIND as NKIND, Notification } from "baseui/notification"
 import { LegalBasisFormValues } from "../../../constants"
 import { legalBasisSchema } from "../../common/LegalBasis"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faPen } from "@fortawesome/free-solid-svg-icons"
 import { DateModalFields } from "../DateModalFields"
+import { faPen, faExclamationCircle } from "@fortawesome/free-solid-svg-icons"
+import { StatefulTooltip, PLACEMENT } from 'baseui/tooltip';
 
 const rowBlockBrops: BlockProps = {
     display: 'flex',
@@ -30,6 +31,30 @@ const Error = (props: { fieldName: string }) => (
         )}
     </ErrorMessage>
 )
+
+const TooltipContent = () => (
+    <Block>
+        <p>{intl.legalBasisInfo}</p>
+        <p>{intl.legalbasisGDPRArt9Info}</p>
+    </Block>
+)
+
+const renderCardHeader = (text: string) => {
+    return (
+        <Block display="flex">
+            <StatefulTooltip
+                content={() => <TooltipContent />}
+                placement={PLACEMENT.right}
+            >
+                <Block display="flex">
+                    <Label2>{text}</Label2>
+                    <FontAwesomeIcon icon={faExclamationCircle} color={theme.colors.positive300} size="sm" />
+                </Block>
+            </StatefulTooltip>
+        </Block>
+
+    )
+}
 
 interface CardLegalBasisProps {
     hideCard: Function;
@@ -49,7 +74,8 @@ const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
             render={(form: FormikProps<LegalBasisFormValues>) => {
                 return (
                     <Card>
-                        <Label2 marginBottom="1rem">{intl.legalBasisNew}</Label2>
+                        {renderCardHeader(intl.legalBasisNew)}
+
 
                         <Block {...rowBlockBrops}>
                             <Field name="gdpr"
@@ -93,16 +119,17 @@ const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
                         <Block {...rowBlockBrops} display={codelist.requiresDescription(form.values.gdpr) ? rowBlockBrops.display : 'none'}>
                             <Field name="description"
                                 render={({ field }: FieldProps<LegalBasisFormValues>) => (
-                                    <StatefulInput {...field} placeholder={intl.descriptionWrite}
+                                    <StatefulInput {...field} placeholder={intl.descriptionWriteLegalBases}
                                         error={!!form.errors.description && !!form.submitCount}
-                                        startEnhancer={() => <FontAwesomeIcon icon={faPen} />}
-
+                                        startEnhancer={() => <StatefulTooltip content={() => 'text'}>
+                                            <FontAwesomeIcon icon={faPen} />
+                                        </StatefulTooltip>}
                                     />
                                 )} />
                         </Block>
                         <Error fieldName="description" />
 
-                        <DateModalFields rowBlockBrops={rowBlockBrops} showDates={useDates}/>
+                        <DateModalFields rowBlockBrops={rowBlockBrops} showDates={useDates} />
 
                         <Block {...rowBlockBrops} justifyContent="space-between">
                             <Button type='button' kind={KIND.secondary} size={ButtonSize.compact} onClick={form.submitForm}>

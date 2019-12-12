@@ -10,8 +10,6 @@ import _includes from 'lodash/includes'
 import { user } from "../../../service/User";
 import { Plus } from 'baseui/icon'
 import { LegalBasis, PolicyFormValues, Process, ProcessFormValues } from "../../../constants"
-
-
 import { LegalBasisView } from "../../common/LegalBasis"
 import { codelist, ListName } from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
@@ -39,7 +37,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
     const [showCreatePolicyModal, setShowCreatePolicyModal] = React.useState(false)
     const [errorCreatePolicy, setErrorCreatePolicy] = React.useState(null)
     const [process, setProcess] = React.useState<Process | undefined>()
-    const {purposeCode} = props
+    const { purposeCode } = props
 
     const updatePath = (params: PathParams | null) => {
         let nextPath
@@ -74,9 +72,9 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
 
     const handleChangePanel = async (processId?: string) => {
         if (!processId)
-            updatePath({purposeCode: purposeCode})
+            updatePath({ purposeCode: purposeCode })
         else {
-            updatePath({purposeCode: purposeCode, processId: processId})
+            updatePath({ purposeCode: purposeCode, processId: processId })
         }
     }
 
@@ -97,7 +95,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
     const renderActiveForProcess = (process: Process) =>
         <Block marginRight="scale1200">
             <Label2>{intl.active}</Label2>
-            <ActiveIndicator alwaysShow={true} {...process}/>
+            <ActiveIndicator alwaysShow={true} {...process} />
         </Block>
 
     const renderLegalBasisListForProcess = (list: LegalBasis[]) => (
@@ -105,8 +103,8 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
             <Label2>{intl.legalBasis}</Label2>
             {list && list.length < 1 && <Paragraph2>{intl.legalBasisNotFound}</Paragraph2>}
             {list && list.length > 0 && (
-                <ul style={{listStyle: "none", paddingInlineStart: 0}}>
-                    {list.map((legalBasis: any, i: number) => <li key={i}><Paragraph2><LegalBasisView legalBasis={legalBasis}/></Paragraph2></li>)}
+                <ul style={{ listStyle: "none", paddingInlineStart: 0 }}>
+                    {list.map((legalBasis: any, i: number) => <li key={i}><Paragraph2><LegalBasisView legalBasis={legalBasis} /></Paragraph2></li>)}
                 </ul>
             )}
         </Block>
@@ -152,7 +150,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
             size={ButtonSize.compact}
             kind={KIND.tertiary}
             onClick={() => setShowCreatePolicyModal(true)}
-            startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
+            startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
         >
             {intl.addNew}
         </Button>
@@ -163,11 +161,11 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
 
     return (
         <React.Fragment>
-            <Accordion onChange={({expanded}) => handleChangePanel(expanded.length ? expanded[0].toString() : undefined)}
-                       initialState={{expanded: props.match.params.processId ? [props.match.params.processId] : []}} >
+            <Accordion onChange={({ expanded }) => handleChangePanel(expanded.length ? expanded[0].toString() : undefined)}
+                initialState={{ expanded: props.match.params.processId ? [props.match.params.processId] : [] }} >
                 {props.processList && props.processList.map((p: Process) => (
                     <Panel title={p.name} key={p.id}>
-                        {isLoading && <Spinner size={18}/>}
+                        {isLoading && <Spinner size={18} />}
 
                         {!isLoading && process && (
                             <React.Fragment>

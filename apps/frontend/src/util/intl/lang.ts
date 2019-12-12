@@ -1,4 +1,4 @@
-import {IStrings} from "./intl";
+import { IStrings } from "./intl";
 
 export const no: IStrings = {
     informationType: "Opplysningstype",
@@ -42,6 +42,7 @@ export const no: IStrings = {
     gdprSelect: "Velg GDPR artikkel",
     nationalLawSelect: "Velg nasjonal lov",
     descriptionWrite: "Skriv inn beskrivelse",
+    descriptionWriteLegalBases: "Skriv inn lov (Eksempel: § 1-1)",
     definitionWrite: "Skriv inn en definisjon",
     subjectCategoriesNotFound: "Fant ingen kategorier av personer",
     legalBasesProcess: "Bruker behandlingens rettslig grunnlag",
@@ -54,10 +55,14 @@ export const no: IStrings = {
         "Bekreft sletting av behandlingsgrunnlaget for opplysningstypen",
     startIllustration: "Illustrasjon av en prosess",
     treasureIllustration: "Illustration av en skatt",
+    legalbasisGDPRArt9Info:
+        "Opplysningstyper som er særlige kategorier krever art. 9",
+    legalBasisInfo:
+        "For artikkel 6(c, e og f) trengs det videre spesifisering.",
 
-    POLLY_READ: 'Les',
-    POLLY_WRITE: 'Skriv',
-    POLLY_ADMIN: 'Admin',
+    POLLY_READ: "Les",
+    POLLY_WRITE: "Skriv",
+    POLLY_ADMIN: "Admin",
 
     department: "Avdeling",
     subDepartment: "Linja (Ytre etat)",
@@ -99,8 +104,10 @@ export const no: IStrings = {
     dateFormat: "Feil dato format, eksempel: 2018-08-22",
     useDates: "Velg datoer",
 
-    requiredGdprArt6: "Opplysningstypen krever et rettslig grunnlag med artikkel 6",
-    requiredGdprArt9: "Opplysningstypen krever et rettslig grunnlag med artikkel 9",
+    requiredGdprArt6:
+        "Opplysningstypen krever et rettslig grunnlag med artikkel 6",
+    requiredGdprArt9:
+        "Opplysningstypen krever et rettslig grunnlag med artikkel 9",
     requiredNationalLaw: "Artikkelen krever nasjonal lov",
     requiredDescription: "Artikkelen krever ytterligere beskrivelse",
 
@@ -111,7 +118,7 @@ export const no: IStrings = {
     editCodeListTitle: "Rediger kode",
     manageCodeListTitle: "Administrering av kodeverk",
     chooseCodeList: "Velg kodeverk",
-    createNewCodeList : "Opprett ny kode"
+    createNewCodeList: "Opprett ny kode"
 };
 
 export const en = {
@@ -156,6 +163,7 @@ export const en = {
     gdprSelect: "Select GDPR article",
     nationalLawSelect: "Select national law",
     descriptionWrite: "Enter description",
+    descriptionWriteLegalBases: "Enter law (Example: § 1-1)",
     definitionWrite: "Enter definition",
     subjectCategoriesNotFound: "Found no subject categories",
     legalBasesProcess: "Use legal bases from process",
@@ -167,10 +175,14 @@ export const en = {
     confirmDeletePolicyText: "Please confirm deleting the policy for",
     startIllustration: "Process illustration",
     treasureIllustration: "Treasure illustration",
+    legalbasisGDPRArt9Info:
+        "Informationtypes that are special categories require art. 9",
+    legalBasisInfo:
+        "For Article 6(c, e and f), further specification is needed.",
 
-    POLLY_READ: 'Read',
-    POLLY_WRITE: 'Write',
-    POLLY_ADMIN: 'Admin',
+    POLLY_READ: "Read",
+    POLLY_WRITE: "Write",
+    POLLY_ADMIN: "Admin",
 
     department: "Department",
     subDepartment: "Sub department",
@@ -208,8 +220,10 @@ export const en = {
     maxChars: "Max {0} characters",
     required: "Field is required",
 
-    requiredGdprArt6: "The information type requires a legal basis for article 6",
-    requiredGdprArt9: "The information type requires a legal basis for article 9",
+    requiredGdprArt6:
+        "The information type requires a legal basis for article 6",
+    requiredGdprArt9:
+        "The information type requires a legal basis for article 9",
     requiredNationalLaw: "The article requires national law",
     requiredDescription: "The article requires additional description",
 
@@ -220,7 +234,7 @@ export const en = {
     editCodeListTitle: "Edit code",
     manageCodeListTitle: "Manage code lists",
     chooseCodeList: "Choose code list",
-    createNewCodeList : "Create new code"
+    createNewCodeList: "Create new code"
 };
 
 export const ta = {
