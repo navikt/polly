@@ -11,8 +11,7 @@ import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.policy.domain.PolicyRepository;
-import no.nav.data.polly.term.domain.Term;
-import no.nav.data.polly.term.domain.TermRepository;
+import no.nav.data.polly.term.catalog.TermCatalogClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,13 +31,13 @@ import static no.nav.data.polly.common.utils.StreamUtils.nullToEmptyList;
 public class InformationTypeService extends RequestValidator<InformationTypeRequest> {
 
     private final InformationTypeRepository repository;
-    private final TermRepository termRepository;
     private final PolicyRepository policyRepository;
+    private final TermCatalogClient termCatalogClient;
 
-    public InformationTypeService(InformationTypeRepository repository, TermRepository termRepository, PolicyRepository policyRepository) {
+    public InformationTypeService(InformationTypeRepository repository, PolicyRepository policyRepository, TermCatalogClient termCatalogClient) {
         this.repository = repository;
-        this.termRepository = termRepository;
         this.policyRepository = policyRepository;
+        this.termCatalogClient = termCatalogClient;
     }
 
     public InformationType save(InformationTypeRequest request) {
@@ -87,7 +86,6 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
 
     private InformationType convertNew(InformationTypeRequest request) {
         InformationType informationType = new InformationType().convertNewFromRequest(request);
-        attachDependencies(informationType, request);
         return informationType;
     }
 
@@ -96,16 +94,6 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
             policyRepository.updateInformationTypeName(request.getIdAsUUID(), request.getName());
         }
         informationType.convertUpdateFromRequest(request);
-        attachDependencies(informationType, request);
-    }
-
-    private void attachDependencies(InformationType informationType, InformationTypeRequest request) {
-        if (request.getTerm() != null) {
-            Term term = termRepository.findByName(request.getTerm())
-                    .orElseGet(() -> termRepository.save(Term.builder().generateId().name(request.getTerm()).description("autogenerert").build()));
-
-            term.addInformationType(informationType);
-        }
     }
 
     public void validateRequest(List<InformationTypeRequest> requests, boolean isUpdate) {
@@ -121,11 +109,19 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
 
         var validationErrors = StreamUtils.applyAll(requests,
                 RequestElement::validateFields,
-                this::validateInformationTypeRepositoryValues
+                this::validateInformationTypeRepositoryValues,
+                this::validateTerm
         );
         validationErrors.addAll(validateNoDuplicates(requests));
 
         return validationErrors;
+    }
+
+    private List<ValidationError> validateTerm(InformationTypeRequest request) {
+        if (request.getTerm() == null || termCatalogClient.getTerm(request.getTerm()).isPresent()) {
+            return List.of();
+        }
+        return List.of(new ValidationError(request.getReference(), "termDoesNotExist", String.format("The Term %s doesnt exist", request.getTerm())));
     }
 
     private List<ValidationError> validateInformationTypeRepositoryValues(InformationTypeRequest request) {

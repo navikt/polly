@@ -7,7 +7,6 @@ import no.nav.data.polly.informationtype.InformationTypeController.InformationTy
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
-import no.nav.data.polly.term.domain.Term;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,9 +87,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
 
     @Test
     void createInformationTypes() {
-        termRepository.save(Term.builder().generateId().name("existingterm").description("desc").build());
         InformationTypeRequest req1 = createRequest("createName1");
-        req1.setTerm("existingterm");
         InformationTypeRequest req2 = createRequest("createName2");
 
         ResponseEntity<InformationTypePage> responseEntity = restTemplate
@@ -101,9 +98,6 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         assertThat(informationTypeRepository.count()).isEqualTo(2L);
         assertThat(informationTypeRepository.findByName("createName1")).isPresent();
         assertThat(informationTypeRepository.findByName("createName2")).isPresent();
-        assertThat(termRepository.count()).isEqualTo(2L);
-        assertThat(termRepository.findByName(req1.getTerm())).isPresent();
-        assertThat(termRepository.findByName(req2.getTerm())).isPresent();
     }
 
     @Test
@@ -235,7 +229,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         return InformationTypeRequest.builder()
                 .id(id)
                 .name(name)
-                .term("someterm")
+                .term("term")
                 .description("InformationTypeDescription")
                 .sensitivity("Personopplysning")
                 .navMaster("TPS")

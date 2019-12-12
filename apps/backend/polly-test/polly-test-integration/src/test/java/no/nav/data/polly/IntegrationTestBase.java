@@ -23,8 +23,8 @@ import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
 import no.nav.data.polly.process.domain.ProcessDistributionRepository;
 import no.nav.data.polly.process.domain.ProcessRepository;
-import no.nav.data.polly.term.domain.Term;
-import no.nav.data.polly.term.domain.TermRepository;
+import no.nav.data.polly.term.catalog.CatalogTerm;
+import no.nav.data.polly.term.catalog.GraphNode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -67,13 +67,11 @@ public abstract class IntegrationTestBase {
     protected static final String PURPOSE_CODE2 = "AAP";
     protected static final String INFORMATION_TYPE_NAME = "Sivilstand";
 
-    private static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:10.4");
+    private static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:10.4");
     @Autowired
     protected TransactionTemplate transactionTemplate;
     @Autowired
     protected InformationTypeRepository informationTypeRepository;
-    @Autowired
-    protected TermRepository termRepository;
     @Autowired
     protected ProcessRepository processRepository;
     @Autowired
@@ -88,17 +86,16 @@ public abstract class IntegrationTestBase {
     }
 
     private Map<String, Process> process = new HashMap<>();
-    private Map<String, Term> terms = new HashMap<>();
     private InformationType informationType;
 
     @BeforeEach
     public void setUpAbstract() {
         CodelistStub.initializeCodelist();
         WireMock.stubFor(get("/elector").willReturn(okJson(JsonUtils.toJson(LeaderElectionService.getHostInfo()))));
+        mockTerms();
 
         policyRepository.deleteAll();
         informationTypeRepository.deleteAll();
-        termRepository.deleteAll();
         processRepository.deleteAll();
     }
 
@@ -106,7 +103,6 @@ public abstract class IntegrationTestBase {
     public void teardownAbstract() {
         policyRepository.deleteAll();
         informationTypeRepository.deleteAll();
-        termRepository.deleteAll();
         processRepository.deleteAll();
         CollectorRegistry.defaultRegistry.clear();
     }
@@ -149,6 +145,7 @@ public abstract class IntegrationTestBase {
     protected InformationType createInformationType(UUID id, String name) {
         InformationType informationType = InformationType.builder()
                 .id(id)
+                .termId("term")
                 .elasticsearchStatus(SYNCED)
                 .data(InformationTypeData.builder()
                         .name(name)
@@ -160,7 +157,6 @@ public abstract class IntegrationTestBase {
                         .build())
                 .build();
         informationType.preUpdate();
-        createTerm("term").addInformationType(informationType);
         return informationTypeRepository.save(informationType);
     }
 
@@ -172,11 +168,6 @@ public abstract class IntegrationTestBase {
                                         .start(LocalDate.now()).end(LocalDate.now()).legalBasis(createLegalBasis())
                                         .build())
                                 .build()));
-    }
-
-    protected Term createTerm(String term) {
-        return terms.computeIfAbsent(term,
-                (t) -> termRepository.save(Term.builder().generateId().name("Auto_" + term).description("termdesc").build()));
     }
 
     protected LegalBasis createLegalBasis() {
@@ -191,6 +182,15 @@ public abstract class IntegrationTestBase {
                 .start(LocalDate.now())
                 .end(LocalDate.now())
                 .build();
+    }
+
+    private void mockTerms() {
+        CatalogTerm termOne = CatalogTerm.builder().id("term").term("new term").description("description").build();
+        CatalogTerm termTwo = CatalogTerm.builder().id("term2").term("term old").description("description").build();
+        WireMock.stubFor(get("/termcatalog/terms/search/term").willReturn(okJson(JsonUtils.toJson(List.of(termOne, termTwo)))));
+
+        GraphNode termOneGraph = GraphNode.builder().propId("term").term("new term").description("descr1").build();
+        WireMock.stubFor(get("/termcatalog/node/prop/term").willReturn(okJson(JsonUtils.toJson(termOneGraph))));
     }
 
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {

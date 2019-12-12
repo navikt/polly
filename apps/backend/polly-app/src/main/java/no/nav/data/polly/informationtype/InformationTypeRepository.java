@@ -43,8 +43,8 @@ public interface InformationTypeRepository extends JpaRepository<InformationType
     @Query("update InformationType set elasticsearchStatus = ?2 where id = ?1")
     void updateStatusForInformationType(UUID informationTypeId, ElasticsearchStatus elasticsearchStatus);
 
-    List<InformationType> findByTermName(String term);
+    List<InformationType> findByTermId(String term);
 
-    @Query(value = "select t.name as term, count(it) as count from InformationType it join it.term t group by t.name")
+    @Query(value = "select it.termId as term, count(it) as count from InformationType it group by it.termId")
     List<TermCount> countByTerm();
 }

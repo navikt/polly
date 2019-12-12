@@ -114,7 +114,7 @@ public class InformationTypeController {
     @GetMapping("/term/{term}")
     public ResponseEntity<RestResponsePage<InformationTypeResponse>> findInformationTypesByTerm(@PathVariable String term) {
         log.info("Received request for InformationTypes with the term {}", term);
-        List<InformationType> infoTypes = repository.findByTermName(term);
+        List<InformationType> infoTypes = repository.findByTermId(term);
         infoTypes.sort(comparing(it -> it.getData().getName(), String.CASE_INSENSITIVE_ORDER));
         log.info("Returned {} InformationTypes", infoTypes.size());
         return new ResponseEntity<>(new RestResponsePage<>(convert(infoTypes, InformationType::convertToResponse)), HttpStatus.OK);
