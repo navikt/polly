@@ -18,7 +18,7 @@ import no.nav.data.polly.term.domain.PollyTerm;
 public class GraphNode {
 
     private static final String TERM_NAME_PROP = "term";
-    private static final String DESC_PROP = "begrepsforklaring";
+    private static final String DESC_PROP = "definisjon";
 
     private String id;
     private String guid;
