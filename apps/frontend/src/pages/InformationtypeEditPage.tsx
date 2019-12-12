@@ -27,7 +27,7 @@ const reduceCodelist = (list: Code[]) => {
 const initFormValues = (data: InformationType) => {
     return {
         name: data.name,
-        term: !data.term ? '' : data.term.name,
+        term: data.term && typeof data.term === 'string' ? data.term as string : undefined,
         navMaster: !data.navMaster ? '' : data.navMaster.code,
         categories: reduceCodelist(data.categories),
         sources: reduceCodelist(data.sources),

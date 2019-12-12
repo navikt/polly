@@ -6,6 +6,10 @@ import { Option } from "baseui/select"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
+export const getTerm = async (termId: string) => {
+    return (await axios.get<Term>(`${server_polly}/term/${termId}`)).data
+}
+
 export const searchTerm = async (termSearch: string) => {
     return (await axios.get<PageResponse<Term>>(`${server_polly}/term/search/${termSearch}`)).data
 }

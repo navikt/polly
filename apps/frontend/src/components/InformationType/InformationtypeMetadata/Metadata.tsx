@@ -1,15 +1,17 @@
 import * as React from 'react'
+import { useEffect, useState } from 'react'
 import { Block, BlockProps } from 'baseui/block'
-import { InformationType, Term } from '../../../constants'
+import { InformationType } from '../../../constants'
 import { Card } from 'baseui/card'
 import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
 import { IconDefinition } from "@fortawesome/fontawesome-common-types"
-import { intl } from '../../../util/intl/intl'
+import { intl } from '../../../util'
 import { Label2, Paragraph2 } from 'baseui/typography'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTag, faUserShield } from '@fortawesome/free-solid-svg-icons'
 import { Code } from '../../../service/Codelist'
 import { sensitivityColor } from "../Sensitivity"
+import { getTerm } from "../../../api"
 
 const itemBlockProps: BlockProps = {
     display: ['flex', 'block', 'block', 'flex'],
@@ -85,13 +87,20 @@ const CardMetadata = (props: { navMaster: Code, sources: Code[], categories: Cod
 
 const Metadata = (props: { informationtype: InformationType }) => {
     const { informationtype } = props
+    const [term, setTerm] = useState()
+
+    useEffect(() => {
+        (async () => {
+            informationtype.term && typeof informationtype.term === 'string' && setTerm((await getTerm(informationtype.term)).description)
+        })()
+    }, [informationtype.term])
 
     return (
         <Block display="flex" marginBottom="5rem">
             <Block width="40%" marginRight="5rem">
                 <CardOverview
                     name={informationtype.name}
-                    term={informationtype.term ? informationtype.term.description : ''}
+                    term={informationtype.term ? term : ''}
                     description={informationtype.description}
                 />
             </Block>
