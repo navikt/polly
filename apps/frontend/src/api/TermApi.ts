@@ -14,6 +14,8 @@ export const searchTerm = async (termSearch: string) => {
     return (await axios.get<PageResponse<Term>>(`${server_polly}/term/search/${termSearch}`)).data
 }
 
+export const mapTermToOption = (term: Term) => ({id: term.id, label: term.name + ' - ' + term.description})
+
 export const useTermSearch = () => {
     const [termSearch, setTermSearch] = useDebouncedState<string>('', 200);
     const [searchResult, setInfoTypeSearchResult] = React.useState<Option[]>([]);
@@ -24,7 +26,7 @@ export const useTermSearch = () => {
             if (termSearch && termSearch.length > 2) {
                 setLoading(true)
                 const res = await searchTerm(termSearch)
-                let options: Option[] = res.content.map(term => ({id: term.id, label: term.name + ' - ' + term.description}))
+                let options: Option[] = res.content.map(mapTermToOption)
                 setInfoTypeSearchResult(options)
                 setLoading(false)
             }

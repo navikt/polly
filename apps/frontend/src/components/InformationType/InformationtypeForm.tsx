@@ -1,5 +1,5 @@
 import * as React from "react";
-import { KeyboardEvent } from "react";
+import { KeyboardEvent, useEffect } from "react";
 import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikActions, FormikProps } from "formik";
 import { Label2 } from "baseui/typography";
 import { Input } from "baseui/input";
@@ -15,7 +15,7 @@ import { codelist, ListName } from "../../service/Codelist";
 import { InformationtypeFormValues } from "../../constants";
 import { intl } from "../../util"
 import * as yup from "yup"
-import { useTermSearch } from "../../api/TermApi"
+import { getTerm, mapTermToOption, useTermSearch } from "../../api/TermApi"
 
 const labelProps: BlockProps = {
     marginBottom: "8px",
@@ -85,21 +85,22 @@ const InformationtypeForm = ({
             label: codelist.getShortname(ListName.SYSTEM, formInitialValues.navMaster)
         }]
     }
-    const initialValueTerm = () => {
+    const initialValueTerm = async () => {
         if (!formInitialValues.term || !codelist) return []
-        return [{
-            id: formInitialValues.term,
-            label: formInitialValues.term
-        }]
+        return [mapTermToOption(await getTerm(formInitialValues.term))]
     }
     const keywordsRef = React.useRef<HTMLInputElement>(null);
 
     const [termSearchResult, setTermSearch, termSearchLoading] = useTermSearch()
 
     const [sensitivityValue, setSensitivityValue] = React.useState<Option>(initialValueSensitivity());
-    const [termValue, setTermValue] = React.useState<Option>(initialValueTerm());
+    const [termValue, setTermValue] = React.useState<Option>(formInitialValues.term ? [{id: formInitialValues.term, label: formInitialValues.term}] : []);
     const [masterValue, setMasterValue] = React.useState<Option>(initialValueMaster());
     const [currentKeywordValue, setCurrentKeywordValue] = React.useState("");
+
+    useEffect(() => {
+        (async () => setTermValue(await initialValueTerm()))()
+    }, [formInitialValues.term])
 
     const getParsedOptions = (listName: ListName, values: string[]) => {
         if (!codelist) return [];
