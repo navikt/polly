@@ -73,7 +73,7 @@ public class TermController {
         if (searchString.length() < 3) {
             throw new ValidationException("Search term must be at least 3 characters");
         }
-        List<PollyTerm> terms = termCatalogClient.getTerms(searchString);
+        List<PollyTerm> terms = termCatalogClient.searchTerms(searchString);
         terms.sort(comparing(t -> t.getName() + t.getDescription(), startsWith(searchString)));
         log.info("Returned {} terms", terms.size());
         return new ResponseEntity<>(new RestResponsePage<>(convert(terms, PollyTerm::convertToResponse)), HttpStatus.OK);

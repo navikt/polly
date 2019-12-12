@@ -41,7 +41,7 @@ public class TermCatalogClient {
                 .maximumSize(1000).build();
     }
 
-    public List<PollyTerm> getTerms(String searchString) {
+    public List<PollyTerm> searchTerms(String searchString) {
         List<CatalogTerm> terms = termSearchCache.get(searchString, this::searchCatalog);
         return safeStream(terms)
                 .map(CatalogTerm::convertToPollyTerm)
@@ -54,7 +54,7 @@ public class TermCatalogClient {
     }
 
     private GraphNode getFromCatalog(String termId) {
-        ResponseEntity<GraphNode[]> response = null;
+        ResponseEntity<GraphNode[]> response;
         try {
             response = restTemplate.getForEntity(properties.getGetUrl(), GraphNode[].class, termId);
         } catch (HttpClientErrorException e) {
@@ -77,7 +77,7 @@ public class TermCatalogClient {
     private List<CatalogTerm> searchCatalog(String searchString) {
         ResponseEntity<CatalogTerm[]> response = restTemplate.getForEntity(properties.getSearchUrl(), CatalogTerm[].class, searchString);
         verifyResponse(response);
-        return response.hasBody() ? asList(requireNonNull(response.getBody())) : List.of();
+        return asList(requireNonNull(response.getBody()));
     }
 
     private void verifyResponse(ResponseEntity<?> responseEntity) {
