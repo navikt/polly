@@ -104,7 +104,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
             {list && list.length < 1 && <Paragraph2>{intl.legalBasisNotFound}</Paragraph2>}
             {list && list.length > 0 && (
                 <ul style={{ listStyle: "none", paddingInlineStart: 0 }}>
-                    {list.map((legalBasis: any, i: number) => <li key={i}><Paragraph2><LegalBasisView legalBasis={legalBasis} /></Paragraph2></li>)}
+                    {list.map((legalBasis, i) => <li key={i}><Paragraph2><LegalBasisView legalBasis={legalBasis} /></Paragraph2></li>)}
                 </ul>
             )}
         </Block>

@@ -1,11 +1,12 @@
 import * as React from "react";
-import {Block, BlockProps} from 'baseui/block'
-import {Label2} from "baseui/typography";
+import { Block, BlockProps } from 'baseui/block'
+import { Label2 } from "baseui/typography";
 
 import AccordionInformationtype from './AccordionInformationtype'
-import {InformationType} from "../../../constants"
-import {intl} from "../../../util/intl/intl"
+import { InformationType } from "../../../constants"
+import { intl } from "../../../util"
 import Metadata from "./Metadata";
+import { PurposeMap } from "../../../pages/InformationtypePage"
 
 const purposeBlockProps: BlockProps = {
     marginTop: '3rem'
@@ -13,7 +14,7 @@ const purposeBlockProps: BlockProps = {
 
 interface InformationtypeMetadataProps {
     informationtype: InformationType;
-    purposeMap: any;
+    purposeMap: PurposeMap;
     expanded: string[];
     onSelectPurpose: (purpose: string) => void
 }

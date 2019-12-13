@@ -1,6 +1,7 @@
 import {Code} from "./service/Codelist";
 
 export interface InformationtypeFormValues {
+    id?: string;
     term?: string;
     name?: string;
     description?: string;

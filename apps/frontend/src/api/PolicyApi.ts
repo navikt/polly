@@ -42,7 +42,7 @@ const getInitialLegalBasesStatus = (legalBasesInherited: boolean, legalBases: Le
 }
 
 export const convertPolicyToFormValues = (policy: Policy): PolicyFormValues => {
-    let parsedLegalBases = policy.legalBases && policy.legalBases.map((legalBasis: any) => ({
+    let parsedLegalBases = policy.legalBases && policy.legalBases.map((legalBasis) => ({
         gdpr: legalBasis.gdpr && legalBasis.gdpr.code,
         nationalLaw: (legalBasis.nationalLaw && legalBasis.nationalLaw.code) || undefined,
         description: legalBasis.description || undefined,

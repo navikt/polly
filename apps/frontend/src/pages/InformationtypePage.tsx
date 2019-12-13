@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect } from "react";
 import { Spinner } from "baseui/spinner";
 import { Button, KIND, SHAPE } from "baseui/button"
 import { Block } from "baseui/block"
@@ -12,21 +12,23 @@ import { PLACEMENT } from "baseui/tooltip"
 import { TriangleDown } from "baseui/icon"
 import { Pagination } from "baseui/pagination"
 import { StyledLink } from "baseui/link"
-import { Option, Select, TYPE } from "baseui/select"
+import { Select, TYPE } from "baseui/select"
 import { RouteComponentProps } from "react-router-dom"
 
 
 import InformationtypeMetadata from "../components/InformationType/InformationtypeMetadata/";
-import { intl, theme, useAwait, useDebouncedState } from "../util"
+import { intl, theme, useAwait } from "../util"
 import { InformationType, Policy } from "../constants"
 import { codelist, ListName } from "../service/Codelist"
 import Banner from "../components/Banner";
 import { user } from "../service/User";
 import { H3, H6 } from "baseui/typography"
-import { getInformationType, getInformationTypes, getPoliciesForInformationType, searchInformationType, useInfoTypeSearch } from "../api"
+import { getInformationType, getInformationTypes, getPoliciesForInformationType, useInfoTypeSearch } from "../api"
+
+export type PurposeMap = { [purpose: string]: Policy[] }
 
 const reducePolicylist = (list: Policy[]) => {
-    const temp = list.reduce((acc: any, curr: any) => {
+    return list.reduce((acc: PurposeMap, curr) => {
         if (!acc[curr.purposeCode.code]) {
             acc[curr.purposeCode.code] = [curr]
         } else {
@@ -35,7 +37,6 @@ const reducePolicylist = (list: Policy[]) => {
 
         return acc
     }, {})
-    return temp
 }
 
 const InformationTypeTable = (props: RouteComponentProps) => {
@@ -131,7 +132,7 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
     const [error, setError] = React.useState(null);
     const [informationTypeId, setInformationTypeId] = React.useState(props.match.params.id)
     const [informationtype, setInformationtype] = React.useState()
-    const [purposeMap, setPurposeMap] = React.useState([])
+    const [purposeMap, setPurposeMap] = React.useState<PurposeMap>({})
 
     const [infoTypeSearchResult, setInfoTypeSearch, infoTypeSearchLoading] = useInfoTypeSearch()
 
@@ -189,7 +190,7 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
                                 options={infoTypeSearchResult.map(it => ({id: it.id, label: it.name}))}
                                 placeholder={intl.informationTypeSearch}
                                 onInputChange={event => setInfoTypeSearch(event.currentTarget.value)}
-                                onChange={(params: any) => setInformationTypeId(params.value[0].id)}
+                                onChange={(params) => setInformationTypeId(params.value[0].id as string)}
                                 isLoading={infoTypeSearchLoading}
                                 filterOptions={options => options}
                             />

@@ -1,4 +1,4 @@
-import { Block } from "baseui/block"
+import { Block, BlockProps } from "baseui/block"
 import { Button } from "baseui/button"
 import { Field, FieldProps } from "formik"
 import { Datepicker } from "baseui/datepicker"
@@ -13,7 +13,7 @@ import { Error, ModalLabel } from "../common/ModalSchema"
 
 interface DateModalProps {
     showDates: boolean;
-    rowBlockBrops: any;
+    rowBlockBrops: BlockProps;
     showLabels?: boolean;
 }
 

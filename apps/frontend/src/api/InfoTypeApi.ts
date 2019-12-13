@@ -1,5 +1,5 @@
 import axios from "axios"
-import { InformationType, PageResponse, PolicyInformationType } from "../constants"
+import { InformationType, InformationtypeFormValues, PageResponse, PolicyInformationType } from "../constants"
 import { default as React, Dispatch, SetStateAction, useEffect } from "react"
 import { useDebouncedState } from "../util"
 
@@ -17,11 +17,11 @@ export const getInformationType = async (informationTypeId: string) => {
     return (await axios.get<InformationType>(`${server_polly}/informationtype/${informationTypeId}`)).data
 }
 
-export const createInformationType = async (informationType: any) => {
+export const createInformationType = async (informationType: InformationtypeFormValues) => {
     return (await axios.post<PageResponse<InformationType>>(`${server_polly}/informationtype`, [informationType])).data.content[0]
 }
 
-export const updateInformationType = async (informationType: any) => {
+export const updateInformationType = async (informationType: InformationtypeFormValues) => {
     return (await axios.put<InformationType>(`${server_polly}/informationtype/${informationType.id}`, informationType)).data
 }
 

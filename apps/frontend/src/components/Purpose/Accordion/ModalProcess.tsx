@@ -44,7 +44,7 @@ const FieldName = () => (
     />
 )
 
-const FieldDepartment = (props: any) => {
+const FieldDepartment = (props: {department?: string}) => {
     const { department } = props
     const [value, setValue] = React.useState<Value>(department ? [{ id: department, label: codelist.getShortname(ListName.DEPARTMENT, department) }] : []);
 
@@ -65,7 +65,7 @@ const FieldDepartment = (props: any) => {
     )
 }
 
-const FieldSubDepartment = (props: any) => {
+const FieldSubDepartment = (props: {subDepartment?: string}) => {
     const { subDepartment } = props
     const [value, setValue] = React.useState<Value>(subDepartment
         ? [{ id: subDepartment, label: codelist.getShortname(ListName.SUB_DEPARTMENT, subDepartment) }]
@@ -173,7 +173,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                                                 <Block width="100%">
                                                     <CardLegalBasis
                                                         hideCard={() => setShowLegalbasesFields(false)}
-                                                        submit={(values: any) => {
+                                                        submit={(values) => {
                                                             if (!values) return
                                                             else {
                                                                 arrayHelpers.push(values)
@@ -188,7 +188,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                                                     <Block width="100%">
                                                         <ListLegalBases
                                                             legalBases={formikBag.values.legalBases}
-                                                            onRemove={(index: any) => arrayHelpers.remove(index)}
+                                                            onRemove={(index) => arrayHelpers.remove(index)}
                                                         />
                                                     </Block>
                                                 </Block>

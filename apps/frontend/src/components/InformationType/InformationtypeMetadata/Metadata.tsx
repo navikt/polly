@@ -24,16 +24,16 @@ const labelBlockProps: BlockProps = {
     marginTop: '1rem',
 };
 
-const reduceToList = (list: Array<any> | undefined | null) => {
+const reduceToList = (list: Array<Code> | undefined) => {
     if (!list) return []
-    return list.reduce((acc: any, curr: any) => {
+    return list.reduce((acc: string[], curr: Code) => {
         acc = [...acc, curr.shortName]
         return acc
     }, [])
 }
 
-const arrayToString = (list: any) => {
-    if (!list) return []
+const arrayToString = (list: string[]) => {
+    if (!list) return ''
     return list.join(', ')
 }
 

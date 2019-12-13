@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { UserInfo } from "../constants"
 import { intl } from "../util"
 
@@ -24,7 +24,7 @@ class UserService {
 
   private fetchData = async () => {
     return axios
-    .get(`${server_polly}/userinfo`)
+    .get<UserInfo>(`${server_polly}/userinfo`)
     .then(this.handleGetResponse)
     .catch(err => {
       this.error = err.message
@@ -32,7 +32,7 @@ class UserService {
     });
   };
 
-  handleGetResponse = (response: any) => {
+  handleGetResponse = (response: AxiosResponse<UserInfo>) => {
     if (typeof response.data === "object" && response.data !== null) {
       this.userInfo = response.data
     } else {

@@ -40,7 +40,7 @@ const logo = <svg
     </g>
 </svg>
 
-const Brand = (props: any) => {
+const Brand = () => {
     const [useCss, theme] = useStyletron()
     const link = useCss({ textDecoration: 'none' });
     return (

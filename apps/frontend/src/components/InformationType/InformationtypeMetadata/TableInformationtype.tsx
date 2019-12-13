@@ -2,9 +2,11 @@ import * as React from "react";
 import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, StyledTable } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
 import { StyledLink } from "baseui/link";
+
 import { LegalBasesNotClarified, ListLegalBasesInTable } from "../../common/LegalBasis"
 import { codelist, ListName } from "../../../service/Codelist"
-import { intl } from "../../../util/intl/intl"
+import { intl } from "../../../util"
+import { Policy } from "../../../constants"
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",
@@ -19,22 +21,22 @@ const CustomStyledRow = withStyle(StyledRow, {
 });
 
 type TableInformationtypeProps = {
-    list: Array<any>;
+    list: Array<Policy>;
 };
 
 const TableInformationtype = ({ list }: TableInformationtypeProps) => {
     const [useCss, theme] = useStyletron();
-    const [processDirection, setProcessDirection] = React.useState<any>(null);
-    const [subjectCategoryDirection, setSubjectCategoryDirection] = React.useState<any>(null);
-    const [legalBasisDirection, setLegalBasisDirection] = React.useState<any>(null);
+    const [processDirection, setProcessDirection] = React.useState<SORT_DIRECTION | null>(null);
+    const [subjectCategoryDirection, setSubjectCategoryDirection] = React.useState<SORT_DIRECTION | null>(null);
+    const [legalBasisDirection, setLegalBasisDirection] = React.useState<SORT_DIRECTION | null>(null);
 
-    const handleSort = (title: string, prevDirection: string) => {
+    const handleSort = (title: string, prevDirection: SORT_DIRECTION | null) => {
         let nextDirection = null;
-        if (prevDirection === "ASC") nextDirection = "DESC";
+        if (prevDirection === SORT_DIRECTION.ASC) nextDirection = SORT_DIRECTION.DESC;
 
-        if (prevDirection === "DESC") nextDirection = "ASC";
+        if (prevDirection === SORT_DIRECTION.DESC) nextDirection = SORT_DIRECTION.ASC;
 
-        if (prevDirection === null) nextDirection = "ASC";
+        if (prevDirection === null) nextDirection = SORT_DIRECTION.ASC;
 
         if (title === intl.process) {
             setProcessDirection(nextDirection);
@@ -58,7 +60,7 @@ const TableInformationtype = ({ list }: TableInformationtypeProps) => {
 
     const getSortedData = () => {
         if (processDirection) {
-            const sorted = list.slice(0).sort((a: any, b: any) => a[1] - b[1]);
+            const sorted = list.slice(0).sort((a, b) => a.process.name.localeCompare(b.process.name));
             if (processDirection === SORT_DIRECTION.ASC) {
                 return sorted;
             }
@@ -68,7 +70,7 @@ const TableInformationtype = ({ list }: TableInformationtypeProps) => {
         }
 
         if (subjectCategoryDirection) {
-            const sorted = list.slice(0).sort((a: any, b: any) => a[1] - b[1]);
+            const sorted = list.slice(0).sort((a, b) => codelist.getShortnameForCode(a.subjectCategory).localeCompare(codelist.getShortnameForCode(b.subjectCategory), intl.getLanguage()));
             if (subjectCategoryDirection === SORT_DIRECTION.ASC) {
                 return sorted;
             }
@@ -78,7 +80,7 @@ const TableInformationtype = ({ list }: TableInformationtypeProps) => {
         }
 
         if (legalBasisDirection) {
-            const sorted = list.slice(0).sort((a: any, b: any) => a[2] - b[2]);
+            const sorted = list.slice(0).sort((a, b) => a.legalBases.length - b.legalBases.length);
             if (legalBasisDirection === SORT_DIRECTION.ASC) {
                 return sorted;
             }
@@ -116,7 +118,7 @@ const TableInformationtype = ({ list }: TableInformationtypeProps) => {
                 </StyledHeader>
 
                 <StyledBody>
-                    {getSortedData().map((row: any, index: number) => (
+                    {getSortedData().map((row, index) => (
                         <CustomStyledRow key={index}>
                             <StyledCell>
                                 <StyledLink href={`/purpose/${row.purposeCode.code}/${row.process.id}`}>
@@ -128,7 +130,7 @@ const TableInformationtype = ({ list }: TableInformationtypeProps) => {
                             <StyledCell>{codelist.getShortname(ListName.SUBJECT_CATEGORY, row.subjectCategory.code)}</StyledCell>
 
                             <StyledCell>
-                                {!row.legallegalBasesInherited && row.legalBases && row.legalBases.length > 0 && (
+                                {!row.legalBasesInherited && row.legalBases && row.legalBases.length > 0 && (
                                     <ListLegalBasesInTable legalBases={row.legalBases} />
                                 )}
 

@@ -5,7 +5,7 @@ import {Field, FieldArray, FieldProps, Form, Formik, FormikProps,} from "formik"
 import {Block, BlockProps} from "baseui/block";
 import {Radio, RadioGroup} from "baseui/radio";
 import {Plus} from "baseui/icon";
-import {Select, TYPE, Value} from 'baseui/select';
+import { OnChangeParams, Option, Select, TYPE, Value } from 'baseui/select';
 
 import CardLegalBasis from "./CardLegalBasis"
 import {codelist, ListName} from "../../../service/Codelist";
@@ -35,8 +35,8 @@ const rowBlockProps: BlockProps = {
 const FieldInformationType = (props: {
     informationTypes: PolicyInformationType[],
     searchInformationType: (name: string) => void,
-    value: Value | undefined,
-    setValue: (v: Value) => void
+    value?: PolicyInformationType,
+    setValue: (v: PolicyInformationType) => void
 }) => (
         <Field
             name="informationType"
@@ -48,10 +48,10 @@ const FieldInformationType = (props: {
                     type={TYPE.search}
                     options={props.informationTypes}
                     placeholder="Søk opplysningstyper"
-                    value={props.value}
+                    value={props.value as any}
                     onInputChange={event => props.searchInformationType(event.currentTarget.value)}
-                    onChange={(params: any) => {
-                        let infoType = params.value[0]
+                    onChange={(params) => {
+                        let infoType = params.value[0] as PolicyInformationType
                         props.setValue(infoType)
                         form.setFieldValue('informationType', infoType)
                     }}
@@ -119,18 +119,18 @@ type ModalPolicyProps = {
     isEdit: boolean;
     initialValues: PolicyFormValues;
     errorOnCreate: any | undefined;
-    submit: Function;
-    onClose: Function;
+    submit: (values: PolicyFormValues) => void;
+    onClose: () => void;
 };
 
 const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialValues, title }: ModalPolicyProps) => {
     const [showLegalbasesFields, setShowLegalbasesFields] = React.useState<boolean>(false);
 
-    const [infoTypeValue, setInfoTypeValue] = React.useState<Array<PolicyInformationType>>(isEdit && initialValues.informationType ? [initialValues.informationType] : []);
+    const [infoTypeValue, setInfoTypeValue] = React.useState<PolicyInformationType | undefined>(initialValues.informationType);
     const [infoTypeSearchResult, setInfoTypeSearch] = useInfoTypeSearch()
 
     const onCloseModal = () => {
-        setInfoTypeValue([])
+        setInfoTypeValue(undefined)
         setInfoTypeSearch('')
         setShowLegalbasesFields(false)
         onClose()
@@ -172,7 +172,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                                         informationTypes={infoTypeSearchResult}
                                         searchInformationType={setInfoTypeSearch}
                                         value={infoTypeValue}
-                                        setValue={setInfoTypeValue as any}
+                                        setValue={setInfoTypeValue}
                                     />
                                 </Block>
                                 <Error fieldName="informationType" />
@@ -200,7 +200,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                                                     <Block width="100%" marginTop="2rem">
                                                         <CardLegalBasis
                                                             hideCard={() => setShowLegalbasesFields(false)}
-                                                            submit={(values: any) => {
+                                                            submit={(values) => {
                                                                 if (!values) return
                                                                 else {
                                                                     arrayHelpers.push(values)
@@ -223,7 +223,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialVa
                                                                 <Block marginTop="1rem">
                                                                     <ListLegalBases
                                                                         legalBases={formikBag.values.legalBases}
-                                                                        onRemove={(index: any) => arrayHelpers.remove(index)}
+                                                                        onRemove={(index) => arrayHelpers.remove(index)}
                                                                     />
                                                                 </Block>
                                                             </Block>

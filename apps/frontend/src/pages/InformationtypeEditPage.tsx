@@ -8,6 +8,7 @@ import { InformationType, InformationtypeFormValues } from "../constants"
 import { Code, codelist } from "../service/Codelist";
 import { intl } from "../util"
 import { getInformationType, updateInformationType } from "../api"
+import { RouteComponentProps } from "react-router-dom";
 
 
 const Centered = styled("div", {
@@ -19,7 +20,7 @@ const Centered = styled("div", {
 
 const reduceCodelist = (list: Code[]) => {
     if (!list) return;
-    return list.reduce((acc: any, curr: any) => {
+    return list.reduce((acc: Array<string | null>, curr: Code) => {
         return [...acc, !curr ? null : curr.code];
     }, []);
 };
@@ -37,7 +38,7 @@ const initFormValues = (data: InformationType) => {
     } as InformationtypeFormValues;
 };
 
-const InformationtypeEditPage = (props: any) => {
+const InformationtypeEditPage = (props: RouteComponentProps<{id:string}>) => {
     const [isLoading, setLoading] = React.useState(true);
     const [error, setError] = React.useState(null);
     const [errorSubmit, setErrorSubmit] = React.useState(null);
@@ -54,7 +55,7 @@ const InformationtypeEditPage = (props: any) => {
         }
     };
 
-    const handleSubmit = async (values: any) => {
+    const handleSubmit = async (values: InformationtypeFormValues) => {
         if (!values) return;
         setErrorSubmit(null);
         let body = {...values, id: props.match.params.id};

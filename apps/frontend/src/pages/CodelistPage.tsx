@@ -35,8 +35,8 @@ const CodeListPage = () => {
             ...values,
         }];
         await axios
-            .post(`${server_polly}/codelist`, body)
-            .then(((response: any) => {
+            .post<Code[]>(`${server_polly}/codelist`, body)
+            .then(((response) => {
                 codelist.refreshCodeLists();
                 setCurrentCodelist([...currentCodelist, response.data[0]]);
                 setCreateCodeListModal(false)

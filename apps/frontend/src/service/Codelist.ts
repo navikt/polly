@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -42,12 +42,12 @@ class CodelistService {
 
     private fetchData = async () => {
         return axios
-        .get(`${server_polly}/codelist`)
+        .get<AllCodelists>(`${server_polly}/codelist`)
         .then(this.handleGetCodelistResponse)
         .catch(err => (this.error = err.message));
     };
 
-    handleGetCodelistResponse = (response: any) => {
+    handleGetCodelistResponse = (response: AxiosResponse<AllCodelists>) => {
         if (typeof response.data === "object" && response.data !== null) {
             this.lists = response.data;
         } else {
@@ -73,6 +73,10 @@ class CodelistService {
 
     getCode(list: ListName, codeName: string): Code | undefined {
         return this.getCodes(list).find(c => c.code === codeName);
+    }
+
+    getShortnameForCode(code: Code) {
+        return this.getShortname(code.list, code.code)
     }
 
     getShortname(list: ListName, codeName: string) {

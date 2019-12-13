@@ -52,7 +52,7 @@ export const LegalBasesNotClarified = () => {
     )
 }
 
-export const ListLegalBases = (props: { legalBases?: LegalBasisFormValues[], onRemove: Function }) => {
+export const ListLegalBases = (props: { legalBases?: LegalBasisFormValues[], onRemove: (index: number) => void }) => {
     const {legalBases, onRemove} = props
     if (!legalBases) return null
     return (
@@ -81,7 +81,7 @@ export const ListLegalBasesInTable = (props: { legalBases: LegalBasis[] }) => {
     return (
         <Block>
             <ul style={{listStyle: "none", paddingInlineStart: 0}}>
-                {legalBases.map((legalBasis: any, i: number) => (
+                {legalBases.map((legalBasis, i) => (
                     <Block marginBottom="8px" key={i}>
                         <li><LegalBasisView legalBasis={legalBasis}/></li>
                     </Block>

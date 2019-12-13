@@ -10,7 +10,7 @@ import {Main} from "./pages/MainPage"
 import CodelistPage from "./pages/CodelistPage"
 
 
-const Routes = (props: any): JSX.Element => (
+const Routes = (): JSX.Element => (
     <Root>
         <Switch>
             <Route exact path="/purpose/:purposeCode?/:processId?" component={PurposePage}/>

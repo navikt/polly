@@ -45,18 +45,21 @@ type TableCodelistProps = {
     hasAccess: boolean
 };
 
+// TODO replace array with object
+type Row = [string, string, string, JSX.Element | boolean]
+
 const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
     const [useCss] = useStyletron();
 
-    const [rows, setRows] = React.useState();
-    const [selectedRow, setSelectedRow] = React.useState();
+    const [rows, setRows] = React.useState<Row[]>([]);
+    const [selectedRow, setSelectedRow] = React.useState<Code>();
     const [showEditModal, setShowEditModal] = React.useState(false);
     const [showDeleteModal, setShowDeleteModal] = React.useState(false);
     const [errorOnResponse, setErrorOnResponse] = React.useState(null);
 
-    const [codeDirection, setCodeDirection] = React.useState<any>(null);
-    const [shortNameDirection, setShortNameDirection] = React.useState<any>(null);
-    const [descriptionDirection, setDescriptionDirection] = React.useState<any>(null);
+    const [codeDirection, setCodeDirection] = React.useState<SORT_DIRECTION | null>(null);
+    const [shortNameDirection, setShortNameDirection] = React.useState<SORT_DIRECTION | null>(null);
+    const [descriptionDirection, setDescriptionDirection] = React.useState<SORT_DIRECTION | null>(null);
 
     const makeTableRow = (codeList: Code) => {
         return [
@@ -89,18 +92,18 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
                     <FontAwesomeIcon icon={faTrash}/>
                 </Button>
             </Block>)
-        ];
-    };
+        ] as Row
+    }
 
-    const handleEditCodelist = async (values: any) => {
+    const handleEditCodelist = async (values: Code) => {
         let body = [{
             ...values,
         }];
         await axios
-            .put(`${server_polly}/codelist`, body)
-            .then(((response: any) => {
+            .put<Code[]>(`${server_polly}/codelist`, body)
+            .then(((response) => {
                 let newRow = makeTableRow(response.data[0]);
-                setRows([...rows.filter((row: any) => row[0] !== response.data[0].code), newRow]);
+                setRows([...rows.filter((row) => row[0] !== response.data[0].code), newRow]);
                 setShowEditModal(false);
                 codelist.refreshCodeLists()
             }))
@@ -115,7 +118,7 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
             .delete(`${server_polly}/codelist/${values.list}/${values.code}`)
             .then((() => {
                 codelist.refreshCodeLists();
-                setRows(rows.filter((row: any) => row[0] !== values.code));
+                setRows(rows.filter((row) => row[0] !== values.code));
                 setShowDeleteModal(false);
             }))
             .catch((error: any) => {
@@ -124,7 +127,7 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
             });
     };
 
-    const handleSort = (title: string, prevDirection: string) => {
+    const handleSort = (title: string, prevDirection: SORT_DIRECTION | null) => {
         let nextDirection = null;
         if (prevDirection === SORT_DIRECTION.ASC) {
             nextDirection = SORT_DIRECTION.DESC;
@@ -157,7 +160,7 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
 
     const getSortedData = () => {
         if (codeDirection) {
-            const sorted = rows.slice(0).sort((a: any, b: any) =>
+            const sorted = rows.slice(0).sort((a, b) =>
                 a[0].localeCompare(b[0]),
             );
             if (codeDirection === SORT_DIRECTION.ASC) {
@@ -169,7 +172,7 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
         }
 
         if (shortNameDirection) {
-            const sorted = rows.slice(0).sort((a: any, b: any) =>
+            const sorted = rows.slice(0).sort((a, b) =>
                 a[0].localeCompare(b[0]),
             );
             if (shortNameDirection === SORT_DIRECTION.ASC) {
@@ -181,7 +184,7 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
         }
 
         if (descriptionDirection) {
-            const sorted = rows.slice(0).sort((a: any, b: any) =>
+            const sorted = rows.slice(0).sort((a, b) =>
                 a[0].localeCompare(b[0]),
             );
             if (descriptionDirection === SORT_DIRECTION.ASC) {
@@ -250,7 +253,7 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
                 <SmallerHeadCell/>
             </StyledHead>
             <StyledBody>
-                {rows && getSortedData().map((row: any, index: any) => (
+                {rows && getSortedData().map((row, index) => (
                     <StyledRow key={index}>
                         <SmallCell>{row[0]}</SmallCell>
                         <SmallCell>{row[1]}</SmallCell>
@@ -267,7 +270,7 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
                 ))}
             </StyledBody>
 
-            {showEditModal && (
+            {showEditModal && selectedRow && (
                 <UpdateCodeListModal
                     title={intl.editCodeListTitle}
                     initialValues={{
@@ -286,7 +289,7 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
                 />
 
             )}
-            {showDeleteModal && (
+            {showDeleteModal && selectedRow && (
                 <DeleteCodeListModal
                     title={intl.deleteCodeListConfirmationTitle}
                     initialValues={{

@@ -10,6 +10,7 @@ import { intl, useAwait } from "../util"
 import { user } from "../service/User";
 import ErrorNotAllowed from "../components/common/ErrorNotAllowed";
 import { createInformationType } from "../api"
+import { RouteComponentProps } from "react-router-dom";
 
 const Centered = styled("div", {
     height: "100%",
@@ -29,12 +30,12 @@ let initialFormValues: InformationtypeFormValues = {
     description: ""
 };
 
-const InformationtypeCreatePage = (props: any) => {
+const InformationtypeCreatePage = (props: RouteComponentProps) => {
     const [isLoading, setLoading] = React.useState(true);
     const [error, setError] = React.useState(null);
     const [errorSubmit, setErrorSubmit] = React.useState(null);
 
-    const handleSubmit = async (values: any) => {
+    const handleSubmit = async (values: InformationtypeFormValues) => {
         if (!values) return;
 
         setErrorSubmit(null);

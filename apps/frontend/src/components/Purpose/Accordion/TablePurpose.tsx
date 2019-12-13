@@ -57,21 +57,21 @@ const TablePurpose = ({ process, hasAccess }: TablePurposeProps) => {
     const [useCss, theme] = useStyletron();
     const [policies, setPolicies] = React.useState<Policy[]>(process.policies)
     const [currentPolicy, setCurrentPolicy] = React.useState<Policy>()
-    const [titleDirection, setTitleDirection] = React.useState<any>(null);
-    const [userDirection, setUserDirection] = React.useState<any>(null);
+    const [titleDirection, setTitleDirection] = React.useState<SORT_DIRECTION | null>(null);
+    const [userDirection, setUserDirection] = React.useState<SORT_DIRECTION | null>(null);
     const [legalBasisDirection, setLegalBasisDirection] = React.useState<any>(null);
     const [showEditModal, setShowEditModal] = React.useState(false)
     const [errorEditModal, setErrorEditModal] = React.useState(false)
     const [showDeleteModal, setShowDeleteModal] = React.useState(false)
     const [errorDeleteModal, setErrorDeleteModal] = React.useState(false)
 
-    const handleSort = (title: string, prevDirection: string) => {
-        let nextDirection = null;
-        if (prevDirection === "ASC") nextDirection = "DESC";
+    const handleSort = (title: string, prevDirection: SORT_DIRECTION | null) => {
+        let nextDirection : SORT_DIRECTION | null = null;
+        if (prevDirection === SORT_DIRECTION.ASC) nextDirection = SORT_DIRECTION.DESC;
 
-        if (prevDirection === "DESC") nextDirection = "ASC";
+        if (prevDirection === SORT_DIRECTION.DESC) nextDirection = SORT_DIRECTION.ASC;
 
-        if (prevDirection === null) nextDirection = "ASC";
+        if (prevDirection === null) nextDirection = SORT_DIRECTION.ASC;
 
         if (title === intl.informationType) {
             setTitleDirection(nextDirection);
@@ -97,7 +97,7 @@ const TablePurpose = ({ process, hasAccess }: TablePurposeProps) => {
         if (titleDirection) {
             const sorted = policyList
                 .slice(0)
-                .sort((a: any, b: any) => a[1] - b[1]);
+                .sort((a, b) => a.informationType.name.localeCompare(b.informationType.name));
             if (titleDirection === SORT_DIRECTION.ASC) {
                 return sorted;
             }
@@ -108,8 +108,8 @@ const TablePurpose = ({ process, hasAccess }: TablePurposeProps) => {
 
         if (userDirection) {
             const sorted = policyList
-                .slice(0)
-                .sort((a: any, b: any) => a[1] - b[1]);
+            .slice(0)
+            .sort((a, b) => codelist.getShortnameForCode(a.subjectCategory).localeCompare(codelist.getShortnameForCode(b.subjectCategory), intl.getLanguage()));
             if (userDirection === SORT_DIRECTION.ASC) {
                 return sorted;
             }
@@ -121,7 +121,7 @@ const TablePurpose = ({ process, hasAccess }: TablePurposeProps) => {
         if (legalBasisDirection) {
             const sorted = policyList
                 .slice(0)
-                .sort((a: any, b: any) => a[1] - b[1]);
+                .sort((a, b) => a.legalBases.length - b.legalBases.length);
             if (legalBasisDirection === SORT_DIRECTION.ASC) {
                 return sorted;
             }
@@ -245,7 +245,7 @@ const TablePurpose = ({ process, hasAccess }: TablePurposeProps) => {
                         onClose={() => { setShowEditModal(false) }}
                         isOpen={showEditModal}
                         isEdit={true}
-                        submit={(values: any) => {
+                        submit={(values) => {
                             handleEditPolicy(values)
                         }}
                         errorOnCreate={errorEditModal}
