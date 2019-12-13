@@ -4,7 +4,7 @@ import LocalizedStrings, {
 } from "react-localization";
 import * as React from "react";
 import { useEffect } from "react";
-import { useForceUpdate } from "../customHooks";
+import { useForceUpdate } from "../hooks/customHooks";
 import { en, no, ta } from "./lang";
 import * as moment from "moment";
 import "moment/locale/nb";

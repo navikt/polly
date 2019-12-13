@@ -1,4 +1,6 @@
-import {Code} from "./service/Codelist";
+import { Code, codelist } from "./service/Codelist";
+import { ColumnCompares } from "./util/hooks"
+import { intl } from "./util"
 
 export interface InformationtypeFormValues {
     id?: string;
@@ -82,6 +84,13 @@ export interface Policy extends IDurationed {
     subjectCategory: Code;
     legalBasesInherited: boolean;
     legalBases: LegalBasis[];
+}
+
+export const policySort : ColumnCompares<Policy> = {
+    informationType: (a, b) => a.informationType.name.localeCompare(b.informationType.name),
+    process: (a, b) => a.process.name.localeCompare(b.process.name),
+    subjectCategory: (a, b) => codelist.getShortnameForCode(a.subjectCategory).localeCompare(codelist.getShortnameForCode(b.subjectCategory), intl.getLanguage()),
+    legalBases: (a, b) => a.legalBases.length - b.legalBases.length
 }
 
 export interface PolicyInformationType {

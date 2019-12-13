@@ -1,12 +1,13 @@
 import * as React from "react";
-import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, StyledTable } from "baseui/table";
+import { SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, StyledTable } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
 import { StyledLink } from "baseui/link";
 
 import { LegalBasesNotClarified, ListLegalBasesInTable } from "../../common/LegalBasis"
 import { codelist, ListName } from "../../../service/Codelist"
 import { intl } from "../../../util"
-import { Policy } from "../../../constants"
+import { Policy, policySort } from "../../../constants"
+import { useTable } from "../../../util/hooks"
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",
@@ -24,73 +25,9 @@ type TableInformationtypeProps = {
     list: Array<Policy>;
 };
 
-const TableInformationtype = ({ list }: TableInformationtypeProps) => {
+const TableInformationtype = ({list}: TableInformationtypeProps) => {
     const [useCss, theme] = useStyletron();
-    const [processDirection, setProcessDirection] = React.useState<SORT_DIRECTION | null>(null);
-    const [subjectCategoryDirection, setSubjectCategoryDirection] = React.useState<SORT_DIRECTION | null>(null);
-    const [legalBasisDirection, setLegalBasisDirection] = React.useState<SORT_DIRECTION | null>(null);
-
-    const handleSort = (title: string, prevDirection: SORT_DIRECTION | null) => {
-        let nextDirection = null;
-        if (prevDirection === SORT_DIRECTION.ASC) nextDirection = SORT_DIRECTION.DESC;
-
-        if (prevDirection === SORT_DIRECTION.DESC) nextDirection = SORT_DIRECTION.ASC;
-
-        if (prevDirection === null) nextDirection = SORT_DIRECTION.ASC;
-
-        if (title === intl.process) {
-            setProcessDirection(nextDirection);
-            setSubjectCategoryDirection(null)
-            setLegalBasisDirection(null);
-        }
-
-        if (title === intl.subjectCategories) {
-            setProcessDirection(null);
-            setSubjectCategoryDirection(nextDirection)
-            setLegalBasisDirection(null);
-        }
-
-        if (title === intl.legalBasisShort) {
-            setLegalBasisDirection(nextDirection);
-            setSubjectCategoryDirection(null)
-            setProcessDirection(null);
-        }
-        return;
-    };
-
-    const getSortedData = () => {
-        if (processDirection) {
-            const sorted = list.slice(0).sort((a, b) => a.process.name.localeCompare(b.process.name));
-            if (processDirection === SORT_DIRECTION.ASC) {
-                return sorted;
-            }
-            if (processDirection === SORT_DIRECTION.DESC) {
-                return sorted.reverse();
-            }
-        }
-
-        if (subjectCategoryDirection) {
-            const sorted = list.slice(0).sort((a, b) => codelist.getShortnameForCode(a.subjectCategory).localeCompare(codelist.getShortnameForCode(b.subjectCategory), intl.getLanguage()));
-            if (subjectCategoryDirection === SORT_DIRECTION.ASC) {
-                return sorted;
-            }
-            if (subjectCategoryDirection === SORT_DIRECTION.DESC) {
-                return sorted.reverse();
-            }
-        }
-
-        if (legalBasisDirection) {
-            const sorted = list.slice(0).sort((a, b) => a.legalBases.length - b.legalBases.length);
-            if (legalBasisDirection === SORT_DIRECTION.ASC) {
-                return sorted;
-            }
-            if (legalBasisDirection === SORT_DIRECTION.DESC) {
-                return sorted.reverse();
-            }
-        }
-
-        return list;
-    };
+    const [table, direction, sortColumn] = useTable(list, {sorting: policySort})
 
     return (
         <React.Fragment>
@@ -98,27 +35,27 @@ const TableInformationtype = ({ list }: TableInformationtypeProps) => {
                 <StyledHeader>
                     <SortableHeadCell
                         title={intl.process}
-                        direction={processDirection}
-                        onSort={() => handleSort(intl.process, processDirection)}
+                        direction={direction('process')}
+                        onSort={() => sortColumn('process')}
                         fillClickTarget
                     />
 
                     <SortableHeadCell
                         title={intl.subjectCategories}
-                        direction={subjectCategoryDirection}
-                        onSort={() => handleSort(intl.subjectCategories, subjectCategoryDirection)}
+                        direction={direction('subjectCategory')}
+                        onSort={() => sortColumn('subjectCategory')}
                         fillClickTarget
                     />
 
                     <SortableHeadCell
                         title={intl.legalBasisShort}
-                        direction={legalBasisDirection}
-                        onSort={() => handleSort(intl.legalBasisShort, legalBasisDirection)}
+                        direction={direction('legalBases')}
+                        onSort={() => sortColumn('legalBases')}
                     />
                 </StyledHeader>
 
                 <StyledBody>
-                    {getSortedData().map((row, index) => (
+                    {table.data.map((row, index) => (
                         <CustomStyledRow key={index}>
                             <StyledCell>
                                 <StyledLink href={`/purpose/${row.purposeCode.code}/${row.process.id}`}>

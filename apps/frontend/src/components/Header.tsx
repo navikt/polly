@@ -4,7 +4,7 @@ import { StyledLink } from "baseui/link";
 import { useStyletron } from 'baseui'
 import { Block, BlockProps } from 'baseui/block'
 import { intl, Lang, langs, langsArray } from '../util/intl/intl'
-import { useAwait } from "../util/customHooks"
+import { useAwait } from "../util/hooks/customHooks"
 import { user } from "../service/User"
 import { Button } from "baseui/button"
 import { StatefulPopover } from "baseui/popover"

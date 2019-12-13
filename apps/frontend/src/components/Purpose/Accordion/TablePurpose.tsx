@@ -1,31 +1,24 @@
 import * as React from "react";
-import {
-    SORT_DIRECTION,
-    SortableHeadCell,
-    StyledBody,
-    StyledCell,
-    StyledHead,
-    StyledHeadCell,
-    StyledRow,
-    StyledTable
-} from "baseui/table";
-import {useStyletron, withStyle} from "baseui";
-import {StyledLink} from 'baseui/link'
-import {LegalBasesNotClarified, ListLegalBasesInTable} from "../../common/LegalBasis"
-import {codelist, ListName} from "../../../service/Codelist"
-import {Policy, PolicyFormValues, Process} from "../../../constants"
-import {Sensitivity} from "../../InformationType/Sensitivity"
-import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
-import {Block} from "baseui/block";
+import { SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from "baseui/table";
+import { useStyletron, withStyle } from "baseui";
+import { StyledLink } from 'baseui/link'
+import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
+import { Block } from "baseui/block";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { Modal, ModalBody, ModalFooter, ModalHeader } from "baseui/modal";
+import { Paragraph2 } from "baseui/typography";
+
+import { codelist, ListName } from "../../../service/Codelist"
+import { Sensitivity } from "../../InformationType/Sensitivity"
 import ModalPolicy from "./ModalPolicy";
-import {intl} from "../../../util"
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
-import {Modal, ModalBody, ModalFooter, ModalHeader} from "baseui/modal";
-import {Paragraph2} from "baseui/typography";
-import {convertPolicyToFormValues, deletePolicy, updatePolicy} from "../../../api"
+import { LegalBasesNotClarified, ListLegalBasesInTable } from "../../common/LegalBasis"
+import { Policy, PolicyFormValues, policySort, Process } from "../../../constants"
+import { intl } from "../../../util"
+import { convertPolicyToFormValues, deletePolicy, updatePolicy } from "../../../api"
 import { ActiveIndicator } from "../../common/Durations"
 import { StatefulTooltip } from "baseui/tooltip"
+import { useTable } from "../../../util/hooks"
 
 
 const StyledHeader = withStyle(StyledHead, {
@@ -57,81 +50,11 @@ const TablePurpose = ({ process, hasAccess }: TablePurposeProps) => {
     const [useCss, theme] = useStyletron();
     const [policies, setPolicies] = React.useState<Policy[]>(process.policies)
     const [currentPolicy, setCurrentPolicy] = React.useState<Policy>()
-    const [titleDirection, setTitleDirection] = React.useState<SORT_DIRECTION | null>(null);
-    const [userDirection, setUserDirection] = React.useState<SORT_DIRECTION | null>(null);
-    const [legalBasisDirection, setLegalBasisDirection] = React.useState<any>(null);
     const [showEditModal, setShowEditModal] = React.useState(false)
     const [errorEditModal, setErrorEditModal] = React.useState(false)
     const [showDeleteModal, setShowDeleteModal] = React.useState(false)
     const [errorDeleteModal, setErrorDeleteModal] = React.useState(false)
-
-    const handleSort = (title: string, prevDirection: SORT_DIRECTION | null) => {
-        let nextDirection : SORT_DIRECTION | null = null;
-        if (prevDirection === SORT_DIRECTION.ASC) nextDirection = SORT_DIRECTION.DESC;
-
-        if (prevDirection === SORT_DIRECTION.DESC) nextDirection = SORT_DIRECTION.ASC;
-
-        if (prevDirection === null) nextDirection = SORT_DIRECTION.ASC;
-
-        if (title === intl.informationType) {
-            setTitleDirection(nextDirection);
-            setUserDirection(null)
-            setLegalBasisDirection(null);
-        }
-
-        if (title === intl.subjectCategories) {
-            setTitleDirection(null);
-            setUserDirection(nextDirection)
-            setLegalBasisDirection(null);
-        }
-
-        if (title === intl.legalBasisShort) {
-            setLegalBasisDirection(nextDirection);
-            setUserDirection(null)
-            setTitleDirection(null);
-        }
-        return;
-    };
-
-    const getSortedData = (policyList: Policy[]) => {
-        if (titleDirection) {
-            const sorted = policyList
-                .slice(0)
-                .sort((a, b) => a.informationType.name.localeCompare(b.informationType.name));
-            if (titleDirection === SORT_DIRECTION.ASC) {
-                return sorted;
-            }
-            if (titleDirection === SORT_DIRECTION.DESC) {
-                return sorted.reverse();
-            }
-        }
-
-        if (userDirection) {
-            const sorted = policyList
-            .slice(0)
-            .sort((a, b) => codelist.getShortnameForCode(a.subjectCategory).localeCompare(codelist.getShortnameForCode(b.subjectCategory), intl.getLanguage()));
-            if (userDirection === SORT_DIRECTION.ASC) {
-                return sorted;
-            }
-            if (userDirection === SORT_DIRECTION.DESC) {
-                return sorted.reverse();
-            }
-        }
-
-        if (legalBasisDirection) {
-            const sorted = policyList
-                .slice(0)
-                .sort((a, b) => a.legalBases.length - b.legalBases.length);
-            if (legalBasisDirection === SORT_DIRECTION.ASC) {
-                return sorted;
-            }
-            if (legalBasisDirection === SORT_DIRECTION.DESC) {
-                return sorted.reverse();
-            }
-        }
-
-        return policyList;
-    };
+    const [table, direction, sortColumn] = useTable(policies, {sorting: policySort})
 
     const handleEditPolicy = async (values: PolicyFormValues) => {
         try {
@@ -166,26 +89,26 @@ const TablePurpose = ({ process, hasAccess }: TablePurposeProps) => {
                 <StyledHeader>
                     <SortableHeadCell
                         title={intl.informationType}
-                        direction={titleDirection}
-                        onSort={() => handleSort(intl.informationType, titleDirection)}
+                        direction={direction('informationType')}
+                        onSort={() => sortColumn('informationType')}
                         fillClickTarget
                     />
                     <SortableHeadCell
                         title={intl.subjectCategories}
-                        direction={userDirection}
-                        onSort={() => handleSort(intl.subjectCategories, userDirection)}
+                        direction={direction('subjectCategory')}
+                        onSort={() => sortColumn('subjectCategory')}
                         fillClickTarget
                     />
                     <SortableHeadCell
                         title={intl.legalBasisShort}
-                        direction={legalBasisDirection}
-                        onSort={() => handleSort(intl.legalBasisShort, legalBasisDirection)}
+                        direction={direction('legalBases')}
+                        onSort={() => sortColumn('legalBases')}
                     />
                     {hasAccess && <SmallerStyledHeadCell/>}
 
                 </StyledHeader>
                 <StyledBody>
-                    {getSortedData(policies).map((row: Policy, index: number) => (
+                    {table.data.map((row: Policy, index: number) => (
                         <CustomStyledRow key={index} >
                             <StyledCell>
                                 <Sensitivity sensitivity={row.informationType.sensitivity} />&nbsp;
