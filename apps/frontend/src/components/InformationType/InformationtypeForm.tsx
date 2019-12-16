@@ -314,7 +314,9 @@ const InformationtypeForm = ({
                                                 <Block {...labelProps}>
                                                     <Label2>{intl.description}</Label2>
                                                 </Block>
-                                                <Textarea
+                                                <Textarea onKeyDown={e => {
+                                                    if (e.key === 'Enter') form.setFieldValue('description', form.values.description+'\n')
+                                                }}
                                                     {...field}
                                                     placeholder={intl.descriptionWrite}
                                                     rows={5}

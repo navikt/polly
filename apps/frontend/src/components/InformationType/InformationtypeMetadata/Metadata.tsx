@@ -50,8 +50,8 @@ const renderTextWithLabelMetadata = (label: string, text: string, icon?: IconDef
 
 const renderTextWithLabel = (label: string, text: string, icon?: IconDefinition, iconColor?: string) => (
     <Block>
-        <Label2>{icon && <FontAwesomeIcon icon={icon} color={iconColor} />}{label}</Label2>
-        <Paragraph2>{text}</Paragraph2>
+        <Label2>{icon && <FontAwesomeIcon icon={icon} color={iconColor}/>}{label}</Label2>
+        <Paragraph2 $style={{whiteSpace: 'pre-wrap'}}>{text}</Paragraph2>
     </Block>
 )
 
