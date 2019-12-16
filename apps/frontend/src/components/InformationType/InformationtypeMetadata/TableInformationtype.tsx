@@ -1,13 +1,13 @@
 import * as React from "react";
 import { SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, StyledTable } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
-import { StyledLink } from "baseui/link";
 
 import { LegalBasesNotClarified, ListLegalBasesInTable } from "../../common/LegalBasis"
 import { codelist, ListName } from "../../../service/Codelist"
 import { intl } from "../../../util"
 import { Policy, policySort } from "../../../constants"
 import { useTable } from "../../../util/hooks"
+import RouteLink from "../../common/RouteLink"
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",
@@ -58,9 +58,9 @@ const TableInformationtype = ({list}: TableInformationtypeProps) => {
                     {table.data.map((row, index) => (
                         <CustomStyledRow key={index}>
                             <StyledCell>
-                                <StyledLink href={`/purpose/${row.purposeCode.code}/${row.process.id}`}>
+                                <RouteLink href={`/purpose/${row.purposeCode.code}/${row.process.id}`}>
                                     {row.process && row.process.name}
-                                </StyledLink>
+                                </RouteLink>
 
                             </StyledCell>
 
