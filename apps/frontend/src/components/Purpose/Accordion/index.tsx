@@ -20,7 +20,7 @@ import { PathParams } from "../../../pages/PurposePage"
 import { useEffect } from "react"
 import { ActiveIndicator } from "../../common/Durations"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
+import {faTrash, faPen, faChevronDown, faChevronRight} from '@fortawesome/free-solid-svg-icons';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'baseui/modal';
 
 const rowPanelContent: BlockProps = {
@@ -171,7 +171,13 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
             <Accordion onChange={({ expanded }) => handleChangePanel(expanded.length ? expanded[0].toString() : undefined)}
                 initialState={{ expanded: props.match.params.processId ? [props.match.params.processId] : [] }} >
                 {props.processList && props.processList.map((p: Process) => (
-                    <Panel title={p.name} key={p.id}>
+                    <Panel
+                        title={p.name}
+                        key={p.id}
+                        overrides={{
+                            ToggleIcon: {component: (iconProps) => !!iconProps.$expanded ? <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
+                        }}
+                    >
                         {isLoading && <Spinner size={18} />}
 
                         {!isLoading && currentProcess && (
