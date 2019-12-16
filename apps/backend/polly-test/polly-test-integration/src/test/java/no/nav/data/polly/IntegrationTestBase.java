@@ -31,8 +31,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -82,6 +85,8 @@ public abstract class IntegrationTestBase {
     protected ProcessDistributionRepository processDistributionRepository;
     @Autowired
     protected KafkaTopicProperties topicProperties;
+    @Autowired
+    protected TestRestTemplate restTemplate;
 
     static {
         postgreSQLContainer.start();
@@ -148,6 +153,7 @@ public abstract class IntegrationTestBase {
                 .legalBases(legalBases)
                 .build();
     }
+
     protected InformationType createInformationType() {
         if (informationType == null) {
             informationType = informationTypeRepository.save(createInformationType(INFORMATION_TYPE_ID_1, INFORMATION_TYPE_NAME));
@@ -251,5 +257,9 @@ public abstract class IntegrationTestBase {
                     "KAFKA_SCHEMA_REGISTRY_URL=" + SchemaRegistryContainer.getAddress()
             ).applyTo(configurableApplicationContext.getEnvironment());
         }
+    }
+
+    public <T> List<T> exchangeAsList(String uri, ParameterizedTypeReference<List<T>> responseType) {
+        return restTemplate.exchange(uri, HttpMethod.GET, null, responseType).getBody();
     }
 }
