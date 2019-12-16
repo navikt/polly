@@ -3,8 +3,6 @@ import moment from "moment"
 import { StatefulTooltip } from "baseui/tooltip"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons"
-
-import { IDurationed } from "../../constants"
 import { intl, theme } from "../../util"
 
 const defaultStart = moment("0001-01-01")
@@ -27,11 +25,12 @@ const checkDate = (startDate?: moment.Moment, endDate?: moment.Moment, alwaysSho
     return {hasStart, hasEnd, hasDates}
 }
 
-export const ActiveIndicator = (props: IDurationed & { alwaysShow?: boolean }) => {
-    const {active, start, end, alwaysShow} = props
-    const startDate = moment(start)
-    const endDate = moment(end)
+export const ActiveIndicator = (props: { start?: string, end?: string, alwaysShow?: boolean }) => {
+    const {start, end, alwaysShow} = props
+    const startDate = start ? moment(start) : defaultStart
+    const endDate = end ? moment(end) : defaultEnd
     const {hasStart, hasEnd, hasDates} = checkDate(startDate, endDate, alwaysShow)
+    const active = startDate.isSameOrBefore(moment()) && endDate.isSameOrAfter(moment())
 
     return (hasDates ?
             <StatefulTooltip content={(<>

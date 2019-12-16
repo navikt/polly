@@ -3,7 +3,7 @@ import { Select, TYPE, Value } from 'baseui/select';
 import { Block, BlockProps } from 'baseui/block'
 import { Card } from 'baseui/card'
 import { StatefulInput } from 'baseui/input';
-import { Label2 } from 'baseui/typography';
+import { H6, Label2, Label3 } from 'baseui/typography';
 import { Button, KIND, SIZE as ButtonSize } from 'baseui/button';
 import { codelist, ListName } from "../../../service/Codelist";
 import { intl, theme } from "../../../util"
@@ -12,9 +12,10 @@ import { KIND as NKIND, Notification } from "baseui/notification"
 import { LegalBasisFormValues } from "../../../constants"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { DateModalFields } from "../DateModalFields"
-import { faPen, faExclamationCircle } from "@fortawesome/free-solid-svg-icons"
+import { faPen, faExclamationCircle, faTimesCircle, faEye } from "@fortawesome/free-solid-svg-icons"
 import { StatefulTooltip, PLACEMENT } from 'baseui/tooltip';
 import { legalBasisSchema } from "../../common/schema"
+import { LegalBasisView } from "../../common/LegalBasis"
 
 const rowBlockBrops: BlockProps = {
     display: 'flex',
@@ -130,6 +131,13 @@ const CardLegalBasis = ({ submit, hideCard }: CardLegalBasisProps) => {
                         <Error fieldName="description" />
 
                         <DateModalFields rowBlockBrops={rowBlockBrops} showDates={useDates} />
+
+                        {form.values.gdpr && (
+                            <>
+                                <Block {...rowBlockBrops}>{intl.preview}</Block>
+                                <Block {...rowBlockBrops}><LegalBasisView legalBasisForm={form.values}/></Block>
+                            </>
+                        )}
 
                         <Block {...rowBlockBrops} justifyContent="space-between">
                             <Button type='button' kind={KIND.secondary} size={ButtonSize.compact} onClick={form.submitForm}>

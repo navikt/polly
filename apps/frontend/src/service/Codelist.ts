@@ -75,6 +75,10 @@ class CodelistService {
         return this.getCodes(list).find(c => c.code === codeName);
     }
 
+    valid(list: ListName, codeName?: string): boolean {
+        return !!codeName && !!this.getCode(list,  codeName)
+    }
+
     getShortnameForCode(code: Code) {
         return this.getShortname(code.list, code.code)
     }
