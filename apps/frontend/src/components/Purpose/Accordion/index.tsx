@@ -82,7 +82,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
     const renderActiveForProcess = (process: Process) =>
         <Block marginRight="scale1200">
             <Label2>{intl.active}</Label2>
-            <ActiveIndicator alwaysShow={true} {...process} />
+            <ActiveIndicator alwaysShow={true} withText={true} {...process} />
         </Block>
 
     const renderLegalBasisListForProcess = (list: LegalBasis[]) => (
