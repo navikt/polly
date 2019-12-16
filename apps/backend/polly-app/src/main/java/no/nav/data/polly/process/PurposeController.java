@@ -17,6 +17,7 @@ import no.nav.data.polly.process.domain.PurposeCount;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.PurposeCountResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.transaction.Transactional;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;

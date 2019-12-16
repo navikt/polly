@@ -17,6 +17,7 @@ import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +32,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import static java.util.Comparator.comparing;
@@ -114,7 +114,7 @@ public class InformationTypeController {
     @GetMapping("/term/{term}")
     public ResponseEntity<RestResponsePage<InformationTypeResponse>> findInformationTypesByTerm(@PathVariable String term) {
         log.info("Received request for InformationTypes with the term {}", term);
-        List<InformationType> infoTypes = repository.findByTermName(term);
+        List<InformationType> infoTypes = repository.findByTermId(term);
         infoTypes.sort(comparing(it -> it.getData().getName(), String.CASE_INSENSITIVE_ORDER));
         log.info("Returned {} InformationTypes", infoTypes.size());
         return new ResponseEntity<>(new RestResponsePage<>(convert(infoTypes, InformationType::convertToResponse)), HttpStatus.OK);

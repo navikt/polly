@@ -3,6 +3,8 @@ package no.nav.data.polly.codelist;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
+import no.nav.data.polly.codelist.dto.FindCodeUsageResponse;
+import no.nav.data.polly.common.exceptions.CodelistNotErasableException;
 import no.nav.data.polly.common.exceptions.CodelistNotFoundException;
 import no.nav.data.polly.common.exceptions.ValidationException;
 import org.junit.jupiter.api.Nested;
@@ -39,6 +41,8 @@ class CodelistServiceTest {
     private static final String VALIDATION_EXCEPTION_ERROR_MESSAGE = "The request was not accepted. The following errors occurred during validation: [%s]";
     @Mock
     private CodelistRepository repository;
+    @Mock
+    private FindCodeUsageService findCodeUsageService;
 
     @InjectMocks
     private CodelistService service;
@@ -77,6 +81,7 @@ class CodelistServiceTest {
         @Test
         void delete_shouldDelete_whenListAndCodeExists() {
             when(repository.findByListAndCode(ListName.SOURCE, "DELETE_CODE")).thenReturn(Optional.of(createCodelist(ListName.SOURCE, "DELETE_CODE")));
+            when(findCodeUsageService.findCodeUsage("SOURCE", "DELETE_CODE")).thenReturn(FindCodeUsageResponse.builder().listName(ListName.SOURCE).build());
 
             service.delete(ListName.SOURCE, "DELETE_CODE");
 
@@ -93,6 +98,20 @@ class CodelistServiceTest {
                 fail();
             } catch (CodelistNotFoundException e) {
                 assertThat(e.getLocalizedMessage()).isEqualTo("Cannot find a codelist to delete with code=UNKNOWN_CODE and listName=SOURCE");
+            }
+        }
+
+        @Test
+        void delete_shouldThrowCodelistNotErasableException_whenCodelistIsInUse() {
+            when(repository.findByListAndCode(ListName.PURPOSE, "DELETE_CODE")).thenReturn(Optional.of(createCodelist(ListName.SOURCE, "DELETE_CODE")));
+            when(findCodeUsageService.findCodeUsage("PURPOSE", "DELETE_CODE")).thenReturn(FindCodeUsageResponse.builder()
+                    .listName(ListName.PURPOSE).code("DELETE_CODE").processResponses(List.of(CodelistUtils.createProcessResponse("DELETE_CODE"))).build());
+
+            try {
+                service.delete(ListName.PURPOSE, "DELETE_CODE");
+                fail();
+            } catch (CodelistNotErasableException e) {
+                assertThat(e.getLocalizedMessage()).contains("The code DELETE_CODE in list PURPOSE cannot be erased. DELETE_CODE in PURPOSE is used in: ");
             }
         }
     }

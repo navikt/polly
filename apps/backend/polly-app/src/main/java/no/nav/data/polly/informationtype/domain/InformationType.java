@@ -14,7 +14,6 @@ import no.nav.data.polly.elasticsearch.dto.ProcessElasticsearch;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
 import no.nav.data.polly.policy.domain.Policy;
-import no.nav.data.polly.term.domain.Term;
 import org.hibernate.annotations.Type;
 
 import java.util.HashSet;
@@ -25,10 +24,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.Valid;
@@ -43,8 +39,8 @@ import static no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus.TO_BE_U
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"term", "policies"})
-@EqualsAndHashCode(callSuper = false, exclude = {"term", "policies"})
+@ToString(exclude = {"policies"})
+@EqualsAndHashCode(callSuper = false, exclude = {"policies"})
 @Entity
 @Table(name = "INFORMATION_TYPE")
 public class InformationType extends Auditable<String> {
@@ -66,9 +62,8 @@ public class InformationType extends Auditable<String> {
     @Column(name = "DATA")
     private InformationTypeData data = new InformationTypeData();
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "TERM_ID")
-    private Term term;
+    @Column(name = "TERM_ID")
+    private String termId;
 
     @Builder.Default
     @OneToMany(mappedBy = "informationType")
@@ -105,6 +100,7 @@ public class InformationType extends Auditable<String> {
     }
 
     private void convertFromRequest(InformationTypeRequest request) {
+        setTermId(request.getTerm());
         data.setName(request.getName());
         data.setDescription(request.getDescription());
         data.setSensitivity(request.getSensitivity());
