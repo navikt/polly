@@ -30,9 +30,6 @@ public class FindCodeUsageControllerIT extends IntegrationTestBase {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private CodeUsageService findCodeUsageService;
-
-    @Autowired
     private CodelistService codelistService;
 
     @Autowired

@@ -161,39 +161,31 @@ public abstract class IntegrationTestBase {
         return informationType;
     }
 
-    protected InformationType createInformationType(UUID id, String name) {
+    protected InformationType createInformationType(UUID id, String name, String sensitivity, String system, String category, String source){
         InformationType informationType = InformationType.builder()
                 .id(id)
                 .elasticsearchStatus(SYNCED)
                 .data(InformationTypeData.builder()
                         .name(name)
                         .description("desc")
-                        .source("SKATT")
-                        .category("PERSONALIA")
-                        .sensitivity("PERSONOPPLYSNING")
-                        .navMaster("TPS")
-                        .build())
-                .build();
-        informationType.preUpdate();
-        createTerm("term").addInformationType(informationType);
-        return informationTypeRepository.save(informationType);
-    }
-
-    protected InformationType createInformationType(String name, String sensitivity, String system, String category, String source) {
-        InformationType informationType = InformationType.builder()
-                .generateId()
-                .elasticsearchStatus(SYNCED)
-                .data(InformationTypeData.builder()
-                        .name(name)
-                        .description("Description")
                         .sensitivity(sensitivity)
                         .navMaster(system)
                         .category(category)
                         .source(source)
                         .build())
                 .build();
+        informationType.preUpdate();
         createTerm("term").addInformationType(informationType);
         return informationType;
+    }
+
+    protected InformationType createInformationType(UUID id, String name) {
+        InformationType informationType = createInformationType(id, name, "PERSONOPPLYSNINGER", "TPS", "PERSONALIA", "SKATT");
+        return informationTypeRepository.save(informationType);
+    }
+
+    protected InformationType createInformationType(String name, String sensitivity, String system, String category, String source) {
+        return createInformationType(UUID.randomUUID(), name, sensitivity, system, category, source);
     }
 
     protected Process createProcess(String name, String purpose, String department, String subDepartment, List<LegalBasis> legalBases) {

@@ -1,6 +1,5 @@
 package no.nav.data.polly.policy.domain;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -15,12 +14,13 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class PolicyRepositoryImpl implements PolicyRepositoryCustom {
 
-    @Autowired
-    private NamedParameterJdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final PolicyRepository policyRepository;
 
-    @Lazy
-    @Autowired
-    private PolicyRepository policyRepository;
+    public PolicyRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate, @Lazy PolicyRepository policyRepository) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.policyRepository = policyRepository;
+    }
 
     @Override
     public List<Policy> findByGDPRArticle(String gdpr) {
