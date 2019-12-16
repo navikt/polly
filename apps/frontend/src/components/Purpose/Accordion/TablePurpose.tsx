@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "baseui/modal";
 import { Paragraph2 } from "baseui/typography";
+import { StatefulTooltip } from "baseui/tooltip"
 
 import { codelist, ListName } from "../../../service/Codelist"
 import { Sensitivity } from "../../InformationType/Sensitivity"
@@ -17,7 +18,6 @@ import { Policy, PolicyFormValues, policySort, Process } from "../../../constant
 import { intl } from "../../../util"
 import { convertPolicyToFormValues, deletePolicy, updatePolicy } from "../../../api"
 import { ActiveIndicator } from "../../common/Durations"
-import { StatefulTooltip } from "baseui/tooltip"
 import { useTable } from "../../../util/hooks"
 
 
@@ -44,40 +44,19 @@ const SmallerStyledHeadCell = withStyle(StyledHeadCell, {
 type TablePurposeProps = {
     process: Process;
     hasAccess: boolean;
+    errorPolicyModal: string | null;
+    errorDeleteModal: string | null;
+    submitEditPolicy: Function;
+    submitDeletePolicy: Function;
 };
 
-const TablePurpose = ({ process, hasAccess }: TablePurposeProps) => {
+const TablePurpose = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, submitEditPolicy, submitDeletePolicy }: TablePurposeProps) => {
     const [useCss, theme] = useStyletron();
     const [policies, setPolicies] = React.useState<Policy[]>(process.policies)
     const [currentPolicy, setCurrentPolicy] = React.useState<Policy>()
     const [showEditModal, setShowEditModal] = React.useState(false)
-    const [errorEditModal, setErrorEditModal] = React.useState(false)
     const [showDeleteModal, setShowDeleteModal] = React.useState(false)
-    const [errorDeleteModal, setErrorDeleteModal] = React.useState(false)
-    const [table, sortColumn] = useTable<Policy, keyof Policy>(policies, {sorting: policySort, initialSortColumn: "informationType"})
-
-    const handleEditPolicy = async (values: PolicyFormValues) => {
-        try {
-            const policy = await updatePolicy(values)
-            setPolicies([...policies.filter((p: Policy) => p.id !== policy.id), policy])
-            setShowEditModal(false)
-        } catch (err) {
-            setShowEditModal(true)
-            setErrorEditModal(err.message)
-        }
-    }
-
-    const handleDeletePolicy = async (policy?: Policy) => {
-        if (!policy) return
-        try {
-            await deletePolicy(policy.id)
-            setPolicies(policies.filter((p: Policy) => p.id !== policy.id))
-            setShowDeleteModal(false)
-        } catch (err) {
-            setShowDeleteModal(true)
-            setErrorDeleteModal(err.message)
-        }
-    }
+    const [table, sortColumn] = useTable<Policy, keyof Policy>(policies, { sorting: policySort, initialSortColumn: "informationType" })
 
     React.useEffect(() => {
         setPolicies(process ? process.policies : [])
@@ -104,7 +83,7 @@ const TablePurpose = ({ process, hasAccess }: TablePurposeProps) => {
                         direction={table.direction.legalBases}
                         onSort={() => sortColumn('legalBases')}
                     />
-                    {hasAccess && <SmallerStyledHeadCell/>}
+                    {hasAccess && <SmallerStyledHeadCell />}
 
                 </StyledHeader>
                 <StyledBody>
@@ -169,9 +148,9 @@ const TablePurpose = ({ process, hasAccess }: TablePurposeProps) => {
                         isOpen={showEditModal}
                         isEdit={true}
                         submit={(values) => {
-                            handleEditPolicy(values)
+                            submitEditPolicy(values)
                         }}
-                        errorOnCreate={errorEditModal}
+                        errorOnCreate={errorPolicyModal}
                     />
                 )}
 
@@ -182,7 +161,7 @@ const TablePurpose = ({ process, hasAccess }: TablePurposeProps) => {
                         animate
                         size="default"
                     >
-                        <ModalHeader>{intl.confirmDeletePolicyHeader}</ModalHeader>
+                        <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
                         <ModalBody>
                             <Paragraph2>{intl.confirmDeletePolicyText} {currentPolicy && currentPolicy.informationType.name}</Paragraph2>
                         </ModalBody>
@@ -198,7 +177,7 @@ const TablePurpose = ({ process, hasAccess }: TablePurposeProps) => {
                                     {intl.abort}
                                 </Button>
                                 <Button onClick={() => {
-                                    handleDeletePolicy(currentPolicy)
+                                    submitDeletePolicy(currentPolicy) ? setShowDeleteModal(false) : setShowDeleteModal(true)
                                 }
                                 }>{intl.delete}</Button>
                             </Block>

@@ -50,9 +50,10 @@ export const no: IStrings = {
     legalBasesOwn: "Har eget rettslig grunnlag",
     legalBasesUndecidedWarning: "Rettslig grunnlag er ikke avklart",
     notAllowedMessage: "Du har ikke tilgang til denne siden.",
-    confirmDeletePolicyHeader: "Bekreft sletting",
+    confirmDeleteHeader: "Bekreft sletting",
     confirmDeletePolicyText:
         "Bekreft sletting av behandlingsgrunnlaget for opplysningstypen",
+    confirmDeleteProcessText: "Bekreft sletting av behandlingen ",
     startIllustration: "Illustrasjon av en prosess",
     treasureIllustration: "Illustration av en skatt",
     legalbasisGDPRArt9Info:
@@ -171,8 +172,9 @@ export const en = {
     legalBasesOwn: "Use explicit legal bases",
     legalBasesUndecidedWarning: "Legal bases missing",
     notAllowedMessage: "You don't have access to this page",
-    confirmDeletePolicyHeader: "Confirm delete",
+    confirmDeleteHeader: "Confirm delete",
     confirmDeletePolicyText: "Please confirm deleting the policy for",
+    confirmDeleteProcessText: "Please confirm deleting the of process ",
     startIllustration: "Process illustration",
     treasureIllustration: "Treasure illustration",
     legalbasisGDPRArt9Info:

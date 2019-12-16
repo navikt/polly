@@ -5,7 +5,7 @@ import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { Spinner } from 'baseui/spinner';
 import { Block, BlockProps } from 'baseui/block';
 import { Label1, Label2, Paragraph2 } from 'baseui/typography';
-import { intl, useAwait } from '../../../util';
+import { intl, useAwait, theme } from '../../../util';
 import _includes from 'lodash/includes'
 import { user } from "../../../service/User";
 import { Plus } from 'baseui/icon'
@@ -15,10 +15,13 @@ import { codelist, ListName } from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
 import ModalPolicy from './ModalPolicy'
 import TablePurpose from './TablePurpose';
-import { convertProcessToFormValues, createPolicy, getProcess, updateProcess } from "../../../api"
+import { convertProcessToFormValues, createPolicy, getProcess, updateProcess, deleteProcess } from "../../../api"
 import { PathParams } from "../../../pages/PurposePage"
 import { useEffect } from "react"
 import { ActiveIndicator } from "../../common/Durations"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'baseui/modal';
 
 const rowPanelContent: BlockProps = {
     display: 'flex',
@@ -29,15 +32,37 @@ const rowPanelContent: BlockProps = {
 type AccordionProcessProps = {
     purposeCode: string;
     processList: Process[];
+    currentProcess: Process | undefined;
+    errorProcessModal: any | null;
+    errorPolicyModal: string | null;
+    setProcessList: Function;
+    onChangeProcess: Function;
+    submitDeleteProcess: Function;
+    submitEditProcess: Function;
+    submitCreatePolicy: Function;
+    submitEditPolicy: Function;
+    submitDeletePolicy: Function;
 }
 
 const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<PathParams>) => {
     const [isLoading, setLoading] = React.useState(false);
     const [showEditProcessModal, setShowEditProcessModal] = React.useState(false)
     const [showCreatePolicyModal, setShowCreatePolicyModal] = React.useState(false)
-    const [errorCreatePolicy, setErrorCreatePolicy] = React.useState(null)
-    const [process, setProcess] = React.useState<Process | undefined>()
-    const { purposeCode } = props
+    const [showDeleteModal, setShowDeleteModal] = React.useState(false)
+    const [errorDeleteModal, setErrorDeleteModal] = React.useState(false)
+
+    const {
+        purposeCode,
+        currentProcess,
+        onChangeProcess,
+        submitDeleteProcess,
+        submitEditProcess,
+        submitCreatePolicy,
+        submitEditPolicy,
+        errorProcessModal,
+        errorPolicyModal,
+        submitDeletePolicy
+    } = props
 
     const updatePath = (params: PathParams | null) => {
         let nextPath
@@ -46,50 +71,12 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
         props.history.push(nextPath)
     }
 
-    const handleEditProcess = async (values: ProcessFormValues) => {
-        try {
-            setProcess(await updateProcess(values))
-            setShowEditProcessModal(false)
-        } catch (err) {
-            console.log(err)
-        }
-    }
-
-    const handleCreatePolicy = async (values: PolicyFormValues) => {
-        if (!values || !process) return
-
-        try {
-            const policy = await createPolicy(values)
-            // todo noe rar interasksjon mellom create policy og edit policy som gjør at vi bør reloade hele process (edit og create burde være samme sted?)
-            await getProcessById(policy.process.id)
-            setErrorCreatePolicy(null)
-            setShowCreatePolicyModal(false)
-        } catch (err) {
-            setShowCreatePolicyModal(true)
-            setErrorCreatePolicy(err.message)
-        }
-    }
-
     const handleChangePanel = async (processId?: string) => {
         if (!processId)
             updatePath({ purposeCode: purposeCode })
         else {
             updatePath({ purposeCode: purposeCode, processId: processId })
         }
-    }
-
-    useEffect(() => {
-        getProcessById(props.match.params.processId!)
-    }, [props.match.params.processId])
-
-    const getProcessById = async (processId: string) => {
-        setLoading(true);
-        try {
-            setProcess(await getProcess(processId))
-        } catch (err) {
-            console.log(err)
-        }
-        setLoading(false);
     }
 
     const renderActiveForProcess = (process: Process) =>
@@ -141,8 +128,24 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
             size={ButtonSize.compact}
             kind={KIND.secondary}
             onClick={() => setShowEditProcessModal(true)}
+            overrides={{
+                BaseButton: {
+                    style: () => {
+                        return { marginRight: theme.sizing.scale500 }
+                    }
+                }
+            }}
         >
-            {intl.processingActivitiesEdit}
+            <FontAwesomeIcon icon={faPen} />
+        </Button>
+    )
+    const renderDeleteProcessButton = () => (
+        <Button
+            size={ButtonSize.compact}
+            kind={KIND.secondary}
+            onClick={() => setShowDeleteModal(true)}
+        >
+            <FontAwesomeIcon icon={faTrash} />
         </Button>
     )
     const renderCreatePolicyButton = () => (
@@ -159,6 +162,10 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
     const hasAccess = () => user.canWrite()
     useAwait(user.wait())
 
+    useEffect(() => {
+        onChangeProcess(props.match.params.processId!)
+    }, [props.match.params.processId])
+
     return (
         <React.Fragment>
             <Accordion onChange={({ expanded }) => handleChangePanel(expanded.length ? expanded[0].toString() : undefined)}
@@ -167,17 +174,18 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                     <Panel title={p.name} key={p.id}>
                         {isLoading && <Spinner size={18} />}
 
-                        {!isLoading && process && (
+                        {!isLoading && currentProcess && (
                             <React.Fragment>
                                 <Block {...rowPanelContent}>
                                     <Block display="flex">
-                                        {renderLegalBasisListForProcess(process.legalBases)}
-                                        {renderSubjectCategoriesForProcess(process)}
-                                        {renderActiveForProcess(process)}
+                                        {renderLegalBasisListForProcess(currentProcess.legalBases)}
+                                        {renderSubjectCategoriesForProcess(currentProcess)}
+                                        {renderActiveForProcess(currentProcess)}
                                     </Block>
                                     {hasAccess() && (
                                         <Block>
                                             {renderEditProcessButton()}
+                                            {renderDeleteProcessButton()}
                                         </Block>
                                     )}
                                 </Block>
@@ -190,11 +198,15 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                         </React.Fragment>
                                     )}
                                 </Block>
-                                {process.policies && (
+                                {currentProcess.policies && (
                                     <Block>
                                         <TablePurpose
-                                            process={process}
+                                            process={currentProcess}
                                             hasAccess={hasAccess()}
+                                            errorPolicyModal={errorPolicyModal}
+                                            errorDeleteModal={errorPolicyModal}
+                                            submitEditPolicy={submitEditPolicy}
+                                            submitDeletePolicy={submitDeletePolicy}
                                         />
                                     </Block>
                                 )}
@@ -203,18 +215,20 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                     title={intl.processingActivitiesEdit}
                                     onClose={() => setShowEditProcessModal(false)}
                                     isOpen={showEditProcessModal}
-                                    submit={(values: ProcessFormValues) => handleEditProcess(values)}
-                                    errorOnCreate={null}
+                                    submit={async (values: ProcessFormValues) => {
+                                        await submitEditProcess(values) ? setShowEditProcessModal(false) : setShowEditProcessModal(true)
+                                    }}
+                                    errorOnCreate={errorProcessModal}
                                     isEdit={true}
-                                    initialValues={convertProcessToFormValues(process)}
+                                    initialValues={convertProcessToFormValues(currentProcess)}
                                 />
                                 <ModalPolicy
                                     title={intl.policyNew}
                                     initialValues={{
                                         informationType: undefined,
                                         legalBasesStatus: undefined,
-                                        process: process,
-                                        purposeCode: process.purposeCode,
+                                        process: currentProcess,
+                                        purposeCode: currentProcess.purposeCode,
                                         subjectCategory: undefined,
                                         start: undefined,
                                         end: undefined,
@@ -223,9 +237,41 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                     isEdit={false}
                                     onClose={() => setShowCreatePolicyModal(false)}
                                     isOpen={showCreatePolicyModal}
-                                    submit={(values: PolicyFormValues) => handleCreatePolicy(values)}
-                                    errorOnCreate={errorCreatePolicy}
+                                    submit={(values: PolicyFormValues) => {
+                                        submitCreatePolicy(values) ? setShowCreatePolicyModal(false) : setShowCreatePolicyModal(true)
+                                    }}
+                                    errorOnCreate={errorPolicyModal}
                                 />
+
+                                <Modal
+                                    onClose={() => setShowDeleteModal(false)}
+                                    isOpen={showDeleteModal}
+                                    animate
+                                    size="default"
+                                >
+                                    <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
+                                    <ModalBody>
+                                        <Paragraph2>{intl.confirmDeleteProcessText}  {currentProcess.name}</Paragraph2>
+                                    </ModalBody>
+
+                                    <ModalFooter>
+                                        <Block display="flex" justifyContent="flex-end">
+                                            <Block alignSelf="flex-end">{errorProcessModal && <p>{errorProcessModal}</p>}</Block>
+                                            <Button
+                                                kind="secondary"
+                                                onClick={() => setShowDeleteModal(false)}
+                                                overrides={{ BaseButton: { style: { marginRight: '1rem', marginLeft: '1rem' } } }}
+                                            >
+                                                {intl.abort}
+                                            </Button>
+                                            <Button onClick={() =>
+                                                submitDeleteProcess(currentProcess) ? setShowDeleteModal(false) : setShowDeleteModal(true)
+                                            }>
+                                                {intl.delete}
+                                            </Button>
+                                        </Block>
+                                    </ModalFooter>
+                                </Modal>
                             </React.Fragment>
                         )}
                     </Panel>

@@ -61,8 +61,9 @@ export interface IStrings {
     legalBasesUndecided: string;
     legalBasesUndecidedWarning: string;
     notAllowedMessage: string;
-    confirmDeletePolicyHeader: string;
+    confirmDeleteHeader: string;
     confirmDeletePolicyText: string;
+    confirmDeleteProcessText: string;
     startIllustration: string;
     treasureIllustration: string;
     legalbasisGDPRArt9Info: string;
