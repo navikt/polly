@@ -9,7 +9,7 @@ type RouteLinkProps = {
 const RouteLinkImpl = (props: RouteComponentProps & RouteLinkProps & any) => {
     const {history, location, match, staticContext, ...restprops} = props
     return (
-        <StyledLink href="#" {...restprops} onClick={(e: Event) => {
+        <StyledLink {...restprops} onClick={(e: Event) => {
             e.preventDefault()
             props.history.push(props.href)
         }}/>
