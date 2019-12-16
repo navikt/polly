@@ -27,7 +27,7 @@ type TableInformationtypeProps = {
 
 const TableInformationtype = ({list}: TableInformationtypeProps) => {
     const [useCss, theme] = useStyletron();
-    const [table, sortColumn] = useTable(list, {sorting: policySort})
+    const [table, sortColumn] = useTable<Policy, keyof Policy>(list, {sorting: policySort, initialSortColumn: "process"})
 
     return (
         <React.Fragment>

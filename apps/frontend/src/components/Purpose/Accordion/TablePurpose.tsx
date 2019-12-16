@@ -54,7 +54,7 @@ const TablePurpose = ({ process, hasAccess }: TablePurposeProps) => {
     const [errorEditModal, setErrorEditModal] = React.useState(false)
     const [showDeleteModal, setShowDeleteModal] = React.useState(false)
     const [errorDeleteModal, setErrorDeleteModal] = React.useState(false)
-    const [table, sortColumn] = useTable(policies, {sorting: policySort})
+    const [table, sortColumn] = useTable<Policy, keyof Policy>(policies, {sorting: policySort, initialSortColumn: "informationType"})
 
     const handleEditPolicy = async (values: PolicyFormValues) => {
         try {
