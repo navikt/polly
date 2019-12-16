@@ -47,7 +47,7 @@ public class CodeUsageService {
     }
 
     public List<CodeUsageResponse> findCodeUsageOfList(ListName list) {
-        List<CodeUsage> usages = CodelistService.getCodelist(list).stream().map(c -> processByListName(c.getList(), c.getCode())).collect(Collectors.toList());
+        List<CodeUsage> usages = CodelistService.getCodelist(list).stream().map(c -> filterByListNameAndGetCodeUsage(c.getList(), c.getCode())).collect(Collectors.toList());
         return createResponse(usages);
     }
 
@@ -56,7 +56,7 @@ public class CodeUsageService {
     }
 
     List<CodeUsageResponse> findCodeUsage(List<CodeUsageRequest> requests) {
-        List<CodeUsage> codeUsages = requests.stream().map(request -> processByListName(request.getAsListName(), request.getCode())).collect(Collectors.toList());
+        List<CodeUsage> codeUsages = requests.stream().map(request -> filterByListNameAndGetCodeUsage(request.getAsListName(), request.getCode())).collect(Collectors.toList());
         return createResponse(codeUsages);
     }
 
@@ -72,7 +72,6 @@ public class CodeUsageService {
         return responses;
     }
 
-
     private boolean responseForListNameExists(List<CodeUsageResponse> responses, String listName) {
         for (CodeUsageResponse response : responses) {
             if (response.getListName().equals(listName)) {
@@ -82,7 +81,7 @@ public class CodeUsageService {
         return false;
     }
 
-    private CodeUsage processByListName(ListName listName, String code) {
+    private CodeUsage filterByListNameAndGetCodeUsage(ListName listName, String code) {
         CodeUsage codeUsage = new CodeUsage(listName.toString(), code);
         switch (listName) {
             // process only

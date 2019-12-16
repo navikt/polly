@@ -24,10 +24,6 @@ public class CodeUsageResponse {
         addCodeUsage(codeUsage);
     }
 
-    public boolean isUsed() {
-        return !codesInUse.isEmpty();
-    }
-
     public void addCodeUsage(CodeUsage codeUsage) {
         codesInUse.add(codeUsage);
     }

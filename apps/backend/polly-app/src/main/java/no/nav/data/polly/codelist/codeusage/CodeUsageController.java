@@ -62,12 +62,12 @@ public class CodeUsageController {
         service.validateRequests(list, code);
 
         CodeUsageResponse response = service.findCodeUsage(list, code);
-        if (response.isUsed()) {
-            log.info("The code {} in list {} is used in: {}", code, list, response);
-            return ResponseEntity.ok(response);
+        if (response.getCodesInUse().isEmpty()) {
+            log.info("The code {} in list {} is never used", code, list);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        log.info("The code {} in list {} is never used", code, list);
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        log.info("The code {} in list {} is used in: {}", code, list, response);
+        return ResponseEntity.ok(response);
     }
 
     @ApiOperation(value = "Get all usage of the requested codelists")
