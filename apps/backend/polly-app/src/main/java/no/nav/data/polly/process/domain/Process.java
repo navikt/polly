@@ -10,6 +10,7 @@ import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
+import no.nav.data.polly.codelist.codeusage.UsedInInstance;
 import no.nav.data.polly.common.auditing.Auditable;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.elasticsearch.dto.ProcessElasticsearch;
@@ -99,6 +100,10 @@ public class Process extends Auditable<String> {
                 .end(data.getEnd())
                 .legalBases(convert(data.getLegalBases(), LegalBasis::convertToResponse))
                 .build();
+    }
+
+    public UsedInInstance getInstanceIdentification(){
+        return UsedInInstance.builder().id(id.toString()).name(name).build();
     }
 
     public ProcessPolicyResponse convertToResponseWithPolicies() {
