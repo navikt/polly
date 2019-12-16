@@ -218,8 +218,6 @@ const InformationtypeForm = ({
                                             <Select
                                                 options={getParsedOptions(ListName.CATEGORY, formikBag.values.categories)}
                                                 placeholder={intl.categoriesWrite}
-                                                type={TYPE.search}
-                                                openOnClick={false}
                                                 maxDropdownHeight="300px"
                                                 onChange={({ option }) => {
                                                     arrayHelpers.push(
@@ -247,8 +245,6 @@ const InformationtypeForm = ({
                                             <Select
                                                 options={getParsedOptions(ListName.SOURCE, formikBag.values.sources)}
                                                 placeholder={intl.sourcesWrite}
-                                                type={TYPE.search}
-                                                openOnClick={false}
                                                 maxDropdownHeight="300px"
                                                 onChange={({ option }) => {
                                                     arrayHelpers.push(option ? option.id : null);
