@@ -52,7 +52,7 @@ public class InformationTypeElasticsearch {
 
     public InformationTypeElasticsearch(InformationType informationType, List<ProcessElasticsearch> processes) {
         setId(informationType.getId());
-        setTerm(informationType.getTerm() == null ? null : informationType.getTerm().getName());
+        setTerm(informationType.getTermId());
 
         setCreated(DateUtil.formatDateTime(informationType.getCreatedDate()));
         setCreatedBy(informationType.getCreatedBy());

@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import static java.util.stream.Collectors.toList;
@@ -46,7 +45,6 @@ import static no.nav.data.polly.common.utils.StreamUtils.convert;
 @Slf4j
 @RestController
 @CrossOrigin
-@Transactional
 @Api(value = "Data Catalog Policies", description = "REST API for Policies", tags = {"Policies"})
 @RequestMapping("/policy")
 public class PolicyRestController {

@@ -13,6 +13,7 @@ import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.common.validator.RequestValidator;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -71,11 +72,11 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         return CodelistCache.getAll();
     }
 
+    @Scheduled(initialDelayString = "PT10M", fixedRateString = "PT10M")
     @PostConstruct
     public void refreshCache() {
         List<Codelist> allCodelists = codelistRepository.findAll();
-        CodelistCache.init();
-        allCodelists.forEach(CodelistCache::set);
+        CodelistCache.init(cache -> allCodelists.forEach(cache::setCode));
     }
 
     public List<Codelist> save(List<CodelistRequest> requests) {
@@ -102,7 +103,6 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         codelist.setShortName(request.getShortName());
         codelist.setDescription(request.getDescription());
         return codelist;
-
     }
 
     public void delete(ListName name, String code) {

@@ -8,6 +8,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -19,37 +20,52 @@ final class CodelistCache {
     private CodelistCache() {
     }
 
-    private static final Map<ListName, Map<String, Codelist>> codelists = new EnumMap<>(ListName.class);
+    private static CodelistCache cache;
+
+    private final Map<ListName, Map<String, Codelist>> codelists = new EnumMap<>(ListName.class);
 
     static {
         CodelistCache.init();
     }
 
     static void init() {
-        Stream.of(ListName.values()).forEach(listName -> codelists.put(listName, new HashMap<>()));
+        init(null);
+    }
+
+    static void init(Consumer<CodelistCache> consumer) {
+        var newCache = new CodelistCache();
+        Stream.of(ListName.values()).forEach(listName -> newCache.codelists.put(listName, new HashMap<>()));
+        if (consumer != null) {
+            consumer.accept(newCache);
+        }
+        cache = newCache;
     }
 
     static List<Codelist> getAll() {
-        return codelists.values().stream().flatMap(e -> e.values().stream()).collect(Collectors.toList());
+        return cache.codelists.values().stream().flatMap(e -> e.values().stream()).collect(Collectors.toList());
     }
 
     static List<Codelist> getCodelist(ListName name) {
-        return List.copyOf(codelists.get(name).values());
+        return List.copyOf(cache.codelists.get(name).values());
     }
 
     static Codelist getCodelist(ListName listName, String code) {
-        return codelists.get(listName).get(code);
+        return cache.codelists.get(listName).get(code);
     }
 
     static boolean contains(ListName listName, String code) {
-        return codelists.get(listName).containsKey(code);
+        return cache.codelists.get(listName).containsKey(code);
     }
 
     static void remove(ListName listName, String code) {
-        codelists.get(listName).remove(code);
+        cache.codelists.get(listName).remove(code);
     }
 
     static void set(Codelist codelist) {
+        cache.setCode(codelist);
+    }
+
+    void setCode(Codelist codelist) {
         Assert.notNull(codelist.getList(), "listName cannot be null");
         Assert.notNull(codelist.getCode(), "code cannot be null");
         Assert.notNull(codelist.getShortName(), "shortName cannot be null");

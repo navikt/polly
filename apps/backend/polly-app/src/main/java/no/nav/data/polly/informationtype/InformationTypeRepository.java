@@ -6,11 +6,11 @@ import no.nav.data.polly.informationtype.domain.TermCount;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import javax.transaction.Transactional;
 
 public interface InformationTypeRepository extends JpaRepository<InformationType, UUID>, InformationTypeRepositoryCustom {
 
@@ -49,8 +49,8 @@ public interface InformationTypeRepository extends JpaRepository<InformationType
     @Query("update InformationType set elasticsearchStatus = ?2 where id = ?1")
     void updateStatusForInformationType(UUID informationTypeId, ElasticsearchStatus elasticsearchStatus);
 
-    List<InformationType> findByTermName(String term);
+    List<InformationType> findByTermId(String term);
 
-    @Query(value = "select t.name as term, count(it) as count from InformationType it join it.term t group by t.name")
+    @Query(value = "select it.termId as term, count(it) as count from InformationType it group by it.termId")
     List<TermCount> countByTerm();
 }

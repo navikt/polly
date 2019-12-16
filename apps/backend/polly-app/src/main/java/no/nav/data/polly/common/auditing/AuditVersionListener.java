@@ -67,7 +67,8 @@ public class AuditVersionListener {
                 id = HibernateUtils.getId(entity).toString();
             }
             String data = wr.writeValueAsString(entity);
-            repository.save(new AuditVersion(action, tableName, id, data));
+            AuditVersion auditVersion = new AuditVersion(action, tableName, id, data);
+            repository.save(auditVersion);
         } catch (JsonProcessingException e) {
             log.error("failed to serialize object", e);
         }

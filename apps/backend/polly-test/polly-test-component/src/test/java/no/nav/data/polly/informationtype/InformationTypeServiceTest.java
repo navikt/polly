@@ -4,8 +4,8 @@ import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
-import no.nav.data.polly.term.domain.Term;
-import no.nav.data.polly.term.domain.TermRepository;
+import no.nav.data.polly.term.catalog.TermCatalogClient;
+import no.nav.data.polly.term.domain.PollyTerm;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -33,7 +34,7 @@ class InformationTypeServiceTest {
     @Mock
     private InformationTypeRepository informationTypeRepository;
     @Mock
-    private TermRepository termRepository;
+    private TermCatalogClient termCatalogClient;
 
     @InjectMocks
     private InformationTypeService service;
@@ -41,11 +42,11 @@ class InformationTypeServiceTest {
     @BeforeEach
     void setUp() {
         CodelistStub.initializeCodelist();
+        lenient().when(termCatalogClient.getTerm("term")).thenReturn(Optional.of(new PollyTerm()));
     }
 
     @Test
     void save_shouldSave_whenRequestIsValid() {
-        when(termRepository.findByName("term")).thenReturn(Optional.of(new Term()));
         InformationTypeRequest request = createValidInformationTypeRequest("Name");
 
         service.saveAll(List.of(request));
@@ -150,6 +151,14 @@ class InformationTypeServiceTest {
         Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), true));
         assertThat(exception).hasMessageContaining("Request:1 -- updatingNonExistingInformationType --");
         assertThat(exception).hasMessageContaining("The InformationType Name does not exist and therefore cannot be updated");
+    }
+
+    @Test
+    void validateRequest_shouldThrowValidationException_whenInvalidTerm() {
+        InformationTypeRequest request = createValidInformationTypeRequest("name");
+        request.setTerm("invalidterm");
+        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), false));
+        assertThat(exception).hasMessageContaining("Request:1 -- termDoesNotExist -- The Term invalidterm doesnt exist");
     }
 
     private InformationTypeRequest createValidInformationTypeUpdateRequest() {

@@ -28,7 +28,7 @@ public class InformationTypeResponse {
 
     private UUID id;
     private String name;
-    private InfoTypeTermResponse term;
+    private String term;
     private String description;
     private CodelistResponse sensitivity;
     private CodelistResponse navMaster;
@@ -39,7 +39,7 @@ public class InformationTypeResponse {
 
     public InformationTypeResponse(InformationType informationType) {
         id = informationType.getId();
-        setTerm(informationType.getTerm() == null ? null : informationType.getTerm().convertToIdNameResponse());
+        setTerm(informationType.getTermId());
         setToBeDeleted(informationType.getElasticsearchStatus() == ElasticsearchStatus.TO_BE_DELETED);
         mapJsonFields(informationType.getData());
     }

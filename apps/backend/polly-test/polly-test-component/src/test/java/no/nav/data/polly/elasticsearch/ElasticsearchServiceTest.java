@@ -12,7 +12,6 @@ import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.process.domain.Process;
-import no.nav.data.polly.term.domain.Term;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,7 +68,7 @@ class ElasticsearchServiceTest {
         informationType = InformationType.builder()
                 .id(UUID.randomUUID())
                 .data(InformationTypeData.builder().name("hei").build())
-                .term(Term.builder().name("term").build())
+                .termId("term")
                 .build();
 
         lenient().when(policyRepository.findByInformationTypeId(informationType.getId())).thenReturn(singletonList(policy));
