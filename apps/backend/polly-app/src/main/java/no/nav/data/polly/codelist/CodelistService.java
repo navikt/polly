@@ -6,11 +6,14 @@ import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.codelist.dto.FindCodeUsageRequest;
+import no.nav.data.polly.codelist.dto.FindCodeUsageResponse;
+import no.nav.data.polly.common.exceptions.CodelistNotErasableException;
 import no.nav.data.polly.common.exceptions.CodelistNotFoundException;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.common.validator.RequestValidator;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -29,9 +32,12 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     private static final String FIELD_NAME_CODE = "code";
     private static final String REFERENCE = "Validate Codelist";
     private CodelistRepository codelistRepository;
+    private FindCodeUsageService findCodeUsageService;
 
-    public CodelistService(CodelistRepository codelistRepository) {
+    // @Lazy to avoid circular dependancy
+    public CodelistService(CodelistRepository codelistRepository, @Lazy FindCodeUsageService findCodeUsageService) {
         this.codelistRepository = codelistRepository;
+        this.findCodeUsageService = findCodeUsageService;
     }
 
     public static Codelist getCodelist(ListName listName, String code) {
@@ -101,14 +107,22 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
 
     public void delete(ListName name, String code) {
         Optional<Codelist> toDelete = codelistRepository.findByListAndCode(name, code);
-        if (toDelete.isPresent()) {
-            validateNonImmutableTypeOfCodelist(name);
-            codelistRepository.delete(toDelete.get());
-            CodelistCache.remove(name, code);
-        } else {
+        if (toDelete.isEmpty()) {
             log.error("Cannot find a codelist to delete with code={} and listName={}", code, name);
             throw new CodelistNotFoundException(
                     String.format("Cannot find a codelist to delete with code=%s and listName=%s", code, name));
+        }
+        validateNonImmutableTypeOfCodelist(name);
+        validateCodelistIsNotInUse(name, code);
+        codelistRepository.delete(toDelete.get());
+        CodelistCache.remove(name, code);
+    }
+
+    private void validateCodelistIsNotInUse(ListName name, String code) {
+        FindCodeUsageResponse codeUsage = findCodeUsageService.findCodeUsage(name.toString(), code);
+        if (codeUsage.codelistIsInUse()) {
+            log.error("The code {} in list {} cannot be erased. {}", code, name, codeUsage.toString());
+            throw new CodelistNotErasableException(String.format("The code %s in list %s cannot be erased. %s", code, name, codeUsage.toString()));
         }
     }
 

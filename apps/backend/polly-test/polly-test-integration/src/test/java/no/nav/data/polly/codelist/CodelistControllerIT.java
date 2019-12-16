@@ -41,10 +41,14 @@ class CodelistControllerIT extends IntegrationTestBase {
     protected TestRestTemplate restTemplate;
 
     @Autowired
+    private CodelistRepository repository;
+
+    @Autowired
     private CodelistService service;
 
     @Autowired
-    private CodelistRepository repository;
+    private FindCodeUsageService findCodeUsageService;
+
 
     @BeforeEach
     void setUp() {
