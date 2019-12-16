@@ -25,13 +25,13 @@ import no.nav.data.polly.process.domain.ProcessDistributionRepository;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.term.catalog.CatalogTerm;
 import no.nav.data.polly.term.catalog.GraphNode;
-import no.nav.data.polly.term.domain.PollyTerm;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -81,6 +81,8 @@ public abstract class IntegrationTestBase {
     protected ProcessDistributionRepository processDistributionRepository;
     @Autowired
     protected KafkaTopicProperties topicProperties;
+    @Autowired
+    protected TestRestTemplate restTemplate;
 
     static {
         postgreSQLContainer.start();
@@ -145,6 +147,7 @@ public abstract class IntegrationTestBase {
                 .legalBases(legalBases)
                 .build();
     }
+
     protected InformationType createInformationType() {
         if (informationType == null) {
             informationType = informationTypeRepository.save(createInformationType(INFORMATION_TYPE_ID_1, INFORMATION_TYPE_NAME));
@@ -152,7 +155,7 @@ public abstract class IntegrationTestBase {
         return informationType;
     }
 
-    protected InformationType createInformationType(UUID id, String name) {
+    protected InformationType createInformationType(UUID id, String name, String sensitivity, String system, String category, String source) {
         InformationType informationType = InformationType.builder()
                 .id(id)
                 .termId("term")
@@ -160,30 +163,23 @@ public abstract class IntegrationTestBase {
                 .data(InformationTypeData.builder()
                         .name(name)
                         .description("desc")
-                        .source("SKATT")
-                        .category("PERSONALIA")
-                        .sensitivity("PERSONOPPLYSNING")
-                        .navMaster("TPS")
-                        .build())
-                .build();
-        informationType.preUpdate();
-        return informationTypeRepository.save(informationType);
-    }
-
-    protected InformationType createInformationType(String name, String sensitivity, String system, String category, String source) {
-        InformationType informationType = InformationType.builder()
-                .generateId()
-                .elasticsearchStatus(SYNCED)
-                .data(InformationTypeData.builder()
-                        .name(name)
-                        .description("Description")
                         .sensitivity(sensitivity)
                         .navMaster(system)
                         .category(category)
                         .source(source)
                         .build())
                 .build();
+        informationType.preUpdate();
         return informationType;
+    }
+
+    protected InformationType createInformationType(UUID id, String name) {
+        InformationType informationType = createInformationType(id, name, "PERSONOPPLYSNINGER", "TPS", "PERSONALIA", "SKATT");
+        return informationTypeRepository.save(informationType);
+    }
+
+    protected InformationType createInformationType(String name, String sensitivity, String system, String category, String source) {
+        return createInformationType(UUID.randomUUID(), name, sensitivity, system, category, source);
     }
 
     protected Process createProcess(String name, String purpose, String department, String subDepartment, List<LegalBasis> legalBases) {

@@ -1,7 +1,6 @@
 package no.nav.data.polly.informationtype;
 
 import no.nav.data.polly.informationtype.domain.InformationType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -16,12 +15,13 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class InformationTypeRepositoryImpl implements InformationTypeRepositoryCustom {
 
-    @Autowired
-    private NamedParameterJdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final InformationTypeRepository informationTypeRepository;
 
-    @Lazy
-    @Autowired
-    private InformationTypeRepository informationTypeRepository;
+    public InformationTypeRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate, @Lazy InformationTypeRepository informationTypeRepository) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.informationTypeRepository = informationTypeRepository;
+    }
 
     @Override
     public List<InformationType> findByCategory(String category) {

@@ -1,9 +1,12 @@
 package no.nav.data.polly.codelist;
 
+import no.nav.data.polly.codelist.codeusage.CodeUsage;
+import no.nav.data.polly.codelist.codeusage.CodeUsageService;
+import no.nav.data.polly.codelist.codeusage.UsedInInstance;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
-import no.nav.data.polly.codelist.dto.FindCodeUsageResponse;
 import no.nav.data.polly.common.exceptions.CodelistNotErasableException;
 import no.nav.data.polly.common.exceptions.CodelistNotFoundException;
 import no.nav.data.polly.common.exceptions.ValidationException;
@@ -42,7 +45,7 @@ class CodelistServiceTest {
     @Mock
     private CodelistRepository repository;
     @Mock
-    private FindCodeUsageService findCodeUsageService;
+    private CodeUsageService codeUsageService;
 
     @InjectMocks
     private CodelistService service;
@@ -80,8 +83,9 @@ class CodelistServiceTest {
 
         @Test
         void delete_shouldDelete_whenListAndCodeExists() {
+            CodeUsage codeUsage = new CodeUsage("SOURCE", "DELETE_CODE");
             when(repository.findByListAndCode(ListName.SOURCE, "DELETE_CODE")).thenReturn(Optional.of(createCodelist(ListName.SOURCE, "DELETE_CODE")));
-            when(findCodeUsageService.findCodeUsage("SOURCE", "DELETE_CODE")).thenReturn(FindCodeUsageResponse.builder().listName(ListName.SOURCE).build());
+            when(codeUsageService.findCodeUsage("SOURCE", "DELETE_CODE")).thenReturn(new CodeUsageResponse(codeUsage));
 
             service.delete(ListName.SOURCE, "DELETE_CODE");
 
@@ -103,15 +107,16 @@ class CodelistServiceTest {
 
         @Test
         void delete_shouldThrowCodelistNotErasableException_whenCodelistIsInUse() {
+            CodeUsage codeUsage = new CodeUsage("SOURCE", "DELETE_CODE");
+            codeUsage.setProcesses(List.of(UsedInInstance.builder().id("id").name("name").build()));
             when(repository.findByListAndCode(ListName.PURPOSE, "DELETE_CODE")).thenReturn(Optional.of(createCodelist(ListName.SOURCE, "DELETE_CODE")));
-            when(findCodeUsageService.findCodeUsage("PURPOSE", "DELETE_CODE")).thenReturn(FindCodeUsageResponse.builder()
-                    .listName(ListName.PURPOSE).code("DELETE_CODE").processResponses(List.of(CodelistUtils.createProcessResponse("DELETE_CODE"))).build());
+            when(codeUsageService.findCodeUsage("PURPOSE", "DELETE_CODE")).thenReturn(new CodeUsageResponse(codeUsage));
 
             try {
                 service.delete(ListName.PURPOSE, "DELETE_CODE");
                 fail();
             } catch (CodelistNotErasableException e) {
-                assertThat(e.getLocalizedMessage()).contains("The code DELETE_CODE in list PURPOSE cannot be erased. DELETE_CODE in PURPOSE is used in: ");
+                assertThat(e.getLocalizedMessage()).contains("The code DELETE_CODE in list PURPOSE cannot be erased");
             }
         }
     }

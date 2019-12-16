@@ -1,6 +1,5 @@
 package no.nav.data.polly.process.domain;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -15,12 +14,14 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
 
-    @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
-
-    @Lazy
-    @Autowired
     private ProcessRepository processRepository;
+
+
+    public ProcessRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate, @Lazy ProcessRepository processRepository) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.processRepository = processRepository;
+    }
 
     @Override
     public List<Process> findByGDPRArticle(String gdpr) {
