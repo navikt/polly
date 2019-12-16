@@ -25,6 +25,7 @@ import no.nav.data.polly.process.domain.ProcessDistributionRepository;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.term.catalog.CatalogTerm;
 import no.nav.data.polly.term.catalog.GraphNode;
+import no.nav.data.polly.term.domain.PollyTerm;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -208,11 +209,6 @@ public abstract class IntegrationTestBase {
                                         .start(LocalDate.now()).end(LocalDate.now()).legalBasis(createLegalBasis())
                                         .build())
                                 .build()));
-    }
-
-    protected Term createTerm(String term) {
-        return terms.computeIfAbsent(term,
-                (t) -> termRepository.save(Term.builder().generateId().name("Auto_" + term).description("termdesc").build()));
     }
 
     protected LegalBasis createLegalBasis(String gdpr, String nationalLaw, String description) {
