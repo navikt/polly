@@ -44,7 +44,7 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
     const [showEditModal, setShowEditModal] = React.useState(false);
     const [showDeleteModal, setShowDeleteModal] = React.useState(false);
     const [errorOnResponse, setErrorOnResponse] = React.useState(null);
-    const [table, direction, sortColumn] = useTable<Code, keyof Code>(tableData, {useDefaultStringCompare: true, initialSortColumn: "code"})
+    const [table, sortColumn] = useTable<Code, keyof Code>(tableData, {useDefaultStringCompare: true, initialSortColumn: "code"})
 
     const handleEditCodelist = async (values: Code) => {
         let body = [{
@@ -87,7 +87,7 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
                             }
                         }}
                         title={intl.code}
-                        direction={direction('code')}
+                        direction={table.direction.code}
                         onSort={() => sortColumn('code')}
                     />
                 </SmallerHeadCell>
@@ -99,7 +99,7 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
                             }
                         }}
                         title={intl.shortName}
-                        direction={direction('shortName')}
+                        direction={table.direction.shortName}
                         onSort={() => sortColumn('shortName')}
                     />
                 </SmallerHeadCell>
@@ -114,7 +114,7 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
                             }
                         }}
                         title={intl.description}
-                        direction={direction('description')}
+                        direction={table.direction.description}
                         onSort={() => sortColumn('description')}
                     />
                 </StyledHeadCell>

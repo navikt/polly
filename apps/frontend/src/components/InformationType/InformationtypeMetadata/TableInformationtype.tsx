@@ -27,7 +27,7 @@ type TableInformationtypeProps = {
 
 const TableInformationtype = ({list}: TableInformationtypeProps) => {
     const [useCss, theme] = useStyletron();
-    const [table, direction, sortColumn] = useTable(list, {sorting: policySort})
+    const [table, sortColumn] = useTable(list, {sorting: policySort})
 
     return (
         <React.Fragment>
@@ -35,21 +35,21 @@ const TableInformationtype = ({list}: TableInformationtypeProps) => {
                 <StyledHeader>
                     <SortableHeadCell
                         title={intl.process}
-                        direction={direction('process')}
+                        direction={table.direction.process}
                         onSort={() => sortColumn('process')}
                         fillClickTarget
                     />
 
                     <SortableHeadCell
                         title={intl.subjectCategories}
-                        direction={direction('subjectCategory')}
+                        direction={table.direction.subjectCategory}
                         onSort={() => sortColumn('subjectCategory')}
                         fillClickTarget
                     />
 
                     <SortableHeadCell
                         title={intl.legalBasisShort}
-                        direction={direction('legalBases')}
+                        direction={table.direction.legalBases}
                         onSort={() => sortColumn('legalBases')}
                     />
                 </StyledHeader>

@@ -54,7 +54,7 @@ const TablePurpose = ({ process, hasAccess }: TablePurposeProps) => {
     const [errorEditModal, setErrorEditModal] = React.useState(false)
     const [showDeleteModal, setShowDeleteModal] = React.useState(false)
     const [errorDeleteModal, setErrorDeleteModal] = React.useState(false)
-    const [table, direction, sortColumn] = useTable(policies, {sorting: policySort})
+    const [table, sortColumn] = useTable(policies, {sorting: policySort})
 
     const handleEditPolicy = async (values: PolicyFormValues) => {
         try {
@@ -89,19 +89,19 @@ const TablePurpose = ({ process, hasAccess }: TablePurposeProps) => {
                 <StyledHeader>
                     <SortableHeadCell
                         title={intl.informationType}
-                        direction={direction('informationType')}
+                        direction={table.direction.informationType}
                         onSort={() => sortColumn('informationType')}
                         fillClickTarget
                     />
                     <SortableHeadCell
                         title={intl.subjectCategories}
-                        direction={direction('subjectCategory')}
+                        direction={table.direction.subjectCategory}
                         onSort={() => sortColumn('subjectCategory')}
                         fillClickTarget
                     />
                     <SortableHeadCell
                         title={intl.legalBasisShort}
-                        direction={direction('legalBases')}
+                        direction={table.direction.legalBases}
                         onSort={() => sortColumn('legalBases')}
                     />
                     {hasAccess && <SmallerStyledHeadCell/>}
