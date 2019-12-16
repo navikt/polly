@@ -1,18 +1,21 @@
 package no.nav.data.polly.codelist;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.codelist.codeusage.CodeUsageService;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.codelist.dto.CodeUsageRequest;
+import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
-import no.nav.data.polly.codelist.dto.CodeUsageRequest;
+import no.nav.data.polly.common.exceptions.CodelistNotErasableException;
 import no.nav.data.polly.common.exceptions.CodelistNotFoundException;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.common.validator.RequestValidator;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -31,12 +34,12 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     private static final String FIELD_NAME_CODE = "code";
     private static final String REFERENCE = "Validate Codelist";
     private CodelistRepository codelistRepository;
-    private FindCodeUsageService findCodeUsageService;
+    private CodeUsageService codeUsageService;
 
     // @Lazy to avoid circular dependancy
-    public CodelistService(CodelistRepository codelistRepository, @Lazy FindCodeUsageService findCodeUsageService) {
+    public CodelistService(CodelistRepository codelistRepository, @Lazy CodeUsageService codeUsageService) {
         this.codelistRepository = codelistRepository;
-        this.findCodeUsageService = findCodeUsageService;
+        this.codeUsageService = codeUsageService;
     }
 
     public static Codelist getCodelist(ListName listName, String code) {
@@ -117,8 +120,8 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     }
 
     private void validateCodelistIsNotInUse(ListName name, String code) {
-        FindCodeUsageResponse codeUsage = findCodeUsageService.findCodeUsage(name.toString(), code);
-        if (codeUsage.codelistIsInUse()) {
+        CodeUsageResponse codeUsage = codeUsageService.findCodeUsage(name.toString(), code);
+        if (codeUsage.codelistIsInUse(code)) {
             log.error("The code {} in list {} cannot be erased. {}", code, name, codeUsage.toString());
             throw new CodelistNotErasableException(String.format("The code %s in list %s cannot be erased. %s", code, name, codeUsage.toString()));
         }

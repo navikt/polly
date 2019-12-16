@@ -51,7 +51,7 @@ public class CodeUsageService {
         return createResponse(usages);
     }
 
-    CodeUsageResponse findCodeUsage(String listName, String code) {
+    public CodeUsageResponse findCodeUsage(String listName, String code) {
         return findCodeUsage(List.of(CodeUsageRequest.builder().listName(listName).code(code).build())).get(0);
     }
 

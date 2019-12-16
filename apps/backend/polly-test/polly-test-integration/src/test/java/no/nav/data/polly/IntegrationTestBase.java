@@ -25,7 +25,6 @@ import no.nav.data.polly.process.domain.ProcessDistributionRepository;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.term.catalog.CatalogTerm;
 import no.nav.data.polly.term.catalog.GraphNode;
-import no.nav.data.polly.term.domain.PollyTerm;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,8 +34,6 @@ import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -158,7 +155,7 @@ public abstract class IntegrationTestBase {
         return informationType;
     }
 
-    protected InformationType createInformationType(UUID id, String name, String sensitivity, String system, String category, String source){
+    protected InformationType createInformationType(UUID id, String name, String sensitivity, String system, String category, String source) {
         InformationType informationType = InformationType.builder()
                 .id(id)
                 .termId("term")
@@ -173,7 +170,6 @@ public abstract class IntegrationTestBase {
                         .build())
                 .build();
         informationType.preUpdate();
-        createTerm("term").addInformationType(informationType);
         return informationType;
     }
 

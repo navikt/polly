@@ -46,10 +46,6 @@ class CodelistControllerIT extends IntegrationTestBase {
     @Autowired
     private CodelistService service;
 
-    @Autowired
-    private FindCodeUsageService findCodeUsageService;
-
-
     @BeforeEach
     void setUp() {
         service.refreshCache();

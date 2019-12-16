@@ -51,4 +51,8 @@ public class CodeUsageResponse {
     public int getCountOfProcesses() {
         return getProcesses().size();
     }
+
+    public boolean codelistIsInUse(String code) {
+        return codesInUse.stream().filter(codeUsage -> codeUsage.getCode().equals(code)).noneMatch(CodeUsage::isNotInUse);
+    }
 }

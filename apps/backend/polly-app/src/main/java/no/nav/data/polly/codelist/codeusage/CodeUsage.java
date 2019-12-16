@@ -29,4 +29,8 @@ public class CodeUsage {
         this.policies = new ArrayList<>();
         this.processes = new ArrayList<>();
     }
+
+    public boolean isNotInUse() {
+        return informationTypes.isEmpty() && policies.isEmpty() && processes.isEmpty();
+    }
 }

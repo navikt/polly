@@ -1,7 +1,6 @@
 package no.nav.data.polly.codelist;
 
 import no.nav.data.polly.IntegrationTestBase;
-import no.nav.data.polly.codelist.codeusage.CodeUsageService;
 import no.nav.data.polly.codelist.dto.CodeUsageRequest;
 import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
@@ -149,30 +148,30 @@ public class FindCodeUsageControllerIT extends IntegrationTestBase {
 
     private void createCodelistsByRequests() {
         List<CodelistRequest> requests = List.of(
-                createCodelistRequest("CATEGORY", "PERSONALIA", "Personalia", "Personalia"),
-                createCodelistRequest("CATEGORY", "ARBEIDSFORHOLD", "ARBEIDSFORHOLD", "Arbeidsforhold"),
+                createCodelistRequest("CATEGORY", "PERSONALIA"),
+                createCodelistRequest("CATEGORY", "ARBEIDSFORHOLD"),
 
-                createCodelistRequest("DEPARTMENT", "YTA", "Ytelsesavdelingen", "Ytelsesavdelingen"),
+                createCodelistRequest("DEPARTMENT", "YTA"),
 
-                createCodelistRequest("GDPR_ARTICLE", "ART61E", "Art. 6(1)e - Allmennhetens interesse eller utøve offentlig myndighet", "6e"),
-                createCodelistRequest("GDPR_ARTICLE", "ART92A", "Art. 9(2)a - Samtykke", "En virksomhet kan behandle særlige kategorier av personopplysninger dersom det er innhentet et gyldig samtykke fra personen det gjelder."),
+                createCodelistRequest("GDPR_ARTICLE", "ART61E"),
+                createCodelistRequest("GDPR_ARTICLE", "ART92A"),
 
-                createCodelistRequest("NATIONAL_LAW", "FTRL", "Ftrl", "1997-02-28-19"),
+                createCodelistRequest("NATIONAL_LAW", "FTRL"),
 
-                createCodelistRequest("PURPOSE", "DAGPENGER", "Dagpenger", "Behandle og vurdere rett til dagpenger som har til formål å gi delvis dekning for bortfall av arbeidsinntekt ved arbeidsløshet."),
-                createCodelistRequest("PURPOSE", "BARNETRYGD", "Barnetrygd", "Behandle og vurdere rett til barnetrygd som ikke er gitt automatisk til dekning av utgifter til forsørgelse av barn."),
+                createCodelistRequest("PURPOSE", "DAGPENGER"),
+                createCodelistRequest("PURPOSE", "BARNETRYGD"),
 
-                createCodelistRequest("SENSITIVITY", "POL", "Personopplysning", "Personopplysning – GDPR art. 6"),
+                createCodelistRequest("SENSITIVITY", "POL"),
 
-                createCodelistRequest("SOURCE", "SKATTEETATEN", "Skatteetaten", "Skatteetaten"),
-                createCodelistRequest("SOURCE", "ARBEIDSGIVER", "Arbeidsgiver", "Arbeidsgiver"),
+                createCodelistRequest("SOURCE", "SKATTEETATEN"),
+                createCodelistRequest("SOURCE", "ARBEIDSGIVER"),
 
-                createCodelistRequest("SUB_DEPARTMENT", "NAY", "NAV Arbeid og ytelser", "NAV Arbeid og ytelser"),
+                createCodelistRequest("SUB_DEPARTMENT", "NAY"),
 
-                createCodelistRequest("SUBJECT_CATEGORY", "BRUKER", "Bruker", "Bruker"),
+                createCodelistRequest("SUBJECT_CATEGORY", "BRUKER"),
 
-                createCodelistRequest("SYSTEM", "TPS", "TPS", "PersondataSystem"),
-                createCodelistRequest("SYSTEM", "AA_REG", "AA_REG", "Arbeidsgiver / Arbeidstaker register"));
+                createCodelistRequest("SYSTEM", "TPS"),
+                createCodelistRequest("SYSTEM", "AA_REG"));
 
         codelistService.save(requests);
     }
