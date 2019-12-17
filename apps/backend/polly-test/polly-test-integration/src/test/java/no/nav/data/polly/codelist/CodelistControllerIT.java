@@ -1,6 +1,7 @@
 package no.nav.data.polly.codelist;
 
 import no.nav.data.polly.IntegrationTestBase;
+import no.nav.data.polly.codelist.codeusage.CodeUsageService;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.AllCodelistResponse;
@@ -45,6 +46,9 @@ class CodelistControllerIT extends IntegrationTestBase {
 
     @Autowired
     private CodelistService service;
+
+    @Autowired
+    private CodeUsageService codeUsageService;
 
     @BeforeEach
     void setUp() {
@@ -237,7 +241,6 @@ class CodelistControllerIT extends IntegrationTestBase {
             assertFalse(repository.findByListAndCode(ListName.SOURCE, "DELETE_CODE").isPresent());
         }
 
-
         @ParameterizedTest
         @ValueSource(strings = {"GDPR_ARTICLE", "SENSITIVITY"})
         void shouldInvalidateDeletingGDPR_ARTICLE(String input) {
@@ -248,6 +251,20 @@ class CodelistControllerIT extends IntegrationTestBase {
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
             assertThat(responseEntity.getBody()).contains(String.format(ERROR_IMMUTABLE_CODELIST, input));
         }
+
+        @Test
+        void shouldThrowCodelistNotErasableException_whenCodelistToBeDeletedIsStillInUse() {
+            saveCodelist(createCodelist(ListName.SOURCE, "DELETE_CODE"));
+            informationTypeRepository.save(createInformationType("infoType", "POL", "TPS", "PERSONALIA", "DELETE_CODE"));
+            assertTrue(repository.findByListAndCode(ListName.SOURCE, "DELETE_CODE").isPresent());
+
+            ResponseEntity<String> responseEntity = restTemplate.exchange("/codelist/SOURCE/DELETE_CODE", HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
+
+            assertThat(responseEntity.getStatusCodeValue()).isEqualTo(HttpStatus.FORBIDDEN.value());
+            assertThat(responseEntity.getBody()).contains("The code DELETE_CODE in list SOURCE cannot be erased.");
+            assertTrue(repository.findByListAndCode(ListName.SOURCE, "DELETE_CODE").isPresent());
+        }
+
     }
 
     private void saveCodelist(Codelist codelist) {
