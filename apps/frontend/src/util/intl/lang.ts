@@ -94,6 +94,8 @@ export const no: IStrings = {
     inactive: "Inaktiv",
     active: "Aktiv",
     preview: "Forhåndsvisning",
+    info: "Informasjon",
+    period: "Periode",
 
     prevButton: "Forrige",
     nextButton: "Neste",
