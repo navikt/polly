@@ -111,14 +111,14 @@ public abstract class IntegrationTestBase {
         CollectorRegistry.defaultRegistry.clear();
     }
 
-    protected List<Policy> createPolicy(int rows) {
-        return createPolicy(rows, (i, p) -> {
+    protected List<Policy> createAndSavePolicy(int rows) {
+        return createAndSavePolicy(rows, (i, p) -> {
         });
     }
 
-    protected List<Policy> createPolicy(int rows, BiConsumer<Integer, Policy> callback) {
+    protected List<Policy> createAndSavePolicy(int rows, BiConsumer<Integer, Policy> callback) {
         return IntStream.range(0, rows).mapToObj(i -> {
-            Policy policy = createPolicy(PURPOSE_CODE1, createInformationType());
+            Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
             callback.accept(i, policy);
             policyRepository.save(policy);
             processRepository.save(policy.getProcess());
@@ -126,7 +126,7 @@ public abstract class IntegrationTestBase {
         }).collect(Collectors.toList());
     }
 
-    protected Policy createPolicy(String purpose, InformationType informationType) {
+    protected Policy createAndSavePolicy(String purpose, InformationType informationType) {
         Policy policy = Policy.builder()
                 .generateId()
                 .purposeCode(purpose)
@@ -135,18 +135,21 @@ public abstract class IntegrationTestBase {
                 .subjectCategory("BRUKER")
                 .activeToday()
                 .build();
-        createProcess(purpose).addPolicy(policy);
+        createAndSaveProcess(purpose).addPolicy(policy);
         return policyRepository.save(policy);
     }
 
-    protected InformationType createInformationType() {
-        if (informationType == null) {
-            informationType = informationTypeRepository.save(createInformationType(INFORMATION_TYPE_ID_1, INFORMATION_TYPE_NAME));
-        }
-        return informationType;
+    protected Policy createPolicy(String purpose, String subjectCategory, List<LegalBasis> legalBases) {
+        return Policy.builder()
+                .generateId()
+                .purposeCode(purpose)
+                .subjectCategory(subjectCategory)
+                .activeToday()
+                .legalBases(legalBases)
+                .build();
     }
 
-    protected InformationType createInformationType(UUID id, String name) {
+    protected InformationType createInformationType(UUID id, String name, String sensitivity, String system, String category, String source) {
         InformationType informationType = InformationType.builder()
                 .id(id)
                 .termId("term")
@@ -154,17 +157,48 @@ public abstract class IntegrationTestBase {
                 .data(InformationTypeData.builder()
                         .name(name)
                         .description("desc")
-                        .source("SKATT")
-                        .category("PERSONALIA")
-                        .sensitivity("PERSONOPPLYSNING")
-                        .navMaster("TPS")
+                        .sensitivity(sensitivity)
+                        .navMaster(system)
+                        .category(category)
+                        .source(source)
                         .build())
                 .build();
         informationType.preUpdate();
+        return informationType;
+    }
+
+    protected InformationType createAndSaveInformationType() {
+        if (informationType == null) {
+            informationType = informationTypeRepository.save(createAndSaveInformationType(INFORMATION_TYPE_ID_1, INFORMATION_TYPE_NAME));
+        }
+        return informationType;
+    }
+
+    protected InformationType createAndSaveInformationType(UUID id, String name) {
+        InformationType informationType = createInformationType(id, name, "PERSONOPPLYSNINGER", "TPS", "PERSONALIA", "SKATT");
         return informationTypeRepository.save(informationType);
     }
 
-    protected Process createProcess(String purpose) {
+    protected InformationType createInformationType(String name, String sensitivity, String system, String category, String source) {
+        return createInformationType(UUID.randomUUID(), name, sensitivity, system, category, source);
+    }
+
+    protected Process createProcess(String name, String purpose, String department, String subDepartment, List<LegalBasis> legalBases) {
+        return processRepository.save(Process.builder()
+                .generateId()
+                .name(name)
+                .purposeCode(purpose)
+                .data(ProcessData.builder()
+                        .start(LocalDate.now()).end(LocalDate.now())
+                        .department(department)
+                        .subDepartment(subDepartment)
+                        .productTeam("ProductTeam")
+                        .legalBases(legalBases)
+                        .build())
+                .build());
+    }
+
+    protected Process createAndSaveProcess(String purpose) {
         return process.computeIfAbsent(purpose,
                 (p) -> processRepository
                         .save(Process.builder().generateId().name("Auto_" + purpose).purposeCode(purpose)
@@ -179,6 +213,10 @@ public abstract class IntegrationTestBase {
                 .start(LocalDate.now().toString())
                 .end(LocalDate.now().toString())
                 .build();
+    }
+
+    protected LegalBasis createLegalBasis(String gdpr, String nationalLaw, String description) {
+        return LegalBasis.builder().gdpr(gdpr).nationalLaw(nationalLaw).description(description).activeToday().build();
     }
 
     protected LegalBasis createLegalBasis() {

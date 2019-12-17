@@ -37,7 +37,7 @@ class TermControllerIT extends IntegrationTestBase {
 
     @Test
     void countTermByInfoType() {
-        InformationType informationType = createInformationType();
+        InformationType informationType = createAndSaveInformationType();
         var response = template.getForEntity("/term/count/informationtype", TermCountResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

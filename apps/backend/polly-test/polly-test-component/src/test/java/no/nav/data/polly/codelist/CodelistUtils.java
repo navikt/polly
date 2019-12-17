@@ -3,6 +3,7 @@ package no.nav.data.polly.codelist;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
+import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,5 +55,9 @@ public class CodelistUtils {
 
     public static List<CodelistRequest> createNrOfCodelistRequests(int nrOfRequests) {
         return IntStream.rangeClosed(1, nrOfRequests).mapToObj(i -> createCodelistRequest("SOURCE", "CODE_NR_" + i)).collect(Collectors.toList());
+    }
+
+    private static LegalBasisRequest createLegalBasis() {
+        return LegalBasisRequest.builder().gdpr("6A").nationalLaw("FTRL").description("§ 1-2").build();
     }
 }

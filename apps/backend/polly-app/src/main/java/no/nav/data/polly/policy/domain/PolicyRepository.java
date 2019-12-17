@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface PolicyRepository extends JpaRepository<Policy, UUID> {
+public interface PolicyRepository extends JpaRepository<Policy, UUID>, PolicyRepositoryCustom {
 
     List<Policy> findByPurposeCodeAndProcessName(String purposeCode, String processName);
 
@@ -19,6 +19,10 @@ public interface PolicyRepository extends JpaRepository<Policy, UUID> {
     List<Policy> findByProcessId(UUID processId);
 
     List<Policy> findByInformationTypeIdAndPurposeCodeAndSubjectCategoryAndProcessName(UUID informationTypeId, String purposeCode, String subjectCategory, String processName);
+
+    List<Policy> findBySubjectCategory(String subjectCategory);
+
+    List<Policy> findByPurposeCode(String purposeCode);
 
     long countByInformationTypeId(UUID informationTypeId);
 

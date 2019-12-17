@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import no.nav.data.polly.codelist.codeusage.UsedInInstance;
 import no.nav.data.polly.common.auditing.Auditable;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus;
@@ -85,6 +86,10 @@ public class InformationType extends Auditable<String> {
 
     public InformationTypeResponse convertToResponse() {
         return new InformationTypeResponse(this);
+    }
+
+    public UsedInInstance getInstanceIdentification(){
+        return UsedInInstance.builder().id(id.toString()).name(data.getName()).build();
     }
 
     public InformationType convertNewFromRequest(InformationTypeRequest request) {

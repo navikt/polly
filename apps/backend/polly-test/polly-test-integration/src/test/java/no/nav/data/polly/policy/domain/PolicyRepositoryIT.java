@@ -86,10 +86,10 @@ class PolicyRepositoryIT extends IntegrationTestBase {
                 .activeToday()
                 .legalBasesInherited(false)
                 .legalBasis(createLegalBasis())
-                .informationType(createInformationType())
+                .informationType(createAndSaveInformationType())
                 .informationTypeId(INFORMATION_TYPE_ID_1)
                 .informationTypeName(INFORMATION_TYPE_NAME)
-                .process(createProcess(purposeCode))
+                .process(createAndSaveProcess(purposeCode))
                 .build();
         return policyRepository.save(policy);
     }
