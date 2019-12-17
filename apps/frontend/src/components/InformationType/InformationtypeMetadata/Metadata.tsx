@@ -107,7 +107,7 @@ const Metadata = (props: { informationtype: InformationType }) => {
                     description={informationtype.description}
                 />
             </Block>
-            <Block width="60%" marginRight="5rem">
+            <Block width="60%" marginRight="0">
                 <CardMetadata
                     navMaster={informationtype.navMaster}
                     sources={informationtype.sources ? informationtype.sources : []}
