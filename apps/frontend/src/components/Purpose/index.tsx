@@ -162,6 +162,7 @@ const ProcessList = ({ purposeCode }: ProcessListProps) => {
 
                 {!isLoadingProcessList &&
                     <AccordionProcess
+                        isLoading={isLoadingProcessList}
                         purposeCode={purposeCode}
                         processList={processList}
                         setProcessList={setProcessList}

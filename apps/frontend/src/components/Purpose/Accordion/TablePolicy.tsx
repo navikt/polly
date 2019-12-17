@@ -1,5 +1,5 @@
 import * as React from "react";
-import { SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from "baseui/table";
+import { SortableHeadCell, StyledBody, StyledHead, StyledHeadCell, StyledRow, StyledTable, StyledCell } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { Block } from "baseui/block";
@@ -16,9 +16,10 @@ import { LegalBasesNotClarified, ListLegalBasesInTable } from "../../common/Lega
 import { Policy, policySort, Process } from "../../../constants"
 import { intl } from "../../../util"
 import { convertPolicyToFormValues } from "../../../api"
-import { ActiveIndicator } from "../../common/Durations"
 import { useTable } from "../../../util/hooks"
 import RouteLink from "../../common/RouteLink"
+import { StyletronComponent } from "styletron-react"
+import { ActiveIndicator } from "../../common/Durations"
 
 
 const StyledHeader = withStyle(StyledHead, {
@@ -27,11 +28,12 @@ const StyledHeader = withStyle(StyledHead, {
     borderBottom: "2px solid #E9E7E7"
 });
 
-const CustomStyledRow = withStyle(StyledRow, {
+const CustomStyledRow = withStyle<StyletronComponent<any>, {inactive: boolean}>(StyledRow, (props) => ({
     borderBottom: "1px solid #E9E7E7",
     padding: "8px",
-    fontSize: "24px"
-});
+    fontSize: "24px",
+    opacity:  props.inactive ? '.5' : undefined,
+}));
 
 
 const SmallerStyledCell = withStyle(StyledCell, {
@@ -50,13 +52,13 @@ type TablePurposeProps = {
     submitDeletePolicy: Function;
 };
 
-const TablePurpose = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, submitEditPolicy, submitDeletePolicy }: TablePurposeProps) => {
+const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, submitEditPolicy, submitDeletePolicy }: TablePurposeProps) => {
     const [useCss, theme] = useStyletron();
     const [policies, setPolicies] = React.useState<Policy[]>(process.policies)
     const [currentPolicy, setCurrentPolicy] = React.useState<Policy>()
     const [showEditModal, setShowEditModal] = React.useState(false)
     const [showDeleteModal, setShowDeleteModal] = React.useState(false)
-    const [table, sortColumn] = useTable<Policy, keyof Policy>(policies, { sorting: policySort, initialSortColumn: "informationType" })
+    const [table, sortColumn] = useTable<Policy, keyof Policy>(policies, { sorting: policySort, initialSortColumn: "informationType", showLast: (p) => !p.active })
 
     React.useEffect(() => {
         setPolicies(process ? process.policies : [])
@@ -88,10 +90,11 @@ const TablePurpose = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, 
                 </StyledHeader>
                 <StyledBody>
                     {table.data.map((row: Policy, index: number) => (
-                        <CustomStyledRow key={index} >
+                        <CustomStyledRow key={index} inactive={!row.active} >
                             <StyledCell>
                                 <Sensitivity sensitivity={row.informationType.sensitivity} />&nbsp;
                                 <ActiveIndicator {...row} /> &nbsp;
+
                                 <RouteLink href={`/informationtype/${row.informationType.id}`} width="25%">
                                     {row.informationType.name}
                                 </RouteLink>
@@ -191,4 +194,4 @@ const TablePurpose = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, 
     );
 };
 
-export default TablePurpose;
+export default TablePolicy;

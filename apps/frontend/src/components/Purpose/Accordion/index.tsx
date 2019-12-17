@@ -1,11 +1,12 @@
 import * as React from 'react'
+import { useEffect } from 'react'
 import { Accordion, Panel } from 'baseui/accordion'
 import { generatePath, RouteComponentProps, withRouter } from 'react-router'
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { Spinner } from 'baseui/spinner';
 import { Block, BlockProps } from 'baseui/block';
-import { Label1, Label2, Paragraph2 } from 'baseui/typography';
-import { intl, useAwait, theme } from '../../../util';
+import { Label2, Paragraph2 } from 'baseui/typography';
+import { intl, theme, useAwait } from '../../../util';
 import _includes from 'lodash/includes'
 import { user } from "../../../service/User";
 import { Plus } from 'baseui/icon'
@@ -14,14 +15,13 @@ import { LegalBasisView } from "../../common/LegalBasis"
 import { codelist, ListName } from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
 import ModalPolicy from './ModalPolicy'
-import TablePurpose from './TablePurpose';
-import { convertProcessToFormValues, createPolicy, getProcess, updateProcess, deleteProcess } from "../../../api"
+import TablePolicy from './TablePolicy';
+import { convertProcessToFormValues } from "../../../api"
 import { PathParams } from "../../../pages/PurposePage"
-import { useEffect } from "react"
 import { ActiveIndicator } from "../../common/Durations"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faTrash, faPen, faChevronDown, faChevronRight} from '@fortawesome/free-solid-svg-icons';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from 'baseui/modal';
+import { faChevronDown, faChevronRight, faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal';
 
 const rowPanelContent: BlockProps = {
     display: 'flex',
@@ -30,6 +30,7 @@ const rowPanelContent: BlockProps = {
 }
 
 type AccordionProcessProps = {
+    isLoading: boolean;
     purposeCode: string;
     processList: Process[];
     currentProcess: Process | undefined;
@@ -45,13 +46,14 @@ type AccordionProcessProps = {
 }
 
 const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<PathParams>) => {
-    const [isLoading, setLoading] = React.useState(false);
     const [showEditProcessModal, setShowEditProcessModal] = React.useState(false)
     const [showCreatePolicyModal, setShowCreatePolicyModal] = React.useState(false)
     const [showDeleteModal, setShowDeleteModal] = React.useState(false)
     const [errorDeleteModal, setErrorDeleteModal] = React.useState(false)
+    const purposeRef = React.useRef<HTMLInputElement>(null);
 
     const {
+        isLoading,
         purposeCode,
         currentProcess,
         onChangeProcess,
@@ -148,6 +150,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
             <FontAwesomeIcon icon={faTrash} />
         </Button>
     )
+
     const renderCreatePolicyButton = () => (
         <Button
             size={ButtonSize.compact}
@@ -166,8 +169,14 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
         onChangeProcess(props.match.params.processId!)
     }, [props.match.params.processId])
 
+    useEffect(() => {
+        props.match.params.processId && !isLoading && setTimeout(() => {
+            purposeRef.current && window.scrollTo({top: purposeRef.current.offsetTop})
+        }, 200)
+    }, [isLoading])
+
     return (
-        <React.Fragment>
+        <Block ref={purposeRef}>
             <Accordion onChange={({ expanded }) => handleChangePanel(expanded.length ? expanded[0].toString() : undefined)}
                 initialState={{ expanded: props.match.params.processId ? [props.match.params.processId] : [] }} >
                 {props.processList && props.processList.map((p: Process) => (
@@ -206,7 +215,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                 </Block>
                                 {currentProcess.policies && (
                                     <Block>
-                                        <TablePurpose
+                                        <TablePolicy
                                             process={currentProcess}
                                             hasAccess={hasAccess()}
                                             errorPolicyModal={errorPolicyModal}
@@ -284,7 +293,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                 ))}
             </Accordion>
 
-        </React.Fragment>
+        </Block>
 
     )
 }
