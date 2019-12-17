@@ -32,7 +32,7 @@ class DisclosureControllerIT extends IntegrationTestBase {
 
     @Test
     void createAndGetDisclosure() {
-        var infoType = createInformationType();
+        var infoType = createAndSaveInformationType();
 
         var req = buildDisclosure();
         req.setInformationTypes(List.of(infoType.getId().toString()));
@@ -88,8 +88,8 @@ class DisclosureControllerIT extends IntegrationTestBase {
 
     @Test
     void updateDisclosure() {
-        var infoTypeOne = createInformationType(UUID.randomUUID(), "name1");
-        var infoTypeTwo = createInformationType(UUID.randomUUID(), "name2");
+        var infoTypeOne = createAndSaveInformationType(UUID.randomUUID(), "name1");
+        var infoTypeTwo = createAndSaveInformationType(UUID.randomUUID(), "name2");
         DisclosureRequest create = buildDisclosure();
         create.setInformationTypes(List.of(infoTypeOne.getId().toString(), infoTypeTwo.getId().toString()));
 
@@ -101,7 +101,7 @@ class DisclosureControllerIT extends IntegrationTestBase {
         assertThat(convert(resp.getBody().getInformationTypes(), DisclosureInformationTypeResponse::getId)).contains(infoTypeOne.getId(), infoTypeTwo.getId());
 
         String id = resp.getBody().getId().toString();
-        var infoTypeUpdate = createInformationType(UUID.randomUUID(), "name3");
+        var infoTypeUpdate = createAndSaveInformationType(UUID.randomUUID(), "name3");
         DisclosureRequest update = buildDisclosure();
         update.setId(id);
         update.setInformationTypes(List.of(infoTypeOne.getId().toString(), infoTypeUpdate.getId().toString()));

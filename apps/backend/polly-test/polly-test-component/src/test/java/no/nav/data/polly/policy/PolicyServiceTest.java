@@ -85,7 +85,7 @@ class PolicyServiceTest {
                 .process("process")
                 .informationTypeName(INFTYPE_NAME)
                 .subjectCategory("Bruker")
-                .legalBases(List.of(LegalBasisRequest.builder().gdpr("6a").description(LEGALBASISDESCRIPTION).build()))
+                .legalBases(List.of(LegalBasisRequest.builder().gdpr("ART61A").description(LEGALBASISDESCRIPTION).build()))
                 .purposeCode("wrong")
                 .build();
         when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.empty());
@@ -104,7 +104,7 @@ class PolicyServiceTest {
                 .process("process")
                 .informationTypeName(INFTYPE_NAME)
                 .subjectCategory("Bruker")
-                .legalBases(List.of(LegalBasisRequest.builder().gdpr("6a").description(LEGALBASISDESCRIPTION).build()))
+                .legalBases(List.of(LegalBasisRequest.builder().gdpr("ART61A").description(LEGALBASISDESCRIPTION).build()))
                 .purposeCode(PURPOSECODE)
                 .build();
         when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.of(InformationType.builder().id(UUID.fromString(INFTYPE_ID_1)).build()));
@@ -142,7 +142,7 @@ class PolicyServiceTest {
                 .process("process")
                 .subjectCategory("BRUKER")
                 .informationTypeName(INFTYPE_NAME)
-                .legalBases(List.of(LegalBasisRequest.builder().gdpr("6a").description(LEGALBASISDESCRIPTION).build()))
+                .legalBases(List.of(LegalBasisRequest.builder().gdpr("ART61A").description(LEGALBASISDESCRIPTION).build()))
                 .purposeCode("WRONG")
                 .build();
         when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.empty());
@@ -164,7 +164,7 @@ class PolicyServiceTest {
                 .id("1-1-1-1-1")
                 .subjectCategory("Bruker")
                 .informationTypeName(INFTYPE_NAME)
-                .legalBases(List.of(LegalBasisRequest.builder().gdpr("6a").description(LEGALBASISDESCRIPTION).build()))
+                .legalBases(List.of(LegalBasisRequest.builder().gdpr("ART61A").description(LEGALBASISDESCRIPTION).build()))
                 .purposeCode(PURPOSECODE)
                 .build();
         when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.of(InformationType.builder().id(UUID.fromString(INFTYPE_ID_1)).build()));
@@ -184,7 +184,7 @@ class PolicyServiceTest {
                 .process("process")
                 .subjectCategory("Bruker")
                 .informationTypeName(INFTYPE_NAME)
-                .legalBases(List.of(LegalBasisRequest.builder().gdpr("6a").description(LEGALBASISDESCRIPTION).build()))
+                .legalBases(List.of(LegalBasisRequest.builder().gdpr("ART61A").description(LEGALBASISDESCRIPTION).build()))
                 .purposeCode(PURPOSECODE)
                 .build();
         when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.of(InformationType.builder().id(UUID.fromString(INFTYPE_ID_1)).build()));
