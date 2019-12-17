@@ -15,6 +15,7 @@ import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.common.utils.HibernateUtils;
 import no.nav.data.polly.common.utils.JsonUtils;
 import org.hibernate.proxy.HibernateProxy;
+import org.springframework.util.Assert;
 
 import java.util.UUID;
 import javax.persistence.Entity;
@@ -64,7 +65,9 @@ public class AuditVersionListener {
             if (entity instanceof Codelist) {
                 id = ((Codelist) entity).getList() + "-" + ((Codelist) entity).getCode();
             } else {
-                id = HibernateUtils.getId(entity).toString();
+                UUID uuid = HibernateUtils.getId(entity);
+                Assert.notNull(uuid, "entity has not set id");
+                id = uuid.toString();
             }
             String data = wr.writeValueAsString(entity);
             AuditVersion auditVersion = new AuditVersion(action, tableName, id, data);

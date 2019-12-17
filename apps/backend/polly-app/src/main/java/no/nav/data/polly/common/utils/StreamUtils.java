@@ -80,6 +80,14 @@ public final class StreamUtils {
                 .collect(Collectors.toList());
     }
 
+    @SafeVarargs
+    public static <T, F> List<T> applyAll(F from, Function<F, Collection<T>>... converters) {
+        return Stream.of(converters)
+                .map(f -> f.apply(from))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
     public static <T> List<T> filter(Iterable<T> objects, Predicate<T> filter) {
         return safeStream(objects).filter(filter).collect(Collectors.toList());
     }

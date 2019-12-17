@@ -22,7 +22,7 @@ public class CodelistStub {
         add(ListName.SENSITIVITY, "SAERLIGE_PERSONOPPLYSNINGER", "Særlige personopplysninger", "Særlige kategorier av personopplysninger");
         add(ListName.SENSITIVITY, "PERSONOPPLYSNING", "Personopplysning", "Personopplysning");
         add(ListName.SUBJECT_CATEGORY, "BRUKER", "Bruker", "Bruker");
-        add(ListName.GDPR_ARTICLE, "6A", "6a", "6a");
+        add(ListName.GDPR_ARTICLE, "ART61A", "6a", "6a");
         add(ListName.GDPR_ARTICLE, "6E", "6e", "6e");
         add(ListName.GDPR_ARTICLE, "9A", "9a", "9a");
         add(ListName.DEPARTMENT, "DEP", "dep", "mdep");

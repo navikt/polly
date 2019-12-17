@@ -4,11 +4,10 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import io.prometheus.client.CollectorRegistry;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.IntegrationTestBase.Initializer;
-import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.CodelistStub;
-import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.nais.LeaderElectionService;
 import no.nav.data.polly.common.utils.JsonUtils;
+import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
@@ -16,6 +15,7 @@ import no.nav.data.polly.kafka.KafkaContainer;
 import no.nav.data.polly.kafka.KafkaTopicProperties;
 import no.nav.data.polly.kafka.SchemaRegistryContainer;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
+import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
@@ -79,6 +79,8 @@ public abstract class IntegrationTestBase {
     @Autowired
     protected ProcessDistributionRepository processDistributionRepository;
     @Autowired
+    protected DisclosureRepository disclosureRepository;
+    @Autowired
     protected KafkaTopicProperties topicProperties;
 
     static {
@@ -94,6 +96,7 @@ public abstract class IntegrationTestBase {
         WireMock.stubFor(get("/elector").willReturn(okJson(JsonUtils.toJson(LeaderElectionService.getHostInfo()))));
         mockTerms();
 
+        disclosureRepository.deleteAll();
         policyRepository.deleteAll();
         informationTypeRepository.deleteAll();
         processRepository.deleteAll();
@@ -101,6 +104,7 @@ public abstract class IntegrationTestBase {
 
     @AfterEach
     public void teardownAbstract() {
+        disclosureRepository.deleteAll();
         policyRepository.deleteAll();
         informationTypeRepository.deleteAll();
         processRepository.deleteAll();
@@ -170,18 +174,19 @@ public abstract class IntegrationTestBase {
                                 .build()));
     }
 
+    protected LegalBasisRequest createLegalBasisRequest() {
+        return LegalBasisRequest.builder().gdpr("ART61A").nationalLaw("FTRL").description("§ 2-1")
+                .start(LocalDate.now().toString())
+                .end(LocalDate.now().toString())
+                .build();
+    }
+
     protected LegalBasis createLegalBasis() {
-        return LegalBasis.builder().gdpr("ART61A").nationalLaw("FTRL").description("§ 2-1").activeToday().build();
+        return createLegalBasisRequest().convertToLegalBasis();
     }
 
     protected LegalBasisResponse legalBasisResponse() {
-        return LegalBasisResponse.builder()
-                .gdpr(CodelistService.getCodelistResponse(ListName.GDPR_ARTICLE, "ART61A"))
-                .nationalLaw(CodelistService.getCodelistResponse(ListName.NATIONAL_LAW, "FTRL"))
-                .description("§ 2-1")
-                .start(LocalDate.now())
-                .end(LocalDate.now())
-                .build();
+        return createLegalBasis().convertToResponse();
     }
 
     private void mockTerms() {
