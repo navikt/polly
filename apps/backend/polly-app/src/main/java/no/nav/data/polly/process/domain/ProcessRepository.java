@@ -7,13 +7,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface ProcessRepository extends JpaRepository<Process, UUID> {
+public interface ProcessRepository extends JpaRepository<Process, UUID>, ProcessRepositoryCustom {
 
     Optional<Process> findByNameAndPurposeCode(String name, String purposeCode);
 
     List<Process> findByName(String name);
 
     List<Process> findByPurposeCode(String purpose);
+
+    @Query(value = "select * from process where data->>'department' = ?1", nativeQuery = true)
+    List<Process> findByDepartment(String department);
+
+    @Query(value = "select * from process where data->>'subDepartment' = ?1", nativeQuery = true)
+    List<Process> findBySubDepartment(String subDepartment);
 
     @Query(value = "select p.purposeCode as purposeCode, count(p) as count from Process p group by p.purposeCode")
     List<PurposeCount> countByPurposeCode();

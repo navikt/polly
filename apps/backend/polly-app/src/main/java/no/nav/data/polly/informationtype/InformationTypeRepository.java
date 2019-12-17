@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface InformationTypeRepository extends JpaRepository<InformationType, UUID> {
+public interface InformationTypeRepository extends JpaRepository<InformationType, UUID>, InformationTypeRepositoryCustom {
 
     @Query(value = "select * from information_type where data ->>'name' = ?1", nativeQuery = true)
     Optional<InformationType> findByName(String name);
@@ -22,6 +22,12 @@ public interface InformationTypeRepository extends JpaRepository<InformationType
 
     @Query(value = "select * from information_type where data ->>'name' ilike %?1%", nativeQuery = true)
     List<InformationType> findByNameLike(String name);
+
+    @Query(value = "select * from information_type where data ->>'sensitivity' = ?1", nativeQuery = true)
+    List<InformationType> findBySensitivity(String sensitivity);
+
+    @Query(value = "select * from information_type where data->>'navMaster' = ?1", nativeQuery = true)
+    List<InformationType> findByNavMaster(String navMaster);
 
     @Query(value = "select * from information_type where data ->>'suggest' ilike %?1%", nativeQuery = true)
     List<InformationType> findBySuggestLike(String name);

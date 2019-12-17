@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.codelist.codeusage.UsedInInstance;
 import no.nav.data.polly.common.auditing.Auditable;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.elasticsearch.dto.PolicyElasticsearch;
@@ -130,6 +131,10 @@ public class Policy extends Auditable<String> {
                 .legalBasesInherited(isLegalBasesInherited())
                 .legalBases(convert(getLegalBases(), LegalBasis::convertToResponse))
                 .build();
+    }
+
+    public UsedInInstance getInstanceIdentification(){
+        return UsedInInstance.builder().id(id.toString()).name(purposeCode).build();
     }
 
     private PolicyInformationTypeResponse convertInformationTypeNameResponse() {

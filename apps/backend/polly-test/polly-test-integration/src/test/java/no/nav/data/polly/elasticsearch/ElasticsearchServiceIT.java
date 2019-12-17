@@ -115,11 +115,11 @@ class ElasticsearchServiceIT extends IntegrationTestBase {
     }
 
     private void createTestData(ElasticsearchStatus esStatus) {
-        InformationType informationType = createInformationType();
+        InformationType informationType = createAndSaveInformationType();
         informationType.setElasticsearchStatus(esStatus);
         informationTypeRepository.save(informationType);
-        createPolicy("KONTROLL", informationType);
-        createPolicy("AAP", informationType);
+        createAndSavePolicy("KONTROLL", informationType);
+        createAndSavePolicy("AAP", informationType);
     }
 
     private void assertInformationType(String json) {

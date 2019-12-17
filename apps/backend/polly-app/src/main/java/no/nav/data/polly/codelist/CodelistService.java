@@ -1,15 +1,20 @@
 package no.nav.data.polly.codelist;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.codelist.codeusage.CodeUsage;
+import no.nav.data.polly.codelist.codeusage.CodeUsageService;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.codelist.dto.CodeUsageRequest;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
+import no.nav.data.polly.common.exceptions.CodelistNotErasableException;
 import no.nav.data.polly.common.exceptions.CodelistNotFoundException;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.common.validator.RequestValidator;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -29,9 +34,12 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     private static final String FIELD_NAME_CODE = "code";
     private static final String REFERENCE = "Validate Codelist";
     private CodelistRepository codelistRepository;
+    private CodeUsageService codeUsageService;
 
-    public CodelistService(CodelistRepository codelistRepository) {
+    // @Lazy to avoid circular dependancy
+    public CodelistService(CodelistRepository codelistRepository, @Lazy CodeUsageService codeUsageService) {
         this.codelistRepository = codelistRepository;
+        this.codeUsageService = codeUsageService;
     }
 
     public static Codelist getCodelist(ListName listName, String code) {
@@ -100,14 +108,22 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
 
     public void delete(ListName name, String code) {
         Optional<Codelist> toDelete = codelistRepository.findByListAndCode(name, code);
-        if (toDelete.isPresent()) {
-            validateNonImmutableTypeOfCodelist(name);
-            codelistRepository.delete(toDelete.get());
-            CodelistCache.remove(name, code);
-        } else {
+        if (toDelete.isEmpty()) {
             log.error("Cannot find a codelist to delete with code={} and listName={}", code, name);
             throw new CodelistNotFoundException(
                     String.format("Cannot find a codelist to delete with code=%s and listName=%s", code, name));
+        }
+        validateNonImmutableTypeOfCodelist(name);
+        validateCodelistIsNotInUse(name, code);
+        codelistRepository.delete(toDelete.get());
+        CodelistCache.remove(name, code);
+    }
+
+    private void validateCodelistIsNotInUse(ListName name, String code) {
+        CodeUsage codeUsage = codeUsageService.findCodeUsage(name, code);
+        if (codeUsage.isInUse()) {
+            log.error("The code {} in list {} cannot be erased. {}", code, name, codeUsage.toString());
+            throw new CodelistNotErasableException(String.format("The code %s in list %s cannot be erased. %s", code, name, codeUsage.toString()));
         }
     }
 
@@ -129,11 +145,17 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         ifErrorsThrowCodelistNotFoundException(validator.getErrors());
     }
 
+    public void validateCodeUsageRequests(List<CodeUsageRequest> requests) {
+        FieldValidator validator = new FieldValidator(REFERENCE);
+        StreamUtils.safeStream(requests).forEach(request -> checkValidCode(request.getListName(), request.getCode(), validator));
+        ifErrorsThrowCodelistNotFoundException(validator.getErrors());
+    }
+
     private void checkValidListName(String listName, FieldValidator validator) {
         validator.checkRequiredEnum(FIELD_NAME_LIST, listName, ListName.class);
     }
 
-    private void checkValidCode(String listName, String code, FieldValidator validator) {
+    public void checkValidCode(String listName, String code, FieldValidator validator) {
         checkValidListName(listName, validator);
         validator.checkRequiredCodelist(FIELD_NAME_CODE, code, ListName.valueOf(listName));
     }

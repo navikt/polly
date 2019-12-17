@@ -23,7 +23,7 @@ class PurposeControllerIT extends IntegrationTestBase {
 
     @Test
     void hentBehandlingsgrunnlag() {
-        Policy policy = createPolicy(PURPOSE_CODE1, createInformationType());
+        Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
 
         ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process/purpose/{purpose}", ProcessPage.class, PURPOSE_CODE1);
 
@@ -45,8 +45,8 @@ class PurposeControllerIT extends IntegrationTestBase {
 
     @Test
     void countPurposes() {
-        createPolicy(PURPOSE_CODE1, createInformationType());
-        createPolicy(PURPOSE_CODE1 + 2, createInformationType());
+        createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
+        createAndSavePolicy(PURPOSE_CODE1 + 2, createAndSaveInformationType());
 
         ResponseEntity<PurposeCountResponse> resp = restTemplate.getForEntity("/process/count/purpose", PurposeCountResponse.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
