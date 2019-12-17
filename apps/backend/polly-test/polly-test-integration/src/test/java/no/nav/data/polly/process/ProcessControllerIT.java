@@ -31,7 +31,7 @@ class ProcessControllerIT extends IntegrationTestBase {
 
     @Test
     void hentProcess() {
-        Policy policy = createPolicy(PURPOSE_CODE1, createInformationType());
+        Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
 
         ResponseEntity<ProcessPolicyResponse> resp = restTemplate.getForEntity("/process/{id}", ProcessPolicyResponse.class, policy.getProcess().getId());
 
@@ -51,7 +51,7 @@ class ProcessControllerIT extends IntegrationTestBase {
                         .process(policy.getProcess().convertToIdNameResponse())
                         .purposeCode(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1))
                         .informationType(
-                                new PolicyInformationTypeResponse(createInformationType().getId(), INFORMATION_TYPE_NAME, createInformationType().getData().sensitivityCode()))
+                                new PolicyInformationTypeResponse(createAndSaveInformationType().getId(), INFORMATION_TYPE_NAME, createAndSaveInformationType().getData().sensitivityCode()))
                         .subjectCategory(CodelistService.getCodelistResponse(ListName.SUBJECT_CATEGORY, policy.getSubjectCategory()))
                         .start(policy.getStart())
                         .end(policy.getEnd())
@@ -62,8 +62,8 @@ class ProcessControllerIT extends IntegrationTestBase {
 
     @Test
     void hentAllProcess() {
-        Policy policy = createPolicy(PURPOSE_CODE1, createInformationType());
-        Policy policy2 = createPolicy(PURPOSE_CODE1 + 2, createInformationType());
+        Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
+        Policy policy2 = createAndSavePolicy(PURPOSE_CODE1 + 2, createAndSaveInformationType());
 
         ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process", ProcessPage.class);
 

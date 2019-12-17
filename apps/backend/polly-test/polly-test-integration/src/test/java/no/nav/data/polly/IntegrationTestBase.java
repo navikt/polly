@@ -31,7 +31,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -81,8 +80,6 @@ public abstract class IntegrationTestBase {
     protected ProcessDistributionRepository processDistributionRepository;
     @Autowired
     protected KafkaTopicProperties topicProperties;
-    @Autowired
-    protected TestRestTemplate restTemplate;
 
     static {
         postgreSQLContainer.start();
@@ -110,14 +107,14 @@ public abstract class IntegrationTestBase {
         CollectorRegistry.defaultRegistry.clear();
     }
 
-    protected List<Policy> createPolicy(int rows) {
-        return createPolicy(rows, (i, p) -> {
+    protected List<Policy> createAndSavePolicy(int rows) {
+        return createAndSavePolicy(rows, (i, p) -> {
         });
     }
 
-    protected List<Policy> createPolicy(int rows, BiConsumer<Integer, Policy> callback) {
+    protected List<Policy> createAndSavePolicy(int rows, BiConsumer<Integer, Policy> callback) {
         return IntStream.range(0, rows).mapToObj(i -> {
-            Policy policy = createPolicy(PURPOSE_CODE1, createInformationType());
+            Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
             callback.accept(i, policy);
             policyRepository.save(policy);
             processRepository.save(policy.getProcess());
@@ -125,7 +122,7 @@ public abstract class IntegrationTestBase {
         }).collect(Collectors.toList());
     }
 
-    protected Policy createPolicy(String purpose, InformationType informationType) {
+    protected Policy createAndSavePolicy(String purpose, InformationType informationType) {
         Policy policy = Policy.builder()
                 .generateId()
                 .purposeCode(purpose)
@@ -148,13 +145,6 @@ public abstract class IntegrationTestBase {
                 .build();
     }
 
-    protected InformationType createInformationType() {
-        if (informationType == null) {
-            informationType = informationTypeRepository.save(createInformationType(INFORMATION_TYPE_ID_1, INFORMATION_TYPE_NAME));
-        }
-        return informationType;
-    }
-
     protected InformationType createInformationType(UUID id, String name, String sensitivity, String system, String category, String source) {
         InformationType informationType = InformationType.builder()
                 .id(id)
@@ -173,7 +163,14 @@ public abstract class IntegrationTestBase {
         return informationType;
     }
 
-    protected InformationType createInformationType(UUID id, String name) {
+    protected InformationType createAndSaveInformationType() {
+        if (informationType == null) {
+            informationType = informationTypeRepository.save(createAndSaveInformationType(INFORMATION_TYPE_ID_1, INFORMATION_TYPE_NAME));
+        }
+        return informationType;
+    }
+
+    protected InformationType createAndSaveInformationType(UUID id, String name) {
         InformationType informationType = createInformationType(id, name, "PERSONOPPLYSNINGER", "TPS", "PERSONALIA", "SKATT");
         return informationTypeRepository.save(informationType);
     }

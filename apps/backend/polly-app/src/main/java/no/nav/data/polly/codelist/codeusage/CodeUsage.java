@@ -30,7 +30,7 @@ public class CodeUsage {
         this.processes = new ArrayList<>();
     }
 
-    public boolean isNotInUse() {
-        return informationTypes.isEmpty() && policies.isEmpty() && processes.isEmpty();
+    public boolean isInUse() {
+        return !informationTypes.isEmpty() || !policies.isEmpty() || !processes.isEmpty();
     }
 }

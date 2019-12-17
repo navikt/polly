@@ -45,7 +45,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     @Test
     void createPolicy() {
-        List<PolicyRequest> requestList = List.of(createPolicyRequest(createInformationType()));
+        List<PolicyRequest> requestList = List.of(createPolicyRequest(createAndSaveInformationType()));
         ResponseEntity<PolicyPage> createEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), PolicyPage.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
@@ -66,7 +66,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     @Test
     void createPolicyThrowAlreadyExistsValidationException() {
-        List<PolicyRequest> requestList = List.of(createPolicyRequest(createInformationType()));
+        List<PolicyRequest> requestList = List.of(createPolicyRequest(createAndSaveInformationType()));
         ResponseEntity<String> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
         assertThat(policyRepository.count(), is(1L));
@@ -82,7 +82,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     @Test
     void createPolicyThrowDuplcateValidationException() {
-        InformationType informationType = createInformationType();
+        InformationType informationType = createAndSaveInformationType();
         List<PolicyRequest> requestList = Arrays.asList(createPolicyRequest(informationType), createPolicyRequest(informationType));
         ResponseEntity<String> createEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
@@ -94,7 +94,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     @Test
     void createPolicyThrowNotFoundValidationException() {
-        createPolicyRequest(createInformationType());
+        createPolicyRequest(createAndSaveInformationType());
         List<PolicyRequest> requestList = Arrays
                 .asList(PolicyRequest.builder().subjectCategory("NOTFOUND").purposeCode("NOTFOUND").informationTypeName("NOTFOUND").build());
         ResponseEntity<String> createEntity = restTemplate.exchange(
@@ -108,7 +108,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     @Test
     void getOnePolicy() {
-        List<PolicyRequest> requestList = List.of(createPolicyRequest(createInformationType()));
+        List<PolicyRequest> requestList = List.of(createPolicyRequest(createAndSaveInformationType()));
         ResponseEntity<PolicyPage> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), PolicyPage.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
 
@@ -128,7 +128,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     @Test
     void updateOnePolicy() {
-        List<PolicyRequest> requestList = List.of(createPolicyRequest(createInformationType()));
+        List<PolicyRequest> requestList = List.of(createPolicyRequest(createAndSaveInformationType()));
         ResponseEntity<PolicyPage> createEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), PolicyPage.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
@@ -147,7 +147,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     @Test
     void updateOnePolicyThrowValidationExeption() {
-        PolicyRequest request = createPolicyRequest(createInformationType());
+        PolicyRequest request = createPolicyRequest(createAndSaveInformationType());
         ResponseEntity<PolicyPage> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(List.of(request)), PolicyPage.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
 
@@ -163,7 +163,7 @@ class PolicyControllerIT extends IntegrationTestBase {
     @Test
     void updateTwoPolices() {
         List<PolicyRequest> requestList = Arrays
-                .asList(createPolicyRequest(createInformationType()), createPolicyRequest(createInformationType(UUID.randomUUID(), "Postadresse")));
+                .asList(createPolicyRequest(createAndSaveInformationType()), createPolicyRequest(createAndSaveInformationType(UUID.randomUUID(), "Postadresse")));
         ResponseEntity<PolicyPage> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), PolicyPage.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
         assertThat(createEntity.getBody().getTotalElements(), is(2L));
@@ -185,9 +185,9 @@ class PolicyControllerIT extends IntegrationTestBase {
     @Test
     void updateThreePolicesThrowTwoExceptions() {
         List<PolicyRequest> requestList = List.of(
-                createPolicyRequest(createInformationType()),
-                createPolicyRequest(createInformationType(UUID.randomUUID(), "Postadresse")),
-                createPolicyRequest(createInformationType(UUID.randomUUID(), "Arbeidsforhold"))
+                createPolicyRequest(createAndSaveInformationType()),
+                createPolicyRequest(createAndSaveInformationType(UUID.randomUUID(), "Postadresse")),
+                createPolicyRequest(createAndSaveInformationType(UUID.randomUUID(), "Arbeidsforhold"))
         );
         ResponseEntity<PolicyPage> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), PolicyPage.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
@@ -212,7 +212,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     @Test
     void updateNotExistingPolicy() {
-        PolicyRequest request = createPolicyRequest(createInformationType());
+        PolicyRequest request = createPolicyRequest(createAndSaveInformationType());
         request.setId("1-1-1-1-1");
         ResponseEntity<Policy> createEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT + "1-1-1-1-1", HttpMethod.PUT, new HttpEntity<>(request), Policy.class);
@@ -221,7 +221,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     @Test
     void deletePolicy() {
-        List<PolicyRequest> requestList = List.of(createPolicyRequest(createInformationType()));
+        List<PolicyRequest> requestList = List.of(createPolicyRequest(createAndSaveInformationType()));
         ResponseEntity<PolicyPage> createEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), PolicyPage.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
@@ -242,7 +242,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     @Test
     void deletePoliciesByInformationTypeId() {
-        List<PolicyRequest> requestList = List.of(createPolicyRequest(createInformationType()));
+        List<PolicyRequest> requestList = List.of(createPolicyRequest(createAndSaveInformationType()));
         ResponseEntity<PolicyPage> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), PolicyPage.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
 
@@ -261,7 +261,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     @Test
     void get20FirstPolicies() {
-        createPolicy(100);
+        createAndSavePolicy(100);
 
         ResponseEntity<PolicyPage> responseEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT, HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), PolicyPage.class);
@@ -274,7 +274,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     @Test
     void get100Policies() {
-        createPolicy(100);
+        createAndSavePolicy(100);
 
         ResponseEntity<PolicyPage> responseEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT + "?pageNumber=0&pageSize=100", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()),
@@ -288,7 +288,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     @Test
     void countPolicies() {
-        createPolicy(100);
+        createAndSavePolicy(100);
 
         ResponseEntity<Long> responseEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT + "count", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), Long.class);
@@ -298,7 +298,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     @Test
     void getPoliciesPageBeyondMax() {
-        createPolicy(100);
+        createAndSavePolicy(100);
 
         ResponseEntity<PolicyPage> responseEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT + "?pageNumber=1&pageSize=100", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()),
@@ -310,7 +310,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     @Test
     void getPolicyForProcess() {
-        List<Policy> policies = createPolicy(5);
+        List<Policy> policies = createAndSavePolicy(5);
 
         ResponseEntity<PolicyPage> responseEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT + "?processId={id}", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()),
@@ -322,7 +322,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     @Test
     void getPolicyForInformationType1() {
-        createPolicy(5);
+        createAndSavePolicy(5);
 
         ResponseEntity<PolicyPage> responseEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT + "?informationTypeId={id}", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()),
@@ -334,7 +334,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     @Test
     void countPolicyForInformationType1() {
-        createPolicy(5);
+        createAndSavePolicy(5);
 
         ResponseEntity<Long> responseEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT + "count?informationTypeId={id}", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), Long.class, INFORMATION_TYPE_ID_1);
@@ -367,7 +367,7 @@ class PolicyControllerIT extends IntegrationTestBase {
     }
 
     private void create5PoliciesWith2Inactive() {
-        createPolicy(5, (i, p) -> {
+        createAndSavePolicy(5, (i, p) -> {
             p.setInformationTypeName(INFORMATION_TYPE_NAME);
             if (i > 2) {
                 p.setStart(LocalDate.now().minusDays(2));

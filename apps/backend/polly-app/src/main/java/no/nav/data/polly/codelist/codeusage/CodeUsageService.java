@@ -3,8 +3,6 @@ package no.nav.data.polly.codelist.codeusage;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodeUsageRequest;
-import no.nav.data.polly.codelist.dto.CodeUsageResponse;
-import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.policy.domain.Policy;
@@ -13,7 +11,6 @@ import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +30,6 @@ public class CodeUsageService {
         this.informationTypeRepository = informationTypeRepository;
     }
 
-
     public void validateListName(String list) {
         codelistService.validateListName(list);
     }
@@ -46,42 +42,11 @@ public class CodeUsageService {
         codelistService.validateCodeUsageRequests(requests);
     }
 
-    public List<CodeUsageResponse> findCodeUsageOfList(ListName list) {
-        List<CodeUsage> usages = CodelistService.getCodelist(list).stream().map(c -> filterByListNameAndGetCodeUsage(c.getList(), c.getCode())).collect(Collectors.toList());
-        return createResponse(usages);
+    public List<CodeUsage> findCodeUsageOfList(ListName list) {
+        return CodelistService.getCodelist(list).stream().map(c -> findCodeUsage(c.getList(), c.getCode())).collect(Collectors.toList());
     }
 
-    public CodeUsageResponse findCodeUsage(String listName, String code) {
-        return findCodeUsage(List.of(CodeUsageRequest.builder().listName(listName).code(code).build())).get(0);
-    }
-
-    List<CodeUsageResponse> findCodeUsage(List<CodeUsageRequest> requests) {
-        List<CodeUsage> codeUsages = requests.stream().map(request -> filterByListNameAndGetCodeUsage(request.getAsListName(), request.getCode())).collect(Collectors.toList());
-        return createResponse(codeUsages);
-    }
-
-    private List<CodeUsageResponse> createResponse(List<CodeUsage> codeUsages) {
-        List<CodeUsageResponse> responses = new ArrayList<>();
-        StreamUtils.safeStream(codeUsages).forEach(codeUsage -> {
-            if (responseForListNameExists(responses, codeUsage.getListName())) {
-                StreamUtils.find(responses, codeUsageResponse -> codeUsageResponse.getListName().equals(codeUsage.getListName())).addCodeUsage(codeUsage);
-            } else {
-                responses.add(new CodeUsageResponse(codeUsage));
-            }
-        });
-        return responses;
-    }
-
-    private boolean responseForListNameExists(List<CodeUsageResponse> responses, String listName) {
-        for (CodeUsageResponse response : responses) {
-            if (response.getListName().equals(listName)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private CodeUsage filterByListNameAndGetCodeUsage(ListName listName, String code) {
+    public CodeUsage findCodeUsage(ListName listName, String code) {
         CodeUsage codeUsage = new CodeUsage(listName.toString(), code);
         switch (listName) {
             // process only

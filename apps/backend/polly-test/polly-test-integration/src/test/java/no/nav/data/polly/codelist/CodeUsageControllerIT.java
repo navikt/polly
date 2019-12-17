@@ -1,9 +1,10 @@
 package no.nav.data.polly.codelist;
 
 import no.nav.data.polly.IntegrationTestBase;
-import no.nav.data.polly.codelist.dto.CodeUsageRequest;
+import no.nav.data.polly.codelist.codeusage.CodeUsage;
 import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
+import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.process.domain.Process;
@@ -16,14 +17,17 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static no.nav.data.polly.codelist.CodelistUtils.createCodelistRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FindCodeUsageControllerIT extends IntegrationTestBase {
+public class CodeUsageControllerIT extends IntegrationTestBase {
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -47,11 +51,11 @@ public class FindCodeUsageControllerIT extends IntegrationTestBase {
 
         @ParameterizedTest
         @CsvSource({"PURPOSE, 2", "DEPARTMENT,1", "SUB_DEPARTMENT,1", "GDPR_ARTICLE,2", "NATIONAL_LAW,1", "SUBJECT_CATEGORY,1", "SENSITIVITY,1", "SYSTEM,2", "CATEGORY,2", "SOURCE,2"})
-        void findAllCodeUsageOfListName(String list, int expectedCodesInUse) {
+        void shouldFindCodeUsage(String list, int expectedCodesInUse) {
             ResponseEntity<List<CodeUsageResponse>> response = restTemplate.exchange(String.format("/codeusage/find/%s", list), HttpMethod.GET, HttpEntity.EMPTY, new ParameterizedTypeReference<>() {
             });
 
-            assertThat(expectedCodesInUse).isEqualTo(response.getBody().get(0).getCodesInUse().size());
+            assertThat(expectedCodesInUse).isEqualTo(response.getBody().get(0).getCodesInUse().stream().filter(CodeUsage::isInUse).count());
         }
     }
 
@@ -60,10 +64,10 @@ public class FindCodeUsageControllerIT extends IntegrationTestBase {
 
         @ParameterizedTest
         @CsvSource({"PURPOSE,DAGPENGER,1", "DEPARTMENT,YTA,2", "SUB_DEPARTMENT,NAY,2", "GDPR_ARTICLE,ART61E,2", "NATIONAL_LAW,FTRL,2"})
-        void findProcesses(String list, String code, int expectedCodesInUse) {
+        void findProcesses(String list, String code, int expectedCountProcess) {
             ResponseEntity<CodeUsageResponse> response = restTemplate.exchange(String.format("/codeusage/find/%s/%s", list, code), HttpMethod.GET, HttpEntity.EMPTY, CodeUsageResponse.class);
 
-            assertThat(expectedCodesInUse).isEqualTo(response.getBody().getCountOfProcesses());
+            assertThat(expectedCountProcess).isEqualTo(getCountOfProcesses(response));
         }
 
         @ParameterizedTest
@@ -71,8 +75,8 @@ public class FindCodeUsageControllerIT extends IntegrationTestBase {
         void findProcessesAndPolicy(String list, String code, int expectedCountProcess, int expectedCountPolicy) {
             ResponseEntity<CodeUsageResponse> response = restTemplate.exchange(String.format("/codeusage/find/%s/%s", list, code), HttpMethod.GET, HttpEntity.EMPTY, CodeUsageResponse.class);
 
-            assertThat(expectedCountProcess).isEqualTo(response.getBody().getCountOfProcesses());
-            assertThat(expectedCountPolicy).isEqualTo(response.getBody().getCountOfPolicies());
+            assertThat(expectedCountProcess).isEqualTo(getCountOfProcesses(response));
+            assertThat(expectedCountPolicy).isEqualTo(getCountOfPolicies(response));
         }
 
         @ParameterizedTest
@@ -80,7 +84,7 @@ public class FindCodeUsageControllerIT extends IntegrationTestBase {
         void findPolicies(String list, String code, int expectedCountPolicy) {
             ResponseEntity<CodeUsageResponse> response = restTemplate.exchange(String.format("/codeusage/find/%s/%s", list, code), HttpMethod.GET, HttpEntity.EMPTY, CodeUsageResponse.class);
 
-            assertThat(expectedCountPolicy).isEqualTo(response.getBody().getCountOfPolicies());
+            assertThat(expectedCountPolicy).isEqualTo(getCountOfPolicies(response));
         }
 
         @ParameterizedTest
@@ -88,39 +92,28 @@ public class FindCodeUsageControllerIT extends IntegrationTestBase {
         void findInformationTypes(String list, String code, int expectedCountInformationTypes) {
             ResponseEntity<CodeUsageResponse> response = restTemplate.exchange(String.format("/codeusage/find/%s/%s", list, code), HttpMethod.GET, HttpEntity.EMPTY, CodeUsageResponse.class);
 
-            assertThat(expectedCountInformationTypes).isEqualTo(response.getBody().getCountOfInformationTypes());
+            assertThat(expectedCountInformationTypes).isEqualTo(getCountOfInformationTypes(response));
+        }
+
+        @ParameterizedTest
+        @CsvSource({"PURPOSE,NOT_FOUND", "DEPARTMENT,NOT_FOUND", "NATIONAL_LAW,NOT_FOUND", "SUBJECT_CATEGORY,NOT_FOUND", "SENSITIVITY,NOT_FOUND"})
+        void shouldNotFindCodeUsage(String list, String code) {
+            ResponseEntity<CodeUsageResponse> response = restTemplate.exchange(String.format("/codeusage/find/%s/%s", list, code), HttpMethod.GET, HttpEntity.EMPTY, CodeUsageResponse.class);
+
+            assertThat(HttpStatus.NOT_FOUND).isEqualTo(response.getStatusCode());
+
+        }
+
+        @ParameterizedTest
+        @CsvSource({"PURPOSE,BARNETRYGD,0,1,1", "DEPARTMENT,YTA,0,0,2", "SUB_DEPARTMENT,NAY,0,0,2", "GDPR_ARTICLE,ART92A,0,0,1", "NATIONAL_LAW,FTRL,0,2,2", "SUBJECT_CATEGORY,BRUKER,0,2,0", "SENSITIVITY,POL,2,0,0", "SYSTEM,AA_REG,1,0,0", "CATEGORY,ARBEIDSFORHOLD,1,0,0", "SOURCE,SKATTEETATEN,1,0,0"})
+        void shouldFindCodeUsage(String list, String code, int expectedCountInformationTypes, int expectedCountPolicy, int expectedCountProcess) {
+            ResponseEntity<CodeUsageResponse> response = restTemplate.exchange(String.format("/codeusage/find/%s/%s", list, code), HttpMethod.GET, HttpEntity.EMPTY, CodeUsageResponse.class);
+
+            assertThat(expectedCountInformationTypes).isEqualTo(getCountOfInformationTypes(response));
+            assertThat(expectedCountPolicy).isEqualTo(getCountOfPolicies(response));
+            assertThat(expectedCountProcess).isEqualTo(getCountOfProcesses(response));
         }
     }
-
-    private CodeUsageRequest createRequest(String listname, String code) {
-        return CodeUsageRequest.builder().listName(listname).code(code).build();
-    }
-
-    //TODO: Fix tests for request version
-//    @Nested
-//    class findCodeUsagesByRequests {
-//
-//        @Test
-//        void byRequests(){
-//            List<CodeUsageRequest> requests = List.of(
-//                    createRequest("PURPOSE", "DAGPENGER"),
-//                    createRequest("DEPARTMENT", "YTA"),
-//                    createRequest("SUB_DEPARTMENT", "NAY"),
-//                    createRequest("GDPR_ARTICLE", "ART61E"),
-//                    createRequest("NATIONAL_LAW", "FTRL"),
-//                    createRequest("SUBJECT_CATEGORY", "BRUKER"),
-//                    createRequest("SENSITIVITY", "POL"),
-//                    createRequest("SYSTEM", "TPS"),
-//                    createRequest("CATEGORY", "PERSONALIA"),
-//                    createRequest("SOURCE", "SKATTEETATEN")
-//                    );
-//
-//            ResponseEntity<List<CodeUsageResponse>> response = restTemplate.exchange("/codeusage/find", HttpMethod.GET, new HttpEntity<>(requests), new ParameterizedTypeReference<List<CodeUsageResponse>>() {});
-//
-//            assertThat(10).isEqualTo(response.getBody().size());
-//
-//        }
-//    }
 
     private void createTestData() {
         createCodelistsByRequests();
@@ -152,16 +145,20 @@ public class FindCodeUsageControllerIT extends IntegrationTestBase {
                 createCodelistRequest("CATEGORY", "ARBEIDSFORHOLD"),
 
                 createCodelistRequest("DEPARTMENT", "YTA"),
+                createCodelistRequest("DEPARTMENT", "NOT_FOUND"),
 
                 createCodelistRequest("GDPR_ARTICLE", "ART61E"),
                 createCodelistRequest("GDPR_ARTICLE", "ART92A"),
 
                 createCodelistRequest("NATIONAL_LAW", "FTRL"),
+                createCodelistRequest("NATIONAL_LAW", "NOT_FOUND"),
 
                 createCodelistRequest("PURPOSE", "DAGPENGER"),
                 createCodelistRequest("PURPOSE", "BARNETRYGD"),
+                createCodelistRequest("PURPOSE", "NOT_FOUND"),
 
                 createCodelistRequest("SENSITIVITY", "POL"),
+                createCodelistRequest("SENSITIVITY", "NOT_FOUND"),
 
                 createCodelistRequest("SOURCE", "SKATTEETATEN"),
                 createCodelistRequest("SOURCE", "ARBEIDSGIVER"),
@@ -169,10 +166,23 @@ public class FindCodeUsageControllerIT extends IntegrationTestBase {
                 createCodelistRequest("SUB_DEPARTMENT", "NAY"),
 
                 createCodelistRequest("SUBJECT_CATEGORY", "BRUKER"),
+                createCodelistRequest("SUBJECT_CATEGORY", "NOT_FOUND"),
 
                 createCodelistRequest("SYSTEM", "TPS"),
                 createCodelistRequest("SYSTEM", "AA_REG"));
 
         codelistService.save(requests);
+    }
+
+    private int getCountOfInformationTypes(ResponseEntity<CodeUsageResponse> response) {
+        return (int) StreamUtils.safeStream(Objects.requireNonNull(response.getBody()).getCodesInUse()).map(CodeUsage::getInformationTypes).mapToLong(List::size).sum();
+    }
+
+    private int getCountOfPolicies(ResponseEntity<CodeUsageResponse> response) {
+        return (int) StreamUtils.safeStream(Objects.requireNonNull(response.getBody()).getCodesInUse()).map(CodeUsage::getPolicies).mapToLong(List::size).sum();
+    }
+
+    private int getCountOfProcesses(ResponseEntity<CodeUsageResponse> response) {
+        return (int) StreamUtils.safeStream(Objects.requireNonNull(response.getBody()).getCodesInUse()).map(CodeUsage::getProcesses).mapToLong(List::size).sum();
     }
 }

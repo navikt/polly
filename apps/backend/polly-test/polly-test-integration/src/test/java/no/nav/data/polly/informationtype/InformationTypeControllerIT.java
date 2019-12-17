@@ -37,7 +37,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
 
     @Test
     void findForId() {
-        var informationType = informationTypeRepository.save(createInformationType(UUID.randomUUID(), "new-name"));
+        var informationType = informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "new-name"));
         ResponseEntity<Map> responseEntity = restTemplate.exchange(
                 "/informationtype/" + informationType.getId(), HttpMethod.GET, HttpEntity.EMPTY, Map.class);
 
@@ -47,8 +47,8 @@ class InformationTypeControllerIT extends IntegrationTestBase {
 
     @Test
     void searchInformationTypeByName() {
-        informationTypeRepository.save(createInformationType(UUID.randomUUID(), "InformationTypeData"));
-        informationTypeRepository.save(createInformationType(UUID.randomUUID(), "TypeData"));
+        informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "InformationTypeData"));
+        informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "TypeData"));
         ResponseEntity<InformationTypePage> responseEntity = restTemplate.exchange(
                 "/informationtype/search/typedata", HttpMethod.GET, HttpEntity.EMPTY, InformationTypePage.class);
 
@@ -208,7 +208,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
 
     @Test
     void testSync() {
-        var it = informationTypeRepository.save(createInformationType(UUID.randomUUID(), "new-name"));
+        var it = informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "new-name"));
 
         restTemplate.postForLocation("/informationtype/sync", List.of(it.getId()), it.getId());
         assertThat(informationTypeRepository.findById(it.getId()).get().getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_UPDATED);

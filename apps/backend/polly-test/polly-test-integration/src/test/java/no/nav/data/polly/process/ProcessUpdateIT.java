@@ -36,7 +36,7 @@ class ProcessUpdateIT extends KafkaIntegrationTestBase {
 
     @Test
     void produserBehandlingsgrunnlag() {
-        createPolicy(4, (index, policy) -> {
+        createAndSavePolicy(4, (index, policy) -> {
             policy.setInformationTypeName(INFORMATION_TYPE_NAME + index);
             policy.getProcess().setName(PROCESS_NAME_1);
             if (index == 0) {

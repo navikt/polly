@@ -10,6 +10,7 @@ import no.nav.data.polly.codelist.dto.CodelistRequest;
 import no.nav.data.polly.common.exceptions.CodelistNotErasableException;
 import no.nav.data.polly.common.exceptions.CodelistNotFoundException;
 import no.nav.data.polly.common.exceptions.ValidationException;
+import org.assertj.core.error.OptionalShouldBeEmpty;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +21,10 @@ import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
+import java.net.http.HttpResponse;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -83,9 +87,8 @@ class CodelistServiceTest {
 
         @Test
         void delete_shouldDelete_whenListAndCodeExists() {
-            CodeUsage codeUsage = new CodeUsage("SOURCE", "DELETE_CODE");
             when(repository.findByListAndCode(ListName.SOURCE, "DELETE_CODE")).thenReturn(Optional.of(createCodelist(ListName.SOURCE, "DELETE_CODE")));
-            when(codeUsageService.findCodeUsage("SOURCE", "DELETE_CODE")).thenReturn(new CodeUsageResponse(codeUsage));
+            when(codeUsageService.findCodeUsage(ListName.SOURCE, "DELETE_CODE")).thenReturn(new CodeUsage("SOURCE", "DELETE_CODE"));
 
             service.delete(ListName.SOURCE, "DELETE_CODE");
 
@@ -110,7 +113,7 @@ class CodelistServiceTest {
             CodeUsage codeUsage = new CodeUsage("SOURCE", "DELETE_CODE");
             codeUsage.setProcesses(List.of(UsedInInstance.builder().id("id").name("name").build()));
             when(repository.findByListAndCode(ListName.PURPOSE, "DELETE_CODE")).thenReturn(Optional.of(createCodelist(ListName.SOURCE, "DELETE_CODE")));
-            when(codeUsageService.findCodeUsage("PURPOSE", "DELETE_CODE")).thenReturn(new CodeUsageResponse(codeUsage));
+            when(codeUsageService.findCodeUsage(ListName.PURPOSE, "DELETE_CODE")).thenReturn(codeUsage);
 
             try {
                 service.delete(ListName.PURPOSE, "DELETE_CODE");
