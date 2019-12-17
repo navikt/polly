@@ -51,7 +51,7 @@ const Banner = ({ title, informationtypeId }: BannerProps) => {
         <Block {...bannerBlockProps}>
             <Block {...bannerContentProps} justifyContent="space-between">
                 <HeadingLevel>
-                    <Heading styleLevel={5}>{title}</Heading>
+                    <Heading styleLevel={5} marginRight="auto" marginLeft="auto">{title}</Heading>
                 </HeadingLevel>
                 {user.canWrite() && informationtypeId ? (
                     <EditInformationtypeButton id={informationtypeId} />
