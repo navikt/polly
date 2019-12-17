@@ -16,6 +16,7 @@ import { Label2, H5, H6 } from "baseui/typography"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons"
 import { FlagIcon } from "./common/Flag"
+import RouteLink from "./common/RouteLink"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -46,7 +47,7 @@ const Brand = () => {
     return (
         <StyledNavigationList $align={ALIGN.left}>
             <StyledNavigationItem>
-                <StyledLink href="/" className={link}>{logo}</StyledLink>
+                <RouteLink href="/" className={link}>{logo}</RouteLink>
             </StyledNavigationItem>
             <StyledNavigationItem></StyledNavigationItem>
         </StyledNavigationList>
@@ -122,7 +123,7 @@ const LoggedInHeader = () => {
     return (
         <StatefulPopover
             content={
-                <React.Fragment>
+                <>
                     <Label2 {...blockStyle}>{intl.name}: {user.getName()}</Label2>
                     <Label2 {...blockStyle}>{intl.groups}: {user.getGroupsHumanReadable().join(', ')}</Label2>
                     <Block {...blockStyle}>
@@ -130,7 +131,7 @@ const LoggedInHeader = () => {
                             {intl.logout}
                         </StyledLink>
                     </Block>
-                </React.Fragment>
+                </>
             }
         >
             <Button kind="tertiary" size="compact" endEnhancer={() => <FontAwesomeIcon icon={faUser} />}>{user.getNavIdent()}</Button>
@@ -164,7 +165,7 @@ const Header = (props: HeaderProps & RouteComponentProps<any>) => {
             <StyledNavigationList $align={ALIGN.left}>
                 <StyledNavigationItem>
                     <Block display="flex" alignItems="center">
-                        <StyledLink href="/" className={link}>{logo}</StyledLink>
+                        <RouteLink href="/" className={link}>{logo}</RouteLink>
                         <H5 marginLeft={theme.sizing.scale400}>{intl.appName}</H5>
                         <H6 marginLeft={theme.sizing.scale200} color={theme.colors.negative400}>({intl.beta})</H6>
                     </Block>
@@ -174,21 +175,21 @@ const Header = (props: HeaderProps & RouteComponentProps<any>) => {
             <StyledNavigationList $align={ALIGN.center} />
             <StyledNavigationList $align={ALIGN.right}>
                 {user.isAdmin() && <StyledNavigationItem>
-                    <StyledLink href="/admin/codelist" className={link}>
+                    <RouteLink href="/admin/codelist" className={link}>
                         {intl.manageCodeListTitle}
-                    </StyledLink>
+                    </RouteLink>
                 </StyledNavigationItem>}
 
                 <StyledNavigationItem>
-                    <StyledLink href="/purpose" className={link}>
+                    <RouteLink href="/purpose" className={link}>
                         {intl.purpose}
-                    </StyledLink>
+                    </RouteLink>
                 </StyledNavigationItem>
 
                 <StyledNavigationItem>
-                    <StyledLink href="/informationtype" className={link}>
+                    <RouteLink href="/informationtype" className={link}>
                         {intl.informationTypes}
-                    </StyledLink>
+                    </RouteLink>
                 </StyledNavigationItem>
 
                 <StyledNavigationItem>

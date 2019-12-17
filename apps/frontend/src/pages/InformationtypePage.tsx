@@ -11,7 +11,6 @@ import { StatefulMenu } from "baseui/menu"
 import { PLACEMENT } from "baseui/tooltip"
 import { TriangleDown } from "baseui/icon"
 import { Pagination } from "baseui/pagination"
-import { StyledLink } from "baseui/link"
 import { Select, TYPE } from "baseui/select"
 import { RouteComponentProps } from "react-router-dom"
 
@@ -24,6 +23,7 @@ import Banner from "../components/Banner";
 import { user } from "../service/User";
 import { H3, H6 } from "baseui/typography"
 import { getInformationType, getInformationTypes, getPoliciesForInformationType, useInfoTypeSearch } from "../api"
+import RouteLink from "../components/common/RouteLink"
 
 export type PurposeMap = { [purpose: string]: Policy[] }
 
@@ -52,7 +52,7 @@ const InformationTypeTable = (props: RouteComponentProps) => {
     ]
 
     const mapInformationTypeToTable = (infoType: InformationType) => [
-        (<StyledLink href="#" onClick={() => props.history.push(`/informationtype/${infoType.id}`)}>{infoType.name}</StyledLink>),
+        <RouteLink href={`/informationtype/${infoType.id}`}>{infoType.name}</RouteLink>,
         infoType.categories.map(cat => codelist.getShortname(ListName.CATEGORY, cat.code)).join(', ')
     ]
 

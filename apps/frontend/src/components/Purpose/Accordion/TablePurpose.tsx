@@ -1,7 +1,6 @@
 import * as React from "react";
 import { SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
-import { StyledLink } from 'baseui/link'
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { Block } from "baseui/block";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,11 +13,12 @@ import { codelist, ListName } from "../../../service/Codelist"
 import { Sensitivity } from "../../InformationType/Sensitivity"
 import ModalPolicy from "./ModalPolicy";
 import { LegalBasesNotClarified, ListLegalBasesInTable } from "../../common/LegalBasis"
-import { Policy, PolicyFormValues, policySort, Process } from "../../../constants"
+import { Policy, policySort, Process } from "../../../constants"
 import { intl } from "../../../util"
-import { convertPolicyToFormValues, deletePolicy, updatePolicy } from "../../../api"
+import { convertPolicyToFormValues } from "../../../api"
 import { ActiveIndicator } from "../../common/Durations"
 import { useTable } from "../../../util/hooks"
+import RouteLink from "../../common/RouteLink"
 
 
 const StyledHeader = withStyle(StyledHead, {
@@ -92,9 +92,9 @@ const TablePurpose = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, 
                             <StyledCell>
                                 <Sensitivity sensitivity={row.informationType.sensitivity} />&nbsp;
                                 <ActiveIndicator {...row} /> &nbsp;
-                                <StyledLink href={`/informationtype/${row.informationType.id}`} width="25%">
+                                <RouteLink href={`/informationtype/${row.informationType.id}`} width="25%">
                                     {row.informationType.name}
-                                </StyledLink>
+                                </RouteLink>
                             </StyledCell>
 
                             <StyledCell>{codelist.getShortname(ListName.SUBJECT_CATEGORY, row.subjectCategory.code)}</StyledCell>

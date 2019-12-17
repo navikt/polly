@@ -8,6 +8,7 @@ import { Button } from "baseui/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { user } from "../service/User"
+import RouteLink from "./common/RouteLink"
 
 
 type BannerProps = {
@@ -36,12 +37,12 @@ const EditInformationtypeButton = (props: { id: string }) => {
     const link = useCss({ textDecoration: 'none' });
     return (
         <Block alignSelf="center" marginTop="10px">
-            <StyledLink href={`/informationtype/edit/${props.id}`} className={link}>
+            <RouteLink href={`/informationtype/edit/${props.id}`} className={link}>
                 <Button size="compact" kind="secondary">
                     <FontAwesomeIcon icon={faEdit} />
                     <Block marginLeft="10px">{intl.edit}</Block>
                 </Button>
-            </StyledLink>
+            </RouteLink>
         </Block>
     )
 }

@@ -93,6 +93,7 @@ export const no: IStrings = {
     endDate: "Tom dato",
     inactive: "Inaktiv",
     active: "Aktiv",
+    preview: "Forhåndsvisning",
 
     prevButton: "Forrige",
     nextButton: "Neste",

@@ -13,28 +13,33 @@ import { ActiveIndicator } from "./Durations"
 
 const lovdata_base = process.env.REACT_APP_LOVDATA_BASE_URL;
 
-export const LegalBasisView = (props: { legalBasis: LegalBasis }) => {
-    const {legalBasis} = props
-    let gdpr = codelist.getShortname(ListName.GDPR_ARTICLE, legalBasis.gdpr.code)
-    let nationalLaw = legalBasis.nationalLaw && codelist.getShortname(ListName.NATIONAL_LAW, legalBasis.nationalLaw.code)
-    let nationalLawId = legalBasis.nationalLaw && !legalBasis.nationalLaw.invalidCode && codelist.getDescription(ListName.NATIONAL_LAW, legalBasis.nationalLaw.code)
+export const LegalBasisView = (props: { legalBasis?: LegalBasis, legalBasisForm?: LegalBasisFormValues }) => {
+    const input = props.legalBasis ? props.legalBasis : props.legalBasisForm
+    if (!input) return null
+    const {start, end, description} = input
+    const gdpr = props.legalBasis ? props.legalBasis.gdpr.code : props.legalBasisForm!.gdpr
+    const nationalLaw = props.legalBasis ? props.legalBasis?.nationalLaw?.code : props.legalBasisForm!.nationalLaw
 
-    let description = nationalLawId ? legalBasisLinkProcessor(nationalLawId, legalBasis.description) : legalBasis.description
+    let gdprDisplay = gdpr && codelist.getShortname(ListName.GDPR_ARTICLE, gdpr)
+    let nationalLawDisplay = nationalLaw && codelist.getShortname(ListName.NATIONAL_LAW, nationalLaw)
+    let nationalLawId = nationalLaw && codelist.valid(ListName.NATIONAL_LAW, nationalLaw) && codelist.getDescription(ListName.NATIONAL_LAW, nationalLaw)
+
+    let descriptionText = nationalLawId ? legalBasisLinkProcessor(nationalLawId, description) : description
 
     return (
-        <span><ActiveIndicator {...legalBasis}/> {gdpr} {(nationalLaw || description) && ', '} {nationalLaw && nationalLaw} {description}</span>
+        <span><ActiveIndicator start={start} end={end}/> {gdprDisplay}{(nationalLawDisplay || descriptionText) && ', '} {nationalLawDisplay && nationalLawDisplay} {descriptionText}</span>
     )
 }
 
-const legalBasisLinkProcessor = (law: string, text: string) => processString([
+const legalBasisLinkProcessor = (law: string, text?: string) => processString([
     {
-        regex: /(§+).?(\d+(-\d+)?)/g,
+        regex: /(§+)\s?(\d+(-\d+)?)/g,
         fn: (key: string, result: string[]) =>
             <a key={key} href={`${lovdata_base + codelist.getDescription(ListName.NATIONAL_LAW, law)}/§${result[2]}`} target="_blank" rel="noopener noreferrer">
                 {result[1]} {result[2]}
             </a>
     }, {
-        regex: /kap(ittel)?.?(\d+)/gi,
+        regex: /kap(ittel)?\s?(\d+)/gi,
         fn: (key: string, result: string[]) =>
             <a key={key} href={`${lovdata_base + codelist.getDescription(ListName.NATIONAL_LAW, law)}/KAPITTEL_${result[2]}`} target="_blank" rel="noopener noreferrer">
                 Kapittel {result[2]}
@@ -65,10 +70,7 @@ export const ListLegalBases = (props: { legalBases?: LegalBasisFormValues[], onR
                     key={i}
                 >
                     <ListItemLabel sublist>
-                        {legalBasis.gdpr && codelist.getShortname(ListName.GDPR_ARTICLE, legalBasis.gdpr)}
-                        {(legalBasis.nationalLaw || legalBasis.description) && ", "}
-                        {legalBasis.nationalLaw && codelist.getShortname(ListName.NATIONAL_LAW, legalBasis.nationalLaw) + ' '}
-                        {legalBasis.description}
+                        <LegalBasisView legalBasisForm={legalBasis}/>
                     </ListItemLabel>
                 </ListItem>
             ))}
@@ -88,6 +90,5 @@ export const ListLegalBasesInTable = (props: { legalBases: LegalBasis[] }) => {
                 ))}
             </ul>
         </Block>
-
     )
 }

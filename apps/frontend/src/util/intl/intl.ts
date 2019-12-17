@@ -103,6 +103,7 @@ export interface IStrings {
     endDate: string;
     active: string;
     inactive: string;
+    preview: string;
 
     prevButton: string;
     nextButton: string;
