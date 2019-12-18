@@ -40,7 +40,11 @@ public final class JsonUtils {
     }
 
     public static JsonNode toJsonNode(String json) {
-        return objectMapper.convertValue(json, JsonNode.class);
+        try {
+            return objectMapper.readTree(json);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("invalid json ", e);
+        }
     }
 
     public static Map toMap(Object object) {
