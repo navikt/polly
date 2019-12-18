@@ -47,7 +47,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/policy/**",
                 "/process/**",
                 "/term/**",
-                "/team/**"
+                "/team/**",
+                "/disclosure/**"
         );
 
         http.authorizeRequests().antMatchers("/logout/**").authenticated();
