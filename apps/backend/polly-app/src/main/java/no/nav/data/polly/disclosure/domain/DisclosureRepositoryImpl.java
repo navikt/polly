@@ -41,7 +41,7 @@ public class DisclosureRepositoryImpl implements DisclosureRepositoryCustom {
     }
 
     @Override
-    public List<Disclosure> findBySource(String recipient) {
+    public List<Disclosure> findByRecipient(String recipient) {
         var resp = jdbcTemplate.queryForList("select disclosure_id from disclosure where data #>'{recipient}' ?? :recipient ",
                 new MapSqlParameterSource().addValue("recipient", recipient));
         List<UUID> ids = resp.stream().map(i -> ((UUID) i.values().iterator().next())).collect(Collectors.toList());

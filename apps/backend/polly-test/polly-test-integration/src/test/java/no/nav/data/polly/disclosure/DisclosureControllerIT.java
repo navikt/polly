@@ -21,7 +21,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-import static java.util.Objects.requireNonNull;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,28 +31,32 @@ class DisclosureControllerIT extends IntegrationTestBase {
 
     @Test
     void createAndGetDisclosure() {
-        var infoType = createAndSaveInformationType();
+        var disc = createDisclosureArbeidsgiverWithInformationType();
+        var resp = restTemplate.getForEntity("/disclosure/{id}", DisclosureResponse.class, disc.getId());
 
-        var req = buildDisclosure();
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertResponse(resp);
+    }
+
+    private DisclosureResponse createDisclosureArbeidsgiverWithInformationType() {
+        InformationType infoType = createAndSaveInformationType();
+        var req = buildDisclosure("ARBEIDSGIVER");
         req.setInformationTypes(List.of(infoType.getId().toString()));
         var resp = restTemplate.postForEntity("/disclosure", req, DisclosureResponse.class);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertResponse(resp, infoType);
-
-        resp = restTemplate.getForEntity("/disclosure/{id}", DisclosureResponse.class, requireNonNull(resp.getBody()).getId());
-
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertResponse(resp, infoType);
+        assertResponse(resp);
+        return resp.getBody();
     }
 
-    private void assertResponse(ResponseEntity<DisclosureResponse> resp, InformationType infoType) {
+    private void assertResponse(ResponseEntity<DisclosureResponse> resp) {
+        InformationType infoType = createAndSaveInformationType();
         var disclosureResponse = resp.getBody();
         assertThat(disclosureResponse).isNotNull();
         assertThat(disclosureResponse).isEqualTo(DisclosureResponse.builder()
                 .id(disclosureResponse.getId())
                 .description("disc desc")
-                .recipient(CodelistService.getCodelistResponse(ListName.SOURCE, "SKATT"))
+                .recipient(CodelistService.getCodelistResponse(ListName.SOURCE, disclosureResponse.getRecipient().getCode()))
                 .recipientPurpose("recipient purpose")
                 .start(LocalDate.now())
                 .end(LocalDate.now())
@@ -74,6 +77,33 @@ class DisclosureControllerIT extends IntegrationTestBase {
         assertThat(disclosurePage).isNotNull();
 
         assertThat(disclosurePage.getContent()).hasSize(2);
+    }
+
+    @Test
+    void getDisclosureByInfoTypeId() {
+        restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
+        var disc = createDisclosureArbeidsgiverWithInformationType();
+        ResponseEntity<DisclosurePage> resp = restTemplate
+                .getForEntity("/disclosure?informationTypeId={infoTypeId}", DisclosurePage.class, disc.getInformationTypes().get(0).getId());
+
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        DisclosurePage disclosurePage = resp.getBody();
+        assertThat(disclosurePage).isNotNull();
+
+        assertThat(disclosurePage.getContent()).hasSize(1);
+    }
+
+    @Test
+    void getDisclosureByRecipient() {
+        restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
+        var disc = createDisclosureArbeidsgiverWithInformationType();
+        ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure?recipient={recipient}", DisclosurePage.class, disc.getRecipient().getCode());
+
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        DisclosurePage disclosurePage = resp.getBody();
+        assertThat(disclosurePage).isNotNull();
+
+        assertThat(disclosurePage.getContent()).hasSize(1);
     }
 
     @Test
@@ -128,8 +158,12 @@ class DisclosureControllerIT extends IntegrationTestBase {
     }
 
     private DisclosureRequest buildDisclosure() {
+        return buildDisclosure("SKATTEETATEN");
+    }
+
+    private DisclosureRequest buildDisclosure(String recipient) {
         return DisclosureRequest.builder()
-                .description("disc desc").recipient("SKATT").recipientPurpose("recipient purpose")
+                .description("disc desc").recipient(recipient).recipientPurpose("recipient purpose")
                 .start(LocalDate.now().toString()).end(LocalDate.now().toString())
                 .legalBasis(createLegalBasisRequest())
                 .build();

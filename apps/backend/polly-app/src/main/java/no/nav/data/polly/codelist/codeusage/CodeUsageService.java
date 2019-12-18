@@ -142,7 +142,7 @@ public class CodeUsageService {
             case NATIONAL_LAW:
                 return disclosureRepository.findByNationalLaw(code).stream().map(Disclosure::getInstanceIdentification).collect(Collectors.toList());
             case SOURCE:
-                return disclosureRepository.findBySource(code).stream().map(Disclosure::getInstanceIdentification).collect(Collectors.toList());
+                return disclosureRepository.findByRecipient(code).stream().map(Disclosure::getInstanceIdentification).collect(Collectors.toList());
             default:
                 return Collections.emptyList();
         }

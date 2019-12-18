@@ -8,6 +8,6 @@ public interface DisclosureRepositoryCustom {
 
     List<Disclosure> findByNationalLaw(String source);
 
-    List<Disclosure> findBySource(String source);
+    List<Disclosure> findByRecipient(String source);
 
 }

@@ -12,7 +12,7 @@ import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;
 import no.nav.data.polly.disclosure.dto.DisclosureResponse;
-import org.springframework.data.domain.Page;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,12 +24,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 import java.util.UUID;
 import javax.validation.Valid;
+
+import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Slf4j
 @RestController
@@ -51,11 +54,24 @@ public class DisclosureController {
             @ApiResponse(code = 200, message = "All Disclosures fetched", response = DisclosurePage.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping
-    public ResponseEntity<RestResponsePage<DisclosureResponse>> getAll(PageParameters pageParameters) {
-        log.info("Received request for all Disclosures");
-        Page<DisclosureResponse> page = repository.findAll(pageParameters.createIdSortedPage()).map(Disclosure::convertToResponse);
+    public ResponseEntity<RestResponsePage<DisclosureResponse>> getAll(PageParameters pageParameters,
+            @RequestParam(required = false) UUID informationTypeId,
+            @RequestParam(required = false) String recipient
+    ) {
+        log.info("Received request for all Disclosures. informationType={} recipient={}", informationTypeId, recipient);
+        if (informationTypeId != null) {
+            var disc = repository.findByInformationTypesId(informationTypeId);
+            return returnResults(new RestResponsePage<>(convert(disc, Disclosure::convertToResponseWithInformationType)));
+        } else if (StringUtils.isNotBlank(recipient)) {
+            var disc = repository.findByRecipient(recipient);
+            return returnResults(new RestResponsePage<>(convert(disc, Disclosure::convertToResponseWithInformationType)));
+        }
+        return returnResults(new RestResponsePage<>(repository.findAll(pageParameters.createIdSortedPage()).map(Disclosure::convertToResponse)));
+    }
+
+    private ResponseEntity<RestResponsePage<DisclosureResponse>> returnResults(RestResponsePage<DisclosureResponse> page) {
         log.info("Returned {} Disclosures", page.getNumberOfElements());
-        return ResponseEntity.ok(new RestResponsePage<>(page));
+        return ResponseEntity.ok(page);
     }
 
     @ApiOperation(value = "Get Disclosure")
