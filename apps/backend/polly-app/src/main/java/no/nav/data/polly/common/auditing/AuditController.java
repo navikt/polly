@@ -37,7 +37,7 @@ public class AuditController {
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/log/{id}")
     public ResponseEntity<AuditLogResponse> findForId(@PathVariable String id) {
-        log.info("Received request for Disclosure with the id={}", id);
+        log.info("Received request for Audit with the id={}", id);
         List<AuditVersion> log = repository.findByTableIdOrderByTimeDesc(id);
         return new ResponseEntity<>(new AuditLogResponse(id, convert(log, AuditVersion::convertToResponse)), HttpStatus.OK);
     }
