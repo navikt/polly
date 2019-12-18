@@ -2,6 +2,7 @@ package no.nav.data.polly.common.auditing;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.data.polly.common.auditing.dto.AuditResponse;
 import org.hibernate.annotations.Type;
 
 import java.time.LocalDateTime;
@@ -46,5 +47,16 @@ public class AuditVersion {
         this.table = table;
         this.tableId = tableId;
         this.data = data;
+    }
+
+    public AuditResponse convertToResponse() {
+        return AuditResponse.builder()
+                .id(id.toString())
+                .action(action)
+                .table(table)
+                .tableId(tableId)
+                .time(time)
+                .data(data)
+                .build();
     }
 }
