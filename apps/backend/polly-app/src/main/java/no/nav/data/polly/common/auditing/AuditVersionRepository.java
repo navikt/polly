@@ -9,5 +9,5 @@ import java.util.UUID;
 @Repository
 public interface AuditVersionRepository extends CrudRepository<AuditVersion, UUID> {
 
-    List<AuditVersion> findByTableIdOOrderByTimeDesc(String tableId);
+    List<AuditVersion> findByTableIdOrderByTimeDesc(String tableId);
 }

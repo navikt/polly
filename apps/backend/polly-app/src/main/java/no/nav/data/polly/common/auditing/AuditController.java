@@ -38,7 +38,7 @@ public class AuditController {
     @GetMapping("/log/{id}")
     public ResponseEntity<AuditLogResponse> findForId(@PathVariable String id) {
         log.info("Received request for Disclosure with the id={}", id);
-        List<AuditVersion> log = repository.findByTableIdOOrderByTimeDesc(id);
+        List<AuditVersion> log = repository.findByTableIdOrderByTimeDesc(id);
         return new ResponseEntity<>(new AuditLogResponse(id, convert(log, AuditVersion::convertToResponse)), HttpStatus.OK);
     }
 
