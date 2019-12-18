@@ -9,12 +9,12 @@ import no.nav.data.polly.elasticsearch.dto.PolicyElasticsearch;
 import no.nav.data.polly.elasticsearch.dto.ProcessElasticsearch;
 import no.nav.data.polly.informationtype.InformationTypeService;
 import no.nav.data.polly.informationtype.domain.InformationType;
-import org.awaitility.Duration;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.Duration;
 import java.util.List;
 
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
@@ -49,7 +49,7 @@ class ElasticsearchServiceIT extends IntegrationTestBase {
     void syncNewInformationTypesToES() {
         createTestData(ElasticsearchStatus.TO_BE_CREATED);
         service.synchToElasticsearch();
-        await().atMost(Duration.FIVE_SECONDS).untilAsserted(() ->
+        await().atMost(Duration.ofSeconds(5)).untilAsserted(() ->
                 assertThat(esRepository.getAllInformationTypes("index").getHits().totalHits).isEqualTo(1L));
         String json = esRepository.getById(newDocumentId(INFORMATION_TYPE_ID_1.toString(), "index"));
         assertInformationType(json);
@@ -61,7 +61,7 @@ class ElasticsearchServiceIT extends IntegrationTestBase {
     void syncUpdatedInformationTypesToES() {
         createTestData(ElasticsearchStatus.TO_BE_CREATED);
         service.synchToElasticsearch();
-        await().atMost(Duration.FIVE_SECONDS).untilAsserted(() ->
+        await().atMost(Duration.ofSeconds(5)).untilAsserted(() ->
                 assertThat(esRepository.getAllInformationTypes("index").getHits().totalHits).isEqualTo(1L));
 
         assertThat(informationTypeRepository.findAll().size()).isEqualTo(1);
@@ -70,7 +70,7 @@ class ElasticsearchServiceIT extends IntegrationTestBase {
         informationTypeRepository.save(informationType);
         service.synchToElasticsearch();
 
-        await().atMost(Duration.FIVE_SECONDS).untilAsserted(() ->
+        await().atMost(Duration.ofSeconds(5)).untilAsserted(() ->
                 assertThat(esRepository.getAllInformationTypes("index").getHits().totalHits).isEqualTo(1L));
         String json = esRepository.getById(newDocumentId(INFORMATION_TYPE_ID_1.toString(), "index"));
         assertInformationType(json);
@@ -85,7 +85,7 @@ class ElasticsearchServiceIT extends IntegrationTestBase {
         createTestData(ElasticsearchStatus.TO_BE_UPDATED);
         service.synchToElasticsearch();
 
-        await().atMost(Duration.FIVE_SECONDS).untilAsserted(() ->
+        await().atMost(Duration.ofSeconds(5)).untilAsserted(() ->
                 assertThat(esRepository.getAllInformationTypes("index").getHits().totalHits).isEqualTo(1L));
         String json = esRepository.getById(newDocumentId(INFORMATION_TYPE_ID_1.toString(), "index"));
         assertInformationType(json);
@@ -99,7 +99,7 @@ class ElasticsearchServiceIT extends IntegrationTestBase {
     void syncDeletedInformationTypesToES() {
         createTestData(ElasticsearchStatus.TO_BE_CREATED);
         service.synchToElasticsearch();
-        await().atMost(Duration.FIVE_SECONDS).untilAsserted(() ->
+        await().atMost(Duration.ofSeconds(5)).untilAsserted(() ->
                 assertThat(esRepository.getAllInformationTypes("index").getHits().totalHits).isEqualTo(1L));
 
         assertThat(informationTypeRepository.findAll().size()).isEqualTo(1);
@@ -109,7 +109,7 @@ class ElasticsearchServiceIT extends IntegrationTestBase {
 
         service.synchToElasticsearch();
 
-        await().atMost(Duration.FIVE_SECONDS).untilAsserted(() ->
+        await().atMost(Duration.ofSeconds(5)).untilAsserted(() ->
                 assertThat(esRepository.getAllInformationTypes("index").getHits().totalHits).isEqualTo(0L));
         assertThat(informationTypeRepository.count()).isEqualTo(0);
     }

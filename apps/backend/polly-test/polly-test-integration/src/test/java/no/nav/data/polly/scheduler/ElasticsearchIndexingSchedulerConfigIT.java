@@ -2,9 +2,10 @@ package no.nav.data.polly.scheduler;
 
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.elasticsearch.ElasticsearchService;
-import org.awaitility.Duration;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+
+import java.time.Duration;
 
 import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.verify;
@@ -17,7 +18,7 @@ public class ElasticsearchIndexingSchedulerConfigIT extends IntegrationTestBase 
 
     @Test
     void jobRuns() {
-        await().atMost(Duration.ONE_MINUTE)
+        await().atMost(Duration.ofSeconds(10))
                 .untilAsserted(() -> verify(service, times(1)).synchToElasticsearch());
     }
 }

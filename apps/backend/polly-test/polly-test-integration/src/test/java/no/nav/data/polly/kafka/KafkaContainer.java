@@ -1,6 +1,7 @@
 package no.nav.data.polly.kafka;
 
 import org.springframework.util.SocketUtils;
+import org.testcontainers.containers.Network;
 
 public class KafkaContainer extends org.testcontainers.containers.KafkaContainer {
 
@@ -9,6 +10,7 @@ public class KafkaContainer extends org.testcontainers.containers.KafkaContainer
     public KafkaContainer(String confluentVersion) {
         super(confluentVersion);
         addFixedExposedPort(PORT, KAFKA_PORT);
+        withNetwork(Network.SHARED);
     }
 
     public static String getAddress() {

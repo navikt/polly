@@ -6,12 +6,12 @@ import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessDistributionRepository;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.awaitility.Duration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 
+import java.time.Duration;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,7 +50,7 @@ class ProcessUpdateIT extends KafkaIntegrationTestBase {
         processService.scheduleDistributeForProcess(Process.builder().name(PROCESS_NAME_1).purposeCode(PURPOSE_CODE1).build());
         processService.distributeAll();
 
-        await().atMost(Duration.TEN_SECONDS).untilAsserted(() -> assertEquals(0L, repository.count()));
+        await().atMost(Duration.ofSeconds(10)).untilAsserted(() -> assertEquals(0L, repository.count()));
 
         ConsumerRecord<String, ProcessUpdate> singleRecord = KafkaTestUtils.getSingleRecord(consumer, topicProperties.getProcessUpdate());
 
