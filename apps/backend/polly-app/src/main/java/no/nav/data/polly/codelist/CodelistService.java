@@ -1,11 +1,11 @@
 package no.nav.data.polly.codelist;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.polly.codelist.codeusage.CodeUsageResponse;
 import no.nav.data.polly.codelist.codeusage.CodeUsageService;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodeUsageRequest;
+import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.common.exceptions.CodelistNotErasableException;

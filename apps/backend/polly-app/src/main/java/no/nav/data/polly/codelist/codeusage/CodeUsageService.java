@@ -3,6 +3,7 @@ package no.nav.data.polly.codelist.codeusage;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodeUsageRequest;
+import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.informationtype.InformationTypeRepository;

@@ -1,9 +1,10 @@
-package no.nav.data.polly.codelist.codeusage;
+package no.nav.data.polly.codelist.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.data.polly.codelist.codeusage.UsedInInstance;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
 import java.util.ArrayList;
