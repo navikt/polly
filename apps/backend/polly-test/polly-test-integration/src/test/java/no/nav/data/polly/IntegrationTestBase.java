@@ -7,6 +7,8 @@ import no.nav.data.polly.IntegrationTestBase.Initializer;
 import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.common.nais.LeaderElectionService;
 import no.nav.data.polly.common.utils.JsonUtils;
+import no.nav.data.polly.disclosure.domain.Disclosure;
+import no.nav.data.polly.disclosure.domain.DisclosureData;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
@@ -206,6 +208,19 @@ public abstract class IntegrationTestBase {
                                         .start(LocalDate.now()).end(LocalDate.now()).legalBasis(createLegalBasis())
                                         .build())
                                 .build()));
+    }
+
+    protected Disclosure createDisclosure(String recipientCode) {
+        return Disclosure.builder()
+                .generateId()
+                .data(DisclosureData.builder()
+                        .description("disc desc")
+                        .recipient(recipientCode)
+                        .recipientPurpose("recipient purpose")
+                        .start(LocalDate.now()).end(LocalDate.now())
+                        .legalBasis(createLegalBasis("ART61E","FTRL","§ 2-1"))
+                        .build())
+                .build();
     }
 
     protected LegalBasisRequest createLegalBasisRequest() {

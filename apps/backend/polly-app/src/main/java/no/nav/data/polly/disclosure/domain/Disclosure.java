@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.codeusage.UsedInInstance;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.auditing.Auditable;
 import no.nav.data.polly.common.utils.DateUtil;
@@ -120,7 +121,19 @@ public class Disclosure extends Auditable<String> {
                 .build();
     }
 
+    public UsedInInstance getInstanceIdentification() {
+        return new UsedInInstance(id.toString(), data.getDescription());
+    }
+
     private static DisclosureInformationTypeResponse convertInformationTypeResponse(InformationType informationType) {
         return new DisclosureInformationTypeResponse(informationType.getId(), informationType.getData().getName(), informationType.getData().sensitivityCode());
+    }
+
+    public static class DisclosureBuilder {
+
+        public DisclosureBuilder generateId() {
+            id = UUID.randomUUID();
+            return this;
+        }
     }
 }

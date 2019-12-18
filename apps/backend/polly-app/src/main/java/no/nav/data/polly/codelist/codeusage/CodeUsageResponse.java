@@ -13,24 +13,26 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"code", "informationTypes", "policies", "processes"})
-public class CodeUsage {
+@JsonPropertyOrder({"code", "informationTypes", "policies", "processes", "disclosures"})
+public class CodeUsageResponse {
 
     private String listName;
     private String code;
     private List<UsedInInstance> informationTypes;
     private List<UsedInInstance> policies;
     private List<UsedInInstance> processes;
+    private List<UsedInInstance> disclosures;
 
-    public CodeUsage(String listName, String code) {
+    public CodeUsageResponse(String listName, String code) {
         this.listName = listName;
         this.code = code;
         this.informationTypes = new ArrayList<>();
         this.policies = new ArrayList<>();
         this.processes = new ArrayList<>();
+        this.disclosures = new ArrayList<>();
     }
 
     public boolean isInUse() {
-        return !informationTypes.isEmpty() || !policies.isEmpty() || !processes.isEmpty();
+        return !informationTypes.isEmpty() || !policies.isEmpty() || !processes.isEmpty() || !disclosures.isEmpty();
     }
 }

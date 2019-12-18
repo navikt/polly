@@ -25,7 +25,8 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
 
     @Override
     public List<Process> findByGDPRArticle(String gdpr) {
-        var resp = jdbcTemplate.queryForList(String.format("select process_id from process where data #>'{legalBases}' @> '[{\"gdpr\": \"%s\"}]'", gdpr), new MapSqlParameterSource());
+        var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{legalBases}' @> :gdpr::jsonb",
+                new MapSqlParameterSource().addValue("gdpr", String.format("[{\"gdpr\": \"%s\"}]", gdpr)));
         List<UUID> ids = resp.stream().map(i -> ((UUID) i.values().iterator().next())).collect(Collectors.toList());
 
         return processRepository.findAllById(ids);
@@ -33,7 +34,8 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
 
     @Override
     public List<Process> findByNationalLaw(String nationalLaw) {
-        var resp = jdbcTemplate.queryForList(String.format("select process_id from process where data #>'{legalBases}' @> '[{\"nationalLaw\": \"%s\"}]'", nationalLaw), new MapSqlParameterSource());
+        var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{legalBases}' @> :nationalLaw::jsonb",
+                new MapSqlParameterSource().addValue("nationalLaw", String.format("[{\"nationalLaw\": \"%s\"}]", nationalLaw)));
         List<UUID> ids = resp.stream().map(i -> ((UUID) i.values().iterator().next())).collect(Collectors.toList());
 
         return processRepository.findAllById(ids);
