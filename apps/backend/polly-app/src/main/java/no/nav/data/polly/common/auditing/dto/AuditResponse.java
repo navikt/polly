@@ -1,6 +1,7 @@
 package no.nav.data.polly.common.auditing.dto;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +22,6 @@ public class AuditResponse {
     private String table;
     private String tableId;
     private LocalDateTime time;
-    private String data;
+    private JsonNode data;
 
 }
