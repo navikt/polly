@@ -2,6 +2,7 @@ package no.nav.data.polly.term.catalog;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.utils.MetricUtils;
 import no.nav.data.polly.term.domain.PollyTerm;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.Duration;
 import java.util.List;
@@ -24,6 +26,8 @@ import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 @Slf4j
 @Component
 public class TermCatalogClient {
+
+    private static final String GODKJENT_BEGREP = "Godkjent begrep";
 
     private final RestTemplate restTemplate;
     private final TermCatalogProperties properties;
@@ -77,8 +81,12 @@ public class TermCatalogClient {
         return body[0];
     }
 
+    @SneakyThrows
     private List<CatalogTerm> searchCatalog(String searchString) {
-        ResponseEntity<CatalogTerm[]> response = restTemplate.getForEntity(properties.getSearchUrl(), CatalogTerm[].class, searchString);
+        var uri = UriComponentsBuilder.fromUriString(properties.getSearchUrl())
+                .queryParam("term_name", searchString)
+                .queryParam("term_status", GODKJENT_BEGREP).build().toUri();
+        ResponseEntity<CatalogTerm[]> response = restTemplate.getForEntity(uri, CatalogTerm[].class);
         verifyResponse(response);
         return asList(requireNonNull(response.getBody()));
     }
