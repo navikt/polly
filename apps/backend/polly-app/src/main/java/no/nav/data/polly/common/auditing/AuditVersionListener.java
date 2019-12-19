@@ -18,6 +18,7 @@ import no.nav.data.polly.common.utils.MdcUtils;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.util.Assert;
 
+import java.util.Optional;
 import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.PrePersist;
@@ -71,8 +72,9 @@ public class AuditVersionListener {
                 id = uuid.toString();
             }
             String data = wr.writeValueAsString(entity);
+            String user = Optional.ofNullable(MdcUtils.getUser()).orElse("no user set");
             AuditVersion auditVersion = AuditVersion.builder()
-                    .action(action).table(tableName).tableId(id).data(data).user(MdcUtils.getUser())
+                    .action(action).table(tableName).tableId(id).data(data).user(user)
                     .build();
             repository.save(auditVersion);
         } catch (JsonProcessingException e) {
