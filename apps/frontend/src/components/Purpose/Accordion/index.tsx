@@ -16,12 +16,14 @@ import { codelist, ListName } from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy';
-import { convertProcessToFormValues } from "../../../api"
+import { convertProcessToFormValues, getTerm, mapTermToOption } from "../../../api"
 import { PathParams } from "../../../pages/PurposePage"
 import { ActiveIndicator } from "../../common/Durations"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronRight, faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal';
+import { useState } from "react"
+import { getTeam, mapTeamToOption } from "../../../api/TeamApi"
 
 const rowPanelContent: BlockProps = {
     display: 'flex',
@@ -175,6 +177,22 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
         }, 200)
     }, [isLoading])
 
+    const productTeamId = currentProcess?.productTeam
+    const [productTeam, setProductTeam] = useState<string | undefined>()
+    useEffect(() => {
+        (async () => {
+            if (productTeamId) {
+                try {
+                    const team = await getTeam(productTeamId)
+                    setProductTeam(mapTeamToOption(team).label)
+                } catch (e) {
+                    console.error(e)
+                    setProductTeam(productTeamId)
+                }
+            }
+        })()
+    }, [productTeamId])
+
     return (
         <Block ref={purposeRef}>
             <Accordion onChange={({ expanded }) => handleChangePanel(expanded.length ? expanded[0].toString() : undefined)}
@@ -216,7 +234,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                     </Block>}
                                     {currentProcess.productTeam && <Block marginRight="scale1200">
                                         <Label2>{intl.productTeam}</Label2>
-                                        {currentProcess.productTeam}
+                                        {productTeam}
                                     </Block>}
                                 </Block>
 
