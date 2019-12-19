@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "action", "table", "tableId", "time", "data"})
+@JsonPropertyOrder({"id", "action", "table", "tableId", "time", "user", "data"})
 public class AuditResponse {
 
     private String id;
@@ -22,6 +22,7 @@ public class AuditResponse {
     private String table;
     private String tableId;
     private LocalDateTime time;
+    private String user;
     private JsonNode data;
 
 }

@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.common.utils.HibernateUtils;
 import no.nav.data.polly.common.utils.JsonUtils;
+import no.nav.data.polly.common.utils.MdcUtils;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.util.Assert;
 
@@ -70,7 +71,9 @@ public class AuditVersionListener {
                 id = uuid.toString();
             }
             String data = wr.writeValueAsString(entity);
-            AuditVersion auditVersion = new AuditVersion(action, tableName, id, data);
+            AuditVersion auditVersion = AuditVersion.builder()
+                    .action(action).table(tableName).tableId(id).data(data).user(MdcUtils.getUser())
+                    .build();
             repository.save(auditVersion);
         } catch (JsonProcessingException e) {
             log.error("failed to serialize object", e);

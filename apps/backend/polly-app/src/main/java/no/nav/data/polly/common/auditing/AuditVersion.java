@@ -1,5 +1,7 @@
 package no.nav.data.polly.common.auditing;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.polly.common.auditing.dto.AuditResponse;
@@ -16,7 +18,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Data
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "AUDIT_VERSION")
 public class AuditVersion {
@@ -24,6 +28,7 @@ public class AuditVersion {
     @Id
     @Type(type = "pg-uuid")
     @Column(name = "AUDIT_ID")
+    @Builder.Default
     private UUID id = UUID.randomUUID();
 
     @Enumerated(EnumType.STRING)
@@ -37,18 +42,15 @@ public class AuditVersion {
     private String tableId;
 
     @Column(name = "TIME", nullable = false, updatable = false)
+    @Builder.Default
     private LocalDateTime time = LocalDateTime.now();
+
+    @Column(name = "USER_ID", nullable = false, updatable = false)
+    private String user;
 
     @Type(type = "jsonb")
     @Column(name = "DATA", nullable = false, updatable = false)
     private String data;
-
-    public AuditVersion(Action action, String table, String tableId, String data) {
-        this.action = action;
-        this.table = table;
-        this.tableId = tableId;
-        this.data = data;
-    }
 
     public AuditResponse convertToResponse() {
         return AuditResponse.builder()
@@ -57,6 +59,7 @@ public class AuditVersion {
                 .table(table)
                 .tableId(tableId)
                 .time(time)
+                .user(user)
                 .data(JsonUtils.toJsonNode(data))
                 .build();
     }
