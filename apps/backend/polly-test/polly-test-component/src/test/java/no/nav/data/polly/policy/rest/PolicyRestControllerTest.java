@@ -1,17 +1,17 @@
 package no.nav.data.polly.policy.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.data.polly.AppStarter;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.common.rest.PageParameters;
+import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.informationtype.InformationTypeService;
 import no.nav.data.polly.informationtype.domain.InformationType;
-import no.nav.data.polly.policy.dto.PolicyInformationTypeResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 import no.nav.data.polly.policy.PolicyService;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
+import no.nav.data.polly.policy.dto.PolicyInformationTypeResponse;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.policy.mapper.PolicyMapper;
@@ -253,7 +253,7 @@ class PolicyRestControllerTest {
 
     private static String asJsonString(final Object obj) {
         try {
-            return new ObjectMapper().writeValueAsString(obj);
+            return JsonUtils.toJson(obj);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
