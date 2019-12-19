@@ -26,6 +26,7 @@ export interface IStrings {
     subjectCategories: string;
     nationalLaw: string;
     navMaster: string;
+    productTeam: string;
 
     // sentence
     loggedInStatus: string;

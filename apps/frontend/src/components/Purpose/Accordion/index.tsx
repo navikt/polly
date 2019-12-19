@@ -206,6 +206,21 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                 </Block>
 
                                 <Block {...rowPanelContent}>
+                                    {currentProcess.department && <Block marginRight="scale1200">
+                                        <Label2>{intl.department}</Label2>
+                                        {codelist.getShortnameForCode(currentProcess.department)}
+                                    </Block>}
+                                    {currentProcess.subDepartment && <Block marginRight="scale1200">
+                                        <Label2>{intl.subDepartment}</Label2>
+                                        {codelist.getShortnameForCode(currentProcess.subDepartment)}
+                                    </Block>}
+                                    {currentProcess.productTeam && <Block marginRight="scale1200">
+                                        <Label2>{intl.productTeam}</Label2>
+                                        {currentProcess.productTeam}
+                                    </Block>}
+                                </Block>
+
+                                <Block {...rowPanelContent}>
                                     <Label2 alignSelf="center">{intl.informationTypes}</Label2>
                                     {hasAccess() && (
                                         <React.Fragment>
