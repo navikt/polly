@@ -17,6 +17,7 @@ import no.nav.data.polly.common.validator.RequestValidator;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.Collection;
 import java.util.List;
@@ -100,7 +101,9 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     }
 
     private Codelist updateDescriptionInRepository(CodelistRequest request) {
-        Codelist codelist = codelistRepository.findByListAndCode(request.getListAsListName(), request.getCode()).get(); // All request are validated at this point
+        Optional<Codelist> byListAndCode = codelistRepository.findByListAndCode(request.getListAsListName(), request.getCode());
+        Assert.isTrue(byListAndCode.isPresent(), "item not found, should be validated");
+        Codelist codelist = byListAndCode.get(); // All request are validated at this point
         codelist.setShortName(request.getShortName());
         codelist.setDescription(request.getDescription());
         return codelist;
@@ -109,7 +112,7 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     public void delete(ListName name, String code) {
         Optional<Codelist> toDelete = codelistRepository.findByListAndCode(name, code);
         if (toDelete.isEmpty()) {
-            log.error("Cannot find a codelist to delete with code={} and listName={}", code, name);
+            log.warn("Cannot find a codelist to delete with code={} and listName={}", code, name);
             throw new CodelistNotFoundException(
                     String.format("Cannot find a codelist to delete with code=%s and listName=%s", code, name));
         }
@@ -122,7 +125,7 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     private void validateCodelistIsNotInUse(ListName name, String code) {
         CodeUsageResponse codeUsage = codeUsageService.findCodeUsage(name, code);
         if (codeUsage.isInUse()) {
-            log.error("The code {} in list {} cannot be erased. {}", code, name, codeUsage.toString());
+            log.warn("The code {} in list {} cannot be erased. {}", code, name, codeUsage.toString());
             throw new CodelistNotErasableException(String.format("The code %s in list %s cannot be erased. %s", code, name, codeUsage.toString()));
         }
     }

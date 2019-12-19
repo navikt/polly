@@ -55,7 +55,7 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
             i.getAndIncrement();
         });
         if (!validations.isEmpty()) {
-            log.error("Validation errors occurred when validating PolicyRequest: {}", validations);
+            log.warn("Validation errors occurred when validating PolicyRequest: {}", validations);
             throw new ValidationException(validations, "Validation errors occurred when validating PolicyRequest.");
         }
     }

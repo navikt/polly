@@ -25,7 +25,7 @@ public class ProcessUpdateProducer {
     @SuppressWarnings("unchecked")
     public ProcessUpdateProducer(
             KafkaTopicProperties topics,
-            KafkaTemplate kafkaTemplate
+            KafkaTemplate<?, ?> kafkaTemplate
     ) {
         this.topic = topics.getProcessUpdate();
         this.kafkaTemplate = (KafkaTemplate<String, ProcessUpdate>) kafkaTemplate;
