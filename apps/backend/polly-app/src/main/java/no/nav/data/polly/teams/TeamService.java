@@ -1,5 +1,6 @@
 package no.nav.data.polly.teams;
 
+import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.teams.dto.ProductTeamResponse;
 import no.nav.data.polly.teams.nora.NoraClient;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,11 @@ public class TeamService {
 
     public List<ProductTeamResponse> getAllProductTeams() {
         return convert(noraClient.getTeamNames(), ProductTeamResponse::new);
+    }
+
+    public ProductTeamResponse getTeam(String teamId) {
+        String team = StreamUtils.find(noraClient.getTeamNames(), n -> n.equals(teamId));
+        return new ProductTeamResponse(team);
     }
 
     public boolean teamExists(String teamId) {

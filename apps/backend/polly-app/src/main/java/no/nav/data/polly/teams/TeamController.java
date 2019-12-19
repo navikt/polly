@@ -44,6 +44,16 @@ public class TeamController {
         return new RestResponsePage<>(teamsService.getAllProductTeams());
     }
 
+    @ApiOperation(value = "Get team")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Teams fetched", response = ProductTeamResponse.class),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @GetMapping("/{name}")
+    public ResponseEntity<ProductTeamResponse> getTeamByName(@PathVariable String teamId) {
+        log.info("Received request for Team with id {}", teamId);
+        return new ResponseEntity<>(teamsService.getTeam(teamId), HttpStatus.OK);
+    }
+
     @ApiOperation(value = "Search teams")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Teams fetched", response = TeamPage.class),

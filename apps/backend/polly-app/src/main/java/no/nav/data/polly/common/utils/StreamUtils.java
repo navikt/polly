@@ -1,5 +1,7 @@
 package no.nav.data.polly.common.utils;
 
+import no.nav.data.polly.common.exceptions.PollyNotFoundException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -93,6 +95,6 @@ public final class StreamUtils {
     }
 
     public static <T> T find(Iterable<T> objects, Predicate<T> filter) {
-        return safeStream(objects).filter(filter).findFirst().orElseThrow();
+        return safeStream(objects).filter(filter).findFirst().orElseThrow(() -> new PollyNotFoundException("could not find item"));
     }
 }
