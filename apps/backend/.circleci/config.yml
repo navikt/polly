@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  nais: navikt/nais-deployment@1.1.1
+  nais: navikt/nais-deployment@3.2.0
 jobs:
   build:
     machine:
@@ -52,7 +52,7 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/project
-      - nais/docker-deploy:
+      - nais/docker:
           image: navikt/polly
 workflows:
   version: 2
@@ -68,7 +68,7 @@ workflows:
               only:
                 - master
                 - prod
-      - nais/deploy:
+      - nais/deploy-gh-app:
           name: Deploy preprod
           context: NAIS deployment
           build-and-push-docker-image: false
@@ -84,7 +84,7 @@ workflows:
             branches:
               only:
                 - master
-      - nais/deploy:
+      - nais/deploy-gh-app:
           name: Deploy prod
           context: NAIS deployment
           build-and-push-docker-image: false
