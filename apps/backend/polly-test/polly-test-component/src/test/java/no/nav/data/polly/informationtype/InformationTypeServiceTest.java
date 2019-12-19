@@ -7,6 +7,7 @@ import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.term.catalog.TermCatalogClient;
 import no.nav.data.polly.term.domain.PollyTerm;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -62,103 +63,107 @@ class InformationTypeServiceTest {
         verify(informationTypeRepository, times(1)).saveAll(anyList());
     }
 
-    @Test
-    void validateRequest_shouldValidateWithoutAnyProcessing_whenListOfRequestsIsNull() {
-        service.validateRequest(null, false);
-    }
+    @Nested
+    class ValidateRequest {
 
-    @Test
-    void validateRequest_shouldValidateWithoutAnyProcessing_whenListOfRequestsIsEmpty() {
-        List<InformationTypeRequest> requests = Collections.emptyList();
-        service.validateRequest(requests, false);
-    }
+        @Test
+        void shouldValidateWithoutAnyProcessing_whenListOfRequestsIsNull() {
+            service.validateRequest(null, false);
+        }
 
-    @Test
-    void validateRequest_shouldThrowValidationException_withDuplicatedElementInRequest() {
-        InformationTypeRequest name1 = createValidInformationTypeRequest("Name1");
-        InformationTypeRequest name2 = createValidInformationTypeRequest("Name2");
+        @Test
+        void shouldValidateWithoutAnyProcessing_whenListOfRequestsIsEmpty() {
+            List<InformationTypeRequest> requests = Collections.emptyList();
+            service.validateRequest(requests, false);
+        }
 
-        var requests = new ArrayList<>(List.of(name1, name2, name1));
+        @Test
+        void shouldThrowValidationException_withDuplicatedElementInRequest() {
+            InformationTypeRequest name1 = createValidInformationTypeRequest("Name1");
+            InformationTypeRequest name2 = createValidInformationTypeRequest("Name2");
 
-        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(requests, false));
-        assertThat(exception)
-                .hasMessageContaining("Request:3 -- DuplicateElement -- The InformationType Name1 is not unique because it has already been used in this request (see request:1)");
-    }
+            var requests = new ArrayList<>(List.of(name1, name2, name1));
 
-    @Test
-    void validateRequest_shouldThrowValidationException_withChangeNameToAlreadyExistRequest() {
-        InformationTypeRequest request = createValidInformationTypeUpdateRequest();
-        InformationType existingInformationTypeByName = new InformationType().convertNewFromRequest(createValidInformationTypeRequest("Name"));
-        InformationType existingInformationTypeById = new InformationType().convertNewFromRequest(createValidInformationTypeRequest("Name0"));
+            Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(requests, false));
+            assertThat(exception)
+                    .hasMessageContaining("Request:3 -- DuplicateElement -- The InformationType Name1 is not unique because it has already been used in this request (see request:1)");
+        }
 
-        when(informationTypeRepository.findById(request.getIdAsUUID())).thenReturn(Optional.of(existingInformationTypeById));
-        when(informationTypeRepository.findByName("Name")).thenReturn(Optional.of(existingInformationTypeByName));
+        @Test
+        void shouldThrowValidationException_withChangeNameToAlreadyExistRequest() {
+            InformationTypeRequest request = createValidInformationTypeUpdateRequest();
+            InformationType existingInformationTypeByName = new InformationType().convertNewFromRequest(createValidInformationTypeRequest("Name"));
+            InformationType existingInformationTypeById = new InformationType().convertNewFromRequest(createValidInformationTypeRequest("Name0"));
 
-        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), true));
-        assertThat(exception).hasMessageContaining("Request:1 -- nameAlreadyExistsNameChange -- Cannot change name, InformationType Name already exists");
-    }
+            when(informationTypeRepository.findById(request.getIdAsUUID())).thenReturn(Optional.of(existingInformationTypeById));
+            when(informationTypeRepository.findByName("Name")).thenReturn(Optional.of(existingInformationTypeByName));
 
-    @Test
-    void validateRequest_shouldThrowValidationException_withDuplicatedIdentifyingFieldsInRequest() {
-        InformationTypeRequest name1 = createValidInformationTypeRequest("Name1");
-        InformationTypeRequest name2 = createValidInformationTypeRequest("Name2");
-        InformationTypeRequest name3 = createValidInformationTypeRequest("Name1");
-        name3.setDescription("Not equal object as the request1");
+            Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), true));
+            assertThat(exception).hasMessageContaining("Request:1 -- nameAlreadyExistsNameChange -- Cannot change name, InformationType Name already exists");
+        }
 
-        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(name1, name2, name3), false));
-        assertThat(exception).hasMessageContaining("Name1 -- DuplicatedIdentifyingFields -- Multiple elements in this request are using the same unique fields (Name1)");
-    }
+        @Test
+        void shouldThrowValidationException_withDuplicatedIdentifyingFieldsInRequest() {
+            InformationTypeRequest name1 = createValidInformationTypeRequest("Name1");
+            InformationTypeRequest name2 = createValidInformationTypeRequest("Name2");
+            InformationTypeRequest name3 = createValidInformationTypeRequest("Name1");
+            name3.setDescription("Not equal object as the request1");
 
-    @Test
-    void validateRequest_shouldThrowValidationException_whenFieldNameIsNull() {
-        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(createValidInformationTypeRequest(null)), false));
-        assertThat(exception).hasMessageContaining("Request:1 -- fieldIsNullOrMissing -- name was null or missing");
-    }
+            Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(name1, name2, name3), false));
+            assertThat(exception).hasMessageContaining("Name1 -- DuplicatedIdentifyingFields -- Multiple elements in this request are using the same unique fields (Name1)");
+        }
 
-    @Test
-    void validateRequest_shouldThrowValidationException_whenFieldCategoriesInvalid() {
-        InformationTypeRequest request = createValidInformationTypeRequest("Name1");
-        request.setCategories(List.of("doesntexist"));
+        @Test
+        void shouldThrowValidationException_whenFieldNameIsNull() {
+            Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(createValidInformationTypeRequest(null)), false));
+            assertThat(exception).hasMessageContaining("Request:1 -- fieldIsNullOrMissing -- name was null or missing");
+        }
 
-        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), false));
-        assertThat(exception).hasMessageContaining("Request:1 -- fieldIsInvalidCodelist -- categories[0]: DOESNTEXIST code not found in codelist CATEGORY");
-    }
+        @Test
+        void shouldThrowValidationException_whenFieldCategoriesInvalid() {
+            InformationTypeRequest request = createValidInformationTypeRequest("Name1");
+            request.setCategories(List.of("doesntexist"));
 
-    @Test
-    void validateRequest_shouldThrowValidationException_whenFieldNameIsEmpty() {
-        InformationTypeRequest request = createValidInformationTypeRequest("");
+            Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), false));
+            assertThat(exception).hasMessageContaining("Request:1 -- fieldIsInvalidCodelist -- categories[0]: DOESNTEXIST code not found in codelist CATEGORY");
+        }
 
-        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), false));
-        assertThat(exception).hasMessageContaining("Request:1 -- fieldIsNullOrMissing -- name was null or missing");
-    }
+        @Test
+        void shouldThrowValidationException_whenFieldNameIsEmpty() {
+            InformationTypeRequest request = createValidInformationTypeRequest("");
 
-    @Test
-    void validateRequest_shouldThrowValidationException_whenCreatingExistingInformationType() {
-        InformationTypeRequest request = createValidInformationTypeRequest("Name");
-        InformationType existingInformationType = new InformationType().convertNewFromRequest(request);
+            Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), false));
+            assertThat(exception).hasMessageContaining("Request:1 -- fieldIsNullOrMissing -- name was null or missing");
+        }
 
-        when(informationTypeRepository.findByName("Name")).thenReturn(Optional.of(existingInformationType));
+        @Test
+        void shouldThrowValidationException_whenCreatingExistingInformationType() {
+            InformationTypeRequest request = createValidInformationTypeRequest("Name");
+            InformationType existingInformationType = new InformationType().convertNewFromRequest(request);
 
-        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), false));
-        assertThat(exception).hasMessageContaining("Request:1 -- nameAlreadyExists -- The InformationType Name already exists");
-    }
+            when(informationTypeRepository.findByName("Name")).thenReturn(Optional.of(existingInformationType));
 
-    @Test
-    void validateRequest_shouldThrowValidationException_whenTryingToUpdateNonExistingInformationType() {
-        when(informationTypeRepository.findById(any())).thenReturn(Optional.empty());
+            Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), false));
+            assertThat(exception).hasMessageContaining("Request:1 -- nameAlreadyExists -- The InformationType Name already exists");
+        }
 
-        InformationTypeRequest request = createValidInformationTypeUpdateRequest();
-        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), true));
-        assertThat(exception).hasMessageContaining("Request:1 -- updatingNonExistingInformationType --");
-        assertThat(exception).hasMessageContaining("The InformationType Name does not exist and therefore cannot be updated");
-    }
+        @Test
+        void shouldThrowValidationException_whenTryingToUpdateNonExistingInformationType() {
+            when(informationTypeRepository.findById(any())).thenReturn(Optional.empty());
 
-    @Test
-    void validateRequest_shouldThrowValidationException_whenInvalidTerm() {
-        InformationTypeRequest request = createValidInformationTypeRequest("name");
-        request.setTerm("invalidterm");
-        Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), false));
-        assertThat(exception).hasMessageContaining("Request:1 -- termDoesNotExist -- The Term invalidterm doesnt exist");
+            InformationTypeRequest request = createValidInformationTypeUpdateRequest();
+            Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), true));
+            assertThat(exception).hasMessageContaining("Request:1 -- updatingNonExistingInformationType --");
+            assertThat(exception).hasMessageContaining("The InformationType Name does not exist and therefore cannot be updated");
+        }
+
+        @Test
+        void shouldThrowValidationException_whenInvalidTerm() {
+            InformationTypeRequest request = createValidInformationTypeRequest("name");
+            request.setTerm("invalidterm");
+            Exception exception = assertThrows(ValidationException.class, () -> service.validateRequest(List.of(request), false));
+            assertThat(exception).hasMessageContaining("Request:1 -- termDoesNotExist -- The Term invalidterm doesnt exist");
+        }
     }
 
     private InformationTypeRequest createValidInformationTypeUpdateRequest() {
