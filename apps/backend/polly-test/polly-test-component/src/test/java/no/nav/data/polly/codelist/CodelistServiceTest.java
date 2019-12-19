@@ -4,6 +4,7 @@ import no.nav.data.polly.codelist.codeusage.CodeUsageService;
 import no.nav.data.polly.codelist.codeusage.UsedInInstance;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
 import no.nav.data.polly.common.exceptions.CodelistNotErasableException;
 import no.nav.data.polly.common.exceptions.CodelistNotFoundException;
