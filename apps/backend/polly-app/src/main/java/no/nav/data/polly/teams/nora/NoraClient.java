@@ -2,6 +2,7 @@ package no.nav.data.polly.teams.nora;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import no.nav.data.polly.common.utils.MetricUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -29,6 +30,7 @@ public class NoraClient {
         this.appsCache = Caffeine.newBuilder()
                 .expireAfterAccess(Duration.ofMinutes(10))
                 .maximumSize(1).build();
+        MetricUtils.register("noraAppsCache", appsCache);
     }
 
     public List<String> getTeamNames() {

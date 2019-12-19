@@ -3,6 +3,7 @@ package no.nav.data.polly.term.catalog;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.common.utils.MetricUtils;
 import no.nav.data.polly.term.domain.PollyTerm;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +40,8 @@ public class TermCatalogClient {
         this.termCache = Caffeine.newBuilder()
                 .expireAfterAccess(Duration.ofMinutes(10))
                 .maximumSize(1000).build();
+        MetricUtils.register("termSearchCache", termSearchCache);
+        MetricUtils.register("termCache", termCache);
     }
 
     public List<PollyTerm> searchTerms(String searchString) {

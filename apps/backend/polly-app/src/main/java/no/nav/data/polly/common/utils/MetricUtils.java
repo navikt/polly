@@ -1,8 +1,10 @@
 package no.nav.data.polly.common.utils;
 
+import com.github.benmanes.caffeine.cache.Cache;
 import io.prometheus.client.Counter;
 import io.prometheus.client.SimpleCollector;
 import io.prometheus.client.Summary;
+import io.prometheus.client.cache.caffeine.CacheMetricsCollector;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.exceptions.PollyTechnicalException;
 import org.springframework.util.ReflectionUtils;
@@ -16,14 +18,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Helper to create metrics
- * - avoid registring metrics multiple times during test
- * - instantiate labels up front to initialize them in prometheus/grafana
+ * Helper to create metrics - avoid registring metrics multiple times during test - instantiate labels up front to initialize them in prometheus/grafana
  */
 @Slf4j
 public final class MetricUtils {
 
-    private static Map<String, SimpleCollector> collectors = new ConcurrentHashMap<>();
+    private static Map<String, SimpleCollector<?>> collectors = new ConcurrentHashMap<>();
+    private static final CacheMetricsCollector cacheCollector = new CacheMetricsCollector().register();
 
     private MetricUtils() {
     }
@@ -34,6 +35,10 @@ public final class MetricUtils {
 
     public static SummaryBuilder summary() {
         return new SummaryBuilder();
+    }
+
+    public static void register(String name, Cache<?, ?> cache) {
+        cacheCollector.addCache(name, cache);
     }
 
     @SuppressWarnings("unchecked")

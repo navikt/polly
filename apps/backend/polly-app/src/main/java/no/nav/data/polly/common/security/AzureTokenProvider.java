@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.exceptions.PollyTechnicalException;
 import no.nav.data.polly.common.security.dto.Credential;
 import no.nav.data.polly.common.security.dto.PollyRole;
+import no.nav.data.polly.common.utils.MetricUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -64,6 +65,8 @@ public class AzureTokenProvider {
         this.grantedAuthorityCache = Caffeine.newBuilder()
                 .expireAfterAccess(Duration.ofMinutes(10))
                 .maximumSize(1000).build();
+        MetricUtils.register("accessTokenCache", accessTokenCache);
+        MetricUtils.register("grantedAuthorityCache", grantedAuthorityCache);
     }
 
     public String getConsumerToken(String resource, String appIdUri) {

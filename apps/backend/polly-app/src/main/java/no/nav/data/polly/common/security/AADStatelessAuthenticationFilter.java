@@ -58,8 +58,9 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         boolean cleanupRequired = false;
 
-        if (!StringUtils.startsWith(request.getServletPath(), "/login")) {
+        if (StringUtils.startsWith(request.getServletPath(), "/login")) {
             counter.labels("login").inc();
+        } else {
             cleanupRequired = authenticate(request, response);
         }
 
