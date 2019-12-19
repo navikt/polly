@@ -59,10 +59,10 @@ public class AzureTokenProvider {
         this.authenticationContext = authenticationContext;
         this.graphClient = new AzureADGraphClient(azureCredential, aadAuthProps, serviceEndpointsProperties);
 
-        this.accessTokenCache = Caffeine.newBuilder()
+        this.accessTokenCache = Caffeine.newBuilder().recordStats()
                 .expireAfter(new AuthResultExpiry())
                 .maximumSize(1000).build();
-        this.grantedAuthorityCache = Caffeine.newBuilder()
+        this.grantedAuthorityCache = Caffeine.newBuilder().recordStats()
                 .expireAfterAccess(Duration.ofMinutes(10))
                 .maximumSize(1000).build();
         MetricUtils.register("accessTokenCache", accessTokenCache);

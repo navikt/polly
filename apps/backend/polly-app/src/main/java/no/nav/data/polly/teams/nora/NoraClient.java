@@ -27,7 +27,7 @@ public class NoraClient {
         this.restTemplate = restTemplate;
         this.noraProperties = noraProperties;
 
-        this.appsCache = Caffeine.newBuilder()
+        this.appsCache = Caffeine.newBuilder().recordStats()
                 .expireAfterAccess(Duration.ofMinutes(10))
                 .maximumSize(1).build();
         MetricUtils.register("noraAppsCache", appsCache);

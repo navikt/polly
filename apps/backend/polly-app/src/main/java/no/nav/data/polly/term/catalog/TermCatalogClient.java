@@ -38,10 +38,10 @@ public class TermCatalogClient {
         this.restTemplate = restTemplate;
         this.properties = properties;
 
-        this.termSearchCache = Caffeine.newBuilder()
+        this.termSearchCache = Caffeine.newBuilder().recordStats()
                 .expireAfterAccess(Duration.ofMinutes(10))
                 .maximumSize(1000).build();
-        this.termCache = Caffeine.newBuilder()
+        this.termCache = Caffeine.newBuilder().recordStats()
                 .expireAfterAccess(Duration.ofMinutes(10))
                 .maximumSize(1000).build();
         MetricUtils.register("termSearchCache", termSearchCache);
