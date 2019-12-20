@@ -13,26 +13,26 @@ import { Error, ModalLabel } from "../common/ModalSchema"
 
 interface DateModalProps {
     showDates: boolean;
-    rowBlockBrops: BlockProps;
+    rowBlockProps: BlockProps;
     showLabels?: boolean;
 }
 
 export const DateModalFields = (props: DateModalProps) => {
     const [showDates, setShowDates] = React.useState<boolean>(props.showDates);
-    const {rowBlockBrops, showLabels} = props
+    const {rowBlockProps, showLabels} = props;
 
     return (
         <>
             {!showDates ?
-                <Block {...rowBlockBrops}><Button size="compact" onClick={() => setShowDates(true)}>{intl.useDates}</Button></Block>
+                <Block {...rowBlockProps}><Button size="compact" onClick={() => setShowDates(true)}>{intl.useDates}</Button></Block>
                 : <>
-                    <Block {...rowBlockBrops}>
+                    <Block {...rowBlockProps}>
                         {showLabels && <ModalLabel label={intl.startDate}/>}
                         <Field name="start"
                                render={({field, form}: FieldProps<LegalBasisFormValues>) => (
                                    <Datepicker placeholder={intl.datePickStart} value={field.value && new Date(field.value)}
                                                onChange={({date}) => {
-                                                   const moment1 = moment(date as Date)
+                                                   const moment1 = moment(date as Date);
                                                    form.setFieldValue('start', moment1.format(moment.HTML5_FMT.DATE));
                                                }}
                                                formatString={'yyyy-MM-dd'}
@@ -53,13 +53,13 @@ export const DateModalFields = (props: DateModalProps) => {
                     </Block>
                     <Error fieldName="start"/>
 
-                    <Block {...rowBlockBrops}>
+                    <Block {...rowBlockProps}>
                         {showLabels && <ModalLabel label={intl.endDate}/>}
                         <Field name="end"
                                render={({field, form}: FieldProps<LegalBasisFormValues>) => (
                                    <Datepicker placeholder={intl.datePickEnd} value={field.value && new Date(field.value)}
                                                onChange={({date}) => {
-                                                   const moment1 = moment(date as Date)
+                                                   const moment1 = moment(date as Date);
                                                    form.setFieldValue('end', moment1.format(moment.HTML5_FMT.DATE));
                                                }}
                                                formatString={'yyyy-MM-dd'}
@@ -82,4 +82,4 @@ export const DateModalFields = (props: DateModalProps) => {
                 </>}
         </>
     )
-}
+};
