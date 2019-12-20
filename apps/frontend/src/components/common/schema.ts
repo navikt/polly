@@ -24,6 +24,7 @@ export const processSchema = () => yup.object<ProcessFormValues>({
     name: yup.string().max(max, maxError()).required(intl.required),
     department: yup.string(),
     subDepartment: yup.string(),
+    productTeam: yup.string(),
     legalBases: yup.array(legalBasisSchema()),
     start: yup.string().matches(DATE_REGEX, intl.dateFormat),
     end: yup.string().matches(DATE_REGEX, intl.dateFormat)

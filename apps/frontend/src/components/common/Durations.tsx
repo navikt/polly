@@ -4,11 +4,10 @@ import { StatefulTooltip } from "baseui/tooltip"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faClock } from "@fortawesome/free-solid-svg-icons"
 import { intl, theme } from "../../util"
-import { Block } from "baseui/block"
 
 const defaultStart = moment("0001-01-01")
 const defaultEnd = moment("9999-12-31")
-const dateFormat = 'LL'
+const dateFormat = 'll'
 
 export const hasSpecifiedDate = (obj: { start?: string, end?: string }) => {
     const startDate = obj.start ? moment(obj.start) : undefined
@@ -33,17 +32,14 @@ export const ActiveIndicator = (props: { start?: string, end?: string, alwaysSho
     const {hasStart, hasEnd, hasDates} = checkDate(startDate, endDate, alwaysShow)
     const active = startDate.isSameOrBefore(moment()) && endDate.isSameOrAfter(moment())
 
-    const startView = hasStart && <>{intl.startDate}: {startDate.format(dateFormat)}</>
-    const endView = hasEnd && <>{intl.endDate}: {endDate.format(dateFormat)}</>
+    const startView = startDate.format(dateFormat)
+    const endView = endDate.format(dateFormat)
     return (hasDates ?
-            <StatefulTooltip content={<>{startView} {hasStart && hasEnd && ' - '} {endView}</>}>
+            <StatefulTooltip content={<>{hasStart && (intl.startDate + ' ' + startView)} {hasStart && hasEnd && ' - '} {hasEnd && (intl.endDate + ' ' + endView)}</>}>
                 <span>
+                    {withText && intl.period + ': '}
                     <FontAwesomeIcon icon={faClock} color={active ? theme.colors.positive300 : theme.colors.mono600}/>
-                    {withText &&
-                    <>
-                      <Block width="100%">{startView}</Block>
-                      <Block width="100%">{endView}</Block>
-                    </>}
+                    {withText && <> {startView} - {endView}</>}
                 </span>
             </StatefulTooltip>
             : null

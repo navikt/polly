@@ -26,6 +26,7 @@ export interface IStrings {
     subjectCategories: string;
     nationalLaw: string;
     navMaster: string;
+    productTeam: string;
 
     // sentence
     loggedInStatus: string;
@@ -104,6 +105,8 @@ export interface IStrings {
     active: string;
     inactive: string;
     preview: string;
+    info: string;
+    period: string;
 
     prevButton: string;
     nextButton: string;

@@ -1,10 +1,10 @@
 import * as React from "react";
-import { SortableHeadCell, StyledBody, StyledHead, StyledHeadCell, StyledRow, StyledTable, StyledCell } from "baseui/table";
+import { SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { Block } from "baseui/block";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faInfo, faInfoCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "baseui/modal";
 import { Paragraph2 } from "baseui/typography";
 import { StatefulTooltip } from "baseui/tooltip"
@@ -28,13 +28,21 @@ const StyledHeader = withStyle(StyledHead, {
     borderBottom: "2px solid #E9E7E7"
 });
 
-const CustomStyledRow = withStyle<StyletronComponent<any>, {inactive: boolean}>(StyledRow, (props) => ({
+type RowProps = {
+    inactive: boolean,
+    selected: boolean,
+    infoRow?: boolean
+}
+
+const CustomStyledRow = withStyle<StyletronComponent<any>, RowProps>(StyledRow, (props) => ({
+    borderLeft: "0px solid #E9E7E7",
     borderBottom: "1px solid #E9E7E7",
     padding: "8px",
     fontSize: "24px",
     opacity:  props.inactive ? '.5' : undefined,
-}));
-
+    backgroundColor: props.infoRow ? props.$theme.colors.accent50 : undefined,
+    borderLeftWidth: props.infoRow || props.selected ? props.$theme.sizing.scale300 : undefined,
+}))
 
 const SmallerStyledCell = withStyle(StyledCell, {
     maxWidth: '15%'
@@ -57,6 +65,7 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
     const [policies, setPolicies] = React.useState<Policy[]>(process.policies)
     const [currentPolicy, setCurrentPolicy] = React.useState<Policy>()
     const [showEditModal, setShowEditModal] = React.useState(false)
+    const [showPolicyInfo, setShowPolicyInfo] = React.useState(false)
     const [showDeleteModal, setShowDeleteModal] = React.useState(false)
     const [table, sortColumn] = useTable<Policy, keyof Policy>(policies, { sorting: policySort, initialSortColumn: "informationType", showLast: (p) => !p.active })
 
@@ -85,63 +94,87 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
                         direction={table.direction.legalBases}
                         onSort={() => sortColumn('legalBases')}
                     />
-                    {hasAccess && <SmallerStyledHeadCell />}
+                    <SmallerStyledHeadCell/>
 
                 </StyledHeader>
                 <StyledBody>
-                    {table.data.map((row: Policy, index: number) => (
-                        <CustomStyledRow key={index} inactive={!row.active} >
-                            <StyledCell>
-                                <Sensitivity sensitivity={row.informationType.sensitivity} />&nbsp;
-                                <ActiveIndicator {...row} /> &nbsp;
+                    {table.data.map((row: Policy, index: number) => {
+                        const selectedRow = row.id === currentPolicy?.id
+                        return (
+                            <>
+                                <CustomStyledRow key={index} inactive={!row.active} selected={showPolicyInfo && selectedRow}>
+                                    <StyledCell>
+                                        <Sensitivity sensitivity={row.informationType.sensitivity}/>&nbsp;
+                                        <RouteLink href={`/informationtype/${row.informationType.id}`} width="25%">
+                                            {row.informationType.name}
+                                        </RouteLink>
+                                    </StyledCell>
 
-                                <RouteLink href={`/informationtype/${row.informationType.id}`} width="25%">
-                                    {row.informationType.name}
-                                </RouteLink>
-                            </StyledCell>
+                                    <StyledCell>{codelist.getShortname(ListName.SUBJECT_CATEGORY, row.subjectCategory.code)}</StyledCell>
+                                    <StyledCell>
+                                        {!row.legalBasesInherited && row.legalBases.length < 1 && (
+                                            <LegalBasesNotClarified/>
+                                        )}
 
-                            <StyledCell>{codelist.getShortname(ListName.SUBJECT_CATEGORY, row.subjectCategory.code)}</StyledCell>
-                            <StyledCell>
-                                {!row.legalBasesInherited && row.legalBases.length < 1 && (
-                                    <LegalBasesNotClarified />
-                                )}
-
-                                {row.legalBases && row.legalBases.length > 0 && (
-                                    <ListLegalBasesInTable legalBases={row.legalBases} />
-                                )}
-                            </StyledCell>
-                            {hasAccess && (
-                                <SmallerStyledCell>
-                                    <Block display="flex" justifyContent="flex-end" width="100%">
-                                        <StatefulTooltip content={intl.edit}>
-                                            <Button
-                                                size={ButtonSize.compact}
-                                                kind={KIND.tertiary}
-                                                onClick={() => {
-                                                    setCurrentPolicy(row)
-                                                    setShowEditModal(true)
-                                                }}
-                                            >
-                                                <FontAwesomeIcon icon={faEdit} />
-                                            </Button>
-                                        </StatefulTooltip>
-                                        <StatefulTooltip content={intl.delete}>
-                                            <Button
-                                                size={ButtonSize.compact}
-                                                kind={KIND.tertiary}
-                                                onClick={() => {
-                                                    setCurrentPolicy(row)
-                                                    setShowDeleteModal(true)
-                                                }}
-                                            >
-                                                <FontAwesomeIcon icon={faTrash} />
-                                            </Button>
-                                        </StatefulTooltip>
-                                    </Block>
-                                </SmallerStyledCell>
-                            )}
-                        </CustomStyledRow>
-                    ))}
+                                        {row.legalBases && row.legalBases.length > 0 && (
+                                            <ListLegalBasesInTable legalBases={row.legalBases}/>
+                                        )}
+                                    </StyledCell>
+                                    <SmallerStyledCell>
+                                        <Block display="flex" justifyContent="flex-end" width="100%">
+                                            <StatefulTooltip content={intl.info}>
+                                                <Button
+                                                    size={ButtonSize.compact}
+                                                    kind={KIND.tertiary}
+                                                    onClick={() => {
+                                                        setCurrentPolicy(row)
+                                                        setShowPolicyInfo(!selectedRow || !showPolicyInfo)
+                                                    }}
+                                                >
+                                                    <FontAwesomeIcon icon={showPolicyInfo && selectedRow ? faInfoCircle : faInfo}/>
+                                                </Button>
+                                            </StatefulTooltip>
+                                            {hasAccess && (
+                                                <>
+                                                    <StatefulTooltip content={intl.edit}>
+                                                        <Button
+                                                            size={ButtonSize.compact}
+                                                            kind={KIND.tertiary}
+                                                            onClick={() => {
+                                                                setCurrentPolicy(row)
+                                                                setShowEditModal(true)
+                                                            }}
+                                                        >
+                                                            <FontAwesomeIcon icon={faEdit}/>
+                                                        </Button>
+                                                    </StatefulTooltip>
+                                                    <StatefulTooltip content={intl.delete}>
+                                                        <Button
+                                                            size={ButtonSize.compact}
+                                                            kind={KIND.tertiary}
+                                                            onClick={() => {
+                                                                setCurrentPolicy(row)
+                                                                setShowDeleteModal(true)
+                                                            }}
+                                                        >
+                                                            <FontAwesomeIcon icon={faTrash}/>
+                                                        </Button>
+                                                    </StatefulTooltip>
+                                                </>
+                                            )}
+                                        </Block>
+                                    </SmallerStyledCell>
+                                </CustomStyledRow>
+                                {showPolicyInfo && selectedRow &&
+                                <CustomStyledRow infoRow={true}>
+                                  <StyledCell>
+                                    <ActiveIndicator {...row} alwaysShow={true} withText={true}/> &nbsp;
+                                  </StyledCell>
+                                </CustomStyledRow>
+                                }
+                            </>
+                        )
+                    })}
                 </StyledBody>
                 {showEditModal && currentPolicy && (
                     <ModalPolicy

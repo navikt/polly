@@ -16,6 +16,7 @@ export const no: IStrings = {
     subjectCategories: "Kategorier av personer",
     nationalLaw: "Nasjonal lov",
     navMaster: "Master i NAV",
+    productTeam: "Produktteam",
 
     loggedInStatus: "Du er logget inn og kan",
     notLoggedInStatus: "Du er ikke logget inn men kan",
@@ -94,6 +95,8 @@ export const no: IStrings = {
     inactive: "Inaktiv",
     active: "Aktiv",
     preview: "Forhåndsvisning",
+    info: "Informasjon",
+    period: "Periode",
 
     prevButton: "Forrige",
     nextButton: "Neste",
@@ -139,6 +142,7 @@ export const en = {
     legalBasesShort: "Legal bases",
     nationalLaw: "National law",
     subjectCategories: "Subject Categories",
+    productTeam: "Product Team",
 
     loggedInStatus: "You are logged in and can",
     notLoggedInStatus: "You are not logged in but you can still",
