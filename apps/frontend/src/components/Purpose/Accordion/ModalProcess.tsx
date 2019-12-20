@@ -1,9 +1,10 @@
 import * as React from 'react'
+import {useEffect} from 'react'
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
 import {Field, FieldArray, FieldProps, Form, Formik, FormikProps,} from "formik";
 import {Block, BlockProps} from "baseui/block";
 import {Input, SIZE as InputSIZE} from "baseui/input";
-import { Select, Value } from 'baseui/select';
+import {Select, Value} from 'baseui/select';
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
 import {Plus} from "baseui/icon";
 
@@ -16,13 +17,7 @@ import {ListLegalBases} from "../../common/LegalBasis"
 import {DateModalFields} from "../DateModalFields"
 import {hasSpecifiedDate} from "../../common/Durations"
 import {processSchema} from "../../common/schema"
-import { Error, ModalLabel } from "../../common/ModalSchema";
-import { ListLegalBases} from "../../common/LegalBasis"
-import { DateModalFields } from "../DateModalFields"
-import { hasSpecifiedDate } from "../../common/Durations"
-import { processSchema } from "../../common/schema"
-import { getTeam, mapTeamToOption, useTeamSearch } from "../../../api/TeamApi"
-import { useEffect } from "react"
+import {getTeam, mapTeamToOption, useTeamSearch} from "../../../api/TeamApi"
 
 const modalBlockProps: BlockProps = {
     width: '750px',
