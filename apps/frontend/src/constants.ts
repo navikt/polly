@@ -162,5 +162,7 @@ export interface legalBasis {
 export interface CardLegalBasisProps {
     initValue: legalBasis;
     hideCard: Function;
-    submit: (val: LegalBasisFormValues) => void
+    submit: (val: LegalBasisFormValues) => void;
+    titleSubmitButton: string;
+
 }
