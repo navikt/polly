@@ -11,29 +11,29 @@ import {ProcessFormValues} from "../../../constants";
 import CardLegalBasis from './CardLegalBasis'
 import {codelist, ListName} from "../../../service/Codelist"
 import {intl} from "../../../util"
-import { Error, ModalLabel } from "../../common/ModalSchema";
-import { ListLegalBases} from "../../common/LegalBasis"
-import { DateModalFields } from "../DateModalFields"
-import { hasSpecifiedDate } from "../../common/Durations"
-import { processSchema } from "../../common/schema"
+import {Error, ModalLabel} from "../../common/ModalSchema";
+import {ListLegalBases} from "../../common/LegalBasis"
+import {DateModalFields} from "../DateModalFields"
+import {hasSpecifiedDate} from "../../common/Durations"
+import {processSchema} from "../../common/schema"
 
 const modalBlockProps: BlockProps = {
     width: '750px',
     paddingRight: '2rem',
     paddingLeft: '2rem'
-}
+};
 
 const rowBlockProps: BlockProps = {
     display: 'flex',
     width: '100%',
     marginTop: '1rem'
-}
+};
 
 const modalHeaderProps: BlockProps = {
     display: 'flex',
     justifyContent: 'center',
     marginBottom: '2rem'
-}
+};
 
 const FieldName = () => (
     <Field
@@ -42,10 +42,10 @@ const FieldName = () => (
             <Input {...field} type="input" size={InputSIZE.default} autoFocus error={!!form.errors.name && form.touched.name} />
         )}
     />
-)
+);
 
 const FieldDepartment = (props: {department?: string}) => {
-    const { department } = props
+    const { department } = props;
     const [value, setValue] = React.useState<Value>(department ? [{ id: department, label: codelist.getShortname(ListName.DEPARTMENT, department) }] : []);
 
     return (
@@ -55,7 +55,7 @@ const FieldDepartment = (props: {department?: string}) => {
                 <Select
                     options={codelist.getParsedOptions(ListName.DEPARTMENT)}
                     onChange={({ value }) => {
-                        setValue(value)
+                        setValue(value);
                         form.setFieldValue('department', value.length > 0 ? value[0].id : undefined)
                     }}
                     value={value}
@@ -63,10 +63,10 @@ const FieldDepartment = (props: {department?: string}) => {
             )}
         />
     )
-}
+};
 
 const FieldSubDepartment = (props: {subDepartment?: string}) => {
-    const { subDepartment } = props
+    const { subDepartment } = props;
     const [value, setValue] = React.useState<Value>(subDepartment
         ? [{ id: subDepartment, label: codelist.getShortname(ListName.SUB_DEPARTMENT, subDepartment) }]
         : []);
@@ -78,7 +78,7 @@ const FieldSubDepartment = (props: {subDepartment?: string}) => {
                 <Select
                     options={codelist.getParsedOptions(ListName.SUB_DEPARTMENT)}
                     onChange={({ value }) => {
-                        setValue(value)
+                        setValue(value);
                         form.setFieldValue('subDepartment', value.length > 0 ? value[0].id : undefined)
                     }}
                     value={value}
@@ -87,7 +87,7 @@ const FieldSubDepartment = (props: {subDepartment?: string}) => {
         />
     )
 
-}
+};
 
 type ModalProcessProps = {
     title: string;
@@ -99,13 +99,13 @@ type ModalProcessProps = {
     onClose: Function;
 };
 
-const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialValues, title }: ModalProcessProps) => {
-    const [showLegalBasisFields, setShowLegalbasesFields] = React.useState(false)
+const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, title }: ModalProcessProps) => {
+    const [showLegalBasisFields, setShowLegalbasesFields] = React.useState(false);
 
     const onCloseModal = () => {
-        setShowLegalbasesFields(false)
+        setShowLegalbasesFields(false);
         onClose()
-    }
+    };
 
     return (
         <Modal
@@ -147,7 +147,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                                     </Block>
                                 )}
 
-                                <DateModalFields showDates={hasSpecifiedDate(initialValues)} showLabels={true} rowBlockBrops={rowBlockProps} />
+                                <DateModalFields showDates={hasSpecifiedDate(initialValues)} showLabels={true} rowBlockProps={rowBlockProps} />
 
                                 <Block {...rowBlockProps}>
                                     <ModalLabel/>
@@ -172,11 +172,13 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                                             {showLegalBasisFields && (
                                                 <Block width="100%">
                                                     <CardLegalBasis
+                                                        initValue={{}}
+                                                        titleSubmitButton={intl.legalBasisAdd}
                                                         hideCard={() => setShowLegalbasesFields(false)}
                                                         submit={(values) => {
-                                                            if (!values) return
+                                                            if (!values) return;
                                                             else {
-                                                                arrayHelpers.push(values)
+                                                                arrayHelpers.push(values);
                                                                 setShowLegalbasesFields(false)
                                                             }
                                                         }} />
@@ -189,6 +191,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
                                                         <ListLegalBases
                                                             legalBases={formikBag.values.legalBases}
                                                             onRemove={(index) => arrayHelpers.remove(index)}
+                                                            onEdit={function(){}}
                                                         />
                                                     </Block>
                                                 </Block>
@@ -213,6 +216,6 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, isEdit, initialV
             </Block>
         </Modal>
     )
-}
+};
 
 export default ModalProcess
