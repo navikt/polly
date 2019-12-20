@@ -91,7 +91,7 @@ export const policySort : ColumnCompares<Policy> = {
     process: (a, b) => a.process.name.localeCompare(b.process.name),
     subjectCategory: (a, b) => codelist.getShortnameForCode(a.subjectCategory).localeCompare(codelist.getShortnameForCode(b.subjectCategory), intl.getLanguage()),
     legalBases: (a, b) => a.legalBases.length - b.legalBases.length
-}
+};
 
 export interface PolicyInformationType {
     id: string;
@@ -149,4 +149,18 @@ export interface CodeListFormValues {
     code: string,
     shortName?: string,
     description ?: string
+}
+
+export interface legalBasis {
+    gdpr?: string,
+    nationalLaw?: string,
+    description?: string,
+    start?: string,
+    end?: string
+}
+
+export interface CardLegalBasisProps {
+    initValue: legalBasis;
+    hideCard: Function;
+    submit: (val: LegalBasisFormValues) => void
 }
