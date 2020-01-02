@@ -9,7 +9,7 @@ import {codelist, ListName} from "../../../service/Codelist";
 import {intl, theme} from "../../../util"
 import {ErrorMessage, Field, FieldProps, Formik, FormikProps} from "formik"
 import {KIND as NKIND, Notification} from "baseui/notification"
-import {CardLegalBasisProps, LegalBasisFormValues} from "../../../constants"
+import {LegalBasisFormValues} from "../../../constants"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {DateModalFields} from "../DateModalFields"
 import {faExclamationCircle, faPen} from "@fortawesome/free-solid-svg-icons"
@@ -56,6 +56,13 @@ const renderCardHeader = (text: string) => {
 
     )
 };
+
+interface CardLegalBasisProps {
+    initValue: LegalBasisFormValues;
+    hideCard: Function;
+    submit: (val: LegalBasisFormValues) => void;
+    titleSubmitButton: string;
+}
 
 const CardLegalBasis = ({ submit, hideCard, initValue,titleSubmitButton }: CardLegalBasisProps) => {
     const [gdpr, setGdpr] = React.useState<Value>(
