@@ -14,11 +14,10 @@ import { Sensitivity } from "../../InformationType/Sensitivity"
 import ModalPolicy from "./ModalPolicy";
 import { LegalBasesNotClarified, ListLegalBasesInTable } from "../../common/LegalBasis"
 import { Policy, policySort, Process } from "../../../constants"
-import { intl } from "../../../util"
+import { intl, theme } from "../../../util"
 import { convertPolicyToFormValues } from "../../../api"
 import { useTable } from "../../../util/hooks"
 import RouteLink from "../../common/RouteLink"
-import { StyletronComponent } from "styletron-react"
 import { ActiveIndicator } from "../../common/Durations"
 
 
@@ -29,20 +28,25 @@ const StyledHeader = withStyle(StyledHead, {
 });
 
 type RowProps = {
-    inactive: boolean,
-    selected: boolean,
-    infoRow?: boolean
+    inactiveRow?: boolean,
+    selectedRow?: boolean,
+    infoRow?: boolean,
+    children?: any
 }
 
-const CustomStyledRow = withStyle<StyletronComponent<any>, RowProps>(StyledRow, (props) => ({
-    borderLeft: "0px solid #E9E7E7",
-    borderBottom: "1px solid #E9E7E7",
-    padding: "8px",
-    fontSize: "24px",
-    opacity:  props.inactive ? '.5' : undefined,
-    backgroundColor: props.infoRow ? props.$theme.colors.accent50 : undefined,
-    borderLeftWidth: props.infoRow || props.selected ? props.$theme.sizing.scale300 : undefined,
-}))
+const CustomStyledRow = (props: RowProps) => {
+    const styleProps = {
+        borderLeft: "0px solid #E9E7E7",
+        borderBottom: "1px solid #E9E7E7",
+        padding: "8px",
+        fontSize: "24px",
+        opacity: props.inactiveRow ? '.5' : undefined,
+        backgroundColor: props.infoRow ? theme.colors.accent50 : undefined,
+        borderLeftWidth: props.infoRow || props.selectedRow ? theme.sizing.scale300 : undefined,
+    }
+    const Row = withStyle(StyledRow, styleProps)
+    return <Row>{props.children}</Row>
+}
 
 const SmallerStyledCell = withStyle(StyledCell, {
     maxWidth: '15%'
@@ -102,7 +106,7 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
                         const selectedRow = row.id === currentPolicy?.id
                         return (
                             <React.Fragment key={index}>
-                                <CustomStyledRow inactive={!row.active} selected={showPolicyInfo && selectedRow}>
+                                <CustomStyledRow inactiveRow={!row.active} selectedRow={showPolicyInfo && selectedRow}>
                                     <StyledCell>
                                         <Sensitivity sensitivity={row.informationType.sensitivity}/>&nbsp;
                                         <RouteLink href={`/informationtype/${row.informationType.id}`} width="25%">
