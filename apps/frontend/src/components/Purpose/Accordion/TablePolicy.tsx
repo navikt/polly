@@ -101,8 +101,8 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
                     {table.data.map((row: Policy, index: number) => {
                         const selectedRow = row.id === currentPolicy?.id
                         return (
-                            <>
-                                <CustomStyledRow key={index} inactive={!row.active} selected={showPolicyInfo && selectedRow}>
+                            <Block key={index}>
+                                <CustomStyledRow inactive={row.active? 0 : 1} selected={showPolicyInfo && selectedRow}>
                                     <StyledCell>
                                         <Sensitivity sensitivity={row.informationType.sensitivity}/>&nbsp;
                                         <RouteLink href={`/informationtype/${row.informationType.id}`} width="25%">
@@ -172,7 +172,7 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
                                   </StyledCell>
                                 </CustomStyledRow>
                                 }
-                            </>
+                            </Block>
                         )
                     })}
                 </StyledBody>
