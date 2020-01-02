@@ -1,23 +1,23 @@
 import * as React from "react";
-import {KeyboardEvent, useState} from "react";
-import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
-import {Field, FieldArray, FieldProps, Form, Formik, FormikProps,} from "formik";
-import {Block, BlockProps} from "baseui/block";
-import {Radio, RadioGroup} from "baseui/radio";
-import {Plus} from "baseui/icon";
-import {Select, TYPE, Value} from 'baseui/select';
+import { KeyboardEvent, useState } from "react";
+import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
+import { Field, FieldArray, FieldProps, Form, Formik, FormikProps, } from "formik";
+import { Block, BlockProps } from "baseui/block";
+import { Radio, RadioGroup } from "baseui/radio";
+import { Plus } from "baseui/icon";
+import { Select, TYPE, Value } from 'baseui/select';
 
 import CardLegalBasis from "./CardLegalBasis"
-import {codelist, ListName} from "../../../service/Codelist";
-import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
-import {LegalBasesStatus, PolicyFormValues, PolicyInformationType} from "../../../constants"
-import {ListLegalBases} from "../../common/LegalBasis"
-import {useInfoTypeSearch} from "../../../api"
-import {Error, ModalLabel} from "../../common/ModalSchema";
-import {intl} from "../../../util"
-import {DateModalFields} from "../DateModalFields"
-import {hasSpecifiedDate} from "../../common/Durations"
-import {policySchema} from "../../common/schema"
+import { codelist, ListName } from "../../../service/Codelist";
+import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
+import { LegalBasesStatus, PolicyFormValues, PolicyInformationType } from "../../../constants"
+import { ListLegalBases } from "../../common/LegalBasis"
+import { useInfoTypeSearch } from "../../../api"
+import { Error, ModalLabel } from "../../common/ModalSchema";
+import { intl } from "../../../util"
+import { DateModalFields } from "../DateModalFields"
+import { hasSpecifiedDate } from "../../common/Durations"
+import { policySchema } from "../../common/schema"
 
 
 const modalBlockProps: BlockProps = {
@@ -141,7 +141,6 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, ti
         if (e.key === 'Enter') e.preventDefault()
     };
 
-    const showDates = hasSpecifiedDate(initialValues);
     return (
         <Modal
             onClose={onCloseModal}
@@ -184,7 +183,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, ti
                                 </Block>
                                 <Error fieldName="subjectCategory" />
 
-                               <DateModalFields showDates={showDates} showLabels={true} rowBlockProps={rowBlockProps}/>
+                               <DateModalFields showDates={hasSpecifiedDate(initialValues)} showLabels={true} rowBlockProps={rowBlockProps}/>
 
                                 <Block {...rowBlockProps}>
                                     <ModalLabel label={intl.legalBasesShort}/>

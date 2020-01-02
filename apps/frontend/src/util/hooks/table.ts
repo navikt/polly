@@ -61,7 +61,7 @@ export const useTable = <T, K extends keyof T>(initialData: Array<T>, config?: T
                 console.warn(`invalid sort column ${sortColumn} no sort function supplied`)
             } else {
                 try {
-                    const sorted = sortData.slice(0).sort((a, b) => sortFunct(a, b))
+                    const sorted = sortData.slice(0).sort(sortFunct)
                     let ordered = sortDirection === SORT_DIRECTION.ASC ? sorted : sorted.reverse()
                     if (showLast && isInitialSort) {
                         ordered = [...ordered.filter(p => !showLast(p)), ...ordered.filter(showLast)]

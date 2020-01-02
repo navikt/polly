@@ -17,6 +17,12 @@ interface DateModalProps {
     showLabels?: boolean;
 }
 
+function dateToDateString(date: Date | Date[]) {
+    if (!date) return undefined
+    const moment1 = moment(date as Date);
+    return moment1.format(moment.HTML5_FMT.DATE)
+}
+
 export const DateModalFields = (props: DateModalProps) => {
     const [showDates, setShowDates] = React.useState<boolean>(props.showDates);
     const {rowBlockProps, showLabels} = props;
@@ -32,8 +38,7 @@ export const DateModalFields = (props: DateModalProps) => {
                                render={({field, form}: FieldProps<LegalBasisFormValues>) => (
                                    <Datepicker placeholder={intl.datePickStart} value={field.value && new Date(field.value)}
                                                onChange={({date}) => {
-                                                   const moment1 = moment(date as Date);
-                                                   form.setFieldValue('start', moment1.format(moment.HTML5_FMT.DATE));
+                                                   form.setFieldValue('start', dateToDateString(date));
                                                }}
                                                formatString={'yyyy-MM-dd'}
                                                error={!!form.errors.start && (form.touched.start || !!form.submitCount)}
@@ -59,8 +64,7 @@ export const DateModalFields = (props: DateModalProps) => {
                                render={({field, form}: FieldProps<LegalBasisFormValues>) => (
                                    <Datepicker placeholder={intl.datePickEnd} value={field.value && new Date(field.value)}
                                                onChange={({date}) => {
-                                                   const moment1 = moment(date as Date);
-                                                   form.setFieldValue('end', moment1.format(moment.HTML5_FMT.DATE));
+                                                   form.setFieldValue('end', dateToDateString(date));
                                                }}
                                                formatString={'yyyy-MM-dd'}
                                                error={!!form.errors.end && (form.touched.end || !!form.submitCount)}
