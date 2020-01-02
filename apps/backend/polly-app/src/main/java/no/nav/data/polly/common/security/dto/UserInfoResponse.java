@@ -24,8 +24,17 @@ public class UserInfoResponse {
     private String email;
     private List<String> groups = new ArrayList<>();
 
-    public static UserInfoResponse noUser() {
-        return UserInfoResponse.builder().loggedIn(false).pollyRole(PollyRole.POLLY_READ).build();
+    public static UserInfoResponse noUser(boolean securityEnabled) {
+        var responseBuilder = UserInfoResponse.builder().loggedIn(false)
+                .pollyRole(PollyRole.POLLY_READ);
+        if (!securityEnabled) {
+            responseBuilder
+                    .pollyRole(PollyRole.POLLY_WRITE)
+                    .pollyRole(PollyRole.POLLY_ADMIN)
+                    .name("Anon")
+                    .navIdent("x000000");
+        }
+        return responseBuilder.build();
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")

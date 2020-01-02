@@ -146,7 +146,7 @@ public class AuthController {
         log.debug("Request to userinfo");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
-            return ResponseEntity.ok(UserInfoResponse.noUser());
+            return ResponseEntity.ok(UserInfoResponse.noUser(securityProperties.isEnabled()));
         }
         return ResponseEntity.ok(((UserInfo) authentication.getDetails()).convertToResponse());
     }
