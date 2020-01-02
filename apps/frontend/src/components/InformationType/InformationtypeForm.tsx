@@ -350,9 +350,10 @@ const InformationtypeForm = ({
 
                         </FlexGrid>
 
-                        <Block display="flex" marginTop="2rem">
+                        <Block display="flex" marginTop="2rem" justifyContent="flex-end">
                             <Button
-                                type="submit"
+                                type="button"
+                                kind="secondary"
                                 overrides={{
                                     BaseButton: {
                                         style: ({ $theme }) => {
@@ -364,31 +365,28 @@ const InformationtypeForm = ({
                                         }
                                     }
                                 }}
+                                onClick={() => window.history.back()}
+                            >
+                                {intl.abort}
+                            </Button>
+                            <Button
+                                type="submit"
+                                overrides={{
+                                    BaseButton: {
+                                        style: ({ $theme }) => {
+                                            return {
+                                                alignContent: "center",
+                                                marginLeft: "1rem",
+                                                paddingRight: "4rem",
+                                                paddingLeft: "4rem"
+                                            };
+                                        }
+                                    }
+                                }}
 
                             >
                                 {intl.save}
                             </Button>
-                            {isEdit && (
-                                <Button
-                                    type="button"
-                                    kind="secondary"
-                                    overrides={{
-                                        BaseButton: {
-                                            style: ({ $theme }) => {
-                                                return {
-                                                    alignContent: "center",
-                                                    marginLeft: "1rem",
-                                                    paddingRight: "4rem",
-                                                    paddingLeft: "4rem"
-                                                };
-                                            }
-                                        }
-                                    }}
-                                    onClick={() => window.history.back()}
-                                >
-                                    {intl.abort}
-                                </Button>
-                            )}
                         </Block>
                     </Form>
                 )}
