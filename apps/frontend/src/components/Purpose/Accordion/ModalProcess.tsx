@@ -134,10 +134,13 @@ type ModalProcessProps = {
 };
 
 const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, title }: ModalProcessProps) => {
-    const [showLegalBasisFields, setShowLegalbasesFields] = React.useState(false);
+
+    const [showLegalBasisFields, setShowLegalBasesFields] = React.useState<boolean>(false);
+    const [selectedLegalBasis, setSelectedLegalBasis] = React.useState();
+    const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState();
 
     const onCloseModal = () => {
-        setShowLegalbasesFields(false);
+        setShowLegalBasesFields(false);
         onClose()
     };
 
@@ -195,7 +198,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                                             <Button
                                                 size={ButtonSize.compact}
                                                 kind={KIND.minimal}
-                                                onClick={() => setShowLegalbasesFields(true)}
+                                                onClick={() => setShowLegalBasesFields(true)}
                                                 startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
                                             >
                                                 {intl.legalBasisAdd}
@@ -208,29 +211,47 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                                     name="legalBases"
                                     render={arrayHelpers => (
                                         <React.Fragment>
-                                            {showLegalBasisFields && (
-                                                <Block width="100%">
-                                                    <CardLegalBasis
-                                                        initValue={{}}
-                                                        titleSubmitButton={intl.legalBasisAdd}
-                                                        hideCard={() => setShowLegalbasesFields(false)}
-                                                        submit={(values) => {
-                                                            if (!values) return;
-                                                            else {
-                                                                arrayHelpers.push(values);
-                                                                setShowLegalbasesFields(false)
-                                                            }
-                                                        }} />
+                                            {showLegalBasisFields ? (
+                                                <Block width="100%" marginTop="2rem">
+                                                    {selectedLegalBasis ? (
+                                                        <CardLegalBasis
+                                                            titleSubmitButton={intl.save}
+                                                            initValue={selectedLegalBasis}
+                                                            hideCard={() => setShowLegalBasesFields(false)}
+                                                            submit={(selectedPolicyBasisValues) => {
+                                                                if (!selectedPolicyBasisValues) return;
+                                                                arrayHelpers.replace(selectedLegalBasisIndex,selectedPolicyBasisValues);
+                                                                setShowLegalBasesFields(false);
+                                                                setSelectedLegalBasis(null)
+                                                            }} />
+                                                    ): (
+                                                        <CardLegalBasis
+                                                            initValue={{}}
+                                                            titleSubmitButton={intl.legalBasisAdd}
+                                                            hideCard={() => setShowLegalBasesFields(false)}
+                                                            submit={(values) => {
+                                                                if (!values) return;
+                                                                else {
+                                                                    arrayHelpers.push(values);
+                                                                    setShowLegalBasesFields(false)
+                                                                }
+                                                            }} />
+                                                    )}
+
                                                 </Block>
-                                            )}
-                                            {!showLegalBasisFields && (
+                                            ):(
                                                 <Block display="flex">
-                                                    <ModalLabel />
+                                                    <ModalLabel/>
                                                     <Block width="100%">
                                                         <ListLegalBases
                                                             legalBases={formikBag.values.legalBases}
                                                             onRemove={(index) => arrayHelpers.remove(index)}
-                                                            onEdit={function(){}}
+                                                            onEdit={
+                                                                (index)=> {
+                                                                    setSelectedLegalBasis(formikBag.values.legalBases[index]);
+                                                                    setSelectedLegalBasisIndex(index);
+                                                                    setShowLegalBasesFields(true)}
+                                                            }
                                                         />
                                                     </Block>
                                                 </Block>
