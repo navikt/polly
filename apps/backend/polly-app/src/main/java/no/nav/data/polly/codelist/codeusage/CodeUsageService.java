@@ -53,39 +53,11 @@ public class CodeUsageService {
     }
 
     public CodeUsageResponse findCodeUsage(ListName listName, String code) {
-        CodeUsageResponse codeUsage = new CodeUsageResponse(listName.toString(), code);
-        switch (listName) {
-            // process only
-            case DEPARTMENT:
-            case SUB_DEPARTMENT:
-                codeUsage.setProcesses(findProcesses(listName, code));
-                break;
-            // process and Policy
-            case PURPOSE:
-                codeUsage.setProcesses(findProcesses(listName, code));
-                codeUsage.setPolicies(findPolicies(listName, code));
-                break;
-            case GDPR_ARTICLE:
-            case NATIONAL_LAW:
-                codeUsage.setProcesses(findProcesses(listName, code));
-                codeUsage.setPolicies(findPolicies(listName, code));
-                codeUsage.setDisclosures(findDisclosures(listName, code));
-                break;
-            // policy only
-            case SUBJECT_CATEGORY:
-                codeUsage.setPolicies(findPolicies(listName, code));
-                break;
-            // informationtypes only
-            case SENSITIVITY:
-            case SYSTEM:
-            case CATEGORY:
-            case SOURCE:
-                codeUsage.setInformationTypes(findInformationTypes(listName, code));
-                codeUsage.setDisclosures(findDisclosures(listName, code));
-                break;
-            default:
-                break;
-        }
+        CodeUsageResponse codeUsage = new CodeUsageResponse(listName, code);
+        codeUsage.setProcesses(findProcesses(listName, code));
+        codeUsage.setPolicies(findPolicies(listName, code));
+        codeUsage.setInformationTypes(findInformationTypes(listName, code));
+        codeUsage.setDisclosures(findDisclosures(listName, code));
         return codeUsage;
     }
 

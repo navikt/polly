@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.polly.codelist.codeusage.UsedInInstance;
+import no.nav.data.polly.codelist.domain.ListName;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
 import java.util.ArrayList;
@@ -17,14 +18,14 @@ import java.util.List;
 @JsonPropertyOrder({"code", "informationTypes", "policies", "processes", "disclosures"})
 public class CodeUsageResponse {
 
-    private String listName;
+    private ListName listName;
     private String code;
     private List<UsedInInstance> informationTypes;
     private List<UsedInInstance> policies;
     private List<UsedInInstance> processes;
     private List<UsedInInstance> disclosures;
 
-    public CodeUsageResponse(String listName, String code) {
+    public CodeUsageResponse(ListName listName, String code) {
         this.listName = listName;
         this.code = code;
         this.informationTypes = new ArrayList<>();

@@ -41,7 +41,7 @@ public class CodeUsageController {
         service.validateListName(list);
 
         List<CodeUsageResponse> codeUsages = service.findCodeUsageOfList(ListName.valueOf(list));
-        var response = new CodelistUsageResponse(list, codeUsages);
+        var response = new CodelistUsageResponse(ListName.valueOf(list), codeUsages);
         log.info("Usage of listName {} : {}", list, response.toString());
         return ResponseEntity.ok(response);
     }

@@ -83,7 +83,7 @@ class CodelistServiceTest {
         @Test
         void delete_shouldDelete_whenListAndCodeExists() {
             when(repository.findByListAndCode(ListName.SOURCE, "DELETE_CODE")).thenReturn(Optional.of(createCodelist(ListName.SOURCE, "DELETE_CODE")));
-            when(codeUsageService.findCodeUsage(ListName.SOURCE, "DELETE_CODE")).thenReturn(new CodeUsageResponse("SOURCE", "DELETE_CODE"));
+            when(codeUsageService.findCodeUsage(ListName.SOURCE, "DELETE_CODE")).thenReturn(new CodeUsageResponse(ListName.SOURCE, "DELETE_CODE"));
 
             service.delete(ListName.SOURCE, "DELETE_CODE");
 
@@ -105,7 +105,7 @@ class CodelistServiceTest {
 
         @Test
         void delete_shouldThrowCodelistNotErasableException_whenCodelistIsInUse() {
-            CodeUsageResponse codeUsage = new CodeUsageResponse("SOURCE", "DELETE_CODE");
+            CodeUsageResponse codeUsage = new CodeUsageResponse(ListName.SOURCE, "DELETE_CODE");
             codeUsage.setProcesses(List.of(UsedInInstance.builder().id("id").name("name").build()));
             when(repository.findByListAndCode(ListName.PURPOSE, "DELETE_CODE")).thenReturn(Optional.of(createCodelist(ListName.SOURCE, "DELETE_CODE")));
             when(codeUsageService.findCodeUsage(ListName.PURPOSE, "DELETE_CODE")).thenReturn(codeUsage);
