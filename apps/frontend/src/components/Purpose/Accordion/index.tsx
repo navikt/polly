@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Accordion, Panel } from 'baseui/accordion'
 import { generatePath, RouteComponentProps, withRouter } from 'react-router'
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
@@ -16,13 +16,12 @@ import { codelist, ListName } from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy';
-import { convertProcessToFormValues, getTerm, mapTermToOption } from "../../../api"
+import { convertProcessToFormValues } from "../../../api"
 import { PathParams } from "../../../pages/PurposePage"
 import { ActiveIndicator } from "../../common/Durations"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faChevronRight, faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronRight, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal';
-import { useState } from "react"
 import { getTeam, mapTeamToOption } from "../../../api/TeamApi"
 
 const rowPanelContent: BlockProps = {
@@ -39,7 +38,7 @@ type AccordionProcessProps = {
     errorProcessModal: any | null;
     errorPolicyModal: string | null;
     setProcessList: Function;
-    onChangeProcess: Function;
+    onChangeProcess: (processId: string) => void;
     submitDeleteProcess: Function;
     submitEditProcess: Function;
     submitCreatePolicy: Function;
@@ -140,7 +139,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                 }
             }}
         >
-            <FontAwesomeIcon icon={faPen} />
+            <FontAwesomeIcon icon={faEdit} />
         </Button>
     )
     const renderDeleteProcessButton = () => (
@@ -168,7 +167,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
     useAwait(user.wait())
 
     useEffect(() => {
-        onChangeProcess(props.match.params.processId!)
+        props.match.params.processId && onChangeProcess(props.match.params.processId)
     }, [props.match.params.processId])
 
     useEffect(() => {
