@@ -88,6 +88,7 @@ export interface Policy extends IDurationed {
 }
 
 export const policySort: ColumnCompares<Policy> = {
+    purposeCode: (a,b) => codelist.getShortnameForCode(a.purposeCode).localeCompare(codelist.getShortnameForCode(b.purposeCode), intl.getLanguage()),
     informationType: (a, b) => a.informationType.name.localeCompare(b.informationType.name),
     process: (a, b) => a.process.name.localeCompare(b.process.name),
     subjectCategory: (a, b) => codelist.getShortnameForCode(a.subjectCategory).localeCompare(codelist.getShortnameForCode(b.subjectCategory), intl.getLanguage()),

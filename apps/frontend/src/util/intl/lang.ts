@@ -61,6 +61,8 @@ export const no: IStrings = {
         "Opplysningstyper som er særlige kategorier krever art. 9",
     legalBasisInfo:
         "For artikkel 6(c, e og f) trengs det videre spesifisering.",
+    groupByPurpose: "Grupper etter formål",
+    showAll: "Vis alle",
 
     POLLY_READ: "Les",
     POLLY_WRITE: "Skriv",
@@ -186,6 +188,8 @@ export const en = {
         "Informationtypes that are special categories require art. 9",
     legalBasisInfo:
         "For Article 6(c, e and f), further specification is needed.",
+    groupByPurpose: "Group by purpose",
+    showAll: "Show all",
 
     POLLY_READ: "Read",
     POLLY_WRITE: "Write",

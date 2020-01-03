@@ -23,16 +23,24 @@ const CustomStyledRow = withStyle(StyledRow, {
 
 type TableInformationtypeProps = {
     list: Array<Policy>;
+    showPurpose: boolean;
 };
 
-const TableInformationtype = ({list}: TableInformationtypeProps) => {
+const TableInformationtype = ({list, showPurpose}: TableInformationtypeProps) => {
     const [useCss, theme] = useStyletron();
-    const [table, sortColumn] = useTable<Policy, keyof Policy>(list, {sorting: policySort, initialSortColumn: "process"})
+    const [table, sortColumn] = useTable<Policy, keyof Policy>(list, {sorting: policySort, initialSortColumn: showPurpose ? "purposeCode" : "process"})
 
     return (
         <React.Fragment>
-            <StyledTable className={useCss({ overflow: "hidden !important" })}>
+            <StyledTable className={useCss({overflow: "hidden !important"})}>
                 <StyledHeader>
+                    {showPurpose && <SortableHeadCell
+                        title={intl.purpose}
+                        direction={table.direction.purposeCode}
+                        onSort={() => sortColumn('purposeCode')}
+                        fillClickTarget
+                    />}
+
                     <SortableHeadCell
                         title={intl.process}
                         direction={table.direction.process}
@@ -57,26 +65,31 @@ const TableInformationtype = ({list}: TableInformationtypeProps) => {
                 <StyledBody>
                     {table.data.map((row, index) => (
                         <CustomStyledRow key={index}>
+                            {showPurpose && <StyledCell>
+                              <RouteLink href={`/purpose/${row.purposeCode.code}`}>
+                                  {codelist.getShortnameForCode(row.purposeCode)}
+                              </RouteLink>
+                            </StyledCell>}
+
                             <StyledCell>
                                 <RouteLink href={`/purpose/${row.purposeCode.code}/${row.process.id}`}>
                                     {row.process && row.process.name}
                                 </RouteLink>
-
                             </StyledCell>
 
                             <StyledCell>{codelist.getShortname(ListName.SUBJECT_CATEGORY, row.subjectCategory.code)}</StyledCell>
 
                             <StyledCell>
                                 {!row.legalBasesInherited && row.legalBases && row.legalBases.length > 0 && (
-                                    <ListLegalBasesInTable legalBases={row.legalBases} />
+                                    <ListLegalBasesInTable legalBases={row.legalBases}/>
                                 )}
 
                                 {row.legalBasesInherited && row.process.legalBases && (
-                                    <ListLegalBasesInTable legalBases={row.process.legalBases} />
+                                    <ListLegalBasesInTable legalBases={row.process.legalBases}/>
                                 )}
 
                                 {!row.legalBasesInherited && row.legalBases.length < 1 && (
-                                    <LegalBasesNotClarified />
+                                    <LegalBasesNotClarified/>
                                 )}
                             </StyledCell>
                         </CustomStyledRow>

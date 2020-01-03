@@ -1,10 +1,7 @@
-import LocalizedStrings, {
-    GlobalStrings,
-    LocalizedStringsMethods
-} from "react-localization";
+import LocalizedStrings, { GlobalStrings, LocalizedStringsMethods } from "react-localization";
 import * as React from "react";
 import { useEffect } from "react";
-import { useForceUpdate } from "../hooks/customHooks";
+import { useForceUpdate } from "../hooks";
 import { en, no, ta } from "./lang";
 import * as moment from "moment";
 import "moment/locale/nb";
@@ -69,6 +66,8 @@ export interface IStrings {
     treasureIllustration: string;
     legalbasisGDPRArt9Info: string;
     legalBasisInfo: string;
+    groupByPurpose: string;
+    showAll: string;
 
     // groups
     POLLY_READ: string;
