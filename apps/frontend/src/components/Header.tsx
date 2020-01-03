@@ -141,11 +141,35 @@ const LoggedInHeader = () => {
     )
 }
 
+const AdminOptionsImpl = (props: RouteComponentProps<any>) => {
+    const pages = [
+        {label: intl.manageCodeListTitle, href: "/admin/codelist"},
+        {label: intl.audit, href: "/admin/audit"}
+    ]
+    return (
+        <StatefulPopover
+            content={({close}) =>
+                <StatefulMenu
+                    items={pages}
+                    onItemSelect={({item}) => {
+                        close()
+                        props.history.push(item.href)
+                    }}
+                />
+            }>
+            <Button endEnhancer={() => <TriangleDown size={24}/>} size="compact" kind="tertiary" $style={{padding: 0}}>
+                {intl.administrate}
+            </Button>
+        </StatefulPopover>
+    )
+}
+const AdminOptions = withRouter(AdminOptionsImpl)
+
 interface HeaderProps {
     setLang: (lang: string) => void
 }
 
-const Header = (props: HeaderProps & RouteComponentProps<any>) => {
+const Header = (props: HeaderProps) => {
     const [useCss] = useStyletron()
     const link = useCss({textDecoration: 'none'});
     useAwait(user.wait())
@@ -180,9 +204,7 @@ const Header = (props: HeaderProps & RouteComponentProps<any>) => {
 
             <StyledNavigationList $align={ALIGN.right}>
                 {user.isAdmin() && <StyledNavigationItem>
-                  <RouteLink href="/admin/codelist" className={link}>
-                      {intl.manageCodeListTitle}
-                  </RouteLink>
+                  <AdminOptions/>
                 </StyledNavigationItem>}
 
                 <StyledNavigationItem>
@@ -218,4 +240,4 @@ const Header = (props: HeaderProps & RouteComponentProps<any>) => {
     );
 }
 
-export default withRouter(Header)
+export default Header

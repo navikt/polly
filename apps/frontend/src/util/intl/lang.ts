@@ -125,7 +125,16 @@ export const no: IStrings = {
     editCodeListTitle: "Rediger kode",
     manageCodeListTitle: "Administrering av kodeverk",
     chooseCodeList: "Velg kodeverk",
-    createNewCodeList: "Opprett ny kode"
+    createNewCodeList: "Opprett ny kode",
+
+    id: "Id",
+    audit: "Versjonering",
+    audits: "Versjoneringer",
+    auditNr: "Versjon #",
+    table: "Tabellnavn",
+    action: "Aksjon",
+    time: "Tidspunkt",
+    user: "Bruker"
 };
 
 export const en = {
@@ -245,7 +254,16 @@ export const en = {
     editCodeListTitle: "Edit code",
     manageCodeListTitle: "Manage code lists",
     chooseCodeList: "Choose code list",
-    createNewCodeList: "Create new code"
+    createNewCodeList: "Create new code",
+
+    id: "Id",
+    audit: "Audit",
+    audits: "Audits",
+    auditNr: "Audit #",
+    table: "Table name",
+    action: "Action",
+    time: "Time",
+    user: "User"
 };
 
 export const ta = {

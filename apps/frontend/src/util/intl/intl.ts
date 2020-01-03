@@ -130,6 +130,15 @@ export interface IStrings {
     manageCodeListTitle: string;
     chooseCodeList: string;
     createNewCodeList: string;
+
+    id: string;
+    audit: string;
+    audits: string;
+    auditNr: string;
+    table: string;
+    action: string;
+    time: string;
+    user: string;
 }
 
 // Remember import moment locales up top

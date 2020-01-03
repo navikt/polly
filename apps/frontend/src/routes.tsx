@@ -8,6 +8,7 @@ import InformationtypeEditPage from "./pages/InformationtypeEditPage";
 import InformationtypePage from './pages/InformationtypePage'
 import {Main} from "./pages/MainPage"
 import CodelistPage from "./pages/CodelistPage"
+import { AuditPage } from "./pages/AuditPage"
 
 
 const Routes = (): JSX.Element => (
@@ -33,6 +34,11 @@ const Routes = (): JSX.Element => (
                 exact
                 path="/admin/codelist"
                 component={CodelistPage}
+            />
+            <Route
+                exact
+                path="/admin/audit/:id?"
+                component={AuditPage}
             />
             <Route>
                 <Main/>
