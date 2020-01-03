@@ -87,12 +87,12 @@ export interface Policy extends IDurationed {
     legalBases: LegalBasis[];
 }
 
-export const policySort : ColumnCompares<Policy> = {
+export const policySort: ColumnCompares<Policy> = {
     informationType: (a, b) => a.informationType.name.localeCompare(b.informationType.name),
     process: (a, b) => a.process.name.localeCompare(b.process.name),
     subjectCategory: (a, b) => codelist.getShortnameForCode(a.subjectCategory).localeCompare(codelist.getShortnameForCode(b.subjectCategory), intl.getLanguage()),
     legalBases: (a, b) => a.legalBases.length - b.legalBases.length
-};
+}
 
 export interface PolicyInformationType {
     id: string;
@@ -150,26 +150,10 @@ export interface CodeListFormValues {
     list: string,
     code: string,
     shortName?: string,
-    description ?: string
+    description?: string
 }
 
 export interface Team {
     id: string;
     name: string;
-}
-
-export interface legalBasis {
-    gdpr?: string,
-    nationalLaw?: string,
-    description?: string,
-    start?: string,
-    end?: string
-}
-
-export interface CardLegalBasisProps {
-    initValue: legalBasis;
-    hideCard: Function;
-    submit: (val: LegalBasisFormValues) => void;
-    titleSubmitButton: string;
-
 }

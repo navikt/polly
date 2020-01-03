@@ -9,13 +9,14 @@ import {codelist, ListName} from "../../../service/Codelist";
 import {intl, theme} from "../../../util"
 import {ErrorMessage, Field, FieldProps, Formik, FormikProps} from "formik"
 import {KIND as NKIND, Notification} from "baseui/notification"
-import {CardLegalBasisProps, LegalBasisFormValues} from "../../../constants"
+import {LegalBasisFormValues} from "../../../constants"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {DateModalFields} from "../DateModalFields"
 import {faExclamationCircle, faPen} from "@fortawesome/free-solid-svg-icons"
 import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip';
 import {legalBasisSchema} from "../../common/schema"
 import {LegalBasisView} from "../../common/LegalBasis"
+import { hasSpecifiedDate } from "../../common/Durations"
 
 const rowBlockProps: BlockProps = {
     display: 'flex',
@@ -57,6 +58,13 @@ const renderCardHeader = (text: string) => {
     )
 };
 
+interface CardLegalBasisProps {
+    initValue: LegalBasisFormValues;
+    hideCard: Function;
+    submit: (val: LegalBasisFormValues) => void;
+    titleSubmitButton: string;
+}
+
 const CardLegalBasis = ({ submit, hideCard, initValue,titleSubmitButton }: CardLegalBasisProps) => {
     const [gdpr, setGdpr] = React.useState<Value>(
         initValue.gdpr?codelist.getParsedOptions(ListName.GDPR_ARTICLE).filter(value => value.id === initValue.gdpr):[]
@@ -64,7 +72,6 @@ const CardLegalBasis = ({ submit, hideCard, initValue,titleSubmitButton }: CardL
     const [nationalLaw, setNationalLaw] = React.useState<Value>(
         initValue.nationalLaw?codelist.getParsedOptions(ListName.NATIONAL_LAW).filter(value => value.id === initValue.nationalLaw):[]
     );
-    const [useDates, setUseDates] = React.useState(false);
     // Must be complete to achieve touched on submit
     const initialValues = {
         gdpr: initValue.gdpr,
@@ -132,7 +139,7 @@ const CardLegalBasis = ({ submit, hideCard, initValue,titleSubmitButton }: CardL
                                         error={!!form.errors.description && !!form.submitCount}
                                         startEnhancer={() =>
                                             <StatefulTooltip content={() => 'text'}>
-                                                <FontAwesomeIcon icon={faPen} />
+                                                <span><FontAwesomeIcon icon={faPen} /></span>
                                             </StatefulTooltip>
                                         }
                                     />
@@ -141,7 +148,7 @@ const CardLegalBasis = ({ submit, hideCard, initValue,titleSubmitButton }: CardL
                         </Block>
                         <Error fieldName="description" />
 
-                        <DateModalFields rowBlockProps={rowBlockProps} showDates={useDates} />
+                        <DateModalFields rowBlockProps={rowBlockProps} showDates={hasSpecifiedDate(initialValues)} />
 
                         {form.values.gdpr && (
                             <>
