@@ -27,18 +27,6 @@ import RouteLink from "../components/common/RouteLink"
 
 export type PurposeMap = { [purpose: string]: Policy[] }
 
-const reducePolicylist = (list: Policy[]) => {
-    return list.reduce((acc: PurposeMap, curr) => {
-        if (!acc[curr.purposeCode.code]) {
-            acc[curr.purposeCode.code] = [curr]
-        } else {
-            acc[curr.purposeCode.code].push(curr)
-        }
-
-        return acc
-    }, {})
-}
-
 const InformationTypeTable = (props: RouteComponentProps) => {
     const [page, setPage] = React.useState(1);
     const [limit, setLimit] = React.useState(25);
@@ -132,7 +120,7 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
     const [error, setError] = React.useState(null);
     const [informationTypeId, setInformationTypeId] = React.useState(props.match.params.id)
     const [informationtype, setInformationtype] = React.useState()
-    const [purposeMap, setPurposeMap] = React.useState<PurposeMap>({})
+    const [policies, setPolicies] = React.useState<Policy[]>([])
 
     const [infoTypeSearchResult, setInfoTypeSearch, infoTypeSearchLoading] = useInfoTypeSearch()
 
@@ -151,7 +139,7 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
                 const infoType = await getInformationType(informationTypeId)
                 const policies = await getPoliciesForInformationType(informationTypeId)
                 setInformationtype(infoType)
-                setPurposeMap(reducePolicylist(policies.content))
+                setPolicies(policies.content)
             } catch (err) {
                 setError(err.message)
             }
@@ -170,7 +158,7 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
                 <React.Fragment>
                     <Banner title={intl.informationType} informationtypeId={informationTypeId} />
                     {!error && informationtype && (
-                        <InformationtypeMetadata informationtype={informationtype} purposeMap={purposeMap}
+                        <InformationtypeMetadata informationtype={informationtype} policies={policies}
                             expanded={props.match.params.purpose ? [props.match.params.purpose] : []}
                             onSelectPurpose={purpose => props.history.push(`/informationtype/${informationTypeId}/${purpose}`)}
                         />

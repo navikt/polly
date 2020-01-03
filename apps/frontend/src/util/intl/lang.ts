@@ -66,6 +66,8 @@ export const no: IStrings = {
         "For artikkel 6(c, e og f) trengs det videre spesifisering.",
     disclosureSelect: "Velg mottaker",
 
+    groupByPurpose: "Grupper etter formål",
+    showAll: "Vis alle",
 
     POLLY_READ: "Les",
     POLLY_WRITE: "Skriv",
@@ -130,7 +132,16 @@ export const no: IStrings = {
     editCodeListTitle: "Rediger kode",
     manageCodeListTitle: "Administrering av kodeverk",
     chooseCodeList: "Velg kodeverk",
-    createNewCodeList: "Opprett ny kode"
+    createNewCodeList: "Opprett ny kode",
+
+    id: "Id",
+    audit: "Versjonering",
+    audits: "Versjoneringer",
+    auditNr: "Versjon #",
+    table: "Tabellnavn",
+    action: "Aksjon",
+    time: "Tidspunkt",
+    user: "Bruker"
 };
 
 export const en = {
@@ -197,6 +208,8 @@ export const en = {
     legalBasisInfo:
         "For Article 6(c, e and f), further specification is needed.",
     disclosureSelect: "Select recipient",
+    groupByPurpose: "Group by purpose",
+    showAll: "Show all",
 
     POLLY_READ: "Read",
     POLLY_WRITE: "Write",
@@ -255,7 +268,16 @@ export const en = {
     editCodeListTitle: "Edit code",
     manageCodeListTitle: "Manage code lists",
     chooseCodeList: "Choose code list",
-    createNewCodeList: "Create new code"
+    createNewCodeList: "Create new code",
+
+    id: "Id",
+    audit: "Audit",
+    audits: "Audits",
+    auditNr: "Audit #",
+    table: "Table name",
+    action: "Action",
+    time: "Time",
+    user: "User"
 };
 
 export const ta = {

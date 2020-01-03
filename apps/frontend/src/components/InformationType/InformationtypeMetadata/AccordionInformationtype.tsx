@@ -8,21 +8,33 @@ import { faChevronDown, faChevronRight, faUsersCog } from "@fortawesome/free-sol
 import { codelist, ListName } from "../../../service/Codelist"
 import { intl } from "../../../util"
 import { PurposeMap } from "../../../pages/InformationtypePage"
+import { Policy } from "../../../constants"
+
+const reducePolicylist = (list: Policy[]) => {
+    return list.reduce((acc: PurposeMap, curr) => {
+        if (!acc[curr.purposeCode.code]) {
+            acc[curr.purposeCode.code] = [curr]
+        } else {
+            acc[curr.purposeCode.code].push(curr)
+        }
+
+        return acc
+    }, {})
+}
 
 export interface AccordionInformationtypeProps {
-    purposeMap: PurposeMap;
+    policies: Policy[];
     expaneded: string[];
     onChange?: (args: { expanded: React.Key[] }) => void;
 }
 
 const AccordionInformationtype = (props: AccordionInformationtypeProps) => {
-    const {purposeMap, onChange, expaneded} = props
-    if (!purposeMap) return <Paragraph2>{intl.purposeNotFound}</Paragraph2>
+    const {policies, onChange, expaneded} = props
+    if (!policies) return <Paragraph2>{intl.purposeNotFound}</Paragraph2>
     if (!codelist.isLoaded()) return <Paragraph2>{intl.couldntLoad}</Paragraph2>
 
-    const getPolicylistForPurpose = (purpose: string) => {
-        return !purposeMap[purpose] ? [] : purposeMap[purpose]
-    }
+    const purposeMap = reducePolicylist(policies)
+    const getPolicylistForPurpose = (purpose: string) => !purposeMap[purpose] ? [] : purposeMap[purpose]
 
     return (
         <Accordion initialState={{expanded: expaneded}} onChange={onChange}>
@@ -32,7 +44,7 @@ const AccordionInformationtype = (props: AccordionInformationtypeProps) => {
                            ToggleIcon: {component: (iconProps) => !!iconProps.$expanded ? <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
                        }}
                 >
-                    <TableInformationtype list={getPolicylistForPurpose(key)}/>
+                    <TableInformationtype list={getPolicylistForPurpose(key)} showPurpose={false}/>
                 </Panel>
             ))}
 
