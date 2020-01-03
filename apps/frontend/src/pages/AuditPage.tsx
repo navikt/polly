@@ -102,7 +102,9 @@ const AuditPageImpl = (props: RouteComponentProps<{ id?: string }>) => {
                             <Label label={intl.action}>{audit.action}</Label>
                             <Label label={intl.time}>{time.format('LL')} {time.format('HH:mm:ss.SSS Z')}</Label>
                             <Label label={intl.user}>{audit.user}</Label>
-                            <ReactJson src={audit.data} name={null} onSelect={sel => sel.name === 'id' && setId(sel.value as string)}/>
+                            <ReactJson src={audit.data} name={null} onSelect={sel => {
+                                (sel.name === 'id' || sel.name?.endsWith("Id")) && setId(sel.value as string)
+                            }}/>
                         </Block>
                     )
                 })}
