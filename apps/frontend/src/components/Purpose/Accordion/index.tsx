@@ -215,7 +215,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                         {renderActiveForProcess(currentProcess)}
                                     </Block>
                                     {hasAccess() && (
-                                        <Block>
+                                        <Block minWidth="100px">
                                             {renderEditProcessButton()}
                                             {renderDeleteProcessButton()}
                                         </Block>

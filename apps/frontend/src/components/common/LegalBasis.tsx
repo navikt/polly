@@ -72,7 +72,7 @@ export const ListLegalBases = (
                     artworkSize={ARTWORK_SIZES.SMALL}
                     endEnhancer={
                         () =>
-                            <Block>
+                            <Block minWidth="100px">
                                 <Button
                                     type="button"
                                     kind="minimal"
