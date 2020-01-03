@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 export function useDebouncedState<T>(
     initialValue: T,
     delay: number
-): [T, Dispatch<SetStateAction<T>>] {
+): [T, Dispatch<SetStateAction<T>>, T] {
     const [value, setValue] = useState<T>(initialValue);
     const [debouncedValue, setDebouncedValue] = useState<T>(value);
 
@@ -16,7 +16,8 @@ export function useDebouncedState<T>(
         };
     }, [value, delay]);
 
-    return [debouncedValue, setValue];
+    // value returned as actual non-debounced value to be used in inputfields etc
+    return [debouncedValue, setValue, value];
 }
 
 export function useForceUpdate() {

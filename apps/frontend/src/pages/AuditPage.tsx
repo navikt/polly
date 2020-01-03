@@ -1,7 +1,7 @@
 import { Block, BlockProps } from "baseui/block"
 import Banner from "../components/Banner"
 import React, { useEffect, useState } from "react"
-import { intl, theme } from "../util"
+import { intl, theme, useDebouncedState } from "../util"
 import { RouteComponentProps, withRouter } from "react-router-dom"
 import { AuditLog } from "../constants"
 import { getAuditLog } from "../api/AuditApi"
@@ -39,30 +39,37 @@ const Label = (props: { label: string, children: any }) => {
 }
 
 const AuditPageImpl = (props: RouteComponentProps<{ id?: string }>) => {
-    const [selectedId, setSelectedId] = useState()
+    const [id, setId] = useState()
+    const [idSearch, setIdInput, idInput] = useDebouncedState(props.match.params.id, 400)
     const [auditLog, setAuditLog] = useState<AuditLog>()
     const [loading, setLoading] = useState(false)
-    const logFound = !!auditLog?.audits.length
 
     useEffect(() => {
         (async () => {
-            if (selectedId) {
+            if (id) {
                 setLoading(true)
                 setAuditLog(undefined)
-                const log = await getAuditLog(selectedId)
+                const log = await getAuditLog(id)
                 if (log) {
                     setAuditLog(log)
-                    if (selectedId !== props.match.params.id) {
-                        props.history.push(`/admin/audit/${selectedId}`)
+                    if (id !== props.match.params.id) {
+                        props.history.push(`/admin/audit/${id}`)
                     }
                 }
                 setLoading(false)
             }
         })()
-    }, [selectedId])
+    }, [id])
 
-    useEffect(() => setSelectedId(props.match.params.id), [props.match.params.id])
+    useEffect(() => {
+        setId(props.match.params.id)
+        setIdInput(props.match.params.id)
+    }, [props.match.params.id])
+    useEffect(() => {
+        idSearch && setId(idSearch)
+    }, [idSearch])
 
+    const logFound = !!auditLog?.audits.length
     return (
         <>
             <Banner title={intl.audit}/>
@@ -70,9 +77,10 @@ const AuditPageImpl = (props: RouteComponentProps<{ id?: string }>) => {
                 <Block marginBottom="2rem">
                     <Block marginBottom="1rem">
                         <Label label={intl.searchId}>
-                            <Input autoFocus={true} size="compact" value={selectedId}
+                            <Input size="compact" value={idInput}
                                    overrides={{Input: {style: {width: '300px'}}}}
-                                   onChange={(e) => setSelectedId(format((e.target as HTMLInputElement).value))}
+                                   placeholder={intl.id}
+                                   onChange={(e) => setIdInput(format((e.target as HTMLInputElement).value))}
                             />
                         </Label>
                     </Block>
@@ -84,7 +92,7 @@ const AuditPageImpl = (props: RouteComponentProps<{ id?: string }>) => {
                 </Block>
 
                 {loading && <Spinner size={theme.sizing.scale2400}/>}
-                {!loading && !logFound && !!selectedId && <Label1>{intl.auditNotFound}</Label1>}
+                {!loading && !logFound && !!id && <Label1>{intl.auditNotFound}</Label1>}
 
                 {logFound && auditLog!.audits.map((audit, index) => {
                     const time = moment(audit.time)
@@ -94,7 +102,7 @@ const AuditPageImpl = (props: RouteComponentProps<{ id?: string }>) => {
                             <Label label={intl.action}>{audit.action}</Label>
                             <Label label={intl.time}>{time.format('LL')} {time.format('HH:mm:ss.SSS Z')}</Label>
                             <Label label={intl.user}>{audit.user}</Label>
-                            <ReactJson src={audit.data} name={null} onSelect={sel => sel.name === 'id' && setSelectedId(sel.value as string)}/>
+                            <ReactJson src={audit.data} name={null} onSelect={sel => sel.name === 'id' && setId(sel.value as string)}/>
                         </Block>
                     )
                 })}
