@@ -138,9 +138,11 @@ export interface IStrings {
     createNewCodeList: string;
 
     id: string;
+    searchId: string;
     audit: string;
     audits: string;
     auditNr: string;
+    auditNotFound: string;
     table: string;
     action: string;
     time: string;

@@ -135,9 +135,11 @@ export const no: IStrings = {
     createNewCodeList: "Opprett ny kode",
 
     id: "Id",
+    searchId: "Søk etter id",
     audit: "Versjonering",
     audits: "Versjoneringer",
     auditNr: "Versjon #",
+    auditNotFound: "Fant ingen versjonering",
     table: "Tabellnavn",
     action: "Aksjon",
     time: "Tidspunkt",
@@ -271,9 +273,11 @@ export const en = {
     createNewCodeList: "Create new code",
 
     id: "Id",
+    searchId: "Search for id",
     audit: "Audit",
     audits: "Audits",
     auditNr: "Audit #",
+    auditNotFound: "No audits found",
     table: "Table name",
     action: "Action",
     time: "Time",
