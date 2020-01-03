@@ -9,6 +9,11 @@ import { Label2, Label3 } from "baseui/typography"
 import ReactJson from "react-json-view"
 import moment from "moment"
 import { Input } from "baseui/input"
+import RouteLink from "../components/common/RouteLink"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faHistory } from "@fortawesome/free-solid-svg-icons"
+import { user } from "../service/User"
+import { Button, KIND, SIZE as ButtonSize } from "baseui/button"
 
 
 const labelBlockProps: BlockProps = {
@@ -30,7 +35,7 @@ const Label = (props: { label: string, children: any }) => {
     )
 }
 
-export const AuditPageImpl = (props: RouteComponentProps<{ id?: string }>) => {
+const AuditPageImpl = (props: RouteComponentProps<{ id?: string }>) => {
     const [selectedId, setSelectedId] = useState(props.match.params.id)
     const [auditLog, setAuditLog] = useState<AuditLog>()
     const [auditTable, setAuditTable] = useState()
@@ -50,7 +55,7 @@ export const AuditPageImpl = (props: RouteComponentProps<{ id?: string }>) => {
                 <Block marginBottom="2rem">
                     <Label label={intl.id}>
                         <Input autoFocus={true} size="compact" value={selectedId}
-                        overrides={{Input:{style:{width: '300px'}}}}
+                               overrides={{Input: {style: {width: '300px'}}}}
                                onChange={(e) => setSelectedId((e.target as HTMLInputElement).value)}
                         />
                     </Label>
@@ -78,3 +83,23 @@ export const AuditPageImpl = (props: RouteComponentProps<{ id?: string }>) => {
 }
 
 export const AuditPage = withRouter(AuditPageImpl)
+
+export const AuditButton = (props: { id: string }) => {
+    return user.isAdmin() ?
+        <RouteLink href={`/admin/audit/${props.id}`}>
+            <Button
+                size={ButtonSize.compact}
+                kind={KIND.secondary}
+                overrides={{
+                    BaseButton: {
+                        style: () => {
+                            return {marginRight: theme.sizing.scale500}
+                        }
+                    }
+                }}
+            >
+                <FontAwesomeIcon icon={faHistory}/>
+            </Button>
+        </RouteLink>
+        : null
+}

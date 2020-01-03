@@ -19,6 +19,7 @@ import { convertPolicyToFormValues } from "../../../api"
 import { useTable } from "../../../util/hooks"
 import RouteLink from "../../common/RouteLink"
 import { ActiveIndicator } from "../../common/Durations"
+import { AuditButton } from "../../../pages/AuditPage"
 
 
 const StyledHeader = withStyle(StyledHead, {
@@ -64,14 +65,14 @@ type TablePurposeProps = {
     submitDeletePolicy: Function;
 };
 
-const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, submitEditPolicy, submitDeletePolicy }: TablePurposeProps) => {
+const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, submitEditPolicy, submitDeletePolicy}: TablePurposeProps) => {
     const [useCss, theme] = useStyletron();
     const [policies, setPolicies] = React.useState<Policy[]>(process.policies)
     const [currentPolicy, setCurrentPolicy] = React.useState<Policy>()
     const [showEditModal, setShowEditModal] = React.useState(false)
     const [showPolicyInfo, setShowPolicyInfo] = React.useState(false)
     const [showDeleteModal, setShowDeleteModal] = React.useState(false)
-    const [table, sortColumn] = useTable<Policy, keyof Policy>(policies, { sorting: policySort, initialSortColumn: "informationType", showLast: (p) => !p.active })
+    const [table, sortColumn] = useTable<Policy, keyof Policy>(policies, {sorting: policySort, initialSortColumn: "informationType", showLast: (p) => !p.active})
 
     React.useEffect(() => {
         setPolicies(process ? process.policies : [])
@@ -79,7 +80,7 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
 
     return (
         <React.Fragment>
-            <StyledTable className={useCss({ overflow: "hidden !important" })}>
+            <StyledTable className={useCss({overflow: "hidden !important"})}>
                 <StyledHeader>
                     <SortableHeadCell
                         title={intl.informationType}
@@ -172,7 +173,10 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
                                 {showPolicyInfo && selectedRow &&
                                 <CustomStyledRow infoRow={true}>
                                   <StyledCell>
-                                    <ActiveIndicator {...row} alwaysShow={true} withText={true}/> &nbsp;
+                                    <Block display="flex" justifyContent="space-between" width="100%">
+                                      <Block><ActiveIndicator {...row} alwaysShow={true} withText={true}/></Block>
+                                      <AuditButton id={row.id}/>
+                                    </Block>
                                   </StyledCell>
                                 </CustomStyledRow>
                                 }
@@ -184,7 +188,9 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
                     <ModalPolicy
                         title={intl.policyEdit}
                         initialValues={convertPolicyToFormValues(currentPolicy)}
-                        onClose={() => { setShowEditModal(false) }}
+                        onClose={() => {
+                            setShowEditModal(false)
+                        }}
                         isOpen={showEditModal}
                         isEdit={true}
                         submit={(values) => {
@@ -212,7 +218,7 @@ const TablePolicy = ({ process, hasAccess, errorPolicyModal, errorDeleteModal, s
                                 <Button
                                     kind="secondary"
                                     onClick={() => setShowDeleteModal(false)}
-                                    overrides={{ BaseButton: { style: { marginRight: '1rem', marginLeft: '1rem' } } }}
+                                    overrides={{BaseButton: {style: {marginRight: '1rem', marginLeft: '1rem'}}}}
                                 >
                                     {intl.abort}
                                 </Button>

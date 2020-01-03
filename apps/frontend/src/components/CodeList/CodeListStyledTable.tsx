@@ -11,6 +11,7 @@ import { intl } from "../../util";
 import DeleteCodeListModal from "./ModalDeleteCodeList";
 import axios from "axios";
 import { useTable } from "../../util/hooks"
+import { AuditButton } from "../../pages/AuditPage"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -127,6 +128,7 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
                     <StyledCell styled={{maxWidth: "55%", minWidth: "24rem",}}>{row.description}</StyledCell>
                     <SmallCell>{
                         (hasAccess && <Block display="flex" justifyContent="flex-end" width="100%">
+                          <AuditButton id={`${row.list}-${row.code}`}/>
                           <Button
                               size={ButtonSize.compact}
                               kind={KIND.tertiary}

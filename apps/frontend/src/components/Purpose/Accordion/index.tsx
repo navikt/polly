@@ -23,6 +23,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronRight, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal';
 import { getTeam, mapTeamToOption } from "../../../api/TeamApi"
+import { AuditButton, AuditPage } from "../../../pages/AuditPage"
 
 const rowPanelContent: BlockProps = {
     display: 'flex',
@@ -216,6 +217,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                     </Block>
                                     {hasAccess() && (
                                         <Block minWidth="100px">
+                                            <AuditButton id={p.id}/>
                                             {renderEditProcessButton()}
                                             {renderDeleteProcessButton()}
                                         </Block>
