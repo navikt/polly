@@ -93,6 +93,16 @@ export const policySort: ColumnCompares<Policy> = {
     subjectCategory: (a, b) => codelist.getShortnameForCode(a.subjectCategory).localeCompare(codelist.getShortnameForCode(b.subjectCategory), intl.getLanguage()),
     legalBases: (a, b) => a.legalBases.length - b.legalBases.length
 }
+export const disclosureSort: ColumnCompares<Disclosure> = {
+    recipient: (a, b) =>
+        a.recipient.shortName.localeCompare(b.recipient.shortName),
+    recipientPurpose: (a, b) =>
+        a.recipientPurpose.localeCompare(b.recipientPurpose),
+    informationTypes: (a, b) =>
+        a.informationTypes.length - b.informationTypes.length,
+    description: (a, b) => a.description.localeCompare(b.description),
+    legalBases: (a, b) => a.legalBases.length - b.legalBases.length
+};
 
 export interface PolicyInformationType {
     id: string;
@@ -156,4 +166,29 @@ export interface CodeListFormValues {
 export interface Team {
     id: string;
     name: string;
+}
+export interface CodeListFormValues {
+    list: string;
+    code: string;
+    shortName?: string;
+    description?: string;
+}
+
+export interface DisclosureFormValues {
+    informationTypes: PolicyInformationType[];
+    recipient: string;
+    recipientPurpose: string;
+    legalBases: LegalBasisFormValues[];
+    description: string;
+    end?: string;
+    start?: string;
+}
+
+export interface Disclosure extends IDurationed {
+    id: string;
+    recipient: Code;
+    recipientPurpose: string;
+    informationTypes: InformationType[];
+    description: string;
+    legalBases: LegalBasis[];
 }

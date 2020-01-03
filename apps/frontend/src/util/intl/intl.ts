@@ -27,6 +27,8 @@ export interface IStrings {
     nationalLaw: string;
     navMaster: string;
     productTeam: string;
+    disclosure: string;
+    thirdParty: string;
 
     // sentence
     loggedInStatus: string;
@@ -42,6 +44,7 @@ export interface IStrings {
     purposeSelect: string;
     purposeNotFound: string;
     purposeUse: string;
+    informationTypeExternalUse: string;
     policyEdit: string;
     policyNew: string;
     legalBasisNotFound: string;
@@ -107,6 +110,9 @@ export interface IStrings {
     preview: string;
     info: string;
     period: string;
+    recipient: string;
+    recipientPurpose: string;
+    disclosureSelect: string;
 
     prevButton: string;
     nextButton: string;

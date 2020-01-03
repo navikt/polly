@@ -17,6 +17,8 @@ export const no: IStrings = {
     nationalLaw: "Nasjonal lov",
     navMaster: "Master i NAV",
     productTeam: "Produktteam",
+    disclosure: "Utlevering",
+    thirdParty: "Ekstern part",
 
     loggedInStatus: "Du er logget inn og kan",
     notLoggedInStatus: "Du er ikke logget inn men kan",
@@ -31,6 +33,7 @@ export const no: IStrings = {
     purposeSelect: "Velg formål",
     purposeNotFound: "Fant ingen formål",
     purposeUse: "Brukes til formål",
+    informationTypeExternalUse: "Utleveres til",
     policyEdit: "Rediger behandlingsgrunnlag for opplysningstype",
     policyNew: "Opprett behandling for opplysningstype",
     processEdit: "Rediger behandling for opplysningstype",
@@ -61,6 +64,8 @@ export const no: IStrings = {
         "Opplysningstyper som er særlige kategorier krever art. 9",
     legalBasisInfo:
         "For artikkel 6(c, e og f) trengs det videre spesifisering.",
+    disclosureSelect: "Velg mottaker",
+
 
     POLLY_READ: "Les",
     POLLY_WRITE: "Skriv",
@@ -97,6 +102,8 @@ export const no: IStrings = {
     preview: "Forhåndsvisning",
     info: "Informasjon",
     period: "Periode",
+    recipient: "Mottaker",
+    recipientPurpose: "Mottakers formål",
 
     prevButton: "Forrige",
     nextButton: "Neste",
@@ -143,6 +150,8 @@ export const en = {
     nationalLaw: "National law",
     subjectCategories: "Subject Categories",
     productTeam: "Product Team",
+    disclosure: "Disclosure",
+    thirdParty: 'Third party',
 
     loggedInStatus: "You are logged in and can",
     notLoggedInStatus: "You are not logged in but you can still",
@@ -157,6 +166,7 @@ export const en = {
     purposeSelect: "Select purpose",
     purposeNotFound: "Found no purposes",
     purposeUse: "Used for purposes",
+    informationTypeExternalUse: "External use",
     policyEdit: "Edit purpose for information type",
     policyNew: "Create new process for information type",
     processNew: "Add new process",
@@ -186,6 +196,7 @@ export const en = {
         "Informationtypes that are special categories require art. 9",
     legalBasisInfo:
         "For Article 6(c, e and f), further specification is needed.",
+    disclosureSelect: "Select recipient",
 
     POLLY_READ: "Read",
     POLLY_WRITE: "Write",
@@ -219,6 +230,8 @@ export const en = {
     endDate: "End date",
     inactive: "Inactive",
     active: "Active",
+    recipient: "Recipient",
+    recipientPurpose: "Recipient's purpose",
 
     prevButton: "Prev",
     nextButton: "Next",
@@ -233,6 +246,7 @@ export const en = {
         "The information type requires a legal basis for article 9",
     requiredNationalLaw: "The article requires national law",
     requiredDescription: "The article requires additional description",
+
 
     code: "Code",
     shortName: "Short name",
