@@ -8,15 +8,22 @@ import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.Collections.replaceAll;
+import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Service
 public class CodeUsageService {
@@ -59,6 +66,75 @@ public class CodeUsageService {
         codeUsage.setInformationTypes(findInformationTypes(listName, code));
         codeUsage.setDisclosures(findDisclosures(listName, code));
         return codeUsage;
+    }
+
+    @SuppressWarnings({"ResultOfMethodCallIgnored"})
+    @Transactional
+    public CodeUsageResponse replaceUsage(ListName listName, String oldCode, String newCode) {
+        var usage = findCodeUsage(listName, oldCode);
+        if (usage.isInUse()) {
+            switch (listName) {
+                case PURPOSE:
+                    getProcesses(usage).forEach(p -> p.setPurposeCode(newCode));
+                    getPolicies(usage).forEach(p -> p.setPurposeCode(newCode));
+                    break;
+                case CATEGORY:
+                    getInformationTypes(usage).forEach(it -> replaceAll(it.getData().getCategories(), oldCode, newCode));
+                    break;
+                case SOURCE:
+                    getInformationTypes(usage).forEach(it -> replaceAll(it.getData().getSources(), oldCode, newCode));
+                    getDisclosures(usage).forEach(d -> d.getData().setRecipient(newCode));
+                    break;
+                case SENSITIVITY:
+                    getInformationTypes(usage).forEach(it -> it.getData().setSensitivity(newCode));
+                    break;
+                case SUBJECT_CATEGORY:
+                    getPolicies(usage).forEach(p -> p.setSubjectCategory(newCode));
+                    break;
+                case NATIONAL_LAW:
+                    replaceNationalLaw(
+                            oldCode, newCode,
+                            convert(getProcesses(usage), p -> p.getData().getLegalBases()),
+                            convert(getPolicies(usage), Policy::getLegalBases),
+                            convert(getDisclosures(usage), p -> p.getData().getLegalBases())
+                    );
+                    break;
+                case GDPR_ARTICLE:
+                    replaceGdprArticle(
+                            oldCode, newCode,
+                            convert(getProcesses(usage), p -> p.getData().getLegalBases()),
+                            convert(getPolicies(usage), Policy::getLegalBases),
+                            convert(getDisclosures(usage), p -> p.getData().getLegalBases())
+                    );
+                    break;
+                case DEPARTMENT:
+                    getProcesses(usage).forEach(p -> p.getData().setDepartment(newCode));
+                    break;
+                case SUB_DEPARTMENT:
+                    getProcesses(usage).forEach(p -> p.getData().setSubDepartment(newCode));
+                    break;
+                case SYSTEM:
+                    getInformationTypes(usage).forEach(it -> it.getData().setNavMaster(newCode));
+                    break;
+            }
+        }
+        return usage;
+    }
+
+    @SafeVarargs
+    private void replaceNationalLaw(String oldCode, String newCode, List<List<LegalBasis>>... legalBases) {
+        Stream.of(legalBases)
+                .flatMap(Collection::stream).flatMap(Collection::stream)
+                .filter(lb -> lb.getNationalLaw().equals(oldCode))
+                .forEach(lb -> lb.setNationalLaw(newCode));
+    }
+
+    @SafeVarargs
+    private void replaceGdprArticle(String oldCode, String newCode, List<List<LegalBasis>>... legalBases) {
+        Stream.of(legalBases)
+                .flatMap(Collection::stream).flatMap(Collection::stream)
+                .filter(lb -> lb.getGdpr().equals(oldCode))
+                .forEach(lb -> lb.setGdpr(newCode));
     }
 
     private List<UsedInInstance> findProcesses(ListName listName, String code) {
@@ -120,5 +196,22 @@ public class CodeUsageService {
                 return Collections.emptyList();
         }
     }
+
+    private List<InformationType> getInformationTypes(CodeUsageResponse usage) {
+        return informationTypeRepository.findAllById(convert(usage.getInformationTypes(), UsedInInstance::getIdAsUUID));
+    }
+
+    private List<Policy> getPolicies(CodeUsageResponse usage) {
+        return policyRepository.findAllById(convert(usage.getPolicies(), UsedInInstance::getIdAsUUID));
+    }
+
+    private List<Process> getProcesses(CodeUsageResponse usage) {
+        return processRepository.findAllById(convert(usage.getProcesses(), UsedInInstance::getIdAsUUID));
+    }
+
+    private List<Disclosure> getDisclosures(CodeUsageResponse usage) {
+        return disclosureRepository.findAllById(convert(usage.getDisclosures(), UsedInInstance::getIdAsUUID));
+    }
+
 
 }

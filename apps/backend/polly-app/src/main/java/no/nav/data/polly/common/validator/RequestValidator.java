@@ -28,7 +28,7 @@ public abstract class RequestValidator<T extends RequestElement> {
     }
 
     private List<ValidationError> validateThatTheSameElementIsNotDuplicatedInTheRequest(List<T> requests) {
-        Set requestSet = Set.copyOf(requests);
+        Set<T> requestSet = Set.copyOf(requests);
         if (requestSet.size() < requests.size()) {
             return recordDuplicatedElementsInTheRequest(requests);
         }
@@ -93,7 +93,7 @@ public abstract class RequestValidator<T extends RequestElement> {
         return isUpdate && !existInRepository;
     }
 
-    protected void ifErrorsThrowValidationException(List<ValidationError> validationErrors) {
+    public static void ifErrorsThrowValidationException(List<ValidationError> validationErrors) {
         if (!validationErrors.isEmpty()) {
             log.warn("The request was not accepted. The following errors occurred during validation:{}", validationErrors);
             throw new ValidationException(validationErrors, "The request was not accepted. The following errors occurred during validation:");

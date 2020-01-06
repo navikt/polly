@@ -54,7 +54,7 @@ public class Policy extends Auditable<String> {
     private UUID id;
 
     @NotNull
-    @Column(name = "PURPOSE_CODE", nullable = false, updatable = false)
+    @Column(name = "PURPOSE_CODE", nullable = false)
     private String purposeCode;
 
     @NotNull

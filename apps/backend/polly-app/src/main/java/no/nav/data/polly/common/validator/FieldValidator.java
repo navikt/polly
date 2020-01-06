@@ -1,5 +1,6 @@
 package no.nav.data.polly.common.validator;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import org.apache.commons.lang3.EnumUtils;
@@ -16,6 +17,7 @@ import java.util.regex.Pattern;
 
 import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 
+@Slf4j
 public class FieldValidator {
 
     private static final String ERROR_TYPE = "fieldIsNullOrMissing";
@@ -169,4 +171,9 @@ public class FieldValidator {
     public List<ValidationError> getErrors() {
         return validationErrors;
     }
+
+    public void ifErrorsThrowValidationException() {
+        RequestValidator.ifErrorsThrowValidationException(validationErrors);
+    }
+
 }

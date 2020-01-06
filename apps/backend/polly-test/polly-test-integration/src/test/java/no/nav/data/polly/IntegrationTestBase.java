@@ -210,7 +210,7 @@ public abstract class IntegrationTestBase {
                                 .build()));
     }
 
-    protected Disclosure createDisclosure(String recipientCode) {
+    protected Disclosure createDisclosure(String recipientCode, String gdpr, String nationalLaw) {
         return Disclosure.builder()
                 .generateId()
                 .data(DisclosureData.builder()
@@ -218,7 +218,7 @@ public abstract class IntegrationTestBase {
                         .recipient(recipientCode)
                         .recipientPurpose("recipient purpose")
                         .start(LocalDate.now()).end(LocalDate.now())
-                        .legalBasis(createLegalBasis("ART61E","FTRL","§ 2-1"))
+                        .legalBasis(createLegalBasis(gdpr, nationalLaw,"§ 2-1"))
                         .build())
                 .build();
     }

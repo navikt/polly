@@ -8,10 +8,13 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.codelist.dto.CodelistUsageResponse;
+import no.nav.data.polly.codelist.dto.ReplaceCodelistRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -58,6 +61,21 @@ public class CodeUsageController {
 
         CodeUsageResponse codeUsage = service.findCodeUsage(ListName.valueOf(list), code);
         log.info("The code {} in list {} is used in: {}", code, list, codeUsage);
+        return ResponseEntity.ok(codeUsage);
+    }
+
+    @ApiOperation(value = "Batch replace codelist value")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "All usages replaced", response = CodeUsageResponse.class),
+            @ApiResponse(code = 404, message = "Code or listName not found"),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @PostMapping("/replace")
+    public ResponseEntity<CodeUsageResponse> replaceAllCodelistUsage(@RequestBody ReplaceCodelistRequest request) {
+        log.info("Received request to replace all usage of code {} with code {} in list {}", request.getOldCode(), request.getNewCode(), request.getList());
+        request.formatAndValidate();
+
+        CodeUsageResponse codeUsage = service.replaceUsage(request.getListAsListName(), request.getOldCode(), request.getNewCode());
+        log.info("The code {} in list {} is used in: {}", request.getOldCode(), request.getListAsListName(), codeUsage);
         return ResponseEntity.ok(codeUsage);
     }
 
