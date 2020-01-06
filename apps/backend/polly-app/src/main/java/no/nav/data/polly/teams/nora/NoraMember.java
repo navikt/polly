@@ -10,17 +10,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class NoraApp {
+public class NoraMember {
 
     @JsonProperty("_id")
     private String id;
+    private String azureId;
     private String name;
-    private String team;
-    private String cluster;
-    private String zone;
-    private String kilde;
-    @JsonProperty("created_at")
-    private String createdAt;
-    @JsonProperty("updated_at")
-    private String updatedAt;
+    private boolean isManager;
+    private String email;
+
 }

@@ -5,7 +5,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import no.nav.data.polly.common.nais.LeaderElectionService;
 import no.nav.data.polly.common.utils.JsonUtils;
-import no.nav.data.polly.teams.nora.NoraApp;
+import no.nav.data.polly.teams.nora.NoraTeam;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -42,14 +42,14 @@ public class WiremockExtension implements Extension, BeforeAllCallback, BeforeEa
 
     private void stubCommon() {
         getWiremock().stubFor(get("/elector").willReturn(okJson(JsonUtils.toJson(LeaderElectionService.getHostInfo()))));
-        getWiremock().stubFor(get("/nora/apps").willReturn(okJson(JsonUtils.toJson(noraMockResponse()))));
+        getWiremock().stubFor(get("/nora/teams").willReturn(okJson(JsonUtils.toJson(noraMockResponse()))));
     }
 
     static WireMockServer getWiremock() {
         return WIREMOCK;
     }
 
-    private List<NoraApp> noraMockResponse() {
-        return List.of(NoraApp.builder().name("app-name").team("team").cluster("nais").zone("fss").kilde("kafka").build());
+    private List<NoraTeam> noraMockResponse() {
+        return List.of(NoraTeam.builder().name("Visual Team Name").nick("teamname").build());
     }
 }

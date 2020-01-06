@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class NoraProperties {
 
     private String url;
-    private String appsUrl;
+    private String teamsUrl;
+    private String teamUrl;
 
 }

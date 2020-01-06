@@ -85,8 +85,7 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
     }
 
     private InformationType convertNew(InformationTypeRequest request) {
-        InformationType informationType = new InformationType().convertNewFromRequest(request);
-        return informationType;
+        return new InformationType().convertNewFromRequest(request);
     }
 
     private void convertUpdate(InformationTypeRequest request, InformationType informationType) {

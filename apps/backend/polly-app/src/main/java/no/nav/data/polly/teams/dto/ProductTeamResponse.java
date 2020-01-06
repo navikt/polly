@@ -15,8 +15,4 @@ public class ProductTeamResponse {
     private String id;
     private String name;
 
-    // temporary name = id constructor
-    public ProductTeamResponse(String teamName) {
-        this(teamName, teamName);
-    }
 }

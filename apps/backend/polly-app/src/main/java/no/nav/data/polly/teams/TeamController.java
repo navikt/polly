@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.common.utils.StreamUtils;
+import no.nav.data.polly.teams.domain.Team;
 import no.nav.data.polly.teams.dto.ProductTeamResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static java.util.Comparator.comparing;
 import static no.nav.data.polly.common.utils.StartsWithComparator.startsWith;
+import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
 
 @Slf4j
@@ -41,7 +43,7 @@ public class TeamController {
     @GetMapping
     public RestResponsePage<ProductTeamResponse> findAll() {
         log.info("Received a request for all teams");
-        return new RestResponsePage<>(teamsService.getAllProductTeams());
+        return new RestResponsePage<>(convert(teamsService.getAllProductTeams(), Team::convertToResponse));
     }
 
     @ApiOperation(value = "Get team")
@@ -51,7 +53,8 @@ public class TeamController {
     @GetMapping("/{name}")
     public ResponseEntity<ProductTeamResponse> getTeamByName(@PathVariable String teamId) {
         log.info("Received request for Team with id {}", teamId);
-        return new ResponseEntity<>(teamsService.getTeam(teamId), HttpStatus.OK);
+        Team team = teamsService.getTeam(teamId);
+        return new ResponseEntity<>(team.convertToResponse(), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Search teams")
@@ -65,9 +68,9 @@ public class TeamController {
             throw new ValidationException("Search teams must be at least 3 characters");
         }
         var teams = StreamUtils.filter(teamsService.getAllProductTeams(), team -> containsIgnoreCase(team.getName(), name));
-        teams.sort(comparing(ProductTeamResponse::getName, startsWith(name)));
+        teams.sort(comparing(Team::getName, startsWith(name)));
         log.info("Returned {} teams", teams.size());
-        return new ResponseEntity<>(new RestResponsePage<>(teams), HttpStatus.OK);
+        return new ResponseEntity<>(new RestResponsePage<>(convert(teams, Team::convertToResponse)), HttpStatus.OK);
     }
 
     static class TeamPage extends RestResponsePage<ProductTeamResponse> {

@@ -99,10 +99,9 @@ public class InformationType extends Auditable<String> {
         return this;
     }
 
-    public InformationType convertUpdateFromRequest(InformationTypeRequest request) {
+    public void convertUpdateFromRequest(InformationTypeRequest request) {
         elasticsearchStatus = elasticsearchStatus == SYNCED ? TO_BE_UPDATED : elasticsearchStatus;
         convertFromRequest(request);
-        return this;
     }
 
     private void convertFromRequest(InformationTypeRequest request) {
