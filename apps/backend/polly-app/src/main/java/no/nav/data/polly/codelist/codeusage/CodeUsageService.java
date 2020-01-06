@@ -26,6 +26,7 @@ import static java.util.Collections.replaceAll;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Service
+@Transactional
 public class CodeUsageService {
 
     private final CodelistService codelistService;
@@ -69,7 +70,6 @@ public class CodeUsageService {
     }
 
     @SuppressWarnings({"ResultOfMethodCallIgnored"})
-    @Transactional
     public CodeUsageResponse replaceUsage(ListName listName, String oldCode, String newCode) {
         var usage = findCodeUsage(listName, oldCode);
         if (usage.isInUse()) {

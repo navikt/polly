@@ -4,14 +4,12 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Repository
-@Transactional(readOnly = true)
 public class DisclosureRepositoryImpl implements DisclosureRepositoryCustom {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;

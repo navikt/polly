@@ -2,11 +2,13 @@ package no.nav.data.polly.process.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Repository
 public interface ProcessRepository extends JpaRepository<Process, UUID>, ProcessRepositoryCustom {
 
     Optional<Process> findByNameAndPurposeCode(String name, String purposeCode);
