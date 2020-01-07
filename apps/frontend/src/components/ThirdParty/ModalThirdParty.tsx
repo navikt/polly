@@ -57,7 +57,7 @@ function renderTagList(list: string[], arrayHelpers: FieldArrayRenderProps) {
     );
 }
 
-const FieldRecipient = (props: { value?: string }) => {
+const FieldRecipient = (props: { value?: string, disabled: boolean | undefined }) => {
     const [recipientValue, setRecipientValue] = React.useState<Value>(props.value ? [{ id: props.value, label: codelist.getShortname(ListName.SOURCE, props.value) }] : []);
 
     return (
@@ -72,6 +72,7 @@ const FieldRecipient = (props: { value?: string }) => {
                         form.setFieldValue('recipient', value.length > 0 ? value[0].id : undefined)
                     }}
                     value={recipientValue}
+                    disabled={props.disabled}
                 />
             )}
         />
@@ -135,6 +136,7 @@ type ModalThirdPartyProps = {
     title?: string;
     isOpen: boolean;
     isEdit: boolean;
+    disableRecipientField?: boolean | undefined;
     initialValues: DisclosureFormValues;
     errorOnCreate: any | undefined;
     submit: (values: DisclosureFormValues) => void;
@@ -146,7 +148,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
     const [showLegalBasisFields, setShowLegalbasesFields] = React.useState(false)
     const [selectedLegalBasis, setSelectedLegalBasis] = React.useState();
     const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState();
-    const { submit, errorOnCreate, onClose, isOpen, initialValues, title } = props
+    const { submit, errorOnCreate, onClose, isOpen, isEdit, disableRecipientField, initialValues, title } = props
 
     return (
         <Modal
@@ -172,7 +174,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                             <ModalBody>
                                 <Block {...rowBlockProps}>
                                     <ModalLabel label={intl.name} />
-                                    <FieldRecipient value={formikBag.values.recipient} />
+                                    <FieldRecipient value={formikBag.values.recipient} disabled={disableRecipientField}/>
                                 </Block>
 
                                 <Block {...rowBlockProps}>
@@ -234,10 +236,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                                                                         setShowLegalbasesFields(false)
                                                                     }
                                                                 }} />
-                                                        )}
-
-
-
+                                                        )} 
                                                 </Block>
                                             )}
                                             {!showLegalBasisFields && (

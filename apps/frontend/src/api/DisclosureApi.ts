@@ -4,7 +4,7 @@ import { PageResponse, DisclosureFormValues, Disclosure } from "../constants";
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 export const getAllDisclosures = async () => {
-    return (await axios.get(`${server_polly}/disclosure`)).data.content;
+    return (await axios.get(`${server_polly}/disclosure?pageSize=250`)).data.content;
 };
 
 export const getDisclosuresByRecipient = async (recipient: string) => {

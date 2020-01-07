@@ -2,10 +2,9 @@ import * as React from "react";
 import { SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, StyledTable } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
 
-import { LegalBasesNotClarified, ListLegalBasesInTable } from "./LegalBasis"
-import { codelist, ListName } from "../../service/Codelist"
+import { ListLegalBasesInTable } from "./LegalBasis"
 import { intl } from "../../util"
-import { Policy, policySort, Disclosure, disclosureSort } from "../../constants"
+import { Disclosure, disclosureSort, InformationType } from "../../constants"
 import { useTable } from "../../util/hooks"
 import RouteLink from "./RouteLink"
 
@@ -20,6 +19,20 @@ const CustomStyledRow = withStyle(StyledRow, {
     padding: "8px",
     fontSize: "24px"
 });
+
+const renderInformationTypesInCell = (informationtypeList: InformationType[]) => {
+    const informationTypeNameList = informationtypeList.reduce((acc, curr) => {
+        if (!acc) acc = [curr.name]
+        else acc = [...acc, curr.name]
+        return acc 
+    }, [] as string[]) 
+
+    return (
+        <React.Fragment>
+            {informationTypeNameList.join(', ')}
+        </React.Fragment>
+    )
+}
 
 type TableDisclosureProps = {
     list: Array<Disclosure>;
@@ -76,10 +89,12 @@ const TableDisclosure = ({ list, showRecipient }: TableDisclosureProps) => {
                     {table.data.map((row, index) => (
                         <CustomStyledRow key={index}>
                             {showRecipient && (
-                                <StyledCell>{row.recipient.shortName}</StyledCell>
+                                <StyledCell>
+                                    <RouteLink href={`/thirdparty/${row.recipient.code}`}>{row.recipient.shortName}</RouteLink>
+                                </StyledCell>
                             )}
                             {/* <StyledCell>{row.recipientPurpose}</StyledCell> */}
-                            <StyledCell>{row.informationTypes.map(i => i.name)}</StyledCell>
+                            <StyledCell>{renderInformationTypesInCell(row.informationTypes)}</StyledCell>
                             <StyledCell>{row.description}</StyledCell>
                             <StyledCell>
                                 {row.legalBases && (
