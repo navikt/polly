@@ -10,7 +10,7 @@ class GraphNodeTest {
     @Test
     void builder() {
         GraphNode node = GraphNode.builder()
-                .propId("id")
+                .id("id")
                 .term("term")
                 .description("desc")
                 .build();

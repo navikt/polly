@@ -245,11 +245,11 @@ public abstract class IntegrationTestBase {
     private void mockTerms() {
         CatalogTerm termOne = CatalogTerm.builder().id("term").term("new term").description("description").build();
         CatalogTerm termTwo = CatalogTerm.builder().id("term2").term("term old").description("description").build();
-        WireMock.stubFor(get("/termcatalog/terms/search?term_name=term&term_status=Godkjent%20begrep")
+        WireMock.stubFor(get("/termcatalog/terms/search?term_name=term")
                 .willReturn(okJson(JsonUtils.toJson(List.of(termOne, termTwo)))));
 
-        GraphNode termOneGraph = GraphNode.builder().propId("term").term("new term").description("descr1").build();
-        WireMock.stubFor(get("/termcatalog/node/prop/term").willReturn(okJson(JsonUtils.toJson(List.of(termOneGraph)))));
+        GraphNode termOneGraph = GraphNode.builder().id("term").term("new term").description("descr1").build();
+        WireMock.stubFor(get("/termcatalog/term/prop/term").willReturn(okJson(JsonUtils.toJson(List.of(termOneGraph)))));
     }
 
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {

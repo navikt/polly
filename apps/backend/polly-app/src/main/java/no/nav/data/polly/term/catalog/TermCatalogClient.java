@@ -27,8 +27,6 @@ import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 @Component
 public class TermCatalogClient {
 
-    private static final String GODKJENT_BEGREP = "Godkjent begrep";
-
     private final RestTemplate restTemplate;
     private final TermCatalogProperties properties;
     private final Cache<String, List<CatalogTerm>> termSearchCache;
@@ -85,7 +83,7 @@ public class TermCatalogClient {
     private List<CatalogTerm> searchCatalog(String searchString) {
         var uri = UriComponentsBuilder.fromUriString(properties.getSearchUrl())
                 .queryParam("term_name", searchString)
-                .queryParam("term_status", GODKJENT_BEGREP).build().toUri();
+                .build().toUri();
         ResponseEntity<CatalogTerm[]> response = restTemplate.getForEntity(uri, CatalogTerm[].class);
         verifyResponse(response);
         return asList(requireNonNull(response.getBody()));
