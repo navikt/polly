@@ -1,0 +1,5 @@
+app: polly
+namespace: default
+team: teamdatajegerne
+ingresses:
+  - https://polly.nais.adeo.no
