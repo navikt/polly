@@ -10,8 +10,12 @@ import TableDisclosure from "../components/common/TableDisclosure";
 import { Label2, Paragraph2, H5 } from "baseui/typography";
 import { Button, SIZE, KIND } from "baseui/button";
 import { user } from "../service/User";
-import { DisclosureFormValues } from "../constants";
+import { Use, DisclosureFormValues } from "../constants";
 import ModalThirdParty from "../components/ThirdParty/ModalThirdParty";
+import List from "../components/List";
+import { ListItem, ARTWORK_SIZES, ListItemLabel } from "baseui/list";
+import { useStyletron } from "styletron-react";
+import { getCodelistUsage } from "../api/CodelistApi";
 
 const labelBlockProps: BlockProps = {
     marginBottom: '2rem',
@@ -23,13 +27,15 @@ export type PathParams = { sourceCode: string }
 const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
     const [isLoading, setIsLoading] = React.useState<boolean>(true)
     const [disclosureList, setDisclosureList] = React.useState();
+    const [informationTypeList, setInformationTypeList] = React.useState<Use[]>()
     const [showCreateModal, setShowCreateModal] = React.useState(false)
     const [error, setError] = React.useState(null);
+    const [css] = useStyletron();
 
     const handleCreateDisclosure = async (disclosure: DisclosureFormValues) => {
         try {
             let createdDisclosure = await createDisclosure(disclosure)
-            if (!disclosureList || disclosureList.length < 1) 
+            if (!disclosureList || disclosureList.length < 1)
                 setDisclosureList([createdDisclosure])
             else if (disclosureList && createdDisclosure)
                 setDisclosureList([...disclosureList, createdDisclosure])
@@ -56,6 +62,8 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
             await codelist.wait();
             if (props.match.params.sourceCode) {
                 setDisclosureList(await getDisclosuresByRecipient(props.match.params.sourceCode))
+                let responseInformationTypeList = await getCodelistUsage(ListName.SOURCE, props.match.params.sourceCode)
+                setInformationTypeList(responseInformationTypeList.informationTypes)
             }
 
             setIsLoading(false);
@@ -110,6 +118,21 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
                             </Block>
                             <Block marginBottom="3rem">
                                 <Label2 {...labelBlockProps}>Innhentinger</Label2>
+                                {informationTypeList && informationTypeList.length > 0 && (
+                                    <ul
+                                        className={css({
+                                            width: '400px',
+                                            paddingLeft: 0,
+                                            paddingRight: 0,
+                                        })}
+                                    >
+                                        {informationTypeList.map(infotype => (
+                                            <ListItem sublist>
+                                                <ListItemLabel sublist>{infotype.name}</ListItemLabel>
+                                            </ListItem>
+                                        ))}
+                                    </ul>
+                                )}
                             </Block>
                         </React.Fragment>
                     )}

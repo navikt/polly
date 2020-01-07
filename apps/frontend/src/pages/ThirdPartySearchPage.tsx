@@ -61,7 +61,6 @@ const ThirdPartySearchPage = (props: RouteComponentProps) => {
         const fetchData = async () => {
             setIsLoading(true);
             await codelist.wait();
-            console.log(await getAllDisclosures())
             setDisclosureList(await getAllDisclosures())
             setIsLoading(false);
         };
