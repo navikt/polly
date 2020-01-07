@@ -178,7 +178,6 @@ export interface CodeListFormValues {
 export interface DisclosureFormValues {
     informationTypes: PolicyInformationType[];
     recipient: string;
-    recipientPurpose: string;
     legalBases: LegalBasisFormValues[];
     description: string;
     end?: string;

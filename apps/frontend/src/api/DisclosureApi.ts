@@ -13,13 +13,13 @@ export const getDisclosuresByRecipient = async (recipient: string) => {
 
 export const createDisclosure = async (disclosure: DisclosureFormValues) => {
     let body = mapDisclosureFromForm(disclosure);
-    return (await axios.post(`${server_polly}/disclosure`, body)).data.content;
+    return (await axios.post(`${server_polly}/disclosure`, body)).data;
 };
 
 export const mapDisclosureFromForm = (values: DisclosureFormValues) => {
     return {
         recipient: values.recipient,
-        recipientPurpose: values.recipientPurpose,
+        recipientPurpose: '-',
         informationTypes:
             values.informationTypes && values.informationTypes.map(i => i.id),
         description: values.description,

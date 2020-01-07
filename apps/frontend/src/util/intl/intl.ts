@@ -71,6 +71,7 @@ export interface IStrings {
     legalBasisInfo: string;
     groupByPurpose: string;
     showAll: string;
+    createThirdPartyModalTitle: string;
 
     // groups
     POLLY_READ: string;
