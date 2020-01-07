@@ -215,7 +215,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                                                 <Block width="100%">
                                                     {selectedLegalBasis ? (
                                                         <CardLegalBasis
-                                                            titleSubmitButton={intl.save}
+                                                            titleSubmitButton={intl.update}
                                                             initValue={selectedLegalBasis}
                                                             hideCard={() => setShowLegalbasesFields(false)}
                                                             submit={(selectedPolicyBasisValues) => {

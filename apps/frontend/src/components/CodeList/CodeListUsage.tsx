@@ -13,7 +13,7 @@ export const Usage = (props: { usage: CodeUsage }) => {
     const maxRows = Math.max(usage.disclosures.length, usage.informationTypes.length, usage.processes.length, usage.policies.length)
     return (
         <Block marginTop="2rem">
-            <Label2 font="font450" marginBottom=".5rem">Usage</Label2>
+            <Label2 font="font450" marginBottom=".5rem">{intl.usage}</Label2>
             <StyledTable>
                 <StyledHead>
                     <StyledHeadCell>

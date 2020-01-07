@@ -27,6 +27,7 @@ export interface IStrings {
     disclosure: string;
     thirdParty: string;
     policy: string;
+    usage: string;
 
     // sentence
     loggedInStatus: string;
@@ -94,6 +95,7 @@ export interface IStrings {
     groups: string;
     description: string;
     edit: string;
+    update: string;
     sources: string;
     categories: string;
     keywords: string;
