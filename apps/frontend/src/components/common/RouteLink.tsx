@@ -49,7 +49,7 @@ const ObjectLinkImpl = (props: RouteComponentProps & ObjectLinkProps) => {
                 return `/purpose/${process.purposeCode}/${process.id}`
             case ObjectType.DISCLOSURE:
                 const disclosure = await getDisclosure(id)
-                return `/thirdparty/${disclosure.recipient}`
+                return `/thirdparty/${disclosure.recipient.code}`
         }
         console.warn('couldn\'t find object type ' + type)
         return ''
