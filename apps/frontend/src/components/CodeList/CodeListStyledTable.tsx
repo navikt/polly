@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect, useState } from "react";
 import { SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
 import { Code, codelist } from "../../service/Codelist";
@@ -12,6 +13,9 @@ import DeleteCodeListModal from "./ModalDeleteCodeList";
 import axios from "axios";
 import { useTable } from "../../util/hooks"
 import { AuditButton } from "../../pages/AuditPage"
+import { getCodelistUsage } from "../../api/CodelistApi"
+import { Usage } from "./CodeListUsage"
+import { CodeUsage } from "../../constants"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -38,7 +42,7 @@ type TableCodelistProps = {
     hasAccess: boolean
 };
 
-const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
+const CodeListTable = ({tableData, hasAccess}: TableCodelistProps) => {
     const [useCss] = useStyletron();
 
     const [selectedCode, setSelectedCode] = React.useState<Code>();
@@ -47,6 +51,18 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
     const [showDeleteModal, setShowDeleteModal] = React.useState(false);
     const [errorOnResponse, setErrorOnResponse] = React.useState(null);
     const [table, sortColumn] = useTable<Code, keyof Code>(tableData, {useDefaultStringCompare: true, initialSortColumn: "code"})
+    const [usage, setUsage] = useState<CodeUsage>()
+
+    useEffect(() => {
+        if (showUsage && selectedCode) {
+            (async () => {
+                setUsage(undefined)
+                const usage = await getCodelistUsage(selectedCode.list,selectedCode.code)
+                setUsage(usage)
+            })()
+        }
+    }, [showUsage, selectedCode])
+    useEffect(() => setShowUsage(false), [tableData])
 
     const handleEditCodelist = async (values: Code) => {
         let body = [{
@@ -197,8 +213,9 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
                 />
             )}
         </StyledTable>
+
+            {showUsage && usage && <Usage usage={usage}/>}
         </React.Fragment>
     );
 };
-
 export default CodeListTable;

@@ -115,22 +115,24 @@ const AuditPageImpl = (props: RouteComponentProps<{ id?: string }>) => {
 
 export const AuditPage = withRouter(AuditPageImpl)
 
-export const AuditButton = (props: { id: string, kind?: KIND[keyof KIND] }) => {
+export const AuditButton = (props: { id: string, kind?: KIND[keyof KIND], children?: any }) => {
     return user.isAdmin() ?
         <RouteLink href={`/admin/audit/${props.id}`}>
-            <Button
-                size={ButtonSize.compact}
-                kind={props.kind || KIND.secondary}
-                overrides={{
-                    BaseButton: {
-                        style: () => {
-                            return {marginRight: theme.sizing.scale500}
+            {props.children ? props.children :
+                <Button
+                    size={ButtonSize.compact}
+                    kind={props.kind || KIND.secondary}
+                    overrides={{
+                        BaseButton: {
+                            style: () => {
+                                return {marginRight: theme.sizing.scale500}
+                            }
                         }
-                    }
-                }}
-            >
-                <FontAwesomeIcon icon={faHistory}/>
-            </Button>
+                    }}
+                >
+                    <FontAwesomeIcon icon={faHistory}/>
+                </Button>
+            }
         </RouteLink>
         : null
 }

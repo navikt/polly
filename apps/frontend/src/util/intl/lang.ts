@@ -19,6 +19,7 @@ export const no: IStrings = {
     productTeam: "Produktteam",
     disclosure: "Utlevering",
     thirdParty: "Ekstern part",
+    policy: 'Polis',
 
     loggedInStatus: "Du er logget inn og kan",
     notLoggedInStatus: "Du er ikke logget inn men kan",
@@ -166,6 +167,7 @@ export const en = {
     productTeam: "Product Team",
     disclosure: "Disclosure",
     thirdParty: 'Third party',
+    policy: 'Policy',
 
     loggedInStatus: "You are logged in and can",
     notLoggedInStatus: "You are not logged in but you can still",
