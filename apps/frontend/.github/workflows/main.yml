@@ -1,0 +1,47 @@
+name: Build and deploy
+
+on:
+  push:
+    branches-ignore:
+      - prod
+
+env:
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/master:${{ github.sha }}
+
+jobs:
+  build:
+    name: Build and push docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '11.x'
+      - name: Build
+        run: |
+          cp .env.master .env
+          yarn
+          CI=false yarn run build
+      - name: docker
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          docker build --tag ${IMAGE} .
+          docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
+          docker push ${IMAGE}
+
+  deploy-preprod:
+    name: Deploy to NAIS Preprod
+    needs: build
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-fss
+          RESOURCE: nais.yaml
+          VARS: preprod.yaml
