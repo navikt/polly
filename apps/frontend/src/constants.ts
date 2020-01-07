@@ -1,4 +1,4 @@
-import { Code, codelist } from "./service/Codelist";
+import { Code, codelist, ListName } from "./service/Codelist";
 import { ColumnCompares } from "./util/hooks"
 import { intl } from "./util"
 
@@ -212,4 +212,19 @@ export interface AuditItem {
 export interface AuditLog {
     id: string;
     audits: AuditItem[];
+}
+
+export interface CodeUsage {
+    listName: ListName
+    code: string
+    inUse: boolean
+    disclosures: [Use]
+    informationTypes: [Use]
+    policies: [Use]
+    processes: [Use]
+}
+
+export interface Use {
+    id: string;
+    name: string;
 }

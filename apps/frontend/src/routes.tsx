@@ -36,7 +36,7 @@ const Routes = (): JSX.Element => (
             />
             <Route
                 exact
-                path="/admin/codelist"
+                path="/admin/codelist/:listname?"
                 component={CodelistPage}
             />
             <Route

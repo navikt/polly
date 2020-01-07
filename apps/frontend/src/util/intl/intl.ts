@@ -26,6 +26,7 @@ export interface IStrings {
     productTeam: string;
     disclosure: string;
     thirdParty: string;
+    policy: string;
 
     // sentence
     loggedInStatus: string;
