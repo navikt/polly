@@ -1,6 +1,6 @@
 import * as React from "react";
 import Banner from "../components/Banner";
-import { intl, useAwait } from "../util"
+import { intl, theme, useAwait } from "../util"
 import { RouteComponentProps } from "react-router-dom";
 import { codelist, ListName } from "../service/Codelist";
 import { Spinner } from "baseui/icon";
@@ -41,7 +41,6 @@ const ThirdPartySearchPage = (props: RouteComponentProps) => {
     }
 
     const handleCreateDisclosure = async (disclosure: DisclosureFormValues) => {
-
         try {
             let createdDisclosure = await createDisclosure(disclosure)
             if (!disclosureList || disclosureList.length < 1) 
@@ -62,6 +61,7 @@ const ThirdPartySearchPage = (props: RouteComponentProps) => {
         const fetchData = async () => {
             setIsLoading(true);
             await codelist.wait();
+            console.log(await getAllDisclosures())
             setDisclosureList(await getAllDisclosures())
             setIsLoading(false);
         };
