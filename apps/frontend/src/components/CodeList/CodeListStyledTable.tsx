@@ -5,7 +5,7 @@ import { Code, codelist } from "../../service/Codelist";
 import { Block } from "baseui/block";
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faGhost, faTrash } from "@fortawesome/free-solid-svg-icons";
 import UpdateCodeListModal from "./ModalUpdateCodeList";
 import { intl } from "../../util";
 import DeleteCodeListModal from "./ModalDeleteCodeList";
@@ -42,6 +42,7 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
     const [useCss] = useStyletron();
 
     const [selectedCode, setSelectedCode] = React.useState<Code>();
+    const [showUsage, setShowUsage] = React.useState(false);
     const [showEditModal, setShowEditModal] = React.useState(false);
     const [showDeleteModal, setShowDeleteModal] = React.useState(false);
     const [errorOnResponse, setErrorOnResponse] = React.useState(null);
@@ -128,7 +129,16 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
                     <StyledCell styled={{maxWidth: "55%", minWidth: "24rem",}}>{row.description}</StyledCell>
                     <SmallCell>{
                         (hasAccess && <Block display="flex" justifyContent="flex-end" width="100%">
-                          <AuditButton id={`${row.list}-${row.code}`}/>
+                          <Button
+                              size={ButtonSize.compact}
+                              kind={row === selectedCode ? KIND.primary : KIND.tertiary}
+                              onClick={() => {
+                                  setSelectedCode(row)
+                                  setShowUsage(true)
+                              }}>
+                            <FontAwesomeIcon icon={faGhost}/>
+                          </Button>
+                          <AuditButton id={`${row.list}-${row.code}`} kind={KIND.tertiary}/>
                           <Button
                               size={ButtonSize.compact}
                               kind={KIND.tertiary}

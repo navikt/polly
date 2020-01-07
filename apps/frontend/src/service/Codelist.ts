@@ -55,7 +55,7 @@ class CodelistService {
         }
     };
 
-    refreshCodeLists(){
+    refreshCodeLists() {
         this.promise = this.fetchData();
     }
 
@@ -76,7 +76,7 @@ class CodelistService {
     }
 
     valid(list: ListName, codeName?: string): boolean {
-        return !!codeName && !!this.getCode(list,  codeName)
+        return !!codeName && !!this.getCode(list, codeName)
     }
 
     getShortnameForCode(code: Code) {
@@ -129,12 +129,7 @@ class CodelistService {
 
     makeIdLabelForAllCodeLists() {
         if (!this.lists) return [];
-        const { codelist } = this.lists;
-        return Object
-            .keys(codelist)
-            .map((key) => ({
-                id: key as string,
-                label: key as string}));
+        return Object.keys(this.lists.codelist).map(key => ({id: key, label: key}))
     }
 
 }
