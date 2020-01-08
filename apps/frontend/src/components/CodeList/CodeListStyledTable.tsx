@@ -1,17 +1,21 @@
 import * as React from "react";
+import { useEffect, useState } from "react";
 import { SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
 import { Code, codelist } from "../../service/Codelist";
 import { Block } from "baseui/block";
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faGhost, faTrash } from "@fortawesome/free-solid-svg-icons";
 import UpdateCodeListModal from "./ModalUpdateCodeList";
 import { intl } from "../../util";
 import DeleteCodeListModal from "./ModalDeleteCodeList";
 import axios from "axios";
 import { useTable } from "../../util/hooks"
 import { AuditButton } from "../../pages/AuditPage"
+import { getCodelistUsage } from "../../api/CodelistApi"
+import { Usage } from "./CodeListUsage"
+import { CodeUsage } from "../../constants"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -38,14 +42,27 @@ type TableCodelistProps = {
     hasAccess: boolean
 };
 
-const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
+const CodeListTable = ({tableData, hasAccess}: TableCodelistProps) => {
     const [useCss] = useStyletron();
 
     const [selectedCode, setSelectedCode] = React.useState<Code>();
+    const [showUsage, setShowUsage] = React.useState(false);
     const [showEditModal, setShowEditModal] = React.useState(false);
     const [showDeleteModal, setShowDeleteModal] = React.useState(false);
     const [errorOnResponse, setErrorOnResponse] = React.useState(null);
     const [table, sortColumn] = useTable<Code, keyof Code>(tableData, {useDefaultStringCompare: true, initialSortColumn: "code"})
+    const [usage, setUsage] = useState<CodeUsage>()
+
+    useEffect(() => {
+        if (showUsage && selectedCode) {
+            (async () => {
+                setUsage(undefined)
+                const usage = await getCodelistUsage(selectedCode.list,selectedCode.code)
+                setUsage(usage)
+            })()
+        }
+    }, [showUsage, selectedCode])
+    useEffect(() => setShowUsage(false), [tableData])
 
     const handleEditCodelist = async (values: Code) => {
         let body = [{
@@ -128,7 +145,16 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
                     <StyledCell styled={{maxWidth: "55%", minWidth: "24rem",}}>{row.description}</StyledCell>
                     <SmallCell>{
                         (hasAccess && <Block display="flex" justifyContent="flex-end" width="100%">
-                          <AuditButton id={`${row.list}-${row.code}`}/>
+                          <Button
+                              size={ButtonSize.compact}
+                              kind={row === selectedCode ? KIND.primary : KIND.tertiary}
+                              onClick={() => {
+                                  setSelectedCode(row)
+                                  setShowUsage(true)
+                              }}>
+                            <FontAwesomeIcon icon={faGhost}/>
+                          </Button>
+                          <AuditButton id={`${row.list}-${row.code}`} kind={KIND.tertiary}/>
                           <Button
                               size={ButtonSize.compact}
                               kind={KIND.tertiary}
@@ -187,8 +213,9 @@ const CodeListTable = ({ tableData, hasAccess }: TableCodelistProps) => {
                 />
             )}
         </StyledTable>
+
+            {showUsage && usage && <Usage usage={usage}/>}
         </React.Fragment>
     );
 };
-
 export default CodeListTable;

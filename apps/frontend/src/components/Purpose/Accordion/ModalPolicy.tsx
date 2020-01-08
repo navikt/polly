@@ -200,7 +200,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, ti
                                                     <Block width="100%" marginTop="2rem">
                                                         {selectedLegalBasis ? (
                                                             <CardLegalBasis
-                                                                titleSubmitButton={intl.save}
+                                                                titleSubmitButton={intl.update}
                                                                 initValue={selectedLegalBasis}
                                                                 hideCard={() => setShowLegalBasesFields(false)}
                                                                 submit={(selectedPolicyBasisValues) => {

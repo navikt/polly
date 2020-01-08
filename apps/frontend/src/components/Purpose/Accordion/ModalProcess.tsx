@@ -215,7 +215,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                                                 <Block width="100%" marginTop="2rem">
                                                     {selectedLegalBasis ? (
                                                         <CardLegalBasis
-                                                            titleSubmitButton={intl.save}
+                                                            titleSubmitButton={intl.update}
                                                             initValue={selectedLegalBasis}
                                                             hideCard={() => setShowLegalBasesFields(false)}
                                                             submit={(selectedPolicyBasisValues) => {

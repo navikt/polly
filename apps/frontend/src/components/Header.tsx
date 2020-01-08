@@ -220,6 +220,12 @@ const Header = (props: HeaderProps) => {
                 </StyledNavigationItem>
 
                 <StyledNavigationItem>
+                    <RouteLink href="/thirdparty" className={link}>
+                        {intl.thirdParty}
+                    </RouteLink>
+                </StyledNavigationItem>
+
+                <StyledNavigationItem>
                     {user.isLoggedIn() && (
                         <LoggedInHeader/>
                     )}

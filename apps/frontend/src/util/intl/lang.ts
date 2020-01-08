@@ -19,6 +19,8 @@ export const no: IStrings = {
     productTeam: "Produktteam",
     disclosure: "Utlevering",
     thirdParty: "Ekstern part",
+    policy: 'Polis',
+    usage: 'Bruk',
 
     loggedInStatus: "Du er logget inn og kan",
     notLoggedInStatus: "Du er ikke logget inn men kan",
@@ -46,7 +48,7 @@ export const no: IStrings = {
     gdprSelect: "Velg GDPR artikkel",
     nationalLawSelect: "Velg nasjonal lov",
     descriptionWrite: "Skriv inn beskrivelse",
-    descriptionWriteLegalBases: "Skriv inn lov (Eksempel: § 1-1)",
+    descriptionWriteLegalBases: "Beskrivelse (feks. med lovreferanse § 1-1 eller kap 4)",
     definitionWrite: "Skriv inn en definisjon",
     subjectCategoriesNotFound: "Fant ingen kategorier av personer",
     legalBasesProcess: "Bruker behandlingens rettslig grunnlag",
@@ -65,6 +67,7 @@ export const no: IStrings = {
     legalBasisInfo:
         "For artikkel 6(c, e og f) trengs det videre spesifisering.",
     disclosureSelect: "Velg mottaker",
+    createThirdPartyModalTitle: 'Opprett utlevering for ekstern part',
 
     groupByPurpose: "Grupper etter formål",
     showAll: "Vis alle",
@@ -76,6 +79,7 @@ export const no: IStrings = {
     department: "Avdeling",
     subDepartment: "Linja (Ytre etat)",
     save: "Lagre",
+    update: "Oppdater",
     abort: "Avbryt",
     login: "Logg inn",
     logout: "Logg ut",
@@ -165,6 +169,8 @@ export const en = {
     productTeam: "Product Team",
     disclosure: "Disclosure",
     thirdParty: 'Third party',
+    policy: 'Policy',
+    usage: 'Usage',
 
     loggedInStatus: "You are logged in and can",
     notLoggedInStatus: "You are not logged in but you can still",
@@ -192,7 +198,7 @@ export const en = {
     gdprSelect: "Select GDPR article",
     nationalLawSelect: "Select national law",
     descriptionWrite: "Enter description",
-    descriptionWriteLegalBases: "Enter law (Example: § 1-1)",
+    descriptionWriteLegalBases: "Description (ie. with law reference '§ 1-1' or 'kap 4')",
     definitionWrite: "Enter definition",
     subjectCategoriesNotFound: "Found no subject categories",
     legalBasesProcess: "Use legal bases from process",
@@ -212,6 +218,7 @@ export const en = {
     disclosureSelect: "Select recipient",
     groupByPurpose: "Group by purpose",
     showAll: "Show all",
+    createThirdPartyModalTitle: 'Create disclosure for a thirdparty',
 
     POLLY_READ: "Read",
     POLLY_WRITE: "Write",
@@ -220,6 +227,7 @@ export const en = {
     department: "Department",
     subDepartment: "Sub department",
     save: "Save",
+    update: "Update",
     abort: "Cancel",
     login: "Login",
     logout: "Logout",

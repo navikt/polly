@@ -7,6 +7,10 @@ export const getPoliciesForInformationType = async (informationTypeId: string) =
     return (await axios.get<PageResponse<Policy>>(`${server_polly}/policy/?informationTypeId=${informationTypeId}&pageSize=250`)).data
 }
 
+export const getPolicy = async (policyId: string) => {
+    return (await axios.get<Policy>(`${server_polly}/policy/${policyId}`)).data
+}
+
 export const createPolicy = async (policy: PolicyFormValues) => {
     let body = mapPolicyFromForm(policy)
     return (await axios.post<PageResponse<Policy>>(`${server_polly}/policy`, [body])).data.content[0]
