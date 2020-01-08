@@ -1,119 +1,26 @@
 import * as React from "react";
-import { ReactNode, useEffect } from "react";
-import { Spinner } from "baseui/spinner";
-import { Button, KIND, SHAPE } from "baseui/button"
-import { Block } from "baseui/block"
-import { faPlusCircle } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Table } from "baseui/table"
-import { StatefulPopover } from "baseui/popover"
-import { StatefulMenu } from "baseui/menu"
-import { PLACEMENT } from "baseui/tooltip"
-import { TriangleDown } from "baseui/icon"
-import { Pagination } from "baseui/pagination"
-import { Select, TYPE } from "baseui/select"
-import { RouteComponentProps } from "react-router-dom"
+import {useEffect} from "react";
+import {Spinner} from "baseui/spinner";
+import {Button, SHAPE} from "baseui/button"
+import {Block} from "baseui/block"
+import {faPlusCircle} from "@fortawesome/free-solid-svg-icons"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import {Select, TYPE} from "baseui/select"
+import {RouteComponentProps} from "react-router-dom"
 
 
 import InformationtypeMetadata from "../components/InformationType/InformationtypeMetadata/";
-import { intl, theme, useAwait } from "../util"
-import { InformationType, Policy } from "../constants"
-import { codelist, ListName } from "../service/Codelist"
+import {intl, theme, useAwait} from "../util"
+import {Policy, UsedCode} from "../constants"
+import {codelist} from "../service/Codelist"
 import Banner from "../components/Banner";
-import { user } from "../service/User";
-import { H3, H6 } from "baseui/typography"
-import { getInformationType, getInformationTypes, getPoliciesForInformationType, useInfoTypeSearch } from "../api"
-import RouteLink from "../components/common/RouteLink"
+import {user} from "../service/User";
+import {H3} from "baseui/typography"
+import {getInformationType, getPoliciesForInformationType, useInfoTypeSearch} from "../api"
+import InformationTypeAccordion from "../components/InformationType/InformationTypeCategory";
+import {getListNameUsages} from "../api/CodeListApi";
 
 export type PurposeMap = { [purpose: string]: Policy[] }
-
-const InformationTypeTable = (props: RouteComponentProps) => {
-    const [page, setPage] = React.useState(1);
-    const [limit, setLimit] = React.useState(25);
-    const [total, setTotal] = React.useState(0);
-    const [loading, setLoading] = React.useState(true);
-    const [data, setData] = React.useState<ReactNode[][]>([]);
-
-    const columns = [
-        intl.name,
-        intl.categories
-    ]
-
-    const mapInformationTypeToTable = (infoType: InformationType) => [
-        <RouteLink href={`/informationtype/${infoType.id}`}>{infoType.name}</RouteLink>,
-        infoType.categories.map(cat => codelist.getShortname(ListName.CATEGORY, cat.code)).join(', ')
-    ]
-
-    React.useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            let data = await getInformationTypes(page, limit)
-            setTotal(data.totalElements)
-            setData(data.content.map(mapInformationTypeToTable));
-            setLoading(false);
-        };
-        fetchData();
-    }, [page, limit]);
-
-    const handlePageChange = (nextPage: number) => {
-        if (nextPage < 1) {
-            return;
-        }
-        if (nextPage > Math.ceil(total / limit)) {
-            return;
-        }
-        setPage(nextPage);
-    };
-
-    const handleLimitChange = (nextLimit: number) => {
-        const nextPageNum = Math.ceil(total / nextLimit);
-        if (nextPageNum < page) {
-            setLimit(nextLimit);
-            setPage(nextPageNum);
-        } else {
-            setLimit(nextLimit);
-        }
-    };
-
-    return (
-        <React.Fragment>
-            <H6 display="flex" justifyContent="space-between" marginBottom={theme.sizing.scale400} paddingLeft={theme.sizing.scale200}>{intl.all} {intl.informationTypes}</H6>
-            <Table columns={columns} data={data} isLoading={loading} />
-            <Block paddingTop={theme.sizing.scale600} display="flex" justifyContent="space-between">
-                <StatefulPopover
-                    content={({ close }) => (
-                        <StatefulMenu
-                            items={[5, 10, 15, 20, 25, 50, 75, 100].map((i) => ({
-                                label: i,
-                            }))}
-                            onItemSelect={({ item }) => {
-                                handleLimitChange(item.label);
-                                close();
-                            }}
-                            overrides={{
-                                List: {
-                                    style: { height: '150px', width: '100px' },
-                                },
-                            }}
-                        />
-                    )}
-                    placement={PLACEMENT.bottom}
-                >
-                    <Button kind={KIND.tertiary} endEnhancer={TriangleDown}>
-                        {`${limit} ${intl.rows}`}
-                    </Button>
-                </StatefulPopover>
-                <Pagination
-                    currentPage={page}
-                    numPages={Math.ceil(total / limit)}
-                    onPageChange={({ nextPage }) => handlePageChange(nextPage)}
-                    labels={{ prevButton: intl.prevButton, nextButton: intl.nextButton }}
-                />
-            </Block>
-        </React.Fragment>
-    )
-}
-
 
 const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?: string }>) => {
     const [isLoading, setLoading] = React.useState(false);
@@ -121,11 +28,25 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
     const [informationTypeId, setInformationTypeId] = React.useState(props.match.params.id)
     const [informationtype, setInformationtype] = React.useState()
     const [policies, setPolicies] = React.useState<Policy[]>([])
+    const [categoryUsages, setCategoryUsages] = React.useState<UsedCode[]>();
+    const [listName, setListName] = React.useState();
 
     const [infoTypeSearchResult, setInfoTypeSearch, infoTypeSearchLoading] = useInfoTypeSearch()
 
     useAwait(user.wait())
     useAwait(codelist.wait())
+
+    React.useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            let response = await getListNameUsages("CATEGORY");
+            setCategoryUsages(response.codesInUse);
+            setListName(response.listName);
+            console.log(categoryUsages);
+            setLoading(false);
+        };
+        fetchData();
+    },[listName]);
 
     useEffect(() => setInformationTypeId(props.match.params.id), [props.match.params.id]);
 
@@ -191,7 +112,7 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
                             }
                         </Block>
                     </Block>
-                    <InformationTypeTable {...props} />
+                    <InformationTypeAccordion categoryUsages={categoryUsages}/>
                 </React.Fragment>
 
                 )}
