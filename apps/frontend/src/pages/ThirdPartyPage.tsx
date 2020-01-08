@@ -5,21 +5,21 @@ import { RouteComponentProps } from "react-router-dom";
 import { codelist, ListName } from "../service/Codelist";
 import { Spinner, Plus } from "baseui/icon";
 import { Block, BlockProps } from "baseui/block";
-import { getDisclosuresByRecipient, createDisclosure } from "../api";
+import { getDisclosuresByRecipient, createDisclosure, deleteDisclosure } from "../api";
 import TableDisclosure from "../components/common/TableDisclosure";
 import { Label2, Paragraph2, H5 } from "baseui/typography";
-import { Button, SIZE, KIND } from "baseui/button";
+import { Button, KIND } from "baseui/button";
 import { user } from "../service/User";
-import { Use, DisclosureFormValues } from "../constants";
-import ModalThirdParty from "../components/ThirdParty/ModalThirdParty";
-import List from "../components/List";
-import { ListItem, ARTWORK_SIZES, ListItemLabel } from "baseui/list";
+import { Use, DisclosureFormValues, Disclosure } from "../constants";
+import ModalThirdParty from "../components/ThirdParty/ModalThirdPartyForm";
+import { ListItem, ListItemLabel } from "baseui/list";
 import { useStyletron } from "styletron-react";
-import { getCodelistUsage} from "../api/CodelistApi";
+import { getCodelistUsage } from "../api/CodelistApi";
+import RouteLink from "../components/common/RouteLink";
 
 const labelBlockProps: BlockProps = {
-    marginBottom: '2rem',
-    font: 'font450'
+    marginBottom: '1rem',
+    font: 'font400'
 }
 
 export type PathParams = { sourceCode: string }
@@ -29,7 +29,7 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
     const [disclosureList, setDisclosureList] = React.useState();
     const [informationTypeList, setInformationTypeList] = React.useState<Use[]>()
     const [showCreateModal, setShowCreateModal] = React.useState(false)
-    const [error, setError] = React.useState(null);
+    const [error, setError] = React.useState();
     const [css] = useStyletron();
 
     const handleCreateDisclosure = async (disclosure: DisclosureFormValues) => {
@@ -44,6 +44,20 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
         } catch (err) {
             setShowCreateModal(true)
             setError(err.message)
+        }
+    }
+
+    const handleDeleteDisclosure = async (disclosure: Disclosure) => {
+        console.log(disclosure, "disclosure")
+        if (!disclosure) return
+        try {
+            await deleteDisclosure(disclosure.id)
+            setDisclosureList([...disclosureList.filter((d: Disclosure) => d.id !== disclosure.id)])
+            setError(null)
+            return true
+        } catch (err) {
+            setError(err.message)
+            return false
         }
     }
 
@@ -114,7 +128,12 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
                                     }
                                 </Block>
 
-                                <TableDisclosure list={disclosureList} showRecipient={false} />
+                                <TableDisclosure
+                                    list={disclosureList}
+                                    showRecipient={false}
+                                    errorDeleteModal={error}
+                                    submitDeleteDisclosure={handleDeleteDisclosure}
+                                />
                             </Block>
                             <Block marginBottom="3rem">
                                 <Label2 {...labelBlockProps}>Innhentinger</Label2>
@@ -127,8 +146,10 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
                                         })}
                                     >
                                         {informationTypeList.map(infotype => (
-                                            <ListItem sublist>
-                                                <ListItemLabel sublist>{infotype.name}</ListItemLabel>
+                                            <ListItem sublist key={infotype.id}>
+                                                <ListItemLabel sublist>
+                                                   <RouteLink href={`/informationtype/${infotype.id}`}>{infotype.name}</RouteLink>
+                                                </ListItemLabel>
                                             </ListItem>
                                         ))}
                                     </ul>
