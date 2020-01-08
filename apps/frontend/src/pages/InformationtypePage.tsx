@@ -40,7 +40,6 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
             setLoading(true);
             let response = await getCodelistUsageByListName(ListName.CATEGORY);
             setCategoryUsages(response.codesInUse);
-            console.log(categoryUsages);
             setLoading(false);
         };
         fetchData();
