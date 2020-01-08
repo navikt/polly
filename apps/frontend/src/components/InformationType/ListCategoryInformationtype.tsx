@@ -1,5 +1,5 @@
 import * as React from "react";
-import {UsedCode} from "../../constants";
+import {CodeUsage} from "../../constants";
 import RouteLink from "../common/RouteLink";
 import {Block} from "baseui/block";
 import {useStyletron} from "baseui";
@@ -11,14 +11,14 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronDown, faChevronRight} from "@fortawesome/free-solid-svg-icons";
 
 type InformationTypeAccordionProps = {
-    categoryUsages: UsedCode[] | undefined
+    categoryUsages: CodeUsage[] | undefined
 };
 
 const InformationTypeAccordion = ({categoryUsages}: InformationTypeAccordionProps) => {
     const [css] = useStyletron();
 
     useAwait(codelist.wait())
-    const show = () => {
+    const panelList = () => {
         if (!categoryUsages) return
         return categoryUsages
             .filter(categoryUsage => categoryUsage.informationTypes.length > 0)
@@ -77,11 +77,7 @@ const InformationTypeAccordion = ({categoryUsages}: InformationTypeAccordionProp
 
     return (
         <Block width="800px" marginTop="50px">
-            <Accordion
-                onChange={({expanded}) => console.log(expanded)}
-            >
-                {show()}
-            </Accordion>
+            <Accordion>{panelList()}</Accordion>
         </Block>
     )
 };

@@ -229,17 +229,7 @@ export interface Use {
     name: string;
 }
 
-export interface UsedCode {
-    listName: string;
-    code: string;
-    informationTypes: InformationType[];
-    policies: Policy[];
-    processes: Process[];
-    disclosure: Disclosure[];
-    inUse: boolean;
-}
-
 export interface CategoryUsage {
     listName : string;
-    codesInUse: UsedCode[];
+    codesInUse: CodeUsage[];
 }

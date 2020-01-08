@@ -15,7 +15,7 @@ import ModalThirdParty from "../components/ThirdParty/ModalThirdParty";
 import List from "../components/List";
 import { ListItem, ARTWORK_SIZES, ListItemLabel } from "baseui/list";
 import { useStyletron } from "styletron-react";
-import { getCodelistUsage } from "../api/CodelistApi";
+import { getCodelistUsage} from "../api/CodelistApi";
 
 const labelBlockProps: BlockProps = {
     marginBottom: '2rem',

@@ -13,7 +13,7 @@ import DeleteCodeListModal from "./ModalDeleteCodeList";
 import axios from "axios";
 import { useTable } from "../../util/hooks"
 import { AuditButton } from "../../pages/AuditPage"
-import { getCodelistUsage } from "../../api/CodelistApi"
+import {getCodelistUsage} from "../../api"
 import { Usage } from "./CodeListUsage"
 import { CodeUsage } from "../../constants"
 

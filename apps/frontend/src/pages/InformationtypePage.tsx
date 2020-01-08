@@ -11,14 +11,14 @@ import {RouteComponentProps} from "react-router-dom"
 
 import InformationtypeMetadata from "../components/InformationType/InformationtypeMetadata/";
 import {intl, theme, useAwait} from "../util"
-import {Policy, UsedCode} from "../constants"
+import {CodeUsage, Policy} from "../constants"
 import {codelist} from "../service/Codelist"
 import Banner from "../components/Banner";
 import {user} from "../service/User";
 import {H3} from "baseui/typography"
 import {getInformationType, getPoliciesForInformationType, useInfoTypeSearch} from "../api"
-import InformationTypeAccordion from "../components/InformationType/InformationTypeCategory";
-import {getListNameUsages} from "../api/CodeListApi";
+import InformationTypeAccordion from "../components/InformationType/ListCategoryInformationtype";
+import {getCodelistUsageByListName} from "../api";
 
 export type PurposeMap = { [purpose: string]: Policy[] }
 
@@ -28,7 +28,7 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
     const [informationTypeId, setInformationTypeId] = React.useState(props.match.params.id)
     const [informationtype, setInformationtype] = React.useState()
     const [policies, setPolicies] = React.useState<Policy[]>([])
-    const [categoryUsages, setCategoryUsages] = React.useState<UsedCode[]>();
+    const [categoryUsages, setCategoryUsages] = React.useState<CodeUsage[]>();
     const [listName, setListName] = React.useState();
 
     const [infoTypeSearchResult, setInfoTypeSearch, infoTypeSearchLoading] = useInfoTypeSearch()
@@ -39,7 +39,7 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
     React.useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
-            let response = await getListNameUsages("CATEGORY");
+            let response = await getCodelistUsageByListName("CATEGORY");
             setCategoryUsages(response.codesInUse);
             setListName(response.listName);
             console.log(categoryUsages);
