@@ -133,8 +133,8 @@ public class Policy extends Auditable<String> {
                 .build();
     }
 
-    public UsedInInstance getInstanceIdentification(){
-        return UsedInInstance.builder().id(id.toString()).name(purposeCode).build();
+    public UsedInInstance getInstanceIdentification() {
+        return UsedInInstance.builder().id(id.toString()).name(purposeCode + " " + informationTypeName).build();
     }
 
     private PolicyInformationTypeResponse convertInformationTypeNameResponse() {
