@@ -15,10 +15,11 @@ import ModalThirdParty from "../components/ThirdParty/ModalThirdPartyForm";
 import { ListItem, ListItemLabel } from "baseui/list";
 import { useStyletron } from "styletron-react";
 import { getCodelistUsage } from "../api/CodelistApi";
+import RouteLink from "../components/common/RouteLink";
 
 const labelBlockProps: BlockProps = {
-    marginBottom: '2rem',
-    font: 'font450'
+    marginBottom: '1rem',
+    font: 'font400'
 }
 
 export type PathParams = { sourceCode: string }
@@ -146,7 +147,9 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
                                     >
                                         {informationTypeList.map(infotype => (
                                             <ListItem sublist key={infotype.id}>
-                                                <ListItemLabel sublist>{infotype.name}</ListItemLabel>
+                                                <ListItemLabel sublist>
+                                                   <RouteLink href={`informationtype/${infotype.id}`}>{infotype.name}</RouteLink> 
+                                                </ListItemLabel>
                                             </ListItem>
                                         ))}
                                     </ul>
