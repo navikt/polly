@@ -148,7 +148,7 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
                                         {informationTypeList.map(infotype => (
                                             <ListItem sublist key={infotype.id}>
                                                 <ListItemLabel sublist>
-                                                   <RouteLink href={`informationtype/${infotype.id}`}>{infotype.name}</RouteLink> 
+                                                   <RouteLink href={`/informationtype/${infotype.id}`}>{infotype.name}</RouteLink> 
                                                 </ListItemLabel>
                                             </ListItem>
                                         ))}
