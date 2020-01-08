@@ -1,8 +1,8 @@
 import * as React from "react";
 import Banner from "../components/Banner";
-import { intl, theme, useAwait } from "../util"
+import { intl, useAwait } from "../util"
 import { RouteComponentProps } from "react-router-dom";
-import { codelist, ListName } from "../service/Codelist";
+import { codelist, ListName, Code } from "../service/Codelist";
 import { Spinner } from "baseui/icon";
 import { Block, BlockProps } from "baseui/block";
 import { StatefulSelect } from "baseui/select";
@@ -13,7 +13,10 @@ import { Button } from "baseui/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { user } from "../service/User";
-import ModalThirdParty from "../components/ThirdParty/ModalThirdParty";
+import ModalThirdParty from "../components/ThirdParty/ModalThirdPartyForm";
+import { useStyletron } from "styletron-react";
+import { ListItemLabel, ListItem } from "baseui/list";
+import RouteLink from "../components/common/RouteLink";
 
 const rowBlockProps: BlockProps = {
     display: 'flex',
@@ -32,7 +35,10 @@ const ThirdPartySearchPage = (props: RouteComponentProps) => {
     const [isLoading, setIsLoading] = React.useState<boolean>(true)
     const [showCreateModal, setShowCreateModal] = React.useState(false)
     const [disclosureList, setDisclosureList] = React.useState<Disclosure[]>()
-    const [error, setError] = React.useState(null);
+    const [thirdPartyList, setThirdPartyList] = React.useState<Code[]>()
+    const [error, setError] = React.useState();
+
+    const [css] = useStyletron();
 
     const handleChangeSource = async (source?: string) => {
         if (source) {
@@ -43,7 +49,7 @@ const ThirdPartySearchPage = (props: RouteComponentProps) => {
     const handleCreateDisclosure = async (disclosure: DisclosureFormValues) => {
         try {
             let createdDisclosure = await createDisclosure(disclosure)
-            if (!disclosureList || disclosureList.length < 1) 
+            if (!disclosureList || disclosureList.length < 1)
                 setDisclosureList([createdDisclosure])
             else if (disclosureList && createdDisclosure)
                 setDisclosureList([...disclosureList, createdDisclosure])
@@ -62,6 +68,8 @@ const ThirdPartySearchPage = (props: RouteComponentProps) => {
             setIsLoading(true);
             await codelist.wait();
             setDisclosureList(await getAllDisclosures())
+            setThirdPartyList(codelist.getCodes(ListName.SOURCE))
+            console.log(codelist.getCodes(ListName.SOURCE))
             setIsLoading(false);
         };
         fetchData();
@@ -76,18 +84,18 @@ const ThirdPartySearchPage = (props: RouteComponentProps) => {
                 <React.Fragment>
                     <Block {...rowBlockProps}>
                         <Block width="80%">
-                        <StatefulSelect
-                            options={codelist.getParsedOptions(ListName.SOURCE)}
-                            placeholder={intl.disclosureSelect}
-                            maxDropdownHeight="350px"
-                            onChange={(event) => handleChangeSource((event.option?.id) as string | undefined)}
-                        />
+                            <StatefulSelect
+                                options={codelist.getParsedOptions(ListName.SOURCE)}
+                                placeholder={intl.disclosureSelect}
+                                maxDropdownHeight="350px"
+                                onChange={(event) => handleChangeSource((event.option ?.id) as string | undefined)}
+                            />
                         </Block>
                         <Block>
                             {user.canWrite() &&
-                            <Button type="button" onClick={() => setShowCreateModal(true)}>
-                              <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;{intl.createNew}
-                            </Button>
+                                <Button type="button" onClick={() => setShowCreateModal(true)}>
+                                    <FontAwesomeIcon icon={faPlusCircle} />&nbsp;{intl.createNew}
+                                </Button>
                             }
                             <ModalThirdParty
                                 title={intl.createThirdPartyModalTitle}
@@ -95,7 +103,7 @@ const ThirdPartySearchPage = (props: RouteComponentProps) => {
                                 isEdit={false}
                                 initialValues={initialFormValues}
                                 submit={handleCreateDisclosure}
-                                onClose={() =>{ 
+                                onClose={() => {
                                     setShowCreateModal(false)
                                     setError(null)
                                 }}
@@ -107,8 +115,22 @@ const ThirdPartySearchPage = (props: RouteComponentProps) => {
 
             )}
 
-            {codelist && disclosureList && (
-                <TableDisclosure list={disclosureList} showRecipient/>
+            {codelist && thirdPartyList && (
+                <ul
+                    className={css({
+                        width: '375px',
+                        paddingLeft: 0,
+                        paddingRight: 0,
+                    })}
+                >
+                    {thirdPartyList.map(thirdParty => (
+                        <ListItem>
+                            <ListItemLabel>
+                               <RouteLink href={`thirdparty/${thirdParty.code}`}>{thirdParty.shortName}</RouteLink> 
+                            </ListItemLabel>
+                        </ListItem>
+                    ))}
+                </ul>
             )}
         </React.Fragment>
     );
