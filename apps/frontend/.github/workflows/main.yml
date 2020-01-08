@@ -24,7 +24,7 @@ jobs:
           cp .env.master .env
           yarn
           CI=false yarn run build
-      - name: docker
+      - name: Docker
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
