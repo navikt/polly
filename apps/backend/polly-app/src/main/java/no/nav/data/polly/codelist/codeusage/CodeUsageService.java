@@ -48,9 +48,10 @@ public class CodeUsageService {
         List<String[]> listnames = Stream.of(ListName.values()).map(e -> new String[]{e.name()}).collect(toList());
         this.summary = MetricUtils.summary()
                 .labels(listnames)
+                .labelNames("listname")
                 .name("polly_codeusage_find_summary")
                 .help("Time taken for listname usage lookup times")
-                .labelNames("listname")
+                .quantile(.5, .05).quantile(.9, .01).quantile(.95, .005).quantile(.99, .001)
                 .register();
     }
 
