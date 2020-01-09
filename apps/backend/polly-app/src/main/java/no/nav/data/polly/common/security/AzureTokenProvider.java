@@ -132,12 +132,12 @@ public class AzureTokenProvider {
     }
 
     private String getApplicationTokenForResource(String resource) {
-        log.debug("Getting application token for resource {}", resource);
+        log.trace("Getting application token for resource {}", resource);
         return requireNonNull(accessTokenCache.get("credential" + resource, cacheKey -> acquireTokenByCredential(resource))).getAccessToken();
     }
 
     private String getAccessTokenForResource(String refreshToken, String resource) {
-        log.debug("Getting access token for resource {}", resource);
+        log.trace("Getting access token for resource {}", resource);
         return requireNonNull(accessTokenCache.get("refresh" + refreshToken + resource, cacheKey -> acquireTokenByRefreshToken(refreshToken, resource))).getAccessToken();
     }
 
