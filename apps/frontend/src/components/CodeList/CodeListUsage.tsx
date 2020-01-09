@@ -52,7 +52,7 @@ const UsageTable = (props: { usage: CodeUsage, rows: number }) => {
 
 export const Usage = (props: { usage?: CodeUsage }) => {
     const {usage} = props;
-    const maxRows = usage ? Math.max(usage.disclosures.length, usage.informationTypes.length, usage.processes.length, usage.policies.length) : 0
+    const maxRows = usage ? Math.max(usage.disclosures.length, usage.informationTypes.length, usage.processes.length, usage.policies.length) : -1
 
     return (
         <Block marginTop="2rem">
