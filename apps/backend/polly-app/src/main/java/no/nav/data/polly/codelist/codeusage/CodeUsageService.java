@@ -70,7 +70,7 @@ public class CodeUsageService {
     }
 
     public CodeUsageResponse findCodeUsage(ListName listName, String code) {
-        return summary.time(() -> {
+        return summary.labels(listName.name()).time(() -> {
             CodeUsageResponse codeUsage = new CodeUsageResponse(listName, code);
             codeUsage.setProcesses(findProcesses(listName, code));
             codeUsage.setPolicies(findPolicies(listName, code));
