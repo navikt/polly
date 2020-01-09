@@ -84,7 +84,7 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
             await codelist.wait();
             if (props.match.params.sourceCode) {
                 setDisclosureList(await getDisclosuresByRecipient(props.match.params.sourceCode))
-                let responseInformationTypeList = await getCodelistUsage(ListName.SOURCE, props.match.params.sourceCode)
+                let responseInformationTypeList = await getCodelistUsage(ListName.THIRD_PARTY, props.match.params.sourceCode)
                 setInformationTypeList(responseInformationTypeList.informationTypes)
             }
 
@@ -101,8 +101,8 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
             {!isLoading && codelist && (
                 <React.Fragment>
                     <Block marginBottom="3rem">
-                        <H5>{codelist.getShortname(ListName.SOURCE, props.match.params.sourceCode)}</H5>
-                        <Paragraph2>{codelist.getDescription(ListName.SOURCE, props.match.params.sourceCode)}</Paragraph2>
+                        <H5>{codelist.getShortname(ListName.THIRD_PARTY, props.match.params.sourceCode)}</H5>
+                        <Paragraph2>{codelist.getDescription(ListName.THIRD_PARTY, props.match.params.sourceCode)}</Paragraph2>
                     </Block>
 
                     <Block display="flex" justifyContent="space-between">
