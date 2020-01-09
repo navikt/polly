@@ -8,12 +8,7 @@ import { Block, BlockProps } from "baseui/block";
 import { StatefulSelect } from "baseui/select";
 import { Disclosure, DisclosureFormValues } from "../constants";
 import { getAllDisclosures, createDisclosure } from "../api";
-import TableDisclosure from "../components/common/TableDisclosure";
-import { Button } from "baseui/button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { user } from "../service/User";
-import ModalThirdParty from "../components/ThirdParty/ModalThirdPartyForm";
 import { useStyletron } from "styletron-react";
 import { ListItemLabel, ListItem } from "baseui/list";
 import RouteLink from "../components/common/RouteLink";
@@ -83,36 +78,14 @@ const ThirdPartySearchPage = (props: RouteComponentProps) => {
             {!isLoading && codelist && (
                 <React.Fragment>
                     <Block {...rowBlockProps}>
-                        <Block width="80%">
-                            <StatefulSelect
-                                options={codelist.getParsedOptions(ListName.SOURCE)}
-                                placeholder={intl.disclosureSelect}
-                                maxDropdownHeight="350px"
-                                onChange={(event) => handleChangeSource((event.option ?.id) as string | undefined)}
-                            />
-                        </Block>
-                        <Block>
-                            {user.canWrite() &&
-                                <Button type="button" onClick={() => setShowCreateModal(true)}>
-                                    <FontAwesomeIcon icon={faPlusCircle} />&nbsp;{intl.createNew}
-                                </Button>
-                            }
-                            <ModalThirdParty
-                                title={intl.createThirdPartyModalTitle}
-                                isOpen={showCreateModal}
-                                isEdit={false}
-                                initialValues={initialFormValues}
-                                submit={handleCreateDisclosure}
-                                onClose={() => {
-                                    setShowCreateModal(false)
-                                    setError(null)
-                                }}
-                                errorOnCreate={error}
-                            />
-                        </Block>
+                        <StatefulSelect
+                            options={codelist.getParsedOptions(ListName.SOURCE)}
+                            placeholder={intl.disclosureSelect}
+                            maxDropdownHeight="350px"
+                            onChange={(event) => handleChangeSource((event.option ?.id) as string | undefined)}
+                        />
                     </Block>
                 </React.Fragment>
-
             )}
 
             {codelist && thirdPartyList && (
@@ -126,7 +99,7 @@ const ThirdPartySearchPage = (props: RouteComponentProps) => {
                     {thirdPartyList.map(thirdParty => (
                         <ListItem>
                             <ListItemLabel>
-                               <RouteLink href={`thirdparty/${thirdParty.code}`}>{thirdParty.shortName}</RouteLink> 
+                                <RouteLink href={`thirdparty/${thirdParty.code}`}>{thirdParty.shortName}</RouteLink>
                             </ListItemLabel>
                         </ListItem>
                     ))}

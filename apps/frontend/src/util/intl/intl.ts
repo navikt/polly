@@ -74,6 +74,8 @@ export interface IStrings {
     groupByPurpose: string;
     showAll: string;
     createThirdPartyModalTitle: string;
+    disclosuresToThirdParty: string;
+    retrievedFromThirdParty: string;
 
     // groups
     POLLY_READ: string;

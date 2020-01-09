@@ -96,67 +96,67 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
                         <H5>{codelist.getShortname(ListName.SOURCE, props.match.params.sourceCode)}</H5>
                         <Paragraph2>{codelist.getDescription(ListName.SOURCE, props.match.params.sourceCode)}</Paragraph2>
                     </Block>
-                    {disclosureList && disclosureList.length > 0 && (
-                        <React.Fragment>
-                            <Block marginBottom="3rem">
-                                <Block display="flex" justifyContent="space-between">
-                                    <Label2 {...labelBlockProps}>Utleveringer</Label2>
-                                    {user.canWrite() &&
-                                        <Block>
-                                            <Button
-                                                size="compact"
-                                                kind={KIND.minimal}
-                                                onClick={() => setShowCreateModal(true)}
-                                                startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
-                                            >
-                                                {intl.createNew}
-                                            </Button>
-                                            <ModalThirdParty
-                                                title={intl.createThirdPartyModalTitle}
-                                                isOpen={showCreateModal}
-                                                isEdit={false}
-                                                initialValues={initialFormValues}
-                                                submit={handleCreateDisclosure}
-                                                onClose={() => {
-                                                    setShowCreateModal(false)
-                                                    setError(null)
-                                                }}
-                                                errorOnCreate={error}
-                                                disableRecipientField={true}
-                                            />
-                                        </Block>
-                                    }
-                                </Block>
 
-                                <TableDisclosure
-                                    list={disclosureList}
-                                    showRecipient={false}
-                                    errorDeleteModal={error}
-                                    submitDeleteDisclosure={handleDeleteDisclosure}
+                    <Block display="flex" justifyContent="space-between">
+                        <Label2 {...labelBlockProps}>{intl.disclosuresToThirdParty}</Label2>
+                        {user.canWrite() &&
+                            <Block>
+                                <Button
+                                    size="compact"
+                                    kind={KIND.minimal}
+                                    onClick={() => setShowCreateModal(true)}
+                                    startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
+                                >
+                                    {intl.createNew}
+                                </Button>
+                                <ModalThirdParty
+                                    title={intl.createThirdPartyModalTitle}
+                                    isOpen={showCreateModal}
+                                    isEdit={false}
+                                    initialValues={initialFormValues}
+                                    submit={handleCreateDisclosure}
+                                    onClose={() => {
+                                        setShowCreateModal(false)
+                                        setError(null)
+                                    }}
+                                    errorOnCreate={error}
+                                    disableRecipientField={true}
                                 />
                             </Block>
-                            <Block marginBottom="3rem">
-                                <Label2 {...labelBlockProps}>Innhentinger</Label2>
-                                {informationTypeList && informationTypeList.length > 0 && (
-                                    <ul
-                                        className={css({
-                                            width: '400px',
-                                            paddingLeft: 0,
-                                            paddingRight: 0,
-                                        })}
-                                    >
-                                        {informationTypeList.map(infotype => (
-                                            <ListItem sublist key={infotype.id}>
-                                                <ListItemLabel sublist>
-                                                   <RouteLink href={`/informationtype/${infotype.id}`}>{infotype.name}</RouteLink>
-                                                </ListItemLabel>
-                                            </ListItem>
-                                        ))}
-                                    </ul>
-                                )}
-                            </Block>
-                        </React.Fragment>
-                    )}
+                        }
+                    </Block>
+                    <React.Fragment>
+                        <Block marginBottom="3rem">
+                            <TableDisclosure
+                                list={disclosureList}
+                                showRecipient={false}
+                                errorDeleteModal={error}
+                                submitDeleteDisclosure={handleDeleteDisclosure}
+                            />
+                        </Block>
+                    </React.Fragment>
+
+
+                    <Block marginBottom="3rem">
+                        <Label2 {...labelBlockProps}>{intl.retrievedFromThirdParty}</Label2>
+                        {informationTypeList && informationTypeList.length > 0 && (
+                            <ul
+                                className={css({
+                                    width: '400px',
+                                    paddingLeft: 0,
+                                    paddingRight: 0,
+                                })}
+                            >
+                                {informationTypeList.map(infotype => (
+                                    <ListItem sublist key={infotype.id}>
+                                        <ListItemLabel sublist>
+                                            <RouteLink href={`/informationtype/${infotype.id}`}>{infotype.name}</RouteLink>
+                                        </ListItemLabel>
+                                    </ListItem>
+                                ))}
+                            </ul>
+                        )}
+                    </Block>
                 </React.Fragment>
             )}
         </React.Fragment>
