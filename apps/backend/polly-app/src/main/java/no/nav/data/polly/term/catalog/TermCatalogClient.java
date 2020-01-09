@@ -5,7 +5,9 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.utils.MetricUtils;
+import no.nav.data.polly.term.TermService;
 import no.nav.data.polly.term.domain.PollyTerm;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -25,7 +27,8 @@ import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 
 @Slf4j
 @Component
-public class TermCatalogClient {
+@ConditionalOnProperty("polly.client.term-catalog.enabled")
+public class TermCatalogClient implements TermService {
 
     private final RestTemplate restTemplate;
     private final TermCatalogProperties properties;
@@ -46,6 +49,7 @@ public class TermCatalogClient {
         MetricUtils.register("termCache", termCache);
     }
 
+    @Override
     public List<PollyTerm> searchTerms(String searchString) {
         List<CatalogTerm> terms = termSearchCache.get(searchString, this::searchCatalog);
         return safeStream(terms)
@@ -53,6 +57,7 @@ public class TermCatalogClient {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public Optional<PollyTerm> getTerm(String termId) {
         GraphNode term = termCache.get(termId, this::getFromCatalog);
         return Optional.ofNullable(term).map(GraphNode::convertToPollyTerm);

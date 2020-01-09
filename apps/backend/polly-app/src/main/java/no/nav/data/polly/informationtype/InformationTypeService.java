@@ -11,13 +11,14 @@ import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.policy.domain.PolicyRepository;
-import no.nav.data.polly.term.catalog.TermCatalogClient;
+import no.nav.data.polly.term.TermService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,12 +33,12 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
 
     private final InformationTypeRepository repository;
     private final PolicyRepository policyRepository;
-    private final TermCatalogClient termCatalogClient;
+    private final TermService termService;
 
-    public InformationTypeService(InformationTypeRepository repository, PolicyRepository policyRepository, TermCatalogClient termCatalogClient) {
+    public InformationTypeService(InformationTypeRepository repository, PolicyRepository policyRepository, TermService termService) {
         this.repository = repository;
         this.policyRepository = policyRepository;
-        this.termCatalogClient = termCatalogClient;
+        this.termService = termService;
     }
 
     public InformationType save(InformationTypeRequest request) {
@@ -108,19 +109,17 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
 
         var validationErrors = StreamUtils.applyAll(requests,
                 RequestElement::validateFields,
-                this::validateInformationTypeRepositoryValues,
-                this::validateTerm
+                this::validateInformationTypeRepositoryValues
         );
         validationErrors.addAll(validateNoDuplicates(requests));
 
         return validationErrors;
     }
 
-    private List<ValidationError> validateTerm(InformationTypeRequest request) {
-        if (request.getTerm() == null || termCatalogClient.getTerm(request.getTerm()).isPresent()) {
-            return List.of();
+    private void validateTerm(InformationTypeRequest request, String existingTermId, List<ValidationError> validationErrors) {
+        if (request.getTerm() != null && !Objects.equals(request.getTerm(), existingTermId) && termService.getTerm(request.getTerm()).isEmpty()) {
+            validationErrors.add(new ValidationError(request.getReference(), "termDoesNotExist", String.format("The Term %s doesnt exist", request.getTerm())));
         }
-        return List.of(new ValidationError(request.getReference(), "termDoesNotExist", String.format("The Term %s doesnt exist", request.getTerm())));
     }
 
     private List<ValidationError> validateInformationTypeRepositoryValues(InformationTypeRequest request) {
@@ -140,6 +139,7 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
                         , String.format("Cannot change name, InformationType %s already exists", request.getIdentifyingFields())));
             }
         }
+        validateTerm(request, existingInformationType.map(InformationType::getTermId).orElse(null), validationErrors);
         return validationErrors;
     }
 }

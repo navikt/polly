@@ -1,6 +1,5 @@
 package no.nav.data.polly.process;
 
-import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.common.nais.LeaderElectionService;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.common.validator.RequestElement;
@@ -14,7 +13,6 @@ import no.nav.data.polly.process.domain.ProcessDistributionRepository;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.teams.TeamService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
@@ -31,6 +29,7 @@ import java.util.stream.Collectors;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.groupingBy;
 import static no.nav.data.polly.common.utils.MdcUtils.wrapAsync;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 public class ProcessService extends RequestValidator<ProcessRequest> {
@@ -104,6 +103,7 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
 
             if (repoValue.isPresent()) {
                 Process process = repoValue.get();
+                validateTeam(request, process.getData().getProductTeam(), validations);
                 if (!Objects.equals(process.getName(), request.getName())) {
                     validations.add(new ValidationError(request.getReference(), "nameChanged",
                             format("Cannot change name from %s to %s", process.getName(), request.getName())));
@@ -114,16 +114,20 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
                 }
             }
         } else {
+            validateTeam(request, null, validations);
             validations.addAll(validateRepositoryValues(request, false));
             if (processRepository.findByNameAndPurposeCode(request.getName(), request.getPurposeCode()).isPresent()) {
                 validations.add(new ValidationError(request.getReference(), "nameAndPurposeExists",
                         format("Process with name %s and Purpose %s already exists", request.getName(), request.getPurposeCode())));
             }
         }
-        if (StringUtils.isNotBlank(request.getProductTeam()) && !teamService.teamExists(request.getProductTeam())) {
+        return validations;
+    }
+
+    private void validateTeam(ProcessRequest request, String existingTeam, ArrayList<ValidationError> validations) {
+        if (isNotBlank(request.getProductTeam()) && !Objects.equals(request.getProductTeam(), existingTeam) && !teamService.teamExists(request.getProductTeam())) {
             validations.add(new ValidationError(request.getReference(), "invalidProductTeam", "Product team " + request.getProductTeam() + " does not exist"));
         }
-        return validations;
     }
 
 }

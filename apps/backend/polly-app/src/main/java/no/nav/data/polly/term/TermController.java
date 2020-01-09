@@ -9,7 +9,6 @@ import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.TermCount;
-import no.nav.data.polly.term.catalog.TermCatalogClient;
 import no.nav.data.polly.term.domain.PollyTerm;
 import no.nav.data.polly.term.dto.TermCountResponse;
 import no.nav.data.polly.term.dto.TermResponse;
@@ -39,11 +38,11 @@ import static no.nav.data.polly.common.utils.StreamUtils.convert;
 public class TermController {
 
     private final InformationTypeRepository informationTypeRepository;
-    private final TermCatalogClient termCatalogClient;
+    private final TermService termService;
 
-    public TermController(InformationTypeRepository informationTypeRepository, TermCatalogClient termCatalogClient) {
+    public TermController(InformationTypeRepository informationTypeRepository, TermService termService) {
         this.informationTypeRepository = informationTypeRepository;
-        this.termCatalogClient = termCatalogClient;
+        this.termService = termService;
     }
 
     @ApiOperation(value = "Get Term")
@@ -54,7 +53,7 @@ public class TermController {
     @GetMapping("/{id}")
     public ResponseEntity<TermResponse> findForId(@PathVariable String id) {
         log.info("Received request for Term with the id={}", id);
-        Optional<TermResponse> termResponse = termCatalogClient.getTerm(id).map(PollyTerm::convertToResponse);
+        Optional<TermResponse> termResponse = termService.getTerm(id).map(PollyTerm::convertToResponse);
         if (termResponse.isEmpty()) {
             log.info("Cannot find the Term with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -73,7 +72,7 @@ public class TermController {
         if (searchString.length() < 3) {
             throw new ValidationException("Search term must be at least 3 characters");
         }
-        List<PollyTerm> terms = termCatalogClient.searchTerms(searchString);
+        List<PollyTerm> terms = termService.searchTerms(searchString);
         terms.sort(comparing(t -> t.getName() + t.getDescription(), startsWith(searchString)));
         log.info("Returned {} terms", terms.size());
         return new ResponseEntity<>(new RestResponsePage<>(convert(terms, PollyTerm::convertToResponse)), HttpStatus.OK);

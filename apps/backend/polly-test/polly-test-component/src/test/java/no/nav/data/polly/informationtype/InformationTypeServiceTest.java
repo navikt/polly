@@ -4,7 +4,7 @@ import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
-import no.nav.data.polly.term.catalog.TermCatalogClient;
+import no.nav.data.polly.term.TermService;
 import no.nav.data.polly.term.domain.PollyTerm;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -35,7 +35,7 @@ class InformationTypeServiceTest {
     @Mock
     private InformationTypeRepository informationTypeRepository;
     @Mock
-    private TermCatalogClient termCatalogClient;
+    private TermService termService;
 
     @InjectMocks
     private InformationTypeService service;
@@ -43,7 +43,7 @@ class InformationTypeServiceTest {
     @BeforeEach
     void setUp() {
         CodelistStub.initializeCodelist();
-        lenient().when(termCatalogClient.getTerm("term")).thenReturn(Optional.of(new PollyTerm()));
+        lenient().when(termService.getTerm("term")).thenReturn(Optional.of(new PollyTerm()));
     }
 
     @Test
