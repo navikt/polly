@@ -76,6 +76,7 @@ export interface IStrings {
     createThirdPartyModalTitle: string;
     disclosuresToThirdParty: string;
     retrievedFromThirdParty: string;
+    usageNotFound: string;
 
     // groups
     POLLY_READ: string;

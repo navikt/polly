@@ -13,7 +13,7 @@ import DeleteCodeListModal from "./ModalDeleteCodeList";
 import axios from "axios";
 import { useTable } from "../../util/hooks"
 import { AuditButton } from "../../pages/AuditPage"
-import {getCodelistUsage} from "../../api"
+import { getCodelistUsage } from "../../api"
 import { Usage } from "./CodeListUsage"
 import { CodeUsage } from "../../constants"
 
@@ -33,16 +33,17 @@ const SmallCell = withStyle(StyledCell, {
 const headerStyle = {
     paddingTop: "2px",
     paddingRight: "16px",
-    paddingBottom:"2px",
-    paddingLeft:"0",
+    paddingBottom: "2px",
+    paddingLeft: "0",
 };
 
 type TableCodelistProps = {
     tableData: Code[],
-    hasAccess: boolean
+    hasAccess: boolean,
+    refresh: () => void
 };
 
-const CodeListTable = ({tableData, hasAccess}: TableCodelistProps) => {
+const CodeListTable = ({tableData, hasAccess, refresh}: TableCodelistProps) => {
     const [useCss] = useStyletron();
 
     const [selectedCode, setSelectedCode] = React.useState<Code>();
@@ -57,7 +58,7 @@ const CodeListTable = ({tableData, hasAccess}: TableCodelistProps) => {
         if (showUsage && selectedCode) {
             (async () => {
                 setUsage(undefined)
-                const usage = await getCodelistUsage(selectedCode.list,selectedCode.code)
+                const usage = await getCodelistUsage(selectedCode.list, selectedCode.code)
                 setUsage(usage)
             })()
         }
@@ -68,153 +69,149 @@ const CodeListTable = ({tableData, hasAccess}: TableCodelistProps) => {
         let body = [{
             ...values,
         }];
-        await axios
-            .put<Code[]>(`${server_polly}/codelist`, body)
-            .then(((response) => {
-                codelist.refreshCodeLists()
-                setShowEditModal(false);
-            }))
-            .catch((error: any) => {
-                setShowEditModal(true);
-                setErrorOnResponse(error.message);
-            });
+        try {
+            await axios.put<Code[]>(`${server_polly}/codelist`, body)
+            refresh()
+            setShowEditModal(false);
+        } catch (error) {
+            setShowEditModal(true);
+            setErrorOnResponse(error.message);
+        }
     };
 
-    const handleDeleteCodelist = async (values: { list: string, code: string}) => {
-        await axios
-            .delete(`${server_polly}/codelist/${values.list}/${values.code}`)
-            .then((() => {
-                codelist.refreshCodeLists();
-                setShowDeleteModal(false);
-            }))
-            .catch((error: any) => {
-                setShowDeleteModal(true);
-                setErrorOnResponse(error.message);
-            });
+    const handleDeleteCodelist = async (values: { list: string, code: string }) => {
+        try {
+            await axios.delete(`${server_polly}/codelist/${values.list}/${values.code}`)
+            refresh()
+            setShowDeleteModal(false);
+        } catch (error) {
+            setShowDeleteModal(true);
+            setErrorOnResponse(error.message);
+        }
     };
 
-    return(
+    return (
         <React.Fragment>
-        <StyledTable className={useCss({overflow: "hidden !important"})}>
-            <StyledHead>
-                <SmallerHeadCell>
-                    <SortableHeadCell
-                        overrides={{
-                            HeadCell: {
-                                style: headerStyle
-                            }
-                        }}
-                        title={intl.code}
-                        direction={table.direction.code}
-                        onSort={() => sortColumn('code')}
-                    />
-                </SmallerHeadCell>
-                <SmallerHeadCell>
-                    <SortableHeadCell
-                        overrides={{
-                            HeadCell: {
-                                style: headerStyle
-                            }
-                        }}
-                        title={intl.shortName}
-                        direction={table.direction.shortName}
-                        onSort={() => sortColumn('shortName')}
-                    />
-                </SmallerHeadCell>
-                <StyledHeadCell styled={{
-                    maxWidth: "55%",
-                    minWidth: "24rem"
-                }}>
-                    <SortableHeadCell
-                        overrides={{
-                            HeadCell: {
-                                style: headerStyle
-                            }
-                        }}
-                        title={intl.description}
-                        direction={table.direction.description}
-                        onSort={() => sortColumn('description')}
-                    />
-                </StyledHeadCell>
-                <SmallerHeadCell/>
-            </StyledHead>
-            <StyledBody>
-                {table.data.map((row, index) => <StyledRow key={index}>
-                    <SmallCell>{row.code}</SmallCell>
-                    <SmallCell>{row.shortName}</SmallCell>
-                    <StyledCell styled={{maxWidth: "55%", minWidth: "24rem",}}>{row.description}</StyledCell>
-                    <SmallCell>{
-                        (hasAccess && <Block display="flex" justifyContent="flex-end" width="100%">
-                          <Button
-                              size={ButtonSize.compact}
-                              kind={row === selectedCode ? KIND.primary : KIND.tertiary}
-                              onClick={() => {
-                                  setSelectedCode(row)
-                                  setShowUsage(true)
-                              }}>
-                            <FontAwesomeIcon icon={faGhost}/>
-                          </Button>
-                          <AuditButton id={`${row.list}-${row.code}`} kind={KIND.tertiary}/>
-                          <Button
-                              size={ButtonSize.compact}
-                              kind={KIND.tertiary}
-                              onClick={() => {
-                                  setSelectedCode(row)
-                                  setShowEditModal(true)
-                              }}>
-                            <FontAwesomeIcon icon={faEdit}/>
-                          </Button>
-                          <Button
-                              size={ButtonSize.compact}
-                              kind={KIND.tertiary}
-                              onClick={() => {
-                                  setSelectedCode(row)
-                                  setShowDeleteModal(true)
-                              }}>
-                            <FontAwesomeIcon icon={faTrash}/>
-                          </Button>
-                        </Block>)}</SmallCell>
-                </StyledRow>)}
-            </StyledBody>
+            <StyledTable className={useCss({overflow: "hidden !important"})}>
+                <StyledHead>
+                    <SmallerHeadCell>
+                        <SortableHeadCell
+                            overrides={{
+                                HeadCell: {
+                                    style: headerStyle
+                                }
+                            }}
+                            title={intl.code}
+                            direction={table.direction.code}
+                            onSort={() => sortColumn('code')}
+                        />
+                    </SmallerHeadCell>
+                    <SmallerHeadCell>
+                        <SortableHeadCell
+                            overrides={{
+                                HeadCell: {
+                                    style: headerStyle
+                                }
+                            }}
+                            title={intl.shortName}
+                            direction={table.direction.shortName}
+                            onSort={() => sortColumn('shortName')}
+                        />
+                    </SmallerHeadCell>
+                    <StyledHeadCell styled={{
+                        maxWidth: "55%",
+                        minWidth: "24rem"
+                    }}>
+                        <SortableHeadCell
+                            overrides={{
+                                HeadCell: {
+                                    style: headerStyle
+                                }
+                            }}
+                            title={intl.description}
+                            direction={table.direction.description}
+                            onSort={() => sortColumn('description')}
+                        />
+                    </StyledHeadCell>
+                    <SmallerHeadCell/>
+                </StyledHead>
+                <StyledBody>
+                    {table.data.map((row, index) => <StyledRow key={index}>
+                        <SmallCell>{row.code}</SmallCell>
+                        <SmallCell>{row.shortName}</SmallCell>
+                        <StyledCell styled={{maxWidth: "55%", minWidth: "24rem",}}>{row.description}</StyledCell>
+                        <SmallCell>{
+                            (hasAccess && <Block display="flex" justifyContent="flex-end" width="100%">
+                              <Button
+                                  size={ButtonSize.compact}
+                                  kind={row === selectedCode && showUsage ? KIND.primary : KIND.tertiary}
+                                  onClick={() => {
+                                      setSelectedCode(row)
+                                      setShowUsage(true)
+                                  }}>
+                                <FontAwesomeIcon icon={faGhost}/>
+                              </Button>
+                              <AuditButton id={`${row.list}-${row.code}`} kind={KIND.tertiary}/>
+                              <Button
+                                  size={ButtonSize.compact}
+                                  kind={KIND.tertiary}
+                                  onClick={() => {
+                                      setSelectedCode(row)
+                                      setShowEditModal(true)
+                                  }}>
+                                <FontAwesomeIcon icon={faEdit}/>
+                              </Button>
+                              <Button
+                                  size={ButtonSize.compact}
+                                  kind={KIND.tertiary}
+                                  onClick={() => {
+                                      setSelectedCode(row)
+                                      setShowDeleteModal(true)
+                                  }}>
+                                <FontAwesomeIcon icon={faTrash}/>
+                              </Button>
+                            </Block>)}</SmallCell>
+                    </StyledRow>)}
+                </StyledBody>
 
-            {showEditModal && selectedCode && (
-                <UpdateCodeListModal
-                    title={intl.editCodeListTitle}
-                    initialValues={{
-                        list: selectedCode.list ?? "" ,
-                        code: selectedCode.code ?? "",
-                        shortName: selectedCode.shortName ?? "",
-                        description: selectedCode.description ?? ""
-                    }}
-                    isOpen={showEditModal}
-                    onClose={() => {
-                        setShowEditModal(!showEditModal);
-                        setErrorOnResponse(null);
-                    }}
-                    errorOnUpdate={errorOnResponse}
-                    submit={handleEditCodelist}
-                />
+                {showEditModal && selectedCode && (
+                    <UpdateCodeListModal
+                        title={intl.editCodeListTitle}
+                        initialValues={{
+                            list: selectedCode.list ?? "",
+                            code: selectedCode.code ?? "",
+                            shortName: selectedCode.shortName ?? "",
+                            description: selectedCode.description ?? ""
+                        }}
+                        isOpen={showEditModal}
+                        onClose={() => {
+                            setShowEditModal(!showEditModal);
+                            setErrorOnResponse(null);
+                        }}
+                        errorOnUpdate={errorOnResponse}
+                        submit={handleEditCodelist}
+                    />
 
-            )}
-            {showDeleteModal && selectedCode && (
-                <DeleteCodeListModal
-                    title={intl.deleteCodeListConfirmationTitle}
-                    initialValues={{
-                        list: selectedCode.list ?? "" ,
-                        code: selectedCode.code ?? "",
-                    }}
-                    isOpen={showDeleteModal}
-                    onClose={() => {
-                        setShowDeleteModal(!showDeleteModal);
-                        setErrorOnResponse(null);
-                    }}
-                    errorOnDelete={errorOnResponse}
-                    submit={handleDeleteCodelist}
-                />
-            )}
-        </StyledTable>
+                )}
+                {showDeleteModal && selectedCode && (
+                    <DeleteCodeListModal
+                        title={intl.deleteCodeListConfirmationTitle}
+                        initialValues={{
+                            list: selectedCode.list ?? "",
+                            code: selectedCode.code ?? "",
+                        }}
+                        isOpen={showDeleteModal}
+                        onClose={() => {
+                            setShowDeleteModal(!showDeleteModal);
+                            setErrorOnResponse(null);
+                        }}
+                        errorOnDelete={errorOnResponse}
+                        submit={handleDeleteCodelist}
+                    />
+                )}
+            </StyledTable>
 
-            {showUsage && usage && <Usage usage={usage}/>}
+            {showUsage && <Usage usage={usage}/>}
         </React.Fragment>
     );
 };

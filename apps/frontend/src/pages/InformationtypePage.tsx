@@ -12,7 +12,7 @@ import {RouteComponentProps} from "react-router-dom"
 import InformationtypeMetadata from "../components/InformationType/InformationtypeMetadata/";
 import {intl, theme, useAwait} from "../util"
 import {CodeUsage, Policy} from "../constants"
-import {codelist} from "../service/Codelist"
+import {codelist, ListName} from "../service/Codelist"
 import Banner from "../components/Banner";
 import {user} from "../service/User";
 import {H3} from "baseui/typography"
@@ -29,7 +29,6 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
     const [informationtype, setInformationtype] = React.useState()
     const [policies, setPolicies] = React.useState<Policy[]>([])
     const [categoryUsages, setCategoryUsages] = React.useState<CodeUsage[]>();
-    const [listName, setListName] = React.useState();
 
     const [infoTypeSearchResult, setInfoTypeSearch, infoTypeSearchLoading] = useInfoTypeSearch()
 
@@ -39,14 +38,12 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
     React.useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
-            let response = await getCodelistUsageByListName("CATEGORY");
+            let response = await getCodelistUsageByListName(ListName.CATEGORY);
             setCategoryUsages(response.codesInUse);
-            setListName(response.listName);
-            console.log(categoryUsages);
             setLoading(false);
         };
         fetchData();
-    },[listName]);
+    },[]);
 
     useEffect(() => setInformationTypeId(props.match.params.id), [props.match.params.id]);
 

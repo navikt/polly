@@ -70,6 +70,7 @@ export const no: IStrings = {
     createThirdPartyModalTitle: 'Opprett utlevering for ekstern part',
     disclosuresToThirdParty: 'Utleveringer til ekstern part',
     retrievedFromThirdParty: 'Innhentinger fra ekstern part',
+    usageNotFound: 'Fant ingen bruk',
 
     groupByPurpose: "Grupper etter formål",
     showAll: "Vis alle",
@@ -224,6 +225,7 @@ export const en = {
     createThirdPartyModalTitle: 'Create disclosure for a thirdparty',
     disclosuresToThirdParty: "Disclosures to",
     retrievedFromThirdParty: "Retrieved from thirdparties",
+    usageNotFound: 'No usage found',
 
     POLLY_READ: "Read",
     POLLY_WRITE: "Write",

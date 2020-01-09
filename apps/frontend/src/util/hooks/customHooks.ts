@@ -25,13 +25,15 @@ export function useForceUpdate() {
     return () => setVal(val + 1);
 }
 
-export function useAwait<T>(p: Promise<T>) {
+export function useAwait<T>(p: Promise<T>, setLoading?: Dispatch<SetStateAction<boolean>>) {
     const update = useForceUpdate();
 
     useEffect(() => {
         (async () => {
+            setLoading && setLoading(true)
             await p;
             update();
+            setLoading && setLoading(false)
         })();
     }, []);
 }
