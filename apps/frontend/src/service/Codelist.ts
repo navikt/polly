@@ -57,6 +57,7 @@ class CodelistService {
 
     refreshCodeLists() {
         this.promise = this.fetchData();
+        return this.promise
     }
 
     async wait() {
