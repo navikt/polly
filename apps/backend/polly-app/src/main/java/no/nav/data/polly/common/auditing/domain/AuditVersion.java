@@ -1,4 +1,4 @@
-package no.nav.data.polly.common.auditing;
+package no.nav.data.polly.common.auditing.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.data.polly.common.auditing.Action;
+import no.nav.data.polly.common.auditing.domain.Action;
 
 import java.time.LocalDateTime;
 
