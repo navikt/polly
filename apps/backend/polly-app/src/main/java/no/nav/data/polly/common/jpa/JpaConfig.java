@@ -13,6 +13,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -32,21 +33,26 @@ public class JpaConfig {
     }
 
     @Bean
+    @Order(10)
     public ApplicationRunner initAudit(AuditVersionRepository repository) {
         return (args) -> AuditVersionListener.setRepo(repository);
     }
 
     @Bean
+    @Order(20)
     public ApplicationRunner auditMissingEntities(InformationTypeRepository informationTypeRepository, AuditVersionRepository auditVersionRepository, TransactionTemplate tt) {
         Runnable updateMissing = () -> {
             Logger log = LoggerFactory.getLogger("MissingAudits");
-            List<InformationType> all = informationTypeRepository.findAll();
-            all.stream().filter(it -> auditVersionRepository.findByTableIdOrderByTimeDesc(it.getId().toString()).isEmpty())
-                    .forEach(it -> {
-                        log.info("Saving audit for informationType {}", it.getId());
-                        new AuditVersionListener().prePersist(it);
-                    });
+            tt.execute(transactionStatus -> {
+                List<InformationType> all = informationTypeRepository.findAll();
+                all.stream().filter(it -> auditVersionRepository.findByTableIdOrderByTimeDesc(it.getId().toString()).isEmpty())
+                        .forEach(it -> {
+                            log.info("Saving audit for informationType {}", it.getId());
+                            new AuditVersionListener().prePersist(it);
+                        });
+                return null;
+            });
         };
-        return (args) -> MdcUtils.wrapAsync(tt.execute(transactionStatus -> updateMissing), "system").run();
+        return (args) -> MdcUtils.wrapAsync(updateMissing, "system").run();
     }
 }
