@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import no.nav.data.polly.codelist.codeusage.UsedInInstance;
-import no.nav.data.polly.common.auditing.Auditable;
+import no.nav.data.polly.common.auditing.domain.Auditable;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus;
 import no.nav.data.polly.elasticsearch.dto.InformationTypeElasticsearch;

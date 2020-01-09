@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.common.auditing.domain.AuditVersion;
+import no.nav.data.polly.common.auditing.domain.AuditVersionRepository;
 import no.nav.data.polly.common.auditing.dto.AuditLogResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

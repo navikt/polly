@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.codeusage.UsedInInstance;
 import no.nav.data.polly.codelist.domain.ListName;
-import no.nav.data.polly.common.auditing.Auditable;
+import no.nav.data.polly.common.auditing.domain.Auditable;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.disclosure.dto.DisclosureInformationTypeResponse;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;

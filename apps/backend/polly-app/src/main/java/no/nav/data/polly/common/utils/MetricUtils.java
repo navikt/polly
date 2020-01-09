@@ -95,5 +95,10 @@ public final class MetricUtils {
             this.labels.add(labels);
             return this;
         }
+
+        public SummaryBuilder labels(List<String[]> labels) {
+            this.labels = labels;
+            return this;
+        }
     }
 }

@@ -1,4 +1,4 @@
-package no.nav.data.polly.common.auditing;
+package no.nav.data.polly.common.auditing.domain;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
