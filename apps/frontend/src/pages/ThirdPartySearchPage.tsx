@@ -64,7 +64,6 @@ const ThirdPartySearchPage = (props: RouteComponentProps) => {
             await codelist.wait();
             setDisclosureList(await getAllDisclosures())
             setThirdPartyList(codelist.getCodes(ListName.SOURCE))
-            console.log(codelist.getCodes(ListName.SOURCE))
             setIsLoading(false);
         };
         fetchData();

@@ -20,12 +20,21 @@ export const createDisclosure = async (disclosure: DisclosureFormValues) => {
     return (await axios.post<Disclosure>(`${server_polly}/disclosure`, body)).data;
 };
 
+export const updateDisclosure = async (disclosure: DisclosureFormValues) => {
+    console.log(disclosure, "DISCL")
+    let body = mapDisclosureFromForm(disclosure);
+    return (
+        await axios.put<Disclosure>(`${server_polly}/disclosure`, body)
+    ).data;
+};
+
 export const deleteDisclosure = async (disclosureId: string) => {
     return (await axios.delete<Disclosure>(`${server_polly}/disclosure/${disclosureId}`)).data
 }
 
 export const mapDisclosureFromForm = (values: DisclosureFormValues) => {
     return {
+        id: values.id,
         recipient: values.recipient,
         recipientPurpose: '-',
         informationTypes:
