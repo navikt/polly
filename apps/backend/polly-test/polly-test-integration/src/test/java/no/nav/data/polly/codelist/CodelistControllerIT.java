@@ -82,23 +82,23 @@ class CodelistControllerIT extends IntegrationTestBase {
             CodelistStub.initializeCodelist();
 
             ResponseEntity<List<CodelistResponse>> responseEntity = restTemplate.exchange(
-                    "/codelist/SOURCE", HttpMethod.GET, HttpEntity.EMPTY, RESPONSE_TYPE);
+                    "/codelist/THIRD_PARTY", HttpMethod.GET, HttpEntity.EMPTY, RESPONSE_TYPE);
 
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(responseEntity.getBody()).isNotNull();
-            assertThat(responseEntity.getBody()).isEqualTo(CodelistService.getCodelistResponseList(ListName.SOURCE));
+            assertThat(responseEntity.getBody()).isEqualTo(CodelistService.getCodelistResponseList(ListName.THIRD_PARTY));
         }
 
         @Test
         void getByListNameAndCode() {
-            CodelistCache.set(createCodelist(ListName.SOURCE, "TEST_CODE"));
+            CodelistCache.set(createCodelist(ListName.THIRD_PARTY, "TEST_CODE"));
 
             ResponseEntity<CodelistResponse> responseEntity = restTemplate.exchange(
-                    "/codelist/SOURCE/TEST_CODE", HttpMethod.GET, HttpEntity.EMPTY, CodelistResponse.class);
+                    "/codelist/THIRD_PARTY/TEST_CODE", HttpMethod.GET, HttpEntity.EMPTY, CodelistResponse.class);
 
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(responseEntity.getBody()).isNotNull();
-            assertThat(responseEntity.getBody().getDescription()).isEqualTo(CodelistService.getCodelist(ListName.SOURCE, "TEST_CODE").getDescription());
+            assertThat(responseEntity.getBody().getDescription()).isEqualTo(CodelistService.getCodelist(ListName.THIRD_PARTY, "TEST_CODE").getDescription());
         }
     }
 
@@ -106,21 +106,21 @@ class CodelistControllerIT extends IntegrationTestBase {
     class Save {
         @Test
         void shouldSaveNewCodelists() {
-            List<CodelistRequest> requests = List.of(createCodelistRequest("SOURCE", "SaveCode", "SaveShortName", "SaveDescription"));
-            assertFalse(CodelistCache.contains(ListName.SOURCE, "SaveCode"));
+            List<CodelistRequest> requests = List.of(createCodelistRequest("THIRD_PARTY", "SaveCode", "SaveShortName", "SaveDescription"));
+            assertFalse(CodelistCache.contains(ListName.THIRD_PARTY, "SaveCode"));
 
             ResponseEntity<List<CodelistResponse>> responseEntity = restTemplate.exchange(
                     "/codelist", HttpMethod.POST, new HttpEntity<>(requests), RESPONSE_TYPE);
 
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
             CodelistResponse codelist = responseEntity.getBody().get(0);
-            assertThat(codelist.getList()).isEqualTo(ListName.SOURCE);
+            assertThat(codelist.getList()).isEqualTo(ListName.THIRD_PARTY);
             assertThat(codelist.getCode()).isEqualTo("SAVECODE");
             assertThat(codelist.getShortName()).isEqualTo("SaveShortName");
             assertThat(codelist.getDescription()).isEqualTo("SaveDescription");
 
-            assertTrue(CodelistCache.contains(ListName.SOURCE, "SAVECODE"));
-            Codelist savedCodelist = CodelistService.getCodelist(ListName.SOURCE, "SAVECODE");
+            assertTrue(CodelistCache.contains(ListName.THIRD_PARTY, "SAVECODE"));
+            Codelist savedCodelist = CodelistService.getCodelist(ListName.THIRD_PARTY, "SAVECODE");
             assertThat(savedCodelist.getCode()).isEqualTo("SAVECODE");
             assertThat(savedCodelist.getShortName()).isEqualTo("SaveShortName");
             assertThat(savedCodelist.getDescription()).isEqualTo("SaveDescription");
@@ -144,7 +144,7 @@ class CodelistControllerIT extends IntegrationTestBase {
                     "/codelist", HttpMethod.POST, new HttpEntity<>(requests), RESPONSE_TYPE);
 
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-            assertThat(CodelistService.getCodelist(ListName.SOURCE).size()).isEqualTo(20);
+            assertThat(CodelistService.getCodelist(ListName.THIRD_PARTY).size()).isEqualTo(20);
         }
 
         @Test
@@ -174,19 +174,19 @@ class CodelistControllerIT extends IntegrationTestBase {
     class Update {
         @Test
         void shouldUpdateOneCodelist() {
-            saveCodelist(createCodelist(ListName.SOURCE, "CODE", "SavedShortName", "SavedDescription"));
-            assertThat(CodelistService.getCodelist(ListName.SOURCE, "CODE").getShortName()).isEqualTo("SavedShortName");
-            assertThat(CodelistService.getCodelist(ListName.SOURCE, "CODE").getDescription()).isEqualTo("SavedDescription");
+            saveCodelist(createCodelist(ListName.THIRD_PARTY, "CODE", "SavedShortName", "SavedDescription"));
+            assertThat(CodelistService.getCodelist(ListName.THIRD_PARTY, "CODE").getShortName()).isEqualTo("SavedShortName");
+            assertThat(CodelistService.getCodelist(ListName.THIRD_PARTY, "CODE").getDescription()).isEqualTo("SavedDescription");
 
             List<CodelistRequest> updatedCodelists = List.of(
-                    createCodelistRequest("SOURCE", "CODE", "UpdatedShortName", "UpdatedDescription"));
+                    createCodelistRequest("THIRD_PARTY", "CODE", "UpdatedShortName", "UpdatedDescription"));
 
             ResponseEntity<String> responseEntity = restTemplate.exchange(
                     "/codelist", HttpMethod.PUT, new HttpEntity<>(updatedCodelists), String.class);
 
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(CodelistService.getCodelist(ListName.SOURCE, "CODE").getShortName()).isEqualTo("UpdatedShortName");
-            assertThat(CodelistService.getCodelist(ListName.SOURCE, "CODE").getDescription()).isEqualTo("UpdatedDescription");
+            assertThat(CodelistService.getCodelist(ListName.THIRD_PARTY, "CODE").getShortName()).isEqualTo("UpdatedShortName");
+            assertThat(CodelistService.getCodelist(ListName.THIRD_PARTY, "CODE").getDescription()).isEqualTo("UpdatedDescription");
         }
 
         @Test
@@ -207,8 +207,8 @@ class CodelistControllerIT extends IntegrationTestBase {
 
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-            assertThat(CodelistService.getCodelist(ListName.SOURCE).size()).isEqualTo(20);
-            List<Codelist> list = CodelistService.getCodelist(ListName.SOURCE);
+            assertThat(CodelistService.getCodelist(ListName.THIRD_PARTY).size()).isEqualTo(20);
+            List<Codelist> list = CodelistService.getCodelist(ListName.THIRD_PARTY);
             list.forEach(cod -> {
                 assertThat(cod.getShortName()).isEqualTo("UpdatedShortName");
                 assertThat(cod.getDescription()).isEqualTo("UpdatedDescription");
@@ -232,13 +232,13 @@ class CodelistControllerIT extends IntegrationTestBase {
     class Delete {
         @Test
         void shouldDeleteCodelist() {
-            saveCodelist(createCodelist(ListName.SOURCE, "DELETE_CODE"));
-            assertTrue(repository.findByListAndCode(ListName.SOURCE, "DELETE_CODE").isPresent());
+            saveCodelist(createCodelist(ListName.THIRD_PARTY, "DELETE_CODE"));
+            assertTrue(repository.findByListAndCode(ListName.THIRD_PARTY, "DELETE_CODE").isPresent());
 
-            ResponseEntity<String> responseEntity = restTemplate.exchange("/codelist/SOURCE/DELETE_CODE", HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
+            ResponseEntity<String> responseEntity = restTemplate.exchange("/codelist/THIRD_PARTY/DELETE_CODE", HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
 
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertFalse(repository.findByListAndCode(ListName.SOURCE, "DELETE_CODE").isPresent());
+            assertFalse(repository.findByListAndCode(ListName.THIRD_PARTY, "DELETE_CODE").isPresent());
         }
 
         @ParameterizedTest
@@ -254,15 +254,15 @@ class CodelistControllerIT extends IntegrationTestBase {
 
         @Test
         void shouldThrowCodelistNotErasableException_whenCodelistToBeDeletedIsStillInUse() {
-            saveCodelist(createCodelist(ListName.SOURCE, "DELETE_CODE"));
+            saveCodelist(createCodelist(ListName.THIRD_PARTY, "DELETE_CODE"));
             informationTypeRepository.save(createInformationType("infoType", "POL", "TPS", "PERSONALIA", "DELETE_CODE"));
-            assertTrue(repository.findByListAndCode(ListName.SOURCE, "DELETE_CODE").isPresent());
+            assertTrue(repository.findByListAndCode(ListName.THIRD_PARTY, "DELETE_CODE").isPresent());
 
-            ResponseEntity<String> responseEntity = restTemplate.exchange("/codelist/SOURCE/DELETE_CODE", HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
+            ResponseEntity<String> responseEntity = restTemplate.exchange("/codelist/THIRD_PARTY/DELETE_CODE", HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
 
             assertThat(responseEntity.getStatusCodeValue()).isEqualTo(HttpStatus.FORBIDDEN.value());
-            assertThat(responseEntity.getBody()).contains("The code DELETE_CODE in list SOURCE cannot be erased.");
-            assertTrue(repository.findByListAndCode(ListName.SOURCE, "DELETE_CODE").isPresent());
+            assertThat(responseEntity.getBody()).contains("The code DELETE_CODE in list THIRD_PARTY cannot be erased.");
+            assertTrue(repository.findByListAndCode(ListName.THIRD_PARTY, "DELETE_CODE").isPresent());
         }
 
     }

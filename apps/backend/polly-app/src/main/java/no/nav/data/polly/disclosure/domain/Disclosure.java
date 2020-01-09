@@ -113,7 +113,7 @@ public class Disclosure extends Auditable<String> {
         return DisclosureResponse.builder()
                 .id(id)
                 .description(data.getDescription())
-                .recipient(CodelistService.getCodelistResponse(ListName.SOURCE, data.getRecipient()))
+                .recipient(CodelistService.getCodelistResponse(ListName.THIRD_PARTY, data.getRecipient()))
                 .recipientPurpose(data.getRecipientPurpose())
                 .legalBases(convert(data.getLegalBases(), LegalBasis::convertToResponse))
                 .start(data.getStart())

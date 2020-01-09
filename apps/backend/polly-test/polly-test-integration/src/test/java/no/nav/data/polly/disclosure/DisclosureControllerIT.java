@@ -56,7 +56,7 @@ class DisclosureControllerIT extends IntegrationTestBase {
         assertThat(disclosureResponse).isEqualTo(DisclosureResponse.builder()
                 .id(disclosureResponse.getId())
                 .description("disc desc")
-                .recipient(CodelistService.getCodelistResponse(ListName.SOURCE, disclosureResponse.getRecipient().getCode()))
+                .recipient(CodelistService.getCodelistResponse(ListName.THIRD_PARTY, disclosureResponse.getRecipient().getCode()))
                 .recipientPurpose("recipient purpose")
                 .start(LocalDate.now())
                 .end(LocalDate.now())

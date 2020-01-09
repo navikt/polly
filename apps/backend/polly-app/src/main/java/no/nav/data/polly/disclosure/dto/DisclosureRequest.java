@@ -68,7 +68,7 @@ public class DisclosureRequest implements RequestElement {
         validator.checkUUID(Fields.id, id);
         validator.checkId(this);
         validator.checkBlank(Fields.description, description);
-        validator.checkRequiredCodelist(Fields.recipient, recipient, ListName.SOURCE);
+        validator.checkRequiredCodelist(Fields.recipient, recipient, ListName.THIRD_PARTY);
         validator.checkBlank(Fields.recipientPurpose, recipientPurpose);
         validator.checkDate(ProcessRequest.Fields.start, start);
         validator.checkDate(ProcessRequest.Fields.end, end);

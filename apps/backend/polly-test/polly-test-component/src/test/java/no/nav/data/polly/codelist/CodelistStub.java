@@ -7,10 +7,10 @@ public class CodelistStub {
 
     public static void initializeCodelist() {
         CodelistCache.init();
-        add(ListName.SOURCE, "ARBEIDSGIVER", "ARBEIDSGIVER", "Arbeidsgiver");
-        add(ListName.SOURCE, "SKATTEETATEN", "SKATTEETATEN", "Skatteetaten");
-        add(ListName.SOURCE, "BRUKER", "BRUKER", "BRUKER");
-        add(ListName.SOURCE, "SKATT", "Skatt", "Skatteetaten");
+        add(ListName.THIRD_PARTY, "ARBEIDSGIVER", "ARBEIDSGIVER", "Arbeidsgiver");
+        add(ListName.THIRD_PARTY, "SKATTEETATEN", "SKATTEETATEN", "Skatteetaten");
+        add(ListName.THIRD_PARTY, "BRUKER", "BRUKER", "BRUKER");
+        add(ListName.THIRD_PARTY, "SKATT", "Skatt", "Skatteetaten");
         add(ListName.CATEGORY, "PERSONALIA", "Personalia", "Personalia");
         add(ListName.CATEGORY, "ARBEIDSFORHOLD", "ARBEIDSFORHOLD", "Arbeidsforhold");
         add(ListName.CATEGORY, "UTDANNING", "UTDANNING", "Utdanning");

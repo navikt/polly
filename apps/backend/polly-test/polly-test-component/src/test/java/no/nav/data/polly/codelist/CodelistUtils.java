@@ -12,7 +12,7 @@ import java.util.stream.IntStream;
 public class CodelistUtils {
 
     public static Codelist createCodelist() {
-        return createCodelist(ListName.SOURCE, "CODE", "shortName", "description");
+        return createCodelist(ListName.THIRD_PARTY, "CODE", "shortName", "description");
     }
 
     public static Codelist createCodelist(ListName listName) {
@@ -33,7 +33,7 @@ public class CodelistUtils {
     }
 
     public static CodelistRequest createCodelistRequest() {
-        return createCodelistRequest("SOURCE", "CODE", "shortName", "description");
+        return createCodelistRequest("THIRD_PARTY", "CODE", "shortName", "description");
     }
 
     public static CodelistRequest createCodelistRequest(String listName) {
@@ -54,7 +54,7 @@ public class CodelistUtils {
     }
 
     public static List<CodelistRequest> createNrOfCodelistRequests(int nrOfRequests) {
-        return IntStream.rangeClosed(1, nrOfRequests).mapToObj(i -> createCodelistRequest("SOURCE", "CODE_NR_" + i)).collect(Collectors.toList());
+        return IntStream.rangeClosed(1, nrOfRequests).mapToObj(i -> createCodelistRequest("THIRD_PARTY", "CODE_NR_" + i)).collect(Collectors.toList());
     }
 
     private static LegalBasisRequest createLegalBasis() {

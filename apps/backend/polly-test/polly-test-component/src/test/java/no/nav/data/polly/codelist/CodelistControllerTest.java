@@ -69,30 +69,30 @@ class CodelistControllerTest {
 
             assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
             assertThat(returnedCodelist.getCodelist().size()).isEqualTo(ListName.values().length);
-            assertThat(returnedCodelist.getCodelist().get(ListName.SOURCE).size()).isEqualTo(CodelistService.getCodelist(ListName.SOURCE).size());
+            assertThat(returnedCodelist.getCodelist().get(ListName.THIRD_PARTY).size()).isEqualTo(CodelistService.getCodelist(ListName.THIRD_PARTY).size());
             assertThat(returnedCodelist.getCodelist().get(ListName.CATEGORY).size()).isEqualTo(CodelistService.getCodelist(ListName.CATEGORY).size());
         }
 
         @Test
         void getByListName_shouldReturnCodelist() throws Exception {
-            String uri = "/codelist/SOURCE";
+            String uri = "/codelist/THIRD_PARTY";
 
             MockHttpServletResponse response = mvc.perform(get(uri)).andExpect(status().isOk()).andReturn().getResponse();
 
             @SuppressWarnings("unchecked")
             List<Map> mappedResponse = JsonUtils.toObject(response.getContentAsString(), ArrayList.class);
-            assertThat(mappedResponse).hasSize(CodelistService.getCodelist(ListName.SOURCE).size());
+            assertThat(mappedResponse).hasSize(CodelistService.getCodelist(ListName.THIRD_PARTY).size());
         }
 
         @Test
         void getByListNameAndCode_shouldReturnForARBEIDSGIVER() throws Exception {
-            String uri = "/codelist/SOURCE/ARBEIDSGIVER";
+            String uri = "/codelist/THIRD_PARTY/ARBEIDSGIVER";
 
             MockHttpServletResponse response = mvc.perform(get(uri))
                     .andExpect(status().isOk())
                     .andReturn().getResponse();
 
-            assertThat(response.getContentAsString()).isEqualTo(JsonUtils.toJson(CodelistService.getCodelistResponse(ListName.SOURCE, "ARBEIDSGIVER")));
+            assertThat(response.getContentAsString()).isEqualTo(JsonUtils.toJson(CodelistService.getCodelistResponse(ListName.THIRD_PARTY, "ARBEIDSGIVER")));
         }
 
         @Test
@@ -111,15 +111,15 @@ class CodelistControllerTest {
 
         @Test
         void getByListNameAndCode_shouldReturnNotFound_whenUnknownCode() throws Exception {
-            String uri = "/codelist/SOURCE/UNKNOWN_CODE";
-            doThrow(new CodelistNotFoundException("The code=UNKNOWN_CODE does not exist in the list=SOURCE."))
-                    .when(service).validateListNameAndCode("SOURCE", "UNKNOWN_CODE");
+            String uri = "/codelist/THIRD_PARTY/UNKNOWN_CODE";
+            doThrow(new CodelistNotFoundException("The code=UNKNOWN_CODE does not exist in the list=THIRD_PARTY."))
+                    .when(service).validateListNameAndCode("THIRD_PARTY", "UNKNOWN_CODE");
 
             Exception exception = mvc.perform(get(uri))
                     .andExpect(status().isNotFound())
                     .andReturn().getResolvedException();
 
-            assertThat(exception.getLocalizedMessage()).isEqualTo("The code=UNKNOWN_CODE does not exist in the list=SOURCE.");
+            assertThat(exception.getLocalizedMessage()).isEqualTo("The code=UNKNOWN_CODE does not exist in the list=THIRD_PARTY.");
         }
     }
 
@@ -128,10 +128,10 @@ class CodelistControllerTest {
 
         @Test
         void save_shouldSaveMultipleCodelists() throws Exception {
-            List<Codelist> codelists = List.of(createCodelist(ListName.SOURCE, "CODE1"), createCodelist(ListName.SOURCE, "CODE2"));
+            List<Codelist> codelists = List.of(createCodelist(ListName.THIRD_PARTY, "CODE1"), createCodelist(ListName.THIRD_PARTY, "CODE2"));
             when(service.save(anyList())).thenReturn(codelists);
 
-            List<CodelistRequest> requests = List.of(createCodelistRequest("SOURCE", "CODE1"), createCodelistRequest("SOURCE", "CODE2"));
+            List<CodelistRequest> requests = List.of(createCodelistRequest("THIRD_PARTY", "CODE1"), createCodelistRequest("THIRD_PARTY", "CODE2"));
             String inputJson = JsonUtils.toJson(requests);
 
             mvc.perform(post("/codelist")
@@ -144,10 +144,10 @@ class CodelistControllerTest {
 
         @Test
         void update_shouldUpdateCodelist() throws Exception {
-            List<Codelist> codelists = List.of(createCodelist(ListName.SOURCE, "CODE1"), createCodelist(ListName.SOURCE, "CODE2"));
+            List<Codelist> codelists = List.of(createCodelist(ListName.THIRD_PARTY, "CODE1"), createCodelist(ListName.THIRD_PARTY, "CODE2"));
             when(service.update(anyList())).thenReturn(codelists);
 
-            List<CodelistRequest> requests = List.of(createCodelistRequest("SOURCE", "CODE1"), createCodelistRequest("SOURCE", "CODE2"));
+            List<CodelistRequest> requests = List.of(createCodelistRequest("THIRD_PARTY", "CODE1"), createCodelistRequest("THIRD_PARTY", "CODE2"));
             String inputJson = JsonUtils.toJson(requests);
 
             mvc.perform(put("/codelist")
@@ -160,20 +160,20 @@ class CodelistControllerTest {
 
         @Test
         void delete_shouldDeleteCodelistItem() throws Exception {
-            MockHttpServletResponse response = mvc.perform(delete("/codelist/SOURCE/TEST_DELETE")).andReturn().getResponse();
+            MockHttpServletResponse response = mvc.perform(delete("/codelist/THIRD_PARTY/TEST_DELETE")).andReturn().getResponse();
 
             assertThat(response.getStatus()).isEqualTo((HttpStatus.OK.value()));
-            verify(service).delete(ListName.SOURCE, "TEST_DELETE");
+            verify(service).delete(ListName.THIRD_PARTY, "TEST_DELETE");
         }
 
         @Test
         void delete_shouldDelete_withoutCorrectFormat() throws Exception {
             MockHttpServletResponse response = mvc.perform(
-                    delete("/codelist/source/test_format"))
+                    delete("/codelist/third_party/test_format"))
                     .andReturn().getResponse();
 
             assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-            verify(service).delete(ListName.SOURCE, "TEST_FORMAT");
+            verify(service).delete(ListName.THIRD_PARTY, "TEST_FORMAT");
         }
     }
 }

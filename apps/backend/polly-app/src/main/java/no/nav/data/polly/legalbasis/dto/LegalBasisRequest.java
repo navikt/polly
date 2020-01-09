@@ -24,9 +24,9 @@ import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
 @AllArgsConstructor
 public class LegalBasisRequest implements Validated {
 
-    @ApiModelProperty(value = "Codelist", example = "CODELIST")
+    @ApiModelProperty(value = "Codelist GDPR", example = "CODELIST")
     private String gdpr;
-    @ApiModelProperty(value = "Codelist", example = "CODELIST")
+    @ApiModelProperty(value = "Codelist NATIONAL_LAW", example = "CODELIST")
     private String nationalLaw;
     private String description;
     @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_START)

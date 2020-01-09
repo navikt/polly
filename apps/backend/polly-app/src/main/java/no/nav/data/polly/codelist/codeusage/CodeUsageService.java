@@ -81,7 +81,7 @@ public class CodeUsageService {
                 case CATEGORY:
                     getInformationTypes(usage).forEach(it -> replaceAll(it.getData().getCategories(), oldCode, newCode));
                     break;
-                case SOURCE:
+                case THIRD_PARTY:
                     getInformationTypes(usage).forEach(it -> replaceAll(it.getData().getSources(), oldCode, newCode));
                     getDisclosures(usage).forEach(d -> d.getData().setRecipient(newCode));
                     break;
@@ -177,7 +177,7 @@ public class CodeUsageService {
                 return informationTypeRepository.findByNavMaster(code).stream().map(InformationType::getInstanceIdentification).collect(Collectors.toList());
             case CATEGORY:
                 return informationTypeRepository.findByCategory(code).stream().map(InformationType::getInstanceIdentification).collect(Collectors.toList());
-            case SOURCE:
+            case THIRD_PARTY:
                 return informationTypeRepository.findBySource(code).stream().map(InformationType::getInstanceIdentification).collect(Collectors.toList());
             default:
                 return Collections.emptyList();
@@ -190,7 +190,7 @@ public class CodeUsageService {
                 return disclosureRepository.findByGDPRArticle(code).stream().map(Disclosure::getInstanceIdentification).collect(Collectors.toList());
             case NATIONAL_LAW:
                 return disclosureRepository.findByNationalLaw(code).stream().map(Disclosure::getInstanceIdentification).collect(Collectors.toList());
-            case SOURCE:
+            case THIRD_PARTY:
                 return disclosureRepository.findByRecipient(code).stream().map(Disclosure::getInstanceIdentification).collect(Collectors.toList());
             default:
                 return Collections.emptyList();

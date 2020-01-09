@@ -20,7 +20,7 @@ public class DisclosureData {
 
     private String description;
     @NotNull
-    private String recipient; // codelist SOURCE - THIRD_PARTY
+    private String recipient; // codelist THIRD_PARTY
     @NotNull
     private String recipientPurpose;
     @NotNull

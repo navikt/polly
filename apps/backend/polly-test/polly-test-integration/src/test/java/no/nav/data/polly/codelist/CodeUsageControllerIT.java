@@ -49,7 +49,7 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
 
         @ParameterizedTest
         @CsvSource({"PURPOSE, 2", "DEPARTMENT,1", "SUB_DEPARTMENT,1", "GDPR_ARTICLE,2", "NATIONAL_LAW,1", "SUBJECT_CATEGORY,1", "SENSITIVITY,1", "SYSTEM,2", "CATEGORY,2",
-                "SOURCE,2"})
+                "THIRD_PARTY,2"})
         void shouldFindCodeUsage(String list, int expectedCodesInUse) {
             ResponseEntity<CodelistUsageResponse> response = restTemplate
                     .exchange(String.format("/codelist/usage/find/%s", list), HttpMethod.GET, HttpEntity.EMPTY, CodelistUsageResponse.class);
@@ -85,13 +85,13 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
         }
 
         @ParameterizedTest
-        @CsvSource({"SENSITIVITY,POL,2", "SYSTEM,TPS,1", "CATEGORY,PERSONALIA,1", "SOURCE,SKATTEETATEN,1"})
+        @CsvSource({"SENSITIVITY,POL,2", "SYSTEM,TPS,1", "CATEGORY,PERSONALIA,1", "THIRD_PARTY,SKATTEETATEN,1"})
         void findInformationTypes(String list, String code, int expectedCountInformationTypes) {
             assertThat(expectedCountInformationTypes).isEqualTo(countInformationTypes(getForListAndCode(list, code)));
         }
 
         @ParameterizedTest
-        @CsvSource({"SOURCE,SKATTEETATEN,1", "SOURCE,ARBEIDSGIVER,0", "GDPR_ARTICLE,ART61E,1", "GDPR_ARTICLE,ART92A,0", "NATIONAL_LAW,FTRL,1", "NATIONAL_LAW,OTHER_LAW,0"})
+        @CsvSource({"THIRD_PARTY,SKATTEETATEN,1", "THIRD_PARTY,ARBEIDSGIVER,0", "GDPR_ARTICLE,ART61E,1", "GDPR_ARTICLE,ART92A,0", "NATIONAL_LAW,FTRL,1", "NATIONAL_LAW,OTHER_LAW,0"})
         void findDisclosures(String list, String code, int expectedCountDisclosures) {
             assertThat(expectedCountDisclosures).isEqualTo(countDisclosures(getForListAndCode(list, code)));
         }
@@ -104,7 +104,7 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
 
         @ParameterizedTest
         @CsvSource({"PURPOSE,BARNETRYGD,0,1,1", "DEPARTMENT,YTA,0,0,2", "SUB_DEPARTMENT,NAY,0,0,2", "GDPR_ARTICLE,ART92A,0,0,1", "NATIONAL_LAW,FTRL,0,2,2",
-                "SUBJECT_CATEGORY,BRUKER,0,2,0", "SENSITIVITY,POL,2,0,0", "SYSTEM,AA_REG,1,0,0", "CATEGORY,ARBEIDSFORHOLD,1,0,0", "SOURCE,SKATTEETATEN,1,0,0"})
+                "SUBJECT_CATEGORY,BRUKER,0,2,0", "SENSITIVITY,POL,2,0,0", "SYSTEM,AA_REG,1,0,0", "CATEGORY,ARBEIDSFORHOLD,1,0,0", "THIRD_PARTY,SKATTEETATEN,1,0,0"})
         void shouldFindCodeUsage(String list, String code, int expectedCountInformationTypes, int expectedCountPolicy, int expectedCountProcess) {
             ResponseEntity<CodeUsageResponse> response = getForListAndCode(list, code);
 
@@ -124,7 +124,7 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
         @ParameterizedTest
         @CsvSource({"PURPOSE,DAGPENGER,0,1,1,0", "CATEGORY,PERSONALIA,1,0,0,0",
                 "DEPARTMENT,YTA,0,0,2,0", "SUB_DEPARTMENT,NAY,0,0,2,0",
-                "SENSITIVITY,POL,2,0,0,0", "SOURCE,SKATTEETATEN,1,0,0,1",
+                "SENSITIVITY,POL,2,0,0,0", "THIRD_PARTY,SKATTEETATEN,1,0,0,1",
                 "SUBJECT_CATEGORY,BRUKER,0,2,0,0", "SYSTEM,TPS,1,0,0,0",
                 "NATIONAL_LAW,FTRL,0,2,2,1", "GDPR_ARTICLE,ART61E,0,2,2,1"
         })
@@ -205,8 +205,8 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
                 createCodelistRequest("SENSITIVITY", "POL"),
                 createCodelistRequest("SENSITIVITY", "OTHER_SENS"),
 
-                createCodelistRequest("SOURCE", "SKATTEETATEN"),
-                createCodelistRequest("SOURCE", "ARBEIDSGIVER"),
+                createCodelistRequest("THIRD_PARTY", "SKATTEETATEN"),
+                createCodelistRequest("THIRD_PARTY", "ARBEIDSGIVER"),
 
                 createCodelistRequest("SUB_DEPARTMENT", "NAY"),
 

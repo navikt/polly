@@ -32,13 +32,13 @@ public class InformationTypeRequest implements RequestElement {
     private String name;
     private String description;
     private String term;
-    @ApiModelProperty(value = "Codelist", example = "CODELIST")
+    @ApiModelProperty(value = "Codelist SENSITIVITY", example = "CODELIST")
     private String sensitivity;
-    @ApiModelProperty(value = "Codelist", example = "CODELIST")
+    @ApiModelProperty(value = "Codelist SYSTEM", example = "CODELIST")
     private String navMaster;
-    @ApiModelProperty(value = "Codelist", example = "[\"CODELIST\"]")
+    @ApiModelProperty(value = "Codelist CATEGORY", example = "[\"CODELIST\"]")
     private List<String> categories;
-    @ApiModelProperty(value = "Codelist", example = "[\"CODELIST\"]")
+    @ApiModelProperty(value = "Codelist THIRD_PARTY", example = "[\"CODELIST\"]")
     private List<String> sources;
     private List<String> keywords;
 
@@ -87,7 +87,7 @@ public class InformationTypeRequest implements RequestElement {
         validator.checkBlank(Fields.description, getDescription());
 
         validator.checkCodelists(Fields.categories, getCategories(), ListName.CATEGORY);
-        validator.checkCodelists(Fields.sources, getSources(), ListName.SOURCE);
+        validator.checkCodelists(Fields.sources, getSources(), ListName.THIRD_PARTY);
         validator.checkRequiredCodelist(Fields.sensitivity, getSensitivity(), ListName.SENSITIVITY);
         validator.checkCodelist(Fields.navMaster, getNavMaster(), ListName.SYSTEM);
     }

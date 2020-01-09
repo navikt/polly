@@ -3,7 +3,7 @@ package no.nav.data.polly.codelist.domain;
 public enum ListName {
     PURPOSE,
     CATEGORY,
-    SOURCE,
+    THIRD_PARTY,
     NATIONAL_LAW,
     SENSITIVITY,
     SUBJECT_CATEGORY,
