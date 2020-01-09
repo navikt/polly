@@ -1,9 +1,11 @@
 package no.nav.data.polly.codelist.codeusage;
 
+import io.prometheus.client.Summary;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodeUsageRequest;
 import no.nav.data.polly.codelist.dto.CodeUsageResponse;
+import no.nav.data.polly.common.utils.MetricUtils;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
@@ -34,6 +36,7 @@ public class CodeUsageService {
     private final PolicyRepository policyRepository;
     private final InformationTypeRepository informationTypeRepository;
     private final DisclosureRepository disclosureRepository;
+    private final Summary summary;
 
     public CodeUsageService(CodelistService codelistService, ProcessRepository processRepository, PolicyRepository policyRepository,
             InformationTypeRepository informationTypeRepository, DisclosureRepository disclosureRepository) {
@@ -42,6 +45,12 @@ public class CodeUsageService {
         this.policyRepository = policyRepository;
         this.informationTypeRepository = informationTypeRepository;
         this.disclosureRepository = disclosureRepository;
+        this.summary = MetricUtils.summary()
+                .labels(Stream.of(ListName.values()).map(Enum::name).toArray(String[]::new))
+                .name("polly_codeusage_find_summary")
+                .help("Time taken for ")
+                .labelNames("listname usage lookup times")
+                .register();
     }
 
     public void validateListName(String list) {
@@ -61,12 +70,14 @@ public class CodeUsageService {
     }
 
     public CodeUsageResponse findCodeUsage(ListName listName, String code) {
-        CodeUsageResponse codeUsage = new CodeUsageResponse(listName, code);
-        codeUsage.setProcesses(findProcesses(listName, code));
-        codeUsage.setPolicies(findPolicies(listName, code));
-        codeUsage.setInformationTypes(findInformationTypes(listName, code));
-        codeUsage.setDisclosures(findDisclosures(listName, code));
-        return codeUsage;
+        return summary.time(() -> {
+            CodeUsageResponse codeUsage = new CodeUsageResponse(listName, code);
+            codeUsage.setProcesses(findProcesses(listName, code));
+            codeUsage.setPolicies(findPolicies(listName, code));
+            codeUsage.setInformationTypes(findInformationTypes(listName, code));
+            codeUsage.setDisclosures(findDisclosures(listName, code));
+            return codeUsage;
+        });
     }
 
     @SuppressWarnings({"ResultOfMethodCallIgnored"})
