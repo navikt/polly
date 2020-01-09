@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class JpaConfig {
     }
 
     @Bean
-    public ApplicationRunner auditMissingEntities(InformationTypeRepository informationTypeRepository, AuditVersionRepository auditVersionRepository) {
+    public ApplicationRunner auditMissingEntities(InformationTypeRepository informationTypeRepository, AuditVersionRepository auditVersionRepository, TransactionTemplate tt) {
         Runnable updateMissing = () -> {
             Logger log = LoggerFactory.getLogger("MissingAudits");
             List<InformationType> all = informationTypeRepository.findAll();
@@ -46,6 +47,6 @@ public class JpaConfig {
                         new AuditVersionListener().prePersist(it);
                     });
         };
-        return (args) -> MdcUtils.wrapAsync(updateMissing, "system").run();
+        return (args) -> MdcUtils.wrapAsync(tt.execute(transactionStatus -> updateMissing), "system").run();
     }
 }
