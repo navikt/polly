@@ -139,6 +139,7 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
                                 list={disclosureList}
                                 showRecipient={false}
                                 errorModal={error}
+                                editable
                                 submitDeleteDisclosure={handleDeleteDisclosure}
                                 submitEditDisclosure={handleEditDisclosure}
                                 onCloseModal={() => setError(null)}

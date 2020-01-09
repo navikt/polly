@@ -15,6 +15,10 @@ export const getDisclosuresByRecipient = async (recipient: string) => {
     return (await axios.get<PageResponse<Disclosure>>(`${server_polly}/disclosure/?recipient=${recipient}`)).data.content
 }
 
+export const getDisclosuresByInformationTypeId = async (informationTypeId: string) => {
+    return (await axios.get<PageResponse<Disclosure>>(`${server_polly}/disclosure/?informationTypeId=${informationTypeId}&pageSize=250`)).data.content
+}
+
 export const createDisclosure = async (disclosure: DisclosureFormValues) => {
     let body = mapDisclosureFromForm(disclosure);
     return (await axios.post<Disclosure>(`${server_polly}/disclosure`, body)).data;

@@ -53,13 +53,14 @@ const renderInformationTypesInCell = (informationtypeList: InformationType[]) =>
 type TableDisclosureProps = {
     list: Array<Disclosure>;
     showRecipient: boolean;
-    errorModal: string;
-    submitDeleteDisclosure: Function;
-    submitEditDisclosure: Function;
-    onCloseModal: Function;
+    editable: boolean;
+    submitDeleteDisclosure?: Function;
+    submitEditDisclosure?: Function;
+    errorModal?: string | undefined;
+    onCloseModal?: Function;
 };
 
-const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, onCloseModal }: TableDisclosureProps) => {
+const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal }: TableDisclosureProps) => {
     const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false)
     const [showEditModal, setShowEditModal] = React.useState<boolean>()
     const [selectedDisclosure, setSelectedDisclosure] = React.useState<Disclosure>()
@@ -122,8 +123,8 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
                         direction={table.direction.legalBases}
                         onSort={() => sortColumn('legalBases')}
                     />
-
-                    <SmallerStyledHeadCell />
+                    {editable && <SmallerStyledHeadCell />}
+                    
                 </StyledHeader>
 
                 <StyledBody>
@@ -141,50 +142,53 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
                                     <ListLegalBasesInTable legalBases={row.legalBases} />
                                 )}
                             </StyledCell>
-                            <SmallerStyledCell>
-                                <Block width="100%" display="flex" justifyContent="flex-end">
-                                    <StatefulTooltip content={intl.edit}>
-                                        <Button
-                                            size={SIZE.compact}
-                                            kind={KIND.tertiary}
-                                            onClick={() => {
-                                                setSelectedDisclosure(row)
-                                                setShowEditModal(true)
-                                            }}
-                                        >
-                                            <FontAwesomeIcon icon={faEdit} />
-                                        </Button>
-                                    </StatefulTooltip>
+                            {editable && (
+                                <SmallerStyledCell>
+                                    <Block width="100%" display="flex" justifyContent="flex-end">
+                                        <StatefulTooltip content={intl.edit}>
+                                            <Button
+                                                size={SIZE.compact}
+                                                kind={KIND.tertiary}
+                                                onClick={() => {
+                                                    setSelectedDisclosure(row)
+                                                    setShowEditModal(true)
+                                                }}
+                                            >
+                                                <FontAwesomeIcon icon={faEdit} />
+                                            </Button>
+                                        </StatefulTooltip>
 
-                                    <StatefulTooltip content={intl.delete}>
-                                        <Button
-                                            size={SIZE.compact}
-                                            kind={KIND.tertiary}
-                                            onClick={() => {
-                                                setSelectedDisclosure(row)
-                                                setShowDeleteModal(true)
-                                            }}
-                                        >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </Button>
-                                    </StatefulTooltip>
-                                </Block>
+                                        <StatefulTooltip content={intl.delete}>
+                                            <Button
+                                                size={SIZE.compact}
+                                                kind={KIND.tertiary}
+                                                onClick={() => {
+                                                    setSelectedDisclosure(row)
+                                                    setShowDeleteModal(true)
+                                                }}
+                                            >
+                                                <FontAwesomeIcon icon={faTrash} />
+                                            </Button>
+                                        </StatefulTooltip>
+                                    </Block>
 
-                            </SmallerStyledCell>
+                                </SmallerStyledCell>
+                            )}
+
                         </CustomStyledRow>
                     ))}
                 </StyledBody>
             </StyledTable>
 
-            {showEditModal && (
+            {editable && showEditModal && (
                 <ModalThirdParty
                     title="Rediger utlevering"
                     isOpen={showEditModal}
                     isEdit={true}
                     initialValues={initialFormValues}
-                    submit={async (values) => await submitEditDisclosure(values) ? setShowEditModal(false) : setShowEditModal(true)}
+                    submit={async (values) => submitEditDisclosure && await submitEditDisclosure(values) ? setShowEditModal(false) : setShowEditModal(true)}
                     onClose={() => {
-                        onCloseModal()
+                        onCloseModal && onCloseModal()
                         setShowEditModal(false)
                     }}
                     errorOnCreate={errorModal}
@@ -216,7 +220,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
                             </Button>
                             <Button onClick={() => {
                                 if (selectedDisclosure)
-                                    submitDeleteDisclosure(selectedDisclosure) ? setShowDeleteModal(false) : setShowDeleteModal(true)
+                                    submitDeleteDisclosure && submitDeleteDisclosure(selectedDisclosure) ? setShowDeleteModal(false) : setShowDeleteModal(true)
                             }}
                             >{intl.delete}</Button>
                         </Block>
