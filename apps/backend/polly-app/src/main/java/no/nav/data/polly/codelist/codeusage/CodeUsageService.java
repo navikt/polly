@@ -21,10 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Collections.replaceAll;
+import static java.util.stream.Collectors.toList;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Service
@@ -45,11 +45,12 @@ public class CodeUsageService {
         this.policyRepository = policyRepository;
         this.informationTypeRepository = informationTypeRepository;
         this.disclosureRepository = disclosureRepository;
+        List<String[]> listnames = Stream.of(ListName.values()).map(e -> new String[]{e.name()}).collect(toList());
         this.summary = MetricUtils.summary()
-                .labels(Stream.of(ListName.values()).map(Enum::name).toArray(String[]::new))
+                .labels(listnames)
                 .name("polly_codeusage_find_summary")
-                .help("Time taken for ")
-                .labelNames("listname usage lookup times")
+                .help("Time taken for listname usage lookup times")
+                .labelNames("listname")
                 .register();
     }
 
@@ -66,7 +67,7 @@ public class CodeUsageService {
     }
 
     public List<CodeUsageResponse> findCodeUsageOfList(ListName list) {
-        return CodelistService.getCodelist(list).stream().map(c -> findCodeUsage(c.getList(), c.getCode())).collect(Collectors.toList());
+        return CodelistService.getCodelist(list).stream().map(c -> findCodeUsage(c.getList(), c.getCode())).collect(toList());
     }
 
     public CodeUsageResponse findCodeUsage(ListName listName, String code) {
@@ -151,15 +152,15 @@ public class CodeUsageService {
     private List<UsedInInstance> findProcesses(ListName listName, String code) {
         switch (listName) {
             case PURPOSE:
-                return processRepository.findByPurposeCode(code).stream().map(Process::getInstanceIdentification).collect(Collectors.toList());
+                return processRepository.findByPurposeCode(code).stream().map(Process::getInstanceIdentification).collect(toList());
             case DEPARTMENT:
-                return processRepository.findByDepartment(code).stream().map(Process::getInstanceIdentification).collect(Collectors.toList());
+                return processRepository.findByDepartment(code).stream().map(Process::getInstanceIdentification).collect(toList());
             case SUB_DEPARTMENT:
-                return processRepository.findBySubDepartment(code).stream().map(Process::getInstanceIdentification).collect(Collectors.toList());
+                return processRepository.findBySubDepartment(code).stream().map(Process::getInstanceIdentification).collect(toList());
             case GDPR_ARTICLE:
-                return processRepository.findByGDPRArticle(code).stream().map(Process::getInstanceIdentification).collect(Collectors.toList());
+                return processRepository.findByGDPRArticle(code).stream().map(Process::getInstanceIdentification).collect(toList());
             case NATIONAL_LAW:
-                return processRepository.findByNationalLaw(code).stream().map(Process::getInstanceIdentification).collect(Collectors.toList());
+                return processRepository.findByNationalLaw(code).stream().map(Process::getInstanceIdentification).collect(toList());
             default:
                 return Collections.emptyList();
         }
@@ -168,13 +169,13 @@ public class CodeUsageService {
     private List<UsedInInstance> findPolicies(ListName listName, String code) {
         switch (listName) {
             case PURPOSE:
-                return policyRepository.findByPurposeCode(code).stream().map(Policy::getInstanceIdentification).collect(Collectors.toList());
+                return policyRepository.findByPurposeCode(code).stream().map(Policy::getInstanceIdentification).collect(toList());
             case SUBJECT_CATEGORY:
-                return policyRepository.findBySubjectCategory(code).stream().map(Policy::getInstanceIdentification).collect(Collectors.toList());
+                return policyRepository.findBySubjectCategory(code).stream().map(Policy::getInstanceIdentification).collect(toList());
             case GDPR_ARTICLE:
-                return policyRepository.findByGDPRArticle(code).stream().map(Policy::getInstanceIdentification).collect(Collectors.toList());
+                return policyRepository.findByGDPRArticle(code).stream().map(Policy::getInstanceIdentification).collect(toList());
             case NATIONAL_LAW:
-                return policyRepository.findByNationalLaw(code).stream().map(Policy::getInstanceIdentification).collect(Collectors.toList());
+                return policyRepository.findByNationalLaw(code).stream().map(Policy::getInstanceIdentification).collect(toList());
             default:
                 return Collections.emptyList();
         }
@@ -183,13 +184,13 @@ public class CodeUsageService {
     private List<UsedInInstance> findInformationTypes(ListName listName, String code) {
         switch (listName) {
             case SENSITIVITY:
-                return informationTypeRepository.findBySensitivity(code).stream().map(InformationType::getInstanceIdentification).collect(Collectors.toList());
+                return informationTypeRepository.findBySensitivity(code).stream().map(InformationType::getInstanceIdentification).collect(toList());
             case SYSTEM:
-                return informationTypeRepository.findByNavMaster(code).stream().map(InformationType::getInstanceIdentification).collect(Collectors.toList());
+                return informationTypeRepository.findByNavMaster(code).stream().map(InformationType::getInstanceIdentification).collect(toList());
             case CATEGORY:
-                return informationTypeRepository.findByCategory(code).stream().map(InformationType::getInstanceIdentification).collect(Collectors.toList());
+                return informationTypeRepository.findByCategory(code).stream().map(InformationType::getInstanceIdentification).collect(toList());
             case THIRD_PARTY:
-                return informationTypeRepository.findBySource(code).stream().map(InformationType::getInstanceIdentification).collect(Collectors.toList());
+                return informationTypeRepository.findBySource(code).stream().map(InformationType::getInstanceIdentification).collect(toList());
             default:
                 return Collections.emptyList();
         }
@@ -198,11 +199,11 @@ public class CodeUsageService {
     private List<UsedInInstance> findDisclosures(ListName listName, String code) {
         switch (listName) {
             case GDPR_ARTICLE:
-                return disclosureRepository.findByGDPRArticle(code).stream().map(Disclosure::getInstanceIdentification).collect(Collectors.toList());
+                return disclosureRepository.findByGDPRArticle(code).stream().map(Disclosure::getInstanceIdentification).collect(toList());
             case NATIONAL_LAW:
-                return disclosureRepository.findByNationalLaw(code).stream().map(Disclosure::getInstanceIdentification).collect(Collectors.toList());
+                return disclosureRepository.findByNationalLaw(code).stream().map(Disclosure::getInstanceIdentification).collect(toList());
             case THIRD_PARTY:
-                return disclosureRepository.findByRecipient(code).stream().map(Disclosure::getInstanceIdentification).collect(Collectors.toList());
+                return disclosureRepository.findByRecipient(code).stream().map(Disclosure::getInstanceIdentification).collect(toList());
             default:
                 return Collections.emptyList();
         }
