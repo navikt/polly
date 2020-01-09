@@ -211,7 +211,7 @@ const CodeListTable = ({tableData, hasAccess, refresh}: TableCodelistProps) => {
                 )}
             </StyledTable>
 
-            {showUsage && usage && <Usage usage={usage}/>}
+            {showUsage && <Usage usage={usage}/>}
         </React.Fragment>
     );
 };

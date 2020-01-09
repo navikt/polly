@@ -68,6 +68,7 @@ export const no: IStrings = {
         "For artikkel 6(c, e og f) trengs det videre spesifisering.",
     disclosureSelect: "Velg mottaker",
     createThirdPartyModalTitle: 'Opprett utlevering for ekstern part',
+    usageNotFound: 'Fant ingen bruk',
 
     groupByPurpose: "Grupper etter formål",
     showAll: "Vis alle",
@@ -219,6 +220,7 @@ export const en = {
     groupByPurpose: "Group by purpose",
     showAll: "Show all",
     createThirdPartyModalTitle: 'Create disclosure for a thirdparty',
+    usageNotFound: 'No usage found',
 
     POLLY_READ: "Read",
     POLLY_WRITE: "Write",
