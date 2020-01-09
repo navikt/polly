@@ -12,10 +12,8 @@ import { Button, KIND } from "baseui/button";
 import { user } from "../service/User";
 import { Use, DisclosureFormValues, Disclosure } from "../constants";
 import ModalThirdParty from "../components/ThirdParty/ModalThirdPartyForm";
-import { ListItem, ListItemLabel } from "baseui/list";
-import { useStyletron } from "styletron-react";
 import { getCodelistUsage } from "../api/CodelistApi";
-import RouteLink from "../components/common/RouteLink";
+import ListRecievedInformationTypes from "../components/ThirdParty/ListRecievedInformationTypes";
 
 const labelBlockProps: BlockProps = {
     marginBottom: '1rem',
@@ -30,7 +28,6 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
     const [informationTypeList, setInformationTypeList] = React.useState<Use[]>()
     const [showCreateModal, setShowCreateModal] = React.useState(false)
     const [error, setError] = React.useState();
-    const [css] = useStyletron();
 
     const handleCreateDisclosure = async (disclosure: DisclosureFormValues) => {
         try {
@@ -138,24 +135,7 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
 
 
                     <Block marginBottom="3rem">
-                        <Label2 {...labelBlockProps}>{intl.retrievedFromThirdParty}</Label2>
-                        {informationTypeList && informationTypeList.length > 0 && (
-                            <ul
-                                className={css({
-                                    width: '400px',
-                                    paddingLeft: 0,
-                                    paddingRight: 0,
-                                })}
-                            >
-                                {informationTypeList.map(infotype => (
-                                    <ListItem sublist key={infotype.id}>
-                                        <ListItemLabel sublist>
-                                            <RouteLink href={`/informationtype/${infotype.id}`}>{infotype.name}</RouteLink>
-                                        </ListItemLabel>
-                                    </ListItem>
-                                ))}
-                            </ul>
-                        )}
+                        <ListRecievedInformationTypes informationtypeList={informationTypeList ? informationTypeList : []} />
                     </Block>
                 </React.Fragment>
             )}

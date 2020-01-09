@@ -1,0 +1,44 @@
+import * as React from 'react'
+import { Block, BlockProps } from 'baseui/block';
+import { Label2 } from 'baseui/typography';
+import { Use } from '../../constants';
+import { ListItem, ListItemLabel } from 'baseui/list';
+import RouteLink from '../common/RouteLink';
+import { useStyletron } from 'styletron-react';
+import { intl } from '../../util';
+
+const labelBlockProps: BlockProps = {
+    marginBottom: '1rem',
+    font: 'font400'
+}
+
+type ListRecievedInformationTypesProps = {
+    informationtypeList: Use[];
+}
+
+const ListRecievedInformationTypes = ({ informationtypeList }: ListRecievedInformationTypesProps) => {
+    const [css] = useStyletron();
+    
+    return (
+        <Block>
+            <Label2 {...labelBlockProps}>{intl.retrievedFromThirdParty}</Label2>
+            <ul
+                className={css({
+                    width: '400px',
+                    paddingLeft: 0,
+                    paddingRight: 0,
+                })}
+            >
+                {informationtypeList.map(infotype => (
+                    <ListItem sublist key={infotype.id}>
+                        <ListItemLabel sublist>
+                            <RouteLink href={`/informationtype/${infotype.id}`}>{infotype.name}</RouteLink>
+                        </ListItemLabel>
+                    </ListItem>
+                ))}
+            </ul>
+        </Block>
+    )
+}
+
+export default ListRecievedInformationTypes
