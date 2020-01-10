@@ -52,7 +52,7 @@ export const no: IStrings = {
     descriptionWriteLegalBasesCE: "Legg inn lovreferanse",
     definitionWrite: "Skriv inn en definisjon",
     subjectCategoriesNotFound: "Fant ingen kategorier av personer",
-    legalBasesProcess: "Bruker behandlingens rettslig grunnlag",
+    legalBasesProcess: "Bruker behandlingens rettslige grunnlag",
     legalBasesUndecided: "Uavklart",
     legalBasesOwn: "Har eget rettslig grunnlag",
     legalBasesUndecidedWarning: "Rettslig grunnlag er ikke avklart",
