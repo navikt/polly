@@ -9,6 +9,7 @@ import {intl, useAwait} from "../../util";
 import {codelist, ListName} from "../../service/Codelist";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronDown, faChevronRight} from "@fortawesome/free-solid-svg-icons";
+import {Heading, HeadingLevel} from "baseui/heading";
 
 type InformationTypeAccordionProps = {
     categoryUsages: CodeUsage[] | undefined
@@ -17,9 +18,9 @@ type InformationTypeAccordionProps = {
 const InformationTypeAccordion = ({categoryUsages}: InformationTypeAccordionProps) => {
     const [css] = useStyletron();
 
-    useAwait(codelist.wait())
+    useAwait(codelist.wait());
     const panelList = () => {
-        if (!categoryUsages) return
+        if (!categoryUsages) return;
         return categoryUsages
             .filter(categoryUsage => categoryUsage.informationTypes.length > 0)
             .sort((a,b) => b.informationTypes.length - a.informationTypes.length)
@@ -28,8 +29,22 @@ const InformationTypeAccordion = ({categoryUsages}: InformationTypeAccordionProp
                     <Panel
                         title={
                             <Block display="flex" width="100%">
-                                <Block marginRight="auto">{codelist.getShortname(ListName.CATEGORY, categoryUsage.code)}</Block>
-                                <Block marginRight="50px">{intl.informationType}: {categoryUsage.informationTypes.length}</Block>
+                                <Block marginRight="auto" minWidth="80%">{codelist.getShortname(ListName.CATEGORY, categoryUsage.code)}</Block>
+                                <Block
+                                    marginRight="50px"
+                                    minWidth="20%"
+                                    overrides={{
+                                        Block:{
+                                            style:{
+                                                opacity:"0.5",
+                                                color:"#545454",
+                                                fontSize:".9rem"
+                                            }
+                                        }
+                                    }}
+                                >
+                                    {intl.informationType}: {categoryUsage.informationTypes.length}
+                                </Block>
                             </Block>
                         }
                         overrides={{
@@ -56,7 +71,7 @@ const InformationTypeAccordion = ({categoryUsages}: InformationTypeAccordionProp
                                         overrides={{
                                             Content:{
                                                 style:{
-                                                    height:"32px",
+                                                    height:"40px",
                                                 }
                                             },
                                             ArtworkContainer:{},
@@ -77,6 +92,9 @@ const InformationTypeAccordion = ({categoryUsages}: InformationTypeAccordionProp
 
     return (
         <Block width="800px" marginTop="50px">
+            <HeadingLevel>
+                <Heading styleLevel={5} paddingLeft="20px">{intl.categories}</Heading>
+            </HeadingLevel>
             <Accordion>{panelList()}</Accordion>
         </Block>
     )
