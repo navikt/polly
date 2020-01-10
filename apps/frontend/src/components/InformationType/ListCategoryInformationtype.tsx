@@ -43,7 +43,7 @@ const InformationTypeAccordion = ({categoryUsages}: InformationTypeAccordionProp
                                         }
                                     }}
                                 >
-                                    {intl.informationType}: {categoryUsage.informationTypes.length}
+                                    {intl.informationTypes}: {categoryUsage.informationTypes.length}
                                 </Block>
                             </Block>
                         }
