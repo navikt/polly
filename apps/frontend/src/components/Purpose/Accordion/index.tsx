@@ -209,34 +209,34 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
 
                         {!isLoading && currentProcess && (
                             <React.Fragment>
-                                <Block {...rowPanelContent}>
-                                    <Block display="flex">
-                                        {renderLegalBasisListForProcess(currentProcess.legalBases)}
-                                        {renderSubjectCategoriesForProcess(currentProcess)}
-                                        {renderActiveForProcess(currentProcess)}
-                                    </Block>
-                                    {hasAccess() && (
-                                        <Block minWidth="100px">
-                                            <AuditButton id={p.id}/>
-                                            {renderEditProcessButton()}
-                                            {renderDeleteProcessButton()}
-                                        </Block>
-                                    )}
-                                </Block>
 
                                 <Block {...rowPanelContent}>
-                                    {currentProcess.department && <Block marginRight="scale1200">
-                                        <Label2>{intl.department}</Label2>
-                                        {codelist.getShortnameForCode(currentProcess.department)}
-                                    </Block>}
-                                    {currentProcess.subDepartment && <Block marginRight="scale1200">
-                                        <Label2>{intl.subDepartment}</Label2>
-                                        {codelist.getShortnameForCode(currentProcess.subDepartment)}
-                                    </Block>}
-                                    {currentProcess.productTeam && <Block marginRight="scale1200">
-                                        <Label2>{intl.productTeam}</Label2>
-                                        {productTeam}
-                                    </Block>}
+                                    <Block width="90%" flexWrap={true} display="flex">
+                                            <Block width="30%">{renderLegalBasisListForProcess(currentProcess.legalBases)}</Block>
+                                            <Block width="30%">{renderSubjectCategoriesForProcess(currentProcess)}</Block>
+                                            <Block width="30%">{renderActiveForProcess(currentProcess)}</Block>
+                                        {currentProcess.department && <Block width="30%">
+                                            <Label2>{intl.department}</Label2>
+                                            {codelist.getShortnameForCode(currentProcess.department)}
+                                        </Block>}
+                                        {currentProcess.subDepartment && <Block width="30%">
+                                            <Label2>{intl.subDepartment}</Label2>
+                                            {codelist.getShortnameForCode(currentProcess.subDepartment)}
+                                        </Block>}
+                                        {currentProcess.productTeam && <Block width="30%">
+                                            <Label2>{intl.productTeam}</Label2>
+                                            {productTeam}
+                                        </Block>}
+                                    </Block>
+                                    <Block width="10%" minWidth="150px">
+                                        {hasAccess() && (
+                                            <>
+                                                <AuditButton id={p.id}/>
+                                                {renderEditProcessButton()}
+                                                {renderDeleteProcessButton()}
+                                            </>
+                                        )}
+                                    </Block>
                                 </Block>
 
                                 <Block {...rowPanelContent}>
