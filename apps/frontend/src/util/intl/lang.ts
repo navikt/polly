@@ -72,6 +72,10 @@ export const no: IStrings = {
     disclosuresToThirdParty: 'Utleveringer til ekstern part',
     retrievedFromThirdParty: 'Innhentinger fra ekstern part',
     usageNotFound: 'Fant ingen bruk',
+    newValue: "Ny verdi",
+    replace: "Erstatt",
+    replaceAllUse: "Erstatt all bruk",
+
 
     groupByPurpose: "Grupper etter formål",
     showAll: "Vis alle",
@@ -228,6 +232,9 @@ export const en = {
     disclosuresToThirdParty: "Disclosures to",
     retrievedFromThirdParty: "Retrieved from thirdparties",
     usageNotFound: 'No usage found',
+    newValue: "New Value",
+    replace: "Replace",
+    replaceAllUse: "Replace all use",
 
     POLLY_READ: "Read",
     POLLY_WRITE: "Write",
