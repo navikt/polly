@@ -243,7 +243,7 @@ const InformationtypeForm = ({
                                                 <Label2>Kilder</Label2>
                                             </Block>
                                             <Select
-                                                options={getParsedOptions(ListName.SOURCE, formikBag.values.sources)}
+                                                options={getParsedOptions(ListName.THIRD_PARTY, formikBag.values.sources)}
                                                 placeholder={intl.sourcesWrite}
                                                 maxDropdownHeight="300px"
                                                 onChange={({ option }) => {
@@ -251,7 +251,7 @@ const InformationtypeForm = ({
                                                 }}
                                                 error={!!arrayHelpers.form.errors.sources && !!arrayHelpers.form.submitCount}
                                             />
-                                            {renderTagList(codelist.getShortnames(ListName.SOURCE, formikBag.values.sources), arrayHelpers)}
+                                            {renderTagList(codelist.getShortnames(ListName.THIRD_PARTY, formikBag.values.sources), arrayHelpers)}
                                         </Block>
                                     )}
                                 />

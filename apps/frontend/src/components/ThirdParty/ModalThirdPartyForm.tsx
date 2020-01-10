@@ -58,7 +58,7 @@ function renderTagList(list: string[], arrayHelpers: FieldArrayRenderProps) {
 }
 
 const FieldRecipient = (props: { value?: string, disabled: boolean | undefined }) => {
-    const [recipientValue, setRecipientValue] = React.useState<Value>(props.value ? [{ id: props.value, label: codelist.getShortname(ListName.SOURCE, props.value) }] : []);
+    const [recipientValue, setRecipientValue] = React.useState<Value>(props.value ? [{ id: props.value, label: codelist.getShortname(ListName.THIRD_PARTY, props.value) }] : []);
 
     return (
         <Field
@@ -66,7 +66,7 @@ const FieldRecipient = (props: { value?: string, disabled: boolean | undefined }
             render={({ form }: FieldProps<DisclosureFormValues>) => (
                 <Select
                     autoFocus
-                    options={codelist.getParsedOptions(ListName.SOURCE)}
+                    options={codelist.getParsedOptions(ListName.THIRD_PARTY)}
                     onChange={({ value }) => {
                         setRecipientValue(value)
                         form.setFieldValue('recipient', value.length > 0 ? value[0].id : undefined)

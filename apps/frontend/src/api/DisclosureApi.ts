@@ -15,9 +15,21 @@ export const getDisclosuresByRecipient = async (recipient: string) => {
     return (await axios.get<PageResponse<Disclosure>>(`${server_polly}/disclosure/?recipient=${recipient}`)).data.content
 }
 
+export const getDisclosuresByInformationTypeId = async (informationTypeId: string) => {
+    return (await axios.get<PageResponse<Disclosure>>(`${server_polly}/disclosure/?informationTypeId=${informationTypeId}&pageSize=250`)).data.content
+}
+
 export const createDisclosure = async (disclosure: DisclosureFormValues) => {
     let body = mapDisclosureFromForm(disclosure);
     return (await axios.post<Disclosure>(`${server_polly}/disclosure`, body)).data;
+};
+
+export const updateDisclosure = async (disclosure: DisclosureFormValues) => {
+    console.log(disclosure, "DISCL")
+    let body = mapDisclosureFromForm(disclosure);
+    return (
+        await axios.put<Disclosure>(`${server_polly}/disclosure`, body)
+    ).data;
 };
 
 export const deleteDisclosure = async (disclosureId: string) => {
@@ -26,6 +38,7 @@ export const deleteDisclosure = async (disclosureId: string) => {
 
 export const mapDisclosureFromForm = (values: DisclosureFormValues) => {
     return {
+        id: values.id,
         recipient: values.recipient,
         recipientPurpose: '-',
         informationTypes:

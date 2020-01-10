@@ -3,26 +3,27 @@ import { Block, BlockProps } from 'baseui/block'
 import { Label2 } from "baseui/typography";
 
 import AccordionInformationtype from './AccordionInformationtype'
-import { InformationType, Policy } from "../../../constants"
+import { InformationType, Policy, Disclosure } from "../../../constants"
 import { intl } from "../../../util"
 import Metadata from "./Metadata";
-import { PurposeMap } from "../../../pages/InformationtypePage"
 import TableInformationtype from "./TableInformationtype"
 import { Button } from "baseui/button"
+import TableDisclosure from "../../common/TableDisclosure";
 
-const purposeBlockProps: BlockProps = {
+const sectionBlockProps: BlockProps = {
     marginTop: '3rem'
 }
 
 interface InformationtypeMetadataProps {
     informationtype: InformationType;
     policies: Policy[];
-    expanded: string[];
+    disclosures: Disclosure[],
+    expanded: string[]
     onSelectPurpose: (purpose: string) => void
 }
 
 const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
-    const {informationtype, policies, expanded, onSelectPurpose} = props
+    const {informationtype, policies, disclosures, expanded, onSelectPurpose} = props
     const [accordion, setAccordion] = React.useState(false);
 
     return (
@@ -31,7 +32,7 @@ const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
                 <React.Fragment>
                     <Metadata informationtype={informationtype}/>
 
-                    <Block {...purposeBlockProps}>
+                    <Block {...sectionBlockProps}>
                         <Block display="flex" justifyContent="space-between" marginBottom="2rem">
                             <Label2 font="font450">{intl.purposeUse}</Label2>
                             <Button onClick={() => setAccordion(!accordion)} type="button" size="compact" kind="secondary">{accordion ? intl.showAll : intl.groupByPurpose}</Button>
@@ -43,6 +44,16 @@ const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
                         {!accordion &&
                         <TableInformationtype list={policies} showPurpose={true}/>
                         }
+                    </Block>
+
+                    <Block {...sectionBlockProps}>
+                        <Label2 font="font450" marginBottom="2rem">{intl.disclosuresToThirdParty}</Label2>
+                        <TableDisclosure 
+                            list={disclosures}
+                            showRecipient
+                            editable={false}
+                            onCloseModal={() => console.log('skal fjerrens også')}
+                        />
                     </Block>
                 </React.Fragment>
             )}

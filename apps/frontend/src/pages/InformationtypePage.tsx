@@ -11,12 +11,12 @@ import {RouteComponentProps} from "react-router-dom"
 
 import InformationtypeMetadata from "../components/InformationType/InformationtypeMetadata/";
 import {intl, theme, useAwait} from "../util"
-import {CodeUsage, Policy} from "../constants"
+import {CodeUsage, Policy, Disclosure} from "../constants"
 import {codelist, ListName} from "../service/Codelist"
 import Banner from "../components/Banner";
 import {user} from "../service/User";
 import {H3} from "baseui/typography"
-import {getInformationType, getPoliciesForInformationType, useInfoTypeSearch} from "../api"
+import {getInformationType, getPoliciesForInformationType, useInfoTypeSearch, getDisclosuresByInformationTypeId} from "../api"
 import InformationTypeAccordion from "../components/InformationType/ListCategoryInformationtype";
 import {getCodelistUsageByListName} from "../api";
 
@@ -28,6 +28,7 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
     const [informationTypeId, setInformationTypeId] = React.useState(props.match.params.id)
     const [informationtype, setInformationtype] = React.useState()
     const [policies, setPolicies] = React.useState<Policy[]>([])
+    const [disclosures, setDisclosures] = React.useState<Disclosure[]>([])
     const [categoryUsages, setCategoryUsages] = React.useState<CodeUsage[]>();
 
     const [infoTypeSearchResult, setInfoTypeSearch, infoTypeSearchLoading] = useInfoTypeSearch()
@@ -56,8 +57,10 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
             try {
                 const infoType = await getInformationType(informationTypeId)
                 const policies = await getPoliciesForInformationType(informationTypeId)
+                const disclosureList = props.match.params.id ? await getDisclosuresByInformationTypeId(props.match.params.id) : []
                 setInformationtype(infoType)
                 setPolicies(policies.content)
+                setDisclosures(disclosureList)
             } catch (err) {
                 setError(err.message)
             }
@@ -76,7 +79,10 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
                 <React.Fragment>
                     <Banner title={intl.informationType} informationtypeId={informationTypeId} />
                     {!error && informationtype && (
-                        <InformationtypeMetadata informationtype={informationtype} policies={policies}
+                        <InformationtypeMetadata 
+                            informationtype={informationtype} 
+                            policies={policies}
+                            disclosures={disclosures}
                             expanded={props.match.params.purpose ? [props.match.params.purpose] : []}
                             onSelectPurpose={purpose => props.history.push(`/informationtype/${informationTypeId}/${purpose}`)}
                         />

@@ -63,8 +63,7 @@ const ThirdPartySearchPage = (props: RouteComponentProps) => {
             setIsLoading(true);
             await codelist.wait();
             setDisclosureList(await getAllDisclosures())
-            setThirdPartyList(codelist.getCodes(ListName.SOURCE))
-            console.log(codelist.getCodes(ListName.SOURCE))
+            setThirdPartyList(codelist.getCodes(ListName.THIRD_PARTY))
             setIsLoading(false);
         };
         fetchData();
@@ -79,7 +78,7 @@ const ThirdPartySearchPage = (props: RouteComponentProps) => {
                 <React.Fragment>
                     <Block {...rowBlockProps}>
                         <StatefulSelect
-                            options={codelist.getParsedOptions(ListName.SOURCE)}
+                            options={codelist.getParsedOptions(ListName.THIRD_PARTY)}
                             placeholder={intl.disclosureSelect}
                             maxDropdownHeight="350px"
                             onChange={(event) => handleChangeSource((event.option ?.id) as string | undefined)}

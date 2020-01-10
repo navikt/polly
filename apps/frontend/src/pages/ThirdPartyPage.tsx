@@ -5,7 +5,7 @@ import { RouteComponentProps } from "react-router-dom";
 import { codelist, ListName } from "../service/Codelist";
 import { Spinner, Plus } from "baseui/icon";
 import { Block, BlockProps } from "baseui/block";
-import { getDisclosuresByRecipient, createDisclosure, deleteDisclosure } from "../api";
+import { getDisclosuresByRecipient, createDisclosure, deleteDisclosure, updateDisclosure } from "../api";
 import TableDisclosure from "../components/common/TableDisclosure";
 import { Label2, Paragraph2, H5 } from "baseui/typography";
 import { Button, KIND } from "baseui/button";
@@ -44,8 +44,19 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
         }
     }
 
+    const handleEditDisclosure = async (disclosure: DisclosureFormValues) => {
+        try {
+            let updatedDisclosure = await updateDisclosure(disclosure)
+            setDisclosureList([...disclosureList.filter((d: Disclosure) => d.id !== updatedDisclosure.id), updatedDisclosure])
+            return true
+        } catch (err) {
+            setError(err.message)
+            return false
+        }
+    }
+
+
     const handleDeleteDisclosure = async (disclosure: Disclosure) => {
-        console.log(disclosure, "disclosure")
         if (!disclosure) return
         try {
             await deleteDisclosure(disclosure.id)
@@ -73,7 +84,7 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
             await codelist.wait();
             if (props.match.params.sourceCode) {
                 setDisclosureList(await getDisclosuresByRecipient(props.match.params.sourceCode))
-                let responseInformationTypeList = await getCodelistUsage(ListName.SOURCE, props.match.params.sourceCode)
+                let responseInformationTypeList = await getCodelistUsage(ListName.THIRD_PARTY, props.match.params.sourceCode)
                 setInformationTypeList(responseInformationTypeList.informationTypes)
             }
 
@@ -90,8 +101,8 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
             {!isLoading && codelist && (
                 <React.Fragment>
                     <Block marginBottom="3rem">
-                        <H5>{codelist.getShortname(ListName.SOURCE, props.match.params.sourceCode)}</H5>
-                        <Paragraph2>{codelist.getDescription(ListName.SOURCE, props.match.params.sourceCode)}</Paragraph2>
+                        <H5>{codelist.getShortname(ListName.THIRD_PARTY, props.match.params.sourceCode)}</H5>
+                        <Paragraph2>{codelist.getDescription(ListName.THIRD_PARTY, props.match.params.sourceCode)}</Paragraph2>
                     </Block>
 
                     <Block display="flex" justifyContent="space-between">
@@ -127,8 +138,11 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
                             <TableDisclosure
                                 list={disclosureList}
                                 showRecipient={false}
-                                errorDeleteModal={error}
+                                errorModal={error}
+                                editable
                                 submitDeleteDisclosure={handleDeleteDisclosure}
+                                submitEditDisclosure={handleEditDisclosure}
+                                onCloseModal={() => setError(null)}
                             />
                         </Block>
                     </React.Fragment>
