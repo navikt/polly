@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
 import { Code, codelist } from "../../service/Codelist";
@@ -211,7 +211,7 @@ const CodeListTable = ({tableData, hasAccess, refresh}: TableCodelistProps) => {
                 )}
             </StyledTable>
 
-            {showUsage && <Usage usage={usage}/>}
+            {showUsage && <Usage usage={usage} refresh={refresh}/>}
         </React.Fragment>
     );
 };
