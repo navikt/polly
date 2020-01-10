@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import no.nav.data.polly.codelist.codeusage.UsedInInstance;
 import no.nav.data.polly.common.auditing.domain.Auditable;
-import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus;
 import no.nav.data.polly.elasticsearch.dto.InformationTypeElasticsearch;
 import no.nav.data.polly.elasticsearch.dto.ProcessElasticsearch;
@@ -26,7 +25,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.Valid;
@@ -70,10 +68,6 @@ public class InformationType extends Auditable<String> {
     @Builder.Default
     @OneToMany(mappedBy = "informationType")
     private Set<Policy> policies = new HashSet<>();
-
-    @Builder.Default
-    @ManyToMany(mappedBy = "informationTypes")
-    private Set<Disclosure> disclosures  = new HashSet<>();
 
     // Added outside builder to enforce backreference
     public InformationType addPolicy(Policy policy) {

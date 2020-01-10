@@ -180,7 +180,6 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
         policyRepository.saveAll(List.of(dagpengerBruker, barnetrygdBruker));
 
         var disclosure = createDisclosure("SKATTEETATEN", "ART61E", "FTRL");
-        disclosure.addInformationType(arbeidsforhold);
         disclosureRepository.save(disclosure);
     }
 

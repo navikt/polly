@@ -10,6 +10,7 @@ import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureData;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
+import no.nav.data.polly.document.domain.DocumentRepository;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
@@ -83,6 +84,8 @@ public abstract class IntegrationTestBase {
     @Autowired
     protected DisclosureRepository disclosureRepository;
     @Autowired
+    protected DocumentRepository documentRepository;
+    @Autowired
     protected KafkaTopicProperties topicProperties;
 
     static {
@@ -97,20 +100,21 @@ public abstract class IntegrationTestBase {
         CodelistStub.initializeCodelist();
         WireMock.stubFor(get("/elector").willReturn(okJson(JsonUtils.toJson(LeaderElectionService.getHostInfo()))));
         mockTerms();
-
-        disclosureRepository.deleteAll();
-        policyRepository.deleteAll();
-        informationTypeRepository.deleteAll();
-        processRepository.deleteAll();
+        delete();
     }
 
     @AfterEach
     public void teardownAbstract() {
+        delete();
+        CollectorRegistry.defaultRegistry.clear();
+    }
+
+    private void delete() {
         disclosureRepository.deleteAll();
+        documentRepository.deleteAll();
         policyRepository.deleteAll();
         informationTypeRepository.deleteAll();
         processRepository.deleteAll();
-        CollectorRegistry.defaultRegistry.clear();
     }
 
     protected List<Policy> createAndSavePolicy(int rows) {

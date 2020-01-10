@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Singular;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.common.utils.DateUtil;
+import no.nav.data.polly.document.dto.DocumentResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 
 import java.time.LocalDate;
@@ -18,7 +19,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "description", "recipient", "recipientPurpose", "start", "end", "active", "legalBases", "informationTypes"})
+@JsonPropertyOrder({"id", "description", "recipient", "recipientPurpose", "start", "end", "active", "documentId", "document", "legalBases"})
 public class DisclosureResponse {
 
     private UUID id;
@@ -27,10 +28,10 @@ public class DisclosureResponse {
     private String recipientPurpose;
     private LocalDate start;
     private LocalDate end;
+    private UUID documentId;
+    private DocumentResponse document;
     @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;
-    @Singular
-    private List<DisclosureInformationTypeResponse> informationTypes;
 
     public boolean isActive() {
         return DateUtil.isNow(start, end);
