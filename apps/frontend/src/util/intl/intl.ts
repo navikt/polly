@@ -56,7 +56,8 @@ export interface IStrings {
     gdprSelect: string;
     nationalLawSelect: string;
     descriptionWrite: string;
-    descriptionWriteLegalBases: string;
+    descriptionWriteLegalBasesF: string;
+    descriptionWriteLegalBasesCE: string;
     definitionWrite: string;
     subjectCategoriesNotFound: string;
     legalBasesProcess: string;

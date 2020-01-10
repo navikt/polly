@@ -16,7 +16,8 @@ import {faExclamationCircle, faPen} from "@fortawesome/free-solid-svg-icons"
 import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip';
 import {legalBasisSchema} from "../../common/schema"
 import {LegalBasisView} from "../../common/LegalBasis"
-import { hasSpecifiedDate } from "../../common/Durations"
+import {hasSpecifiedDate} from "../../common/Durations"
+import {customizeNationalLawPlaceholder} from "./PlaceholderCustomizer";
 
 const rowBlockProps: BlockProps = {
     display: 'flex',
@@ -115,7 +116,7 @@ const CardLegalBasis = ({ submit, hideCard, initValue,titleSubmitButton }: CardL
                                     <Select
                                         options={codelist.getParsedOptions(ListName.NATIONAL_LAW)}
 
-                                        placeholder={intl.nationalLawSelect}
+                                        placeholder={ intl.nationalLawSelect}
                                         maxDropdownHeight="300px"
                                         type={TYPE.search}
                                         onChange={({ value }) => {
@@ -135,7 +136,7 @@ const CardLegalBasis = ({ submit, hideCard, initValue,titleSubmitButton }: CardL
                                     <StatefulInput
                                         {...field}
                                         initialState={{value: initValue.description}}
-                                        placeholder={intl.descriptionWriteLegalBases}
+                                        placeholder={customizeNationalLawPlaceholder(gdpr)}
                                         error={!!form.errors.description && !!form.submitCount}
                                         startEnhancer={() =>
                                             <StatefulTooltip content={() => 'text'}>
