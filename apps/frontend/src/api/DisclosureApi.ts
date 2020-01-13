@@ -42,7 +42,7 @@ export const updateDisclosure = async (disclosure: DisclosureFormValues) => {
     console.log(disclosure, "DISCL")
     let body = mapDisclosureFromForm(disclosure);
     return (
-        await axios.put<Disclosure>(`${server_polly}/disclosure`, body)
+        await axios.put<Disclosure>(`${server_polly}/disclosure/${body.id}`, body)
     ).data;
 };
 
