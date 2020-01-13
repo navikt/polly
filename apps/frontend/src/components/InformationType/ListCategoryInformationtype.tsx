@@ -18,7 +18,6 @@ type InformationTypeAccordionProps = {
 const InformationTypeAccordion = ({categoryUsages}: InformationTypeAccordionProps) => {
     const [css] = useStyletron();
 
-    useAwait(codelist.wait());
     const panelList = () => {
         if (!categoryUsages) return;
         return categoryUsages

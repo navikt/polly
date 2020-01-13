@@ -96,7 +96,7 @@ const ThirdPartySearchPage = (props: RouteComponentProps) => {
                     })}
                 >
                     {thirdPartyList.map(thirdParty => (
-                        <ListItem>
+                        <ListItem key={thirdParty.code}>
                             <ListItemLabel>
                                 <RouteLink href={`thirdparty/${thirdParty.code}`}>{thirdParty.shortName}</RouteLink>
                             </ListItemLabel>
