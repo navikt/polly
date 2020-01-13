@@ -50,6 +50,6 @@ public class WiremockExtension implements Extension, BeforeAllCallback, BeforeEa
     }
 
     private List<NoraTeam> noraMockResponse() {
-        return List.of(NoraTeam.builder().name("Visual Team Name").nick("teamname").build());
+        return List.of(NoraTeam.builder().name("Visual Team Name").nick("teamname").build(), NoraTeam.builder().name("X Team").nick("xteamR").build());
     }
 }

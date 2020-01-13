@@ -19,7 +19,7 @@ class TeamControllerIT extends IntegrationTestBase {
     void getTeams() {
         ResponseEntity<TeamPage> teams = restTemplate.getForEntity("/team", TeamPage.class);
         assertThat(teams.getBody()).isNotNull();
-        assertThat(teams.getBody().getContent()).hasSize(1);
+        assertThat(teams.getBody().getContent()).hasSize(2);
         assertThat(teams.getBody().getContent().get(0).getId()).isEqualTo("teamname");
         assertThat(teams.getBody().getContent().get(0).getName()).isEqualTo("Visual Team Name");
     }

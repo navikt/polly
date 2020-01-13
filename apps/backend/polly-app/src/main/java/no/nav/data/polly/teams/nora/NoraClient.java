@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,7 +56,8 @@ public class NoraClient implements TeamService {
 
     private List<Team> getTeams() {
         List<NoraTeam> noraApps = appsCache.get("singleton", key -> getTeamsResponse());
-        return safeStream(noraApps).map(noraTeam -> new Team(noraTeam.getNick(), noraTeam.getName())).distinct().sorted().collect(Collectors.toList());
+        return safeStream(noraApps).map(noraTeam -> new Team(noraTeam.getNick(), noraTeam.getName())).distinct()
+                .sorted(Comparator.comparing(Team::getName)).collect(Collectors.toList());
     }
 
     private List<NoraTeam> getTeamsResponse() {
