@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -111,9 +112,10 @@ public class DisclosureController {
             @ApiResponse(code = 201, message = "Disclosure successfully updated", response = DisclosureResponse.class),
             @ApiResponse(code = 400, message = "Illegal arguments"),
             @ApiResponse(code = 500, message = "Internal server error")})
-    @PutMapping
-    public ResponseEntity<DisclosureResponse> updatePolicy(@Valid @RequestBody DisclosureRequest request) {
+    @PutMapping("/{id}")
+    public ResponseEntity<DisclosureResponse> updatePolicy(@PathVariable UUID id, @Valid @RequestBody DisclosureRequest request) {
         log.debug("Received request to update Disclosure");
+        Assert.isTrue(id.equals(request.getIdAsUUID()), "id mismatch");
         return ResponseEntity.ok(convertAndAddDocument(service.update(request)));
     }
 
