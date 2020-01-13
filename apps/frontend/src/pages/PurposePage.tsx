@@ -1,18 +1,18 @@
 import * as React from "react";
-import { Option, StatefulSelect } from 'baseui/select';
+import {Option, StatefulSelect} from 'baseui/select';
 
 import ProcessList from "../components/Purpose";
 import Banner from "../components/Banner";
-import { Block } from "baseui/block";
-import { codelist, ListName } from "../service/Codelist";
-import { ProcessPurposeCount } from "../constants"
-import { intl, theme } from "../util"
+import {Block} from "baseui/block";
+import {codelist, ListName} from "../service/Codelist";
+import {intl, theme} from "../util"
 import illustration from "../resources/purpose_illustration.svg"
-import { Spinner } from "baseui/spinner";
-import { Label2, Paragraph2 } from "baseui/typography";
-import { generatePath } from "react-router";
-import { getProcessPurposeCount } from "../api/ProcessApi"
-import { RouteComponentProps } from "react-router-dom";
+import {Spinner} from "baseui/spinner";
+import {Label2, Paragraph2} from "baseui/typography";
+import {generatePath} from "react-router";
+import {getProcessPurposeCount} from "../api/ProcessApi"
+import {RouteComponentProps} from "react-router-dom";
+import {useState} from "react";
 
 const renderDescription = (description: string) => (
     <Block marginBottom="scale1000">
@@ -29,7 +29,7 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
     const [isLoadingPurpose, setLoadingPurpose] = React.useState(false);
     const [error, setError] = React.useState(null);
     const [processCount, setProcessCount] = React.useState<{ [purpose: string]: number }>(({}));
-
+    const [statefulSelectOptions,setStatefulSelectOptions] = useState<{ id: string, label: string }[] >();
     const updatePath = (params?: PathParams) => {
         let nextPath
         if (!params) nextPath = generatePath(props.match.path)
@@ -51,7 +51,7 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
 
     const purposeLabelView = (option: Option) => {
         return {
-            ...option,
+            id: option.label!.toString(),
             label: <Block display="flex" justifyContent="space-between" width="100%">
                 <span>{option.label}</span>
                 <Block $style={{opacity: .5}}>{option.id && `${intl.processes}: ${processCount[option.id]}`}</Block>
@@ -66,6 +66,7 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
             setProcessCount((await getProcessPurposeCount()).purposes)
             if (props.match.params.purposeCode) await handleChangePurpose(props.match.params.purposeCode, props.match.params.processId)
             setLoading(false);
+            await setStatefulSelectOptions(codelist.getParsedOptions(ListName.PURPOSE));
         };
         fetchData();
     }, []);
@@ -75,7 +76,6 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
             <Banner title={intl.purpose}/>
             {!isLoading && (
                 <Block marginBottom="3rem">
-
                     {error && <p>{error}</p>}
                     {!error && (
                         <StatefulSelect
@@ -83,7 +83,15 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
                             initialState={{value: currentPurposeValue ? [{id: currentPurposeValue, label: currentPurposeValue} as Option] : []}}
                             placeholder={intl.purposeSelect}
                             maxDropdownHeight="350px"
-                            onChange={(event) => handleChangePurpose((event.option?.id) as string | undefined)}
+                            onChange={
+                                (event) => {
+                                    if(statefulSelectOptions?.filter(option=>option.label===event.option?.id).length){
+                                        handleChangePurpose(statefulSelectOptions?.filter(option=>option.label===event.option?.id)[0].id)
+                                    } else {
+                                        handleChangePurpose(undefined)
+                                    }
+                                }
+                            }
                             overrides={{
                                 SingleValue: {
                                     style: {
