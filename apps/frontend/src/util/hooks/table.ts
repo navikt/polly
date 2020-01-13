@@ -22,7 +22,7 @@ export type ColumnCompares<T> = {
 }
 
 export type ColumnDirection<T> = {
-    [P in keyof T]: SORT_DIRECTION | null
+    [P in keyof T]-?: SORT_DIRECTION | null
 }
 
 const getSort = <T, K extends keyof T>(column?: K, existingSort?: K, existingDir?: SORT_DIRECTION) => {

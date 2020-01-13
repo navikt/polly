@@ -183,11 +183,12 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                                 </Block>
 
                                 <Block {...rowBlockProps}>
-                                    <ModalLabel label={intl.informationTypes} />
+                                    <ModalLabel label={intl.document} />
+                                    {/*TODO replace with document*/}
                                     <FieldInformationType
                                         informationTypes={infoTypeSearchResult}
                                         searchInformationType={setInfoTypeSearch}
-                                        tagValues={formikBag.values.informationTypes}
+                                        tagValues={[]}
                                     />
                                 </Block>
 

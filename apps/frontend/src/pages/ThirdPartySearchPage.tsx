@@ -22,7 +22,7 @@ const rowBlockProps: BlockProps = {
 const initialFormValues: DisclosureFormValues = {
     recipient: '',
     description: '',
-    informationTypes: [],
+    documentId: undefined,
     legalBases: []
 }
 

@@ -72,7 +72,7 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
     const initialFormValues: DisclosureFormValues = {
         recipient: props.match.params.sourceCode,
         description: '',
-        informationTypes: [],
+        documentId: undefined,
         legalBases: []
     }
 

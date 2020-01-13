@@ -41,8 +41,7 @@ export const mapDisclosureFromForm = (values: DisclosureFormValues) => {
         id: values.id,
         recipient: values.recipient,
         recipientPurpose: '-',
-        informationTypes:
-            values.informationTypes && values.informationTypes.map(i => i.id),
+        documentId: values.documentId,
         description: values.description,
         legalBases: values.legalBases ? values.legalBases : [],
         start: values.start,

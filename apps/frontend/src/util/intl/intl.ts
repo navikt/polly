@@ -33,6 +33,7 @@ export interface IStrings {
     loggedInStatus: string;
     notLoggedInStatus: string;
     couldntLoad: string;
+    couldntLoadTerm: string;
     informationTypeCreate: string;
     sensitivitySelect: string;
     nameWrite: string;
@@ -101,6 +102,7 @@ export interface IStrings {
     email: string;
     groups: string;
     description: string;
+    document: string;
     edit: string;
     update: string;
     sources: string;

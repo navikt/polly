@@ -84,7 +84,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
         id: selectedDisclosure && selectedDisclosure.id,
         recipient: selectedDisclosure ? selectedDisclosure.recipient.shortName : '',
         description: selectedDisclosure ? selectedDisclosure.description : '',
-        informationTypes: selectedDisclosure ? selectedDisclosure.informationTypes : [],
+        documentId: selectedDisclosure ? selectedDisclosure.documentId : undefined,
         legalBases: selectedDisclosure ? mapLegalBasesToFormValues(selectedDisclosure.legalBases) : [],
         start: selectedDisclosure && selectedDisclosure.start,
         end: selectedDisclosure && selectedDisclosure.end
@@ -106,8 +106,8 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
 
                     <SortableHeadCell
                         title={intl.informationTypes}
-                        direction={table.direction.informationTypes}
-                        onSort={() => sortColumn('informationTypes')}
+                        direction={table.direction.document}
+                        onSort={() => sortColumn('document')}
                         fillClickTarget
                     />
 
@@ -135,7 +135,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
                                     <RouteLink href={`/thirdparty/${row.recipient.code}`}>{row.recipient.shortName}</RouteLink>
                                 </StyledCell>
                             )}
-                            <StyledCell>{renderInformationTypesInCell(row.informationTypes)}</StyledCell>
+                            <StyledCell>{renderInformationTypesInCell(row.document?.informationTypes || [])}</StyledCell>
                             <StyledCell>{row.description}</StyledCell>
                             <StyledCell>
                                 {row.legalBases && (

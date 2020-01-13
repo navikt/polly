@@ -5,13 +5,14 @@ import { InformationType } from '../../../constants'
 import { Card } from 'baseui/card'
 import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
 import { IconDefinition } from "@fortawesome/fontawesome-common-types"
-import { intl } from '../../../util'
+import { intl, theme } from '../../../util'
 import { Label2, Paragraph2 } from 'baseui/typography'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTag, faUserShield } from '@fortawesome/free-solid-svg-icons'
+import { faCross, faCrosshairs, faTag, faTimesCircle, faUserShield } from '@fortawesome/free-solid-svg-icons'
 import { Code } from '../../../service/Codelist'
 import { sensitivityColor } from "../Sensitivity"
 import { getTerm, mapTermToOption } from "../../../api"
+import { StatefulTooltip } from "baseui/tooltip"
 
 const itemBlockProps: BlockProps = {
     display: ['flex', 'block', 'block', 'flex'],
@@ -41,33 +42,63 @@ const renderTextWithLabelMetadata = (label: string, text: string, icon?: IconDef
     return (
         <Block {...itemBlockProps}>
             <Block {...labelBlockProps}>
-                <Label2>{icon && <FontAwesomeIcon icon={icon} color={iconColor} />} {label}</Label2>
+                <Label2>{icon && <FontAwesomeIcon icon={icon} color={iconColor}/>} {label}</Label2>
             </Block>
             <Block maxWidth="70%"><Paragraph2>{text}</Paragraph2></Block>
         </Block>
     )
 }
 
-const renderTextWithLabel = (label: string, text: string, icon?: IconDefinition, iconColor?: string) => (
-    <Block>
-        <Label2>{icon && <FontAwesomeIcon icon={icon} color={iconColor}/>} {label}</Label2>
-        <Paragraph2 $style={{whiteSpace: 'pre-wrap'}}>{text}</Paragraph2>
-    </Block>
-)
+const TextWithLabel = (props: { label: string, text?: string, icon?: IconDefinition, iconColor?: string, error?: string }) => {
+    const errorIcon = <FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500}/>
+    const value = <Paragraph2 $style={{whiteSpace: 'pre-wrap'}}>{props.error && errorIcon} {props.text}</Paragraph2>
+    return (
+        <Block>
+            <Label2>{props.icon && <FontAwesomeIcon icon={props.icon} color={props.iconColor}/>} {props.label}</Label2>
+            {!props.error && value}
+            {props.error && <StatefulTooltip content={props.error}>{value}</StatefulTooltip>}
+        </Block>
+    )
+}
 
-const CardOverview = (props: { name: string, term: string, description: string }) => (
-    <Card>
-        <FlexGrid
-            flexGridColumnCount={1}
-            flexGridColumnGap="scale400"
-            flexGridRowGap="scale400"
-        >
-            <FlexGridItem marginTop="1rem">{renderTextWithLabel(intl.name, props.name, faTag)}</FlexGridItem>
-            <FlexGridItem>{renderTextWithLabel(intl.term, props.term)}</FlexGridItem>
-            <FlexGridItem>{renderTextWithLabel(intl.description, props.description)}</FlexGridItem>
-        </FlexGrid>
-    </Card>
-)
+const CardOverview = (props: { name: string, termId?: string, description: string }) => {
+    const [term, setTerm] = useState(props.termId)
+    const [termError, setTermError] = useState(false)
+
+    useEffect(() => {
+        (async () => {
+            if (props.termId) {
+                try {
+                    const term = await getTerm(props.termId)
+                    setTerm(mapTermToOption(term).label)
+                } catch (e) {
+                    console.error("couldnt find term", e)
+                    setTermError(true)
+                }
+            }
+        })()
+    }, [props.termId])
+
+    return (
+        <Card>
+            <FlexGrid
+                flexGridColumnCount={1}
+                flexGridColumnGap="scale400"
+                flexGridRowGap="scale400"
+            >
+                <FlexGridItem marginTop="1rem">
+                    <TextWithLabel label={intl.name} text={props.name} icon={faTag}/>
+                </FlexGridItem>
+                <FlexGridItem>
+                    <TextWithLabel label={intl.term} text={term} error={termError ? intl.couldntLoadTerm : undefined}/>
+                </FlexGridItem>
+                <FlexGridItem>
+                    <TextWithLabel label={intl.description} text={props.description}/>
+                </FlexGridItem>
+            </FlexGrid>
+        </Card>
+    )
+}
 
 const CardMetadata = (props: { navMaster: Code, sources: Code[], categories: Code[], keywords: string[], sensitivity: Code }) => (
     <Card>
@@ -86,24 +117,14 @@ const CardMetadata = (props: { navMaster: Code, sources: Code[], categories: Cod
 )
 
 const Metadata = (props: { informationtype: InformationType }) => {
-    const { informationtype } = props
-    const [term, setTerm] = useState()
-
-    useEffect(() => {
-        (async () => {
-            if (informationtype.term) {
-                const term = await getTerm(informationtype.term)
-                setTerm(mapTermToOption(term).label)
-            }
-        })()
-    }, [informationtype.term])
+    const {informationtype} = props
 
     return (
         <Block display="flex" marginBottom="5rem">
             <Block width="40%" marginRight="5rem">
                 <CardOverview
                     name={informationtype.name}
-                    term={informationtype.term ? term : ''}
+                    termId={informationtype.term}
                     description={informationtype.description}
                 />
             </Block>
