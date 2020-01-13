@@ -129,8 +129,7 @@ class CodelistService {
     }
 
     makeIdLabelForAllCodeLists() {
-        if (!this.lists) return [];
-        return Object.keys(this.lists.codelist).map(key => ({id: key, label: key}))
+        return Object.keys(ListName).map(key => ({id: key, label: key}))
     }
 
 }
