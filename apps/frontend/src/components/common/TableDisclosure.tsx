@@ -4,7 +4,7 @@ import { useStyletron, withStyle } from "baseui";
 
 import { ListLegalBasesInTable } from "./LegalBasis"
 import { intl } from "../../util"
-import { Disclosure, disclosureSort, InformationType, DisclosureFormValues, LegalBasis, LegalBasisFormValues } from "../../constants"
+import { Disclosure, disclosureSort, InformationType, DisclosureFormValues, LegalBasis, LegalBasisFormValues, DocumentFormValues } from "../../constants"
 import { useTable } from "../../util/hooks"
 import RouteLink from "./RouteLink"
 import { StatefulTooltip } from "baseui/tooltip";
@@ -60,12 +60,12 @@ type TableDisclosureProps = {
     onCloseModal?: Function;
 };
 
-const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal }: TableDisclosureProps) => {
+const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal}: TableDisclosureProps) => {
     const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false)
     const [showEditModal, setShowEditModal] = React.useState<boolean>()
     const [selectedDisclosure, setSelectedDisclosure] = React.useState<Disclosure>()
 
-    const [table, sortColumn] = useTable<Disclosure, keyof Disclosure>(list, { sorting: disclosureSort, initialSortColumn: "recipient" })
+    const [table, sortColumn] = useTable<Disclosure, keyof Disclosure>(list, {sorting: disclosureSort, initialSortColumn: "recipient"})
     const [useCss, theme] = useStyletron();
 
     const mapLegalBasesToFormValues = (legalBases: LegalBasis[]) => {
@@ -84,7 +84,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
         id: selectedDisclosure && selectedDisclosure.id,
         recipient: selectedDisclosure ? selectedDisclosure.recipient.shortName : '',
         description: selectedDisclosure ? selectedDisclosure.description : '',
-        documentId: selectedDisclosure ? selectedDisclosure.documentId : undefined,
+        document: selectedDisclosure && selectedDisclosure.document ? selectedDisclosure.document : {informationTypes: [], name: 'autosel', description: 'autodesc'},
         legalBases: selectedDisclosure ? mapLegalBasesToFormValues(selectedDisclosure.legalBases) : [],
         start: selectedDisclosure && selectedDisclosure.start,
         end: selectedDisclosure && selectedDisclosure.end
@@ -93,7 +93,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
     return (
         <React.Fragment>
 
-            <StyledTable className={useCss({ overflow: "hidden !important" })}>
+            <StyledTable className={useCss({overflow: "hidden !important"})}>
                 <StyledHeader>
                     {showRecipient && (
                         <SortableHeadCell
@@ -123,8 +123,8 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
                         direction={table.direction.legalBases}
                         onSort={() => sortColumn('legalBases')}
                     />
-                    {editable && <SmallerStyledHeadCell />}
-                    
+                    {editable && <SmallerStyledHeadCell/>}
+
                 </StyledHeader>
 
                 <StyledBody>
@@ -139,7 +139,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
                             <StyledCell>{row.description}</StyledCell>
                             <StyledCell>
                                 {row.legalBases && (
-                                    <ListLegalBasesInTable legalBases={row.legalBases} />
+                                    <ListLegalBasesInTable legalBases={row.legalBases}/>
                                 )}
                             </StyledCell>
                             {editable && (
@@ -154,7 +154,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
                                                     setShowEditModal(true)
                                                 }}
                                             >
-                                                <FontAwesomeIcon icon={faEdit} />
+                                                <FontAwesomeIcon icon={faEdit}/>
                                             </Button>
                                         </StatefulTooltip>
 
@@ -167,7 +167,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
                                                     setShowDeleteModal(true)
                                                 }}
                                             >
-                                                <FontAwesomeIcon icon={faTrash} />
+                                                <FontAwesomeIcon icon={faTrash}/>
                                             </Button>
                                         </StatefulTooltip>
                                     </Block>
@@ -214,7 +214,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
                             <Button
                                 kind="secondary"
                                 onClick={() => setShowDeleteModal(false)}
-                                overrides={{ BaseButton: { style: { marginRight: '1rem', marginLeft: '1rem' } } }}
+                                overrides={{BaseButton: {style: {marginRight: '1rem', marginLeft: '1rem'}}}}
                             >
                                 {intl.abort}
                             </Button>

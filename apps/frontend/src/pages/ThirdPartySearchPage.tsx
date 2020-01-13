@@ -19,13 +19,6 @@ const rowBlockProps: BlockProps = {
     marginBottom: '3rem',
 }
 
-const initialFormValues: DisclosureFormValues = {
-    recipient: '',
-    description: '',
-    documentId: undefined,
-    legalBases: []
-}
-
 const ThirdPartySearchPage = (props: RouteComponentProps) => {
     const [isLoading, setIsLoading] = React.useState<boolean>(true)
     const [showCreateModal, setShowCreateModal] = React.useState(false)

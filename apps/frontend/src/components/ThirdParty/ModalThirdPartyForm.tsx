@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { DisclosureFormValues, PolicyInformationType } from '../../constants';
+import { DisclosureFormValues, InformationtypeFormValues, PolicyInformationType } from '../../constants';
 import { Modal, SIZE, ROLE, ModalHeader, ModalBody, ModalFooter, ModalButton } from 'baseui/modal';
 import { Formik, FormikProps, Form, Field, FieldProps, FieldArrayRenderProps, FieldArray } from 'formik';
 import { Block, BlockProps } from 'baseui/block';
@@ -33,7 +33,7 @@ const rowBlockProps: BlockProps = {
     marginTop: '1rem'
 };
 
-function renderTagList(list: string[], arrayHelpers: FieldArrayRenderProps) {
+function renderTagList(list: string[], informationTypes?: PolicyInformationType[]) {
     return (
         <React.Fragment>
             {list && list.length > 0
@@ -44,7 +44,7 @@ function renderTagList(list: string[], arrayHelpers: FieldArrayRenderProps) {
                                 key={item}
                                 variant={VARIANT.outlined}
                                 onActionClick={() =>
-                                    arrayHelpers.remove(index)
+                                    informationTypes?.splice(index, 1)
                                 }
                             >
                                 {item}
@@ -103,9 +103,9 @@ const FieldInformationType = (props: {
     tagValues: PolicyInformationType[]
 }) => (
         <React.Fragment>
-            <FieldArray
-                name="informationTypes"
-                render={arrayHelpers => (
+            <Field
+                name="document"
+                render={({field,form}:FieldProps<DisclosureFormValues>) => (
                     <Block width="100%">
                         <StatefulSelect
                             maxDropdownHeight="400px"
@@ -116,14 +116,15 @@ const FieldInformationType = (props: {
                             onInputChange={event => props.searchInformationType(event.currentTarget.value)}
                             onChange={(params) => {
                                 let infoType = params.value[0] as PolicyInformationType
-                                arrayHelpers.push(infoType)
+                                form.values.document?.informationTypes.push(infoType)
+                                form.setFieldValue('document', form.values.document)
                             }}
                             filterOptions={options => options}
                             labelKey="name"
                         />
                         {props.tagValues.length > 0 && (
                             <React.Fragment>
-                                {renderTagList(props.tagValues.map(infoType => infoType && infoType.name), arrayHelpers)}
+                                {renderTagList(props.tagValues.map(infoType => infoType && infoType.name), form.values.document?.informationTypes)}
                             </React.Fragment>
                         )}
                     </Block>
@@ -183,12 +184,12 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                                 </Block>
 
                                 <Block {...rowBlockProps}>
-                                    <ModalLabel label={intl.document} />
+                                    <ModalLabel label={intl.informationTypes} />
                                     {/*TODO replace with document*/}
                                     <FieldInformationType
                                         informationTypes={infoTypeSearchResult}
                                         searchInformationType={setInfoTypeSearch}
-                                        tagValues={[]}
+                                        tagValues={formikBag.values.document?.informationTypes || []}
                                     />
                                 </Block>
 

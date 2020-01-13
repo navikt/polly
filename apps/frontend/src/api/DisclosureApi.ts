@@ -1,5 +1,6 @@
 import axios from "axios";
 import { PageResponse, DisclosureFormValues, Disclosure } from "../constants";
+import { createDocument, updateDocument } from "./DocumentApi"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -20,11 +21,24 @@ export const getDisclosuresByInformationTypeId = async (informationTypeId: strin
 }
 
 export const createDisclosure = async (disclosure: DisclosureFormValues) => {
+    let doc = disclosure.document
+    if (doc) {
+        const createDoc = await createDocument(doc)
+        disclosure.documentId = createDoc.id
+    }
     let body = mapDisclosureFromForm(disclosure);
     return (await axios.post<Disclosure>(`${server_polly}/disclosure`, body)).data;
 };
 
 export const updateDisclosure = async (disclosure: DisclosureFormValues) => {
+    let doc = disclosure.document
+    if (doc && doc.id) {
+        await updateDocument(doc)
+        disclosure.documentId = doc.id
+    } else if (doc) {
+        const createDoc = await createDocument(doc)
+        disclosure.documentId = createDoc.id
+    }
     console.log(disclosure, "DISCL")
     let body = mapDisclosureFromForm(disclosure);
     return (

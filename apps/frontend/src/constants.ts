@@ -178,6 +178,7 @@ export interface DisclosureFormValues {
     recipient?: string
     description?: string
     documentId?: string
+    document?: DocumentFormValues
     legalBases: LegalBasisFormValues[]
     end?: string
     start?: string
@@ -205,6 +206,7 @@ export interface Document {
     name: string
     description: string
     informationTypes: InformationType[]
+    informationTypeIds: string[]
 }
 
 export enum AuditAction {
