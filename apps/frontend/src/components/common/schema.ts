@@ -31,7 +31,7 @@ export const processSchema = () => yup.object<ProcessFormValues>({
 })
 
 const missingArt9LegalBasisForSensitiveInfoType = (informationType: PolicyInformationType, policy: PolicyFormValues) => {
-    const ownLegalBasis = policy.legalBasesStatus === LegalBasesStatus.OWN
+    const ownLegalBasis = policy.legalBasesStatus !== LegalBasesStatus.UNKNOWN
     const reqArt9 = informationType && codelist.requiresArt9(informationType.sensitivity && informationType.sensitivity.code)
     const missingArt9 = !policy.legalBases.filter((lb) => codelist.isArt9(lb.gdpr)).length
     const processMissingArt9 = !policy.process.legalBases.filter(lb => codelist.isArt9(lb.gdpr.code)).length
@@ -39,9 +39,10 @@ const missingArt9LegalBasisForSensitiveInfoType = (informationType: PolicyInform
 }
 
 const missingArt6LegalBasisForInfoType = (policy: PolicyFormValues) => {
-    const ownLegalBasis = policy.legalBasesStatus === LegalBasesStatus.OWN
+    const ownLegalBasis = policy.legalBasesStatus !== LegalBasesStatus.UNKNOWN
     const missingArt6 = !policy.legalBases.filter((lb) => codelist.isArt6(lb.gdpr)).length
-    return ownLegalBasis && missingArt6
+    const processMissingArt6 = !policy.process.legalBases.filter(lb => codelist.isArt6(lb.gdpr.code)).length
+    return ownLegalBasis && missingArt6 && processMissingArt6
 }
 
 export const policySchema = () => yup.object<PolicyFormValues>({
@@ -56,7 +57,7 @@ export const policySchema = () => yup.object<PolicyFormValues>({
     }).test({
         name: 'policyHasArt6',
         message: intl.requiredGdprArt6,
-        test: function (informationType) {
+        test: function () {
             const {parent} = this
             return !missingArt6LegalBasisForInfoType(parent)
         }
