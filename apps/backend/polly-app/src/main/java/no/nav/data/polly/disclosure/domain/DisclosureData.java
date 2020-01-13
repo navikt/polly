@@ -9,6 +9,7 @@ import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -27,6 +28,7 @@ public class DisclosureData {
     private LocalDate start;
     @NotNull
     private LocalDate end;
+    private UUID documentId;
 
     @Valid
     private List<LegalBasis> legalBases = new ArrayList<>();

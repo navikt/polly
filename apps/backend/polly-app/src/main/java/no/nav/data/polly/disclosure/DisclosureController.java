@@ -12,6 +12,7 @@ import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;
 import no.nav.data.polly.disclosure.dto.DisclosureResponse;
+import no.nav.data.polly.document.DocumentService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,12 +42,14 @@ import static no.nav.data.polly.common.utils.StreamUtils.convert;
 @Api(value = "Disclosure", description = "REST API for Disclosure", tags = {"Disclosure"})
 public class DisclosureController {
 
-    private DisclosureRepository repository;
-    private DisclosureService service;
+    private final DisclosureRepository repository;
+    private final DisclosureService service;
+    private final DocumentService documentService;
 
-    public DisclosureController(DisclosureRepository repository, DisclosureService service) {
+    public DisclosureController(DisclosureRepository repository, DisclosureService service, DocumentService documentService) {
         this.repository = repository;
         this.service = service;
+        this.documentService = documentService;
     }
 
     @ApiOperation(value = "Get All Disclosures")
@@ -60,11 +63,11 @@ public class DisclosureController {
     ) {
         log.info("Received request for all Disclosures. informationType={} recipient={}", informationTypeId, recipient);
         if (informationTypeId != null) {
-            var disc = repository.findByInformationTypesId(informationTypeId);
-            return returnResults(new RestResponsePage<>(convert(disc, Disclosure::convertToResponseWithInformationType)));
+            var disc = repository.findByInformationTypeId(informationTypeId);
+            return returnResults(new RestResponsePage<>(convert(disc, this::convertAndAddDocument)));
         } else if (StringUtils.isNotBlank(recipient)) {
             var disc = repository.findByRecipient(recipient);
-            return returnResults(new RestResponsePage<>(convert(disc, Disclosure::convertToResponseWithInformationType)));
+            return returnResults(new RestResponsePage<>(convert(disc, this::convertAndAddDocument)));
         }
         return returnResults(new RestResponsePage<>(repository.findAll(pageParameters.createIdSortedPage()).map(Disclosure::convertToResponse)));
     }
@@ -82,7 +85,7 @@ public class DisclosureController {
     @GetMapping("/{id}")
     public ResponseEntity<DisclosureResponse> findForId(@PathVariable UUID id) {
         log.info("Received request for Disclosure with the id={}", id);
-        Optional<DisclosureResponse> disclosureResponse = repository.findById(id).map(Disclosure::convertToResponseWithInformationType);
+        Optional<DisclosureResponse> disclosureResponse = repository.findById(id).map(this::convertAndAddDocument);
         if (disclosureResponse.isEmpty()) {
             log.info("Cannot find the Disclosure with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -100,7 +103,7 @@ public class DisclosureController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<DisclosureResponse> createPolicy(@Valid @RequestBody DisclosureRequest request) {
         log.debug("Received request to create Disclosure");
-        return new ResponseEntity<>(service.save(request).convertToResponseWithInformationType(), HttpStatus.CREATED);
+        return new ResponseEntity<>(convertAndAddDocument(service.save(request)), HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "Update Disclosure")
@@ -111,7 +114,7 @@ public class DisclosureController {
     @PutMapping
     public ResponseEntity<DisclosureResponse> updatePolicy(@Valid @RequestBody DisclosureRequest request) {
         log.debug("Received request to update Disclosure");
-        return ResponseEntity.ok(service.update(request).convertToResponseWithInformationType());
+        return ResponseEntity.ok(convertAndAddDocument(service.update(request)));
     }
 
     @ApiOperation(value = "Delete Disclosure")
@@ -130,7 +133,15 @@ public class DisclosureController {
         }
         repository.deleteById(id);
         log.info("Disclosure with id={} deleted", id);
-        return new ResponseEntity<>(fromRepository.get().convertToResponseWithInformationType(), HttpStatus.OK);
+        return new ResponseEntity<>(convertAndAddDocument(fromRepository.get()), HttpStatus.OK);
+    }
+
+    private DisclosureResponse convertAndAddDocument(Disclosure disclosure) {
+        var response = disclosure.convertToResponse();
+        if (disclosure.getData().getDocumentId() != null) {
+            response.setDocument(documentService.getDocument(disclosure.getData().getDocumentId()));
+        }
+        return response;
     }
 
     static class DisclosurePage extends RestResponsePage<DisclosureResponse> {

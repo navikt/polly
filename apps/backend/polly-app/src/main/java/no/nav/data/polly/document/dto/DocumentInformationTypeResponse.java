@@ -1,4 +1,4 @@
-package no.nav.data.polly.disclosure.dto;
+package no.nav.data.polly.document.dto;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
@@ -9,16 +9,14 @@ import no.nav.data.polly.codelist.dto.CodelistResponse;
 
 import java.util.UUID;
 
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonPropertyOrder({"id", "name", "sensitivity"})
-public class DisclosureInformationTypeResponse {
+public class DocumentInformationTypeResponse {
 
     private UUID id;
     private String name;
     private CodelistResponse sensitivity;
-
 }
