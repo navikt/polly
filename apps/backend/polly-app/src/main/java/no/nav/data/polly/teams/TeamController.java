@@ -50,7 +50,7 @@ public class TeamController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Teams fetched", response = ProductTeamResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")})
-    @GetMapping("/{name}")
+    @GetMapping("/{teamId}")
     public ResponseEntity<ProductTeamResponse> getTeamByName(@PathVariable String teamId) {
         log.info("Received request for Team with id {}", teamId);
         Team team = teamsService.getTeam(teamId);
