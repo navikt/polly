@@ -121,7 +121,7 @@ class DocumentControllerIT extends IntegrationTestBase {
         update.setId(id);
         update.setInformationTypeIds(List.of(infoTypeOne.getId().toString(), infoTypeUpdate.getId().toString()));
 
-        resp = restTemplate.exchange("/document", HttpMethod.PUT, new HttpEntity<>(update), DocumentResponse.class, id);
+        resp = restTemplate.exchange("/document/{id}", HttpMethod.PUT, new HttpEntity<>(update), DocumentResponse.class, id);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getBody()).isNotNull();
@@ -137,10 +137,13 @@ class DocumentControllerIT extends IntegrationTestBase {
         assertThat(resp.getBody()).isNotNull();
 
         String id = resp.getBody().getId().toString();
-        var errorResp = restTemplate.exchange("/document", HttpMethod.PUT, new HttpEntity<>(buildDocument()), String.class, id);
+        DocumentRequest request2 = buildDocument();
+        request2.setId(id);
+        request2.setName(null);
+        var errorResp = restTemplate.exchange("/document/{id}", HttpMethod.PUT, new HttpEntity<>(request2), String.class, id);
         assertThat(errorResp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResp.getBody()).isNotNull();
-        assertThat(errorResp.getBody()).contains("missingIdForUpdate");
+        assertThat(errorResp.getBody()).contains("fieldIsNullOrMissing -- name was null or missing");
     }
 
     private DocumentRequest buildDocument() {

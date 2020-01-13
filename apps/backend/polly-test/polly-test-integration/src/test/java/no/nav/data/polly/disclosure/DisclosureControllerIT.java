@@ -146,7 +146,7 @@ class DisclosureControllerIT extends IntegrationTestBase {
         update.setId(id);
         update.setDocumentId(docUpdate.getId().toString());
 
-        resp = restTemplate.exchange("/disclosure", HttpMethod.PUT, new HttpEntity<>(update), DisclosureResponse.class, id);
+        resp = restTemplate.exchange("/disclosure/{id}", HttpMethod.PUT, new HttpEntity<>(update), DisclosureResponse.class, id);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getBody()).isNotNull();
@@ -160,10 +160,13 @@ class DisclosureControllerIT extends IntegrationTestBase {
         assertThat(resp.getBody()).isNotNull();
 
         String id = resp.getBody().getId().toString();
-        var errorResp = restTemplate.exchange("/disclosure", HttpMethod.PUT, new HttpEntity<>(buildDisclosure()), String.class, id);
+        DisclosureRequest request2 = buildDisclosure();
+        request2.setId(id);
+        request2.setRecipient("error");
+        var errorResp = restTemplate.exchange("/disclosure/{id}", HttpMethod.PUT, new HttpEntity<>(request2), String.class, id);
         assertThat(errorResp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResp.getBody()).isNotNull();
-        assertThat(errorResp.getBody()).contains("missingIdForUpdate");
+        assertThat(errorResp.getBody()).contains("fieldIsInvalidCodelist -- recipient: ERROR code not found in codelist THIRD_PARTY");
     }
 
     private DisclosureRequest buildDisclosure() {
