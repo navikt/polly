@@ -177,17 +177,17 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                                     <FieldDepartment department={formikBag.values.department} />
                                 </Block>
 
-                                <Block {...rowBlockProps}>
-                                    <ModalLabel label={intl.productTeam}/>
-                                    <FieldProductTeam productTeam={formikBag.values.productTeam} />
-                                </Block>
-
                                 {codelist.showSubDepartment(formikBag.values.department) && (
                                     <Block {...rowBlockProps}>
                                         <ModalLabel label={intl.subDepartment}/>
                                         <FieldSubDepartment subDepartment={formikBag.values.subDepartment} />
                                     </Block>
                                 )}
+
+                                <Block {...rowBlockProps}>
+                                    <ModalLabel label={intl.productTeam}/>
+                                    <FieldProductTeam productTeam={formikBag.values.productTeam} />
+                                </Block>
 
                                 <DateModalFields showDates={hasSpecifiedDate(initialValues)} showLabels={true} rowBlockProps={rowBlockProps} />
 
