@@ -56,10 +56,10 @@ type FormProps = {
 };
 
 const InformationtypeForm = ({
-    formInitialValues,
-    submit,
-    isEdit
-}: FormProps) => {
+                                 formInitialValues,
+                                 submit,
+                                 isEdit
+                             }: FormProps) => {
     const initialValueSensitivity = () => {
         if (!formInitialValues.sensitivity || !codelist.isLoaded()) return []
         return [{
@@ -88,7 +88,13 @@ const InformationtypeForm = ({
     const [currentKeywordValue, setCurrentKeywordValue] = React.useState("");
 
     useEffect(() => {
-        (async () => setTermValue(await initialValueTerm()))()
+        (async () => {
+            try {
+                setTermValue(await initialValueTerm())
+            } catch (e) {
+                console.error("failed to get term", e)
+            }
+        })()
     }, [formInitialValues.term])
 
     const getParsedOptions = (listName: ListName, values: string[]) => {
@@ -138,7 +144,7 @@ const InformationtypeForm = ({
                             <FlexGridItem>
                                 <Field
                                     name="name"
-                                    render={({ form, field }: FieldProps<InformationtypeFormValues>) => (
+                                    render={({form, field}: FieldProps<InformationtypeFormValues>) => (
                                         <Block>
                                             <Block {...labelProps}>
                                                 <Label2>{intl.name}</Label2>
@@ -156,7 +162,7 @@ const InformationtypeForm = ({
                             <FlexGridItem>
                                 <Field
                                     name="term"
-                                    render={({ form }: FieldProps<InformationtypeFormValues>) => (
+                                    render={({form}: FieldProps<InformationtypeFormValues>) => (
                                         <Block>
                                             <Block {...labelProps}>
                                                 <Label2>{intl.term}</Label2>
@@ -185,7 +191,7 @@ const InformationtypeForm = ({
                             <FlexGridItem>
                                 <Field
                                     name="sensitivity"
-                                    render={({ form }: FieldProps<InformationtypeFormValues>) => (
+                                    render={({form}: FieldProps<InformationtypeFormValues>) => (
                                         <Block>
                                             <Block {...labelProps}>
                                                 <Label2>{intl.sensitivity}</Label2>
@@ -219,7 +225,7 @@ const InformationtypeForm = ({
                                                 options={getParsedOptions(ListName.CATEGORY, formikBag.values.categories)}
                                                 placeholder={intl.categoriesWrite}
                                                 maxDropdownHeight="300px"
-                                                onChange={({ option }) => {
+                                                onChange={({option}) => {
                                                     arrayHelpers.push(
                                                         option
                                                             ? option.id
@@ -246,7 +252,7 @@ const InformationtypeForm = ({
                                                 options={getParsedOptions(ListName.THIRD_PARTY, formikBag.values.sources)}
                                                 placeholder={intl.sourcesWrite}
                                                 maxDropdownHeight="300px"
-                                                onChange={({ option }) => {
+                                                onChange={({option}) => {
                                                     arrayHelpers.push(option ? option.id : null);
                                                 }}
                                                 error={!!arrayHelpers.form.errors.sources && !!arrayHelpers.form.submitCount}
@@ -286,7 +292,7 @@ const InformationtypeForm = ({
                                                             shape={SHAPE.square}
                                                             onClick={() => onAddKeyword(arrayHelpers)}
                                                         >
-                                                            <Plus />
+                                                            <Plus/>
                                                         </Button>
                                                     )
                                                 }}
@@ -302,31 +308,29 @@ const InformationtypeForm = ({
                                 <Field
                                     name="description"
                                     render={({
-                                        field, form
-                                    }: FieldProps<
-                                        InformationtypeFormValues
-                                    >) => (
-                                            <Block>
-                                                <Block {...labelProps}>
-                                                    <Label2>{intl.description}</Label2>
-                                                </Block>
-                                                <Textarea onKeyDown={e => {
-                                                    if (e.key === 'Enter') form.setFieldValue('description', form.values.description+'\n')
-                                                }}
-                                                    {...field}
-                                                    placeholder={intl.descriptionWrite}
-                                                    rows={5}
-                                                    error={!!form.errors.description && !!form.submitCount}
-                                                />
+                                                 field, form
+                                             }: FieldProps<InformationtypeFormValues>) => (
+                                        <Block>
+                                            <Block {...labelProps}>
+                                                <Label2>{intl.description}</Label2>
                                             </Block>
-                                        )}
+                                            <Textarea onKeyDown={e => {
+                                                if (e.key === 'Enter') form.setFieldValue('description', form.values.description + '\n')
+                                            }}
+                                                      {...field}
+                                                      placeholder={intl.descriptionWrite}
+                                                      rows={5}
+                                                      error={!!form.errors.description && !!form.submitCount}
+                                            />
+                                        </Block>
+                                    )}
                                 />
                             </FlexGridItem>
 
                             <FlexGridItem>
                                 <Field
                                     name="navMaster"
-                                    render={({ form }: FieldProps<InformationtypeFormValues>) => (
+                                    render={({form}: FieldProps<InformationtypeFormValues>) => (
                                         <Block marginBottom="1em">
                                             <Block {...labelProps}>
                                                 <Label2>{intl.navMaster}</Label2>
@@ -356,7 +360,7 @@ const InformationtypeForm = ({
                                 kind="secondary"
                                 overrides={{
                                     BaseButton: {
-                                        style: ({ $theme }) => {
+                                        style: ({$theme}) => {
                                             return {
                                                 alignContent: "center",
                                                 paddingRight: "4rem",
@@ -373,7 +377,7 @@ const InformationtypeForm = ({
                                 type="submit"
                                 overrides={{
                                     BaseButton: {
-                                        style: ({ $theme }) => {
+                                        style: ({$theme}) => {
                                             return {
                                                 alignContent: "center",
                                                 marginLeft: "1rem",
