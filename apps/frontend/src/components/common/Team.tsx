@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react"
 import { getTeam } from "../../api/TeamApi"
 import { Member, Team } from "../../constants"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faEnvelope, faPersonBooth, faTimesCircle, faUser, faUsers } from "@fortawesome/free-solid-svg-icons"
+import { faEnvelope, faTimesCircle, faUser, faUsers } from "@fortawesome/free-solid-svg-icons"
 import { copyToClipboard, intl, theme } from "../../util"
 import { StatefulTooltip } from "baseui/tooltip"
 import { Card, StyledBody } from "baseui/card"
@@ -11,13 +11,16 @@ import { ListItem, ListItemLabel } from "baseui/list"
 import { Button } from "baseui/button"
 
 
+const defaultTeam = (teamId: string) => ({id: teamId, name: teamId, members: []})
+
 export const TeamPopover = (props: { teamId: string }) => {
-    const [team, setTeam] = useState<Team>({id: props.teamId, name: props.teamId, members: []})
+    const [team, setTeam] = useState<Team>(defaultTeam(props.teamId))
     const [error, setError] = useState(false)
 
     useEffect(() => {
         (async () => {
             try {
+                setTeam(defaultTeam(props.teamId))
                 const team = await getTeam(props.teamId)
                 setTeam(team)
                 setError(false)
