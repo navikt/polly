@@ -85,8 +85,9 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
                 Instant.now().plus(1, ChronoUnit.MINUTES), Duration.ofSeconds(rate));
     }
 
-    public void validateRequests(List<ProcessRequest> requests, boolean update) {
-        initialize(requests, update);
+    public void validateRequest(ProcessRequest request, boolean update) {
+        ProcessRequest requests = request;
+        initialize(List.of(requests), update);
         var validationErrors = StreamUtils.applyAll(requests,
                 RequestElement::validateFields,
                 this::validateProcessRepositoryValues

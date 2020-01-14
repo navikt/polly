@@ -6,7 +6,7 @@ import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.common.validator.RequestValidator;
 import no.nav.data.polly.common.validator.ValidationError;
-import no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus;
+import no.nav.data.polly.sync.domain.SyncStatus;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
@@ -64,7 +64,7 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
 
     public InformationType delete(UUID id) {
         InformationType infoType = repository.findById(id).orElseThrow(() -> new PollyNotFoundException("Fant ikke id=" + id));
-        infoType.setElasticsearchStatus(ElasticsearchStatus.TO_BE_DELETED);
+        infoType.setSyncStatus(SyncStatus.TO_BE_DELETED);
         long deletes = policyRepository.deleteByInformationTypeId(id);
         log.debug("Deleted {} policies", deletes);
         log.info("InformationType with id={} has been set to be deleted during the next scheduled task", id);

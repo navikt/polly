@@ -9,8 +9,6 @@ import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.rest.PageParameters;
 import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.common.utils.StreamUtils;
-import no.nav.data.polly.elasticsearch.ElasticsearchService;
-import no.nav.data.polly.elasticsearch.dto.InformationTypeElasticsearch;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
@@ -47,14 +45,11 @@ public class InformationTypeController {
 
     private final InformationTypeRepository repository;
     private final InformationTypeService service;
-    private final ElasticsearchService elasticsearchService;
 
     public InformationTypeController(InformationTypeRepository informationTypeRepository,
-            InformationTypeService informationTypeService,
-            ElasticsearchService elasticsearchService) {
+            InformationTypeService informationTypeService) {
         this.repository = informationTypeRepository;
         this.service = informationTypeService;
-        this.elasticsearchService = elasticsearchService;
     }
 
     @ApiOperation(value = "Get InformationType")
@@ -72,23 +67,6 @@ public class InformationTypeController {
         }
         log.info("Returned InformationType");
         return new ResponseEntity<>(informationTypeResponse.get(), HttpStatus.OK);
-    }
-
-    @ApiOperation(value = "Get InformationType in Elasticsearch format")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "InformationType fetched", response = InformationTypeElasticsearch.class),
-            @ApiResponse(code = 404, message = "InformationType not found"),
-            @ApiResponse(code = 500, message = "Internal server error")})
-    @GetMapping("/elasticsearch/{id}")
-    public ResponseEntity<InformationTypeElasticsearch> findElasticsearchFormatForId(@PathVariable UUID id) {
-        log.info("Received request for InformationType ElasticsearchFormat with the id={}", id);
-        Optional<InformationType> informationTypeResponse = repository.findById(id);
-        if (informationTypeResponse.isEmpty()) {
-            log.info("Cannot find the InformationType with id={}", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        log.info("Returned InformationType ElasticsearchFormat");
-        return new ResponseEntity<>(elasticsearchService.mapInformationType(informationTypeResponse.get()), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Search InformationTypes")
@@ -213,7 +191,7 @@ public class InformationTypeController {
         return new ResponseEntity<>(service.delete(id).convertToResponse(), HttpStatus.ACCEPTED);
     }
 
-    @ApiOperation(value = "Trigger InformationType Sync mot elasticsearch")
+    @ApiOperation(value = "Trigger InformationType Sync")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "InformationTypes will be synced"),
             @ApiResponse(code = 400, message = "Illegal arguments"),

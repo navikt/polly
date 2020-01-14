@@ -12,7 +12,6 @@ import no.nav.data.polly.codelist.codeusage.UsedInInstance;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.auditing.domain.Auditable;
 import no.nav.data.polly.common.utils.DateUtil;
-import no.nav.data.polly.elasticsearch.dto.PolicyElasticsearch;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.policy.dto.PolicyInformationTypeResponse;
@@ -36,7 +35,6 @@ import javax.validation.constraints.NotNull;
 
 import static no.nav.data.polly.codelist.CodelistService.getCodelistResponse;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
-import static no.nav.data.polly.common.utils.StreamUtils.filter;
 
 @Data
 @Builder
@@ -109,16 +107,6 @@ public class Policy extends Auditable<String> {
         return DateUtil.isNow(start, end);
     }
 
-    public PolicyElasticsearch convertToElasticsearch() {
-        return PolicyElasticsearch.builder()
-                .start(DateUtil.formatDate(start))
-                .end(DateUtil.formatDate(end))
-                .active(isActive())
-                .subjectCategory(getCodelistResponse(ListName.SUBJECT_CATEGORY, getSubjectCategory()))
-                .legalbases(convert(filter(legalBases, LegalBasis::isActive), LegalBasis::convertToElasticsearch))
-                .build();
-    }
-
     public PolicyResponse convertToResponse() {
         return PolicyResponse.builder()
                 .id(getId())
@@ -127,6 +115,7 @@ public class Policy extends Auditable<String> {
                 .process(getProcess() == null ? null : getProcess().convertToIdNameResponse())
                 .start(getStart())
                 .end(getEnd())
+                .informationTypeId(informationTypeId)
                 .informationType(convertInformationTypeNameResponse())
                 .legalBasesInherited(isLegalBasesInherited())
                 .legalBases(convert(getLegalBases(), LegalBasis::convertToResponse))

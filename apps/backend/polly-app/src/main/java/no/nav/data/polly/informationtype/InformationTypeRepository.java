@@ -1,6 +1,6 @@
 package no.nav.data.polly.informationtype;
 
-import no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus;
+import no.nav.data.polly.sync.domain.SyncStatus;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.TermCount;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,22 +34,22 @@ public interface InformationTypeRepository extends JpaRepository<InformationType
     @Query(value = "select * from information_type where data ->>'suggest' ilike %?1%", nativeQuery = true)
     List<InformationType> findBySuggestLike(String name);
 
-    List<InformationType> findByElasticsearchStatus(ElasticsearchStatus status);
+    List<InformationType> findBySyncStatus(SyncStatus status);
 
     @Modifying
     @Transactional
-    @Query("delete from InformationType where elasticsearchStatus = 'TO_BE_DELETED'")
+    @Query("delete from InformationType where syncStatus = 'TO_BE_DELETED'")
     int deleteToBeDeleted();
 
     @Modifying
     @Transactional
-    @Query("update InformationType set elasticsearchStatus = 'TO_BE_UPDATED' where id in ?1")
+    @Query("update InformationType set syncStatus = 'TO_BE_UPDATED' where id in ?1")
     int setSyncForInformationTypeIds(List<UUID> ids);
 
     @Modifying
     @Transactional
-    @Query("update InformationType set elasticsearchStatus = ?2 where id = ?1")
-    void updateStatusForInformationType(UUID informationTypeId, ElasticsearchStatus elasticsearchStatus);
+    @Query("update InformationType set syncStatus = ?2 where id = ?1")
+    void updateStatusForInformationType(UUID informationTypeId, SyncStatus syncStatus);
 
     List<InformationType> findByTermId(String term);
 
