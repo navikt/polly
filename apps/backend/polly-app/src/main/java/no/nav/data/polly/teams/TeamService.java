@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface TeamService {
 
-    List<Team> getAllProductTeams();
+    List<Team> getAllTeams();
 
     Team getTeam(String teamId);
 

@@ -9,7 +9,7 @@ import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.teams.domain.Team;
-import no.nav.data.polly.teams.dto.ProductTeamResponse;
+import no.nav.data.polly.teams.dto.TeamResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -41,17 +41,17 @@ public class TeamController {
             @ApiResponse(code = 200, message = "Teams fetched", response = TeamPage.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping
-    public RestResponsePage<ProductTeamResponse> findAll() {
+    public RestResponsePage<TeamResponse> findAll() {
         log.info("Received a request for all teams");
-        return new RestResponsePage<>(convert(teamsService.getAllProductTeams(), Team::convertToResponse));
+        return new RestResponsePage<>(convert(teamsService.getAllTeams(), Team::convertToResponse));
     }
 
     @ApiOperation(value = "Get team")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Teams fetched", response = ProductTeamResponse.class),
+            @ApiResponse(code = 200, message = "Teams fetched", response = TeamResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/{teamId}")
-    public ResponseEntity<ProductTeamResponse> getTeamByName(@PathVariable String teamId) {
+    public ResponseEntity<TeamResponse> getTeamByName(@PathVariable String teamId) {
         log.info("Received request for Team with id {}", teamId);
         Team team = teamsService.getTeam(teamId);
         return new ResponseEntity<>(team.convertToResponse(), HttpStatus.OK);
@@ -62,18 +62,18 @@ public class TeamController {
             @ApiResponse(code = 200, message = "Teams fetched", response = TeamPage.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/search/{name}")
-    public ResponseEntity<RestResponsePage<ProductTeamResponse>> searchTeamByName(@PathVariable String name) {
+    public ResponseEntity<RestResponsePage<TeamResponse>> searchTeamByName(@PathVariable String name) {
         log.info("Received request for Team with the name like {}", name);
         if (name.length() < 3) {
             throw new ValidationException("Search teams must be at least 3 characters");
         }
-        var teams = StreamUtils.filter(teamsService.getAllProductTeams(), team -> containsIgnoreCase(team.getName(), name));
+        var teams = StreamUtils.filter(teamsService.getAllTeams(), team -> containsIgnoreCase(team.getName(), name));
         teams.sort(comparing(Team::getName, startsWith(name)));
         log.info("Returned {} teams", teams.size());
         return new ResponseEntity<>(new RestResponsePage<>(convert(teams, Team::convertToResponse)), HttpStatus.OK);
     }
 
-    static class TeamPage extends RestResponsePage<ProductTeamResponse> {
+    static class TeamPage extends RestResponsePage<TeamResponse> {
 
     }
 }

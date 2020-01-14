@@ -2,8 +2,8 @@ package no.nav.data.polly.teams.nora;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import no.nav.data.polly.common.exceptions.PollyNotFoundException;
 import no.nav.data.polly.common.utils.MetricUtils;
-import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.teams.TeamService;
 import no.nav.data.polly.teams.domain.Team;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -28,6 +28,7 @@ public class NoraClient implements TeamService {
     private final RestTemplate restTemplate;
     private final NoraProperties noraProperties;
     private final Cache<String, List<NoraTeam>> appsCache;
+    private final Cache<String, NoraTeam> teamCache;
 
     public NoraClient(RestTemplate restTemplate, NoraProperties noraProperties) {
         this.restTemplate = restTemplate;
@@ -36,17 +37,25 @@ public class NoraClient implements TeamService {
         this.appsCache = Caffeine.newBuilder().recordStats()
                 .expireAfterAccess(Duration.ofMinutes(10))
                 .maximumSize(1).build();
+        this.teamCache = Caffeine.newBuilder().recordStats()
+                .expireAfterAccess(Duration.ofMinutes(10))
+                .maximumSize(100).build();
         MetricUtils.register("noraAppsCache", appsCache);
+        MetricUtils.register("teamCache", teamCache);
     }
 
     @Override
-    public List<Team> getAllProductTeams() {
+    public List<Team> getAllTeams() {
         return getTeams();
     }
 
     @Override
     public Team getTeam(String teamId) {
-        return StreamUtils.find(getTeams(), n -> n.getId().equals(teamId));
+        NoraTeam noraTeam = teamCache.get(teamId, this::getTeamResponse);
+        if (noraTeam == null) {
+            throw new PollyNotFoundException("Couldn't find team "+ teamId);
+        }
+        return noraTeam.convertToTeam();
     }
 
     @Override
@@ -56,7 +65,7 @@ public class NoraClient implements TeamService {
 
     private List<Team> getTeams() {
         List<NoraTeam> noraApps = appsCache.get("singleton", key -> getTeamsResponse());
-        return safeStream(noraApps).map(noraTeam -> new Team(noraTeam.getNick(), noraTeam.getName())).distinct()
+        return safeStream(noraApps).map(NoraTeam::convertToTeam).distinct()
                 .sorted(Comparator.comparing(Team::getName)).collect(Collectors.toList());
     }
 
@@ -64,6 +73,12 @@ public class NoraClient implements TeamService {
         ResponseEntity<NoraTeam[]> response = restTemplate.getForEntity(noraProperties.getTeamsUrl(), NoraTeam[].class);
         Assert.isTrue(response.getStatusCode().is2xxSuccessful() && response.hasBody(), "Call to nora failed " + response.getStatusCode());
         return response.hasBody() ? Arrays.asList(requireNonNull(response.getBody())) : List.of();
+    }
+
+    private NoraTeam getTeamResponse(String nick) {
+        ResponseEntity<NoraTeam> response = restTemplate.getForEntity(noraProperties.getTeamUrl(), NoraTeam.class, nick);
+        Assert.isTrue(response.getStatusCode().is2xxSuccessful() && response.hasBody(), "Call to nora failed for team " + nick + " " + response.getStatusCode());
+        return response.hasBody() ? requireNonNull(response.getBody()) : null;
     }
 
 }
