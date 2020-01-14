@@ -32,9 +32,7 @@ export const getProcessPurposeCount = async () => {
 export const createProcess = async (process: ProcessFormValues) => {
     let body = mapProcessFromForm(process);
     return (
-        await axios.post<Process>(`${server_polly}/process`, [
-            body
-        ])
+        await axios.post<Process>(`${server_polly}/process`, body)
     ).data;
 };
 
