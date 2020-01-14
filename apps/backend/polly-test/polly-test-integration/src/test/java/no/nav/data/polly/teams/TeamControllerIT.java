@@ -26,10 +26,13 @@ class TeamControllerIT extends IntegrationTestBase {
 
     @Test
     void getTeam() {
-        ResponseEntity<TeamResponse> teams = restTemplate.getForEntity("/team/{teamId}", TeamResponse.class, "teamname");
-        assertThat(teams.getBody()).isNotNull();
-        assertThat(teams.getBody().getId()).isEqualTo("teamname");
-        assertThat(teams.getBody().getName()).isEqualTo("Visual Team Name");
+        ResponseEntity<TeamResponse> team = restTemplate.getForEntity("/team/{teamId}", TeamResponse.class, "teamname");
+        assertThat(team.getBody()).isNotNull();
+        assertThat(team.getBody().getId()).isEqualTo("teamname");
+        assertThat(team.getBody().getName()).isEqualTo("Visual Team Name");
+        assertThat(team.getBody().getMembers()).hasSize(1);
+        assertThat(team.getBody().getMembers().get(0).getName()).isEqualTo("Member Name");
+        assertThat(team.getBody().getMembers().get(0).getEmail()).isEqualTo("member@email.com");
     }
 
     @Test

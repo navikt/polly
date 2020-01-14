@@ -17,7 +17,6 @@ public class NoraMember {
     private String id;
     private String azureId;
     private String name;
-    private boolean isManager;
     private String email;
 
     public Member convertToMember() {
