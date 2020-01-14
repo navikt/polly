@@ -1,12 +1,12 @@
 import * as React from 'react'
-import {useEffect, useState} from 'react'
-import {Accordion, Panel} from 'baseui/accordion'
-import {generatePath, RouteComponentProps, withRouter} from 'react-router'
-import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
-import {Spinner} from 'baseui/spinner';
-import {Block, BlockProps} from 'baseui/block';
-import {Label2, Paragraph2} from 'baseui/typography';
-import {intl, theme, useAwait} from '../../../util';
+import { useEffect } from 'react'
+import { Accordion, Panel } from 'baseui/accordion'
+import { generatePath, RouteComponentProps, withRouter } from 'react-router'
+import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
+import { Spinner } from 'baseui/spinner';
+import { Block, BlockProps } from 'baseui/block';
+import { Label2, Paragraph2 } from 'baseui/typography';
+import { intl, theme, useAwait } from '../../../util';
 import _includes from 'lodash/includes'
 import {user} from "../../../service/User";
 import {Plus} from 'baseui/icon'
@@ -16,12 +16,13 @@ import {codelist, ListName} from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy';
-import {convertProcessToFormValues} from "../../../api"
-import {PathParams} from "../../../pages/PurposePage"
-import {ActiveIndicator} from "../../common/Durations"
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faChevronDown, faChevronRight, faEdit, faTrash} from '@fortawesome/free-solid-svg-icons';
-import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal';
+import { convertProcessToFormValues } from "../../../api"
+import { PathParams } from "../../../pages/PurposePage"
+import { ActiveIndicator } from "../../common/Durations"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown, faChevronRight, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal';
+import { TeamPopover } from "../../common/Team"
 import {getTeam, mapTeamToOption} from "../../../api/TeamApi"
 import {AuditButton, AuditPage} from "../../../pages/AuditPage"
 import {StatefulTooltip} from "baseui/tooltip";
@@ -183,22 +184,6 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
         }, 200)
     }, [isLoading])
 
-    const productTeamId = currentProcess?.productTeam
-    const [productTeam, setProductTeam] = useState<string | undefined>()
-    useEffect(() => {
-        (async () => {
-            if (productTeamId) {
-                try {
-                    const team = await getTeam(productTeamId)
-                    setProductTeam(mapTeamToOption(team).label)
-                } catch (e) {
-                    console.error(e)
-                    setProductTeam(productTeamId)
-                }
-            }
-        })()
-    }, [productTeamId])
-
     return (
         <Block ref={purposeRef}>
             <Accordion
@@ -236,7 +221,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                         </Block>}
                                         {currentProcess.productTeam && <Block width="30%">
                                             <Label2>{intl.productTeam}</Label2>
-                                            {productTeam}
+                                            <TeamPopover teamId={currentProcess.productTeam}/>
                                         </Block>}
                                     </Block>
                                     <Block width="10%" minWidth="150px">

@@ -7,7 +7,9 @@ import { Option } from "baseui/select"
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 export const getTeam = async (teamId: string) => {
-    return (await axios.get<Team>(`${server_polly}/team/${teamId}`)).data
+    const data = (await axios.get<Team>(`${server_polly}/team/${teamId}`)).data
+    data.members = data.members.sort((a,b)=> a.name.localeCompare(b.name))
+    return data
 }
 
 export const searchTeam = async (teamSearch: string) => {

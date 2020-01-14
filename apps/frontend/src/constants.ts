@@ -164,6 +164,12 @@ export interface CodeListFormValues {
 export interface Team {
     id: string
     name: string
+    members: Member[]
+}
+
+export interface Member {
+    name: string
+    email: string
 }
 
 export interface CodeListFormValues {

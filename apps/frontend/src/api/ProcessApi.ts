@@ -32,10 +32,8 @@ export const getProcessPurposeCount = async () => {
 export const createProcess = async (process: ProcessFormValues) => {
     let body = mapProcessFromForm(process);
     return (
-        await axios.post<PageResponse<Process>>(`${server_polly}/process`, [
-            body
-        ])
-    ).data.content[0];
+        await axios.post<Process>(`${server_polly}/process`, body)
+    ).data;
 };
 
 export const deleteProcess = async (processId: string) => {
