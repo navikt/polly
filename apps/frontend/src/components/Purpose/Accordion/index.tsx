@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Accordion, Panel } from 'baseui/accordion'
 import { generatePath, RouteComponentProps, withRouter } from 'react-router'
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
@@ -22,8 +22,8 @@ import { ActiveIndicator } from "../../common/Durations"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronRight, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal';
-import { getTeam, mapTeamToOption } from "../../../api/TeamApi"
-import { AuditButton, AuditPage } from "../../../pages/AuditPage"
+import { AuditButton } from "../../../pages/AuditPage"
+import { TeamPopover } from "../../common/Team"
 
 const rowPanelContent: BlockProps = {
     display: 'flex',
@@ -177,22 +177,6 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
         }, 200)
     }, [isLoading])
 
-    const productTeamId = currentProcess?.productTeam
-    const [productTeam, setProductTeam] = useState<string | undefined>()
-    useEffect(() => {
-        (async () => {
-            if (productTeamId) {
-                try {
-                    const team = await getTeam(productTeamId)
-                    setProductTeam(mapTeamToOption(team).label)
-                } catch (e) {
-                    console.error(e)
-                    setProductTeam(productTeamId)
-                }
-            }
-        })()
-    }, [productTeamId])
-
     return (
         <Block ref={purposeRef}>
             <Accordion onChange={({ expanded }) => handleChangePanel(expanded.length ? expanded[0].toString() : undefined)}
@@ -225,7 +209,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                         </Block>}
                                         {currentProcess.productTeam && <Block width="30%">
                                             <Label2>{intl.productTeam}</Label2>
-                                            {productTeam}
+                                            <TeamPopover teamId={currentProcess.productTeam}/>
                                         </Block>}
                                     </Block>
                                     <Block width="10%" minWidth="150px">

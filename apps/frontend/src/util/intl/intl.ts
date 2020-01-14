@@ -34,6 +34,7 @@ export interface IStrings {
     notLoggedInStatus: string;
     couldntLoad: string;
     couldntLoadTerm: string;
+    couldntLoadTeam: string;
     informationTypeCreate: string;
     sensitivitySelect: string;
     nameWrite: string;
@@ -100,6 +101,7 @@ export interface IStrings {
     createNew: string;
     name: string;
     email: string;
+    copied: string;
     groups: string;
     description: string;
     document: string;
