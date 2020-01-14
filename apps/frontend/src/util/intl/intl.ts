@@ -121,6 +121,8 @@ export interface IStrings {
     inactive: string;
     preview: string;
     info: string;
+    version: string;
+    ghost: string;
     period: string;
     recipient: string;
     recipientPurpose: string;

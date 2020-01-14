@@ -1,21 +1,22 @@
-import { Block, BlockProps } from "baseui/block"
+import {Block, BlockProps} from "baseui/block"
 import Banner from "../components/Banner"
-import React, { useEffect, useState } from "react"
-import { intl, theme, useDebouncedState } from "../util"
-import { RouteComponentProps, withRouter } from "react-router-dom"
-import { AuditLog } from "../constants"
-import { getAuditLog } from "../api/AuditApi"
-import { Label1, Label2, Label3 } from "baseui/typography"
+import React, {useEffect, useState} from "react"
+import {intl, theme, useDebouncedState} from "../util"
+import {RouteComponentProps, withRouter} from "react-router-dom"
+import {AuditLog} from "../constants"
+import {getAuditLog} from "../api/AuditApi"
+import {Label1, Label2, Label3} from "baseui/typography"
 import ReactJson from "react-json-view"
 import moment from "moment"
-import { Input } from "baseui/input"
+import {Input} from "baseui/input"
 import RouteLink from "../components/common/RouteLink"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faHistory } from "@fortawesome/free-solid-svg-icons"
-import { user } from "../service/User"
-import { Button, KIND, SIZE as ButtonSize } from "baseui/button"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import {faHistory} from "@fortawesome/free-solid-svg-icons"
+import {user} from "../service/User"
+import {Button, KIND, SIZE as ButtonSize} from "baseui/button"
 import _ from "lodash"
-import { Spinner } from "baseui/icon"
+import {Spinner} from "baseui/icon"
+import {StatefulTooltip} from "baseui/tooltip";
 
 const format = (id: string) => _.trim(id, "\"")
 
@@ -85,9 +86,10 @@ const AuditPageImpl = (props: RouteComponentProps<{ id?: string }>) => {
                         </Label>
                     </Block>
                     {logFound && <>
-                      <Label label={intl.id}>{auditLog?.id}</Label>
-                      <Label label={intl.table}>{auditLog?.audits.length ? auditLog?.audits[0].table : undefined}</Label>
-                      <Label label={intl.audits}>{auditLog?.audits.length}</Label>
+                        <Label label={intl.id}>{auditLog?.id}</Label>
+                        <Label
+                            label={intl.table}>{auditLog?.audits.length ? auditLog?.audits[0].table : undefined}</Label>
+                        <Label label={intl.audits}>{auditLog?.audits.length}</Label>
                     </>}
                 </Block>
 
@@ -119,19 +121,21 @@ export const AuditButton = (props: { id: string, kind?: KIND[keyof KIND], childr
     return user.isAdmin() ?
         <RouteLink href={`/admin/audit/${props.id}`}>
             {props.children ? props.children :
-                <Button
-                    size={ButtonSize.compact}
-                    kind={props.kind || KIND.secondary}
-                    overrides={{
-                        BaseButton: {
-                            style: () => {
-                                return {marginRight: theme.sizing.scale500}
+                <StatefulTooltip content={intl.version}>
+                    <Button
+                        size={ButtonSize.compact}
+                        kind={props.kind || KIND.secondary}
+                        overrides={{
+                            BaseButton: {
+                                style: () => {
+                                    return {marginRight: theme.sizing.scale500}
+                                }
                             }
-                        }
-                    }}
-                >
-                    <FontAwesomeIcon icon={faHistory}/>
-                </Button>
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faHistory}/>
+                    </Button>
+                </StatefulTooltip>
             }
         </RouteLink>
         : null

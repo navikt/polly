@@ -1,21 +1,30 @@
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
-import { SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from "baseui/table";
-import { useStyletron, withStyle } from "baseui";
-import { Code, codelist } from "../../service/Codelist";
-import { Block } from "baseui/block";
-import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faGhost, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {useEffect, useRef, useState} from "react";
+import {
+    SortableHeadCell,
+    StyledBody,
+    StyledCell,
+    StyledHead,
+    StyledHeadCell,
+    StyledRow,
+    StyledTable
+} from "baseui/table";
+import {useStyletron, withStyle} from "baseui";
+import {Code, codelist} from "../../service/Codelist";
+import {Block} from "baseui/block";
+import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faEdit, faGhost, faTrash} from "@fortawesome/free-solid-svg-icons";
 import UpdateCodeListModal from "./ModalUpdateCodeList";
-import { intl } from "../../util";
+import {intl} from "../../util";
 import DeleteCodeListModal from "./ModalDeleteCodeList";
 import axios from "axios";
-import { useTable } from "../../util/hooks"
-import { AuditButton } from "../../pages/AuditPage"
-import { getCodelistUsage } from "../../api"
-import { Usage } from "./CodeListUsage"
-import { CodeUsage } from "../../constants"
+import {useTable} from "../../util/hooks"
+import {AuditButton} from "../../pages/AuditPage"
+import {getCodelistUsage} from "../../api"
+import {Usage} from "./CodeListUsage"
+import {CodeUsage} from "../../constants"
+import {StatefulTooltip} from "baseui/tooltip";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -51,7 +60,10 @@ const CodeListTable = ({tableData, hasAccess, refresh}: TableCodelistProps) => {
     const [showEditModal, setShowEditModal] = React.useState(false);
     const [showDeleteModal, setShowDeleteModal] = React.useState(false);
     const [errorOnResponse, setErrorOnResponse] = React.useState(null);
-    const [table, sortColumn] = useTable<Code, keyof Code>(tableData, {useDefaultStringCompare: true, initialSortColumn: "code"})
+    const [table, sortColumn] = useTable<Code, keyof Code>(tableData, {
+        useDefaultStringCompare: true,
+        initialSortColumn: "code"
+    })
     const [usage, setUsage] = useState<CodeUsage>()
 
     useEffect(() => {
@@ -142,34 +154,40 @@ const CodeListTable = ({tableData, hasAccess, refresh}: TableCodelistProps) => {
                         <StyledCell styled={{maxWidth: "55%", minWidth: "24rem",}}>{row.description}</StyledCell>
                         <SmallCell>{
                             (hasAccess && <Block display="flex" justifyContent="flex-end" width="100%">
-                              <Button
-                                  size={ButtonSize.compact}
-                                  kind={row === selectedCode && showUsage ? KIND.primary : KIND.tertiary}
-                                  onClick={() => {
-                                      setSelectedCode(row)
-                                      setShowUsage(true)
-                                  }}>
-                                <FontAwesomeIcon icon={faGhost}/>
-                              </Button>
-                              <AuditButton id={`${row.list}-${row.code}`} kind={KIND.tertiary}/>
-                              <Button
-                                  size={ButtonSize.compact}
-                                  kind={KIND.tertiary}
-                                  onClick={() => {
-                                      setSelectedCode(row)
-                                      setShowEditModal(true)
-                                  }}>
-                                <FontAwesomeIcon icon={faEdit}/>
-                              </Button>
-                              <Button
-                                  size={ButtonSize.compact}
-                                  kind={KIND.tertiary}
-                                  onClick={() => {
-                                      setSelectedCode(row)
-                                      setShowDeleteModal(true)
-                                  }}>
-                                <FontAwesomeIcon icon={faTrash}/>
-                              </Button>
+                                <StatefulTooltip content={intl.ghost}>
+                                    <Button
+                                        size={ButtonSize.compact}
+                                        kind={row === selectedCode && showUsage ? KIND.primary : KIND.tertiary}
+                                        onClick={() => {
+                                            setSelectedCode(row)
+                                            setShowUsage(true)
+                                        }}>
+                                        <FontAwesomeIcon icon={faGhost}/>
+                                    </Button>
+                                </StatefulTooltip>
+                                <AuditButton id={`${row.list}-${row.code}`} kind={KIND.tertiary}/>
+                                <StatefulTooltip content={intl.edit}>
+                                    <Button
+                                        size={ButtonSize.compact}
+                                        kind={KIND.tertiary}
+                                        onClick={() => {
+                                            setSelectedCode(row)
+                                            setShowEditModal(true)
+                                        }}>
+                                        <FontAwesomeIcon icon={faEdit}/>
+                                    </Button>
+                                </StatefulTooltip>
+                                <StatefulTooltip content={intl.delete}>
+                                    <Button
+                                        size={ButtonSize.compact}
+                                        kind={KIND.tertiary}
+                                        onClick={() => {
+                                            setSelectedCode(row)
+                                            setShowDeleteModal(true)
+                                        }}>
+                                        <FontAwesomeIcon icon={faTrash}/>
+                                    </Button>
+                                </StatefulTooltip>
                             </Block>)}</SmallCell>
                     </StyledRow>)}
                 </StyledBody>

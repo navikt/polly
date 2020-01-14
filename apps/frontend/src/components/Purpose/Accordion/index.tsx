@@ -1,29 +1,30 @@
 import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { Accordion, Panel } from 'baseui/accordion'
-import { generatePath, RouteComponentProps, withRouter } from 'react-router'
-import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
-import { Spinner } from 'baseui/spinner';
-import { Block, BlockProps } from 'baseui/block';
-import { Label2, Paragraph2 } from 'baseui/typography';
-import { intl, theme, useAwait } from '../../../util';
+import {useEffect, useState} from 'react'
+import {Accordion, Panel} from 'baseui/accordion'
+import {generatePath, RouteComponentProps, withRouter} from 'react-router'
+import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
+import {Spinner} from 'baseui/spinner';
+import {Block, BlockProps} from 'baseui/block';
+import {Label2, Paragraph2} from 'baseui/typography';
+import {intl, theme, useAwait} from '../../../util';
 import _includes from 'lodash/includes'
-import { user } from "../../../service/User";
-import { Plus } from 'baseui/icon'
-import { LegalBasis, PolicyFormValues, Process, ProcessFormValues } from "../../../constants"
-import { LegalBasisView } from "../../common/LegalBasis"
-import { codelist, ListName } from "../../../service/Codelist"
+import {user} from "../../../service/User";
+import {Plus} from 'baseui/icon'
+import {LegalBasis, PolicyFormValues, Process, ProcessFormValues} from "../../../constants"
+import {LegalBasisView} from "../../common/LegalBasis"
+import {codelist, ListName} from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy';
-import { convertProcessToFormValues } from "../../../api"
-import { PathParams } from "../../../pages/PurposePage"
-import { ActiveIndicator } from "../../common/Durations"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faChevronRight, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal';
-import { getTeam, mapTeamToOption } from "../../../api/TeamApi"
-import { AuditButton, AuditPage } from "../../../pages/AuditPage"
+import {convertProcessToFormValues} from "../../../api"
+import {PathParams} from "../../../pages/PurposePage"
+import {ActiveIndicator} from "../../common/Durations"
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faChevronDown, faChevronRight, faEdit, faTrash} from '@fortawesome/free-solid-svg-icons';
+import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal';
+import {getTeam, mapTeamToOption} from "../../../api/TeamApi"
+import {AuditButton, AuditPage} from "../../../pages/AuditPage"
+import {StatefulTooltip} from "baseui/tooltip";
 
 const rowPanelContent: BlockProps = {
     display: 'flex',
@@ -77,9 +78,9 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
 
     const handleChangePanel = async (processId?: string) => {
         if (!processId)
-            updatePath({ purposeCode: purposeCode })
+            updatePath({purposeCode: purposeCode})
         else {
-            updatePath({ purposeCode: purposeCode, processId: processId })
+            updatePath({purposeCode: purposeCode, processId: processId})
         }
     }
 
@@ -94,8 +95,9 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
             <Label2>{intl.legalBasis}</Label2>
             {list && list.length < 1 && <Paragraph2>{intl.legalBasisNotFound}</Paragraph2>}
             {list && list.length > 0 && (
-                <ul style={{ listStyle: "none", paddingInlineStart: 0 }}>
-                    {list.map((legalBasis, i) => <li key={i}><Paragraph2><LegalBasisView legalBasis={legalBasis} /></Paragraph2></li>)}
+                <ul style={{listStyle: "none", paddingInlineStart: 0}}>
+                    {list.map((legalBasis, i) => <li key={i}><Paragraph2><LegalBasisView
+                        legalBasis={legalBasis}/></Paragraph2></li>)}
                 </ul>
             )}
         </Block>
@@ -128,29 +130,33 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
         )
     }
     const renderEditProcessButton = () => (
-        <Button
-            size={ButtonSize.compact}
-            kind={KIND.secondary}
-            onClick={() => setShowEditProcessModal(true)}
-            overrides={{
-                BaseButton: {
-                    style: () => {
-                        return { marginRight: theme.sizing.scale500 }
+        <StatefulTooltip content={intl.edit}>
+            <Button
+                size={ButtonSize.compact}
+                kind={KIND.secondary}
+                onClick={() => setShowEditProcessModal(true)}
+                overrides={{
+                    BaseButton: {
+                        style: () => {
+                            return {marginRight: theme.sizing.scale500}
+                        }
                     }
-                }
-            }}
-        >
-            <FontAwesomeIcon icon={faEdit} />
-        </Button>
+                }}
+            >
+                <FontAwesomeIcon icon={faEdit}/>
+            </Button>
+        </StatefulTooltip>
     )
     const renderDeleteProcessButton = () => (
-        <Button
-            size={ButtonSize.compact}
-            kind={KIND.secondary}
-            onClick={() => setShowDeleteModal(true)}
-        >
-            <FontAwesomeIcon icon={faTrash} />
-        </Button>
+        <StatefulTooltip content={intl.delete}>
+            <Button
+                size={ButtonSize.compact}
+                kind={KIND.secondary}
+                onClick={() => setShowDeleteModal(true)}
+            >
+                <FontAwesomeIcon icon={faTrash}/>
+            </Button>
+        </StatefulTooltip>
     )
 
     const renderCreatePolicyButton = () => (
@@ -158,7 +164,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
             size={ButtonSize.compact}
             kind={KIND.tertiary}
             onClick={() => setShowCreatePolicyModal(true)}
-            startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
+            startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
         >
             {intl.addNew}
         </Button>
@@ -195,26 +201,31 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
 
     return (
         <Block ref={purposeRef}>
-            <Accordion onChange={({ expanded }) => handleChangePanel(expanded.length ? expanded[0].toString() : undefined)}
-                initialState={{ expanded: props.match.params.processId ? [props.match.params.processId] : [] }} >
+            <Accordion
+                onChange={({expanded}) => handleChangePanel(expanded.length ? expanded[0].toString() : undefined)}
+                initialState={{expanded: props.match.params.processId ? [props.match.params.processId] : []}}>
                 {props.processList && props.processList.map((p: Process) => (
                     <Panel
                         title={p.name}
                         key={p.id}
                         overrides={{
-                            ToggleIcon: {component: (iconProps) => !!iconProps.$expanded ? <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
+                            ToggleIcon: {
+                                component: (iconProps) => !!iconProps.$expanded ?
+                                    <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>
+                            }
                         }}
                     >
-                        {isLoading && <Spinner size={18} />}
+                        {isLoading && <Spinner size={18}/>}
 
                         {!isLoading && currentProcess && (
                             <React.Fragment>
 
                                 <Block {...rowPanelContent}>
                                     <Block width="90%" flexWrap={true} display="flex">
-                                            <Block width="30%">{renderLegalBasisListForProcess(currentProcess.legalBases)}</Block>
-                                            <Block width="30%">{renderSubjectCategoriesForProcess(currentProcess)}</Block>
-                                            <Block width="30%">{renderActiveForProcess(currentProcess)}</Block>
+                                        <Block
+                                            width="30%">{renderLegalBasisListForProcess(currentProcess.legalBases)}</Block>
+                                        <Block width="30%">{renderSubjectCategoriesForProcess(currentProcess)}</Block>
+                                        <Block width="30%">{renderActiveForProcess(currentProcess)}</Block>
                                         {currentProcess.department && <Block width="30%">
                                             <Label2>{intl.department}</Label2>
                                             {codelist.getShortnameForCode(currentProcess.department)}
@@ -300,16 +311,24 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                 >
                                     <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
                                     <ModalBody>
-                                        <Paragraph2>{intl.confirmDeleteProcessText}  {currentProcess.name}</Paragraph2>
+                                        <Paragraph2>{intl.confirmDeleteProcessText} {currentProcess.name}</Paragraph2>
                                     </ModalBody>
 
                                     <ModalFooter>
                                         <Block display="flex" justifyContent="flex-end">
-                                            <Block alignSelf="flex-end">{errorProcessModal && <p>{errorProcessModal}</p>}</Block>
+                                            <Block alignSelf="flex-end">{errorProcessModal &&
+                                            <p>{errorProcessModal}</p>}</Block>
                                             <Button
                                                 kind="secondary"
                                                 onClick={() => setShowDeleteModal(false)}
-                                                overrides={{ BaseButton: { style: { marginRight: '1rem', marginLeft: '1rem' } } }}
+                                                overrides={{
+                                                    BaseButton: {
+                                                        style: {
+                                                            marginRight: '1rem',
+                                                            marginLeft: '1rem'
+                                                        }
+                                                    }
+                                                }}
                                             >
                                                 {intl.abort}
                                             </Button>

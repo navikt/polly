@@ -116,6 +116,8 @@ export const no: IStrings = {
     active: "Aktiv",
     preview: "Forhåndsvisning",
     info: "Informasjon",
+    ghost: "Vis bruk",
+    version: "Versjonering",
     period: "Periode",
     recipient: "Mottaker",
     recipientPurpose: "Mottakers formål",
