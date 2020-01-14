@@ -2,6 +2,7 @@ package no.nav.data.polly.common.security;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.microsoft.aad.adal4j.AuthenticationContext;
 import com.microsoft.aad.adal4j.AuthenticationResult;
 import com.microsoft.aad.adal4j.ClientCredential;
@@ -39,7 +40,7 @@ public class AzureTokenProvider {
     private static final String TOKEN_TYPE = "Bearer ";
 
     private final Cache<String, AuthenticationResult> accessTokenCache;
-    private final Cache<String, Set<GrantedAuthority>> grantedAuthorityCache;
+    private final LoadingCache<String, Set<GrantedAuthority>> grantedAuthorityCache;
 
     private final AuthenticationContext authenticationContext;
     private final AzureADGraphClient graphClient;
@@ -64,7 +65,7 @@ public class AzureTokenProvider {
                 .maximumSize(1000).build();
         this.grantedAuthorityCache = Caffeine.newBuilder().recordStats()
                 .expireAfterAccess(Duration.ofMinutes(10))
-                .maximumSize(1000).build();
+                .maximumSize(1000).build(this::lookupGrantedAuthorities);
         MetricUtils.register("accessTokenCache", accessTokenCache);
         MetricUtils.register("grantedAuthorityCache", grantedAuthorityCache);
     }
@@ -84,7 +85,7 @@ public class AzureTokenProvider {
     }
 
     public Set<GrantedAuthority> getGrantedAuthorities(String token) {
-        return grantedAuthorityCache.get(token, this::lookupGrantedAuthorities);
+        return grantedAuthorityCache.get(token);
     }
 
     public AuthenticationResult acquireTokenForAuthCode(String code, String redirectUri) {

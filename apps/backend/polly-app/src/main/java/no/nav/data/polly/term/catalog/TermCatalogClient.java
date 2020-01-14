@@ -1,7 +1,7 @@
 package no.nav.data.polly.term.catalog;
 
-import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.utils.MetricUtils;
@@ -32,8 +32,8 @@ public class TermCatalogClient implements TermService {
 
     private final RestTemplate restTemplate;
     private final TermCatalogProperties properties;
-    private final Cache<String, List<CatalogTerm>> termSearchCache;
-    private final Cache<String, GraphNode> termCache;
+    private final LoadingCache<String, List<CatalogTerm>> termSearchCache;
+    private final LoadingCache<String, GraphNode> termCache;
 
     public TermCatalogClient(RestTemplate restTemplate, TermCatalogProperties properties) {
         this.restTemplate = restTemplate;
@@ -41,17 +41,17 @@ public class TermCatalogClient implements TermService {
 
         this.termSearchCache = Caffeine.newBuilder().recordStats()
                 .expireAfterAccess(Duration.ofMinutes(10))
-                .maximumSize(1000).build();
+                .maximumSize(1000).build(this::searchCatalog);
         this.termCache = Caffeine.newBuilder().recordStats()
                 .expireAfterAccess(Duration.ofMinutes(10))
-                .maximumSize(1000).build();
+                .maximumSize(1000).build(this::getFromCatalog);
         MetricUtils.register("termSearchCache", termSearchCache);
         MetricUtils.register("termCache", termCache);
     }
 
     @Override
     public List<PollyTerm> searchTerms(String searchString) {
-        List<CatalogTerm> terms = termSearchCache.get(searchString, this::searchCatalog);
+        List<CatalogTerm> terms = termSearchCache.get(searchString);
         return safeStream(terms)
                 .map(CatalogTerm::convertToPollyTerm)
                 .collect(Collectors.toList());
@@ -59,7 +59,7 @@ public class TermCatalogClient implements TermService {
 
     @Override
     public Optional<PollyTerm> getTerm(String termId) {
-        GraphNode term = termCache.get(termId, this::getFromCatalog);
+        GraphNode term = termCache.get(termId);
         return Optional.ofNullable(term).map(GraphNode::convertToPollyTerm);
     }
 

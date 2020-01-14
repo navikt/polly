@@ -1,7 +1,7 @@
 package no.nav.data.polly.teams.nora;
 
-import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import no.nav.data.polly.common.exceptions.PollyNotFoundException;
 import no.nav.data.polly.common.utils.MetricUtils;
 import no.nav.data.polly.teams.TeamService;
@@ -27,21 +27,21 @@ public class NoraClient implements TeamService {
 
     private final RestTemplate restTemplate;
     private final NoraProperties noraProperties;
-    private final Cache<String, List<NoraTeam>> appsCache;
-    private final Cache<String, NoraTeam> teamCache;
+    private final LoadingCache<String, List<NoraTeam>> allTeamsCache;
+    private final LoadingCache<String, NoraTeam> teamCache;
 
     public NoraClient(RestTemplate restTemplate, NoraProperties noraProperties) {
         this.restTemplate = restTemplate;
         this.noraProperties = noraProperties;
 
-        this.appsCache = Caffeine.newBuilder().recordStats()
+        this.allTeamsCache = Caffeine.newBuilder().recordStats()
                 .expireAfterAccess(Duration.ofMinutes(10))
-                .maximumSize(1).build();
+                .maximumSize(1).build(k -> getTeamsResponse());
         this.teamCache = Caffeine.newBuilder().recordStats()
                 .expireAfterAccess(Duration.ofMinutes(10))
-                .maximumSize(100).build();
-        MetricUtils.register("noraAppsCache", appsCache);
-        MetricUtils.register("teamCache", teamCache);
+                .maximumSize(100).build(this::getTeamResponse);
+        MetricUtils.register("noraAllTeamsCache", allTeamsCache);
+        MetricUtils.register("noraTeamCache", teamCache);
     }
 
     @Override
@@ -51,9 +51,9 @@ public class NoraClient implements TeamService {
 
     @Override
     public Team getTeam(String teamId) {
-        NoraTeam noraTeam = teamCache.get(teamId, this::getTeamResponse);
+        NoraTeam noraTeam = teamCache.get(teamId);
         if (noraTeam == null) {
-            throw new PollyNotFoundException("Couldn't find team "+ teamId);
+            throw new PollyNotFoundException("Couldn't find team " + teamId);
         }
         return noraTeam.convertToTeam();
     }
@@ -64,7 +64,7 @@ public class NoraClient implements TeamService {
     }
 
     private List<Team> getTeams() {
-        List<NoraTeam> noraApps = appsCache.get("singleton", key -> getTeamsResponse());
+        List<NoraTeam> noraApps = allTeamsCache.get("singleton");
         return safeStream(noraApps).map(NoraTeam::convertToTeam).distinct()
                 .sorted(Comparator.comparing(Team::getName)).collect(Collectors.toList());
     }
