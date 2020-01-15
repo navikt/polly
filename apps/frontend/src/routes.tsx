@@ -41,7 +41,7 @@ const Routes = (): JSX.Element => (
             />
             <Route
                 exact
-                path="/admin/audit/:id?"
+                path="/admin/audit/:id?/:auditId?"
                 component={AuditPage}
             />
             <Route>

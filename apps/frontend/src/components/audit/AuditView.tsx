@@ -2,7 +2,7 @@ import moment from "moment"
 import { Block } from "baseui/block"
 import { intl, theme } from "../../util"
 import ReactJson from "react-json-view"
-import React from "react"
+import React, { RefObject, useEffect } from "react"
 import { AuditLog } from "../../constants"
 import { Label1 } from "baseui/typography"
 import { AuditLabel as Label } from "./AuditLabel"
@@ -15,13 +15,27 @@ import { StatefulTooltip } from "baseui/tooltip"
 
 type AuditViewProps = {
     auditLog?: AuditLog,
+    auditId?: string,
     loading: boolean,
     viewId: (id?: string) => void
 }
 
+type Refs = { [id: string]: RefObject<HTMLElement> }
+
 export const AuditView = (props: AuditViewProps) => {
-    const {auditLog, loading, viewId} = props
+    const {auditLog, auditId, loading, viewId} = props
+    const refs: Refs = auditLog?.audits.reduce((acc, value) => {
+        acc[value.id] = React.createRef();
+        return acc;
+    }, {} as Refs) || {};
+
     const logFound = !!auditLog?.audits.length
+
+    useEffect(() => {
+        if (auditId && auditLog) {
+            refs[auditId].current!.scrollIntoView({block: "start"})
+        }
+    }, [auditId, auditLog])
 
     return !auditLog ? null :
         (<Card>
@@ -44,10 +58,11 @@ export const AuditView = (props: AuditViewProps) => {
                     </Block>
                   </Block>
 
-                    {auditLog!.audits.map((audit, index) => {
+                    {auditLog.audits.map((audit, index) => {
                         const time = moment(audit.time)
                         return (
-                            <Block key={audit.id} marginBottom='1rem' marginTop=".5rem">
+                            <Block key={audit.id} ref={refs[audit.id]} marginBottom='1rem' marginTop=".5rem"
+                                   backgroundColor={audit.id === props.auditId ? theme.colors.mono200 : undefined}>
                                 <Label label={intl.auditNr}>{auditLog!.audits.length - index}</Label>
                                 <Label label={intl.action}>{audit.action}</Label>
                                 <Label label={intl.time}>{time.format('LL')} {time.format('HH:mm:ss.SSS Z')}</Label>

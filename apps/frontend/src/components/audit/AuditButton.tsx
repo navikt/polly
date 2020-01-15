@@ -7,9 +7,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faHistory } from "@fortawesome/free-solid-svg-icons"
 import React from "react"
 
-export const AuditButton = (props: { id: string, kind?: KIND[keyof KIND], children?: any }) => {
+export const AuditButton = (props: { id: string, auditId?: string, kind?: KIND[keyof KIND], children?: any }) => {
     return user.isAdmin() ?
-        <RouteLink href={`/admin/audit/${props.id}`}>
+        <RouteLink href={`/admin/audit/${props.id}` + (props.auditId ? `/${props.auditId}` : '')}>
             {props.children ? props.children :
                 <StatefulTooltip content={intl.version}>
                     <Button

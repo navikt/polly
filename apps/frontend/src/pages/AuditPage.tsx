@@ -15,7 +15,7 @@ import { Paragraph2 } from "baseui/typography"
 const format = (id: string) => _.trim(id, "\"")
 
 
-const AuditPageImpl = (props: RouteComponentProps<{ id?: string }>) => {
+const AuditPageImpl = (props: RouteComponentProps<{ id?: string, auditId?: string }>) => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState()
     const [auditLog, setAuditLog] = useState<AuditLog>()
@@ -63,7 +63,7 @@ const AuditPageImpl = (props: RouteComponentProps<{ id?: string }>) => {
             </Block>
 
             {error && <Paragraph2>{_.escape(error)}</Paragraph2>}
-            <AuditView auditLog={auditLog} loading={loading} viewId={lookupVersion}/>
+            <AuditView auditLog={auditLog} auditId={props.match.params.auditId} loading={loading} viewId={lookupVersion}/>
             {!auditLog && !error && <AuditRecentTable/>}
         </>
     )

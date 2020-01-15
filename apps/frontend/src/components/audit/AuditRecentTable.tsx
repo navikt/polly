@@ -2,7 +2,7 @@ import { Label2 } from "baseui/typography"
 import React, { useEffect, useState } from "react"
 import { getAudits } from "../../api/AuditApi"
 import { AuditItem, PageResponse } from "../../constants"
-import { Table } from "baseui/table"
+import { StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from "baseui/table"
 import { intl } from "../../util"
 import moment from "moment"
 import { Pagination } from "baseui/pagination"
@@ -13,6 +13,7 @@ import { StatefulMenu } from "baseui/menu"
 import { Block } from "baseui/block"
 import { StatefulTooltip } from "baseui/tooltip"
 import { AuditButton } from "./AuditButton"
+import _ from "lodash"
 
 export const AuditRecentTable = () => {
     const [audits, setAudits] = useState<PageResponse<AuditItem>>({content: [], numberOfElements: 0, pageNumber: 0, pages: 0, pageSize: 1, totalElements: 0})
@@ -43,18 +44,34 @@ export const AuditRecentTable = () => {
         setLimit(nextLimit);
     };
 
-    const dataView = audits.content.map(audit => [
-        <><AuditButton id={audit.tableId}/> <StatefulTooltip content={audit.time}>{moment(audit.time).fromNow()}</StatefulTooltip></>,
-        audit.action,
-        audit.table,
-        audit.user
-    ])
-
     return (
         <>
-            <Label2>Hei</Label2>
-
-            <Table columns={[intl.time, intl.action, intl.table, intl.user]} data={dataView}/>
+            <Label2>Siste endringer</Label2>
+            <StyledTable>
+                <StyledHead>
+                    <StyledHeadCell $style={{maxWidth: "13%"}}>{intl.time}</StyledHeadCell>
+                    <StyledHeadCell>{intl.action}</StyledHeadCell>
+                    <StyledHeadCell>{intl.id}</StyledHeadCell>
+                    <StyledHeadCell>{intl.user}</StyledHeadCell>
+                </StyledHead>
+                <StyledBody>
+                    {audits.content.map((audit, index) => {
+                        const length = window.innerWidth > 1200 ? window.innerWidth > 1400 ? 40 : 30 : 20
+                        return (
+                            <StyledRow key={audit.id}>
+                                <StyledCell $style={{maxWidth: "13%"}}>
+                                    <AuditButton kind="tertiary" id={audit.tableId} auditId={audit.id}>
+                                        <StatefulTooltip content={audit.time}>{moment(audit.time).fromNow()}</StatefulTooltip>
+                                    </AuditButton>
+                                </StyledCell>
+                                <StyledCell>{audit.action} {audit.table}</StyledCell>
+                                <StyledCell><StatefulTooltip content={audit.tableId}>{_.truncate(audit.tableId, {length})}</StatefulTooltip></StyledCell>
+                                <StyledCell>{audit.user}</StyledCell>
+                            </StyledRow>
+                        )
+                    })}
+                </StyledBody>
+            </StyledTable>
 
             <Block display="flex" justifyContent="space-between" marginTop="1rem">
                 <StatefulPopover
