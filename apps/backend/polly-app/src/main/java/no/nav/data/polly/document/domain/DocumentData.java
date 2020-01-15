@@ -1,23 +1,20 @@
-package no.nav.data.polly.informationtype.dto;
+package no.nav.data.polly.document.domain;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
-
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "name", "description"})
-public class InfoTypeTermResponse {
+public class DocumentData {
 
-    private UUID id;
     private String name;
     private String description;
-
+    private List<UUID> informationTypeIds;
 }

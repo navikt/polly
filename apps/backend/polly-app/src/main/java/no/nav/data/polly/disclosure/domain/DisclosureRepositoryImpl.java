@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -24,26 +25,34 @@ public class DisclosureRepositoryImpl implements DisclosureRepositoryCustom {
     public List<Disclosure> findByGDPRArticle(String gdpr) {
         var resp = jdbcTemplate.queryForList("select disclosure_id from disclosure where data #>'{legalBases}' @> :gdpr::jsonb",
                 new MapSqlParameterSource().addValue("gdpr", String.format("[{\"gdpr\": \"%s\"}]", gdpr)));
-        List<UUID> ids = resp.stream().map(i -> ((UUID) i.values().iterator().next())).collect(Collectors.toList());
-
-        return disclosureRepository.findAllById(ids);
+        return getDisclosures(resp);
     }
 
     @Override
     public List<Disclosure> findByNationalLaw(String nationalLaw) {
         var resp = jdbcTemplate.queryForList("select disclosure_id from disclosure where data #>'{legalBases}' @> :nationalLaw::jsonb",
                 new MapSqlParameterSource().addValue("nationalLaw", String.format("[{\"nationalLaw\": \"%s\"}]", nationalLaw)));
-        List<UUID> ids = resp.stream().map(i -> ((UUID) i.values().iterator().next())).collect(Collectors.toList());
-
-        return disclosureRepository.findAllById(ids);
+        return getDisclosures(resp);
     }
 
     @Override
     public List<Disclosure> findByRecipient(String recipient) {
         var resp = jdbcTemplate.queryForList("select disclosure_id from disclosure where data #>'{recipient}' ?? :recipient ",
                 new MapSqlParameterSource().addValue("recipient", recipient));
-        List<UUID> ids = resp.stream().map(i -> ((UUID) i.values().iterator().next())).collect(Collectors.toList());
+        return getDisclosures(resp);
+    }
 
+    @Override
+    public List<Disclosure> findByInformationTypeId(UUID informationTypeId) {
+        var resp = jdbcTemplate.queryForList("select disclosure_id from disclosure di where exists(select 1 from document d"
+                        + "             where di.data ->> 'documentId' = d.document_id::text"
+                        + "               and d.data #> '{informationTypeIds}' ?? :informationTypeId::text)",
+                new MapSqlParameterSource().addValue("informationTypeId", informationTypeId));
+        return getDisclosures(resp);
+    }
+
+    private List<Disclosure> getDisclosures(List<Map<String, Object>> resp) {
+        List<UUID> ids = resp.stream().map(i -> ((UUID) i.values().iterator().next())).collect(Collectors.toList());
         return disclosureRepository.findAllById(ids);
     }
 }

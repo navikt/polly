@@ -11,23 +11,23 @@ import static java.lang.String.CASE_INSENSITIVE_ORDER;
  */
 public class StartsWithComparator implements Comparator<String> {
 
-    private final String str;
+    private final String prefix;
 
-    public static Comparator<String> startsWith(String str) {
-        return new StartsWithComparator(str).thenComparing(CASE_INSENSITIVE_ORDER);
+    public static Comparator<String> startsWith(String prefix) {
+        return new StartsWithComparator(prefix).thenComparing(CASE_INSENSITIVE_ORDER);
     }
 
-    private StartsWithComparator(String str) {
-        this.str = str;
+    private StartsWithComparator(String prefix) {
+        this.prefix = prefix;
     }
 
     @Override
     public int compare(String o1, String o2) {
-        var o1Start = StringUtils.indexOfIgnoreCase(o1, str);
-        var o2Start = StringUtils.indexOfIgnoreCase(o2, str);
-        if (o1Start < 0 && o2Start >= 0) {
-            return 1;
-        }
-        return o1Start - o2Start;
+        return start(o1) - start(o2);
+    }
+
+    private int start(String string) {
+        int start = StringUtils.indexOfIgnoreCase(string, prefix);
+        return start < 0 ? Integer.MAX_VALUE : start;
     }
 }

@@ -10,6 +10,7 @@ import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureData;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
+import no.nav.data.polly.document.domain.DocumentRepository;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
@@ -52,7 +53,7 @@ import java.util.stream.IntStream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
-import static no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus.SYNCED;
+import static no.nav.data.polly.sync.domain.SyncStatus.SYNCED;
 
 @Slf4j
 @ActiveProfiles("test")
@@ -60,8 +61,6 @@ import static no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus.SYNCED;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {AppStarter.class})
 @ContextConfiguration(initializers = {Initializer.class})
 public abstract class IntegrationTestBase {
-
-    public static final int ELASTICSEARCH_PORT = SocketUtils.findAvailableTcpPort();
 
     protected static final UUID INFORMATION_TYPE_ID_1 = UUID.fromString("fe566351-da4d-43b0-a2e9-b09e41ff8aa7");
     protected static final String PROCESS_NAME_1 = "Saksbehandling";
@@ -83,6 +82,8 @@ public abstract class IntegrationTestBase {
     @Autowired
     protected DisclosureRepository disclosureRepository;
     @Autowired
+    protected DocumentRepository documentRepository;
+    @Autowired
     protected KafkaTopicProperties topicProperties;
 
     static {
@@ -97,20 +98,21 @@ public abstract class IntegrationTestBase {
         CodelistStub.initializeCodelist();
         WireMock.stubFor(get("/elector").willReturn(okJson(JsonUtils.toJson(LeaderElectionService.getHostInfo()))));
         mockTerms();
-
-        disclosureRepository.deleteAll();
-        policyRepository.deleteAll();
-        informationTypeRepository.deleteAll();
-        processRepository.deleteAll();
+        delete();
     }
 
     @AfterEach
     public void teardownAbstract() {
+        delete();
+        CollectorRegistry.defaultRegistry.clear();
+    }
+
+    private void delete() {
         disclosureRepository.deleteAll();
+        documentRepository.deleteAll();
         policyRepository.deleteAll();
         informationTypeRepository.deleteAll();
         processRepository.deleteAll();
-        CollectorRegistry.defaultRegistry.clear();
     }
 
     protected List<Policy> createAndSavePolicy(int rows) {
@@ -155,7 +157,7 @@ public abstract class IntegrationTestBase {
         InformationType informationType = InformationType.builder()
                 .id(id)
                 .termId("term")
-                .elasticsearchStatus(SYNCED)
+                .syncStatus(SYNCED)
                 .data(InformationTypeData.builder()
                         .name(name)
                         .description("desc")
@@ -259,7 +261,6 @@ public abstract class IntegrationTestBase {
                     "spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
                     "spring.datasource.username=" + postgreSQLContainer.getUsername(),
                     "spring.datasource.password=" + postgreSQLContainer.getPassword(),
-                    "elasticsearch.port=" + ELASTICSEARCH_PORT,
                     "wiremock.server.port=" + WiremockExtension.getWiremock().port(),
                     "KAFKA_BOOTSTRAP_SERVERS=" + KafkaContainer.getAddress(),
                     "KAFKA_SCHEMA_REGISTRY_URL=" + SchemaRegistryContainer.getAddress()

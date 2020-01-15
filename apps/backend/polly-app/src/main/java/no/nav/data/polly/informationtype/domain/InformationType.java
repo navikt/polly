@@ -8,17 +8,13 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import no.nav.data.polly.codelist.codeusage.UsedInInstance;
 import no.nav.data.polly.common.auditing.domain.Auditable;
-import no.nav.data.polly.disclosure.domain.Disclosure;
-import no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus;
-import no.nav.data.polly.elasticsearch.dto.InformationTypeElasticsearch;
-import no.nav.data.polly.elasticsearch.dto.ProcessElasticsearch;
+import no.nav.data.polly.sync.domain.SyncStatus;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
 import no.nav.data.polly.policy.domain.Policy;
 import org.hibernate.annotations.Type;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Column;
@@ -26,16 +22,15 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import static no.nav.data.polly.common.utils.StreamUtils.copyOf;
-import static no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus.SYNCED;
-import static no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus.TO_BE_CREATED;
-import static no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus.TO_BE_UPDATED;
+import static no.nav.data.polly.sync.domain.SyncStatus.SYNCED;
+import static no.nav.data.polly.sync.domain.SyncStatus.TO_BE_CREATED;
+import static no.nav.data.polly.sync.domain.SyncStatus.TO_BE_UPDATED;
 
 @Data
 @Builder
@@ -53,9 +48,9 @@ public class InformationType extends Auditable<String> {
     private UUID id;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(nullable = false, name = "ELASTICSEARCH_STATUS")
     @Enumerated(EnumType.STRING)
-    private ElasticsearchStatus elasticsearchStatus;
+    private SyncStatus syncStatus;
 
     @Builder.Default
     @Valid
@@ -71,10 +66,6 @@ public class InformationType extends Auditable<String> {
     @OneToMany(mappedBy = "informationType")
     private Set<Policy> policies = new HashSet<>();
 
-    @Builder.Default
-    @ManyToMany(mappedBy = "informationTypes")
-    private Set<Disclosure> disclosures  = new HashSet<>();
-
     // Added outside builder to enforce backreference
     public InformationType addPolicy(Policy policy) {
         if (policy != null) {
@@ -88,19 +79,19 @@ public class InformationType extends Auditable<String> {
         return new InformationTypeResponse(this);
     }
 
-    public UsedInInstance getInstanceIdentification(){
+    public UsedInInstance getInstanceIdentification() {
         return UsedInInstance.builder().id(id.toString()).name(data.getName()).build();
     }
 
     public InformationType convertNewFromRequest(InformationTypeRequest request) {
         id = UUID.randomUUID();
-        elasticsearchStatus = TO_BE_CREATED;
+        syncStatus = TO_BE_CREATED;
         convertFromRequest(request);
         return this;
     }
 
     public void convertUpdateFromRequest(InformationTypeRequest request) {
-        elasticsearchStatus = elasticsearchStatus == SYNCED ? TO_BE_UPDATED : elasticsearchStatus;
+        syncStatus = syncStatus == SYNCED ? TO_BE_UPDATED : syncStatus;
         convertFromRequest(request);
     }
 
@@ -119,10 +110,6 @@ public class InformationType extends Auditable<String> {
 
     public void preUpdate() {
         data.setSuggest(data.getName() + " " + String.join(" ", data.getKeywords()) + " " + data.getDescription());
-    }
-
-    public InformationTypeElasticsearch convertToElasticsearch(List<ProcessElasticsearch> processes) {
-        return new InformationTypeElasticsearch(this, processes);
     }
 
     public static class InformationTypeBuilder {

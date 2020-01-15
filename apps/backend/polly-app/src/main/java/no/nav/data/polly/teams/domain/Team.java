@@ -4,7 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.data.polly.teams.dto.ProductTeamResponse;
+import no.nav.data.polly.teams.dto.TeamResponse;
+
+import java.util.List;
+
+import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Data
 @Builder
@@ -14,8 +18,13 @@ public class Team {
 
     private String id;
     private String name;
+    private List<Member> members;
 
-    public ProductTeamResponse convertToResponse() {
-        return new ProductTeamResponse(id, name);
+    public TeamResponse convertToResponse() {
+        return TeamResponse.builder()
+                .id(id)
+                .name(name)
+                .members(convert(members, Member::convertToResponse))
+                .build();
     }
 }

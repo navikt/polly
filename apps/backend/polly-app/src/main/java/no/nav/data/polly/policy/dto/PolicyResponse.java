@@ -18,7 +18,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "process", "purposeCode", "subjectCategory", "start", "end", "active", "legalBasesInherited", "informationType", "legalBases"})
+@JsonPropertyOrder({"id", "process", "purposeCode", "subjectCategory", "start", "end", "active", "legalBasesInherited", "informationTypeId", "informationType", "legalBases"})
 public class PolicyResponse {
 
     private UUID id;
@@ -28,6 +28,7 @@ public class PolicyResponse {
     private LocalDate start;
     private LocalDate end;
     private boolean legalBasesInherited;
+    private UUID informationTypeId;
     private PolicyInformationTypeResponse informationType;
     @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;

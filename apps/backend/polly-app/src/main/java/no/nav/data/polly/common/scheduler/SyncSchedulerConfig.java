@@ -1,7 +1,7 @@
 package no.nav.data.polly.common.scheduler;
 
-import no.nav.data.polly.elasticsearch.ElasticsearchProperties;
-import no.nav.data.polly.elasticsearch.ElasticsearchService;
+import no.nav.data.polly.sync.SyncProperties;
+import no.nav.data.polly.sync.SyncService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -15,22 +15,22 @@ import static no.nav.data.polly.common.utils.MdcUtils.wrapAsync;
 
 @Configuration
 @EnableScheduling
-public class ElasticsearchIndexingSchedulerConfig implements SchedulingConfigurer {
+public class SyncSchedulerConfig implements SchedulingConfigurer {
 
     @Autowired
-    private ElasticsearchProperties properties;
+    private SyncProperties properties;
     @Autowired
-    private ElasticsearchService service;
+    private SyncService service;
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
         if (!properties.indexingDisabled()) {
-            long syncIntervalInMillis = TimeUnit.SECONDS.toMillis(properties.getIndexingIntervalSeconds());
+            long syncIntervalInMillis = TimeUnit.SECONDS.toMillis(properties.getIntervalSeconds());
             taskRegistrar.addFixedRateTask(syncTask(syncIntervalInMillis, 1000L));
         }
     }
 
     IntervalTask syncTask(long interval, long initialDelay) {
-        return new IntervalTask(wrapAsync(service::synchToElasticsearch, "elasticsync"), interval, initialDelay);
+        return new IntervalTask(wrapAsync(service::sync, "sync"), interval, initialDelay);
     }
 }

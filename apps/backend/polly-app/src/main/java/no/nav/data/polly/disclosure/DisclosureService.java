@@ -7,26 +7,24 @@ import no.nav.data.polly.common.validator.ValidationError;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;
-import no.nav.data.polly.informationtype.InformationTypeRepository;
+import no.nav.data.polly.document.domain.DocumentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-import static no.nav.data.polly.common.utils.StreamUtils.convert;
-import static no.nav.data.polly.common.utils.StreamUtils.filter;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 public class DisclosureService extends RequestValidator<DisclosureRequest> {
 
     private DisclosureRepository repository;
-    private InformationTypeRepository informationTypeRepository;
+    private DocumentRepository documentRepository;
 
-    public DisclosureService(DisclosureRepository repository, InformationTypeRepository informationTypeRepository) {
+    public DisclosureService(DisclosureRepository repository, DocumentRepository documentRepository) {
         this.repository = repository;
-        this.informationTypeRepository = informationTypeRepository;
+        this.documentRepository = documentRepository;
     }
 
     @Transactional
@@ -47,21 +45,14 @@ public class DisclosureService extends RequestValidator<DisclosureRequest> {
         var validationErrors = StreamUtils.applyAll(request,
                 RequestElement::validateFields,
                 r -> validateRepositoryValues(r, r.getIdAsUUID() != null && repository.findById(r.getIdAsUUID()).isPresent()),
-                this::validateInformationTypes
+                this::validateDocument
         );
 
         ifErrorsThrowValidationException(validationErrors);
     }
 
-    private List<ValidationError> validateInformationTypes(DisclosureRequest request) {
-        if (request.getInformationTypes().isEmpty()) {
-            return List.of();
-        }
-        List<UUID> ids = convert(request.getInformationTypes(), UUID::fromString);
-        var infoTypes = informationTypeRepository.findAllById(ids);
-        request.setInformationTypesData(infoTypes);
-        var missingInfoTypes = ids.stream().filter(id -> filter(infoTypes, infoType -> ids.contains(infoType.getId())).isEmpty()).collect(Collectors.toList());
-        return missingInfoTypes.isEmpty() ? List.of()
-                : List.of(new ValidationError(request.getReference(), "informationTypeDoesNotExist", String.format("The InformationTypes %s doesnt exist", missingInfoTypes)));
+    private List<ValidationError> validateDocument(DisclosureRequest request) {
+        return isBlank(request.getDocumentId()) || documentRepository.findById(UUID.fromString(request.getDocumentId())).isPresent() ? List.of()
+                : List.of(new ValidationError(request.getReference(), "documentDoesNotExist", String.format("The Document %s doesnt exist", request.getDocumentId())));
     }
 }

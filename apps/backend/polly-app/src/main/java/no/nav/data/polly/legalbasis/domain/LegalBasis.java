@@ -8,7 +8,6 @@ import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.common.utils.DateUtil;
-import no.nav.data.polly.elasticsearch.dto.LegalBasisElasticsearch;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 
 import java.io.Serializable;
@@ -36,17 +35,6 @@ public class LegalBasis implements Serializable {
 
     public LegalBasisResponse convertToResponse() {
         return new LegalBasisResponse(gdprCodelistResponse(), nationalLawCodelistResponse(), description, start, end);
-    }
-
-    public LegalBasisElasticsearch convertToElasticsearch() {
-        return LegalBasisElasticsearch.builder()
-                .gdpr(gdprCodelistResponse())
-                .nationalLaw(nationalLawCodelistResponse())
-                .description(description)
-                .start(DateUtil.formatDate(start))
-                .end(DateUtil.formatDate(end))
-                .active(isActive())
-                .build();
     }
 
     private CodelistResponse gdprCodelistResponse() {

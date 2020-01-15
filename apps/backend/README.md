@@ -15,7 +15,7 @@ Prosjektet krever maven og java 11
 ``mvn clean install``
 
 #####For å kjøre lokalt
-Start postgres og elasticsearch med `docker-compose up -d elasticsearch postgres`
+Start postgres med `docker-compose up -d postgres`
 og bruk ``no.nav.data.polly.LocalAppStarter``
 
 Swagger-dokumentasjon av tjenestene er tilgjenglig på http://localhost:8080/swagger-ui.html

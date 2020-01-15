@@ -1,6 +1,5 @@
 package no.nav.data.polly.disclosure.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,9 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
-import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.process.dto.ProcessRequest;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,14 +42,10 @@ public class DisclosureRequest implements RequestElement {
     private String end;
     @Singular("legalBasis")
     private List<LegalBasisRequest> legalBases = new ArrayList<>();
-    @Singular
-    private List<String> informationTypes = new ArrayList<>();
+    private String documentId;
 
     private boolean update;
     private int requestIndex;
-    @Builder.Default
-    @JsonIgnore
-    private List<InformationType> informationTypesData = new ArrayList<>();
 
     @Override
     public String getIdentifyingFields() {
@@ -60,7 +55,7 @@ public class DisclosureRequest implements RequestElement {
     @Override
     public void format() {
         setRecipient(toUpperCaseAndTrim(getRecipient()));
-        setInformationTypes(informationTypes == null ? List.of() : informationTypes);
+        setDocumentId(StringUtils.trim(documentId));
     }
 
     @Override
@@ -73,5 +68,6 @@ public class DisclosureRequest implements RequestElement {
         validator.checkDate(ProcessRequest.Fields.start, start);
         validator.checkDate(ProcessRequest.Fields.end, end);
         validator.validateType(ProcessRequest.Fields.legalBases, legalBases);
+        validator.checkUUID(Fields.documentId, documentId);
     }
 }

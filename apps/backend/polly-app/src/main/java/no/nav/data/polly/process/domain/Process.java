@@ -8,23 +8,19 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.codeusage.UsedInInstance;
-import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.common.auditing.domain.Auditable;
 import no.nav.data.polly.common.utils.DateUtil;
-import no.nav.data.polly.elasticsearch.dto.ProcessElasticsearch;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.dto.PolicyProcessResponse;
-import no.nav.data.polly.process.dto.ProcessPolicyResponse;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import org.hibernate.annotations.Type;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Column;
@@ -106,36 +102,10 @@ public class Process extends Auditable<String> {
         return UsedInInstance.builder().id(id.toString()).name(name).build();
     }
 
-    public ProcessPolicyResponse convertToResponseWithPolicies() {
-        return ProcessPolicyResponse.builder()
-                .id(id)
-                .name(name)
-                .purposeCode(purposeCode)
-                .department(getDepartmentCode())
-                .subDepartment(getSubDepartmentCode())
-                .productTeam(data.getProductTeam())
-                .start(data.getStart())
-                .end(data.getEnd())
-                .legalBases(convert(data.getLegalBases(), LegalBasis::convertToResponse))
-                .policies(convert(policies, Policy::convertToResponse))
-                .build();
-    }
-
-    public ProcessElasticsearch convertToElasticsearch(List<Policy> policies) {
-        Codelist purpose = CodelistService.getCodelist(ListName.PURPOSE, purposeCode);
-        return ProcessElasticsearch.builder()
-                .id(id)
-                .name(name)
-                .purpose(purpose.getCode())
-                .purposeDescription(purpose.getDescription())
-                .department(getDepartmentCode())
-                .subDepartment(getSubDepartmentCode())
-                .start(DateUtil.formatDate(data.getStart()))
-                .end(DateUtil.formatDate(data.getEnd()))
-                .active(isActive())
-                .legalbases(convert(data.getLegalBases(), LegalBasis::convertToElasticsearch))
-                .policies(convert(policies, Policy::convertToElasticsearch))
-                .build();
+    public ProcessResponse convertToResponseWithPolicies() {
+        var response = convertToResponse();
+        response.setPolicies(convert(policies, Policy::convertToResponse));
+        return response;
     }
 
     public Process convertFromRequest(ProcessRequest request) {

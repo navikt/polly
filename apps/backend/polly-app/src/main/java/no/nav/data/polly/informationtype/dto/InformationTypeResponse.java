@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
-import no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus;
+import no.nav.data.polly.sync.domain.SyncStatus;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
 
@@ -40,7 +40,7 @@ public class InformationTypeResponse {
     public InformationTypeResponse(InformationType informationType) {
         id = informationType.getId();
         setTerm(informationType.getTermId());
-        setToBeDeleted(informationType.getElasticsearchStatus() == ElasticsearchStatus.TO_BE_DELETED);
+        setToBeDeleted(informationType.getSyncStatus() == SyncStatus.TO_BE_DELETED);
         mapJsonFields(informationType.getData());
     }
 

@@ -4,9 +4,12 @@ import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.disclosure.DisclosureController.DisclosurePage;
-import no.nav.data.polly.disclosure.dto.DisclosureInformationTypeResponse;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;
 import no.nav.data.polly.disclosure.dto.DisclosureResponse;
+import no.nav.data.polly.document.domain.Document;
+import no.nav.data.polly.document.dto.DocumentInformationTypeResponse;
+import no.nav.data.polly.document.dto.DocumentRequest;
+import no.nav.data.polly.document.dto.DocumentResponse;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import org.junit.jupiter.api.Test;
@@ -19,15 +22,14 @@ import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
-import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class DisclosureControllerIT extends IntegrationTestBase {
 
     @Autowired
     private TestRestTemplate restTemplate;
+    private Document document;
 
     @Test
     void createAndGetDisclosure() {
@@ -39,9 +41,9 @@ class DisclosureControllerIT extends IntegrationTestBase {
     }
 
     private DisclosureResponse createDisclosureArbeidsgiverWithInformationType() {
-        InformationType infoType = createAndSaveInformationType();
+        document = createAndSaveDocument();
         var req = buildDisclosure("ARBEIDSGIVER");
-        req.setInformationTypes(List.of(infoType.getId().toString()));
+        req.setDocumentId(document.getId().toString());
         var resp = restTemplate.postForEntity("/disclosure", req, DisclosureResponse.class);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -53,6 +55,10 @@ class DisclosureControllerIT extends IntegrationTestBase {
         InformationType infoType = createAndSaveInformationType();
         var disclosureResponse = resp.getBody();
         assertThat(disclosureResponse).isNotNull();
+
+        DocumentInformationTypeResponse infoTypeRes = new DocumentInformationTypeResponse(infoType.getId(), infoType.getData().getName(),
+                CodelistService.getCodelistResponse(ListName.SENSITIVITY, infoType.getData().getSensitivity()));
+
         assertThat(disclosureResponse).isEqualTo(DisclosureResponse.builder()
                 .id(disclosureResponse.getId())
                 .description("disc desc")
@@ -61,8 +67,14 @@ class DisclosureControllerIT extends IntegrationTestBase {
                 .start(LocalDate.now())
                 .end(LocalDate.now())
                 .legalBasis(legalBasisResponse())
-                .informationType(new DisclosureInformationTypeResponse(infoType.getId(), infoType.getData().getName(),
-                        CodelistService.getCodelistResponse(ListName.SENSITIVITY, infoType.getData().getSensitivity())))
+                .documentId(document.getId())
+                .document(DocumentResponse.builder()
+                        .id(document.getId())
+                        .name(document.getData().getName())
+                        .description(document.getData().getDescription())
+                        .informationTypeIds(List.of(infoTypeRes.getId()))
+                        .informationTypes(List.of(infoTypeRes))
+                        .build())
                 .build());
     }
 
@@ -82,9 +94,9 @@ class DisclosureControllerIT extends IntegrationTestBase {
     @Test
     void getDisclosureByInfoTypeId() {
         restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
-        var disc = createDisclosureArbeidsgiverWithInformationType();
+        createDisclosureArbeidsgiverWithInformationType();
         ResponseEntity<DisclosurePage> resp = restTemplate
-                .getForEntity("/disclosure?informationTypeId={infoTypeId}", DisclosurePage.class, disc.getInformationTypes().get(0).getId());
+                .getForEntity("/disclosure?informationTypeId={infoTypeId}", DisclosurePage.class, document.getData().getInformationTypeIds().get(0));
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         DisclosurePage disclosurePage = resp.getBody();
@@ -118,30 +130,27 @@ class DisclosureControllerIT extends IntegrationTestBase {
 
     @Test
     void updateDisclosure() {
-        var infoTypeOne = createAndSaveInformationType(UUID.randomUUID(), "name1");
-        var infoTypeTwo = createAndSaveInformationType(UUID.randomUUID(), "name2");
+        var doc = createAndSaveDocument();
         DisclosureRequest create = buildDisclosure();
-        create.setInformationTypes(List.of(infoTypeOne.getId().toString(), infoTypeTwo.getId().toString()));
+        create.setDocumentId(doc.getId().toString());
 
         ResponseEntity<DisclosureResponse> resp = restTemplate.postForEntity("/disclosure", create, DisclosureResponse.class);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody().getInformationTypes()).hasSize(2);
-        assertThat(convert(resp.getBody().getInformationTypes(), DisclosureInformationTypeResponse::getId)).contains(infoTypeOne.getId(), infoTypeTwo.getId());
+        assertThat(resp.getBody().getDocumentId()).isEqualTo(doc.getId());
 
         String id = resp.getBody().getId().toString();
-        var infoTypeUpdate = createAndSaveInformationType(UUID.randomUUID(), "name3");
+        var docUpdate = createAndSaveDocument();
         DisclosureRequest update = buildDisclosure();
         update.setId(id);
-        update.setInformationTypes(List.of(infoTypeOne.getId().toString(), infoTypeUpdate.getId().toString()));
+        update.setDocumentId(docUpdate.getId().toString());
 
-        resp = restTemplate.exchange("/disclosure", HttpMethod.PUT, new HttpEntity<>(update), DisclosureResponse.class, id);
+        resp = restTemplate.exchange("/disclosure/{id}", HttpMethod.PUT, new HttpEntity<>(update), DisclosureResponse.class, id);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody().getInformationTypes()).hasSize(2);
-        assertThat(convert(resp.getBody().getInformationTypes(), DisclosureInformationTypeResponse::getId)).contains(infoTypeOne.getId(), infoTypeUpdate.getId());
+        assertThat(resp.getBody().getDocumentId()).isEqualTo(docUpdate.getId());
     }
 
     @Test
@@ -151,10 +160,13 @@ class DisclosureControllerIT extends IntegrationTestBase {
         assertThat(resp.getBody()).isNotNull();
 
         String id = resp.getBody().getId().toString();
-        var errorResp = restTemplate.exchange("/disclosure", HttpMethod.PUT, new HttpEntity<>(buildDisclosure()), String.class, id);
+        DisclosureRequest request2 = buildDisclosure();
+        request2.setId(id);
+        request2.setRecipient("error");
+        var errorResp = restTemplate.exchange("/disclosure/{id}", HttpMethod.PUT, new HttpEntity<>(request2), String.class, id);
         assertThat(errorResp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResp.getBody()).isNotNull();
-        assertThat(errorResp.getBody()).contains("missingIdForUpdate");
+        assertThat(errorResp.getBody()).contains("fieldIsInvalidCodelist -- recipient: ERROR code not found in codelist THIRD_PARTY");
     }
 
     private DisclosureRequest buildDisclosure() {
@@ -167,5 +179,13 @@ class DisclosureControllerIT extends IntegrationTestBase {
                 .start(LocalDate.now().toString()).end(LocalDate.now().toString())
                 .legalBasis(createLegalBasisRequest())
                 .build();
+    }
+
+    private Document createAndSaveDocument() {
+        InformationType infoType = createAndSaveInformationType();
+        var document = new Document().convertFromRequest(DocumentRequest.builder()
+                .name("doc 1").description("desc").informationTypeIds(List.of(infoType.getId().toString()))
+                .build());
+        return documentRepository.save(document);
     }
 }

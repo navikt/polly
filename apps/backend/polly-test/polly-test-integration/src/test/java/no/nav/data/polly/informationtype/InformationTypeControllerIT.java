@@ -2,7 +2,7 @@ package no.nav.data.polly.informationtype;
 
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.CodelistStub;
-import no.nav.data.polly.elasticsearch.domain.ElasticsearchStatus;
+import no.nav.data.polly.sync.domain.SyncStatus;
 import no.nav.data.polly.informationtype.InformationTypeController.InformationTypePage;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
@@ -175,20 +175,20 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         createInformationTypeTestData(3);
 
         List<InformationType> informationTypes = informationTypeRepository.findAll();
-        informationTypes.forEach(d -> d.setElasticsearchStatus(ElasticsearchStatus.SYNCED));
+        informationTypes.forEach(d -> d.setSyncStatus(SyncStatus.SYNCED));
         informationTypeRepository.saveAll(informationTypes);
 
         UUID id = informationTypeRepository.findByName("InformationType_nr2").get().getId();
         assertThat(informationTypeRepository.count()).isEqualTo(3L);
         assertThat(informationTypeRepository.findByName("InformationType_nr1")
                 .get()
-                .getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.SYNCED);
+                .getSyncStatus()).isEqualTo(SyncStatus.SYNCED);
         assertThat(informationTypeRepository.findByName("InformationType_nr2")
                 .get()
-                .getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.SYNCED);
+                .getSyncStatus()).isEqualTo(SyncStatus.SYNCED);
         assertThat(informationTypeRepository.findByName("InformationType_nr3")
                 .get()
-                .getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.SYNCED);
+                .getSyncStatus()).isEqualTo(SyncStatus.SYNCED);
 
         ResponseEntity<InformationTypeResponse> responseEntity = restTemplate.exchange(
                 "/informationtype/" + id, HttpMethod.DELETE, HttpEntity.EMPTY, InformationTypeResponse.class);
@@ -197,13 +197,13 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         assertThat(informationTypeRepository.count()).isEqualTo(3L);
         assertThat(informationTypeRepository.findByName("InformationType_nr1")
                 .get()
-                .getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.SYNCED);
+                .getSyncStatus()).isEqualTo(SyncStatus.SYNCED);
         assertThat(informationTypeRepository.findByName("InformationType_nr2 (To be deleted)")
                 .get()
-                .getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_DELETED);
+                .getSyncStatus()).isEqualTo(SyncStatus.TO_BE_DELETED);
         assertThat(informationTypeRepository.findByName("InformationType_nr3")
                 .get()
-                .getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.SYNCED);
+                .getSyncStatus()).isEqualTo(SyncStatus.SYNCED);
     }
 
     @Test
@@ -211,7 +211,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         var it = informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "new-name"));
 
         restTemplate.postForLocation("/informationtype/sync", List.of(it.getId()), it.getId());
-        assertThat(informationTypeRepository.findById(it.getId()).get().getElasticsearchStatus()).isEqualTo(ElasticsearchStatus.TO_BE_UPDATED);
+        assertThat(informationTypeRepository.findById(it.getId()).get().getSyncStatus()).isEqualTo(SyncStatus.TO_BE_UPDATED);
     }
 
     private List<InformationType> createInformationTypeTestData(int nrOfRows) {
