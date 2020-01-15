@@ -173,7 +173,7 @@ export const langs: Langs = {
 };
 
 if (window.location.hostname.indexOf("local") >= 0) {
-    langs["ta"] = {flag: "lk", name: "தமிழ்", langCode: "ta", texts: ta};
+    langs["ta"] = {flag: ["lk", "in"][Math.floor(Math.random() * 3)], name: "தமிழ்", langCode: "ta", texts: ta};
 }
 
 export const langsArray: Lang[] = Object.keys(langs).map(lang => langs[lang]);
