@@ -83,6 +83,8 @@ export interface IStrings {
     replace: string;
     replaceAllUse: string;
     newValue: string;
+    recipientPurpose: string;
+    disclosureSelect: string;
 
     // groups
     POLLY_READ: string;
@@ -127,12 +129,10 @@ export interface IStrings {
     ghost: string;
     period: string;
     recipient: string;
-    recipientPurpose: string;
-    disclosureSelect: string;
-
     prevButton: string;
     nextButton: string;
     rows: string;
+    slack: string;
 
     maxChars: string;
     required: string;
