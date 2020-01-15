@@ -160,7 +160,8 @@ export const no: IStrings = {
     table: "Tabellnavn",
     action: "Aksjon",
     time: "Tidspunkt",
-    user: "Bruker"
+    user: "Bruker",
+    close: "Lukk"
 };
 
 export const en = {
@@ -314,7 +315,8 @@ export const en = {
     table: "Table name",
     action: "Action",
     time: "Time",
-    user: "User"
+    user: "User",
+    close: "Close"
 };
 
 export const ta = {
