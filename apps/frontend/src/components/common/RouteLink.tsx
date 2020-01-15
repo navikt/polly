@@ -2,9 +2,9 @@ import { RouteComponentProps, withRouter } from "react-router-dom";
 import { StyledLink } from "baseui/link"
 import React from "react"
 import { KIND } from "baseui/button"
-import { AuditButton } from "../../pages/AuditPage"
 import { getDisclosure, getPolicy, getProcess } from "../../api"
 import { Block } from "baseui/block"
+import { AuditButton } from "../audit/AuditButton"
 
 type RouteLinkProps = {
     href: string

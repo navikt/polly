@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { user } from "../service/User"
 import RouteLink from "./common/RouteLink"
-import { AuditButton } from "../pages/AuditPage"
+import { AuditButton } from "./audit/AuditButton"
 
 
 type BannerProps = {
