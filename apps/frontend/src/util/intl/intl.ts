@@ -155,6 +155,7 @@ export interface IStrings {
     createNewCodeList: string;
 
     id: string;
+    close: string;
     searchId: string;
     audit: string;
     audits: string;

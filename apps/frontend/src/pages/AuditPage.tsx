@@ -9,23 +9,34 @@ import { AuditView } from "../components/audit/AuditView"
 import { AuditLabel as Label } from "../components/audit/AuditLabel"
 import { getAuditLog } from "../api/AuditApi"
 import { AuditLog } from "../constants"
+import { AuditRecentTable } from "../components/audit/AuditRecentTable"
+import { Paragraph2 } from "baseui/typography"
 
 const format = (id: string) => _.trim(id, "\"")
 
 
 const AuditPageImpl = (props: RouteComponentProps<{ id?: string }>) => {
     const [loading, setLoading] = useState(false)
+    const [error, setError] = useState()
     const [auditLog, setAuditLog] = useState<AuditLog>()
     const [idSearch, setIdInput, idInput] = useDebouncedState(props.match.params.id, 400)
 
     const lookupVersion = (id?: string) => {
         (async () => {
             setAuditLog(undefined)
+            setError(undefined)
             if (!id) {
+                !!props.match.params.id && props.history.replace('/admin/audit')
                 return
             }
             setLoading(true)
-            const log = await getAuditLog(id)
+            let log: AuditLog
+            try {
+                log = await getAuditLog(_.escape(id))
+            } catch (e) {
+                setError(e)
+                return
+            }
             setAuditLog(log)
             if (log.audits.length && id !== props.match.params.id) {
                 props.history.push(`/admin/audit/${id}`)
@@ -34,9 +45,7 @@ const AuditPageImpl = (props: RouteComponentProps<{ id?: string }>) => {
         })()
     }
 
-    useEffect(() => {
-        setIdInput(props.match.params.id)
-    }, [props.match.params.id])
+    useEffect(() => setIdInput(props.match.params.id), [props.match.params.id])
     useEffect(() => lookupVersion(idSearch), [idSearch])
 
     return (
@@ -53,7 +62,9 @@ const AuditPageImpl = (props: RouteComponentProps<{ id?: string }>) => {
                 </Label>
             </Block>
 
+            {error && <Paragraph2>{_.escape(error)}</Paragraph2>}
             <AuditView auditLog={auditLog} loading={loading} viewId={lookupVersion}/>
+            {!auditLog && !error && <AuditRecentTable/>}
         </>
     )
 }
