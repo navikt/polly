@@ -6,8 +6,12 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.auditing.domain.AuditVersion;
+import no.nav.data.polly.common.auditing.domain.AuditVersion.Fields;
 import no.nav.data.polly.common.auditing.domain.AuditVersionRepository;
 import no.nav.data.polly.common.auditing.dto.AuditLogResponse;
+import no.nav.data.polly.common.auditing.dto.AuditResponse;
+import no.nav.data.polly.common.rest.PageParameters;
+import no.nav.data.polly.common.rest.RestResponsePage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -33,6 +37,17 @@ public class AuditController {
         this.repository = repository;
     }
 
+    @ApiOperation(value = "Get Audit log")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Audit log fetched", response = AuditLogPage.class),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @GetMapping
+    public ResponseEntity<RestResponsePage<AuditResponse>> getAll(PageParameters paging) {
+        log.info("Received request for Audit {}", paging);
+        var page = repository.findAll(paging.createSortedPageByFieldDescending(Fields.time)).map(AuditVersion::convertToResponse);
+        return new ResponseEntity<>(new RestResponsePage<>(page), HttpStatus.OK);
+    }
+
     @ApiOperation(value = "Get Audit log for object")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Audit log fetched", response = AuditLogResponse.class),
@@ -42,6 +57,10 @@ public class AuditController {
         log.info("Received request for Audit with the id={}", id);
         List<AuditVersion> log = repository.findByTableIdOrderByTimeDesc(id);
         return new ResponseEntity<>(new AuditLogResponse(id, convert(log, AuditVersion::convertToResponse)), HttpStatus.OK);
+    }
+
+    static class AuditLogPage extends RestResponsePage<AuditResponse> {
+
     }
 
 }

@@ -25,6 +25,11 @@ public class PageParameters {
         return PageRequest.of(pageNumber, pageSize, Sort.by("id"));
     }
 
+    public Pageable createSortedPageByFieldDescending(String fieldName) {
+        validate();
+        return PageRequest.of(pageNumber, pageSize, Sort.by(fieldName).descending());
+    }
+
     private void validate() {
         if (pageNumber < 0) {
             log.warn("invalid pageNumber {}, setting to 0", pageNumber);

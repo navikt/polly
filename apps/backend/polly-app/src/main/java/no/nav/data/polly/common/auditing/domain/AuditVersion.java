@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldNameConstants;
 import no.nav.data.polly.common.auditing.dto.AuditResponse;
 import no.nav.data.polly.common.utils.JsonUtils;
 import org.hibernate.annotations.Type;
@@ -22,6 +23,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@FieldNameConstants
 @Table(name = "AUDIT_VERSION")
 public class AuditVersion {
 
