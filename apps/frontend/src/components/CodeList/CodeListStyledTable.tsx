@@ -20,11 +20,11 @@ import {intl} from "../../util";
 import DeleteCodeListModal from "./ModalDeleteCodeList";
 import axios from "axios";
 import {useTable} from "../../util/hooks"
-import {AuditButton} from "../../pages/AuditPage"
 import {getCodelistUsage} from "../../api"
 import {Usage} from "./CodeListUsage"
 import {CodeUsage} from "../../constants"
 import {StatefulTooltip} from "baseui/tooltip";
+import { AuditButton } from "../audit/AuditButton"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
