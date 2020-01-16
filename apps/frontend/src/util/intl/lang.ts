@@ -1,4 +1,4 @@
-import {IStrings} from "./intl";
+import { IStrings } from "./intl";
 
 export const no: IStrings = {
     informationType: "Opplysningstype",
@@ -78,6 +78,7 @@ export const no: IStrings = {
     replace: "Erstatt",
     replaceAllUse: "Erstatt all bruk",
     recipientPurpose: "Mottakers formål",
+    legalBasisComplete: "Lukk rettslig grunnlag editor før lagring",
 
     groupByPurpose: "Grupper etter formål",
     showAll: "Vis alle",
@@ -129,6 +130,7 @@ export const no: IStrings = {
     period: "Periode",
     recipient: "Mottaker",
     slack: "Slack kanal",
+    add: "Legg til",
 
     prevButton: "Forrige",
     nextButton: "Neste",
@@ -251,6 +253,7 @@ export const en: IStrings = {
     replace: "Replace",
     replaceAllUse: "Replace all use",
     recipientPurpose: "Recipient's purpose",
+    legalBasisComplete: "Close legal basis editor before saving",
 
     POLLY_READ: "Read",
     POLLY_WRITE: "Write",
@@ -300,6 +303,7 @@ export const en: IStrings = {
     period: "Period",
     useDates: "Use dates",
     version: "Version",
+    add: "Add",
 
     prevButton: "Prev",
     nextButton: "Next",

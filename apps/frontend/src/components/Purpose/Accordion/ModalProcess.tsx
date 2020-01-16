@@ -1,23 +1,24 @@
 import * as React from 'react'
-import {useEffect} from 'react'
-import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
-import {Field, FieldArray, FieldProps, Form, Formik, FormikProps,} from "formik";
-import {Block, BlockProps} from "baseui/block";
-import {Input, SIZE as InputSIZE} from "baseui/input";
-import {Select, Value} from 'baseui/select';
-import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
-import {Plus} from "baseui/icon";
+import { useEffect } from 'react'
+import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
+import { Field, FieldArray, FieldProps, Form, Formik, FormikProps, } from "formik";
+import { Block, BlockProps } from "baseui/block";
+import { Input, SIZE as InputSIZE } from "baseui/input";
+import { Select, Value } from 'baseui/select';
+import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
+import { Plus } from "baseui/icon";
 
-import {ProcessFormValues} from "../../../constants";
+import { ProcessFormValues } from "../../../constants";
 import CardLegalBasis from './CardLegalBasis'
-import {codelist, ListName} from "../../../service/Codelist"
-import {intl} from "../../../util"
-import {Error, ModalLabel} from "../../common/ModalSchema";
-import {ListLegalBases} from "../../common/LegalBasis"
-import {DateModalFields} from "../DateModalFields"
-import {hasSpecifiedDate} from "../../common/Durations"
-import {processSchema} from "../../common/schema"
-import {getTeam, mapTeamToOption, useTeamSearch} from "../../../api/TeamApi"
+import { codelist, ListName } from "../../../service/Codelist"
+import { intl } from "../../../util"
+import { Error, ModalLabel } from "../../common/ModalSchema";
+import { ListLegalBases } from "../../common/LegalBasis"
+import { DateModalFields } from "../DateModalFields"
+import { hasSpecifiedDate } from "../../common/Durations"
+import { processSchema } from "../../common/schema"
+import { getTeam, mapTeamToOption, useTeamSearch } from "../../../api/TeamApi"
+import { StatefulTooltip } from "baseui/tooltip"
 
 const modalBlockProps: BlockProps = {
     width: '750px',
@@ -213,33 +214,22 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                                         <React.Fragment>
                                             {showLegalBasisFields ? (
                                                 <Block width="100%" marginTop="2rem">
-                                                    {selectedLegalBasis ? (
-                                                        <CardLegalBasis
-                                                            titleSubmitButton={intl.update}
-                                                            initValue={selectedLegalBasis}
-                                                            hideCard={() => setShowLegalBasesFields(false)}
-                                                            submit={(selectedPolicyBasisValues) => {
-                                                                if (!selectedPolicyBasisValues) return;
-                                                                arrayHelpers.replace(selectedLegalBasisIndex,selectedPolicyBasisValues);
-                                                                setShowLegalBasesFields(false);
+                                                    <CardLegalBasis
+                                                        titleSubmitButton={selectedLegalBasis ? intl.update : intl.add}
+                                                        initValue={selectedLegalBasis || {}}
+                                                        hideCard={() => setShowLegalBasesFields(false)}
+                                                        submit={values => {
+                                                            if (!values) return;
+                                                            if (selectedLegalBasis) {
+                                                                arrayHelpers.replace(selectedLegalBasisIndex, values);
                                                                 setSelectedLegalBasis(null)
-                                                            }} />
-                                                    ): (
-                                                        <CardLegalBasis
-                                                            initValue={{}}
-                                                            titleSubmitButton={intl.legalBasisAdd}
-                                                            hideCard={() => setShowLegalBasesFields(false)}
-                                                            submit={(values) => {
-                                                                if (!values) return;
-                                                                else {
-                                                                    arrayHelpers.push(values);
-                                                                    setShowLegalBasesFields(false)
-                                                                }
-                                                            }} />
-                                                    )}
-
+                                                            } else {
+                                                                arrayHelpers.push(values);
+                                                            }
+                                                            setShowLegalBasesFields(false);
+                                                        }}/>
                                                 </Block>
-                                            ):(
+                                            ) : (
                                                 <Block display="flex">
                                                     <ModalLabel/>
                                                     <Block width="100%">
@@ -266,7 +256,12 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                                 <Block display="flex" justifyContent="flex-end">
                                     <Block alignSelf="flex-end">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
                                     <Button type="button" kind={KIND.minimal} onClick={onCloseModal}>{intl.abort}</Button>
-                                    <ModalButton type="submit">{intl.save}</ModalButton>
+                                    <ModalButton type="submit" disabled={showLegalBasisFields}>
+                                        {showLegalBasisFields ?
+                                            <StatefulTooltip content={intl.legalBasisComplete}>{intl.save}</StatefulTooltip>
+                                            : intl.save
+                                        }
+                                    </ModalButton>
                                 </Block>
                             </ModalFooter>
                         </Form>

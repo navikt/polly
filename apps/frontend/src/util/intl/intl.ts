@@ -86,6 +86,7 @@ export interface IStrings {
     newValue: string;
     recipientPurpose: string;
     disclosureSelect: string;
+    legalBasisComplete: string;
 
     // groups
     POLLY_READ: string;
@@ -139,6 +140,7 @@ export interface IStrings {
     nextButton: string;
     rows: string;
     slack: string;
+    add: string;
 
     maxChars: string;
     required: string;

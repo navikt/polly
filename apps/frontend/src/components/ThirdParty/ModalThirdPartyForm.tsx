@@ -1,19 +1,20 @@
 import * as React from 'react'
-import { DisclosureFormValues, InformationtypeFormValues, PolicyInformationType } from '../../constants';
-import { Modal, SIZE, ROLE, ModalHeader, ModalBody, ModalFooter, ModalButton } from 'baseui/modal';
-import { Formik, FormikProps, Form, Field, FieldProps, FieldArrayRenderProps, FieldArray } from 'formik';
+import { DisclosureFormValues, PolicyInformationType } from '../../constants';
+import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal';
+import { Field, FieldArray, FieldProps, Form, Formik, FormikProps } from 'formik';
 import { Block, BlockProps } from 'baseui/block';
 import { ModalLabel } from '../common/ModalSchema';
 import { intl } from '../../util';
 import { Button } from 'baseui/button';
-import { Value, Select, StatefulSelect } from 'baseui/select';
+import { Select, StatefulSelect, Value } from 'baseui/select';
 import { codelist, ListName } from '../../service/Codelist';
 import { Textarea } from 'baseui/textarea';
-import { VARIANT, Tag } from 'baseui/tag';
+import { Tag, VARIANT } from 'baseui/tag';
 import { useInfoTypeSearch } from '../../api';
 import { ListLegalBases } from '../common/LegalBasis';
 import CardLegalBasis from '../Purpose/Accordion/CardLegalBasis';
 import { Plus } from 'baseui/icon';
+import { StatefulTooltip } from "baseui/tooltip"
 
 const modalBlockProps: BlockProps = {
     width: '750px',
@@ -214,31 +215,21 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                                     render={arrayHelpers => (
                                         <React.Fragment>
                                             {showLegalBasisFields && (
-                                                <Block width="100%">
-                                                    {selectedLegalBasis ? (
-                                                        <CardLegalBasis
-                                                            titleSubmitButton={intl.update}
-                                                            initValue={selectedLegalBasis}
-                                                            hideCard={() => setShowLegalbasesFields(false)}
-                                                            submit={(selectedPolicyBasisValues) => {
-                                                                if (!selectedPolicyBasisValues) return;
-                                                                arrayHelpers.replace(selectedLegalBasisIndex, selectedPolicyBasisValues);
-                                                                setShowLegalbasesFields(false);
+                                                <Block width="100%" marginTop="2rem">
+                                                    <CardLegalBasis
+                                                        titleSubmitButton={selectedLegalBasis ? intl.update : intl.add}
+                                                        initValue={selectedLegalBasis || {}}
+                                                        hideCard={() => setShowLegalbasesFields(false)}
+                                                        submit={values => {
+                                                            if (!values) return;
+                                                            if (selectedLegalBasis) {
+                                                                arrayHelpers.replace(selectedLegalBasisIndex, values);
                                                                 setSelectedLegalBasis(null)
-                                                            }} />
-                                                    ) : (
-                                                            <CardLegalBasis
-                                                                initValue={{}}
-                                                                hideCard={() => setShowLegalbasesFields(false)}
-                                                                titleSubmitButton={intl.legalBasisAdd}
-                                                                submit={(values) => {
-                                                                    if (!values) return
-                                                                    else {
-                                                                        arrayHelpers.push(values)
-                                                                        setShowLegalbasesFields(false)
-                                                                    }
-                                                                }} />
-                                                        )} 
+                                                            } else {
+                                                                arrayHelpers.push(values);
+                                                            }
+                                                            setShowLegalbasesFields(false);
+                                                        }}/>
                                                 </Block>
                                             )}
                                             {!showLegalBasisFields && (
@@ -266,7 +257,12 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                                 <Block display="flex" justifyContent="flex-end">
                                     <Block alignSelf="flex-end">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
                                     <Button type="button" kind="minimal" onClick={() => onClose()}>{intl.abort}</Button>
-                                    <ModalButton type="submit">{intl.save}</ModalButton>
+                                    <ModalButton type="submit" disabled={showLegalBasisFields}>
+                                        {showLegalBasisFields ?
+                                            <StatefulTooltip content={intl.legalBasisComplete}>{intl.save}</StatefulTooltip>
+                                            : intl.save
+                                        }
+                                    </ModalButton>
                                 </Block>
                             </ModalFooter>
                         </Form>

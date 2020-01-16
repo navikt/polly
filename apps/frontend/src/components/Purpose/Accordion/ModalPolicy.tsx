@@ -18,6 +18,7 @@ import { intl } from "../../../util"
 import { DateModalFields } from "../DateModalFields"
 import { hasSpecifiedDate } from "../../common/Durations"
 import { policySchema } from "../../common/schema"
+import { StatefulTooltip } from "baseui/tooltip"
 
 
 const modalBlockProps: BlockProps = {
@@ -198,31 +199,20 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, ti
                                             <React.Fragment>
                                                 {showLegalBasesFields ? (
                                                     <Block width="100%" marginTop="2rem">
-                                                        {selectedLegalBasis ? (
-                                                            <CardLegalBasis
-                                                                titleSubmitButton={intl.update}
-                                                                initValue={selectedLegalBasis}
-                                                                hideCard={() => setShowLegalBasesFields(false)}
-                                                                submit={(selectedPolicyBasisValues) => {
-                                                                    if (!selectedPolicyBasisValues) return;
-                                                                    arrayHelpers.replace(selectedLegalBasisIndex,selectedPolicyBasisValues);
-                                                                    setShowLegalBasesFields(false);
+                                                        <CardLegalBasis
+                                                            titleSubmitButton={selectedLegalBasis ? intl.update : intl.add}
+                                                            initValue={selectedLegalBasis || {}}
+                                                            hideCard={() => setShowLegalBasesFields(false)}
+                                                            submit={values => {
+                                                                if (!values) return;
+                                                                if (selectedLegalBasis) {
+                                                                    arrayHelpers.replace(selectedLegalBasisIndex, values);
                                                                     setSelectedLegalBasis(null)
-                                                                }} />
-                                                        ): (
-                                                            <CardLegalBasis
-                                                                initValue={{}}
-                                                                titleSubmitButton={intl.legalBasisAdd}
-                                                                hideCard={() => setShowLegalBasesFields(false)}
-                                                                submit={(values) => {
-                                                                    if (!values) return;
-                                                                    else {
-                                                                        arrayHelpers.push(values);
-                                                                        setShowLegalBasesFields(false)
-                                                                    }
-                                                                }} />
-                                                        )}
-
+                                                                } else {
+                                                                    arrayHelpers.push(values);
+                                                                }
+                                                                setShowLegalBasesFields(false);
+                                                            }}/>
                                                     </Block>
                                                 ) : (
                                                         <Block {...rowBlockProps}>
@@ -260,7 +250,12 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, ti
                                 <Block display="flex" justifyContent="flex-end">
                                     <Block alignSelf="flex-end">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
                                     <Button type="button" kind={KIND.minimal} onClick={onCloseModal}>{intl.abort}</Button>
-                                    <ModalButton type="submit">{intl.save}</ModalButton>
+                                    <ModalButton type="submit" disabled={showLegalBasesFields}>
+                                        {showLegalBasesFields ?
+                                            <StatefulTooltip content={intl.legalBasisComplete}>{intl.save}</StatefulTooltip>
+                                            : intl.save
+                                        }
+                                    </ModalButton>
                                 </Block>
                             </ModalFooter>
                         </Form>
