@@ -91,6 +91,10 @@ export interface IStrings {
     POLLY_WRITE: string;
     POLLY_ADMIN: string;
 
+    CREATE: string;
+    DELETE: string;
+    UPDATE: string;
+
     // generic
     department: string;
     subDepartment: string;
@@ -124,6 +128,7 @@ export interface IStrings {
     active: string;
     inactive: string;
     preview: string;
+    view: string;
     info: string;
     version: string;
     ghost: string;

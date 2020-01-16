@@ -5,6 +5,7 @@ import { KIND } from "baseui/button"
 import { getDisclosure, getPolicy, getProcess } from "../../api"
 import { Block } from "baseui/block"
 import { AuditButton } from "../audit/AuditButton"
+import { ObjectType } from "../../constants"
 
 type RouteLinkProps = {
     href: string
@@ -27,13 +28,6 @@ type ObjectLinkProps = {
     type: ObjectType,
     withHistory?: boolean,
     children?: any
-}
-
-export enum ObjectType {
-    INFORMATION_TYPE,
-    POLICY,
-    PROCESS,
-    DISCLOSURE
 }
 
 const ObjectLinkImpl = (props: RouteComponentProps & ObjectLinkProps) => {

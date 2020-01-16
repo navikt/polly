@@ -8,8 +8,8 @@ import { Select, Value } from "baseui/select"
 import { Button } from "baseui/button"
 
 import { intl } from "../../util"
-import { CodeUsage } from "../../constants"
-import { ObjectLink, ObjectType } from "../common/RouteLink"
+import { CodeUsage, ObjectType } from "../../constants"
+import { ObjectLink } from "../common/RouteLink"
 import { codelist } from "../../service/Codelist"
 import { replaceCodelistUsage } from "../../api"
 

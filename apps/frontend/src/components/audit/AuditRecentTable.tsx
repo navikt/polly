@@ -14,6 +14,10 @@ import { Block } from "baseui/block"
 import { StatefulTooltip } from "baseui/tooltip"
 import { AuditButton } from "./AuditButton"
 import _ from "lodash"
+import ReactJson from "react-json-view"
+import { faCode } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { AuditActionIcon } from "./AuditComponents"
 
 export const AuditRecentTable = () => {
     const [audits, setAudits] = useState<PageResponse<AuditItem>>({content: [], numberOfElements: 0, pageNumber: 0, pages: 0, pageSize: 1, totalElements: 0})
@@ -50,13 +54,13 @@ export const AuditRecentTable = () => {
             <StyledTable>
                 <StyledHead>
                     <StyledHeadCell $style={{maxWidth: "13%"}}>{intl.time}</StyledHeadCell>
-                    <StyledHeadCell>{intl.action}</StyledHeadCell>
+                    <StyledHeadCell $style={{maxWidth: "17%"}}>{intl.action}</StyledHeadCell>
                     <StyledHeadCell>{intl.id}</StyledHeadCell>
                     <StyledHeadCell>{intl.user}</StyledHeadCell>
                 </StyledHead>
                 <StyledBody>
                     {audits.content.map((audit, index) => {
-                        const length = window.innerWidth > 1200 ? window.innerWidth > 1400 ? 40 : 30 : 20
+                        const length = window.innerWidth > 1000 ? window.innerWidth > 1200 ? 40 : 30 : 20
                         return (
                             <StyledRow key={audit.id}>
                                 <StyledCell $style={{maxWidth: "13%"}}>
@@ -64,9 +68,16 @@ export const AuditRecentTable = () => {
                                         <StatefulTooltip content={audit.time}>{moment(audit.time).fromNow()}</StatefulTooltip>
                                     </AuditButton>
                                 </StyledCell>
-                                <StyledCell>{audit.action} {audit.table}</StyledCell>
+                                <StyledCell $style={{maxWidth: "17%"}}><AuditActionIcon action={audit.action}/> {audit.table}</StyledCell>
                                 <StyledCell><StatefulTooltip content={audit.tableId}>{_.truncate(audit.tableId, {length})}</StatefulTooltip></StyledCell>
-                                <StyledCell>{audit.user}</StyledCell>
+                                <StyledCell $style={{display: "flex", justifyContent: "space-between"}}>
+                                    <Block>{audit.user}</Block>
+                                    <Block>
+                                        <StatefulPopover content={() => (<ReactJson src={audit.data} name={null}/>)}>
+                                            <Button size="compact" shape="pill"><FontAwesomeIcon icon={faCode}/></Button>
+                                        </StatefulPopover>
+                                    </Block>
+                                </StyledCell>
                             </StyledRow>
                         )
                     })}

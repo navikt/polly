@@ -221,10 +221,17 @@ export enum AuditAction {
     DELETE = "DELETE"
 }
 
+export enum ObjectType {
+    INFORMATION_TYPE = "INFORMATION_TYPE",
+    POLICY = "POLICY",
+    PROCESS = "PROCESS",
+    DISCLOSURE = "DISCLOSURE"
+}
+
 export interface AuditItem {
     action: AuditAction
     id: string
-    table: string
+    table: ObjectType
     tableId: string
     time: string
     user: string
