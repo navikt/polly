@@ -85,6 +85,10 @@ export const no: IStrings = {
     POLLY_WRITE: "Skriv",
     POLLY_ADMIN: "Admin",
 
+    CREATE: "Opprett",
+    UPDATE: "Oppdater",
+    DELETE: "Slett",
+
     department: "Avdeling",
     subDepartment: "Linja (Ytre etat)",
     save: "Lagre",
@@ -117,6 +121,7 @@ export const no: IStrings = {
     inactive: "Inaktiv",
     active: "Aktiv",
     preview: "Forhåndsvisning",
+    view: "Vis",
     info: "Informasjon",
     ghost: "Vis bruk",
     version: "Versjonering",
@@ -161,10 +166,11 @@ export const no: IStrings = {
     action: "Aksjon",
     time: "Tidspunkt",
     user: "Bruker",
-    close: "Lukk"
+    close: "Lukk",
+    lastChanges: "Siste endringer"
 };
 
-export const en = {
+export const en: IStrings = {
     informationType: "Information type",
     informationTypes: "Information types",
     informationTypeSearch: "Information type search",
@@ -248,6 +254,10 @@ export const en = {
     POLLY_WRITE: "Write",
     POLLY_ADMIN: "Admin",
 
+    CREATE: "Create",
+    UPDATE: "Update",
+    DELETE: "Delete",
+
     department: "Department",
     subDepartment: "Sub department",
     save: "Save",
@@ -281,6 +291,13 @@ export const en = {
     active: "Active",
     recipient: "Recipient",
     slack: "Slack channel",
+    preview: "Preview",
+    view: "View",
+    ghost: "Usage",
+    info: "Info",
+    period: "Period",
+    useDates: "Use dates",
+    version: "Version",
 
     prevButton: "Prev",
     nextButton: "Next",
@@ -288,6 +305,9 @@ export const en = {
 
     maxChars: "Max {0} characters",
     required: "Field is required",
+    dateFormat: "Incorrect date format, ex: 2018-08-22",
+    datePickEnd: "Select to date (inclsuive)",
+    datePickStart: "Select from date (inclusive)",
 
     requiredGdprArt6:
         "The information type requires a legal basis for article 6",
@@ -316,7 +336,8 @@ export const en = {
     action: "Action",
     time: "Time",
     user: "User",
-    close: "Close"
+    close: "Close",
+    lastChanges: "Last changes"
 };
 
 export const ta = {
