@@ -1,5 +1,13 @@
 import * as yup from "yup"
-import { InformationtypeFormValues, LegalBasesStatus, LegalBasisFormValues, PolicyFormValues, PolicyInformationType, ProcessFormValues } from "../../constants"
+import {
+    DisclosureFormValues,
+    InformationtypeFormValues,
+    LegalBasesStatus,
+    LegalBasisFormValues,
+    PolicyFormValues,
+    PolicyInformationType,
+    ProcessFormValues
+} from "../../constants"
 import { intl } from "../../util"
 import { Code, codelist } from "../../service/Codelist"
 
@@ -26,6 +34,7 @@ export const processSchema = () => yup.object<ProcessFormValues>({
     subDepartment: yup.string(),
     productTeam: yup.string(),
     legalBases: yup.array(legalBasisSchema()),
+    legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
     start: yup.string().matches(DATE_REGEX, intl.dateFormat),
     end: yup.string().matches(DATE_REGEX, intl.dateFormat)
 })
@@ -65,6 +74,7 @@ export const policySchema = () => yup.object<PolicyFormValues>({
     subjectCategory: yup.string().required(intl.required),
     legalBasesStatus: yup.mixed().oneOf(Object.values(LegalBasesStatus)).required(intl.required),
     legalBases: yup.array(legalBasisSchema()),
+    legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
     process: yup.object(),
     purposeCode: yup.string(),
     id: yup.string(),
@@ -80,7 +90,7 @@ export const legalBasisSchema = () => yup.object<LegalBasisFormValues>({
         otherwise: yup.string()
     }),
     description: yup.string().when('gdpr', {
-        is: (gdprCode) =>  codelist.requiresDescription(gdprCode),
+        is: (gdprCode) => codelist.requiresDescription(gdprCode),
         then: yup.string().required(intl.requiredDescription),
         otherwise: yup.string()
     }),
@@ -94,3 +104,13 @@ export const codeListSchema = () => yup.object<Code>({
     shortName: yup.string().required(intl.required),
     description: yup.string().required(intl.required),
 });
+
+export const disclosureSchema = () => yup.object<DisclosureFormValues>({
+    id: yup.string(),
+    recipient: yup.string(),
+    description: yup.string().required(intl.required),
+    legalBases: yup.array(legalBasisSchema()),
+    legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
+    start: yup.string().matches(DATE_REGEX, intl.dateFormat),
+    end: yup.string().matches(DATE_REGEX, intl.dateFormat)
+})

@@ -4,11 +4,11 @@ import { KIND as NKIND, Notification } from "baseui/notification";
 import { Label2 } from "baseui/typography";
 import * as React from "react";
 
-export const Error = (props: { fieldName: string }) => (
+export const Error = (props: { fieldName: string, fullWidth?: boolean }) => (
     <ErrorMessage name={props.fieldName}>
         {msg => (
             <Block display="flex" width="100%" marginTop=".2rem">
-                <ModalLabel/>
+                {!props.fullWidth && <ModalLabel/>}
                 <Block width="100%">
                     <Notification overrides={{Body: {style: {width: 'auto', padding: 0, marginTop: 0}}}} kind={NKIND.negative}>{msg}</Notification>
                 </Block>

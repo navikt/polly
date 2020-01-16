@@ -55,6 +55,7 @@ export const convertPolicyToFormValues = (policy: Policy): PolicyFormValues => {
     }))
 
     return {
+        legalBasesOpen: false,
         id: policy.id,
         process: policy.process,
         purposeCode: policy.purposeCode.code,

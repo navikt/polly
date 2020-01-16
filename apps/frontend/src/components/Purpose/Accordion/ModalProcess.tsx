@@ -18,7 +18,6 @@ import { DateModalFields } from "../DateModalFields"
 import { hasSpecifiedDate } from "../../common/Durations"
 import { processSchema } from "../../common/schema"
 import { getTeam, mapTeamToOption, useTeamSearch } from "../../../api/TeamApi"
-import { StatefulTooltip } from "baseui/tooltip"
 
 const modalBlockProps: BlockProps = {
     width: '750px',
@@ -136,12 +135,10 @@ type ModalProcessProps = {
 
 const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, title }: ModalProcessProps) => {
 
-    const [showLegalBasisFields, setShowLegalBasesFields] = React.useState<boolean>(false);
     const [selectedLegalBasis, setSelectedLegalBasis] = React.useState();
     const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState();
 
     const onCloseModal = () => {
-        setShowLegalBasesFields(false);
         onClose()
     };
 
@@ -194,12 +191,12 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
 
                                 <Block {...rowBlockProps}>
                                     <ModalLabel/>
-                                    {!showLegalBasisFields && (
+                                    {!formikBag.values.legalBasesOpen && (
                                         <Block width="100%" marginBottom="1rem">
                                             <Button
                                                 size={ButtonSize.compact}
                                                 kind={KIND.minimal}
-                                                onClick={() => setShowLegalBasesFields(true)}
+                                                onClick={() => formikBag.setFieldValue('legalBasesOpen', true)}
                                                 startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
                                             >
                                                 {intl.legalBasisAdd}
@@ -212,21 +209,21 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                                     name="legalBases"
                                     render={arrayHelpers => (
                                         <React.Fragment>
-                                            {showLegalBasisFields ? (
+                                            {formikBag.values.legalBasesOpen ? (
                                                 <Block width="100%" marginTop="2rem">
                                                     <CardLegalBasis
                                                         titleSubmitButton={selectedLegalBasis ? intl.update : intl.add}
                                                         initValue={selectedLegalBasis || {}}
-                                                        hideCard={() => setShowLegalBasesFields(false)}
+                                                        hideCard={() => formikBag.setFieldValue('legalBasesOpen', false)}
                                                         submit={values => {
                                                             if (!values) return;
                                                             if (selectedLegalBasis) {
-                                                                arrayHelpers.replace(selectedLegalBasisIndex, values);
+                                                                arrayHelpers.replace(selectedLegalBasisIndex, values)
                                                                 setSelectedLegalBasis(null)
                                                             } else {
-                                                                arrayHelpers.push(values);
+                                                                arrayHelpers.push(values)
                                                             }
-                                                            setShowLegalBasesFields(false);
+                                                            formikBag.setFieldValue('legalBasesOpen', false)
                                                         }}/>
                                                 </Block>
                                             ) : (
@@ -240,7 +237,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                                                                 (index)=> {
                                                                     setSelectedLegalBasis(formikBag.values.legalBases[index]);
                                                                     setSelectedLegalBasisIndex(index);
-                                                                    setShowLegalBasesFields(true)}
+                                                                    formikBag.setFieldValue('legalBasesOpen', true)}
                                                             }
                                                         />
                                                     </Block>
@@ -249,6 +246,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                                         </React.Fragment>
                                     )}
                                 />
+                                <Error fieldName="legalBasesOpen" fullWidth={true} />
 
                             </ModalBody>
 
@@ -256,12 +254,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                                 <Block display="flex" justifyContent="flex-end">
                                     <Block alignSelf="flex-end">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
                                     <Button type="button" kind={KIND.minimal} onClick={onCloseModal}>{intl.abort}</Button>
-                                    <ModalButton type="submit" disabled={showLegalBasisFields}>
-                                        {showLegalBasisFields ?
-                                            <StatefulTooltip content={intl.legalBasisComplete}>{intl.save}</StatefulTooltip>
-                                            : intl.save
-                                        }
-                                    </ModalButton>
+                                    <ModalButton type="submit">{intl.save}</ModalButton>
                                 </Block>
                             </ModalFooter>
                         </Form>

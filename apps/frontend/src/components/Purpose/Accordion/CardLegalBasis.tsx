@@ -151,7 +151,7 @@ const CardLegalBasis = ({ submit, hideCard, initValue,titleSubmitButton }: CardL
 
                         <DateModalFields rowBlockProps={rowBlockProps} showDates={hasSpecifiedDate(initialValues)} />
 
-                        <Block {...rowBlockProps} justifyContent="end">
+                        <Block {...rowBlockProps} justifyContent="flex-end">
                             <Button type='button' kind={KIND.minimal} size={ButtonSize.compact} onClick={() => hideCard()}>
                                 {intl.abort}
                             </Button>
