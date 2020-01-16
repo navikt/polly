@@ -20,7 +20,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { AuditActionIcon } from "./AuditComponents"
 import randomColor from "randomcolor"
 
-export const AuditRecentTable = () => {
+export const AuditRecentTable = (props: { show: boolean }) => {
     const [audits, setAudits] = useState<PageResponse<AuditItem>>({content: [], numberOfElements: 0, pageNumber: 0, pages: 0, pageSize: 1, totalElements: 0})
     const [page, setPage] = React.useState(1);
     const [limit, setLimit] = React.useState(20);
@@ -33,9 +33,9 @@ export const AuditRecentTable = () => {
 
     useEffect(() => {
         (async () => {
-            setAudits((await getAudits(page - 1, limit)))
+            props.show && setAudits((await getAudits(page - 1, limit)))
         })()
-    }, [page, limit])
+    }, [page, limit, props.show])
 
     const handlePageChange = (nextPage: number) => {
         if (nextPage < 1) {
@@ -54,6 +54,10 @@ export const AuditRecentTable = () => {
         }
         setLimit(nextLimit);
     };
+
+    if (!props.show) {
+        return null
+    }
 
     return (
         <>
