@@ -76,7 +76,7 @@ export const no: IStrings = {
     newValue: "Ny verdi",
     replace: "Erstatt",
     replaceAllUse: "Erstatt all bruk",
-
+    recipientPurpose: "Mottakers formål",
 
     groupByPurpose: "Grupper etter formål",
     showAll: "Vis alle",
@@ -122,8 +122,7 @@ export const no: IStrings = {
     version: "Versjonering",
     period: "Periode",
     recipient: "Mottaker",
-    recipientPurpose: "Mottakers formål",
-
+    slack: "Slack kanal",
 
     prevButton: "Forrige",
     nextButton: "Neste",
@@ -161,7 +160,8 @@ export const no: IStrings = {
     table: "Tabellnavn",
     action: "Aksjon",
     time: "Tidspunkt",
-    user: "Bruker"
+    user: "Bruker",
+    close: "Lukk"
 };
 
 export const en = {
@@ -242,6 +242,7 @@ export const en = {
     newValue: "New Value",
     replace: "Replace",
     replaceAllUse: "Replace all use",
+    recipientPurpose: "Recipient's purpose",
 
     POLLY_READ: "Read",
     POLLY_WRITE: "Write",
@@ -279,7 +280,7 @@ export const en = {
     inactive: "Inactive",
     active: "Active",
     recipient: "Recipient",
-    recipientPurpose: "Recipient's purpose",
+    slack: "Slack channel",
 
     prevButton: "Prev",
     nextButton: "Next",
@@ -314,7 +315,8 @@ export const en = {
     table: "Table name",
     action: "Action",
     time: "Time",
-    user: "User"
+    user: "User",
+    close: "Close"
 };
 
 export const ta = {

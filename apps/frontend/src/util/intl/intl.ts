@@ -83,6 +83,8 @@ export interface IStrings {
     replace: string;
     replaceAllUse: string;
     newValue: string;
+    recipientPurpose: string;
+    disclosureSelect: string;
 
     // groups
     POLLY_READ: string;
@@ -127,12 +129,10 @@ export interface IStrings {
     ghost: string;
     period: string;
     recipient: string;
-    recipientPurpose: string;
-    disclosureSelect: string;
-
     prevButton: string;
     nextButton: string;
     rows: string;
+    slack: string;
 
     maxChars: string;
     required: string;
@@ -155,6 +155,7 @@ export interface IStrings {
     createNewCodeList: string;
 
     id: string;
+    close: string;
     searchId: string;
     audit: string;
     audits: string;
@@ -173,7 +174,7 @@ export const langs: Langs = {
 };
 
 if (window.location.hostname.indexOf("local") >= 0) {
-    langs["ta"] = {flag: "lk", name: "தமிழ்", langCode: "ta", texts: ta};
+    langs["ta"] = {flag: ["lk", "in"][Math.floor(Math.random() * 2)], name: "தமிழ்", langCode: "ta", texts: ta};
 }
 
 export const langsArray: Lang[] = Object.keys(langs).map(lang => langs[lang]);

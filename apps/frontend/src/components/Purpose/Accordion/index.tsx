@@ -24,8 +24,9 @@ import { faChevronDown, faChevronRight, faEdit, faTrash } from '@fortawesome/fre
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal';
 import { TeamPopover } from "../../common/Team"
 import {getTeam, mapTeamToOption} from "../../../api/TeamApi"
-import {AuditButton, AuditPage} from "../../../pages/AuditPage"
+import {AuditPage} from "../../../pages/AuditPage"
 import {StatefulTooltip} from "baseui/tooltip";
+import { AuditButton } from "../../audit/AuditButton"
 
 const rowPanelContent: BlockProps = {
     display: 'flex',

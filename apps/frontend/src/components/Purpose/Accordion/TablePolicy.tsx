@@ -19,7 +19,7 @@ import { convertPolicyToFormValues } from "../../../api"
 import { useTable } from "../../../util/hooks"
 import RouteLink from "../../common/RouteLink"
 import { ActiveIndicator } from "../../common/Durations"
-import { AuditButton } from "../../../pages/AuditPage"
+import { AuditButton } from "../../audit/AuditButton"
 
 
 const StyledHeader = withStyle(StyledHead, {
