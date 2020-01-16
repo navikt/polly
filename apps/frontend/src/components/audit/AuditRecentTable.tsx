@@ -18,11 +18,18 @@ import ReactJson from "react-json-view"
 import { faCode } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { AuditActionIcon } from "./AuditComponents"
+import randomColor from "randomcolor"
 
 export const AuditRecentTable = () => {
     const [audits, setAudits] = useState<PageResponse<AuditItem>>({content: [], numberOfElements: 0, pageNumber: 0, pages: 0, pageSize: 1, totalElements: 0})
     const [page, setPage] = React.useState(1);
     const [limit, setLimit] = React.useState(10);
+
+    const colors = _.uniq(audits.content.map(a => a.tableId))
+    .reduce((val, id) => {
+        val[id] = randomColor({seed: id, luminosity: "dark"})
+        return val
+    }, {} as { [id: string]: string })
 
     useEffect(() => {
         (async () => {
@@ -69,7 +76,11 @@ export const AuditRecentTable = () => {
                                     </AuditButton>
                                 </StyledCell>
                                 <StyledCell $style={{maxWidth: "17%"}}><AuditActionIcon action={audit.action}/> {audit.table}</StyledCell>
-                                <StyledCell><StatefulTooltip content={audit.tableId}>{_.truncate(audit.tableId, {length})}</StatefulTooltip></StyledCell>
+                                <StyledCell>
+                                    <StatefulTooltip content={audit.tableId}>
+                                        <Block color={colors[audit.tableId]}>{_.truncate(audit.tableId, {length})}</Block>
+                                    </StatefulTooltip>
+                                </StyledCell>
                                 <StyledCell $style={{display: "flex", justifyContent: "space-between"}}>
                                     <Block>{audit.user}</Block>
                                     <Block>
