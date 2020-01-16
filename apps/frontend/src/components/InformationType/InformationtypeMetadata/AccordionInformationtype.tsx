@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Accordion, Panel } from 'baseui/accordion'
 import { Paragraph2 } from 'baseui/typography'
-import TableInformationtype from './TableInformationtype'
+import InformationtypePolicyTable from './InformationtypePolicyTable'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faChevronDown, faChevronRight, faUsersCog } from "@fortawesome/free-solid-svg-icons"
 
@@ -44,7 +44,7 @@ const AccordionInformationtype = (props: AccordionInformationtypeProps) => {
                            ToggleIcon: {component: (iconProps) => !!iconProps.$expanded ? <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
                        }}
                 >
-                    <TableInformationtype list={getPolicylistForPurpose(key)} showPurpose={false}/>
+                    <InformationtypePolicyTable policies={getPolicylistForPurpose(key)} showPurpose={false}/>
                 </Panel>
             ))}
 

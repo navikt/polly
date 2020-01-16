@@ -57,7 +57,7 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
             try {
                 const infoType = await getInformationType(informationTypeId)
                 const policies = await getPoliciesForInformationType(informationTypeId)
-                const disclosureList = props.match.params.id ? await getDisclosuresByInformationTypeId(props.match.params.id) : []
+                const disclosureList = await getDisclosuresByInformationTypeId(informationTypeId)
                 setInformationtype(infoType)
                 setPolicies(policies.content)
                 setDisclosures(disclosureList)

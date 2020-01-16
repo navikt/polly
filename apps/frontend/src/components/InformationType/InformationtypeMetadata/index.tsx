@@ -3,10 +3,10 @@ import { Block, BlockProps } from 'baseui/block'
 import { Label2 } from "baseui/typography";
 
 import AccordionInformationtype from './AccordionInformationtype'
-import { InformationType, Policy, Disclosure } from "../../../constants"
+import { Disclosure, InformationType, Policy } from "../../../constants"
 import { intl } from "../../../util"
 import Metadata from "./Metadata";
-import TableInformationtype from "./TableInformationtype"
+import InformationtypePolicyTable from "./InformationtypePolicyTable"
 import { Button } from "baseui/button"
 import TableDisclosure from "../../common/TableDisclosure";
 
@@ -42,7 +42,7 @@ const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
                                                   onChange={args => args.expanded.length && onSelectPurpose(args.expanded[0] as string)}/>
                         }
                         {!accordion &&
-                        <TableInformationtype list={policies} showPurpose={true}/>
+                        <InformationtypePolicyTable policies={policies} showPurpose={true}/>
                         }
                     </Block>
 
