@@ -23,7 +23,7 @@ import randomColor from "randomcolor"
 export const AuditRecentTable = () => {
     const [audits, setAudits] = useState<PageResponse<AuditItem>>({content: [], numberOfElements: 0, pageNumber: 0, pages: 0, pageSize: 1, totalElements: 0})
     const [page, setPage] = React.useState(1);
-    const [limit, setLimit] = React.useState(10);
+    const [limit, setLimit] = React.useState(20);
 
     const colors = _.uniq(audits.content.map(a => a.tableId))
     .reduce((val, id) => {
