@@ -1,4 +1,4 @@
-import { IStrings } from "./intl";
+import {IStrings} from "./intl";
 
 export const no: IStrings = {
     informationType: "Opplysningstype",
@@ -6,8 +6,9 @@ export const no: IStrings = {
     informationTypeSearch: "Søk opplysningstyper",
     term: "Begrepsdefinisjon",
     purpose: "Formål",
+    purposeDescription: "Formålsbeskrivelse",
     sensitivity: "Type personopplysning",
-    processingActivities: "Behandlingsoversikt",
+    processingActivities: "Behandlingsaktiviteter",
     process: "Behandling",
     processes: "Behandlinger",
     legalBasis: "Rettslig grunnlag for behandlingen",
@@ -176,6 +177,7 @@ export const en: IStrings = {
     informationTypeSearch: "Information type search",
     term: "Term definition",
     purpose: "Purpose",
+    purposeDescription: "Purpose description",
     sensitivity: "Type of personal data",
     processingActivities: "Processing activities",
     process: "Process",

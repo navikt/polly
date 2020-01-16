@@ -145,7 +145,7 @@ const ProcessList = ({ purposeCode }: ProcessListProps) => {
         <React.Fragment>
             <React.Fragment>
                 <Block {...rowBlockProps}>
-                    <Label2 font="font400">{intl.processingActivities}</Label2>
+                    <Label2 font="font400">{intl.processes}</Label2>
                     {hasAccess() && (
                         <React.Fragment>
                             <Button

@@ -16,7 +16,7 @@ import {useState} from "react";
 
 const renderDescription = (description: string) => (
     <Block marginBottom="scale1000">
-        <Label2 font="font400">{intl.description}</Label2>
+        <Label2 font="font400">{intl.purposeDescription}</Label2>
         <Paragraph2>{description}</Paragraph2>
     </Block>
 )
@@ -73,7 +73,7 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
 
     return (
         <React.Fragment>
-            <Banner title={intl.purpose}/>
+            <Banner title={intl.processingActivities}/>
             {!isLoading && (
                 <Block marginBottom="3rem">
                     {error && <p>{error}</p>}

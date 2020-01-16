@@ -209,7 +209,7 @@ const Header = (props: HeaderProps) => {
 
                 <StyledNavigationItem>
                     <RouteLink href="/purpose" className={link}>
-                        {intl.purpose}
+                        {intl.processingActivities}
                     </RouteLink>
                 </StyledNavigationItem>
 
