@@ -78,7 +78,7 @@ export const no: IStrings = {
     replace: "Erstatt",
     replaceAllUse: "Erstatt all bruk",
     recipientPurpose: "Mottakers formål",
-    legalBasisComplete: "Lukk rettslig grunnlag editor før lagring",
+    legalBasisComplete: "Lukk rettslig grunnlag redigering før lagring",
 
     groupByPurpose: "Grupper etter formål",
     showAll: "Vis alle",
