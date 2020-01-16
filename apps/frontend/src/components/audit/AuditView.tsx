@@ -3,7 +3,7 @@ import { Block } from "baseui/block"
 import { intl, theme } from "../../util"
 import ReactJson from "react-json-view"
 import React, { RefObject, useEffect } from "react"
-import { AuditLog } from "../../constants"
+import { AuditAction, AuditLog } from "../../constants"
 import { Label1 } from "baseui/typography"
 import { AuditLabel as Label } from "./AuditComponents"
 import { Spinner } from "baseui/icon"
@@ -37,7 +37,7 @@ export const AuditView = (props: AuditViewProps) => {
     }, [auditId, auditLog])
 
     const logFound = auditLog && !!auditLog.audits.length
-    const rowOne = auditLog?.audits[0]
+    const newestAudit = auditLog?.audits[0]
 
     return <Card>
         {loading && <Spinner size={theme.sizing.scale2400}/>}
@@ -48,17 +48,19 @@ export const AuditView = (props: AuditViewProps) => {
             <Block width="90%">
               <Label label={intl.id}>{auditLog?.id}</Label>
               <Label
-                  label={intl.table}>{rowOne?.table}</Label>
+                  label={intl.table}>{newestAudit?.table}</Label>
               <Label label={intl.audits}>{auditLog?.audits.length}</Label>
             </Block>
             <Block display="flex">
-              <StatefulTooltip content={() => intl.view}>
-                <Block>
-                  <ObjectLink id={rowOne!.tableId} type={rowOne!.table}>
-                    <Button size="compact" shape="round" kind="tertiary"><FontAwesomeIcon icon={faBinoculars}/></Button>
-                  </ObjectLink>
-                </Block>
-              </StatefulTooltip>
+                {newestAudit?.action !== AuditAction.DELETE &&
+                <StatefulTooltip content={() => intl.view}>
+                  <Block>
+                    <ObjectLink id={newestAudit!.tableId} type={newestAudit!.table}>
+                      <Button size="compact" shape="round" kind="tertiary"><FontAwesomeIcon icon={faBinoculars}/></Button>
+                    </ObjectLink>
+                  </Block>
+                </StatefulTooltip>
+                }
               <StatefulTooltip content={() => intl.close}>
                 <Block>
                   <Button size="compact" shape="round" kind="tertiary" onClick={() => viewId('')}><FontAwesomeIcon icon={faTimes}/></Button>
