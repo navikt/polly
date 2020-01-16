@@ -170,6 +170,7 @@ export interface IStrings {
     action: string;
     time: string;
     user: string;
+    lastChanges: string;
 }
 
 // Remember import moment locales up top

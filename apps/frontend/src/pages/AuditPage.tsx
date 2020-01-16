@@ -19,33 +19,34 @@ const AuditPageImpl = (props: RouteComponentProps<{ id?: string, auditId?: strin
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState()
     const [auditLog, setAuditLog] = useState<AuditLog>()
-    const [idSearch, setIdInput, idInput] = useDebouncedState(props.match.params.id, 400)
+    const [idSearch, setIdInput, idInput] = useDebouncedState(props.match.params.id || '', 400)
 
     const lookupVersion = (id?: string) => {
         (async () => {
+            if (id === auditLog?.id) {
+                return
+            }
             setAuditLog(undefined)
             setError(undefined)
             if (!id) {
-                !!props.match.params.id && props.history.replace('/admin/audit')
+                !!props.match.params.id && props.history.push('/admin/audit')
                 return
             }
             setLoading(true)
-            let log: AuditLog
             try {
-                log = await getAuditLog(_.escape(id))
+                const log = await getAuditLog(_.escape(id))
+                setAuditLog(log)
+                if (log.audits.length && id !== props.match.params.id) {
+                    props.history.push(`/admin/audit/${id}`)
+                }
             } catch (e) {
                 setError(e)
-                return
-            }
-            setAuditLog(log)
-            if (log.audits.length && id !== props.match.params.id) {
-                props.history.push(`/admin/audit/${id}`)
             }
             setLoading(false)
         })()
     }
 
-    useEffect(() => setIdInput(props.match.params.id), [props.match.params.id])
+    useEffect(() => setIdInput(props.match.params.id || ''), [props.match.params.id])
     useEffect(() => lookupVersion(idSearch), [idSearch])
 
     return (
@@ -57,14 +58,14 @@ const AuditPageImpl = (props: RouteComponentProps<{ id?: string, auditId?: strin
                     <Input size="compact" value={idInput}
                            overrides={{Input: {style: {width: '300px'}}}}
                            placeholder={intl.id}
-                           onChange={(e) => setIdInput(format((e.target as HTMLInputElement).value))}
+                           onChange={e => setIdInput(format((e.target as HTMLInputElement).value))}
                     />
                 </Label>
             </Block>
 
             {error && <Paragraph2>{_.escape(error)}</Paragraph2>}
-            <AuditView auditLog={auditLog} auditId={props.match.params.auditId} loading={loading} viewId={lookupVersion}/>
-            {!auditLog && !error && <AuditRecentTable/>}
+            {idInput && <AuditView auditLog={auditLog} auditId={props.match.params.auditId} loading={loading} viewId={lookupVersion}/>}
+            {!idInput && <AuditRecentTable/>}
         </>
     )
 }

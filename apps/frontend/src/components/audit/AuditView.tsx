@@ -18,7 +18,7 @@ type AuditViewProps = {
     auditLog?: AuditLog,
     auditId?: string,
     loading: boolean,
-    viewId: (id?: string) => void
+    viewId: (id: string) => void
 }
 
 type Refs = { [id: string]: RefObject<HTMLElement> }
@@ -30,62 +30,59 @@ export const AuditView = (props: AuditViewProps) => {
         return acc;
     }, {} as Refs) || {};
 
-    const logFound = !!auditLog?.audits.length
-
     useEffect(() => {
-        if (auditId && auditLog) {
+        if (auditId && auditLog && refs[auditId] && auditId !== auditLog.audits[0].id) {
             refs[auditId].current!.scrollIntoView({block: "start"})
         }
     }, [auditId, auditLog])
 
+    const logFound = auditLog && !!auditLog.audits.length
     const rowOne = auditLog?.audits[0]
-    return !auditLog ? null :
-        (<Card>
-                {loading && <Spinner size={theme.sizing.scale2400}/>}
-                {!loading && auditLog && !logFound && <Label1>{intl.auditNotFound}</Label1>}
 
-                {logFound &&
-                <>
-                  <Block display="flex" justifyContent="space-between">
-                    <Block width="90%">
-                      <Label label={intl.id}>{auditLog?.id}</Label>
-                      <Label
-                          label={intl.table}>{auditLog?.audits.length ? rowOne!.table : undefined}</Label>
-                      <Label label={intl.audits}>{auditLog?.audits.length}</Label>
-                    </Block>
-                    <Block display="flex">
-                      <StatefulTooltip content={() => intl.view}>
-                        <Block>
-                          <ObjectLink id={rowOne!.tableId} type={rowOne!.table}>
-                            <Button size="compact" shape="round" kind="tertiary"><FontAwesomeIcon icon={faBinoculars}/></Button>
-                          </ObjectLink>
-                        </Block>
-                      </StatefulTooltip>
-                      <StatefulTooltip content={() => intl.close}>
-                        <Block>
-                          <Button size="compact" shape="round" kind="tertiary" onClick={() => viewId(undefined)}><FontAwesomeIcon icon={faTimes}/></Button>
-                        </Block>
-                      </StatefulTooltip>
-                    </Block>
-                  </Block>
+    return <Card>
+        {loading && <Spinner size={theme.sizing.scale2400}/>}
+        {!loading && auditLog && !logFound && <Label1>{intl.auditNotFound}</Label1>}
 
-                    {auditLog.audits.map((audit, index) => {
-                        const time = moment(audit.time)
-                        return (
-                            <Block key={audit.id} ref={refs[audit.id]} marginBottom='1rem' marginTop=".5rem"
-                                   backgroundColor={audit.id === props.auditId ? theme.colors.mono200 : undefined}>
-                                <Label label={intl.auditNr}>{auditLog!.audits.length - index}</Label>
-                                <Label label={intl.action}>{audit.action}</Label>
-                                <Label label={intl.time}>{time.format('LL')} {time.format('HH:mm:ss.SSS Z')}</Label>
-                                <Label label={intl.user}>{audit.user}</Label>
-                                <ReactJson src={audit.data} name={null} onSelect={sel => {
-                                    (sel.name === 'id' || sel.name?.endsWith("Id")) && viewId(sel.value as string)
-                                }}/>
-                            </Block>
-                        )
-                    })}
-                </>
-                }
-            </Card>
-        )
+        {logFound && <>
+          <Block display="flex" justifyContent="space-between">
+            <Block width="90%">
+              <Label label={intl.id}>{auditLog?.id}</Label>
+              <Label
+                  label={intl.table}>{rowOne?.table}</Label>
+              <Label label={intl.audits}>{auditLog?.audits.length}</Label>
+            </Block>
+            <Block display="flex">
+              <StatefulTooltip content={() => intl.view}>
+                <Block>
+                  <ObjectLink id={rowOne!.tableId} type={rowOne!.table}>
+                    <Button size="compact" shape="round" kind="tertiary"><FontAwesomeIcon icon={faBinoculars}/></Button>
+                  </ObjectLink>
+                </Block>
+              </StatefulTooltip>
+              <StatefulTooltip content={() => intl.close}>
+                <Block>
+                  <Button size="compact" shape="round" kind="tertiary" onClick={() => viewId('')}><FontAwesomeIcon icon={faTimes}/></Button>
+                </Block>
+              </StatefulTooltip>
+            </Block>
+          </Block>
+
+            {auditLog && auditLog.audits.map((audit, index) => {
+                const time = moment(audit.time)
+                return (
+                    <Block key={audit.id} ref={refs[audit.id]} marginBottom='1rem' marginTop=".5rem"
+                           backgroundColor={audit.id === props.auditId ? theme.colors.mono200 : undefined}>
+                        <Label label={intl.auditNr}>{auditLog!.audits.length - index}</Label>
+                        <Label label={intl.action}>{audit.action}</Label>
+                        <Label label={intl.time}>{time.format('LL')} {time.format('HH:mm:ss.SSS Z')}</Label>
+                        <Label label={intl.user}>{audit.user}</Label>
+                        <ReactJson src={audit.data} name={null} onSelect={sel => {
+                            (sel.name === 'id' || sel.name?.endsWith("Id")) && viewId(sel.value as string)
+                        }}/>
+                    </Block>
+                )
+            })}
+        </>
+        }
+    </Card>
 }

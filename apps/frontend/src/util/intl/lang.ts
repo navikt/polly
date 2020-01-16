@@ -166,7 +166,8 @@ export const no: IStrings = {
     action: "Aksjon",
     time: "Tidspunkt",
     user: "Bruker",
-    close: "Lukk"
+    close: "Lukk",
+    lastChanges: "Siste endringer"
 };
 
 export const en: IStrings = {
@@ -335,7 +336,8 @@ export const en: IStrings = {
     action: "Action",
     time: "Time",
     user: "User",
-    close: "Close"
+    close: "Close",
+    lastChanges: "Last changes"
 };
 
 export const ta = {

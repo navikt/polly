@@ -1,4 +1,4 @@
-import { Label2 } from "baseui/typography"
+import { Label1 } from "baseui/typography"
 import React, { useEffect, useState } from "react"
 import { getAudits } from "../../api/AuditApi"
 import { AuditItem, PageResponse } from "../../constants"
@@ -50,7 +50,7 @@ export const AuditRecentTable = () => {
 
     return (
         <>
-            <Label2>Siste endringer</Label2>
+            <Label1 marginBottom="1rem">{intl.lastChanges}</Label1>
             <StyledTable>
                 <StyledHead>
                     <StyledHeadCell $style={{maxWidth: "13%"}}>{intl.time}</StyledHeadCell>
