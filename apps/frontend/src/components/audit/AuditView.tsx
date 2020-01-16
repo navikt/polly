@@ -5,7 +5,7 @@ import ReactJson from "react-json-view"
 import React, { RefObject, useEffect } from "react"
 import { AuditAction, AuditLog } from "../../constants"
 import { Label1 } from "baseui/typography"
-import { AuditLabel as Label } from "./AuditComponents"
+import { AuditActionIcon, AuditLabel as Label } from "./AuditComponents"
 import { Spinner } from "baseui/icon"
 import { Card } from "baseui/card"
 import { Button } from "baseui/button"
@@ -75,7 +75,7 @@ export const AuditView = (props: AuditViewProps) => {
                     <Block key={audit.id} ref={refs[audit.id]} marginBottom='1rem' marginTop=".5rem"
                            backgroundColor={audit.id === props.auditId ? theme.colors.mono200 : undefined}>
                         <Label label={intl.auditNr}>{auditLog!.audits.length - index}</Label>
-                        <Label label={intl.action}>{audit.action}</Label>
+                        <Label label={intl.action}><AuditActionIcon action={audit.action} withText={true}/></Label>
                         <Label label={intl.time}>{time.format('LL')} {time.format('HH:mm:ss.SSS Z')}</Label>
                         <Label label={intl.user}>{audit.user}</Label>
                         <ReactJson src={audit.data} name={null} onSelect={sel => {

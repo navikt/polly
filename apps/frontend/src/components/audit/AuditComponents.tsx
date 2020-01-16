@@ -26,7 +26,7 @@ export const AuditLabel = (props: { label: string, children: any }) => {
     )
 }
 
-export const AuditActionIcon = (props: { action: AuditAction }) => {
+export const AuditActionIcon = (props: { action: AuditAction, withText?: boolean }) => {
     const icon =
         (props.action === AuditAction.CREATE && {icon: faPlusCircle, color: theme.colors.positive300}) ||
         (props.action === AuditAction.UPDATE && {icon: faInfoCircle, color: theme.colors.warning300}) ||
@@ -36,7 +36,7 @@ export const AuditActionIcon = (props: { action: AuditAction }) => {
     return (
         <StatefulTooltip content={() => intl[props.action] as string}>
             <Block marginRight=".5rem">
-                <FontAwesomeIcon icon={icon.icon!} color={icon.color}/>
+                <FontAwesomeIcon icon={icon.icon!} color={icon.color}/> {props.withText && intl[props.action]}
             </Block>
         </StatefulTooltip>
     )
