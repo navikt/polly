@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useEffect } from 'react'
-import { Accordion, Panel } from 'baseui/accordion'
+import { Accordion, Panel, SharedProps } from 'baseui/accordion'
 import { generatePath, RouteComponentProps, withRouter } from 'react-router'
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { Spinner } from 'baseui/spinner';
@@ -194,7 +194,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                         key={p.id}
                         overrides={{
                             ToggleIcon: {
-                                component: (iconProps) => !!iconProps.$expanded ?
+                                component: (iconProps: SharedProps) => !!iconProps.$expanded ?
                                     <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>
                             }
                         }}
