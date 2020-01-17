@@ -19,7 +19,8 @@ import { FlagIcon } from "./common/Flag"
 import RouteLink from "./common/RouteLink"
 import { codelist } from "../service/Codelist"
 
-const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
+const server_polly = process.env.REACT_APP_POLLY_ENDPOINT
+const enableThirdParty = !process.env.REACT_APP_DISABLE_THIRDPARTY
 
 const logo = <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -219,11 +220,11 @@ const Header = (props: HeaderProps) => {
                     </RouteLink>
                 </StyledNavigationItem>
 
-                <StyledNavigationItem>
+                {enableThirdParty && <StyledNavigationItem>
                     <RouteLink href="/thirdparty" className={link}>
                         {intl.thirdParty}
                     </RouteLink>
-                </StyledNavigationItem>
+                </StyledNavigationItem>}
 
                 <StyledNavigationItem>
                     {user.isLoggedIn() && (
