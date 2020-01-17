@@ -27,7 +27,6 @@ import no.nav.data.polly.process.domain.ProcessData;
 import no.nav.data.polly.process.domain.ProcessDistributionRepository;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.term.catalog.CatalogTerm;
-import no.nav.data.polly.term.catalog.GraphNode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +38,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.util.SocketUtils;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.LocalDate;
@@ -250,8 +248,7 @@ public abstract class IntegrationTestBase {
         WireMock.stubFor(get("/termcatalog/terms/search?term_name=term")
                 .willReturn(okJson(JsonUtils.toJson(List.of(termOne, termTwo)))));
 
-        GraphNode termOneGraph = GraphNode.builder().id("term").term("new term").description("descr1").build();
-        WireMock.stubFor(get("/termcatalog/term/prop/term").willReturn(okJson(JsonUtils.toJson(List.of(termOneGraph)))));
+        WireMock.stubFor(get("/termcatalog/term/prop/term").willReturn(okJson(JsonUtils.toJson(List.of(termOne)))));
     }
 
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {

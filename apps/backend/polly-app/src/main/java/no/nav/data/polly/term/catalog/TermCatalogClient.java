@@ -33,7 +33,7 @@ public class TermCatalogClient implements TermService {
     private final RestTemplate restTemplate;
     private final TermCatalogProperties properties;
     private final LoadingCache<String, List<CatalogTerm>> termSearchCache;
-    private final LoadingCache<String, GraphNode> termCache;
+    private final LoadingCache<String, CatalogTerm> termCache;
 
     public TermCatalogClient(RestTemplate restTemplate, TermCatalogProperties properties) {
         this.restTemplate = restTemplate;
@@ -59,14 +59,14 @@ public class TermCatalogClient implements TermService {
 
     @Override
     public Optional<PollyTerm> getTerm(String termId) {
-        GraphNode term = termCache.get(termId);
-        return Optional.ofNullable(term).map(GraphNode::convertToPollyTerm);
+        CatalogTerm term = termCache.get(termId);
+        return Optional.ofNullable(term).map(CatalogTerm::convertToPollyTerm);
     }
 
-    private GraphNode getFromCatalog(String termId) {
-        ResponseEntity<GraphNode[]> response;
+    private CatalogTerm getFromCatalog(String termId) {
+        ResponseEntity<CatalogTerm[]> response;
         try {
-            response = restTemplate.getForEntity(properties.getGetUrl(), GraphNode[].class, termId);
+            response = restTemplate.getForEntity(properties.getGetUrl(), CatalogTerm[].class, termId);
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 log.debug("term {} not found", termId);
@@ -75,7 +75,7 @@ public class TermCatalogClient implements TermService {
             throw e;
         }
         verifyResponse(response);
-        GraphNode[] body = requireNonNull(response.getBody());
+        CatalogTerm[] body = requireNonNull(response.getBody());
         if (body.length == 0) {
             log.debug("term {} not found", termId);
             return null;
