@@ -5,7 +5,7 @@ import { createDocument, updateDocument } from "./DocumentApi"
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 export const getAllDisclosures = async (pageSize: number, pageNumber: number) => {
-    return (await axios.get<PageResponse<Disclosure>>(`${server_polly}/disclosure?pageSize=${pageSize}&pageNumber==${pageNumber}`)).data.content;
+    return (await axios.get<PageResponse<Disclosure>>(`${server_polly}/disclosure?pageSize=${pageSize}&pageNumber=${pageNumber}`)).data.content;
 };
 
 export const getDisclosure = async (disclosureId: string) => {
