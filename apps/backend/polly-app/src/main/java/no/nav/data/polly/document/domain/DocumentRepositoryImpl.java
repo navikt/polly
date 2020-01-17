@@ -22,8 +22,8 @@ public class DocumentRepositoryImpl implements DocumentRepositoryCustom {
 
     @Override
     public List<Document> findByInformationTypeId(UUID informationTypeId) {
-        var resp = jdbcTemplate.queryForList("select document_id from document where data #>'{informationTypeIds}' ?? :informationTypeId",
-                new MapSqlParameterSource().addValue("informationTypeId", informationTypeId.toString()));
+        var resp = jdbcTemplate.queryForList("select document_id from document where data #>'{informationTypes}' @> :informationTypeId::jsonb",
+                new MapSqlParameterSource().addValue("informationTypeId", String.format("[{\"informationTypeId\": \"%s\"}]", informationTypeId)));
         List<UUID> ids = resp.stream().map(i -> ((UUID) i.values().iterator().next())).collect(Collectors.toList());
 
         return documentRepository.findAllById(ids);

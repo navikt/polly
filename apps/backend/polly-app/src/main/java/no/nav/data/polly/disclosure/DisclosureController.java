@@ -141,7 +141,7 @@ public class DisclosureController {
     private DisclosureResponse convertAndAddDocument(Disclosure disclosure) {
         var response = disclosure.convertToResponse();
         if (disclosure.getData().getDocumentId() != null) {
-            response.setDocument(documentService.getDocument(disclosure.getData().getDocumentId()));
+            response.setDocument(documentService.getDocumentAsResponse(disclosure.getData().getDocumentId()));
         }
         return response;
     }

@@ -46,8 +46,8 @@ public class DisclosureRepositoryImpl implements DisclosureRepositoryCustom {
     public List<Disclosure> findByInformationTypeId(UUID informationTypeId) {
         var resp = jdbcTemplate.queryForList("select disclosure_id from disclosure di where exists(select 1 from document d"
                         + "             where di.data ->> 'documentId' = d.document_id::text"
-                        + "               and d.data #> '{informationTypeIds}' ?? :informationTypeId::text)",
-                new MapSqlParameterSource().addValue("informationTypeId", informationTypeId));
+                        + "               and  data #>'{informationTypes}' @> :informationTypeId::jsonb)",
+                new MapSqlParameterSource().addValue("informationTypeId", String.format("[{\"informationTypeId\": \"%s\"}]", informationTypeId)));
         return getDisclosures(resp);
     }
 

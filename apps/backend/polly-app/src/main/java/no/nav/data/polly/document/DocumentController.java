@@ -6,11 +6,13 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.rest.PageParameters;
 import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.document.domain.Document;
 import no.nav.data.polly.document.domain.DocumentRepository;
+import no.nav.data.polly.document.dto.DocumentInfoTypeResponse;
 import no.nav.data.polly.document.dto.DocumentRequest;
 import no.nav.data.polly.document.dto.DocumentResponse;
 import org.springframework.http.HttpStatus;
@@ -29,9 +31,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import javax.validation.Valid;
+
+import static java.util.Comparator.comparing;
+import static no.nav.data.polly.common.utils.StartsWithComparator.startsWith;
 
 @Slf4j
 @RestController
@@ -58,10 +64,25 @@ public class DocumentController {
     ) {
         log.info("Received request for all Documents. informationType={}", informationTypeId);
         if (informationTypeId != null) {
-            var disc = repository.findByInformationTypeId(informationTypeId);
-            return returnResults(new RestResponsePage<>(StreamUtils.convert(disc, this::convertToResponse)));
+            var doc = repository.findByInformationTypeId(informationTypeId);
+            return returnResults(new RestResponsePage<>(StreamUtils.convert(doc, this::convertToResponseWithInfoTypes)));
         }
         return returnResults(new RestResponsePage<>(repository.findAll(pageParameters.createIdSortedPage()).map(Document::convertToResponse)));
+    }
+
+    @ApiOperation(value = "Get All Documents")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "All Documents fetched", response = DocumentPage.class),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @GetMapping("/search/{name}")
+    public ResponseEntity<RestResponsePage<DocumentResponse>> search(@PathVariable String name) {
+        log.info("Received request for Documents name={}", name);
+        if (name.length() < 3) {
+            throw new ValidationException("Search term must be at least 3 characters");
+        }
+        var docs = repository.findByNameLike(name);
+        docs.sort(comparing(it -> it.getData().getName(), startsWith(name)));
+        return returnResults(new RestResponsePage<>(StreamUtils.convert(docs, this::convertToResponseWithInfoTypes)));
     }
 
     private ResponseEntity<RestResponsePage<DocumentResponse>> returnResults(RestResponsePage<DocumentResponse> page) {
@@ -77,7 +98,7 @@ public class DocumentController {
     @GetMapping("/{id}")
     public ResponseEntity<DocumentResponse> findForId(@PathVariable UUID id) {
         log.info("Received request for Document with the id={}", id);
-        Optional<DocumentResponse> documentResponse = repository.findById(id).map(this::convertToResponse);
+        Optional<DocumentResponse> documentResponse = repository.findById(id).map(this::convertToResponseWithInfoTypes);
         if (documentResponse.isEmpty()) {
             log.info("Cannot find the Document with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -95,7 +116,7 @@ public class DocumentController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<DocumentResponse> createPolicy(@Valid @RequestBody DocumentRequest request) {
         log.debug("Received request to create Document");
-        return new ResponseEntity<>(convertToResponse(service.save(request)), HttpStatus.CREATED);
+        return new ResponseEntity<>(convertToResponseWithInfoTypes(service.save(request)), HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "Update Document")
@@ -104,10 +125,10 @@ public class DocumentController {
             @ApiResponse(code = 400, message = "Illegal arguments"),
             @ApiResponse(code = 500, message = "Internal server error")})
     @PutMapping("/{id}")
-    public ResponseEntity<DocumentResponse> updatePolicy(@PathVariable UUID id , @Valid @RequestBody DocumentRequest request) {
+    public ResponseEntity<DocumentResponse> updatePolicy(@PathVariable UUID id, @Valid @RequestBody DocumentRequest request) {
         log.debug("Received request to update Document");
         Assert.isTrue(id.equals(request.getIdAsUUID()), "id mismatch");
-        return ResponseEntity.ok(convertToResponse(service.update(request)));
+        return ResponseEntity.ok(convertToResponseWithInfoTypes(service.update(request)));
     }
 
     @ApiOperation(value = "Delete Document")
@@ -126,12 +147,13 @@ public class DocumentController {
         }
         repository.deleteById(id);
         log.info("Document with id={} deleted", id);
-        return new ResponseEntity<>(convertToResponse(fromRepository.get()), HttpStatus.OK);
+        return new ResponseEntity<>(convertToResponseWithInfoTypes(fromRepository.get()), HttpStatus.OK);
     }
 
-    private DocumentResponse convertToResponse(Document document) {
+    private DocumentResponse convertToResponseWithInfoTypes(Document document) {
         var response = document.convertToResponse();
-        response.setInformationTypes(service.getInformationTypes(document));
+        Map<UUID, DocumentInfoTypeResponse> informationTypes = service.getInformationTypes(document);
+        response.getInformationTypes().forEach(it -> it.setInformationType(informationTypes.get(it.getInformationTypeId())));
         return response;
     }
 
