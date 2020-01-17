@@ -66,14 +66,7 @@ public class AuditVersionListener {
     private void audit(Object entity, Action action) {
         try {
             String tableName = entity.getClass().getAnnotation(Table.class).name();
-            String id;
-            if (entity instanceof Codelist) {
-                id = ((Codelist) entity).getList() + "-" + ((Codelist) entity).getCode();
-            } else {
-                UUID uuid = HibernateUtils.getId(entity);
-                Assert.notNull(uuid, "entity has not set id");
-                id = uuid.toString();
-            }
+            String id = getIdForObject(entity);
             String data = wr.writeValueAsString(entity);
             String user = Optional.ofNullable(MdcUtils.getUser()).orElse("no user set");
             AuditVersion auditVersion = AuditVersion.builder()
@@ -83,6 +76,18 @@ public class AuditVersionListener {
         } catch (JsonProcessingException e) {
             log.error("failed to serialize object", e);
         }
+    }
+
+    public static String getIdForObject(Object entity) {
+        String id;
+        if (entity instanceof Codelist) {
+            id = ((Codelist) entity).getList() + "-" + ((Codelist) entity).getCode();
+        } else {
+            UUID uuid = HibernateUtils.getId(entity);
+            Assert.notNull(uuid, "entity has not set id");
+            id = uuid.toString();
+        }
+        return id;
     }
 
     private static class RelationFilter extends SimpleBeanPropertyFilter {
