@@ -79,14 +79,14 @@ export const AuditRecentTable = (props: { show: boolean }) => {
                                 </Block>
                                 <StyledCell $style={{maxWidth: "13%"}}>
                                     <AuditButton kind="tertiary" id={audit.tableId} auditId={audit.id}>
-                                        <StatefulTooltip content={audit.time}>{moment(audit.time).fromNow()}</StatefulTooltip>
+                                        <StatefulTooltip content={audit.time} placement={PLACEMENT.top}>{moment(audit.time).fromNow()}</StatefulTooltip>
                                     </AuditButton>
                                 </StyledCell>
                                 <StyledCell $style={{maxWidth: "17%"}}>
                                     <AuditActionIcon action={audit.action}/> {audit.table}
                                 </StyledCell>
                                 <StyledCell>
-                                    <StatefulTooltip content={audit.tableId}>
+                                    <StatefulTooltip content={audit.tableId} placement={PLACEMENT.top}>
                                         <Block color={colors[audit.tableId]}>{_.truncate(audit.tableId, {length})}</Block>
                                     </StatefulTooltip>
                                 </StyledCell>

@@ -1,6 +1,6 @@
 import * as React from "react"
 import moment from "moment"
-import { StatefulTooltip } from "baseui/tooltip"
+import {PLACEMENT, StatefulTooltip} from "baseui/tooltip"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faClock } from "@fortawesome/free-solid-svg-icons"
 import { intl, theme } from "../../util"
@@ -35,7 +35,7 @@ export const ActiveIndicator = (props: { start?: string, end?: string, alwaysSho
     const startView = startDate.format(dateFormat)
     const endView = endDate.format(dateFormat)
     return (hasDates ?
-            <StatefulTooltip content={<>{hasStart && (intl.startDate + ' ' + startView)} {hasStart && hasEnd && ' - '} {hasEnd && (intl.endDate + ' ' + endView)}</>}>
+            <StatefulTooltip content={<>{hasStart && (intl.startDate + ' ' + startView)} {hasStart && hasEnd && ' - '} {hasEnd && (intl.endDate + ' ' + endView)}</>} placement={PLACEMENT.top}>
                 <span>
                     {withText && intl.period + ': '}
                     <FontAwesomeIcon icon={faClock} color={active ? theme.colors.positive300 : theme.colors.mono600}/>

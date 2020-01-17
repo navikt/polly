@@ -23,7 +23,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronRight, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal';
 import { TeamPopover } from "../../common/Team"
-import { StatefulTooltip } from "baseui/tooltip";
+import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
 import { AuditButton } from "../../audit/AuditButton"
 
 const rowPanelContent: BlockProps = {
@@ -130,7 +130,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
         )
     }
     const renderEditProcessButton = () => (
-        <StatefulTooltip content={intl.edit}>
+        <StatefulTooltip content={intl.edit} placement={PLACEMENT.top}>
             <Button
                 size={ButtonSize.compact}
                 kind={KIND.secondary}
@@ -148,7 +148,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
         </StatefulTooltip>
     )
     const renderDeleteProcessButton = () => (
-        <StatefulTooltip content={intl.delete}>
+        <StatefulTooltip content={intl.delete} placement={PLACEMENT.top}>
             <Button
                 size={ButtonSize.compact}
                 kind={KIND.secondary}

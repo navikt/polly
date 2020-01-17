@@ -23,7 +23,7 @@ import {useTable} from "../../util/hooks"
 import {getCodelistUsage} from "../../api"
 import {Usage} from "./CodeListUsage"
 import {CodeUsage} from "../../constants"
-import {StatefulTooltip} from "baseui/tooltip";
+import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
 import { AuditButton } from "../audit/AuditButton"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
@@ -154,7 +154,7 @@ const CodeListTable = ({tableData, hasAccess, refresh}: TableCodelistProps) => {
                         <StyledCell styled={{maxWidth: "55%", minWidth: "24rem",}}>{row.description}</StyledCell>
                         <SmallCell>{
                             (hasAccess && <Block display="flex" justifyContent="flex-end" width="100%">
-                                <StatefulTooltip content={intl.ghost}>
+                                <StatefulTooltip content={intl.ghost} placement={PLACEMENT.top}>
                                     <Button
                                         size={ButtonSize.compact}
                                         kind={row === selectedCode && showUsage ? KIND.primary : KIND.tertiary}
@@ -166,7 +166,7 @@ const CodeListTable = ({tableData, hasAccess, refresh}: TableCodelistProps) => {
                                     </Button>
                                 </StatefulTooltip>
                                 <AuditButton id={`${row.list}-${row.code}`} kind={KIND.tertiary}/>
-                                <StatefulTooltip content={intl.edit}>
+                                <StatefulTooltip content={intl.edit} placement={PLACEMENT.top}>
                                     <Button
                                         size={ButtonSize.compact}
                                         kind={KIND.tertiary}
@@ -177,7 +177,7 @@ const CodeListTable = ({tableData, hasAccess, refresh}: TableCodelistProps) => {
                                         <FontAwesomeIcon icon={faEdit}/>
                                     </Button>
                                 </StatefulTooltip>
-                                <StatefulTooltip content={intl.delete}>
+                                <StatefulTooltip content={intl.delete} placement={PLACEMENT.top}>
                                     <Button
                                         size={ButtonSize.compact}
                                         kind={KIND.tertiary}

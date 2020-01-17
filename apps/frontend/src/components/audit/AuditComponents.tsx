@@ -3,7 +3,7 @@ import { Label2, Label3 } from "baseui/typography"
 import React from "react"
 import { AuditAction } from "../../constants"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { StatefulTooltip } from "baseui/tooltip"
+import {PLACEMENT, StatefulTooltip} from "baseui/tooltip"
 import { faInfoCircle, faMinusCircle, faPlusCircle } from "@fortawesome/free-solid-svg-icons"
 import { intl, theme } from "../../util"
 
@@ -34,7 +34,7 @@ export const AuditActionIcon = (props: { action: AuditAction, withText?: boolean
         {icon: undefined, color: undefined}
 
     return (
-        <StatefulTooltip content={() => intl[props.action] as string}>
+        <StatefulTooltip content={() => intl[props.action] as string} placement={PLACEMENT.top}>
             <Block marginRight=".5rem">
                 <FontAwesomeIcon icon={icon.icon!} color={icon.color}/> {props.withText && intl[props.action]}
             </Block>

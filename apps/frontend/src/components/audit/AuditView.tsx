@@ -11,7 +11,7 @@ import { Card } from "baseui/card"
 import { Button } from "baseui/button"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBinoculars, faTimes } from "@fortawesome/free-solid-svg-icons"
-import { StatefulTooltip } from "baseui/tooltip"
+import {PLACEMENT, StatefulTooltip} from "baseui/tooltip"
 import { ObjectLink } from "../common/RouteLink"
 
 type AuditViewProps = {
@@ -53,7 +53,7 @@ export const AuditView = (props: AuditViewProps) => {
             </Block>
             <Block display="flex">
                 {newestAudit?.action !== AuditAction.DELETE &&
-                <StatefulTooltip content={() => intl.view}>
+                <StatefulTooltip content={() => intl.view} placement={PLACEMENT.top}>
                   <Block>
                     <ObjectLink id={newestAudit!.tableId} type={newestAudit!.table}>
                       <Button size="compact" shape="round" kind="tertiary"><FontAwesomeIcon icon={faBinoculars}/></Button>
@@ -61,7 +61,7 @@ export const AuditView = (props: AuditViewProps) => {
                   </Block>
                 </StatefulTooltip>
                 }
-              <StatefulTooltip content={() => intl.close}>
+              <StatefulTooltip content={() => intl.close} placement={PLACEMENT.top}>
                 <Block>
                   <Button size="compact" shape="round" kind="tertiary" onClick={() => viewId('')}><FontAwesomeIcon icon={faTimes}/></Button>
                 </Block>
