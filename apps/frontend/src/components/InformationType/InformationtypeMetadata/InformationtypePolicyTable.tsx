@@ -22,13 +22,13 @@ const CustomStyledRow = withStyle(StyledRow, {
 });
 
 type TableInformationtypeProps = {
-    list: Array<Policy>;
+    policies: Array<Policy>;
     showPurpose: boolean;
 };
 
-const TableInformationtype = ({list, showPurpose}: TableInformationtypeProps) => {
+const InformationtypePolicyTable = ({policies, showPurpose}: TableInformationtypeProps) => {
     const [useCss, theme] = useStyletron();
-    const [table, sortColumn] = useTable<Policy, keyof Policy>(list, {sorting: policySort, initialSortColumn: showPurpose ? "purposeCode" : "process"})
+    const [table, sortColumn] = useTable<Policy, keyof Policy>(policies, {sorting: policySort, initialSortColumn: showPurpose ? "purposeCode" : "process"})
 
     return (
         <React.Fragment>
@@ -100,4 +100,4 @@ const TableInformationtype = ({list, showPurpose}: TableInformationtypeProps) =>
     );
 };
 
-export default TableInformationtype;
+export default InformationtypePolicyTable;

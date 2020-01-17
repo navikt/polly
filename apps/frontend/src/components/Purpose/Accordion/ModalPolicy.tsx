@@ -124,7 +124,6 @@ type ModalPolicyProps = {
 };
 
 const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, title }: ModalPolicyProps) => {
-    const [showLegalBasesFields, setShowLegalBasesFields] = React.useState<boolean>(false);
     const [selectedLegalBasis, setSelectedLegalBasis] = React.useState();
     const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState();
     const [infoTypeValue, setInfoTypeValue] = React.useState<PolicyInformationType | undefined>(initialValues.informationType);
@@ -133,7 +132,6 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, ti
     const onCloseModal = () => {
         setInfoTypeValue(undefined);
         setInfoTypeSearch('');
-        setShowLegalBasesFields(false);
         onClose()
     };
 
@@ -196,33 +194,22 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, ti
                                         name="legalBases"
                                         render={arrayHelpers => (
                                             <React.Fragment>
-                                                {showLegalBasesFields ? (
+                                                {formikBag.values.legalBasesOpen ? (
                                                     <Block width="100%" marginTop="2rem">
-                                                        {selectedLegalBasis ? (
-                                                            <CardLegalBasis
-                                                                titleSubmitButton={intl.update}
-                                                                initValue={selectedLegalBasis}
-                                                                hideCard={() => setShowLegalBasesFields(false)}
-                                                                submit={(selectedPolicyBasisValues) => {
-                                                                    if (!selectedPolicyBasisValues) return;
-                                                                    arrayHelpers.replace(selectedLegalBasisIndex,selectedPolicyBasisValues);
-                                                                    setShowLegalBasesFields(false);
+                                                        <CardLegalBasis
+                                                            titleSubmitButton={selectedLegalBasis ? intl.update : intl.add}
+                                                            initValue={selectedLegalBasis || {}}
+                                                            hideCard={() => formikBag.setFieldValue('legalBasesOpen', false)}
+                                                            submit={values => {
+                                                                if (!values) return;
+                                                                if (selectedLegalBasis) {
+                                                                    arrayHelpers.replace(selectedLegalBasisIndex, values);
                                                                     setSelectedLegalBasis(null)
-                                                                }} />
-                                                        ): (
-                                                            <CardLegalBasis
-                                                                initValue={{}}
-                                                                titleSubmitButton={intl.legalBasisAdd}
-                                                                hideCard={() => setShowLegalBasesFields(false)}
-                                                                submit={(values) => {
-                                                                    if (!values) return;
-                                                                    else {
-                                                                        arrayHelpers.push(values);
-                                                                        setShowLegalBasesFields(false)
-                                                                    }
-                                                                }} />
-                                                        )}
-
+                                                                } else {
+                                                                    arrayHelpers.push(values);
+                                                                }
+                                                                formikBag.setFieldValue('legalBasesOpen', false);
+                                                            }}/>
                                                     </Block>
                                                 ) : (
                                                         <Block {...rowBlockProps}>
@@ -231,7 +218,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, ti
                                                                 <Button
                                                                     size={ButtonSize.compact}
                                                                     kind={KIND.minimal}
-                                                                    onClick={() => setShowLegalBasesFields(true)}
+                                                                    onClick={() => formikBag.setFieldValue('legalBasesOpen', true)}
                                                                     startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
                                                                 >
                                                                     {intl.legalBasisAdd}
@@ -243,7 +230,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, ti
                                                                         onEdit={(index)=> {
                                                                             setSelectedLegalBasis(formikBag.values.legalBases[index]);
                                                                             setSelectedLegalBasisIndex(index);
-                                                                            setShowLegalBasesFields(true)
+                                                                            formikBag.setFieldValue('legalBasesOpen', true)
                                                                         }}
                                                                     />
                                                                 </Block>
@@ -255,6 +242,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, ti
                                     />
                                 )}
                             </ModalBody>
+                            <Error fieldName="legalBasesOpen" fullWidth={true} />
 
                             <ModalFooter>
                                 <Block display="flex" justifyContent="flex-end">

@@ -4,15 +4,12 @@ import { Block, BlockProps } from "baseui/block";
 import { Plus } from "baseui/icon";
 import { Label2 } from "baseui/typography";
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
-import { Process, ProcessFormValues, PolicyFormValues, Policy } from "../../constants"
+import { Policy, PolicyFormValues, Process, ProcessFormValues } from "../../constants"
 import { intl, useAwait } from "../../util"
 import { user } from "../../service/User";
 import ModalProcess from './Accordion/ModalProcess'
 import AccordionProcess from "./Accordion";
-import {
-    createProcess, createPolicy, getProcessesForPurpose, getProcess, updateProcess, updatePolicy,
-    deleteProcess, deletePolicy, mapProcessFromForm
-} from "../../api"
+import { createPolicy, createProcess, deletePolicy, deleteProcess, getProcess, getProcessesForPurpose, updatePolicy, updateProcess } from "../../api"
 
 const rowBlockProps: BlockProps = {
     marginBottom: 'scale800',
@@ -185,7 +182,7 @@ const ProcessList = ({ purposeCode }: ProcessListProps) => {
                     submit={(values: ProcessFormValues) => handleCreateProcess(values)}
                     errorOnCreate={errorProcessModal}
                     isEdit={false}
-                    initialValues={{ name: '', department: '', subDepartment: '', purposeCode: purposeCode, legalBases: [] }}
+                    initialValues={{ legalBasesOpen: false, name: '', department: '', subDepartment: '', purposeCode: purposeCode, legalBases: [] }}
                 />
             </React.Fragment>
         </React.Fragment>

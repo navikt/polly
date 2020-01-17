@@ -22,6 +22,7 @@ export interface PolicyFormValues {
     subjectCategory?: string
     legalBasesStatus?: LegalBasesStatus
     legalBases: Array<LegalBasisFormValues>
+    legalBasesOpen: boolean
     end?: string
     start?: string
 }
@@ -40,6 +41,7 @@ export interface ProcessFormValues {
     subDepartment?: string
     productTeam?: string
     legalBases: Array<LegalBasisFormValues>
+    legalBasesOpen: boolean
     end?: string
     start?: string
 }
@@ -186,6 +188,7 @@ export interface DisclosureFormValues {
     documentId?: string
     document?: DocumentFormValues
     legalBases: LegalBasisFormValues[]
+    legalBasesOpen: boolean;
     end?: string
     start?: string
 }

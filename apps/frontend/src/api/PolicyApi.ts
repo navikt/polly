@@ -4,7 +4,7 @@ import { LegalBasesStatus, LegalBasis, PageResponse, Policy, PolicyFormValues } 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
 export const getPoliciesForInformationType = async (informationTypeId: string) => {
-    return (await axios.get<PageResponse<Policy>>(`${server_polly}/policy/?informationTypeId=${informationTypeId}&pageSize=250`)).data
+    return (await axios.get<PageResponse<Policy>>(`${server_polly}/policy/?informationTypeId=${informationTypeId}`)).data
 }
 
 export const getPolicy = async (policyId: string) => {
@@ -55,6 +55,7 @@ export const convertPolicyToFormValues = (policy: Policy): PolicyFormValues => {
     }))
 
     return {
+        legalBasesOpen: false,
         id: policy.id,
         process: policy.process,
         purposeCode: policy.purposeCode.code,

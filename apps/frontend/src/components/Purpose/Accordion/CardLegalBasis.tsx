@@ -1,23 +1,23 @@
 import * as React from 'react';
-import {Select, TYPE, Value} from 'baseui/select';
-import {Block, BlockProps} from 'baseui/block'
-import {Card} from 'baseui/card'
-import {StatefulInput} from 'baseui/input';
-import {Label2} from 'baseui/typography';
-import {Button, KIND, SIZE as ButtonSize} from 'baseui/button';
-import {codelist, ListName} from "../../../service/Codelist";
-import {intl, theme} from "../../../util"
-import {ErrorMessage, Field, FieldProps, Formik, FormikProps} from "formik"
-import {KIND as NKIND, Notification} from "baseui/notification"
-import {LegalBasisFormValues} from "../../../constants"
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {DateModalFields} from "../DateModalFields"
-import {faExclamationCircle, faPen} from "@fortawesome/free-solid-svg-icons"
-import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip';
-import {legalBasisSchema} from "../../common/schema"
-import {LegalBasisView} from "../../common/LegalBasis"
-import {hasSpecifiedDate} from "../../common/Durations"
-import {customizeNationalLawPlaceholder} from "./PlaceholderCustomizer";
+import { Select, TYPE, Value } from 'baseui/select';
+import { Block, BlockProps } from 'baseui/block'
+import { Card } from 'baseui/card'
+import { StatefulInput } from 'baseui/input';
+import { Label2 } from 'baseui/typography';
+import { Button, KIND, SIZE as ButtonSize } from 'baseui/button';
+import { codelist, ListName } from "../../../service/Codelist";
+import { intl, theme } from "../../../util"
+import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from "formik"
+import { KIND as NKIND, Notification } from "baseui/notification"
+import { LegalBasisFormValues } from "../../../constants"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { DateModalFields } from "../DateModalFields"
+import { faExclamationCircle, faPen } from "@fortawesome/free-solid-svg-icons"
+import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip';
+import { legalBasisSchema } from "../../common/schema"
+import { LegalBasisView } from "../../common/LegalBasis"
+import { hasSpecifiedDate } from "../../common/Durations"
+import { customizeNationalLawPlaceholder } from "./PlaceholderCustomizer";
 
 const rowBlockProps: BlockProps = {
     display: 'flex',
@@ -151,21 +151,21 @@ const CardLegalBasis = ({ submit, hideCard, initValue,titleSubmitButton }: CardL
 
                         <DateModalFields rowBlockProps={rowBlockProps} showDates={hasSpecifiedDate(initialValues)} />
 
+                        <Block {...rowBlockProps} justifyContent="flex-end">
+                            <Button type='button' kind={KIND.minimal} size={ButtonSize.compact} onClick={() => hideCard()}>
+                                {intl.abort}
+                            </Button>
+                            <Button type='button' kind={KIND.secondary} size={ButtonSize.compact} onClick={form.submitForm}>
+                                {titleSubmitButton}
+                            </Button>
+                        </Block>
+
                         {form.values.gdpr && (
                             <>
                                 <Block {...rowBlockProps}>{intl.preview}</Block>
                                 <Block {...rowBlockProps}><LegalBasisView legalBasisForm={form.values}/></Block>
                             </>
                         )}
-
-                        <Block {...rowBlockProps} justifyContent="space-between">
-                            <Button type='button' kind={KIND.secondary} size={ButtonSize.compact} onClick={form.submitForm}>
-                                {titleSubmitButton}
-                            </Button>
-                            <Button type='button' kind={KIND.minimal} size={ButtonSize.compact} onClick={() => hideCard()}>
-                                {intl.abort}
-                            </Button>
-                        </Block>
                     </Card>
                 )
             }} />

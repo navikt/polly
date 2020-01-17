@@ -1,24 +1,23 @@
 import * as React from "react";
-import {useEffect} from "react";
-import {Spinner} from "baseui/spinner";
-import {Button, SHAPE} from "baseui/button"
-import {Block} from "baseui/block"
-import {faPlusCircle} from "@fortawesome/free-solid-svg-icons"
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {Select, TYPE} from "baseui/select"
-import {RouteComponentProps} from "react-router-dom"
+import { useEffect } from "react";
+import { Spinner } from "baseui/spinner";
+import { Button, SHAPE } from "baseui/button"
+import { Block } from "baseui/block"
+import { faPlusCircle } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { Select, TYPE } from "baseui/select"
+import { RouteComponentProps } from "react-router-dom"
 
 
 import InformationtypeMetadata from "../components/InformationType/InformationtypeMetadata/";
-import {intl, theme, useAwait} from "../util"
-import {CodeUsage, Policy, Disclosure} from "../constants"
-import {codelist, ListName} from "../service/Codelist"
+import { intl, theme, useAwait } from "../util"
+import { CodeUsage, Disclosure, Policy } from "../constants"
+import { codelist, ListName } from "../service/Codelist"
 import Banner from "../components/Banner";
-import {user} from "../service/User";
-import {H3} from "baseui/typography"
-import {getInformationType, getPoliciesForInformationType, useInfoTypeSearch, getDisclosuresByInformationTypeId} from "../api"
+import { user } from "../service/User";
+import { H3 } from "baseui/typography"
+import { getCodelistUsageByListName, getDisclosuresByInformationTypeId, getInformationType, getPoliciesForInformationType, useInfoTypeSearch } from "../api"
 import InformationTypeAccordion from "../components/InformationType/ListCategoryInformationtype";
-import {getCodelistUsageByListName} from "../api";
 
 export type PurposeMap = { [purpose: string]: Policy[] }
 
@@ -57,7 +56,7 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
             try {
                 const infoType = await getInformationType(informationTypeId)
                 const policies = await getPoliciesForInformationType(informationTypeId)
-                const disclosureList = props.match.params.id ? await getDisclosuresByInformationTypeId(props.match.params.id) : []
+                const disclosureList = await getDisclosuresByInformationTypeId(informationTypeId)
                 setInformationtype(infoType)
                 setPolicies(policies.content)
                 setDisclosures(disclosureList)

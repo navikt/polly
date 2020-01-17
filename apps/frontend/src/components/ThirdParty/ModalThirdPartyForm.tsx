@@ -1,19 +1,20 @@
 import * as React from 'react'
-import { DisclosureFormValues, InformationtypeFormValues, PolicyInformationType } from '../../constants';
-import { Modal, SIZE, ROLE, ModalHeader, ModalBody, ModalFooter, ModalButton } from 'baseui/modal';
-import { Formik, FormikProps, Form, Field, FieldProps, FieldArrayRenderProps, FieldArray } from 'formik';
+import { DisclosureFormValues, PolicyInformationType } from '../../constants';
+import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal';
+import { Field, FieldArray, FieldProps, Form, Formik, FormikProps } from 'formik';
 import { Block, BlockProps } from 'baseui/block';
-import { ModalLabel } from '../common/ModalSchema';
+import { Error, ModalLabel } from '../common/ModalSchema';
 import { intl } from '../../util';
 import { Button } from 'baseui/button';
-import { Value, Select, StatefulSelect } from 'baseui/select';
+import { Select, StatefulSelect, Value } from 'baseui/select';
 import { codelist, ListName } from '../../service/Codelist';
 import { Textarea } from 'baseui/textarea';
-import { VARIANT, Tag } from 'baseui/tag';
+import { Tag, VARIANT } from 'baseui/tag';
 import { useInfoTypeSearch } from '../../api';
 import { ListLegalBases } from '../common/LegalBasis';
 import CardLegalBasis from '../Purpose/Accordion/CardLegalBasis';
 import { Plus } from 'baseui/icon';
+import { disclosureSchema } from "../common/schema"
 
 const modalBlockProps: BlockProps = {
     width: '750px',
@@ -146,7 +147,6 @@ type ModalThirdPartyProps = {
 
 const ModalThirdParty = (props: ModalThirdPartyProps) => {
     const [infoTypeSearchResult, setInfoTypeSearch] = useInfoTypeSearch()
-    const [showLegalBasisFields, setShowLegalbasesFields] = React.useState(false)
     const [selectedLegalBasis, setSelectedLegalBasis] = React.useState();
     const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState();
     const { submit, errorOnCreate, onClose, isOpen, isEdit, disableRecipientField, initialValues, title } = props
@@ -164,6 +164,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                 <Formik
                     initialValues={initialValues}
                     onSubmit={(values) => submit(values)}
+                    validationSchema={disclosureSchema()}
                     render={(formikBag: FormikProps<DisclosureFormValues>) => (
                         <Form>
                             <ModalHeader>
@@ -182,6 +183,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                                     <ModalLabel label={intl.description} />
                                     <FieldDescription />
                                 </Block>
+                                <Error fieldName="description"/>
 
                                 <Block {...rowBlockProps}>
                                     <ModalLabel label={intl.informationTypes} />
@@ -195,12 +197,12 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
 
                                 <Block {...rowBlockProps}>
                                     <ModalLabel />
-                                    {!showLegalBasisFields && (
+                                    {!formikBag.values.legalBasesOpen && (
                                         <Block width="100%" marginBottom="1rem">
                                             <Button
                                                 size="compact"
                                                 kind="minimal"
-                                                onClick={() => setShowLegalbasesFields(true)}
+                                                onClick={() => formikBag.setFieldValue('legalBasesOpen', true)}
                                                 startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
                                             >
                                                 {intl.legalBasisAdd}
@@ -213,35 +215,25 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                                     name="legalBases"
                                     render={arrayHelpers => (
                                         <React.Fragment>
-                                            {showLegalBasisFields && (
-                                                <Block width="100%">
-                                                    {selectedLegalBasis ? (
-                                                        <CardLegalBasis
-                                                            titleSubmitButton={intl.update}
-                                                            initValue={selectedLegalBasis}
-                                                            hideCard={() => setShowLegalbasesFields(false)}
-                                                            submit={(selectedPolicyBasisValues) => {
-                                                                if (!selectedPolicyBasisValues) return;
-                                                                arrayHelpers.replace(selectedLegalBasisIndex, selectedPolicyBasisValues);
-                                                                setShowLegalbasesFields(false);
+                                            {formikBag.values.legalBasesOpen && (
+                                                <Block width="100%" marginTop="2rem">
+                                                    <CardLegalBasis
+                                                        titleSubmitButton={selectedLegalBasis ? intl.update : intl.add}
+                                                        initValue={selectedLegalBasis || {}}
+                                                        hideCard={() => formikBag.setFieldValue('legalBasesOpen', false)}
+                                                        submit={values => {
+                                                            if (!values) return;
+                                                            if (selectedLegalBasis) {
+                                                                arrayHelpers.replace(selectedLegalBasisIndex, values);
                                                                 setSelectedLegalBasis(null)
-                                                            }} />
-                                                    ) : (
-                                                            <CardLegalBasis
-                                                                initValue={{}}
-                                                                hideCard={() => setShowLegalbasesFields(false)}
-                                                                titleSubmitButton={intl.legalBasisAdd}
-                                                                submit={(values) => {
-                                                                    if (!values) return
-                                                                    else {
-                                                                        arrayHelpers.push(values)
-                                                                        setShowLegalbasesFields(false)
-                                                                    }
-                                                                }} />
-                                                        )} 
+                                                            } else {
+                                                                arrayHelpers.push(values);
+                                                            }
+                                                            formikBag.setFieldValue('legalBasesOpen', false);
+                                                        }}/>
                                                 </Block>
                                             )}
-                                            {!showLegalBasisFields && (
+                                            {!formikBag.values.legalBasesOpen && (
                                                 <Block display="flex">
                                                     <ModalLabel />
                                                     <Block width="100%">
@@ -251,7 +243,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                                                             onEdit={(index) => {
                                                                 setSelectedLegalBasis(formikBag.values.legalBases[index]);
                                                                 setSelectedLegalBasisIndex(index);
-                                                                setShowLegalbasesFields(true)
+                                                                formikBag.setFieldValue('legalBasesOpen', true)
                                                             }}
                                                         />
                                                     </Block>
@@ -260,6 +252,8 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                                         </React.Fragment>
                                     )}
                                 />
+                                <Error fieldName="legalBasesOpen" fullWidth={true} />
+
                             </ModalBody>
 
                             <ModalFooter>

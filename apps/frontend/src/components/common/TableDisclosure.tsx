@@ -1,17 +1,17 @@
 import * as React from "react";
-import { SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, StyledTable, StyledHeadCell } from "baseui/table";
+import { SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
 
 import { ListLegalBasesInTable } from "./LegalBasis"
 import { intl } from "../../util"
-import { Disclosure, disclosureSort, InformationType, DisclosureFormValues, LegalBasis, LegalBasisFormValues, DocumentFormValues } from "../../constants"
+import { Disclosure, DisclosureFormValues, disclosureSort, InformationType, LegalBasis, LegalBasisFormValues } from "../../constants"
 import { useTable } from "../../util/hooks"
 import RouteLink from "./RouteLink"
 import { StatefulTooltip } from "baseui/tooltip";
-import { Button, SIZE, KIND } from "baseui/button";
+import { Button, KIND, SIZE } from "baseui/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "baseui/modal";
+import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { Modal, ModalBody, ModalFooter, ModalHeader } from "baseui/modal";
 import { Paragraph2 } from "baseui/typography";
 import { Block } from "baseui/block";
 import ModalThirdParty from "../ThirdParty/ModalThirdPartyForm";
@@ -86,6 +86,7 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
         description: selectedDisclosure ? selectedDisclosure.description : '',
         document: selectedDisclosure && selectedDisclosure.document ? selectedDisclosure.document : {informationTypes: [], name: 'autosel', description: 'autodesc'},
         legalBases: selectedDisclosure ? mapLegalBasesToFormValues(selectedDisclosure.legalBases) : [],
+        legalBasesOpen: false,
         start: selectedDisclosure && selectedDisclosure.start,
         end: selectedDisclosure && selectedDisclosure.end
     }

@@ -8,11 +8,11 @@ import { Block, BlockProps } from 'baseui/block';
 import { Label2, Paragraph2 } from 'baseui/typography';
 import { intl, theme, useAwait } from '../../../util';
 import _includes from 'lodash/includes'
-import {user} from "../../../service/User";
-import {Plus} from 'baseui/icon'
-import {LegalBasis, PolicyFormValues, Process, ProcessFormValues} from "../../../constants"
-import {LegalBasisView} from "../../common/LegalBasis"
-import {codelist, ListName} from "../../../service/Codelist"
+import { user } from "../../../service/User";
+import { Plus } from 'baseui/icon'
+import { LegalBasis, PolicyFormValues, Process, ProcessFormValues } from "../../../constants"
+import { LegalBasisView } from "../../common/LegalBasis"
+import { codelist, ListName } from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy';
@@ -23,9 +23,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronRight, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal';
 import { TeamPopover } from "../../common/Team"
-import {getTeam, mapTeamToOption} from "../../../api/TeamApi"
-import {AuditPage} from "../../../pages/AuditPage"
-import {StatefulTooltip} from "baseui/tooltip";
+import { StatefulTooltip } from "baseui/tooltip";
 import { AuditButton } from "../../audit/AuditButton"
 
 const rowPanelContent: BlockProps = {
@@ -271,6 +269,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                 <ModalPolicy
                                     title={intl.policyNew}
                                     initialValues={{
+                                        legalBasesOpen: false,
                                         informationType: undefined,
                                         legalBasesStatus: undefined,
                                         process: currentProcess,

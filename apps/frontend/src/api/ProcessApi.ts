@@ -1,10 +1,5 @@
 import axios from "axios";
-import {
-    PageResponse,
-    Process,
-    ProcessFormValues,
-    ProcessPurposeCount
-} from "../constants";
+import { PageResponse, Process, ProcessFormValues, ProcessPurposeCount } from "../constants";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -73,6 +68,7 @@ export const convertProcessToFormValues = (process: Process) => {
         }));
 
     return {
+        legalBasesOpen: false,
         id: id,
         name: name,
         purposeCode: purposeCode,

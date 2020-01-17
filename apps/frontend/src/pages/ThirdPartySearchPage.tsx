@@ -2,15 +2,15 @@ import * as React from "react";
 import Banner from "../components/Banner";
 import { intl, useAwait } from "../util"
 import { RouteComponentProps } from "react-router-dom";
-import { codelist, ListName, Code } from "../service/Codelist";
+import { Code, codelist, ListName } from "../service/Codelist";
 import { Spinner } from "baseui/icon";
 import { Block, BlockProps } from "baseui/block";
 import { StatefulSelect } from "baseui/select";
 import { Disclosure, DisclosureFormValues } from "../constants";
-import { getAllDisclosures, createDisclosure } from "../api";
+import { createDisclosure, getAllDisclosures } from "../api";
 import { user } from "../service/User";
 import { useStyletron } from "styletron-react";
-import { ListItemLabel, ListItem } from "baseui/list";
+import { ListItem, ListItemLabel } from "baseui/list";
 import RouteLink from "../components/common/RouteLink";
 
 const rowBlockProps: BlockProps = {
@@ -55,7 +55,7 @@ const ThirdPartySearchPage = (props: RouteComponentProps) => {
         const fetchData = async () => {
             setIsLoading(true);
             await codelist.wait();
-            setDisclosureList(await getAllDisclosures())
+            setDisclosureList(await getAllDisclosures(250, 0))
             setThirdPartyList(codelist.getCodes(ListName.THIRD_PARTY))
             setIsLoading(false);
         };

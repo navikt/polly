@@ -3,16 +3,15 @@ import Banner from "../components/Banner";
 import { intl, useAwait } from "../util"
 import { RouteComponentProps } from "react-router-dom";
 import { codelist, ListName } from "../service/Codelist";
-import { Spinner, Plus } from "baseui/icon";
+import { Plus, Spinner } from "baseui/icon";
 import { Block, BlockProps } from "baseui/block";
-import { getDisclosuresByRecipient, createDisclosure, deleteDisclosure, updateDisclosure } from "../api";
+import { createDisclosure, deleteDisclosure, getCodelistUsage, getDisclosuresByRecipient, updateDisclosure } from "../api";
 import TableDisclosure from "../components/common/TableDisclosure";
-import { Label2, Paragraph2, H5 } from "baseui/typography";
+import { H5, Label2, Paragraph2 } from "baseui/typography";
 import { Button, KIND } from "baseui/button";
 import { user } from "../service/User";
-import { Use, DisclosureFormValues, Disclosure } from "../constants";
+import { Disclosure, DisclosureFormValues, Use } from "../constants";
 import ModalThirdParty from "../components/ThirdParty/ModalThirdPartyForm";
-import { getCodelistUsage } from "../api/CodelistApi";
 import ListRecievedInformationTypes from "../components/ThirdParty/ListRecievedInformationTypes";
 
 const labelBlockProps: BlockProps = {
@@ -73,7 +72,8 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
         recipient: props.match.params.sourceCode,
         description: '',
         document: {name: 'auto', description: 'autodesc', informationTypes: []},
-        legalBases: []
+        legalBases: [],
+        legalBasesOpen: false
     }
 
     useAwait(user.wait())

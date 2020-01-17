@@ -1,11 +1,11 @@
 import axios from "axios";
-import { PageResponse, DisclosureFormValues, Disclosure } from "../constants";
+import { Disclosure, DisclosureFormValues, PageResponse } from "../constants";
 import { createDocument, updateDocument } from "./DocumentApi"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
-export const getAllDisclosures = async () => {
-    return (await axios.get<PageResponse<Disclosure>>(`${server_polly}/disclosure?pageSize=250`)).data.content;
+export const getAllDisclosures = async (pageSize: number, pageNumber: number) => {
+    return (await axios.get<PageResponse<Disclosure>>(`${server_polly}/disclosure?pageSize=${pageSize}&pageNumber==${pageNumber}`)).data.content;
 };
 
 export const getDisclosure = async (disclosureId: string) => {
@@ -17,7 +17,7 @@ export const getDisclosuresByRecipient = async (recipient: string) => {
 }
 
 export const getDisclosuresByInformationTypeId = async (informationTypeId: string) => {
-    return (await axios.get<PageResponse<Disclosure>>(`${server_polly}/disclosure/?informationTypeId=${informationTypeId}&pageSize=250`)).data.content
+    return (await axios.get<PageResponse<Disclosure>>(`${server_polly}/disclosure/?informationTypeId=${informationTypeId}`)).data.content
 }
 
 export const createDisclosure = async (disclosure: DisclosureFormValues) => {

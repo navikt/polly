@@ -65,7 +65,7 @@ const AuditPageImpl = (props: RouteComponentProps<{ id?: string, auditId?: strin
 
             {error && <Paragraph2>{_.escape(error)}</Paragraph2>}
             {idInput && <AuditView auditLog={auditLog} auditId={props.match.params.auditId} loading={loading} viewId={lookupVersion}/>}
-            {!idInput && <AuditRecentTable/>}
+            <AuditRecentTable show={!idInput}/>
         </>
     )
 }
