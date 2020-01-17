@@ -1,18 +1,21 @@
 import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { Block, BlockProps } from 'baseui/block'
-import { InformationType } from '../../../constants'
-import { Card } from 'baseui/card'
-import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
-import { IconDefinition } from "@fortawesome/fontawesome-common-types"
-import { intl, theme } from '../../../util'
-import { Label2, Paragraph2 } from 'baseui/typography'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCross, faCrosshairs, faTag, faTimesCircle, faUserShield } from '@fortawesome/free-solid-svg-icons'
-import { Code } from '../../../service/Codelist'
-import { sensitivityColor } from "../Sensitivity"
-import { getTerm, mapTermToOption } from "../../../api"
-import { StatefulTooltip } from "baseui/tooltip"
+import {useEffect, useState} from 'react'
+import {Block, BlockProps} from 'baseui/block'
+import {InformationType} from '../../../constants'
+import {Card} from 'baseui/card'
+import {FlexGrid, FlexGridItem} from 'baseui/flex-grid'
+import {IconDefinition} from "@fortawesome/fontawesome-common-types"
+import {intl, theme} from '../../../util'
+import {Label2, Paragraph2} from 'baseui/typography'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faCross, faCrosshairs, faTag, faTimesCircle, faUserShield} from '@fortawesome/free-solid-svg-icons'
+import {Code} from '../../../service/Codelist'
+import {sensitivityColor} from "../Sensitivity"
+import {getTerm, mapTermToOption} from "../../../api"
+import {StatefulTooltip} from "baseui/tooltip"
+import {Link} from "react-router-dom";
+import {Tag} from "baseui/tag";
+import {StyledLink} from "baseui/link";
 
 const itemBlockProps: BlockProps = {
     display: ['flex', 'block', 'block', 'flex'],
@@ -38,7 +41,17 @@ const arrayToString = (list: string[]) => {
     return list.join(', ')
 }
 
-const renderTextWithLabelMetadata = (label: string, text: string, icon?: IconDefinition, iconColor?: string) => {
+const renderCodesToLinks = (sources: Code[]) => {
+    return (
+        sources.map((source, index) => (
+            <>
+                <StyledLink href={`/thirdparty/${source.code}`}>{source.shortName}</StyledLink>
+                <span>{index < sources.length - 1 ? ", " : ""}</span>
+            </>
+        )));
+};
+
+const renderTextWithLabelMetadata = (label: string, text: string | any, icon?: IconDefinition, iconColor?: string) => {
     return (
         <Block {...itemBlockProps}>
             <Block {...labelBlockProps}>
@@ -108,7 +121,7 @@ const CardMetadata = (props: { navMaster: Code, sources: Code[], categories: Cod
             flexGridRowGap="scale400"
         >
             <FlexGridItem>{renderTextWithLabelMetadata(intl.navMaster, props.navMaster ? props.navMaster.shortName : '')}</FlexGridItem>
-            <FlexGridItem>{renderTextWithLabelMetadata(intl.sources, reduceToList(props.sources).join(', '))}</FlexGridItem>
+            <FlexGridItem>{renderTextWithLabelMetadata(intl.sources, renderCodesToLinks(props.sources))}</FlexGridItem>
             <FlexGridItem>{renderTextWithLabelMetadata(intl.categories, reduceToList(props.categories).join(', '))}</FlexGridItem>
             <FlexGridItem>{renderTextWithLabelMetadata(intl.keywords, arrayToString(props.keywords))}</FlexGridItem>
             <FlexGridItem>{renderTextWithLabelMetadata(intl.sensitivity, props.sensitivity ? props.sensitivity.shortName : '', faUserShield, sensitivityColor(props.sensitivity.code))}</FlexGridItem>
