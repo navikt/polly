@@ -87,6 +87,8 @@ export interface IStrings {
     recipientPurpose: string;
     disclosureSelect: string;
     legalBasisComplete: string;
+    validityOfProcess: string;
+    validityOfPolicy: string;
 
     // groups
     POLLY_READ: string;

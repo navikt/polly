@@ -79,6 +79,8 @@ export const no: IStrings = {
     replaceAllUse: "Erstatt all bruk",
     recipientPurpose: "Mottakers formål",
     legalBasisComplete: "Lukk rettslig grunnlag redigering før lagring",
+    validityOfProcess: "Gyldighetsperiode for behandlingen",
+    validityOfPolicy: "Gyldighetsperiode for bruk av opplysningstypen i denne behandlingen",
 
     groupByPurpose: "Grupper etter formål",
     showAll: "Vis alle",
@@ -254,6 +256,8 @@ export const en: IStrings = {
     replaceAllUse: "Replace all use",
     recipientPurpose: "Recipient's purpose",
     legalBasisComplete: "Close legal basis editor before saving",
+    validityOfProcess: "Validity of process",
+    validityOfPolicy: "Validity of policy",
 
     POLLY_READ: "Read",
     POLLY_WRITE: "Write",

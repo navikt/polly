@@ -25,8 +25,8 @@ const checkDate = (startDate?: moment.Moment, endDate?: moment.Moment, alwaysSho
     return {hasStart, hasEnd, hasDates}
 }
 
-export const ActiveIndicator = (props: { start?: string, end?: string, alwaysShow?: boolean, withText?: boolean }) => {
-    const {start, end, alwaysShow, withText} = props
+export const ActiveIndicator = (props: { start?: string, end?: string, alwaysShow?: boolean, preText?: string, showDates?: boolean }) => {
+    const {start, end, alwaysShow, preText, showDates} = props
     const startDate = start ? moment(start) : defaultStart
     const endDate = end ? moment(end) : defaultEnd
     const {hasStart, hasEnd, hasDates} = checkDate(startDate, endDate, alwaysShow)
@@ -37,9 +37,9 @@ export const ActiveIndicator = (props: { start?: string, end?: string, alwaysSho
     return (hasDates ?
             <StatefulTooltip content={<>{hasStart && (intl.startDate + ' ' + startView)} {hasStart && hasEnd && ' - '} {hasEnd && (intl.endDate + ' ' + endView)}</>}>
                 <span>
-                    {withText && intl.period + ': '}
+                    {preText && preText + ': '}
                     <FontAwesomeIcon icon={faClock} color={active ? theme.colors.positive300 : theme.colors.mono600}/>
-                    {withText && <> {startView} - {endView}</>}
+                    {showDates && <> {startView} - {endView}</>}
                 </span>
             </StatefulTooltip>
             : null

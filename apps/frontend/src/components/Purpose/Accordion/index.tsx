@@ -86,8 +86,8 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
 
     const renderActiveForProcess = (process: Process) =>
         <Block marginRight="scale1200">
-            <Label2>{intl.active}</Label2>
-            <ActiveIndicator alwaysShow={true} withText={true} {...process} />
+            <Label2>{intl.validityOfProcess}</Label2>
+            <ActiveIndicator alwaysShow={true} showDates={true} {...process} />
         </Block>
 
     const renderLegalBasisListForProcess = (list: LegalBasis[]) => (
@@ -206,8 +206,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
 
                                 <Block {...rowPanelContent}>
                                     <Block width="90%" flexWrap={true} display="flex">
-                                        <Block
-                                            width="30%">{renderLegalBasisListForProcess(currentProcess.legalBases)}</Block>
+                                        <Block width="30%">{renderLegalBasisListForProcess(currentProcess.legalBases)}</Block>
                                         <Block width="30%">{renderSubjectCategoriesForProcess(currentProcess)}</Block>
                                         <Block width="30%">{renderActiveForProcess(currentProcess)}</Block>
                                         {currentProcess.department && <Block width="30%">

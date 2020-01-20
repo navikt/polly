@@ -174,7 +174,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                                 <CustomStyledRow infoRow={true}>
                                   <StyledCell>
                                     <Block display="flex" justifyContent="space-between" width="100%">
-                                      <Block><ActiveIndicator {...row} alwaysShow={true} withText={true}/></Block>
+                                      <Block><ActiveIndicator {...row} alwaysShow={true} preText={intl.validityOfPolicy} showDates /></Block>
                                       <AuditButton id={row.id}/>
                                     </Block>
                                   </StyledCell>
