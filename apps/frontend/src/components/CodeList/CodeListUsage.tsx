@@ -19,6 +19,7 @@ const UsageTable = (props: { usage: CodeUsage, rows: number }) => {
     const processes = !!usage.processes.length
     const policies = !!usage.policies.length
     const disclosures = !!usage.disclosures.length
+    const documents = !!usage.documents.length
     return (
         <StyledTable>
             <StyledHead>
@@ -26,13 +27,15 @@ const UsageTable = (props: { usage: CodeUsage, rows: number }) => {
                 {processes && <StyledHeadCell> {intl.process} </StyledHeadCell>}
                 {policies && <StyledHeadCell> {intl.policy} </StyledHeadCell>}
                 {disclosures && <StyledHeadCell> {intl.disclosure} </StyledHeadCell>}
+                {documents && <StyledHeadCell> {intl.documents} </StyledHeadCell>}
             </StyledHead>
             <StyledBody>
                 {Array.from(Array(rows).keys()).map(index => {
-                    const it = usage.informationTypes[index];
-                    const po = usage.policies[index];
-                    const pr = usage.processes[index];
-                    const di = usage.disclosures[index];
+                    const it = usage.informationTypes[index]
+                    const po = usage.policies[index]
+                    const pr = usage.processes[index]
+                    const di = usage.disclosures[index]
+                    const doc = usage.documents[index]
                     return (
                         <StyledRow key={index}>
                             {informationTypes && <StyledCell>
@@ -46,6 +49,9 @@ const UsageTable = (props: { usage: CodeUsage, rows: number }) => {
                             </StyledCell>}
                             {disclosures && <StyledCell>
                                 {di && <ObjectLink id={di.id} type={ObjectType.DISCLOSURE} withHistory={true}>{di.name}</ObjectLink>}
+                            </StyledCell>}
+                            {documents && <StyledCell>
+                                {doc && <ObjectLink id={doc.id} type={ObjectType.DOCUMENT} withHistory={true}>{doc.name}</ObjectLink>}
                             </StyledCell>}
                         </StyledRow>
                     )

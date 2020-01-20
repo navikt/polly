@@ -11,7 +11,7 @@ type RouteLinkProps = {
     href: string
 }
 
-const RouteLinkImpl = (props: RouteComponentProps & RouteLinkProps & any) => {
+const RouteLinkImpl = (props: RouteComponentProps<any> & RouteLinkProps & any) => {
     const {history, location, match, staticContext, ...restprops} = props
     return (
         <StyledLink {...restprops} onClick={(e: Event) => {
@@ -44,6 +44,10 @@ const ObjectLinkImpl = (props: RouteComponentProps & ObjectLinkProps) => {
             case ObjectType.DISCLOSURE:
                 const disclosure = await getDisclosure(id)
                 return `/thirdparty/${disclosure.recipient.code}`
+            case ObjectType.DOCUMENT:
+                return `/document/${id}`
+            case ObjectType.CODELIST:
+                return `/admin/codelist/${id.substring(0, id.indexOf('-'))}`
         }
         console.warn('couldn\'t find object type ' + type)
         return ''

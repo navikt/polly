@@ -233,7 +233,9 @@ export enum ObjectType {
     INFORMATION_TYPE = "INFORMATION_TYPE",
     POLICY = "POLICY",
     PROCESS = "PROCESS",
-    DISCLOSURE = "DISCLOSURE"
+    DISCLOSURE = "DISCLOSURE",
+    DOCUMENT = "DOCUMENT",
+    CODELIST = "CODELIST"
 }
 
 export interface AuditItem {
@@ -256,6 +258,7 @@ export interface CodeUsage {
     code: string
     inUse: boolean
     disclosures: [Use]
+    documents: [Use]
     informationTypes: [Use]
     policies: [Use]
     processes: [Use]
