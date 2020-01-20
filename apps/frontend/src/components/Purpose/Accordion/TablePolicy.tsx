@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faInfo, faInfoCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "baseui/modal";
 import { Paragraph2 } from "baseui/typography";
-import {PLACEMENT, StatefulTooltip} from "baseui/tooltip"
+import { PLACEMENT, StatefulTooltip } from "baseui/tooltip"
 
 import { codelist, ListName } from "../../../service/Codelist"
 import { Sensitivity } from "../../InformationType/Sensitivity"
@@ -90,8 +90,8 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                     />
                     <SortableHeadCell
                         title={intl.subjectCategories}
-                        direction={table.direction.subjectCategory}
-                        onSort={() => sortColumn('subjectCategory')}
+                        direction={table.direction.subjectCategories}
+                        onSort={() => sortColumn('subjectCategories')}
                         fillClickTarget
                     />
                     <SortableHeadCell
@@ -115,7 +115,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                                         </RouteLink>
                                     </StyledCell>
 
-                                    <StyledCell>{codelist.getShortname(ListName.SUBJECT_CATEGORY, row.subjectCategory.code)}</StyledCell>
+                                    <StyledCell>{row.subjectCategories.map(sc => codelist.getShortname(ListName.SUBJECT_CATEGORY, sc.code)).join(", ")}</StyledCell>
                                     <StyledCell>
                                         {!row.legalBasesInherited && row.legalBases.length < 1 && (
                                             <LegalBasesNotClarified/>

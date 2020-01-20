@@ -84,7 +84,7 @@ export interface Policy extends IDurationed {
     informationType: PolicyInformationType
     process: PolicyProcess
     purposeCode: Code
-    subjectCategory: Code
+    subjectCategories: Code[]
     legalBasesInherited: boolean
     legalBases: LegalBasis[]
 }
@@ -93,7 +93,7 @@ export const policySort: ColumnCompares<Policy> = {
     purposeCode: (a, b) => codelist.getShortnameForCode(a.purposeCode).localeCompare(codelist.getShortnameForCode(b.purposeCode), intl.getLanguage()),
     informationType: (a, b) => a.informationType.name.localeCompare(b.informationType.name),
     process: (a, b) => a.process.name.localeCompare(b.process.name),
-    subjectCategory: (a, b) => codelist.getShortnameForCode(a.subjectCategory).localeCompare(codelist.getShortnameForCode(b.subjectCategory), intl.getLanguage()),
+    subjectCategories: (a, b) => codelist.getShortnameForCode(a.subjectCategories[0]).localeCompare(codelist.getShortnameForCode(b.subjectCategories[0]), intl.getLanguage()),
     legalBases: (a, b) => a.legalBases.length - b.legalBases.length
 }
 export const disclosureSort: ColumnCompares<Disclosure> = {
@@ -214,8 +214,13 @@ export interface Document {
     id: string
     name: string
     description: string
-    informationTypes: InformationType[]
-    informationTypeIds: string[]
+    informationTypes: DocumentInfoTypeUse[]
+}
+
+export interface DocumentInfoTypeUse {
+  informationTypeId: string,
+  informationType: PolicyInformationType,
+  subjectCategories: Code[]
 }
 
 export enum AuditAction {

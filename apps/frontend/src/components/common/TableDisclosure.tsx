@@ -4,10 +4,10 @@ import { useStyletron, withStyle } from "baseui";
 
 import { ListLegalBasesInTable } from "./LegalBasis"
 import { intl } from "../../util"
-import { Disclosure, DisclosureFormValues, disclosureSort, InformationType, LegalBasis, LegalBasisFormValues } from "../../constants"
+import { Disclosure, DisclosureFormValues, disclosureSort, DocumentInfoTypeUse, LegalBasis, LegalBasisFormValues } from "../../constants"
 import { useTable } from "../../util/hooks"
 import RouteLink from "./RouteLink"
-import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
+import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
 import { Button, KIND, SIZE } from "baseui/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -35,11 +35,11 @@ const SmallerStyledCell = withStyle(StyledCell, {
     maxWidth: '15%'
 })
 
-const renderInformationTypesInCell = (informationtypeList: InformationType[]) => {
+const renderInformationTypesInCell = (informationtypeList: DocumentInfoTypeUse[]) => {
     if (!informationtypeList) return ''
     const informationTypeNameList = informationtypeList.reduce((acc, curr) => {
-        if (!acc) acc = [curr.name]
-        else acc = [...acc, curr.name]
+        if (!acc) acc = [curr.informationType.name]
+        else acc = [...acc, curr.informationType.name]
         return acc
     }, [] as string[])
 
@@ -84,7 +84,9 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
         id: selectedDisclosure && selectedDisclosure.id,
         recipient: selectedDisclosure ? selectedDisclosure.recipient.shortName : '',
         description: selectedDisclosure ? selectedDisclosure.description : '',
-        document: selectedDisclosure && selectedDisclosure.document ? selectedDisclosure.document : {informationTypes: [], name: 'autosel', description: 'autodesc'},
+        document: selectedDisclosure && selectedDisclosure.document ?
+          {...selectedDisclosure.document, informationTypes: selectedDisclosure.document.informationTypes.map(it => it.informationType)} :
+          {informationTypes: [], name: 'autosel', description: 'autodesc'},
         legalBases: selectedDisclosure ? mapLegalBasesToFormValues(selectedDisclosure.legalBases) : [],
         legalBasesOpen: false,
         start: selectedDisclosure && selectedDisclosure.start,

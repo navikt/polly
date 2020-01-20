@@ -50,8 +50,8 @@ const InformationtypePolicyTable = ({policies, showPurpose}: TableInformationtyp
 
                     <SortableHeadCell
                         title={intl.subjectCategories}
-                        direction={table.direction.subjectCategory}
-                        onSort={() => sortColumn('subjectCategory')}
+                        direction={table.direction.subjectCategories}
+                        onSort={() => sortColumn('subjectCategories')}
                         fillClickTarget
                     />
 
@@ -77,7 +77,7 @@ const InformationtypePolicyTable = ({policies, showPurpose}: TableInformationtyp
                                 </RouteLink>
                             </StyledCell>
 
-                            <StyledCell>{codelist.getShortname(ListName.SUBJECT_CATEGORY, row.subjectCategory.code)}</StyledCell>
+                            <StyledCell>{row.subjectCategories.map(sc => codelist.getShortname(ListName.SUBJECT_CATEGORY, sc.code)).join(", ")}</StyledCell>
 
                             <StyledCell>
                                 {!row.legalBasesInherited && row.legalBases && row.legalBases.length > 0 && (

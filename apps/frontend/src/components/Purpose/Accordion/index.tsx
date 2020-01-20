@@ -10,7 +10,7 @@ import { intl, theme, useAwait } from '../../../util';
 import _includes from 'lodash/includes'
 import { user } from "../../../service/User";
 import { Plus } from 'baseui/icon'
-import { LegalBasis, PolicyFormValues, Process, ProcessFormValues, LegalBasesStatus } from "../../../constants"
+import { LegalBasesStatus, LegalBasis, PolicyFormValues, Process, ProcessFormValues } from "../../../constants"
 import { LegalBasisView } from "../../common/LegalBasis"
 import { codelist, ListName } from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
@@ -23,7 +23,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronRight, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal';
 import { TeamPopover } from "../../common/Team"
-import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
+import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
 import { AuditButton } from "../../audit/AuditButton"
 
 const rowPanelContent: BlockProps = {
@@ -111,8 +111,8 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
         } else {
             if (processObj.policies.length < 1) display = notFound
             else {
-                const subjectCategories = processObj.policies.reduce((acc: string[], curr) => {
-                    const subjectCategory = codelist.getShortname(ListName.SUBJECT_CATEGORY, curr.subjectCategory.code)
+                const subjectCategories = processObj.policies.flatMap(p => p.subjectCategories).reduce((acc: string[], curr) => {
+                    const subjectCategory = codelist.getShortname(ListName.SUBJECT_CATEGORY, curr.code)
                     if (!_includes(acc, subjectCategory) && subjectCategory)
                         acc = [...acc, subjectCategory]
                     return acc
