@@ -7,4 +7,6 @@ public interface DocumentRepositoryCustom {
 
     List<Document> findByInformationTypeId(UUID informationTypeId);
 
+    List<Document> findBySubjectCategory(String subjectCategory);
+
 }

@@ -4,7 +4,9 @@ import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.document.DocumentController.DocumentPage;
-import no.nav.data.polly.document.dto.DocumentInformationTypeResponse;
+import no.nav.data.polly.document.dto.DocumentInfoTypeResponse;
+import no.nav.data.polly.document.dto.DocumentInfoTypeUseRequest;
+import no.nav.data.polly.document.dto.DocumentInfoTypeUseResponse;
 import no.nav.data.polly.document.dto.DocumentRequest;
 import no.nav.data.polly.document.dto.DocumentResponse;
 import no.nav.data.polly.informationtype.domain.InformationType;
@@ -40,7 +42,7 @@ class DocumentControllerIT extends IntegrationTestBase {
         InformationType infoType = createAndSaveInformationType();
 
         var req = buildDocument();
-        req.setInformationTypeIds(List.of(infoType.getId().toString()));
+        req.setInformationTypes(List.of(createInfoTypeUseRequest(infoType.getId().toString())));
         var resp = restTemplate.postForEntity("/document", req, DocumentResponse.class);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -48,20 +50,25 @@ class DocumentControllerIT extends IntegrationTestBase {
         return resp.getBody();
     }
 
+    private DocumentInfoTypeUseRequest createInfoTypeUseRequest(String informationTypeId) {
+        return DocumentInfoTypeUseRequest.builder().informationTypeId(informationTypeId).subjectCategories(List.of("BRUKER")).build();
+    }
+
     private void assertResponse(ResponseEntity<DocumentResponse> resp) {
         InformationType infoType = createAndSaveInformationType();
         var documentResponse = resp.getBody();
         assertThat(documentResponse).isNotNull();
 
-        DocumentInformationTypeResponse infoTypeRes = new DocumentInformationTypeResponse(infoType.getId(), infoType.getData().getName(),
+        DocumentInfoTypeResponse infoTypeRes = new DocumentInfoTypeResponse(infoType.getId(), infoType.getData().getName(),
                 CodelistService.getCodelistResponse(ListName.SENSITIVITY, infoType.getData().getSensitivity()));
 
         assertThat(documentResponse).isEqualTo(DocumentResponse.builder()
                 .id(documentResponse.getId())
                 .name("Skattedata")
                 .description("desc")
-                .informationTypeIds(List.of(infoTypeRes.getId()))
-                .informationTypes(List.of(infoTypeRes))
+                .informationTypes(List.of(DocumentInfoTypeUseResponse.builder().informationTypeId(infoTypeRes.getId())
+                        .informationType(infoTypeRes)
+                        .subjectCategory(CodelistService.getCodelistResponse(ListName.SUBJECT_CATEGORY, "BRUKER")).build()))
                 .build());
     }
 
@@ -83,7 +90,7 @@ class DocumentControllerIT extends IntegrationTestBase {
         restTemplate.postForEntity("/document", buildDocument(), DocumentResponse.class);
         var doc = createDocumentArbeidsgiverWithInformationType();
         ResponseEntity<DocumentPage> resp = restTemplate
-                .getForEntity("/document?informationTypeId={infoTypeId}", DocumentPage.class, doc.getInformationTypeIds().get(0));
+                .getForEntity("/document?informationTypeId={infoTypeId}", DocumentPage.class, doc.getInformationTypes().get(0).getInformationTypeId());
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         DocumentPage documentPage = resp.getBody();
@@ -106,27 +113,27 @@ class DocumentControllerIT extends IntegrationTestBase {
         var infoTypeTwo = createAndSaveInformationType(UUID.randomUUID(), "name2");
 
         DocumentRequest create = buildDocument();
-        create.setInformationTypeIds(List.of(infoTypeOne.getId().toString(), infoTypeTwo.getId().toString()));
+        create.setInformationTypes(List.of(createInfoTypeUseRequest(infoTypeOne.getId().toString()), createInfoTypeUseRequest(infoTypeTwo.getId().toString())));
 
         ResponseEntity<DocumentResponse> resp = restTemplate.postForEntity("/document", create, DocumentResponse.class);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(resp.getBody()).isNotNull();
         assertThat(resp.getBody().getInformationTypes()).hasSize(2);
-        assertThat(convert(resp.getBody().getInformationTypes(), DocumentInformationTypeResponse::getId)).contains(infoTypeOne.getId(), infoTypeTwo.getId());
+        assertThat(convert(resp.getBody().getInformationTypes(), DocumentInfoTypeUseResponse::getInformationTypeId)).contains(infoTypeOne.getId(), infoTypeTwo.getId());
 
         String id = resp.getBody().getId().toString();
         var infoTypeUpdate = createAndSaveInformationType(UUID.randomUUID(), "name3");
         DocumentRequest update = buildDocument();
         update.setId(id);
-        update.setInformationTypeIds(List.of(infoTypeOne.getId().toString(), infoTypeUpdate.getId().toString()));
+        update.setInformationTypes(List.of(createInfoTypeUseRequest(infoTypeOne.getId().toString()), createInfoTypeUseRequest(infoTypeUpdate.getId().toString())));
 
         resp = restTemplate.exchange("/document/{id}", HttpMethod.PUT, new HttpEntity<>(update), DocumentResponse.class, id);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getBody()).isNotNull();
         assertThat(resp.getBody().getInformationTypes()).hasSize(2);
-        assertThat(convert(resp.getBody().getInformationTypes(), DocumentInformationTypeResponse::getId)).contains(infoTypeOne.getId(), infoTypeUpdate.getId());
+        assertThat(convert(resp.getBody().getInformationTypes(), DocumentInfoTypeUseResponse::getInformationTypeId)).contains(infoTypeOne.getId(), infoTypeUpdate.getId());
 
     }
 

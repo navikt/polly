@@ -14,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonPropertyOrder({"id", "name", "sensitivity"})
-public class DocumentInformationTypeResponse {
+public class DocumentInfoTypeResponse {
 
     private UUID id;
     private String name;

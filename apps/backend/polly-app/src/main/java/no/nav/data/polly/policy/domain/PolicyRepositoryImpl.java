@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -21,20 +22,28 @@ public class PolicyRepositoryImpl implements PolicyRepositoryCustom {
     }
 
     @Override
+    public List<Policy> findBySubjectCategory(String subjectCategory) {
+        var resp = jdbcTemplate.queryForList("select policy_id from policy where subject_categories ?? :subjectCategory",
+                new MapSqlParameterSource().addValue("subjectCategory", subjectCategory));
+        return getPolicies(resp);
+    }
+
+    @Override
     public List<Policy> findByGDPRArticle(String gdpr) {
         var resp = jdbcTemplate.queryForList("select policy_id from policy where legal_bases @> :gdpr::jsonb",
                 new MapSqlParameterSource().addValue("gdpr", String.format("[{\"gdpr\": \"%s\"}]", gdpr)));
-        List<UUID> ids = resp.stream().map(i -> ((UUID) i.values().iterator().next())).collect(Collectors.toList());
-
-        return policyRepository.findAllById(ids);
+        return getPolicies(resp);
     }
 
     @Override
     public List<Policy> findByNationalLaw(String nationalLaw) {
         var resp = jdbcTemplate.queryForList("select policy_id from policy where legal_bases @> :nationalLaw::jsonb",
                 new MapSqlParameterSource().addValue("nationalLaw", String.format("[{\"nationalLaw\": \"%s\"}]", nationalLaw)));
-        List<UUID> ids = resp.stream().map(i -> ((UUID) i.values().iterator().next())).collect(Collectors.toList());
+        return getPolicies(resp);
+    }
 
+    private List<Policy> getPolicies(List<Map<String, Object>> resp) {
+        List<UUID> ids = resp.stream().map(i -> ((UUID) i.values().iterator().next())).collect(Collectors.toList());
         return policyRepository.findAllById(ids);
     }
 }

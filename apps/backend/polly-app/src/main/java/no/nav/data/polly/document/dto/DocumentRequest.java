@@ -12,7 +12,6 @@ import no.nav.data.polly.common.validator.RequestElement;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Data
@@ -25,7 +24,7 @@ public class DocumentRequest implements RequestElement {
     private String id;
     private String name;
     private String description;
-    private List<String> informationTypeIds;
+    private List<DocumentInfoTypeUseRequest> informationTypes;
 
     private boolean update;
     private int requestIndex;
@@ -39,7 +38,7 @@ public class DocumentRequest implements RequestElement {
     public void format() {
         setName(StringUtils.trimToNull(name));
         setDescription(StringUtils.trimToNull(description));
-        setInformationTypeIds(StreamUtils.safeStream(informationTypeIds).map(StringUtils::trimToNull).filter(StringUtils::isNotBlank).collect(Collectors.toList()));
+        setInformationTypes(StreamUtils.nullToEmptyList(informationTypes));
     }
 
     @Override
@@ -48,6 +47,6 @@ public class DocumentRequest implements RequestElement {
         validator.checkId(this);
         validator.checkBlank(Fields.name, name);
         validator.checkBlank(Fields.description, name);
-        informationTypeIds.forEach(it -> validator.checkUUID(Fields.informationTypeIds, it));
+        validator.validateType(Fields.informationTypes, informationTypes);
     }
 }

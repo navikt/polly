@@ -7,7 +7,9 @@ import no.nav.data.polly.disclosure.DisclosureController.DisclosurePage;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;
 import no.nav.data.polly.disclosure.dto.DisclosureResponse;
 import no.nav.data.polly.document.domain.Document;
-import no.nav.data.polly.document.dto.DocumentInformationTypeResponse;
+import no.nav.data.polly.document.dto.DocumentInfoTypeResponse;
+import no.nav.data.polly.document.dto.DocumentInfoTypeUseRequest;
+import no.nav.data.polly.document.dto.DocumentInfoTypeUseResponse;
 import no.nav.data.polly.document.dto.DocumentRequest;
 import no.nav.data.polly.document.dto.DocumentResponse;
 import no.nav.data.polly.informationtype.domain.InformationType;
@@ -56,7 +58,7 @@ class DisclosureControllerIT extends IntegrationTestBase {
         var disclosureResponse = resp.getBody();
         assertThat(disclosureResponse).isNotNull();
 
-        DocumentInformationTypeResponse infoTypeRes = new DocumentInformationTypeResponse(infoType.getId(), infoType.getData().getName(),
+        DocumentInfoTypeResponse infoTypeRes = new DocumentInfoTypeResponse(infoType.getId(), infoType.getData().getName(),
                 CodelistService.getCodelistResponse(ListName.SENSITIVITY, infoType.getData().getSensitivity()));
 
         assertThat(disclosureResponse).isEqualTo(DisclosureResponse.builder()
@@ -72,8 +74,10 @@ class DisclosureControllerIT extends IntegrationTestBase {
                         .id(document.getId())
                         .name(document.getData().getName())
                         .description(document.getData().getDescription())
-                        .informationTypeIds(List.of(infoTypeRes.getId()))
-                        .informationTypes(List.of(infoTypeRes))
+                        .informationTypes(List.of(DocumentInfoTypeUseResponse.builder()
+                                .informationTypeId(infoTypeRes.getId())
+                                .informationType(infoTypeRes)
+                                .subjectCategory(CodelistService.getCodelistResponse(ListName.SUBJECT_CATEGORY, "BRUKER")).build()))
                         .build())
                 .build());
     }
@@ -96,7 +100,7 @@ class DisclosureControllerIT extends IntegrationTestBase {
         restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
         createDisclosureArbeidsgiverWithInformationType();
         ResponseEntity<DisclosurePage> resp = restTemplate
-                .getForEntity("/disclosure?informationTypeId={infoTypeId}", DisclosurePage.class, document.getData().getInformationTypeIds().get(0));
+                .getForEntity("/disclosure?informationTypeId={infoTypeId}", DisclosurePage.class, document.getData().getInformationTypes().get(0).getInformationTypeId());
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         DisclosurePage disclosurePage = resp.getBody();
@@ -184,7 +188,8 @@ class DisclosureControllerIT extends IntegrationTestBase {
     private Document createAndSaveDocument() {
         InformationType infoType = createAndSaveInformationType();
         var document = new Document().convertFromRequest(DocumentRequest.builder()
-                .name("doc 1").description("desc").informationTypeIds(List.of(infoType.getId().toString()))
+                .name("doc 1").description("desc")
+                .informationTypes(List.of(DocumentInfoTypeUseRequest.builder().informationTypeId(infoType.getId().toString()).subjectCategories(List.of("BRUKER")).build()))
                 .build());
         return documentRepository.save(document);
     }

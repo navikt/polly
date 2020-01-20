@@ -8,6 +8,8 @@ import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.common.utils.MetricUtils;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
+import no.nav.data.polly.document.domain.Document;
+import no.nav.data.polly.document.domain.DocumentRepository;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
@@ -26,6 +28,7 @@ import java.util.stream.Stream;
 import static java.util.Collections.replaceAll;
 import static java.util.stream.Collectors.toList;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
+import static no.nav.data.polly.common.utils.StreamUtils.nullToEmptyList;
 
 @Service
 @Transactional
@@ -36,15 +39,17 @@ public class CodeUsageService {
     private final PolicyRepository policyRepository;
     private final InformationTypeRepository informationTypeRepository;
     private final DisclosureRepository disclosureRepository;
+    private final DocumentRepository documentRepository;
     private final Summary summary;
 
     public CodeUsageService(CodelistService codelistService, ProcessRepository processRepository, PolicyRepository policyRepository,
-            InformationTypeRepository informationTypeRepository, DisclosureRepository disclosureRepository) {
+            InformationTypeRepository informationTypeRepository, DisclosureRepository disclosureRepository, DocumentRepository documentRepository) {
         this.codelistService = codelistService;
         this.processRepository = processRepository;
         this.policyRepository = policyRepository;
         this.informationTypeRepository = informationTypeRepository;
         this.disclosureRepository = disclosureRepository;
+        this.documentRepository = documentRepository;
         List<String[]> listnames = Stream.of(ListName.values()).map(e -> new String[]{e.name()}).collect(toList());
         this.summary = MetricUtils.summary()
                 .labels(listnames)
@@ -78,6 +83,7 @@ public class CodeUsageService {
             codeUsage.setPolicies(findPolicies(listName, code));
             codeUsage.setInformationTypes(findInformationTypes(listName, code));
             codeUsage.setDisclosures(findDisclosures(listName, code));
+            codeUsage.setDocuments(findDocuments(listName, code));
             return codeUsage;
         });
     }
@@ -102,7 +108,9 @@ public class CodeUsageService {
                     getInformationTypes(usage).forEach(it -> it.getData().setSensitivity(newCode));
                     break;
                 case SUBJECT_CATEGORY:
-                    getPolicies(usage).forEach(p -> p.setSubjectCategory(newCode));
+                    getPolicies(usage).forEach(p -> replaceAll(p.getSubjectCategories(), oldCode, newCode));
+                    getDocuments(usage).forEach(d -> nullToEmptyList(d.getData().getInformationTypes())
+                            .forEach(it -> replaceAll(nullToEmptyList(it.getSubjectCategories()), oldCode, newCode)));
                     break;
                 case NATIONAL_LAW:
                     replaceNationalLaw(
@@ -210,6 +218,13 @@ public class CodeUsageService {
         }
     }
 
+    private List<UsedInInstance> findDocuments(ListName listName, String code) {
+        if (listName == ListName.SUBJECT_CATEGORY) {
+            return documentRepository.findBySubjectCategory(code).stream().map(Document::getInstanceIdentification).collect(toList());
+        }
+        return Collections.emptyList();
+    }
+
     private List<InformationType> getInformationTypes(CodeUsageResponse usage) {
         return informationTypeRepository.findAllById(convert(usage.getInformationTypes(), UsedInInstance::getIdAsUUID));
     }
@@ -224,6 +239,10 @@ public class CodeUsageService {
 
     private List<Disclosure> getDisclosures(CodeUsageResponse usage) {
         return disclosureRepository.findAllById(convert(usage.getDisclosures(), UsedInInstance::getIdAsUUID));
+    }
+
+    private List<Document> getDocuments(CodeUsageResponse usage) {
+        return documentRepository.findAllById(convert(usage.getDocuments(), UsedInInstance::getIdAsUUID));
     }
 
 

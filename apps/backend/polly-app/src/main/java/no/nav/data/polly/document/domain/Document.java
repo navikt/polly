@@ -6,9 +6,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.codeusage.UsedInInstance;
+import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.auditing.domain.Auditable;
-import no.nav.data.polly.document.dto.DocumentInformationTypeResponse;
+import no.nav.data.polly.document.dto.DocumentInfoTypeResponse;
+import no.nav.data.polly.document.dto.DocumentInfoTypeUseResponse;
 import no.nav.data.polly.document.dto.DocumentRequest;
 import no.nav.data.polly.document.dto.DocumentResponse;
 import no.nav.data.polly.informationtype.domain.InformationType;
@@ -52,7 +55,7 @@ public class Document extends Auditable<String> {
         }
         data.setDescription(request.getDescription());
         data.setName(request.getName());
-        data.setInformationTypeIds(convert(request.getInformationTypeIds(), UUID::fromString));
+        data.setInformationTypes(convert(request.getInformationTypes(), DocumentData.InformationTypeUse::convertFromRequest));
         return this;
     }
 
@@ -61,12 +64,23 @@ public class Document extends Auditable<String> {
                 .id(id)
                 .name(data.getName())
                 .description(data.getDescription())
-                .informationTypeIds(data.getInformationTypeIds())
+                .informationTypes(convert(data.getInformationTypes(), Document::convertToInfoTypeUseResponse))
                 .build();
     }
 
-    public static DocumentInformationTypeResponse convertInformationTypeResponse(InformationType informationType) {
-        return new DocumentInformationTypeResponse(informationType.getId(), informationType.getData().getName(), informationType.getData().sensitivityCode());
+    public static DocumentInfoTypeUseResponse convertToInfoTypeUseResponse(DocumentData.InformationTypeUse informationTypeUse) {
+        return DocumentInfoTypeUseResponse.builder()
+                .informationTypeId(informationTypeUse.getInformationTypeId())
+                .subjectCategories(CodelistService.getCodelistResponseList(ListName.SUBJECT_CATEGORY, informationTypeUse.getSubjectCategories()))
+                .build();
+    }
+
+    public static DocumentInfoTypeResponse convertToInformationTypeResponse(InformationType informationType) {
+        return new DocumentInfoTypeResponse(informationType.getId(), informationType.getData().getName(), informationType.getData().sensitivityCode());
+    }
+
+    public UsedInInstance getInstanceIdentification() {
+        return new UsedInInstance(id.toString(), data.getName());
     }
 
     public static class DocumentBuilder {

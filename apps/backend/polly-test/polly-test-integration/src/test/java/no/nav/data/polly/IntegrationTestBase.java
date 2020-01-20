@@ -10,6 +10,9 @@ import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureData;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
+import no.nav.data.polly.document.domain.Document;
+import no.nav.data.polly.document.domain.DocumentData;
+import no.nav.data.polly.document.domain.DocumentData.InformationTypeUse;
 import no.nav.data.polly.document.domain.DocumentRepository;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
@@ -134,7 +137,7 @@ public abstract class IntegrationTestBase {
                 .purposeCode(purpose)
                 .legalBasis(createLegalBasis())
                 .informationType(informationType).informationTypeName(informationType.getData().getName())
-                .subjectCategory("BRUKER")
+                .subjectCategories(List.of("BRUKER"))
                 .activeToday()
                 .build();
         createAndSaveProcess(purpose).addPolicy(policy);
@@ -145,7 +148,7 @@ public abstract class IntegrationTestBase {
         return Policy.builder()
                 .generateId()
                 .purposeCode(purpose)
-                .subjectCategory(subjectCategory)
+                .subjectCategories(List.of(subjectCategory))
                 .activeToday()
                 .legalBases(legalBases)
                 .build();
@@ -219,6 +222,20 @@ public abstract class IntegrationTestBase {
                         .recipientPurpose("recipient purpose")
                         .start(LocalDate.now()).end(LocalDate.now())
                         .legalBasis(createLegalBasis(gdpr, nationalLaw,"§ 2-1"))
+                        .build())
+                .build();
+    }
+
+    protected Document createDocument(String subjectCategory, UUID informationTypeId) {
+        return Document.builder()
+                .generateId()
+                .data(DocumentData.builder()
+                        .name("doc name")
+                        .description("doc desc")
+                        .informationTypes(List.of(InformationTypeUse.builder()
+                                .informationTypeId(informationTypeId)
+                                .subjectCategories(List.of(subjectCategory))
+                                .build()))
                         .build())
                 .build();
     }

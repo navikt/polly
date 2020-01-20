@@ -6,8 +6,9 @@ import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.common.validator.RequestValidator;
 import no.nav.data.polly.common.validator.ValidationError;
 import no.nav.data.polly.document.domain.Document;
+import no.nav.data.polly.document.domain.DocumentData.InformationTypeUse;
 import no.nav.data.polly.document.domain.DocumentRepository;
-import no.nav.data.polly.document.dto.DocumentInformationTypeResponse;
+import no.nav.data.polly.document.dto.DocumentInfoTypeResponse;
 import no.nav.data.polly.document.dto.DocumentRequest;
 import no.nav.data.polly.document.dto.DocumentResponse;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
@@ -15,7 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
@@ -32,16 +35,19 @@ public class DocumentService extends RequestValidator<DocumentRequest> {
         this.informationTypeRepository = informationTypeRepository;
     }
 
-    public DocumentResponse getDocument(UUID uuid) {
+    public DocumentResponse getDocumentAsResponse(UUID uuid) {
         var document = repository.findById(uuid).orElseThrow(() -> new PollyNotFoundException("Document " + uuid + " not found"));
         DocumentResponse response = document.convertToResponse();
-        response.setInformationTypes(getInformationTypes(document));
+        Map<UUID, DocumentInfoTypeResponse> informationTypes = getInformationTypes(document);
+        response.getInformationTypes().forEach(it -> it.setInformationType(informationTypes.get(it.getInformationTypeId())));
         return response;
     }
 
-    public List<DocumentInformationTypeResponse> getInformationTypes(Document document) {
-        var infoTypes = informationTypeRepository.findAllById(document.getData().getInformationTypeIds());
-        return convert(infoTypes, Document::convertInformationTypeResponse);
+    public Map<UUID, DocumentInfoTypeResponse> getInformationTypes(Document document) {
+        return informationTypeRepository.findAllById(convert(document.getData().getInformationTypes(), InformationTypeUse::getInformationTypeId))
+                .stream()
+                .map(Document::convertToInformationTypeResponse)
+                .collect(Collectors.toMap(DocumentInfoTypeResponse::getId, Function.identity()));
     }
 
     @Transactional
@@ -69,10 +75,10 @@ public class DocumentService extends RequestValidator<DocumentRequest> {
     }
 
     private List<ValidationError> validateInformationTypes(DocumentRequest request) {
-        if (request.getInformationTypeIds().isEmpty()) {
+        if (request.getInformationTypes().isEmpty()) {
             return List.of();
         }
-        List<UUID> ids = convert(request.getInformationTypeIds(), UUID::fromString);
+        List<UUID> ids = convert(request.getInformationTypes(), infoType -> UUID.fromString(infoType.getInformationTypeId()));
         var infoTypes = informationTypeRepository.findAllById(ids);
         var missingInfoTypes = ids.stream().filter(id -> filter(infoTypes, infoType -> ids.contains(infoType.getId())).isEmpty()).collect(Collectors.toList());
         return missingInfoTypes.isEmpty() ? List.of()

@@ -5,6 +5,7 @@ import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -115,6 +116,13 @@ public class FieldValidator {
     public void checkCodelists(String fieldName, Collection<String> values, ListName listName) {
         AtomicInteger i = new AtomicInteger(0);
         safeStream(values).forEach(value -> checkRequiredCodelist(String.format("%s[%d]", fieldName, i.getAndIncrement()), value, listName));
+    }
+
+    public void checkRequiredCodelists(String fieldName, Collection<String> values, ListName listName) {
+        checkCodelists(fieldName, values, listName);
+        if (CollectionUtils.isEmpty(values)) {
+            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(ERROR_MESSAGE, getFieldName(fieldName))));
+        }
     }
 
     public void checkDate(String fieldName, String fieldValue) {

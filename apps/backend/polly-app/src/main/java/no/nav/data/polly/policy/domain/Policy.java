@@ -34,6 +34,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import static no.nav.data.polly.codelist.CodelistService.getCodelistResponse;
+import static no.nav.data.polly.codelist.CodelistService.getCodelistResponseList;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Data
@@ -56,8 +57,9 @@ public class Policy extends Auditable<String> {
     private String purposeCode;
 
     @NotNull
+    @Type(type = "jsonb")
     @Column(name = "SUBJECT_CATEGORIES", nullable = false)
-    private String subjectCategory;
+    private List<String> subjectCategories;
 
     @NotNull
     @Column(name = "START_DATE", nullable = false)
@@ -111,7 +113,7 @@ public class Policy extends Auditable<String> {
         return PolicyResponse.builder()
                 .id(getId())
                 .purposeCode(getCodelistResponse(ListName.PURPOSE, getPurposeCode()))
-                .subjectCategory(getCodelistResponse(ListName.SUBJECT_CATEGORY, getSubjectCategory()))
+                .subjectCategories(getCodelistResponseList(ListName.SUBJECT_CATEGORY, getSubjectCategories()))
                 .process(getProcess() == null ? null : getProcess().convertToIdNameResponse())
                 .start(getStart())
                 .end(getEnd())

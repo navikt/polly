@@ -54,7 +54,9 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
             ResponseEntity<CodelistUsageResponse> response = restTemplate
                     .exchange(String.format("/codelist/usage/find/%s", list), HttpMethod.GET, HttpEntity.EMPTY, CodelistUsageResponse.class);
 
-            assertThat(expectedCodesInUse).isEqualTo(Objects.requireNonNull(response.getBody()).getCodesInUse().stream().filter(CodeUsageResponse::isInUse).count());
+            assertThat(
+                    Objects.requireNonNull(response.getBody()).getCodesInUse().stream().filter(CodeUsageResponse::isInUse).count()
+            ).isEqualTo(expectedCodesInUse);
         }
     }
 
@@ -91,9 +93,16 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
         }
 
         @ParameterizedTest
-        @CsvSource({"THIRD_PARTY,SKATTEETATEN,1", "THIRD_PARTY,ARBEIDSGIVER,0", "GDPR_ARTICLE,ART61E,1", "GDPR_ARTICLE,ART92A,0", "NATIONAL_LAW,FTRL,1", "NATIONAL_LAW,OTHER_LAW,0"})
+        @CsvSource({"THIRD_PARTY,SKATTEETATEN,1", "THIRD_PARTY,ARBEIDSGIVER,0", "GDPR_ARTICLE,ART61E,1", "GDPR_ARTICLE,ART92A,0", "NATIONAL_LAW,FTRL,1",
+                "NATIONAL_LAW,OTHER_LAW,0"})
         void findDisclosures(String list, String code, int expectedCountDisclosures) {
             assertThat(expectedCountDisclosures).isEqualTo(countDisclosures(getForListAndCode(list, code)));
+        }
+
+        @ParameterizedTest
+        @CsvSource({"SUBJECT_CATEGORY,BRUKER,1", "SUBJECT_CATEGORY,OTHER_SUBCAT,0"})
+        void findDocuments(String list, String code, int expectedCountDisclosures) {
+            assertThat(expectedCountDisclosures).isEqualTo(countDocuments(getForListAndCode(list, code)));
         }
 
         @ParameterizedTest
@@ -122,13 +131,13 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
     class replaceCodelist {
 
         @ParameterizedTest
-        @CsvSource({"PURPOSE,DAGPENGER,0,1,1,0", "CATEGORY,PERSONALIA,1,0,0,0",
-                "DEPARTMENT,YTA,0,0,2,0", "SUB_DEPARTMENT,NAY,0,0,2,0",
-                "SENSITIVITY,POL,2,0,0,0", "THIRD_PARTY,SKATTEETATEN,1,0,0,1",
-                "SUBJECT_CATEGORY,BRUKER,0,2,0,0", "SYSTEM,TPS,1,0,0,0",
-                "NATIONAL_LAW,FTRL,0,2,2,1", "GDPR_ARTICLE,ART61E,0,2,2,1"
+        @CsvSource({"PURPOSE,DAGPENGER,0,1,1,0,0", "CATEGORY,PERSONALIA,1,0,0,0,0",
+                "DEPARTMENT,YTA,0,0,2,0,0", "SUB_DEPARTMENT,NAY,0,0,2,0,0",
+                "SENSITIVITY,POL,2,0,0,0,0", "THIRD_PARTY,SKATTEETATEN,1,0,0,1,0",
+                "SUBJECT_CATEGORY,BRUKER,0,2,0,0,1", "SYSTEM,TPS,1,0,0,0,0",
+                "NATIONAL_LAW,FTRL,0,2,2,1,0", "GDPR_ARTICLE,ART61E,0,2,2,1,0"
         })
-        void replaceCodelistUsage(String list, String code, int informationTypes, int policies, int processes, int disclosures) {
+        void replaceCodelistUsage(String list, String code, int informationTypes, int policies, int processes, int disclosures, int documents) {
             String newCode = "REPLACECODE";
             codelistService.save(List.of(createCodelistRequest(list, newCode)));
 
@@ -141,6 +150,7 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
             assertThat(replace.getPolicies()).hasSize(policies);
             assertThat(replace.getProcesses()).hasSize(processes);
             assertThat(replace.getDisclosures()).hasSize(disclosures);
+            assertThat(replace.getDocuments()).hasSize(documents);
 
             var replaceSecondRun = replaceCode(list, code, newCode);
             assertThat(replaceSecondRun.isInUse()).isFalse();
@@ -180,7 +190,9 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
         policyRepository.saveAll(List.of(dagpengerBruker, barnetrygdBruker));
 
         var disclosure = createDisclosure("SKATTEETATEN", "ART61E", "FTRL");
+        var document = createDocument("BRUKER", sivilstand.getId());
         disclosureRepository.save(disclosure);
+        documentRepository.save(document);
     }
 
     private void createCodelistsByRequests() {
@@ -232,5 +244,9 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
 
     private int countDisclosures(ResponseEntity<CodeUsageResponse> response) {
         return Objects.requireNonNull(response.getBody()).getDisclosures().size();
+    }
+
+    private int countDocuments(ResponseEntity<CodeUsageResponse> response) {
+        return Objects.requireNonNull(response.getBody()).getDocuments().size();
     }
 }
