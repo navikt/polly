@@ -11,3 +11,22 @@ set data = jsonb_build_object(
         'informationTypes',
         (select info_types from pre where pre.document_id = document.document_id)
     );
+
+-- convert column to jsonb array (column name was already plural by accident)
+
+alter table policy
+    add column subject_categories_old text;
+
+update policy
+set subject_categories_old = subject_categories;
+
+alter table policy
+    drop column subject_categories,
+    add column subject_categories jsonb;
+
+update policy
+set subject_categories = jsonb_build_array(subject_categories_old);
+
+alter table policy
+    alter column subject_categories set not null,
+    drop column subject_categories_old;

@@ -11,6 +11,7 @@ import no.nav.data.polly.process.dto.ProcessRequest;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.UUID;
 
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
@@ -28,7 +29,7 @@ public class PolicyMapper {
         Policy policy = policyRequest.getExistingPolicy() != null ? policyRequest.getExistingPolicy() : new Policy();
         policyRequest.getInformationType().addPolicy(policy);
         policy.setPurposeCode(policyRequest.getPurposeCode());
-        policy.setSubjectCategory(policyRequest.getSubjectCategory());
+        policy.setSubjectCategories(List.copyOf(policyRequest.getSubjectCategories()));
         policy.setStart(DateUtil.parseStart(policyRequest.getStart()));
         policy.setEnd(DateUtil.parseEnd(policyRequest.getEnd()));
         policy.setLegalBasesInherited(BooleanUtils.toBoolean(policyRequest.getLegalBasesInherited()));

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -82,7 +83,7 @@ class PolicyRepositoryIT extends IntegrationTestBase {
         Policy policy = new Policy.PolicyBuilder()
                 .id(datasetId)
                 .purposeCode(purposeCode)
-                .subjectCategory("BRUKER")
+                .subjectCategories(List.of("BRUKER"))
                 .activeToday()
                 .legalBasesInherited(false)
                 .legalBasis(createLegalBasis())

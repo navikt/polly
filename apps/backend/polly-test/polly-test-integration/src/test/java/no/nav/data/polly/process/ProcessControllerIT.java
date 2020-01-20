@@ -53,7 +53,7 @@ class ProcessControllerIT extends IntegrationTestBase {
                         .informationType(
                                 new PolicyInformationTypeResponse(createAndSaveInformationType().getId(), INFORMATION_TYPE_NAME,
                                         createAndSaveInformationType().getData().sensitivityCode()))
-                        .subjectCategory(CodelistService.getCodelistResponse(ListName.SUBJECT_CATEGORY, policy.getSubjectCategory()))
+                        .subjectCategory(CodelistService.getCodelistResponse(ListName.SUBJECT_CATEGORY, policy.getSubjectCategories().get(0)))
                         .start(policy.getStart())
                         .end(policy.getEnd())
                         .legalBasis(legalBasisResponse())

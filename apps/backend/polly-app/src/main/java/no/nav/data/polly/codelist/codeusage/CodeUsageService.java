@@ -108,7 +108,7 @@ public class CodeUsageService {
                     getInformationTypes(usage).forEach(it -> it.getData().setSensitivity(newCode));
                     break;
                 case SUBJECT_CATEGORY:
-                    getPolicies(usage).forEach(p -> p.setSubjectCategory(newCode));
+                    getPolicies(usage).forEach(p -> replaceAll(p.getSubjectCategories(), oldCode, newCode));
                     getDocuments(usage).forEach(d -> nullToEmptyList(d.getData().getInformationTypes())
                             .forEach(it -> replaceAll(nullToEmptyList(it.getSubjectCategories()), oldCode, newCode)));
                     break;

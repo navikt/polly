@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -85,24 +84,14 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
                         String.format("An InformationType with name %s does not exist", request.getInformationTypeName())));
             } else {
                 request.setInformationType(informationType);
-                if (request.getPurposeCode() != null && request.getSubjectCategory() != null && request.getProcess() != null &&
-                        !request.isUpdate() && exists(informationType.getId(), request.getPurposeCode(), request.getSubjectCategory(), request.getProcess())) {
-                    validations.add(new ValidationError(request.getReference(), "informationTypeAndPurpose",
-                            String.format("A policy combining %s already exists", identifiers(request))));
-                }
             }
         }
         return validations;
     }
 
     private String identifiers(PolicyRequest request) {
-        return String.format("InformationType: %s and Process: %s Purpose: %s SubjectCategory: %s",
-                request.getInformationTypeName(), request.getProcess(), request.getPurposeCode(), request.getSubjectCategory());
-    }
-
-    private boolean exists(UUID informationTypeId, String purposeCode, String subjectCategory, String processName) {
-        return policyRepository.findByInformationTypeIdAndPurposeCodeAndSubjectCategoryAndProcessName(informationTypeId, purposeCode, subjectCategory, processName).stream()
-                .anyMatch(Policy::isActive);
+        return String.format("InformationType: %s and Process: %s Purpose: %s SubjectCategories: %s",
+                request.getInformationTypeName(), request.getProcess(), request.getPurposeCode(), request.getSubjectCategories());
     }
 
     public List<Policy> findByPurposeCodeAndProcessName(String purpose, String processName) {

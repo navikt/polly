@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -53,7 +54,7 @@ class PolicyMapperTest {
         InformationType informationType = createBasicTestdata();
         PolicyRequest request = PolicyRequest.builder()
                 .process("process")
-                .subjectCategory("Bruker")
+                .subjectCategories(List.of("Bruker"))
                 .legalBases(List.of(LegalBasisRequest.builder().gdpr("6e").nationalLaw("Ftrl").description(LEGAL_BASIS_DESCRIPTION1).build()))
                 .start("2019-02-04")
                 .end("2020-02-04")
@@ -62,7 +63,7 @@ class PolicyMapperTest {
                 .build();
         Policy policy = mapper.mapRequestToPolicy(request);
         assertThat(policy.getProcess().getName(), is("process"));
-        assertThat(policy.getSubjectCategory(), is("Bruker"));
+        assertThat(policy.getSubjectCategories(), hasItem("Bruker"));
         assertThat(policy.getPurposeCode(), is(PURPOSE_CODE1));
         assertThat(policy.getInformationType(), is(informationType));
         assertThat(policy.getInformationTypeId(), is(informationType.getId()));
@@ -81,13 +82,13 @@ class PolicyMapperTest {
         assertThat(policyResponse.getPurposeCode(), notNullValue());
         assertThat(policyResponse.getPurposeCode().getCode(), is(PURPOSE_CODE1));
         assertThat(policyResponse.getPurposeCode().getDescription(), is(DESC));
-        assertThat(policyResponse.getSubjectCategory().getCode(), is("Bruker"));
+        assertThat(policyResponse.getSubjectCategories().get(0).getCode(), is("Bruker"));
     }
 
     private Policy createPolicy(InformationType informationType) {
         return Policy.builder().id(UUID.randomUUID())
                 .process(Process.builder().name("process").build())
-                .subjectCategory("Bruker")
+                .subjectCategories(List.of("Bruker"))
                 .legalBases(List.of(LegalBasis.builder().gdpr("6e").nationalLaw("nl").description(LEGAL_BASIS_DESCRIPTION1).build()))
                 .start(LocalDate.parse("2019-02-04"))
                 .end(LocalDate.parse("2020-02-04"))

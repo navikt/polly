@@ -16,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,8 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -60,7 +57,6 @@ class PolicyServiceTest {
                 .purposeCode(PURPOSECODE)
                 .build();
         when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.of(InformationType.builder().id(UUID.fromString(INFTYPE_ID_1)).build()));
-        when(policyRepository.findByInformationTypeIdAndPurposeCodeAndSubjectCategoryAndProcessName(any(UUID.class), anyString(), anyString(), anyString())).thenReturn(List.of());
         service.validateRequests(List.of(request), false);
     }
 
@@ -75,7 +71,7 @@ class PolicyServiceTest {
             assertThat(e.getMessage()).contains("informationTypeName was null or missing");
             assertThat(e.getMessage()).contains("purposeCode was null or missing");
             assertThat(e.getMessage()).contains("process was null or missing");
-            assertThat(e.getMessage()).contains("subjectCategory was null or missing");
+            assertThat(e.getMessage()).contains("subjectCategories was null or missing");
         }
     }
 
@@ -95,27 +91,6 @@ class PolicyServiceTest {
         } catch (ValidationException e) {
             assertThat(e.getMessage()).contains("purposeCode: WRONG code not found in codelist PURPOSE");
             assertThat(e.getMessage()).contains("An InformationType with name " + INFTYPE_NAME + " does not exist");
-        }
-    }
-
-    @Test
-    void shouldThrowAlreadyExistsValidationExceptionOnInsert() {
-        PolicyRequest request = PolicyRequest.builder()
-                .process("process")
-                .informationTypeName(INFTYPE_NAME)
-                .subjectCategory("Bruker")
-                .legalBases(List.of(LegalBasisRequest.builder().gdpr("ART61A").description(LEGALBASISDESCRIPTION).build()))
-                .purposeCode(PURPOSECODE)
-                .build();
-        when(informationTypeRepository.findByName(request.getInformationTypeName())).thenReturn(Optional.of(InformationType.builder().id(UUID.fromString(INFTYPE_ID_1)).build()));
-        when(policyRepository.findByInformationTypeIdAndPurposeCodeAndSubjectCategoryAndProcessName(any(UUID.class), anyString(), anyString(), anyString()))
-                .thenReturn(List.of(Policy.builder().start(LocalDate.now()).end(LocalDate.now()).build()));
-        try {
-            service.validateRequests(List.of(request), false);
-            fail();
-        } catch (ValidationException e) {
-            assertEquals(1, e.get().size(), JsonUtils.toJson(e.get()));
-            assertThat(e.getMessage()).contains("A policy combining InformationType: Personalia and Process: process Purpose: KONTROLL SubjectCategory: BRUKER already exists");
         }
     }
 

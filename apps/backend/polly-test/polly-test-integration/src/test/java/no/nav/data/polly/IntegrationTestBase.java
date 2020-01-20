@@ -137,7 +137,7 @@ public abstract class IntegrationTestBase {
                 .purposeCode(purpose)
                 .legalBasis(createLegalBasis())
                 .informationType(informationType).informationTypeName(informationType.getData().getName())
-                .subjectCategory("BRUKER")
+                .subjectCategories(List.of("BRUKER"))
                 .activeToday()
                 .build();
         createAndSaveProcess(purpose).addPolicy(policy);
@@ -148,7 +148,7 @@ public abstract class IntegrationTestBase {
         return Policy.builder()
                 .generateId()
                 .purposeCode(purpose)
-                .subjectCategory(subjectCategory)
+                .subjectCategories(List.of(subjectCategory))
                 .activeToday()
                 .legalBases(legalBases)
                 .build();

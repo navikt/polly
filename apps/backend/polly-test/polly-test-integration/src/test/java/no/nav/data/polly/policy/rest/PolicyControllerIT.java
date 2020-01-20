@@ -65,22 +65,6 @@ class PolicyControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void createPolicyThrowAlreadyExistsValidationException() {
-        List<PolicyRequest> requestList = List.of(createPolicyRequest(createAndSaveInformationType()));
-        ResponseEntity<String> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
-        assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
-        assertThat(policyRepository.count(), is(1L));
-
-        createEntity = restTemplate.exchange(
-                POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
-
-        assertThat(createEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(createEntity.getBody(), containsString(
-                "A policy combining InformationType: Sivilstand and Process: Saksbehandling Purpose: KONTROLL SubjectCategory: BRUKER already exists"));
-        assertThat(policyRepository.count(), is(1L));
-    }
-
-    @Test
     void createPolicyThrowDuplcateValidationException() {
         InformationType informationType = createAndSaveInformationType();
         List<PolicyRequest> requestList = Arrays.asList(createPolicyRequest(informationType), createPolicyRequest(informationType));
@@ -88,7 +72,7 @@ class PolicyControllerIT extends IntegrationTestBase {
                 POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
         assertThat(createEntity.getBody(),
-                containsString("A request combining InformationType: Sivilstand and Process: Saksbehandling Purpose: KONTROLL SubjectCategory: BRUKER"
+                containsString("A request combining InformationType: Sivilstand and Process: Saksbehandling Purpose: KONTROLL SubjectCategories: [BRUKER]"
                         + " is not unique because it is already used in this request"));
     }
 
@@ -102,7 +86,7 @@ class PolicyControllerIT extends IntegrationTestBase {
         assertThat(createEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
         assertThat(createEntity.getBody(), containsString("purposeCode: NOTFOUND code not found in codelist PURPOSE"));
         assertThat(createEntity.getBody(), containsString("An InformationType with name NOTFOUND does not exist"));
-        assertThat(createEntity.getBody(), containsString("subjectCategory: NOTFOUND code not found in codelist SUBJECT_CATEGORY"));
+        assertThat(createEntity.getBody(), containsString("subjectCategories[0]: NOTFOUND code not found in codelist SUBJECT_CATEGORY"));
         assertThat(policyRepository.count(), is(0L));
     }
 
