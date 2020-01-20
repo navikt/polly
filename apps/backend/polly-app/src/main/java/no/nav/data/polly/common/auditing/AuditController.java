@@ -12,12 +12,15 @@ import no.nav.data.polly.common.auditing.dto.AuditLogResponse;
 import no.nav.data.polly.common.auditing.dto.AuditResponse;
 import no.nav.data.polly.common.rest.PageParameters;
 import no.nav.data.polly.common.rest.RestResponsePage;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -42,9 +45,15 @@ public class AuditController {
             @ApiResponse(code = 200, message = "Audit log fetched", response = AuditLogPage.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping
-    public ResponseEntity<RestResponsePage<AuditResponse>> getAll(PageParameters paging) {
-        log.info("Received request for Audit {}", paging);
-        var page = repository.findAll(paging.createSortedPageByFieldDescending(Fields.time)).map(AuditVersion::convertToResponse);
+    public ResponseEntity<RestResponsePage<AuditResponse>> getAll(PageParameters paging, @RequestParam(required = false) String table) {
+        log.info("Received request for Audit {} table {}", paging, table);
+        Pageable pageable = paging.createSortedPageByFieldDescending(Fields.time);
+        Page<AuditResponse> page;
+        if (table != null) {
+            page = repository.findByTable(table, pageable).map(AuditVersion::convertToResponse);
+        } else {
+            page = repository.findAll(pageable).map(AuditVersion::convertToResponse);
+        }
         return new ResponseEntity<>(new RestResponsePage<>(page), HttpStatus.OK);
     }
 
