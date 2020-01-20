@@ -138,11 +138,7 @@ const CardLegalBasis = ({ submit, hideCard, initValue,titleSubmitButton }: CardL
                                         initialState={{value: initValue.description}}
                                         placeholder={customizeNationalLawPlaceholder(gdpr)}
                                         error={!!form.errors.description && !!form.submitCount}
-                                        startEnhancer={() =>
-                                            <StatefulTooltip content={() => 'text'} placement={PLACEMENT.top}>
-                                                <span><FontAwesomeIcon icon={faPen} /></span>
-                                            </StatefulTooltip>
-                                        }
+                                        startEnhancer={() => <span><FontAwesomeIcon icon={faPen} /></span>}
                                     />
                                     )}
                             />
