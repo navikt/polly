@@ -7,7 +7,7 @@ import { intl } from "../../util"
 import { Disclosure, DisclosureFormValues, disclosureSort, InformationType, LegalBasis, LegalBasisFormValues } from "../../constants"
 import { useTable } from "../../util/hooks"
 import RouteLink from "./RouteLink"
-import { StatefulTooltip } from "baseui/tooltip";
+import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
 import { Button, KIND, SIZE } from "baseui/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -146,7 +146,7 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
                             {editable && (
                                 <SmallerStyledCell>
                                     <Block width="100%" display="flex" justifyContent="flex-end">
-                                        <StatefulTooltip content={intl.edit}>
+                                        <StatefulTooltip content={intl.edit} placement={PLACEMENT.top}>
                                             <Button
                                                 size={SIZE.compact}
                                                 kind={KIND.tertiary}
@@ -159,7 +159,7 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
                                             </Button>
                                         </StatefulTooltip>
 
-                                        <StatefulTooltip content={intl.delete}>
+                                        <StatefulTooltip content={intl.delete} placement={PLACEMENT.top}>
                                             <Button
                                                 size={SIZE.compact}
                                                 kind={KIND.tertiary}

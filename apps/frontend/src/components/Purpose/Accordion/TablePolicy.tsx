@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faInfo, faInfoCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "baseui/modal";
 import { Paragraph2 } from "baseui/typography";
-import { StatefulTooltip } from "baseui/tooltip"
+import {PLACEMENT, StatefulTooltip} from "baseui/tooltip"
 
 import { codelist, ListName } from "../../../service/Codelist"
 import { Sensitivity } from "../../InformationType/Sensitivity"
@@ -127,7 +127,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                                     </StyledCell>
                                     <SmallerStyledCell>
                                         <Block display="flex" justifyContent="flex-end" width="100%">
-                                            <StatefulTooltip content={intl.info}>
+                                            <StatefulTooltip content={intl.info} placement={PLACEMENT.top}>
                                                 <Button
                                                     size={ButtonSize.compact}
                                                     kind={KIND.tertiary}
@@ -141,7 +141,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                                             </StatefulTooltip>
                                             {hasAccess && (
                                                 <>
-                                                    <StatefulTooltip content={intl.edit}>
+                                                    <StatefulTooltip content={intl.edit} placement={PLACEMENT.top}>
                                                         <Button
                                                             size={ButtonSize.compact}
                                                             kind={KIND.tertiary}
@@ -153,7 +153,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                                                             <FontAwesomeIcon icon={faEdit}/>
                                                         </Button>
                                                     </StatefulTooltip>
-                                                    <StatefulTooltip content={intl.delete}>
+                                                    <StatefulTooltip content={intl.delete} placement={PLACEMENT.top}>
                                                         <Button
                                                             size={ButtonSize.compact}
                                                             kind={KIND.tertiary}

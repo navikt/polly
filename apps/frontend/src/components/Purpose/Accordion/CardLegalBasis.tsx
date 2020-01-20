@@ -47,7 +47,7 @@ const renderCardHeader = (text: string) => {
         <Block display="flex">
             <StatefulTooltip
                 content={() => <TooltipContent />}
-                placement={PLACEMENT.right}
+                placement={PLACEMENT.top}
             >
                 <Block display="flex">
                     <Label2>{text}</Label2>
@@ -139,7 +139,7 @@ const CardLegalBasis = ({ submit, hideCard, initValue,titleSubmitButton }: CardL
                                         placeholder={customizeNationalLawPlaceholder(gdpr)}
                                         error={!!form.errors.description && !!form.submitCount}
                                         startEnhancer={() =>
-                                            <StatefulTooltip content={() => 'text'}>
+                                            <StatefulTooltip content={() => 'text'} placement={PLACEMENT.top}>
                                                 <span><FontAwesomeIcon icon={faPen} /></span>
                                             </StatefulTooltip>
                                         }

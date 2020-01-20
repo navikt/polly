@@ -5,7 +5,7 @@ import { Team } from "../../constants"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faEnvelope, faTimesCircle, faUser, faUsers } from "@fortawesome/free-solid-svg-icons"
 import { copyToClipboard, intl, theme } from "../../util"
-import { StatefulTooltip } from "baseui/tooltip"
+import {PLACEMENT, StatefulTooltip} from "baseui/tooltip"
 import { Card, StyledBody } from "baseui/card"
 import { ListItem, ListItemLabel, OverridesT } from "baseui/list"
 import { Button } from "baseui/button"
@@ -48,7 +48,7 @@ const TeamContent = (props: { team: Team }) => (
 
             {props.team.members.map((member, index) =>
                 <ListItem key={index} overrides={listOverrides} endEnhancer={() =>
-                    <StatefulTooltip content={`${intl.email} ${member.email} ${intl.copied}!`} triggerType="click" onOpen={() => copyToClipboard(member.email)}>
+                    <StatefulTooltip content={`${intl.email} ${member.email} ${intl.copied}!`} triggerType="click" onOpen={() => copyToClipboard(member.email)} placement={PLACEMENT.top}>
                         <Button size="compact" shape="pill" kind="secondary" $style={{marginLeft: "1rem"}}>
                             <SmallIcon icon={faEnvelope}/> {intl.email}
                         </Button>
@@ -87,7 +87,7 @@ export const TeamPopover = (props: { teamId: string }) => {
               </Button>
             </StatefulPopover>
             }
-            {error && <StatefulTooltip content={intl.couldntLoadTeam}>
+            {error && <StatefulTooltip content={intl.couldntLoadTeam} placement={PLACEMENT.top}>
               <span><FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500}/> {team.name}</span>
             </StatefulTooltip>}
         </>

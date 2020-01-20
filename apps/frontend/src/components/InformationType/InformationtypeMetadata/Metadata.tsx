@@ -12,7 +12,7 @@ import {faCross, faCrosshairs, faTag, faTimesCircle, faUserShield} from '@fortaw
 import {Code} from '../../../service/Codelist'
 import {sensitivityColor} from "../Sensitivity"
 import {getTerm, mapTermToOption} from "../../../api"
-import {StatefulTooltip} from "baseui/tooltip"
+import {PLACEMENT, StatefulTooltip} from "baseui/tooltip"
 import {Link} from "react-router-dom";
 import {Tag} from "baseui/tag";
 import {StyledLink} from "baseui/link";
@@ -69,7 +69,7 @@ const TextWithLabel = (props: { label: string, text?: string, icon?: IconDefinit
         <Block>
             <Label2>{props.icon && <FontAwesomeIcon icon={props.icon} color={props.iconColor}/>} {props.label}</Label2>
             {!props.error && value}
-            {props.error && <StatefulTooltip content={props.error}>{value}</StatefulTooltip>}
+            {props.error && <StatefulTooltip content={props.error} placement={PLACEMENT.top}>{value}</StatefulTooltip>}
         </Block>
     )
 }
