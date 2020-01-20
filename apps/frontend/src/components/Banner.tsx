@@ -1,9 +1,8 @@
 import * as React from "react";
 import { Block, BlockProps } from "baseui/block";
 import { Heading, HeadingLevel } from "baseui/heading";
-import { StyledLink } from "baseui/link";
 import { useStyletron } from 'baseui'
-import { intl } from '../util/intl/intl'
+import { intl } from '../util'
 import { Button } from "baseui/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
@@ -19,7 +18,7 @@ type BannerProps = {
 
 const bannerBlockProps: BlockProps = {
     backgroundColor: "mono200",
-    width: "100vw",
+    width: "calc(100vw - 8px)",
     left: "calc(-50vw + 50%)",
     position: "relative",
     paddingTop: '1rem',
