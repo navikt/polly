@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"code", "informationTypes", "policies", "processes", "disclosures"})
+@JsonPropertyOrder({"code", "informationTypes", "policies", "processes", "disclosures", "documents"})
 public class CodeUsageResponse {
 
     private ListName listName;
@@ -24,6 +24,7 @@ public class CodeUsageResponse {
     private List<UsedInInstance> policies;
     private List<UsedInInstance> processes;
     private List<UsedInInstance> disclosures;
+    private List<UsedInInstance> documents;
 
     public CodeUsageResponse(ListName listName, String code) {
         this.listName = listName;
@@ -32,9 +33,10 @@ public class CodeUsageResponse {
         this.policies = new ArrayList<>();
         this.processes = new ArrayList<>();
         this.disclosures = new ArrayList<>();
+        this.documents = new ArrayList<>();
     }
 
     public boolean isInUse() {
-        return !informationTypes.isEmpty() || !policies.isEmpty() || !processes.isEmpty() || !disclosures.isEmpty();
+        return !informationTypes.isEmpty() || !policies.isEmpty() || !processes.isEmpty() || !disclosures.isEmpty() || !documents.isEmpty();
     }
 }

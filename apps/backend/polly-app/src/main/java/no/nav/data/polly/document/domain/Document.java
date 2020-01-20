@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.codeusage.UsedInInstance;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.auditing.domain.Auditable;
 import no.nav.data.polly.document.dto.DocumentInfoTypeResponse;
@@ -76,6 +77,10 @@ public class Document extends Auditable<String> {
 
     public static DocumentInfoTypeResponse convertToInformationTypeResponse(InformationType informationType) {
         return new DocumentInfoTypeResponse(informationType.getId(), informationType.getData().getName(), informationType.getData().sensitivityCode());
+    }
+
+    public UsedInInstance getInstanceIdentification() {
+        return new UsedInInstance(id.toString(), data.getName());
     }
 
     public static class DocumentBuilder {
