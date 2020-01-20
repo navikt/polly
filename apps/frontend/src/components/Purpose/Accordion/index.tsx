@@ -10,7 +10,7 @@ import { intl, theme, useAwait } from '../../../util';
 import _includes from 'lodash/includes'
 import { user } from "../../../service/User";
 import { Plus } from 'baseui/icon'
-import { LegalBasis, PolicyFormValues, Process, ProcessFormValues } from "../../../constants"
+import { LegalBasis, PolicyFormValues, Process, ProcessFormValues, LegalBasesStatus } from "../../../constants"
 import { LegalBasisView } from "../../common/LegalBasis"
 import { codelist, ListName } from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
@@ -271,7 +271,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                     initialValues={{
                                         legalBasesOpen: false,
                                         informationType: undefined,
-                                        legalBasesStatus: undefined,
+                                        legalBasesStatus: LegalBasesStatus.INHERITED,
                                         process: currentProcess,
                                         purposeCode: currentProcess.purposeCode,
                                         subjectCategory: undefined,
