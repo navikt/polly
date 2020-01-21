@@ -1,3 +1,5 @@
+import { env } from "./env"
+
 export const features = {
-  enableThirdParty: !process.env.REACT_APP_DISABLE_THIRDPARTY
+  enableThirdParty: !env.disableThirdParty
 }

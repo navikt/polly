@@ -1,21 +1,19 @@
 import axios from "axios"
 import { Document, DocumentFormValues } from "../constants"
-
-const server_polly = process.env.REACT_APP_POLLY_ENDPOINT
-
+import { env } from "../util/env"
 
 export const getDocument = async (documentId: string) => {
-  return (await axios.get<Document>(`${server_polly}/document/${documentId}`)).data
+  return (await axios.get<Document>(`${env.pollyBaseUrl}/document/${documentId}`)).data
 }
 
 export const createDocument = async (document: DocumentFormValues) => {
   const doc = {...document, informationTypes: mapToInfoTypes(document)}
-  return (await axios.post<Document>(`${server_polly}/document`, doc)).data
+  return (await axios.post<Document>(`${env.pollyBaseUrl}/document`, doc)).data
 }
 
 export const updateDocument = async (document: DocumentFormValues) => {
   const doc = {...document, informationTypes: mapToInfoTypes(document)}
-  return (await axios.put<Document>(`${server_polly}/document/${doc.id}`, doc)).data
+  return (await axios.put<Document>(`${env.pollyBaseUrl}/document/${doc.id}`, doc)).data
 }
 
 const mapToInfoTypes = (document: DocumentFormValues) => document.informationTypes.map(it => ({informationTypeId: it.id, subjectCategories: []}))

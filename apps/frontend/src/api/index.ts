@@ -1,6 +1,11 @@
+export * from './CodelistApi'
+export * from './UserApi'
+
 export * from './InfoTypeApi'
 export * from './PolicyApi'
 export * from './ProcessApi'
-export * from './TermApi'
 export * from './DisclosureApi'
-export * from './CodelistApi'
+export * from './DocumentApi'
+
+export * from './TermApi'
+export * from './TeamApi'

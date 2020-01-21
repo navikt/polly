@@ -1,17 +1,16 @@
 import axios from "axios";
 import { PageResponse, Process, ProcessFormValues, ProcessPurposeCount } from "../constants";
-
-const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
+import { env } from "../util/env"
 
 export const getProcess = async (processId: string) => {
-    return (await axios.get<Process>(`${server_polly}/process/${processId}`))
+    return (await axios.get<Process>(`${env.pollyBaseUrl}/process/${processId}`))
         .data;
 };
 
 export const getProcessesForPurpose = async (purpose: string) => {
     return (
         await axios.get<PageResponse<Process>>(
-            `${server_polly}/process/purpose/${purpose}`
+            `${env.pollyBaseUrl}/process/purpose/${purpose}`
         )
     ).data;
 };
@@ -19,7 +18,7 @@ export const getProcessesForPurpose = async (purpose: string) => {
 export const getProcessPurposeCount = async () => {
     return (
         await axios.get<ProcessPurposeCount>(
-            `${server_polly}/process/count/purpose`
+            `${env.pollyBaseUrl}/process/count/purpose`
         )
     ).data;
 };
@@ -27,19 +26,19 @@ export const getProcessPurposeCount = async () => {
 export const createProcess = async (process: ProcessFormValues) => {
     let body = mapProcessFromForm(process);
     return (
-        await axios.post<Process>(`${server_polly}/process`, body)
+        await axios.post<Process>(`${env.pollyBaseUrl}/process`, body)
     ).data;
 };
 
 export const deleteProcess = async (processId: string) => {
-    return (await axios.delete<Process>(`${server_polly}/process/${processId}`))
+    return (await axios.delete<Process>(`${env.pollyBaseUrl}/process/${processId}`))
         .data;
 };
 
 export const updateProcess = async (process: ProcessFormValues) => {
     let body = mapProcessFromForm(process);
     return (
-        await axios.put<Process>(`${server_polly}/process/${process.id}`, body)
+        await axios.put<Process>(`${env.pollyBaseUrl}/process/${process.id}`, body)
     ).data;
 };
 
