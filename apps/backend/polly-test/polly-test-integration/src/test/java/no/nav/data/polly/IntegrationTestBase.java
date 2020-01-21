@@ -132,14 +132,8 @@ public abstract class IntegrationTestBase {
     }
 
     protected Policy createAndSavePolicy(String purpose, InformationType informationType) {
-        Policy policy = Policy.builder()
-                .generateId()
-                .purposeCode(purpose)
-                .legalBasis(createLegalBasis())
-                .informationType(informationType).informationTypeName(informationType.getData().getName())
-                .subjectCategories(List.of("BRUKER"))
-                .activeToday()
-                .build();
+        Policy policy = createPolicy(purpose, "BRUKER", List.of(createLegalBasis()));
+        policy.setInformationType(informationType);
         createAndSaveProcess(purpose).addPolicy(policy);
         return policyRepository.save(policy);
     }
@@ -221,7 +215,7 @@ public abstract class IntegrationTestBase {
                         .recipient(recipientCode)
                         .recipientPurpose("recipient purpose")
                         .start(LocalDate.now()).end(LocalDate.now())
-                        .legalBasis(createLegalBasis(gdpr, nationalLaw,"§ 2-1"))
+                        .legalBasis(createLegalBasis(gdpr, nationalLaw, "§ 2-1"))
                         .build())
                 .build();
     }

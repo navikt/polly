@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -94,9 +93,4 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
                 request.getInformationTypeName(), request.getProcess(), request.getPurposeCode(), request.getSubjectCategories());
     }
 
-    public List<Policy> findByPurposeCodeAndProcessName(String purpose, String processName) {
-        return policyRepository.findByPurposeCodeAndProcessName(purpose, processName).stream()
-                .filter(Policy::isActive)
-                .collect(Collectors.toList());
-    }
 }

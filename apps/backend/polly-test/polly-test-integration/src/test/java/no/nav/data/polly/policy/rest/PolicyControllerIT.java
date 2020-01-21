@@ -221,7 +221,6 @@ class PolicyControllerIT extends IntegrationTestBase {
     private void assertBehandlingsgrunnlagDistribusjon(int count) {
         List<ProcessDistribution> all = processDistributionRepository.findAll();
         assertThat(all, hasSize(count));
-        assertThat(all.get(0).getPurposeCode(), is(PURPOSE_CODE1));
     }
 
     @Test

@@ -3,6 +3,7 @@ package no.nav.data.polly.process.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import java.util.UUID;
 import javax.persistence.Column;
@@ -21,14 +22,20 @@ public class ProcessDistribution {
     @Column(name = "ID", nullable = false, updatable = false, unique = true)
     private UUID id;
 
-    @Column(name = "PROCESS", nullable = false, updatable = false)
-    private String process;
-
-    @Column(name = "PURPOSE_CODE", nullable = false, updatable = false)
-    private String purposeCode;
+    @Type(type = "jsonb")
+    @Column(name = "DATA", nullable = false, updatable = false)
+    private ProcessDistributionData data;
 
     public static ProcessDistribution newForProcess(Process process) {
-        return new ProcessDistribution(UUID.randomUUID(), process.getName(), process.getPurposeCode());
+        return new ProcessDistribution(UUID.randomUUID(), new ProcessDistributionData(process.getId()));
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ProcessDistributionData {
+
+        private UUID processId;
     }
 
 }

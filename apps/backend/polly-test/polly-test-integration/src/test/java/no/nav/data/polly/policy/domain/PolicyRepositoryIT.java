@@ -72,13 +72,6 @@ class PolicyRepositoryIT extends IntegrationTestBase {
         assertThat(policyRepository.countByInformationTypeId(INFORMATION_TYPE_ID_1)).isEqualTo(2L);
     }
 
-    @Test
-    void findByPurposeCodeAndProcessName() {
-        Policy expectedPolicy = createTestdata(PURPOSE_CODE1, POLICY_ID_1);
-        createTestdata(PURPOSE_CODE2, POLICY_ID_2);
-        assertThat(policyRepository.findByPurposeCodeAndProcessName(PURPOSE_CODE1, "Auto_" + PURPOSE_CODE1).get(0)).isEqualTo(expectedPolicy);
-    }
-
     private Policy createTestdata(String purposeCode, UUID datasetId) {
         Policy policy = new Policy.PolicyBuilder()
                 .id(datasetId)
