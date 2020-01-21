@@ -23,6 +23,8 @@ class ProcessUpdateIT extends KafkaIntegrationTestBase {
     @Autowired
     private ProcessService processService;
     @Autowired
+    private DistributionScheduler distributionScheduler;
+    @Autowired
     private ProcessDistributionRepository repository;
     private Consumer<String, ProcessUpdate> consumer;
 
@@ -48,7 +50,7 @@ class ProcessUpdateIT extends KafkaIntegrationTestBase {
         });
 
         processService.scheduleDistributeForProcess(Process.builder().name(PROCESS_NAME_1).purposeCode(PURPOSE_CODE1).build());
-        processService.distributeAll();
+        distributionScheduler.distributeAll();
 
         await().atMost(Duration.ofSeconds(10)).untilAsserted(() -> assertEquals(0L, repository.count()));
 

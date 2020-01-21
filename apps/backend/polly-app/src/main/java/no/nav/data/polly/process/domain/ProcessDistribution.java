@@ -31,8 +31,4 @@ public class ProcessDistribution {
         return new ProcessDistribution(UUID.randomUUID(), process.getName(), process.getPurposeCode());
     }
 
-    public Process convertToProcess() {
-        return Process.builder().name(process).purposeCode(purposeCode).build();
-    }
-
 }

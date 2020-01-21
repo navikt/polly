@@ -1,94 +1,46 @@
 package no.nav.data.polly.process;
 
-import no.nav.data.polly.common.nais.LeaderElectionService;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.common.validator.RequestValidator;
 import no.nav.data.polly.common.validator.ValidationError;
-import no.nav.data.polly.policy.PolicyService;
-import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessDistribution;
 import no.nav.data.polly.process.domain.ProcessDistributionRepository;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.teams.TeamService;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.lang.String.format;
-import static java.util.stream.Collectors.groupingBy;
-import static no.nav.data.polly.common.utils.MdcUtils.wrapAsync;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 public class ProcessService extends RequestValidator<ProcessRequest> {
 
     private final ProcessDistributionRepository distributionRepository;
-    private final ProcessUpdateProducer processUpdateProducer;
-    private final PolicyService policyService;
-    private final LeaderElectionService leaderElectionService;
     private final ProcessRepository processRepository;
     private final TeamService teamService;
 
     public ProcessService(ProcessDistributionRepository distributionRepository,
-            PolicyService policyService, ProcessUpdateProducer processUpdateProducer,
-            LeaderElectionService leaderElectionService,
-            @Value("${behandlingsgrunnlag.distribute.rate.seconds}") Integer rateSeconds, ProcessRepository processRepository, TeamService teamService) {
+            ProcessRepository processRepository, TeamService teamService) {
         this.distributionRepository = distributionRepository;
-        this.policyService = policyService;
-        this.processUpdateProducer = processUpdateProducer;
-        this.leaderElectionService = leaderElectionService;
         this.processRepository = processRepository;
         this.teamService = teamService;
-        scheduleDistributions(rateSeconds);
     }
 
     public void scheduleDistributeForProcess(Process process) {
         distributionRepository.save(ProcessDistribution.newForProcess(process));
     }
 
-    public void distributeAll() {
-        if (!leaderElectionService.isLeader()) {
-            return;
-        }
-        distributionRepository.findAll().stream().collect(groupingBy(ProcessDistribution::convertToProcess)).forEach(this::distribute);
-    }
-
-    private void distribute(Process process, List<ProcessDistribution> processDistributions) {
-        List<String> informationTypeNames = policyService.findByPurposeCodeAndProcessName(process.getPurposeCode(), process.getName()).stream()
-                .map(Policy::getInformationTypeName)
-                .collect(Collectors.toList());
-        if (processUpdateProducer.sendProcess(process.getName(), process.getPurposeCode(), informationTypeNames)) {
-            processDistributions.forEach(bd -> distributionRepository.deleteById(bd.getId()));
-        }
-    }
-
-    private void scheduleDistributions(int rate) {
-        if (rate < 0) {
-            return;
-        }
-        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-        scheduler.setThreadNamePrefix("BehGrnlgDist");
-        scheduler.initialize();
-        scheduler.scheduleAtFixedRate(wrapAsync(this::distributeAll, scheduler.getThreadNamePrefix()),
-                Instant.now().plus(1, ChronoUnit.MINUTES), Duration.ofSeconds(rate));
-    }
-
     public void validateRequest(ProcessRequest request, boolean update) {
-        ProcessRequest requests = request;
-        initialize(List.of(requests), update);
-        var validationErrors = StreamUtils.applyAll(requests,
+        initialize(List.of(request), update);
+        var validationErrors = StreamUtils.applyAll(request,
                 RequestElement::validateFields,
                 this::validateProcessRepositoryValues
         );
