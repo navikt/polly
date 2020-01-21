@@ -29,11 +29,11 @@ public class ProcessRequest implements RequestElement {
 
     private String id;
     private String name;
-    @ApiModelProperty(value = "Codelist PURPOSE", example = "CODELIST")
+    @ApiModelProperty(value = "Codelist PURPOSE")
     private String purposeCode;
-    @ApiModelProperty(value = "Codelist DEPARTMENT", example = "CODELIST")
+    @ApiModelProperty(value = "Codelist DEPARTMENT")
     private String department;
-    @ApiModelProperty(value = "Codelist SUB_DEPARTMENT", example = "CODELIST")
+    @ApiModelProperty(value = "Codelist SUB_DEPARTMENT")
     private String subDepartment;
     private String productTeam;
     @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_START)

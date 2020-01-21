@@ -32,9 +32,9 @@ public class InformationTypeRequest implements RequestElement {
     private String name;
     private String description;
     private String term;
-    @ApiModelProperty(value = "Codelist SENSITIVITY", example = "CODELIST")
+    @ApiModelProperty(value = "Codelist SENSITIVITY")
     private String sensitivity;
-    @ApiModelProperty(value = "Codelist SYSTEM", example = "CODELIST")
+    @ApiModelProperty(value = "Codelist SYSTEM")
     private String navMaster;
     @ApiModelProperty(value = "Codelist CATEGORY", example = "[\"CODELIST\"]")
     private List<String> categories;

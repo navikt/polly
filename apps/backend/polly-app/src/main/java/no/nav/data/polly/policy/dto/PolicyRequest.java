@@ -34,10 +34,10 @@ public class PolicyRequest implements RequestElement {
 
     private String id;
     private String process;
-    @ApiModelProperty(value = "Codelist PURPOSE", example = "CODELIST")
+    @ApiModelProperty(value = "Codelist PURPOSE")
     private String purposeCode;
     @Singular
-    @ApiModelProperty(value = "Codelist SUBJECT_CATEGORY", example = "CODELIST[]")
+    @ApiModelProperty(value = "Codelist SUBJECT_CATEGORY")
     private List<String> subjectCategories;
     private String informationTypeName;
     @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_START)

@@ -33,7 +33,7 @@ public class DisclosureRequest implements RequestElement {
 
     private String id;
     private String description;
-    @ApiModelProperty(value = "Codelist THIRD_PARTY", example = "CODELIST")
+    @ApiModelProperty(value = "Codelist THIRD_PARTY")
     private String recipient;
     private String recipientPurpose;
     @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_START)
