@@ -1,18 +1,18 @@
 import * as React from "react";
-import {Option, StatefulSelect} from 'baseui/select';
+import { useEffect, useState } from "react";
+import { Option, StatefulSelect } from 'baseui/select';
 
 import ProcessList from "../components/Purpose";
 import Banner from "../components/Banner";
-import {Block} from "baseui/block";
-import {codelist, ListName} from "../service/Codelist";
-import {intl, theme} from "../util"
+import { Block } from "baseui/block";
+import { codelist, ListName } from "../service/Codelist";
+import { intl, theme } from "../util"
 import illustration from "../resources/purpose_illustration.svg"
-import {Spinner} from "baseui/spinner";
-import {Label2, Paragraph2} from "baseui/typography";
-import {generatePath} from "react-router";
-import {getProcessPurposeCount} from "../api/ProcessApi"
-import {RouteComponentProps} from "react-router-dom";
-import {useState} from "react";
+import { Spinner } from "baseui/spinner";
+import { Label2, Paragraph2 } from "baseui/typography";
+import { generatePath } from "react-router";
+import { getProcessPurposeCount } from "../api"
+import { RouteComponentProps } from "react-router-dom";
 
 const renderDescription = (description: string) => (
     <Block marginBottom="scale1000">
@@ -59,16 +59,15 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
         }
     }
 
-    React.useEffect(() => {
-        const fetchData = async () => {
+    useEffect(() => {
+        (async () => {
             setLoading(true);
             await codelist.wait();
             setProcessCount((await getProcessPurposeCount()).purposes)
             if (props.match.params.purposeCode) await handleChangePurpose(props.match.params.purposeCode, props.match.params.processId)
             setLoading(false);
-            await setStatefulSelectOptions(codelist.getParsedOptions(ListName.PURPOSE));
-        };
-        fetchData();
+            setStatefulSelectOptions(codelist.getParsedOptions(ListName.PURPOSE));
+        })();
     }, []);
 
     return (
@@ -80,7 +79,7 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
                     {!error && (
                         <StatefulSelect
                             options={codelist.getParsedOptions(ListName.PURPOSE).map(purposeLabelView)}
-                            initialState={{value: currentPurposeValue ? [{id: currentPurposeValue, label: currentPurposeValue} as Option] : []}}
+                            initialState={{value: currentPurposeValue ? [{id: currentPurposeValue, label: codelist.getShortname(ListName.PURPOSE, currentPurposeValue)} as Option] : []}}
                             placeholder={intl.purposeSelect}
                             maxDropdownHeight="350px"
                             onChange={
@@ -88,7 +87,7 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
                                     if(statefulSelectOptions?.filter(option=>option.label===event.option?.id).length){
                                         handleChangePurpose(statefulSelectOptions?.filter(option=>option.label===event.option?.id)[0].id)
                                     } else {
-                                        handleChangePurpose(undefined)
+                                        handleChangePurpose()
                                     }
                                 }
                             }
