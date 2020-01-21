@@ -69,10 +69,11 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
     const [useCss, theme] = useStyletron();
 
     const mapLegalBasesToFormValues = (legalBases: LegalBasis[]) => {
+        console.log(legalBases, "LEGALBSES")
         return legalBases.map((lb: LegalBasis) => (
             {
                 gdpr: lb.gdpr && lb.gdpr.shortName,
-                nationalLaw: lb.nationalLaw && lb.nationalLaw,
+                nationalLaw: lb.nationalLaw && lb.nationalLaw.shortName,
                 description: lb.description,
                 start: lb.start && lb.start,
                 end: lb.end && lb.end
