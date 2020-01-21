@@ -3,6 +3,7 @@ package no.nav.data.polly.policy.domain;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -19,9 +20,6 @@ import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.domain.Process;
 import org.hibernate.annotations.Type;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -56,27 +54,12 @@ public class Policy extends Auditable<String> {
     @Column(name = "PURPOSE_CODE", nullable = false)
     private String purposeCode;
 
-    @NotNull
-    @Type(type = "jsonb")
-    @Column(name = "SUBJECT_CATEGORIES", nullable = false)
-    private List<String> subjectCategories;
-
-    @NotNull
-    @Column(name = "START_DATE", nullable = false)
-    private LocalDate start;
-
-    @NotNull
-    @Column(name = "END_DATE", nullable = false)
-    private LocalDate end;
-
-    @NotNull
-    @Column(name = "LEGAL_BASES_INHERITED", nullable = false)
-    private boolean legalBasesInherited = false;
-
     @Valid
+    @NotNull
+    @Default
     @Type(type = "jsonb")
-    @Column(name = "LEGAL_BASES", nullable = false)
-    private List<LegalBasis> legalBases = new ArrayList<>();
+    @Column(name = "DATA", nullable = false)
+    private PolicyData data = new PolicyData();
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
@@ -106,21 +89,22 @@ public class Policy extends Auditable<String> {
     }
 
     public boolean isActive() {
-        return DateUtil.isNow(start, end);
+        return DateUtil.isNow(getData().getStart(), getData().getEnd());
     }
 
     public PolicyResponse convertToResponse() {
         return PolicyResponse.builder()
                 .id(getId())
                 .purposeCode(getCodelistResponse(ListName.PURPOSE, getPurposeCode()))
-                .subjectCategories(getCodelistResponseList(ListName.SUBJECT_CATEGORY, getSubjectCategories()))
+                .subjectCategories(getCodelistResponseList(ListName.SUBJECT_CATEGORY, getData().getSubjectCategories()))
                 .process(getProcess() == null ? null : getProcess().convertToIdNameResponse())
-                .start(getStart())
-                .end(getEnd())
+                .start(getData().getStart())
+                .end(getData().getEnd())
                 .informationTypeId(informationTypeId)
                 .informationType(convertInformationTypeNameResponse())
-                .legalBasesInherited(isLegalBasesInherited())
-                .legalBases(convert(getLegalBases(), LegalBasis::convertToResponse))
+                .legalBasesInherited(getData().isLegalBasesInherited())
+                .legalBases(convert(getData().getLegalBases(), LegalBasis::convertToResponse))
+                .documentIds(getData().getDocumentId())
                 .build();
     }
 
@@ -136,15 +120,9 @@ public class Policy extends Auditable<String> {
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static class PolicyBuilder {
 
-        private List<LegalBasis> legalBases = new ArrayList<>();
 
         public PolicyBuilder generateId() {
             id = UUID.randomUUID();
-            return this;
-        }
-
-        public PolicyBuilder legalBasis(LegalBasis legalBasis) {
-            legalBases.add(legalBasis);
             return this;
         }
 
@@ -154,12 +132,6 @@ public class Policy extends Auditable<String> {
                 this.informationTypeId = informationType.getId();
                 this.informationTypeName = informationType.getData().getName();
             }
-            return this;
-        }
-
-        public PolicyBuilder activeToday() {
-            start = LocalDate.now();
-            end = LocalDate.now();
             return this;
         }
     }

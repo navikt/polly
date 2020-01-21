@@ -23,6 +23,7 @@ import static no.nav.data.polly.common.swagger.SwaggerConfig.LOCAL_DATE;
 import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_END;
 import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_START;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
+import static no.nav.data.polly.common.utils.StreamUtils.nullToEmptyList;
 import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
 
 @Data
@@ -47,6 +48,7 @@ public class PolicyRequest implements RequestElement {
     @ApiModelProperty(dataType = BOOLEAN)
     private String legalBasesInherited;
     private List<LegalBasisRequest> legalBases;
+    private List<String> documentIds;
 
     private int requestIndex;
     private boolean update;
@@ -71,6 +73,7 @@ public class PolicyRequest implements RequestElement {
     public void format() {
         setPurposeCode(toUpperCaseAndTrim(getPurposeCode()));
         setSubjectCategories(convert(getSubjectCategories(), StringUtils::toUpperCaseAndTrim));
+        setDocumentIds(nullToEmptyList(documentIds));
     }
 
     @Override
@@ -84,6 +87,7 @@ public class PolicyRequest implements RequestElement {
         validator.checkDate(Fields.end, end);
         validator.validateType(Fields.legalBases, legalBases);
         validator.checkId(this);
+        documentIds.forEach(docId -> validator.checkUUID(Fields.documentIds, docId));
     }
 
 }

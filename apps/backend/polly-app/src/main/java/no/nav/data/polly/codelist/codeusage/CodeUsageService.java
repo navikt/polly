@@ -108,7 +108,7 @@ public class CodeUsageService {
                     getInformationTypes(usage).forEach(it -> it.getData().setSensitivity(newCode));
                     break;
                 case SUBJECT_CATEGORY:
-                    getPolicies(usage).forEach(p -> replaceAll(p.getSubjectCategories(), oldCode, newCode));
+                    getPolicies(usage).forEach(p -> replaceAll(p.getData().getSubjectCategories(), oldCode, newCode));
                     getDocuments(usage).forEach(d -> nullToEmptyList(d.getData().getInformationTypes())
                             .forEach(it -> replaceAll(nullToEmptyList(it.getSubjectCategories()), oldCode, newCode)));
                     break;
@@ -116,7 +116,7 @@ public class CodeUsageService {
                     replaceNationalLaw(
                             oldCode, newCode,
                             convert(getProcesses(usage), p -> p.getData().getLegalBases()),
-                            convert(getPolicies(usage), Policy::getLegalBases),
+                            convert(getPolicies(usage), p -> p.getData().getLegalBases()),
                             convert(getDisclosures(usage), p -> p.getData().getLegalBases())
                     );
                     break;
@@ -124,7 +124,7 @@ public class CodeUsageService {
                     replaceGdprArticle(
                             oldCode, newCode,
                             convert(getProcesses(usage), p -> p.getData().getLegalBases()),
-                            convert(getPolicies(usage), Policy::getLegalBases),
+                            convert(getPolicies(usage), p -> p.getData().getLegalBases()),
                             convert(getDisclosures(usage), p -> p.getData().getLegalBases())
                     );
                     break;

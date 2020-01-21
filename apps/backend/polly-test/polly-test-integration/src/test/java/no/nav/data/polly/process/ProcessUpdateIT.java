@@ -17,7 +17,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -66,7 +65,7 @@ class ProcessUpdateIT extends KafkaIntegrationTestBase {
         var infoType4 = createAndSaveInformationType(UUID.randomUUID(), INFORMATION_TYPE_NAME + 4);
 
         Policy policy1 = createPolicy(PURPOSE_CODE1, "BRUKER", List.of(createLegalBasis()));
-        policy1.setEnd(LocalDate.now().minusDays(1));
+        policy1.getData().setEnd(LocalDate.now().minusDays(1));
         policy1.setProcess(process1);
         policy1.setInformationType(infoType1);
 

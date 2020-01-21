@@ -3,6 +3,7 @@ package no.nav.data.polly.policy.mapper;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.domain.Process;
@@ -26,17 +27,15 @@ public class PolicyMapper {
     }
 
     public Policy mapRequestToPolicy(PolicyRequest policyRequest) {
-        Policy policy = policyRequest.getExistingPolicy() != null ? policyRequest.getExistingPolicy() : new Policy();
+        Policy policy = policyRequest.getExistingPolicy() != null ? policyRequest.getExistingPolicy() : Policy.builder().generateId().data(new PolicyData()).build();
         policyRequest.getInformationType().addPolicy(policy);
         policy.setPurposeCode(policyRequest.getPurposeCode());
-        policy.setSubjectCategories(List.copyOf(policyRequest.getSubjectCategories()));
-        policy.setStart(DateUtil.parseStart(policyRequest.getStart()));
-        policy.setEnd(DateUtil.parseEnd(policyRequest.getEnd()));
-        policy.setLegalBasesInherited(BooleanUtils.toBoolean(policyRequest.getLegalBasesInherited()));
-        policy.setLegalBases(convert(policyRequest.getLegalBases(), LegalBasisRequest::convertToLegalBasis));
-        if (policy.getId() == null) {
-            policy.setId(UUID.randomUUID());
-        }
+        policy.getData().setSubjectCategories(List.copyOf(policyRequest.getSubjectCategories()));
+        policy.getData().setStart(DateUtil.parseStart(policyRequest.getStart()));
+        policy.getData().setEnd(DateUtil.parseEnd(policyRequest.getEnd()));
+        policy.getData().setLegalBasesInherited(BooleanUtils.toBoolean(policyRequest.getLegalBasesInherited()));
+        policy.getData().setLegalBases(convert(policyRequest.getLegalBases(), LegalBasisRequest::convertToLegalBasis));
+        policy.getData().setDocumentId(convert(policyRequest.getDocumentIds(), UUID::fromString));
         processRepository.findByNameAndPurposeCode(policyRequest.getProcess(), policyRequest.getPurposeCode())
                 .orElseGet(() -> processRepository.save(createProcess(policyRequest)))
                 .addPolicy(policy);

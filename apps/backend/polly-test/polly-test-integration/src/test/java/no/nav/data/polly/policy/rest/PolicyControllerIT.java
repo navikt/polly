@@ -353,8 +353,8 @@ class PolicyControllerIT extends IntegrationTestBase {
         createAndSavePolicy(5, (i, p) -> {
             p.setInformationTypeName(INFORMATION_TYPE_NAME);
             if (i > 2) {
-                p.setStart(LocalDate.now().minusDays(2));
-                p.setEnd(LocalDate.now().minusDays(1));
+                p.getData().setStart(LocalDate.now().minusDays(2));
+                p.getData().setEnd(LocalDate.now().minusDays(1));
             }
         });
     }

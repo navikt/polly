@@ -24,6 +24,7 @@ import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
@@ -142,9 +143,11 @@ public abstract class IntegrationTestBase {
         return Policy.builder()
                 .generateId()
                 .purposeCode(purpose)
-                .subjectCategories(List.of(subjectCategory))
-                .activeToday()
-                .legalBases(legalBases)
+                .data(PolicyData.builder()
+                        .subjectCategories(List.of(subjectCategory))
+                        .activeToday()
+                        .legalBases(legalBases)
+                        .build())
                 .build();
     }
 

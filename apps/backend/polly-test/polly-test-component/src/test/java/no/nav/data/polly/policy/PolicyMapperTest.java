@@ -6,6 +6,7 @@ import no.nav.data.polly.informationtype.domain.InformationTypeData;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.policy.mapper.PolicyMapper;
@@ -63,12 +64,12 @@ class PolicyMapperTest {
                 .build();
         Policy policy = mapper.mapRequestToPolicy(request);
         assertThat(policy.getProcess().getName(), is("process"));
-        assertThat(policy.getSubjectCategories(), hasItem("Bruker"));
+        assertThat(policy.getData().getSubjectCategories(), hasItem("Bruker"));
         assertThat(policy.getPurposeCode(), is(PURPOSE_CODE1));
         assertThat(policy.getInformationType(), is(informationType));
         assertThat(policy.getInformationTypeId(), is(informationType.getId()));
         assertThat(policy.getInformationTypeName(), is(informationType.getData().getName()));
-        assertThat(policy.getLegalBases().get(0).getDescription(), is(LEGAL_BASIS_DESCRIPTION1));
+        assertThat(policy.getData().getLegalBases().get(0).getDescription(), is(LEGAL_BASIS_DESCRIPTION1));
     }
 
     @Test
@@ -88,10 +89,12 @@ class PolicyMapperTest {
     private Policy createPolicy(InformationType informationType) {
         return Policy.builder().id(UUID.randomUUID())
                 .process(Process.builder().name("process").build())
-                .subjectCategories(List.of("Bruker"))
-                .legalBases(List.of(LegalBasis.builder().gdpr("6e").nationalLaw("nl").description(LEGAL_BASIS_DESCRIPTION1).build()))
-                .start(LocalDate.parse("2019-02-04"))
-                .end(LocalDate.parse("2020-02-04"))
+                .data(PolicyData.builder()
+                        .subjectCategories(List.of("Bruker"))
+                        .legalBases(List.of(LegalBasis.builder().gdpr("6e").nationalLaw("nl").description(LEGAL_BASIS_DESCRIPTION1).build()))
+                        .start(LocalDate.parse("2019-02-04"))
+                        .end(LocalDate.parse("2020-02-04"))
+                        .build())
                 .purposeCode(PURPOSE_CODE1)
                 .informationType(informationType)
                 .build();

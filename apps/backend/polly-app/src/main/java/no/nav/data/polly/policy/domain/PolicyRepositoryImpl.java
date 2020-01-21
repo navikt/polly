@@ -23,21 +23,21 @@ public class PolicyRepositoryImpl implements PolicyRepositoryCustom {
 
     @Override
     public List<Policy> findBySubjectCategory(String subjectCategory) {
-        var resp = jdbcTemplate.queryForList("select policy_id from policy where subject_categories ?? :subjectCategory",
+        var resp = jdbcTemplate.queryForList("select policy_id from policy where data #> '{subjectCategories}' ?? :subjectCategory",
                 new MapSqlParameterSource().addValue("subjectCategory", subjectCategory));
         return getPolicies(resp);
     }
 
     @Override
     public List<Policy> findByGDPRArticle(String gdpr) {
-        var resp = jdbcTemplate.queryForList("select policy_id from policy where legal_bases @> :gdpr::jsonb",
+        var resp = jdbcTemplate.queryForList("select policy_id from policy where data #> '{legalBases}' @> :gdpr::jsonb",
                 new MapSqlParameterSource().addValue("gdpr", String.format("[{\"gdpr\": \"%s\"}]", gdpr)));
         return getPolicies(resp);
     }
 
     @Override
     public List<Policy> findByNationalLaw(String nationalLaw) {
-        var resp = jdbcTemplate.queryForList("select policy_id from policy where legal_bases @> :nationalLaw::jsonb",
+        var resp = jdbcTemplate.queryForList("select policy_id from policy where data #> '{legalBases}' @> :nationalLaw::jsonb",
                 new MapSqlParameterSource().addValue("nationalLaw", String.format("[{\"nationalLaw\": \"%s\"}]", nationalLaw)));
         return getPolicies(resp);
     }
