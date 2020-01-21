@@ -1,7 +1,7 @@
 import * as React from "react";
 import { KeyboardEvent, useState } from "react";
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
-import { Field, FieldArray, FieldProps, Form, Formik, FormikProps, } from "formik";
+import { Field, FieldArray, FieldProps, Form, Formik, FormikProps, FieldArrayRenderProps, } from "formik";
 import { Block, BlockProps } from "baseui/block";
 import { Radio, RadioGroup } from "baseui/radio";
 import { Plus } from "baseui/icon";
@@ -18,6 +18,7 @@ import { intl } from "../../../util"
 import { DateModalFields } from "../DateModalFields"
 import { hasSpecifiedDate } from "../../common/Durations"
 import { policySchema } from "../../common/schema"
+import { Tag, VARIANT } from "baseui/tag";
 
 
 const modalBlockProps: BlockProps = {
@@ -31,6 +32,30 @@ const rowBlockProps: BlockProps = {
     width: '100%',
     marginTop: '1rem'
 };
+
+const renderTagList = (list: string[], arrayHelpers: FieldArrayRenderProps) => {
+    return (
+        <React.Fragment>
+            {list && list.length > 0
+                ? list.map((item, index) => (
+                    <React.Fragment key={index}>
+                        {item ? (
+                            <Tag
+                                key={item}
+                                variant={VARIANT.outlined}
+                                onActionClick={() =>
+                                    arrayHelpers.remove(index)
+                                }
+                            >
+                                {item}
+                            </Tag>
+                        ) : null}
+                    </React.Fragment>
+                ))
+                : null}
+        </React.Fragment>
+    );
+}
 
 const FieldInformationType = (props: {
     informationTypes: PolicyInformationType[],
@@ -62,28 +87,6 @@ const FieldInformationType = (props: {
             )}
         />
     );
-
-const FieldSubjectCategory = (props: { value?: string }) => {
-    const [value, setValue] = React.useState<Value>(props.value ? [{ id: props.value, label: codelist.getShortname(ListName.SUBJECT_CATEGORY, props.value) }] : []);
-
-    return (
-        <Field
-            name="subjectCategory"
-            render={({ form }: FieldProps<PolicyFormValues>) => (
-                <Select
-                    options={codelist.getParsedOptions(ListName.SUBJECT_CATEGORY)}
-                    onChange={({ value }) => {
-                        setValue(value);
-                        form.setFieldValue('subjectCategory', value.length > 0 ? value[0].id : undefined)
-                    }}
-                    value={value}
-                    error={!!form.errors.subjectCategory && !!form.submitCount}
-                />
-            )}
-        />
-
-    )
-};
 
 const FieldLegalBasisStatus = (props: { legalBasesStatus?: LegalBasesStatus }) => {
     const [value, setValue] = useState(props.legalBasesStatus);
@@ -165,7 +168,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
                             <ModalBody>
                                 <Block {...rowBlockProps}>
-                                    <ModalLabel label={intl.informationType}/>
+                                    <ModalLabel label={intl.informationType} />
                                     <FieldInformationType
                                         informationTypes={infoTypeSearchResult}
                                         searchInformationType={setInfoTypeSearch}
@@ -176,15 +179,30 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, ti
                                 <Error fieldName="informationType" />
 
                                 <Block {...rowBlockProps}>
-                                    <ModalLabel label={intl.subjectCategories}/>
-                                    <FieldSubjectCategory value={formikBag.values.subjectCategory} />
+                                    <ModalLabel label={intl.subjectCategories} />
+                                    <FieldArray
+                                        name="subjectCategories"
+                                        render={arrayHelpers => (
+                                            <Block width="100%">
+                                                <Select
+                                                    options={codelist.getParsedOptionsFilterOutSelected(ListName.SUBJECT_CATEGORY, formikBag.values.subjectCategories)}
+                                                    maxDropdownHeight="300px"
+                                                    onChange={({ option }) => {
+                                                        arrayHelpers.push(option ? option.id : null);
+                                                    }}
+                                                    error={!!arrayHelpers.form.errors.sources && !!arrayHelpers.form.submitCount}
+                                                />
+                                                {renderTagList(codelist.getShortnames(ListName.SUBJECT_CATEGORY, formikBag.values.subjectCategories), arrayHelpers)}
+                                            </Block>
+                                        )}
+                                    />
                                 </Block>
-                                <Error fieldName="subjectCategory" />
+                                <Error fieldName="subjectCategories" />
 
-                               <DateModalFields showDates={hasSpecifiedDate(initialValues)} showLabels={true} rowBlockProps={rowBlockProps}/>
+                                <DateModalFields showDates={hasSpecifiedDate(initialValues)} showLabels={true} rowBlockProps={rowBlockProps} />
 
                                 <Block {...rowBlockProps}>
-                                    <ModalLabel label={intl.legalBasesShort}/>
+                                    <ModalLabel label={intl.legalBasesShort} />
                                     <FieldLegalBasisStatus legalBasesStatus={formikBag.values.legalBasesStatus} />
                                 </Block>
                                 <Error fieldName="legalBasesStatus" />
@@ -209,7 +227,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, ti
                                                                     arrayHelpers.push(values);
                                                                 }
                                                                 formikBag.setFieldValue('legalBasesOpen', false);
-                                                            }}/>
+                                                            }} />
                                                     </Block>
                                                 ) : (
                                                         <Block {...rowBlockProps}>
@@ -227,7 +245,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, ti
                                                                     <ListLegalBases
                                                                         legalBases={formikBag.values.legalBases}
                                                                         onRemove={(index) => arrayHelpers.remove(index)}
-                                                                        onEdit={(index)=> {
+                                                                        onEdit={(index) => {
                                                                             setSelectedLegalBasis(formikBag.values.legalBases[index]);
                                                                             setSelectedLegalBasisIndex(index);
                                                                             formikBag.setFieldValue('legalBasesOpen', true)

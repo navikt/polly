@@ -1,5 +1,6 @@
 import axios from "axios"
 import { LegalBasesStatus, LegalBasis, PageResponse, Policy, PolicyFormValues } from "../constants"
+import { Code } from "../service/Codelist";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
 
@@ -28,8 +29,7 @@ export const deletePolicy = async (policyId: string) => {
 export const mapPolicyFromForm = (values: PolicyFormValues) => {
   return {
     ...values,
-    subjectCategory: undefined,
-    subjectCategories: [values.subjectCategory],
+    subjectCategories: values.subjectCategories,
     informationType: undefined,
     informationTypeName: values.informationType && values.informationType.name,
     process: values.process.name,
@@ -62,7 +62,7 @@ export const convertPolicyToFormValues = (policy: Policy): PolicyFormValues => {
     process: policy.process,
     purposeCode: policy.purposeCode.code,
     informationType: policy.informationType,
-    subjectCategory: policy?.subjectCategories.length ? policy.subjectCategories[0].code : '',
+    subjectCategories:  policy.subjectCategories.map((code: Code) => code.code),
     legalBasesStatus: getInitialLegalBasesStatus(policy.legalBasesInherited, policy.legalBases),
     legalBases: parsedLegalBases,
     start: policy.start || undefined,

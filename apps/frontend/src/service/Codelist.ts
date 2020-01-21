@@ -104,6 +104,13 @@ class CodelistService {
         });
     }
 
+    getParsedOptionsFilterOutSelected(listName: ListName, currentSelected: string[]): { id: string, label: string}[] {
+        let parsedOptions = this.getParsedOptions(listName)
+        return !currentSelected ? parsedOptions : parsedOptions.filter(option =>
+            currentSelected.includes(option.id) ? null : option.id
+        );
+    }
+
     requiresNationalLaw(gdprCode?: string) {
         return gdprCode && NATIONAL_LAW_GDPR_ARTICLES.indexOf(gdprCode) >= 0
     }

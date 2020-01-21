@@ -19,7 +19,7 @@ export interface PolicyFormValues {
     purposeCode: string
     informationType?: PolicyInformationType
     process: PolicyProcess
-    subjectCategory?: string
+    subjectCategories: string[]
     legalBasesStatus?: LegalBasesStatus
     legalBases: Array<LegalBasisFormValues>
     legalBasesOpen: boolean

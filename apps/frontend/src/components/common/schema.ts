@@ -71,7 +71,7 @@ export const policySchema = () => yup.object<PolicyFormValues>({
             return !missingArt6LegalBasisForInfoType(parent)
         }
     }),
-    subjectCategory: yup.string().required(intl.required),
+    subjectCategories: yup.array().of(yup.string()).min(1, intl.required),
     legalBasesStatus: yup.mixed().oneOf(Object.values(LegalBasesStatus)).required(intl.required),
     legalBases: yup.array(legalBasisSchema()),
     legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
