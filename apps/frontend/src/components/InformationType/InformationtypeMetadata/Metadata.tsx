@@ -1,21 +1,20 @@
 import * as React from 'react'
-import {useEffect, useState} from 'react'
-import {Block, BlockProps} from 'baseui/block'
-import {InformationType} from '../../../constants'
-import {Card} from 'baseui/card'
-import {FlexGrid, FlexGridItem} from 'baseui/flex-grid'
-import {IconDefinition} from "@fortawesome/fontawesome-common-types"
-import {intl, theme} from '../../../util'
-import {Label2, Paragraph2} from 'baseui/typography'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faCross, faCrosshairs, faTag, faTimesCircle, faUserShield} from '@fortawesome/free-solid-svg-icons'
-import {Code} from '../../../service/Codelist'
-import {sensitivityColor} from "../Sensitivity"
-import {getTerm, mapTermToOption} from "../../../api"
-import {PLACEMENT, StatefulTooltip} from "baseui/tooltip"
-import {Link} from "react-router-dom";
-import {Tag} from "baseui/tag";
-import {StyledLink} from "baseui/link";
+import { useEffect, useState } from 'react'
+import { Block, BlockProps } from 'baseui/block'
+import { InformationType } from '../../../constants'
+import { Card } from 'baseui/card'
+import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
+import { IconDefinition } from "@fortawesome/fontawesome-common-types"
+import { intl, theme } from '../../../util'
+import { Label2, Paragraph2 } from 'baseui/typography'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTag, faTimesCircle, faUserShield } from '@fortawesome/free-solid-svg-icons'
+import { Code } from '../../../service/Codelist'
+import { sensitivityColor } from "../Sensitivity"
+import { getTerm, mapTermToOption } from "../../../api"
+import { PLACEMENT, StatefulTooltip } from "baseui/tooltip"
+import { StyledLink } from "baseui/link";
+import { features } from "../../../util/feature-toggle"
 
 const itemBlockProps: BlockProps = {
     display: ['flex', 'block', 'block', 'flex'],
@@ -41,15 +40,15 @@ const arrayToString = (list: string[]) => {
     return list.join(', ')
 }
 
-const renderCodesToLinks = (sources: Code[]) => {
-    return (
-        sources.map((source, index) => (
-            <>
-                <StyledLink href={`/thirdparty/${source.code}`}>{source.shortName}</StyledLink>
-                <span>{index < sources.length - 1 ? ", " : ""}</span>
-            </>
-        )));
-};
+const renderCodesToLinks = (sources: Code[]) =>
+  sources.map((source, index) => (
+    <React.Fragment key={index}>
+      {features.enableThirdParty ?
+        <StyledLink href={`/thirdparty/${source.code}`}>{source.shortName}</StyledLink>
+        : source.shortName}
+      <span>{index < sources.length - 1 ? ", " : ""}</span>
+    </React.Fragment>
+  ));
 
 const renderTextWithLabelMetadata = (label: string, text: string | any, icon?: IconDefinition, iconColor?: string) => {
     return (

@@ -18,9 +18,9 @@ import { faUser } from "@fortawesome/free-solid-svg-icons"
 import { FlagIcon } from "./common/Flag"
 import RouteLink from "./common/RouteLink"
 import { codelist } from "../service/Codelist"
+import { features } from "../util/feature-toggle"
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT
-const enableThirdParty = !process.env.REACT_APP_DISABLE_THIRDPARTY
 
 const logo = <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -220,7 +220,7 @@ const Header = (props: HeaderProps) => {
                     </RouteLink>
                 </StyledNavigationItem>
 
-                {enableThirdParty && <StyledNavigationItem>
+                {features.enableThirdParty && <StyledNavigationItem>
                     <RouteLink href="/thirdparty" className={link}>
                         {intl.thirdParty}
                     </RouteLink>
