@@ -4,7 +4,6 @@ import { StatefulSelect } from "baseui/select"
 import { Block } from "baseui/block"
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button"
 import { RouteComponentProps, withRouter } from "react-router-dom"
-import axios from "axios"
 import { Plus, Spinner } from "baseui/icon"
 
 import Banner from "../components/Banner"
@@ -13,8 +12,7 @@ import CreateCodeListModal from "../components/CodeList/ModalCreateCodeList"
 import { user } from "../service/User"
 import CodeListTable from "../components/CodeList/CodeListStyledTable"
 import { intl, useAwait, useForceUpdate } from "../util"
-
-const server_polly = process.env.REACT_APP_POLLY_ENDPOINT
+import { createCodelist } from "../api"
 
 const CodeListPage = (props: RouteComponentProps<{ listname?: string }>) => {
     const [loading, setLoading] = React.useState(true)
@@ -35,12 +33,9 @@ const CodeListPage = (props: RouteComponentProps<{ listname?: string }>) => {
     }, [listname, lists])
 
     const handleCreateCodelist = async (values: Code) => {
-        let body = [{
-            ...values,
-        }]
         setLoading(true)
         try {
-            await axios.post<Code[]>(`${server_polly}/codelist`, body)
+            await createCodelist(values)
             await codelist.refreshCodeLists()
             setCreateCodeListModal(false)
         } catch (error) {

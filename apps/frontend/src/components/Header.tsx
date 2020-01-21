@@ -18,9 +18,8 @@ import { faUser } from "@fortawesome/free-solid-svg-icons"
 import { FlagIcon } from "./common/Flag"
 import RouteLink from "./common/RouteLink"
 import { codelist } from "../service/Codelist"
-
-const server_polly = process.env.REACT_APP_POLLY_ENDPOINT
-const enableThirdParty = !process.env.REACT_APP_DISABLE_THIRDPARTY
+import { features } from "../util/feature-toggle"
+import { env } from "../util/env"
 
 const logo = <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -130,7 +129,7 @@ const LoggedInHeader = () => {
                     <Label2 {...blockStyle}>{intl.name}: {user.getName()}</Label2>
                     <Label2 {...blockStyle}>{intl.groups}: {user.getGroupsHumanReadable().join(', ')}</Label2>
                     <Block {...blockStyle}>
-                        <StyledLink href={`${server_polly}/logout?redirect_uri=${window.location.href}`}>
+                        <StyledLink href={`${env.pollyBaseUrl}/logout?redirect_uri=${window.location.href}`}>
                             {intl.logout}
                         </StyledLink>
                     </Block>
@@ -220,7 +219,7 @@ const Header = (props: HeaderProps) => {
                     </RouteLink>
                 </StyledNavigationItem>
 
-                {enableThirdParty && <StyledNavigationItem>
+                {features.enableThirdParty && <StyledNavigationItem>
                     <RouteLink href="/thirdparty" className={link}>
                         {intl.thirdParty}
                     </RouteLink>
@@ -231,7 +230,7 @@ const Header = (props: HeaderProps) => {
                         <LoggedInHeader/>
                     )}
                     {!user.isLoggedIn() && (
-                        <StyledLink href={`${server_polly}/login?redirect_uri=${window.location.href}`} className={link}>
+                        <StyledLink href={`${env.pollyBaseUrl}/login?redirect_uri=${window.location.href}`} className={link}>
                             {intl.login}
                         </StyledLink>
                     )}

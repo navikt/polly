@@ -1,29 +1,28 @@
 import axios from "axios"
 import { LegalBasesStatus, LegalBasis, PageResponse, Policy, PolicyFormValues } from "../constants"
 import { Code } from "../service/Codelist";
-
-const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
+import { env } from "../util/env"
 
 export const getPoliciesForInformationType = async (informationTypeId: string) => {
-  return (await axios.get<PageResponse<Policy>>(`${server_polly}/policy/?informationTypeId=${informationTypeId}`)).data
+  return (await axios.get<PageResponse<Policy>>(`${env.pollyBaseUrl}/policy/?informationTypeId=${informationTypeId}`)).data
 }
 
 export const getPolicy = async (policyId: string) => {
-  return (await axios.get<Policy>(`${server_polly}/policy/${policyId}`)).data
+  return (await axios.get<Policy>(`${env.pollyBaseUrl}/policy/${policyId}`)).data
 }
 
 export const createPolicy = async (policy: PolicyFormValues) => {
   let body = mapPolicyFromForm(policy)
-  return (await axios.post<PageResponse<Policy>>(`${server_polly}/policy`, [body])).data.content[0]
+  return (await axios.post<PageResponse<Policy>>(`${env.pollyBaseUrl}/policy`, [body])).data.content[0]
 }
 
 export const updatePolicy = async (policy: PolicyFormValues) => {
   let body = mapPolicyFromForm(policy)
-  return (await axios.put<Policy>(`${server_polly}/policy/${policy.id}`, body)).data
+  return (await axios.put<Policy>(`${env.pollyBaseUrl}/policy/${policy.id}`, body)).data
 }
 
 export const deletePolicy = async (policyId: string) => {
-  return (await axios.delete<Policy>(`${server_polly}/policy/${policyId}`)).data
+  return (await axios.delete<Policy>(`${env.pollyBaseUrl}/policy/${policyId}`)).data
 }
 
 export const mapPolicyFromForm = (values: PolicyFormValues) => {

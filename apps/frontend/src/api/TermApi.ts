@@ -3,15 +3,14 @@ import { PageResponse, Term } from "../constants"
 import { default as React, Dispatch, SetStateAction, useEffect } from "react"
 import { useDebouncedState } from "../util"
 import { Option } from "baseui/select"
-
-const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
+import { env } from "../util/env"
 
 export const getTerm = async (termId: string) => {
-    return (await axios.get<Term>(`${server_polly}/term/${termId}`)).data
+    return (await axios.get<Term>(`${env.pollyBaseUrl}/term/${termId}`)).data
 }
 
 export const searchTerm = async (termSearch: string) => {
-    return (await axios.get<PageResponse<Term>>(`${server_polly}/term/search/${termSearch}`)).data
+    return (await axios.get<PageResponse<Term>>(`${env.pollyBaseUrl}/term/search/${termSearch}`)).data
 }
 
 export const mapTermToOption = (term: Term) => ({id: term.id, label: term.name + ' - ' + term.description})
