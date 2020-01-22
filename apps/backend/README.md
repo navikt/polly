@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/navikt/polly.svg?style=svg)](https://circleci.com/gh/navikt/polly)
+[![Actions Status](https://github.com/navikt/polly/workflows/Java%20CI/badge.svg)](https://github.com/navikt/polly/actions)
 
 # NAV Policy And Information catalog
 Applikasjonen er en del av Datakatalog - prosjektet som skal levere en katalog over datasett i NAV
