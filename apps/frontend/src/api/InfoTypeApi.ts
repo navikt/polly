@@ -1,5 +1,5 @@
 import axios from "axios"
-import { InformationType, InformationtypeFormValues, PageResponse, PolicyInformationType } from "../constants"
+import { InformationType, InformationtypeFormValues, PageResponse, Policy, PolicyInformationType } from "../constants"
 import { default as React, Dispatch, SetStateAction, useEffect } from "react"
 import { useDebouncedState } from "../util"
 import { env } from "../util/env"
@@ -14,6 +14,10 @@ export const searchInformationType = async (text: string) => {
 
 export const getInformationType = async (informationTypeId: string) => {
     return (await axios.get<InformationType>(`${env.pollyBaseUrl}/informationtype/${informationTypeId}`)).data
+}
+
+export const deleteInformationType = async (informationTypeId: string) => {
+  return (await axios.delete<Policy>(`${env.pollyBaseUrl}/informationtype/${informationTypeId}`)).data
 }
 
 export const createInformationType = async (informationType: InformationtypeFormValues) => {

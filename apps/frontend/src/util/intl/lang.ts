@@ -64,6 +64,10 @@ export const no: IStrings = {
     confirmDeleteHeader: "Bekreft sletting",
     confirmDeletePolicyText: "Bekreft sletting av behandling for opplysningstypen",
     confirmDeleteProcessText: "Bekreft sletting av behandlingen ",
+    confirmDeleteInformationTypeText: "Bekreft sletting av opplysningstypen ",
+    cannotDeleteInformationTypes: "Kan ikke slette opplysningstypen {0} da den",
+    informationTypeHasPolicies: "er knyttet til {0} behandlinger",
+    informationTypeHasDocuments: "er knyttet til {0} dokumenter",
     startIllustration: "Illustrasjon av en prosess",
     treasureIllustration: "Illustration av en skatt",
     legalbasisGDPRArt9Info:
@@ -240,6 +244,10 @@ export const en: IStrings = {
     confirmDeleteHeader: "Confirm delete",
     confirmDeletePolicyText: "Please confirm deleting the policy for",
     confirmDeleteProcessText: "Please confirm deleting the of process ",
+    confirmDeleteInformationTypeText: "Please confirm deleting the of information type ",
+    cannotDeleteInformationTypes: "Can't delete the information type {0} as it",
+    informationTypeHasPolicies: "is connected to {0} processes",
+    informationTypeHasDocuments: "is connected to {0} documents",
     startIllustration: "Process illustration",
     treasureIllustration: "Treasure illustration",
     legalbasisGDPRArt9Info:

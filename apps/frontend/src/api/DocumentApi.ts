@@ -1,9 +1,13 @@
 import axios from "axios"
-import { Document, DocumentFormValues } from "../constants"
+import { Document, DocumentFormValues, PageResponse } from "../constants"
 import { env } from "../util/env"
 
 export const getDocument = async (documentId: string) => {
   return (await axios.get<Document>(`${env.pollyBaseUrl}/document/${documentId}`)).data
+}
+
+export const getDocumentsForInformationType = async (informationTypeId: string) => {
+  return (await axios.get<PageResponse<Document>>(`${env.pollyBaseUrl}/document/?informationTypeId=${informationTypeId}`)).data
 }
 
 export const createDocument = async (document: DocumentFormValues) => {

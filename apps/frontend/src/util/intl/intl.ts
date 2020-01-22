@@ -72,6 +72,10 @@ export interface IStrings {
     confirmDeleteHeader: string;
     confirmDeletePolicyText: string;
     confirmDeleteProcessText: string;
+    confirmDeleteInformationTypeText: string;
+    cannotDeleteInformationTypes: string;
+    informationTypeHasPolicies: string;
+    informationTypeHasDocuments: string;
     startIllustration: string;
     treasureIllustration: string;
     legalbasisGDPRArt9Info: string;

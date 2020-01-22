@@ -81,8 +81,8 @@ const CardOverview = (props: { name: string, termId?: string, description: strin
         (async () => {
             if (props.termId) {
                 try {
-                    const term = await getTerm(props.termId)
-                    setTerm(mapTermToOption(term).label)
+                    const termResponse = await getTerm(props.termId)
+                    setTerm(mapTermToOption(termResponse).label)
                 } catch (e) {
                     console.error("couldnt find term", e)
                     setTermError(true)
