@@ -13,7 +13,7 @@ import { codelist, ListName } from "../../../service/Codelist"
 import { Sensitivity } from "../../InformationType/Sensitivity"
 import ModalPolicy from "./ModalPolicy";
 import { LegalBasesNotClarified, ListLegalBasesInTable } from "../../common/LegalBasis"
-import { Policy, policySort, Process } from "../../../constants"
+import { Policy, PolicyFormValues, policySort, Process } from "../../../constants"
 import { intl, theme } from "../../../util"
 import { convertPolicyToFormValues } from "../../../api"
 import { useTable } from "../../../util/hooks"
@@ -61,8 +61,8 @@ type TablePurposeProps = {
     hasAccess: boolean;
     errorPolicyModal: string | null;
     errorDeleteModal: string | null;
-    submitEditPolicy: Function;
-    submitDeletePolicy: Function;
+    submitEditPolicy: (policy: PolicyFormValues) => Promise<boolean>;
+    submitDeletePolicy: (policy: Policy) => Promise<boolean>;
 };
 
 const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, submitEditPolicy, submitDeletePolicy}: TablePurposeProps) => {
@@ -193,14 +193,12 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                         }}
                         isOpen={showEditModal}
                         isEdit={true}
-                        submit={(values) => {
-                            submitEditPolicy(values)
-                        }}
+                        submit={submitEditPolicy}
                         errorOnCreate={errorPolicyModal}
                     />
                 )}
 
-                {showDeleteModal && (
+                {showDeleteModal && currentPolicy && (
                     <Modal
                         onClose={() => setShowDeleteModal(false)}
                         isOpen={showDeleteModal}
@@ -209,7 +207,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                     >
                         <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
                         <ModalBody>
-                            <Paragraph2>{intl.confirmDeletePolicyText} {currentPolicy && currentPolicy.informationType.name}</Paragraph2>
+                            <Paragraph2>{intl.confirmDeletePolicyText} {currentPolicy.informationType.name}</Paragraph2>
                         </ModalBody>
 
                         <ModalFooter>
@@ -223,7 +221,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                                     {intl.abort}
                                 </Button>
                                 <Button onClick={() => {
-                                    submitDeletePolicy(currentPolicy) ? setShowDeleteModal(false) : setShowDeleteModal(true)
+                                    submitDeletePolicy(currentPolicy).then(()=> setShowDeleteModal(false)).catch(()=> setShowDeleteModal(true))
                                 }
                                 }>{intl.delete}</Button>
                             </Block>

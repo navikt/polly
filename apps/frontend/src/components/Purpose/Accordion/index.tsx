@@ -10,7 +10,7 @@ import { intl, theme, useAwait } from '../../../util';
 import _includes from 'lodash/includes'
 import { user } from "../../../service/User";
 import { Plus } from 'baseui/icon'
-import { LegalBasesStatus, LegalBasis, PolicyFormValues, Process, ProcessFormValues } from "../../../constants"
+import { LegalBasesStatus, LegalBasis, Policy, PolicyFormValues, Process, ProcessFormValues } from "../../../constants"
 import { LegalBasisView } from "../../common/LegalBasis"
 import { codelist, ListName } from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
@@ -41,18 +41,17 @@ type AccordionProcessProps = {
     errorPolicyModal: string | null;
     setProcessList: Function;
     onChangeProcess: (processId: string) => void;
-    submitDeleteProcess: Function;
-    submitEditProcess: Function;
-    submitCreatePolicy: Function;
-    submitEditPolicy: Function;
-    submitDeletePolicy: Function;
+    submitDeleteProcess: (process: Process) => Promise<boolean>;
+    submitEditProcess: (process: ProcessFormValues) => Promise<boolean>;
+    submitCreatePolicy: (process: PolicyFormValues) => Promise<boolean>;
+    submitEditPolicy: (process: PolicyFormValues) => Promise<boolean>;
+    submitDeletePolicy: (process: Policy) => Promise<boolean>;
 }
 
 const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<PathParams>) => {
     const [showEditProcessModal, setShowEditProcessModal] = React.useState(false)
     const [showCreatePolicyModal, setShowCreatePolicyModal] = React.useState(false)
     const [showDeleteModal, setShowDeleteModal] = React.useState(false)
-    const [errorDeleteModal, setErrorDeleteModal] = React.useState(false)
     const purposeRef = React.useRef<HTMLInputElement>(null);
 
     const {
@@ -282,7 +281,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                     onClose={() => setShowCreatePolicyModal(false)}
                                     isOpen={showCreatePolicyModal}
                                     submit={(values: PolicyFormValues) => {
-                                        submitCreatePolicy(values) ? setShowCreatePolicyModal(false) : setShowCreatePolicyModal(true)
+                                        submitCreatePolicy(values).then(()=> setShowCreatePolicyModal(false)).catch(()=> setShowCreatePolicyModal(true))
                                     }}
                                     errorOnCreate={errorPolicyModal}
                                 />
@@ -317,7 +316,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                                 {intl.abort}
                                             </Button>
                                             <Button onClick={() =>
-                                                submitDeleteProcess(currentProcess) ? setShowDeleteModal(false) : setShowDeleteModal(true)
+                                                submitDeleteProcess(currentProcess).then(()=> setShowDeleteModal(false)).catch(()=> setShowDeleteModal(true))
                                             }>
                                                 {intl.delete}
                                             </Button>

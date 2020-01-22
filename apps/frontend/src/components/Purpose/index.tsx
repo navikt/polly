@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect } from "react";
 
 import { Block, BlockProps } from "baseui/block";
 import { Plus } from "baseui/icon";
@@ -84,7 +85,7 @@ const ProcessList = ({ purposeCode }: ProcessListProps) => {
     }
 
     const handleCreatePolicy = async (values: PolicyFormValues) => {
-        if (!values || !currentProcess) return
+        if (!values || !currentProcess) return false
 
         try {
             const policy = await createPolicy(values)
@@ -109,10 +110,11 @@ const ProcessList = ({ purposeCode }: ProcessListProps) => {
             return true
         } catch (err) {
             setErrorPolicyModal(err.message)
+          return false
         }
     }
     const handleDeletePolicy = async (policy?: Policy) => {
-        if (!policy) return
+        if (!policy) return false
         try {
             await deletePolicy(policy.id)
             if (currentProcess) {
@@ -131,11 +133,10 @@ const ProcessList = ({ purposeCode }: ProcessListProps) => {
 
     useAwait(user.wait())
 
-    React.useEffect(() => {
-        const fetchData = async () => {
-            await getProcessListByPurpose(purposeCode)
-        };
-        fetchData();
+    useEffect(() => {
+      (async () => {
+        await getProcessListByPurpose(purposeCode)
+      })()
     }, [purposeCode]);
 
     return (
