@@ -2,11 +2,11 @@ package no.nav.data.polly.informationtype;
 
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.CodelistStub;
-import no.nav.data.polly.sync.domain.SyncStatus;
 import no.nav.data.polly.informationtype.InformationTypeController.InformationTypePage;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
+import no.nav.data.polly.sync.domain.SyncStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +18,14 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
+import static no.nav.data.polly.sync.domain.SyncStatus.SYNCED;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpEntity.EMPTY;
+import static org.springframework.http.HttpMethod.DELETE;
 
 class InformationTypeControllerIT extends IntegrationTestBase {
 
@@ -38,19 +40,18 @@ class InformationTypeControllerIT extends IntegrationTestBase {
     @Test
     void findForId() {
         var informationType = informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "new-name"));
-        ResponseEntity<Map> responseEntity = restTemplate.exchange(
-                "/informationtype/" + informationType.getId(), HttpMethod.GET, HttpEntity.EMPTY, Map.class);
+        ResponseEntity<InformationTypeResponse> responseEntity = restTemplate.getForEntity("/informationtype/{id}", InformationTypeResponse.class, informationType.getId());
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody().get("name")).isEqualTo(informationType.getData().getName());
+        assertThat(responseEntity.getBody()).isNotNull();
+        assertThat(responseEntity.getBody().getName()).isEqualTo(informationType.getData().getName());
     }
 
     @Test
     void searchInformationTypeByName() {
         informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "InformationTypeData"));
         informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "TypeData"));
-        ResponseEntity<InformationTypePage> responseEntity = restTemplate.exchange(
-                "/informationtype/search/typedata", HttpMethod.GET, HttpEntity.EMPTY, InformationTypePage.class);
+        ResponseEntity<InformationTypePage> responseEntity = restTemplate.getForEntity("/informationtype/search/{search}", InformationTypePage.class, "typedata");
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isNotNull();
@@ -63,8 +64,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
     void findAll() {
         createInformationTypeTestData(30);
 
-        ResponseEntity<InformationTypePage> responseEntity = restTemplate.exchange("/informationtype/",
-                HttpMethod.GET, HttpEntity.EMPTY, InformationTypePage.class);
+        ResponseEntity<InformationTypePage> responseEntity = restTemplate.getForEntity("/informationtype/", InformationTypePage.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(informationTypeRepository.findAll().size()).isEqualTo(30);
@@ -78,8 +78,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
     void countAllInformationTypes() {
         createInformationTypeTestData(35);
 
-        ResponseEntity<Long> responseEntity = restTemplate.exchange(
-                "/informationtype/count", HttpMethod.GET, HttpEntity.EMPTY, Long.class);
+        ResponseEntity<Long> responseEntity = restTemplate.getForEntity("/informationtype/count", Long.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isEqualTo(35L);
@@ -175,35 +174,43 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         createInformationTypeTestData(3);
 
         List<InformationType> informationTypes = informationTypeRepository.findAll();
-        informationTypes.forEach(d -> d.setSyncStatus(SyncStatus.SYNCED));
+        informationTypes.forEach(d -> d.setSyncStatus(SYNCED));
         informationTypeRepository.saveAll(informationTypes);
+        assertThat(informationTypeRepository.count()).isEqualTo(3L);
 
         UUID id = informationTypeRepository.findByName("InformationType_nr2").get().getId();
-        assertThat(informationTypeRepository.count()).isEqualTo(3L);
-        assertThat(informationTypeRepository.findByName("InformationType_nr1")
-                .get()
-                .getSyncStatus()).isEqualTo(SyncStatus.SYNCED);
-        assertThat(informationTypeRepository.findByName("InformationType_nr2")
-                .get()
-                .getSyncStatus()).isEqualTo(SyncStatus.SYNCED);
-        assertThat(informationTypeRepository.findByName("InformationType_nr3")
-                .get()
-                .getSyncStatus()).isEqualTo(SyncStatus.SYNCED);
+        assertThat(informationTypeRepository.findByName("InformationType_nr1").get().getSyncStatus()).isEqualTo(SYNCED);
+        assertThat(informationTypeRepository.findByName("InformationType_nr2").get().getSyncStatus()).isEqualTo(SYNCED);
+        assertThat(informationTypeRepository.findByName("InformationType_nr3").get().getSyncStatus()).isEqualTo(SYNCED);
 
-        ResponseEntity<InformationTypeResponse> responseEntity = restTemplate.exchange(
-                "/informationtype/" + id, HttpMethod.DELETE, HttpEntity.EMPTY, InformationTypeResponse.class);
+        ResponseEntity<InformationTypeResponse> responseEntity = restTemplate.exchange("/informationtype/" + id, DELETE, EMPTY, InformationTypeResponse.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
         assertThat(informationTypeRepository.count()).isEqualTo(3L);
-        assertThat(informationTypeRepository.findByName("InformationType_nr1")
-                .get()
-                .getSyncStatus()).isEqualTo(SyncStatus.SYNCED);
-        assertThat(informationTypeRepository.findByName("InformationType_nr2 (To be deleted)")
-                .get()
-                .getSyncStatus()).isEqualTo(SyncStatus.TO_BE_DELETED);
-        assertThat(informationTypeRepository.findByName("InformationType_nr3")
-                .get()
-                .getSyncStatus()).isEqualTo(SyncStatus.SYNCED);
+        assertThat(informationTypeRepository.findByName("InformationType_nr1").get().getSyncStatus()).isEqualTo(SYNCED);
+        assertThat(informationTypeRepository.findByName("InformationType_nr2 (To be deleted)").get().getSyncStatus()).isEqualTo(SyncStatus.TO_BE_DELETED);
+        assertThat(informationTypeRepository.findByName("InformationType_nr3").get().getSyncStatus()).isEqualTo(SYNCED);
+    }
+
+    @Test
+    void preventDeleteUsedInfoTypes() {
+        InformationType informationType = createAndSaveInformationType();
+
+        var policy = createAndSavePolicy(PURPOSE_CODE1, informationType);
+        var resp = restTemplate.exchange("/informationtype/{id}", DELETE, EMPTY, String.class, informationType.getId());
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(resp.getBody()).contains("used by 1 policie(s)");
+
+        policyRepository.delete(policy);
+
+        var doc = documentRepository.save(createDocument("BRUKER", informationType.getId()));
+        resp = restTemplate.exchange("/informationtype/{id}", DELETE, EMPTY, String.class, informationType.getId());
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(resp.getBody()).contains("used by 1 document(s)");
+
+        documentRepository.delete(doc);
+
+        assertThat(restTemplate.exchange("/informationtype/{id}", DELETE, EMPTY, String.class, informationType.getId()).getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
     }
 
     @Test

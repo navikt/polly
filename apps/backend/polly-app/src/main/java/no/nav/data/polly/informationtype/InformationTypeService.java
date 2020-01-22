@@ -2,15 +2,18 @@ package no.nav.data.polly.informationtype;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.exceptions.PollyNotFoundException;
+import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.common.validator.RequestValidator;
 import no.nav.data.polly.common.validator.ValidationError;
-import no.nav.data.polly.sync.domain.SyncStatus;
+import no.nav.data.polly.document.domain.Document;
+import no.nav.data.polly.document.domain.DocumentRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.policy.domain.PolicyRepository;
+import no.nav.data.polly.sync.domain.SyncStatus;
 import no.nav.data.polly.term.TermService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,11 +36,14 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
 
     private final InformationTypeRepository repository;
     private final PolicyRepository policyRepository;
+    private final DocumentRepository documentRepository;
     private final TermService termService;
 
-    public InformationTypeService(InformationTypeRepository repository, PolicyRepository policyRepository, TermService termService) {
+    public InformationTypeService(InformationTypeRepository repository, PolicyRepository policyRepository,
+            DocumentRepository documentRepository, TermService termService) {
         this.repository = repository;
         this.policyRepository = policyRepository;
+        this.documentRepository = documentRepository;
         this.termService = termService;
     }
 
@@ -64,9 +70,15 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
 
     public InformationType delete(UUID id) {
         InformationType infoType = repository.findById(id).orElseThrow(() -> new PollyNotFoundException("Fant ikke id=" + id));
+        if (!infoType.getPolicies().isEmpty()) {
+            throw new ValidationException(String.format("InformationType %s is used by %d policie(s)", id, infoType.getPolicies().size()));
+        }
+        List<Document> documents = documentRepository.findByInformationTypeId(id);
+        if (!documents.isEmpty()) {
+            throw new ValidationException(String.format("InformationType %s is used by %d document(s)", id, documents.size()));
+        }
+
         infoType.setSyncStatus(SyncStatus.TO_BE_DELETED);
-        long deletes = policyRepository.deleteByInformationTypeId(id);
-        log.debug("Deleted {} policies", deletes);
         log.info("InformationType with id={} has been set to be deleted during the next scheduled task", id);
         infoType.getData().setName(infoType.getData().getName() + " (To be deleted)");
         return infoType;
