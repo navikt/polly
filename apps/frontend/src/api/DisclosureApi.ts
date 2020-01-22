@@ -2,6 +2,7 @@ import axios from "axios";
 import { Disclosure, DisclosureFormValues, PageResponse } from "../constants";
 import { createDocument, updateDocument } from "./DocumentApi"
 import { env } from "../util/env"
+import { convertLegalBasesToFormValues } from "./PolicyApi"
 
 export const getAllDisclosures = async (pageSize: number, pageNumber: number) => {
     return (await axios.get<PageResponse<Disclosure>>(`${env.pollyBaseUrl}/disclosure?pageSize=${pageSize}&pageNumber=${pageNumber}`)).data.content;
@@ -61,3 +62,16 @@ export const mapDisclosureFromForm = (values: DisclosureFormValues) => {
         end: values.end
     };
 };
+
+export const mapDisclosureToFormValues: (disclosure: Disclosure) => DisclosureFormValues = (disclosure) => ({
+  id: disclosure.id,
+  recipient: disclosure.recipient.shortName || '',
+  description: disclosure ? disclosure.description : '',
+  document: disclosure.document ?
+    {...disclosure.document, informationTypes: disclosure.document.informationTypes.map(it => it.informationType)} :
+    {informationTypes: [], name: 'autosel', description: 'autodesc'},
+  legalBases: convertLegalBasesToFormValues(disclosure?.legalBases || []),
+  legalBasesOpen: false,
+  start: disclosure.start || undefined,
+  end: disclosure.end || undefined
+})

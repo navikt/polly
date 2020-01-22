@@ -46,25 +46,24 @@ const getInitialLegalBasesStatus = (legalBasesInherited: boolean, legalBases: Le
   }
 }
 
-export const convertPolicyToFormValues = (policy: Policy): PolicyFormValues => {
-  let parsedLegalBases = policy.legalBases && policy.legalBases.map((legalBasis) => ({
-    gdpr: legalBasis.gdpr && legalBasis.gdpr.code,
-    nationalLaw: (legalBasis.nationalLaw && legalBasis.nationalLaw.code) || undefined,
-    description: legalBasis.description || undefined,
-    start: legalBasis.start || undefined,
-    end: legalBasis.end || undefined
-  }))
+export const convertLegalBasesToFormValues = (legalBases?: LegalBasis[]) => (legalBases || [])
+.map((legalBasis) => ({
+  gdpr: legalBasis.gdpr && legalBasis.gdpr.code,
+  nationalLaw: (legalBasis.nationalLaw && legalBasis.nationalLaw.code) || undefined,
+  description: legalBasis.description || undefined,
+  start: legalBasis.start || undefined,
+  end: legalBasis.end || undefined
+}))
 
-  return {
-    legalBasesOpen: false,
-    id: policy.id,
-    process: policy.process,
-    purposeCode: policy.purposeCode.code,
-    informationType: policy.informationType,
-    subjectCategories:  policy.subjectCategories.map((code: Code) => code.code),
-    legalBasesStatus: getInitialLegalBasesStatus(policy.legalBasesInherited, policy.legalBases),
-    legalBases: parsedLegalBases,
-    start: policy.start || undefined,
-    end: policy.end || undefined
-  }
-}
+export const convertPolicyToFormValues = (policy: Policy): PolicyFormValues => ({
+  legalBasesOpen: false,
+  id: policy.id,
+  process: policy.process,
+  purposeCode: policy.purposeCode.code,
+  informationType: policy.informationType,
+  subjectCategories: policy.subjectCategories.map((code: Code) => code.code),
+  legalBasesStatus: getInitialLegalBasesStatus(policy.legalBasesInherited, policy.legalBases),
+  legalBases: convertLegalBasesToFormValues(policy.legalBases),
+  start: policy.start || undefined,
+  end: policy.end || undefined
+})

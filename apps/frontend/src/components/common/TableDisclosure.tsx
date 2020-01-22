@@ -4,7 +4,7 @@ import { useStyletron, withStyle } from "baseui";
 
 import { ListLegalBasesInTable } from "./LegalBasis"
 import { intl } from "../../util"
-import { Disclosure, DisclosureFormValues, disclosureSort, DocumentInfoTypeUse, LegalBasis, LegalBasisFormValues } from "../../constants"
+import { Disclosure, disclosureSort, DocumentInfoTypeUse } from "../../constants"
 import { useTable } from "../../util/hooks"
 import RouteLink from "./RouteLink"
 import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
@@ -15,6 +15,7 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from "baseui/modal";
 import { Paragraph2 } from "baseui/typography";
 import { Block } from "baseui/block";
 import ModalThirdParty from "../ThirdParty/ModalThirdPartyForm";
+import { mapDisclosureToFormValues } from "../../api"
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",
@@ -67,32 +68,6 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
 
     const [table, sortColumn] = useTable<Disclosure, keyof Disclosure>(list, {sorting: disclosureSort, initialSortColumn: "recipient"})
     const [useCss, theme] = useStyletron();
-
-    const mapLegalBasesToFormValues = (legalBases: LegalBasis[]) => {
-        console.log(legalBases, "LEGALBSES")
-        return legalBases.map((lb: LegalBasis) => (
-            {
-                gdpr: lb.gdpr && lb.gdpr.shortName,
-                nationalLaw: lb.nationalLaw && lb.nationalLaw.shortName,
-                description: lb.description,
-                start: lb.start && lb.start,
-                end: lb.end && lb.end
-            } as LegalBasisFormValues
-        ))
-    }
-
-    const initialFormValues: DisclosureFormValues = {
-        id: selectedDisclosure && selectedDisclosure.id,
-        recipient: selectedDisclosure ? selectedDisclosure.recipient.shortName : '',
-        description: selectedDisclosure ? selectedDisclosure.description : '',
-        document: selectedDisclosure && selectedDisclosure.document ?
-          {...selectedDisclosure.document, informationTypes: selectedDisclosure.document.informationTypes.map(it => it.informationType)} :
-          {informationTypes: [], name: 'autosel', description: 'autodesc'},
-        legalBases: selectedDisclosure ? mapLegalBasesToFormValues(selectedDisclosure.legalBases) : [],
-        legalBasesOpen: false,
-        start: selectedDisclosure && selectedDisclosure.start,
-        end: selectedDisclosure && selectedDisclosure.end
-    }
 
     return (
         <React.Fragment>
@@ -184,12 +159,12 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
                 </StyledBody>
             </StyledTable>
 
-            {editable && showEditModal && (
+            {editable && showEditModal && selectedDisclosure && (
                 <ModalThirdParty
                     title="Rediger utlevering"
                     isOpen={showEditModal}
                     isEdit={true}
-                    initialValues={initialFormValues}
+                    initialValues={mapDisclosureToFormValues(selectedDisclosure)}
                     submit={async (values) => submitEditDisclosure && await submitEditDisclosure(values) ? setShowEditModal(false) : setShowEditModal(true)}
                     onClose={() => {
                         onCloseModal && onCloseModal()

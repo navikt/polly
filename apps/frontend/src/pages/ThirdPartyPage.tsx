@@ -73,7 +73,9 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
         description: '',
         document: {name: 'auto', description: 'autodesc', informationTypes: []},
         legalBases: [],
-        legalBasesOpen: false
+        legalBasesOpen: false,
+        start: undefined,
+        end: undefined
     }
 
     useAwait(user.wait())
