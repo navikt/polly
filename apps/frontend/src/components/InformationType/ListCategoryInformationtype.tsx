@@ -1,15 +1,15 @@
 import * as React from "react";
-import {CodeUsage} from "../../constants";
+import { CodeUsage } from "../../constants";
 import RouteLink from "../common/RouteLink";
-import {Block} from "baseui/block";
-import {useStyletron} from "baseui";
+import { Block } from "baseui/block";
+import { useStyletron } from "baseui";
 import { Accordion, Panel, SharedProps } from "baseui/accordion";
-import {ListItem, ListItemLabel} from "baseui/list";
-import {intl, useAwait} from "../../util";
-import {codelist, ListName} from "../../service/Codelist";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faChevronDown, faChevronRight} from "@fortawesome/free-solid-svg-icons";
-import {Heading, HeadingLevel} from "baseui/heading";
+import { ListItem, ListItemLabel } from "baseui/list";
+import { intl } from "../../util";
+import { codelist, ListName } from "../../service/Codelist";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { Heading, HeadingLevel } from "baseui/heading";
 
 type InformationTypeAccordionProps = {
     categoryUsages: CodeUsage[] | undefined
@@ -22,7 +22,7 @@ const InformationTypeAccordion = ({categoryUsages}: InformationTypeAccordionProp
         if (!categoryUsages) return;
         return categoryUsages
             .filter(categoryUsage => categoryUsage.informationTypes.length > 0)
-            .sort((a,b) => b.informationTypes.length - a.informationTypes.length)
+            .sort((a, b) => codelist.getShortname(a.listName, a.code).localeCompare(codelist.getShortname(b.listName, b.code), intl.getLanguage()))
             .map(categoryUsage => {
                 return (
                     <Panel
@@ -64,7 +64,9 @@ const InformationTypeAccordion = ({categoryUsages}: InformationTypeAccordionProp
                                 paddingRight: 0,
                             })}
                         >
-                            {categoryUsage.informationTypes.map((informationType) => {
+                            {categoryUsage.informationTypes
+                            .sort((a, b) => a.name.localeCompare(b.name, intl.getLanguage()))
+                            .map((informationType) => {
                                 return (
                                     <ListItem
                                         overrides={{
