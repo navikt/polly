@@ -294,7 +294,9 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                 >
                                     <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
                                     <ModalBody>
-                                        <Paragraph2>{intl.confirmDeleteProcessText} {currentProcess.name}</Paragraph2>
+                                      {!currentProcess?.policies.length && <Paragraph2>{intl.confirmDeleteProcessText} {currentProcess.name}</Paragraph2>}
+                                      {!!currentProcess?.policies.length &&
+                                      <Paragraph2>{intl.formatString(intl.cannotDeleteProcess, currentProcess?.name, '' + currentProcess?.policies.length)}</Paragraph2>}
                                     </ModalBody>
 
                                     <ModalFooter>
@@ -317,7 +319,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                             </Button>
                                             <Button onClick={() =>
                                                 submitDeleteProcess(currentProcess).then(()=> setShowDeleteModal(false)).catch(()=> setShowDeleteModal(true))
-                                            }>
+                                            } disabled={!!currentProcess?.policies.length}>
                                                 {intl.delete}
                                             </Button>
                                         </Block>
