@@ -130,7 +130,7 @@ type ModalProcessProps = {
     initialValues: ProcessFormValues;
     errorOnCreate: any | undefined;
     submit: (process: ProcessFormValues) => void;
-    onClose: Function;
+    onClose: () => void;
 };
 
 const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, title }: ModalProcessProps) => {

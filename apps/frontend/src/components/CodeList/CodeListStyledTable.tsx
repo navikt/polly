@@ -13,7 +13,7 @@ import DeleteCodeListModal from "./ModalDeleteCodeList";
 import { useTable } from "../../util/hooks"
 import { deleteCodelist, getCodelistUsage, updateCodelist } from "../../api"
 import { Usage } from "./CodeListUsage"
-import { CodeUsage } from "../../constants"
+import { CodeListFormValues, CodeUsage } from "../../constants"
 import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
 import { AuditButton } from "../audit/AuditButton"
 
@@ -65,9 +65,9 @@ const CodeListTable = ({tableData, hasAccess, refresh}: TableCodelistProps) => {
     }, [showUsage, selectedCode])
     useEffect(() => setShowUsage(false), [tableData])
 
-    const handleEditCodelist = async (values: Code) => {
+    const handleEditCodelist = async (values: CodeListFormValues) => {
         try {
-            await updateCodelist(values)
+            await updateCodelist({...values} as Code)
             refresh()
             setShowEditModal(false);
         } catch (error) {

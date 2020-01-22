@@ -56,7 +56,7 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
 
 
     const handleDeleteDisclosure = async (disclosure: Disclosure) => {
-        if (!disclosure) return
+        if (!disclosure) return false
         try {
             await deleteDisclosure(disclosure.id)
             setDisclosureList([...disclosureList.filter((d: Disclosure) => d.id !== disclosure.id)])

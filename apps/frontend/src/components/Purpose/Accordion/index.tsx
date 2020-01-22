@@ -39,7 +39,7 @@ type AccordionProcessProps = {
     currentProcess: Process | undefined;
     errorProcessModal: any | null;
     errorPolicyModal: string | null;
-    setProcessList: Function;
+    setProcessList: (processes: Process[]) => void;
     onChangeProcess: (processId: string) => void;
     submitDeleteProcess: (process: Process) => Promise<boolean>;
     submitEditProcess: (process: ProcessFormValues) => Promise<boolean>;

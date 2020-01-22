@@ -13,6 +13,7 @@ import { user } from "../service/User"
 import CodeListTable from "../components/CodeList/CodeListStyledTable"
 import { intl, useAwait, useForceUpdate } from "../util"
 import { createCodelist } from "../api"
+import { CodeListFormValues } from "../constants"
 
 const CodeListPage = (props: RouteComponentProps<{ listname?: string }>) => {
     const [loading, setLoading] = React.useState(true)
@@ -32,10 +33,10 @@ const CodeListPage = (props: RouteComponentProps<{ listname?: string }>) => {
         }
     }, [listname, lists])
 
-    const handleCreateCodelist = async (values: Code) => {
+    const handleCreateCodelist = async (values: CodeListFormValues) => {
         setLoading(true)
         try {
-            await createCodelist(values)
+            await createCodelist({...values} as Code)
             await codelist.refreshCodeLists()
             setCreateCodeListModal(false)
         } catch (error) {

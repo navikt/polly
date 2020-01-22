@@ -4,7 +4,7 @@ import { useStyletron, withStyle } from "baseui";
 
 import { ListLegalBasesInTable } from "./LegalBasis"
 import { intl } from "../../util"
-import { Disclosure, disclosureSort, DocumentInfoTypeUse } from "../../constants"
+import { Disclosure, DisclosureFormValues, disclosureSort, DocumentInfoTypeUse } from "../../constants"
 import { useTable } from "../../util/hooks"
 import RouteLink from "./RouteLink"
 import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
@@ -55,10 +55,10 @@ type TableDisclosureProps = {
     list: Array<Disclosure>;
     showRecipient: boolean;
     editable: boolean;
-    submitDeleteDisclosure?: Function;
-    submitEditDisclosure?: Function;
+    submitDeleteDisclosure?: (disclosure: Disclosure) => Promise<boolean>;
+    submitEditDisclosure?: (disclosure: DisclosureFormValues) => Promise<boolean>;
     errorModal?: string | undefined;
-    onCloseModal?: Function;
+    onCloseModal?: () => void;
 };
 
 const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal}: TableDisclosureProps) => {
