@@ -23,6 +23,8 @@ import java.util.UUID;
 
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpEntity.EMPTY;
+import static org.springframework.http.HttpMethod.DELETE;
 
 class DocumentControllerIT extends IntegrationTestBase {
 
@@ -151,6 +153,24 @@ class DocumentControllerIT extends IntegrationTestBase {
         assertThat(errorResp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResp.getBody()).isNotNull();
         assertThat(errorResp.getBody()).contains("fieldIsNullOrMissing -- name was null or missing");
+    }
+
+    @Test
+    void delete() {
+        InformationType informationType = createAndSaveInformationType();
+        var policy = createAndSavePolicy(PURPOSE_CODE1, informationType);
+
+        var doc = documentRepository.save(createDocument("BRUKER", informationType.getId()));
+        policy.getData().getDocumentIds().add(doc.getId());
+        policyRepository.save(policy);
+
+        var resp = restTemplate.exchange("/document/{id}", DELETE, EMPTY, String.class, doc.getId());
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(resp.getBody()).contains("used by 1 policie(s)");
+
+        policyRepository.delete(policy);
+
+        assertThat(restTemplate.exchange("/document/{id}", DELETE, EMPTY, String.class, doc.getId()).getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     private DocumentRequest buildDocument() {

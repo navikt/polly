@@ -1,6 +1,7 @@
 package no.nav.data.polly.document;
 
 import no.nav.data.polly.common.exceptions.PollyNotFoundException;
+import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.common.validator.RequestValidator;
@@ -12,6 +13,7 @@ import no.nav.data.polly.document.dto.DocumentInfoTypeResponse;
 import no.nav.data.polly.document.dto.DocumentRequest;
 import no.nav.data.polly.document.dto.DocumentResponse;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
+import no.nav.data.polly.policy.domain.PolicyRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,12 +29,14 @@ import static no.nav.data.polly.common.utils.StreamUtils.filter;
 @Service
 public class DocumentService extends RequestValidator<DocumentRequest> {
 
-    private DocumentRepository repository;
-    private InformationTypeRepository informationTypeRepository;
+    private final DocumentRepository repository;
+    private final InformationTypeRepository informationTypeRepository;
+    private final PolicyRepository policyRepository;
 
-    public DocumentService(DocumentRepository repository, InformationTypeRepository informationTypeRepository) {
+    public DocumentService(DocumentRepository repository, InformationTypeRepository informationTypeRepository, PolicyRepository policyRepository) {
         this.repository = repository;
         this.informationTypeRepository = informationTypeRepository;
+        this.policyRepository = policyRepository;
     }
 
     public DocumentResponse getDocumentAsResponse(UUID uuid) {
@@ -62,6 +66,16 @@ public class DocumentService extends RequestValidator<DocumentRequest> {
         initialize(List.of(request), true);
         validateRequest(request);
         return repository.findById(request.getIdAsUUID()).orElseThrow().convertFromRequest(request);
+    }
+
+    public Document delete(UUID uuid) {
+        var doc = repository.findById(uuid).orElseThrow(() -> new PollyNotFoundException("Couldn't find document " + uuid));
+        var policies = policyRepository.findByDocumentId(uuid);
+        if (!policies.isEmpty()) {
+            throw new ValidationException(String.format("Document %s is used by %d policie(s)", uuid, policies.size()));
+        }
+        repository.delete(doc);
+        return doc;
     }
 
     private void validateRequest(DocumentRequest request) {

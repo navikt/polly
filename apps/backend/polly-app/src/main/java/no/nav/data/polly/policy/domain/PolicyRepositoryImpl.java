@@ -42,6 +42,13 @@ public class PolicyRepositoryImpl implements PolicyRepositoryCustom {
         return getPolicies(resp);
     }
 
+    @Override
+    public List<Policy> findByDocumentId(UUID id) {
+        var resp = jdbcTemplate.queryForList("select policy_id from policy where data #> '{documentIds}' ?? :documentId",
+                new MapSqlParameterSource().addValue("documentId", id.toString()));
+        return getPolicies(resp);
+    }
+
     private List<Policy> getPolicies(List<Map<String, Object>> resp) {
         List<UUID> ids = resp.stream().map(i -> ((UUID) i.values().iterator().next())).collect(Collectors.toList());
         return policyRepository.findAllById(ids);

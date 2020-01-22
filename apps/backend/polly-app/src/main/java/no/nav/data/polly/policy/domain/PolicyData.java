@@ -30,14 +30,21 @@ public class PolicyData {
     @Valid
     @NotNull
     private List<LegalBasis> legalBases = new ArrayList<>();
-    private List<UUID> documentId;
+    private List<UUID> documentIds;
 
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static class PolicyDataBuilder {
 
         private List<LegalBasis> legalBases = new ArrayList<>();
+        private List<UUID> documentIds = new ArrayList<>();
 
         public PolicyDataBuilder legalBasis(LegalBasis legalBasis) {
             legalBases.add(legalBasis);
+            return this;
+        }
+
+        public PolicyDataBuilder dokumentId(UUID dokumentId) {
+            documentIds.add(dokumentId);
             return this;
         }
 

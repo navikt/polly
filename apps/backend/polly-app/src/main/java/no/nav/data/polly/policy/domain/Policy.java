@@ -104,7 +104,7 @@ public class Policy extends Auditable<String> {
                 .informationType(convertInformationTypeNameResponse())
                 .legalBasesInherited(getData().isLegalBasesInherited())
                 .legalBases(convert(getData().getLegalBases(), LegalBasis::convertToResponse))
-                .documentIds(getData().getDocumentId())
+                .documentIds(getData().getDocumentIds())
                 .build();
     }
 

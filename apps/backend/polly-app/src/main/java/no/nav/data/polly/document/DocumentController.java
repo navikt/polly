@@ -140,14 +140,9 @@ public class DocumentController {
     @Transactional
     public ResponseEntity<DocumentResponse> deleteDocumentById(@PathVariable UUID id) {
         log.info("Received a request to delete Document with id={}", id);
-        Optional<Document> fromRepository = repository.findById(id);
-        if (fromRepository.isEmpty()) {
-            log.info("Cannot find Document with id={}", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        repository.deleteById(id);
+        var doc = service.delete(id);
         log.info("Document with id={} deleted", id);
-        return new ResponseEntity<>(convertToResponseWithInfoTypes(fromRepository.get()), HttpStatus.OK);
+        return new ResponseEntity<>(convertToResponseWithInfoTypes(doc), HttpStatus.OK);
     }
 
     private DocumentResponse convertToResponseWithInfoTypes(Document document) {

@@ -35,7 +35,7 @@ public class PolicyMapper {
         policy.getData().setEnd(DateUtil.parseEnd(policyRequest.getEnd()));
         policy.getData().setLegalBasesInherited(BooleanUtils.toBoolean(policyRequest.getLegalBasesInherited()));
         policy.getData().setLegalBases(convert(policyRequest.getLegalBases(), LegalBasisRequest::convertToLegalBasis));
-        policy.getData().setDocumentId(convert(policyRequest.getDocumentIds(), UUID::fromString));
+        policy.getData().setDocumentIds(convert(policyRequest.getDocumentIds(), UUID::fromString));
         processRepository.findByNameAndPurposeCode(policyRequest.getProcess(), policyRequest.getPurposeCode())
                 .orElseGet(() -> processRepository.save(createProcess(policyRequest)))
                 .addPolicy(policy);
