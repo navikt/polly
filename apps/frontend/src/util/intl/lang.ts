@@ -25,6 +25,7 @@ export const no: IStrings = {
   policy: 'Polis',
   usage: 'Bruk',
   and: 'og',
+  remove: 'Fjern',
 
   loggedInStatus: "Du er logget inn og kan",
   notLoggedInStatus: "Du er ikke logget inn men kan",
@@ -213,6 +214,7 @@ export const en: IStrings = {
   policy: 'Policy',
   usage: 'Usage',
   and: 'and',
+  remove: 'Remove',
 
   loggedInStatus: "You are logged in and can",
   notLoggedInStatus: "You are not logged in but you can still",

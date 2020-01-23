@@ -32,6 +32,7 @@ export interface IStrings {
     policy: string;
     usage: string;
     and: string;
+    remove: string;
 
     // sentence
     loggedInStatus: string;

@@ -14,9 +14,9 @@ import { ListItem } from "baseui/list"
 import { useStyletron } from "baseui"
 import { codelist, ListName } from "../../../service/Codelist"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faTrash } from "@fortawesome/free-solid-svg-icons"
-import { Paragraph2 } from "baseui/typography"
+import { faMinusCircle } from "@fortawesome/free-solid-svg-icons"
 import { Sensitivity } from "../../InformationType/Sensitivity"
+import { PLACEMENT, StatefulTooltip } from "baseui/tooltip"
 
 const modalBlockProps: BlockProps = {
   width: '750px',
@@ -113,42 +113,40 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
                 </Block>
                 <Error fieldName="document"/>
 
+                {!!formik.values.document &&
                 <Block {...rowBlockProps}>
                   <ModalLabel label={intl.informationTypes}/>
                   <FieldArray name="informationTypes"
                               render={arrayProps => (
-                                <>
-                                  {!formik.values.document && <Paragraph2>{intl.chooseDocument}</Paragraph2>}
-                                  {!!formik.values.document &&
-                                  <ul className={css({paddingLeft: 0, width: "100%"})}>
-                                    {formik.values.informationTypes.map((informationType, index) => (
-                                      <ListItem key={informationType.informationTypeId} sublist>
-                                        <Block display="flex" width="100%" justifyContent="space-between">
-                                          <Block display="flex" justifyContent="space-between" width="90%" alignItems="center">
-                                            <Block>
-                                              <Sensitivity sensitivity={informationType.informationType.sensitivity}/>&nbsp;
-                                              {informationType.informationType.name}
-                                            </Block>
-                                            <Block $style={{opacity: "80%"}}>
-                                              {informationType.subjectCategories.map(s => codelist.getShortname(ListName.SUBJECT_CATEGORY, s.code)).join(", ")}
-                                            </Block>
+                                <ul className={css({paddingLeft: 0, width: "100%"})}>
+                                  {formik.values.informationTypes.map((informationType, index) => (
+                                    <ListItem key={informationType.informationTypeId} sublist>
+                                      <Block display="flex" width="100%" justifyContent="space-between">
+                                        <Block display="flex" justifyContent="space-between" width="90%" alignItems="center">
+                                          <Block>
+                                            <Sensitivity sensitivity={informationType.informationType.sensitivity}/>&nbsp;
+                                            {informationType.informationType.name}
                                           </Block>
-                                          <Button size="compact" kind="tertiary" onClick={() => {
+                                          <Block $style={{opacity: "80%"}}>
+                                            {informationType.subjectCategories.map(s => codelist.getShortname(ListName.SUBJECT_CATEGORY, s.code)).join(", ")}
+                                          </Block>
+                                        </Block>
+                                        <StatefulTooltip content={intl.remove} placement={PLACEMENT.top}>
+                                          <Button size="compact" kind="tertiary" shape="round" onClick={() => {
                                             const length = formik.values.informationTypes.length
                                             arrayProps.remove(index);
                                             if (length === 1) {
                                               formik.setFieldValue('document', undefined)
                                             }
-                                          }}>
-                                            <FontAwesomeIcon icon={faTrash}/> </Button>
-                                        </Block>
-                                      </ListItem>
-                                    ))}
-                                  </ul>
-                                  }
-                                </>
+                                          }}> <FontAwesomeIcon icon={faMinusCircle}/> </Button>
+                                        </StatefulTooltip>
+                                      </Block>
+                                    </ListItem>
+                                  ))}
+                                </ul>
                               )}/>
                 </Block>
+                }
                 <Error fieldName="informationTypes"/>
 
 
