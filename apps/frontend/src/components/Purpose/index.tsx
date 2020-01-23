@@ -183,7 +183,7 @@ const ProcessList = ({ purposeCode }: ProcessListProps) => {
                     submit={(values: ProcessFormValues) => handleCreateProcess(values)}
                     errorOnCreate={errorProcessModal}
                     isEdit={false}
-                    initialValues={{ legalBasesOpen: false, name: '', department: '', subDepartment: '', purposeCode: purposeCode, legalBases: [] }}
+                    initialValues={{ legalBasesOpen: false, name: '', description: undefined, department: '', subDepartment: '', purposeCode: purposeCode, legalBases: [] }}
                 />
             </React.Fragment>
         </React.Fragment>

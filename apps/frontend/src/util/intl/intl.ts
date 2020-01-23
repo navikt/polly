@@ -13,6 +13,7 @@ export interface IStrings {
     informationTypeSearch: string;
     term: string;
     purpose: string;
+    processPurpose: string;
     purposeDescription: string;
     sensitivity: string;
     processingActivities: string;

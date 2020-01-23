@@ -204,19 +204,25 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                             <React.Fragment>
 
                                 <Block {...rowPanelContent}>
-                                    <Block width="90%" flexWrap={true} display="flex">
-                                        <Block width="30%">{renderLegalBasisListForProcess(currentProcess.legalBases)}</Block>
-                                        <Block width="30%">{renderSubjectCategoriesForProcess(currentProcess)}</Block>
-                                        <Block width="30%">{renderActiveForProcess(currentProcess)}</Block>
-                                        {currentProcess.department && <Block width="30%">
+                                    <Block width="90%" flexWrap={true} display="flex" marginRight=".5rem">
+                                        {currentProcess.description && <Block marginBottom=".5rem">
+                                          <Label2>{intl.processPurpose}</Label2>
+                                          {currentProcess.description}
+                                        </Block>}
+
+                                        <Block width="33%">{renderLegalBasisListForProcess(currentProcess.legalBases)}</Block>
+                                        <Block width="33%">{renderSubjectCategoriesForProcess(currentProcess)}</Block>
+                                        <Block width="33%">{renderActiveForProcess(currentProcess)}</Block>
+
+                                        {currentProcess.department && <Block width="33%">
                                             <Label2>{intl.department}</Label2>
                                             {codelist.getShortnameForCode(currentProcess.department)}
                                         </Block>}
-                                        {currentProcess.subDepartment && <Block width="30%">
+                                        {currentProcess.subDepartment && <Block width="33%">
                                             <Label2>{intl.subDepartment}</Label2>
                                             {codelist.getShortnameForCode(currentProcess.subDepartment)}
                                         </Block>}
-                                        {currentProcess.productTeam && <Block width="30%">
+                                        {currentProcess.productTeam && <Block width="33%">
                                             <Label2>{intl.productTeam}</Label2>
                                             <TeamPopover teamId={currentProcess.productTeam}/>
                                         </Block>}

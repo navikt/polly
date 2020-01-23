@@ -1,12 +1,12 @@
 import * as yup from "yup"
 import {
-    DisclosureFormValues,
-    InformationtypeFormValues,
-    LegalBasesStatus,
-    LegalBasisFormValues,
-    PolicyFormValues,
-    PolicyInformationType,
-    ProcessFormValues
+  DisclosureFormValues,
+  InformationtypeFormValues,
+  LegalBasesStatus,
+  LegalBasisFormValues,
+  PolicyFormValues,
+  PolicyInformationType,
+  ProcessFormValues
 } from "../../constants"
 import { intl } from "../../util"
 import { Code, codelist } from "../../service/Codelist"
@@ -30,6 +30,7 @@ export const infoTypeSchema = () => yup.object<InformationtypeFormValues>({
 
 export const processSchema = () => yup.object<ProcessFormValues>({
     name: yup.string().max(max, maxError()).required(intl.required),
+    description: yup.string(),
     department: yup.string(),
     subDepartment: yup.string(),
     productTeam: yup.string(),

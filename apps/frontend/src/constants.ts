@@ -37,6 +37,7 @@ export interface ProcessFormValues {
     id?: string
     purposeCode?: string
     name?: string
+    description?: string
     department?: string
     subDepartment?: string
     productTeam?: string
@@ -119,6 +120,7 @@ export interface PolicyProcess {
 export interface Process extends IDurationed {
     id: string
     name: string
+    description?: string
     legalBases: LegalBasis[]
     department: Code
     subDepartment: Code

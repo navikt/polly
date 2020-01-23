@@ -18,6 +18,7 @@ import { DateModalFields } from "../DateModalFields"
 import { hasSpecifiedDate } from "../../common/Durations"
 import { processSchema } from "../../common/schema"
 import { getTeam, mapTeamToOption, useTeamSearch } from "../../../api/TeamApi"
+import { Textarea } from "baseui/textarea"
 
 const modalBlockProps: BlockProps = {
     width: '750px',
@@ -45,6 +46,15 @@ const FieldName = () => (
         )}
     />
 );
+
+const FieldDescription = () => (
+    <Field
+        name="description"
+        render={({ field, form }: FieldProps<ProcessFormValues>) => (
+            <Textarea {...field} type="input" size={InputSIZE.default} error={!!form.errors.description && form.touched.description} />
+        )}
+    />
+)
 
 const FieldDepartment = (props: {department?: string}) => {
     const { department } = props;
@@ -169,6 +179,12 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                                     <FieldName />
                                 </Block>
                                 <Error fieldName="name" />
+
+                                <Block {...rowBlockProps}>
+                                    <ModalLabel label={intl.processPurpose}/>
+                                    <FieldDescription />
+                                </Block>
+                                <Error fieldName="description" />
 
                                 <Block {...rowBlockProps}>
                                     <ModalLabel label={intl.department}/>

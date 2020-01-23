@@ -34,6 +34,7 @@ export const convertProcessToFormValues = (process: Process) => {
     id,
     purposeCode,
     name,
+    description,
     department,
     subDepartment,
     productTeam,
@@ -46,6 +47,7 @@ export const convertProcessToFormValues = (process: Process) => {
     legalBasesOpen: false,
     id: id,
     name: name,
+    description: description ||undefined,
     purposeCode: purposeCode,
     department: (department && department.code) || undefined,
     subDepartment: (subDepartment && subDepartment.code) || undefined,
@@ -60,6 +62,7 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
   return {
     id: values.id,
     name: values.name,
+    description: values.description,
     purposeCode: values.purposeCode,
     department: values.department ? values.department : undefined,
     subDepartment: values.subDepartment ? values.subDepartment : undefined,
