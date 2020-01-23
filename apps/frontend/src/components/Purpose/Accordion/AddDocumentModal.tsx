@@ -15,6 +15,7 @@ import { useStyletron } from "baseui"
 import { codelist, ListName } from "../../../service/Codelist"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTrash } from "@fortawesome/free-solid-svg-icons"
+import { Paragraph2 } from "baseui/typography"
 
 const modalBlockProps: BlockProps = {
   width: '750px',
@@ -115,21 +116,33 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
                   <ModalLabel label={intl.informationTypes}/>
                   <FieldArray name="informationTypes"
                               render={arrayProps => (
-                                <ul className={css({paddingLeft: 0, width: "100%"})}>
-                                  {formik.values.informationTypes.map((informationType, index) => (
-                                    <ListItem key={informationType.informationTypeId} sublist>
-                                      <Block display="flex" width="100%" justifyContent="space-between">
-                                        <Block display="flex" justifyContent="space-between" width="90%" alignItems="center">
-                                          <Block>{informationType.informationType.name}</Block>
-                                          <Block $style={{opacity: "80%"}}>
-                                            {informationType.subjectCategories.map(s => codelist.getShortname(ListName.SUBJECT_CATEGORY, s.code)).join(", ")}
+                                <>
+                                  {!formik.values.document && <Paragraph2>{intl.chooseDocument}</Paragraph2>}
+                                  {!!formik.values.document &&
+                                  <ul className={css({paddingLeft: 0, width: "100%"})}>
+                                    {formik.values.informationTypes.map((informationType, index) => (
+                                      <ListItem key={informationType.informationTypeId} sublist>
+                                        <Block display="flex" width="100%" justifyContent="space-between">
+                                          <Block display="flex" justifyContent="space-between" width="90%" alignItems="center">
+                                            <Block>{informationType.informationType.name}</Block>
+                                            <Block $style={{opacity: "80%"}}>
+                                              {informationType.subjectCategories.map(s => codelist.getShortname(ListName.SUBJECT_CATEGORY, s.code)).join(", ")}
+                                            </Block>
                                           </Block>
+                                          <Button size="compact" kind="tertiary" onClick={() => {
+                                            const length = formik.values.informationTypes.length
+                                            arrayProps.remove(index);
+                                            if (length === 1) {
+                                              formik.setFieldValue('document', undefined)
+                                            }
+                                          }}>
+                                            <FontAwesomeIcon icon={faTrash}/> </Button>
                                         </Block>
-                                        <Button size="compact" kind="tertiary" onClick={() => arrayProps.remove(index)}><FontAwesomeIcon icon={faTrash}/> </Button>
-                                      </Block>
-                                    </ListItem>
-                                  ))}
-                                </ul>
+                                      </ListItem>
+                                    ))}
+                                  </ul>
+                                  }
+                                </>
                               )}/>
                 </Block>
                 <Error fieldName="informationTypes"/>

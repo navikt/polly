@@ -96,6 +96,7 @@ export interface IStrings {
     legalBasisComplete: string;
     validityOfProcess: string;
     validityOfPolicy: string;
+    chooseDocument: string;
     addDocument: string;
     searchDocuments: string;
     addOneInformationType: string;
