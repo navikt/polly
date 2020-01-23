@@ -31,6 +31,7 @@ export interface IStrings {
     thirdParty: string;
     policy: string;
     usage: string;
+    and: string;
 
     // sentence
     loggedInStatus: string;

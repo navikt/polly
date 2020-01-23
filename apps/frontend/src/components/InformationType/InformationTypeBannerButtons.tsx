@@ -55,13 +55,13 @@ const DeleteModalImpl = (props: RouteComponentProps<any> & { id: string, showDel
       <ModalBody>
         {!infoType && <Spinner/>}
         {canDelete && <Paragraph2>{intl.confirmDeleteInformationTypeText} {infoType?.name}</Paragraph2>}
-        {infoType && !canDelete &&
-        <>
-          {infoType && !canDelete && <Paragraph2>{intl.formatString(intl.cannotDeleteInformationTypes, infoType.name)}</Paragraph2>}
-          {!!policies && <Paragraph2>{intl.formatString(intl.informationTypeHasPolicies, policies)}</Paragraph2>}
-          {!!documents && <Paragraph2>{intl.formatString(intl.informationTypeHasDocuments, documents)}</Paragraph2>}
-        </>
-        }
+        {infoType && !canDelete && <Paragraph2>
+          {intl.formatString(intl.cannotDeleteInformationTypes, infoType.name)}
+          <br/>
+          {!!policies && intl.formatString(intl.informationTypeHasPolicies, policies)}
+          <br/>
+          {!!documents && intl.formatString(intl.informationTypeHasDocuments, documents)}
+        </Paragraph2>}
       </ModalBody>
 
       <ModalFooter>
