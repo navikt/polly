@@ -1,11 +1,15 @@
 import * as yup from "yup"
 import {
+  AddDocumentToProcessFormValues,
   DisclosureFormValues,
+  Document,
+  DocumentInfoTypeUse,
   InformationtypeFormValues,
   LegalBasesStatus,
   LegalBasisFormValues,
   PolicyFormValues,
   PolicyInformationType,
+  Process,
   ProcessFormValues
 } from "../../constants"
 import { intl } from "../../util"
@@ -80,7 +84,8 @@ export const policySchema = () => yup.object<PolicyFormValues>({
     purposeCode: yup.string(),
     id: yup.string(),
     start: yup.string().matches(DATE_REGEX, intl.dateFormat),
-    end: yup.string().matches(DATE_REGEX, intl.dateFormat)
+    end: yup.string().matches(DATE_REGEX, intl.dateFormat),
+    documentIds: yup.array(yup.string())
 })
 
 export const legalBasisSchema = () => yup.object<LegalBasisFormValues>({
@@ -114,4 +119,10 @@ export const disclosureSchema = () => yup.object<DisclosureFormValues>({
     legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
     start: yup.string().matches(DATE_REGEX, intl.dateFormat),
     end: yup.string().matches(DATE_REGEX, intl.dateFormat)
+})
+
+export const addDocumentToProcessSchema = () => yup.object<AddDocumentToProcessFormValues>({
+  document: yup.object<Document>().required(intl.required),
+  informationTypes: yup.array(yup.object<DocumentInfoTypeUse>()).required(intl.required),
+  process: yup.object<Process>().required(intl.required)
 })

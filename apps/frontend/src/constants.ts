@@ -25,6 +25,7 @@ export interface PolicyFormValues {
     legalBasesOpen: boolean
     end?: string
     start?: string
+    documentIds?: string[]
 }
 
 export enum LegalBasesStatus {
@@ -88,6 +89,7 @@ export interface Policy extends IDurationed {
     subjectCategories: Code[]
     legalBasesInherited: boolean
     legalBases: LegalBasis[]
+    documentIds?: string[]
 }
 
 export const policySort: ColumnCompares<Policy> = {
@@ -223,6 +225,12 @@ export interface DocumentInfoTypeUse {
   informationTypeId: string,
   informationType: PolicyInformationType,
   subjectCategories: Code[]
+}
+
+export interface AddDocumentToProcessFormValues {
+  document?: Document
+  informationTypes: DocumentInfoTypeUse[]
+  process: Process
 }
 
 export enum AuditAction {

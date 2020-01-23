@@ -10,7 +10,7 @@ import { intl, theme, useAwait } from '../../../util';
 import _includes from 'lodash/includes'
 import { user } from "../../../service/User";
 import { Plus } from 'baseui/icon'
-import { LegalBasesStatus, LegalBasis, Policy, PolicyFormValues, Process, ProcessFormValues } from "../../../constants"
+import { AddDocumentToProcessFormValues, LegalBasesStatus, LegalBasis, Policy, PolicyFormValues, Process, ProcessFormValues } from "../../../constants"
 import { LegalBasisView } from "../../common/LegalBasis"
 import { codelist, ListName } from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
@@ -25,6 +25,7 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal';
 import { TeamPopover } from "../../common/Team"
 import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
 import { AuditButton } from "../../audit/AuditButton"
+import { AddDocumentModal } from "./AddDocumentModal"
 
 const rowPanelContent: BlockProps = {
     display: 'flex',
@@ -33,24 +34,27 @@ const rowPanelContent: BlockProps = {
 }
 
 type AccordionProcessProps = {
-    isLoading: boolean;
-    purposeCode: string;
-    processList: Process[];
-    currentProcess: Process | undefined;
-    errorProcessModal: any | null;
-    errorPolicyModal: string | null;
-    setProcessList: (processes: Process[]) => void;
-    onChangeProcess: (processId: string) => void;
-    submitDeleteProcess: (process: Process) => Promise<boolean>;
-    submitEditProcess: (process: ProcessFormValues) => Promise<boolean>;
-    submitCreatePolicy: (process: PolicyFormValues) => Promise<boolean>;
-    submitEditPolicy: (process: PolicyFormValues) => Promise<boolean>;
-    submitDeletePolicy: (process: Policy) => Promise<boolean>;
+    isLoading: boolean
+    purposeCode: string
+    processList: Process[]
+    currentProcess?: Process
+    errorProcessModal: any | null
+    errorPolicyModal: string | null
+    errorDocumentModal: string | null
+    setProcessList: (processes: Process[]) => void
+    onChangeProcess: (processId: string) => void
+    submitDeleteProcess: (process: Process) => Promise<boolean>
+    submitEditProcess: (process: ProcessFormValues) => Promise<boolean>
+    submitCreatePolicy: (process: PolicyFormValues) => Promise<boolean>
+    submitEditPolicy: (process: PolicyFormValues) => Promise<boolean>
+    submitDeletePolicy: (process: Policy) => Promise<boolean>
+    submitAddDocument: (document: AddDocumentToProcessFormValues) => Promise<boolean>
 }
 
 const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<PathParams>) => {
     const [showEditProcessModal, setShowEditProcessModal] = React.useState(false)
     const [showCreatePolicyModal, setShowCreatePolicyModal] = React.useState(false)
+    const [showAddDocumentModal, setShowAddDocumentModal] = React.useState(false)
     const [showDeleteModal, setShowDeleteModal] = React.useState(false)
     const purposeRef = React.useRef<HTMLInputElement>(null);
 
@@ -159,14 +163,31 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
     )
 
     const renderCreatePolicyButton = () => (
+      <StatefulTooltip content={intl.addOneInformationType}>
         <Button
-            size={ButtonSize.compact}
-            kind={KIND.tertiary}
-            onClick={() => setShowCreatePolicyModal(true)}
-            startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
+          size={ButtonSize.compact}
+          kind={KIND.tertiary}
+          onClick={() => setShowCreatePolicyModal(true)}
+          startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
+          overrides={{StartEnhancer: {style: {marginRight: theme.sizing.scale100}}}}
         >
-            {intl.addNew}
+          {intl.informationType}
         </Button>
+      </StatefulTooltip>
+    )
+
+    const renderAddDocumentButton = () => (
+      <StatefulTooltip content={'Legg til én samling av opplysningstyper'}>
+        <Button
+          size={ButtonSize.compact}
+          kind={KIND.tertiary}
+          onClick={() => setShowAddDocumentModal(true)}
+          startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
+          overrides={{StartEnhancer: {style: {marginRight: theme.sizing.scale100}}}}
+        >
+          {intl.document}
+        </Button>
+      </StatefulTooltip>
     )
 
     const hasAccess = () => user.canWrite()
@@ -241,9 +262,10 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                 <Block {...rowPanelContent}>
                                     <Label2 alignSelf="center">{intl.informationTypes}</Label2>
                                     {hasAccess() && (
-                                        <React.Fragment>
+                                        <Block alignSelf="flex-end">
+                                            {renderAddDocumentButton()}
                                             {renderCreatePolicyButton()}
-                                        </React.Fragment>
+                                        </Block>
                                     )}
                                 </Block>
                                 {currentProcess.policies && (
@@ -281,7 +303,8 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                         subjectCategories: [],
                                         start: undefined,
                                         end: undefined,
-                                        legalBases: []
+                                        legalBases: [],
+                                        documentIds: []
                                     }}
                                     isEdit={false}
                                     onClose={() => setShowCreatePolicyModal(false)}
@@ -290,6 +313,14 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                         submitCreatePolicy(values).then(()=> setShowCreatePolicyModal(false)).catch(()=> setShowCreatePolicyModal(true))
                                     }}
                                     errorOnCreate={errorPolicyModal}
+                                />
+
+                                <AddDocumentModal
+                                  onClose={() => setShowAddDocumentModal(false)}
+                                  isOpen={showAddDocumentModal}
+                                  submit={(formValues) => props.submitAddDocument(formValues).then(() => setShowAddDocumentModal(false))}
+                                  process={currentProcess}
+                                  error={props.errorDocumentModal}
                                 />
 
                                 <Modal

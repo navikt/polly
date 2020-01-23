@@ -16,6 +16,11 @@ export const createPolicy = async (policy: PolicyFormValues) => {
   return (await axios.post<PageResponse<Policy>>(`${env.pollyBaseUrl}/policy`, [body])).data.content[0]
 }
 
+export const createPolicies = async (policies: PolicyFormValues[]) => {
+  let body = policies.map(mapPolicyFromForm)
+  return (await axios.post<PageResponse<Policy>>(`${env.pollyBaseUrl}/policy`, body)).data.content
+}
+
 export const updatePolicy = async (policy: PolicyFormValues) => {
   let body = mapPolicyFromForm(policy)
   return (await axios.put<Policy>(`${env.pollyBaseUrl}/policy/${policy.id}`, body)).data
@@ -65,5 +70,6 @@ export const convertPolicyToFormValues = (policy: Policy): PolicyFormValues => (
   legalBasesStatus: getInitialLegalBasesStatus(policy.legalBasesInherited, policy.legalBases),
   legalBases: convertLegalBasesToFormValues(policy.legalBases),
   start: policy.start || undefined,
-  end: policy.end || undefined
+  end: policy.end || undefined,
+  documentIds: policy.documentIds || []
 })

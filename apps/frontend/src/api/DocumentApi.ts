@@ -10,6 +10,10 @@ export const getDocumentsForInformationType = async (informationTypeId: string) 
   return (await axios.get<PageResponse<Document>>(`${env.pollyBaseUrl}/document/?informationTypeId=${informationTypeId}`)).data
 }
 
+export const searchDocuments = async (name: string) => {
+  return (await axios.get<PageResponse<Document>>(`${env.pollyBaseUrl}/document/search/${name}`)).data
+}
+
 export const createDocument = async (document: DocumentFormValues) => {
   const doc = {...document, informationTypes: mapToInfoTypes(document)}
   return (await axios.post<Document>(`${env.pollyBaseUrl}/document`, doc)).data

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect, useState } from "react";
 import { SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
@@ -13,13 +14,14 @@ import { codelist, ListName } from "../../../service/Codelist"
 import { Sensitivity } from "../../InformationType/Sensitivity"
 import ModalPolicy from "./ModalPolicy";
 import { LegalBasesNotClarified, ListLegalBasesInTable } from "../../common/LegalBasis"
-import { Policy, PolicyFormValues, policySort, Process } from "../../../constants"
+import { Document, Policy, PolicyFormValues, policySort, Process } from "../../../constants"
 import { intl, theme } from "../../../util"
-import { convertPolicyToFormValues } from "../../../api"
+import { convertPolicyToFormValues, getDocument } from "../../../api"
 import { useTable } from "../../../util/hooks"
 import RouteLink from "../../common/RouteLink"
 import { ActiveIndicator } from "../../common/Durations"
 import { AuditButton } from "../../audit/AuditButton"
+import _ from "lodash"
 
 
 const StyledHeader = withStyle(StyledHead, {
@@ -65,6 +67,7 @@ type TablePurposeProps = {
     submitDeletePolicy: (policy: Policy) => Promise<boolean>;
 };
 
+type Docs = { [id: string]: Document }
 const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, submitEditPolicy, submitDeletePolicy}: TablePurposeProps) => {
     const [useCss, theme] = useStyletron();
     const [policies, setPolicies] = React.useState<Policy[]>(process.policies)
@@ -77,6 +80,20 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
     React.useEffect(() => {
         setPolicies(process ? process.policies : [])
     }, [process]);
+
+  const [docs, setDocs] = useState<Docs>({})
+
+  useEffect(() => {
+    (async () => {
+      const allIds = _.uniq(process.policies.flatMap(p => p.documentIds)).filter(id => !!id)
+      const docMap = (await Promise.all(allIds.map(id => getDocument(id!)))).reduce((acc:Docs, doc) => {
+        acc[doc.id] = doc;
+        return acc
+      }, {} as Docs)
+
+      setDocs(docMap)
+    })()
+  }, [process])
 
     return (
         <React.Fragment>
@@ -109,10 +126,21 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                             <React.Fragment key={index}>
                                 <CustomStyledRow inactiveRow={!row.active} selectedRow={showPolicyInfo && selectedRow}>
                                     <StyledCell>
-                                        <Sensitivity sensitivity={row.informationType.sensitivity}/>&nbsp;
-                                        <RouteLink href={`/informationtype/${row.informationType.id}`} width="25%">
+                                      <Block display="flex" width="100%" justifyContent="space-between">
+                                        <Block>
+                                          <Sensitivity sensitivity={row.informationType.sensitivity}/>&nbsp;
+                                          <RouteLink href={`/informationtype/${row.informationType.id}`} width="25%">
                                             {row.informationType.name}
-                                        </RouteLink>
+                                          </RouteLink>
+                                        </Block>
+                                        <Block>
+                                          <StatefulTooltip content={() => intl.documents}>
+                                            <Block $style={{opacity: "60%"}}>
+                                              {!!row.documentIds?.length && '(' + row.documentIds?.map(id => (docs[id] || {}).name).join(", ") + ')'}
+                                            </Block>
+                                          </StatefulTooltip>
+                                        </Block>
+                                      </Block>
                                     </StyledCell>
 
                                     <StyledCell>{row.subjectCategories.map(sc => codelist.getShortname(ListName.SUBJECT_CATEGORY, sc.code)).join(", ")}</StyledCell>

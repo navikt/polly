@@ -88,6 +88,10 @@ export const no: IStrings = {
     legalBasisComplete: "Lukk rettslig grunnlag redigering før lagring",
     validityOfProcess: "Gyldighetsperiode for behandlingen",
     validityOfPolicy: "Gyldighetsperiode for bruk av opplysningstypen i denne behandlingen",
+    addDocument: "Legg til opplysningstyper fra dokument",
+    searchDocuments: "Søk dokumenter",
+    addOneInformationType: "Legg til én opplysningstype",
+    addCollectionOfInformationTypes: "Legg til én samling av opplysningstyper",
 
     groupByPurpose: "Grupper etter formål",
     showAll: "Vis alle",
@@ -272,6 +276,10 @@ export const en: IStrings = {
     legalBasisComplete: "Close legal basis editor before saving",
     validityOfProcess: "Validity of process",
     validityOfPolicy: "Validity of policy",
+    addDocument: "Add information types from dokument",
+    searchDocuments: "Search documents",
+    addOneInformationType: "Add one information type",
+    addCollectionOfInformationTypes: "Add a collection of information types",
 
     POLLY_READ: "Read",
     POLLY_WRITE: "Write",

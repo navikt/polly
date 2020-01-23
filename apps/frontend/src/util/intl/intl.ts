@@ -96,6 +96,10 @@ export interface IStrings {
     legalBasisComplete: string;
     validityOfProcess: string;
     validityOfPolicy: string;
+    addDocument: string;
+    searchDocuments: string;
+    addOneInformationType: string;
+    addCollectionOfInformationTypes: string;
 
     // groups
     POLLY_READ: string;
