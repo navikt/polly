@@ -163,7 +163,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
     )
 
     const renderCreatePolicyButton = () => (
-      <StatefulTooltip content={intl.addOneInformationType}>
+      <StatefulTooltip content={intl.addOneInformationType} placement={PLACEMENT.top}>
         <Button
           size={ButtonSize.compact}
           kind={KIND.tertiary}
@@ -177,7 +177,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
     )
 
     const renderAddDocumentButton = () => (
-      <StatefulTooltip content={'Legg til én samling av opplysningstyper'}>
+      <StatefulTooltip content={'Legg til én samling av opplysningstyper'} placement={PLACEMENT.top}>
         <Button
           size={ButtonSize.compact}
           kind={KIND.tertiary}
