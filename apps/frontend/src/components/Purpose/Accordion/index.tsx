@@ -177,7 +177,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
     )
 
     const renderAddDocumentButton = () => (
-      <StatefulTooltip content={'Legg til én samling av opplysningstyper'} placement={PLACEMENT.top}>
+      <StatefulTooltip content={intl.addCollectionOfInformationTypes} placement={PLACEMENT.top}>
         <Button
           size={ButtonSize.compact}
           kind={KIND.tertiary}

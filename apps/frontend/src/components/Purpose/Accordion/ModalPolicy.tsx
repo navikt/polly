@@ -1,11 +1,11 @@
 import * as React from "react";
 import { KeyboardEvent, useState } from "react";
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
-import { Field, FieldArray, FieldProps, Form, Formik, FormikProps, FieldArrayRenderProps, } from "formik";
+import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps, } from "formik";
 import { Block, BlockProps } from "baseui/block";
 import { Radio, RadioGroup } from "baseui/radio";
 import { Plus } from "baseui/icon";
-import { Select, TYPE, Value } from 'baseui/select';
+import { Select, TYPE } from 'baseui/select';
 
 import CardLegalBasis from "./CardLegalBasis"
 import { codelist, ListName } from "../../../service/Codelist";
@@ -72,7 +72,7 @@ const FieldInformationType = (props: {
                     searchable={true}
                     type={TYPE.search}
                     options={props.informationTypes}
-                    placeholder="Søk opplysningstyper"
+                    placeholder={intl.informationTypeSearch}
                     value={props.value as any}
                     onInputChange={event => props.searchInformationType(event.currentTarget.value)}
                     onChange={(params) => {
