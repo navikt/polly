@@ -11,6 +11,7 @@ import ThirdPartyMetadataPage from './pages/ThirdPartyPage'
 import {Main} from "./pages/MainPage"
 import CodelistPage from "./pages/CodelistPage"
 import { AuditPage } from "./pages/AuditPage"
+import DocumentPage from "./pages/DocumentPage";
 
 
 const Routes = (): JSX.Element => (
@@ -38,6 +39,11 @@ const Routes = (): JSX.Element => (
                 exact
                 path="/admin/codelist/:listname?"
                 component={CodelistPage}
+            />
+            <Route
+                exact
+                path="/document"
+                component={DocumentPage}
             />
             <Route
                 exact

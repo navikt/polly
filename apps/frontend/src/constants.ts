@@ -1,6 +1,7 @@
 import { Code, codelist, ListName } from "./service/Codelist"
 import { ColumnCompares } from "./util/hooks"
 import { intl } from "./util"
+import {Value} from "baseui/select";
 
 export interface InformationtypeFormValues {
     id?: string
@@ -272,4 +273,9 @@ export interface Use {
 export interface CategoryUsage {
     listName: string
     codesInUse: CodeUsage[]
+}
+
+export interface DocumentTableRow {
+  informationTypes: PolicyInformationType | undefined,
+  categories: Value
 }
