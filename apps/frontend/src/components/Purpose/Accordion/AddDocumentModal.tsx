@@ -16,6 +16,7 @@ import { codelist, ListName } from "../../../service/Codelist"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTrash } from "@fortawesome/free-solid-svg-icons"
 import { Paragraph2 } from "baseui/typography"
+import { Sensitivity } from "../../InformationType/Sensitivity"
 
 const modalBlockProps: BlockProps = {
   width: '750px',
@@ -124,7 +125,10 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
                                       <ListItem key={informationType.informationTypeId} sublist>
                                         <Block display="flex" width="100%" justifyContent="space-between">
                                           <Block display="flex" justifyContent="space-between" width="90%" alignItems="center">
-                                            <Block>{informationType.informationType.name}</Block>
+                                            <Block>
+                                              <Sensitivity sensitivity={informationType.informationType.sensitivity}/>&nbsp;
+                                              {informationType.informationType.name}
+                                            </Block>
                                             <Block $style={{opacity: "80%"}}>
                                               {informationType.subjectCategories.map(s => codelist.getShortname(ListName.SUBJECT_CATEGORY, s.code)).join(", ")}
                                             </Block>
