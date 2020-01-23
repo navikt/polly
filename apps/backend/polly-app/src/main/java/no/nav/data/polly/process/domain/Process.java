@@ -88,6 +88,7 @@ public class Process extends Auditable<String> {
         return ProcessResponse.builder()
                 .id(id)
                 .name(name)
+                .description(data.getDescription())
                 .purposeCode(purposeCode)
                 .department(getDepartmentCode())
                 .subDepartment(getSubDepartmentCode())
@@ -114,6 +115,7 @@ public class Process extends Auditable<String> {
         }
         setName(request.getName());
         setPurposeCode(request.getPurposeCode());
+        data.setDescription(request.getDescription());
         data.setDepartment(request.getDepartment());
         data.setSubDepartment(request.getSubDepartment());
         data.setProductTeam(request.getProductTeam());

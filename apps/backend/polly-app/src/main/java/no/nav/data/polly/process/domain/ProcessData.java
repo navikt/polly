@@ -18,6 +18,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class ProcessData {
 
+    private String description;
     @NotNull
     private LocalDate start;
     @NotNull

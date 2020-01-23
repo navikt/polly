@@ -36,6 +36,7 @@ class PurposeControllerIT extends IntegrationTestBase {
                 ProcessResponse.builder()
                         .id(policy.getProcess().getId())
                         .name("Auto_" + PURPOSE_CODE1)
+                        .description("process description")
                         .purposeCode(PURPOSE_CODE1)
                         .start(LocalDate.now())
                         .end(LocalDate.now())

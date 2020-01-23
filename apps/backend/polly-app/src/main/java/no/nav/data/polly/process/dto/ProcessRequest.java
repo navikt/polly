@@ -11,6 +11,7 @@ import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class ProcessRequest implements RequestElement {
 
     private String id;
     private String name;
+    private String description;
     @ApiModelProperty(value = "Codelist PURPOSE")
     private String purposeCode;
     @ApiModelProperty(value = "Codelist DEPARTMENT")
@@ -55,6 +57,7 @@ public class ProcessRequest implements RequestElement {
         setPurposeCode(toUpperCaseAndTrim(getPurposeCode()));
         setDepartment(toUpperCaseAndTrim(getDepartment()));
         setSubDepartment(toUpperCaseAndTrim(getSubDepartment()));
+        setDescription(StringUtils.trimToNull(description));
     }
 
     @Override

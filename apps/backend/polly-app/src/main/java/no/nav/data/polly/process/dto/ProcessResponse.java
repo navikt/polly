@@ -20,11 +20,12 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "name", "purposeCode", "department", "subDepartment", "productTeam", "start", "end", "active", "legalBases", "policies"})
+@JsonPropertyOrder({"id", "name", "description", "purposeCode", "department", "subDepartment", "productTeam", "start", "end", "active", "legalBases", "policies"})
 public class ProcessResponse {
 
     private UUID id;
     private String name;
+    private String description;
     private String purposeCode;
     private CodelistResponse department;
     private CodelistResponse subDepartment;

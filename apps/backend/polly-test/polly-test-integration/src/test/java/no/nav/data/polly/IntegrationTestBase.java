@@ -205,6 +205,7 @@ public abstract class IntegrationTestBase {
                 (p) -> processRepository
                         .save(Process.builder().generateId().name("Auto_" + purpose).purposeCode(purpose)
                                 .data(ProcessData.builder()
+                                        .description("process description")
                                         .start(LocalDate.now()).end(LocalDate.now()).legalBasis(createLegalBasis())
                                         .build())
                                 .build()));
