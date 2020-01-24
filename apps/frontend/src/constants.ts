@@ -224,6 +224,18 @@ export interface DocumentInfoTypeUse {
   subjectCategories: Code[]
 }
 
+export interface CreateDocumentFormValues{
+  id?: string;
+  name: string;
+  description: string;
+  informationTypes: DocumentInformationTypes[]
+}
+
+export interface DocumentInformationTypes{
+  informationTypeId: string;
+  subjectCategories: string[]
+}
+
 export enum AuditAction {
     CREATE = "CREATE",
     UPDATE = "UPDATE",

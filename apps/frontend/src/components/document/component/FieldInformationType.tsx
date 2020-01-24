@@ -8,7 +8,7 @@ const FieldInformationType = (props: {
   setValue: Function,
   rowData:DocumentTableRow,
   setRowData:Function,
-  index:number
+  index:number,
 }) => {
   const [selectedInformationType, setSelectedInformationType] = React.useState();
   const [infoTypeSearchResult, setInfoTypeSearchResult, infoTypeSearchLoading] = useInfoTypeSearch();

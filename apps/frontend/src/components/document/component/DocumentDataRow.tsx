@@ -8,10 +8,12 @@ import {intl} from "../../../util";
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTrash} from "@fortawesome/free-solid-svg-icons";
+import {FieldArrayRenderProps} from "formik";
 
 const DocumentDataRow = (index: number,
                          tableData: DocumentTableRow[],
-                         setRowData: Function) => {
+                         setRowData: Function,
+                         arrayHelpers: FieldArrayRenderProps) => {
   return (
     <React.Fragment key={index}>
       <StyledRow>

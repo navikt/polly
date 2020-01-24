@@ -3,20 +3,22 @@ import {StyledBody, StyledHead, StyledHeadCell, StyledTable} from "baseui/table"
 import {intl} from "../../../util";
 import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
-import {DocumentTableRow} from "../../../constants";
+import {DocumentInformationTypes, DocumentTableRow} from "../../../constants";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import DocumentDataRow from "./DocumentDataRow";
 import {Block} from "baseui/block";
 import {useStyletron} from "baseui";
+import {FieldArrayRenderProps} from "formik";
 
 type CreateDocumentProps = {
   tableData:DocumentTableRow[],
   setTableData:Function,
-  setRowData:Function
+  setRowData:Function,
+  arrayHelpers:FieldArrayRenderProps
 }
 
-const DocumentTable = ({tableData,setTableData,setRowData}:CreateDocumentProps) => {
+const DocumentTable = ({tableData,setTableData,setRowData,arrayHelpers}:CreateDocumentProps) => {
   const [useCss] = useStyletron();
   return(
     <StyledTable className={useCss({overflow: "hidden !important"})}>
@@ -31,6 +33,7 @@ const DocumentTable = ({tableData,setTableData,setRowData}:CreateDocumentProps) 
               onClick={() => {
                 let emptyRow = {informationTypes: undefined, categories: []} as DocumentTableRow;
                 setTableData([...tableData, emptyRow]);
+                arrayHelpers.push({informationTypeId:"",subjectCategories:[]} as DocumentInformationTypes);
                 console.log(tableData);
               }}>
               <FontAwesomeIcon icon={faPlus}/>
@@ -43,7 +46,9 @@ const DocumentTable = ({tableData,setTableData,setRowData}:CreateDocumentProps) 
           tableData.map((row, index) => DocumentDataRow(
             index,
             tableData,
-            () => setRowData))
+            () => setRowData,
+            arrayHelpers
+          ))
         }
       </StyledBody>
     </StyledTable>
