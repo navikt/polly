@@ -2,7 +2,7 @@ import moment from "moment"
 import { Block } from "baseui/block"
 import { intl, theme } from "../../util"
 import ReactJson from "react-json-view"
-import React, { RefObject, useEffect } from "react"
+import React, { useEffect } from "react"
 import { AuditAction, AuditLog } from "../../constants"
 import { Label1 } from "baseui/typography"
 import { AuditActionIcon, AuditLabel as Label } from "./AuditComponents"
@@ -15,6 +15,7 @@ import { PLACEMENT, StatefulTooltip } from "baseui/tooltip"
 import { ObjectLink } from "../common/RouteLink"
 import { StatefulPopover } from "baseui/popover"
 import DiffViewer from "react-diff-viewer"
+import { useRefs } from "../../util/hooks"
 
 type AuditViewProps = {
   auditLog?: AuditLog,
@@ -23,14 +24,10 @@ type AuditViewProps = {
   viewId: (id: string) => void
 }
 
-type Refs = { [id: string]: RefObject<HTMLElement> }
 
 export const AuditView = (props: AuditViewProps) => {
   const {auditLog, auditId, loading, viewId} = props
-  const refs: Refs = auditLog?.audits.reduce((acc, value) => {
-    acc[value.id] = React.createRef();
-    return acc;
-  }, {} as Refs) || {};
+  const refs = useRefs(auditLog?.audits.map(al => al.id) || [])
 
   useEffect(() => {
     if (auditId && auditLog && refs[auditId] && auditId !== auditLog.audits[0].id) {

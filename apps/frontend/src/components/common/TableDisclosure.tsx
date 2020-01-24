@@ -4,7 +4,7 @@ import { useStyletron, withStyle } from "baseui";
 
 import { ListLegalBasesInTable } from "./LegalBasis"
 import { intl } from "../../util"
-import { Disclosure, DisclosureFormValues, disclosureSort, DocumentInfoTypeUse } from "../../constants"
+import { Disclosure, DisclosureFormValues, disclosureSort } from "../../constants"
 import { useTable } from "../../util/hooks"
 import RouteLink from "./RouteLink"
 import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
@@ -16,6 +16,8 @@ import { Paragraph2 } from "baseui/typography";
 import { Block } from "baseui/block";
 import ModalThirdParty from "../ThirdParty/ModalThirdPartyForm";
 import { mapDisclosureToFormValues } from "../../api"
+import { StyledLink } from "baseui/link"
+import { DocumentReferences } from "../InformationType/InformationtypeMetadata/DocumentTable"
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",
@@ -36,32 +38,18 @@ const SmallerStyledCell = withStyle(StyledCell, {
     maxWidth: '15%'
 })
 
-const renderInformationTypesInCell = (informationtypeList: DocumentInfoTypeUse[]) => {
-    if (!informationtypeList) return ''
-    const informationTypeNameList = informationtypeList.reduce((acc, curr) => {
-        if (!acc) acc = [curr.informationType.name]
-        else acc = [...acc, curr.informationType.name]
-        return acc
-    }, [] as string[])
-
-    return (
-        <React.Fragment>
-            {informationTypeNameList.join(', ')}
-        </React.Fragment>
-    )
-}
-
 type TableDisclosureProps = {
     list: Array<Disclosure>;
     showRecipient: boolean;
     editable: boolean;
     submitDeleteDisclosure?: (disclosure: Disclosure) => Promise<boolean>;
     submitEditDisclosure?: (disclosure: DisclosureFormValues) => Promise<boolean>;
-    errorModal?: string | undefined;
+    errorModal?: string;
     onCloseModal?: () => void;
+    documentRef?: DocumentReferences
 };
 
-const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal}: TableDisclosureProps) => {
+const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal, documentRef}: TableDisclosureProps) => {
     const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false)
     const [showEditModal, setShowEditModal] = React.useState<boolean>()
     const [selectedDisclosure, setSelectedDisclosure] = React.useState<Disclosure>()
@@ -84,7 +72,7 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
                     )}
 
                     <SortableHeadCell
-                        title={intl.informationTypes}
+                        title={intl.document}
                         direction={table.direction.document}
                         onSort={() => sortColumn('document')}
                         fillClickTarget
@@ -114,8 +102,16 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
                                     <RouteLink href={`/thirdparty/${row.recipient.code}`}>{row.recipient.shortName}</RouteLink>
                                 </StyledCell>
                             )}
-                            <StyledCell>{renderInformationTypesInCell(row.document?.informationTypes || [])}</StyledCell>
-                            <StyledCell>{row.description}</StyledCell>
+                            <StyledCell>
+                              {!documentRef && <RouteLink href={`/document/${row.documentId}`}>{row.document?.name}</RouteLink>}
+                              {documentRef && <StyledLink href="#" onClick={(e: Event) => {
+                                e.preventDefault()
+                                documentRef[row.document!.id]?.()
+                              }}>
+                              {row.document?.name}
+                            </StyledLink>}
+                            </StyledCell>
+                            <StyledCell>{row.document?.description}</StyledCell>
                             <StyledCell>
                                 {row.legalBases && (
                                     <ListLegalBasesInTable legalBases={row.legalBases}/>
