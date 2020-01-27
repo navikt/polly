@@ -41,7 +41,12 @@ export const processSchema = () => yup.object<ProcessFormValues>({
     legalBases: yup.array(legalBasisSchema()),
     legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
     start: yup.string().matches(DATE_REGEX, intl.dateFormat),
-    end: yup.string().matches(DATE_REGEX, intl.dateFormat)
+    end: yup.string().matches(DATE_REGEX, intl.dateFormat),
+    automaticProcessing: yup.boolean(),
+    profiling: yup.boolean(),
+    dataProcessor: yup.boolean(),
+    dataProcessorAgreement: yup.string(),
+    dataProcessorOutsideEU: yup.boolean(),
 })
 
 const missingArt9LegalBasisForSensitiveInfoType = (informationType: PolicyInformationType, policy: PolicyFormValues) => {

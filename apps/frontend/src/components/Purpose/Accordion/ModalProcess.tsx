@@ -17,8 +17,9 @@ import { ListLegalBases } from "../../common/LegalBasis"
 import { DateModalFields } from "../DateModalFields"
 import { hasSpecifiedDate } from "../../common/Durations"
 import { processSchema } from "../../common/schema"
-import { getTeam, mapTeamToOption, useTeamSearch } from "../../../api/TeamApi"
+import { getTeam, mapTeamToOption, useTeamSearch } from "../../../api"
 import { Textarea } from "baseui/textarea"
+import { Radio, RadioGroup } from "baseui/radio"
 
 const modalBlockProps: BlockProps = {
     width: '750px',
@@ -100,6 +101,36 @@ const FieldSubDepartment = (props: {subDepartment?: string}) => {
     )
 
 };
+
+const YES = "YES", NO = "NO", UNCLARIFIED = "UNCLARIFIED"
+const boolToRadio = (bool?: boolean) => bool === undefined ? UNCLARIFIED : bool ? YES : NO
+const radioToBool = (radio: string) => radio === UNCLARIFIED ? undefined : radio === YES
+
+const BoolField = (props: { value?: boolean, fieldName: string}) => (
+  <Field
+    name={props.fieldName}
+    render={({form}: FieldProps<ProcessFormValues>) => (
+
+      <RadioGroup value={boolToRadio(props.value)} align="horizontal"
+                  overrides={{RadioGroupRoot:{style:{width:"100%"}}}}
+                  onChange={(e) => form.setFieldValue(props.fieldName, radioToBool(e.target.value))}
+      >
+        <Radio overrides={{Label: {style: {marginRight: "2rem"}}}} value={YES}>{intl.yes}</Radio>
+        <Radio overrides={{Label: {style: {marginRight: "2rem"}}}} value={NO}>{intl.no}</Radio>
+        <Radio overrides={{Label: {style: {marginRight: "2rem"}}}} value={UNCLARIFIED}>{intl.unclarified}</Radio>
+      </RadioGroup>
+    )}
+  />
+)
+
+const FieldDataProcessorAgreement = () => (
+  <Field
+    name="dataProcessorAgreement"
+    render={({ field, form }: FieldProps<ProcessFormValues>) => (
+      <Input {...field} type="input" size={InputSIZE.compact} error={!!form.errors.dataProcessorAgreement && form.touched.dataProcessorAgreement} />
+    )}
+  />
+)
 
 const FieldProductTeam = (props: {productTeam?: string}) => {
     const { productTeam } = props;
@@ -202,6 +233,34 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                                     <ModalLabel label={intl.productTeam}/>
                                     <FieldProductTeam productTeam={formikBag.values.productTeam} />
                                 </Block>
+
+                                <Block {...rowBlockProps}>
+                                  <ModalLabel label={intl.automaticProcessing} tooltip={intl.automaticProcessingExtra}/>
+                                  <BoolField fieldName="automaticProcessing" value={formikBag.values.automaticProcessing}/>
+                                </Block>
+
+                                <Block {...rowBlockProps}>
+                                  <ModalLabel label={intl.profiling} tooltip={intl.profilingExtra}/>
+                                  <BoolField fieldName="profiling" value={formikBag.values.profiling}/>
+                                </Block>
+
+                                <Block {...rowBlockProps}>
+                                  <ModalLabel label={intl.dataProcessor} tooltip={intl.dataProcessorExtra}/>
+                                  <BoolField fieldName="dataProcessor" value={formikBag.values.dataProcessor}/>
+                                </Block>
+
+                              {formikBag.values.dataProcessor && <>
+                                <Block {...rowBlockProps}>
+                                  <ModalLabel label={intl.dataProcessorAgreement}/>
+                                  <FieldDataProcessorAgreement/>
+                                </Block>
+                                <Error fieldName="dataProcessorAgreement"/>
+
+                                <Block {...rowBlockProps}>
+                                  <ModalLabel label={intl.dataProcessorOutsideEU} tooltip={intl.dataProcessorOutsideEUExtra}/>
+                                  <BoolField fieldName="dataProcessorOutsideEU" value={formikBag.values.dataProcessorOutsideEU}/>
+                                </Block>
+                              </>}
 
                                 <DateModalFields showDates={hasSpecifiedDate(initialValues)} showLabels={true} rowBlockProps={rowBlockProps} />
 

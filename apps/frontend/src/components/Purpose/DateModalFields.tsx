@@ -30,7 +30,11 @@ export const DateModalFields = (props: DateModalProps) => {
     return (
         <>
             {!showDates ?
-                <Block {...rowBlockProps}><Button size="compact" onClick={() => setShowDates(true)}>{intl.useDates}</Button></Block>
+              <Block {...rowBlockProps}>
+                <Button size="compact" shape='pill'
+                        overrides={{BaseButton: {style: {padding: '6px 8px'}}}}
+                        onClick={() => setShowDates(true)}>{intl.useDates}</Button>
+              </Block>
                 : <>
                     <Block {...rowBlockProps}>
                         {showLabels && <ModalLabel label={intl.startDate}/>}
