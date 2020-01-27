@@ -13,7 +13,8 @@ import {FieldArrayRenderProps} from "formik";
 const DocumentDataRow = (index: number,
                          tableData: DocumentTableRow[],
                          setRowData: Function,
-                         arrayHelpers: FieldArrayRenderProps) => {
+                         arrayHelpers: FieldArrayRenderProps,
+                         removeRow:Function) => {
   return (
     <React.Fragment key={index}>
       <StyledRow>
@@ -23,20 +24,29 @@ const DocumentDataRow = (index: number,
             rowData={tableData[index]}
             setRowData={setRowData}
             index={index}
+            arrayHelpers={arrayHelpers}
           />
         </StyledCell>
 
         <StyledCell style={{maxWidth: "52.5%"}}>
-          <FieldSubjectCategory value={""} rowData={tableData[index]} setRowData={setRowData} index={index}/>
+          <FieldSubjectCategory
+            value={""}
+            rowData={tableData[index]}
+            setRowData={setRowData}
+            index={index}
+            arrayHelpers={arrayHelpers}
+          />
         </StyledCell>
 
         <StyledCell style={{maxWidth: "2.5%", justifyContent: "center"}}>
           <StatefulTooltip content={intl.delete}>
             <Button
+              type={"button"}
               size={ButtonSize.compact}
               kind={KIND.tertiary}
               onClick={() => {
-                console.log(tableData);
+                removeRow(index);
+                arrayHelpers.remove(index);
               }}>
               <FontAwesomeIcon icon={faTrash}/>
             </Button>

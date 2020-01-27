@@ -7,7 +7,6 @@ import {DocumentInformationTypes, DocumentTableRow} from "../../../constants";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import DocumentDataRow from "./DocumentDataRow";
-import {Block} from "baseui/block";
 import {useStyletron} from "baseui";
 import {FieldArrayRenderProps} from "formik";
 
@@ -16,9 +15,15 @@ type CreateDocumentProps = {
   setTableData:Function,
   setRowData:Function,
   arrayHelpers:FieldArrayRenderProps
+  removeRow:Function
 }
 
-const DocumentTable = ({tableData,setTableData,setRowData,arrayHelpers}:CreateDocumentProps) => {
+const DocumentTable = ({
+                         tableData,
+                         setTableData,
+                         setRowData,
+                         arrayHelpers,
+                         removeRow}:CreateDocumentProps) => {
   const [useCss] = useStyletron();
   return(
     <StyledTable className={useCss({overflow: "hidden !important"})}>
@@ -28,13 +33,13 @@ const DocumentTable = ({tableData,setTableData,setRowData,arrayHelpers}:CreateDo
         <StyledHeadCell style={{maxWidth: "2.5%", justifyContent: "center"}}>
           <StatefulTooltip content={intl.addNew} placement={PLACEMENT.top}>
             <Button
+              type={"button"}
               size={ButtonSize.compact}
               kind={KIND.tertiary}
               onClick={() => {
                 let emptyRow = {informationTypes: undefined, categories: []} as DocumentTableRow;
                 setTableData([...tableData, emptyRow]);
                 arrayHelpers.push({informationTypeId:"",subjectCategories:[]} as DocumentInformationTypes);
-                console.log(tableData);
               }}>
               <FontAwesomeIcon icon={faPlus}/>
             </Button>
@@ -47,7 +52,8 @@ const DocumentTable = ({tableData,setTableData,setRowData,arrayHelpers}:CreateDo
             index,
             tableData,
             () => setRowData,
-            arrayHelpers
+            arrayHelpers,
+            removeRow
           ))
         }
       </StyledBody>
