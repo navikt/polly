@@ -8,8 +8,9 @@ import {CreateDocumentFormValues, DocumentTableRow} from "../../../constants";
 import DocumentTable from "./DocumentTable";
 import {Field, FieldArray, FieldProps, Form, Formik} from "formik";
 import {Button} from "baseui/button";
-import {Code} from "../../../service/Codelist";
 import axios from "axios";
+import {Error} from "../../common/ModalSchema";
+import {createDocumentValidation} from "../../common/schema";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT
 
@@ -61,12 +62,13 @@ const CreateDocument = () => {
     <React.Fragment>
       <Formik
         initialValues={initialCreateDocumentFormValues}
-        onSubmit={(values,{resetForm}) => {
+        onSubmit={(values:CreateDocumentFormValues,{resetForm}) => {
           console.log(values)
           handleCreateDocument(values);
           resetForm();
           setTableData([]);
         }}
+        validationSchema={createDocumentValidation}
       >
         {
           (formikProps:any) => (
@@ -80,6 +82,7 @@ const CreateDocument = () => {
                     )
                   }
                 </Field>
+                <Error fieldName="name" fullWidth={true}/>
               </Block>
               <Block {...rowBlockProps}>
                 <Label2>{intl.description}</Label2>
@@ -94,6 +97,7 @@ const CreateDocument = () => {
                     )
                   }
                 </Field>
+                <Error fieldName="description" fullWidth={true}/>
               </Block>
               <Block {...rowBlockProps}>
                 <FieldArray
@@ -110,6 +114,7 @@ const CreateDocument = () => {
                     )
                   }
                 />
+                <Error fieldName="informationTypes" fullWidth={true}/>
               </Block>
               <Block display="flex" flexDirection="row-reverse">
                 <Button

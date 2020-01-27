@@ -1,8 +1,8 @@
 import * as yup from "yup"
 import {
-  AddDocumentToProcessFormValues,
+  AddDocumentToProcessFormValues, CreateDocumentFormValues,
   DisclosureFormValues,
-  Document,
+  Document, DocumentInformationTypes,
   DocumentInfoTypeUse,
   InformationtypeFormValues,
   LegalBasesStatus,
@@ -58,6 +58,12 @@ const missingArt6LegalBasisForInfoType = (policy: PolicyFormValues) => {
     const processMissingArt6 = !policy.process.legalBases.filter(lb => codelist.isArt6(lb.gdpr.code)).length
     return ownLegalBasis && missingArt6 && processMissingArt6
 }
+
+export const createDocumentValidation = ()=>yup.object<CreateDocumentFormValues>({
+  name: yup.string().required(intl.required),
+  description:yup.string().required(intl.required),
+  informationTypes:yup.mixed().required(intl.required)
+});
 
 export const policySchema = () => yup.object<PolicyFormValues>({
     informationType: yup.object<PolicyInformationType>().required(intl.required)
