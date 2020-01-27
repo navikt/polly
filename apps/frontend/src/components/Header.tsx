@@ -214,6 +214,12 @@ const Header = (props: HeaderProps) => {
                 </StyledNavigationItem>
 
                 <StyledNavigationItem>
+                    <RouteLink href="/document" className={link}>
+                        {intl.documents}
+                    </RouteLink>
+                </StyledNavigationItem>
+
+                <StyledNavigationItem>
                     <RouteLink href="/informationtype" className={link}>
                         {intl.informationTypes}
                     </RouteLink>
