@@ -16,13 +16,13 @@ import { intl } from "../../util"
 import { Code, codelist } from "../../service/Codelist"
 
 const DATE_REGEX = /\d{4}-\d{2}-\d{2}/
-const max = 60
+const max = 150
 
 const maxError = () => intl.formatString(intl.maxChars, max) as string
 
 
 export const infoTypeSchema = () => yup.object<InformationtypeFormValues>({
-    name: yup.string().required(intl.required),
+    name: yup.string().required(intl.required).max(max, maxError()),
     term: yup.string(),
     sensitivity: yup.string().required(intl.required),
     categories: yup.array(yup.string()),

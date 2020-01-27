@@ -4,6 +4,8 @@ import { SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledRow, Styled
 import { intl, theme } from "../../../util"
 import { useRefs, useTable } from "../../../util/hooks"
 import { withStyle } from "baseui"
+import RouteLink from "../../common/RouteLink"
+import { Label2 } from "baseui/typography"
 
 const Head = withStyle(StyledHead, {
   backgroundColor: "transparent",
@@ -52,7 +54,7 @@ export const DocumentTable = (props: DocumentTableProps) => {
           {table.data.map((row, index) => (
             <Row key={index} selected={row.id === selected} ref={refs[row.id]}>
               <StyledCell>
-                {row.name}
+                <RouteLink href={`/document/${row.id}`}>{row.name}</RouteLink>
               </StyledCell>
               <StyledCell>
                 {row.description}
@@ -62,10 +64,9 @@ export const DocumentTable = (props: DocumentTableProps) => {
               </StyledCell>
             </Row>
           ))}
-
         </StyledBody>
       </StyledTable>
-
+      {!table.data.length && <Label2 margin="1rem">{intl.emptyTable} {intl.documents}</Label2>}
     </>
   )
 }

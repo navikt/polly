@@ -8,6 +8,7 @@ import { intl } from "../../../util"
 import { Policy, policySort } from "../../../constants"
 import { useTable } from "../../../util/hooks"
 import RouteLink from "../../common/RouteLink"
+import { Label2 } from "baseui/typography"
 
 const StyledHeader = withStyle(StyledHead, {
     backgroundColor: "transparent",
@@ -96,6 +97,7 @@ const InformationtypePolicyTable = ({policies, showPurpose}: TableInformationtyp
                     ))}
                 </StyledBody>
             </StyledTable>
+          {!table.data.length && <Label2 margin="1rem">{intl.emptyTable} {intl.processes}</Label2>}
         </React.Fragment>
     );
 };

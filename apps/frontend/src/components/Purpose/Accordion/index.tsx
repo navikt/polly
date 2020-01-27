@@ -367,6 +367,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                     </Panel>
                 ))}
             </Accordion>
+          {!props.processList.length && <Label2 margin="1rem">{intl.emptyTable} {intl.processes}</Label2>}
 
         </Block>
 

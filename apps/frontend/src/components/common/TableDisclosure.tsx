@@ -12,7 +12,7 @@ import { Button, KIND, SIZE } from "baseui/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "baseui/modal";
-import { Paragraph2 } from "baseui/typography";
+import { Label2, Paragraph2 } from "baseui/typography";
 import { Block } from "baseui/block";
 import ModalThirdParty from "../ThirdParty/ModalThirdPartyForm";
 import { mapDisclosureToFormValues } from "../../api"
@@ -154,6 +154,7 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
                     ))}
                 </StyledBody>
             </StyledTable>
+            {!table.data.length && <Label2 margin="1rem">{intl.emptyTable} {intl.disclosures}</Label2>}
 
             {editable && showEditModal && selectedDisclosure && (
                 <ModalThirdParty

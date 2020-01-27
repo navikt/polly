@@ -1,4 +1,4 @@
-import { Label1, Label3 } from "baseui/typography"
+import { Label1, Label2, Label3 } from "baseui/typography"
 import React, { useEffect, useState } from "react"
 import { getAudits } from "../../api/AuditApi"
 import { AuditItem, ObjectType, PageResponse } from "../../constants"
@@ -110,6 +110,7 @@ export const AuditRecentTable = (props: { show: boolean }) => {
           })}
         </StyledBody>
       </StyledTable>
+      {!audits.totalElements && <Label2 margin="1rem">{intl.emptyTable} {intl.audits}</Label2>}
 
       <Block display="flex" justifyContent="space-between" marginTop="1rem">
         <StatefulPopover
