@@ -6,6 +6,7 @@ import no.nav.data.polly.common.exceptions.PollyNotFoundException;
 import no.nav.data.polly.common.utils.MetricUtils;
 import no.nav.data.polly.teams.TeamService;
 import no.nav.data.polly.teams.domain.Team;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -66,6 +67,7 @@ public class NoraClient implements TeamService {
     private List<Team> getTeams() {
         List<NoraTeam> noraApps = allTeamsCache.get("singleton");
         return safeStream(noraApps).map(NoraTeam::convertToTeam).distinct()
+                .filter(team -> StringUtils.isNotBlank(team.getId()))
                 .sorted(Comparator.comparing(Team::getName)).collect(Collectors.toList());
     }
 
