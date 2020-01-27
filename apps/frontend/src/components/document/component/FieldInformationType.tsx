@@ -1,18 +1,21 @@
-import {DocumentTableRow, PolicyInformationType} from "../../../constants";
+import {DocumentInformationTypes, DocumentTableRow, PolicyInformationType} from "../../../constants";
 import {Select, TYPE} from "baseui/select";
 import React from "react";
 import index from "../../Purpose/Accordion";
 import {useInfoTypeSearch} from "../../../api";
+import {FieldArrayRenderProps} from "formik";
 
 const FieldInformationType = (props: {
   setValue: Function,
-  rowData:DocumentTableRow,
-  setRowData:Function,
-  index:number,
+  rowData: DocumentTableRow,
+  setRowData: Function,
+  index: number,
+  arrayHelpers: FieldArrayRenderProps
 }) => {
   const [selectedInformationType, setSelectedInformationType] = React.useState();
   const [infoTypeSearchResult, setInfoTypeSearchResult, infoTypeSearchLoading] = useInfoTypeSearch();
-  return(
+  return (
+
     <Select
       autoFocus
       maxDropdownHeight="400px"
@@ -24,12 +27,13 @@ const FieldInformationType = (props: {
       onInputChange={event => setInfoTypeSearchResult(event.currentTarget.value)}
       onChange={(params) => {
         let infoType = params.value[0] as PolicyInformationType;
-        console.log(infoType);
-        console.log(props.rowData)
         props.rowData.informationTypes = infoType;
-        props.setRowData(props.rowData,index);
+        props.setRowData(props.rowData, index);
         setSelectedInformationType(infoType)
-        // console.log(params);
+
+        let  informationType = props.arrayHelpers.form.values.informationTypes[props.index] as DocumentInformationTypes;
+        informationType.informationTypeId = infoType.id;
+        props.arrayHelpers.replace(props.index,informationType);
       }}
       filterOptions={options => options}
       labelKey="name"
