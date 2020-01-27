@@ -37,9 +37,7 @@ const CreateDocument = () => {
     let body = {...values};
     setLoading(true)
     try {
-      console.log("Body: ",body);
       const response = await axios.post(`${server_polly}/document`, body);
-      console.log(response);
     } catch (error) {
       console.log(error.message)
     }
@@ -66,7 +64,6 @@ const CreateDocument = () => {
       <Formik
         initialValues={initialCreateDocumentFormValues}
         onSubmit={(values:CreateDocumentFormValues,{resetForm}) => {
-          console.log(values)
           handleCreateDocument(values);
           resetForm();
           setTableData([]);
@@ -125,7 +122,7 @@ const CreateDocument = () => {
                   overrides={{
                     BaseButton: {
                       style: {
-                        marginTop: "5px",
+                        marginTop: "10px",
                         marginLeft: "5px",
                         paddingRight: "4rem",
                         paddingLeft: "4rem",
@@ -140,7 +137,7 @@ const CreateDocument = () => {
                   overrides={{
                     BaseButton: {
                       style: {
-                        marginTop : "5px",
+                        marginTop : "10px",
                         paddingRight: "4rem",
                         paddingLeft: "4rem",
                       }
