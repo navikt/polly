@@ -1,18 +1,17 @@
 import * as React from "react"
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {faEdit, faExclamation, faTrash} from "@fortawesome/free-solid-svg-icons"
-import {ARTWORK_SIZES, ListItem, ListItemLabel} from "baseui/list";
-import {Block} from 'baseui/block'
-import {Button} from "baseui/button"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faEdit, faExclamation, faTrash } from "@fortawesome/free-solid-svg-icons"
+import { ARTWORK_SIZES, ListItem, ListItemLabel } from "baseui/list";
+import { Block } from 'baseui/block'
+import { Button } from "baseui/button"
 
-import {LegalBasis, LegalBasisFormValues} from "../../constants"
-import {codelist, ListName} from "../../service/Codelist"
-import {processString} from "../../util/string-processor"
-import {intl, theme} from "../../util"
-import {ActiveIndicator} from "./Durations"
-import {StyledLink} from "baseui/link"
-
-const lovdata_base = process.env.REACT_APP_LOVDATA_BASE_URL;
+import { LegalBasis, LegalBasisFormValues } from "../../constants"
+import { codelist, ListName } from "../../service/Codelist"
+import { processString } from "../../util/string-processor"
+import { intl, theme } from "../../util"
+import { ActiveIndicator } from "./Durations"
+import { StyledLink } from "baseui/link"
+import { env } from "../../util/env"
 
 export const LegalBasisView = (props: { legalBasis?: LegalBasis, legalBasisForm?: LegalBasisFormValues }) => {
     const input = props.legalBasis ? props.legalBasis : props.legalBasisForm;
@@ -36,13 +35,13 @@ const legalBasisLinkProcessor = (law: string, text?: string) => processString([
     {
         regex: /(§+)\s?(\d+(-\d+)?)/g,
         fn: (key: string, result: string[]) =>
-            <StyledLink key={key} href={`${lovdata_base + codelist.getDescription(ListName.NATIONAL_LAW, law)}/§${result[2]}`} target="_blank" rel="noopener noreferrer">
+            <StyledLink key={key} href={`${env.lovdataBaseUrl + codelist.getDescription(ListName.NATIONAL_LAW, law)}/§${result[2]}`} target="_blank" rel="noopener noreferrer">
                 {result[1]} {result[2]}
             </StyledLink>
     }, {
         regex: /kap(ittel)?\s?(\d+)/gi,
         fn: (key: string, result: string[]) =>
-            <StyledLink key={key} href={`${lovdata_base + codelist.getDescription(ListName.NATIONAL_LAW, law)}/KAPITTEL_${result[2]}`} target="_blank" rel="noopener noreferrer">
+            <StyledLink key={key} href={`${env.lovdataBaseUrl + codelist.getDescription(ListName.NATIONAL_LAW, law)}/KAPITTEL_${result[2]}`} target="_blank" rel="noopener noreferrer">
                 Kapittel {result[2]}
             </StyledLink>
     }

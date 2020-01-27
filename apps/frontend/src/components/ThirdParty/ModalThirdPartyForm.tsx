@@ -113,7 +113,7 @@ const FieldInformationType = (props: {
                             searchable={true}
                             type="search"
                             options={props.informationTypes}
-                            placeholder="Søk opplysningstyper"
+                            placeholder={intl.informationTypeSearch}
                             onInputChange={event => props.searchInformationType(event.currentTarget.value)}
                             onChange={(params) => {
                                 let infoType = params.value[0] as PolicyInformationType

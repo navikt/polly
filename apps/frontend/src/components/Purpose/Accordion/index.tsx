@@ -10,7 +10,7 @@ import { intl, theme, useAwait } from '../../../util';
 import _includes from 'lodash/includes'
 import { user } from "../../../service/User";
 import { Plus } from 'baseui/icon'
-import { LegalBasesStatus, LegalBasis, PolicyFormValues, Process, ProcessFormValues } from "../../../constants"
+import { AddDocumentToProcessFormValues, LegalBasesStatus, LegalBasis, Policy, PolicyFormValues, Process, ProcessFormValues } from "../../../constants"
 import { LegalBasisView } from "../../common/LegalBasis"
 import { codelist, ListName } from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
@@ -25,6 +25,7 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal';
 import { TeamPopover } from "../../common/Team"
 import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
 import { AuditButton } from "../../audit/AuditButton"
+import { AddDocumentModal } from "./AddDocumentModal"
 
 const rowPanelContent: BlockProps = {
     display: 'flex',
@@ -33,26 +34,28 @@ const rowPanelContent: BlockProps = {
 }
 
 type AccordionProcessProps = {
-    isLoading: boolean;
-    purposeCode: string;
-    processList: Process[];
-    currentProcess: Process | undefined;
-    errorProcessModal: any | null;
-    errorPolicyModal: string | null;
-    setProcessList: Function;
-    onChangeProcess: (processId: string) => void;
-    submitDeleteProcess: Function;
-    submitEditProcess: Function;
-    submitCreatePolicy: Function;
-    submitEditPolicy: Function;
-    submitDeletePolicy: Function;
+    isLoading: boolean
+    purposeCode: string
+    processList: Process[]
+    currentProcess?: Process
+    errorProcessModal: any | null
+    errorPolicyModal: string | null
+    errorDocumentModal: string | null
+    setProcessList: (processes: Process[]) => void
+    onChangeProcess: (processId: string) => void
+    submitDeleteProcess: (process: Process) => Promise<boolean>
+    submitEditProcess: (process: ProcessFormValues) => Promise<boolean>
+    submitCreatePolicy: (process: PolicyFormValues) => Promise<boolean>
+    submitEditPolicy: (process: PolicyFormValues) => Promise<boolean>
+    submitDeletePolicy: (process: Policy) => Promise<boolean>
+    submitAddDocument: (document: AddDocumentToProcessFormValues) => Promise<boolean>
 }
 
 const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<PathParams>) => {
     const [showEditProcessModal, setShowEditProcessModal] = React.useState(false)
     const [showCreatePolicyModal, setShowCreatePolicyModal] = React.useState(false)
+    const [showAddDocumentModal, setShowAddDocumentModal] = React.useState(false)
     const [showDeleteModal, setShowDeleteModal] = React.useState(false)
-    const [errorDeleteModal, setErrorDeleteModal] = React.useState(false)
     const purposeRef = React.useRef<HTMLInputElement>(null);
 
     const {
@@ -160,14 +163,31 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
     )
 
     const renderCreatePolicyButton = () => (
+      <StatefulTooltip content={intl.addOneInformationType} placement={PLACEMENT.top}>
         <Button
-            size={ButtonSize.compact}
-            kind={KIND.tertiary}
-            onClick={() => setShowCreatePolicyModal(true)}
-            startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
+          size={ButtonSize.compact}
+          kind={KIND.tertiary}
+          onClick={() => setShowCreatePolicyModal(true)}
+          startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
+          overrides={{StartEnhancer: {style: {marginRight: theme.sizing.scale100}}}}
         >
-            {intl.addNew}
+          {intl.informationType}
         </Button>
+      </StatefulTooltip>
+    )
+
+    const renderAddDocumentButton = () => (
+      <StatefulTooltip content={intl.addCollectionOfInformationTypes} placement={PLACEMENT.top}>
+        <Button
+          size={ButtonSize.compact}
+          kind={KIND.tertiary}
+          onClick={() => setShowAddDocumentModal(true)}
+          startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
+          overrides={{StartEnhancer: {style: {marginRight: theme.sizing.scale100}}}}
+        >
+          {intl.document}
+        </Button>
+      </StatefulTooltip>
     )
 
     const hasAccess = () => user.canWrite()
@@ -205,19 +225,25 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                             <React.Fragment>
 
                                 <Block {...rowPanelContent}>
-                                    <Block width="90%" flexWrap={true} display="flex">
-                                        <Block width="30%">{renderLegalBasisListForProcess(currentProcess.legalBases)}</Block>
-                                        <Block width="30%">{renderSubjectCategoriesForProcess(currentProcess)}</Block>
-                                        <Block width="30%">{renderActiveForProcess(currentProcess)}</Block>
-                                        {currentProcess.department && <Block width="30%">
+                                      <Block width="90%" flexWrap={true} display="flex" marginRight=".5rem">
+                                        {currentProcess.description && <Block marginBottom=".5rem" width="100%">
+                                          <Label2>{intl.processPurpose}</Label2>
+                                          <Paragraph2>{currentProcess.description}</Paragraph2>
+                                        </Block>}
+
+                                        <Block width="33%">{renderLegalBasisListForProcess(currentProcess.legalBases)}</Block>
+                                        <Block width="33%">{renderSubjectCategoriesForProcess(currentProcess)}</Block>
+                                        <Block width="33%">{renderActiveForProcess(currentProcess)}</Block>
+
+                                        {currentProcess.department && <Block width="33%">
                                             <Label2>{intl.department}</Label2>
                                             {codelist.getShortnameForCode(currentProcess.department)}
                                         </Block>}
-                                        {currentProcess.subDepartment && <Block width="30%">
+                                        {currentProcess.subDepartment && <Block width="33%">
                                             <Label2>{intl.subDepartment}</Label2>
                                             {codelist.getShortnameForCode(currentProcess.subDepartment)}
                                         </Block>}
-                                        {currentProcess.productTeam && <Block width="30%">
+                                        {currentProcess.productTeam && <Block width="33%">
                                             <Label2>{intl.productTeam}</Label2>
                                             <TeamPopover teamId={currentProcess.productTeam}/>
                                         </Block>}
@@ -236,9 +262,10 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                 <Block {...rowPanelContent}>
                                     <Label2 alignSelf="center">{intl.informationTypes}</Label2>
                                     {hasAccess() && (
-                                        <React.Fragment>
+                                        <Block alignSelf="flex-end">
+                                            {renderAddDocumentButton()}
                                             {renderCreatePolicyButton()}
-                                        </React.Fragment>
+                                        </Block>
                                     )}
                                 </Block>
                                 {currentProcess.policies && (
@@ -273,18 +300,27 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                         legalBasesStatus: LegalBasesStatus.INHERITED,
                                         process: currentProcess,
                                         purposeCode: currentProcess.purposeCode,
-                                        subjectCategory: undefined,
+                                        subjectCategories: [],
                                         start: undefined,
                                         end: undefined,
-                                        legalBases: []
+                                        legalBases: [],
+                                        documentIds: []
                                     }}
                                     isEdit={false}
                                     onClose={() => setShowCreatePolicyModal(false)}
                                     isOpen={showCreatePolicyModal}
                                     submit={(values: PolicyFormValues) => {
-                                        submitCreatePolicy(values) ? setShowCreatePolicyModal(false) : setShowCreatePolicyModal(true)
+                                        submitCreatePolicy(values).then(()=> setShowCreatePolicyModal(false)).catch(()=> setShowCreatePolicyModal(true))
                                     }}
                                     errorOnCreate={errorPolicyModal}
+                                />
+
+                                <AddDocumentModal
+                                  onClose={() => setShowAddDocumentModal(false)}
+                                  isOpen={showAddDocumentModal}
+                                  submit={(formValues) => props.submitAddDocument(formValues).then(() => setShowAddDocumentModal(false))}
+                                  process={currentProcess}
+                                  error={props.errorDocumentModal}
                                 />
 
                                 <Modal
@@ -295,7 +331,9 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                 >
                                     <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
                                     <ModalBody>
-                                        <Paragraph2>{intl.confirmDeleteProcessText} {currentProcess.name}</Paragraph2>
+                                      {!currentProcess?.policies.length && <Paragraph2>{intl.confirmDeleteProcessText} {currentProcess.name}</Paragraph2>}
+                                      {!!currentProcess?.policies.length &&
+                                      <Paragraph2>{intl.formatString(intl.cannotDeleteProcess, currentProcess?.name, '' + currentProcess?.policies.length)}</Paragraph2>}
                                     </ModalBody>
 
                                     <ModalFooter>
@@ -317,8 +355,8 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                                                 {intl.abort}
                                             </Button>
                                             <Button onClick={() =>
-                                                submitDeleteProcess(currentProcess) ? setShowDeleteModal(false) : setShowDeleteModal(true)
-                                            }>
+                                                submitDeleteProcess(currentProcess).then(()=> setShowDeleteModal(false)).catch(()=> setShowDeleteModal(true))
+                                            } disabled={!!currentProcess?.policies.length}>
                                                 {intl.delete}
                                             </Button>
                                         </Block>

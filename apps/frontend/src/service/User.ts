@@ -1,9 +1,7 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { UserInfo } from "../constants"
 import { intl } from "../util"
-
-axios.defaults.withCredentials = true;
-const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
+import { getUserInfo } from "../api"
 
 export enum Group {
   POLLY_READ = "POLLY_READ",
@@ -11,7 +9,6 @@ export enum Group {
   POLLY_ADMIN = "POLLY_ADMIN"
 }
 
-// TODO show error
 class UserService {
   loaded = false;
   userInfo: UserInfo = {loggedIn: false, groups: []};
@@ -23,8 +20,7 @@ class UserService {
   }
 
   private fetchData = async () => {
-    return axios
-    .get<UserInfo>(`${server_polly}/userinfo`)
+    return getUserInfo()
     .then(this.handleGetResponse)
     .catch(err => {
       this.error = err.message

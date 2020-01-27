@@ -1,33 +1,21 @@
 import * as React from "react";
-import {useEffect, useRef, useState} from "react";
-import {
-    SortableHeadCell,
-    StyledBody,
-    StyledCell,
-    StyledHead,
-    StyledHeadCell,
-    StyledRow,
-    StyledTable
-} from "baseui/table";
-import {useStyletron, withStyle} from "baseui";
-import {Code, codelist} from "../../service/Codelist";
-import {Block} from "baseui/block";
-import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEdit, faGhost, faTrash} from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
+import { SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from "baseui/table";
+import { useStyletron, withStyle } from "baseui";
+import { Code } from "../../service/Codelist";
+import { Block } from "baseui/block";
+import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faGhost, faTrash } from "@fortawesome/free-solid-svg-icons";
 import UpdateCodeListModal from "./ModalUpdateCodeList";
-import {intl} from "../../util";
+import { intl } from "../../util";
 import DeleteCodeListModal from "./ModalDeleteCodeList";
-import axios from "axios";
-import {useTable} from "../../util/hooks"
-import {getCodelistUsage} from "../../api"
-import {Usage} from "./CodeListUsage"
-import {CodeUsage} from "../../constants"
-import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
+import { useTable } from "../../util/hooks"
+import { deleteCodelist, getCodelistUsage, updateCodelist } from "../../api"
+import { Usage } from "./CodeListUsage"
+import { CodeListFormValues, CodeUsage } from "../../constants"
+import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
 import { AuditButton } from "../audit/AuditButton"
-
-const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
-
 
 const SmallerHeadCell = withStyle(StyledHeadCell, {
     maxWidth: "15%",
@@ -77,12 +65,9 @@ const CodeListTable = ({tableData, hasAccess, refresh}: TableCodelistProps) => {
     }, [showUsage, selectedCode])
     useEffect(() => setShowUsage(false), [tableData])
 
-    const handleEditCodelist = async (values: Code) => {
-        let body = [{
-            ...values,
-        }];
+    const handleEditCodelist = async (values: CodeListFormValues) => {
         try {
-            await axios.put<Code[]>(`${server_polly}/codelist`, body)
+            await updateCodelist({...values} as Code)
             refresh()
             setShowEditModal(false);
         } catch (error) {
@@ -93,7 +78,7 @@ const CodeListTable = ({tableData, hasAccess, refresh}: TableCodelistProps) => {
 
     const handleDeleteCodelist = async (values: { list: string, code: string }) => {
         try {
-            await axios.delete(`${server_polly}/codelist/${values.list}/${values.code}`)
+            await deleteCodelist(values.list, values.code)
             refresh()
             setShowDeleteModal(false);
         } catch (error) {

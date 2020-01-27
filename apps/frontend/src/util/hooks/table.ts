@@ -25,9 +25,9 @@ export type ColumnDirection<T> = {
     [P in keyof T]-?: SORT_DIRECTION | null
 }
 
-const getSort = <T, K extends keyof T>(column?: K, existingSort?: K, existingDir?: SORT_DIRECTION) => {
-    const direction = existingSort && column === existingSort && existingDir === SORT_DIRECTION.ASC ? SORT_DIRECTION.DESC : SORT_DIRECTION.ASC
-    return {direction, column}
+const newSort = <T, K extends keyof T>(newColumn?: K, columnPrevious?: K, directionPrevious?: SORT_DIRECTION) => {
+    const newDirection = columnPrevious && newColumn === columnPrevious && directionPrevious === SORT_DIRECTION.ASC ? SORT_DIRECTION.DESC : SORT_DIRECTION.ASC
+    return {newDirection, newColumn}
 }
 
 const getSortFunction = <T, K extends keyof T>(sortColumn: K, useDefaultStringCompare: boolean, sorting?: ColumnCompares<T>): Compare<T> | undefined => {
@@ -41,28 +41,28 @@ const getSortFunction = <T, K extends keyof T>(sortColumn: K, useDefaultStringCo
     return sorting[sortColumn]
 }
 
-function toDirection<K, T>(column: K | undefined, direction: SORT_DIRECTION): ColumnDirection<T> {
+const toDirection = <T, K extends keyof T>(direction: SORT_DIRECTION, column?: K): ColumnDirection<T> => {
     const newDirection: any = {}
-    newDirection[column!] = direction
+    newDirection[column] = direction
     return newDirection
 }
 
 export const useTable = <T, K extends keyof T>(initialData: Array<T>, config?: TableConfig<T, K>) => {
     const {sorting, useDefaultStringCompare, showLast} = config || {}
-    const initialSort = getSort<T, K>(config?.initialSortColumn, undefined, undefined)
+    const initialSort = newSort<T, K>(config?.initialSortColumn)
 
     const [data, setData] = useState<T[]>(initialData)
 
     const [isInitialSort, setIsInitialSort] = useState(true)
-    const [sortDirection, setSortDirection] = useState(initialSort.direction)
-    const [sortColumn, setSortColumn] = useState(initialSort.column)
-    const [direction, setDirection] = useState<ColumnDirection<T>>(toDirection(initialSort.column, initialSort.direction))
+    const [sortDirection, setSortDirection] = useState(initialSort.newDirection)
+    const [sortColumn, setSortColumn] = useState(initialSort.newColumn)
+    const [direction, setDirection] = useState<ColumnDirection<T>>(toDirection(initialSort.newDirection, initialSort.newColumn))
 
     useEffect(() => setData(sortTableData()), [sortColumn, sortDirection, initialData])
 
     const sortTableData = () => {
         if (sortColumn) {
-            const sortFunct = getSortFunction(sortColumn!, !!useDefaultStringCompare, sorting)
+            const sortFunct = getSortFunction(sortColumn, !!useDefaultStringCompare, sorting)
             if (!sortFunct) {
                 console.warn(`invalid sort column ${sortColumn} no sort function supplied`)
             } else {
@@ -81,11 +81,11 @@ export const useTable = <T, K extends keyof T>(initialData: Array<T>, config?: T
         return initialData
     }
 
-    const sort = (columnName: K, internal?: boolean) => {
-        const {direction, column} = getSort<T, K>(columnName, sortColumn, sortDirection)
-        setSortColumn(column)
-        setSortDirection(direction)
-        setDirection(toDirection(column, direction))
+    const sort = (sortColumnName: K) => {
+        const {newDirection, newColumn} = newSort<T, K>(sortColumnName, sortColumn, sortDirection)
+        setSortColumn(newColumn)
+        setSortDirection(newDirection)
+        setDirection(toDirection(newDirection, newColumn))
         setIsInitialSort(false)
     }
 

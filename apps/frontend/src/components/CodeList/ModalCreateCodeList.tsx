@@ -1,14 +1,14 @@
 import * as React from "react";
-import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
-import {Block, BlockProps} from "baseui/block";
-import {Label2} from "baseui/typography";
-import {Field, FieldProps, Form, Formik} from "formik";
-import {ProcessFormValues} from "../../constants";
-import {Input, SIZE as InputSIZE} from "baseui/input";
-import {Error} from "../common/ModalSchema";
-import {Textarea} from "baseui/textarea";
-import {Button, KIND} from "baseui/button";
-import {intl} from "../../util";
+import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
+import { Block, BlockProps } from "baseui/block";
+import { Label2 } from "baseui/typography";
+import { Field, FieldProps, Form, Formik } from "formik";
+import { CodeListFormValues, ProcessFormValues } from "../../constants";
+import { Input, SIZE as InputSIZE } from "baseui/input";
+import { Error } from "../common/ModalSchema";
+import { Textarea } from "baseui/textarea";
+import { Button, KIND } from "baseui/button";
+import { intl } from "../../util";
 import { codeListSchema } from "../common/schema"
 
 const modalBlockProps: BlockProps = {
@@ -29,8 +29,8 @@ type ModalCreateProps = {
     list: string,
     isOpen: boolean,
     errorOnCreate: any | undefined,
-    submit: Function,
-    onClose: Function,
+    submit: (code: CodeListFormValues) => Promise<void>,
+    onClose: () => void,
 };
 
 const CreateCodeListModal = ({isOpen, title, list, errorOnCreate, onClose, submit}: ModalCreateProps) => {

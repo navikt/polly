@@ -1,6 +1,5 @@
-import axios, { AxiosResponse } from "axios";
-
-const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
+import { AxiosResponse } from "axios";
+import { getAllCodelists } from "../api"
 
 export enum ListName {
     PURPOSE = "PURPOSE",
@@ -30,7 +29,6 @@ const DESCRIPTION_GDPR_ARTICLES = ['ART61C', 'ART61E', 'ART61F']
 const DEPARTMENTS_WITH_SUB_DEPARTMENTS = ['ØSA', 'YTA', 'ATA']
 
 
-// TODO show error
 class CodelistService {
     lists?: AllCodelists;
     error?: string;
@@ -41,11 +39,10 @@ class CodelistService {
     }
 
     private fetchData = async () => {
-        return axios
-        .get<AllCodelists>(`${server_polly}/codelist`)
+        return getAllCodelists()
         .then(this.handleGetCodelistResponse)
-        .catch(err => (this.error = err.message));
-    };
+        .catch(err => (this.error = err.message))
+    }
 
     handleGetCodelistResponse = (response: AxiosResponse<AllCodelists>) => {
         if (typeof response.data === "object" && response.data !== null) {
@@ -102,6 +99,13 @@ class CodelistService {
         return this.getCodes(listName).map((code: Code) => {
             return {id: code.code, label: code.shortName};
         });
+    }
+
+    getParsedOptionsFilterOutSelected(listName: ListName, currentSelected: string[]): { id: string, label: string}[] {
+        let parsedOptions = this.getParsedOptions(listName)
+        return !currentSelected ? parsedOptions : parsedOptions.filter(option =>
+            currentSelected.includes(option.id) ? null : option.id
+        );
     }
 
     requiresNationalLaw(gdprCode?: string) {

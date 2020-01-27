@@ -1,15 +1,16 @@
 import * as React from "react";
+import { useEffect } from "react";
 
 import { Block, BlockProps } from "baseui/block";
 import { Plus } from "baseui/icon";
 import { Label2 } from "baseui/typography";
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
-import { Policy, PolicyFormValues, Process, ProcessFormValues } from "../../constants"
+import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues } from "../../constants"
 import { intl, useAwait } from "../../util"
 import { user } from "../../service/User";
 import ModalProcess from './Accordion/ModalProcess'
 import AccordionProcess from "./Accordion";
-import { createPolicy, createProcess, deletePolicy, deleteProcess, getProcess, getProcessesForPurpose, updatePolicy, updateProcess } from "../../api"
+import { createPolicies, createPolicy, createProcess, deletePolicy, deleteProcess, getProcess, getProcessesForPurpose, updatePolicy, updateProcess } from "../../api"
 
 const rowBlockProps: BlockProps = {
     marginBottom: 'scale800',
@@ -27,6 +28,7 @@ const ProcessList = ({ purposeCode }: ProcessListProps) => {
     const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
     const [errorProcessModal, setErrorProcessModal] = React.useState(null)
     const [errorPolicyModal, setErrorPolicyModal] = React.useState(null)
+    const [errorDocumentModal, setErrorDocumentModal] = React.useState(null)
 
 
     const [isLoadingProcessList, setIsLoadingProcessList] = React.useState(true)
@@ -84,7 +86,7 @@ const ProcessList = ({ purposeCode }: ProcessListProps) => {
     }
 
     const handleCreatePolicy = async (values: PolicyFormValues) => {
-        if (!values || !currentProcess) return
+        if (!values || !currentProcess) return false
 
         try {
             const policy = await createPolicy(values)
@@ -109,10 +111,11 @@ const ProcessList = ({ purposeCode }: ProcessListProps) => {
             return true
         } catch (err) {
             setErrorPolicyModal(err.message)
+          return false
         }
     }
     const handleDeletePolicy = async (policy?: Policy) => {
-        if (!policy) return
+        if (!policy) return false
         try {
             await deletePolicy(policy.id)
             if (currentProcess) {
@@ -127,15 +130,36 @@ const ProcessList = ({ purposeCode }: ProcessListProps) => {
         }
     }
 
+    const handleAddDocument = async (formValues: AddDocumentToProcessFormValues) => {
+      try {
+        const policies: PolicyFormValues[] = formValues.informationTypes.map(infoType => ({
+          subjectCategories: infoType.subjectCategories.map(c => c.code),
+          informationType: infoType.informationType,
+          process: formValues.process,
+          purposeCode: formValues.process.purposeCode,
+          legalBases: [],
+          legalBasesOpen: false,
+          legalBasesStatus: LegalBasesStatus.INHERITED,
+          documentIds: [formValues.document!.id]
+        }))
+        await createPolicies(policies)
+        await getProcessById(formValues.process.id)
+      } catch (e) {
+        console.log(e)
+        setErrorDocumentModal(e.message)
+        return false
+      }
+      return true
+    }
+
     const hasAccess = () => user.canWrite()
 
     useAwait(user.wait())
 
-    React.useEffect(() => {
-        const fetchData = async () => {
-            await getProcessListByPurpose(purposeCode)
-        };
-        fetchData();
+    useEffect(() => {
+      (async () => {
+        await getProcessListByPurpose(purposeCode)
+      })()
     }, [purposeCode]);
 
     return (
@@ -170,8 +194,10 @@ const ProcessList = ({ purposeCode }: ProcessListProps) => {
                         submitCreatePolicy={handleCreatePolicy}
                         submitEditPolicy={handleEditPolicy}
                         submitDeletePolicy={handleDeletePolicy}
+                        submitAddDocument={handleAddDocument}
                         errorProcessModal={errorProcessModal}
                         errorPolicyModal={errorPolicyModal}
+                        errorDocumentModal={errorDocumentModal}
                     />
                 }
 
@@ -182,7 +208,7 @@ const ProcessList = ({ purposeCode }: ProcessListProps) => {
                     submit={(values: ProcessFormValues) => handleCreateProcess(values)}
                     errorOnCreate={errorProcessModal}
                     isEdit={false}
-                    initialValues={{ legalBasesOpen: false, name: '', department: '', subDepartment: '', purposeCode: purposeCode, legalBases: [] }}
+                    initialValues={{ legalBasesOpen: false, name: '', description: undefined, department: '', subDepartment: '', purposeCode: purposeCode, legalBases: [] }}
                 />
             </React.Fragment>
         </React.Fragment>

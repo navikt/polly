@@ -13,6 +13,7 @@ export interface IStrings {
     informationTypeSearch: string;
     term: string;
     purpose: string;
+    processPurpose: string;
     purposeDescription: string;
     sensitivity: string;
     processingActivities: string;
@@ -30,6 +31,8 @@ export interface IStrings {
     thirdParty: string;
     policy: string;
     usage: string;
+    and: string;
+    remove: string;
 
     // sentence
     loggedInStatus: string;
@@ -72,6 +75,11 @@ export interface IStrings {
     confirmDeleteHeader: string;
     confirmDeletePolicyText: string;
     confirmDeleteProcessText: string;
+    cannotDeleteProcess: string;
+    confirmDeleteInformationTypeText: string;
+    cannotDeleteInformationTypes: string;
+    informationTypeHasPolicies: string;
+    informationTypeHasDocuments: string;
     startIllustration: string;
     treasureIllustration: string;
     legalbasisGDPRArt9Info: string;
@@ -90,6 +98,11 @@ export interface IStrings {
     legalBasisComplete: string;
     validityOfProcess: string;
     validityOfPolicy: string;
+    chooseDocument: string;
+    addDocument: string;
+    searchDocuments: string;
+    addOneInformationType: string;
+    addCollectionOfInformationTypes: string;
 
     // groups
     POLLY_READ: string;

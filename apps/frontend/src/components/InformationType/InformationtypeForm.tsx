@@ -51,8 +51,8 @@ function renderTagList(
 
 type FormProps = {
     formInitialValues: InformationtypeFormValues;
-    submit: Function;
-    isEdit: Boolean;
+    submit: (infoType: InformationtypeFormValues) => Promise<void>;
+    isEdit: boolean;
 };
 
 const InformationtypeForm = ({

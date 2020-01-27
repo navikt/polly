@@ -1,16 +1,16 @@
 import * as React from "react";
-import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
+import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
 
-import {Field, FieldProps, Form, Formik,} from "formik";
+import { Field, FieldProps, Form, Formik, } from "formik";
 
-import {Button, KIND} from "baseui/button";
-import {Block, BlockProps} from "baseui/block";
-import {Label2} from "baseui/typography";
-import {Textarea} from "baseui/textarea";
-import {Input, SIZE as InputSIZE} from "baseui/input";
-import {CodeListFormValues, ProcessFormValues} from "../../constants";
-import {intl} from "../../util";
-import {Error} from "../common/ModalSchema";
+import { Button, KIND } from "baseui/button";
+import { Block, BlockProps } from "baseui/block";
+import { Label2 } from "baseui/typography";
+import { Textarea } from "baseui/textarea";
+import { Input, SIZE as InputSIZE } from "baseui/input";
+import { CodeListFormValues, ProcessFormValues } from "../../constants";
+import { intl } from "../../util";
+import { Error } from "../common/ModalSchema";
 import { codeListSchema } from "../common/schema"
 
 const modalBlockProps: BlockProps = {
@@ -31,14 +31,14 @@ type ModalUpdateProps = {
     initialValues: CodeListFormValues,
     isOpen: boolean,
     errorOnUpdate: any | undefined,
-    onClose: Function,
-    submit: Function,
+    onClose: () => void,
+    submit: (process: CodeListFormValues) => Promise<void>,
 };
 
 const UpdateCodeListModal = ({title, initialValues, errorOnUpdate, isOpen, onClose, submit}: ModalUpdateProps) => {
     return (
         <Modal
-            onClose={() => onClose()}
+            onClose={onClose}
             closeable
             isOpen={isOpen}
             animate
@@ -49,17 +49,10 @@ const UpdateCodeListModal = ({title, initialValues, errorOnUpdate, isOpen, onClo
             <Block {...modalBlockProps}>
                 <Formik
                     onSubmit={(values) => {
-                        submit(values);
-                        onClose();
+                      submit(values);
+                      onClose();
                     }}
-                    initialValues={
-                        {
-                            list: initialValues.list,
-                            code: initialValues.code,
-                            shortName: initialValues.shortName,
-                            description: initialValues.description,
-                        }
-                    }
+                    initialValues={{...initialValues}}
                     validationSchema={codeListSchema()}
                     render={() => (
                         <Form>

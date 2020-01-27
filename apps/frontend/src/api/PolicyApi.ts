@@ -1,35 +1,39 @@
 import axios from "axios"
 import { LegalBasesStatus, LegalBasis, PageResponse, Policy, PolicyFormValues } from "../constants"
-
-const server_polly = process.env.REACT_APP_POLLY_ENDPOINT;
+import { Code } from "../service/Codelist";
+import { env } from "../util/env"
 
 export const getPoliciesForInformationType = async (informationTypeId: string) => {
-  return (await axios.get<PageResponse<Policy>>(`${server_polly}/policy/?informationTypeId=${informationTypeId}`)).data
+  return (await axios.get<PageResponse<Policy>>(`${env.pollyBaseUrl}/policy/?informationTypeId=${informationTypeId}`)).data
 }
 
 export const getPolicy = async (policyId: string) => {
-  return (await axios.get<Policy>(`${server_polly}/policy/${policyId}`)).data
+  return (await axios.get<Policy>(`${env.pollyBaseUrl}/policy/${policyId}`)).data
 }
 
 export const createPolicy = async (policy: PolicyFormValues) => {
   let body = mapPolicyFromForm(policy)
-  return (await axios.post<PageResponse<Policy>>(`${server_polly}/policy`, [body])).data.content[0]
+  return (await axios.post<PageResponse<Policy>>(`${env.pollyBaseUrl}/policy`, [body])).data.content[0]
+}
+
+export const createPolicies = async (policies: PolicyFormValues[]) => {
+  let body = policies.map(mapPolicyFromForm)
+  return (await axios.post<PageResponse<Policy>>(`${env.pollyBaseUrl}/policy`, body)).data.content
 }
 
 export const updatePolicy = async (policy: PolicyFormValues) => {
   let body = mapPolicyFromForm(policy)
-  return (await axios.put<Policy>(`${server_polly}/policy/${policy.id}`, body)).data
+  return (await axios.put<Policy>(`${env.pollyBaseUrl}/policy/${policy.id}`, body)).data
 }
 
 export const deletePolicy = async (policyId: string) => {
-  return (await axios.delete<Policy>(`${server_polly}/policy/${policyId}`)).data
+  return (await axios.delete<Policy>(`${env.pollyBaseUrl}/policy/${policyId}`)).data
 }
 
 export const mapPolicyFromForm = (values: PolicyFormValues) => {
   return {
     ...values,
-    subjectCategory: undefined,
-    subjectCategories: [values.subjectCategory],
+    subjectCategories: values.subjectCategories,
     informationType: undefined,
     informationTypeName: values.informationType && values.informationType.name,
     process: values.process.name,
@@ -47,25 +51,25 @@ const getInitialLegalBasesStatus = (legalBasesInherited: boolean, legalBases: Le
   }
 }
 
-export const convertPolicyToFormValues = (policy: Policy): PolicyFormValues => {
-  let parsedLegalBases = policy.legalBases && policy.legalBases.map((legalBasis) => ({
-    gdpr: legalBasis.gdpr && legalBasis.gdpr.code,
-    nationalLaw: (legalBasis.nationalLaw && legalBasis.nationalLaw.code) || undefined,
-    description: legalBasis.description || undefined,
-    start: legalBasis.start || undefined,
-    end: legalBasis.end || undefined
-  }))
+export const convertLegalBasesToFormValues = (legalBases?: LegalBasis[]) => (legalBases || [])
+.map((legalBasis) => ({
+  gdpr: legalBasis.gdpr && legalBasis.gdpr.code,
+  nationalLaw: (legalBasis.nationalLaw && legalBasis.nationalLaw.code) || undefined,
+  description: legalBasis.description || undefined,
+  start: legalBasis.start || undefined,
+  end: legalBasis.end || undefined
+}))
 
-  return {
-    legalBasesOpen: false,
-    id: policy.id,
-    process: policy.process,
-    purposeCode: policy.purposeCode.code,
-    informationType: policy.informationType,
-    subjectCategory: policy?.subjectCategories.length ? policy.subjectCategories[0].code : '',
-    legalBasesStatus: getInitialLegalBasesStatus(policy.legalBasesInherited, policy.legalBases),
-    legalBases: parsedLegalBases,
-    start: policy.start || undefined,
-    end: policy.end || undefined
-  }
-}
+export const convertPolicyToFormValues = (policy: Policy): PolicyFormValues => ({
+  legalBasesOpen: false,
+  id: policy.id,
+  process: policy.process,
+  purposeCode: policy.purposeCode.code,
+  informationType: policy.informationType,
+  subjectCategories: policy.subjectCategories.map((code: Code) => code.code),
+  legalBasesStatus: getInitialLegalBasesStatus(policy.legalBasesInherited, policy.legalBases),
+  legalBases: convertLegalBasesToFormValues(policy.legalBases),
+  start: policy.start || undefined,
+  end: policy.end || undefined,
+  documentIds: policy.documentIds || []
+})

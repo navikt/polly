@@ -1,12 +1,16 @@
 import * as yup from "yup"
 import {
-    DisclosureFormValues,
-    InformationtypeFormValues,
-    LegalBasesStatus,
-    LegalBasisFormValues,
-    PolicyFormValues,
-    PolicyInformationType,
-    ProcessFormValues
+  AddDocumentToProcessFormValues,
+  DisclosureFormValues,
+  Document,
+  DocumentInfoTypeUse,
+  InformationtypeFormValues,
+  LegalBasesStatus,
+  LegalBasisFormValues,
+  PolicyFormValues,
+  PolicyInformationType,
+  Process,
+  ProcessFormValues
 } from "../../constants"
 import { intl } from "../../util"
 import { Code, codelist } from "../../service/Codelist"
@@ -30,6 +34,7 @@ export const infoTypeSchema = () => yup.object<InformationtypeFormValues>({
 
 export const processSchema = () => yup.object<ProcessFormValues>({
     name: yup.string().max(max, maxError()).required(intl.required),
+    description: yup.string(),
     department: yup.string(),
     subDepartment: yup.string(),
     productTeam: yup.string(),
@@ -71,7 +76,7 @@ export const policySchema = () => yup.object<PolicyFormValues>({
             return !missingArt6LegalBasisForInfoType(parent)
         }
     }),
-    subjectCategory: yup.string().required(intl.required),
+    subjectCategories: yup.array().of(yup.string()).min(1, intl.required),
     legalBasesStatus: yup.mixed().oneOf(Object.values(LegalBasesStatus)).required(intl.required),
     legalBases: yup.array(legalBasisSchema()),
     legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
@@ -79,7 +84,8 @@ export const policySchema = () => yup.object<PolicyFormValues>({
     purposeCode: yup.string(),
     id: yup.string(),
     start: yup.string().matches(DATE_REGEX, intl.dateFormat),
-    end: yup.string().matches(DATE_REGEX, intl.dateFormat)
+    end: yup.string().matches(DATE_REGEX, intl.dateFormat),
+    documentIds: yup.array(yup.string())
 })
 
 export const legalBasisSchema = () => yup.object<LegalBasisFormValues>({
@@ -113,4 +119,10 @@ export const disclosureSchema = () => yup.object<DisclosureFormValues>({
     legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
     start: yup.string().matches(DATE_REGEX, intl.dateFormat),
     end: yup.string().matches(DATE_REGEX, intl.dateFormat)
+})
+
+export const addDocumentToProcessSchema = () => yup.object<AddDocumentToProcessFormValues>({
+  document: yup.object<Document>().required(intl.required),
+  informationTypes: yup.array(yup.object<DocumentInfoTypeUse>()).required(intl.required),
+  process: yup.object<Process>().required(intl.required)
 })

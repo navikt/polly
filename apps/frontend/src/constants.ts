@@ -20,12 +20,13 @@ export interface PolicyFormValues {
     purposeCode: string
     informationType?: PolicyInformationType
     process: PolicyProcess
-    subjectCategory?: string
+    subjectCategories: string[]
     legalBasesStatus?: LegalBasesStatus
     legalBases: Array<LegalBasisFormValues>
     legalBasesOpen: boolean
     end?: string
     start?: string
+    documentIds?: string[]
 }
 
 export enum LegalBasesStatus {
@@ -38,6 +39,7 @@ export interface ProcessFormValues {
     id?: string
     purposeCode?: string
     name?: string
+    description?: string
     department?: string
     subDepartment?: string
     productTeam?: string
@@ -88,6 +90,7 @@ export interface Policy extends IDurationed {
     subjectCategories: Code[]
     legalBasesInherited: boolean
     legalBases: LegalBasis[]
+    documentIds?: string[]
 }
 
 export const policySort: ColumnCompares<Policy> = {
@@ -120,6 +123,7 @@ export interface PolicyProcess {
 export interface Process extends IDurationed {
     id: string
     name: string
+    description?: string
     legalBases: LegalBasis[]
     department: Code
     subDepartment: Code
@@ -222,6 +226,12 @@ export interface DocumentInfoTypeUse {
   informationTypeId: string,
   informationType: PolicyInformationType,
   subjectCategories: Code[]
+}
+
+export interface AddDocumentToProcessFormValues {
+  document?: Document
+  informationTypes: DocumentInfoTypeUse[]
+  process: Process
 }
 
 export interface CreateDocumentFormValues{

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { Dispatch, RefObject, SetStateAction, useEffect, useState } from "react";
 
 export function useDebouncedState<T>(
     initialValue: T,
@@ -36,4 +36,15 @@ export function useAwait<T>(p: Promise<T>, setLoading?: Dispatch<SetStateAction<
             setLoading && setLoading(false)
         })();
     }, []);
+}
+
+type Refs = { [id: string]: RefObject<HTMLElement> }
+
+export function useRefs(ids: string[]) {
+  const refs: Refs = ids.reduce((acc, value) => {
+    acc[value] = React.createRef();
+    return acc;
+  }, {} as Refs) || {};
+
+  return refs
 }

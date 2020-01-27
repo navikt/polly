@@ -61,7 +61,7 @@ const renderCardHeader = (text: string) => {
 
 interface CardLegalBasisProps {
     initValue: LegalBasisFormValues;
-    hideCard: Function;
+    hideCard: () => void;
     submit: (val: LegalBasisFormValues) => void;
     titleSubmitButton: string;
 }
