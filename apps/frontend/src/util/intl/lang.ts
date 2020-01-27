@@ -20,6 +20,7 @@ export const no: IStrings = {
   navMaster: "Master i NAV",
   productTeam: "Produktteam",
   disclosure: "Utlevering",
+  disclosures: "Utleveringer",
   documents: "Dokumenter",
   thirdParty: "Ekstern part",
   policy: 'Polis',
@@ -95,9 +96,9 @@ export const no: IStrings = {
   searchDocuments: "Søk dokumenter",
   addOneInformationType: "Legg til én opplysningstype",
   addCollectionOfInformationTypes: "Legg til én samling av opplysningstyper",
-
   groupByPurpose: "Grupper etter formål",
   showAll: "Vis alle",
+  emptyTable: "Ingen",
 
   POLLY_READ: "Les",
   POLLY_WRITE: "Skriv",
@@ -167,6 +168,7 @@ export const no: IStrings = {
   requiredDescription: "Artikkelen krever ytterligere beskrivelse",
 
   code: "Kode",
+  codes: "Koder",
   shortName: "Kortnavn",
   createCodeListTitle: "Ny kode",
   deleteCodeListConfirmationTitle: "Bekreft sletting",
@@ -209,6 +211,7 @@ export const en: IStrings = {
   subjectCategories: "Subject Categories",
   productTeam: "Product Team",
   disclosure: "Disclosure",
+  disclosures: "Disclosures",
   documents: "Documents",
   thirdParty: 'Third party',
   policy: 'Policy',
@@ -286,6 +289,7 @@ export const en: IStrings = {
   searchDocuments: "Search documents",
   addOneInformationType: "Add one information type",
   addCollectionOfInformationTypes: "Add a collection of information types",
+  emptyTable: "No",
 
   POLLY_READ: "Read",
   POLLY_WRITE: "Write",
@@ -356,6 +360,7 @@ export const en: IStrings = {
 
 
   code: "Code",
+  codes: "Codes",
   shortName: "Short name",
   createCodeListTitle: "Create code",
   deleteCodeListConfirmationTitle: "Confirm deletion",

@@ -18,7 +18,7 @@ type ListRecievedInformationTypesProps = {
 
 const ListRecievedInformationTypes = ({ informationtypeList }: ListRecievedInformationTypesProps) => {
     const [css] = useStyletron();
-    
+
     return (
         <Block>
             <Label2 {...labelBlockProps}>{intl.retrievedFromThirdParty}</Label2>
@@ -37,6 +37,7 @@ const ListRecievedInformationTypes = ({ informationtypeList }: ListRecievedInfor
                     </ListItem>
                 ))}
             </ul>
+          {!informationtypeList.length && <Label2 margin="1rem">{intl.emptyTable} {intl.informationTypes}</Label2>}
         </Block>
     )
 }

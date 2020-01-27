@@ -64,7 +64,7 @@ const CodeListPage = (props: RouteComponentProps<{ listname?: string }>) => {
             </Block>
         )}
 
-        {!loading &&
+        {!loading && currentCodelist &&
         <>
             {hasAccess() && (
                 <Block display="flex" justifyContent="flex-end">

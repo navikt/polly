@@ -8,198 +8,201 @@ import "moment/locale/nb";
 import "moment/locale/ta";
 
 export interface IStrings {
-    informationType: string;
-    informationTypes: string;
-    informationTypeSearch: string;
-    term: string;
-    purpose: string;
-    processPurpose: string;
-    purposeDescription: string;
-    sensitivity: string;
-    processingActivities: string;
-    process: string;
-    processes: string;
-    legalBasis: string;
-    legalBasisShort: string;
-    legalBasesShort: string;
-    subjectCategories: string;
-    nationalLaw: string;
-    navMaster: string;
-    productTeam: string;
-    disclosure: string;
-    documents: string;
-    thirdParty: string;
-    policy: string;
-    usage: string;
-    and: string;
-    remove: string;
+  informationType: string;
+  informationTypes: string;
+  informationTypeSearch: string;
+  term: string;
+  purpose: string;
+  processPurpose: string;
+  purposeDescription: string;
+  sensitivity: string;
+  processingActivities: string;
+  process: string;
+  processes: string;
+  legalBasis: string;
+  legalBasisShort: string;
+  legalBasesShort: string;
+  subjectCategories: string;
+  nationalLaw: string;
+  navMaster: string;
+  productTeam: string;
+  disclosure: string;
+  disclosures: string;
+  documents: string;
+  thirdParty: string;
+  policy: string;
+  usage: string;
+  and: string;
+  remove: string;
 
-    // sentence
-    loggedInStatus: string;
-    notLoggedInStatus: string;
-    couldntLoad: string;
-    couldntLoadTerm: string;
-    couldntLoadTeam: string;
-    informationTypeCreate: string;
-    sensitivitySelect: string;
-    nameWrite: string;
-    categoriesWrite: string;
-    sourcesWrite: string;
-    keywordsWrite: string;
-    navMasterSelect: string;
-    purposeSelect: string;
-    purposeNotFound: string;
-    purposeUse: string;
-    informationTypeExternalUse: string;
-    policyEdit: string;
-    policyNew: string;
-    legalBasisNotFound: string;
-    processEdit: string;
-    processingActivitiesNew: string;
-    processingActivitiesEdit: string;
-    processNew: string;
-    legalBasisNew: string;
-    legalBasisAdd: string;
-    gdprSelect: string;
-    nationalLawSelect: string;
-    descriptionWrite: string;
-    descriptionWriteLegalBasesF: string;
-    descriptionWriteLegalBasesCE: string;
-    definitionWrite: string;
-    subjectCategoriesNotFound: string;
-    legalBasesProcess: string;
-    legalBasesOwn: string;
-    legalBasesUndecided: string;
-    legalBasesUndecidedWarning: string;
-    notAllowedMessage: string;
-    confirmDeleteHeader: string;
-    confirmDeletePolicyText: string;
-    confirmDeleteProcessText: string;
-    cannotDeleteProcess: string;
-    confirmDeleteInformationTypeText: string;
-    cannotDeleteInformationTypes: string;
-    informationTypeHasPolicies: string;
-    informationTypeHasDocuments: string;
-    startIllustration: string;
-    treasureIllustration: string;
-    legalbasisGDPRArt9Info: string;
-    legalBasisInfo: string;
-    groupByPurpose: string;
-    showAll: string;
-    createThirdPartyModalTitle: string;
-    disclosuresToThirdParty: string;
-    retrievedFromThirdParty: string;
-    usageNotFound: string;
-    replace: string;
-    replaceAllUse: string;
-    newValue: string;
-    recipientPurpose: string;
-    disclosureSelect: string;
-    legalBasisComplete: string;
-    validityOfProcess: string;
-    validityOfPolicy: string;
-    chooseDocument: string;
-    addDocument: string;
-    searchDocuments: string;
-    addOneInformationType: string;
-    addCollectionOfInformationTypes: string;
+  // sentence
+  loggedInStatus: string;
+  notLoggedInStatus: string;
+  couldntLoad: string;
+  couldntLoadTerm: string;
+  couldntLoadTeam: string;
+  informationTypeCreate: string;
+  sensitivitySelect: string;
+  nameWrite: string;
+  categoriesWrite: string;
+  sourcesWrite: string;
+  keywordsWrite: string;
+  navMasterSelect: string;
+  purposeSelect: string;
+  purposeNotFound: string;
+  purposeUse: string;
+  informationTypeExternalUse: string;
+  policyEdit: string;
+  policyNew: string;
+  legalBasisNotFound: string;
+  processEdit: string;
+  processingActivitiesNew: string;
+  processingActivitiesEdit: string;
+  processNew: string;
+  legalBasisNew: string;
+  legalBasisAdd: string;
+  gdprSelect: string;
+  nationalLawSelect: string;
+  descriptionWrite: string;
+  descriptionWriteLegalBasesF: string;
+  descriptionWriteLegalBasesCE: string;
+  definitionWrite: string;
+  subjectCategoriesNotFound: string;
+  legalBasesProcess: string;
+  legalBasesOwn: string;
+  legalBasesUndecided: string;
+  legalBasesUndecidedWarning: string;
+  notAllowedMessage: string;
+  confirmDeleteHeader: string;
+  confirmDeletePolicyText: string;
+  confirmDeleteProcessText: string;
+  cannotDeleteProcess: string;
+  confirmDeleteInformationTypeText: string;
+  cannotDeleteInformationTypes: string;
+  informationTypeHasPolicies: string;
+  informationTypeHasDocuments: string;
+  startIllustration: string;
+  treasureIllustration: string;
+  legalbasisGDPRArt9Info: string;
+  legalBasisInfo: string;
+  groupByPurpose: string;
+  showAll: string;
+  createThirdPartyModalTitle: string;
+  disclosuresToThirdParty: string;
+  retrievedFromThirdParty: string;
+  usageNotFound: string;
+  replace: string;
+  replaceAllUse: string;
+  newValue: string;
+  recipientPurpose: string;
+  disclosureSelect: string;
+  legalBasisComplete: string;
+  validityOfProcess: string;
+  validityOfPolicy: string;
+  chooseDocument: string;
+  addDocument: string;
+  searchDocuments: string;
+  addOneInformationType: string;
+  addCollectionOfInformationTypes: string;
+  emptyTable: string;
 
-    // groups
-    POLLY_READ: string;
-    POLLY_WRITE: string;
-    POLLY_ADMIN: string;
+  // groups
+  POLLY_READ: string;
+  POLLY_WRITE: string;
+  POLLY_ADMIN: string;
 
-    CREATE: string;
-    DELETE: string;
-    UPDATE: string;
+  CREATE: string;
+  DELETE: string;
+  UPDATE: string;
 
-    // generic
-    department: string;
-    subDepartment: string;
-    save: string;
-    abort: string;
-    login: string;
-    logout: string;
-    hi: string;
-    addNew: string;
-    createNew: string;
-    name: string;
-    email: string;
-    copied: string;
-    groups: string;
-    description: string;
-    document: string;
-    edit: string;
-    update: string;
-    sources: string;
-    categories: string;
-    keywords: string;
-    read: string;
-    write: string;
-    administrate: string;
-    delete: string;
-    appName: string;
-    beta: string;
-    all: string;
-    startDate: string;
-    endDate: string;
-    active: string;
-    inactive: string;
-    preview: string;
-    view: string;
-    info: string;
-    version: string;
-    ghost: string;
-    period: string;
-    recipient: string;
-    prevButton: string;
-    nextButton: string;
-    rows: string;
-    slack: string;
-    add: string;
+  // generic
+  department: string;
+  subDepartment: string;
+  save: string;
+  abort: string;
+  login: string;
+  logout: string;
+  hi: string;
+  addNew: string;
+  createNew: string;
+  name: string;
+  email: string;
+  copied: string;
+  groups: string;
+  description: string;
+  document: string;
+  edit: string;
+  update: string;
+  sources: string;
+  categories: string;
+  keywords: string;
+  read: string;
+  write: string;
+  administrate: string;
+  delete: string;
+  appName: string;
+  beta: string;
+  all: string;
+  startDate: string;
+  endDate: string;
+  active: string;
+  inactive: string;
+  preview: string;
+  view: string;
+  info: string;
+  version: string;
+  ghost: string;
+  period: string;
+  recipient: string;
+  prevButton: string;
+  nextButton: string;
+  rows: string;
+  slack: string;
+  add: string;
 
-    maxChars: string;
-    required: string;
-    dateFormat: string;
-    datePickStart: string;
-    datePickEnd: string;
-    useDates: string;
-    requiredGdprArt6: string;
-    requiredGdprArt9: string;
-    requiredNationalLaw: string;
-    requiredDescription: string;
+  maxChars: string;
+  required: string;
+  dateFormat: string;
+  datePickStart: string;
+  datePickEnd: string;
+  useDates: string;
+  requiredGdprArt6: string;
+  requiredGdprArt9: string;
+  requiredNationalLaw: string;
+  requiredDescription: string;
 
-    code: string;
-    shortName: string;
-    createCodeListTitle: string;
-    deleteCodeListConfirmationTitle: string;
-    editCodeListTitle: string;
-    manageCodeListTitle: string;
-    chooseCodeList: string;
-    createNewCodeList: string;
+  code: string;
+  codes: string;
+  shortName: string;
+  createCodeListTitle: string;
+  deleteCodeListConfirmationTitle: string;
+  editCodeListTitle: string;
+  manageCodeListTitle: string;
+  chooseCodeList: string;
+  createNewCodeList: string;
 
-    id: string;
-    close: string;
-    searchId: string;
-    audit: string;
-    audits: string;
-    auditNr: string;
-    auditNotFound: string;
-    table: string;
-    action: string;
-    time: string;
-    user: string;
-    lastChanges: string;
+  id: string;
+  close: string;
+  searchId: string;
+  audit: string;
+  audits: string;
+  auditNr: string;
+  auditNotFound: string;
+  table: string;
+  action: string;
+  time: string;
+  user: string;
+  lastChanges: string;
 }
 
 // Remember import moment locales up top
 export const langs: Langs = {
-    nb: {flag: "no", name: "Norsk", langCode: "nb", texts: no},
-    en: {flag: "gb", name: "English", langCode: "en", texts: en}
+  nb: {flag: "no", name: "Norsk", langCode: "nb", texts: no},
+  en: {flag: "gb", name: "English", langCode: "en", texts: en}
 };
 
 if (window.location.hostname.indexOf("local") >= 0) {
-    langs["ta"] = {flag: ["lk", "in"][Math.floor(Math.random() * 2)], name: "தமிழ்", langCode: "ta", texts: ta};
+  langs["ta"] = {flag: ["lk", "in"][Math.floor(Math.random() * 2)], name: "தமிழ்", langCode: "ta", texts: ta};
 }
 
 export const langsArray: Lang[] = Object.keys(langs).map(lang => langs[lang]);
@@ -210,10 +213,10 @@ const defaultLang = langs.nb;
 type IIntl = LocalizedStringsMethods & IStrings;
 
 interface LocalizedStringsFactory {
-    new<T>(
-        props: GlobalStrings<T>,
-        options?: { customLanguageInterface: () => string }
-    ): IIntl;
+  new<T>(
+    props: GlobalStrings<T>,
+    options?: { customLanguageInterface: () => string }
+  ): IIntl;
 }
 
 const strings: IntlLangs = {};
@@ -221,23 +224,23 @@ const strings: IntlLangs = {};
 Object.keys(langs).forEach(lang => (strings[lang] = langs[lang].texts));
 
 export const intl: IIntl = new (LocalizedStrings as LocalizedStringsFactory)(
-    strings as any,
-    {customLanguageInterface: () => defaultLang.langCode}
+  strings as any,
+  {customLanguageInterface: () => defaultLang.langCode}
 );
 
 interface IntlLangs {
-    [lang: string]: IStrings;
+  [lang: string]: IStrings;
 }
 
 export interface Lang {
-    flag: string;
-    name: string;
-    langCode: string;
-    texts: any;
+  flag: string;
+  name: string;
+  langCode: string;
+  texts: any;
 }
 
 interface Langs {
-    [lang: string]: Lang;
+  [lang: string]: Lang;
 }
 
 // hooks
@@ -245,30 +248,30 @@ interface Langs {
 const localStorageAvailable = storageAvailable();
 
 export const useLang = () => {
-    const [lang, setLang] = React.useState<string>(
-        ((localStorageAvailable &&
-            localStorage.getItem("polly-lang")) as string) ||
-        defaultLang.langCode
-    );
-    const update = useForceUpdate();
-    useEffect(() => {
-        intl.setLanguage(lang);
-        let momentlocale = moment.locale(lang);
-        if (lang !== momentlocale) console.warn("moment locale missing", lang);
-        localStorageAvailable && localStorage.setItem("polly-lang", lang);
-        update();
-    }, [lang]);
+  const [lang, setLang] = React.useState<string>(
+    ((localStorageAvailable &&
+      localStorage.getItem("polly-lang")) as string) ||
+    defaultLang.langCode
+  );
+  const update = useForceUpdate();
+  useEffect(() => {
+    intl.setLanguage(lang);
+    let momentlocale = moment.locale(lang);
+    if (lang !== momentlocale) console.warn("moment locale missing", lang);
+    localStorageAvailable && localStorage.setItem("polly-lang", lang);
+    update();
+  }, [lang]);
 
-    return setLang;
+  return setLang;
 };
 
 function storageAvailable() {
-    try {
-        let key = "ptab";
-        localStorage.setItem(key, key);
-        localStorage.removeItem(key);
-        return true;
-    } catch (e) {
-        return false;
-    }
+  try {
+    let key = "ptab";
+    localStorage.setItem(key, key);
+    localStorage.removeItem(key);
+    return true;
+  } catch (e) {
+    return false;
+  }
 }

@@ -16,6 +16,7 @@ import { Usage } from "./CodeListUsage"
 import { CodeListFormValues, CodeUsage } from "../../constants"
 import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
 import { AuditButton } from "../audit/AuditButton"
+import { Label2 } from "baseui/typography"
 
 const SmallerHeadCell = withStyle(StyledHeadCell, {
     maxWidth: "15%",
@@ -213,6 +214,7 @@ const CodeListTable = ({tableData, hasAccess, refresh}: TableCodelistProps) => {
                     />
                 )}
             </StyledTable>
+            {!table.data.length && <Label2 margin="1rem">{intl.emptyTable} {intl.codes}</Label2>}
 
             {showUsage && <Usage usage={usage} refresh={refresh}/>}
         </React.Fragment>

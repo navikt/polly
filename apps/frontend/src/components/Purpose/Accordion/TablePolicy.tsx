@@ -7,7 +7,7 @@ import { Block } from "baseui/block";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faInfo, faInfoCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "baseui/modal";
-import { Paragraph2 } from "baseui/typography";
+import { Label2, Paragraph2 } from "baseui/typography";
 import { PLACEMENT, StatefulTooltip } from "baseui/tooltip"
 
 import { codelist, ListName } from "../../../service/Codelist"
@@ -258,6 +258,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                 )}
 
             </StyledTable>
+            {!table.data.length && <Label2 margin="1rem">{intl.emptyTable} {intl.informationTypes}</Label2>}
 
         </React.Fragment>
     );
