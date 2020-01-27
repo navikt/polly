@@ -29,6 +29,12 @@ public class ProcessData {
     @Valid
     private List<LegalBasis> legalBases = new ArrayList<>();
 
+    private Boolean automaticProcessing;
+    private Boolean profiling;
+    private Boolean dataProcessor;
+    private String dataProcessorAgreement;
+    private Boolean dataProcessorOutsideEU;
+
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static class ProcessDataBuilder {
 

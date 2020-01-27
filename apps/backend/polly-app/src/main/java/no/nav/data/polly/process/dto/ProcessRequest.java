@@ -12,6 +12,7 @@ import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 
 import java.util.List;
 
@@ -44,6 +45,12 @@ public class ProcessRequest implements RequestElement {
     private String end;
     private List<LegalBasisRequest> legalBases;
 
+    private Boolean automaticProcessing;
+    private Boolean profiling;
+    private Boolean dataProcessor;
+    private String dataProcessorAgreement;
+    private Boolean dataProcessorOutsideEU;
+
     private boolean update;
     private int requestIndex;
 
@@ -57,7 +64,13 @@ public class ProcessRequest implements RequestElement {
         setPurposeCode(toUpperCaseAndTrim(getPurposeCode()));
         setDepartment(toUpperCaseAndTrim(getDepartment()));
         setSubDepartment(toUpperCaseAndTrim(getSubDepartment()));
-        setDescription(StringUtils.trimToNull(description));
+        setDescription(StringUtils.trimToNull(getDescription()));
+
+        setDataProcessorAgreement(Strings.trimToNull(getDataProcessorAgreement()));
+        if (Boolean.FALSE.equals(dataProcessor)) {
+            setDataProcessorAgreement(null);
+            setDataProcessorOutsideEU(null);
+        }
     }
 
     @Override

@@ -20,7 +20,9 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "name", "description", "purposeCode", "department", "subDepartment", "productTeam", "start", "end", "active", "legalBases", "policies"})
+@JsonPropertyOrder({"id", "name", "description", "purposeCode", "department", "subDepartment", "productTeam", "start", "end", "active",
+        "automaticProcessing", "profiling", "dataProcessor", "dataProcessorAgreement", "dataProcessorOutsideEU",
+        "legalBases", "policies"})
 public class ProcessResponse {
 
     private UUID id;
@@ -32,6 +34,13 @@ public class ProcessResponse {
     private String productTeam;
     private LocalDate start;
     private LocalDate end;
+
+    private Boolean automaticProcessing;
+    private Boolean profiling;
+    private Boolean dataProcessor;
+    private String dataProcessorAgreement;
+    private Boolean dataProcessorOutsideEU;
+
     @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;
     @ApiModelProperty("Only set when get/create/update one process")
