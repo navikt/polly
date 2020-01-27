@@ -82,7 +82,7 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
                 var authentication = new PreAuthenticatedAuthenticationToken(principal, credential, grantedAuthorities);
                 authentication.setDetails(new UserInfo(principal, grantedAuthorities));
                 authentication.setAuthenticated(true);
-                log.info("Request token verification success for subject {} with roles {}.", principal.getSubject(), grantedAuthorities);
+                log.trace("Request token verification success for subject {} with roles {}.", principal.getSubject(), grantedAuthorities);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 return true;
             } catch (BadJWTException ex) {
