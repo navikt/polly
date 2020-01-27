@@ -15,11 +15,12 @@ import { StatefulTooltip } from "baseui/tooltip"
 import { AuditButton } from "./AuditButton"
 import _ from "lodash"
 import ReactJson from "react-json-view"
-import { faCode } from "@fortawesome/free-solid-svg-icons"
+import { faBinoculars, faCode } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { AuditActionIcon } from "./AuditComponents"
 import randomColor from "randomcolor"
 import { StatefulSelect } from "baseui/select"
+import { ObjectLink } from "../common/RouteLink"
 
 export const AuditRecentTable = (props: { show: boolean }) => {
   const [audits, setAudits] = useState<PageResponse<AuditItem>>({content: [], numberOfElements: 0, pageNumber: 0, pages: 0, pageSize: 1, totalElements: 0})
@@ -100,8 +101,12 @@ export const AuditRecentTable = (props: { show: boolean }) => {
                 <StyledCell $style={{display: "flex", justifyContent: "space-between"}}>
                   <Block>{audit.user}</Block>
                   <Block>
-                    <StatefulPopover content={() => (<ReactJson src={audit.data} name={null}/>)}>
-                      <Button size="compact" shape="pill"><FontAwesomeIcon icon={faCode}/></Button>
+                    <ObjectLink id={audit.tableId} type={audit.table}>
+                      <Button size="compact" shape="round" kind="tertiary"><FontAwesomeIcon icon={faBinoculars}/></Button>
+                    </ObjectLink>
+                    <StatefulPopover overrides={{Body: {style: {width: "80%"}}}}
+                                     content={() => (<ReactJson src={audit.data} name={null}/>)}>
+                      <Button size="compact" shape="round" kind="tertiary"><FontAwesomeIcon icon={faCode}/></Button>
                     </StatefulPopover>
                   </Block>
                 </StyledCell>
