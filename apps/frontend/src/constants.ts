@@ -225,7 +225,6 @@ export interface DocumentInfoTypeUse {
 }
 
 export interface CreateDocumentFormValues{
-  id?: string;
   name: string;
   description: string;
   informationTypes: DocumentInformationTypes[]
