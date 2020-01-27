@@ -70,7 +70,7 @@ public abstract class IntegrationTestBase {
     protected static final String PURPOSE_CODE2 = "AAP";
     protected static final String INFORMATION_TYPE_NAME = "Sivilstand";
 
-    private static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:10.4");
+    private static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:11.3");
     @Autowired
     protected TransactionTemplate transactionTemplate;
     @Autowired
