@@ -11,6 +11,7 @@ import {Button} from "baseui/button";
 import axios from "axios";
 import {Error} from "../../common/ModalSchema";
 import {createDocumentValidation} from "../../common/schema";
+import {user} from "../../../service/User";
 
 const server_polly = process.env.REACT_APP_POLLY_ENDPOINT
 
@@ -29,6 +30,8 @@ const CreateDocument = () => {
   const [tableData, setTableData] = React.useState<DocumentTableRow[]>([]);
   const [description, setDescription] = React.useState("");
   const [isLoading, setLoading] = React.useState();
+
+  const hasAccess = () => user.canWrite();
 
   const handleCreateDocument = async (values: CreateDocumentFormValues) => {
     let body = {...values};
@@ -58,7 +61,7 @@ const CreateDocument = () => {
     if (e.key === 'Enter') e.preventDefault()
   }
 
-  return (
+  return hasAccess() ? (
     <React.Fragment>
       <Formik
         initialValues={initialCreateDocumentFormValues}
@@ -155,6 +158,10 @@ const CreateDocument = () => {
           )
         }
       </Formik>
+    </React.Fragment>
+  ) : (
+    <React.Fragment>
+      
     </React.Fragment>
   )
 };
