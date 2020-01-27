@@ -297,6 +297,6 @@ export interface CategoryUsage {
 }
 
 export interface DocumentTableRow {
-  informationTypes: PolicyInformationType | undefined,
+  informationTypes?: PolicyInformationType,
   categories: Value
 }
