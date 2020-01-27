@@ -1,5 +1,6 @@
 package no.nav.data.polly.document;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.exceptions.PollyNotFoundException;
 import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.utils.StreamUtils;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static no.nav.data.polly.common.utils.StreamUtils.filter;
 
+@Slf4j
 @Service
 public class DocumentService extends RequestValidator<DocumentRequest> {
 
@@ -92,10 +94,22 @@ public class DocumentService extends RequestValidator<DocumentRequest> {
         if (request.getInformationTypes().isEmpty()) {
             return List.of();
         }
-        List<UUID> ids = convert(request.getInformationTypes(), infoType -> UUID.fromString(infoType.getInformationTypeId()));
+        List<UUID> ids = convert(filter(request.getInformationTypes(), it ->
+                isValidUUID(it.getInformationTypeId())), infoType -> UUID.fromString(infoType.getInformationTypeId()));
         var infoTypes = informationTypeRepository.findAllById(ids);
         var missingInfoTypes = ids.stream().filter(id -> filter(infoTypes, infoType -> ids.contains(infoType.getId())).isEmpty()).collect(Collectors.toList());
         return missingInfoTypes.isEmpty() ? List.of()
                 : List.of(new ValidationError(request.getReference(), "informationTypeDoesNotExist", String.format("The InformationTypes %s doesnt exist", missingInfoTypes)));
+    }
+
+    private boolean isValidUUID(String uuid) {
+        try {
+            //noinspection ResultOfMethodCallIgnored
+            UUID.fromString(uuid);
+            return true;
+        } catch (Exception e) {
+            log.trace("invalid uuid " + uuid, e);
+            return false;
+        }
     }
 }

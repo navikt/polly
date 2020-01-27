@@ -37,6 +37,7 @@ public class DocumentInfoTypeUseRequest implements Validated {
 
     @Override
     public void validate(FieldValidator validator) {
+        validator.checkBlank(Fields.informationTypeId, informationTypeId);
         validator.checkUUID(Fields.informationTypeId, informationTypeId);
         subjectCategories.forEach(subjCat -> validator.checkCodelist(Fields.subjectCategories, subjCat, ListName.SUBJECT_CATEGORY));
     }
