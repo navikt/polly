@@ -20,18 +20,18 @@ const rowBlockProps: BlockProps = {
   marginTop: '1rem',
 };
 
-let initialCreateDocumentFormValues: CreateDocumentFormValues = {
-  name: "",
-  description: "",
-  informationTypes: []
-};
-
 const CreateDocument = () => {
   const [tableData, setTableData] = React.useState<DocumentTableRow[]>([]);
   const [description, setDescription] = React.useState("");
   const [isLoading, setLoading] = React.useState();
 
   const hasAccess = () => user.canWrite();
+
+  let initialCreateDocumentFormValues: CreateDocumentFormValues = {
+    name: "",
+    description: "",
+    informationTypes: []
+  };
 
   const handleCreateDocument = async (values: CreateDocumentFormValues) => {
     let body = {...values};
@@ -161,7 +161,7 @@ const CreateDocument = () => {
     </React.Fragment>
   ) : (
     <React.Fragment>
-      
+
     </React.Fragment>
   )
 };
