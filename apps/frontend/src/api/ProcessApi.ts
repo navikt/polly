@@ -85,7 +85,7 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
     automaticProcessing: values.automaticProcessing,
     profiling: values.profiling,
     dataProcessor: values.dataProcessor,
-    dataProcessorAgreement: values.dataProcessor ? values.dataProcessorAgreements : [],
+    dataProcessorAgreements: values.dataProcessor ? values.dataProcessorAgreements : [],
     dataProcessorOutsideEU: values.dataProcessor ? values.dataProcessorOutsideEU : undefined,
   }
 }
