@@ -19,7 +19,7 @@ type CreateDocumentProps = {
   removeRow: Function
 }
 
-const DocumentTable = ({
+const InformationTypesTable = ({
                          tableData,
                          setTableData,
                          setRowData,
@@ -64,4 +64,4 @@ const DocumentTable = ({
   );
 };
 
-export default DocumentTable;
+export default InformationTypesTable;

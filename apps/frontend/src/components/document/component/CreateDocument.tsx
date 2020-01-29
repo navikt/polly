@@ -5,7 +5,7 @@ import {intl} from "../../../util";
 import {Input, SIZE} from "baseui/input";
 import {Textarea} from "baseui/textarea";
 import {CreateDocumentFormValues} from "../../../constants";
-import DocumentTable from "./DocumentTable";
+import InformationTypesTable from "./InformationTypesTable";
 import {Field, FieldArray, FieldProps, Form, Formik} from "formik";
 import {Button} from "baseui/button";
 import {Error} from "../../common/ModalSchema";
@@ -103,7 +103,7 @@ const CreateDocument = () => {
                   name="informationTypes"
                   render={
                     arrayHelpers=>(
-                      <DocumentTable
+                      <InformationTypesTable
                         tableData={tableData}
                         setTableData={setTableData}
                         setRowData={setRowData}
