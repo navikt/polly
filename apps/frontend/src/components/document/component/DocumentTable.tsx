@@ -3,12 +3,13 @@ import {StyledBody, StyledHead, StyledHeadCell, StyledTable} from "baseui/table"
 import {intl} from "../../../util";
 import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
-import {DocumentInformationTypes, DocumentTableRow} from "../../../constants";
+import {DocumentInformationTypes} from "../../../constants";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import DocumentDataRow from "./DocumentDataRow";
 import {useStyletron} from "baseui";
 import {FieldArrayRenderProps} from "formik";
+import {DocumentTableRow} from "../common/model/DocumentTableRow";
 
 type CreateDocumentProps = {
   tableData:DocumentTableRow[],

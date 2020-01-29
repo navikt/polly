@@ -4,7 +4,7 @@ import {Label2} from "baseui/typography";
 import {intl} from "../../../util";
 import {Input, SIZE} from "baseui/input";
 import {Textarea} from "baseui/textarea";
-import {CreateDocumentFormValues, DocumentTableRow} from "../../../constants";
+import {CreateDocumentFormValues} from "../../../constants";
 import DocumentTable from "./DocumentTable";
 import {Field, FieldArray, FieldProps, Form, Formik} from "formik";
 import {Button} from "baseui/button";
@@ -12,6 +12,7 @@ import {Error} from "../../common/ModalSchema";
 import {createDocumentValidation} from "../../common/schema";
 import {user} from "../../../service/User";
 import {createInformationTypesDocument} from "../../../api";
+import {DocumentTableRow} from "../common/model/DocumentTableRow";
 
 const rowBlockProps: BlockProps = {
   width: '100%',

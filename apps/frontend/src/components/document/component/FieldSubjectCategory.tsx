@@ -1,9 +1,10 @@
 import React from "react";
 import {Select, Value} from "baseui/select";
 import {codelist, ListName} from "../../../service/Codelist";
-import {DocumentInformationTypes, DocumentTableRow} from "../../../constants";
+import {DocumentInformationTypes} from "../../../constants";
 import index from "../../Purpose/Accordion";
 import {FieldArrayRenderProps} from "formik";
+import {DocumentTableRow} from "../common/model/DocumentTableRow";
 
 const FieldSubjectCategory = (props: {
   value?: string,

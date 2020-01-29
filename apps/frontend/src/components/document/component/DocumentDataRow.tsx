@@ -1,4 +1,3 @@
-import {DocumentTableRow} from "../../../constants";
 import React from "react";
 import {StyledCell, StyledRow} from "baseui/table";
 import FieldInformationType from "./FieldInformationType";
@@ -10,6 +9,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTrash} from "@fortawesome/free-solid-svg-icons";
 import {FieldArrayRenderProps} from "formik";
 import {Error} from "../../common/ModalSchema";
+import {DocumentTableRow} from "../common/model/DocumentTableRow";
 
 const DocumentDataRow = (index: number,
                          tableData: DocumentTableRow[],
