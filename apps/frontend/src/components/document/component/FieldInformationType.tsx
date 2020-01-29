@@ -15,7 +15,7 @@ const FieldInformationType = (props: {
   arrayHelpers: FieldArrayRenderProps
 }) => {
   const [selectedInformationType, setSelectedInformationType] = React.useState();
-  const [infoTypeSearchResult, setInfoTypeSearchResult, infoTypeSearchLoading] = useInfoTypeSearch();
+  const [searchKeyword, setSearchKeyword] = useInfoTypeSearch();
   return (
 
     <Select
@@ -23,10 +23,10 @@ const FieldInformationType = (props: {
       maxDropdownHeight="400px"
       searchable={true}
       type={TYPE.search}
-      options={infoTypeSearchResult}
+      options={searchKeyword}
       placeholder={intl.informationTypeSearch}
       value={selectedInformationType as any}
-      onInputChange={event => setInfoTypeSearchResult(event.currentTarget.value)}
+      onInputChange={event => setSearchKeyword(event.currentTarget.value)}
       onChange={(params) => {
         let infoType = params.value[0] as PolicyInformationType;
         props.rowData.informationTypes = infoType;
