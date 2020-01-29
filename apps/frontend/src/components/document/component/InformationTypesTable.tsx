@@ -52,6 +52,7 @@ const InformationTypesTable = ({
         {
           tableData.map((row, index) =>
             <DocumentDataRow
+              key={index}
               index={index}
               tableData={tableData}
               setRowData={() => setRowData}
