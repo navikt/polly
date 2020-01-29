@@ -32,16 +32,22 @@ public class ProcessData {
     private Boolean automaticProcessing;
     private Boolean profiling;
     private Boolean dataProcessor;
-    private String dataProcessorAgreement;
+    private List<String> dataProcessorAgreements;
     private Boolean dataProcessorOutsideEU;
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static class ProcessDataBuilder {
 
         private List<LegalBasis> legalBases = new ArrayList<>();
+        private List<String> dataProcessorAgreements = new ArrayList<>();
 
         public ProcessDataBuilder legalBasis(LegalBasis legalBasis) {
             legalBases.add(legalBasis);
+            return this;
+        }
+
+        public ProcessDataBuilder dataProcessorAgreements(String agreement) {
+            dataProcessorAgreements.add(agreement);
             return this;
         }
     }

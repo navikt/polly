@@ -99,7 +99,7 @@ public class Process extends Auditable<String> {
                 .automaticProcessing(data.getAutomaticProcessing())
                 .profiling(data.getProfiling())
                 .dataProcessor(data.getDataProcessor())
-                .dataProcessorAgreement(data.getDataProcessorAgreement())
+                .dataProcessorAgreements(data.getDataProcessorAgreements())
                 .dataProcessorOutsideEU(data.getDataProcessorOutsideEU())
                 .build();
     }
@@ -130,7 +130,7 @@ public class Process extends Auditable<String> {
         data.setAutomaticProcessing(request.getAutomaticProcessing());
         data.setProfiling(request.getProfiling());
         data.setDataProcessor(request.getDataProcessor());
-        data.setDataProcessorAgreement(request.getDataProcessorAgreement());
+        data.setDataProcessorAgreements(request.getDataProcessorAgreements());
         data.setDataProcessorOutsideEU(request.getDataProcessorOutsideEU());
         return this;
     }

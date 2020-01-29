@@ -15,10 +15,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static no.nav.data.polly.common.swagger.SwaggerConfig.LOCAL_DATE;
 import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_END;
 import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_START;
+import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
 
 @Data
@@ -48,7 +51,7 @@ public class ProcessRequest implements RequestElement {
     private Boolean automaticProcessing;
     private Boolean profiling;
     private Boolean dataProcessor;
-    private String dataProcessorAgreement;
+    private List<String> dataProcessorAgreements;
     private Boolean dataProcessorOutsideEU;
 
     private boolean update;
@@ -66,9 +69,10 @@ public class ProcessRequest implements RequestElement {
         setSubDepartment(toUpperCaseAndTrim(getSubDepartment()));
         setDescription(StringUtils.trimToNull(getDescription()));
 
-        setDataProcessorAgreement(Strings.trimToNull(getDataProcessorAgreement()));
+        setDataProcessorAgreements(safeStream(getDataProcessorAgreements())
+                .map(Strings::trimToNull).filter(Objects::nonNull).collect(Collectors.toList()));
         if (Boolean.FALSE.equals(dataProcessor)) {
-            setDataProcessorAgreement(null);
+            setDataProcessorAgreements(List.of());
             setDataProcessorOutsideEU(null);
         }
     }
