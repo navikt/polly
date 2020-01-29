@@ -49,7 +49,7 @@ const CreateDocument = () => {
   };
 
   const removeRowData = (index:number) => {
-    tableData.splice(index,1);
+    delete tableData[index]
     setTableData(tableData);
   };
 
