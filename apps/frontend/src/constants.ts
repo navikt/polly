@@ -50,7 +50,7 @@ export interface ProcessFormValues {
     automaticProcessing?: boolean
     profiling?: boolean
     dataProcessor?: boolean
-    dataProcessorAgreement?: string
+    dataProcessorAgreements: string[]
     dataProcessorOutsideEU?: boolean
 }
 
@@ -139,7 +139,7 @@ export interface Process extends IDurationed {
     automaticProcessing?: boolean
     profiling?: boolean
     dataProcessor?: boolean
-    dataProcessorAgreement?: string
+    dataProcessorAgreements?: string[]
     dataProcessorOutsideEU?: boolean
 }
 

@@ -281,19 +281,16 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
 
                   {currentProcess?.dataProcessor &&
                   <>
-                    {currentProcess?.dataProcessorAgreement &&
+                    {currentProcess.dataProcessorAgreements?.length &&
                     <Block width="25%">
                       <Label2>{intl.dataProcessorAgreement}</Label2>
-                      <Paragraph3>{currentProcess?.dataProcessorAgreement}</Paragraph3>
-                    </Block>
-                    }
-
+                      <Paragraph3>{currentProcess.dataProcessorAgreements.join(", ")}</Paragraph3>
+                    </Block>}
                     <Block width="25%">
                       <Label2>{intl.dataProcessorOutsideEU}</Label2>
-                      <Paragraph3>{boolToText(currentProcess?.dataProcessorOutsideEU)}</Paragraph3>
+                      <Paragraph3>{boolToText(currentProcess.dataProcessorOutsideEU)}</Paragraph3>
                     </Block>
                   </>}
-
                 </Block>
 
                 <Block {...rowPanelContent}>

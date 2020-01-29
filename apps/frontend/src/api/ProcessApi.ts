@@ -46,7 +46,7 @@ export const convertProcessToFormValues = (process?: Process) => {
     automaticProcessing,
     profiling,
     dataProcessor,
-    dataProcessorAgreement,
+    dataProcessorAgreements,
     dataProcessorOutsideEU
   } = (process || {})
 
@@ -65,7 +65,7 @@ export const convertProcessToFormValues = (process?: Process) => {
     automaticProcessing: process ? mapBool(automaticProcessing) : false,
     profiling: process ? mapBool(profiling) : false,
     dataProcessor: mapBool(dataProcessor),
-    dataProcessorAgreement: dataProcessorAgreement || undefined,
+    dataProcessorAgreements: dataProcessorAgreements || [],
     dataProcessorOutsideEU: mapBool(dataProcessorOutsideEU),
   } as ProcessFormValues
 }
@@ -85,7 +85,7 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
     automaticProcessing: values.automaticProcessing,
     profiling: values.profiling,
     dataProcessor: values.dataProcessor,
-    dataProcessorAgreement: values.dataProcessor ? values.dataProcessorAgreement : undefined,
+    dataProcessorAgreement: values.dataProcessor ? values.dataProcessorAgreements : [],
     dataProcessorOutsideEU: values.dataProcessor ? values.dataProcessorOutsideEU : undefined,
   }
 }

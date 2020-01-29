@@ -45,7 +45,7 @@ export const processSchema = () => yup.object<ProcessFormValues>({
     automaticProcessing: yup.boolean(),
     profiling: yup.boolean(),
     dataProcessor: yup.boolean(),
-    dataProcessorAgreement: yup.string(),
+    dataProcessorAgreements: yup.array(yup.string()),
     dataProcessorOutsideEU: yup.boolean(),
 })
 

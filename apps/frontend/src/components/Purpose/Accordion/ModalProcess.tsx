@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { useEffect } from 'react'
+import { KeyboardEvent, useEffect } from 'react'
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
-import { Field, FieldArray, FieldProps, Form, Formik, FormikProps, } from "formik";
+import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps, } from "formik";
 import { Block, BlockProps } from "baseui/block";
 import { Input, SIZE as InputSIZE } from "baseui/input";
 import { Select, Value } from 'baseui/select';
-import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
+import { Button, KIND, SHAPE, SIZE as ButtonSize } from "baseui/button";
 import { Plus } from "baseui/icon";
 
 import { ProcessFormValues } from "../../../constants";
@@ -21,6 +21,7 @@ import { getTeam, mapTeamToOption, useTeamSearch } from "../../../api"
 import { Textarea } from "baseui/textarea"
 import { Radio, RadioGroup } from "baseui/radio"
 import { Card } from "baseui/card"
+import { renderTagList } from "../../common/TagList"
 
 const modalBlockProps: BlockProps = {
   width: '750px',
@@ -124,14 +125,50 @@ const BoolField = (props: { value?: boolean, fieldName: string }) => (
   />
 )
 
-const FieldDataProcessorAgreement = () => (
-  <Field
-    name="dataProcessorAgreement"
-    render={({field, form}: FieldProps<ProcessFormValues>) => (
-      <Input {...field} type="input" size={InputSIZE.compact} error={!!form.errors.dataProcessorAgreement && form.touched.dataProcessorAgreement}/>
-    )}
-  />
-)
+const FieldDataProcessorAgreements = (props: { formikBag: FormikProps<ProcessFormValues> }) => {
+  const [currentKeywordValue, setCurrentKeywordValue] = React.useState("");
+  const agreementRef = React.useRef<HTMLInputElement>(null);
+
+  const onAddAgreement = (arrayHelpers: FieldArrayRenderProps) => {
+    arrayHelpers.push(currentKeywordValue);
+    setCurrentKeywordValue("");
+    if (agreementRef && agreementRef.current) {
+      agreementRef.current.focus();
+    }
+  }
+  return (
+    <FieldArray
+      name="dataProcessorAgreements"
+      render={arrayHelpers => (
+        <Block>
+          <Input
+            type="text"
+            placeholder={intl.dataProcessorAgreement}
+            value={currentKeywordValue}
+            onChange={event => setCurrentKeywordValue(event.currentTarget.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') onAddAgreement(arrayHelpers)
+            }}
+            inputRef={agreementRef}
+            overrides={{
+              After: () => (
+                <Button
+                  type="button"
+                  shape={SHAPE.square}
+                  onClick={() => onAddAgreement(arrayHelpers)}
+                >
+                  <Plus/>
+                </Button>
+              )
+            }}
+            error={!!arrayHelpers.form.errors.dataProcessorAgreements && !!arrayHelpers.form.submitCount}
+          />
+          {renderTagList(props.formikBag.values.dataProcessorAgreements, arrayHelpers)}
+        </Block>
+      )}
+    />
+  )
+}
 
 const FieldProductTeam = (props: { productTeam?: string }) => {
   const {productTeam} = props;
@@ -201,7 +238,7 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
         {formikBag.values.dataProcessor && <>
           <Block {...rowBlockProps}>
             <ModalLabel label={intl.dataProcessorAgreement}/>
-            <FieldDataProcessorAgreement/>
+            <FieldDataProcessorAgreements formikBag={formikBag}/>
           </Block>
           <Error fieldName="dataProcessorAgreement"/>
 
@@ -251,6 +288,10 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
     onClose()
   };
 
+  const disableEnter = (e: KeyboardEvent) => {
+    if (e.key === 'Enter') e.preventDefault()
+  }
+
   return (
     <Modal
       onClose={onCloseModal}
@@ -265,7 +306,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
           initialValues={initialValues}
           onSubmit={(values) => submit(values)} validationSchema={processSchema()}
           render={(formikBag: FormikProps<ProcessFormValues>) => (
-            <Form>
+            <Form onKeyDown={disableEnter}>
               <ModalHeader>
                 <Block {...modalHeaderProps}>
                   {title}
