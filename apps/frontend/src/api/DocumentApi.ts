@@ -1,6 +1,6 @@
 import axios from "axios"
-import { Document, DocumentFormValues, PageResponse } from "../constants"
-import { env } from "../util/env"
+import {CreateDocumentFormValues, Document, DocumentFormValues, PageResponse} from "../constants"
+import {env} from "../util/env"
 
 export const getDocument = async (documentId: string) => {
   return (await axios.get<Document>(`${env.pollyBaseUrl}/document/${documentId}`)).data
@@ -22,6 +22,11 @@ export const createDocument = async (document: DocumentFormValues) => {
 export const updateDocument = async (document: DocumentFormValues) => {
   const doc = {...document, informationTypes: mapToInfoTypes(document)}
   return (await axios.put<Document>(`${env.pollyBaseUrl}/document/${doc.id}`, doc)).data
+}
+
+
+export const createInformationTypesDocument = async (document: CreateDocumentFormValues) => {
+  return (await axios.post(`${env.pollyBaseUrl}/document`, document))
 }
 
 const mapToInfoTypes = (document: DocumentFormValues) => document.informationTypes.map(it => ({informationTypeId: it.id, subjectCategories: []}))

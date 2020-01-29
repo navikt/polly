@@ -8,12 +8,10 @@ import {CreateDocumentFormValues, DocumentTableRow} from "../../../constants";
 import DocumentTable from "./DocumentTable";
 import {Field, FieldArray, FieldProps, Form, Formik} from "formik";
 import {Button} from "baseui/button";
-import axios from "axios";
 import {Error} from "../../common/ModalSchema";
 import {createDocumentValidation} from "../../common/schema";
 import {user} from "../../../service/User";
-
-const server_polly = process.env.REACT_APP_POLLY_ENDPOINT
+import {createInformationTypesDocument} from "../../../api";
 
 const rowBlockProps: BlockProps = {
   width: '100%',
@@ -37,7 +35,7 @@ const CreateDocument = () => {
     let body = {...values};
     setLoading(true)
     try {
-      const response = await axios.post(`${server_polly}/document`, body);
+      const response = createInformationTypesDocument(body);
     } catch (error) {
       console.log(error.message)
     }
