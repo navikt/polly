@@ -5,6 +5,7 @@ import index from "../../Purpose/Accordion";
 import {useInfoTypeSearch} from "../../../api";
 import {FieldArrayRenderProps} from "formik";
 import {DocumentTableRow} from "../common/model/DocumentTableRow";
+import {intl} from "../../../util";
 
 const FieldInformationType = (props: {
   setValue: Function,
@@ -23,7 +24,7 @@ const FieldInformationType = (props: {
       searchable={true}
       type={TYPE.search}
       options={infoTypeSearchResult}
-      placeholder="Søk opplysningstyper"
+      placeholder={intl.informationTypeSearch}
       value={selectedInformationType as any}
       onInputChange={event => setInfoTypeSearchResult(event.currentTarget.value)}
       onChange={(params) => {
