@@ -12,11 +12,11 @@ import {FieldArrayRenderProps} from "formik";
 import {DocumentTableRow} from "../common/model/DocumentTableRow";
 
 type CreateDocumentProps = {
-  tableData:DocumentTableRow[],
-  setTableData:Function,
-  setRowData:Function,
-  arrayHelpers:FieldArrayRenderProps
-  removeRow:Function
+  tableData: DocumentTableRow[],
+  setTableData: Function,
+  setRowData: Function,
+  arrayHelpers: FieldArrayRenderProps
+  removeRow: Function
 }
 
 const DocumentTable = ({
@@ -24,9 +24,10 @@ const DocumentTable = ({
                          setTableData,
                          setRowData,
                          arrayHelpers,
-                         removeRow}:CreateDocumentProps) => {
+                         removeRow
+                       }: CreateDocumentProps) => {
   const [useCss] = useStyletron();
-  return(
+  return (
     <StyledTable className={useCss({overflow: "hidden !important"})}>
       <StyledHead>
         <StyledHeadCell style={{maxWidth: "45%"}}>{intl.informationType}</StyledHeadCell>
@@ -40,7 +41,7 @@ const DocumentTable = ({
               onClick={() => {
                 let emptyRow = {informationTypes: undefined, categories: []} as DocumentTableRow;
                 setTableData([...tableData, emptyRow]);
-                arrayHelpers.push({informationTypeId:"",subjectCategories:[]} as DocumentInformationTypes);
+                arrayHelpers.push({informationTypeId: "", subjectCategories: []} as DocumentInformationTypes);
               }}>
               <FontAwesomeIcon icon={faPlus}/>
             </Button>
@@ -49,13 +50,14 @@ const DocumentTable = ({
       </StyledHead>
       <StyledBody>
         {
-          tableData.map((row, index) => DocumentDataRow(
-            index,
-            tableData,
-            () => setRowData,
-            arrayHelpers,
-            removeRow
-          ))
+          tableData.map((row, index) =>
+            <DocumentDataRow
+              index={index}
+              tableData={tableData}
+              setRowData={() => setRowData}
+              arrayHelpers={arrayHelpers}
+              removeRow={removeRow}/>
+          )
         }
       </StyledBody>
     </StyledTable>

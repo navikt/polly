@@ -11,11 +11,20 @@ import {FieldArrayRenderProps} from "formik";
 import {Error} from "../../common/ModalSchema";
 import {DocumentTableRow} from "../common/model/DocumentTableRow";
 
-const DocumentDataRow = (index: number,
-                         tableData: DocumentTableRow[],
-                         setRowData: Function,
-                         arrayHelpers: FieldArrayRenderProps,
-                         removeRow:Function) => {
+type DocumentDataRowProps = {
+  index: number,
+  tableData: DocumentTableRow[],
+  setRowData: Function,
+  arrayHelpers: FieldArrayRenderProps,
+  removeRow: Function
+}
+const DocumentDataRow = ({
+                           index,
+                           arrayHelpers,
+                           removeRow,
+                           setRowData,
+                           tableData
+                         }: DocumentDataRowProps) => {
   return (
     <React.Fragment key={index}>
       <StyledRow>
