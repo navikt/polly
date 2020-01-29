@@ -57,7 +57,7 @@ const CreateDocument = () => {
     if (e.key === 'Enter') e.preventDefault()
   }
 
-  return hasAccess() ? (
+  return hasAccess() && isLoading ? (
     <React.Fragment>
       <Formik
         initialValues={initialCreateDocumentFormValues}
