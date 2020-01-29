@@ -21,7 +21,7 @@ const rowBlockProps: BlockProps = {
 const CreateDocument = () => {
   const [tableData, setTableData] = React.useState<DocumentTableRow[]>([]);
   const [description, setDescription] = React.useState("");
-  const [isLoading, setLoading] = React.useState();
+  const [isLoading, setLoading] = React.useState(false);
 
   const hasAccess = () => user.canWrite();
 
@@ -57,7 +57,7 @@ const CreateDocument = () => {
     if (e.key === 'Enter') e.preventDefault()
   }
 
-  return hasAccess() && isLoading ? (
+  return hasAccess() && !isLoading ? (
     <React.Fragment>
       <Formik
         initialValues={initialCreateDocumentFormValues}
