@@ -27,10 +27,10 @@ export const ModalLabel = (props: { label?: string, tooltip?: string }) => {
     <Block width="25%" alignSelf="center" paddingRight=".5rem">
       {props.tooltip ?
         <StatefulTooltip content={props.tooltip} placement={PLACEMENT.top}>
-          <Label2 font="font300" display="flex" width="100%">
-            <FontAwesomeIcon style={{marginLeft: "-1.5rem", position: "absolute"}}
-                             icon={faExclamationCircle} color={theme.colors.accent400} size="sm"/>
+          <Label2 font="font300" display="flex" justifyContent="space-between" width="100%">
             <>{props.label}</>
+            <FontAwesomeIcon style={{marginRight: ".5rem", alignSelf: "center"}}
+                             icon={faExclamationCircle} color={theme.colors.accent400} size="sm"/>
           </Label2>
         </StatefulTooltip>
         : <Label2 font="font300">{props.label}</Label2>
