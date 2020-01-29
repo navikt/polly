@@ -68,7 +68,7 @@ const CreateDocument = () => {
           resetForm();
           setTableData([]);
         }}
-        validationSchema={createDocumentValidation}
+        validationSchema={createDocumentValidation()}
       >
         {
           (formikProps:any) => (
@@ -114,7 +114,6 @@ const CreateDocument = () => {
                     )
                   }
                 />
-                <Error fieldName="informationTypes" fullWidth={true}/>
               </Block>
               <Block display="flex" flexDirection="row-reverse">
                 <Button

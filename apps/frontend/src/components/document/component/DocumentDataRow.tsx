@@ -9,6 +9,7 @@ import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTrash} from "@fortawesome/free-solid-svg-icons";
 import {FieldArrayRenderProps} from "formik";
+import {Error} from "../../common/ModalSchema";
 
 const DocumentDataRow = (index: number,
                          tableData: DocumentTableRow[],
@@ -27,7 +28,6 @@ const DocumentDataRow = (index: number,
             arrayHelpers={arrayHelpers}
           />
         </StyledCell>
-
         <StyledCell style={{maxWidth: "52.5%"}}>
           <FieldSubjectCategory
             value={""}
@@ -37,7 +37,6 @@ const DocumentDataRow = (index: number,
             arrayHelpers={arrayHelpers}
           />
         </StyledCell>
-
         <StyledCell style={{maxWidth: "2.5%", justifyContent: "center"}}>
           <StatefulTooltip content={intl.delete}>
             <Button
@@ -52,6 +51,16 @@ const DocumentDataRow = (index: number,
             </Button>
           </StatefulTooltip>
         </StyledCell>
+      </StyledRow>
+
+      <StyledRow>
+        <StyledCell style={{maxWidth: "45%"}}>
+          <Error fieldName={`informationTypes[${index}].informationTypeId`} fullWidth={true}/>
+        </StyledCell>
+        <StyledCell style={{maxWidth: "52.5%"}}>
+          <Error fieldName={`informationTypes[${index}].subjectCategories`} fullWidth={true}/>
+        </StyledCell>
+        <StyledCell style={{maxWidth: "2.5%", justifyContent: "center"}}/>
       </StyledRow>
     </React.Fragment>
   )
