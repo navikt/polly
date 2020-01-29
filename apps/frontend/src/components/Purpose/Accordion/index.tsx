@@ -281,7 +281,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
 
                   {currentProcess?.dataProcessor &&
                   <>
-                    {currentProcess.dataProcessorAgreements?.length &&
+                    {!!currentProcess.dataProcessorAgreements?.length &&
                     <Block width="25%">
                       <Label2>{intl.dataProcessorAgreement}</Label2>
                       <Paragraph3>{currentProcess.dataProcessorAgreements.join(", ")}</Paragraph3>
