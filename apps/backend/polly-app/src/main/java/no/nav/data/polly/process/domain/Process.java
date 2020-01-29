@@ -32,6 +32,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
+import static no.nav.data.polly.common.utils.StreamUtils.nullToEmptyList;
 
 @Data
 @Builder
@@ -99,7 +100,7 @@ public class Process extends Auditable<String> {
                 .automaticProcessing(data.getAutomaticProcessing())
                 .profiling(data.getProfiling())
                 .dataProcessor(data.getDataProcessor())
-                .dataProcessorAgreements(data.getDataProcessorAgreements())
+                .dataProcessorAgreements(nullToEmptyList(data.getDataProcessorAgreements()))
                 .dataProcessorOutsideEU(data.getDataProcessorOutsideEU())
                 .build();
     }
