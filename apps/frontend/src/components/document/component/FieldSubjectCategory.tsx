@@ -23,7 +23,7 @@ const FieldSubjectCategory = (props: {
       options={codelist.getParsedOptions(ListName.SUBJECT_CATEGORY)}
       onChange={({value}) => {
         setValue(value);
-        let newRowData = {...props.rowData};
+        let newRowData = props.rowData;
         newRowData.categories = [...value];
         props.setRowData(newRowData,index);
 
