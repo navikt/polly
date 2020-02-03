@@ -9,39 +9,26 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTrash} from "@fortawesome/free-solid-svg-icons";
 import {FieldArrayRenderProps} from "formik";
 import {Error} from "../../common/ModalSchema";
-import {DocumentTableRow} from "../common/model/DocumentTableRow";
 
 type DocumentDataRowProps = {
   index: number,
-  tableData: DocumentTableRow[],
-  setRowData: Function,
   arrayHelpers: FieldArrayRenderProps,
-  removeRow: Function
 }
 const DocumentDataRow = ({
                            index,
                            arrayHelpers,
-                           removeRow,
-                           setRowData,
-                           tableData
                          }: DocumentDataRowProps) => {
   return (
     <React.Fragment key={index}>
       <StyledRow>
         <StyledCell style={{maxWidth: "45%"}}>
           <FieldInformationType
-            setValue={setRowData(index, tableData)}
-            rowData={tableData[index]}
-            setRowData={setRowData}
             index={index}
             arrayHelpers={arrayHelpers}
           />
         </StyledCell>
         <StyledCell style={{maxWidth: "52.5%"}}>
           <FieldSubjectCategory
-            value={""}
-            rowData={tableData[index]}
-            setRowData={setRowData}
             index={index}
             arrayHelpers={arrayHelpers}
           />
@@ -53,7 +40,6 @@ const DocumentDataRow = ({
               size={ButtonSize.compact}
               kind={KIND.tertiary}
               onClick={() => {
-                removeRow(index);
                 arrayHelpers.remove(index);
               }}>
               <FontAwesomeIcon icon={faTrash}/>

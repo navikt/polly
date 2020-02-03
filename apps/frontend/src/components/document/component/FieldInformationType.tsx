@@ -3,13 +3,9 @@ import {Select, TYPE} from "baseui/select";
 import React from "react";
 import {useInfoTypeSearch} from "../../../api";
 import {FieldArrayRenderProps} from "formik";
-import {DocumentTableRow} from "../common/model/DocumentTableRow";
 import {intl} from "../../../util";
 
 const FieldInformationType = (props: {
-  setValue: Function,
-  rowData: DocumentTableRow,
-  setRowData: Function,
   index: number,
   arrayHelpers: FieldArrayRenderProps
 }) => {
@@ -28,8 +24,6 @@ const FieldInformationType = (props: {
       onInputChange={event => setSearchKeyword(event.currentTarget.value)}
       onChange={(params) => {
         let infoType = params.value[0] as PolicyInformationType;
-        props.rowData.informationTypes = infoType;
-        props.setRowData(props.rowData, props.index);
         setSelectedInformationType(infoType)
 
         let  informationType = props.arrayHelpers.form.values.informationTypes[props.index] as DocumentInformationTypes;

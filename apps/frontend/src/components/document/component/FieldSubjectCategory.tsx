@@ -3,28 +3,24 @@ import {Select, Value} from "baseui/select";
 import {codelist, ListName} from "../../../service/Codelist";
 import {DocumentInformationTypes} from "../../../constants";
 import {FieldArrayRenderProps} from "formik";
-import {DocumentTableRow} from "../common/model/DocumentTableRow";
 
 const FieldSubjectCategory = (props: {
-  value?: string,
-  rowData:DocumentTableRow,
-  setRowData:Function,
   index:number,
   arrayHelpers:FieldArrayRenderProps}) => {
 
-  const [value, setValue] = React.useState<Value>(props.value ? [{
-    id: props.value,
-    label: codelist.getShortname(ListName.SUBJECT_CATEGORY, props.value)
-  }] : []);
+  const { arrayHelpers, index } = props
 
+  const [value, setValue] = React.useState<Value>();
+
+  // arrayHelpers.form.values.informationTypes[index] ? [{
+  //   id: (arrayHelpers.form.values.informationTypes[index] as DocumentInformationTypes).subjectCategories,
+  //   label: codelist.getShortname(ListName.SUBJECT_CATEGORY, (arrayHelpers.form.values.informationTypes[index] as DocumentInformationTypes).subjectCategories)
+  // }] : []
   return (
     <Select
       options={codelist.getParsedOptions(ListName.SUBJECT_CATEGORY)}
       onChange={({value}) => {
         setValue(value);
-        let newRowData = props.rowData;
-        newRowData.categories = [...value];
-        props.setRowData(newRowData,props.index);
 
         let  informationType = props.arrayHelpers.form.values.informationTypes[props.index] as DocumentInformationTypes;
         // @ts-ignore

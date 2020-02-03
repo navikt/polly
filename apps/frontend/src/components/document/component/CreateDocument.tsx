@@ -6,10 +6,9 @@ import {Input, SIZE} from "baseui/input";
 import {Textarea} from "baseui/textarea";
 import {CreateDocumentFormValues} from "../../../constants";
 import InformationTypesTable from "./InformationTypesTable";
-import {Field, FieldArray, FieldProps, Form, Formik} from "formik";
+import {Field, FieldArray, FieldProps, Form, Formik, FormikProps} from "formik";
 import {Button} from "baseui/button";
 import {Error} from "../../common/ModalSchema";
-import {createDocumentValidation} from "../../common/schema";
 import {user} from "../../../service/User";
 import {createInformationTypesDocument} from "../../../api";
 import {DocumentTableRow} from "../common/model/DocumentTableRow";
@@ -49,8 +48,11 @@ const CreateDocument = () => {
   };
 
   const removeRowData = (index:number) => {
+    console.log(index, "INDEX")
     delete tableData[index]
-    setTableData(tableData);
+    tableData.filter((value, index1) => index !==index1)
+    setTableData(tableData.filter(value => value !== undefined));
+
   };
 
 
@@ -63,14 +65,16 @@ const CreateDocument = () => {
       <Formik
         initialValues={initialCreateDocumentFormValues}
         onSubmit={(values:CreateDocumentFormValues,{resetForm}) => {
-          handleCreateDocument(values);
-          resetForm();
-          setTableData([]);
+          console.log(values)
+          // handleCreateDocument(values);
+          // resetForm();
+          // setTableData([]);
+          console.log(tableData)
         }}
-        validationSchema={createDocumentValidation()}
+        // validationSchema={createDocumentValidation()}
       >
         {
-          (formikProps:any) => (
+          (formikProps: FormikProps<CreateDocumentFormValues>) => (
             <Form onKeyDown={disableEnter}>
               <Block {...rowBlockProps}>
                 <Label2>{intl.name}</Label2>
@@ -98,16 +102,13 @@ const CreateDocument = () => {
                 </Field>
                 <Error fieldName="description" fullWidth={true}/>
               </Block>
+
               <Block {...rowBlockProps}>
                 <FieldArray
                   name="informationTypes"
                   render={
                     arrayHelpers=>(
                       <InformationTypesTable
-                        tableData={tableData}
-                        setTableData={setTableData}
-                        setRowData={setRowData}
-                        removeRow={removeRowData}
                         arrayHelpers={arrayHelpers}
                       />
                     )
