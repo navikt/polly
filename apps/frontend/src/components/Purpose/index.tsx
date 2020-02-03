@@ -71,7 +71,6 @@ const ProcessList = ({ purposeCode }: ProcessListProps) => {
             setErrorProcessModal(null)
             setShowCreateProcessModal(false)
         } catch (err) {
-            setShowCreateProcessModal(false)
             setErrorProcessModal(err.message)
         }
     }
