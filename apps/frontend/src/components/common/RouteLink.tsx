@@ -5,68 +5,73 @@ import { KIND } from "baseui/button"
 import { getDisclosure, getPolicy, getProcess } from "../../api"
 import { Block } from "baseui/block"
 import { AuditButton } from "../audit/AuditButton"
-import { ObjectType } from "../../constants"
+import { AuditItem, ObjectType } from "../../constants"
 
 type RouteLinkProps = {
-    href: string
+  href: string
 }
 
 const RouteLinkImpl = (props: RouteComponentProps<any> & RouteLinkProps & any) => {
-    const {history, location, match, staticContext, ...restprops} = props
-    return (
-        <StyledLink {...restprops} onClick={(e: Event) => {
-            e.preventDefault()
-            props.history.push(props.href)
-        }}/>
-    )
+  const {history, location, match, staticContext, ...restprops} = props
+  return (
+    <StyledLink {...restprops} onClick={(e: Event) => {
+      e.preventDefault()
+      props.history.push(props.href)
+    }}/>
+  )
 }
 
 export default withRouter(RouteLinkImpl)
 
 type ObjectLinkProps = {
-    id: string,
-    type: ObjectType,
-    withHistory?: boolean,
-    children?: any
+  id: string,
+  type: ObjectType,
+  audit?: AuditItem,
+  withHistory?: boolean,
+  children?: any
 }
 
 const ObjectLinkImpl = (props: RouteComponentProps & ObjectLinkProps) => {
-    const urlFor = async (type: ObjectType, id: string) => {
-        switch (type) {
-            case ObjectType.INFORMATION_TYPE:
-                return `/informationtype/${id}`
-            case ObjectType.POLICY:
-                const policy = await getPolicy(id)
-                return `/purpose/${policy.purposeCode.code}/${policy.process.id}`
-            case ObjectType.PROCESS:
-                const process = await getProcess(id)
-                return `/purpose/${process.purposeCode}/${process.id}`
-            case ObjectType.DISCLOSURE:
-                const disclosure = await getDisclosure(id)
-                return `/thirdparty/${disclosure.recipient.code}`
-            case ObjectType.DOCUMENT:
-                return `/document/${id}`
-            case ObjectType.CODELIST:
-                return `/admin/codelist/${id.substring(0, id.indexOf('-'))}`
+  const urlFor = async (type: ObjectType, id: string) => {
+    switch (type) {
+      case ObjectType.INFORMATION_TYPE:
+        return `/informationtype/${id}`
+      case ObjectType.POLICY:
+        const policy = await getPolicy(id)
+        return `/purpose/${policy.purposeCode.code}/${policy.process.id}`
+      case ObjectType.PROCESS:
+        const process = await getProcess(id)
+        return `/purpose/${process.purposeCode}/${process.id}`
+      case ObjectType.DISCLOSURE:
+        const disclosure = await getDisclosure(id)
+        return `/thirdparty/${disclosure.recipient.code}`
+      case ObjectType.DOCUMENT:
+        return `/document/${id}`
+      case ObjectType.CODELIST:
+        return `/admin/codelist/${id.substring(0, id.indexOf('-'))}`
+      case ObjectType.GENERIC_STORAGE:
+        if (props.audit && (props.audit.data as any)?.type === 'SETTINGS') {
+          return '/admin/settings'
         }
-        console.warn('couldn\'t find object type ' + type)
-        return ''
     }
+    console.warn('couldn\'t find object type ' + type)
+    return ''
+  }
 
-    const link =
-        <StyledLink onClick={(e: Event) => {
-            e.preventDefault();
-            (async () => props.history.push(await urlFor(props.type, props.id)))()
-        }} href='#'>
-            {props.children}
-        </StyledLink>
+  const link =
+    <StyledLink onClick={(e: Event) => {
+      e.preventDefault();
+      (async () => props.history.push(await urlFor(props.type, props.id)))()
+    }} href='#'>
+      {props.children}
+    </StyledLink>
 
-    return props.withHistory ?
-        <Block display="flex" justifyContent="space-between" width="100%" alignItems="center">
-            {link}
-            <AuditButton id={props.id} kind={KIND.tertiary}/>
-        </Block> :
-        link
+  return props.withHistory ?
+    <Block display="flex" justifyContent="space-between" width="100%" alignItems="center">
+      {link}
+      <AuditButton id={props.id} kind={KIND.tertiary}/>
+    </Block> :
+    link
 }
 
 export const ObjectLink = withRouter(ObjectLinkImpl)

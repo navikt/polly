@@ -54,7 +54,7 @@ export const AuditView = (props: AuditViewProps) => {
           {newestAudit?.action !== AuditAction.DELETE &&
           <StatefulTooltip content={() => intl.view} placement={PLACEMENT.top}>
             <Block>
-              <ObjectLink id={newestAudit!.tableId} type={newestAudit!.table}>
+              <ObjectLink id={newestAudit!.tableId} type={newestAudit!.table} audit={newestAudit}>
                 <Button size="compact" shape="round" kind="tertiary"><FontAwesomeIcon icon={faBinoculars}/></Button>
               </ObjectLink>
             </Block>

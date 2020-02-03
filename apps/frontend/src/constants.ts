@@ -257,7 +257,8 @@ export enum ObjectType {
     PROCESS = "PROCESS",
     DISCLOSURE = "DISCLOSURE",
     DOCUMENT = "DOCUMENT",
-    CODELIST = "CODELIST"
+    CODELIST = "CODELIST",
+    GENERIC_STORAGE = "GENERIC_STORAGE"
 }
 
 export interface AuditItem {
