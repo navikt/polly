@@ -107,7 +107,7 @@ export const no: IStrings = {
   addDocument: "Legg til opplysningstyper fra dokument",
   searchDocuments: "Søk dokumenter",
   addOneInformationType: "Legg til én opplysningstype",
-  addCollectionOfInformationTypes: "Legg til én samling av opplysningstyper",
+  addCollectionOfInformationTypes: "Legg til en samling av opplysningstyper",
   groupByPurpose: "Grupper etter formål",
   showAll: "Vis alle",
   emptyTable: "Ingen",
