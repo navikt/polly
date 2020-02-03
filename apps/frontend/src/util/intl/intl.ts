@@ -34,6 +34,18 @@ export interface IStrings {
   usage: string;
   and: string;
   remove: string;
+  yes: string;
+  no: string;
+  unclarified: string;
+  automaticProcessing: string;
+  automaticProcessingExtra: string;
+  profiling: string;
+  profilingExtra: string;
+  dataProcessor: string;
+  dataProcessorExtra: string;
+  dataProcessorAgreement: string;
+  dataProcessorOutsideEU: string;
+  dataProcessorOutsideEUExtra: string;
 
   // sentence
   loggedInStatus: string;

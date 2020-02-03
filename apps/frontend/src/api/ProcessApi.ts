@@ -29,7 +29,9 @@ export const updateProcess = async (process: ProcessFormValues) => {
   return (await axios.put<Process>(`${env.pollyBaseUrl}/process/${process.id}`, body)).data
 }
 
-export const convertProcessToFormValues = (process: Process) => {
+const mapBool = (b?: boolean) => b === true ? true : b === false ? false : undefined
+
+export const convertProcessToFormValues = (process?: Partial<Process>) => {
   const {
     id,
     purposeCode,
@@ -40,21 +42,31 @@ export const convertProcessToFormValues = (process: Process) => {
     productTeam,
     legalBases,
     start,
-    end
-  } = process
+    end,
+    automaticProcessing,
+    profiling,
+    dataProcessor,
+    dataProcessorAgreements,
+    dataProcessorOutsideEU
+  } = (process || {})
 
   return {
     legalBasesOpen: false,
     id: id,
     name: name,
-    description: description ||undefined,
+    description: description || undefined,
     purposeCode: purposeCode,
     department: (department && department.code) || undefined,
     subDepartment: (subDepartment && subDepartment.code) || undefined,
     productTeam: productTeam || undefined,
     legalBases: convertLegalBasesToFormValues(legalBases),
     start: start || undefined,
-    end: end || undefined
+    end: end || undefined,
+    automaticProcessing: process ? mapBool(automaticProcessing) : false,
+    profiling: process ? mapBool(profiling) : false,
+    dataProcessor: mapBool(dataProcessor),
+    dataProcessorAgreements: dataProcessorAgreements || [],
+    dataProcessorOutsideEU: mapBool(dataProcessorOutsideEU),
   } as ProcessFormValues
 }
 
@@ -69,6 +81,11 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
     productTeam: values.productTeam,
     legalBases: values.legalBases ? values.legalBases : [],
     start: values.start,
-    end: values.end
+    end: values.end,
+    automaticProcessing: values.automaticProcessing,
+    profiling: values.profiling,
+    dataProcessor: values.dataProcessor,
+    dataProcessorAgreements: values.dataProcessor ? values.dataProcessorAgreements : [],
+    dataProcessorOutsideEU: values.dataProcessor ? values.dataProcessorOutsideEU : undefined,
   }
 }

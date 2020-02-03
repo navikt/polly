@@ -10,7 +10,18 @@ import { intl, useAwait } from "../../util"
 import { user } from "../../service/User";
 import ModalProcess from './Accordion/ModalProcess'
 import AccordionProcess from "./Accordion";
-import { createPolicies, createPolicy, createProcess, deletePolicy, deleteProcess, getProcess, getProcessesForPurpose, updatePolicy, updateProcess } from "../../api"
+import {
+  convertProcessToFormValues,
+  createPolicies,
+  createPolicy,
+  createProcess,
+  deletePolicy,
+  deleteProcess,
+  getProcess,
+  getProcessesForPurpose,
+  updatePolicy,
+  updateProcess
+} from "../../api"
 
 const rowBlockProps: BlockProps = {
     marginBottom: 'scale800',
@@ -60,7 +71,6 @@ const ProcessList = ({ purposeCode }: ProcessListProps) => {
             setErrorProcessModal(null)
             setShowCreateProcessModal(false)
         } catch (err) {
-            setShowCreateProcessModal(false)
             setErrorProcessModal(err.message)
         }
     }
@@ -208,7 +218,7 @@ const ProcessList = ({ purposeCode }: ProcessListProps) => {
                     submit={(values: ProcessFormValues) => handleCreateProcess(values)}
                     errorOnCreate={errorProcessModal}
                     isEdit={false}
-                    initialValues={{ legalBasesOpen: false, name: '', description: undefined, department: '', subDepartment: '', purposeCode: purposeCode, legalBases: [] }}
+                    initialValues={convertProcessToFormValues({purposeCode: purposeCode})}
                 />
             </React.Fragment>
         </React.Fragment>

@@ -35,15 +35,20 @@ export const infoTypeSchema = () => yup.object<InformationtypeFormValues>({
 })
 
 export const processSchema = () => yup.object<ProcessFormValues>({
-  name: yup.string().max(max, maxError()).required(intl.required),
-  description: yup.string(),
-  department: yup.string(),
-  subDepartment: yup.string(),
-  productTeam: yup.string(),
-  legalBases: yup.array(legalBasisSchema()),
-  legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
-  start: yup.string().matches(DATE_REGEX, intl.dateFormat),
-  end: yup.string().matches(DATE_REGEX, intl.dateFormat)
+    name: yup.string().max(max, maxError()).required(intl.required),
+    description: yup.string(),
+    department: yup.string(),
+    subDepartment: yup.string(),
+    productTeam: yup.string(),
+    legalBases: yup.array(legalBasisSchema()),
+    legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
+    start: yup.string().matches(DATE_REGEX, intl.dateFormat),
+    end: yup.string().matches(DATE_REGEX, intl.dateFormat),
+    automaticProcessing: yup.boolean(),
+    profiling: yup.boolean(),
+    dataProcessor: yup.boolean(),
+    dataProcessorAgreements: yup.array(yup.string()),
+    dataProcessorOutsideEU: yup.boolean(),
 })
 
 const missingArt9LegalBasisForSensitiveInfoType = (informationType: PolicyInformationType, policy: PolicyFormValues) => {

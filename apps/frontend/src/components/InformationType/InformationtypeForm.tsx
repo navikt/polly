@@ -8,7 +8,6 @@ import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 import { Textarea } from "baseui/textarea";
 import { Button, SHAPE } from "baseui/button";
 import { Plus } from "baseui/icon";
-import { Tag, VARIANT } from "baseui/tag";
 import { Option, Select, TYPE, Value } from "baseui/select";
 
 import { codelist, ListName } from "../../service/Codelist";
@@ -16,38 +15,12 @@ import { InformationtypeFormValues } from "../../constants";
 import { intl } from "../../util"
 import { getTerm, mapTermToOption, useTermSearch } from "../../api"
 import { infoTypeSchema } from "../common/schema"
+import { renderTagList } from "../common/TagList"
 
 const labelProps: BlockProps = {
     marginBottom: "8px",
     alignSelf: "center"
 };
-
-function renderTagList(
-    list: string[],
-    arrayHelpers: FieldArrayRenderProps
-) {
-    return (
-        <React.Fragment>
-            {list && list.length > 0
-                ? list.map((item, index) => (
-                    <React.Fragment key={index}>
-                        {item ? (
-                            <Tag
-                                key={item}
-                                variant={VARIANT.outlined}
-                                onActionClick={() =>
-                                    arrayHelpers.remove(index)
-                                }
-                            >
-                                {item}
-                            </Tag>
-                        ) : null}
-                    </React.Fragment>
-                ))
-                : null}
-        </React.Fragment>
-    );
-}
 
 type FormProps = {
     formInitialValues: InformationtypeFormValues;

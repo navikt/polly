@@ -43,20 +43,19 @@ const TooltipContent = () => (
 );
 
 const renderCardHeader = (text: string) => {
-    return (
+  return (
+    <Block display="flex">
+      <StatefulTooltip
+        content={() => <TooltipContent/>}
+        placement={PLACEMENT.top}
+      >
         <Block display="flex">
-            <StatefulTooltip
-                content={() => <TooltipContent />}
-                placement={PLACEMENT.top}
-            >
-                <Block display="flex">
-                    <Label2>{text}</Label2>
-                    <FontAwesomeIcon icon={faExclamationCircle} color={theme.colors.positive300} size="sm" />
-                </Block>
-            </StatefulTooltip>
+          <Label2>{text}</Label2>
+          <FontAwesomeIcon style={{marginLeft: ".25rem"}} icon={faExclamationCircle} color={theme.colors.accent400} size="sm"/>
         </Block>
-
-    )
+      </StatefulTooltip>
+    </Block>
+  )
 };
 
 interface CardLegalBasisProps {

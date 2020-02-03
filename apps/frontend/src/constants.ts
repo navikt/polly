@@ -46,6 +46,12 @@ export interface ProcessFormValues {
     legalBasesOpen: boolean
     end?: string
     start?: string
+
+    automaticProcessing?: boolean
+    profiling?: boolean
+    dataProcessor?: boolean
+    dataProcessorAgreements: string[]
+    dataProcessorOutsideEU?: boolean
 }
 
 export interface LegalBasisFormValues {
@@ -129,6 +135,12 @@ export interface Process extends IDurationed {
     productTeam: string
     policies: Policy[]
     purposeCode: string
+
+    automaticProcessing?: boolean
+    profiling?: boolean
+    dataProcessor?: boolean
+    dataProcessorAgreements?: string[]
+    dataProcessorOutsideEU?: boolean
 }
 
 export interface ProcessPurposeCount {
