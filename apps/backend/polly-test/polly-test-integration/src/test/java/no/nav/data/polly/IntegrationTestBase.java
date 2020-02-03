@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.IntegrationTestBase.Initializer;
 import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.common.nais.LeaderElectionService;
+import no.nav.data.polly.common.storage.domain.GenericStorageRepository;
 import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureData;
@@ -86,6 +87,8 @@ public abstract class IntegrationTestBase {
     @Autowired
     protected DocumentRepository documentRepository;
     @Autowired
+    protected GenericStorageRepository genericStorageRepository;
+    @Autowired
     protected KafkaTopicProperties topicProperties;
 
     static {
@@ -110,6 +113,7 @@ public abstract class IntegrationTestBase {
     }
 
     private void delete() {
+        genericStorageRepository.deleteAll();
         disclosureRepository.deleteAll();
         documentRepository.deleteAll();
         policyRepository.deleteAll();

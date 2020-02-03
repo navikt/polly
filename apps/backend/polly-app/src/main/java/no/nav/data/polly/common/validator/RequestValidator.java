@@ -93,6 +93,12 @@ public abstract class RequestValidator<T extends RequestElement> {
         return isUpdate && !existInRepository;
     }
 
+    public static void validate(String reference, Validated object) {
+        FieldValidator validator = new FieldValidator(reference);
+        object.validate(validator);
+        validator.ifErrorsThrowValidationException();
+    }
+
     public static void ifErrorsThrowValidationException(List<ValidationError> validationErrors) {
         if (!validationErrors.isEmpty()) {
             log.warn("The request was not accepted. The following errors occurred during validation:{}", validationErrors);

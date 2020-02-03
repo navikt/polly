@@ -15,6 +15,7 @@ import no.nav.data.polly.document.dto.DocumentRequest;
 import no.nav.data.polly.document.dto.DocumentResponse;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.policy.domain.PolicyRepository;
+import no.nav.data.polly.settings.SettingsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,11 +35,14 @@ public class DocumentService extends RequestValidator<DocumentRequest> {
     private final DocumentRepository repository;
     private final InformationTypeRepository informationTypeRepository;
     private final PolicyRepository policyRepository;
+    private final SettingsService settingsService;
 
-    public DocumentService(DocumentRepository repository, InformationTypeRepository informationTypeRepository, PolicyRepository policyRepository) {
+    public DocumentService(DocumentRepository repository, InformationTypeRepository informationTypeRepository, PolicyRepository policyRepository,
+            SettingsService settingsService) {
         this.repository = repository;
         this.informationTypeRepository = informationTypeRepository;
         this.policyRepository = policyRepository;
+        this.settingsService = settingsService;
     }
 
     public DocumentResponse getDocumentAsResponse(UUID uuid) {
@@ -75,6 +79,9 @@ public class DocumentService extends RequestValidator<DocumentRequest> {
         var policies = policyRepository.findByDocumentId(uuid);
         if (!policies.isEmpty()) {
             throw new ValidationException(String.format("Document %s is used by %d policie(s)", uuid, policies.size()));
+        }
+        if (uuid.toString().equals(settingsService.getSettings().getDefaultProcessDocument())) {
+            throw new ValidationException("Cannot delete default process document " + uuid);
         }
         repository.delete(doc);
         return doc;
