@@ -1,7 +1,6 @@
 import {DocumentInformationTypes, PolicyInformationType} from "../../../constants";
 import {Select, TYPE} from "baseui/select";
 import React from "react";
-import index from "../../Purpose/Accordion";
 import {useInfoTypeSearch} from "../../../api";
 import {FieldArrayRenderProps} from "formik";
 import {DocumentTableRow} from "../common/model/DocumentTableRow";
@@ -30,7 +29,7 @@ const FieldInformationType = (props: {
       onChange={(params) => {
         let infoType = params.value[0] as PolicyInformationType;
         props.rowData.informationTypes = infoType;
-        props.setRowData(props.rowData, index);
+        props.setRowData(props.rowData, props.index);
         setSelectedInformationType(infoType)
 
         let  informationType = props.arrayHelpers.form.values.informationTypes[props.index] as DocumentInformationTypes;

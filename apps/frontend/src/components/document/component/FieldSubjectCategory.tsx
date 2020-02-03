@@ -2,7 +2,6 @@ import React from "react";
 import {Select, Value} from "baseui/select";
 import {codelist, ListName} from "../../../service/Codelist";
 import {DocumentInformationTypes} from "../../../constants";
-import index from "../../Purpose/Accordion";
 import {FieldArrayRenderProps} from "formik";
 import {DocumentTableRow} from "../common/model/DocumentTableRow";
 
@@ -25,7 +24,7 @@ const FieldSubjectCategory = (props: {
         setValue(value);
         let newRowData = props.rowData;
         newRowData.categories = [...value];
-        props.setRowData(newRowData,index);
+        props.setRowData(newRowData,props.index);
 
         let  informationType = props.arrayHelpers.form.values.informationTypes[props.index] as DocumentInformationTypes;
         // @ts-ignore
