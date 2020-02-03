@@ -9,12 +9,13 @@ import InformationtypePage from './pages/InformationtypePage'
 import ThirdPartySearchPage from "./pages/ThirdPartySearchPage";
 import ThirdPartyMetadataPage from './pages/ThirdPartyPage'
 import { Main } from "./pages/MainPage"
-import CodelistPage from "./pages/CodelistPage"
-import { AuditPage } from "./pages/AuditPage"
+import CodelistPage from "./pages/admin/CodelistPage"
+import { AuditPage } from "./pages/admin/AuditPage"
 import { intl, theme } from "./util"
 import { Block } from "baseui/block"
 import { Paragraph1 } from "baseui/typography"
 import notFound from "./resources/notfound.svg"
+import { SettingsPage } from "./pages/admin/SettingsPage"
 
 
 const Routes = (): JSX.Element => (
@@ -47,6 +48,11 @@ const Routes = (): JSX.Element => (
         exact
         path="/admin/audit/:id?/:auditId?"
         component={AuditPage}
+      />
+      <Route
+        exact
+        path="/admin/settings"
+        component={SettingsPage}
       />
       <Route
         exact

@@ -144,7 +144,8 @@ const LoggedInHeader = () => {
 const AdminOptionsImpl = (props: RouteComponentProps<any>) => {
     const pages = [
         {label: intl.manageCodeListTitle, href: "/admin/codelist"},
-        {label: intl.audit, href: "/admin/audit"}
+        {label: intl.audit, href: "/admin/audit"},
+        {label: intl.settings, href: "/admin/settings"}
     ]
     return (
         <StatefulPopover

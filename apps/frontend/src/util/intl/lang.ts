@@ -201,8 +201,10 @@ export const no: IStrings = {
   time: "Tidspunkt",
   user: "Bruker",
   close: "Lukk",
-  lastChanges: "Siste endringer"
-};
+  lastChanges: "Siste endringer",
+  settings: "Instillinger",
+  defaultProcessDocument: "Dokument for standard informasjonstyper i behandling"
+}
 
 export const en: IStrings = {
   informationType: "Information type",
@@ -406,7 +408,9 @@ export const en: IStrings = {
   time: "Time",
   user: "User",
   close: "Close",
-  lastChanges: "Last changes"
+  lastChanges: "Last changes",
+  settings: "Settings",
+  defaultProcessDocument: "Document for the default information types in a process"
 };
 
 export const ta = {

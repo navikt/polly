@@ -295,3 +295,7 @@ export interface CategoryUsage {
     listName: string
     codesInUse: CodeUsage[]
 }
+
+export interface Settings {
+  defaultProcessDocument: string;
+}

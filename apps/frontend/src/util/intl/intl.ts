@@ -206,6 +206,8 @@ export interface IStrings {
   time: string;
   user: string;
   lastChanges: string;
+  settings: string;
+  defaultProcessDocument: string;
 }
 
 // Remember import moment locales up top
