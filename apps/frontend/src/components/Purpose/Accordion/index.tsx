@@ -228,28 +228,65 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
               <React.Fragment>
 
                 <Block {...rowPanelContent}>
-                  <Block width="90%" flexWrap={true} display="flex" marginRight=".5rem">
-                    {currentProcess.description && <Block marginBottom=".5rem" width="100%">
-                      <Label2>{intl.processPurpose}</Label2>
-                      <Paragraph2>{currentProcess.description}</Paragraph2>
-                    </Block>}
+                  <Block width="90%" marginRight=".5rem">
 
-                    <Block width="33%">{renderLegalBasisListForProcess(currentProcess.legalBases)}</Block>
-                    <Block width="33%">{renderSubjectCategoriesForProcess(currentProcess)}</Block>
-                    <Block width="33%">{renderActiveForProcess(currentProcess)}</Block>
+                    <Block flexWrap={true} display="flex" justifyContent="flex-start">
+                      {currentProcess.description && <Block marginBottom=".5rem" width="100%">
+                        <Label2>{intl.processPurpose}</Label2>
+                        <Paragraph2>{currentProcess.description}</Paragraph2>
+                      </Block>}
 
-                    {currentProcess.department && <Block width="33%">
-                      <Label2>{intl.department}</Label2>
-                      <Paragraph3>{codelist.getShortnameForCode(currentProcess.department)}</Paragraph3>
-                    </Block>}
-                    {currentProcess.subDepartment && <Block width="33%">
-                      <Label2>{intl.subDepartment}</Label2>
-                      <Paragraph3>{codelist.getShortnameForCode(currentProcess.subDepartment)}</Paragraph3>
-                    </Block>}
-                    {currentProcess.productTeam && <Block width="33%">
-                      <Label2>{intl.productTeam}</Label2>
-                      <TeamPopover teamId={currentProcess.productTeam}/>
-                    </Block>}
+                      <Block width="33%">{renderLegalBasisListForProcess(currentProcess.legalBases)}</Block>
+                      <Block width="33%">{renderSubjectCategoriesForProcess(currentProcess)}</Block>
+                      <Block width="33%">{renderActiveForProcess(currentProcess)}</Block>
+
+                      {currentProcess.department && <Block width="33%">
+                        <Label2>{intl.department}</Label2>
+                        <Paragraph3>{codelist.getShortnameForCode(currentProcess.department)}</Paragraph3>
+                      </Block>}
+                      {currentProcess.subDepartment && <Block width="33%">
+                        <Label2>{intl.subDepartment}</Label2>
+                        <Paragraph3>{codelist.getShortnameForCode(currentProcess.subDepartment)}</Paragraph3>
+                      </Block>}
+                      {currentProcess.productTeam && <Block width="33%">
+                        <Label2>{intl.productTeam}</Label2>
+                        <TeamPopover teamId={currentProcess.productTeam}/>
+                      </Block>}
+                    </Block>
+
+
+                    <Block {...rowPanelContent} justifyContent="flex-start">
+                      <Block width="33%">
+                        <Label2>{intl.automaticProcessing}</Label2>
+                        <Paragraph3>{boolToText(currentProcess?.automaticProcessing)}</Paragraph3>
+                      </Block>
+
+                      <Block width="33%">
+                        <Label2>{intl.profiling}</Label2>
+                        <Paragraph3>{boolToText(currentProcess?.profiling)}</Paragraph3>
+                      </Block>
+                    </Block>
+
+                    <Block {...rowPanelContent} justifyContent="flex-start">
+                      <Block width="33%">
+                        <Label2>{intl.dataProcessor}</Label2>
+                        <Paragraph3>{boolToText(currentProcess?.dataProcessor)}</Paragraph3>
+                      </Block>
+
+                      {currentProcess?.dataProcessor &&
+                      <>
+                        <Block width="33%">
+                          <Label2>{intl.dataProcessorOutsideEU}</Label2>
+                          <Paragraph3>{boolToText(currentProcess.dataProcessorOutsideEU)}</Paragraph3>
+                        </Block>
+                        {!!currentProcess.dataProcessorAgreements?.length &&
+                        <Block width="33%">
+                          <Label2>{intl.dataProcessorAgreement}</Label2>
+                          <Paragraph3>{currentProcess.dataProcessorAgreements.join(", ")}</Paragraph3>
+                        </Block>}
+                      </>}
+                    </Block>
+
                   </Block>
 
                   <Block width="10%" minWidth="150px">
@@ -261,36 +298,6 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                       </>
                     )}
                   </Block>
-                </Block>
-
-                <Block {...rowPanelContent} flexWrap={true}>
-                  <Block width="25%">
-                    <Label2>{intl.automaticProcessing}</Label2>
-                    <Paragraph3>{boolToText(currentProcess?.automaticProcessing)}</Paragraph3>
-                  </Block>
-
-                  <Block width="25%">
-                    <Label2>{intl.profiling}</Label2>
-                    <Paragraph3>{boolToText(currentProcess?.profiling)}</Paragraph3>
-                  </Block>
-
-                  <Block width="25%">
-                    <Label2>{intl.dataProcessor}</Label2>
-                    <Paragraph3>{boolToText(currentProcess?.dataProcessor)}</Paragraph3>
-                  </Block>
-
-                  {currentProcess?.dataProcessor &&
-                  <>
-                    {!!currentProcess.dataProcessorAgreements?.length &&
-                    <Block width="25%">
-                      <Label2>{intl.dataProcessorAgreement}</Label2>
-                      <Paragraph3>{currentProcess.dataProcessorAgreements.join(", ")}</Paragraph3>
-                    </Block>}
-                    <Block width="25%">
-                      <Label2>{intl.dataProcessorOutsideEU}</Label2>
-                      <Paragraph3>{boolToText(currentProcess.dataProcessorOutsideEU)}</Paragraph3>
-                    </Block>
-                  </>}
                 </Block>
 
                 <Block {...rowPanelContent}>
