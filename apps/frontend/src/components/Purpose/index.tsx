@@ -219,7 +219,7 @@ const ProcessList = ({ purposeCode }: ProcessListProps) => {
                     submit={(values: ProcessFormValues) => handleCreateProcess(values)}
                     errorOnCreate={errorProcessModal}
                     isEdit={false}
-                    initialValues={convertProcessToFormValues()}
+                    initialValues={convertProcessToFormValues({purposeCode: purposeCode})}
                 />
             </React.Fragment>
         </React.Fragment>

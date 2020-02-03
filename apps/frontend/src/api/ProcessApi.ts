@@ -31,7 +31,7 @@ export const updateProcess = async (process: ProcessFormValues) => {
 
 const mapBool = (b?: boolean) => b === true ? true : b === false ? false : undefined
 
-export const convertProcessToFormValues = (process?: Process) => {
+export const convertProcessToFormValues = (process?: Partial<Process>) => {
   const {
     id,
     purposeCode,
