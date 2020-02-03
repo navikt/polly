@@ -111,6 +111,7 @@ export const no: IStrings = {
   groupByPurpose: "Grupper etter formål",
   showAll: "Vis alle",
   emptyTable: "Ingen",
+  pageNotFound: "Oida 404! Fant ikke den siden der nei",
 
   POLLY_READ: "Les",
   POLLY_WRITE: "Skriv",
@@ -314,6 +315,7 @@ export const en: IStrings = {
   addOneInformationType: "Add one information type",
   addCollectionOfInformationTypes: "Add a collection of information types",
   emptyTable: "No",
+  pageNotFound: "Oops 404! Couldn't find that page",
 
   POLLY_READ: "Read",
   POLLY_WRITE: "Write",

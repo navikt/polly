@@ -117,6 +117,7 @@ export interface IStrings {
   addOneInformationType: string;
   addCollectionOfInformationTypes: string;
   emptyTable: string;
+  pageNotFound: string;
 
   // groups
   POLLY_READ: string;
