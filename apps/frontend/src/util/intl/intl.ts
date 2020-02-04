@@ -27,6 +27,7 @@ export interface IStrings {
   nationalLaw: string;
   navMaster: string;
   productTeam: string;
+  product: string;
   disclosure: string;
   disclosures: string;
   documents: string;

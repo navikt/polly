@@ -252,6 +252,10 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                         <Label2>{intl.productTeam}</Label2>
                         <TeamPopover teamId={currentProcess.productTeam}/>
                       </Block>}
+                      {!!currentProcess.product && <Block width="33%">
+                        <Label2>{intl.product}</Label2>
+                        <Paragraph3>{codelist.getShortname(ListName.SYSTEM, currentProcess.product.code)}</Paragraph3>
+                      </Block>}
                     </Block>
 
 

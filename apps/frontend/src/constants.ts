@@ -1,6 +1,6 @@
-import {Code, codelist, ListName} from "./service/Codelist"
-import {ColumnCompares} from "./util/hooks"
-import {intl} from "./util"
+import { Code, codelist, ListName } from "./service/Codelist"
+import { ColumnCompares } from "./util/hooks"
+import { intl } from "./util"
 
 export interface InformationtypeFormValues {
   id?: string
@@ -42,6 +42,7 @@ export interface ProcessFormValues {
   department?: string
   subDepartment?: string
   productTeam?: string
+  product?: string
   legalBases: Array<LegalBasisFormValues>
   legalBasesOpen: boolean
   end?: string
@@ -135,6 +136,7 @@ export interface Process extends IDurationed {
   department: Code
   subDepartment: Code
   productTeam: string
+  product: Code
   policies: Policy[]
   purposeCode: string
 
