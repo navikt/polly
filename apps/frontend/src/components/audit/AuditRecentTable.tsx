@@ -101,7 +101,7 @@ export const AuditRecentTable = (props: { show: boolean }) => {
                 <StyledCell $style={{display: "flex", justifyContent: "space-between"}}>
                   <Block>{audit.user}</Block>
                   <Block>
-                    <ObjectLink id={audit.tableId} type={audit.table}>
+                    <ObjectLink id={audit.tableId} type={audit.table} audit={audit}>
                       <Button size="compact" shape="round" kind="tertiary"><FontAwesomeIcon icon={faBinoculars}/></Button>
                     </ObjectLink>
                     <StatefulPopover overrides={{Body: {style: {width: "80%"}}}}

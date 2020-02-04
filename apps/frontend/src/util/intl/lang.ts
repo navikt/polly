@@ -111,6 +111,7 @@ export const no: IStrings = {
   groupByPurpose: "Grupper etter formål",
   showAll: "Vis alle",
   emptyTable: "Ingen",
+  pageNotFound: "Oida 404! Fant ikke den siden der nei",
 
   POLLY_READ: "Les",
   POLLY_WRITE: "Skriv",
@@ -200,8 +201,10 @@ export const no: IStrings = {
   time: "Tidspunkt",
   user: "Bruker",
   close: "Lukk",
-  lastChanges: "Siste endringer"
-};
+  lastChanges: "Siste endringer",
+  settings: "Instillinger",
+  defaultProcessDocument: "Dokument for standard informasjonstyper i behandling"
+}
 
 export const en: IStrings = {
   informationType: "Information type",
@@ -314,6 +317,7 @@ export const en: IStrings = {
   addOneInformationType: "Add one information type",
   addCollectionOfInformationTypes: "Add a collection of information types",
   emptyTable: "No",
+  pageNotFound: "Oops 404! Couldn't find that page",
 
   POLLY_READ: "Read",
   POLLY_WRITE: "Write",
@@ -404,7 +408,9 @@ export const en: IStrings = {
   time: "Time",
   user: "User",
   close: "Close",
-  lastChanges: "Last changes"
+  lastChanges: "Last changes",
+  settings: "Settings",
+  defaultProcessDocument: "Document for the default information types in a process"
 };
 
 export const ta = {

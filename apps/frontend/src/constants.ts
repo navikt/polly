@@ -268,7 +268,8 @@ export enum ObjectType {
     PROCESS = "PROCESS",
     DISCLOSURE = "DISCLOSURE",
     DOCUMENT = "DOCUMENT",
-    CODELIST = "CODELIST"
+    CODELIST = "CODELIST",
+    GENERIC_STORAGE = "GENERIC_STORAGE"
 }
 
 export interface AuditItem {
@@ -305,4 +306,8 @@ export interface Use {
 export interface CategoryUsage {
     listName: string
     codesInUse: CodeUsage[]
+}
+
+export interface Settings {
+  defaultProcessDocument: string;
 }
