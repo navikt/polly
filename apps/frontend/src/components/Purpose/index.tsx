@@ -72,7 +72,7 @@ const ProcessList = ({ purposeCode }: ProcessListProps) => {
         setErrorProcessModal(null)
         if (process.includeDefaultDocument) {
           const doc = await getDefaultProcessDocument()
-          return handleAddDocument({process: newProcess, document: doc, informationTypes: doc.informationTypes}, true)
+          await handleAddDocument({process: newProcess, document: doc, informationTypes: doc.informationTypes.filter(it => !!it.subjectCategories.length)}, true)
         }
         setShowCreateProcessModal(false)
       } catch (err) {
