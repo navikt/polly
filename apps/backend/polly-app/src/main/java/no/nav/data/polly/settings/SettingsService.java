@@ -38,7 +38,7 @@ public class SettingsService {
 
     private void validate(Settings settings) {
         RequestValidator.validate("Settings", settings);
-        if (documentRepository.findById(UUID.fromString(settings.getDefaultProcessDocument())).isEmpty()) {
+        if (settings.getDefaultProcessDocument() != null && documentRepository.findById(UUID.fromString(settings.getDefaultProcessDocument())).isEmpty()) {
             throw new ValidationException("Can't find document " + settings.getDefaultProcessDocument());
         }
     }
