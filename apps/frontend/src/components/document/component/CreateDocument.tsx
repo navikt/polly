@@ -1,7 +1,7 @@
 import React, {KeyboardEvent} from "react";
 import {Block, BlockProps} from "baseui/block";
-import {Label2} from "baseui/typography";
-import {intl} from "../../../util";
+import {Label2, Paragraph2} from "baseui/typography";
+import {intl, useAwait} from "../../../util";
 import {Input, SIZE} from "baseui/input";
 import {Textarea} from "baseui/textarea";
 import {CreateDocumentFormValues} from "../../../constants";
@@ -12,6 +12,7 @@ import {Error} from "../../common/ModalSchema";
 import {user} from "../../../service/User";
 import {createInformationTypesDocument} from "../../../api";
 import {createDocumentValidation} from "../../common/schema";
+import { Notification } from "baseui/notification";
 
 const rowBlockProps: BlockProps = {
   width: '100%',
@@ -21,9 +22,10 @@ const rowBlockProps: BlockProps = {
 const CreateDocument = () => {
   const [description, setDescription] = React.useState("");
   const [isLoading, setLoading] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState("");
+  const [responseMessage, setResponseMessage] = React.useState();
 
   const hasAccess = () => user.canWrite();
+  useAwait(user.wait())
 
   let initialCreateDocumentFormValues: CreateDocumentFormValues = {
     name: "",
@@ -32,13 +34,14 @@ const CreateDocument = () => {
   };
 
   const handleCreateDocument = async (values: CreateDocumentFormValues) => {
+    setResponseMessage(null)
     let body = {...values};
     setLoading(true)
     try {
-      const response = createInformationTypesDocument(body);
+      await createInformationTypesDocument(body);
+      setResponseMessage(intl.createdDocument)
     } catch (error) {
-      console.log("inne")
-      setErrorMessage(error.message)
+      setResponseMessage(error.message)
     }
     setLoading(false)
   };
@@ -132,11 +135,14 @@ const CreateDocument = () => {
                 >
                   {intl.abort}
                 </Button>
-                <Block>
-                  {
-                    errorMessage && errorMessage
-                  }
-                </Block>
+                
+                {responseMessage && (
+                  <Block marginRight="scale800" marginTop="10px">
+                     <Notification kind="positive" autoHideDuration={5000}>
+                        {responseMessage}
+                     </Notification>
+                  </Block>
+                )}
               </Block>
             </Form>
           )

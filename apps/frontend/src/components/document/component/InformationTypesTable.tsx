@@ -13,11 +13,9 @@ import FieldSubjectCategory from "./FieldSubjectCategory";
 import {Error} from "../../common/ModalSchema";
 import shortid from 'shortid'
 
-
 type InformationTypesTableProps = {
   arrayHelpers: FieldArrayRenderProps,
 }
-
 
 const InformationTypesTable = (props: InformationTypesTableProps) => {
   const [useCss] = useStyletron();
