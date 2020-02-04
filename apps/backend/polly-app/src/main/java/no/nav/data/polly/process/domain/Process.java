@@ -94,6 +94,7 @@ public class Process extends Auditable<String> {
                 .department(getDepartmentCode())
                 .subDepartment(getSubDepartmentCode())
                 .productTeam(data.getProductTeam())
+                .product(getProductCode())
                 .start(data.getStart())
                 .end(data.getEnd())
                 .legalBases(convert(data.getLegalBases(), LegalBasis::convertToResponse))
@@ -105,7 +106,7 @@ public class Process extends Auditable<String> {
                 .build();
     }
 
-    public UsedInInstance getInstanceIdentification(){
+    public UsedInInstance getInstanceIdentification() {
         return UsedInInstance.builder().id(id.toString()).name(name).build();
     }
 
@@ -125,6 +126,7 @@ public class Process extends Auditable<String> {
         data.setDepartment(request.getDepartment());
         data.setSubDepartment(request.getSubDepartment());
         data.setProductTeam(request.getProductTeam());
+        data.setProduct(request.getProduct());
         data.setStart(DateUtil.parseStart(request.getStart()));
         data.setEnd(DateUtil.parseEnd(request.getEnd()));
         data.setLegalBases(convert(request.getLegalBases(), LegalBasisRequest::convertToLegalBasis));
@@ -142,6 +144,10 @@ public class Process extends Auditable<String> {
 
     private CodelistResponse getDepartmentCode() {
         return CodelistService.getCodelistResponse(ListName.DEPARTMENT, data.getDepartment());
+    }
+
+    private CodelistResponse getProductCode() {
+        return CodelistService.getCodelistResponse(ListName.SYSTEM, data.getProduct());
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")

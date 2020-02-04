@@ -11,7 +11,6 @@ import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import java.util.List;
@@ -23,6 +22,7 @@ import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_END;
 import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_START;
 import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
+import static org.apache.commons.lang3.StringUtils.trimToNull;
 
 @Data
 @Builder
@@ -42,6 +42,8 @@ public class ProcessRequest implements RequestElement {
     @ApiModelProperty(value = "Codelist SUB_DEPARTMENT")
     private String subDepartment;
     private String productTeam;
+    @ApiModelProperty(value = "Codelist SYSTEM")
+    private String product;
     @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_START)
     private String start;
     @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_END)
@@ -67,7 +69,9 @@ public class ProcessRequest implements RequestElement {
         setPurposeCode(toUpperCaseAndTrim(getPurposeCode()));
         setDepartment(toUpperCaseAndTrim(getDepartment()));
         setSubDepartment(toUpperCaseAndTrim(getSubDepartment()));
-        setDescription(StringUtils.trimToNull(getDescription()));
+        setDescription(trimToNull(getDescription()));
+        setProductTeam(trimToNull(getProductTeam()));
+        setProduct(toUpperCaseAndTrim(getProduct()));
 
         setDataProcessorAgreements(safeStream(getDataProcessorAgreements())
                 .map(Strings::trimToNull).filter(Objects::nonNull).collect(Collectors.toList()));
@@ -85,6 +89,7 @@ public class ProcessRequest implements RequestElement {
         validator.checkRequiredCodelist(Fields.purposeCode, purposeCode, ListName.PURPOSE);
         validator.checkCodelist(Fields.department, department, ListName.DEPARTMENT);
         validator.checkCodelist(Fields.subDepartment, subDepartment, ListName.SUB_DEPARTMENT);
+        validator.checkCodelist(Fields.product, product, ListName.SYSTEM);
         validator.checkDate(Fields.start, start);
         validator.checkDate(Fields.end, end);
         validator.validateType(Fields.legalBases, legalBases);

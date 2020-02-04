@@ -1,6 +1,8 @@
 package no.nav.data.polly.process;
 
 import no.nav.data.polly.IntegrationTestBase;
+import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.process.ProcessReadController.ProcessPage;
 import no.nav.data.polly.process.dto.ProcessResponse;
@@ -38,6 +40,8 @@ class PurposeControllerIT extends IntegrationTestBase {
                         .name("Auto_" + PURPOSE_CODE1)
                         .description("process description")
                         .purposeCode(PURPOSE_CODE1)
+                        .productTeam("teamname")
+                        .product(CodelistService.getCodelistResponse(ListName.SYSTEM, "PESYS"))
                         .start(LocalDate.now())
                         .end(LocalDate.now())
                         .legalBasis(legalBasisResponse())

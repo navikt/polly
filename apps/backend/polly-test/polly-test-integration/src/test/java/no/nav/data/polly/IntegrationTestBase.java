@@ -210,6 +210,8 @@ public abstract class IntegrationTestBase {
                         .save(Process.builder().generateId().name("Auto_" + purpose).purposeCode(purpose)
                                 .data(ProcessData.builder()
                                         .description("process description")
+                                        .productTeam("teamname")
+                                        .product("PESYS")
                                         .start(LocalDate.now()).end(LocalDate.now()).legalBasis(createLegalBasis())
                                         .build())
                                 .build()));
