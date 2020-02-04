@@ -5,12 +5,12 @@ import {useInfoTypeSearch} from "../../../api";
 import {intl} from "../../../util";
 
 const FieldInformationType = (props: {
-  informationType: DocumentInformationTypes,
+  documentInformationType: DocumentInformationTypes,
   handleChange: Function
 }) => {
   const [selectedInformationType, setSelectedInformationType] = React.useState();
   const [searchKeyword, setSearchKeyword, isLoading] = useInfoTypeSearch();
-  const { informationType, handleChange } = props
+  const { documentInformationType, handleChange } = props
 
   return (
 
@@ -25,7 +25,7 @@ const FieldInformationType = (props: {
       onInputChange={event => setSearchKeyword(event.currentTarget.value)}
       onChange={(params) => {
           setSelectedInformationType(params.value[0] as PolicyInformationType)
-          handleChange({...informationType, informationTypeId: !params.value[0] ? '' : params.value[0].id})
+          handleChange({...documentInformationType, informationTypeId: !params.value[0] ? '' : params.value[0].id})
       }}
       filterOptions={options => options}
       labelKey="name"

@@ -27,7 +27,7 @@ export const infoTypeSchema = () => yup.object<InformationtypeFormValues>({
   name: yup.string().required(intl.required).max(max, maxError()),
   term: yup.string(),
   sensitivity: yup.string().required(intl.required),
-  categories: yup.array(yup.string()),
+  categories: yup.array(yup.string()).required(intl.required),
   sources: yup.array(yup.string()),
   keywords: yup.array(yup.string()),
   navMaster: yup.string(),

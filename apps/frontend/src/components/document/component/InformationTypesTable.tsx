@@ -50,7 +50,7 @@ const InformationTypesTable = (props: InformationTypesTableProps) => {
             <StyledRow>
               <StyledCell style={{maxWidth: "45%"}}>
                 <FieldInformationType
-                  informationType={row}
+                  documentInformationType={row}
                   handleChange={(values: DocumentInformationTypes) => arrayHelpers.replace(index, values)}
                 />
               </StyledCell>
