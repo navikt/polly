@@ -39,6 +39,8 @@ export const no: IStrings = {
   dataProcessorAgreement: 'Saksnummer i Websak',
   dataProcessorOutsideEU: 'Utenfor EU / EØS',
   dataProcessorOutsideEUExtra: 'Behandles personopplysningene utenfor EU/EØS av databehandler?',
+  includeDefaultDocument: "Legg til standard opplysningstyper",
+  includeDefaultDocumentExtra: 'Legger til opplysningstyper fra dokument {0} ved opprettelse av behandling',
 
   loggedInStatus: "Du er logget inn og kan",
   notLoggedInStatus: "Du er ikke logget inn men kan",
@@ -246,6 +248,8 @@ export const en: IStrings = {
   dataProcessorAgreement: 'Case number in Websak',
   dataProcessorOutsideEU: 'Outside EU / EEA',
   dataProcessorOutsideEUExtra: 'Is personal data processed outside EU/EEA by a data processor?',
+  includeDefaultDocument: 'Add default information types',
+  includeDefaultDocumentExtra: 'Adds information types from document {0} when creating process',
 
   loggedInStatus: "You are logged in and can",
   notLoggedInStatus: "You are not logged in but you can still",

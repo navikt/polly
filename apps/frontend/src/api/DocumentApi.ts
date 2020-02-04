@@ -1,9 +1,15 @@
 import axios from "axios"
 import {CreateDocumentFormValues, Document, DocumentFormValues, PageResponse} from "../constants"
 import {env} from "../util/env"
+import { getSettings } from "./SettingsApi"
 
 export const getDocument = async (documentId: string) => {
   return (await axios.get<Document>(`${env.pollyBaseUrl}/document/${documentId}`)).data
+}
+
+export const getDefaultProcessDocument = async () => {
+  const settings = await getSettings()
+  return await getDocument(settings.defaultProcessDocument)
 }
 
 export const getDocumentsForInformationType = async (informationTypeId: string) => {

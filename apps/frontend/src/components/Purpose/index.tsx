@@ -17,6 +17,7 @@ import {
   createProcess,
   deletePolicy,
   deleteProcess,
+  getDefaultProcessDocument,
   getProcess,
   getProcessesForPurpose,
   updatePolicy,
@@ -64,16 +65,21 @@ const ProcessList = ({ purposeCode }: ProcessListProps) => {
     }
 
     const handleCreateProcess = async (process: ProcessFormValues) => {
-        if (!process) return
-        try {
-            const newProcess = await createProcess(process)
-            setProcessList([...processList, newProcess])
-            setErrorProcessModal(null)
-            setShowCreateProcessModal(false)
-        } catch (err) {
-            setErrorProcessModal(err.message)
+      if (!process) return
+      try {
+        const newProcess = await createProcess(process)
+        setProcessList([...processList, newProcess])
+        setErrorProcessModal(null)
+        if (process.includeDefaultDocument) {
+          const doc = await getDefaultProcessDocument()
+          await handleAddDocument({process: newProcess, document: doc, informationTypes: doc.informationTypes.filter(it => !!it.subjectCategories.length)}, true)
         }
+        setShowCreateProcessModal(false)
+      } catch (err) {
+        setErrorProcessModal(err.message)
+      }
     }
+
     const handleEditProcess = async (values: ProcessFormValues) => {
         try {
             setCurrentProcess(await updateProcess(values))
@@ -140,7 +146,7 @@ const ProcessList = ({ purposeCode }: ProcessListProps) => {
         }
     }
 
-    const handleAddDocument = async (formValues: AddDocumentToProcessFormValues) => {
+    const handleAddDocument = async (formValues: AddDocumentToProcessFormValues, skipLinkDocument?: boolean) => {
       try {
         const policies: PolicyFormValues[] = formValues.informationTypes.map(infoType => ({
           subjectCategories: infoType.subjectCategories.map(c => c.code),
@@ -150,7 +156,7 @@ const ProcessList = ({ purposeCode }: ProcessListProps) => {
           legalBases: [],
           legalBasesOpen: false,
           legalBasesStatus: LegalBasesStatus.INHERITED,
-          documentIds: [formValues.document!.id]
+          documentIds: skipLinkDocument ? [] : [formValues.document!.id]
         }))
         await createPolicies(policies)
         await getProcessById(formValues.process.id)
