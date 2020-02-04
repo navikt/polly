@@ -2,15 +2,16 @@ import {DocumentInformationTypes, PolicyInformationType} from "../../../constant
 import {Select, TYPE} from "baseui/select";
 import React from "react";
 import {useInfoTypeSearch} from "../../../api";
-import {FieldArrayRenderProps} from "formik";
 import {intl} from "../../../util";
 
 const FieldInformationType = (props: {
-  index: number,
-  arrayHelpers: FieldArrayRenderProps
+  informationType: DocumentInformationTypes,
+  handleChange: Function
 }) => {
   const [selectedInformationType, setSelectedInformationType] = React.useState();
-  const [searchKeyword, setSearchKeyword] = useInfoTypeSearch();
+  const [searchKeyword, setSearchKeyword, isLoading] = useInfoTypeSearch();
+  const { informationType, handleChange } = props
+
   return (
 
     <Select
@@ -20,15 +21,11 @@ const FieldInformationType = (props: {
       type={TYPE.search}
       options={searchKeyword}
       placeholder={intl.informationTypeSearch}
-      value={selectedInformationType as any}
+      value={selectedInformationType}
       onInputChange={event => setSearchKeyword(event.currentTarget.value)}
       onChange={(params) => {
-        let infoType = params.value[0] as PolicyInformationType;
-        setSelectedInformationType(infoType)
-
-        let  informationType = props.arrayHelpers.form.values.informationTypes[props.index] as DocumentInformationTypes;
-        informationType.informationTypeId = infoType.id;
-        props.arrayHelpers.replace(props.index,informationType);
+          setSelectedInformationType(params.value[0] as PolicyInformationType)
+          handleChange({...informationType, informationTypeId: !params.value[0] ? '' : params.value[0].id})
       }}
       filterOptions={options => options}
       labelKey="name"

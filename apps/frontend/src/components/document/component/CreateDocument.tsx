@@ -11,7 +11,7 @@ import {Button} from "baseui/button";
 import {Error} from "../../common/ModalSchema";
 import {user} from "../../../service/User";
 import {createInformationTypesDocument} from "../../../api";
-import {DocumentTableRow} from "../common/model/DocumentTableRow";
+import {createDocumentValidation} from "../../common/schema";
 
 const rowBlockProps: BlockProps = {
   width: '100%',
@@ -19,9 +19,9 @@ const rowBlockProps: BlockProps = {
 };
 
 const CreateDocument = () => {
-  const [tableData, setTableData] = React.useState<DocumentTableRow[]>([]);
   const [description, setDescription] = React.useState("");
   const [isLoading, setLoading] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState("");
 
   const hasAccess = () => user.canWrite();
 
@@ -37,24 +37,11 @@ const CreateDocument = () => {
     try {
       const response = createInformationTypesDocument(body);
     } catch (error) {
-      console.log(error.message)
+      console.log("inne")
+      setErrorMessage(error.message)
     }
     setLoading(false)
   };
-
-  const setRowData = (data: DocumentTableRow, index: number) => {
-    tableData[index] = data;
-    setTableData(tableData);
-  };
-
-  const removeRowData = (index:number) => {
-    console.log(index, "INDEX")
-    delete tableData[index]
-    tableData.filter((value, index1) => index !==index1)
-    setTableData(tableData.filter(value => value !== undefined));
-
-  };
-
 
   const disableEnter = (e: KeyboardEvent) => {
     if (e.key === 'Enter') e.preventDefault()
@@ -64,14 +51,11 @@ const CreateDocument = () => {
     <React.Fragment>
       <Formik
         initialValues={initialCreateDocumentFormValues}
-        onSubmit={(values:CreateDocumentFormValues,{resetForm}) => {
-          console.log(values)
-          // handleCreateDocument(values);
-          // resetForm();
-          // setTableData([]);
-          console.log(tableData)
+        onSubmit={(values: CreateDocumentFormValues, {resetForm}) => {
+          handleCreateDocument(values);
+          resetForm();
         }}
-        // validationSchema={createDocumentValidation()}
+        validationSchema={createDocumentValidation()}
       >
         {
           (formikProps: FormikProps<CreateDocumentFormValues>) => (
@@ -107,7 +91,7 @@ const CreateDocument = () => {
                 <FieldArray
                   name="informationTypes"
                   render={
-                    arrayHelpers=>(
+                    arrayHelpers => (
                       <InformationTypesTable
                         arrayHelpers={arrayHelpers}
                       />
@@ -136,19 +120,23 @@ const CreateDocument = () => {
                   overrides={{
                     BaseButton: {
                       style: {
-                        marginTop : "10px",
+                        marginTop: "10px",
                         paddingRight: "4rem",
                         paddingLeft: "4rem",
                       }
                     }
                   }}
-                  onClick={()=>{
+                  onClick={() => {
                     formikProps.resetForm();
-                    setTableData([]);
                   }}
                 >
                   {intl.abort}
                 </Button>
+                <Block>
+                  {
+                    errorMessage && errorMessage
+                  }
+                </Block>
               </Block>
             </Form>
           )

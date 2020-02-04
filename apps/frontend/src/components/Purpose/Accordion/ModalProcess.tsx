@@ -1,27 +1,27 @@
 import * as React from 'react'
-import { KeyboardEvent, useEffect } from 'react'
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
-import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps, } from "formik";
-import { Block, BlockProps } from "baseui/block";
-import { Input, SIZE as InputSIZE } from "baseui/input";
-import { Select, Value } from 'baseui/select';
-import { Button, KIND, SHAPE, SIZE as ButtonSize } from "baseui/button";
-import { Plus } from "baseui/icon";
+import {KeyboardEvent, useEffect} from 'react'
+import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
+import {Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps,} from "formik";
+import {Block, BlockProps} from "baseui/block";
+import {Input, SIZE as InputSIZE} from "baseui/input";
+import {Select, Value} from 'baseui/select';
+import {Button, KIND, SHAPE, SIZE as ButtonSize} from "baseui/button";
+import {Plus} from "baseui/icon";
 
-import { ProcessFormValues } from "../../../constants";
+import {ProcessFormValues} from "../../../constants";
 import CardLegalBasis from './CardLegalBasis'
-import { codelist, ListName } from "../../../service/Codelist"
-import { intl } from "../../../util"
-import { Error, ModalLabel } from "../../common/ModalSchema";
-import { ListLegalBases } from "../../common/LegalBasis"
-import { DateModalFields } from "../DateModalFields"
-import { hasSpecifiedDate } from "../../common/Durations"
-import { processSchema } from "../../common/schema"
-import { getTeam, mapTeamToOption, useTeamSearch } from "../../../api"
-import { Textarea } from "baseui/textarea"
-import { Radio, RadioGroup } from "baseui/radio"
-import { Card } from "baseui/card"
-import { renderTagList } from "../../common/TagList"
+import {codelist, ListName} from "../../../service/Codelist"
+import {intl} from "../../../util"
+import {Error, ModalLabel} from "../../common/ModalSchema";
+import {ListLegalBases} from "../../common/LegalBasis"
+import {DateModalFields} from "../DateModalFields"
+import {hasSpecifiedDate} from "../../common/Durations"
+import {processSchema} from "../../common/schema"
+import {getTeam, mapTeamToOption, useTeamSearch} from "../../../api"
+import {Textarea} from "baseui/textarea"
+import {Radio, RadioGroup} from "baseui/radio"
+import {Card} from "baseui/card"
+import {renderTagList} from "../../common/TagList"
 
 const modalBlockProps: BlockProps = {
   width: '750px',
@@ -115,7 +115,7 @@ const BoolField = (props: { value?: boolean, fieldName: string }) => (
 
       <RadioGroup value={boolToRadio(props.value)} align="horizontal"
                   overrides={{RadioGroupRoot: {style: {width: "100%"}}}}
-                  onChange={(e) => form.setFieldValue(props.fieldName, radioToBool(e.target.value))}
+                  onChange={(e) => form.setFieldValue(props.fieldName, radioToBool((e.target as HTMLInputElement).value))}
       >
         <Radio overrides={{Label: {style: {marginRight: "2rem"}}}} value={YES}>{intl.yes}</Radio>
         <Radio overrides={{Label: {style: {marginRight: "2rem"}}}} value={NO}>{intl.no}</Radio>

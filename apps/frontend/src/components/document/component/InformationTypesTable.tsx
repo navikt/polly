@@ -11,20 +11,20 @@ import {FieldArrayRenderProps} from "formik";
 import FieldInformationType from "./FieldInformationType";
 import FieldSubjectCategory from "./FieldSubjectCategory";
 import {Error} from "../../common/ModalSchema";
+import shortid from 'shortid'
+
 
 type InformationTypesTableProps = {
   arrayHelpers: FieldArrayRenderProps,
 }
 
+
 const InformationTypesTable = (props: InformationTypesTableProps) => {
   const [useCss] = useStyletron();
-
   const [tableContent, setTableContent] = React.useState([]);
-
-  const { arrayHelpers } = props
+  const { arrayHelpers } = props;
 
   React.useEffect(() => {
-    console.log(arrayHelpers.form.values)
     setTableContent(arrayHelpers.form.values.informationTypes)
   },[arrayHelpers]);
 
@@ -39,7 +39,7 @@ const InformationTypesTable = (props: InformationTypesTableProps) => {
               type={"button"}
               size={ButtonSize.compact}
               kind={KIND.tertiary}
-              onClick={() => {arrayHelpers.push({informationTypeId: "", subjectCategories: []} as DocumentInformationTypes);}}>
+              onClick={() => {arrayHelpers.push({id: shortid.generate(), informationTypeId: "", subjectCategories: []} as DocumentInformationTypes);}}>
               <FontAwesomeIcon icon={faPlus}/>
             </Button>
           </StatefulTooltip>
@@ -48,18 +48,18 @@ const InformationTypesTable = (props: InformationTypesTableProps) => {
       <StyledBody>
 
         {tableContent.map((row: DocumentInformationTypes, index: number) => (
-          <React.Fragment key={JSON.stringify(row) + index}>
+          <React.Fragment key={row.id}>
             <StyledRow>
               <StyledCell style={{maxWidth: "45%"}}>
                 <FieldInformationType
-                  index={index}
-                  arrayHelpers={arrayHelpers}
+                  informationType={row}
+                  handleChange={(values: DocumentInformationTypes) => arrayHelpers.replace(index, values)}
                 />
               </StyledCell>
               <StyledCell style={{maxWidth: "52.5%"}}>
                 <FieldSubjectCategory
-                  index={index}
-                  arrayHelpers={arrayHelpers}
+                  documentInformationType={row}
+                  handleChange={(values:DocumentInformationTypes) => arrayHelpers.replace(index, values)}
                 />
               </StyledCell>
               <StyledCell style={{maxWidth: "2.5%", justifyContent: "center"}}>

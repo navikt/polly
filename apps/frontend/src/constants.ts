@@ -252,6 +252,7 @@ export interface CreateDocumentFormValues{
 }
 
 export interface DocumentInformationTypes{
+  id?: string;
   informationTypeId: string;
   subjectCategories: string[]
 }
