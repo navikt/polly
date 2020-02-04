@@ -46,8 +46,8 @@ export const SettingsPage = () => {
         error ? {error} :
           <Block>
             <DefaultProcessDocument
-              document={settings?.defaultProcessDocument}
-              setDocument={id => setSettings({...settings, defaultProcessDocument: id})}
+              documentId={settings?.defaultProcessDocument}
+              setDocumentId={defaultProcessDocument => setSettings({...settings, defaultProcessDocument})}
             />
 
             <Block display="flex" justifyContent="flex-end" marginTop={theme.sizing.scale800}>
@@ -60,7 +60,7 @@ export const SettingsPage = () => {
 }
 
 
-const DefaultProcessDocument = (props: { document?: string, setDocument: (id: string) => void }) => {
+const DefaultProcessDocument = (props: { documentId?: string, setDocumentId: (id: string) => void }) => {
   const [document, setDocument] = useState<Document | undefined>(undefined)
   const [documents, setDocuments] = useState<Document[]>([])
   const [documentSearch, setDocumentSearch] = useDebouncedState<string>('', 400)
@@ -68,14 +68,14 @@ const DefaultProcessDocument = (props: { document?: string, setDocument: (id: st
 
   useEffect(() => {
     (async () => {
-      if (props.document) {
+      if (props.documentId && props.documentId !== document?.id) {
         setLoading(true)
-        var doc = await getDocument(props.document)
+        const doc = await getDocument(props.documentId)
         setDocument(doc)
         setLoading(false)
       }
     })()
-  }, [props.document])
+  }, [props.documentId])
 
 
   useEffect(() => {
@@ -94,20 +94,19 @@ const DefaultProcessDocument = (props: { document?: string, setDocument: (id: st
       <Label2 marginRight="1rem">{intl.defaultProcessDocument}</Label2>
       <Block width="40%">
         <Select
-          clearable={false}
+          clearable
+          searchable
           isLoading={loading}
-          autoFocus
           maxDropdownHeight="400px"
-          searchable={true}
           type={TYPE.search}
           options={documents}
           placeholder={intl.searchDocuments}
-          value={document as any}
+          value={document ? [document as any] : []}
           onInputChange={event => setDocumentSearch(event.currentTarget.value)}
           onChange={params => {
             const doc = params.value[0] as Document
             setDocument(doc)
-            props.setDocument((doc).id)
+            props.setDocumentId(doc?.id)
           }}
           filterOptions={options => options}
           labelKey="name"

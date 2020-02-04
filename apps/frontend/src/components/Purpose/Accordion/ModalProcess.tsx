@@ -8,7 +8,7 @@ import { Select, Value } from 'baseui/select';
 import { Button, KIND, SHAPE, SIZE as ButtonSize } from "baseui/button";
 import { Plus } from "baseui/icon";
 
-import { ProcessFormValues } from "../../../constants";
+import { Document, ProcessFormValues } from "../../../constants";
 import CardLegalBasis from './CardLegalBasis'
 import { codelist, ListName } from "../../../service/Codelist"
 import { intl } from "../../../util"
@@ -17,7 +17,7 @@ import { ListLegalBases } from "../../common/LegalBasis"
 import { DateModalFields } from "../DateModalFields"
 import { hasSpecifiedDate } from "../../common/Durations"
 import { processSchema } from "../../common/schema"
-import { getTeam, mapTeamToOption, useTeamSearch } from "../../../api"
+import { getDefaultProcessDocument, getTeam, mapTeamToOption, useTeamSearch } from "../../../api"
 import { Textarea } from "baseui/textarea"
 import { Radio, RadioGroup } from "baseui/radio"
 import { Card } from "baseui/card"
@@ -108,7 +108,7 @@ const YES = "YES", NO = "NO", UNCLARIFIED = "UNCLARIFIED"
 const boolToRadio = (bool?: boolean) => bool === undefined ? UNCLARIFIED : bool ? YES : NO
 const radioToBool = (radio: string) => radio === UNCLARIFIED ? undefined : radio === YES
 
-const BoolField = (props: { value?: boolean, fieldName: string }) => (
+const BoolField = (props: { value?: boolean, fieldName: string, omitUndefined?: boolean }) => (
   <Field
     name={props.fieldName}
     render={({form}: FieldProps<ProcessFormValues>) => (
@@ -119,7 +119,7 @@ const BoolField = (props: { value?: boolean, fieldName: string }) => (
       >
         <Radio overrides={{Label: {style: {marginRight: "2rem"}}}} value={YES}>{intl.yes}</Radio>
         <Radio overrides={{Label: {style: {marginRight: "2rem"}}}} value={NO}>{intl.no}</Radio>
-        <Radio overrides={{Label: {style: {marginRight: "2rem"}}}} value={UNCLARIFIED}>{intl.unclarified}</Radio>
+        {!props.omitUndefined && <Radio overrides={{Label: {style: {marginRight: "2rem"}}}} value={UNCLARIFIED}>{intl.unclarified}</Radio>}
       </RadioGroup>
     )}
   />
@@ -279,14 +279,17 @@ type ModalProcessProps = {
   onClose: () => void;
 };
 
-const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, title}: ModalProcessProps) => {
+const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, title, isEdit}: ModalProcessProps) => {
 
   const [selectedLegalBasis, setSelectedLegalBasis] = React.useState();
   const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState();
+  const [defaultDoc, setDefaultDoc] = React.useState<Document | undefined>();
 
-  const onCloseModal = () => {
-    onClose()
-  };
+  useEffect(() => {
+    (async () => {
+      !isEdit && setDefaultDoc(await getDefaultProcessDocument())
+    })()
+  }, [])
 
   const disableEnter = (e: KeyboardEvent) => {
     if (e.key === 'Enter') e.preventDefault()
@@ -294,7 +297,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
   return (
     <Modal
-      onClose={onCloseModal}
+      onClose={onClose}
       isOpen={isOpen}
       closeable
       animate
@@ -342,6 +345,11 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                   <ModalLabel label={intl.productTeam}/>
                   <FieldProductTeam productTeam={formikBag.values.productTeam}/>
                 </Block>
+
+                {!isEdit && defaultDoc && <Block {...rowBlockProps}>
+                  <ModalLabel label={intl.includeDefaultDocument} tooltip={intl.formatString(intl.includeDefaultDocumentExtra, defaultDoc.name) as string}/>
+                  <BoolField fieldName="includeDefaultDocument" value={formikBag.values.includeDefaultDocument} omitUndefined={true}/>
+                </Block>}
 
                 <OptionalItems formikBag={formikBag}/>
 
@@ -410,7 +418,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
               <ModalFooter>
                 <Block display="flex" justifyContent="flex-end">
                   <Block alignSelf="flex-end">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
-                  <Button type="button" kind={KIND.minimal} onClick={onCloseModal}>{intl.abort}</Button>
+                  <Button type="button" kind={KIND.minimal} onClick={onClose}>{intl.abort}</Button>
                   <ModalButton type="submit">{intl.save}</ModalButton>
                 </Block>
               </ModalFooter>

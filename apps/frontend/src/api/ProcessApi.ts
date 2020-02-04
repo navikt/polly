@@ -67,6 +67,7 @@ export const convertProcessToFormValues = (process?: Partial<Process>) => {
     dataProcessor: mapBool(dataProcessor),
     dataProcessorAgreements: dataProcessorAgreements || [],
     dataProcessorOutsideEU: mapBool(dataProcessorOutsideEU),
+    includeDefaultDocument: false
   } as ProcessFormValues
 }
 
