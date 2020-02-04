@@ -12,6 +12,7 @@ export interface IStrings {
   informationTypes: string;
   informationTypeSearch: string;
   term: string;
+  termEditHeader: string;
   purpose: string;
   processPurpose: string;
   purposeDescription: string;
@@ -56,6 +57,7 @@ export interface IStrings {
   couldntLoadTerm: string;
   couldntLoadTeam: string;
   informationTypeCreate: string;
+  informationTypeExists: string;
   sensitivitySelect: string;
   nameWrite: string;
   categoriesWrite: string;
