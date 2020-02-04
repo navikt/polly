@@ -1,7 +1,6 @@
 package no.nav.data.polly.codelist;
 
 import no.nav.data.polly.IntegrationTestBase;
-import no.nav.data.polly.codelist.codeusage.CodeUsageService;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.AllCodelistResponse;
@@ -47,9 +46,6 @@ class CodelistControllerIT extends IntegrationTestBase {
     @Autowired
     private CodelistService service;
 
-    @Autowired
-    private CodeUsageService codeUsageService;
-
     @BeforeEach
     void setUp() {
         service.refreshCache();
@@ -62,6 +58,7 @@ class CodelistControllerIT extends IntegrationTestBase {
 
     @Nested
     class Get {
+
         @Test
         void findAll_shouldReturnAllCodelists() {
             CodelistStub.initializeCodelist();
@@ -104,6 +101,7 @@ class CodelistControllerIT extends IntegrationTestBase {
 
     @Nested
     class Save {
+
         @Test
         void shouldSaveNewCodelists() {
             List<CodelistRequest> requests = List.of(createCodelistRequest("THIRD_PARTY", "SaveCode", "SaveShortName", "SaveDescription"));
@@ -172,6 +170,7 @@ class CodelistControllerIT extends IntegrationTestBase {
 
     @Nested
     class Update {
+
         @Test
         void shouldUpdateOneCodelist() {
             saveCodelist(createCodelist(ListName.THIRD_PARTY, "CODE", "SavedShortName", "SavedDescription"));
@@ -230,6 +229,7 @@ class CodelistControllerIT extends IntegrationTestBase {
 
     @Nested
     class Delete {
+
         @Test
         void shouldDeleteCodelist() {
             saveCodelist(createCodelist(ListName.THIRD_PARTY, "DELETE_CODE"));
@@ -260,7 +260,7 @@ class CodelistControllerIT extends IntegrationTestBase {
 
             ResponseEntity<String> responseEntity = restTemplate.exchange("/codelist/THIRD_PARTY/DELETE_CODE", HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
 
-            assertThat(responseEntity.getStatusCodeValue()).isEqualTo(HttpStatus.FORBIDDEN.value());
+            assertThat(responseEntity.getStatusCodeValue()).isEqualTo(HttpStatus.CONFLICT.value());
             assertThat(responseEntity.getBody()).contains("The code DELETE_CODE in list THIRD_PARTY cannot be erased.");
             assertTrue(repository.findByListAndCode(ListName.THIRD_PARTY, "DELETE_CODE").isPresent());
         }
