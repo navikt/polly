@@ -159,7 +159,7 @@ const InformationtypeForm = ({
                         onInputChange={event => setTermSearch(event.currentTarget.value)}
                         onChange={(params) => {
                           let term = params.value.length ? params.value[0] : undefined
-                          setTermValue([term as Option])
+                          setTermValue(term ? [term as Option] : [])
                           form.setFieldValue('term', term ? term.id : undefined)
                         }}
                         error={!!form.errors.term && !!form.submitCount}
