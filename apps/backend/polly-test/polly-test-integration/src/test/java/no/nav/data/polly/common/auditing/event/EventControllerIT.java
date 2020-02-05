@@ -6,6 +6,7 @@ import no.nav.data.polly.common.auditing.domain.AuditVersionRepository;
 import no.nav.data.polly.common.auditing.event.EventController.EventPage;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.process.domain.Process;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -21,6 +22,11 @@ public class EventControllerIT extends IntegrationTestBase {
     private TestRestTemplate template;
     @Autowired
     private AuditVersionRepository auditVersionRepository;
+
+    @BeforeEach
+    void setUp() {
+        auditVersionRepository.deleteAll();
+    }
 
     @Test
     void getAllChanges() {
