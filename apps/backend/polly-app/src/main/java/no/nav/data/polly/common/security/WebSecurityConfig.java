@@ -37,7 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         allowAll(http,
                 "/login/**",
                 "/userinfo",
-                "/internal",
+                "/internal/**",
                 "/swagger*/**",
                 "/webjars/springfox-swagger-ui/**"
         );
