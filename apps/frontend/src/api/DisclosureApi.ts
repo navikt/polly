@@ -53,8 +53,9 @@ export const deleteDisclosure = async (disclosureId: string) => {
 export const mapDisclosureFromForm = (values: DisclosureFormValues) => {
     return {
         id: values.id,
+        name: values.name || 'na',
         recipient: values.recipient,
-        recipientPurpose: '-',
+        recipientPurpose: values.recipientPurpose,
         documentId: values.documentId,
         description: values.description,
         legalBases: values.legalBases ? values.legalBases : [],
@@ -65,8 +66,10 @@ export const mapDisclosureFromForm = (values: DisclosureFormValues) => {
 
 export const mapDisclosureToFormValues: (disclosure: Disclosure) => DisclosureFormValues = (disclosure) => ({
   id: disclosure.id,
-  recipient: disclosure.recipient.shortName || '',
+  name: disclosure.name || undefined,
   description: disclosure ? disclosure.description : '',
+  recipient: disclosure.recipient.code || '',
+  recipientPurpose: disclosure ? disclosure.recipientPurpose : '',
   document: disclosure.document ?
     {...disclosure.document, informationTypes: disclosure.document.informationTypes.map(it => it.informationType)} :
     {informationTypes: [], name: 'autosel', description: 'autodesc'},
