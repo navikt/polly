@@ -127,7 +127,7 @@ const LoggedInHeader = () => {
   return (
     <StatefulPopover
       content={
-        <>
+        <Block padding={theme.sizing.scale400}>
           <Label2 {...blockStyle}>{intl.name}: {user.getName()}</Label2>
           <Label2 {...blockStyle}>{intl.groups}: {user.getGroupsHumanReadable().join(', ')}</Label2>
           <Block {...blockStyle}>
@@ -135,7 +135,7 @@ const LoggedInHeader = () => {
               {intl.logout}
             </StyledLink>
           </Block>
-        </>
+        </Block>
       }
     >
       <Button kind="tertiary" size="compact" endEnhancer={() => <FontAwesomeIcon icon={faUser}/>}>{user.getNavIdent()}</Button>

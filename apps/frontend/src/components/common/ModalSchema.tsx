@@ -22,7 +22,7 @@ export const Error = (props: { fieldName: string, fullWidth?: boolean }) => (
   </ErrorMessage>
 );
 
-export const ModalLabel = (props: { label?: string, tooltip?: string }) => {
+export const ModalLabel = (props: { label?: string, tooltip?: string | React.ReactElement }) => {
   return (
     <Block width="25%" alignSelf="center" paddingRight=".5rem">
       {props.tooltip ?
