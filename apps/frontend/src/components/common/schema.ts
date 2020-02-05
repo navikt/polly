@@ -14,8 +14,8 @@ import {
   Process,
   ProcessFormValues
 } from "../../constants"
-import {intl} from "../../util"
-import {Code, codelist} from "../../service/Codelist"
+import { intl } from "../../util"
+import { Code, codelist } from "../../service/Codelist"
 
 const DATE_REGEX = /\d{4}-\d{2}-\d{2}/
 const max = 150
@@ -27,7 +27,7 @@ export const infoTypeSchema = () => yup.object<InformationtypeFormValues>({
   name: yup.string().required(intl.required).max(max, maxError()),
   term: yup.string(),
   sensitivity: yup.string().required(intl.required),
-  categories: yup.array(yup.string()),
+  categories: yup.array(yup.string()).required(intl.required),
   sources: yup.array(yup.string()),
   keywords: yup.array(yup.string()),
   navMaster: yup.string(),
@@ -40,6 +40,7 @@ export const processSchema = () => yup.object<ProcessFormValues>({
   department: yup.string(),
   subDepartment: yup.string(),
   productTeam: yup.string(),
+  product: yup.string(),
   legalBases: yup.array(legalBasisSchema()),
   legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
   start: yup.string().matches(DATE_REGEX, intl.dateFormat),

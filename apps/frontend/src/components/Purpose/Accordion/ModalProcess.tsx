@@ -202,6 +202,27 @@ const FieldProductTeam = (props: { productTeam?: string }) => {
   )
 }
 
+const FieldProduct = (props: { product?: string }) => {
+  const {product} = props;
+  const [value, setValue] = React.useState<Value>(product ? [{id: product, label: codelist.getShortname(ListName.SYSTEM, product)}] : []);
+
+  return (
+    <Field
+      name="product"
+      render={({form}: FieldProps<ProcessFormValues>) => (
+        <Select
+          options={codelist.getParsedOptions(ListName.SYSTEM)}
+          onChange={({value}) => {
+            setValue(value);
+            form.setFieldValue('product', value.length > 0 ? value[0].id : undefined)
+          }}
+          value={value}
+        />
+      )}
+    />
+  )
+}
+
 const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => {
   const {formikBag} = props
   const [showDates, setShowDates] = React.useState(hasSpecifiedDate(formikBag.values));
@@ -344,6 +365,11 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                 <Block {...rowBlockProps}>
                   <ModalLabel label={intl.productTeam}/>
                   <FieldProductTeam productTeam={formikBag.values.productTeam}/>
+                </Block>
+
+                <Block {...rowBlockProps}>
+                  <ModalLabel label={intl.product}/>
+                  <FieldProduct product={formikBag.values.product}/>
                 </Block>
 
                 {!isEdit && defaultDoc && <Block {...rowBlockProps}>

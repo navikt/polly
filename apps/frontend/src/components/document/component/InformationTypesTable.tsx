@@ -30,7 +30,7 @@ const InformationTypesTable = (props: InformationTypesTableProps) => {
     <StyledTable className={useCss({overflow: "hidden !important"})}>
       <StyledHead>
         <StyledHeadCell style={{maxWidth: "45%"}}>{intl.informationType}</StyledHeadCell>
-        <StyledHeadCell style={{maxWidth: "52.5%"}}>{intl.categories}</StyledHeadCell>
+        <StyledHeadCell style={{maxWidth: "52.5%"}}>{intl.subjectCategories}</StyledHeadCell>
         <StyledHeadCell style={{maxWidth: "2.5%", justifyContent: "center"}}>
           <StatefulTooltip content={intl.addNew} placement={PLACEMENT.top}>
             <Button
