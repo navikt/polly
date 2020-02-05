@@ -203,7 +203,9 @@ export interface CodeListFormValues {
 
 export interface DisclosureFormValues {
   id?: string
+  name?: string
   recipient?: string
+  recipientPurpose?: string
   description?: string
   documentId?: string
   document?: DocumentFormValues
@@ -215,6 +217,7 @@ export interface DisclosureFormValues {
 
 export interface Disclosure extends IDurationed {
   id: string
+  name: string
   recipient: Code
   recipientPurpose: string
   description: string

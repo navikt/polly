@@ -373,7 +373,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                 </Block>
 
                 {!isEdit && defaultDoc && <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.includeDefaultDocument} tooltip={intl.formatString(intl.includeDefaultDocumentExtra, defaultDoc.name) as string}/>
+                  <ModalLabel label={intl.includeDefaultDocument} tooltip={<>{intl.includeDefaultDocumentExtraStart} <i>{defaultDoc.name}</i> {intl.includeDefaultDocumentExtraEnd}</>}/>
                   <BoolField fieldName="includeDefaultDocument" value={formikBag.values.includeDefaultDocument} omitUndefined={true}/>
                 </Block>}
 

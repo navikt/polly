@@ -60,7 +60,7 @@ export const convertProcessToFormValues = (process?: Partial<Process>) => {
     department: (department && department.code) || undefined,
     subDepartment: (subDepartment && subDepartment.code) || undefined,
     productTeam: productTeam || undefined,
-    product: product || undefined,
+    product: (product && product?.code) || undefined,
     legalBases: convertLegalBasesToFormValues(legalBases),
     start: start || undefined,
     end: end || undefined,

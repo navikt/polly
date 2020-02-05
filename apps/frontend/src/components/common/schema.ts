@@ -131,7 +131,9 @@ export const codeListSchema = () => yup.object<Code>({
 
 export const disclosureSchema = () => yup.object<DisclosureFormValues>({
   id: yup.string(),
+  name: yup.string(),
   recipient: yup.string(),
+  recipientPurpose: yup.string(),
   description: yup.string().required(intl.required),
   legalBases: yup.array(legalBasisSchema()),
   legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),

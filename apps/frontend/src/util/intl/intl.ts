@@ -49,7 +49,8 @@ export interface IStrings {
   dataProcessorOutsideEU: string;
   dataProcessorOutsideEUExtra: string;
   includeDefaultDocument: string;
-  includeDefaultDocumentExtra: string;
+  includeDefaultDocumentExtraStart: string;
+  includeDefaultDocumentExtraEnd: string;
 
   // sentence
   loggedInStatus: string;
