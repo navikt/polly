@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.auditing.domain.AuditVersion;
-import no.nav.data.polly.common.auditing.domain.AuditVersion.Fields;
 import no.nav.data.polly.common.auditing.domain.AuditVersionRepository;
 import no.nav.data.polly.common.auditing.dto.AuditLogResponse;
 import no.nav.data.polly.common.auditing.dto.AuditResponse;
@@ -25,13 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static no.nav.data.polly.common.auditing.domain.AuditVersionRepository.exampleFrom;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Slf4j
 @RestController
 @CrossOrigin
 @RequestMapping("/audit")
-@Api(value = "Audit", description = "REST API for Audit", tags = {"Audit"})
+@Api(value = "Audit", tags = {"Audit"})
 public class AuditController {
 
     private final AuditVersionRepository repository;
@@ -47,10 +47,10 @@ public class AuditController {
     @GetMapping
     public ResponseEntity<RestResponsePage<AuditResponse>> getAll(PageParameters paging, @RequestParam(required = false) String table) {
         log.info("Received request for Audit {} table {}", paging, table);
-        Pageable pageable = paging.createSortedPageByFieldDescending(Fields.time);
+        Pageable pageable = paging.createSortedPageByFieldDescending(AuditVersion.Fields.time);
         Page<AuditResponse> page;
         if (table != null) {
-            page = repository.findByTable(table, pageable).map(AuditVersion::convertToResponse);
+            page = repository.findAll(exampleFrom(AuditVersion.builder().table(table).build()), pageable).map(AuditVersion::convertToResponse);
         } else {
             page = repository.findAll(pageable).map(AuditVersion::convertToResponse);
         }

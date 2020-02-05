@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
 import no.nav.data.polly.common.auditing.dto.AuditResponse;
+import no.nav.data.polly.common.auditing.event.EventResponse;
 import no.nav.data.polly.common.utils.JsonUtils;
 import org.hibernate.annotations.Type;
 
@@ -65,4 +66,15 @@ public class AuditVersion {
                 .data(JsonUtils.toJsonNode(data))
                 .build();
     }
+
+    public EventResponse convertToEventResponse() {
+        return EventResponse.builder()
+                .id(id.toString())
+                .action(action)
+                .table(table)
+                .tableId(tableId)
+                .time(time)
+                .build();
+    }
+
 }
