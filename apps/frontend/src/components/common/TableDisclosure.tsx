@@ -20,191 +20,207 @@ import { StyledLink } from "baseui/link"
 import { DocumentReferences } from "../InformationType/InformationtypeMetadata/DocumentTable"
 
 const StyledHeader = withStyle(StyledHead, {
-    backgroundColor: "transparent",
-    boxShadow: "none",
-    borderBottom: "2px solid #E9E7E7"
+  backgroundColor: "transparent",
+  boxShadow: "none",
+  borderBottom: "2px solid #E9E7E7"
 });
 
 const CustomStyledRow = withStyle(StyledRow, {
-    borderBottom: "1px solid #E9E7E7",
-    padding: "8px",
-    fontSize: "24px"
+  borderBottom: "1px solid #E9E7E7",
+  padding: "8px",
+  fontSize: "24px"
 });
 
 const SmallerStyledHeadCell = withStyle(StyledHeadCell, {
-    maxWidth: '15%'
+  maxWidth: '15%'
 })
 const SmallerStyledCell = withStyle(StyledCell, {
-    maxWidth: '15%'
+  maxWidth: '15%'
 })
 
 type TableDisclosureProps = {
-    list: Array<Disclosure>;
-    showRecipient: boolean;
-    editable: boolean;
-    submitDeleteDisclosure?: (disclosure: Disclosure) => Promise<boolean>;
-    submitEditDisclosure?: (disclosure: DisclosureFormValues) => Promise<boolean>;
-    errorModal?: string;
-    onCloseModal?: () => void;
-    documentRef?: DocumentReferences
+  list: Array<Disclosure>;
+  showRecipient: boolean;
+  editable: boolean;
+  submitDeleteDisclosure?: (disclosure: Disclosure) => Promise<boolean>;
+  submitEditDisclosure?: (disclosure: DisclosureFormValues) => Promise<boolean>;
+  errorModal?: string;
+  onCloseModal?: () => void;
+  documentRef?: DocumentReferences
 };
 
 const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal, documentRef}: TableDisclosureProps) => {
-    const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false)
-    const [showEditModal, setShowEditModal] = React.useState<boolean>()
-    const [selectedDisclosure, setSelectedDisclosure] = React.useState<Disclosure>()
+  const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false)
+  const [showEditModal, setShowEditModal] = React.useState<boolean>()
+  const [selectedDisclosure, setSelectedDisclosure] = React.useState<Disclosure>()
 
-    const [table, sortColumn] = useTable<Disclosure, keyof Disclosure>(list, {sorting: disclosureSort, initialSortColumn: "recipient"})
-    const [useCss, theme] = useStyletron();
+  const [table, sortColumn] = useTable<Disclosure, keyof Disclosure>(list, {sorting: disclosureSort, initialSortColumn: "recipient"})
+  const [useCss, theme] = useStyletron();
 
-    return (
-        <React.Fragment>
+  return (
+    <React.Fragment>
 
-            <StyledTable className={useCss({overflow: "hidden !important"})}>
-                <StyledHeader>
-                    {showRecipient && (
-                        <SortableHeadCell
-                            title={intl.recipient}
-                            direction={table.direction.recipient}
-                            onSort={() => sortColumn('recipient')}
-                            fillClickTarget
-                        />
-                    )}
+      <StyledTable className={useCss({overflow: "hidden !important"})}>
+        <StyledHeader>
+          {showRecipient && (
+            <SortableHeadCell
+              title={intl.recipient}
+              direction={table.direction.recipient}
+              onSort={() => sortColumn('recipient')}
+              fillClickTarget
+            />
+          )}
 
-                    <SortableHeadCell
-                        title={intl.document}
-                        direction={table.direction.document}
-                        onSort={() => sortColumn('document')}
-                        fillClickTarget
-                    />
+          <SortableHeadCell
+            title={intl.name}
+            direction={table.direction.name}
+            onSort={() => sortColumn('name')}
+            fillClickTarget
+          />
 
-                    <SortableHeadCell
-                        title={intl.description}
-                        direction={table.direction.description}
-                        onSort={() => sortColumn('description')}
-                        fillClickTarget
-                    />
+          <SortableHeadCell
+            title={intl.document}
+            direction={table.direction.document}
+            onSort={() => sortColumn('document')}
+            fillClickTarget
+          />
 
-                    <SortableHeadCell
-                        title={intl.legalBasisShort}
-                        direction={table.direction.legalBases}
-                        onSort={() => sortColumn('legalBases')}
-                    />
-                    {editable && <SmallerStyledHeadCell/>}
+          <SortableHeadCell
+            title={intl.purpose}
+            direction={table.direction.recipientPurpose}
+            onSort={() => sortColumn('recipientPurpose')}
+            fillClickTarget
+          />
 
-                </StyledHeader>
+          <SortableHeadCell
+            title={intl.description}
+            direction={table.direction.description}
+            onSort={() => sortColumn('description')}
+            fillClickTarget
+          />
 
-                <StyledBody>
-                    {table.data.map((row, index) => (
-                        <CustomStyledRow key={index}>
-                            {showRecipient && (
-                                <StyledCell>
-                                    <RouteLink href={`/thirdparty/${row.recipient.code}`}>{row.recipient.shortName}</RouteLink>
-                                </StyledCell>
-                            )}
-                            <StyledCell>
-                              {!documentRef && <RouteLink href={`/document/${row.documentId}`}>{row.document?.name}</RouteLink>}
-                              {documentRef && <StyledLink href="#" onClick={(e: Event) => {
-                                e.preventDefault()
-                                documentRef[row.document!.id]?.()
-                              }}>
-                              {row.document?.name}
-                            </StyledLink>}
-                            </StyledCell>
-                            <StyledCell>{row.document?.description}</StyledCell>
-                            <StyledCell>
-                                {row.legalBases && (
-                                    <ListLegalBasesInTable legalBases={row.legalBases}/>
-                                )}
-                            </StyledCell>
-                            {editable && (
-                                <SmallerStyledCell>
-                                    <Block width="100%" display="flex" justifyContent="flex-end">
-                                        <StatefulTooltip content={intl.edit} placement={PLACEMENT.top}>
-                                            <Button
-                                                size={SIZE.compact}
-                                                kind={KIND.tertiary}
-                                                onClick={() => {
-                                                    setSelectedDisclosure(row)
-                                                    setShowEditModal(true)
-                                                }}
-                                            >
-                                                <FontAwesomeIcon icon={faEdit}/>
-                                            </Button>
-                                        </StatefulTooltip>
+          <SortableHeadCell
+            title={intl.legalBasisShort}
+            direction={table.direction.legalBases}
+            onSort={() => sortColumn('legalBases')}
+          />
+          {editable && <SmallerStyledHeadCell/>}
 
-                                        <StatefulTooltip content={intl.delete} placement={PLACEMENT.top}>
-                                            <Button
-                                                size={SIZE.compact}
-                                                kind={KIND.tertiary}
-                                                onClick={() => {
-                                                    setSelectedDisclosure(row)
-                                                    setShowDeleteModal(true)
-                                                }}
-                                            >
-                                                <FontAwesomeIcon icon={faTrash}/>
-                                            </Button>
-                                        </StatefulTooltip>
-                                    </Block>
+        </StyledHeader>
 
-                                </SmallerStyledCell>
-                            )}
+        <StyledBody>
+          {table.data.map((row, index) => (
+            <CustomStyledRow key={index}>
+              {showRecipient && (
+                <StyledCell>
+                  <RouteLink href={`/thirdparty/${row.recipient.code}`}>{row.recipient.shortName}</RouteLink>
+                </StyledCell>
+              )}
+              <StyledCell>{row.name}</StyledCell>
+              <StyledCell>
+                {!documentRef && <RouteLink href={`/document/${row.documentId}`}>{row.document?.name}</RouteLink>}
+                {documentRef && <StyledLink href="#" onClick={(e: Event) => {
+                  e.preventDefault()
+                  documentRef[row.document!.id]?.()
+                }}>
+                  {row.document?.name}
+                </StyledLink>}
+              </StyledCell>
+              <StyledCell>{row.recipientPurpose}</StyledCell>
+              <StyledCell>{row.document?.description}</StyledCell>
+              <StyledCell>
+                {row.legalBases && (
+                  <ListLegalBasesInTable legalBases={row.legalBases}/>
+                )}
+              </StyledCell>
+              {editable && (
+                <SmallerStyledCell>
+                  <Block width="100%" display="flex" justifyContent="flex-end">
+                    <StatefulTooltip content={intl.edit} placement={PLACEMENT.top}>
+                      <Button
+                        size={SIZE.compact}
+                        kind={KIND.tertiary}
+                        onClick={() => {
+                          setSelectedDisclosure(row)
+                          setShowEditModal(true)
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faEdit}/>
+                      </Button>
+                    </StatefulTooltip>
 
-                        </CustomStyledRow>
-                    ))}
-                </StyledBody>
-            </StyledTable>
-            {!table.data.length && <Label2 margin="1rem">{intl.emptyTable} {intl.disclosures}</Label2>}
+                    <StatefulTooltip content={intl.delete} placement={PLACEMENT.top}>
+                      <Button
+                        size={SIZE.compact}
+                        kind={KIND.tertiary}
+                        onClick={() => {
+                          setSelectedDisclosure(row)
+                          setShowDeleteModal(true)
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faTrash}/>
+                      </Button>
+                    </StatefulTooltip>
+                  </Block>
 
-            {editable && showEditModal && selectedDisclosure && (
-                <ModalThirdParty
-                    title="Rediger utlevering"
-                    isOpen={showEditModal}
-                    isEdit={true}
-                    initialValues={mapDisclosureToFormValues(selectedDisclosure)}
-                    submit={async (values) => submitEditDisclosure && await submitEditDisclosure(values) ? setShowEditModal(false) : setShowEditModal(true)}
-                    onClose={() => {
-                        onCloseModal && onCloseModal()
-                        setShowEditModal(false)
-                    }}
-                    errorOnCreate={errorModal}
-                    disableRecipientField={true}
-                />
-            )}
+                </SmallerStyledCell>
+              )}
 
-            {showDeleteModal && (
-                <Modal
-                    onClose={() => setShowDeleteModal(false)}
-                    isOpen={showDeleteModal}
-                    animate
-                    size="default"
-                >
-                    <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
-                    <ModalBody>
-                        <Paragraph2>{intl.confirmDeletePolicyText} {selectedDisclosure && selectedDisclosure.recipient.code}</Paragraph2>
-                    </ModalBody>
+            </CustomStyledRow>
+          ))}
+        </StyledBody>
+      </StyledTable>
+      {!table.data.length && <Label2 margin="1rem">{intl.emptyTable} {intl.disclosures}</Label2>}
 
-                    <ModalFooter>
-                        <Block display="flex" justifyContent="flex-end">
-                            <Block alignSelf="flex-end">{errorModal && <p>{errorModal}</p>}</Block>
-                            <Button
-                                kind="secondary"
-                                onClick={() => setShowDeleteModal(false)}
-                                overrides={{BaseButton: {style: {marginRight: '1rem', marginLeft: '1rem'}}}}
-                            >
-                                {intl.abort}
-                            </Button>
-                            <Button onClick={() => {
-                                if (selectedDisclosure)
-                                    submitDeleteDisclosure && submitDeleteDisclosure(selectedDisclosure) ? setShowDeleteModal(false) : setShowDeleteModal(true)
-                            }}
-                            >{intl.delete}</Button>
-                        </Block>
-                    </ModalFooter>
-                </Modal>
-            )}
-        </React.Fragment>
-    );
+      {editable && showEditModal && selectedDisclosure && (
+        <ModalThirdParty
+          title="Rediger utlevering"
+          isOpen={showEditModal}
+          isEdit={true}
+          initialValues={mapDisclosureToFormValues(selectedDisclosure)}
+          submit={async (values) => submitEditDisclosure && await submitEditDisclosure(values) ? setShowEditModal(false) : setShowEditModal(true)}
+          onClose={() => {
+            onCloseModal && onCloseModal()
+            setShowEditModal(false)
+          }}
+          errorOnCreate={errorModal}
+          disableRecipientField={true}
+        />
+      )}
+
+      {showDeleteModal && (
+        <Modal
+          onClose={() => setShowDeleteModal(false)}
+          isOpen={showDeleteModal}
+          animate
+          size="default"
+        >
+          <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
+          <ModalBody>
+            <Paragraph2>{intl.confirmDeletePolicyText} {selectedDisclosure && selectedDisclosure.recipient.code}</Paragraph2>
+          </ModalBody>
+
+          <ModalFooter>
+            <Block display="flex" justifyContent="flex-end">
+              <Block alignSelf="flex-end">{errorModal && <p>{errorModal}</p>}</Block>
+              <Button
+                kind="secondary"
+                onClick={() => setShowDeleteModal(false)}
+                overrides={{BaseButton: {style: {marginRight: '1rem', marginLeft: '1rem'}}}}
+              >
+                {intl.abort}
+              </Button>
+              <Button onClick={() => {
+                if (selectedDisclosure)
+                  submitDeleteDisclosure && submitDeleteDisclosure(selectedDisclosure) ? setShowDeleteModal(false) : setShowDeleteModal(true)
+              }}
+              >{intl.delete}</Button>
+            </Block>
+          </ModalFooter>
+        </Modal>
+      )}
+    </React.Fragment>
+  );
 };
 
 export default TableDisclosure;

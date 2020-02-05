@@ -108,7 +108,9 @@ export const policySort: ColumnCompares<Policy> = {
   subjectCategories: (a, b) => codelist.getShortnameForCode(a.subjectCategories[0]).localeCompare(codelist.getShortnameForCode(b.subjectCategories[0]), intl.getLanguage()),
   legalBases: (a, b) => a.legalBases.length - b.legalBases.length
 }
+
 export const disclosureSort: ColumnCompares<Disclosure> = {
+  name: (a, b) => (a.name || '').localeCompare(b.name || ''),
   recipient: (a, b) => a.recipient.shortName.localeCompare(b.recipient.shortName),
   recipientPurpose: (a, b) => a.recipientPurpose.localeCompare(b.recipientPurpose),
   document: (a, b) => (a.document?.name || '').localeCompare(b.document?.name || ''),
@@ -252,13 +254,13 @@ export interface AddDocumentToProcessFormValues {
   process: Process
 }
 
-export interface CreateDocumentFormValues{
+export interface CreateDocumentFormValues {
   name: string;
   description: string;
   informationTypes: DocumentInformationTypes[]
 }
 
-export interface DocumentInformationTypes{
+export interface DocumentInformationTypes {
   id?: string;
   informationTypeId: string;
   subjectCategories: string[]
