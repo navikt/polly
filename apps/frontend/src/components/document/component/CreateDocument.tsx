@@ -1,6 +1,6 @@
 import React, {KeyboardEvent} from "react";
 import {Block, BlockProps} from "baseui/block";
-import {Label2, Paragraph2} from "baseui/typography";
+import {Label2} from "baseui/typography";
 import {intl, useAwait} from "../../../util";
 import {Input, SIZE} from "baseui/input";
 import {Textarea} from "baseui/textarea";
@@ -12,7 +12,7 @@ import {Error} from "../../common/ModalSchema";
 import {user} from "../../../service/User";
 import {createInformationTypesDocument} from "../../../api";
 import {createDocumentValidation} from "../../common/schema";
-import { Notification } from "baseui/notification";
+import {Notification} from "baseui/notification";
 
 const rowBlockProps: BlockProps = {
   width: '100%',
@@ -23,6 +23,7 @@ const CreateDocument = () => {
   const [description, setDescription] = React.useState("");
   const [isLoading, setLoading] = React.useState(false);
   const [responseMessage, setResponseMessage] = React.useState();
+  const [errorMessage, setErrorMessage] = React.useState();
 
   const hasAccess = () => user.canWrite();
   useAwait(user.wait())
@@ -33,17 +34,16 @@ const CreateDocument = () => {
     informationTypes: []
   };
 
-  const handleCreateDocument = async (values: CreateDocumentFormValues) => {
+  const handleCreateDocument = (values: CreateDocumentFormValues,resetForm:Function) => {
     setResponseMessage(null)
     let body = {...values};
-    setLoading(true)
     try {
-      await createInformationTypesDocument(body);
-      setResponseMessage(intl.createdDocument)
+      createInformationTypesDocument(body);
+      setResponseMessage(intl.createdDocument);
+      resetForm()
     } catch (error) {
-      setResponseMessage(error.message)
+      setErrorMessage(error.message);
     }
-    setLoading(false)
   };
 
   const disableEnter = (e: KeyboardEvent) => {
@@ -55,8 +55,7 @@ const CreateDocument = () => {
       <Formik
         initialValues={initialCreateDocumentFormValues}
         onSubmit={(values: CreateDocumentFormValues, {resetForm}) => {
-          handleCreateDocument(values);
-          resetForm();
+          handleCreateDocument(values,resetForm);
         }}
         validationSchema={createDocumentValidation()}
       >
@@ -135,12 +134,20 @@ const CreateDocument = () => {
                 >
                   {intl.abort}
                 </Button>
-                
+
                 {responseMessage && (
                   <Block marginRight="scale800" marginTop="10px">
                      <Notification kind="positive" autoHideDuration={5000}>
                         {responseMessage}
                      </Notification>
+                  </Block>
+                )}
+
+                {errorMessage && (
+                  <Block marginRight="scale800" marginTop="10px">
+                    <Notification kind="negative">
+                      {errorMessage}
+                    </Notification>
                   </Block>
                 )}
               </Block>
