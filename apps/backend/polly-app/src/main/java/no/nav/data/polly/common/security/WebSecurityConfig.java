@@ -33,13 +33,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         if (securityProperties == null || !securityProperties.isEnabled()) {
             return;
         }
-        http.authorizeRequests().antMatchers("/login/**").permitAll();
-        http.authorizeRequests().antMatchers("/userinfo").permitAll();
-        http.authorizeRequests().antMatchers("/internal/**").permitAll();
 
-        // Swagger ui
-        http.authorizeRequests().antMatchers("/swagger*/**").permitAll();
-        http.authorizeRequests().antMatchers("/webjars/springfox-swagger-ui/**").permitAll();
+        allowAll(http,
+                "/login/**",
+                "/userinfo",
+                "/internal",
+                "/swagger*/**",
+                "/webjars/springfox-swagger-ui/**"
+        );
 
         allowGetAndOptions(http,
                 "/codelist/**",
@@ -53,11 +54,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/settings/**"
         );
 
+        adminOnly(http,
+                "/codelist/**",
+                "/audit/**",
+                "/settings/**"
+        );
+
         http.authorizeRequests().antMatchers("/logout/**").authenticated();
-        http.authorizeRequests().antMatchers("/codelist/**").hasRole(PollyRole.POLLY_ADMIN.name());
-        http.authorizeRequests().antMatchers("/audit/**").hasRole(PollyRole.POLLY_ADMIN.name());
-        http.authorizeRequests().antMatchers(HttpMethod.POST, "/settings/**").hasRole(PollyRole.POLLY_ADMIN.name());
         http.authorizeRequests().anyRequest().hasRole(PollyRole.POLLY_WRITE.name());
+    }
+
+    private void adminOnly(HttpSecurity http, String... paths) throws Exception {
+        for (String path : paths) {
+            http.authorizeRequests().antMatchers(path).hasRole(PollyRole.POLLY_ADMIN.name());
+        }
+    }
+
+    private void allowAll(HttpSecurity http, String... paths) throws Exception {
+        for (String path : paths) {
+            http.authorizeRequests().antMatchers(path).permitAll();
+        }
     }
 
     private void allowGetAndOptions(HttpSecurity http, String... paths) throws Exception {
