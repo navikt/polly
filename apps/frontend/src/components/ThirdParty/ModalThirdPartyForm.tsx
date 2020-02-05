@@ -83,33 +83,30 @@ const FieldRecipient = (props: { value?: string, disabled: boolean | undefined }
 
 const FieldTextarea = (props: { fieldName: string, fieldValue?: string, placeholder?: string }) => {
   return (
-      <Field
-        name={props.fieldName}
-        render={({field, form}: FieldProps<DisclosureFormValues>) => (
-          <Textarea
-            {...field}
-            placeholder={props.placeholder}
-            rows={4}
-            onKeyDown={e => {
-              if (e.key === 'Enter') form.setFieldValue(props.fieldName, props.fieldValue + '\n')
-            }}
-          />
-        )}
-      />
+    <Field
+      name={props.fieldName}
+      render={({field, form}: FieldProps<DisclosureFormValues>) => (
+        <Textarea
+          {...field}
+          placeholder={props.placeholder}
+          rows={4}
+          onKeyDown={e => {
+            if (e.key === 'Enter') form.setFieldValue(props.fieldName, props.fieldValue + '\n')
+          }}
+        />
+      )}
+    />
   )
 }
 
 const FieldInput = (props: { fieldName: string, fieldValue?: string }) => {
   return (
-      <Field
-        name={props.fieldName}
-        render={({field, form}: FieldProps<DisclosureFormValues>) => (
-          <Input
-            {...field}
-            placeholder={intl.write}
-          />
-        )}
-      />
+    <Field
+      name={props.fieldName}
+      render={({field, form}: FieldProps<DisclosureFormValues>) => (
+        <Input {...field} />
+      )}
+    />
   )
 }
 
