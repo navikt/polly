@@ -53,6 +53,7 @@ public class Disclosure extends Auditable<String> {
         if (!request.isUpdate()) {
             setId(UUID.randomUUID());
         }
+        data.setName(request.getName());
         data.setDescription(request.getDescription());
         data.setRecipient(request.getRecipient());
         data.setRecipientPurpose(request.getRecipientPurpose());
@@ -66,6 +67,7 @@ public class Disclosure extends Auditable<String> {
     public DisclosureResponse convertToResponse() {
         return DisclosureResponse.builder()
                 .id(id)
+                .name(data.getName())
                 .description(data.getDescription())
                 .recipient(CodelistService.getCodelistResponse(ListName.THIRD_PARTY, data.getRecipient()))
                 .recipientPurpose(data.getRecipientPurpose())

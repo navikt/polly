@@ -32,6 +32,7 @@ import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
 public class DisclosureRequest implements RequestElement {
 
     private String id;
+    private String name;
     private String description;
     @ApiModelProperty(value = "Codelist THIRD_PARTY")
     private String recipient;
@@ -62,9 +63,9 @@ public class DisclosureRequest implements RequestElement {
     public void validate(FieldValidator validator) {
         validator.checkUUID(Fields.id, id);
         validator.checkId(this);
+        validator.checkBlank(Fields.name, name);
         validator.checkBlank(Fields.description, description);
         validator.checkRequiredCodelist(Fields.recipient, recipient, ListName.THIRD_PARTY);
-        validator.checkBlank(Fields.recipientPurpose, recipientPurpose);
         validator.checkDate(ProcessRequest.Fields.start, start);
         validator.checkDate(ProcessRequest.Fields.end, end);
         validator.validateType(ProcessRequest.Fields.legalBases, legalBases);

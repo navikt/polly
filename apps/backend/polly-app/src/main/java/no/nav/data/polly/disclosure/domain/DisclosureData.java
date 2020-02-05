@@ -19,10 +19,10 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class DisclosureData {
 
+    private String name;
     private String description;
     @NotNull
     private String recipient; // codelist THIRD_PARTY
-    @NotNull
     private String recipientPurpose;
     @NotNull
     private LocalDate start;

@@ -136,6 +136,7 @@ public class CodeUsageService {
                     break;
                 case SYSTEM:
                     getInformationTypes(usage).forEach(it -> it.getData().setNavMaster(newCode));
+                    getProcesses(usage).forEach(p -> p.getData().setProduct(newCode));
                     break;
             }
         }
@@ -170,6 +171,8 @@ public class CodeUsageService {
                 return processRepository.findByGDPRArticle(code).stream().map(Process::getInstanceIdentification).collect(toList());
             case NATIONAL_LAW:
                 return processRepository.findByNationalLaw(code).stream().map(Process::getInstanceIdentification).collect(toList());
+            case SYSTEM:
+                return processRepository.findByProduct(code).stream().map(Process::getInstanceIdentification).collect(toList());
             default:
                 return Collections.emptyList();
         }

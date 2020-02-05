@@ -19,10 +19,11 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "description", "recipient", "recipientPurpose", "start", "end", "active", "documentId", "document", "legalBases"})
+@JsonPropertyOrder({"id", "name", "description", "recipient", "recipientPurpose", "start", "end", "active", "documentId", "document", "legalBases"})
 public class DisclosureResponse {
 
     private UUID id;
+    private String name;
     private String description;
     private CodelistResponse recipient;
     private String recipientPurpose;

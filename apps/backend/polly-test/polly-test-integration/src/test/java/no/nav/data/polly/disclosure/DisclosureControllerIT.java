@@ -63,6 +63,7 @@ class DisclosureControllerIT extends IntegrationTestBase {
 
         assertThat(disclosureResponse).isEqualTo(DisclosureResponse.builder()
                 .id(disclosureResponse.getId())
+                .name("disc name")
                 .description("disc desc")
                 .recipient(CodelistService.getCodelistResponse(ListName.THIRD_PARTY, disclosureResponse.getRecipient().getCode()))
                 .recipientPurpose("recipient purpose")
@@ -179,6 +180,7 @@ class DisclosureControllerIT extends IntegrationTestBase {
 
     private DisclosureRequest buildDisclosure(String recipient) {
         return DisclosureRequest.builder()
+                .name("disc name")
                 .description("disc desc").recipient(recipient).recipientPurpose("recipient purpose")
                 .start(LocalDate.now().toString()).end(LocalDate.now().toString())
                 .legalBasis(createLegalBasisRequest())
