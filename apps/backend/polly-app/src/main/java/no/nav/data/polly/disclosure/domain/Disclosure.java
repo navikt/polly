@@ -79,7 +79,7 @@ public class Disclosure extends Auditable<String> {
     }
 
     public UsedInInstance getInstanceIdentification() {
-        return new UsedInInstance(id.toString(), data.getDescription());
+        return new UsedInInstance(id.toString(), data.getName());
     }
 
     public static class DisclosureBuilder {
