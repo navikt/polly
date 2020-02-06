@@ -16,8 +16,6 @@ import { Label2, Paragraph2 } from "baseui/typography";
 import { Block } from "baseui/block";
 import ModalThirdParty from "../ThirdParty/ModalThirdPartyForm";
 import { mapDisclosureToFormValues } from "../../api"
-import { StyledLink } from "baseui/link"
-import { DocumentReferences } from "../InformationType/InformationtypeMetadata/DocumentTable"
 
 const StyledHeader = withStyle(StyledHead, {
   backgroundColor: "transparent",
@@ -46,10 +44,9 @@ type TableDisclosureProps = {
   submitEditDisclosure?: (disclosure: DisclosureFormValues) => Promise<boolean>;
   errorModal?: string;
   onCloseModal?: () => void;
-  documentRef?: DocumentReferences
 };
 
-const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal, documentRef}: TableDisclosureProps) => {
+const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal}: TableDisclosureProps) => {
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false)
   const [showEditModal, setShowEditModal] = React.useState<boolean>()
   const [selectedDisclosure, setSelectedDisclosure] = React.useState<Disclosure>()
@@ -118,13 +115,7 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
               )}
               <StyledCell>{row.name}</StyledCell>
               <StyledCell>
-                {!documentRef && <RouteLink href={`/document/${row.documentId}`}>{row.document?.name}</RouteLink>}
-                {documentRef && <StyledLink href="#" onClick={(e: Event) => {
-                  e.preventDefault()
-                  documentRef[row.document!.id]?.()
-                }}>
-                  {row.document?.name}
-                </StyledLink>}
+                {<RouteLink href={`/document/${row.documentId}`}>{row.document?.name}</RouteLink>}
               </StyledCell>
               <StyledCell>{row.recipientPurpose}</StyledCell>
               <StyledCell>{row.document?.description}</StyledCell>
