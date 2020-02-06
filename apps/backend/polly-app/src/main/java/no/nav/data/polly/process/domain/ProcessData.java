@@ -2,6 +2,7 @@ package no.nav.data.polly.process.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
@@ -32,9 +33,33 @@ public class ProcessData {
 
     private Boolean automaticProcessing;
     private Boolean profiling;
-    private Boolean dataProcessor;
-    private List<String> dataProcessorAgreements;
-    private Boolean dataProcessorOutsideEU;
+    @Default
+    private DataProcessing dataProcessing = new DataProcessing();
+    @Default
+    private Retention retention = new Retention();
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class DataProcessing {
+
+        private Boolean dataProcessor;
+        private List<String> dataProcessorAgreements;
+        private Boolean dataProcessorOutsideEU;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Retention {
+
+        private Boolean retentionPlan;
+        private Integer retentionMonths;
+        private String retentionStart;
+        private String retentionDescription;
+    }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static class ProcessDataBuilder {

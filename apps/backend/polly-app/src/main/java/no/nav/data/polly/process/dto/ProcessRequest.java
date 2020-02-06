@@ -1,6 +1,5 @@
 package no.nav.data.polly.process.dto;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +28,6 @@ import static org.apache.commons.lang3.StringUtils.trimToNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldNameConstants
-@JsonPropertyOrder({"id,", "name", "purposeCode", "start", "end", "legalBases"})
 public class ProcessRequest implements RequestElement {
 
     private String id;
@@ -52,9 +50,31 @@ public class ProcessRequest implements RequestElement {
 
     private Boolean automaticProcessing;
     private Boolean profiling;
-    private Boolean dataProcessor;
-    private List<String> dataProcessorAgreements;
-    private Boolean dataProcessorOutsideEU;
+    private DataProcessingRequest dataProcessing;
+    private RetentionRequest retention;
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class DataProcessingRequest {
+
+        private Boolean dataProcessor;
+        private List<String> dataProcessorAgreements;
+        private Boolean dataProcessorOutsideEU;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class RetentionRequest {
+
+        private Boolean retentionPlan;
+        private Integer retentionMonths;
+        private String retentionStart;
+        private String retentionDescription;
+    }
 
     private boolean update;
     private int requestIndex;
@@ -73,11 +93,22 @@ public class ProcessRequest implements RequestElement {
         setProductTeam(trimToNull(getProductTeam()));
         setProduct(toUpperCaseAndTrim(getProduct()));
 
-        setDataProcessorAgreements(safeStream(getDataProcessorAgreements())
+        if (dataProcessing == null) {
+            setDataProcessing(new DataProcessingRequest());
+        }
+        if (retention == null) {
+            setRetention(new RetentionRequest());
+        }
+        getDataProcessing().setDataProcessorAgreements(safeStream(getDataProcessing().getDataProcessorAgreements())
                 .map(Strings::trimToNull).filter(Objects::nonNull).collect(Collectors.toList()));
-        if (Boolean.FALSE.equals(dataProcessor)) {
-            setDataProcessorAgreements(List.of());
-            setDataProcessorOutsideEU(null);
+        if (Boolean.FALSE.equals(getDataProcessing().getDataProcessor())) {
+            getDataProcessing().setDataProcessorAgreements(List.of());
+            getDataProcessing().setDataProcessorOutsideEU(null);
+        }
+        if (Boolean.FALSE.equals(getRetention().getRetentionPlan())) {
+            getRetention().setRetentionMonths(null);
+            getRetention().setRetentionStart(null);
+            getRetention().setRetentionDescription(null);
         }
     }
 

@@ -16,8 +16,14 @@ import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.dto.PolicyProcessResponse;
+import no.nav.data.polly.process.domain.ProcessData.DataProcessing;
+import no.nav.data.polly.process.domain.ProcessData.Retention;
 import no.nav.data.polly.process.dto.ProcessRequest;
+import no.nav.data.polly.process.dto.ProcessRequest.DataProcessingRequest;
+import no.nav.data.polly.process.dto.ProcessRequest.RetentionRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
+import no.nav.data.polly.process.dto.ProcessResponse.DataProcessingResponse;
+import no.nav.data.polly.process.dto.ProcessResponse.RetentionResponse;
 import org.hibernate.annotations.Type;
 
 import java.util.HashSet;
@@ -100,9 +106,17 @@ public class Process extends Auditable<String> {
                 .legalBases(convert(data.getLegalBases(), LegalBasis::convertToResponse))
                 .automaticProcessing(data.getAutomaticProcessing())
                 .profiling(data.getProfiling())
-                .dataProcessor(data.getDataProcessor())
-                .dataProcessorAgreements(nullToEmptyList(data.getDataProcessorAgreements()))
-                .dataProcessorOutsideEU(data.getDataProcessorOutsideEU())
+                .dataProcessing(DataProcessingResponse.builder()
+                        .dataProcessor(data.getDataProcessing().getDataProcessor())
+                        .dataProcessorAgreements(nullToEmptyList(data.getDataProcessing().getDataProcessorAgreements()))
+                        .dataProcessorOutsideEU(data.getDataProcessing().getDataProcessorOutsideEU())
+                        .build())
+                .retention(RetentionResponse.builder()
+                        .retentionPlan(data.getRetention().getRetentionPlan())
+                        .retentionMonths(data.getRetention().getRetentionMonths())
+                        .retentionStart(data.getRetention().getRetentionStart())
+                        .retentionDescription(data.getRetention().getRetentionDescription())
+                        .build())
                 .build();
     }
 
@@ -132,10 +146,32 @@ public class Process extends Auditable<String> {
         data.setLegalBases(convert(request.getLegalBases(), LegalBasisRequest::convertToLegalBasis));
         data.setAutomaticProcessing(request.getAutomaticProcessing());
         data.setProfiling(request.getProfiling());
-        data.setDataProcessor(request.getDataProcessor());
-        data.setDataProcessorAgreements(request.getDataProcessorAgreements());
-        data.setDataProcessorOutsideEU(request.getDataProcessorOutsideEU());
+        data.setDataProcessing(convertDataProcessing(request.getDataProcessing()));
+        data.setRetention(convertRetention(request.getRetention()));
         return this;
+    }
+
+    private static DataProcessing convertDataProcessing(DataProcessingRequest dataProcessing) {
+        if (dataProcessing == null) {
+            return null;
+        }
+        return DataProcessing.builder()
+                .dataProcessor(dataProcessing.getDataProcessor())
+                .dataProcessorAgreements(nullToEmptyList(dataProcessing.getDataProcessorAgreements()))
+                .dataProcessorOutsideEU(dataProcessing.getDataProcessorOutsideEU())
+                .build();
+    }
+
+    private static Retention convertRetention(RetentionRequest retention) {
+        if (retention == null) {
+            return null;
+        }
+        return Retention.builder()
+                .retentionPlan(retention.getRetentionPlan())
+                .retentionMonths(retention.getRetentionMonths())
+                .retentionStart(retention.getRetentionStart())
+                .retentionDescription(retention.getRetentionDescription())
+                .build();
     }
 
     private CodelistResponse getSubDepartmentCode() {

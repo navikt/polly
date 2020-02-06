@@ -18,7 +18,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,16 +37,7 @@ class ProcessControllerIT extends IntegrationTestBase {
         ProcessResponse processResponse = resp.getBody();
         assertThat(processResponse).isNotNull();
 
-        assertThat(processResponse).isEqualTo(ProcessResponse.builder()
-                .id(policy.getProcess().getId())
-                .name("Auto_" + PURPOSE_CODE1)
-                .description("process description")
-                .purposeCode(PURPOSE_CODE1)
-                .productTeam("teamname")
-                .product(CodelistService.getCodelistResponse(ListName.SYSTEM, "PESYS"))
-                .start(LocalDate.now())
-                .end(LocalDate.now())
-                .legalBasis(legalBasisResponse())
+        assertThat(processResponse).isEqualTo(processResponseBuilder(policy.getProcess().getId())
                 .policy(PolicyResponse.builder()
                         .id(policy.getId())
                         .process(policy.getProcess().convertToIdNameResponse())
@@ -78,27 +68,13 @@ class ProcessControllerIT extends IntegrationTestBase {
 
         assertThat(processPage.getContent()).hasSize(2);
         assertThat(processPage.getContent()).contains(
-                ProcessResponse.builder()
-                        .id(policy.getProcess().getId())
+                processResponseBuilder(policy.getProcess().getId())
                         .name("Auto_" + PURPOSE_CODE1)
-                        .description("process description")
                         .purposeCode(PURPOSE_CODE1)
-                        .productTeam("teamname")
-                        .product(CodelistService.getCodelistResponse(ListName.SYSTEM, "PESYS"))
-                        .start(LocalDate.now())
-                        .end(LocalDate.now())
-                        .legalBasis(legalBasisResponse())
                         .build(),
-                ProcessResponse.builder()
-                        .id(policy2.getProcess().getId())
+                processResponseBuilder(policy2.getProcess().getId())
                         .name("Auto_" + PURPOSE_CODE1 + 2)
-                        .description("process description")
                         .purposeCode(PURPOSE_CODE1 + 2)
-                        .productTeam("teamname")
-                        .product(CodelistService.getCodelistResponse(ListName.SYSTEM, "PESYS"))
-                        .start(LocalDate.now())
-                        .end(LocalDate.now())
-                        .legalBasis(legalBasisResponse())
                         .build()
         );
     }
@@ -162,4 +138,5 @@ class ProcessControllerIT extends IntegrationTestBase {
         assertThat(errorResp.getBody()).isNotNull();
         assertThat(errorResp.getBody()).contains("Cannot change name from newprocess to changedName");
     }
+
 }

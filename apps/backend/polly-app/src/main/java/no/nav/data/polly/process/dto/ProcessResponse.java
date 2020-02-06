@@ -21,7 +21,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonPropertyOrder({"id", "name", "description", "purposeCode", "department", "subDepartment", "productTeam", "product", "start", "end", "active",
-        "automaticProcessing", "profiling", "dataProcessor", "dataProcessorAgreements", "dataProcessorOutsideEU",
+        "automaticProcessing", "profiling", "dataProcessing", "retention",
         "legalBases", "policies"})
 public class ProcessResponse {
 
@@ -38,10 +38,8 @@ public class ProcessResponse {
 
     private Boolean automaticProcessing;
     private Boolean profiling;
-    private Boolean dataProcessor;
-    @Singular
-    private List<String> dataProcessorAgreements;
-    private Boolean dataProcessorOutsideEU;
+    private DataProcessingResponse dataProcessing;
+    private RetentionResponse retention;
 
     @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;
@@ -51,6 +49,32 @@ public class ProcessResponse {
 
     public boolean isActive() {
         return DateUtil.isNow(start, end);
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @JsonPropertyOrder({"dataProcessor", "dataProcessorAgreements", "dataProcessorOutsideEU"})
+    public static class DataProcessingResponse {
+
+        private Boolean dataProcessor;
+        @Singular
+        private List<String> dataProcessorAgreements;
+        private Boolean dataProcessorOutsideEU;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @JsonPropertyOrder({"retentionPlan", "retentionMonths", "retentionStart", "retentionDescription"})
+    public static class RetentionResponse {
+
+        private Boolean retentionPlan;
+        private Integer retentionMonths;
+        private String retentionStart;
+        private String retentionDescription;
     }
 
 }

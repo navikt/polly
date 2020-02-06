@@ -4,7 +4,9 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import io.prometheus.client.CollectorRegistry;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.IntegrationTestBase.Initializer;
+import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.CodelistStub;
+import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.nais.LeaderElectionService;
 import no.nav.data.polly.common.storage.domain.GenericStorageRepository;
 import no.nav.data.polly.common.utils.JsonUtils;
@@ -29,8 +31,14 @@ import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
+import no.nav.data.polly.process.domain.ProcessData.DataProcessing;
+import no.nav.data.polly.process.domain.ProcessData.Retention;
 import no.nav.data.polly.process.domain.ProcessDistributionRepository;
 import no.nav.data.polly.process.domain.ProcessRepository;
+import no.nav.data.polly.process.dto.ProcessResponse;
+import no.nav.data.polly.process.dto.ProcessResponse.DataProcessingResponse;
+import no.nav.data.polly.process.dto.ProcessResponse.ProcessResponseBuilder;
+import no.nav.data.polly.process.dto.ProcessResponse.RetentionResponse;
 import no.nav.data.polly.term.catalog.CatalogTerm;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -214,6 +222,10 @@ public abstract class IntegrationTestBase {
                                         .productTeam("teamname")
                                         .product("PESYS")
                                         .start(LocalDate.now()).end(LocalDate.now()).legalBasis(createLegalBasis())
+                                        .automaticProcessing(true)
+                                        .profiling(true)
+                                        .dataProcessing(DataProcessing.builder().dataProcessor(true).dataProcessorAgreements(List.of("X")).dataProcessorOutsideEU(false).build())
+                                        .retention(Retention.builder().retentionPlan(true).retentionMonths(24).retentionStart("Birth").retentionDescription("ret desc").build())
                                         .build())
                                 .build()));
     }
@@ -262,6 +274,33 @@ public abstract class IntegrationTestBase {
 
     protected LegalBasisResponse legalBasisResponse() {
         return createLegalBasis().convertToResponse();
+    }
+
+    protected ProcessResponseBuilder processResponseBuilder(UUID processId) {
+        return ProcessResponse.builder()
+                .id(processId)
+                .name("Auto_" + PURPOSE_CODE1)
+                .description("process description")
+                .purposeCode(PURPOSE_CODE1)
+                .productTeam("teamname")
+                .product(CodelistService.getCodelistResponse(ListName.SYSTEM, "PESYS"))
+                .start(LocalDate.now())
+                .end(LocalDate.now())
+                .legalBasis(legalBasisResponse())
+                .automaticProcessing(true)
+                .profiling(true)
+                .dataProcessing(DataProcessingResponse.builder()
+                        .dataProcessor(true)
+                        .dataProcessorAgreements(List.of("X"))
+                        .dataProcessorOutsideEU(false)
+                        .build())
+                .retention(RetentionResponse.builder()
+                        .retentionPlan(true)
+                        .retentionMonths(24)
+                        .retentionStart("Birth")
+                        .retentionDescription("ret desc")
+                        .build())
+                ;
     }
 
     private void mockTerms() {
