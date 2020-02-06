@@ -7,7 +7,7 @@ import startIll from '../resources/start_illustration.svg'
 import { getEvents } from "../api/AuditApi"
 import { AuditAction, Event, ObjectType, PageResponse } from "../constants"
 import { StatefulTabs, Tab } from "baseui/tabs"
-import { HeadingMedium } from "baseui/typography"
+import { HeadingMedium, Label2 } from "baseui/typography"
 import moment from "moment"
 import { ObjectLink } from "../components/common/RouteLink"
 import { Option, StatefulSelect, Value } from "baseui/select"
@@ -57,12 +57,14 @@ const LastEvents = () => {
       <Block display="flex" justifyContent="space-between" alignItems="flex-end" width="100%">
         <HeadingMedium>Siste hendelser</HeadingMedium>
         <img src={startIll} alt={intl.startIllustration} style={{width: "30%"}}/>
-        <Block maxWidth="150px" marginBottom=".5rem">
+        <Block width="25%" marginBottom=".5rem" display="flex" justifyContent="space-between" alignItems="center">
+          <Label2 marginRight=".5rem">{intl.eventType}</Label2>
           <StatefulSelect
             size="compact"
             clearable={false}
-            options={[{id: AuditAction.CREATE, label: intl.CREATE}, {id: AuditAction.UPDATE, label: intl.UPDATE}, {id: AuditAction.DELETE, label: intl.DELETE}]}
-            initialState={{value: action}} onChange={params => setAction(params.value)}/>
+            options={Object.keys(AuditAction).map(auditAction => ({id: auditAction, label: intl[auditAction as AuditAction]}))}
+            initialState={{value: action}} onChange={params => setAction(params.value)}
+          />
         </Block>
       </Block>
       <Block>

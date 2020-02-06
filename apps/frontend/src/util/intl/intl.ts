@@ -125,6 +125,7 @@ export interface IStrings {
   emptyTable: string;
   pageNotFound: string;
   createdDocument: string;
+  eventType: string;
 
   // groups
   POLLY_READ: string;
