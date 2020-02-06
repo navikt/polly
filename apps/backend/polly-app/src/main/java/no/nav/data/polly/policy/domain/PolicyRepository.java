@@ -12,6 +12,8 @@ import java.util.UUID;
 @Repository
 public interface PolicyRepository extends JpaRepository<Policy, UUID>, PolicyRepositoryCustom {
 
+    List<Policy> findByPurposeCodeAndProcessName(String purposeCode, String processName);
+
     List<Policy> findByInformationTypeId(UUID informationTypeId);
 
     List<Policy> findByProcessId(UUID processId);
@@ -19,10 +21,6 @@ public interface PolicyRepository extends JpaRepository<Policy, UUID>, PolicyRep
     List<Policy> findByPurposeCode(String purposeCode);
 
     long countByInformationTypeId(UUID informationTypeId);
-
-    @Modifying
-    @Transactional
-    long deleteByInformationTypeId(UUID informationTypeId);
 
     @Modifying
     @Transactional

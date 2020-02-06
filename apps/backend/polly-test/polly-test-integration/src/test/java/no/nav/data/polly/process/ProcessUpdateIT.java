@@ -2,7 +2,6 @@ package no.nav.data.polly.process;
 
 import no.nav.data.polly.KafkaIntegrationTestBase;
 import no.nav.data.polly.avro.ProcessUpdate;
-import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessDistributionRepository;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -15,7 +14,6 @@ import org.springframework.kafka.test.utils.KafkaTestUtils;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -41,48 +39,28 @@ class ProcessUpdateIT extends KafkaIntegrationTestBase {
 
     @Test
     void produserBehandlingsgrunnlag() {
-        Process process = createTestData();
+        createAndSavePolicy(4, (index, policy) -> {
+            policy.setInformationTypeName(INFORMATION_TYPE_NAME + index);
+            policy.getProcess().setName(PROCESS_NAME_1);
+            if (index == 0) {
+                // Inactive policy should not be sent
+                policy.getData().setEnd(LocalDate.now().minusDays(1));
+            } else if (index == 1) {
+                var process = createProcess("ignored process", PURPOSE_CODE1, "", "", List.of(), "");
+                policy.setProcess(process);
+            }
+        });
 
-        processService.scheduleDistributeForProcess(Process.builder().id(process.getId()).build());
+        processService.scheduleDistributeForProcess(Process.builder().name(PROCESS_NAME_1).purposeCode(PURPOSE_CODE1).build());
         distributionScheduler.distributeAll();
 
         await().atMost(Duration.ofSeconds(10)).untilAsserted(() -> assertEquals(0L, repository.count()));
 
         ConsumerRecord<String, ProcessUpdate> singleRecord = KafkaTestUtils.getSingleRecord(consumer, topicProperties.getProcessUpdate());
 
-        assertEquals(process.getName() + "-" + PURPOSE_CODE1, singleRecord.key());
-        assertEquals(process.getName(), singleRecord.value().getProcessName());
+        assertEquals(PROCESS_NAME_1 + "-" + PURPOSE_CODE1, singleRecord.key());
+        assertEquals(PROCESS_NAME_1, singleRecord.value().getProcessName());
         assertEquals(PURPOSE_CODE1, singleRecord.value().getPurposeCode());
-        assertThat(singleRecord.value().getInformationTypes()).contains(INFORMATION_TYPE_NAME + 3, INFORMATION_TYPE_NAME + 4);
-    }
-
-    private Process createTestData() {
-        var process1 = createAndSaveProcess(PURPOSE_CODE1);
-        var process2 = createAndSaveProcess(PURPOSE_CODE1);
-
-        var infoType1 = createAndSaveInformationType(UUID.randomUUID(), INFORMATION_TYPE_NAME + 1);
-        var infoType2 = createAndSaveInformationType(UUID.randomUUID(), INFORMATION_TYPE_NAME + 2);
-        var infoType3 = createAndSaveInformationType(UUID.randomUUID(), INFORMATION_TYPE_NAME + 3);
-        var infoType4 = createAndSaveInformationType(UUID.randomUUID(), INFORMATION_TYPE_NAME + 4);
-
-        Policy policy1 = createPolicy(PURPOSE_CODE1, "BRUKER", List.of(createLegalBasis()));
-        policy1.getData().setEnd(LocalDate.now().minusDays(1));
-        policy1.setProcess(process1);
-        policy1.setInformationType(infoType1);
-
-        Policy policy2 = createPolicy(PURPOSE_CODE1, "BRUKER", List.of(createLegalBasis()));
-        policy2.setInformationType(infoType2);
-        policy2.setProcess(process2);
-
-        Policy policy3 = createPolicy(PURPOSE_CODE1, "BRUKER", List.of(createLegalBasis()));
-        policy3.setInformationType(infoType3);
-        policy3.setProcess(process1);
-
-        Policy policy4 = createPolicy(PURPOSE_CODE1, "BRUKER", List.of(createLegalBasis()));
-        policy4.setInformationType(infoType4);
-        policy4.setProcess(process1);
-
-        policyRepository.saveAll(List.of(policy1, policy2, policy3, policy4));
-        return process1;
+        assertThat(singleRecord.value().getInformationTypes()).contains(INFORMATION_TYPE_NAME + 2, INFORMATION_TYPE_NAME + 3);
     }
 }

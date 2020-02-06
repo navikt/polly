@@ -27,7 +27,7 @@ public class ProcessDistribution {
     private ProcessDistributionData data;
 
     public static ProcessDistribution newForProcess(Process process) {
-        return new ProcessDistribution(UUID.randomUUID(), new ProcessDistributionData(process.getId()));
+        return new ProcessDistribution(UUID.randomUUID(), new ProcessDistributionData(process.getName(), process.getPurposeCode()));
     }
 
     @Data
@@ -35,7 +35,8 @@ public class ProcessDistribution {
     @NoArgsConstructor
     public static class ProcessDistributionData {
 
-        private UUID processId;
+        private String processName;
+        private String purposeCode;
     }
 
 }
