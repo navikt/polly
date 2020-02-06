@@ -46,9 +46,8 @@ export const convertProcessToFormValues = (process?: Partial<Process>) => {
     end,
     automaticProcessing,
     profiling,
-    dataProcessor,
-    dataProcessorAgreements,
-    dataProcessorOutsideEU
+    dataProcessing,
+    retention
   } = (process || {})
 
   return {
@@ -66,9 +65,17 @@ export const convertProcessToFormValues = (process?: Partial<Process>) => {
     end: end || undefined,
     automaticProcessing: process ? mapBool(automaticProcessing) : false,
     profiling: process ? mapBool(profiling) : false,
-    dataProcessor: mapBool(dataProcessor),
-    dataProcessorAgreements: dataProcessorAgreements || [],
-    dataProcessorOutsideEU: mapBool(dataProcessorOutsideEU),
+    dataProcessing: {
+      dataProcessor: mapBool(dataProcessing?.dataProcessor),
+      dataProcessorAgreements: dataProcessing?.dataProcessorAgreements || [],
+      dataProcessorOutsideEU: mapBool(dataProcessing?.dataProcessorOutsideEU)
+    },
+    retention: {
+      retentionPlan: mapBool(retention?.retentionPlan),
+      retentionMonths: retention?.retentionMonths || undefined,
+      retentionStart: retention?.retentionStart || undefined,
+      retentionDescription: retention?.retentionDescription || undefined
+    },
     includeDefaultDocument: false
   } as ProcessFormValues
 }
@@ -88,8 +95,7 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
     end: values.end,
     automaticProcessing: values.automaticProcessing,
     profiling: values.profiling,
-    dataProcessor: values.dataProcessor,
-    dataProcessorAgreements: values.dataProcessor ? values.dataProcessorAgreements : [],
-    dataProcessorOutsideEU: values.dataProcessor ? values.dataProcessorOutsideEU : undefined,
+    dataProcessing: values.dataProcessing,
+    retention: values.retention
   }
 }

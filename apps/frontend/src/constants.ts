@@ -50,11 +50,23 @@ export interface ProcessFormValues {
 
   automaticProcessing?: boolean
   profiling?: boolean
+  dataProcessing: DataProcessing
+  retention: Retention
+
+  includeDefaultDocument: boolean
+}
+
+export interface DataProcessing {
   dataProcessor?: boolean
   dataProcessorAgreements: string[]
   dataProcessorOutsideEU?: boolean
+}
 
-  includeDefaultDocument: boolean
+export interface Retention {
+  retentionPlan?: boolean
+  retentionMonths?: number
+  retentionStart?: string
+  retentionDescription?: string
 }
 
 export interface LegalBasisFormValues {
@@ -119,7 +131,7 @@ export const disclosureSort: ColumnCompares<Disclosure> = {
 }
 export const documentSort: ColumnCompares<DocumentInfoTypeUse> = {
   informationType: (a, b) => a.informationType.name.localeCompare(b.informationType.name),
-  subjectCategories: (a, b) =>  a.subjectCategories.length - b.subjectCategories.length
+  subjectCategories: (a, b) => a.subjectCategories.length - b.subjectCategories.length
 }
 
 export interface PolicyInformationType {
@@ -148,9 +160,8 @@ export interface Process extends IDurationed {
 
   automaticProcessing?: boolean
   profiling?: boolean
-  dataProcessor?: boolean
-  dataProcessorAgreements?: string[]
-  dataProcessorOutsideEU?: boolean
+  dataProcessing?: DataProcessing
+  retention?: Retention
 }
 
 export interface ProcessPurposeCount {

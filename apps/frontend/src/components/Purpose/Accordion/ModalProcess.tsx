@@ -8,7 +8,7 @@ import { Select, Value } from 'baseui/select';
 import { Button, KIND, SHAPE, SIZE as ButtonSize } from "baseui/button";
 import { Plus } from "baseui/icon";
 
-import { Document, ProcessFormValues } from "../../../constants";
+import { DisclosureFormValues, Document, ProcessFormValues } from "../../../constants";
 import CardLegalBasis from './CardLegalBasis'
 import { codelist, ListName } from "../../../service/Codelist"
 import { intl } from "../../../util"
@@ -138,7 +138,7 @@ const FieldDataProcessorAgreements = (props: { formikBag: FormikProps<ProcessFor
   }
   return (
     <FieldArray
-      name="dataProcessorAgreements"
+      name="dataProcessing.dataProcessorAgreements"
       render={arrayHelpers => (
         <Block>
           <Input
@@ -161,9 +161,8 @@ const FieldDataProcessorAgreements = (props: { formikBag: FormikProps<ProcessFor
                 </Button>
               )
             }}
-            error={!!arrayHelpers.form.errors.dataProcessorAgreements && !!arrayHelpers.form.submitCount}
           />
-          {renderTagList(props.formikBag.values.dataProcessorAgreements, arrayHelpers)}
+          {renderTagList(props.formikBag.values.dataProcessing.dataProcessorAgreements, arrayHelpers)}
         </Block>
       )}
     />
@@ -222,12 +221,23 @@ const FieldProduct = (props: { product?: string }) => {
     />
   )
 }
+const FieldInput = (props: { fieldName: string, fieldValue?: string | number }) => {
+  return (
+    <Field
+      name={props.fieldName}
+      render={({field, form}: FieldProps<DisclosureFormValues>) => (
+        <Input {...field} />
+      )}
+    />
+  )
+}
 
 const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => {
   const {formikBag} = props
   const [showDates, setShowDates] = React.useState(hasSpecifiedDate(formikBag.values));
   const [showAutomation, setShowAutomation] = React.useState(formikBag.values.automaticProcessing || formikBag.values.profiling);
-  const [showDataProcessor, setShowDataProcessor] = React.useState(formikBag.values.dataProcessor);
+  const [showDataProcessor, setShowDataProcessor] = React.useState(formikBag.values.dataProcessing.dataProcessor);
+  const [showRetention, setShowRetention] = React.useState(formikBag.values.retention.retentionPlan);
 
   const cardOverrides = {
     Root: {style: {marginTop: "1rem"}},
@@ -253,20 +263,48 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
       <Card overrides={cardOverrides}>
         <Block {...rowBlockProps} marginTop={0}>
           <ModalLabel label={intl.dataProcessor} tooltip={intl.dataProcessorExtra}/>
-          <BoolField fieldName="dataProcessor" value={formikBag.values.dataProcessor}/>
+          <BoolField fieldName="dataProcessing.dataProcessor" value={formikBag.values.dataProcessing.dataProcessor}/>
         </Block>
 
-        {formikBag.values.dataProcessor && <>
+        {formikBag.values.dataProcessing.dataProcessor && <>
           <Block {...rowBlockProps}>
             <ModalLabel label={intl.dataProcessorAgreement}/>
             <FieldDataProcessorAgreements formikBag={formikBag}/>
           </Block>
-          <Error fieldName="dataProcessorAgreement"/>
+          <Error fieldName="dataProcessing.dataProcessorAgreement"/>
 
           <Block {...rowBlockProps}>
             <ModalLabel label={intl.dataProcessorOutsideEU} tooltip={intl.dataProcessorOutsideEUExtra}/>
-            <BoolField fieldName="dataProcessorOutsideEU" value={formikBag.values.dataProcessorOutsideEU}/>
+            <BoolField fieldName="dataProcessing.dataProcessorOutsideEU" value={formikBag.values.dataProcessing.dataProcessorOutsideEU}/>
           </Block>
+        </>}
+      </Card>}
+
+      {showRetention &&
+      <Card overrides={cardOverrides}>
+        <Block {...rowBlockProps} marginTop={0}>
+          <ModalLabel label={intl.retentionPlan}/>
+          <BoolField fieldName="retention.retentionPlan" value={formikBag.values.retention.retentionPlan}/>
+        </Block>
+
+        {formikBag.values.retention.retentionPlan && <>
+          <Block {...rowBlockProps}>
+            <ModalLabel label={intl.retentionMonths}/>
+            <FieldInput fieldName="retention.retentionMonths" fieldValue={formikBag.values.retention.retentionMonths}/>
+          </Block>
+          <Error fieldName="retention.retentionMonths"/>
+
+          <Block {...rowBlockProps}>
+            <ModalLabel label={intl.retentionStart}/>
+            <FieldInput fieldName="retention.retentionStart" fieldValue={formikBag.values.retention.retentionStart}/>
+          </Block>
+          <Error fieldName="retention.retentionStart"/>
+
+          <Block {...rowBlockProps}>
+            <ModalLabel label={intl.retentionDescription}/>
+            <FieldInput fieldName="retention.retentionDescription" fieldValue={formikBag.values.retention.retentionDescription}/>
+          </Block>
+          < Error fieldName="retention.retentionDescription"/>
         </>}
       </Card>}
 
@@ -285,6 +323,10 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
         <Button size="compact" shape='pill' type="button"
                 $style={{marginRight: "1rem"}}
                 onClick={() => setShowDataProcessor(true)}>{intl.dataProcessor}</Button>}
+        {!showRetention &&
+        <Button size="compact" shape='pill' type="button"
+                $style={{marginRight: "1rem"}}
+                onClick={() => setShowRetention(true)}>{intl.retentionPlan}</Button>}
       </Block>
     </>
   )
@@ -373,7 +415,8 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                 </Block>
 
                 {!isEdit && defaultDoc && <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.includeDefaultDocument} tooltip={<>{intl.includeDefaultDocumentExtraStart} <i>{defaultDoc.name}</i> {intl.includeDefaultDocumentExtraEnd}</>}/>
+                  <ModalLabel label={intl.includeDefaultDocument}
+                              tooltip={<>{intl.includeDefaultDocumentExtraStart} <i>{defaultDoc.name}</i> {intl.includeDefaultDocumentExtraEnd}</>}/>
                   <BoolField fieldName="includeDefaultDocument" value={formikBag.values.includeDefaultDocument} omitUndefined={true}/>
                 </Block>}
 

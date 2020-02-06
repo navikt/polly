@@ -26,6 +26,7 @@ import { TeamPopover } from "../../common/Team"
 import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
 import { AuditButton } from "../../audit/AuditButton"
 import { AddDocumentModal } from "./AddDocumentModal"
+import moment from 'moment';
 
 const rowPanelContent: BlockProps = {
   display: 'flex',
@@ -206,6 +207,10 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
     }, 200)
   }, [isLoading])
 
+  const retentionYears = Math.floor((currentProcess?.retention?.retentionMonths || 0) / 12)
+  const retentionTimeYears = moment.duration(retentionYears, "year")
+  const retentionTimeMonths = moment.duration((currentProcess?.retention?.retentionMonths || 0) - retentionYears * 12, "month")
+  console.log(retentionYears, retentionTimeYears.years(), retentionTimeMonths.months())
   return (
     <Block ref={purposeRef}>
       <Accordion
@@ -274,19 +279,39 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                     <Block {...rowPanelContent} justifyContent="flex-start">
                       <Block width="33%">
                         <Label2>{intl.dataProcessor}</Label2>
-                        <Paragraph3>{boolToText(currentProcess?.dataProcessor)}</Paragraph3>
+                        <Paragraph3>{boolToText(currentProcess?.dataProcessing?.dataProcessor)}</Paragraph3>
                       </Block>
 
-                      {currentProcess?.dataProcessor &&
+                      {currentProcess?.dataProcessing?.dataProcessor &&
                       <>
                         <Block width="33%">
                           <Label2>{intl.dataProcessorOutsideEU}</Label2>
-                          <Paragraph3>{boolToText(currentProcess.dataProcessorOutsideEU)}</Paragraph3>
+                          <Paragraph3>{boolToText(currentProcess.dataProcessing.dataProcessorOutsideEU)}</Paragraph3>
                         </Block>
-                        {!!currentProcess.dataProcessorAgreements?.length &&
+                        {!!currentProcess.dataProcessing.dataProcessorAgreements?.length &&
                         <Block width="33%">
                           <Label2>{intl.dataProcessorAgreement}</Label2>
-                          <Paragraph3>{currentProcess.dataProcessorAgreements.join(", ")}</Paragraph3>
+                          <Paragraph3>{currentProcess.dataProcessing.dataProcessorAgreements.join(", ")}</Paragraph3>
+                        </Block>}
+                      </>}
+                    </Block>
+
+                    <Block {...rowPanelContent} justifyContent="flex-start">
+                      <Block width="33%">
+                        <Label2>{intl.retentionPlan}</Label2>
+                        <Paragraph3>{boolToText(currentProcess?.retention?.retentionPlan)}</Paragraph3>
+                      </Block>
+
+                      {currentProcess?.retention?.retentionPlan &&
+                      <>
+                        <Block width="33%">
+                          <Label2>{intl.retentionMonths}</Label2>
+                          <Paragraph3>{retentionTimeYears.humanize()} {retentionTimeMonths.humanize()} {intl.from} {currentProcess?.retention?.retentionStart}</Paragraph3>
+                        </Block>
+                        {!!currentProcess?.retention?.retentionDescription &&
+                        <Block width="33%">
+                          <Label2>{intl.retentionDescription}</Label2>
+                          <Paragraph3>{currentProcess?.retention?.retentionDescription}</Paragraph3>
                         </Block>}
                       </>}
                     </Block>

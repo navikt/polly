@@ -44,6 +44,11 @@ export const no: IStrings = {
   includeDefaultDocument: "Legg til standard opplysningstyper",
   includeDefaultDocumentExtraStart: 'Legger til opplysningstyper fra',
   includeDefaultDocumentExtraEnd: 'ved opprettelse av behandling',
+  from: "fra",
+  retentionPlan: "Er området omfattet av etatens kassasjons- og bevaringsplan?",
+  retentionMonths: "Lagringstid",
+  retentionStart: "Lagringsstart",
+  retentionDescription: "Beskrivelse av lagring",
 
   loggedInStatus: "Du er logget inn og kan",
   notLoggedInStatus: "Du er ikke logget inn men kan",
@@ -265,6 +270,11 @@ export const en: IStrings = {
   includeDefaultDocument: 'Add default information types',
   includeDefaultDocumentExtraStart: 'Adds information types from',
   includeDefaultDocumentExtraEnd: 'when creating process',
+  from: "from",
+  retentionPlan: "Is the area covered by the agency's disposal and conservation plan?",
+  retentionMonths: "Retention time",
+  retentionStart: "Retention start",
+  retentionDescription: "Description of retention",
 
   loggedInStatus: "You are logged in and can",
   notLoggedInStatus: "You are not logged in but you can still",

@@ -51,6 +51,11 @@ export interface IStrings {
   includeDefaultDocument: string;
   includeDefaultDocumentExtraStart: string;
   includeDefaultDocumentExtraEnd: string;
+  from: string;
+  retentionPlan: string;
+  retentionMonths: string;
+  retentionStart: string;
+  retentionDescription: string;
 
   // sentence
   loggedInStatus: string;
