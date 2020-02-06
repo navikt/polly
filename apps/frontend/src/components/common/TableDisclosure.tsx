@@ -118,7 +118,7 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
                 {<RouteLink href={`/document/${row.documentId}`}>{row.document?.name}</RouteLink>}
               </StyledCell>
               <StyledCell>{row.recipientPurpose}</StyledCell>
-              <StyledCell>{row.document?.description}</StyledCell>
+              <StyledCell>{row.description}</StyledCell>
               <StyledCell>
                 {row.legalBases && (
                   <ListLegalBasesInTable legalBases={row.legalBases}/>
