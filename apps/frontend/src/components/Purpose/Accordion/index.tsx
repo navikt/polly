@@ -26,7 +26,6 @@ import { TeamPopover } from "../../common/Team"
 import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
 import { AuditButton } from "../../audit/AuditButton"
 import { AddDocumentModal } from "./AddDocumentModal"
-import moment from 'moment';
 
 const rowPanelContent: BlockProps = {
   display: 'flex',
@@ -208,9 +207,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
   }, [isLoading])
 
   const retentionYears = Math.floor((currentProcess?.retention?.retentionMonths || 0) / 12)
-  const retentionTimeYears = moment.duration(retentionYears, "year")
-  const retentionTimeMonths = moment.duration((currentProcess?.retention?.retentionMonths || 0) - retentionYears * 12, "month")
-  console.log(retentionYears, retentionTimeYears.years(), retentionTimeMonths.months())
+  const retentionMonths = (currentProcess?.retention?.retentionMonths || 0) - retentionYears * 12
   return (
     <Block ref={purposeRef}>
       <Accordion
@@ -306,7 +303,9 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                       <>
                         <Block width="33%">
                           <Label2>{intl.retentionMonths}</Label2>
-                          <Paragraph3>{retentionTimeYears.humanize()} {retentionTimeMonths.humanize()} {intl.from} {currentProcess?.retention?.retentionStart}</Paragraph3>
+                          <Paragraph3>
+                            {!!retentionYears && `${retentionYears} ${intl.years}`} {!!retentionMonths && `${retentionMonths} ${intl.months}`} {intl.from} {currentProcess?.retention?.retentionStart}
+                          </Paragraph3>
                         </Block>
                         {!!currentProcess?.retention?.retentionDescription &&
                         <Block width="33%">

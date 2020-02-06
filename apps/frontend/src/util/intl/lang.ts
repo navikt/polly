@@ -49,6 +49,8 @@ export const no: IStrings = {
   retentionMonths: "Lagringstid",
   retentionStart: "Lagringsstart",
   retentionDescription: "Beskrivelse av lagring",
+  years: "År",
+  months: "Måneder",
 
   loggedInStatus: "Du er logget inn og kan",
   notLoggedInStatus: "Du er ikke logget inn men kan",
@@ -275,6 +277,8 @@ export const en: IStrings = {
   retentionMonths: "Retention time",
   retentionStart: "Retention start",
   retentionDescription: "Description of retention",
+  years: "Years",
+  months: "Months",
 
   loggedInStatus: "You are logged in and can",
   notLoggedInStatus: "You are not logged in but you can still",

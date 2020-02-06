@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { KeyboardEvent, useEffect } from 'react'
+import { KeyboardEvent, useEffect, useState } from 'react'
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
 import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps, } from "formik";
 import { Block, BlockProps } from "baseui/block";
@@ -11,7 +11,7 @@ import { Plus } from "baseui/icon";
 import { DisclosureFormValues, Document, ProcessFormValues } from "../../../constants";
 import CardLegalBasis from './CardLegalBasis'
 import { codelist, ListName } from "../../../service/Codelist"
-import { intl } from "../../../util"
+import { intl, theme } from "../../../util"
 import { Error, ModalLabel } from "../../common/ModalSchema";
 import { ListLegalBases } from "../../common/LegalBasis"
 import { DateModalFields } from "../DateModalFields"
@@ -22,6 +22,7 @@ import { Textarea } from "baseui/textarea"
 import { Radio, RadioGroup } from "baseui/radio"
 import { Card } from "baseui/card"
 import { renderTagList } from "../../common/TagList"
+import { Slider } from "baseui/slider"
 
 const modalBlockProps: BlockProps = {
   width: '750px',
@@ -232,6 +233,20 @@ const FieldInput = (props: { fieldName: string, fieldValue?: string | number }) 
   )
 }
 
+function sliderOvveride(suffix: string) {
+  return {
+    ThumbValue: {
+      component: (prop: any) => <div style={{
+        position: 'absolute',
+        top: `-${theme.sizing.scale800}`,
+        ...theme.typography.font200,
+        backgroundColor: 'transparent',
+        whiteSpace: 'nowrap',
+      }}>{prop.children} {suffix}</div>
+    }
+  }
+}
+
 const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => {
   const {formikBag} = props
   const [showDates, setShowDates] = React.useState(hasSpecifiedDate(formikBag.values));
@@ -239,9 +254,15 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
   const [showDataProcessor, setShowDataProcessor] = React.useState(formikBag.values.dataProcessing.dataProcessor);
   const [showRetention, setShowRetention] = React.useState(formikBag.values.retention.retentionPlan);
 
+  const [retention, setRetention] = useState(formikBag.values.retention.retentionMonths || 0)
+  const retentionYears = Math.floor(retention / 12)
+  const retentionMonths = retention - retentionYears * 12
+
+  useEffect(() => formikBag.setFieldValue('retention.retentionMonths', retention), [retention])
+
   const cardOverrides = {
     Root: {style: {marginTop: "1rem"}},
-    Contents: {style: {margin: "4px"}},
+    Contents: {style: {marginRight: "4px", marginTop: "4px", marginLeft: "4px", marginBottom: "4px"}},
     Body: {style: {marginBottom: 0}}
   }
   return (
@@ -290,7 +311,24 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
         {formikBag.values.retention.retentionPlan && <>
           <Block {...rowBlockProps}>
             <ModalLabel label={intl.retentionMonths}/>
-            <FieldInput fieldName="retention.retentionMonths" fieldValue={formikBag.values.retention.retentionMonths}/>
+            <Field
+              name="retention.retentionMonths"
+              render={({field, form}: FieldProps<DisclosureFormValues>) => (
+                <>
+                  <Slider
+                    overrides={sliderOvveride(intl.years)}
+                    min={0} max={100}
+                    value={[retentionYears]}
+                    onChange={({value}) => setRetention(value[0] * 12 + retentionMonths)}
+                  />
+                  <Slider
+                    overrides={sliderOvveride(intl.months)}
+                    min={0} max={12}
+                    value={[retentionMonths]}
+                    onChange={({value}) => setRetention(value[0] + retentionYears * 12)}
+                  />
+                </>
+              )}/>
           </Block>
           <Error fieldName="retention.retentionMonths"/>
 
