@@ -16,6 +16,7 @@ import {Block} from "baseui/block"
 import {Paragraph1} from "baseui/typography"
 import notFound from "./resources/notfound.svg"
 import {SettingsPage} from "./pages/admin/SettingsPage"
+import DocumentCreatePage from "./pages/DocumentCreatePage";
 import DocumentPage from "./pages/DocumentPage";
 
 
@@ -57,7 +58,12 @@ const Routes = (): JSX.Element => (
       />
       <Route
         exact
-        path="/document"
+        path="/document/create"
+        component={DocumentCreatePage}
+      />
+      <Route
+        exact
+        path="/document/:id?"
         component={DocumentPage}
       />
       <Route

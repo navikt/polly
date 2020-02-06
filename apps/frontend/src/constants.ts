@@ -115,6 +115,10 @@ export const disclosureSort: ColumnCompares<Disclosure> = {
   description: (a, b) => a.description.localeCompare(b.description),
   legalBases: (a, b) => a.legalBases.length - b.legalBases.length
 }
+export const documentSort: ColumnCompares<DocumentInfoTypeUse> = {
+  informationType: (a, b) => a.informationType.name.localeCompare(b.informationType.name),
+  subjectCategories: (a, b) =>  a.subjectCategories.length - b.subjectCategories.length
+}
 
 export interface PolicyInformationType {
   id: string
