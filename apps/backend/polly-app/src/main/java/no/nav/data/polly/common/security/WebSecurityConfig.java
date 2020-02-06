@@ -51,7 +51,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/team/**",
                 "/disclosure/**",
                 "/document/**",
-                "/settings/**"
+                "/settings/**",
+                "/event/**"
         );
 
         adminOnly(http,
