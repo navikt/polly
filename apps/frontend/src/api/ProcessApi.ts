@@ -72,9 +72,9 @@ export const convertProcessToFormValues = (process?: Partial<Process>) => {
     },
     retention: {
       retentionPlan: mapBool(retention?.retentionPlan),
-      retentionMonths: retention?.retentionMonths || undefined,
-      retentionStart: retention?.retentionStart || undefined,
-      retentionDescription: retention?.retentionDescription || undefined
+      retentionMonths: retention?.retentionMonths || 0,
+      retentionStart: retention?.retentionStart || '',
+      retentionDescription: retention?.retentionDescription || ''
     },
     includeDefaultDocument: false
   } as ProcessFormValues

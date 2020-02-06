@@ -144,6 +144,7 @@ const FieldDataProcessorAgreements = (props: { formikBag: FormikProps<ProcessFor
         <Block>
           <Input
             type="text"
+            size="compact"
             placeholder={intl.dataProcessorAgreement}
             value={currentKeywordValue}
             onChange={event => setCurrentKeywordValue(event.currentTarget.value)}
@@ -155,6 +156,7 @@ const FieldDataProcessorAgreements = (props: { formikBag: FormikProps<ProcessFor
               After: () => (
                 <Button
                   type="button"
+                  size="compact"
                   shape={SHAPE.square}
                   onClick={() => onAddAgreement(arrayHelpers)}
                 >
@@ -227,7 +229,7 @@ const FieldInput = (props: { fieldName: string, fieldValue?: string | number }) 
     <Field
       name={props.fieldName}
       render={({field, form}: FieldProps<DisclosureFormValues>) => (
-        <Input {...field} />
+        <Input {...field} size="compact" />
       )}
     />
   )
@@ -304,7 +306,7 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
       {showRetention &&
       <Card overrides={cardOverrides}>
         <Block {...rowBlockProps} marginTop={0}>
-          <ModalLabel label={intl.retentionPlan}/>
+          <ModalLabel label={intl.retention} tooltip={intl.retentionPlan}/>
           <BoolField fieldName="retention.retentionPlan" value={formikBag.values.retention.retentionPlan}/>
         </Block>
 
@@ -356,7 +358,7 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
         {!showAutomation &&
         <Button size="compact" shape='pill' type="button"
                 $style={{marginRight: "1rem"}}
-                onClick={() => setShowAutomation(true)}>{intl.automaticProcessing}</Button>}
+                onClick={() => setShowAutomation(true)}>{intl.automation}</Button>}
         {!showDataProcessor &&
         <Button size="compact" shape='pill' type="button"
                 $style={{marginRight: "1rem"}}
@@ -364,7 +366,7 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
         {!showRetention &&
         <Button size="compact" shape='pill' type="button"
                 $style={{marginRight: "1rem"}}
-                onClick={() => setShowRetention(true)}>{intl.retentionPlan}</Button>}
+                onClick={() => setShowRetention(true)}>{intl.retention}</Button>}
       </Block>
     </>
   )

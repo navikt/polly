@@ -39,6 +39,7 @@ export interface IStrings {
   yes: string;
   no: string;
   unclarified: string;
+  automation: string;
   automaticProcessing: string;
   automaticProcessingExtra: string;
   profiling: string;
@@ -52,6 +53,7 @@ export interface IStrings {
   includeDefaultDocumentExtraStart: string;
   includeDefaultDocumentExtraEnd: string;
   from: string;
+  retention: string;
   retentionPlan: string;
   retentionMonths: string;
   retentionStart: string;
