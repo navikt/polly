@@ -1,4 +1,4 @@
-import {DocumentInformationTypes, PolicyInformationType} from "../../../constants";
+import {DocumentInfoTypeUse, PolicyInformationType} from "../../../constants";
 import {Select, TYPE} from "baseui/select";
 import React from "react";
 import {useInfoTypeSearch} from "../../../api";
@@ -6,15 +6,20 @@ import {intl} from "../../../util";
 import {PLACEMENT} from "baseui/popover";
 
 const FieldInformationType = (props: {
-  documentInformationType: DocumentInformationTypes,
+  documentInformationType: DocumentInfoTypeUse,
   handleChange: Function
 }) => {
-  const [selectedInformationType, setSelectedInformationType] = React.useState();
-  const [searchKeyword, setSearchKeyword, isLoading] = useInfoTypeSearch();
   const { documentInformationType, handleChange } = props
+  const [searchKeyword, setSearchKeyword, isLoading] = useInfoTypeSearch();
+
+  const [selectedInformationType, setSelectedInformationType] = React.useState();
+
+  React.useEffect(() => {
+    console.log(documentInformationType)
+    setSelectedInformationType(documentInformationType.informationType)
+  }, []);
 
   return (
-
     <Select
       autoFocus
       maxDropdownHeight="400px"
@@ -34,6 +39,7 @@ const FieldInformationType = (props: {
       value={selectedInformationType}
       onInputChange={event => setSearchKeyword(event.currentTarget.value)}
       onChange={(params) => {
+        console.log(params.value[0])
           setSelectedInformationType(params.value[0] as PolicyInformationType)
           handleChange({...documentInformationType, informationTypeId: !params.value[0] ? '' : params.value[0].id})
       }}

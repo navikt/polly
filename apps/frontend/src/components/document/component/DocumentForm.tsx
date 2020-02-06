@@ -4,13 +4,12 @@ import {Label2} from "baseui/typography";
 import {intl, useAwait} from "../../../util";
 import {Input, SIZE} from "baseui/input";
 import {Textarea} from "baseui/textarea";
-import {CreateDocumentFormValues} from "../../../constants";
+import {DocumentFormValues_Temp} from "../../../constants";
 import InformationTypesTable from "./InformationTypesTable";
 import {Field, FieldArray, FieldProps, Form, Formik, FormikProps} from "formik";
 import {Button} from "baseui/button";
 import {Error} from "../../common/ModalSchema";
 import {user} from "../../../service/User";
-import {createInformationTypesDocument} from "../../../api";
 import {createDocumentValidation} from "../../common/schema";
 import {Notification} from "baseui/notification";
 
@@ -19,32 +18,21 @@ const rowBlockProps: BlockProps = {
   marginTop: '1rem',
 };
 
-const CreateDocument = () => {
+type DocumentFormProps = {
+  initialValues: DocumentFormValues_Temp;
+  handleSubmit: Function;
+}
+
+const DocumentForm = (props: DocumentFormProps) => {
   const [description, setDescription] = React.useState("");
   const [isLoading, setLoading] = React.useState(false);
   const [responseMessage, setResponseMessage] = React.useState();
   const [errorMessage, setErrorMessage] = React.useState();
 
+  const { initialValues, handleSubmit } = props
+
   const hasAccess = () => user.canWrite();
   useAwait(user.wait())
-
-  let initialCreateDocumentFormValues: CreateDocumentFormValues = {
-    name: "",
-    description: "",
-    informationTypes: []
-  };
-
-  const handleCreateDocument = (values: CreateDocumentFormValues,resetForm:Function) => {
-    setResponseMessage(null)
-    let body = {...values};
-    try {
-      createInformationTypesDocument(body);
-      setResponseMessage(intl.createdDocument);
-      resetForm()
-    } catch (error) {
-      setErrorMessage(error.message);
-    }
-  };
 
   const disableEnter = (e: KeyboardEvent) => {
     if (e.key === 'Enter') e.preventDefault()
@@ -53,14 +41,14 @@ const CreateDocument = () => {
   return hasAccess() && !isLoading ? (
     <React.Fragment>
       <Formik
-        initialValues={initialCreateDocumentFormValues}
-        onSubmit={(values: CreateDocumentFormValues, {resetForm}) => {
-          handleCreateDocument(values,resetForm);
+        initialValues={initialValues}
+        onSubmit={(values: DocumentFormValues_Temp) => {
+          handleSubmit(values);
         }}
         validationSchema={createDocumentValidation()}
       >
         {
-          (formikProps: FormikProps<CreateDocumentFormValues>) => (
+          (formikProps: FormikProps<DocumentFormValues_Temp>) => (
             <Form onKeyDown={disableEnter}>
               <Block {...rowBlockProps}>
                 <Label2>{intl.name}</Label2>
@@ -163,4 +151,4 @@ const CreateDocument = () => {
   )
 };
 
-export default CreateDocument;
+export default DocumentForm;

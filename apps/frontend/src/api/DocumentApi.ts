@@ -1,9 +1,9 @@
-import { default as React, Dispatch, SetStateAction, useEffect } from "react"
+import {default as React, Dispatch, SetStateAction, useEffect} from "react"
 import axios from "axios"
-import {CreateDocumentFormValues, Document, DocumentFormValues, PageResponse} from "../constants"
+import {Document, DocumentFormValues, DocumentFormValues_Temp, PageResponse} from "../constants"
 import {env} from "../util/env"
-import { getSettings } from "./SettingsApi"
-import { useDebouncedState } from "../util"
+import {getSettings} from "./SettingsApi"
+import {useDebouncedState} from "../util"
 
 export const getDocument = async (documentId: string) => {
   return (await axios.get<Document>(`${env.pollyBaseUrl}/document/${documentId}`)).data as Document
@@ -32,8 +32,8 @@ export const updateDocument = async (document: DocumentFormValues) => {
   return (await axios.put<Document>(`${env.pollyBaseUrl}/document/${doc.id}`, doc)).data
 }
 
-export const createInformationTypesDocument = async (document: CreateDocumentFormValues) => {
-  return (await axios.post(`${env.pollyBaseUrl}/document`, document))
+export const createInformationTypesDocument = async (document: DocumentFormValues_Temp) => {
+  return (await axios.post(`${env.pollyBaseUrl}/document`, document)).data
 }
 
 const mapToInfoTypes = (document: DocumentFormValues) => document.informationTypes.map(it => ({informationTypeId: it.id, subjectCategories: []}))
@@ -57,3 +57,5 @@ export const useDocumentSearch = () => {
 
   return [documentSearchResult, setDocumentSearch, loading] as [Document[], Dispatch<SetStateAction<string>>, boolean]
 }
+
+

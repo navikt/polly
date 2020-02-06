@@ -18,6 +18,7 @@ import notFound from "./resources/notfound.svg"
 import {SettingsPage} from "./pages/admin/SettingsPage"
 import DocumentCreatePage from "./pages/DocumentCreatePage";
 import DocumentPage from "./pages/DocumentPage";
+import DocumentEditPage from "./pages/DocumentEditPage";
 
 
 const Routes = (): JSX.Element => (
@@ -65,6 +66,11 @@ const Routes = (): JSX.Element => (
         exact
         path="/document/:id?"
         component={DocumentPage}
+      />
+      <Route
+        exact
+        path="/document/edit/:id?"
+        component={DocumentEditPage}
       />
       <Route
         exact

@@ -1,6 +1,6 @@
-import { Code, codelist, ListName } from "./service/Codelist"
-import { ColumnCompares } from "./util/hooks"
-import { intl } from "./util"
+import {Code, codelist, ListName} from "./service/Codelist"
+import {ColumnCompares} from "./util/hooks"
+import {intl} from "./util"
 
 export interface InformationtypeFormValues {
   id?: string
@@ -237,6 +237,13 @@ export interface DocumentFormValues {
   name: string
   description: string
   informationTypes: PolicyInformationType[]
+}
+
+export interface DocumentFormValues_Temp {
+  id?: string
+  name: string
+  description: string
+  informationTypes: DocumentInfoTypeUse[]
 }
 
 export interface Document {
