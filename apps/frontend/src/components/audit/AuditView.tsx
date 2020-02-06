@@ -75,7 +75,7 @@ export const AuditView = (props: AuditViewProps) => {
                  backgroundColor={audit.id === props.auditId ? theme.colors.mono200 : undefined}>
             <Block display="flex" justifyContent="space-between">
               <Block width="90%">
-                <Label label={intl.auditNr}>{auditLog!.audits.length - index}</Label>
+                <Label label={intl.auditNr}>{auditLog.audits.length - index}</Label>
                 <Label label={intl.action}><AuditActionIcon action={audit.action} withText={true}/></Label>
                 <Label label={intl.time}>{time.format('LL')} {time.format('HH:mm:ss.SSS Z')}</Label>
                 <Label label={intl.user}>{audit.user}</Label>

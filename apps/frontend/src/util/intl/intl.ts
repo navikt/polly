@@ -135,6 +135,14 @@ export interface IStrings {
   DELETE: string;
   UPDATE: string;
 
+  // Tables
+  INFORMATION_TYPE: string;
+  POLICY: string;
+  PROCESS: string;
+  DISCLOSURE: string;
+  DOCUMENT: string;
+  CODELIST: string;
+
   // generic
   department: string;
   subDepartment: string;

@@ -296,6 +296,8 @@ export interface AuditItem {
   data: object
 }
 
+export type Event = Omit<AuditItem, "user" | "data"> & { name: string }
+
 export interface AuditLog {
   id: string
   audits: AuditItem[]

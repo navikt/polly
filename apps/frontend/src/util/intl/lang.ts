@@ -128,6 +128,13 @@ export const no: IStrings = {
   UPDATE: "Oppdater",
   DELETE: "Slett",
 
+  INFORMATION_TYPE: "Opplysningstype",
+  POLICY: "Opplysningstype i behandling",
+  PROCESS: "Behandling",
+  DISCLOSURE: "Utlevering",
+  DOCUMENT: "Dokument",
+  CODELIST: "Kodeverk",
+
   department: "Avdeling",
   subDepartment: "Linja (Ytre etat)",
   save: "Lagre",
@@ -340,6 +347,13 @@ export const en: IStrings = {
   CREATE: "Create",
   UPDATE: "Update",
   DELETE: "Delete",
+
+  INFORMATION_TYPE: "Information type",
+  POLICY: "Information type in process",
+  PROCESS: "Process",
+  DISCLOSURE: "Disclosure",
+  DOCUMENT: "Document",
+  CODELIST: "Codelist",
 
   department: "Department",
   subDepartment: "Sub department",

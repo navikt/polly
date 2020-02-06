@@ -1,5 +1,5 @@
 import axios from "axios"
-import { AuditItem, AuditLog, ObjectType, PageResponse } from "../constants"
+import { AuditAction, AuditItem, AuditLog, Event, ObjectType, PageResponse } from "../constants"
 import moment from "moment";
 import { env } from "../util/env"
 
@@ -11,4 +11,11 @@ export const getAuditLog = async (id: string) => {
 
 export const getAudits = async (page: number, count: number, table?: ObjectType) => {
   return (await axios.get<PageResponse<AuditItem>>(`${env.pollyBaseUrl}/audit/?pageNumber=${page}&pageSize=${count}` + (table ? `&table=${table}` : ''))).data
+}
+
+export const getEvents = async (page: number, count: number, table: ObjectType, tableId?: string, action?: AuditAction) => {
+  return (await axios.get<PageResponse<Event>>(`${env.pollyBaseUrl}/event/?pageNumber=${page}&pageSize=${count}&table=${table}`
+      + (tableId ? `&tableId=${tableId}` : '')
+      + (action ? `&action=${action}` : ''))
+  ).data
 }
