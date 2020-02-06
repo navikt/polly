@@ -13,10 +13,11 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "action", "table", "tableId", "time"})
+@JsonPropertyOrder({"id", "name", "action", "table", "tableId", "time"})
 public class EventResponse {
 
     private String id;
+    private String name;
     private Action action;
     private String table;
     private String tableId;

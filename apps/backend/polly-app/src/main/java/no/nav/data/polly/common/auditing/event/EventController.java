@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.common.auditing.domain.Action;
 import no.nav.data.polly.common.auditing.domain.AuditVersion;
 import no.nav.data.polly.common.auditing.domain.AuditVersion.Fields;
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import javax.persistence.Table;
 
 import static no.nav.data.polly.common.auditing.domain.AuditVersionRepository.exampleFrom;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
@@ -43,8 +41,8 @@ public class EventController {
 
     private final AuditVersionRepository repository;
     private final List<String> allowedTables = convert(
-            List.of(InformationType.class, Process.class, Policy.class, Disclosure.class, Document.class, Codelist.class),
-            c -> c.getAnnotation(Table.class).name());
+            List.of(InformationType.class, Process.class, Policy.class, Disclosure.class, Document.class),
+            AuditVersion::tableName);
 
     public EventController(AuditVersionRepository repository) {
         this.repository = repository;

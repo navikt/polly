@@ -1,16 +1,23 @@
 package no.nav.data.polly.common.auditing.domain;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
+import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.domain.Codelist;
+import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.auditing.dto.AuditResponse;
 import no.nav.data.polly.common.auditing.event.EventResponse;
 import no.nav.data.polly.common.utils.JsonUtils;
+import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.process.domain.Process;
 import org.hibernate.annotations.Type;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -70,11 +77,42 @@ public class AuditVersion {
     public EventResponse convertToEventResponse() {
         return EventResponse.builder()
                 .id(id.toString())
+                .name(findName())
                 .action(action)
                 .table(table)
                 .tableId(tableId)
                 .time(time)
                 .build();
+    }
+
+    private String findName() {
+        JsonNode json = JsonUtils.toJsonNode(data);
+        if (table.equals(AuditVersion.tableName(Policy.class))) {
+            String purposeCodeText = getPurpose(json);
+            return purposeCodeText + " " + json.get("informationTypeName").textValue();
+        } else if (table.equals(tableName(Process.class))) {
+            return getPurpose(json) + " " + findName(json);
+        }
+        return findName(json);
+    }
+
+    private String findName(JsonNode json) {
+        return json.has("name") ?
+                json.get("name").textValue() :
+                Optional.ofNullable(json.get("data"))
+                        .map(dataField -> dataField.get("name"))
+                        .map(JsonNode::textValue)
+                        .orElse("");
+    }
+
+    private String getPurpose(JsonNode json) {
+        String purposeCode = json.get("purposeCode").textValue();
+        Codelist codelist = CodelistService.getCodelist(ListName.PURPOSE, purposeCode);
+        return Optional.ofNullable(codelist).map(Codelist::getShortName).orElse(purposeCode);
+    }
+
+    public static String tableName(@SuppressWarnings("rawtypes") Class<? extends Auditable> aClass) {
+        return aClass.getAnnotation(Table.class).name();
     }
 
 }

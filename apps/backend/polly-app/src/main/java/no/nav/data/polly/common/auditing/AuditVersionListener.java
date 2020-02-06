@@ -15,6 +15,7 @@ import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.common.auditing.domain.Action;
 import no.nav.data.polly.common.auditing.domain.AuditVersion;
 import no.nav.data.polly.common.auditing.domain.AuditVersionRepository;
+import no.nav.data.polly.common.auditing.domain.Auditable;
 import no.nav.data.polly.common.utils.HibernateUtils;
 import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.common.utils.MdcUtils;
@@ -27,7 +28,6 @@ import javax.persistence.Entity;
 import javax.persistence.PrePersist;
 import javax.persistence.PreRemove;
 import javax.persistence.PreUpdate;
-import javax.persistence.Table;
 
 @Slf4j
 public class AuditVersionListener {
@@ -65,7 +65,8 @@ public class AuditVersionListener {
 
     private void audit(Object entity, Action action) {
         try {
-            String tableName = entity.getClass().getAnnotation(Table.class).name();
+            Assert.isTrue(entity instanceof Auditable<?>, "Invalid object");
+            String tableName = AuditVersion.tableName(((Auditable<?>) entity).getClass());
             String id = getIdForObject(entity);
             String data = wr.writeValueAsString(entity);
             String user = Optional.ofNullable(MdcUtils.getUser()).orElse("no user set");
