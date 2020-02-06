@@ -19,19 +19,12 @@ export const Main = () => {
   useAwait(user.wait())
 
   return (
-    <Block display="flex" marginTop={theme.sizing.scale1200}
-           overrides={{
-             Block: {
-               style: {
-                 backgroundImage: `url(${startIll})`,
-                 backgroundPosition: "bottom right",
-                 backgroundRepeat: "no-repeat",
-                 backgroundSize: "65%"
-               }
-             }
-           }}
-           minHeight="60vh">
-      <LastEvents/>
+    <Block marginTop={theme.sizing.scale400} display="flex" flexWrap
+           justifyContent="center" alignContent="center"
+    >
+      {user.isAdmin() ? <LastEvents/> :
+        <img src={startIll} alt={intl.startIllustration} style={{maxWidth: "65%", marginTop: theme.sizing.scale4800}}/>
+      }
     </Block>
   )
 }
@@ -48,7 +41,7 @@ const LastEvents = () => {
   }, [table, action])
 
   const content = events?.content.map((event, index) =>
-    <Block key={event.id}>
+    <Block key={event.id} marginBottom=".3rem">
       <ObjectLink id={event.tableId} type={event.table} disable={event.action === AuditAction.DELETE} hideUnderline>
         <span>
           <AuditActionIcon action={event.action}/>
@@ -61,9 +54,10 @@ const LastEvents = () => {
 
   return (
     <Block width="100%">
-      <Block display="flex" justifyContent="space-between" alignItems="center" width="100%">
+      <Block display="flex" justifyContent="space-between" alignItems="flex-end" width="100%">
         <HeadingMedium>Siste hendelser</HeadingMedium>
-        <Block maxWidth="150px">
+        <img src={startIll} alt={intl.startIllustration} style={{width: "30%"}}/>
+        <Block maxWidth="150px" marginBottom=".5rem">
           <StatefulSelect
             size="compact"
             clearable={false}
