@@ -3,6 +3,7 @@ import {Select, TYPE} from "baseui/select";
 import React from "react";
 import {useInfoTypeSearch} from "../../../api";
 import {intl} from "../../../util";
+import {PLACEMENT} from "baseui/popover";
 
 const FieldInformationType = (props: {
   documentInformationType: DocumentInformationTypes,
@@ -21,6 +22,15 @@ const FieldInformationType = (props: {
       type={TYPE.search}
       options={searchKeyword}
       placeholder={intl.informationTypeSearch}
+      overrides={{
+        Popover:{
+          props:{
+            Body:{
+              placement:PLACEMENT.bottom,
+            }
+          }
+        }
+      }}
       value={selectedInformationType}
       onInputChange={event => setSearchKeyword(event.currentTarget.value)}
       onChange={(params) => {

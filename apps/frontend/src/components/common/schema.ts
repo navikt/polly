@@ -132,7 +132,9 @@ export const codeListSchema = () => yup.object<Code>({
 export const disclosureSchema = () => yup.object<DisclosureFormValues>({
   id: yup.string(),
   recipient: yup.string(),
-  description: yup.string().required(intl.required),
+  name: yup.string().required(intl.required),
+  recipientPurpose: yup.string().required(intl.required),
+  description: yup.string(),
   legalBases: yup.array(legalBasisSchema()),
   legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
   start: yup.string().matches(DATE_REGEX, intl.dateFormat),
