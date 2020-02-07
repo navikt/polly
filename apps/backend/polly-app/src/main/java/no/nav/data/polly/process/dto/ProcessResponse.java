@@ -20,7 +20,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "name", "description", "purposeCode", "department", "subDepartment", "productTeam", "product", "start", "end", "active",
+@JsonPropertyOrder({"id", "name", "description", "purposeCode", "department", "subDepartment", "productTeams", "products", "start", "end", "active",
         "automaticProcessing", "profiling", "dataProcessing", "retention",
         "legalBases", "policies"})
 public class ProcessResponse {
@@ -32,7 +32,8 @@ public class ProcessResponse {
     private CodelistResponse department;
     private CodelistResponse subDepartment;
     private String productTeam;
-    private CodelistResponse product;
+    @Singular
+    private List<CodelistResponse> products;
     private LocalDate start;
     private LocalDate end;
 

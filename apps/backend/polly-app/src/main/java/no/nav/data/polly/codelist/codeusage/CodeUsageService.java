@@ -136,7 +136,7 @@ public class CodeUsageService {
                     break;
                 case SYSTEM:
                     getInformationTypes(usage).forEach(it -> it.getData().setNavMaster(newCode));
-                    getProcesses(usage).forEach(p -> p.getData().setProduct(newCode));
+                    getProcesses(usage).forEach(p -> replaceAll(p.getData().getProducts(), oldCode, newCode));
                     break;
             }
         }

@@ -5,21 +5,20 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Singular;
 import lombok.experimental.FieldNameConstants;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
-import org.apache.logging.log4j.util.Strings;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static no.nav.data.polly.common.swagger.SwaggerConfig.LOCAL_DATE;
 import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_END;
 import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_START;
-import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
+import static no.nav.data.polly.common.utils.StringUtils.formatList;
+import static no.nav.data.polly.common.utils.StringUtils.formatListToUppercase;
 import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
 import static org.apache.commons.lang3.StringUtils.trimToNull;
 
@@ -40,8 +39,9 @@ public class ProcessRequest implements RequestElement {
     @ApiModelProperty(value = "Codelist SUB_DEPARTMENT")
     private String subDepartment;
     private String productTeam;
+    @Singular
     @ApiModelProperty(value = "Codelist SYSTEM")
-    private String product;
+    private List<String> products;
     @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_START)
     private String start;
     @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_END)
@@ -91,16 +91,15 @@ public class ProcessRequest implements RequestElement {
         setSubDepartment(toUpperCaseAndTrim(getSubDepartment()));
         setDescription(trimToNull(getDescription()));
         setProductTeam(trimToNull(getProductTeam()));
-        setProduct(toUpperCaseAndTrim(getProduct()));
+        setProducts(formatListToUppercase(getProducts()));
 
-        if (dataProcessing == null) {
+        if (getDataProcessing() == null) {
             setDataProcessing(new DataProcessingRequest());
         }
-        if (retention == null) {
+        if (getRetention() == null) {
             setRetention(new RetentionRequest());
         }
-        getDataProcessing().setDataProcessorAgreements(safeStream(getDataProcessing().getDataProcessorAgreements())
-                .map(Strings::trimToNull).filter(Objects::nonNull).collect(Collectors.toList()));
+        getDataProcessing().setDataProcessorAgreements(formatList(getDataProcessing().getDataProcessorAgreements()));
         if (Boolean.FALSE.equals(getDataProcessing().getDataProcessor())) {
             getDataProcessing().setDataProcessorAgreements(List.of());
             getDataProcessing().setDataProcessorOutsideEU(null);
@@ -120,7 +119,7 @@ public class ProcessRequest implements RequestElement {
         validator.checkRequiredCodelist(Fields.purposeCode, purposeCode, ListName.PURPOSE);
         validator.checkCodelist(Fields.department, department, ListName.DEPARTMENT);
         validator.checkCodelist(Fields.subDepartment, subDepartment, ListName.SUB_DEPARTMENT);
-        validator.checkCodelist(Fields.product, product, ListName.SYSTEM);
+        products.forEach(product -> validator.checkCodelist(Fields.products, product, ListName.SYSTEM));
         validator.checkDate(Fields.start, start);
         validator.checkDate(Fields.end, end);
         validator.validateType(Fields.legalBases, legalBases);

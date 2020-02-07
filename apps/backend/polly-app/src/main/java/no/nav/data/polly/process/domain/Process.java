@@ -27,6 +27,7 @@ import no.nav.data.polly.process.dto.ProcessResponse.RetentionResponse;
 import org.hibernate.annotations.Type;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Column;
@@ -75,12 +76,11 @@ public class Process extends Auditable<String> {
     private Set<Policy> policies = new HashSet<>();
 
     // Added outside builder to enforce backreference
-    public Process addPolicy(Policy policy) {
+    public void addPolicy(Policy policy) {
         if (policy != null) {
             policies.add(policy);
             policy.setProcess(this);
         }
-        return this;
     }
 
     public boolean isActive() {
@@ -100,7 +100,7 @@ public class Process extends Auditable<String> {
                 .department(getDepartmentCode())
                 .subDepartment(getSubDepartmentCode())
                 .productTeam(data.getProductTeam())
-                .product(getProductCode())
+                .products(getProductCodes())
                 .start(data.getStart())
                 .end(data.getEnd())
                 .legalBases(convert(data.getLegalBases(), LegalBasis::convertToResponse))
@@ -140,7 +140,7 @@ public class Process extends Auditable<String> {
         data.setDepartment(request.getDepartment());
         data.setSubDepartment(request.getSubDepartment());
         data.setProductTeam(request.getProductTeam());
-        data.setProduct(request.getProduct());
+        data.setProducts(List.copyOf(request.getProducts()));
         data.setStart(DateUtil.parseStart(request.getStart()));
         data.setEnd(DateUtil.parseEnd(request.getEnd()));
         data.setLegalBases(convert(request.getLegalBases(), LegalBasisRequest::convertToLegalBasis));
@@ -182,8 +182,8 @@ public class Process extends Auditable<String> {
         return CodelistService.getCodelistResponse(ListName.DEPARTMENT, data.getDepartment());
     }
 
-    private CodelistResponse getProductCode() {
-        return CodelistService.getCodelistResponse(ListName.SYSTEM, data.getProduct());
+    private List<CodelistResponse> getProductCodes() {
+        return CodelistService.getCodelistResponseList(ListName.SYSTEM, data.getProducts());
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")

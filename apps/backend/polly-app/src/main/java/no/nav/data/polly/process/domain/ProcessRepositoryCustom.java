@@ -7,4 +7,6 @@ public interface ProcessRepositoryCustom {
     List<Process> findByGDPRArticle(String gdpr);
 
     List<Process> findByNationalLaw(String nationalLaw);
+
+    List<Process> findByProduct(String product);
 }

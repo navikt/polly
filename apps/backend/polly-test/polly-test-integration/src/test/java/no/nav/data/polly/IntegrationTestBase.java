@@ -207,7 +207,7 @@ public abstract class IntegrationTestBase {
                         .department(department)
                         .subDepartment(subDepartment)
                         .productTeam("ProductTeam")
-                        .product(product)
+                        .products(List.of(product))
                         .legalBases(legalBases)
                         .build())
                 .build());
@@ -220,7 +220,7 @@ public abstract class IntegrationTestBase {
                                 .data(ProcessData.builder()
                                         .description("process description")
                                         .productTeam("teamname")
-                                        .product("PESYS")
+                                        .products(List.of("PESYS"))
                                         .start(LocalDate.now()).end(LocalDate.now()).legalBasis(createLegalBasis())
                                         .automaticProcessing(true)
                                         .profiling(true)
