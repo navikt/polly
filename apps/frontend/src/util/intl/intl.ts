@@ -45,6 +45,9 @@ export interface IStrings {
   profiling: string;
   profilingExtra: string;
   dataProcessor: string;
+  dataProcessorYes: string;
+  dataProcessorNo: string;
+  dataProcessorUnclarified: string;
   dataProcessorExtra: string;
   dataProcessorAgreement: string;
   dataProcessorOutsideEU: string;

@@ -211,6 +211,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
   const retentionMonths = (currentProcess?.retention?.retentionMonths || 0) - retentionYears * 12
   const retainedYearsOrMonths = !!retentionYears || !!retentionMonths
   const retainedYearsAndMonths = !!retentionYears && !!retentionMonths
+  const dataProcessorAgreements = !!currentProcess?.dataProcessing?.dataProcessorAgreements.length
   return (
     <Block ref={purposeRef}>
       <Accordion
@@ -276,54 +277,62 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                       </Block>
                     </Block>
 
-                    <Block {...rowPanelContent} justifyContent="flex-start">
-                      <Block width="33%">
+                    <Block {...rowPanelContent} display="flex">
+                      <Block width="50%">
                         <Label2>{intl.dataProcessor}</Label2>
-                        <Paragraph3>{boolToText(currentProcess?.dataProcessing?.dataProcessor)}</Paragraph3>
+                        <Block>
+                          {currentProcess?.dataProcessing?.dataProcessor === null && intl.dataProcessorUnclarified}
+                          {currentProcess?.dataProcessing?.dataProcessor === false && intl.dataProcessorNo}
+                          {currentProcess?.dataProcessing?.dataProcessor &&
+                          <>
+                            <Paragraph3 marginBottom="0">
+                              <span>{retainedYearsOrMonths && intl.dataProcessorYes}</span>
+                            </Paragraph3>
+                            <Paragraph3 marginBottom="0" marginTop="0">
+                              <span>{dataProcessorAgreements && intl.dataProcessorAgreement}:</span>
+                              <span> </span>
+                              <span>{dataProcessorAgreements && currentProcess?.dataProcessing?.dataProcessorAgreements.join(", ")}</span>
+                            </Paragraph3>
+                            <Paragraph3 marginBottom="0" marginTop="0">
+                              <span>{intl.dataProcessorOutsideEUExtra}:</span>
+                              <span> </span>
+                              <span>{boolToText(currentProcess?.dataProcessing?.dataProcessorOutsideEU)}</span>
+                            </Paragraph3>
+                          </>}
+                        </Block>
                       </Block>
 
-                      {currentProcess?.dataProcessing?.dataProcessor &&
-                      <>
-                        <Block width="33%">
-                          <Label2>{intl.dataProcessorOutsideEU}</Label2>
-                          <Paragraph3>{boolToText(currentProcess.dataProcessing.dataProcessorOutsideEU)}</Paragraph3>
+                      <Block width="50%">
+                        <Label2>{intl.retention}</Label2>
+                        <Block>
+                          {currentProcess?.retention?.retentionPlan === null && intl.retentionPlanUnclarified}
+                          {currentProcess?.retention?.retentionPlan === false && intl.retentionPlanNo}
+                          {currentProcess?.retention?.retentionPlan &&
+                          <>
+                            <Paragraph3 marginBottom="0">
+                              <span>{retainedYearsOrMonths && intl.retentionPlanYes}</span>
+                            </Paragraph3>
+                            <Paragraph3 marginBottom="0" marginTop="0">
+                              <span>{retainedYearsOrMonths && intl.retained}</span>
+                              <span> </span>
+                              <span>{!!retentionYears && `${retentionYears} ${intl.years}`}</span>
+                              <span> </span>
+                              <span>{retainedYearsAndMonths && intl.and}</span>
+                              <span> </span>
+                              <span>{!!retentionMonths && `${retentionMonths} ${intl.months}`}</span>
+                              <span> </span>
+                              <span>{intl.from}</span>
+                              <span> </span>
+                              <span>{_.lowerFirst(currentProcess?.retention?.retentionStart)}</span>
+                            </Paragraph3>
+                            <Paragraph3 marginBottom="0" marginTop="0">
+                              <span>{currentProcess?.retention?.retentionDescription && intl.description}:</span>
+                              <span> </span>
+                              <span>{currentProcess?.retention?.retentionDescription}</span>
+                            </Paragraph3>
+                          </>
+                          }
                         </Block>
-                        {!!currentProcess.dataProcessing.dataProcessorAgreements?.length &&
-                        <Block width="33%">
-                          <Label2>{intl.dataProcessorAgreement}</Label2>
-                          <Paragraph3>{currentProcess.dataProcessing.dataProcessorAgreements.join(", ")}</Paragraph3>
-                        </Block>}
-                      </>}
-                    </Block>
-
-                    <Block {...rowPanelContent} display="block">
-                      <Label2>{intl.retention}</Label2>
-                      <Block>
-                        {currentProcess?.retention?.retentionPlan === null && intl.retentionPlanUnclarified}
-                        {currentProcess?.retention?.retentionPlan === false && intl.retentionPlanNo}
-                        {currentProcess?.retention?.retentionPlan &&
-                        <>
-                          <Paragraph3 marginBottom="0">
-                            <span>{retainedYearsOrMonths && intl.retentionPlanYes}</span>
-                          </Paragraph3>
-                          <Paragraph3 marginBottom="0" marginTop="0">
-                            <span>{retainedYearsOrMonths && intl.retained}</span>
-                            <span> </span>
-                            <span>{!!retentionYears && `${retentionYears} ${intl.years}`}</span>
-                            <span> </span>
-                            <span>{retainedYearsAndMonths && intl.and}</span>
-                            <span> </span>
-                            <span>{!!retentionMonths && `${retentionMonths} ${intl.months}`}</span>
-                            <span> </span>
-                            <span>{intl.from}</span>
-                            <span> </span>
-                            <span>{_.lowerFirst(currentProcess?.retention?.retentionStart)}</span>
-                          </Paragraph3>
-                          <Paragraph3 marginBottom="0" marginTop="0">
-                            <span>{currentProcess?.retention?.retentionDescription}</span>
-                          </Paragraph3>
-                        </>
-                        }
                       </Block>
                     </Block>
 
