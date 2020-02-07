@@ -89,7 +89,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
   }
 
   const renderActiveForProcess = (process: Process) =>
-    <Block marginRight="scale1200">
+    <Block>
       <Label2>{intl.validityOfProcess}</Label2>
       <ActiveIndicator alwaysShow={true} showDates={true} {...process} />
     </Block>
@@ -246,14 +246,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                       <Block width="33%">{renderSubjectCategoriesForProcess(currentProcess)}</Block>
                       <Block width="33%">{renderActiveForProcess(currentProcess)}</Block>
 
-                      {!!currentProcess?.products?.length && <Block width="33%">
-                        <Label2>{intl.product}</Label2>
-                        <Paragraph3>{currentProcess.products.map(product => codelist.getShortname(ListName.SYSTEM, product.code)).join(", ")}</Paragraph3>
-                      </Block>}
-                    </Block>
-
-                    <Block {...rowPanelContent} display="flex">
-                      <Block width="50%">
+                      <Block width="33%">
                         <Label2>{intl.organizing}</Label2>
                         <Block>
                           {currentProcess.department &&
@@ -267,30 +260,33 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                             <span>{codelist.getShortnameForCode(currentProcess.subDepartment)}</span>
                           </Paragraph3>}
                           {currentProcess.productTeam &&
-                          <Paragraph3 marginBottom="0" marginTop="0">
+                          <Paragraph3 marginTop="0">
                             <span>{intl.productTeam}: </span>
                             <TeamPopover teamId={currentProcess.productTeam}/>
                           </Paragraph3>}
                         </Block>
                       </Block>
 
-                      <Block width="50%">
+                      {!!currentProcess?.products?.length && <Block width="33%">
+                        <Label2>{intl.product}</Label2>
+                        <Paragraph3>{currentProcess.products.map(product => codelist.getShortname(ListName.SYSTEM, product.code)).join(", ")}</Paragraph3>
+                      </Block>}
+
+                      <Block width="33%">
                         <Label2>{intl.automaticProcessing}</Label2>
                         <Block>
                           <Paragraph3 marginBottom="0">
                             <span>{intl.automaticProcessing}: </span>
                             <span>{boolToText(currentProcess?.automaticProcessing)}</span>
                           </Paragraph3>
-                          <Paragraph3 marginBottom="0" marginTop="0">
+                          <Paragraph3 marginTop="0">
                             <span>{intl.profiling}: </span>
                             <span>{boolToText(currentProcess?.profiling)}</span>
                           </Paragraph3>
                         </Block>
                       </Block>
-                    </Block>
 
-                    <Block {...rowPanelContent} display="flex">
-                      <Block width="50%">
+                      <Block width="33%">
                         <Label2>{intl.dataProcessor}</Label2>
                         <Block>
                           {currentProcess?.dataProcessing?.dataProcessor === null && intl.dataProcessorUnclarified}
@@ -304,7 +300,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                               <span>{dataProcessorAgreements && intl.dataProcessorAgreement}: </span>
                               <span>{dataProcessorAgreements && currentProcess?.dataProcessing?.dataProcessorAgreements.join(", ")}</span>
                             </Paragraph3>
-                            <Paragraph3 marginBottom="0" marginTop="0">
+                            <Paragraph3 marginTop="0">
                               <span>{intl.dataProcessorOutsideEUExtra}: </span>
                               <span>{boolToText(currentProcess?.dataProcessing?.dataProcessorOutsideEU)}</span>
                             </Paragraph3>
@@ -312,7 +308,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                         </Block>
                       </Block>
 
-                      <Block width="50%">
+                      <Block width="33%">
                         <Label2>{intl.retention}</Label2>
                         <Block>
                           {currentProcess?.retention?.retentionPlan === null && intl.retentionPlanUnclarified}
@@ -330,7 +326,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                               <span>{intl.from} </span>
                               <span>{_.lowerFirst(currentProcess?.retention?.retentionStart)}</span>
                             </Paragraph3>
-                            <Paragraph3 marginBottom="0" marginTop="0">
+                            <Paragraph3 marginTop="0">
                               <span>{currentProcess?.retention?.retentionDescription && intl.description}: </span>
                               <span>{currentProcess?.retention?.retentionDescription}</span>
                             </Paragraph3>

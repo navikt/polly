@@ -216,7 +216,7 @@ const FieldProduct = (props: { products: string[] }) => {
       options={codelist.getParsedOptions(ListName.SYSTEM)}
       onChange={({value}) => {
         setValue(value);
-        arrayHelpers.form.setFieldValue('product', value.map(v => v.id))
+        arrayHelpers.form.setFieldValue('products', value.map(v => v.id))
       }}
       value={value}
     />}
