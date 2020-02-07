@@ -19,10 +19,13 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 import java.util.UUID;
+
+import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Slf4j
 @RestController
@@ -51,7 +54,6 @@ public class ProcessReadController {
             log.info("Cannot find the Process with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        log.info("Returned Process");
         return ResponseEntity.ok(process.get());
     }
 
@@ -60,10 +62,16 @@ public class ProcessReadController {
             @ApiResponse(code = 200, message = "All Processes fetched", response = ProcessPage.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping
-    public ResponseEntity<RestResponsePage<ProcessResponse>> getAllProcesses(PageParameters pageParameters) {
+    public ResponseEntity<RestResponsePage<ProcessResponse>> getAllProcesses(PageParameters pageParameters,
+            @RequestParam(required = false) String productTeam
+    ) {
+        if (productTeam != null) {
+            log.info("Received request for Processeses for productTeam {}", productTeam);
+            var processes = repository.findByProductTeam(productTeam);
+            return ResponseEntity.ok(new RestResponsePage<>(convert(processes, Process::convertToResponse)));
+        }
         log.info("Received request for all Processes");
         Page<ProcessResponse> page = repository.findAll(pageParameters.createIdSortedPage()).map(Process::convertToResponse);
-        log.info("Returned {} Processes", page.getNumberOfElements());
         return ResponseEntity.ok(new RestResponsePage<>(page));
     }
 

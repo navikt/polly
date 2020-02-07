@@ -80,6 +80,19 @@ class ProcessControllerIT extends IntegrationTestBase {
     }
 
     @Test
+    void hentForProductTeam() {
+        Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
+
+        ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process?productTeam={productTeam}", ProcessPage.class, policy.getProcess().getData().getProductTeam());
+
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        ProcessPage processPage = resp.getBody();
+        assertThat(processPage).isNotNull();
+
+        assertThat(processPage.getContent()).hasSize(1);
+    }
+
+    @Test
     void createProcess() {
         ResponseEntity<ProcessResponse> resp = restTemplate
                 .postForEntity("/process", ProcessRequest.builder().name("newprocess").purposeCode("AAP").build(), ProcessResponse.class);
