@@ -42,7 +42,7 @@ export interface ProcessFormValues {
   department?: string
   subDepartment?: string
   productTeam?: string
-  product?: string
+  products: string[]
   legalBases: Array<LegalBasisFormValues>
   legalBasesOpen: boolean
   end?: string
@@ -154,7 +154,7 @@ export interface Process extends IDurationed {
   department: Code
   subDepartment: Code
   productTeam: string
-  product: Code
+  products: Code[]
   policies: Policy[]
   purposeCode: string
 

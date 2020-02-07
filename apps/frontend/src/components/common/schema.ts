@@ -42,7 +42,7 @@ export const processSchema = () => yup.object<ProcessFormValues>({
   department: yup.string(),
   subDepartment: yup.string(),
   productTeam: yup.string(),
-  product: yup.string(),
+  products: yup.array(yup.string()),
   legalBases: yup.array(legalBasisSchema()),
   legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
   start: yup.string().matches(DATE_REGEX, intl.dateFormat),

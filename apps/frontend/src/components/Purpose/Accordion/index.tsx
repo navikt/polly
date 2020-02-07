@@ -246,9 +246,9 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                       <Block width="33%">{renderSubjectCategoriesForProcess(currentProcess)}</Block>
                       <Block width="33%">{renderActiveForProcess(currentProcess)}</Block>
 
-                      {!!currentProcess.product && <Block width="33%">
+                      {!!currentProcess?.products?.length && <Block width="33%">
                         <Label2>{intl.product}</Label2>
-                        <Paragraph3>{codelist.getShortname(ListName.SYSTEM, currentProcess.product.code)}</Paragraph3>
+                        <Paragraph3>{currentProcess.products.map(product => codelist.getShortname(ListName.SYSTEM, product.code)).join(", ")}</Paragraph3>
                       </Block>}
                     </Block>
 

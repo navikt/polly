@@ -204,32 +204,31 @@ const FieldProductTeam = (props: { productTeam?: string }) => {
   )
 }
 
-const FieldProduct = (props: { product?: string }) => {
-  const {product} = props;
-  const [value, setValue] = React.useState<Value>(product ? [{id: product, label: codelist.getShortname(ListName.SYSTEM, product)}] : []);
+const FieldProduct = (props: { products: string[] }) => {
+  const {products} = props;
+  const [value, setValue] = React.useState<Value>(products ? products.map(product => ({id: product, label: codelist.getShortname(ListName.SYSTEM, product)})) : []);
 
-  return (
-    <Field
-      name="product"
-      render={({form}: FieldProps<ProcessFormValues>) => (
-        <Select
-          options={codelist.getParsedOptions(ListName.SYSTEM)}
-          onChange={({value}) => {
-            setValue(value);
-            form.setFieldValue('product', value.length > 0 ? value[0].id : undefined)
-          }}
-          value={value}
-        />
-      )}
-    />
-  )
+  return <FieldArray
+    name="products"
+    render={arrayHelpers => <Select
+      multi
+      clearable
+      options={codelist.getParsedOptions(ListName.SYSTEM)}
+      onChange={({value}) => {
+        setValue(value);
+        arrayHelpers.form.setFieldValue('product', value.map(v => v.id))
+      }}
+      value={value}
+    />}
+  />
 }
+
 const FieldInput = (props: { fieldName: string, fieldValue?: string | number }) => {
   return (
     <Field
       name={props.fieldName}
       render={({field, form}: FieldProps<DisclosureFormValues>) => (
-        <Input {...field} size="compact" />
+        <Input {...field} size="compact"/>
       )}
     />
   )
@@ -451,7 +450,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
                 <Block {...rowBlockProps}>
                   <ModalLabel label={intl.product}/>
-                  <FieldProduct product={formikBag.values.product}/>
+                  <FieldProduct products={formikBag.values.products}/>
                 </Block>
 
                 {!isEdit && defaultDoc && <Block {...rowBlockProps}>
