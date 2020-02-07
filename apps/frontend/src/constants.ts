@@ -18,7 +18,7 @@ export interface PolicyFormValues {
   id?: string
   purposeCode: string
   informationType?: PolicyInformationType
-  process: PolicyProcess
+  process: { name: string, legalBases: LegalBasis[] }
   subjectCategories: string[]
   legalBasesStatus?: LegalBasesStatus
   legalBases: Array<LegalBasisFormValues>
@@ -52,8 +52,6 @@ export interface ProcessFormValues {
   profiling?: boolean
   dataProcessing: DataProcessing
   retention: Retention
-
-  includeDefaultDocument: boolean
 }
 
 export interface DataProcessing {
@@ -266,7 +264,8 @@ export interface DocumentInfoTypeUse {
 export interface AddDocumentToProcessFormValues {
   document?: Document
   informationTypes: DocumentInfoTypeUse[]
-  process: Process
+  defaultDocument: boolean
+  process: { id: string, name: string, purposeCode: string }
 }
 
 export interface CreateDocumentFormValues {

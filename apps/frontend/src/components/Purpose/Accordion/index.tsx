@@ -191,8 +191,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
     </StatefulTooltip>
   )
 
-  const boolToText = (b?: boolean) => (b === null || b === undefined) ?
-    intl.unclarified : b ? intl.yes : intl.no
+  const boolToText = (b?: boolean) => (b === null || b === undefined) ? intl.unclarified : b ? intl.yes : intl.no
 
   const hasAccess = () => user.canWrite()
   useAwait(user.wait())

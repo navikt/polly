@@ -53,8 +53,6 @@ export interface IStrings {
   dataProcessorOutsideEU: string;
   dataProcessorOutsideEUExtra: string;
   includeDefaultDocument: string;
-  includeDefaultDocumentExtraStart: string;
-  includeDefaultDocumentExtraEnd: string;
   from: string;
   retained: string;
   retention: string;

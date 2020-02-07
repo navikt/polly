@@ -8,7 +8,7 @@ import { Select, Value } from 'baseui/select';
 import { Button, KIND, SHAPE, SIZE as ButtonSize } from "baseui/button";
 import { Plus } from "baseui/icon";
 
-import { DisclosureFormValues, Document, ProcessFormValues } from "../../../constants";
+import { DisclosureFormValues, ProcessFormValues } from "../../../constants";
 import CardLegalBasis from './CardLegalBasis'
 import { codelist, ListName } from "../../../service/Codelist"
 import { intl, theme } from "../../../util"
@@ -17,7 +17,7 @@ import { ListLegalBases } from "../../common/LegalBasis"
 import { DateModalFields } from "../DateModalFields"
 import { hasSpecifiedDate } from "../../common/Durations"
 import { processSchema } from "../../common/schema"
-import { getDefaultProcessDocument, getTeam, mapTeamToOption, useTeamSearch } from "../../../api"
+import { getTeam, mapTeamToOption, useTeamSearch } from "../../../api"
 import { Textarea } from "baseui/textarea"
 import { Radio, RadioGroup } from "baseui/radio"
 import { Card } from "baseui/card"
@@ -385,13 +385,6 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
   const [selectedLegalBasis, setSelectedLegalBasis] = React.useState();
   const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState();
-  const [defaultDoc, setDefaultDoc] = React.useState<Document | undefined>();
-
-  useEffect(() => {
-    (async () => {
-      !isEdit && setDefaultDoc(await getDefaultProcessDocument())
-    })()
-  }, [])
 
   const disableEnter = (e: KeyboardEvent) => {
     if (e.key === 'Enter') e.preventDefault()
@@ -452,12 +445,6 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                   <ModalLabel label={intl.product}/>
                   <FieldProduct products={formikBag.values.products}/>
                 </Block>
-
-                {!isEdit && defaultDoc && <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.includeDefaultDocument}
-                              tooltip={<>{intl.includeDefaultDocumentExtraStart} <i>{defaultDoc.name}</i> {intl.includeDefaultDocumentExtraEnd}</>}/>
-                  <BoolField fieldName="includeDefaultDocument" value={formikBag.values.includeDefaultDocument} omitUndefined={true}/>
-                </Block>}
 
                 <OptionalItems formikBag={formikBag}/>
 

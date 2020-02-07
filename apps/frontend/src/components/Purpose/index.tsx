@@ -17,7 +17,6 @@ import {
   createProcess,
   deletePolicy,
   deleteProcess,
-  getDefaultProcessDocument,
   getProcess,
   getProcessesForPurpose,
   updatePolicy,
@@ -69,10 +68,6 @@ const ProcessList = ({purposeCode}: ProcessListProps) => {
       const newProcess = await createProcess(process)
       setProcessList([...processList, newProcess])
       setErrorProcessModal(null)
-      if (process.includeDefaultDocument) {
-        const doc = await getDefaultProcessDocument()
-        await handleAddDocument({process: newProcess, document: doc, informationTypes: doc.informationTypes.filter(it => !!it.subjectCategories.length)}, true)
-      }
       setShowCreateProcessModal(false)
     } catch (err) {
       setErrorProcessModal(err.message)
@@ -145,17 +140,17 @@ const ProcessList = ({purposeCode}: ProcessListProps) => {
     }
   }
 
-  const handleAddDocument = async (formValues: AddDocumentToProcessFormValues, skipLinkDocument?: boolean) => {
+  const handleAddDocument = async (formValues: AddDocumentToProcessFormValues) => {
     try {
       const policies: PolicyFormValues[] = formValues.informationTypes.map(infoType => ({
         subjectCategories: infoType.subjectCategories.map(c => c.code),
         informationType: infoType.informationType,
-        process: formValues.process,
+        process: {...formValues.process, legalBases: []},
         purposeCode: formValues.process.purposeCode,
         legalBases: [],
         legalBasesOpen: false,
         legalBasesStatus: LegalBasesStatus.INHERITED,
-        documentIds: skipLinkDocument ? [] : [formValues.document!.id]
+        documentIds: formValues.defaultDocument ? [] : [formValues.document!.id]
       }))
       await createPolicies(policies)
       await getProcessById(formValues.process.id)
