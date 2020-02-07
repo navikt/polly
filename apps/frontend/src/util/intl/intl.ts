@@ -53,8 +53,12 @@ export interface IStrings {
   includeDefaultDocumentExtraStart: string;
   includeDefaultDocumentExtraEnd: string;
   from: string;
+  retained: string;
   retention: string;
   retentionPlan: string;
+  retentionPlanYes: string;
+  retentionPlanNo: string;
+  retentionPlanUnclarified: string;
   retentionMonths: string;
   retentionStart: string;
   retentionDescription: string;

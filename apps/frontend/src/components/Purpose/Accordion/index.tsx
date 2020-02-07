@@ -26,6 +26,7 @@ import { TeamPopover } from "../../common/Team"
 import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
 import { AuditButton } from "../../audit/AuditButton"
 import { AddDocumentModal } from "./AddDocumentModal"
+import _ from "lodash"
 
 const rowPanelContent: BlockProps = {
   display: 'flex',
@@ -208,6 +209,8 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
 
   const retentionYears = Math.floor((currentProcess?.retention?.retentionMonths || 0) / 12)
   const retentionMonths = (currentProcess?.retention?.retentionMonths || 0) - retentionYears * 12
+  const retainedYearsOrMonths = !!retentionYears || !!retentionMonths
+  const retainedYearsAndMonths = !!retentionYears && !!retentionMonths
   return (
     <Block ref={purposeRef}>
       <Accordion
@@ -293,26 +296,35 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                       </>}
                     </Block>
 
-                    <Block {...rowPanelContent} justifyContent="flex-start">
-                      <Block width="33%">
-                        <Label2>{intl.retentionPlan}</Label2>
-                        <Paragraph3>{boolToText(currentProcess?.retention?.retentionPlan)}</Paragraph3>
-                      </Block>
-
-                      {currentProcess?.retention?.retentionPlan &&
-                      <>
-                        <Block width="33%">
-                          <Label2>{intl.retentionMonths}</Label2>
-                          <Paragraph3>
-                            {!!retentionYears && `${retentionYears} ${intl.years}`} {!!retentionMonths && `${retentionMonths} ${intl.months}`} {intl.from} {currentProcess?.retention?.retentionStart}
+                    <Block {...rowPanelContent} display="block">
+                      <Label2>{intl.retention}</Label2>
+                      <Block>
+                        {currentProcess?.retention?.retentionPlan === null && intl.retentionPlanUnclarified}
+                        {currentProcess?.retention?.retentionPlan === false && intl.retentionPlanNo}
+                        {currentProcess?.retention?.retentionPlan &&
+                        <>
+                          <Paragraph3 marginBottom="0">
+                            <span>{retainedYearsOrMonths && intl.retentionPlanYes}</span>
                           </Paragraph3>
-                        </Block>
-                        {!!currentProcess?.retention?.retentionDescription &&
-                        <Block width="33%">
-                          <Label2>{intl.retentionDescription}</Label2>
-                          <Paragraph3>{currentProcess?.retention?.retentionDescription}</Paragraph3>
-                        </Block>}
-                      </>}
+                          <Paragraph3 marginBottom="0" marginTop="0">
+                            <span>{retainedYearsOrMonths && intl.retained}</span>
+                            <span> </span>
+                            <span>{!!retentionYears && `${retentionYears} ${intl.years}`}</span>
+                            <span> </span>
+                            <span>{retainedYearsAndMonths && intl.and}</span>
+                            <span> </span>
+                            <span>{!!retentionMonths && `${retentionMonths} ${intl.months}`}</span>
+                            <span> </span>
+                            <span>{intl.from}</span>
+                            <span> </span>
+                            <span>{_.lowerFirst(currentProcess?.retention?.retentionStart)}</span>
+                          </Paragraph3>
+                          <Paragraph3 marginBottom="0" marginTop="0">
+                            <span>{currentProcess?.retention?.retentionDescription}</span>
+                          </Paragraph3>
+                        </>
+                        }
+                      </Block>
                     </Block>
 
                   </Block>
