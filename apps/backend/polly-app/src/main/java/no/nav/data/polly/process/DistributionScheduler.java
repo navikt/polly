@@ -56,6 +56,7 @@ public class DistributionScheduler {
         }
 
         List<Policy> policies = policyRepository.findByPurposeCodeAndProcessName(data.getPurposeCode(), data.getProcessName()).stream()
+                .filter(p -> p.getProcess().isActive())
                 .filter(Policy::isActive)
                 .collect(Collectors.toList());
         var informationTypeNames = convert(policies, Policy::getInformationTypeName);
