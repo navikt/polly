@@ -324,7 +324,7 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
                   />
                   <Slider
                     overrides={sliderOvveride(intl.months)}
-                    min={0} max={12}
+                    min={0} max={11}
                     value={[retentionMonths]}
                     onChange={({value}) => setRetention(value[0] + retentionYears * 12)}
                   />
