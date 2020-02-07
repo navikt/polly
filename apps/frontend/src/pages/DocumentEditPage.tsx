@@ -9,7 +9,6 @@ import {Document, DocumentFormValues_Temp, DocumentInfoTypeUse,} from "../consta
 import shortid from "shortid";
 
 const convertToDocumentFormValues = (document: Document) => {
-  console.log(document, "DOCUMENT")
   return {
       id: document.id,
       name: document.name,
@@ -30,9 +29,12 @@ const DocumentEditPage = (props: RouteComponentProps<{ id?: string}>) => {
   const [isLoading,setLoading] = React.useState();
 
   const handleEditDocument = async (values: DocumentFormValues_Temp) => {
-      console.log(values, "VALUES SUBMITTED")
-      const res = updateInformationTypesDocument(values)
-      console.log(res, "RESPONSE")
+      try {
+        const res = await updateInformationTypesDocument(values)
+        props.history.push(`/document/${res.id}`)
+      } catch (err) {
+        console.log(err, "ERR")
+      }
   }
 
   React.useEffect(() => {

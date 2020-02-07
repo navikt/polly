@@ -6,7 +6,7 @@ import { intl } from "../../util";
 import DocumentInfoTypeTable from "./DocumentInfoTypeTable";
 
 const renderTextWithLabel = (label: string, text: string) => (
-    <Block marginTop="scale800">
+    <Block marginTop="scale1000">
         <Label2 font="font400">{label}</Label2>
         <Paragraph2>{text}</Paragraph2>
     </Block>
@@ -24,7 +24,7 @@ const DocumentMetadata = (props: DocumentMetadata) => {
             {renderTextWithLabel(intl.name, document.name)}
             {renderTextWithLabel(intl.description, document.description)}
 
-            <Block marginTop="scale800">
+            <Block marginTop="scale1000">
                 <Label2 font="font400" marginBottom="scale800">{intl.informationTypes}</Label2>
                 <DocumentInfoTypeTable list={document.informationTypes}/>
             </Block>

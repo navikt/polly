@@ -15,7 +15,6 @@ const FieldInformationType = (props: {
   const [selectedInformationType, setSelectedInformationType] = React.useState();
 
   React.useEffect(() => {
-    console.log(documentInformationType)
     setSelectedInformationType(documentInformationType.informationType)
   }, []);
 
@@ -39,7 +38,6 @@ const FieldInformationType = (props: {
       value={selectedInformationType}
       onInputChange={event => setSearchKeyword(event.currentTarget.value)}
       onChange={(params) => {
-        console.log(params.value[0])
           setSelectedInformationType(params.value[0] as PolicyInformationType)
           handleChange({...documentInformationType, informationTypeId: !params.value[0] ? '' : params.value[0].id})
       }}

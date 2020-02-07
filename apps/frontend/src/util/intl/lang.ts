@@ -119,6 +119,7 @@ export const no: IStrings = {
   emptyTable: "Ingen",
   pageNotFound: "Oida 404! Fant ikke den siden der nei",
   createdDocument: "Dokumentet er opprettet",
+  searchDocumentPlaceholder: "Søk dokumenter",
 
   POLLY_READ: "Les",
   POLLY_WRITE: "Skriv",
@@ -332,6 +333,7 @@ export const en: IStrings = {
   emptyTable: "No",
   pageNotFound: "Oops 404! Couldn't find that page",
   createdDocument: "Document is created",
+  searchDocumentPlaceholder: "Search documents",
 
   POLLY_READ: "Read",
   POLLY_WRITE: "Write",

@@ -11,10 +11,11 @@ import { Document } from "../constants";
 import DocumentMetadata from "../components/document/DocumentMetadata";
 import { user } from "../service/User";
 import { Button, SHAPE } from "baseui/button";
-import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { faPlusCircle, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { StatefulTooltip, PLACEMENT } from "baseui/tooltip";
 
-const DocumentPage = (props: RouteComponentProps<{ id?: string}>) => {
+const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
     const [isLoading, setLoading] = React.useState()
     const [selectValue, setSelectValue] = React.useState<Value>([]);
     const [currentDocument, setCurrentDocument] = React.useState<Document | undefined>()
@@ -36,7 +37,7 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string}>) => {
             if (documentId) {
                 const res = await getDocument(documentId)
                 setCurrentDocument(res)
-                setSelectValue([{ id: res.id, label: res.name}])
+                setSelectValue([{ id: res.id, label: res.name }])
                 props.history.push(`/document/${documentId}`)
             } else {
                 setCurrentDocument(undefined)
@@ -54,14 +55,14 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string}>) => {
                 <React.Fragment>
                     <Banner title={intl.document} />
                     <Block display="flex" justifyContent="space-between">
-                        <Block width="70%">
+                        <Block width="80%">
                             <Select
                                 autoFocus
                                 maxDropdownHeight="400px"
                                 searchable={true}
                                 type={TYPE.search}
                                 options={documentSearchResult.map(doc => ({ id: doc.id, label: doc.name }))}
-                                placeholder="Søk dokumenter"
+                                placeholder={intl.searchDocumentPlaceholder}
                                 onInputChange={event => setDocumentSearch(event.currentTarget.value)}
                                 onChange={(params) => params.value.length < 1 ? setDocumentId(undefined) : setDocumentId(params.value[0].id as string)}
                                 isLoading={documentSearchLoading}
@@ -70,15 +71,30 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string}>) => {
                             />
                         </Block>
                         <Block>
-                        {user.canWrite() &&
-                            <Button type="button" shape={SHAPE.square} onClick={() => props.history.push("/document/create")}>
-                              <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;{intl.createNew}
-                            </Button>
+                            {user.canWrite() && (
+                                <Block display="flex">
+                                    {currentDocument && (
+                                        <StatefulTooltip content={intl.edit} placement={PLACEMENT.bottom}>
+                                            <Button kind="secondary" onClick={() => props.history.push(`/document/edit/${currentDocument.id}`)}>
+                                                <FontAwesomeIcon icon={faEdit} />
+                                            </Button>
+                                        </StatefulTooltip>
+                                    )}
+                                    
+                                    <Block marginLeft="scale400">
+                                        <Button type="button" shape={SHAPE.square} onClick={() => props.history.push("/document/create")}>
+                                            <FontAwesomeIcon icon={faPlusCircle} />&nbsp;{intl.createNew}
+                                        </Button>
+                                    </Block>
+                                    
+                                </Block>
+                            )
+
                             }
                         </Block>
                     </Block>
 
-                    {currentDocument && <DocumentMetadata document={currentDocument}/>}
+                    {currentDocument && <DocumentMetadata document={currentDocument} />}
                 </React.Fragment>
             )}
 

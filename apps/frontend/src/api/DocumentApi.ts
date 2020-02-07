@@ -44,7 +44,8 @@ export const updateInformationTypesDocument = async (document: DocumentFormValue
 }
 
 export const createInformationTypesDocument = async (document: DocumentFormValues_Temp) => {
-  return (await axios.post(`${env.pollyBaseUrl}/document`, document)).data
+  const body = mapFormValuesToDocument(document)
+  return (await axios.post(`${env.pollyBaseUrl}/document`, body)).data
 }
 
 const mapFormValuesToDocument = (document: DocumentFormValues_Temp) => ({

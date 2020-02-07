@@ -18,6 +18,10 @@ const rowBlockProps: BlockProps = {
   marginTop: '1rem',
 };
 
+const labelProps: BlockProps = {
+  font: 'font400'
+}
+
 type DocumentFormProps = {
   initialValues: DocumentFormValues_Temp;
   handleSubmit: Function;
@@ -51,7 +55,7 @@ const DocumentForm = (props: DocumentFormProps) => {
           (formikProps: FormikProps<DocumentFormValues_Temp>) => (
             <Form onKeyDown={disableEnter}>
               <Block {...rowBlockProps}>
-                <Label2>{intl.name}</Label2>
+                <Label2 {...labelProps}>{intl.name}</Label2>
                 <Field name="name">
                   {
                     (props: FieldProps) => (
@@ -62,7 +66,7 @@ const DocumentForm = (props: DocumentFormProps) => {
                 <Error fieldName="name" fullWidth={true}/>
               </Block>
               <Block {...rowBlockProps}>
-                <Label2>{intl.description}</Label2>
+                <Label2 {...labelProps}>{intl.description}</Label2>
                 <Field name="description">
                   {
                     (props: FieldProps) => (
@@ -107,6 +111,7 @@ const DocumentForm = (props: DocumentFormProps) => {
                 </Button>
                 <Button
                   type="button"
+                  kind="secondary"
                   overrides={{
                     BaseButton: {
                       style: {
@@ -116,9 +121,7 @@ const DocumentForm = (props: DocumentFormProps) => {
                       }
                     }
                   }}
-                  onClick={() => {
-                    formikProps.resetForm();
-                  }}
+                  onClick={() => window.history.back()}
                 >
                   {intl.abort}
                 </Button>

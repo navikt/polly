@@ -16,11 +16,11 @@ const DocumentCreatePage = (props: RouteComponentProps) => {
 
   const handleCreateDocument = async (values: DocumentFormValues_Temp) => {
     let body = {...values};
-    console.log(body)
     try {
       const res = await createInformationTypesDocument(body);
       props.history.push(`/document/${res.id}`);
     } catch (error) {
+      console.log(error, "Error")
     }
   };
 

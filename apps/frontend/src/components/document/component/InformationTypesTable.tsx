@@ -37,7 +37,8 @@ const InformationTypesTable = (props: InformationTypesTableProps) => {
               type={"button"}
               size={ButtonSize.compact}
               kind={KIND.tertiary}
-              onClick={() => {arrayHelpers.push({id: shortid.generate(), informationTypeId: "", informationType: undefined, subjectCategories: []});}}>
+              onClick={() => {arrayHelpers.push({id: shortid.generate(), informationTypeId: "", informationType: undefined, subjectCategories: []});}}
+            >
               <FontAwesomeIcon icon={faPlus}/>
             </Button>
           </StatefulTooltip>
