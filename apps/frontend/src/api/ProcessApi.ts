@@ -4,7 +4,9 @@ import { env } from "../util/env"
 import { convertLegalBasesToFormValues } from "./PolicyApi"
 
 export const getProcess = async (processId: string) => {
-  return (await axios.get<Process>(`${env.pollyBaseUrl}/process/${processId}`)).data
+  const data = (await axios.get<Process>(`${env.pollyBaseUrl}/process/${processId}`)).data
+  data.policies.forEach(p => p.process = data)
+  return data
 }
 
 export const getProcessesForPurpose = async (purpose: string) => {

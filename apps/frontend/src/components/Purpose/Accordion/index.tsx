@@ -26,7 +26,7 @@ import { TeamPopover } from "../../common/Team"
 import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
 import { AuditButton } from "../../audit/AuditButton"
 import { AddDocumentModal } from "./AddDocumentModal"
-import _ from "lodash"
+import { RetentionView } from "../Retention"
 
 const rowPanelContent: BlockProps = {
   display: 'flex',
@@ -206,10 +206,6 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
     }, 200)
   }, [isLoading])
 
-  const retentionYears = Math.floor((currentProcess?.retention?.retentionMonths || 0) / 12)
-  const retentionMonths = (currentProcess?.retention?.retentionMonths || 0) - retentionYears * 12
-  const retainedYearsOrMonths = !!retentionYears || !!retentionMonths
-  const retainedYearsAndMonths = !!retentionYears && !!retentionMonths
   const dataProcessorAgreements = !!currentProcess?.dataProcessing?.dataProcessorAgreements.length
   return (
     <Block ref={purposeRef}>
@@ -309,7 +305,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                         {currentProcess?.dataProcessing?.dataProcessor &&
                         <>
                           <Paragraph3 marginBottom="0">
-                            <span>{retainedYearsOrMonths && intl.dataProcessorYes}</span>
+                            <span>{intl.dataProcessorYes}</span>
                           </Paragraph3>
                           <Paragraph3 marginBottom="0" marginTop="0">
                             <span>{dataProcessorAgreements && intl.dataProcessorAgreement}: </span>
@@ -331,15 +327,10 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                         {currentProcess?.retention?.retentionPlan &&
                         <>
                           <Paragraph3 marginBottom="0">
-                            <span>{retainedYearsOrMonths && intl.retentionPlanYes}</span>
+                            <span>{intl.retentionPlanYes}</span>
                           </Paragraph3>
                           <Paragraph3 marginBottom="0" marginTop="0">
-                            <span>{retainedYearsOrMonths && intl.retained} </span>
-                            <span>{!!retentionYears && `${retentionYears} ${intl.years}`} </span>
-                            <span>{retainedYearsAndMonths && intl.and} </span>
-                            <span>{!!retentionMonths && `${retentionMonths} ${intl.months}`} </span>
-                            <span>{intl.from} </span>
-                            <span>{_.lowerFirst(currentProcess?.retention?.retentionStart)}</span>
+                            <RetentionView retention={currentProcess?.retention}/>
                           </Paragraph3>
                           <Paragraph3 marginTop="0">
                             <span>{currentProcess?.retention?.retentionDescription && intl.description}: </span>
