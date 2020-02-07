@@ -321,13 +321,19 @@ export interface CodeUsage {
   disclosures: [Use]
   documents: [Use]
   informationTypes: [Use]
-  policies: [Use]
-  processes: [Use]
+  policies: [UseWithPurpose]
+  processes: [UseWithPurpose]
 }
 
 export interface Use {
   id: string
   name: string
+}
+
+export interface UseWithPurpose {
+  id: string
+  name: string
+  purposeCode: string
 }
 
 export interface CategoryUsage {
