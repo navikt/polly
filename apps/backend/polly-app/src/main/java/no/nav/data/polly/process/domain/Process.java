@@ -7,9 +7,9 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import no.nav.data.polly.codelist.CodelistService;
-import no.nav.data.polly.codelist.codeusage.UsedInInstance;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
+import no.nav.data.polly.codelist.dto.UsedInInstancePurpose;
 import no.nav.data.polly.common.auditing.domain.Auditable;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
@@ -120,8 +120,8 @@ public class Process extends Auditable<String> {
                 .build();
     }
 
-    public UsedInInstance getInstanceIdentification() {
-        return UsedInInstance.builder().id(id.toString()).name(name).build();
+    public UsedInInstancePurpose getInstanceIdentification() {
+        return UsedInInstancePurpose.builder().id(id.toString()).name(name).purposeCode(purposeCode).build();
     }
 
     public ProcessResponse convertToResponseWithPolicies() {

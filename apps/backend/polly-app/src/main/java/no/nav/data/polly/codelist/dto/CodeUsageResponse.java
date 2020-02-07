@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.data.polly.codelist.codeusage.UsedInInstance;
 import no.nav.data.polly.codelist.domain.ListName;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
@@ -21,8 +20,8 @@ public class CodeUsageResponse {
     private ListName listName;
     private String code;
     private List<UsedInInstance> informationTypes;
-    private List<UsedInInstance> policies;
-    private List<UsedInInstance> processes;
+    private List<UsedInInstancePurpose> policies;
+    private List<UsedInInstancePurpose> processes;
     private List<UsedInInstance> disclosures;
     private List<UsedInInstance> documents;
 

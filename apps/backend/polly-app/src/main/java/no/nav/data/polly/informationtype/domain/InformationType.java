@@ -6,12 +6,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import no.nav.data.polly.codelist.codeusage.UsedInInstance;
+import no.nav.data.polly.codelist.dto.UsedInInstance;
 import no.nav.data.polly.common.auditing.domain.Auditable;
-import no.nav.data.polly.sync.domain.SyncStatus;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
 import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.sync.domain.SyncStatus;
 import org.hibernate.annotations.Type;
 
 import java.util.HashSet;

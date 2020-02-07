@@ -5,6 +5,8 @@ import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodeUsageRequest;
 import no.nav.data.polly.codelist.dto.CodeUsageResponse;
+import no.nav.data.polly.codelist.dto.UsedInInstance;
+import no.nav.data.polly.codelist.dto.UsedInInstancePurpose;
 import no.nav.data.polly.common.utils.MetricUtils;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
@@ -159,7 +161,7 @@ public class CodeUsageService {
                 .forEach(lb -> lb.setGdpr(newCode));
     }
 
-    private List<UsedInInstance> findProcesses(ListName listName, String code) {
+    private List<UsedInInstancePurpose> findProcesses(ListName listName, String code) {
         switch (listName) {
             case PURPOSE:
                 return processRepository.findByPurposeCode(code).stream().map(Process::getInstanceIdentification).collect(toList());
@@ -178,7 +180,7 @@ public class CodeUsageService {
         }
     }
 
-    private List<UsedInInstance> findPolicies(ListName listName, String code) {
+    private List<UsedInInstancePurpose> findPolicies(ListName listName, String code) {
         switch (listName) {
             case PURPOSE:
                 return policyRepository.findByPurposeCode(code).stream().map(Policy::getInstanceIdentification).collect(toList());
@@ -233,11 +235,11 @@ public class CodeUsageService {
     }
 
     private List<Policy> getPolicies(CodeUsageResponse usage) {
-        return policyRepository.findAllById(convert(usage.getPolicies(), UsedInInstance::getIdAsUUID));
+        return policyRepository.findAllById(convert(usage.getPolicies(), UsedInInstancePurpose::getIdAsUUID));
     }
 
     private List<Process> getProcesses(CodeUsageResponse usage) {
-        return processRepository.findAllById(convert(usage.getProcesses(), UsedInInstance::getIdAsUUID));
+        return processRepository.findAllById(convert(usage.getProcesses(), UsedInInstancePurpose::getIdAsUUID));
     }
 
     private List<Disclosure> getDisclosures(CodeUsageResponse usage) {

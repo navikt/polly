@@ -1,4 +1,4 @@
-package no.nav.data.polly.codelist.codeusage;
+package no.nav.data.polly.codelist.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;

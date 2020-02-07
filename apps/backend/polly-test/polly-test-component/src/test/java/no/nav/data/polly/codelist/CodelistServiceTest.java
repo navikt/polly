@@ -1,11 +1,11 @@
 package no.nav.data.polly.codelist;
 
 import no.nav.data.polly.codelist.codeusage.CodeUsageService;
-import no.nav.data.polly.codelist.codeusage.UsedInInstance;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
+import no.nav.data.polly.codelist.dto.UsedInInstancePurpose;
 import no.nav.data.polly.common.exceptions.CodelistNotErasableException;
 import no.nav.data.polly.common.exceptions.CodelistNotFoundException;
 import no.nav.data.polly.common.exceptions.ValidationException;
@@ -106,7 +106,7 @@ class CodelistServiceTest {
         @Test
         void delete_shouldThrowCodelistNotErasableException_whenCodelistIsInUse() {
             CodeUsageResponse codeUsage = new CodeUsageResponse(ListName.THIRD_PARTY, "DELETE_CODE");
-            codeUsage.setProcesses(List.of(UsedInInstance.builder().id("id").name("name").build()));
+            codeUsage.setProcesses(List.of(UsedInInstancePurpose.builder().id("id").name("name").build()));
             when(repository.findByListAndCode(ListName.PURPOSE, "DELETE_CODE")).thenReturn(Optional.of(createCodelist(ListName.THIRD_PARTY, "DELETE_CODE")));
             when(codeUsageService.findCodeUsage(ListName.PURPOSE, "DELETE_CODE")).thenReturn(codeUsage);
 
