@@ -15,7 +15,6 @@ import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
-import no.nav.data.polly.policy.dto.PolicyProcessResponse;
 import no.nav.data.polly.process.domain.ProcessData.DataProcessing;
 import no.nav.data.polly.process.domain.ProcessData.Retention;
 import no.nav.data.polly.process.dto.ProcessRequest;
@@ -87,10 +86,6 @@ public class Process extends Auditable<String> {
         return DateUtil.isNow(data.getStart(), data.getEnd());
     }
 
-    public PolicyProcessResponse convertToIdNameResponse() {
-        return new PolicyProcessResponse(id, name, convert(data.getLegalBases(), LegalBasis::convertToResponse));
-    }
-
     public ProcessResponse convertToResponse() {
         return ProcessResponse.builder()
                 .id(id)
@@ -106,12 +101,12 @@ public class Process extends Auditable<String> {
                 .legalBases(convert(data.getLegalBases(), LegalBasis::convertToResponse))
                 .automaticProcessing(data.getAutomaticProcessing())
                 .profiling(data.getProfiling())
-                .dataProcessing(DataProcessingResponse.builder()
+                .dataProcessing(data.getDataProcessing() == null ? null : DataProcessingResponse.builder()
                         .dataProcessor(data.getDataProcessing().getDataProcessor())
                         .dataProcessorAgreements(nullToEmptyList(data.getDataProcessing().getDataProcessorAgreements()))
                         .dataProcessorOutsideEU(data.getDataProcessing().getDataProcessorOutsideEU())
                         .build())
-                .retention(RetentionResponse.builder()
+                .retention(data.getRetention() == null ? null : RetentionResponse.builder()
                         .retentionPlan(data.getRetention().getRetentionPlan())
                         .retentionMonths(data.getRetention().getRetentionMonths())
                         .retentionStart(data.getRetention().getRetentionStart())
@@ -126,7 +121,7 @@ public class Process extends Auditable<String> {
 
     public ProcessResponse convertToResponseWithPolicies() {
         var response = convertToResponse();
-        response.setPolicies(convert(policies, Policy::convertToResponse));
+        response.setPolicies(convert(policies, policy -> policy.convertToResponse(false)));
         return response;
     }
 

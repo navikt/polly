@@ -5,7 +5,6 @@ import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.policy.dto.PolicyRequest;
-import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessRequest;
@@ -40,10 +39,6 @@ public class PolicyMapper {
                 .orElseGet(() -> processRepository.save(createProcess(policyRequest)))
                 .addPolicy(policy);
         return policy;
-    }
-
-    public PolicyResponse mapPolicyToResponse(Policy policy) {
-        return policy.convertToResponse();
     }
 
     private Process createProcess(PolicyRequest policyRequest) {

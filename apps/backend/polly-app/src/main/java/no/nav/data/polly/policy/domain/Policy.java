@@ -92,12 +92,12 @@ public class Policy extends Auditable<String> {
         return DateUtil.isNow(getData().getStart(), getData().getEnd());
     }
 
-    public PolicyResponse convertToResponse() {
+    public PolicyResponse convertToResponse(boolean includeProcess) {
         return PolicyResponse.builder()
                 .id(getId())
                 .purposeCode(getCodelistResponse(ListName.PURPOSE, getPurposeCode()))
                 .subjectCategories(getCodelistResponseList(ListName.SUBJECT_CATEGORY, getData().getSubjectCategories()))
-                .process(getProcess() == null ? null : getProcess().convertToIdNameResponse())
+                .process(getProcess() == null || !includeProcess ? null : getProcess().convertToResponse())
                 .start(getData().getStart())
                 .end(getData().getEnd())
                 .informationTypeId(informationTypeId)

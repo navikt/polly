@@ -76,7 +76,7 @@ class PolicyMapperTest {
     void shouldMapToPolicyResponse() {
         InformationType informationType = createBasicTestdata();
         Policy policy = createPolicy(informationType);
-        PolicyResponse policyResponse = mapper.mapPolicyToResponse(policy);
+        PolicyResponse policyResponse = policy.convertToResponse(true);
         assertThat(policyResponse.getInformationType().getId(), is(policy.getInformationTypeId()));
         assertThat(policyResponse.getInformationType().getName(), is(policy.getInformationTypeName()));
         assertThat(policyResponse.getLegalBases().get(0).getDescription(), is(LEGAL_BASIS_DESCRIPTION1));

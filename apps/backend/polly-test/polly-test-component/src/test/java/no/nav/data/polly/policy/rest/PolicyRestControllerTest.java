@@ -1,19 +1,16 @@
 package no.nav.data.polly.policy.rest;
 
 import no.nav.data.polly.AppStarter;
-import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.common.rest.PageParameters;
 import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.informationtype.InformationTypeService;
 import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
-import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 import no.nav.data.polly.policy.PolicyService;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
-import no.nav.data.polly.policy.dto.PolicyInformationTypeResponse;
 import no.nav.data.polly.policy.dto.PolicyRequest;
-import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.policy.mapper.PolicyMapper;
 import no.nav.data.polly.process.ProcessService;
 import org.junit.jupiter.api.Test;
@@ -37,7 +34,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static no.nav.data.polly.codelist.domain.ListName.PURPOSE;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
@@ -91,10 +87,8 @@ class PolicyRestControllerTest {
     @Test
     void getOnePolicy() throws Exception {
         Policy policy1 = createPolicyTestdata(INFORMATION_TYPE_ID_1);
-        PolicyResponse response = createPolicyResponse("code", "Description", POLICY_ID_1);
 
         given(policyRepository.findById(POLICY_ID_1)).willReturn(Optional.of(policy1));
-        given(mapper.mapPolicyToResponse(policy1)).willReturn(response);
         mvc.perform(get("/policy/{id}", POLICY_ID_1).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.legalBases[0].description", is("Description")));
@@ -177,12 +171,10 @@ class PolicyRestControllerTest {
     void updatePolicy() throws Exception {
         Policy policy1 = createPolicyTestdata(INFORMATION_TYPE_ID_1);
         PolicyRequest request = PolicyRequest.builder().id(POLICY_ID_1.toString()).build();
-        PolicyResponse response = createPolicyResponse("code", "Description", null);
 
         given(mapper.mapRequestToPolicy(request)).willReturn(policy1);
         given(policyRepository.findById(POLICY_ID_1)).willReturn(Optional.of(policy1));
         given(policyRepository.save(policy1)).willReturn(policy1);
-        given(mapper.mapPolicyToResponse(policy1)).willReturn(response);
 
         mvc.perform(put("/policy/{id}", POLICY_ID_1)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -236,18 +228,13 @@ class PolicyRestControllerTest {
         Policy policy = new Policy();
         policy.setId(POLICY_ID_1);
         policy.setInformationType(InformationType.builder().id(informationTypeId).build());
+        policy.getData().setLegalBases(List.of(LegalBasis.builder().description("Description").build()));
         return policy;
     }
 
     private PolicyRequest createPolicyRequest(String desc, String code, String name) {
         return PolicyRequest.builder().id(UUID.randomUUID().toString()).purposeCode(code).informationTypeName(name)
                 .legalBases(List.of(LegalBasisRequest.builder().description(desc).build()))
-                .build();
-    }
-
-    private PolicyResponse createPolicyResponse(String purpose, String desc, UUID id) {
-        return PolicyResponse.builder().id(id).purposeCode(new CodelistResponse(PURPOSE, purpose, "", "")).informationType(new PolicyInformationTypeResponse())
-                .legalBases(List.of(LegalBasisResponse.builder().description(desc).build()))
                 .build();
     }
 

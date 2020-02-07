@@ -17,9 +17,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -221,18 +219,6 @@ class PolicyControllerIT extends IntegrationTestBase {
     private void assertBehandlingsgrunnlagDistribusjon(int count) {
         List<ProcessDistribution> all = processDistributionRepository.findAll();
         assertThat(all, hasSize(count));
-    }
-
-    @Test
-    void deletePoliciesByInformationTypeId() {
-        List<PolicyRequest> requestList = List.of(createPolicyRequest(createAndSaveInformationType()));
-        ResponseEntity<PolicyPage> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), PolicyPage.class);
-        assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
-
-        URI uri = UriComponentsBuilder.fromPath(POLICY_REST_ENDPOINT).queryParam("informationTypeId", INFORMATION_TYPE_ID_1).build().toUri();
-        ResponseEntity deleteEntity = restTemplate.exchange(uri, HttpMethod.DELETE, new HttpEntity<>(null), Void.class);
-        assertThat(deleteEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(policyRepository.count(), is(0L));
     }
 
     @Test
