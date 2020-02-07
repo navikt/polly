@@ -3,7 +3,7 @@ import {StyledCell, StyledHead, StyledHeadCell, StyledRow} from "baseui/table";
 import {intl} from "../../../util";
 import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
-import {DocumentInformationTypes} from "../../../constants";
+import {DocumentInformationTypes, DocumentInfoTypeUse} from "../../../constants";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {useStyletron} from "baseui";
@@ -37,14 +37,14 @@ const InformationTypesTable = (props: InformationTypesTableProps) => {
               type={"button"}
               size={ButtonSize.compact}
               kind={KIND.tertiary}
-              onClick={() => {arrayHelpers.push({id: shortid.generate(), informationTypeId: "", subjectCategories: []} as DocumentInformationTypes);}}>
+              onClick={() => {arrayHelpers.push({id: shortid.generate(), informationTypeId: "", informationType: undefined, subjectCategories: []});}}>
               <FontAwesomeIcon icon={faPlus}/>
             </Button>
           </StatefulTooltip>
         </StyledHeadCell>
       </StyledHead>
 
-        {tableContent.map((row: DocumentInformationTypes, index: number) => (
+        {tableContent.map((row: DocumentInfoTypeUse, index: number) => (
           <React.Fragment key={row.id}>
             <StyledRow>
               <StyledCell style={{maxWidth: "45%"}}>

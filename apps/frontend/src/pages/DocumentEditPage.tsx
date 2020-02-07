@@ -4,16 +4,19 @@ import Banner from "../components/Banner";
 import DocumentForm from "../components/document/component/DocumentForm";
 import {RouteComponentProps} from "react-router-dom";
 import {codelist} from "../service/Codelist";
-import {getDocument} from "../api";
+import {getDocument, updateInformationTypesDocument} from "../api";
 import {Document, DocumentFormValues_Temp, DocumentInfoTypeUse,} from "../constants";
+import shortid from "shortid";
 
 const convertToDocumentFormValues = (document: Document) => {
   console.log(document, "DOCUMENT")
   return {
+      id: document.id,
       name: document.name,
       description: document.description,
       informationTypes: document.informationTypes.map(it => {
         return {
+          id: shortid.generate(),
           informationTypeId: it.informationTypeId,
           informationType: it.informationType,
           subjectCategories: it.subjectCategories
@@ -25,6 +28,12 @@ const convertToDocumentFormValues = (document: Document) => {
 const DocumentEditPage = (props: RouteComponentProps<{ id?: string}>) => {
   const [document, setDocument] = React.useState<Document>()
   const [isLoading,setLoading] = React.useState();
+
+  const handleEditDocument = async (values: DocumentFormValues_Temp) => {
+      console.log(values, "VALUES SUBMITTED")
+      const res = updateInformationTypesDocument(values)
+      console.log(res, "RESPONSE")
+  }
 
   React.useEffect(() => {
     (async () => {
@@ -40,7 +49,7 @@ const DocumentEditPage = (props: RouteComponentProps<{ id?: string}>) => {
   return (
     <React.Fragment>
       <Banner title={intl.document}/>
-      {!isLoading && document && <DocumentForm initialValues={convertToDocumentFormValues(document)} handleSubmit={() => console.log('tekst')}/>}
+      {!isLoading && document && <DocumentForm initialValues={convertToDocumentFormValues(document)} handleSubmit={handleEditDocument}/>}
     </React.Fragment>
   );
 };
