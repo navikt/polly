@@ -213,18 +213,6 @@ class CodelistControllerIT extends IntegrationTestBase {
                 assertThat(cod.getDescription()).isEqualTo("UpdatedDescription");
             });
         }
-
-        @ParameterizedTest
-        @ValueSource(strings = {"GDPR_ARTICLE", "SENSITIVITY"})
-        void shouldInvalidateUpdatingGDPR_ARTICLE(String testValue) {
-            saveCodelist(createCodelist(ListName.valueOf(testValue)));
-            List<CodelistRequest> requests = List.of(createCodelistRequest(testValue));
-
-            ResponseEntity<String> responseEntity = restTemplate.exchange("/codelist", HttpMethod.PUT, new HttpEntity<>(requests), String.class);
-
-            assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-            assertThat(responseEntity.getBody()).contains(String.format(ERROR_IMMUTABLE_CODELIST, testValue));
-        }
     }
 
     @Nested
