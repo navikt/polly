@@ -19,7 +19,7 @@ export const no: IStrings = {
   subjectCategories: "Kategorier av personer",
   nationalLaw: "Nasjonal lov",
   navMaster: "Master i NAV",
-  productTeam: "Produktteam",
+  productTeam: "Produktteam (IT)",
   product: "Produkt",
   disclosure: "Utlevering",
   disclosures: "Utleveringer",
@@ -152,6 +152,7 @@ export const no: IStrings = {
   DOCUMENT: "Dokument",
   CODELIST: "Kodeverk",
 
+  organizing: "Organisering",
   department: "Avdeling",
   subDepartment: "Linja (Ytre etat)",
   save: "Lagre",
@@ -256,7 +257,7 @@ export const en: IStrings = {
   legalBasesShort: "Legal bases",
   nationalLaw: "National law",
   subjectCategories: "Subject Categories",
-  productTeam: "Product Team",
+  productTeam: "Product team (IT)",
   product: "Product",
   disclosure: "Disclosure",
   disclosures: "Disclosures",
@@ -389,6 +390,7 @@ export const en: IStrings = {
   DOCUMENT: "Document",
   CODELIST: "Codelist",
 
+  organizing: "Organizing",
   department: "Department",
   subDepartment: "Sub department",
   save: "Save",

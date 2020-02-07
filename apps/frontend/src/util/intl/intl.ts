@@ -162,6 +162,7 @@ export interface IStrings {
 
   // generic
   department: string;
+  organizing: string;
   subDepartment: string;
   save: string;
   abort: string;
