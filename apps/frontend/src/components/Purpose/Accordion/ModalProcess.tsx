@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { KeyboardEvent, useEffect } from 'react'
+import { KeyboardEvent, useEffect, useState } from 'react'
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
 import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps, } from "formik";
 import { Block, BlockProps } from "baseui/block";
@@ -8,10 +8,10 @@ import { Select, Value } from 'baseui/select';
 import { Button, KIND, SHAPE, SIZE as ButtonSize } from "baseui/button";
 import { Plus } from "baseui/icon";
 
-import { Document, ProcessFormValues } from "../../../constants";
+import { DisclosureFormValues, Document, ProcessFormValues } from "../../../constants";
 import CardLegalBasis from './CardLegalBasis'
 import { codelist, ListName } from "../../../service/Codelist"
-import { intl } from "../../../util"
+import { intl, theme } from "../../../util"
 import { Error, ModalLabel } from "../../common/ModalSchema";
 import { ListLegalBases } from "../../common/LegalBasis"
 import { DateModalFields } from "../DateModalFields"
@@ -22,6 +22,7 @@ import { Textarea } from "baseui/textarea"
 import { Radio, RadioGroup } from "baseui/radio"
 import { Card } from "baseui/card"
 import { renderTagList } from "../../common/TagList"
+import { Slider } from "baseui/slider"
 
 const modalBlockProps: BlockProps = {
   width: '750px',
@@ -138,11 +139,12 @@ const FieldDataProcessorAgreements = (props: { formikBag: FormikProps<ProcessFor
   }
   return (
     <FieldArray
-      name="dataProcessorAgreements"
+      name="dataProcessing.dataProcessorAgreements"
       render={arrayHelpers => (
         <Block>
           <Input
             type="text"
+            size="compact"
             placeholder={intl.dataProcessorAgreement}
             value={currentKeywordValue}
             onChange={event => setCurrentKeywordValue(event.currentTarget.value)}
@@ -154,6 +156,7 @@ const FieldDataProcessorAgreements = (props: { formikBag: FormikProps<ProcessFor
               After: () => (
                 <Button
                   type="button"
+                  size="compact"
                   shape={SHAPE.square}
                   onClick={() => onAddAgreement(arrayHelpers)}
                 >
@@ -161,9 +164,8 @@ const FieldDataProcessorAgreements = (props: { formikBag: FormikProps<ProcessFor
                 </Button>
               )
             }}
-            error={!!arrayHelpers.form.errors.dataProcessorAgreements && !!arrayHelpers.form.submitCount}
           />
-          {renderTagList(props.formikBag.values.dataProcessorAgreements, arrayHelpers)}
+          {renderTagList(props.formikBag.values.dataProcessing.dataProcessorAgreements, arrayHelpers)}
         </Block>
       )}
     />
@@ -202,36 +204,66 @@ const FieldProductTeam = (props: { productTeam?: string }) => {
   )
 }
 
-const FieldProduct = (props: { product?: string }) => {
-  const {product} = props;
-  const [value, setValue] = React.useState<Value>(product ? [{id: product, label: codelist.getShortname(ListName.SYSTEM, product)}] : []);
+const FieldProduct = (props: { products: string[] }) => {
+  const {products} = props;
+  const [value, setValue] = React.useState<Value>(products ? products.map(product => ({id: product, label: codelist.getShortname(ListName.SYSTEM, product)})) : []);
 
+  return <FieldArray
+    name="products"
+    render={arrayHelpers => <Select
+      multi
+      clearable
+      options={codelist.getParsedOptions(ListName.SYSTEM)}
+      onChange={({value}) => {
+        setValue(value);
+        arrayHelpers.form.setFieldValue('product', value.map(v => v.id))
+      }}
+      value={value}
+    />}
+  />
+}
+
+const FieldInput = (props: { fieldName: string, fieldValue?: string | number }) => {
   return (
     <Field
-      name="product"
-      render={({form}: FieldProps<ProcessFormValues>) => (
-        <Select
-          options={codelist.getParsedOptions(ListName.SYSTEM)}
-          onChange={({value}) => {
-            setValue(value);
-            form.setFieldValue('product', value.length > 0 ? value[0].id : undefined)
-          }}
-          value={value}
-        />
+      name={props.fieldName}
+      render={({field, form}: FieldProps<DisclosureFormValues>) => (
+        <Input {...field} size="compact"/>
       )}
     />
   )
+}
+
+function sliderOvveride(suffix: string) {
+  return {
+    ThumbValue: {
+      component: (prop: any) => <div style={{
+        position: 'absolute',
+        top: `-${theme.sizing.scale800}`,
+        ...theme.typography.font200,
+        backgroundColor: 'transparent',
+        whiteSpace: 'nowrap',
+      }}>{prop.children} {suffix}</div>
+    }
+  }
 }
 
 const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => {
   const {formikBag} = props
   const [showDates, setShowDates] = React.useState(hasSpecifiedDate(formikBag.values));
   const [showAutomation, setShowAutomation] = React.useState(formikBag.values.automaticProcessing || formikBag.values.profiling);
-  const [showDataProcessor, setShowDataProcessor] = React.useState(formikBag.values.dataProcessor);
+  const [showDataProcessor, setShowDataProcessor] = React.useState(formikBag.values.dataProcessing.dataProcessor);
+  const [showRetention, setShowRetention] = React.useState(formikBag.values.retention.retentionPlan);
+
+  const [retention, setRetention] = useState(formikBag.values.retention.retentionMonths || 0)
+  const retentionYears = Math.floor(retention / 12)
+  const retentionMonths = retention - retentionYears * 12
+
+  useEffect(() => formikBag.setFieldValue('retention.retentionMonths', retention), [retention])
 
   const cardOverrides = {
     Root: {style: {marginTop: "1rem"}},
-    Contents: {style: {margin: "4px"}},
+    Contents: {style: {marginRight: "4px", marginTop: "4px", marginLeft: "4px", marginBottom: "4px"}},
     Body: {style: {marginBottom: 0}}
   }
   return (
@@ -253,20 +285,65 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
       <Card overrides={cardOverrides}>
         <Block {...rowBlockProps} marginTop={0}>
           <ModalLabel label={intl.dataProcessor} tooltip={intl.dataProcessorExtra}/>
-          <BoolField fieldName="dataProcessor" value={formikBag.values.dataProcessor}/>
+          <BoolField fieldName="dataProcessing.dataProcessor" value={formikBag.values.dataProcessing.dataProcessor}/>
         </Block>
 
-        {formikBag.values.dataProcessor && <>
+        {formikBag.values.dataProcessing.dataProcessor && <>
           <Block {...rowBlockProps}>
             <ModalLabel label={intl.dataProcessorAgreement}/>
             <FieldDataProcessorAgreements formikBag={formikBag}/>
           </Block>
-          <Error fieldName="dataProcessorAgreement"/>
+          <Error fieldName="dataProcessing.dataProcessorAgreement"/>
 
           <Block {...rowBlockProps}>
             <ModalLabel label={intl.dataProcessorOutsideEU} tooltip={intl.dataProcessorOutsideEUExtra}/>
-            <BoolField fieldName="dataProcessorOutsideEU" value={formikBag.values.dataProcessorOutsideEU}/>
+            <BoolField fieldName="dataProcessing.dataProcessorOutsideEU" value={formikBag.values.dataProcessing.dataProcessorOutsideEU}/>
           </Block>
+        </>}
+      </Card>}
+
+      {showRetention &&
+      <Card overrides={cardOverrides}>
+        <Block {...rowBlockProps} marginTop={0}>
+          <ModalLabel label={intl.retention} tooltip={intl.retentionPlan}/>
+          <BoolField fieldName="retention.retentionPlan" value={formikBag.values.retention.retentionPlan}/>
+        </Block>
+
+        {formikBag.values.retention.retentionPlan && <>
+          <Block {...rowBlockProps}>
+            <ModalLabel label={intl.retentionMonths}/>
+            <Field
+              name="retention.retentionMonths"
+              render={({field, form}: FieldProps<DisclosureFormValues>) => (
+                <>
+                  <Slider
+                    overrides={sliderOvveride(intl.years)}
+                    min={0} max={100}
+                    value={[retentionYears]}
+                    onChange={({value}) => setRetention(value[0] * 12 + retentionMonths)}
+                  />
+                  <Slider
+                    overrides={sliderOvveride(intl.months)}
+                    min={0} max={12}
+                    value={[retentionMonths]}
+                    onChange={({value}) => setRetention(value[0] + retentionYears * 12)}
+                  />
+                </>
+              )}/>
+          </Block>
+          <Error fieldName="retention.retentionMonths"/>
+
+          <Block {...rowBlockProps}>
+            <ModalLabel label={intl.retentionStart}/>
+            <FieldInput fieldName="retention.retentionStart" fieldValue={formikBag.values.retention.retentionStart}/>
+          </Block>
+          <Error fieldName="retention.retentionStart"/>
+
+          <Block {...rowBlockProps}>
+            <ModalLabel label={intl.retentionDescription}/>
+            <FieldInput fieldName="retention.retentionDescription" fieldValue={formikBag.values.retention.retentionDescription}/>
+          </Block>
+          < Error fieldName="retention.retentionDescription"/>
         </>}
       </Card>}
 
@@ -280,11 +357,15 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
         {!showAutomation &&
         <Button size="compact" shape='pill' type="button"
                 $style={{marginRight: "1rem"}}
-                onClick={() => setShowAutomation(true)}>{intl.automaticProcessing}</Button>}
+                onClick={() => setShowAutomation(true)}>{intl.automation}</Button>}
         {!showDataProcessor &&
         <Button size="compact" shape='pill' type="button"
                 $style={{marginRight: "1rem"}}
                 onClick={() => setShowDataProcessor(true)}>{intl.dataProcessor}</Button>}
+        {!showRetention &&
+        <Button size="compact" shape='pill' type="button"
+                $style={{marginRight: "1rem"}}
+                onClick={() => setShowRetention(true)}>{intl.retention}</Button>}
       </Block>
     </>
   )
@@ -369,11 +450,12 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
                 <Block {...rowBlockProps}>
                   <ModalLabel label={intl.product}/>
-                  <FieldProduct product={formikBag.values.product}/>
+                  <FieldProduct products={formikBag.values.products}/>
                 </Block>
 
                 {!isEdit && defaultDoc && <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.includeDefaultDocument} tooltip={<>{intl.includeDefaultDocumentExtraStart} <i>{defaultDoc.name}</i> {intl.includeDefaultDocumentExtraEnd}</>}/>
+                  <ModalLabel label={intl.includeDefaultDocument}
+                              tooltip={<>{intl.includeDefaultDocumentExtraStart} <i>{defaultDoc.name}</i> {intl.includeDefaultDocumentExtraEnd}</>}/>
                   <BoolField fieldName="includeDefaultDocument" value={formikBag.values.includeDefaultDocument} omitUndefined={true}/>
                 </Block>}
 

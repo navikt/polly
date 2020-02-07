@@ -1,19 +1,16 @@
 import * as React from "react";
-import { Block, BlockProps } from 'baseui/block'
-import { Label2 } from "baseui/typography";
+import { useState } from "react";
+import { Block } from 'baseui/block'
 
 import AccordionInformationtype from './AccordionInformationtype'
 import { Disclosure, Document, InformationType, Policy } from "../../../constants"
-import { intl } from "../../../util"
+import { intl, theme } from "../../../util"
 import Metadata from "./Metadata";
 import InformationtypePolicyTable from "./InformationtypePolicyTable"
 import { Button } from "baseui/button"
 import TableDisclosure from "../../common/TableDisclosure";
-import { DocumentReferences, DocumentTable } from "./DocumentTable"
-
-const sectionBlockProps: BlockProps = {
-  marginTop: '3rem'
-}
+import { DocumentTable } from "./DocumentTable"
+import { Tab, Tabs } from "baseui/tabs"
 
 interface InformationtypeMetadataProps {
   informationtype: InformationType;
@@ -24,50 +21,56 @@ interface InformationtypeMetadataProps {
   onSelectPurpose: (purpose: string) => void
 }
 
-const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
-  const {informationtype, policies, disclosures, documents, expanded, onSelectPurpose} = props
+const Purposes = ({policies, expanded, onSelectPurpose}: { policies: Policy[], expanded: string[], onSelectPurpose: (purpose: string) => void }) => {
   const [accordion, setAccordion] = React.useState(false);
+  return (
+    <Block>
+      <Block display="flex" justifyContent="flex-end">
+        <Button onClick={() => setAccordion(!accordion)} type="button" size="compact" shape="pill"
+                $style={{position: "absolute", marginTop: "-" + theme.sizing.scale1400}}
+        >
+          {accordion ? intl.showAll : intl.groupByPurpose}
+        </Button>
+      </Block>
+      {accordion ?
+        <AccordionInformationtype policies={policies} expaneded={expanded} onChange={args => args.expanded.length && onSelectPurpose(args.expanded[0] as string)}/>
+        : <InformationtypePolicyTable policies={policies} showPurpose={true}/>}
+    </Block>
+  )
+}
 
-  const documentRef: DocumentReferences = {}
+const Disclosures = ({disclosures}: { disclosures: Disclosure[] }) => {
+  return (
+    <TableDisclosure
+      list={disclosures}
+      showRecipient
+      editable={false}
+      onCloseModal={() => console.log('skal fjerrens også')}
+    />
+  )
+}
 
+const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
+  const [activeTab, setActiveTab] = useState("purposes")
+
+  const tabOverride = {Tab: {style: {fontSize: "1.5rem"}}}
   return (
     <React.Fragment>
-      {informationtype && (
+      {props.informationtype && (
         <React.Fragment>
-          <Metadata informationtype={informationtype}/>
+          <Metadata informationtype={props.informationtype}/>
 
-          <Block {...sectionBlockProps}>
-            <Block display="flex" justifyContent="space-between" marginBottom="2rem">
-              <Label2 font="font450">{intl.purposeUse}</Label2>
-              <Button onClick={() => setAccordion(!accordion)} type="button" size="compact" kind="secondary">{accordion ? intl.showAll : intl.groupByPurpose}</Button>
-            </Block>
-            {accordion &&
-            <AccordionInformationtype policies={policies} expaneded={expanded}
-                                      onChange={args => args.expanded.length && onSelectPurpose(args.expanded[0] as string)}/>
-            }
-            {!accordion &&
-            <InformationtypePolicyTable policies={policies} showPurpose={true}/>
-            }
-          </Block>
-
-          <Block {...sectionBlockProps}>
-            <Label2 font="font450" marginBottom="2rem">{intl.disclosuresToThirdParty}</Label2>
-            <TableDisclosure
-              list={disclosures}
-              showRecipient
-              editable={false}
-              onCloseModal={() => console.log('skal fjerrens også')}
-              documentRef={documentRef}
-            />
-          </Block>
-
-          <Block {...sectionBlockProps}>
-            <Label2 font="font450" marginBottom="2rem">{intl.documents}</Label2>
-            <DocumentTable
-              documents={documents}
-              documentRef={documentRef}
-            />
-          </Block>
+          <Tabs activeKey={activeTab} onChange={args => setActiveTab(args.activeKey as string)}>
+            <Tab key="purposes" title={intl.purposeUse} overrides={tabOverride}>
+              <Purposes policies={props.policies} expanded={props.expanded} onSelectPurpose={props.onSelectPurpose}/>
+            </Tab>
+            <Tab key="disclose" title={intl.disclosuresToThirdParty} overrides={tabOverride}>
+              <Disclosures disclosures={props.disclosures}/>
+            </Tab>
+            <Tab key="document" title={intl.documents} overrides={tabOverride}>
+              <DocumentTable documents={props.documents}/>
+            </Tab>
+          </Tabs>
         </React.Fragment>
       )}
     </React.Fragment>

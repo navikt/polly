@@ -40,15 +40,14 @@ export const convertProcessToFormValues = (process?: Partial<Process>) => {
     department,
     subDepartment,
     productTeam,
-    product,
+    products,
     legalBases,
     start,
     end,
     automaticProcessing,
     profiling,
-    dataProcessor,
-    dataProcessorAgreements,
-    dataProcessorOutsideEU
+    dataProcessing,
+    retention
   } = (process || {})
 
   return {
@@ -60,15 +59,23 @@ export const convertProcessToFormValues = (process?: Partial<Process>) => {
     department: (department && department.code) || undefined,
     subDepartment: (subDepartment && subDepartment.code) || undefined,
     productTeam: productTeam || undefined,
-    product: (product && product?.code) || undefined,
+    products: (products && products.map(p => p.code)) || [],
     legalBases: convertLegalBasesToFormValues(legalBases),
     start: start || undefined,
     end: end || undefined,
     automaticProcessing: process ? mapBool(automaticProcessing) : false,
     profiling: process ? mapBool(profiling) : false,
-    dataProcessor: mapBool(dataProcessor),
-    dataProcessorAgreements: dataProcessorAgreements || [],
-    dataProcessorOutsideEU: mapBool(dataProcessorOutsideEU),
+    dataProcessing: {
+      dataProcessor: mapBool(dataProcessing?.dataProcessor),
+      dataProcessorAgreements: dataProcessing?.dataProcessorAgreements || [],
+      dataProcessorOutsideEU: mapBool(dataProcessing?.dataProcessorOutsideEU)
+    },
+    retention: {
+      retentionPlan: mapBool(retention?.retentionPlan),
+      retentionMonths: retention?.retentionMonths || 0,
+      retentionStart: retention?.retentionStart || '',
+      retentionDescription: retention?.retentionDescription || ''
+    },
     includeDefaultDocument: false
   } as ProcessFormValues
 }
@@ -82,14 +89,13 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
     department: values.department ? values.department : undefined,
     subDepartment: values.subDepartment ? values.subDepartment : undefined,
     productTeam: values.productTeam,
-    product: values.product,
+    products: values.products,
     legalBases: values.legalBases ? values.legalBases : [],
     start: values.start,
     end: values.end,
     automaticProcessing: values.automaticProcessing,
     profiling: values.profiling,
-    dataProcessor: values.dataProcessor,
-    dataProcessorAgreements: values.dataProcessor ? values.dataProcessorAgreements : [],
-    dataProcessorOutsideEU: values.dataProcessor ? values.dataProcessorOutsideEU : undefined,
+    dataProcessing: values.dataProcessing,
+    retention: values.retention
   }
 }

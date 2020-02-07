@@ -26,6 +26,7 @@ import { TeamPopover } from "../../common/Team"
 import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
 import { AuditButton } from "../../audit/AuditButton"
 import { AddDocumentModal } from "./AddDocumentModal"
+import _ from "lodash"
 
 const rowPanelContent: BlockProps = {
   display: 'flex',
@@ -206,6 +207,11 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
     }, 200)
   }, [isLoading])
 
+  const retentionYears = Math.floor((currentProcess?.retention?.retentionMonths || 0) / 12)
+  const retentionMonths = (currentProcess?.retention?.retentionMonths || 0) - retentionYears * 12
+  const retainedYearsOrMonths = !!retentionYears || !!retentionMonths
+  const retainedYearsAndMonths = !!retentionYears && !!retentionMonths
+  const dataProcessorAgreements = !!currentProcess?.dataProcessing?.dataProcessorAgreements.length
   return (
     <Block ref={purposeRef}>
       <Accordion
@@ -240,55 +246,98 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                       <Block width="33%">{renderSubjectCategoriesForProcess(currentProcess)}</Block>
                       <Block width="33%">{renderActiveForProcess(currentProcess)}</Block>
 
-                      {currentProcess.department && <Block width="33%">
-                        <Label2>{intl.department}</Label2>
-                        <Paragraph3>{codelist.getShortnameForCode(currentProcess.department)}</Paragraph3>
-                      </Block>}
-                      {currentProcess.subDepartment && <Block width="33%">
-                        <Label2>{intl.subDepartment}</Label2>
-                        <Paragraph3>{codelist.getShortnameForCode(currentProcess.subDepartment)}</Paragraph3>
-                      </Block>}
-                      {currentProcess.productTeam && <Block width="33%">
-                        <Label2>{intl.productTeam}</Label2>
-                        <TeamPopover teamId={currentProcess.productTeam}/>
-                      </Block>}
-                      {!!currentProcess.product && <Block width="33%">
+                      {!!currentProcess?.products?.length && <Block width="33%">
                         <Label2>{intl.product}</Label2>
-                        <Paragraph3>{codelist.getShortname(ListName.SYSTEM, currentProcess.product.code)}</Paragraph3>
+                        <Paragraph3>{currentProcess.products.map(product => codelist.getShortname(ListName.SYSTEM, product.code)).join(", ")}</Paragraph3>
                       </Block>}
                     </Block>
 
-
-                    <Block {...rowPanelContent} justifyContent="flex-start">
-                      <Block width="33%">
-                        <Label2>{intl.automaticProcessing}</Label2>
-                        <Paragraph3>{boolToText(currentProcess?.automaticProcessing)}</Paragraph3>
+                    <Block {...rowPanelContent} display="flex">
+                      <Block width="50%">
+                        <Label2>{intl.organizing}</Label2>
+                        <Block>
+                          {currentProcess.department &&
+                          <Paragraph3 marginBottom="0">
+                            <span>{intl.department}: </span>
+                            <span>{codelist.getShortnameForCode(currentProcess.department)}</span>
+                          </Paragraph3>}
+                          {currentProcess.subDepartment &&
+                          <Paragraph3 marginBottom="0" marginTop="0">
+                            <span>{intl.subDepartment}: </span>
+                            <span>{codelist.getShortnameForCode(currentProcess.subDepartment)}</span>
+                          </Paragraph3>}
+                          {currentProcess.productTeam &&
+                          <Paragraph3 marginBottom="0" marginTop="0">
+                            <span>{intl.productTeam}: </span>
+                            <TeamPopover teamId={currentProcess.productTeam}/>
+                          </Paragraph3>}
+                        </Block>
                       </Block>
 
-                      <Block width="33%">
-                        <Label2>{intl.profiling}</Label2>
-                        <Paragraph3>{boolToText(currentProcess?.profiling)}</Paragraph3>
+                      <Block width="50%">
+                        <Label2>{intl.automaticProcessing}</Label2>
+                        <Block>
+                          <Paragraph3 marginBottom="0">
+                            <span>{intl.automaticProcessing}: </span>
+                            <span>{boolToText(currentProcess?.automaticProcessing)}</span>
+                          </Paragraph3>
+                          <Paragraph3 marginBottom="0" marginTop="0">
+                            <span>{intl.profiling}: </span>
+                            <span>{boolToText(currentProcess?.profiling)}</span>
+                          </Paragraph3>
+                        </Block>
                       </Block>
                     </Block>
 
-                    <Block {...rowPanelContent} justifyContent="flex-start">
-                      <Block width="33%">
+                    <Block {...rowPanelContent} display="flex">
+                      <Block width="50%">
                         <Label2>{intl.dataProcessor}</Label2>
-                        <Paragraph3>{boolToText(currentProcess?.dataProcessor)}</Paragraph3>
+                        <Block>
+                          {currentProcess?.dataProcessing?.dataProcessor === null && intl.dataProcessorUnclarified}
+                          {currentProcess?.dataProcessing?.dataProcessor === false && intl.dataProcessorNo}
+                          {currentProcess?.dataProcessing?.dataProcessor &&
+                          <>
+                            <Paragraph3 marginBottom="0">
+                              <span>{retainedYearsOrMonths && intl.dataProcessorYes}</span>
+                            </Paragraph3>
+                            <Paragraph3 marginBottom="0" marginTop="0">
+                              <span>{dataProcessorAgreements && intl.dataProcessorAgreement}: </span>
+                              <span>{dataProcessorAgreements && currentProcess?.dataProcessing?.dataProcessorAgreements.join(", ")}</span>
+                            </Paragraph3>
+                            <Paragraph3 marginBottom="0" marginTop="0">
+                              <span>{intl.dataProcessorOutsideEUExtra}: </span>
+                              <span>{boolToText(currentProcess?.dataProcessing?.dataProcessorOutsideEU)}</span>
+                            </Paragraph3>
+                          </>}
+                        </Block>
                       </Block>
 
-                      {currentProcess?.dataProcessor &&
-                      <>
-                        <Block width="33%">
-                          <Label2>{intl.dataProcessorOutsideEU}</Label2>
-                          <Paragraph3>{boolToText(currentProcess.dataProcessorOutsideEU)}</Paragraph3>
+                      <Block width="50%">
+                        <Label2>{intl.retention}</Label2>
+                        <Block>
+                          {currentProcess?.retention?.retentionPlan === null && intl.retentionPlanUnclarified}
+                          {currentProcess?.retention?.retentionPlan === false && intl.retentionPlanNo}
+                          {currentProcess?.retention?.retentionPlan &&
+                          <>
+                            <Paragraph3 marginBottom="0">
+                              <span>{retainedYearsOrMonths && intl.retentionPlanYes}</span>
+                            </Paragraph3>
+                            <Paragraph3 marginBottom="0" marginTop="0">
+                              <span>{retainedYearsOrMonths && intl.retained} </span>
+                              <span>{!!retentionYears && `${retentionYears} ${intl.years}`} </span>
+                              <span>{retainedYearsAndMonths && intl.and} </span>
+                              <span>{!!retentionMonths && `${retentionMonths} ${intl.months}`} </span>
+                              <span>{intl.from} </span>
+                              <span>{_.lowerFirst(currentProcess?.retention?.retentionStart)}</span>
+                            </Paragraph3>
+                            <Paragraph3 marginBottom="0" marginTop="0">
+                              <span>{currentProcess?.retention?.retentionDescription && intl.description}: </span>
+                              <span>{currentProcess?.retention?.retentionDescription}</span>
+                            </Paragraph3>
+                          </>
+                          }
                         </Block>
-                        {!!currentProcess.dataProcessorAgreements?.length &&
-                        <Block width="33%">
-                          <Label2>{intl.dataProcessorAgreement}</Label2>
-                          <Paragraph3>{currentProcess.dataProcessorAgreements.join(", ")}</Paragraph3>
-                        </Block>}
-                      </>}
+                      </Block>
                     </Block>
 
                   </Block>

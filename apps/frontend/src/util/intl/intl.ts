@@ -39,11 +39,15 @@ export interface IStrings {
   yes: string;
   no: string;
   unclarified: string;
+  automation: string;
   automaticProcessing: string;
   automaticProcessingExtra: string;
   profiling: string;
   profilingExtra: string;
   dataProcessor: string;
+  dataProcessorYes: string;
+  dataProcessorNo: string;
+  dataProcessorUnclarified: string;
   dataProcessorExtra: string;
   dataProcessorAgreement: string;
   dataProcessorOutsideEU: string;
@@ -51,6 +55,18 @@ export interface IStrings {
   includeDefaultDocument: string;
   includeDefaultDocumentExtraStart: string;
   includeDefaultDocumentExtraEnd: string;
+  from: string;
+  retained: string;
+  retention: string;
+  retentionPlan: string;
+  retentionPlanYes: string;
+  retentionPlanNo: string;
+  retentionPlanUnclarified: string;
+  retentionMonths: string;
+  retentionStart: string;
+  retentionDescription: string;
+  years: string;
+  months: string;
 
   // sentence
   loggedInStatus: string;
@@ -126,6 +142,7 @@ export interface IStrings {
   pageNotFound: string;
   createdDocument: string;
   searchDocumentPlaceholder: string;
+  eventType: string;
 
   // groups
   POLLY_READ: string;
@@ -136,8 +153,17 @@ export interface IStrings {
   DELETE: string;
   UPDATE: string;
 
+  // Tables
+  INFORMATION_TYPE: string;
+  POLICY: string;
+  PROCESS: string;
+  DISCLOSURE: string;
+  DOCUMENT: string;
+  CODELIST: string;
+
   // generic
   department: string;
+  organizing: string;
   subDepartment: string;
   save: string;
   abort: string;

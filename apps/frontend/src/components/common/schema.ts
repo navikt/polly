@@ -2,6 +2,7 @@ import * as yup from "yup"
 import {
   AddDocumentToProcessFormValues,
   CreateDocumentFormValues,
+  DataProcessing,
   DisclosureFormValues,
   Document,
   DocumentInformationTypes,
@@ -12,7 +13,8 @@ import {
   PolicyFormValues,
   PolicyInformationType,
   Process,
-  ProcessFormValues
+  ProcessFormValues,
+  Retention
 } from "../../constants"
 import { intl } from "../../util"
 import { Code, codelist } from "../../service/Codelist"
@@ -40,16 +42,24 @@ export const processSchema = () => yup.object<ProcessFormValues>({
   department: yup.string(),
   subDepartment: yup.string(),
   productTeam: yup.string(),
-  product: yup.string(),
+  products: yup.array(yup.string()),
   legalBases: yup.array(legalBasisSchema()),
   legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
   start: yup.string().matches(DATE_REGEX, intl.dateFormat),
   end: yup.string().matches(DATE_REGEX, intl.dateFormat),
   automaticProcessing: yup.boolean(),
   profiling: yup.boolean(),
-  dataProcessor: yup.boolean(),
-  dataProcessorAgreements: yup.array(yup.string()),
-  dataProcessorOutsideEU: yup.boolean(),
+  dataProcessing: yup.object<DataProcessing>({
+    dataProcessor: yup.boolean(),
+    dataProcessorAgreements: yup.array(yup.string()),
+    dataProcessorOutsideEU: yup.boolean(),
+  }),
+  retention: yup.object<Retention>({
+    retentionPlan: yup.boolean(),
+    retentionMonths: yup.number(),
+    retentionStart: yup.string(),
+    retentionDescription: yup.string()
+  }),
   includeDefaultDocument: yup.boolean()
 })
 
@@ -74,7 +84,7 @@ export const createDocumentValidation = () => yup.object<CreateDocumentFormValue
   informationTypes: yup.array(yup.object().shape<DocumentInformationTypes>({
     subjectCategories: yup.array(yup.string()).min(1, intl.required),
     informationTypeId: yup.string().required(intl.required)
-  })).min(1,intl.required)
+  })).min(1, intl.required)
 });
 
 export const policySchema = () => yup.object<PolicyFormValues>({

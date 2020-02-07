@@ -6,6 +6,7 @@ import { getDisclosure, getPolicy, getProcess } from "../../api"
 import { Block } from "baseui/block"
 import { AuditButton } from "../audit/AuditButton"
 import { AuditItem, ObjectType } from "../../constants"
+import { useStyletron } from "baseui"
 
 type RouteLinkProps = {
   href: string
@@ -24,11 +25,13 @@ const RouteLinkImpl = (props: RouteComponentProps<any> & RouteLinkProps & any) =
 export default withRouter(RouteLinkImpl)
 
 type ObjectLinkProps = {
-  id: string,
-  type: ObjectType,
-  audit?: AuditItem,
-  withHistory?: boolean,
+  id: string
+  type: ObjectType
+  audit?: AuditItem
+  withHistory?: boolean
   children?: any
+  disable?: boolean
+  hideUnderline?: boolean
 }
 
 const ObjectLinkImpl = (props: RouteComponentProps & ObjectLinkProps) => {
@@ -57,14 +60,17 @@ const ObjectLinkImpl = (props: RouteComponentProps & ObjectLinkProps) => {
     console.warn('couldn\'t find object type ' + type)
     return ''
   }
+  const [useCss, theme] = useStyletron();
+  const linkCss = useCss({textDecoration: 'none'});
 
   const link =
-    <StyledLink onClick={(e: Event) => {
-      e.preventDefault();
-      (async () => props.history.push(await urlFor(props.type, props.id)))()
-    }} href='#'>
-      {props.children}
-    </StyledLink>
+    props.disable ? props.children :
+      <StyledLink onClick={(e: Event) => {
+        e.preventDefault();
+        (async () => props.history.push(await urlFor(props.type, props.id)))()
+      }} href='#' className={props.hideUnderline ? linkCss : undefined}>
+        {props.children}
+      </StyledLink>
 
   return props.withHistory ?
     <Block display="flex" justifyContent="space-between" width="100%" alignItems="center">
