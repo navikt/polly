@@ -256,18 +256,21 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                       <Block width="50%">
                         <Label2>{intl.organizing}</Label2>
                         <Block>
+                          {currentProcess.department &&
                           <Paragraph3 marginBottom="0">
                             <span>{intl.department}: </span>
                             <span>{codelist.getShortnameForCode(currentProcess.department)}</span>
-                          </Paragraph3>
+                          </Paragraph3>}
+                          {currentProcess.subDepartment &&
                           <Paragraph3 marginBottom="0" marginTop="0">
                             <span>{intl.subDepartment}: </span>
                             <span>{codelist.getShortnameForCode(currentProcess.subDepartment)}</span>
-                          </Paragraph3>
+                          </Paragraph3>}
+                          {currentProcess.productTeam &&
                           <Paragraph3 marginBottom="0" marginTop="0">
                             <span>{intl.productTeam}: </span>
                             <TeamPopover teamId={currentProcess.productTeam}/>
-                          </Paragraph3>
+                          </Paragraph3>}
                         </Block>
                       </Block>
 
