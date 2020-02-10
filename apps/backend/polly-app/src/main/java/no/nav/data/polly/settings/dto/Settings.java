@@ -16,6 +16,7 @@ import no.nav.data.polly.common.validator.Validated;
 public class Settings implements Validated {
 
     private String defaultProcessDocument;
+    private String frontpageMessage;
 
     @Override
     public void validate(FieldValidator validator) {
