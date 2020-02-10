@@ -40,6 +40,7 @@ class ProcessControllerIT extends IntegrationTestBase {
         assertThat(processResponse).isEqualTo(processResponseBuilder(policy.getProcess().getId())
                 .policy(PolicyResponse.builder()
                         .id(policy.getId())
+                        .processId(policy.getProcess().getId())
                         .purposeCode(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1))
                         .informationTypeId(createAndSaveInformationType().getId())
                         .informationType(

@@ -97,6 +97,7 @@ public class Policy extends Auditable<String> {
                 .id(getId())
                 .purposeCode(getCodelistResponse(ListName.PURPOSE, getPurposeCode()))
                 .subjectCategories(getCodelistResponseList(ListName.SUBJECT_CATEGORY, getData().getSubjectCategories()))
+                .processId(getProcess() == null ? null : getProcess().getId())
                 .process(getProcess() == null || !includeProcess ? null : getProcess().convertToResponse())
                 .start(getData().getStart())
                 .end(getData().getEnd())

@@ -75,6 +75,8 @@ public abstract class IntegrationTestBase {
 
     protected static final UUID INFORMATION_TYPE_ID_1 = UUID.fromString("fe566351-da4d-43b0-a2e9-b09e41ff8aa7");
     protected static final String PROCESS_NAME_1 = "Saksbehandling";
+    protected static final UUID PROCESS_ID_1 = UUID.fromString("60db8589-f383-4405-82f1-148b0333899b");
+    protected static final UUID PROCESS_ID_2 = UUID.fromString("0045b96b-8af8-4b1f-8bc5-81a6bde8506d");
     protected static final String PURPOSE_CODE1 = "KONTROLL";
     protected static final String PURPOSE_CODE2 = "AAP";
     protected static final String INFORMATION_TYPE_NAME = "Sivilstand";

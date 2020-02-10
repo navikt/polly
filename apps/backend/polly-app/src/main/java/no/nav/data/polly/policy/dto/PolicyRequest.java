@@ -15,8 +15,10 @@ import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.process.domain.Process;
 
 import java.util.List;
+import java.util.UUID;
 
 import static no.nav.data.polly.common.swagger.SwaggerConfig.BOOLEAN;
 import static no.nav.data.polly.common.swagger.SwaggerConfig.LOCAL_DATE;
@@ -34,13 +36,13 @@ import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
 public class PolicyRequest implements RequestElement {
 
     private String id;
-    private String process;
+    private String processId;
     @ApiModelProperty(value = "Codelist PURPOSE")
     private String purposeCode;
     @Singular
     @ApiModelProperty(value = "Codelist SUBJECT_CATEGORY")
     private List<String> subjectCategories;
-    private String informationTypeName;
+    private String informationTypeId;
     @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_START)
     private String start;
     @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_END)
@@ -56,17 +58,19 @@ public class PolicyRequest implements RequestElement {
     @JsonIgnore
     private InformationType informationType;
     @JsonIgnore
+    private Process process;
+    @JsonIgnore
     private Policy existingPolicy;
 
     @Override
     public String getIdentifyingFields() {
-        return process + "-" + purposeCode + "-" + subjectCategories + "-" + informationTypeName;
+        return processId + "-" + purposeCode + "-" + subjectCategories + "-" + informationTypeId;
     }
 
     @JsonIgnore
     @Override
     public String getReference() {
-        return getInformationTypeName() + "/" + getPurposeCode();
+        return getInformationTypeId() + "/" + getPurposeCode();
     }
 
     @Override
@@ -80,8 +84,10 @@ public class PolicyRequest implements RequestElement {
     public void validate(FieldValidator validator) {
         validator.checkUUID(Fields.id, id);
         validator.checkRequiredCodelist(Fields.purposeCode, purposeCode, ListName.PURPOSE);
-        validator.checkBlank(Fields.informationTypeName, informationTypeName);
-        validator.checkBlank(Fields.process, process);
+        validator.checkBlank(Fields.informationTypeId, informationTypeId);
+        validator.checkUUID(Fields.informationTypeId, informationTypeId);
+        validator.checkBlank(Fields.processId, processId);
+        validator.checkUUID(Fields.processId, processId);
         validator.checkRequiredCodelists(Fields.subjectCategories, subjectCategories, ListName.SUBJECT_CATEGORY);
         validator.checkDate(Fields.start, start);
         validator.checkDate(Fields.end, end);
@@ -90,4 +96,19 @@ public class PolicyRequest implements RequestElement {
         documentIds.forEach(docId -> validator.checkUUID(Fields.documentIds, docId));
     }
 
+    public UUID getInformationTypeIdAsUUID() {
+        try {
+            return informationTypeId == null ? null : UUID.fromString(informationTypeId);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    public UUID getProcessIdAsUUID() {
+        try {
+            return processId == null ? null : UUID.fromString(processId);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
 }

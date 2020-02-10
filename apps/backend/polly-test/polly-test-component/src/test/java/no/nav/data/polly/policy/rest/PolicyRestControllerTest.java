@@ -233,7 +233,7 @@ class PolicyRestControllerTest {
     }
 
     private PolicyRequest createPolicyRequest(String desc, String code, String name) {
-        return PolicyRequest.builder().id(UUID.randomUUID().toString()).purposeCode(code).informationTypeName(name)
+        return PolicyRequest.builder().id(UUID.randomUUID().toString()).purposeCode(code).informationTypeId(name)
                 .legalBases(List.of(LegalBasisRequest.builder().description(desc).build()))
                 .build();
     }

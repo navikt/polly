@@ -9,6 +9,8 @@ import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.policy.dto.PolicyRequest;
+import no.nav.data.polly.process.domain.Process;
+import no.nav.data.polly.process.domain.ProcessRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -25,10 +27,13 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
 
     private final PolicyRepository policyRepository;
     private final InformationTypeRepository informationTypeRepository;
+    private final ProcessRepository processRepository;
 
-    public PolicyService(PolicyRepository policyRepository, InformationTypeRepository informationTypeRepository) {
+    public PolicyService(PolicyRepository policyRepository, InformationTypeRepository informationTypeRepository,
+            ProcessRepository processRepository) {
         this.policyRepository = policyRepository;
         this.informationTypeRepository = informationTypeRepository;
+        this.processRepository = processRepository;
     }
 
     public void validateRequests(List<PolicyRequest> requests, boolean isUpdate) {
@@ -76,13 +81,22 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
 
     private List<ValidationError> validateRepositoryForPolicyRequest(PolicyRequest request) {
         List<ValidationError> validations = new ArrayList<>();
-        if (request.getInformationTypeName() != null) {
-            InformationType informationType = informationTypeRepository.findByName(request.getInformationTypeName()).orElse(null);
+        if (request.getInformationTypeIdAsUUID() != null) {
+            InformationType informationType = informationTypeRepository.findById(request.getInformationTypeIdAsUUID()).orElse(null);
             if (informationType == null) {
-                validations.add(new ValidationError(request.getReference(), "informationTypeName",
-                        String.format("An InformationType with name %s does not exist", request.getInformationTypeName())));
+                validations.add(new ValidationError(request.getReference(), "informationTypeId",
+                        String.format("An InformationType with id %s does not exist", request.getInformationTypeId())));
             } else {
                 request.setInformationType(informationType);
+            }
+        }
+        if (request.getProcessIdAsUUID() != null) {
+            Process process = processRepository.findById(request.getProcessIdAsUUID()).orElse(null);
+            if (process == null) {
+                validations.add(new ValidationError(request.getReference(), "processId",
+                        String.format("A Process with id %s does not exist", request.getProcessId())));
+            } else {
+                request.setProcess(process);
             }
         }
         return validations;
@@ -90,7 +104,7 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
 
     private String identifiers(PolicyRequest request) {
         return String.format("InformationType: %s and Process: %s Purpose: %s SubjectCategories: %s",
-                request.getInformationTypeName(), request.getProcess(), request.getPurposeCode(), request.getSubjectCategories());
+                request.getInformationTypeId(), request.getProcessId(), request.getPurposeCode(), request.getSubjectCategories());
     }
 
 }

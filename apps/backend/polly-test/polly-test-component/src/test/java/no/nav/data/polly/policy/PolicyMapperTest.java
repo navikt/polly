@@ -11,32 +11,21 @@ import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.policy.mapper.PolicyMapper;
 import no.nav.data.polly.process.domain.Process;
-import no.nav.data.polly.process.domain.ProcessRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.BDDMockito.given;
 
-@ExtendWith(MockitoExtension.class)
 class PolicyMapperTest {
 
-    @Mock
-    private ProcessRepository processRepository;
-    @InjectMocks
-    private PolicyMapper mapper;
+    private PolicyMapper mapper = new PolicyMapper();
 
     private static final String LEGAL_BASIS_DESCRIPTION1 = "Legal basis 1";
     private static final String PURPOSE_CODE1 = "KONTROLL";
@@ -51,10 +40,9 @@ class PolicyMapperTest {
 
     @Test
     void shouldMapToPolicy() {
-        given(processRepository.findByNameAndPurposeCode("process", PURPOSE_CODE1)).willReturn(Optional.of(Process.builder().name("process").build()));
         InformationType informationType = createBasicTestdata();
         PolicyRequest request = PolicyRequest.builder()
-                .process("process")
+                .process(Process.builder().name("process").build())
                 .subjectCategories(List.of("Bruker"))
                 .legalBases(List.of(LegalBasisRequest.builder().gdpr("6e").nationalLaw("Ftrl").description(LEGAL_BASIS_DESCRIPTION1).build()))
                 .start("2019-02-04")
