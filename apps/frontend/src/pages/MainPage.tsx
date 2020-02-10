@@ -25,7 +25,7 @@ export const Main = () => {
     (async () => {
       setSettings(await getSettings())
     })()
-  })
+  }, [])
 
   return (
     <Block marginTop={theme.sizing.scale400} display="flex" flexWrap>
