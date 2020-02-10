@@ -20,7 +20,6 @@ const FieldInformationType = (props: {
 
   return (
     <Select
-      autoFocus
       maxDropdownHeight="400px"
       searchable={true}
       type={TYPE.search}
