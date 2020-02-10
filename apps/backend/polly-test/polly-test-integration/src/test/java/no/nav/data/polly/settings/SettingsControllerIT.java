@@ -45,7 +45,8 @@ public class SettingsControllerIT extends IntegrationTestBase {
 
     @Test
     void validateDefaultProcessDocumentExists() {
-        ResponseEntity<String> resp = restTemplate.postForEntity("/settings", new Settings("d7fc29f4-c006-49ce-9f38-75c82c4bcc98"), String.class);
+        Settings settings = Settings.builder().defaultProcessDocument("d7fc29f4-c006-49ce-9f38-75c82c4bcc98").build();
+        ResponseEntity<String> resp = restTemplate.postForEntity("/settings", settings, String.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(resp.getBody()).contains("Can't find document d7fc29f4-c006-49ce-9f38-75c82c4bcc98");
     }
