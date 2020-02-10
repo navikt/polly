@@ -19,10 +19,10 @@ import { hasSpecifiedDate } from "../../common/Durations"
 import { processSchema } from "../../common/schema"
 import { getTeam, mapTeamToOption, useTeamSearch } from "../../../api"
 import { Textarea } from "baseui/textarea"
-import { Radio, RadioGroup } from "baseui/radio"
 import { Card } from "baseui/card"
 import { renderTagList } from "../../common/TagList"
 import { Slider } from "baseui/slider"
+import { RadioBoolButton } from "../../common/Radio"
 
 const modalBlockProps: BlockProps = {
   width: '750px',
@@ -105,24 +105,12 @@ const FieldSubDepartment = (props: { subDepartment?: string }) => {
 
 };
 
-const YES = "YES", NO = "NO", UNCLARIFIED = "UNCLARIFIED"
-const boolToRadio = (bool?: boolean) => bool === undefined ? UNCLARIFIED : bool ? YES : NO
-const radioToBool = (radio: string) => radio === UNCLARIFIED ? undefined : radio === YES
-
 const BoolField = (props: { value?: boolean, fieldName: string, omitUndefined?: boolean }) => (
   <Field
     name={props.fieldName}
-    render={({form}: FieldProps<ProcessFormValues>) => (
-
-      <RadioGroup value={boolToRadio(props.value)} align="horizontal"
-                  overrides={{RadioGroupRoot: {style: {width: "100%"}}}}
-                  onChange={(e) => form.setFieldValue(props.fieldName, radioToBool((e.target as HTMLInputElement).value))}
-      >
-        <Radio overrides={{Label: {style: {marginRight: "2rem"}}}} value={YES}>{intl.yes}</Radio>
-        <Radio overrides={{Label: {style: {marginRight: "2rem"}}}} value={NO}>{intl.no}</Radio>
-        {!props.omitUndefined && <Radio overrides={{Label: {style: {marginRight: "2rem"}}}} value={UNCLARIFIED}>{intl.unclarified}</Radio>}
-      </RadioGroup>
-    )}
+    render={({form}: FieldProps<ProcessFormValues>) =>
+      <RadioBoolButton value={props.value} setValue={(b) => form.setFieldValue(props.fieldName, b)}
+                       omitUndefined={props.omitUndefined}/>}
   />
 )
 

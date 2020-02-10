@@ -27,6 +27,7 @@ import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
 import { AuditButton } from "../../audit/AuditButton"
 import { AddDocumentModal } from "./AddDocumentModal"
 import { RetentionView } from "../Retention"
+import { boolToText } from "../../common/Radio"
 
 const rowPanelContent: BlockProps = {
   display: 'flex',
@@ -190,8 +191,6 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
       </Button>
     </StatefulTooltip>
   )
-
-  const boolToText = (b?: boolean) => (b === null || b === undefined) ? intl.unclarified : b ? intl.yes : intl.no
 
   const hasAccess = () => user.canWrite()
   useAwait(user.wait())
