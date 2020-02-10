@@ -35,8 +35,9 @@ export const mapPolicyFromForm = (values: PolicyFormValues) => {
     ...values,
     subjectCategories: values.subjectCategories,
     informationType: undefined,
-    informationTypeName: values.informationType && values.informationType.name,
-    process: values.process.name,
+    informationTypeId: values.informationType?.id,
+    process: undefined,
+    processId: values.process.id,
     legalBases: values.legalBasesStatus !== LegalBasesStatus.OWN ? [] : values.legalBases,
     legalBasesInherited: values.legalBasesStatus === LegalBasesStatus.INHERITED,
     legalBasesStatus: undefined
@@ -63,7 +64,7 @@ export const convertLegalBasesToFormValues = (legalBases?: LegalBasis[]) => (leg
 export const convertPolicyToFormValues = (policy: Policy): PolicyFormValues => ({
   legalBasesOpen: false,
   id: policy.id,
-  process: policy.process!,
+  process: policy.process,
   purposeCode: policy.purposeCode.code,
   informationType: policy.informationType,
   subjectCategories: policy.subjectCategories.map((code: Code) => code.code),
