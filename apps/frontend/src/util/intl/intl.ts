@@ -74,6 +74,7 @@ export interface IStrings {
   couldntLoadTeam: string;
   informationTypeCreate: string;
   informationTypeExists: string;
+  documentExists: string;
   sensitivitySelect: string;
   nameWrite: string;
   categoriesWrite: string;

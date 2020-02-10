@@ -100,8 +100,9 @@ const InformationtypeForm = ({
     values: InformationtypeFormValues,
     actions: FormikActions<InformationtypeFormValues>
   ) => {
-    const searchResults = (await searchInformationType(values.name!)).content.filter(it => it.name.toLowerCase() === values.name?.toLowerCase())
-    if (searchResults.length > 0 && formInitialValues.id !== searchResults[0].id) {
+    const searchResults = (await searchInformationType(values.name!))
+    .content.filter(it => it.name.toLowerCase() === values.name?.toLowerCase() && formInitialValues.id !== it.id)
+    if (searchResults.length > 0) {
       actions.setFieldError('name', intl.informationTypeExists)
     } else {
       submit(values);

@@ -1,17 +1,18 @@
-import React, {KeyboardEvent} from "react";
-import {Block, BlockProps} from "baseui/block";
-import {Label2} from "baseui/typography";
-import {intl, useAwait} from "../../../util";
-import {Input, SIZE} from "baseui/input";
-import {Textarea} from "baseui/textarea";
-import {DocumentFormValues_Temp} from "../../../constants";
+import React, { KeyboardEvent } from "react";
+import { Block, BlockProps } from "baseui/block";
+import { Label2 } from "baseui/typography";
+import { intl, useAwait } from "../../../util";
+import { Input, SIZE } from "baseui/input";
+import { Textarea } from "baseui/textarea";
+import { DocumentFormValues_Temp } from "../../../constants";
 import InformationTypesTable from "./InformationTypesTable";
-import {Field, FieldArray, FieldProps, Form, Formik, FormikProps} from "formik";
-import {Button} from "baseui/button";
-import {Error} from "../../common/ModalSchema";
-import {user} from "../../../service/User";
-import {createDocumentValidation} from "../../common/schema";
-import {Notification} from "baseui/notification";
+import { Field, FieldArray, FieldProps, Form, Formik, FormikActions, FormikProps } from "formik";
+import { Button } from "baseui/button";
+import { Error } from "../../common/ModalSchema";
+import { user } from "../../../service/User";
+import { createDocumentValidation } from "../../common/schema";
+import { Notification } from "baseui/notification";
+import { searchDocuments } from "../../../api"
 
 const rowBlockProps: BlockProps = {
   width: '100%',
@@ -33,7 +34,7 @@ const DocumentForm = (props: DocumentFormProps) => {
   const [responseMessage, setResponseMessage] = React.useState();
   const [errorMessage, setErrorMessage] = React.useState();
 
-  const { initialValues, handleSubmit } = props
+  const {initialValues, handleSubmit} = props
 
   const hasAccess = () => user.canWrite();
   useAwait(user.wait())
@@ -42,13 +43,21 @@ const DocumentForm = (props: DocumentFormProps) => {
     if (e.key === 'Enter') e.preventDefault()
   }
 
+  const onSubmit = async (values: DocumentFormValues_Temp, actions: FormikActions<DocumentFormValues_Temp>) => {
+    const searchResults = (await searchDocuments(values.name))
+    .content.filter(doc => doc.name?.toLowerCase() === values.name?.toLowerCase() && initialValues.id !== doc.id)
+    if (searchResults.length > 0) {
+      actions.setFieldError('name', intl.documentExists)
+    } else {
+      handleSubmit(values)
+    }
+  }
+
   return hasAccess() && !isLoading ? (
     <React.Fragment>
       <Formik
         initialValues={initialValues}
-        onSubmit={(values: DocumentFormValues_Temp) => {
-          handleSubmit(values);
-        }}
+        onSubmit={onSubmit}
         validationSchema={createDocumentValidation()}
       >
         {
@@ -128,9 +137,9 @@ const DocumentForm = (props: DocumentFormProps) => {
 
                 {responseMessage && (
                   <Block marginRight="scale800" marginTop="10px">
-                     <Notification kind="positive" autoHideDuration={5000}>
-                        {responseMessage}
-                     </Notification>
+                    <Notification kind="positive" autoHideDuration={5000}>
+                      {responseMessage}
+                    </Notification>
                   </Block>
                 )}
 
