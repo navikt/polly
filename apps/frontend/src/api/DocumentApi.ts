@@ -12,7 +12,7 @@ import {getSettings} from "./SettingsApi"
 import {useDebouncedState} from "../util"
 
 export const getDocument = async (documentId: string) => {
-  return (await axios.get<Document>(`${env.pollyBaseUrl}/document/${documentId}`)).data as Document
+  return (await axios.get<Document>(`${env.pollyBaseUrl}/document/${documentId}`)).data
 }
 
 export const getDefaultProcessDocument = async () => {
@@ -82,5 +82,3 @@ export const useDocumentSearch = () => {
 
   return [documentSearchResult, setDocumentSearch, loading] as [Document[], Dispatch<SetStateAction<string>>, boolean]
 }
-
-

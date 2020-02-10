@@ -344,4 +344,5 @@ export interface CategoryUsage {
 
 export interface Settings {
   defaultProcessDocument: string;
+  frontpageMessage: string;
 }

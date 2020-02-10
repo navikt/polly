@@ -28,6 +28,7 @@
         "react-helmet": "^5.2.1",
         "react-json-view": "^1.19.1",
         "react-localization": "^1.0.15",
+        "react-markdown": "^4.3.1",
         "react-process-string": "^1.2.0",
         "react-router-dom": "^5.0.1",
         "react-scripts": "3.3.0",

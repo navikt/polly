@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 import { Block } from "baseui/block"
 import startIll from '../resources/start_illustration.svg'
 import { getEvents } from "../api/AuditApi"
-import { AuditAction, Event, ObjectType, PageResponse } from "../constants"
+import { AuditAction, Event, ObjectType, PageResponse, Settings } from "../constants"
 import { StatefulTabs, Tab } from "baseui/tabs"
 import { HeadingMedium, Label2 } from "baseui/typography"
 import moment from "moment"
@@ -14,17 +14,31 @@ import { Option, StatefulSelect, Value } from "baseui/select"
 import { AuditActionIcon } from "../components/audit/AuditComponents"
 import { PLACEMENT } from "baseui/popover"
 import { StatefulTooltip } from "baseui/tooltip"
+import { getSettings } from "../api/SettingsApi"
+import ReactMarkdown from "react-markdown"
 
 export const Main = () => {
   useAwait(user.wait())
+  const [settings, setSettings] = useState<Settings>()
+
+  useEffect(() => {
+    (async () => {
+      setSettings(await getSettings())
+    })()
+  })
 
   return (
-    <Block marginTop={theme.sizing.scale400} display="flex" flexWrap
-           justifyContent="center" alignContent="center"
-    >
-      {user.isAdmin() ? <LastEvents/> :
-        <img src={startIll} alt={intl.startIllustration} style={{maxWidth: "65%", marginTop: theme.sizing.scale4800}}/>
-      }
+    <Block marginTop={theme.sizing.scale400} display="flex" flexWrap>
+      <Block width="100%">
+        <ReactMarkdown source={settings?.frontpageMessage}/>
+      </Block>
+      <Block width="100%" display="flex" justifyContent="center" alignContent="center">
+        {user.isAdmin() ? <LastEvents/> :
+          <Block maxWidth="65%" marginTop={theme.sizing.scale1200}>
+            <img src={startIll} alt={intl.startIllustration} style={{width: "100%"}}/>
+          </Block>
+        }
+      </Block>
     </Block>
   )
 }
