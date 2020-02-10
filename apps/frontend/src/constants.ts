@@ -18,7 +18,7 @@ export interface PolicyFormValues {
   id?: string
   purposeCode: string
   informationType?: PolicyInformationType
-  process: PolicyProcess
+  process: { name: string, legalBases: LegalBasis[] }
   subjectCategories: string[]
   legalBasesStatus?: LegalBasesStatus
   legalBases: Array<LegalBasisFormValues>
@@ -52,8 +52,6 @@ export interface ProcessFormValues {
   profiling?: boolean
   dataProcessing: DataProcessing
   retention: Retention
-
-  includeDefaultDocument: boolean
 }
 
 export interface DataProcessing {
@@ -105,7 +103,7 @@ export interface InformationType {
 export interface Policy extends IDurationed {
   id: string
   informationType: PolicyInformationType
-  process: PolicyProcess
+  process: Process
   purposeCode: Code
   subjectCategories: Code[]
   legalBasesInherited: boolean
@@ -116,7 +114,7 @@ export interface Policy extends IDurationed {
 export const policySort: ColumnCompares<Policy> = {
   purposeCode: (a, b) => codelist.getShortnameForCode(a.purposeCode).localeCompare(codelist.getShortnameForCode(b.purposeCode), intl.getLanguage()),
   informationType: (a, b) => a.informationType.name.localeCompare(b.informationType.name),
-  process: (a, b) => a.process.name.localeCompare(b.process.name),
+  process: (a, b) => (a.process?.name || '').localeCompare(b.process?.name || ''),
   subjectCategories: (a, b) => codelist.getShortnameForCode(a.subjectCategories[0]).localeCompare(codelist.getShortnameForCode(b.subjectCategories[0]), intl.getLanguage()),
   legalBases: (a, b) => a.legalBases.length - b.legalBases.length
 }
@@ -138,12 +136,6 @@ export interface PolicyInformationType {
   id: string
   name: string
   sensitivity: Code
-}
-
-export interface PolicyProcess {
-  id: string
-  name: string
-  legalBases: LegalBasis[]
 }
 
 export interface Process extends IDurationed {
@@ -274,7 +266,8 @@ export interface DocumentInfoTypeUse {
 export interface AddDocumentToProcessFormValues {
   document?: Document
   informationTypes: DocumentInfoTypeUse[]
-  process: Process
+  defaultDocument: boolean
+  process: { id: string, name: string, purposeCode: string }
 }
 
 export interface CreateDocumentFormValues {
@@ -329,13 +322,19 @@ export interface CodeUsage {
   disclosures: [Use]
   documents: [Use]
   informationTypes: [Use]
-  policies: [Use]
-  processes: [Use]
+  policies: [UseWithPurpose]
+  processes: [UseWithPurpose]
 }
 
 export interface Use {
   id: string
   name: string
+}
+
+export interface UseWithPurpose {
+  id: string
+  name: string
+  purposeCode: string
 }
 
 export interface CategoryUsage {

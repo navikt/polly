@@ -59,8 +59,7 @@ export const processSchema = () => yup.object<ProcessFormValues>({
     retentionMonths: yup.number(),
     retentionStart: yup.string(),
     retentionDescription: yup.string()
-  }),
-  includeDefaultDocument: yup.boolean()
+  })
 })
 
 const missingArt9LegalBasisForSensitiveInfoType = (informationType: PolicyInformationType, policy: PolicyFormValues) => {
@@ -154,5 +153,6 @@ export const disclosureSchema = () => yup.object<DisclosureFormValues>({
 export const addDocumentToProcessSchema = () => yup.object<AddDocumentToProcessFormValues>({
   document: yup.object<Document>().required(intl.required),
   informationTypes: yup.array(yup.object<DocumentInfoTypeUse>()).required(intl.required),
-  process: yup.object<Process>().required(intl.required)
+  process: yup.object<Process>().required(intl.required),
+  defaultDocument: yup.boolean()
 })

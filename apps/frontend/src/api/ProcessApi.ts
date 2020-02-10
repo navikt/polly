@@ -4,7 +4,9 @@ import { env } from "../util/env"
 import { convertLegalBasesToFormValues } from "./PolicyApi"
 
 export const getProcess = async (processId: string) => {
-  return (await axios.get<Process>(`${env.pollyBaseUrl}/process/${processId}`)).data
+  const data = (await axios.get<Process>(`${env.pollyBaseUrl}/process/${processId}`)).data
+  data.policies.forEach(p => p.process = data)
+  return data
 }
 
 export const getProcessesForPurpose = async (purpose: string) => {
@@ -31,7 +33,7 @@ export const updateProcess = async (process: ProcessFormValues) => {
 
 const mapBool = (b?: boolean) => b === true ? true : b === false ? false : undefined
 
-export const convertProcessToFormValues = (process?: Partial<Process>) => {
+export const convertProcessToFormValues: (process?: Partial<Process>) => ProcessFormValues = process => {
   const {
     id,
     purposeCode,
@@ -75,9 +77,8 @@ export const convertProcessToFormValues = (process?: Partial<Process>) => {
       retentionMonths: retention?.retentionMonths || 0,
       retentionStart: retention?.retentionStart || '',
       retentionDescription: retention?.retentionDescription || ''
-    },
-    includeDefaultDocument: false
-  } as ProcessFormValues
+    }
+  }
 }
 
 export const mapProcessFromForm = (values: ProcessFormValues) => {
