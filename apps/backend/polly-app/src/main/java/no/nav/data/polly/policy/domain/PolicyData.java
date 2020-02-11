@@ -25,7 +25,6 @@ public class PolicyData {
     private LocalDate start;
     @NotNull
     private LocalDate end;
-    @NotNull
     private boolean legalBasesInherited = false;
     @Valid
     @NotNull
