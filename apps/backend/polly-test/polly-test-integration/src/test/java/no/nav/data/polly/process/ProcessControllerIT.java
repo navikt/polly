@@ -145,11 +145,11 @@ class ProcessControllerIT extends IntegrationTestBase {
         assertThat(resp.getBody()).isNotNull();
 
         String id = resp.getBody().getId().toString();
-        ProcessRequest update = ProcessRequest.builder().id(id).name("changedName").purposeCode("AAP").department("dep").build();
+        ProcessRequest update = ProcessRequest.builder().id(id).name("newprocess").purposeCode("KONTROLL").department("dep").build();
         var errorResp = restTemplate.exchange("/process/{id}", HttpMethod.PUT, new HttpEntity<>(update), String.class, id);
         assertThat(errorResp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResp.getBody()).isNotNull();
-        assertThat(errorResp.getBody()).contains("Cannot change name from newprocess to changedName");
+        assertThat(errorResp.getBody()).contains("Cannot change purpose from AAP to KONTROLL");
     }
 
 }

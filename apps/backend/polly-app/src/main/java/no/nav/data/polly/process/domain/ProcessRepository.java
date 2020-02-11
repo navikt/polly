@@ -13,8 +13,6 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
 
     Optional<Process> findByNameAndPurposeCode(String name, String purposeCode);
 
-    List<Process> findByName(String name);
-
     List<Process> findByPurposeCode(String purpose);
 
     @Query(value = "select * from process where data->>'department' = ?1", nativeQuery = true)

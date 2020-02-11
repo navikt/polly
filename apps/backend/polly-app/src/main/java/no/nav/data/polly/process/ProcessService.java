@@ -57,10 +57,6 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
             if (repoValue.isPresent()) {
                 Process process = repoValue.get();
                 validateTeam(request, process.getData().getProductTeam(), validations);
-                if (!Objects.equals(process.getName(), request.getName())) {
-                    validations.add(new ValidationError(request.getReference(), "nameChanged",
-                            format("Cannot change name from %s to %s", process.getName(), request.getName())));
-                }
                 if (!Objects.equals(process.getPurposeCode(), request.getPurposeCode())) {
                     validations.add(new ValidationError(request.getReference(), "purposeChanged",
                             format("Cannot change purpose from %s to %s", process.getPurposeCode(), request.getPurposeCode())));

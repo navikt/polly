@@ -19,12 +19,6 @@ public interface InformationTypeRepository extends JpaRepository<InformationType
     @Query(value = "select * from information_type where data ->>'name' = ?1", nativeQuery = true)
     Optional<InformationType> findByName(String name);
 
-    @Query(value = "select * from information_type where data ->>'name' in (?1)", nativeQuery = true)
-    List<InformationType> findAllByNameIn(List<String> names);
-
-    @Query(value = "select * from information_type where data ->>'name' ilike %?1%", nativeQuery = true)
-    List<InformationType> findByNameLike(String name);
-
     @Query(value = "select * from information_type where data ->>'sensitivity' = ?1", nativeQuery = true)
     List<InformationType> findBySensitivity(String sensitivity);
 
@@ -40,11 +34,6 @@ public interface InformationTypeRepository extends JpaRepository<InformationType
     @Transactional
     @Query("update InformationType set syncStatus = 'TO_BE_UPDATED' where id in ?1")
     int setSyncForInformationTypeIds(List<UUID> ids);
-
-    @Modifying
-    @Transactional
-    @Query("update InformationType set syncStatus = ?2 where id = ?1")
-    void updateStatusForInformationType(UUID informationTypeId, SyncStatus syncStatus);
 
     List<InformationType> findByTermId(String term);
 
