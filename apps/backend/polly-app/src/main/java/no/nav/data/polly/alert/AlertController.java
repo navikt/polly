@@ -43,7 +43,7 @@ public class AlertController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Alerts fetched", response = InformationTypeAlert.class),
             @ApiResponse(code = 500, message = "Internal server error")})
-    @GetMapping("/informationType/{informationTypeId}")
+    @GetMapping("/informationtype/{informationTypeId}")
     public ResponseEntity<InformationTypeAlert> alertsForInformationType(@PathVariable UUID informationTypeId) {
         var alerts = alertService.checkAlertsForInformationType(informationTypeId);
         return ResponseEntity.ok(alerts);
