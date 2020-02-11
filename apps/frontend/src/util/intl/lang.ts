@@ -236,7 +236,7 @@ export const no: IStrings = {
   user: "Bruker",
   close: "Lukk",
   lastChanges: "Siste endringer",
-  settings: "Instillinger",
+  settings: "Innstillinger",
   defaultProcessDocument: "Dokument for standard informasjonstyper i behandling"
 }
 
