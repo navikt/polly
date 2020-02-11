@@ -83,7 +83,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
     (async () => {
       setAlert(await getAlertForProcess(process.id))
     })()
-  }, [process.id])
+  }, [process, policies])
 
   React.useEffect(() => {
     setPolicies(process ? process.policies : [])
