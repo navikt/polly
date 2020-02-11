@@ -307,7 +307,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                             <span>{intl.dataProcessorYes}</span>
                           </Paragraph3>
                           <Paragraph3 marginBottom="0" marginTop="0">
-                            <span>{dataProcessorAgreements && intl.dataProcessorAgreement}: </span>
+                            <span>{dataProcessorAgreements && `${intl.dataProcessorAgreement}: `}</span>
                             <span>{dataProcessorAgreements && currentProcess?.dataProcessing?.dataProcessorAgreements.join(", ")}</span>
                           </Paragraph3>
                           <Paragraph3 marginTop="0">
@@ -332,7 +332,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                             <RetentionView retention={currentProcess?.retention}/>
                           </Paragraph3>
                           <Paragraph3 marginTop="0">
-                            <span>{currentProcess?.retention?.retentionDescription && intl.description}: </span>
+                            <span>{currentProcess?.retention?.retentionDescription && `${intl.description}: `}</span>
                             <span>{currentProcess?.retention?.retentionDescription}</span>
                           </Paragraph3>
                         </>
