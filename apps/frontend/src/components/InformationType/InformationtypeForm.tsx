@@ -89,10 +89,13 @@ const InformationtypeForm = ({
     if (e.key === 'Enter') e.preventDefault()
   }
   const onAddKeyword = (arrayHelpers: FieldArrayRenderProps) => {
-    arrayHelpers.push(currentKeywordValue);
-    setCurrentKeywordValue("");
+    if (!currentKeywordValue) {
+      return
+    }
+    arrayHelpers.push(currentKeywordValue)
+    setCurrentKeywordValue("")
     if (keywordsRef && keywordsRef.current) {
-      keywordsRef.current.focus();
+      keywordsRef.current.focus()
     }
   }
 
