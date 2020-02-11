@@ -85,7 +85,7 @@ const FieldTextarea = (props: { fieldName: string, fieldValue?: string, placehol
   return (
     <Field
       name={props.fieldName}
-      render={({field, form}: FieldProps<DisclosureFormValues>) => (
+      render={({field, form}: FieldProps<string, DisclosureFormValues>) => (
         <Textarea
           {...field}
           placeholder={props.placeholder}
@@ -103,7 +103,7 @@ const FieldInput = (props: { fieldName: string, fieldValue?: string }) => {
   return (
     <Field
       name={props.fieldName}
-      render={({field, form}: FieldProps<DisclosureFormValues>) => (
+      render={({field, form}: FieldProps<string, DisclosureFormValues>) => (
         <Input {...field} />
       )}
     />
@@ -118,7 +118,7 @@ const FieldInformationType = (props: {
   <React.Fragment>
     <Field
       name="document"
-      render={({field, form}: FieldProps<DisclosureFormValues>) => (
+      render={({field, form}: FieldProps<string, DisclosureFormValues>) => (
         <Block width="100%">
           <StatefulSelect
             maxDropdownHeight="400px"

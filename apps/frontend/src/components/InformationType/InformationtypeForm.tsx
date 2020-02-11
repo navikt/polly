@@ -1,6 +1,6 @@
 import * as React from "react";
 import { KeyboardEvent, useEffect } from "react";
-import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikActions, FormikProps } from "formik";
+import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikHelpers, FormikProps } from "formik";
 import { Label2 } from "baseui/typography";
 import { Input } from "baseui/input";
 import { Block, BlockProps } from "baseui/block";
@@ -98,7 +98,7 @@ const InformationtypeForm = ({
 
   const onSubmit = async (
     values: InformationtypeFormValues,
-    actions: FormikActions<InformationtypeFormValues>
+    actions: FormikHelpers<InformationtypeFormValues>
   ) => {
     const searchResults = (await searchInformationType(values.name!))
     .content.filter(it => it.name.toLowerCase() === values.name?.toLowerCase() && formInitialValues.id !== it.id)
@@ -126,7 +126,7 @@ const InformationtypeForm = ({
               <FlexGridItem>
                 <Field
                   name="name"
-                  render={({form, field}: FieldProps<InformationtypeFormValues>) => (
+                  render={({form, field}: FieldProps) => (
                     <Block>
                       <Block {...labelProps}>
                         <Label2>{intl.name}</Label2>
@@ -297,7 +297,7 @@ const InformationtypeForm = ({
                   name="description"
                   render={({
                              field, form
-                           }: FieldProps<InformationtypeFormValues>) => (
+                           }: FieldProps) => (
                     <Block>
                       <Block {...labelProps}>
                         <Label2>{intl.description}</Label2>
