@@ -97,6 +97,8 @@ export const no: IStrings = {
   legalBasesUndecided: "Uavklart",
   legalBasesOwn: "Har eget rettslig grunnlag",
   legalBasesUndecidedWarning: "Rettslig grunnlag er ikke avklart",
+  legalBasesArt6Warning: "Rettslig grunnlag for artikkel 6 mangler",
+  legalBasesArt9Warning: "Rettslig grunnlag for artikkel 9 mangler",
   notAllowedMessage: "Du har ikke tilgang til denne siden.",
   confirmDeleteHeader: "Bekreft sletting",
   confirmDeletePolicyText: "Bekreft sletting av behandling for opplysningstypen",
@@ -234,7 +236,7 @@ export const no: IStrings = {
   user: "Bruker",
   close: "Lukk",
   lastChanges: "Siste endringer",
-  settings: "Instillinger",
+  settings: "Innstillinger",
   defaultProcessDocument: "Dokument for standard informasjonstyper i behandling"
 }
 
@@ -335,6 +337,8 @@ export const en: IStrings = {
   legalBasesUndecided: "Undecided",
   legalBasesOwn: "Use explicit legal bases",
   legalBasesUndecidedWarning: "Legal bases missing",
+  legalBasesArt6Warning: "Legal basis for article 6 is missing",
+  legalBasesArt9Warning: "Legal basis for article 9 is missing",
   notAllowedMessage: "You don't have access to this page",
   confirmDeleteHeader: "Confirm delete",
   confirmDeletePolicyText: "Please confirm deleting the policy for",

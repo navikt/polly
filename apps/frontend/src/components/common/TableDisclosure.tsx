@@ -16,6 +16,7 @@ import { Label2, Paragraph2 } from "baseui/typography";
 import { Block } from "baseui/block";
 import ModalThirdParty from "../ThirdParty/ModalThirdPartyForm";
 import { mapDisclosureToFormValues } from "../../api"
+import { features } from "../../util/feature-toggle"
 
 const StyledHeader = withStyle(StyledHead, {
   backgroundColor: "transparent",
@@ -110,7 +111,10 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
             <CustomStyledRow key={index}>
               {showRecipient && (
                 <StyledCell>
-                  <RouteLink href={`/thirdparty/${row.recipient.code}`}>{row.recipient.shortName}</RouteLink>
+                  {features.enableThirdParty ?
+                    <RouteLink href={`/thirdparty/${row.recipient.code}`}>{row.recipient.shortName}</RouteLink>
+                    : row.recipient.shortName
+                  }
                 </StyledCell>
               )}
               <StyledCell>{row.name}</StyledCell>

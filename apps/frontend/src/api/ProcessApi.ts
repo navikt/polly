@@ -28,7 +28,9 @@ export const deleteProcess = async (processId: string) => {
 
 export const updateProcess = async (process: ProcessFormValues) => {
   let body = mapProcessFromForm(process)
-  return (await axios.put<Process>(`${env.pollyBaseUrl}/process/${process.id}`, body)).data
+  const data = (await axios.put<Process>(`${env.pollyBaseUrl}/process/${process.id}`, body)).data
+  data.policies.forEach(p => p.process = data)
+  return data
 }
 
 const mapBool = (b?: boolean) => b === true ? true : b === false ? false : undefined

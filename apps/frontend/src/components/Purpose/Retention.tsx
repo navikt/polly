@@ -16,7 +16,7 @@ export const RetentionView = (props: { retention?: Retention }) => {
   }
 
   return (
-    <span style={{whiteSpace: "nowrap"}}>
+    <span>
       <span>{retainedYearsOrMonths && intl.retained} </span>
       <span>{!!retentionYears && `${retentionYears} ${intl.years}`} </span>
       <span>{retainedYearsAndMonths && intl.and} </span>
