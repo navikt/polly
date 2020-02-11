@@ -45,6 +45,7 @@ public class SwaggerConfig {
                         basePackage("no.nav.data.polly.disclosure"),
                         basePackage("no.nav.data.polly.document"),
                         basePackage("no.nav.data.polly.settings"),
+                        basePackage("no.nav.data.polly.alert"),
                         basePackage("no.nav.data.polly.common.security"),
                         basePackage("no.nav.data.polly.common.audit")
                 ))
