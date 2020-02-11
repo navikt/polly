@@ -33,6 +33,8 @@ type ProcessListProps = {
   purposeCode: string;
 }
 
+const sortProcess = (list: Process[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, intl.getLanguage()))
+
 const ProcessList = ({purposeCode}: ProcessListProps) => {
   const [processList, setProcessList] = React.useState<Process[]>([])
   const [currentProcess, setCurrentProcess] = React.useState<Process | undefined>()
@@ -40,14 +42,13 @@ const ProcessList = ({purposeCode}: ProcessListProps) => {
   const [errorProcessModal, setErrorProcessModal] = React.useState(null)
   const [errorPolicyModal, setErrorPolicyModal] = React.useState(null)
   const [errorDocumentModal, setErrorDocumentModal] = React.useState(null)
-
-
   const [isLoadingProcessList, setIsLoadingProcessList] = React.useState(true)
 
   const getProcessListByPurpose = async (purpose: string) => {
     setIsLoadingProcessList(true)
     try {
-      setProcessList((await getProcessesForPurpose(purpose)).content)
+      const list = (await getProcessesForPurpose(purpose)).content
+      setProcessList(sortProcess(list))
     } catch (err) {
       console.log(err)
     }
@@ -66,7 +67,7 @@ const ProcessList = ({purposeCode}: ProcessListProps) => {
     if (!process) return
     try {
       const newProcess = await createProcess(process)
-      setProcessList([...processList, newProcess])
+      setProcessList(sortProcess([...processList, newProcess]))
       setErrorProcessModal(null)
       setShowCreateProcessModal(false)
     } catch (err) {
@@ -76,7 +77,9 @@ const ProcessList = ({purposeCode}: ProcessListProps) => {
 
   const handleEditProcess = async (values: ProcessFormValues) => {
     try {
-      setCurrentProcess(await updateProcess(values))
+      const updatedProcess = await updateProcess(values)
+      setCurrentProcess(updatedProcess)
+      setProcessList(sortProcess([...processList.filter(p => p.id !== updatedProcess.id), updatedProcess]))
       return true
     } catch (err) {
       console.log(err)
@@ -86,7 +89,7 @@ const ProcessList = ({purposeCode}: ProcessListProps) => {
   const handleDeleteProcess = async (process: Process) => {
     try {
       await deleteProcess(process.id)
-      setProcessList(processList.filter((p: Process) => p.id !== process.id))
+      setProcessList(sortProcess(processList.filter((p: Process) => p.id !== process.id)))
       setErrorProcessModal(null)
       return true
     } catch (err) {
