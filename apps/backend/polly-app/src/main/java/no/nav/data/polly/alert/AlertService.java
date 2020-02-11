@@ -10,6 +10,7 @@ import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import org.springframework.stereotype.Service;
@@ -34,10 +35,12 @@ public class AlertService {
     private static final String ART_9_PREFIX = "ART9";
 
     private final ProcessRepository processRepository;
+    private final PolicyRepository policyRepository;
     private final InformationTypeRepository informationTypeRepository;
 
-    public AlertService(ProcessRepository processRepository, InformationTypeRepository informationTypeRepository) {
+    public AlertService(ProcessRepository processRepository, PolicyRepository policyRepository, InformationTypeRepository informationTypeRepository) {
         this.processRepository = processRepository;
+        this.policyRepository = policyRepository;
         this.informationTypeRepository = informationTypeRepository;
     }
 
@@ -46,7 +49,7 @@ public class AlertService {
                 .orElseThrow(() -> new PollyNotFoundException("No information type for id " + informationTypeId + " found"));
         var alert = new InformationTypeAlert(informationTypeId, new ArrayList<>());
 
-        List<Process> processes = informationType.getPolicies().stream().map(Policy::getProcess).distinct().collect(Collectors.toList());
+        List<Process> processes = policyRepository.findByInformationTypeId(informationTypeId).stream().map(Policy::getProcess).distinct().collect(Collectors.toList());
 
         for (Process process : processes) {
             checkProcess(process, informationType).resolve().ifPresent(alert.getProcesses()::add);
