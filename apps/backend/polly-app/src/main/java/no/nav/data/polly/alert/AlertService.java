@@ -49,7 +49,10 @@ public class AlertService {
                 .orElseThrow(() -> new PollyNotFoundException("No information type for id " + informationTypeId + " found"));
         var alert = new InformationTypeAlert(informationTypeId, new ArrayList<>());
 
-        List<Process> processes = policyRepository.findByInformationTypeId(informationTypeId).stream().map(Policy::getProcess).distinct().collect(Collectors.toList());
+        List<Process> processes = policyRepository.findByInformationTypeId(informationTypeId).stream()
+                .map(Policy::getProcess).distinct()
+                .filter(Process::isActive)
+                .collect(Collectors.toList());
 
         for (Process process : processes) {
             checkProcess(process, informationType).resolve().ifPresent(alert.getProcesses()::add);
@@ -70,7 +73,9 @@ public class AlertService {
         var processArt6 = containsArticle(process.getData().getLegalBases(), ART_6_PREFIX);
         var processArt9 = containsArticle(process.getData().getLegalBases(), ART_9_PREFIX);
 
-        List<Policy> policies = StreamUtils.filter(process.getPolicies(), policy -> informationType == null || policy.getInformationType().equals(informationType));
+        List<Policy> policies = StreamUtils.filter(process.getPolicies(),
+                policy -> policy.isActive() && (informationType == null || policy.getInformationType().equals(informationType))
+        );
         for (Policy policy : policies) {
             checkPolicy(processArt6, processArt9, policy).resolve().ifPresent(alert.getPolicies()::add);
         }
