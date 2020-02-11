@@ -217,7 +217,7 @@ export interface DisclosureFormValues {
   recipientPurpose?: string
   description?: string
   documentId?: string
-  document?: DocumentFormValues
+  document?: DocumentFormValues | undefined,
   legalBases: LegalBasisFormValues[]
   legalBasesOpen: boolean;
   end?: string
@@ -236,13 +236,6 @@ export interface Disclosure extends IDurationed {
 }
 
 export interface DocumentFormValues {
-  id?: string
-  name: string
-  description: string
-  informationTypes: PolicyInformationType[]
-}
-
-export interface DocumentFormValues_Temp {
   id?: string
   name: string
   description: string
