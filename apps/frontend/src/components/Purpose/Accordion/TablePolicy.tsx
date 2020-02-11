@@ -154,9 +154,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                   <StyledCell>{row.subjectCategories.map(sc => codelist.getShortname(ListName.SUBJECT_CATEGORY, sc.code)).join(", ")}</StyledCell>
                   <StyledCell>
                     <Block>
-                      {!row.legalBasesInherited && row.legalBases.length < 1 && (
-                        <LegalBasesNotClarified alert={alert?.policies.filter(p => p.policyId === row.id)[0]}/>
-                      )}
+                      <LegalBasesNotClarified alert={alert?.policies.filter(p => p.policyId === row.id)[0]}/>
 
                       {row.legalBases && row.legalBases.length > 0 && (
                         <ListLegalBasesInTable legalBases={row.legalBases}/>
