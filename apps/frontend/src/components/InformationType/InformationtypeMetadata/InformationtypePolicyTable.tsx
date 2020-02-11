@@ -1,15 +1,18 @@
 import * as React from "react";
+import { useEffect, useState } from "react";
 import { SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from "baseui/table";
 import { useStyletron, withStyle } from "baseui";
 
 import { LegalBasesNotClarified, ListLegalBasesInTable } from "../../common/LegalBasis"
 import { codelist, ListName } from "../../../service/Codelist"
 import { intl } from "../../../util"
-import { Policy, policySort } from "../../../constants"
+import { Policy, PolicyAlert, policySort } from "../../../constants"
 import { useTable } from "../../../util/hooks"
 import RouteLink from "../../common/RouteLink"
 import { Label2 } from "baseui/typography"
 import { RetentionView } from "../../Purpose/Retention"
+import { getAlertForInformationType } from "../../../api/AlertApi"
+import { Block } from "baseui/block"
 
 const StyledHeader = withStyle(StyledHead, {
   backgroundColor: "transparent",
@@ -28,9 +31,28 @@ type TableInformationtypeProps = {
   showPurpose: boolean;
 };
 
+type Alerts = { [id: string]: PolicyAlert }
+
 const InformationtypePolicyTable = ({policies, showPurpose}: TableInformationtypeProps) => {
   const [useCss, theme] = useStyletron();
   const [table, sortColumn] = useTable<Policy, keyof Policy>(policies, {sorting: policySort, initialSortColumn: showPurpose ? "purposeCode" : "process"})
+  const [alerts, setAlerts] = useState<Alerts>()
+
+  useEffect(() => {
+    (async () => {
+      const infoTypeId = policies && policies.length && policies[0].informationType.id
+      if (infoTypeId) {
+        const infoTypeAlert = await getAlertForInformationType(infoTypeId)
+        const reduced: Alerts = infoTypeAlert.processes
+        .flatMap(p => p.policies)
+        .reduce((agg, policy) => {
+          agg[policy.policyId] = policy
+          return agg
+        }, {} as Alerts)
+        setAlerts(reduced)
+      }
+    })()
+  }, [policies])
 
   return (
     <React.Fragment>
@@ -84,17 +106,17 @@ const InformationtypePolicyTable = ({policies, showPurpose}: TableInformationtyp
               <StyledCell>{row.subjectCategories.map(sc => codelist.getShortname(ListName.SUBJECT_CATEGORY, sc.code)).join(", ")}</StyledCell>
 
               <StyledCell>
-                {!row.legalBasesInherited && row.legalBases && row.legalBases.length > 0 && (
-                  <ListLegalBasesInTable legalBases={row.legalBases}/>
-                )}
+                <Block>
+                  {!row.legalBasesInherited && row.legalBases && row.legalBases.length > 0 && (
+                    <ListLegalBasesInTable legalBases={row.legalBases}/>
+                  )}
 
-                {row.legalBasesInherited && row.process.legalBases && (
-                  <ListLegalBasesInTable legalBases={row.process.legalBases}/>
-                )}
+                  {row.legalBasesInherited && row.process.legalBases && (
+                    <ListLegalBasesInTable legalBases={row.process.legalBases}/>
+                  )}
 
-                {!row.legalBasesInherited && row.legalBases.length < 1 && (
-                  <LegalBasesNotClarified/>
-                )}
+                  <LegalBasesNotClarified alert={alerts && alerts[row.id]}/>
+                </Block>
               </StyledCell>
 
               <StyledCell>

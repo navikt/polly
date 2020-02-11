@@ -105,6 +105,8 @@ export interface IStrings {
   legalBasesOwn: string;
   legalBasesUndecided: string;
   legalBasesUndecidedWarning: string;
+  legalBasesArt6Warning: string;
+  legalBasesArt9Warning: string;
   notAllowedMessage: string;
   confirmDeleteHeader: string;
   confirmDeletePolicyText: string;

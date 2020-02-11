@@ -346,3 +346,20 @@ export interface Settings {
   defaultProcessDocument: string;
   frontpageMessage: string;
 }
+
+export interface InformationTypeAlert {
+  informationTypeId: string
+  processes: ProcessAlert[]
+}
+
+export interface ProcessAlert {
+  processId: string
+  policies: PolicyAlert[]
+}
+
+export interface PolicyAlert {
+  policyId: string
+  missingLegalBasis: boolean
+  missingArt6: boolean
+  missingArt9: boolean
+}
