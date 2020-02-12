@@ -42,7 +42,6 @@ const CustomStyledRow = (props: RowProps) => {
   const styleProps = {
     borderLeft: "0px solid #E9E7E7",
     borderBottom: "1px solid #E9E7E7",
-    padding: "8px",
     fontSize: "24px",
     opacity: props.inactiveRow ? '.5' : undefined,
     backgroundColor: props.infoRow ? theme.colors.accent50 : undefined,
