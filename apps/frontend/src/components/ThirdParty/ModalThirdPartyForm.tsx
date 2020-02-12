@@ -147,7 +147,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                 <Error fieldName="name"/>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.recipientPurpose}/>
+                  <ModalLabel label={intl.disclosurePurpose}/>
                   <FieldTextarea fieldName="recipientPurpose" fieldValue={formikBag.values.recipientPurpose}/>
                 </Block>
                 <Error fieldName="recipientPurpose"/>

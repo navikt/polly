@@ -144,6 +144,7 @@ export interface IStrings {
   createdDocument: string;
   searchDocumentPlaceholder: string;
   eventType: string;
+  disclosurePurpose: string;
 
   // groups
   POLLY_READ: string;

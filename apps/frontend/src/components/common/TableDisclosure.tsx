@@ -84,7 +84,7 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
           />
 
           <SortableHeadCell
-            title={intl.purpose}
+            title={intl.disclosurePurpose}
             direction={table.direction.recipientPurpose}
             onSort={() => sortColumn('recipientPurpose')}
             fillClickTarget

@@ -114,7 +114,7 @@ export const no: IStrings = {
     "Opplysningstyper som er særlige kategorier krever art. 9",
   legalBasisInfo:
     "For artikkel 6(c, e og f) trengs det videre spesifisering.",
-  disclosureSelect: "Velg mottaker",
+  disclosureSelect: "Velg ekstern part",
   createThirdPartyModalTitle: 'Opprett utlevering for ekstern part',
   disclosuresToThirdParty: 'Utleveringer til ekstern part',
   retrievedFromThirdParty: 'Innhentinger fra ekstern part',
@@ -138,6 +138,7 @@ export const no: IStrings = {
   createdDocument: "Dokumentet er opprettet",
   searchDocumentPlaceholder: "Søk dokumenter",
   eventType: "Hendelsetype",
+  disclosurePurpose: "Formål med utlevering",
 
   POLLY_READ: "Les",
   POLLY_WRITE: "Skriv",
@@ -354,7 +355,7 @@ export const en: IStrings = {
     "Informationtypes that are special categories require art. 9",
   legalBasisInfo:
     "For Article 6(c, e and f), further specification is needed.",
-  disclosureSelect: "Select recipient",
+  disclosureSelect: "Select thirdparty",
   groupByPurpose: "Group by purpose",
   showAll: "Show all",
   createThirdPartyModalTitle: 'Create disclosure for a thirdparty',
@@ -378,6 +379,7 @@ export const en: IStrings = {
   createdDocument: "Document is created",
   searchDocumentPlaceholder: "Search documents",
   eventType: "Event type",
+  disclosurePurpose: "Purpose for disclosure",
 
   POLLY_READ: "Read",
   POLLY_WRITE: "Write",
