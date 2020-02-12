@@ -34,6 +34,8 @@ const overrides = {
     buttonSecondarySelectedText: primitives.accent,
     buttonSecondarySpinnerForeground: primitives.accent700,
     buttonSecondarySpinnerBackground: primitives.accent300,
+
+    linkVisited: primitives.primary400,
   },
 }
 
