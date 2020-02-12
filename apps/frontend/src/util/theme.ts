@@ -1,17 +1,18 @@
 import { createTheme, lightThemePrimitives } from 'baseui'
+import { colors } from "baseui/tokens"
+import { ThemePrimitives } from 'baseui/theme'
 
-const primitives = {
+const primitives: ThemePrimitives = {
   ...lightThemePrimitives,
-  primary: '#247aff',
-  primary50: '#FDEDFC',
-  primary100: '#a8f0fc',
-  primary200: '#55dcf8',
-  primary300: '#41adf4',
-  primary400: '#1574f1',
-  primary500: '#1a2bd6',
-  primary600: '#1828a5',
-  primary700: '#101960',
-
+  primary: colors.blue400,
+  primary50: colors.blue50,
+  primary100: colors.blue100,
+  primary200: colors.blue200,
+  primary300: colors.blue300,
+  primary400: colors.blue400,
+  primary500: colors.blue500,
+  primary600: colors.blue600,
+  primary700: colors.blue700,
 
   accent: '#F127E4', // hot pink
   accent50: '#FDEDFC',
