@@ -4,7 +4,7 @@ import { Label2 } from "baseui/typography";
 import { intl, useAwait } from "../../../util";
 import { Input, SIZE } from "baseui/input";
 import { Textarea } from "baseui/textarea";
-import { DocumentFormValues_Temp } from "../../../constants";
+import { DocumentFormValues } from "../../../constants";
 import InformationTypesTable from "./InformationTypesTable";
 import { Field, FieldArray, FieldProps, Form, Formik, FormikHelpers, FormikProps } from "formik";
 import { Button } from "baseui/button";
@@ -24,7 +24,7 @@ const labelProps: BlockProps = {
 }
 
 type DocumentFormProps = {
-  initialValues: DocumentFormValues_Temp;
+  initialValues: DocumentFormValues;
   handleSubmit: Function;
 }
 
@@ -43,7 +43,7 @@ const DocumentForm = (props: DocumentFormProps) => {
     if (e.key === 'Enter') e.preventDefault()
   }
 
-  const onSubmit = async (values: DocumentFormValues_Temp, actions: FormikHelpers<DocumentFormValues_Temp>) => {
+  const onSubmit = async (values: DocumentFormValues, actions: FormikHelpers<DocumentFormValues>) => {
     const searchResults = (await searchDocuments(values.name))
     .content.filter(doc => doc.name?.toLowerCase() === values.name?.toLowerCase() && initialValues.id !== doc.id)
     if (searchResults.length > 0) {
@@ -61,7 +61,7 @@ const DocumentForm = (props: DocumentFormProps) => {
         validationSchema={createDocumentValidation()}
       >
         {
-          (formikProps: FormikProps<DocumentFormValues_Temp>) => (
+          (formikProps: FormikProps<DocumentFormValues>) => (
             <Form onKeyDown={disableEnter}>
               <Block {...rowBlockProps}>
                 <Label2 {...labelProps}>{intl.name}</Label2>

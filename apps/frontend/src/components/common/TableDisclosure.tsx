@@ -52,7 +52,7 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
   const [showEditModal, setShowEditModal] = React.useState<boolean>()
   const [selectedDisclosure, setSelectedDisclosure] = React.useState<Disclosure>()
 
-  const [table, sortColumn] = useTable<Disclosure, keyof Disclosure>(list, {sorting: disclosureSort, initialSortColumn: "recipient"})
+  const [table, sortColumn] = useTable<Disclosure, keyof Disclosure>(list, {sorting: disclosureSort, initialSortColumn: showRecipient ? "recipient" : "name"})
   const [useCss, theme] = useStyletron();
 
   return (

@@ -1,21 +1,21 @@
 import * as React from 'react'
-import { DisclosureFormValues, PolicyInformationType } from '../../constants';
+import { DisclosureFormValues, Document } from '../../constants';
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal';
 import { Field, FieldArray, FieldProps, Form, Formik, FormikProps } from 'formik';
 import { Block, BlockProps } from 'baseui/block';
 import { Error, ModalLabel } from '../common/ModalSchema';
-import { intl } from '../../util';
+import { intl, useDebouncedState } from '../../util';
 import { Button } from 'baseui/button';
-import { Select, StatefulSelect, Value } from 'baseui/select';
+import { Select, StatefulSelect, Value, TYPE, Option } from 'baseui/select';
 import { codelist, ListName } from '../../service/Codelist';
 import { Textarea } from 'baseui/textarea';
-import { Tag, VARIANT } from 'baseui/tag';
-import { useInfoTypeSearch } from '../../api';
+import { useInfoTypeSearch, searchDocuments } from '../../api';
 import { ListLegalBases } from '../common/LegalBasis';
 import CardLegalBasis from '../Purpose/Accordion/CardLegalBasis';
 import { Plus } from 'baseui/icon';
 import { disclosureSchema } from "../common/schema"
 import { Input } from "baseui/input"
+import SelectDocument from '../common/SelectDocument';
 
 const modalBlockProps: BlockProps = {
   width: '750px',
@@ -34,30 +34,6 @@ const rowBlockProps: BlockProps = {
   width: '100%',
   marginTop: '1rem'
 };
-
-function renderTagList(list: string[], informationTypes?: PolicyInformationType[]) {
-  return (
-    <React.Fragment>
-      {list && list.length > 0
-        ? list.map((item, index) => (
-          <React.Fragment key={index}>
-            {item ? (
-              <Tag
-                key={item}
-                variant={VARIANT.outlined}
-                onActionClick={() =>
-                  informationTypes?.splice(index, 1)
-                }
-              >
-                {item}
-              </Tag>
-            ) : null}
-          </React.Fragment>
-        ))
-        : null}
-    </React.Fragment>
-  );
-}
 
 const FieldRecipient = (props: { value?: string, disabled: boolean | undefined }) => {
   const [recipientValue, setRecipientValue] = React.useState<Value>(props.value ? [{id: props.value, label: codelist.getShortname(ListName.THIRD_PARTY, props.value)}] : []);
@@ -110,41 +86,7 @@ const FieldInput = (props: { fieldName: string, fieldValue?: string }) => {
   )
 }
 
-const FieldInformationType = (props: {
-  informationTypes: PolicyInformationType[],
-  searchInformationType: (name: string) => void,
-  tagValues: PolicyInformationType[]
-}) => (
-  <React.Fragment>
-    <Field
-      name="document"
-      render={({field, form}: FieldProps<string, DisclosureFormValues>) => (
-        <Block width="100%">
-          <StatefulSelect
-            maxDropdownHeight="400px"
-            searchable={true}
-            type="search"
-            options={props.informationTypes}
-            placeholder={intl.informationTypeSearch}
-            onInputChange={event => props.searchInformationType(event.currentTarget.value)}
-            onChange={(params) => {
-              let infoType = params.value[0] as PolicyInformationType
-              form.values.document?.informationTypes.push(infoType)
-              form.setFieldValue('document', form.values.document)
-            }}
-            filterOptions={options => options}
-            labelKey="name"
-          />
-          {props.tagValues.length > 0 && (
-            <React.Fragment>
-              {renderTagList(props.tagValues.map(infoType => infoType && infoType.name), form.values.document?.informationTypes)}
-            </React.Fragment>
-          )}
-        </Block>
-      )}
-    />
-  </React.Fragment>
-)
+
 
 type ModalThirdPartyProps = {
   title?: string;
@@ -157,10 +99,15 @@ type ModalThirdPartyProps = {
   onClose: () => void;
 };
 
+
+
 const ModalThirdParty = (props: ModalThirdPartyProps) => {
   const [infoTypeSearchResult, setInfoTypeSearch] = useInfoTypeSearch()
+  const [documents, setDocuments] = React.useState<Document[]>([])
+  const [documentSearch, setDocumentSearch] = useDebouncedState<string>('', 400)
   const [selectedLegalBasis, setSelectedLegalBasis] = React.useState();
   const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState();
+
   const {submit, errorOnCreate, onClose, isOpen, isEdit, disableRecipientField, initialValues, title} = props
 
   return (
@@ -178,6 +125,8 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
           onSubmit={(values) => submit(values)}
           validationSchema={disclosureSchema()}
           render={(formikBag: FormikProps<DisclosureFormValues>) => (
+
+
             <Form>
               <ModalHeader>
                 <Block {...modalHeaderProps}>
@@ -210,14 +159,20 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                 <Error fieldName="description"/>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.informationTypes}/>
-                  {/*TODO replace with document*/}
-                  <FieldInformationType
-                    informationTypes={infoTypeSearchResult}
-                    searchInformationType={setInfoTypeSearch}
-                    tagValues={formikBag.values.document?.informationTypes || []}
+                  <ModalLabel label={intl.document}/>
+                  <Field
+                    name="document"
+                    render={({form}: FieldProps<DisclosureFormValues>) => (
+                      <SelectDocument
+                        document={form.values.document}
+                        handleChange={(document: Document | undefined) => {
+                          formikBag.setFieldValue("document", document)
+                        }}
+                      />
+                    )}
                   />
                 </Block>
+                <Error fieldName="document" />
 
                 <Block {...rowBlockProps}>
                   <ModalLabel/>

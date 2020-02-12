@@ -1,6 +1,5 @@
 import axios from "axios";
 import { Disclosure, DisclosureFormValues, PageResponse } from "../constants";
-import { createDocument, updateDocument } from "./DocumentApi"
 import { env } from "../util/env"
 import { convertLegalBasesToFormValues } from "./PolicyApi"
 
@@ -21,24 +20,11 @@ export const getDisclosuresByInformationTypeId = async (informationTypeId: strin
 }
 
 export const createDisclosure = async (disclosure: DisclosureFormValues) => {
-  let doc = disclosure.document
-  if (doc) {
-    const createDoc = await createDocument(doc)
-    disclosure.documentId = createDoc.id
-  }
   let body = mapDisclosureFromForm(disclosure);
   return (await axios.post<Disclosure>(`${env.pollyBaseUrl}/disclosure`, body)).data;
 };
 
 export const updateDisclosure = async (disclosure: DisclosureFormValues) => {
-  let doc = disclosure.document
-  if (doc && doc.id) {
-    await updateDocument(doc)
-    disclosure.documentId = doc.id
-  } else if (doc) {
-    const createDoc = await createDocument(doc)
-    disclosure.documentId = createDoc.id
-  }
   let body = mapDisclosureFromForm(disclosure);
   return (
     await axios.put<Disclosure>(`${env.pollyBaseUrl}/disclosure/${body.id}`, body)
@@ -56,7 +42,7 @@ export const mapDisclosureFromForm = (values: DisclosureFormValues) => {
     name: values.name,
     recipientPurpose: values.recipientPurpose,
     description: values.description,
-    documentId: values.documentId,
+    documentId: values.document?.id,
     legalBases: values.legalBases ? values.legalBases : [],
     start: values.start,
     end: values.end
@@ -66,12 +52,10 @@ export const mapDisclosureFromForm = (values: DisclosureFormValues) => {
 export const mapDisclosureToFormValues: (disclosure: Disclosure) => DisclosureFormValues = (disclosure) => ({
   id: disclosure.id,
   recipient: disclosure.recipient.code || '',
-  name: disclosure.name || undefined,
+  name: disclosure.name || '',
   recipientPurpose: disclosure ? disclosure.recipientPurpose : '',
   description: disclosure ? disclosure.description : '',
-  document: disclosure.document ?
-    {...disclosure.document, informationTypes: disclosure.document.informationTypes.map(it => it.informationType)} :
-    {informationTypes: [], name: 'autosel', description: 'autodesc'},
+  document: disclosure.document,
   legalBases: convertLegalBasesToFormValues(disclosure?.legalBases || []),
   legalBasesOpen: false,
   start: disclosure.start || undefined,

@@ -5,7 +5,7 @@ import DocumentForm from "../components/document/component/DocumentForm";
 import {RouteComponentProps} from "react-router-dom";
 import {codelist} from "../service/Codelist";
 import {getDocument, updateInformationTypesDocument} from "../api";
-import {Document, DocumentFormValues_Temp, DocumentInfoTypeUse,} from "../constants";
+import {Document, DocumentFormValues, DocumentInfoTypeUse,} from "../constants";
 import shortid from "shortid";
 
 const convertToDocumentFormValues = (document: Document) => {
@@ -21,14 +21,14 @@ const convertToDocumentFormValues = (document: Document) => {
           subjectCategories: it.subjectCategories
         } as DocumentInfoTypeUse
       })
-  } as DocumentFormValues_Temp
+  } as DocumentFormValues
 }
 
 const DocumentEditPage = (props: RouteComponentProps<{ id?: string}>) => {
   const [document, setDocument] = React.useState<Document>()
   const [isLoading,setLoading] = React.useState();
 
-  const handleEditDocument = async (values: DocumentFormValues_Temp) => {
+  const handleEditDocument = async (values: DocumentFormValues) => {
       try {
         const res = await updateInformationTypesDocument(values)
         props.history.push(`/document/${res.id}`)
