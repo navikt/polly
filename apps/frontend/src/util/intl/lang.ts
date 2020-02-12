@@ -51,7 +51,7 @@ export const no: IStrings = {
   retention: "Lagringstid",
   retentionPlan: "Er området omfattet av etatens kassasjons- og bevaringsplan?",
   retentionPlanYes: "Omfattes av virksomhetens kassasjons- og bevaringsplan",
-  retentionPlanNo: "Omfattet ikke av virksomhetens kassasjons- og bevaringsplan",
+  retentionPlanNo: "Omfattes ikke av virksomhetens kassasjons- og bevaringsplan",
   retentionPlanUnclarified: "Uavklart om omfattes av virksomhetens kassasjons- og bevaringsplan",
   retentionMonths: "Lagringstid",
   retentionStart: "Lagringsstart",
