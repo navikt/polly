@@ -14,103 +14,103 @@ import { Error } from "../common/ModalSchema";
 import { codeListSchema } from "../common/schema"
 
 const modalBlockProps: BlockProps = {
-    width: '700px',
-    paddingRight: '2rem',
-    paddingLeft: '2rem'
+  width: '700px',
+  paddingRight: '2rem',
+  paddingLeft: '2rem'
 };
 
 const rowBlockProps: BlockProps = {
-    display: 'flex',
-    width: '100%',
-    marginTop: '1rem',
-    alignItems: 'center',
+  display: 'flex',
+  width: '100%',
+  marginTop: '1rem',
+  alignItems: 'center',
 };
 
 type ModalUpdateProps = {
-    title: string,
-    initialValues: CodeListFormValues,
-    isOpen: boolean,
-    errorOnUpdate: any | undefined,
-    onClose: () => void,
-    submit: (process: CodeListFormValues) => Promise<void>,
+  title: string,
+  initialValues: CodeListFormValues,
+  isOpen: boolean,
+  errorOnUpdate: any | undefined,
+  onClose: () => void,
+  submit: (process: CodeListFormValues) => Promise<void>,
 };
 
 const UpdateCodeListModal = ({title, initialValues, errorOnUpdate, isOpen, onClose, submit}: ModalUpdateProps) => {
-    return (
-        <Modal
-            onClose={onClose}
-            closeable
-            isOpen={isOpen}
-            animate
-            autoFocus
-            size={SIZE.auto}
-            role={ROLE.dialog}
-        >
-            <Block {...modalBlockProps}>
-                <Formik
-                    onSubmit={(values) => {
-                      submit(values);
-                      onClose();
-                    }}
-                    initialValues={{...initialValues}}
-                    validationSchema={codeListSchema()}
-                    render={() => (
-                        <Form>
-                            <ModalHeader>{title}</ModalHeader>
-                            <ModalBody>
-                                <Block {...rowBlockProps}>
-                                    <Label2 marginRight={"1rem"} width="25%">
-                                        Short name:
-                                    </Label2>
-                                    <Field
-                                        name="shortName"
-                                        render={({field}: FieldProps<ProcessFormValues>) => (
-                                            <Input
-                                                {...field}
-                                                type="input"
-                                                size={InputSIZE.default}
-                                            />
-                                        )}
-                                    />
-                                </Block>
-                                <Error fieldName="shortName"/>
-                                <Block {...rowBlockProps}>
-                                    <Label2 marginRight={"1rem"} width="25%">
-                                        Description:
-                                    </Label2>
-                                    <Field
-                                        name="description"
-                                        render={({field}: FieldProps<ProcessFormValues>) => (
-                                            <Textarea
-                                                {...field}
-                                                type="input"
-                                            />
-                                        )}
-                                    />
-                                </Block>
-                                <Error fieldName="description"/>
-                            </ModalBody>
-                            <ModalFooter>
-                                <Block display="flex" justifyContent="flex-end">
-                                    <Block marginRight="auto">{errorOnUpdate && <p>{errorOnUpdate}</p>}</Block>
-                                    <Button
-                                        type="button"
-                                        kind={KIND.secondary}
-                                        onClick={() => onClose()}
-                                    >
-                                        {intl.abort}
-                                    </Button>
-                                    <ModalButton type="submit">
-                                        {intl.save}
-                                    </ModalButton>
-                                </Block>
-                            </ModalFooter>
-                        </Form>
+  return (
+    <Modal
+      onClose={onClose}
+      closeable
+      isOpen={isOpen}
+      animate
+      autoFocus
+      size={SIZE.auto}
+      role={ROLE.dialog}
+    >
+      <Block {...modalBlockProps}>
+        <Formik
+          onSubmit={(values) => {
+            submit(values);
+            onClose();
+          }}
+          initialValues={{...initialValues}}
+          validationSchema={codeListSchema()}
+          render={(formik) => (
+            <Form>
+              <ModalHeader>{title}</ModalHeader>
+              <ModalBody>
+                <Block {...rowBlockProps}>
+                  <Label2 marginRight={"1rem"} width="25%">
+                    Short name:
+                  </Label2>
+                  <Field
+                    name="shortName"
+                    render={({field}: FieldProps<ProcessFormValues>) => (
+                      <Input
+                        value={formik.values.shortName} onChange={formik.handleChange}
+                        type="input"
+                        size={InputSIZE.default}
+                      />
                     )}
-                />
-            </Block>
-        </Modal>
-    );
+                  />
+                </Block>
+                <Error fieldName="shortName"/>
+                <Block {...rowBlockProps}>
+                  <Label2 marginRight={"1rem"} width="25%">
+                    Description:
+                  </Label2>
+                  <Field
+                    name="description"
+                    render={({field}: FieldProps<ProcessFormValues>) => (
+                      <Textarea
+                        value={formik.values.description} onChange={formik.handleChange}
+                        type="input"
+                      />
+                    )}
+                  />
+                </Block>
+                <Error fieldName="description"/>
+              </ModalBody>
+              <ModalFooter>
+                <Block display="flex" justifyContent="flex-end">
+                  <Block marginRight="auto">{errorOnUpdate && <p>{errorOnUpdate}</p>}</Block>
+                  <Button
+                    type="button"
+                    kind={KIND.secondary}
+                    onClick={() => onClose()}
+                  >
+                    {intl.abort}
+                  </Button>
+                  <ModalButton type="submit">
+                    {intl.save}
+                  </ModalButton>
+                </Block>
+              </ModalFooter>
+            </Form>
+          )}
+        />
+      </Block>
+    </Modal>
+  );
 };
 
 export default UpdateCodeListModal;

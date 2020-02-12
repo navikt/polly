@@ -61,7 +61,7 @@ const FieldTextarea = (props: { fieldName: string, fieldValue?: string, placehol
   return (
     <Field
       name={props.fieldName}
-      render={({field, form}: FieldProps<DisclosureFormValues>) => (
+      render={({field, form}: FieldProps<string, DisclosureFormValues>) => (
         <Textarea
           {...field}
           placeholder={props.placeholder}
@@ -79,7 +79,7 @@ const FieldInput = (props: { fieldName: string, fieldValue?: string }) => {
   return (
     <Field
       name={props.fieldName}
-      render={({field, form}: FieldProps<DisclosureFormValues>) => (
+      render={({field, form}: FieldProps<string, DisclosureFormValues>) => (
         <Input {...field} />
       )}
     />
@@ -125,7 +125,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
           onSubmit={(values) => submit(values)}
           validationSchema={disclosureSchema()}
           render={(formikBag: FormikProps<DisclosureFormValues>) => (
-            
+
 
             <Form>
               <ModalHeader>
@@ -160,7 +160,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
 
                 <Block {...rowBlockProps}>
                   <ModalLabel label={intl.document}/>
-                  <Field 
+                  <Field
                     name="document"
                     render={({form}: FieldProps<DisclosureFormValues>) => (
                       <SelectDocument

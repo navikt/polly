@@ -6,7 +6,7 @@ import { Input, SIZE } from "baseui/input";
 import { Textarea } from "baseui/textarea";
 import { DocumentFormValues } from "../../../constants";
 import InformationTypesTable from "./InformationTypesTable";
-import { Field, FieldArray, FieldProps, Form, Formik, FormikActions, FormikProps } from "formik";
+import { Field, FieldArray, FieldProps, Form, Formik, FormikHelpers, FormikProps } from "formik";
 import { Button } from "baseui/button";
 import { Error } from "../../common/ModalSchema";
 import { user } from "../../../service/User";
@@ -43,7 +43,7 @@ const DocumentForm = (props: DocumentFormProps) => {
     if (e.key === 'Enter') e.preventDefault()
   }
 
-  const onSubmit = async (values: DocumentFormValues, actions: FormikActions<DocumentFormValues>) => {
+  const onSubmit = async (values: DocumentFormValues, actions: FormikHelpers<DocumentFormValues>) => {
     const searchResults = (await searchDocuments(values.name))
     .content.filter(doc => doc.name?.toLowerCase() === values.name?.toLowerCase() && initialValues.id !== doc.id)
     if (searchResults.length > 0) {

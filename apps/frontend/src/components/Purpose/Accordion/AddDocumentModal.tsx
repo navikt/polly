@@ -115,7 +115,7 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
     >
       <Formik
         onSubmit={props.submit}
-        initialValues={{document: undefined, informationTypes: [], process: props.process, defaultDocument: false}}
+        initialValues={{document: undefined, informationTypes: [], process: props.process, defaultDocument: false} as AddDocumentToProcessFormValues}
         validationSchema={addDocumentToProcessSchema()}
         render={(formik: FormikProps<AddDocumentToProcessFormValues>) => {
 
