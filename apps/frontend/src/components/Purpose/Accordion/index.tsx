@@ -1,33 +1,33 @@
 import * as React from 'react'
-import { useEffect } from 'react'
-import { Accordion, Panel, SharedProps } from 'baseui/accordion'
-import { generatePath, RouteComponentProps, withRouter } from 'react-router'
-import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
-import { Spinner } from 'baseui/spinner';
-import { Block, BlockProps } from 'baseui/block';
-import { Label2, Paragraph2, Paragraph3 } from 'baseui/typography';
-import { intl, theme, useAwait } from '../../../util';
+import {useEffect} from 'react'
+import {Accordion, Panel, SharedProps} from 'baseui/accordion'
+import {generatePath, RouteComponentProps, withRouter} from 'react-router'
+import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
+import {Spinner} from 'baseui/spinner';
+import {Block, BlockProps} from 'baseui/block';
+import {Label2, Paragraph2, Paragraph3} from 'baseui/typography';
+import {intl, theme, useAwait} from '../../../util';
 import _includes from 'lodash/includes'
-import { user } from "../../../service/User";
-import { Plus } from 'baseui/icon'
-import { AddDocumentToProcessFormValues, LegalBasesStatus, LegalBasis, Policy, PolicyFormValues, Process, ProcessFormValues } from "../../../constants"
-import { LegalBasisView } from "../../common/LegalBasis"
-import { codelist, ListName } from "../../../service/Codelist"
+import {user} from "../../../service/User";
+import {Plus} from 'baseui/icon'
+import {AddDocumentToProcessFormValues, LegalBasesStatus, LegalBasis, Policy, PolicyFormValues, Process, ProcessFormValues} from "../../../constants"
+import {LegalBasisView} from "../../common/LegalBasis"
+import {codelist, ListName} from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy';
-import { convertProcessToFormValues } from "../../../api"
-import { PathParams } from "../../../pages/PurposePage"
-import { ActiveIndicator } from "../../common/Durations"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faChevronRight, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal';
-import { TeamPopover } from "../../common/Team"
-import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
-import { AuditButton } from "../../audit/AuditButton"
-import { AddDocumentModal } from "./AddDocumentModal"
-import { RetentionView } from "../Retention"
-import { boolToText } from "../../common/Radio"
+import {convertProcessToFormValues} from "../../../api"
+import {PathParams} from "../../../pages/PurposePage"
+import {ActiveIndicator} from "../../common/Durations"
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faChevronDown, faChevronRight, faEdit, faTrash} from '@fortawesome/free-solid-svg-icons';
+import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal';
+import {TeamPopover} from "../../common/Team"
+import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
+import {AuditButton} from "../../audit/AuditButton"
+import {AddDocumentModal} from "./AddDocumentModal"
+import {RetentionView} from "../Retention"
+import {boolToText} from "../../common/Radio"
 
 const rowPanelContent: BlockProps = {
   display: 'flex',
@@ -259,8 +259,9 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                     <Block width="33%">
                       <Label2>{intl.organizing}</Label2>
                       <Block>
+                        <Paragraph3 marginBottom="0"> </Paragraph3>
                         {currentProcess.department &&
-                        <Paragraph3 marginBottom="0">
+                        <Paragraph3 marginBottom="0" marginTop="0">
                           <span>{intl.department}: </span>
                           <span>{codelist.getShortnameForCode(currentProcess.department)}</span>
                         </Paragraph3>}
@@ -299,11 +300,13 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                     <Block width="33%">
                       <Label2>{intl.dataProcessor}</Label2>
                       <Block>
-                        {currentProcess?.dataProcessing?.dataProcessor === null && intl.dataProcessorUnclarified}
-                        {currentProcess?.dataProcessing?.dataProcessor === false && intl.dataProcessorNo}
+                        <Paragraph3 marginBottom="0">
+                          {currentProcess?.dataProcessing?.dataProcessor === null && intl.dataProcessorUnclarified}
+                          {currentProcess?.dataProcessing?.dataProcessor === false && intl.dataProcessorNo}
+                        </Paragraph3>
                         {currentProcess?.dataProcessing?.dataProcessor &&
                         <>
-                          <Paragraph3 marginBottom="0">
+                          <Paragraph3 marginBottom="0" marginTop="0">
                             <span>{intl.dataProcessorYes}</span>
                           </Paragraph3>
                           <Paragraph3 marginBottom="0" marginTop="0">
@@ -321,11 +324,13 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                     <Block width="33%">
                       <Label2>{intl.retention}</Label2>
                       <Block>
-                        {currentProcess?.retention?.retentionPlan === null && intl.retentionPlanUnclarified}
-                        {currentProcess?.retention?.retentionPlan === false && intl.retentionPlanNo}
+                        <Paragraph3 marginBottom="0">
+                          {currentProcess?.retention?.retentionPlan === null && intl.retentionPlanUnclarified}
+                          {currentProcess?.retention?.retentionPlan === false && intl.retentionPlanNo}
+                        </Paragraph3>
                         {currentProcess?.retention?.retentionPlan &&
                         <>
-                          <Paragraph3 marginBottom="0">
+                          <Paragraph3 marginBottom="0" marginTop="0">
                             <span>{intl.retentionPlanYes}</span>
                           </Paragraph3>
                           <Paragraph3 marginBottom="0" marginTop="0">
