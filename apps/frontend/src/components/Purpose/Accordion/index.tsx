@@ -1,33 +1,33 @@
 import * as React from 'react'
-import {useEffect} from 'react'
-import {Accordion, Panel, SharedProps} from 'baseui/accordion'
-import {generatePath, RouteComponentProps, withRouter} from 'react-router'
-import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
-import {Spinner} from 'baseui/spinner';
-import {Block, BlockProps} from 'baseui/block';
-import {Label2, Paragraph2, Paragraph3} from 'baseui/typography';
-import {intl, theme, useAwait} from '../../../util';
+import { useEffect } from 'react'
+import { Accordion, Panel } from 'baseui/accordion'
+import { generatePath, RouteComponentProps, withRouter } from 'react-router'
+import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
+import { Spinner } from 'baseui/spinner';
+import { Block, BlockProps } from 'baseui/block';
+import { Label2, Paragraph2, Paragraph3 } from 'baseui/typography';
+import { intl, theme, useAwait } from '../../../util';
 import _includes from 'lodash/includes'
-import {user} from "../../../service/User";
-import {Plus} from 'baseui/icon'
-import {AddDocumentToProcessFormValues, LegalBasesStatus, LegalBasis, Policy, PolicyFormValues, Process, ProcessFormValues} from "../../../constants"
-import {LegalBasisView} from "../../common/LegalBasis"
-import {codelist, ListName} from "../../../service/Codelist"
+import { user } from "../../../service/User";
+import { Plus } from 'baseui/icon'
+import { AddDocumentToProcessFormValues, LegalBasesStatus, LegalBasis, Policy, PolicyFormValues, Process, ProcessFormValues } from "../../../constants"
+import { LegalBasisView } from "../../common/LegalBasis"
+import { codelist, ListName } from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy';
-import {convertProcessToFormValues} from "../../../api"
-import {PathParams} from "../../../pages/PurposePage"
-import {ActiveIndicator} from "../../common/Durations"
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faChevronDown, faChevronRight, faEdit, faTrash} from '@fortawesome/free-solid-svg-icons';
-import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal';
-import {TeamPopover} from "../../common/Team"
-import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
-import {AuditButton} from "../../audit/AuditButton"
-import {AddDocumentModal} from "./AddDocumentModal"
-import {RetentionView} from "../Retention"
-import {boolToText} from "../../common/Radio"
+import { convertProcessToFormValues } from "../../../api"
+import { PathParams } from "../../../pages/PurposePage"
+import { ActiveIndicator } from "../../common/Durations"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown, faChevronRight, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal';
+import { TeamPopover } from "../../common/Team"
+import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
+import { AuditButton } from "../../audit/AuditButton"
+import { AddDocumentModal } from "./AddDocumentModal"
+import { RetentionView } from "../Retention"
+import { boolToText } from "../../common/Radio"
 
 const rowPanelContent: BlockProps = {
   display: 'flex',
@@ -52,6 +52,15 @@ type AccordionProcessProps = {
   submitDeletePolicy: (process: Policy) => Promise<boolean>
   submitAddDocument: (document: AddDocumentToProcessFormValues) => Promise<boolean>
 }
+
+const AccordionTitle = (props: { purposeCode: string, name: string, expanded: boolean }) =>
+  <Block>
+    {props.expanded ?
+      <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
+    <span> </span>
+    <span>{codelist.getShortname(ListName.PURPOSE, props.purposeCode)}: </span>
+    <span>{props.name}</span>
+  </Block>
 
 const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<PathParams>) => {
   const [showEditProcessModal, setShowEditProcessModal] = React.useState(false)
@@ -213,13 +222,14 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
         initialState={{expanded: props.match.params.processId ? [props.match.params.processId] : []}}>
         {props.processList && props.processList.map((p: Process) => (
           <Panel
-            title={p.name}
+            title={
+              <AccordionTitle purposeCode={p.purposeCode} name={p.name} expanded={props.match.params.processId === p.id}/>
+            }
             key={p.id}
             overrides={{
               ToggleIcon: {
-                component: (iconProps: SharedProps) => !!iconProps.$expanded ?
-                  <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>
-              }
+                component: () => null
+              },
             }}
           >
             {isLoading && <Spinner size={18}/>}
