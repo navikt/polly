@@ -14,27 +14,20 @@ const primitives: ThemePrimitives = {
   primary600: colors.blue600,
   primary700: colors.blue700,
 
-  accent: '#F127E4', // hot pink
-  accent50: '#FDEDFC',
-  accent100: '#FCD3F9',
-  accent200: '#F89FF3',
-  accent300: '#F45AEA',
-  accent400: '#F127E4',
-  accent500: '#B71DAD',
-  accent600: '#901788',
-  accent700: '#600F5B',
+  accent: colors.platinum400,
+  accent50: colors.platinum50,
+  accent100: colors.platinum100,
+  accent200: colors.platinum200,
+  accent300: colors.platinum300,
+  accent400: colors.platinum400,
+  accent500: colors.platinum500,
+  accent600: colors.platinum600,
+  accent700: colors.platinum700,
 }
 
 const overrides = {
   colors: {
-    buttonSecondaryFill: primitives.accent100,
-    buttonSecondaryText: primitives.accent,
-    buttonSecondaryHover: primitives.accent200,
-    buttonSecondaryActive: primitives.accent300,
-    buttonSecondarySelectedFill: primitives.accent200,
-    buttonSecondarySelectedText: primitives.accent,
-    buttonSecondarySpinnerForeground: primitives.accent700,
-    buttonSecondarySpinnerBackground: primitives.accent300,
+    buttonSecondaryText: primitives.accent600,
 
     linkVisited: primitives.primary400,
   },
