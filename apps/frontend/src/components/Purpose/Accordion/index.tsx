@@ -258,19 +258,12 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
               <React.Fragment>
 
                 <Block {...rowPanelContent}>
-                  <Block width="90%" marginRight=".5rem">
-
-                    <Block flexWrap={true} display="flex" justifyContent="flex-start">
-                      {currentProcess.description && <Block marginBottom=".5rem" width="100%">
-                        <Label2>{intl.processPurpose}</Label2>
-                        <Paragraph2>{currentProcess.description}</Paragraph2>
-                      </Block>}
-                    </Block>
-                  </Block>
-                </Block>
-
-                <Block {...rowPanelContent}>
                   <Block width="100%" flexWrap display="flex">
+
+                    {currentProcess.description && <Block marginBottom=".5rem" width="100%">
+                      <Label2>{intl.processPurpose}</Label2>
+                      <Paragraph2>{currentProcess.description}</Paragraph2>
+                    </Block>}
 
                     <Block width="33%">{renderLegalBasisListForProcess(currentProcess.legalBases)}</Block>
                     <Block width="33%">{renderSubjectCategoriesForProcess(currentProcess)}</Block>
