@@ -10,7 +10,7 @@ import { intl, theme, useAwait } from '../../../util';
 import _includes from 'lodash/includes'
 import { user } from "../../../service/User";
 import { Plus } from 'baseui/icon'
-import { AddDocumentToProcessFormValues, LegalBasesStatus, LegalBasis, Policy, PolicyFormValues, Process, ProcessFormValues } from "../../../constants"
+import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues } from "../../../constants"
 import { LegalBasisView } from "../../common/LegalBasis"
 import { codelist, ListName } from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
@@ -108,6 +108,165 @@ const AccordionTitle = (props: { process: Process, expanded: boolean, hasAccess:
   </>
 }
 
+const ProcessData = (props: { process: Process }) => {
+  const {process} = props
+  const dataProcessorAgreements = !!process.dataProcessing?.dataProcessorAgreements.length
+
+  const renderActiveForProcess = () =>
+    <Block>
+      <Label2>{intl.validityOfProcess}</Label2>
+      <ActiveIndicator alwaysShow={true} showDates={true} {...process} />
+    </Block>
+
+  const renderLegalBasisListForProcess = () => {
+    const list = process.legalBases
+    return (
+      <Block marginRight="scale1200">
+        <Label2>{intl.legalBasis}</Label2>
+        {list && list.length < 1 && <Paragraph2>{intl.legalBasisNotFound}</Paragraph2>}
+        {list && list.length > 0 && (
+          <ul style={{listStyle: "none", paddingInlineStart: 0}}>
+            {list.map((legalBasis, i) => <li key={i}><Paragraph2><LegalBasisView
+              legalBasis={legalBasis}/></Paragraph2></li>)}
+          </ul>
+        )}
+      </Block>
+    )
+  }
+  const renderSubjectCategoriesForProcess = () => {
+    const notFound = (<Paragraph2>{intl.subjectCategoriesNotFound}</Paragraph2>)
+    let display
+    if (!process) display = notFound
+    else if (!process.policies) {
+      display = notFound
+    } else {
+      if (process.policies.length < 1) display = notFound
+      else {
+        const subjectCategories = process.policies.flatMap(p => p.subjectCategories).reduce((acc: string[], curr) => {
+          const subjectCategory = codelist.getShortname(ListName.SUBJECT_CATEGORY, curr.code)
+          if (!_includes(acc, subjectCategory) && subjectCategory)
+            acc = [...acc, subjectCategory]
+          return acc
+        }, [])
+        if (subjectCategories.length < 1) display = notFound
+        else display = <Paragraph2>{subjectCategories.join(', ')}</Paragraph2>
+      }
+    }
+
+    return (
+      <Block marginRight="scale1200">
+        <Label2>{intl.subjectCategories}</Label2>
+        {display}
+      </Block>
+    )
+  }
+
+  return (
+    <Block {...rowPanelContent}>
+      <Block width="100%" flexWrap display="flex">
+
+        {process.description && <Block marginBottom=".5rem" width="100%">
+          <Label2>{intl.processPurpose}</Label2>
+          <Paragraph2>{process.description}</Paragraph2>
+        </Block>}
+
+        <Block width="33%">{renderLegalBasisListForProcess()}</Block>
+        <Block width="33%">{renderSubjectCategoriesForProcess()}</Block>
+        <Block width="33%">{renderActiveForProcess()}</Block>
+
+        <Block width="33%">
+          <Label2>{intl.organizing}</Label2>
+          <Block>
+            <Paragraph3 marginBottom="0"> </Paragraph3>
+            {process.department &&
+            <Paragraph3 marginBottom="0" marginTop="0">
+              <span>{intl.department}: </span>
+              <span>{codelist.getShortnameForCode(process.department)}</span>
+            </Paragraph3>}
+            {process.subDepartment &&
+            <Paragraph3 marginBottom="0" marginTop="0">
+              <span>{intl.subDepartment}: </span>
+              <span>{codelist.getShortnameForCode(process.subDepartment)}</span>
+            </Paragraph3>}
+            {process.productTeam &&
+            <Paragraph3 marginTop="0">
+              <span>{intl.productTeam}: </span>
+              <TeamPopover teamId={process.productTeam}/>
+            </Paragraph3>}
+          </Block>
+        </Block>
+
+        {!!process.products?.length && <Block width="33%">
+          <Label2>{intl.product}</Label2>
+          <Paragraph3>{process.products.map(product => codelist.getShortname(ListName.SYSTEM, product.code)).join(", ")}</Paragraph3>
+        </Block>}
+
+        <Block width="33%">
+          <Label2>{intl.automaticProcessing}</Label2>
+          <Block>
+            <Paragraph3 marginBottom="0">
+              <span>{intl.automaticProcessing}: </span>
+              <span>{boolToText(process.automaticProcessing)}</span>
+            </Paragraph3>
+            <Paragraph3 marginTop="0">
+              <span>{intl.profiling}: </span>
+              <span>{boolToText(process.profiling)}</span>
+            </Paragraph3>
+          </Block>
+        </Block>
+
+        <Block width="33%">
+          <Label2>{intl.dataProcessor}</Label2>
+          <Block>
+            <Paragraph3 marginBottom="0">
+              {process.dataProcessing?.dataProcessor === null && intl.dataProcessorUnclarified}
+              {process.dataProcessing?.dataProcessor === false && intl.dataProcessorNo}
+            </Paragraph3>
+            {process.dataProcessing?.dataProcessor &&
+            <>
+              <Paragraph3 marginBottom="0" marginTop="0">
+                <span>{intl.dataProcessorYes}</span>
+              </Paragraph3>
+              <Paragraph3 marginBottom="0" marginTop="0">
+                <span>{dataProcessorAgreements && `${intl.dataProcessorAgreement}: `}</span>
+                <span>{dataProcessorAgreements && process.dataProcessing?.dataProcessorAgreements.join(", ")}</span>
+              </Paragraph3>
+              <Paragraph3 marginTop="0">
+                <span>{intl.dataProcessorOutsideEUExtra}: </span>
+                <span>{boolToText(process.dataProcessing?.dataProcessorOutsideEU)}</span>
+              </Paragraph3>
+            </>}
+          </Block>
+        </Block>
+
+        <Block width="33%">
+          <Label2>{intl.retention}</Label2>
+          <Block>
+            <Paragraph3 marginBottom="0">
+              {process.retention?.retentionPlan === null && intl.retentionPlanUnclarified}
+              {process.retention?.retentionPlan === false && intl.retentionPlanNo}
+            </Paragraph3>
+            {process.retention?.retentionPlan &&
+            <>
+              <Paragraph3 marginBottom="0" marginTop="0">
+                <span>{intl.retentionPlanYes}</span>
+              </Paragraph3>
+              <Paragraph3 marginBottom="0" marginTop="0">
+                <RetentionView retention={process.retention}/>
+              </Paragraph3>
+              <Paragraph3 marginTop="0">
+                <span>{process.retention?.retentionDescription && `${intl.description}: `}</span>
+                <span>{process.retention?.retentionDescription}</span>
+              </Paragraph3>
+            </>
+            }
+          </Block>
+        </Block>
+      </Block>
+    </Block>
+  )
+}
+
 const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<PathParams>) => {
   const [showEditProcessModal, setShowEditProcessModal] = React.useState(false)
   const [showCreatePolicyModal, setShowCreatePolicyModal] = React.useState(false)
@@ -142,52 +301,6 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
     else {
       updatePath({purposeCode: purposeCode, processId: processId})
     }
-  }
-
-  const renderActiveForProcess = (process: Process) =>
-    <Block>
-      <Label2>{intl.validityOfProcess}</Label2>
-      <ActiveIndicator alwaysShow={true} showDates={true} {...process} />
-    </Block>
-
-  const renderLegalBasisListForProcess = (list: LegalBasis[]) => (
-    <Block marginRight="scale1200">
-      <Label2>{intl.legalBasis}</Label2>
-      {list && list.length < 1 && <Paragraph2>{intl.legalBasisNotFound}</Paragraph2>}
-      {list && list.length > 0 && (
-        <ul style={{listStyle: "none", paddingInlineStart: 0}}>
-          {list.map((legalBasis, i) => <li key={i}><Paragraph2><LegalBasisView
-            legalBasis={legalBasis}/></Paragraph2></li>)}
-        </ul>
-      )}
-    </Block>
-  )
-  const renderSubjectCategoriesForProcess = (processObj: Process) => {
-    const notFound = (<Paragraph2>{intl.subjectCategoriesNotFound}</Paragraph2>)
-    let display
-    if (!processObj) display = notFound
-    else if (!processObj.policies) {
-      display = notFound
-    } else {
-      if (processObj.policies.length < 1) display = notFound
-      else {
-        const subjectCategories = processObj.policies.flatMap(p => p.subjectCategories).reduce((acc: string[], curr) => {
-          const subjectCategory = codelist.getShortname(ListName.SUBJECT_CATEGORY, curr.code)
-          if (!_includes(acc, subjectCategory) && subjectCategory)
-            acc = [...acc, subjectCategory]
-          return acc
-        }, [])
-        if (subjectCategories.length < 1) display = notFound
-        else display = <Paragraph2>{subjectCategories.join(', ')}</Paragraph2>
-      }
-    }
-
-    return (
-      <Block marginRight="scale1200">
-        <Label2>{intl.subjectCategories}</Label2>
-        {display}
-      </Block>
-    )
   }
 
   const renderCreatePolicyButton = () => (
@@ -231,7 +344,6 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
     }, 200)
   }, [isLoading])
 
-  const dataProcessorAgreements = !!currentProcess?.dataProcessing?.dataProcessorAgreements.length
   return (
     <Block ref={purposeRef}>
       <Accordion
@@ -257,108 +369,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
             {!isLoading && currentProcess && (
               <React.Fragment>
 
-                <Block {...rowPanelContent}>
-                  <Block width="100%" flexWrap display="flex">
-
-                    {currentProcess.description && <Block marginBottom=".5rem" width="100%">
-                      <Label2>{intl.processPurpose}</Label2>
-                      <Paragraph2>{currentProcess.description}</Paragraph2>
-                    </Block>}
-
-                    <Block width="33%">{renderLegalBasisListForProcess(currentProcess.legalBases)}</Block>
-                    <Block width="33%">{renderSubjectCategoriesForProcess(currentProcess)}</Block>
-                    <Block width="33%">{renderActiveForProcess(currentProcess)}</Block>
-
-                    <Block width="33%">
-                      <Label2>{intl.organizing}</Label2>
-                      <Block>
-                        <Paragraph3 marginBottom="0"> </Paragraph3>
-                        {currentProcess.department &&
-                        <Paragraph3 marginBottom="0" marginTop="0">
-                          <span>{intl.department}: </span>
-                          <span>{codelist.getShortnameForCode(currentProcess.department)}</span>
-                        </Paragraph3>}
-                        {currentProcess.subDepartment &&
-                        <Paragraph3 marginBottom="0" marginTop="0">
-                          <span>{intl.subDepartment}: </span>
-                          <span>{codelist.getShortnameForCode(currentProcess.subDepartment)}</span>
-                        </Paragraph3>}
-                        {currentProcess.productTeam &&
-                        <Paragraph3 marginTop="0">
-                          <span>{intl.productTeam}: </span>
-                          <TeamPopover teamId={currentProcess.productTeam}/>
-                        </Paragraph3>}
-                      </Block>
-                    </Block>
-
-                    {!!currentProcess?.products?.length && <Block width="33%">
-                      <Label2>{intl.product}</Label2>
-                      <Paragraph3>{currentProcess.products.map(product => codelist.getShortname(ListName.SYSTEM, product.code)).join(", ")}</Paragraph3>
-                    </Block>}
-
-                    <Block width="33%">
-                      <Label2>{intl.automaticProcessing}</Label2>
-                      <Block>
-                        <Paragraph3 marginBottom="0">
-                          <span>{intl.automaticProcessing}: </span>
-                          <span>{boolToText(currentProcess?.automaticProcessing)}</span>
-                        </Paragraph3>
-                        <Paragraph3 marginTop="0">
-                          <span>{intl.profiling}: </span>
-                          <span>{boolToText(currentProcess?.profiling)}</span>
-                        </Paragraph3>
-                      </Block>
-                    </Block>
-
-                    <Block width="33%">
-                      <Label2>{intl.dataProcessor}</Label2>
-                      <Block>
-                        <Paragraph3 marginBottom="0">
-                          {currentProcess?.dataProcessing?.dataProcessor === null && intl.dataProcessorUnclarified}
-                          {currentProcess?.dataProcessing?.dataProcessor === false && intl.dataProcessorNo}
-                        </Paragraph3>
-                        {currentProcess?.dataProcessing?.dataProcessor &&
-                        <>
-                          <Paragraph3 marginBottom="0" marginTop="0">
-                            <span>{intl.dataProcessorYes}</span>
-                          </Paragraph3>
-                          <Paragraph3 marginBottom="0" marginTop="0">
-                            <span>{dataProcessorAgreements && `${intl.dataProcessorAgreement}: `}</span>
-                            <span>{dataProcessorAgreements && currentProcess?.dataProcessing?.dataProcessorAgreements.join(", ")}</span>
-                          </Paragraph3>
-                          <Paragraph3 marginTop="0">
-                            <span>{intl.dataProcessorOutsideEUExtra}: </span>
-                            <span>{boolToText(currentProcess?.dataProcessing?.dataProcessorOutsideEU)}</span>
-                          </Paragraph3>
-                        </>}
-                      </Block>
-                    </Block>
-
-                    <Block width="33%">
-                      <Label2>{intl.retention}</Label2>
-                      <Block>
-                        <Paragraph3 marginBottom="0">
-                          {currentProcess?.retention?.retentionPlan === null && intl.retentionPlanUnclarified}
-                          {currentProcess?.retention?.retentionPlan === false && intl.retentionPlanNo}
-                        </Paragraph3>
-                        {currentProcess?.retention?.retentionPlan &&
-                        <>
-                          <Paragraph3 marginBottom="0" marginTop="0">
-                            <span>{intl.retentionPlanYes}</span>
-                          </Paragraph3>
-                          <Paragraph3 marginBottom="0" marginTop="0">
-                            <RetentionView retention={currentProcess?.retention}/>
-                          </Paragraph3>
-                          <Paragraph3 marginTop="0">
-                            <span>{currentProcess?.retention?.retentionDescription && `${intl.description}: `}</span>
-                            <span>{currentProcess?.retention?.retentionDescription}</span>
-                          </Paragraph3>
-                        </>
-                        }
-                      </Block>
-                    </Block>
-                  </Block>
-                </Block>
+                <ProcessData process={currentProcess}/>
 
                 <Block {...rowPanelContent}>
                   <Label2 alignSelf="center">{intl.informationTypes}</Label2>
