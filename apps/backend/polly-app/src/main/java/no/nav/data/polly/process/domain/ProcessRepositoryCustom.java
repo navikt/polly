@@ -9,4 +9,7 @@ public interface ProcessRepositoryCustom {
     List<Process> findByNationalLaw(String nationalLaw);
 
     List<Process> findByProduct(String product);
+
+    List<Process> findByDocumentId(String documentId);
+
 }

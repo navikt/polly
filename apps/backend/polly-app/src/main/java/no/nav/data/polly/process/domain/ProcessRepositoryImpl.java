@@ -43,6 +43,13 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
         return getProcesses(resp);
     }
 
+    @Override
+    public List<Process> findByDocumentId(String documentId) {
+        var resp = jdbcTemplate.queryForList("select distinct(process_id) from policy where data #>'{documentIds}' ?? :documentId",
+                new MapSqlParameterSource().addValue("documentId", documentId));
+        return getProcesses(resp);
+    }
+
     private List<Process> getProcesses(List<Map<String, Object>> resp) {
         List<UUID> ids = resp.stream().map(i -> ((UUID) i.values().iterator().next())).collect(Collectors.toList());
         return processRepository.findAllById(ids);

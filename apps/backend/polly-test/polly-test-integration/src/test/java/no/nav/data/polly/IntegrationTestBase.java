@@ -161,6 +161,7 @@ public abstract class IntegrationTestBase {
                         .subjectCategories(List.of(subjectCategory))
                         .activeToday()
                         .legalBases(legalBases)
+                        .documentIds(List.of(UUID.fromString("fc32176b-dbee-42be-b16f-eaddd483bf77")))
                         .build())
                 .build();
     }

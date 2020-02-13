@@ -28,7 +28,7 @@ class ProcessControllerIT extends IntegrationTestBase {
     private TestRestTemplate restTemplate;
 
     @Test
-    void hentProcess() {
+    void getProcess() {
         Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
 
         ResponseEntity<ProcessResponse> resp = restTemplate.getForEntity("/process/{id}", ProcessResponse.class, policy.getProcess().getId());
@@ -56,7 +56,7 @@ class ProcessControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void hentAllProcess() {
+    void getAllProcess() {
         Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
         Policy policy2 = createAndSavePolicy(PURPOSE_CODE1 + 2, createAndSaveInformationType());
 
@@ -80,10 +80,24 @@ class ProcessControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void hentForProductTeam() {
+    void getForProductTeam() {
         Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
 
         ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process?productTeam={productTeam}", ProcessPage.class, policy.getProcess().getData().getProductTeam());
+
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        ProcessPage processPage = resp.getBody();
+        assertThat(processPage).isNotNull();
+
+        assertThat(processPage.getContent()).hasSize(1);
+    }
+
+    @Test
+    void getByDocumentId() {
+        Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
+
+        ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process?documentId={documentId}", ProcessPage.class,
+                policy.getData().getDocumentIds().get(0));
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         ProcessPage processPage = resp.getBody();

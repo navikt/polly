@@ -63,11 +63,17 @@ public class ProcessReadController {
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping
     public ResponseEntity<RestResponsePage<ProcessResponse>> getAllProcesses(PageParameters pageParameters,
-            @RequestParam(required = false) String productTeam
+            @RequestParam(required = false) String productTeam,
+            @RequestParam(required = false) String documentId
     ) {
         if (productTeam != null) {
             log.info("Received request for Processeses for productTeam {}", productTeam);
             var processes = repository.findByProductTeam(productTeam);
+            return ResponseEntity.ok(new RestResponsePage<>(convert(processes, Process::convertToResponse)));
+        }
+        if (documentId != null) {
+            log.info("Received request for Processeses for documentId {}", documentId);
+            var processes = repository.findByDocumentId(documentId);
             return ResponseEntity.ok(new RestResponsePage<>(convert(processes, Process::convertToResponse)));
         }
         log.info("Received request for all Processes");
