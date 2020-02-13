@@ -50,7 +50,7 @@ class ProcessControllerIT extends IntegrationTestBase {
                         .start(policy.getData().getStart())
                         .end(policy.getData().getEnd())
                         .legalBasis(legalBasisResponse())
-                        .documentIds(List.of())
+                        .documentIds(policy.getData().getDocumentIds())
                         .build())
                 .build());
     }
