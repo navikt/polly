@@ -2,7 +2,6 @@ import * as React from "react";
 import { Block } from "baseui/block";
 import { BrowserRouter as Router } from "react-router-dom";
 import { ThemeProvider } from "@data-catalog/theme";
-//import {Header} from "@data-catalog/header";
 import Header from "./components/Header";
 import Routes from "./routes";
 import { theme } from "./util/theme";

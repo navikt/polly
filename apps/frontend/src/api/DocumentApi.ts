@@ -3,7 +3,6 @@ import axios from "axios"
 import {
   Document,
   DocumentFormValues,
-  DocumentFormValues_Temp,
   DocumentInformationTypes,
   PageResponse
 } from "../constants"
@@ -28,22 +27,12 @@ export const searchDocuments = async (name: string) => {
   return (await axios.get<PageResponse<Document>>(`${env.pollyBaseUrl}/document/search/${name}`)).data
 }
 
-export const createDocument = async (document: DocumentFormValues) => {
-  const doc = {...document, informationTypes: mapToInfoTypes(document)}
-  return (await axios.post<Document>(`${env.pollyBaseUrl}/document`, doc)).data
-}
-
-export const updateDocument = async (document: DocumentFormValues) => {
-  const doc = {...document, informationTypes: mapToInfoTypes(document)}
-  return (await axios.put<Document>(`${env.pollyBaseUrl}/document/${doc.id}`, doc)).data
-}
-
-export const updateInformationTypesDocument = async (document: DocumentFormValues_Temp) => {
+export const updateInformationTypesDocument = async (document: DocumentFormValues) => {
   const body = mapFormValuesToDocument(document)
   return (await axios.put<Document>(`${env.pollyBaseUrl}/document/${document.id}`, body)).data
 }
 
-export const createInformationTypesDocument = async (document: DocumentFormValues_Temp) => {
+export const createInformationTypesDocument = async (document: DocumentFormValues) => {
   const body = mapFormValuesToDocument(document)
   return (await axios.post(`${env.pollyBaseUrl}/document`, body)).data
 }
@@ -52,7 +41,7 @@ export const deleteDocument = async (id: string) => {
   return (await axios.delete<PageResponse<Document>>(`${env.pollyBaseUrl}/document/${id}`)).data
 }
 
-const mapFormValuesToDocument = (document: DocumentFormValues_Temp) => ({
+const mapFormValuesToDocument = (document: DocumentFormValues) => ({
   id: document.id ? document.id : undefined,
   name: document.name,
   description: document.description,
@@ -61,11 +50,6 @@ const mapFormValuesToDocument = (document: DocumentFormValues_Temp) => ({
     subjectCategories: it.subjectCategories.map(sc => sc.code)
   } as DocumentInformationTypes))
 })
-
-const mapToInfoTypes = (document: DocumentFormValues) => document.informationTypes.map(it => ({
-  informationTypeId: it.id,
-  subjectCategories: []
-}))
 
 export const useDocumentSearch = () => {
   const [documentSearch, setDocumentSearch] = useDebouncedState<string>('', 200);

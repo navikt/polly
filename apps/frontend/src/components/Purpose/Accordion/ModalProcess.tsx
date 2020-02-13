@@ -45,7 +45,7 @@ const modalHeaderProps: BlockProps = {
 const FieldName = () => (
   <Field
     name="name"
-    render={({field, form}: FieldProps<ProcessFormValues>) => (
+    render={({field, form}: FieldProps<string, ProcessFormValues>) => (
       <Input {...field} type="input" size={InputSIZE.default} autoFocus error={!!form.errors.name && form.touched.name}/>
     )}
   />
@@ -54,7 +54,7 @@ const FieldName = () => (
 const FieldDescription = () => (
   <Field
     name="description"
-    render={({field, form}: FieldProps<ProcessFormValues>) => (
+    render={({field, form}: FieldProps<string, ProcessFormValues>) => (
       <Textarea {...field} type="input" size={InputSIZE.default} error={!!form.errors.description && form.touched.description}/>
     )}
   />
@@ -72,7 +72,7 @@ const FieldDepartment = (props: { department?: string }) => {
           options={codelist.getParsedOptions(ListName.DEPARTMENT)}
           onChange={({value}) => {
             setValue(value);
-            form.setFieldValue('department', value.length > 0 ? value[0].id : undefined)
+            form.setFieldValue('department', value.length > 0 ? value[0].id : '')
           }}
           value={value}
         />
@@ -95,7 +95,7 @@ const FieldSubDepartment = (props: { subDepartment?: string }) => {
           options={codelist.getParsedOptions(ListName.SUB_DEPARTMENT)}
           onChange={({value}) => {
             setValue(value);
-            form.setFieldValue('subDepartment', value.length > 0 ? value[0].id : undefined)
+            form.setFieldValue('subDepartment', value.length > 0 ? value[0].id : '')
           }}
           value={value}
         />
@@ -175,13 +175,13 @@ const FieldProductTeam = (props: { productTeam?: string }) => {
 
   return (
     <Field
-      name="department"
-      render={({form}: FieldProps<ProcessFormValues>) => (
+      name="productTeam"
+      render={({form,field}: FieldProps<ProcessFormValues>) => (
         <Select
           options={teamSearchResult}
           onChange={({value}) => {
             setValue(value)
-            form.setFieldValue('productTeam', value.length > 0 ? value[0].id : undefined)
+            form.setFieldValue('productTeam', value && value.length > 0 ? value[0].id : '')
           }}
           onInputChange={event => setTeamSearch(event.currentTarget.value)}
           value={value}
@@ -215,7 +215,7 @@ const FieldInput = (props: { fieldName: string, fieldValue?: string | number }) 
   return (
     <Field
       name={props.fieldName}
-      render={({field, form}: FieldProps<DisclosureFormValues>) => (
+      render={({field, form}: FieldProps<string, DisclosureFormValues>) => (
         <Input {...field} size="compact"/>
       )}
     />
@@ -247,7 +247,9 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
   const retentionYears = Math.floor(retention / 12)
   const retentionMonths = retention - retentionYears * 12
 
-  useEffect(() => formikBag.setFieldValue('retention.retentionMonths', retention), [retention])
+  useEffect(() => {
+    (() => formikBag.setFieldValue('retention.retentionMonths', retention))()
+  }, [retention])
 
   const cardOverrides = {
     Root: {style: {marginTop: "1rem"}},

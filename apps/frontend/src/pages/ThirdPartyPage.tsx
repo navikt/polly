@@ -31,6 +31,7 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
   const handleCreateDisclosure = async (disclosure: DisclosureFormValues) => {
     try {
       let createdDisclosure = await createDisclosure(disclosure)
+      
       if (!disclosureList || disclosureList.length < 1)
         setDisclosureList([createdDisclosure])
       else if (disclosureList && createdDisclosure)
@@ -73,7 +74,7 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
     recipient: props.match.params.sourceCode,
     recipientPurpose: '',
     description: '',
-    document: {name: 'auto', description: 'autodesc', informationTypes: []},
+    document: undefined,
     legalBases: [],
     legalBasesOpen: false,
     start: undefined,

@@ -5,7 +5,7 @@ import { convertLegalBasesToFormValues } from "./PolicyApi"
 
 export const getProcess = async (processId: string) => {
   const data = (await axios.get<Process>(`${env.pollyBaseUrl}/process/${processId}`)).data
-  data.policies.forEach(p => p.process = data)
+  data.policies.forEach(p => p.process = {...data, policies: []})
   return data
 }
 
@@ -28,7 +28,9 @@ export const deleteProcess = async (processId: string) => {
 
 export const updateProcess = async (process: ProcessFormValues) => {
   let body = mapProcessFromForm(process)
-  return (await axios.put<Process>(`${env.pollyBaseUrl}/process/${process.id}`, body)).data
+  const data = (await axios.put<Process>(`${env.pollyBaseUrl}/process/${process.id}`, body)).data
+  data.policies.forEach(p => p.process = {...data, policies: []})
+  return data
 }
 
 const mapBool = (b?: boolean) => b === true ? true : b === false ? false : undefined
@@ -55,8 +57,8 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
   return {
     legalBasesOpen: false,
     id: id,
-    name: name,
-    description: description || undefined,
+    name: name || '',
+    description: description || '',
     purposeCode: purposeCode,
     department: (department && department.code) || undefined,
     subDepartment: (subDepartment && subDepartment.code) || undefined,
