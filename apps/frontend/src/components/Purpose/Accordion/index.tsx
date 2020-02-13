@@ -118,22 +118,21 @@ type DataTextProps = {
 const DataText = (props: DataTextProps) => {
   if (props.hide) return null
   const texts = typeof props.text === "string" ? [props.text] : props.text
-  const children = Array.isArray(props.children) ? props.children : [props.children]
 
   return (
     <Block display="flex" alignContent="flex-start" marginBottom="1rem" width="100%">
-      <Block width="33%" paddingRight={theme.sizing.scale800}>
+      <Block width="30%" paddingRight={theme.sizing.scale400}>
         <Label2>{props.label}</Label2>
       </Block>
-      <Block width="67%">
+      <Block width="70%">
         {texts && texts.map((text, index) =>
           <Paragraph2 marginTop="0" marginBottom="0" key={index}>
             {text}
           </Paragraph2>
         )}
-        {children &&
+        {props.children &&
         <Block font="ParagraphMedium">
-          {children}
+          {props.children}
         </Block>}
       </Block>
     </Block>
