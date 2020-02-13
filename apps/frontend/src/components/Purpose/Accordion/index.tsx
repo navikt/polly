@@ -53,14 +53,60 @@ type AccordionProcessProps = {
   submitAddDocument: (document: AddDocumentToProcessFormValues) => Promise<boolean>
 }
 
-const AccordionTitle = (props: { purposeCode: string, name: string, expanded: boolean }) =>
-  <Block>
-    {props.expanded ?
-      <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
-    <span> </span>
-    <span>{codelist.getShortname(ListName.PURPOSE, props.purposeCode)}: </span>
-    <span>{props.name}</span>
-  </Block>
+const AccordionTitle = (props: { process: Process, expanded: boolean, hasAccess: boolean, editProcess: () => void, deleteProcess: () => void }) => {
+  const {process, expanded, hasAccess} = props
+
+  const renderEditProcessButton = () => (
+    <StatefulTooltip content={intl.edit} placement={PLACEMENT.top}>
+      <Button
+        size={ButtonSize.compact}
+        kind={KIND.secondary}
+        onClick={props.editProcess}
+        overrides={{
+          BaseButton: {
+            style: () => {
+              return {marginRight: theme.sizing.scale500}
+            }
+          }
+        }}
+      >
+        <FontAwesomeIcon icon={faEdit} style={{marginRight: ".5rem"}}/>{intl.edit}
+      </Button>
+    </StatefulTooltip>
+  )
+  const renderDeleteProcessButton = () => (
+    <StatefulTooltip content={intl.delete} placement={PLACEMENT.top}>
+      <Button
+        size={ButtonSize.compact}
+        kind={KIND.secondary}
+        onClick={props.deleteProcess}
+      >
+        <FontAwesomeIcon icon={faTrash} style={{marginRight: ".5rem"}}/>{intl.delete}
+      </Button>
+    </StatefulTooltip>
+  )
+
+  return <>
+    <Block>
+      {expanded ?
+        <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
+      <span> </span>
+      <span>{codelist.getShortname(ListName.PURPOSE, process.purposeCode)}: </span>
+      <span>{process.name}</span>
+    </Block>
+    <div onClick={(e) => {
+      e.stopPropagation()
+    }}>
+      {hasAccess && expanded && (
+        <>
+          <AuditButton id={process.id}/>
+          {renderEditProcessButton()}
+          {renderDeleteProcessButton()}
+        </>
+      )}
+    </div>
+  </>
+}
 
 const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<PathParams>) => {
   const [showEditProcessModal, setShowEditProcessModal] = React.useState(false)
@@ -143,35 +189,6 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
       </Block>
     )
   }
-  const renderEditProcessButton = () => (
-    <StatefulTooltip content={intl.edit} placement={PLACEMENT.top}>
-      <Button
-        size={ButtonSize.compact}
-        kind={KIND.secondary}
-        onClick={() => setShowEditProcessModal(true)}
-        overrides={{
-          BaseButton: {
-            style: () => {
-              return {marginRight: theme.sizing.scale500}
-            }
-          }
-        }}
-      >
-        <FontAwesomeIcon icon={faEdit}/>
-      </Button>
-    </StatefulTooltip>
-  )
-  const renderDeleteProcessButton = () => (
-    <StatefulTooltip content={intl.delete} placement={PLACEMENT.top}>
-      <Button
-        size={ButtonSize.compact}
-        kind={KIND.secondary}
-        onClick={() => setShowDeleteModal(true)}
-      >
-        <FontAwesomeIcon icon={faTrash}/>
-      </Button>
-    </StatefulTooltip>
-  )
 
   const renderCreatePolicyButton = () => (
     <StatefulTooltip content={intl.addOneInformationType} placement={PLACEMENT.top}>
@@ -223,7 +240,10 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
         {props.processList && props.processList.map((p: Process) => (
           <Panel
             title={
-              <AccordionTitle purposeCode={p.purposeCode} name={p.name} expanded={props.match.params.processId === p.id}/>
+              <AccordionTitle process={p} expanded={props.match.params.processId === p.id}
+                              hasAccess={hasAccess()} editProcess={() => setShowEditProcessModal(true)}
+                              deleteProcess={() => setShowDeleteModal(true)}
+              />
             }
             key={p.id}
             overrides={{
@@ -246,16 +266,6 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                         <Paragraph2>{currentProcess.description}</Paragraph2>
                       </Block>}
                     </Block>
-                  </Block>
-
-                  <Block width="10%" minWidth="150px">
-                    {hasAccess() && (
-                      <>
-                        <AuditButton id={p.id}/>
-                        {renderEditProcessButton()}
-                        {renderDeleteProcessButton()}
-                      </>
-                    )}
                   </Block>
                 </Block>
 
