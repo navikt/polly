@@ -4,7 +4,7 @@ import { Accordion, Panel } from 'baseui/accordion'
 import { generatePath, RouteComponentProps, withRouter } from 'react-router'
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { Spinner } from 'baseui/spinner';
-import { Block, BlockProps } from 'baseui/block';
+import { Block } from 'baseui/block';
 import { Label2, Paragraph2 } from 'baseui/typography';
 import { intl, theme, useAwait } from '../../../util';
 import _includes from 'lodash/includes'
@@ -28,12 +28,6 @@ import { AuditButton } from "../../audit/AuditButton"
 import { AddDocumentModal } from "./AddDocumentModal"
 import { RetentionView } from "../Retention"
 import { boolToText } from "../../common/Radio"
-
-const rowPanelContent: BlockProps = {
-  display: 'flex',
-  marginBottom: '1rem',
-  justifyContent: 'space-between'
-}
 
 type AccordionProcessProps = {
   isLoading: boolean
@@ -342,25 +336,44 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
               ToggleIcon: {
                 component: () => null
               },
+              Content: {
+                style: {
+                  backgroundColor: theme.colors.white,
+                  // Outline width
+                  paddingTop: "4px",
+                  paddingBottom: "4px",
+                  paddingLeft: "4px",
+                  paddingRight: "4px",
+                }
+              }
             }}
           >
             {isLoading && <Spinner size={18}/>}
 
             {!isLoading && currentProcess && (
-              <React.Fragment>
+              <Block $style={{
+                outline: `4px ${theme.colors.primary300} solid`
+              }}>
 
-                <ProcessData process={currentProcess}/>
-
-                <Block {...rowPanelContent}>
-                  <Label2 alignSelf="center">{intl.informationTypes}</Label2>
-                  {hasAccess() && (
-                    <Block alignSelf="flex-end">
-                      {renderAddDocumentButton()}
-                      {renderCreatePolicyButton()}
-                    </Block>
-                  )}
+                <Block padding={theme.sizing.scale800}>
+                  <ProcessData process={currentProcess}/>
                 </Block>
-                {currentProcess.policies && (
+
+                <Block backgroundColor={theme.colors.primary50}>
+                  <Block {...({
+                    display: 'flex',
+                    marginBottom: '1rem',
+                    justifyContent: 'space-between',
+                    padding: theme.sizing.scale800
+                  })}>
+                    <Label2 alignSelf="center">{intl.informationTypes}</Label2>
+                    {hasAccess() && (
+                      <Block alignSelf="flex-end">
+                        {renderAddDocumentButton()}
+                        {renderCreatePolicyButton()}
+                      </Block>
+                    )}
+                  </Block>
                   <Block>
                     <TablePolicy
                       process={currentProcess}
@@ -371,96 +384,99 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                       submitDeletePolicy={submitDeletePolicy}
                     />
                   </Block>
-                )}
+                </Block>
 
-                <ModalProcess
-                  title={intl.processingActivitiesEdit}
-                  onClose={() => setShowEditProcessModal(false)}
-                  isOpen={showEditProcessModal}
-                  submit={async (values: ProcessFormValues) => {
-                    await submitEditProcess(values) ? setShowEditProcessModal(false) : setShowEditProcessModal(true)
-                  }}
-                  errorOnCreate={errorProcessModal}
-                  isEdit={true}
-                  initialValues={convertProcessToFormValues(currentProcess)}
-                />
-                <ModalPolicy
-                  title={intl.policyNew}
-                  initialValues={{
-                    legalBasesOpen: false,
-                    informationType: undefined,
-                    legalBasesStatus: LegalBasesStatus.INHERITED,
-                    process: currentProcess,
-                    purposeCode: currentProcess.purposeCode,
-                    subjectCategories: [],
-                    start: undefined,
-                    end: undefined,
-                    legalBases: [],
-                    documentIds: []
-                  }}
-                  isEdit={false}
-                  onClose={() => setShowCreatePolicyModal(false)}
-                  isOpen={showCreatePolicyModal}
-                  submit={(values: PolicyFormValues) => {
-                    submitCreatePolicy(values).then(() => setShowCreatePolicyModal(false)).catch(() => setShowCreatePolicyModal(true))
-                  }}
-                  errorOnCreate={errorPolicyModal}
-                />
-
-                <AddDocumentModal
-                  onClose={() => setShowAddDocumentModal(false)}
-                  isOpen={showAddDocumentModal}
-                  submit={(formValues) => props.submitAddDocument(formValues).then(() => setShowAddDocumentModal(false))}
-                  process={currentProcess}
-                  error={props.errorDocumentModal}
-                />
-
-                <Modal
-                  onClose={() => setShowDeleteModal(false)}
-                  isOpen={showDeleteModal}
-                  animate
-                  size="default"
-                >
-                  <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
-                  <ModalBody>
-                    {!currentProcess?.policies.length && <Paragraph2>{intl.confirmDeleteProcessText} {currentProcess.name}</Paragraph2>}
-                    {!!currentProcess?.policies.length &&
-                    <Paragraph2>{intl.formatString(intl.cannotDeleteProcess, currentProcess?.name, '' + currentProcess?.policies.length)}</Paragraph2>}
-                  </ModalBody>
-
-                  <ModalFooter>
-                    <Block display="flex" justifyContent="flex-end">
-                      <Block alignSelf="flex-end">{errorProcessModal &&
-                      <p>{errorProcessModal}</p>}</Block>
-                      <Button
-                        kind="secondary"
-                        onClick={() => setShowDeleteModal(false)}
-                        overrides={{
-                          BaseButton: {
-                            style: {
-                              marginRight: '1rem',
-                              marginLeft: '1rem'
-                            }
-                          }
-                        }}
-                      >
-                        {intl.abort}
-                      </Button>
-                      <Button onClick={() =>
-                        submitDeleteProcess(currentProcess).then(() => setShowDeleteModal(false)).catch(() => setShowDeleteModal(true))
-                      } disabled={!!currentProcess?.policies.length}>
-                        {intl.delete}
-                      </Button>
-                    </Block>
-                  </ModalFooter>
-                </Modal>
-              </React.Fragment>
+              </Block>
             )}
           </Panel>
         ))}
       </Accordion>
       {!props.processList.length && <Label2 margin="1rem">{intl.emptyTable} {intl.processes}</Label2>}
 
+      {!!currentProcess &&
+      <>
+        <ModalProcess
+          title={intl.processingActivitiesEdit}
+          onClose={() => setShowEditProcessModal(false)}
+          isOpen={showEditProcessModal}
+          submit={async (values: ProcessFormValues) => {
+            await submitEditProcess(values) ? setShowEditProcessModal(false) : setShowEditProcessModal(true)
+          }}
+          errorOnCreate={errorProcessModal}
+          isEdit={true}
+          initialValues={convertProcessToFormValues(currentProcess)}
+        />
+        <ModalPolicy
+          title={intl.policyNew}
+          initialValues={{
+            legalBasesOpen: false,
+            informationType: undefined,
+            legalBasesStatus: LegalBasesStatus.INHERITED,
+            process: currentProcess,
+            purposeCode: currentProcess.purposeCode,
+            subjectCategories: [],
+            start: undefined,
+            end: undefined,
+            legalBases: [],
+            documentIds: []
+          }}
+          isEdit={false}
+          onClose={() => setShowCreatePolicyModal(false)}
+          isOpen={showCreatePolicyModal}
+          submit={(values: PolicyFormValues) => {
+            submitCreatePolicy(values).then(() => setShowCreatePolicyModal(false)).catch(() => setShowCreatePolicyModal(true))
+          }}
+          errorOnCreate={errorPolicyModal}
+        />
+
+        <AddDocumentModal
+          onClose={() => setShowAddDocumentModal(false)}
+          isOpen={showAddDocumentModal}
+          submit={(formValues) => props.submitAddDocument(formValues).then(() => setShowAddDocumentModal(false))}
+          process={currentProcess}
+          error={props.errorDocumentModal}
+        />
+
+        <Modal
+          onClose={() => setShowDeleteModal(false)}
+          isOpen={showDeleteModal}
+          animate
+          size="default"
+        >
+          <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
+          <ModalBody>
+            {!currentProcess?.policies.length && <Paragraph2>{intl.confirmDeleteProcessText} {currentProcess.name}</Paragraph2>}
+            {!!currentProcess?.policies.length &&
+            <Paragraph2>{intl.formatString(intl.cannotDeleteProcess, currentProcess?.name, '' + currentProcess?.policies.length)}</Paragraph2>}
+          </ModalBody>
+
+          <ModalFooter>
+            <Block display="flex" justifyContent="flex-end">
+              <Block alignSelf="flex-end">{errorProcessModal &&
+              <p>{errorProcessModal}</p>}</Block>
+              <Button
+                kind="secondary"
+                onClick={() => setShowDeleteModal(false)}
+                overrides={{
+                  BaseButton: {
+                    style: {
+                      marginRight: '1rem',
+                      marginLeft: '1rem'
+                    }
+                  }
+                }}
+              >
+                {intl.abort}
+              </Button>
+              <Button onClick={() =>
+                submitDeleteProcess(currentProcess).then(() => setShowDeleteModal(false)).catch(() => setShowDeleteModal(true))
+              } disabled={!!currentProcess?.policies.length}>
+                {intl.delete}
+              </Button>
+            </Block>
+          </ModalFooter>
+        </Modal>
+      </>}
     </Block>
 
   )

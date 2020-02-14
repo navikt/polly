@@ -14,7 +14,7 @@ const primitives: ThemePrimitives = {
   primary600: colors.blue600,
   primary700: colors.blue700,
 
-  accent: colors.platinum400,
+  accent: colors.platinum700,
   accent50: colors.platinum50,
   accent100: colors.platinum100,
   accent200: colors.platinum200,
