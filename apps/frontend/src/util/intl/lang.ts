@@ -1,4 +1,4 @@
-import { IStrings } from "./intl";
+import {IStrings} from "./intl";
 
 export const no: IStrings = {
   informationType: "Opplysningstype",
@@ -238,7 +238,11 @@ export const no: IStrings = {
   close: "Lukk",
   lastChanges: "Siste endringer",
   settings: "Innstillinger",
-  defaultProcessDocument: "Dokument for standard informasjonstyper i behandling"
+  defaultProcessDocument: "Dokument for standard informasjonstyper i behandling",
+  processNameHelpText: "Et kort og beskrivende navn som sier hva behandlingen går ut på. Eksempel: saksbehandling, saksbehandling sykepenger, håndtere brukerhenvendelser eller rekruttering.",
+  processPurposeHelpText: "Hva er formålet med bruk av personopplysninger i denne behandlingen? Brukes hvis du ønsker å ha en spissere formulert formål enn det overordnede formålet. Eksempel: Behandle og vurdere rett til stønad ved behov for førerhund pga. nedsatt syn.",
+  departmentHelpText: "Avdelingen som har ansvaret for behandlingen",
+
 }
 
 export const en: IStrings = {
@@ -480,7 +484,10 @@ export const en: IStrings = {
   close: "Close",
   lastChanges: "Last changes",
   settings: "Settings",
-  defaultProcessDocument: "Document for the default information types in a process"
+  defaultProcessDocument: "Document for the default information types in a process",
+  processNameHelpText: "Et kort og beskrivende navn som sier hva behandlingen går ut på. Eksempel: saksbehandling, saksbehandling sykepenger, håndtere brukerhenvendelser eller rekruttering.",
+  processPurposeHelpText: "",
+  departmentHelpText: "",
 };
 
 export const ta = {
