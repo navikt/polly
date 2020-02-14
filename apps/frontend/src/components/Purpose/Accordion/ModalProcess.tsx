@@ -12,6 +12,19 @@ import {DisclosureFormValues, ProcessFormValues} from "../../../constants";
 import CardLegalBasis from './CardLegalBasis'
 import {codelist, ListName} from "../../../service/Codelist"
 import {intl, theme} from "../../../util"
+import {Error, ModalLabel} from "../../common/ModalSchema";
+import {ListLegalBases} from "../../common/LegalBasis"
+import {DateModalFields} from "../DateModalFields"
+import {hasSpecifiedDate} from "../../common/Durations"
+import {processSchema} from "../../common/schema"
+import {getTeam, mapTeamToOption, useTeamSearch} from "../../../api"
+import {Textarea} from "baseui/textarea"
+import {Card} from "baseui/card"
+import {renderTagList} from "../../common/TagList"
+import {Slider} from "baseui/slider"
+import {RadioBoolButton} from "../../common/Radio"
+import {codelist, ListName} from "../../../service/Codelist"
+import {intl, theme} from "../../../util"
 import {Error, ModalBlock, ModalLabel} from "../../common/ModalSchema";
 import {ListLegalBases} from "../../common/LegalBasis"
 import {DateModalFields} from "../DateModalFields"
@@ -460,7 +473,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                 </Block>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.product}/>
+                  <ModalLabel label={intl.system}/>
                   <FieldProduct products={formikBag.values.products}/>
                 </Block>
 

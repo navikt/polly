@@ -28,6 +28,7 @@ export interface IStrings {
   navMaster: string;
   productTeam: string;
   product: string;
+  system: string;
   disclosure: string;
   disclosures: string;
   documents: string;
@@ -114,6 +115,7 @@ export interface IStrings {
   confirmDeleteHeader: string;
   confirmDeletePolicyText: string;
   confirmDeleteProcessText: string;
+  confirmDeleteDocumentText: string;
   cannotDeleteProcess: string;
   confirmDeleteInformationTypeText: string;
   cannotDeleteInformationTypes: string;
