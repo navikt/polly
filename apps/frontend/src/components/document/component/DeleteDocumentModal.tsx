@@ -24,7 +24,7 @@ const DeleteDocumentModal = ({title, documentName, isOpen, onClose, submit}: Mod
     >
       <ModalHeader>{title}</ModalHeader>
       <ModalBody>
-        <Paragraph2> Bekreft sletting av "{documentName}" </Paragraph2>
+        <Paragraph2> {intl.confirmDeleteDocumentText} "{documentName}" </Paragraph2>
       </ModalBody>
 
       <ModalFooter>

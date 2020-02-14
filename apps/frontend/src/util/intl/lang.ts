@@ -1,4 +1,4 @@
-import { IStrings } from "./intl";
+import {IStrings} from "./intl";
 
 export const no: IStrings = {
   informationType: "Opplysningstype",
@@ -103,6 +103,7 @@ export const no: IStrings = {
   confirmDeleteHeader: "Bekreft sletting",
   confirmDeletePolicyText: "Bekreft sletting av behandling for opplysningstypen",
   confirmDeleteProcessText: "Bekreft sletting av behandlingen ",
+  confirmDeleteDocumentText: "Bekreft sletting av dokument ",
   cannotDeleteProcess: "Kan ikke slette behandlingen {0}, den inneholder fortsatt {1} opplysningstyp(er)",
   confirmDeleteInformationTypeText: "Bekreft sletting av opplysningstypen ",
   cannotDeleteInformationTypes: "Kan ikke slette opplysningstypen {0} da den er",
@@ -344,6 +345,7 @@ export const en: IStrings = {
   confirmDeleteHeader: "Confirm delete",
   confirmDeletePolicyText: "Please confirm deleting the policy for",
   confirmDeleteProcessText: "Please confirm deleting the process ",
+  confirmDeleteDocumentText: "Please confirm deleting the document ",
   cannotDeleteProcess: "Can't delete the process {0} as it contains {1} information type(s)",
   confirmDeleteInformationTypeText: "Please confirm deleting the of information type ",
   cannotDeleteInformationTypes: "Can't delete the information type {0} as it is",
