@@ -1,11 +1,6 @@
 import {default as React, Dispatch, SetStateAction, useEffect} from "react"
 import axios from "axios"
-import {
-  Document,
-  DocumentFormValues,
-  DocumentInformationTypes,
-  PageResponse
-} from "../constants"
+import {Document, DocumentFormValues, DocumentInformationTypes, PageResponse} from "../constants"
 import {env} from "../util/env"
 import {getSettings} from "./SettingsApi"
 import {useDebouncedState} from "../util"
@@ -38,7 +33,7 @@ export const createInformationTypesDocument = async (document: DocumentFormValue
 }
 
 export const deleteDocument = async (id: string) => {
-  return (await axios.delete<PageResponse<Document>>(`${env.pollyBaseUrl}/document/${id}`)).data
+  return (await axios.delete<Document>(`${env.pollyBaseUrl}/document/${id}`)).data
 }
 
 const mapFormValuesToDocument = (document: DocumentFormValues) => ({
