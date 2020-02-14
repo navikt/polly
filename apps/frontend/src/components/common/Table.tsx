@@ -2,18 +2,19 @@ import { SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, S
 import { theme } from "../../util"
 import * as React from "react"
 import { ReactElement } from "react"
-import { useStyletron, withStyle } from "baseui"
+import { withStyle } from "baseui"
 import { TableState } from "../../util/hooks"
 
 type TableProps = {
+  backgroundColor?: string,
   headers: ReactElement,
   children: ReactElement | ReactElement[]
 }
 
 type HeadProps<K extends keyof T, T> = {
   title: string,
-  column: K,
-  tableState: TableState<T, K>
+  column?: K,
+  tableState?: TableState<T, K>
 }
 
 type RowProps = {
@@ -27,38 +28,44 @@ const headerCellOverride = {
   HeadCell: {
     style: {
       borderLeft: "none",
-      borderRight: "none"
+      borderRight: "none",
+      borderTop: "none",
+      borderBottom: "none"
     }
   }
-}
-
-const tableCss = {
-  overflow: "hidden !important",
-  backgroundColor: theme.colors.primary50,
-  borderTop: "none",
-  borderBottom: "none",
-  borderLeft: "none",
-  borderRight: "none"
 }
 
 const StyledHeader = withStyle(StyledHead, {
   backgroundColor: "transparent",
   boxShadow: "none",
-  borderBottom: `2px solid ${theme.colors.mono600}`
+  borderBottom: `2px solid ${theme.colors.mono600}`,
+  marginBottom: ".5rem"
 })
 
-export const Table = (props: TableProps) => {
-  const [useCss] = useStyletron();
+const StyleTable = withStyle(StyledTable, (props: { backgroundColor?: string }) => ({
+  overflow: "hidden !important",
+  backgroundColor: props.backgroundColor,
+  borderWidth: "0",
+  borderTopWidth: "0",
+  borderBottomWidth: "0",
+  borderLeftWidth: "0",
+  borderRightWidth: "0",
+  borderTopLeftRadius: "0",
+  borderTopRightRadius: "0",
+  borderBottomLeftRadius: "0",
+  borderBottomRightRadius: "0"
+}))
 
+export const Table = (props: TableProps) => {
   return (
-    <StyledTable className={useCss(tableCss)}>
+    <StyleTable backgroundColor={props.backgroundColor}>
       <StyledHeader>
         {props.headers}
       </StyledHeader>
       <StyledBody>
         {props.children}
       </StyledBody>
-    </StyledTable>
+    </StyleTable>
   )
 }
 export const Row = (props: RowProps) => {
@@ -74,7 +81,13 @@ export const Row = (props: RowProps) => {
   return <StyleRow>{props.children}</StyleRow>
 }
 
+const PlainHeadCell = withStyle(StyledHeadCell, headerCellOverride.HeadCell.style)
+
 export const HeadCell = <T, K extends keyof T>(props: HeadProps<K, T>) => {
+  if (!props.tableState || !props.column) {
+    return <PlainHeadCell>{props.title}</PlainHeadCell>
+  }
+
   const [table, sortColumn] = props.tableState
 
   return (
@@ -82,7 +95,7 @@ export const HeadCell = <T, K extends keyof T>(props: HeadProps<K, T>) => {
       overrides={headerCellOverride}
       title={props.title}
       direction={table.direction[props.column]}
-      onSort={() => sortColumn(props.column)}
+      onSort={() => sortColumn(props.column!)}
       fillClickTarget
     />
   )

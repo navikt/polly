@@ -118,7 +118,7 @@ export const ListLegalBasesInTable = (props: { legalBases: LegalBasis[] }) => {
   const {legalBases} = props;
   return (
     <Block>
-      <ul style={{listStyle: "none", paddingInlineStart: 0}}>
+      <ul style={{listStyle: "none", paddingInlineStart: 0, marginTop: 0, marginBottom: 0}}>
         {legalBases.map((legalBasis, i) => (
           <Block marginBottom="8px" key={i}>
             <li><LegalBasisView legalBasis={legalBasis}/></li>
