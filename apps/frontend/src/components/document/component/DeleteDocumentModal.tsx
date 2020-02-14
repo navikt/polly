@@ -9,7 +9,7 @@ type ModalDeleteProps = {
   title: string,
   isOpen: boolean,
   documentName: String,
-  submit: Function,
+  submit: () => void,
   onClose: () => void,
 };
 

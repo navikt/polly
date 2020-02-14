@@ -22,7 +22,7 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
   const [isLoading, setLoading] = React.useState();
   const [selectValue, setSelectValue] = React.useState<Value>([]);
   const [currentDocument, setCurrentDocument] = React.useState<Document | undefined>();
-  const [documentSearchResult, setDocumentSearch, documentSearchLoading, setDocumentSearchResult] = useDocumentSearch();
+  const [documentSearchResult, setDocumentSearch, documentSearchLoading] = useDocumentSearch();
   const [documentId, setDocumentId] = React.useState<string | undefined>(props.match.params.id);
   const [isDeleteModalVisible, setDeleteModalVisibility] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState();
@@ -35,8 +35,8 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
           console.log(response);
           setSelectValue([]);
           setCurrentDocument(undefined);
+          setDocumentSearch("");
           setDeleteModalVisibility(false);
-          setDocumentSearchResult([]);
           props.history.push("/document")
         }).catch((e) => {
         setErrorMessage(e.message);
@@ -55,6 +55,7 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
 
   React.useEffect(() => {
     (async () => {
+      setErrorMessage("")
       if (documentId) {
         const res = await getDocument(documentId);
         setCurrentDocument(res);

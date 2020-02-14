@@ -57,9 +57,11 @@ export const useDocumentSearch = () => {
         setLoading(true)
         setDocumentSearchResult((await searchDocuments(documentSearch)).content)
         setLoading(false)
+      } else {
+        setDocumentSearchResult([])
       }
     })()
   }, [documentSearch])
 
-  return [documentSearchResult, setDocumentSearch, loading, setDocumentSearchResult] as [Document[], Dispatch<SetStateAction<string>>, boolean, Function]
+  return [documentSearchResult, setDocumentSearch, loading] as [Document[], Dispatch<SetStateAction<string>>, boolean]
 }
