@@ -28,7 +28,7 @@ export const LegalBasisView = (props: { legalBasis?: LegalBasis, legalBasisForm?
 
   return (
     <span><ActiveIndicator start={start}
-                           end={end}/> {gdprDisplay}{(nationalLawDisplay || descriptionText) && ', '} {nationalLawDisplay && nationalLawDisplay} {descriptionText}</span>
+                           end={end}/> {gdprDisplay}{(nationalLawDisplay || descriptionText) && ', '} {nationalLawDisplay} {descriptionText}</span>
   )
 };
 
