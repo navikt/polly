@@ -49,9 +49,10 @@ const legalBasisLinkProcessor = (law: string, text?: string) => processString([
 ])(text);
 
 export const LegalBasesNotClarified = (props: { alert?: PolicyAlert }) => {
-  const warningIcon = <span><FontAwesomeIcon icon={faExclamation} color={theme.colors.warning400}/>&nbsp;</span>
+  const color = theme.colors.warning500
+  const warningIcon = <span><FontAwesomeIcon icon={faExclamation} color={color}/>&nbsp;</span>
   return (
-    <Block color={theme.colors.warning400}>
+    <Block color={color}>
       <Block>
         {props.alert?.missingLegalBasis && <>{warningIcon} {intl.legalBasesUndecidedWarning}</>}
       </Block>
