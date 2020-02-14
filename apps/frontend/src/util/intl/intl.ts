@@ -112,6 +112,7 @@ export interface IStrings {
   confirmDeleteHeader: string;
   confirmDeletePolicyText: string;
   confirmDeleteProcessText: string;
+  confirmDeleteDocumentText: string;
   cannotDeleteProcess: string;
   confirmDeleteInformationTypeText: string;
   cannotDeleteInformationTypes: string;

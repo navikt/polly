@@ -1,11 +1,6 @@
 import {default as React, Dispatch, SetStateAction, useEffect} from "react"
 import axios from "axios"
-import {
-  Document,
-  DocumentFormValues,
-  DocumentInformationTypes,
-  PageResponse
-} from "../constants"
+import {Document, DocumentFormValues, DocumentInformationTypes, PageResponse} from "../constants"
 import {env} from "../util/env"
 import {getSettings} from "./SettingsApi"
 import {useDebouncedState} from "../util"
@@ -37,6 +32,10 @@ export const createInformationTypesDocument = async (document: DocumentFormValue
   return (await axios.post(`${env.pollyBaseUrl}/document`, body)).data
 }
 
+export const deleteDocument = async (id: string) => {
+  return (await axios.delete<Document>(`${env.pollyBaseUrl}/document/${id}`)).data
+}
+
 const mapFormValuesToDocument = (document: DocumentFormValues) => ({
   id: document.id ? document.id : undefined,
   name: document.name,
@@ -53,15 +52,15 @@ export const useDocumentSearch = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
 
   useEffect(() => {
-    const search = async () => {
+    (async () => {
       if (documentSearch && documentSearch.length > 2) {
         setLoading(true)
-        const res = await searchDocuments(documentSearch)
-        setDocumentSearchResult(res.content)
+        setDocumentSearchResult((await searchDocuments(documentSearch)).content)
         setLoading(false)
+      } else {
+        setDocumentSearchResult([])
       }
-    }
-    search()
+    })()
   }, [documentSearch])
 
   return [documentSearchResult, setDocumentSearch, loading] as [Document[], Dispatch<SetStateAction<string>>, boolean]
