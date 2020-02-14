@@ -1,4 +1,4 @@
-import { IStrings } from "./intl";
+import {IStrings} from "./intl";
 
 export const no: IStrings = {
   informationType: "Opplysningstype",
@@ -21,6 +21,7 @@ export const no: IStrings = {
   navMaster: "Master i NAV",
   productTeam: "Produktteam (IT)",
   product: "Produkt",
+  system: "System",
   disclosure: "Utlevering",
   disclosures: "Utleveringer",
   documents: "Dokumenter",
@@ -33,7 +34,7 @@ export const no: IStrings = {
   no: 'Nei',
   unclarified: 'Uavklart',
   automation: 'Automatisering',
-  automaticProcessing: 'Helautomatisert behandling',
+  automaticProcessing: 'Helautomatisk behandling',
   automaticProcessingExtra: 'Treffes det et vedtak eller en avgjørelse som er basert på helautomatisert behandling av personopplysninger? Altså avgjørelser uten menneskelig innvirkning.',
   profiling: 'Profilering',
   profilingExtra: 'Med profilering mener vi at personopplysninger behandles automatisk for å kunne analysere eller forutsi noe om preferanser, evner eller behov til en enkeltperson. analysering av personopplysninger for å kunne forutsi noe om en enkeltperson, f.eks. personens preferanser, evner eller behov.',
@@ -44,7 +45,7 @@ export const no: IStrings = {
   dataProcessorExtra: 'Brukes det databehandler for å utføre behandlingen/behandle personopplysninger',
   dataProcessorAgreement: 'Ref. til databehandleravtale',
   dataProcessorOutsideEU: 'Utenfor EU / EØS',
-  dataProcessorOutsideEUExtra: 'Personopplysningene behnadles utenfor EU/EØS',
+  dataProcessorOutsideEUExtra: 'Personopplysningene behandles utenfor EU/EØS',
   includeDefaultDocument: "Standard opplysningstyper",
   from: "fra",
   retained: "Lagres i",
@@ -54,8 +55,8 @@ export const no: IStrings = {
   retentionPlanNo: "Omfattes ikke av virksomhetens kassasjons- og bevaringsplan",
   retentionPlanUnclarified: "Uavklart om omfattes av virksomhetens kassasjons- og bevaringsplan",
   retentionMonths: "Lagringstid",
-  retentionStart: "Lagringsstart",
-  retentionDescription: "Lagringsbeskrivelse",
+  retentionStart: "Lagres fra",
+  retentionDescription: "Begrunnelse",
   years: "år",
   months: "måneder",
 
@@ -262,6 +263,7 @@ export const en: IStrings = {
   subjectCategories: "Subject Categories",
   productTeam: "Product team (IT)",
   product: "Product",
+  system: "System",
   disclosure: "Disclosure",
   disclosures: "Disclosures",
   documents: "Documents",
@@ -295,8 +297,8 @@ export const en: IStrings = {
   retentionPlanNo: "Not covered by the business' disposal and conservation plan",
   retentionPlanUnclarified: "Unclarified wether covered by the business' disposal and conservation plan",
   retentionMonths: "Retention time",
-  retentionStart: "Retention start",
-  retentionDescription: "Retention-description",
+  retentionStart: "Retention from",
+  retentionDescription: "Retention grounds",
   years: "years",
   months: "months",
 
