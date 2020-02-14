@@ -10,7 +10,15 @@ import {intl, theme, useAwait} from '../../../util';
 import _includes from 'lodash/includes'
 import {user} from "../../../service/User";
 import {Plus} from 'baseui/icon'
-import {AddDocumentToProcessFormValues, LegalBasesStatus, LegalBasis, Policy, PolicyFormValues, Process, ProcessFormValues} from "../../../constants"
+import {
+  AddDocumentToProcessFormValues,
+  LegalBasesStatus,
+  LegalBasis,
+  Policy,
+  PolicyFormValues,
+  Process,
+  ProcessFormValues
+} from "../../../constants"
 import {LegalBasisView} from "../../common/LegalBasis"
 import {codelist, ListName} from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
@@ -279,12 +287,12 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                     </Block>
 
                     {!!currentProcess?.products?.length && <Block width="33%">
-                      <Label2>{intl.product}</Label2>
+                      <Label2>{intl.system}</Label2>
                       <Paragraph3>{currentProcess.products.map(product => codelist.getShortname(ListName.SYSTEM, product.code)).join(", ")}</Paragraph3>
                     </Block>}
 
                     <Block width="33%">
-                      <Label2>{intl.automaticProcessing}</Label2>
+                      <Label2>{intl.automation}</Label2>
                       <Block>
                         <Paragraph3 marginBottom="0">
                           <span>{intl.automaticProcessing}: </span>
@@ -337,7 +345,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                             <RetentionView retention={currentProcess?.retention}/>
                           </Paragraph3>
                           <Paragraph3 marginTop="0">
-                            <span>{currentProcess?.retention?.retentionDescription && `${intl.description}: `}</span>
+                            <span>{currentProcess?.retention?.retentionDescription && `${intl.retentionDescription}: `}</span>
                             <span>{currentProcess?.retention?.retentionDescription}</span>
                           </Paragraph3>
                         </>
