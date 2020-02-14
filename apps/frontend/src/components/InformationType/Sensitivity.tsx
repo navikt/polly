@@ -10,7 +10,7 @@ export function sensitivityColor(code: string) {
     case SensitivityLevel.ART9:
       return theme.colors.negative500
     default:
-      return theme.colors.primary
+      return theme.colors.mono1000
   }
 }
 

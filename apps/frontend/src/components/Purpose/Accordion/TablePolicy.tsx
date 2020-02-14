@@ -28,7 +28,7 @@ import { getAlertForProcess } from "../../../api/AlertApi"
 const StyledHeader = withStyle(StyledHead, {
   backgroundColor: "transparent",
   boxShadow: "none",
-  borderBottom: "2px solid #E9E7E7"
+  borderBottom: `2px solid ${theme.colors.mono600}`
 });
 
 type RowProps = {
@@ -40,9 +40,8 @@ type RowProps = {
 
 const CustomStyledRow = (props: RowProps) => {
   const styleProps = {
-    borderLeft: "0px solid #E9E7E7",
-    borderBottom: "1px solid #E9E7E7",
-    padding: "8px",
+    borderLeft: "none",
+    borderBottom: `1px solid ${theme.colors.mono600}`,
     fontSize: "24px",
     opacity: props.inactiveRow ? '.5' : undefined,
     backgroundColor: props.infoRow ? theme.colors.accent50 : undefined,
@@ -103,23 +102,43 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
     })()
   }, [process])
 
+  const headerCellOverride = {
+    HeadCell: {
+      style: {
+        borderLeft: "none",
+        borderRight: "none"
+      }
+    }
+  }
+
+  const tableCss = {
+    overflow: "hidden !important",
+    backgroundColor: theme.colors.primary50,
+    borderTop: "none",
+    borderBottom: "none",
+    borderLeft: "none",
+    borderRight: "none"
+  }
   return (
     <React.Fragment>
-      <StyledTable className={useCss({overflow: "hidden !important"})}>
+      <StyledTable className={useCss(tableCss)}>
         <StyledHeader>
           <SortableHeadCell
+            overrides={headerCellOverride}
             title={intl.informationType}
             direction={table.direction.informationType}
             onSort={() => sortColumn('informationType')}
             fillClickTarget
           />
           <SortableHeadCell
+            overrides={headerCellOverride}
             title={intl.subjectCategories}
             direction={table.direction.subjectCategories}
             onSort={() => sortColumn('subjectCategories')}
             fillClickTarget
           />
           <SortableHeadCell
+            overrides={headerCellOverride}
             title={intl.legalBasisShort}
             direction={table.direction.legalBases}
             onSort={() => sortColumn('legalBases')}
@@ -143,7 +162,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                       </Block>
                       <Block>
                         <StatefulTooltip content={() => intl.documents}>
-                          <Block $style={{opacity: "60%"}}>
+                          <Block $style={{opacity: "80%"}}>
                             {!!row.documentIds?.length && '(' + row.documentIds?.map(id => (docs[id] || {}).name).join(", ") + ')'}
                           </Block>
                         </StatefulTooltip>

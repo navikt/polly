@@ -3,7 +3,7 @@ import { useEffect } from "react";
 
 import { Block, BlockProps } from "baseui/block";
 import { Plus } from "baseui/icon";
-import { Label2 } from "baseui/typography";
+import { Label1 } from "baseui/typography";
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues } from "../../constants"
 import { intl, useAwait } from "../../util"
@@ -22,6 +22,8 @@ import {
   updatePolicy,
   updateProcess
 } from "../../api"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faList } from "@fortawesome/free-solid-svg-icons"
 
 const rowBlockProps: BlockProps = {
   marginBottom: 'scale800',
@@ -179,7 +181,10 @@ const ProcessList = ({purposeCode}: ProcessListProps) => {
     <React.Fragment>
       <React.Fragment>
         <Block {...rowBlockProps}>
-          <Label2 font="font400">{intl.processes}</Label2>
+          <Label1 font="font400">
+            <FontAwesomeIcon icon={faList} style={{marginRight: ".5rem"}}/>
+            {intl.processes}
+          </Label1>
           {hasAccess() && (
             <React.Fragment>
               <Button

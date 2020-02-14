@@ -1,47 +1,33 @@
 import * as React from 'react'
-import {useEffect} from 'react'
-import {Accordion, Panel, SharedProps} from 'baseui/accordion'
-import {generatePath, RouteComponentProps, withRouter} from 'react-router'
-import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
-import {Spinner} from 'baseui/spinner';
-import {Block, BlockProps} from 'baseui/block';
-import {Label2, Paragraph2, Paragraph3} from 'baseui/typography';
-import {intl, theme, useAwait} from '../../../util';
+import { ReactElement, useEffect } from 'react'
+import { Accordion, Panel } from 'baseui/accordion'
+import { generatePath, RouteComponentProps, withRouter } from 'react-router'
+import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
+import { Spinner } from 'baseui/spinner';
+import { Block } from 'baseui/block';
+import { Label1, Label2, Paragraph2 } from 'baseui/typography';
+import { intl, theme, useAwait } from '../../../util';
 import _includes from 'lodash/includes'
-import {user} from "../../../service/User";
-import {Plus} from 'baseui/icon'
-import {
-  AddDocumentToProcessFormValues,
-  LegalBasesStatus,
-  LegalBasis,
-  Policy,
-  PolicyFormValues,
-  Process,
-  ProcessFormValues
-} from "../../../constants"
-import {LegalBasisView} from "../../common/LegalBasis"
-import {codelist, ListName} from "../../../service/Codelist"
+import { user } from "../../../service/User";
+import { Plus } from 'baseui/icon'
+import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues } from "../../../constants"
+import { LegalBasisView } from "../../common/LegalBasis"
+import { codelist, ListName } from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy';
-import {convertProcessToFormValues} from "../../../api"
-import {PathParams} from "../../../pages/PurposePage"
-import {ActiveIndicator} from "../../common/Durations"
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faChevronDown, faChevronRight, faEdit, faTrash} from '@fortawesome/free-solid-svg-icons';
-import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal';
-import {TeamPopover} from "../../common/Team"
-import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
-import {AuditButton} from "../../audit/AuditButton"
-import {AddDocumentModal} from "./AddDocumentModal"
-import {RetentionView} from "../Retention"
-import {boolToText} from "../../common/Radio"
-
-const rowPanelContent: BlockProps = {
-  display: 'flex',
-  marginBottom: '1rem',
-  justifyContent: 'space-between'
-}
+import { convertProcessToFormValues } from "../../../api"
+import { PathParams } from "../../../pages/PurposePage"
+import { ActiveIndicator } from "../../common/Durations"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown, faChevronRight, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal';
+import { TeamPopover } from "../../common/Team"
+import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
+import { AuditButton } from "../../audit/AuditButton"
+import { AddDocumentModal } from "./AddDocumentModal"
+import { RetentionView } from "../Retention"
+import { boolToText } from "../../common/Radio"
 
 type AccordionProcessProps = {
   isLoading: boolean
@@ -59,6 +45,202 @@ type AccordionProcessProps = {
   submitEditPolicy: (process: PolicyFormValues) => Promise<boolean>
   submitDeletePolicy: (process: Policy) => Promise<boolean>
   submitAddDocument: (document: AddDocumentToProcessFormValues) => Promise<boolean>
+}
+
+const AccordionTitle = (props: { process: Process, expanded: boolean, hasAccess: boolean, editProcess: () => void, deleteProcess: () => void }) => {
+  const {process, expanded, hasAccess} = props
+
+  const renderEditProcessButton = () => (
+    <StatefulTooltip content={intl.edit} placement={PLACEMENT.top}>
+      <Button
+        size={ButtonSize.compact}
+        kind={KIND.secondary}
+        onClick={props.editProcess}
+        overrides={{
+          BaseButton: {
+            style: () => {
+              return {marginRight: theme.sizing.scale500}
+            }
+          }
+        }}
+      >
+        <FontAwesomeIcon icon={faEdit} style={{marginRight: ".5rem"}}/>{intl.edit}
+      </Button>
+    </StatefulTooltip>
+  )
+  const renderDeleteProcessButton = () => (
+    <StatefulTooltip content={intl.delete} placement={PLACEMENT.top}>
+      <Button
+        size={ButtonSize.compact}
+        kind={KIND.secondary}
+        onClick={props.deleteProcess}
+      >
+        <FontAwesomeIcon icon={faTrash} style={{marginRight: ".5rem"}}/>{intl.delete}
+      </Button>
+    </StatefulTooltip>
+  )
+
+  return <>
+    <Block>
+      <Label1 color={theme.colors.primary600}>
+        {expanded ?
+          <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
+        <span> </span>
+        <span>{codelist.getShortname(ListName.PURPOSE, process.purposeCode)}: </span>
+        <span>{process.name}</span>
+      </Label1>
+    </Block>
+    <div onClick={(e) => {
+      e.stopPropagation()
+    }}>
+      {hasAccess && expanded && (
+        <>
+          <AuditButton id={process.id}/>
+          {renderEditProcessButton()}
+          {renderDeleteProcessButton()}
+        </>
+      )}
+    </div>
+  </>
+}
+
+type DataTextProps = {
+  label: string,
+  text?: false | string | string[],
+  children?: ReactElement | Array<ReactElement | false>
+  hide?: boolean
+}
+
+const DataText = (props: DataTextProps) => {
+  if (props.hide) return null
+  const texts = typeof props.text === "string" ? [props.text] : props.text
+
+  return (
+    <Block display="flex" alignContent="flex-start" marginBottom="1rem" width="100%">
+      <Block width="30%" paddingRight={theme.sizing.scale400}>
+        <Label2>{props.label}</Label2>
+      </Block>
+      <Block width="70%">
+        {texts && texts.map((text, index) =>
+          <Paragraph2 marginTop="0" marginBottom="0" key={index}>
+            {text}
+          </Paragraph2>
+        )}
+        {props.children &&
+        <Block font="ParagraphMedium">
+          {props.children}
+        </Block>}
+      </Block>
+    </Block>
+  )
+}
+
+const ProcessData = (props: { process: Process }) => {
+  const {process} = props
+  const dataProcessorAgreements = !!process.dataProcessing?.dataProcessorAgreements.length
+
+  const subjectCategories = process.policies.flatMap(p => p.subjectCategories).reduce((acc: string[], curr) => {
+    const subjectCategory = codelist.getShortname(ListName.SUBJECT_CATEGORY, curr.code)
+    if (!_includes(acc, subjectCategory) && subjectCategory)
+      acc = [...acc, subjectCategory]
+    return acc
+  }, [])
+
+  return (
+    <Block>
+
+      <DataText label={intl.processPurpose} text={process.description} hide={!process.description}/>
+
+      <DataText label={intl.legalBasis} text={process.legalBases.length ? undefined : intl.legalBasisNotFound}>
+        {process.legalBases.map((legalBasis, index) =>
+          <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
+        )}
+      </DataText>
+
+      <DataText label={intl.subjectCategories} text={subjectCategories.length ? subjectCategories.join(", ") : intl.subjectCategoriesNotFound}/>
+
+      <DataText label={intl.validityOfProcess}>
+        <ActiveIndicator alwaysShow={true} showDates={true} {...process} />
+      </DataText>
+
+      <DataText label={intl.organizing}>
+        {process.department && <Block>
+          <span>{intl.department}: </span>
+          <span>{codelist.getShortnameForCode(process.department)}</span>
+        </Block>}
+        {process.subDepartment && <Block>
+          <span>{intl.subDepartment}: </span>
+          <span>{codelist.getShortnameForCode(process.subDepartment)}</span>
+        </Block>}
+        {!!process.productTeam && <Block>
+          <span>{intl.productTeam}: </span>
+          <TeamPopover teamId={process.productTeam}/>
+        </Block>}
+      </DataText>
+
+      <DataText label={intl.product}
+                text={process.products.map(product => codelist.getShortname(ListName.SYSTEM, product.code)).join(", ")}
+                hide={!process.products?.length}/>
+
+      <DataText label={intl.automaticProcessing}>
+        <Block>
+          <span>{intl.automaticProcessing}: </span>
+          <span>{boolToText(process.automaticProcessing)}</span>
+        </Block>
+        <Block>
+          <span>{intl.profiling}: </span>
+          <span>{boolToText(process.profiling)}</span>
+        </Block>
+      </DataText>
+
+      <DataText label={intl.dataProcessor}>
+        <>
+          {process.dataProcessing?.dataProcessor === null && intl.dataProcessorUnclarified}
+          {process.dataProcessing?.dataProcessor === false && intl.dataProcessorNo}
+        </>
+        <>
+          {process.dataProcessing?.dataProcessor &&
+          <Block>
+            <Block>
+              <span>{intl.dataProcessorYes}</span>
+            </Block>
+            <Block>
+              <span>{dataProcessorAgreements && `${intl.dataProcessorAgreement}: `}</span>
+              <span>{dataProcessorAgreements && process.dataProcessing?.dataProcessorAgreements.join(", ")}</span>
+            </Block>
+            <Block>
+              <span>{intl.dataProcessorOutsideEUExtra}: </span>
+              <span>{boolToText(process.dataProcessing?.dataProcessorOutsideEU)}</span>
+            </Block>
+          </Block>}
+        </>
+      </DataText>
+
+      <DataText label={intl.retention}>
+        <>
+          {process.retention?.retentionPlan === null && intl.retentionPlanUnclarified}
+          {process.retention?.retentionPlan === false && intl.retentionPlanNo}
+        </>
+        <>
+          {process.retention?.retentionPlan &&
+          <Block>
+            <Block>
+              <span>{intl.retentionPlanYes}</span>
+            </Block>
+            <Block>
+              <RetentionView retention={process.retention}/>
+            </Block>
+            <Block>
+              <span>{process.retention?.retentionDescription && `${intl.description}: `}</span>
+              <span>{process.retention?.retentionDescription}</span>
+            </Block>
+          </Block>
+          }
+        </>
+      </DataText>
+
+    </Block>
+  )
 }
 
 const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<PathParams>) => {
@@ -96,81 +278,6 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
       updatePath({purposeCode: purposeCode, processId: processId})
     }
   }
-
-  const renderActiveForProcess = (process: Process) =>
-    <Block>
-      <Label2>{intl.validityOfProcess}</Label2>
-      <ActiveIndicator alwaysShow={true} showDates={true} {...process} />
-    </Block>
-
-  const renderLegalBasisListForProcess = (list: LegalBasis[]) => (
-    <Block marginRight="scale1200">
-      <Label2>{intl.legalBasis}</Label2>
-      {list && list.length < 1 && <Paragraph2>{intl.legalBasisNotFound}</Paragraph2>}
-      {list && list.length > 0 && (
-        <ul style={{listStyle: "none", paddingInlineStart: 0}}>
-          {list.map((legalBasis, i) => <li key={i}><Paragraph2><LegalBasisView
-            legalBasis={legalBasis}/></Paragraph2></li>)}
-        </ul>
-      )}
-    </Block>
-  )
-  const renderSubjectCategoriesForProcess = (processObj: Process) => {
-    const notFound = (<Paragraph2>{intl.subjectCategoriesNotFound}</Paragraph2>)
-    let display
-    if (!processObj) display = notFound
-    else if (!processObj.policies) {
-      display = notFound
-    } else {
-      if (processObj.policies.length < 1) display = notFound
-      else {
-        const subjectCategories = processObj.policies.flatMap(p => p.subjectCategories).reduce((acc: string[], curr) => {
-          const subjectCategory = codelist.getShortname(ListName.SUBJECT_CATEGORY, curr.code)
-          if (!_includes(acc, subjectCategory) && subjectCategory)
-            acc = [...acc, subjectCategory]
-          return acc
-        }, [])
-        if (subjectCategories.length < 1) display = notFound
-        else display = <Paragraph2>{subjectCategories.join(', ')}</Paragraph2>
-      }
-    }
-
-    return (
-      <Block marginRight="scale1200">
-        <Label2>{intl.subjectCategories}</Label2>
-        {display}
-      </Block>
-    )
-  }
-  const renderEditProcessButton = () => (
-    <StatefulTooltip content={intl.edit} placement={PLACEMENT.top}>
-      <Button
-        size={ButtonSize.compact}
-        kind={KIND.secondary}
-        onClick={() => setShowEditProcessModal(true)}
-        overrides={{
-          BaseButton: {
-            style: () => {
-              return {marginRight: theme.sizing.scale500}
-            }
-          }
-        }}
-      >
-        <FontAwesomeIcon icon={faEdit}/>
-      </Button>
-    </StatefulTooltip>
-  )
-  const renderDeleteProcessButton = () => (
-    <StatefulTooltip content={intl.delete} placement={PLACEMENT.top}>
-      <Button
-        size={ButtonSize.compact}
-        kind={KIND.secondary}
-        onClick={() => setShowDeleteModal(true)}
-      >
-        <FontAwesomeIcon icon={faTrash}/>
-      </Button>
-    </StatefulTooltip>
-  )
 
   const renderCreatePolicyButton = () => (
     <StatefulTooltip content={intl.addOneInformationType} placement={PLACEMENT.top}>
@@ -213,7 +320,6 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
     }, 200)
   }, [isLoading])
 
-  const dataProcessorAgreements = !!currentProcess?.dataProcessing?.dataProcessorAgreements.length
   return (
     <Block ref={purposeRef}>
       <Accordion
@@ -221,151 +327,56 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
         initialState={{expanded: props.match.params.processId ? [props.match.params.processId] : []}}>
         {props.processList && props.processList.map((p: Process) => (
           <Panel
-            title={p.name}
+            title={
+              <AccordionTitle process={p} expanded={props.match.params.processId === p.id}
+                              hasAccess={hasAccess()} editProcess={() => setShowEditProcessModal(true)}
+                              deleteProcess={() => setShowDeleteModal(true)}
+              />
+            }
             key={p.id}
             overrides={{
               ToggleIcon: {
-                component: (iconProps: SharedProps) => !!iconProps.$expanded ?
-                  <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>
+                component: () => null
+              },
+              Content: {
+                style: {
+                  backgroundColor: theme.colors.white,
+                  // Outline width
+                  paddingTop: "4px",
+                  paddingBottom: "4px",
+                  paddingLeft: "4px",
+                  paddingRight: "4px",
+                }
               }
             }}
           >
             {isLoading && <Spinner size={18}/>}
 
             {!isLoading && currentProcess && (
-              <React.Fragment>
+              <Block $style={{
+                outline: `4px ${theme.colors.primary300} solid`
+              }}>
 
-                <Block {...rowPanelContent}>
-                  <Block width="90%" marginRight=".5rem">
+                <Block padding={theme.sizing.scale800}>
+                  <ProcessData process={currentProcess}/>
+                </Block>
 
-                    <Block flexWrap={true} display="flex" justifyContent="flex-start">
-                      {currentProcess.description && <Block marginBottom=".5rem" width="100%">
-                        <Label2>{intl.processPurpose}</Label2>
-                        <Paragraph2>{currentProcess.description}</Paragraph2>
-                      </Block>}
-                    </Block>
-                  </Block>
-
-                  <Block width="10%" minWidth="150px">
+                <Block backgroundColor={theme.colors.primary50}>
+                  <Block {...({
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    paddingLeft: theme.sizing.scale800,
+                    paddingRight: theme.sizing.scale800
+                  })}>
+                    <Label2 alignSelf="center">{intl.informationTypes}</Label2>
                     {hasAccess() && (
-                      <>
-                        <AuditButton id={p.id}/>
-                        {renderEditProcessButton()}
-                        {renderDeleteProcessButton()}
-                      </>
+                      <Block alignSelf="flex-end">
+                        {renderAddDocumentButton()}
+                        {renderCreatePolicyButton()}
+                      </Block>
                     )}
                   </Block>
-                </Block>
-
-                <Block {...rowPanelContent}>
-                  <Block width="100%" flexWrap display="flex">
-
-                    <Block width="33%">{renderLegalBasisListForProcess(currentProcess.legalBases)}</Block>
-                    <Block width="33%">{renderSubjectCategoriesForProcess(currentProcess)}</Block>
-                    <Block width="33%">{renderActiveForProcess(currentProcess)}</Block>
-
-                    <Block width="33%">
-                      <Label2>{intl.organizing}</Label2>
-                      <Block>
-                        <Paragraph3 marginBottom="0"> </Paragraph3>
-                        {currentProcess.department &&
-                        <Paragraph3 marginBottom="0" marginTop="0">
-                          <span>{intl.department}: </span>
-                          <span>{codelist.getShortnameForCode(currentProcess.department)}</span>
-                        </Paragraph3>}
-                        {currentProcess.subDepartment &&
-                        <Paragraph3 marginBottom="0" marginTop="0">
-                          <span>{intl.subDepartment}: </span>
-                          <span>{codelist.getShortnameForCode(currentProcess.subDepartment)}</span>
-                        </Paragraph3>}
-                        {currentProcess.productTeam &&
-                        <Paragraph3 marginTop="0">
-                          <span>{intl.productTeam}: </span>
-                          <TeamPopover teamId={currentProcess.productTeam}/>
-                        </Paragraph3>}
-                      </Block>
-                    </Block>
-
-                    {!!currentProcess?.products?.length && <Block width="33%">
-                      <Label2>{intl.system}</Label2>
-                      <Paragraph3>{currentProcess.products.map(product => codelist.getShortname(ListName.SYSTEM, product.code)).join(", ")}</Paragraph3>
-                    </Block>}
-
-                    <Block width="33%">
-                      <Label2>{intl.automation}</Label2>
-                      <Block>
-                        <Paragraph3 marginBottom="0">
-                          <span>{intl.automaticProcessing}: </span>
-                          <span>{boolToText(currentProcess?.automaticProcessing)}</span>
-                        </Paragraph3>
-                        <Paragraph3 marginTop="0">
-                          <span>{intl.profiling}: </span>
-                          <span>{boolToText(currentProcess?.profiling)}</span>
-                        </Paragraph3>
-                      </Block>
-                    </Block>
-
-                    <Block width="33%">
-                      <Label2>{intl.dataProcessor}</Label2>
-                      <Block>
-                        <Paragraph3 marginBottom="0">
-                          {currentProcess?.dataProcessing?.dataProcessor === null && intl.dataProcessorUnclarified}
-                          {currentProcess?.dataProcessing?.dataProcessor === false && intl.dataProcessorNo}
-                        </Paragraph3>
-                        {currentProcess?.dataProcessing?.dataProcessor &&
-                        <>
-                          <Paragraph3 marginBottom="0" marginTop="0">
-                            <span>{intl.dataProcessorYes}</span>
-                          </Paragraph3>
-                          <Paragraph3 marginBottom="0" marginTop="0">
-                            <span>{dataProcessorAgreements && `${intl.dataProcessorAgreement}: `}</span>
-                            <span>{dataProcessorAgreements && currentProcess?.dataProcessing?.dataProcessorAgreements.join(", ")}</span>
-                          </Paragraph3>
-                          <Paragraph3 marginTop="0">
-                            <span>{intl.dataProcessorOutsideEUExtra}: </span>
-                            <span>{boolToText(currentProcess?.dataProcessing?.dataProcessorOutsideEU)}</span>
-                          </Paragraph3>
-                        </>}
-                      </Block>
-                    </Block>
-
-                    <Block width="33%">
-                      <Label2>{intl.retention}</Label2>
-                      <Block>
-                        <Paragraph3 marginBottom="0">
-                          {currentProcess?.retention?.retentionPlan === null && intl.retentionPlanUnclarified}
-                          {currentProcess?.retention?.retentionPlan === false && intl.retentionPlanNo}
-                        </Paragraph3>
-                        {currentProcess?.retention?.retentionPlan &&
-                        <>
-                          <Paragraph3 marginBottom="0" marginTop="0">
-                            <span>{intl.retentionPlanYes}</span>
-                          </Paragraph3>
-                          <Paragraph3 marginBottom="0" marginTop="0">
-                            <RetentionView retention={currentProcess?.retention}/>
-                          </Paragraph3>
-                          <Paragraph3 marginTop="0">
-                            <span>{currentProcess?.retention?.retentionDescription && `${intl.retentionDescription}: `}</span>
-                            <span>{currentProcess?.retention?.retentionDescription}</span>
-                          </Paragraph3>
-                        </>
-                        }
-                      </Block>
-                    </Block>
-                  </Block>
-                </Block>
-
-                <Block {...rowPanelContent}>
-                  <Label2 alignSelf="center">{intl.informationTypes}</Label2>
-                  {hasAccess() && (
-                    <Block alignSelf="flex-end">
-                      {renderAddDocumentButton()}
-                      {renderCreatePolicyButton()}
-                    </Block>
-                  )}
-                </Block>
-                {currentProcess.policies && (
-                  <Block>
+                  <Block padding={theme.sizing.scale800}>
                     <TablePolicy
                       process={currentProcess}
                       hasAccess={hasAccess()}
@@ -375,96 +386,99 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                       submitDeletePolicy={submitDeletePolicy}
                     />
                   </Block>
-                )}
+                </Block>
 
-                <ModalProcess
-                  title={intl.processingActivitiesEdit}
-                  onClose={() => setShowEditProcessModal(false)}
-                  isOpen={showEditProcessModal}
-                  submit={async (values: ProcessFormValues) => {
-                    await submitEditProcess(values) ? setShowEditProcessModal(false) : setShowEditProcessModal(true)
-                  }}
-                  errorOnCreate={errorProcessModal}
-                  isEdit={true}
-                  initialValues={convertProcessToFormValues(currentProcess)}
-                />
-                <ModalPolicy
-                  title={intl.policyNew}
-                  initialValues={{
-                    legalBasesOpen: false,
-                    informationType: undefined,
-                    legalBasesStatus: LegalBasesStatus.INHERITED,
-                    process: currentProcess,
-                    purposeCode: currentProcess.purposeCode,
-                    subjectCategories: [],
-                    start: undefined,
-                    end: undefined,
-                    legalBases: [],
-                    documentIds: []
-                  }}
-                  isEdit={false}
-                  onClose={() => setShowCreatePolicyModal(false)}
-                  isOpen={showCreatePolicyModal}
-                  submit={(values: PolicyFormValues) => {
-                    submitCreatePolicy(values).then(() => setShowCreatePolicyModal(false)).catch(() => setShowCreatePolicyModal(true))
-                  }}
-                  errorOnCreate={errorPolicyModal}
-                />
-
-                <AddDocumentModal
-                  onClose={() => setShowAddDocumentModal(false)}
-                  isOpen={showAddDocumentModal}
-                  submit={(formValues) => props.submitAddDocument(formValues).then(() => setShowAddDocumentModal(false))}
-                  process={currentProcess}
-                  error={props.errorDocumentModal}
-                />
-
-                <Modal
-                  onClose={() => setShowDeleteModal(false)}
-                  isOpen={showDeleteModal}
-                  animate
-                  size="default"
-                >
-                  <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
-                  <ModalBody>
-                    {!currentProcess?.policies.length && <Paragraph2>{intl.confirmDeleteProcessText} {currentProcess.name}</Paragraph2>}
-                    {!!currentProcess?.policies.length &&
-                    <Paragraph2>{intl.formatString(intl.cannotDeleteProcess, currentProcess?.name, '' + currentProcess?.policies.length)}</Paragraph2>}
-                  </ModalBody>
-
-                  <ModalFooter>
-                    <Block display="flex" justifyContent="flex-end">
-                      <Block alignSelf="flex-end">{errorProcessModal &&
-                      <p>{errorProcessModal}</p>}</Block>
-                      <Button
-                        kind="secondary"
-                        onClick={() => setShowDeleteModal(false)}
-                        overrides={{
-                          BaseButton: {
-                            style: {
-                              marginRight: '1rem',
-                              marginLeft: '1rem'
-                            }
-                          }
-                        }}
-                      >
-                        {intl.abort}
-                      </Button>
-                      <Button onClick={() =>
-                        submitDeleteProcess(currentProcess).then(() => setShowDeleteModal(false)).catch(() => setShowDeleteModal(true))
-                      } disabled={!!currentProcess?.policies.length}>
-                        {intl.delete}
-                      </Button>
-                    </Block>
-                  </ModalFooter>
-                </Modal>
-              </React.Fragment>
+              </Block>
             )}
           </Panel>
         ))}
       </Accordion>
       {!props.processList.length && <Label2 margin="1rem">{intl.emptyTable} {intl.processes}</Label2>}
 
+      {!!currentProcess &&
+      <>
+        <ModalProcess
+          title={intl.processingActivitiesEdit}
+          onClose={() => setShowEditProcessModal(false)}
+          isOpen={showEditProcessModal}
+          submit={async (values: ProcessFormValues) => {
+            await submitEditProcess(values) ? setShowEditProcessModal(false) : setShowEditProcessModal(true)
+          }}
+          errorOnCreate={errorProcessModal}
+          isEdit={true}
+          initialValues={convertProcessToFormValues(currentProcess)}
+        />
+        <ModalPolicy
+          title={intl.policyNew}
+          initialValues={{
+            legalBasesOpen: false,
+            informationType: undefined,
+            legalBasesStatus: LegalBasesStatus.INHERITED,
+            process: currentProcess,
+            purposeCode: currentProcess.purposeCode,
+            subjectCategories: [],
+            start: undefined,
+            end: undefined,
+            legalBases: [],
+            documentIds: []
+          }}
+          isEdit={false}
+          onClose={() => setShowCreatePolicyModal(false)}
+          isOpen={showCreatePolicyModal}
+          submit={(values: PolicyFormValues) => {
+            submitCreatePolicy(values).then(() => setShowCreatePolicyModal(false)).catch(() => setShowCreatePolicyModal(true))
+          }}
+          errorOnCreate={errorPolicyModal}
+        />
+
+        <AddDocumentModal
+          onClose={() => setShowAddDocumentModal(false)}
+          isOpen={showAddDocumentModal}
+          submit={(formValues) => props.submitAddDocument(formValues).then(() => setShowAddDocumentModal(false))}
+          process={currentProcess}
+          error={props.errorDocumentModal}
+        />
+
+        <Modal
+          onClose={() => setShowDeleteModal(false)}
+          isOpen={showDeleteModal}
+          animate
+          size="default"
+        >
+          <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
+          <ModalBody>
+            {!currentProcess?.policies.length && <Paragraph2>{intl.confirmDeleteProcessText} {currentProcess.name}</Paragraph2>}
+            {!!currentProcess?.policies.length &&
+            <Paragraph2>{intl.formatString(intl.cannotDeleteProcess, currentProcess?.name, '' + currentProcess?.policies.length)}</Paragraph2>}
+          </ModalBody>
+
+          <ModalFooter>
+            <Block display="flex" justifyContent="flex-end">
+              <Block alignSelf="flex-end">{errorProcessModal &&
+              <p>{errorProcessModal}</p>}</Block>
+              <Button
+                kind="secondary"
+                onClick={() => setShowDeleteModal(false)}
+                overrides={{
+                  BaseButton: {
+                    style: {
+                      marginRight: '1rem',
+                      marginLeft: '1rem'
+                    }
+                  }
+                }}
+              >
+                {intl.abort}
+              </Button>
+              <Button onClick={() =>
+                submitDeleteProcess(currentProcess).then(() => setShowDeleteModal(false)).catch(() => setShowDeleteModal(true))
+              } disabled={!!currentProcess?.policies.length}>
+                {intl.delete}
+              </Button>
+            </Block>
+          </ModalFooter>
+        </Modal>
+      </>}
     </Block>
 
   )
