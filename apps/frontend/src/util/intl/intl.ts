@@ -28,6 +28,7 @@ export interface IStrings {
   navMaster: string;
   productTeam: string;
   product: string;
+  system: string;
   disclosure: string;
   disclosures: string;
   documents: string;
