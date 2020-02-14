@@ -42,9 +42,8 @@ const StyledHeader = withStyle(StyledHead, {
   marginBottom: ".5rem"
 })
 
-const StyleTable = withStyle(StyledTable, (props: { backgroundColor?: string }) => ({
+const tableStyle = {
   overflow: "hidden !important",
-  backgroundColor: props.backgroundColor,
   borderWidth: "0",
   borderTopWidth: "0",
   borderBottomWidth: "0",
@@ -54,11 +53,12 @@ const StyleTable = withStyle(StyledTable, (props: { backgroundColor?: string }) 
   borderTopRightRadius: "0",
   borderBottomLeftRadius: "0",
   borderBottomRightRadius: "0"
-}))
+}
 
 export const Table = (props: TableProps) => {
+  const StyleTable = withStyle(StyledTable, {...tableStyle, backgroundColor: props.backgroundColor})
   return (
-    <StyleTable backgroundColor={props.backgroundColor}>
+    <StyleTable>
       <StyledHeader>
         {props.headers}
       </StyledHeader>
