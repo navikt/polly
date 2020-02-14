@@ -5,7 +5,7 @@ import { generatePath, RouteComponentProps, withRouter } from 'react-router'
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { Spinner } from 'baseui/spinner';
 import { Block } from 'baseui/block';
-import { Label2, Paragraph2 } from 'baseui/typography';
+import { Label1, Label2, Paragraph2 } from 'baseui/typography';
 import { intl, theme, useAwait } from '../../../util';
 import _includes from 'lodash/includes'
 import { user } from "../../../service/User";
@@ -82,11 +82,13 @@ const AccordionTitle = (props: { process: Process, expanded: boolean, hasAccess:
 
   return <>
     <Block>
-      {expanded ?
-        <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
-      <span> </span>
-      <span>{codelist.getShortname(ListName.PURPOSE, process.purposeCode)}: </span>
-      <span>{process.name}</span>
+      <Label1 color={theme.colors.primary600}>
+        {expanded ?
+          <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
+        <span> </span>
+        <span>{codelist.getShortname(ListName.PURPOSE, process.purposeCode)}: </span>
+        <span>{process.name}</span>
+      </Label1>
     </Block>
     <div onClick={(e) => {
       e.stopPropagation()
@@ -362,9 +364,9 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                 <Block backgroundColor={theme.colors.primary50}>
                   <Block {...({
                     display: 'flex',
-                    marginBottom: '1rem',
                     justifyContent: 'space-between',
-                    padding: theme.sizing.scale800
+                    paddingLeft: theme.sizing.scale800,
+                    paddingRight: theme.sizing.scale800
                   })}>
                     <Label2 alignSelf="center">{intl.informationTypes}</Label2>
                     {hasAccess() && (
@@ -374,7 +376,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                       </Block>
                     )}
                   </Block>
-                  <Block>
+                  <Block padding={theme.sizing.scale800}>
                     <TablePolicy
                       process={currentProcess}
                       hasAccess={hasAccess()}
