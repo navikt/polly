@@ -89,7 +89,6 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
               }}
               onChange={(params) => {
                 params.value.length < 1 ? setDocumentId(undefined) : setDocumentId(params.value[0].id as string);
-                setErrorMessage("");
               }}
               isLoading={documentSearchLoading}
               filterOptions={options => options}
