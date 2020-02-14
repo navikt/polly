@@ -1,28 +1,28 @@
 import * as React from 'react'
-import { KeyboardEvent, useEffect, useState } from 'react'
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
-import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps, } from "formik";
-import { Block, BlockProps } from "baseui/block";
-import { Input, SIZE as InputSIZE } from "baseui/input";
-import { Select, Value } from 'baseui/select';
-import { Button, KIND, SHAPE, SIZE as ButtonSize } from "baseui/button";
-import { Plus } from "baseui/icon";
+import {KeyboardEvent, useEffect, useState} from 'react'
+import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
+import {Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps,} from "formik";
+import {Block, BlockProps} from "baseui/block";
+import {Input, SIZE as InputSIZE} from "baseui/input";
+import {Select, Value} from 'baseui/select';
+import {Button, KIND, SHAPE, SIZE as ButtonSize} from "baseui/button";
+import {Plus} from "baseui/icon";
 
-import { DisclosureFormValues, ProcessFormValues } from "../../../constants";
+import {DisclosureFormValues, ProcessFormValues} from "../../../constants";
 import CardLegalBasis from './CardLegalBasis'
-import { codelist, ListName } from "../../../service/Codelist"
-import { intl, theme } from "../../../util"
-import { Error, ModalLabel } from "../../common/ModalSchema";
-import { ListLegalBases } from "../../common/LegalBasis"
-import { DateModalFields } from "../DateModalFields"
-import { hasSpecifiedDate } from "../../common/Durations"
-import { processSchema } from "../../common/schema"
-import { getTeam, mapTeamToOption, useTeamSearch } from "../../../api"
-import { Textarea } from "baseui/textarea"
-import { Card } from "baseui/card"
-import { renderTagList } from "../../common/TagList"
-import { Slider } from "baseui/slider"
-import { RadioBoolButton } from "../../common/Radio"
+import {codelist, ListName} from "../../../service/Codelist"
+import {intl, theme} from "../../../util"
+import {Error, ModalBlock, ModalLabel} from "../../common/ModalSchema";
+import {ListLegalBases} from "../../common/LegalBasis"
+import {DateModalFields} from "../DateModalFields"
+import {hasSpecifiedDate} from "../../common/Durations"
+import {processSchema} from "../../common/schema"
+import {getTeam, mapTeamToOption, useTeamSearch} from "../../../api"
+import {Textarea} from "baseui/textarea"
+import {Card} from "baseui/card"
+import {renderTagList} from "../../common/TagList"
+import {Slider} from "baseui/slider"
+import {RadioBoolButton} from "../../common/Radio"
 
 const modalBlockProps: BlockProps = {
   width: '750px',
@@ -46,7 +46,8 @@ const FieldName = () => (
   <Field
     name="name"
     render={({field, form}: FieldProps<string, ProcessFormValues>) => (
-      <Input {...field} type="input" size={InputSIZE.default} autoFocus error={!!form.errors.name && form.touched.name}/>
+      <Input {...field} type="input" size={InputSIZE.default} autoFocus
+             error={!!form.errors.name && form.touched.name}/>
     )}
   />
 );
@@ -55,14 +56,18 @@ const FieldDescription = () => (
   <Field
     name="description"
     render={({field, form}: FieldProps<string, ProcessFormValues>) => (
-      <Textarea {...field} type="input" size={InputSIZE.default} error={!!form.errors.description && form.touched.description}/>
+      <Textarea {...field} type="input" size={InputSIZE.default}
+                error={!!form.errors.description && form.touched.description}/>
     )}
   />
 )
 
 const FieldDepartment = (props: { department?: string }) => {
   const {department} = props;
-  const [value, setValue] = React.useState<Value>(department ? [{id: department, label: codelist.getShortname(ListName.DEPARTMENT, department)}] : []);
+  const [value, setValue] = React.useState<Value>(department ? [{
+    id: department,
+    label: codelist.getShortname(ListName.DEPARTMENT, department)
+  }] : []);
 
   return (
     <Field
@@ -176,7 +181,7 @@ const FieldProductTeam = (props: { productTeam?: string }) => {
   return (
     <Field
       name="productTeam"
-      render={({form,field}: FieldProps<ProcessFormValues>) => (
+      render={({form, field}: FieldProps<ProcessFormValues>) => (
         <Select
           options={teamSearchResult}
           onChange={({value}) => {
@@ -194,7 +199,10 @@ const FieldProductTeam = (props: { productTeam?: string }) => {
 
 const FieldProduct = (props: { products: string[] }) => {
   const {products} = props;
-  const [value, setValue] = React.useState<Value>(products ? products.map(product => ({id: product, label: codelist.getShortname(ListName.SYSTEM, product)})) : []);
+  const [value, setValue] = React.useState<Value>(products ? products.map(product => ({
+    id: product,
+    label: codelist.getShortname(ListName.SYSTEM, product)
+  })) : []);
 
   return <FieldArray
     name="products"
@@ -287,7 +295,8 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
 
           <Block {...rowBlockProps}>
             <ModalLabel label={intl.dataProcessorOutsideEU} tooltip={intl.dataProcessorOutsideEUExtra}/>
-            <BoolField fieldName="dataProcessing.dataProcessorOutsideEU" value={formikBag.values.dataProcessing.dataProcessorOutsideEU}/>
+            <BoolField fieldName="dataProcessing.dataProcessorOutsideEU"
+                       value={formikBag.values.dataProcessing.dataProcessorOutsideEU}/>
           </Block>
         </>}
       </Card>}
@@ -331,7 +340,8 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
 
           <Block {...rowBlockProps}>
             <ModalLabel label={intl.retentionDescription}/>
-            <FieldInput fieldName="retention.retentionDescription" fieldValue={formikBag.values.retention.retentionDescription}/>
+            <FieldInput fieldName="retention.retentionDescription"
+                        fieldValue={formikBag.values.retention.retentionDescription}/>
           </Block>
           < Error fieldName="retention.retentionDescription"/>
         </>}
@@ -402,22 +412,40 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
               </ModalHeader>
 
               <ModalBody>
-                <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.name}/>
-                  <FieldName/>
-                </Block>
+                <ModalBlock
+                  tooltip={intl.processNameHelpText}
+                  blockProps={rowBlockProps}
+                  content={
+                    <>
+                      <ModalLabel label={intl.name}/>
+                      <FieldName/>
+                    </>
+                  }
+                />
                 <Error fieldName="name"/>
 
-                <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.processPurpose}/>
-                  <FieldDescription/>
-                </Block>
+                <ModalBlock
+                  content={
+                    <>
+                      <ModalLabel label={intl.processPurpose}/>
+                      <FieldDescription/>
+                    </>
+                  }
+                  blockProps={rowBlockProps}
+                  tooltip={intl.processPurposeHelpText}
+                />
                 <Error fieldName="description"/>
 
-                <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.department}/>
-                  <FieldDepartment department={formikBag.values.department}/>
-                </Block>
+                <ModalBlock
+                  tooltip={intl.departmentHelpText}
+                  blockProps={rowBlockProps}
+                  content={
+                    <>
+                      <ModalLabel label={intl.department}/>
+                      <FieldDepartment department={formikBag.values.department}/>
+                    </>
+                  }
+                />
 
                 {codelist.showSubDepartment(formikBag.values.department) && (
                   <Block {...rowBlockProps}>
