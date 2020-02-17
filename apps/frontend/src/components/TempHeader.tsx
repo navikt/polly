@@ -140,17 +140,7 @@ const TempHeader = (props: TempHeaderProps & RouteComponentProps) => {
     useAwait(user.wait())
 
     return (
-        <HeaderNavigation
-            overrides={{
-                Root: {
-                    style: ({ $theme }) => {
-                        return {
-                            padding: '1rem'
-                        };
-                    }
-                }
-            }}
-        >
+        <HeaderNavigation>        >
             <Block margin="0 auto" width="80%">
                 <NavigationList $align={ALIGN.right}>
                     {user.isAdmin() && (

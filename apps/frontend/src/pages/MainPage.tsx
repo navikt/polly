@@ -81,12 +81,12 @@ export const Main = () => {
   return (
     <Block marginTop={theme.sizing.scale400} display="flex" flexWrap>
       <Block width="100%" display="flex" justifyContent="space-between">
-        <Block>
+        <Block marginRight={theme.sizing.scale2400}>
           <ReactMarkdown source={settings?.frontpageMessage}/>
         </Block>
         <Block marginTop={theme.sizing.scale1200}>
             <img src={startIll} alt={intl.startIllustration} style={{width: "50%"}}/>
-          </Block>
+        </Block>
       </Block>
       <Block width="100%" display="flex" justifyContent="center" alignContent="center">
         {user.isAdmin() && <LastEvents/> }
