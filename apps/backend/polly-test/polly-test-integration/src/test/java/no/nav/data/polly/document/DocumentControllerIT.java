@@ -159,6 +159,7 @@ class DocumentControllerIT extends IntegrationTestBase {
     void delete() {
         InformationType informationType = createAndSaveInformationType();
         var policy = createAndSavePolicy(PURPOSE_CODE1, informationType);
+        var disclosure = createDisclosure("BRUKER", "ART61E", null);
 
         var doc = documentRepository.save(createDocument("BRUKER", informationType.getId()));
         policy.getData().getDocumentIds().add(doc.getId());
@@ -167,8 +168,14 @@ class DocumentControllerIT extends IntegrationTestBase {
         var resp = restTemplate.exchange("/document/{id}", DELETE, EMPTY, String.class, doc.getId());
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(resp.getBody()).contains("used by 1 policie(s)");
-
         policyRepository.delete(policy);
+
+        disclosure.getData().setDocumentId(doc.getId());
+        disclosureRepository.save(disclosure);
+        resp = restTemplate.exchange("/document/{id}", DELETE, EMPTY, String.class, doc.getId());
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(resp.getBody()).contains("used by 1 disclosure(s)");
+        disclosureRepository.delete(disclosure);
 
         assertThat(restTemplate.exchange("/document/{id}", DELETE, EMPTY, String.class, doc.getId()).getStatusCode()).isEqualTo(HttpStatus.OK);
     }

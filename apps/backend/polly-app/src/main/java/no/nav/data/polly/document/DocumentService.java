@@ -7,6 +7,7 @@ import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.common.validator.RequestValidator;
 import no.nav.data.polly.common.validator.ValidationError;
+import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.document.domain.Document;
 import no.nav.data.polly.document.domain.DocumentData.InformationTypeUse;
 import no.nav.data.polly.document.domain.DocumentRepository;
@@ -35,13 +36,15 @@ public class DocumentService extends RequestValidator<DocumentRequest> {
     private final DocumentRepository repository;
     private final InformationTypeRepository informationTypeRepository;
     private final PolicyRepository policyRepository;
+    private final DisclosureRepository disclosureRepository;
     private final SettingsService settingsService;
 
     public DocumentService(DocumentRepository repository, InformationTypeRepository informationTypeRepository, PolicyRepository policyRepository,
-            SettingsService settingsService) {
+            DisclosureRepository disclosureRepository, SettingsService settingsService) {
         this.repository = repository;
         this.informationTypeRepository = informationTypeRepository;
         this.policyRepository = policyRepository;
+        this.disclosureRepository = disclosureRepository;
         this.settingsService = settingsService;
     }
 
@@ -76,6 +79,10 @@ public class DocumentService extends RequestValidator<DocumentRequest> {
 
     public Document delete(UUID uuid) {
         var doc = repository.findById(uuid).orElseThrow(() -> new PollyNotFoundException("Couldn't find document " + uuid));
+        var disclosures = disclosureRepository.findByDocumentId(uuid.toString());
+        if (!disclosures.isEmpty()) {
+            throw new ValidationException(String.format("Document %s is used by %d disclosure(s)", uuid, disclosures.size()));
+        }
         var policies = policyRepository.findByDocumentId(uuid);
         if (!policies.isEmpty()) {
             throw new ValidationException(String.format("Document %s is used by %d policie(s)", uuid, policies.size()));
