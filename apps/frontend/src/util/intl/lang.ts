@@ -59,6 +59,7 @@ export const no: IStrings = {
   retentionDescription: "Begrunnelse",
   years: "år",
   months: "måneder",
+  lastEvents: "Siste hendelser",
 
   loggedInStatus: "Du er logget inn og kan",
   notLoggedInStatus: "Du er ikke logget inn men kan",
@@ -302,6 +303,7 @@ export const en: IStrings = {
   retentionDescription: "Retention grounds",
   years: "years",
   months: "months",
+  lastEvents: "Last events",
 
   loggedInStatus: "You are logged in and can",
   notLoggedInStatus: "You are not logged in but you can still",

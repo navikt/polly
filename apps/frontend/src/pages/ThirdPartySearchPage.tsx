@@ -12,6 +12,7 @@ import { user } from "../service/User";
 import { useStyletron } from "styletron-react";
 import { ListItem, ListItemLabel } from "baseui/list";
 import RouteLink from "../components/common/RouteLink";
+import { H4 } from "baseui/typography";
 
 const rowBlockProps: BlockProps = {
     display: 'flex',
@@ -68,6 +69,7 @@ const ThirdPartySearchPage = (props: RouteComponentProps) => {
 
             {!isLoading && codelist && (
                 <React.Fragment>
+                    <H4>{intl.thirdParty}</H4>
                     <Block {...rowBlockProps}>
                         <StatefulSelect
                             options={codelist.getParsedOptions(ListName.THIRD_PARTY)}
