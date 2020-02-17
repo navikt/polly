@@ -40,6 +40,14 @@ const legalBasisLinkProcessor = (law: string, text?: string) => processString([
         {result[1]} {result[2]}
       </StyledLink>
   }, {
+    regex: /og\s?(\d+(-\d+)?)/g,
+    fn: (key: string, result: string[]) =>
+      <><span>og </span>
+        <StyledLink key={key} href={`${env.lovdataBaseUrl + codelist.getDescription(ListName.NATIONAL_LAW, law)}/§${result[1]}`} target="_blank" rel="noopener noreferrer">
+          {result[1]}
+        </StyledLink>
+      </>
+  }, {
     regex: /kap(ittel)?\s?(\d+)/gi,
     fn: (key: string, result: string[]) =>
       <StyledLink key={key} href={`${env.lovdataBaseUrl + codelist.getDescription(ListName.NATIONAL_LAW, law)}/KAPITTEL_${result[2]}`} target="_blank" rel="noopener noreferrer">
