@@ -28,7 +28,7 @@ jobs:
 
       - name: docker
         env:
-          GITHUB_TOKEN: ${{ secrets.SKOTSJ_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           docker build --tag ${IMAGE} .
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
