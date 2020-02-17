@@ -1,28 +1,28 @@
 import * as React from 'react'
-import { KeyboardEvent, useEffect, useState } from 'react'
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
-import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps, } from "formik";
-import { Block, BlockProps } from "baseui/block";
-import { Input, SIZE as InputSIZE } from "baseui/input";
-import { Select, Value } from 'baseui/select';
-import { Button, KIND, SHAPE, SIZE as ButtonSize } from "baseui/button";
-import { Plus } from "baseui/icon";
+import {KeyboardEvent, useEffect, useState} from 'react'
+import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
+import {Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps,} from "formik";
+import {Block, BlockProps} from "baseui/block";
+import {Input, SIZE as InputSIZE} from "baseui/input";
+import {Select, Value} from 'baseui/select';
+import {Button, KIND, SHAPE, SIZE as ButtonSize} from "baseui/button";
+import {Plus} from "baseui/icon";
 
-import { DisclosureFormValues, ProcessFormValues } from "../../../constants";
+import {DisclosureFormValues, ProcessFormValues} from "../../../constants";
 import CardLegalBasis from './CardLegalBasis'
-import { codelist, ListName } from "../../../service/Codelist"
-import { intl, theme } from "../../../util"
-import { Error, ModalLabel } from "../../common/ModalSchema";
-import { ListLegalBases } from "../../common/LegalBasis"
-import { DateModalFields } from "../DateModalFields"
-import { hasSpecifiedDate } from "../../common/Durations"
-import { processSchema } from "../../common/schema"
-import { getTeam, mapTeamToOption, useTeamSearch } from "../../../api"
-import { Textarea } from "baseui/textarea"
-import { Card } from "baseui/card"
-import { renderTagList } from "../../common/TagList"
-import { Slider } from "baseui/slider"
-import { RadioBoolButton } from "../../common/Radio"
+import {codelist, ListName} from "../../../service/Codelist"
+import {intl, theme} from "../../../util"
+import {Error, ModalBlock, ModalLabel} from "../../common/ModalSchema";
+import {ListLegalBases} from "../../common/LegalBasis"
+import {DateModalFields} from "../DateModalFields"
+import {hasSpecifiedDate} from "../../common/Durations"
+import {processSchema} from "../../common/schema"
+import {getTeam, mapTeamToOption, useTeamSearch} from "../../../api"
+import {Textarea} from "baseui/textarea"
+import {Card} from "baseui/card"
+import {renderTagList} from "../../common/TagList"
+import {Slider} from "baseui/slider"
+import {RadioBoolButton} from "../../common/Radio"
 
 const modalBlockProps: BlockProps = {
   width: '750px',
