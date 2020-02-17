@@ -1,5 +1,4 @@
 import * as React from "react";
-import Banner from "../components/Banner";
 import { intl, useAwait } from "../util"
 import { RouteComponentProps } from "react-router-dom";
 import { codelist, ListName } from "../service/Codelist";
@@ -19,7 +18,7 @@ const labelBlockProps: BlockProps = {
   font: 'font400'
 }
 
-export type PathParams = { sourceCode: string }
+export type PathParams = { thirdPartyCode: string }
 
 const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
@@ -31,7 +30,7 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
   const handleCreateDisclosure = async (disclosure: DisclosureFormValues) => {
     try {
       let createdDisclosure = await createDisclosure(disclosure)
-      
+
       if (!disclosureList || disclosureList.length < 1)
         setDisclosureList([createdDisclosure])
       else if (disclosureList && createdDisclosure)
@@ -71,7 +70,7 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
 
   const initialFormValues: DisclosureFormValues = {
     name: '',
-    recipient: props.match.params.sourceCode,
+    recipient: props.match.params.thirdPartyCode,
     recipientPurpose: '',
     description: '',
     document: undefined,
@@ -84,18 +83,17 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
   useAwait(user.wait())
 
   React.useEffect(() => {
-    const fetchData = async () => {
+    (async () => {
       setIsLoading(true);
       await codelist.wait();
-      if (props.match.params.sourceCode) {
-        setDisclosureList(await getDisclosuresByRecipient(props.match.params.sourceCode))
-        let responseInformationTypeList = await getCodelistUsage(ListName.THIRD_PARTY, props.match.params.sourceCode)
+      if (props.match.params.thirdPartyCode) {
+        setDisclosureList(await getDisclosuresByRecipient(props.match.params.thirdPartyCode))
+        let responseInformationTypeList = await getCodelistUsage(ListName.THIRD_PARTY, props.match.params.thirdPartyCode)
         setInformationTypeList(responseInformationTypeList.informationTypes)
       }
 
       setIsLoading(false);
-    };
-    fetchData();
+    })()
   }, []);
 
   return (
@@ -105,8 +103,8 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
       {!isLoading && codelist && (
         <React.Fragment>
           <Block marginBottom="3rem">
-            <H5>{codelist.getShortname(ListName.THIRD_PARTY, props.match.params.sourceCode)}</H5>
-            <Paragraph2>{codelist.getDescription(ListName.THIRD_PARTY, props.match.params.sourceCode)}</Paragraph2>
+            <H5>{codelist.getShortname(ListName.THIRD_PARTY, props.match.params.thirdPartyCode)}</H5>
+            <Paragraph2>{codelist.getDescription(ListName.THIRD_PARTY, props.match.params.thirdPartyCode)}</Paragraph2>
           </Block>
 
           <Block display="flex" justifyContent="space-between">
