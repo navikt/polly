@@ -38,23 +38,18 @@ export type Docs = {
 }
 
 const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, submitEditPolicy, submitDeletePolicy}: TablePurposeProps) => {
-  const [policies, setPolicies] = React.useState<Policy[]>(process.policies)
   const [currentPolicy, setCurrentPolicy] = React.useState<Policy>()
   const [showEditModal, setShowEditModal] = React.useState(false)
   const [showPolicyInfo, setShowPolicyInfo] = React.useState(false)
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
-  const [table, sortColumn] = useTable<Policy, keyof Policy>(policies, {sorting: policySort, initialSortColumn: "informationType", showLast: (p) => !p.active})
+  const [table, sortColumn] = useTable<Policy, keyof Policy>(process.policies, {sorting: policySort, initialSortColumn: "informationType", showLast: (p) => !p.active})
   const [alert, setAlert] = useState<ProcessAlert>()
 
   useEffect(() => {
     (async () => {
       setAlert(await getAlertForProcess(process.id))
     })()
-  }, [process, policies])
-
-  React.useEffect(() => {
-    setPolicies(process ? process.policies : [])
-  }, [process]);
+  }, [process])
 
   const [docs, setDocs] = useState<Docs>({})
 
