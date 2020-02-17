@@ -243,8 +243,18 @@ export const no: IStrings = {
   defaultProcessDocument: "Dokument for standard informasjonstyper i behandling",
   processNameHelpText: "Et kort og beskrivende navn som sier hva behandlingen går ut på. Eksempel: saksbehandling, saksbehandling sykepenger, håndtere brukerhenvendelser eller rekruttering.",
   processPurposeHelpText: "Hva er formålet med bruk av personopplysninger i denne behandlingen? Brukes hvis du ønsker å ha en spissere formulert formål enn det overordnede formålet. Eksempel: Behandle og vurdere rett til stønad ved behov for førerhund pga. nedsatt syn.",
-  departmentHelpText: "Avdelingen som har ansvaret for behandlingen",
-
+  departmentHelpText: "Avdelingen som har ansvaret for behandlingen.",
+  productTeamHelpText: "Produktteamet i IT-avdelingen som har ansvaret for IT-løsningen som understøtter denne behandlingen. Ikke aktuelt på alle behandlinger. Eksempel: Team Pensjon, Team Bidrag",
+  subDepartmentHelpText: "Oppgi hvor i linja (ytre etat) denne behandlingen foregår.",
+  systemHelpText: "IT-systemene som brukes i denne behandlingen. Eksempel: Pesys, Bidrag, Modia.",
+  processAutomationHelpText: "Brukes det databehandler for å utføre behandlingen/behandle personopplysninger.",
+  profilingHelpText: "Behandles personopplysninger automatisk for å kunne analysere eller forutsi noe om preferanser, evner eller behov til en enkeltperson.",
+  dataProcessorHelpText: "Oppgi om det brukes en databehandler for å behandle personopplysninger. En databehandler er en ekstern virksomhet som behandler personopplysninger på våre vegne.",
+  dataProcessorAgreementHelpText: "Oppgi referanse (typisk saksnummer) til avtalens lagringssted, for eksempel i Websak.",
+  dataProcessorOutsideEUExtraHelpText: "Oppgi om personopplysningene behandles utenfor EU/EØS-området av databehandleren eller eventuelle underdatabehandlere.",
+  legalBasisHelpText: "Oppgi hvilket rettslig grunnlag som benyttes for å kunne behandle personopplysningene.",
+  retentionHelpText: "Oppgi når lagringstiden begynner å løpe. Dette er tidspunktet vi regner lagringsbehovet fra. For eksempel begynner lagringstiden for opplysninger i flere HR-behandlinger å løpe fra ansettelsesforholdets avslutning. Andre eksempler for bruk av personopplysninger om etatens brukere kan være fra søknad mottatt, fødsel, død, søknadens virkningstidspunkt o.l.",
+  retentionDescriptionHelpText: "Begrunnelse for hvorfor vi har behov for å oppbevare personopplysningene i oppgitt lagringstid. For eksempel kan behovet skyldes at vi må kunne forsvare oss mot rettskrav eller at vi må kunne vurdere mulige krav om tilbakebetaling av feilutbetalt ytelse.",
 }
 
 export const en: IStrings = {
@@ -490,8 +500,19 @@ export const en: IStrings = {
   settings: "Settings",
   defaultProcessDocument: "Document for the default information types in a process",
   processNameHelpText: "Et kort og beskrivende navn som sier hva behandlingen går ut på. Eksempel: saksbehandling, saksbehandling sykepenger, håndtere brukerhenvendelser eller rekruttering.",
-  processPurposeHelpText: "",
-  departmentHelpText: "",
+  processPurposeHelpText: "Hva er formålet med bruk av personopplysninger i denne behandlingen? Brukes hvis du ønsker å ha en spissere formulert formål enn det overordnede formålet. Eksempel: Behandle og vurdere rett til stønad ved behov for førerhund pga. nedsatt syn.",
+  departmentHelpText: "Avdelingen som har ansvaret for behandlingen.",
+  productTeamHelpText: "Produktteamet i IT-avdelingen som har ansvaret for IT-løsningen som understøtter denne behandlingen. Ikke aktuelt på alle behandlinger. Eksempel: Team Pensjon, Team Bidrag",
+  subDepartmentHelpText: "Oppgi hvor i linja (ytre etat) denne behandlingen foregår.",
+  systemHelpText: "IT-systemene som brukes i denne behandlingen. Eksempel: Pesys, Bidrag, Modia.",
+  processAutomationHelpText: "Brukes det databehandler for å utføre behandlingen/behandle personopplysninger.",
+  profilingHelpText: "Behandles personopplysninger automatisk for å kunne analysere eller forutsi noe om preferanser, evner eller behov til en enkeltperson.",
+  dataProcessorHelpText: "Oppgi om det brukes en databehandler for å behandle personopplysninger. En databehandler er en ekstern virksomhet som behandler personopplysninger på våre vegne.",
+  dataProcessorAgreementHelpText: "Oppgi referanse (typisk saksnummer) til avtalens lagringssted, for eksempel i Websak.",
+  dataProcessorOutsideEUExtraHelpText: "Oppgi om personopplysningene behandles utenfor EU/EØS-området av databehandleren eller eventuelle underdatabehandlere.",
+  legalBasisHelpText: "Oppgi hvilket rettslig grunnlag som benyttes for å kunne behandle personopplysningene.",
+  retentionHelpText: "Oppgi når lagringstiden begynner å løpe. Dette er tidspunktet vi regner lagringsbehovet fra. For eksempel begynner lagringstiden for opplysninger i flere HR-behandlinger å løpe fra ansettelsesforholdets avslutning. Andre eksempler for bruk av personopplysninger om etatens brukere kan være fra søknad mottatt, fødsel, død, søknadens virkningstidspunkt o.l.",
+  retentionDescriptionHelpText: "Begrunnelse for hvorfor vi har behov for å oppbevare personopplysningene i oppgitt lagringstid. For eksempel kan behovet skyldes at vi må kunne forsvare oss mot rettskrav eller at vi må kunne vurdere mulige krav om tilbakebetaling av feilutbetalt ytelse.",
 };
 
 export const ta = {

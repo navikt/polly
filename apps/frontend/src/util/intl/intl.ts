@@ -96,6 +96,17 @@ export interface IStrings {
   processNameHelpText: string;
   processPurposeHelpText: string;
   departmentHelpText: string;
+  productTeamHelpText: string;
+  subDepartmentHelpText: string;
+  systemHelpText: string;
+  processAutomationHelpText: string;
+  profilingHelpText: string;
+  dataProcessorHelpText: string;
+  dataProcessorAgreementHelpText: string;
+  dataProcessorOutsideEUExtraHelpText: string;
+  legalBasisHelpText: string;
+  retentionHelpText: string;
+  retentionDescriptionHelpText: string;
   legalBasisNew: string;
   legalBasisAdd: string;
   gdprSelect: string;
