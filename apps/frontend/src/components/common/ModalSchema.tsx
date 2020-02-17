@@ -42,33 +42,31 @@ export const ModalLabel = (props: { label?: string, tooltip?: string | React.Rea
 
 export const ModalBlock = (props: { content?: React.ReactElement, blockProps?: BlockProps, tooltip?: string }) => {
   return (
-    <>
-      <Block {...props.blockProps}>
-        {props.content}
-        {
-          props.tooltip &&
-          <StatefulTooltip
-            content={props.tooltip}
-            placement={PLACEMENT.top}
-            overrides={{
-              Body:{
-                style:{
-                  maxWidth: "400px"
-                }
+    <Block {...props.blockProps}>
+      {props.content}
+      {
+        props.tooltip &&
+        <StatefulTooltip
+          content={props.tooltip}
+          placement={PLACEMENT.top}
+          overrides={{
+            Body: {
+              style: {
+                maxWidth: "400px"
               }
-            }}
-          >
-            <Label2 font="font300" display="flex" justifyContent="space-between">
-              <FontAwesomeIcon
-                style={{marginRight: ".5rem", alignSelf: "center", marginLeft:"5px"}}
-                icon={faExclamationCircle}
-                color={theme.colors.accent400}
-                size="sm"
-              />
-            </Label2>
-          </StatefulTooltip>
-        }
-      </Block>
-    </>
+            }
+          }}
+        >
+          <Label2 font="font300" display="flex" justifyContent="space-between">
+            <FontAwesomeIcon
+              style={{marginRight: ".5rem", marginLeft: "10px"}}
+              icon={faExclamationCircle}
+              color={theme.colors.accent400}
+              size="sm"
+            />
+          </Label2>
+        </StatefulTooltip>
+      }
+    </Block>
   )
 };

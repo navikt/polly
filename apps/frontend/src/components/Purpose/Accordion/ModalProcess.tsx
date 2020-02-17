@@ -12,19 +12,6 @@ import {DisclosureFormValues, ProcessFormValues} from "../../../constants";
 import CardLegalBasis from './CardLegalBasis'
 import {codelist, ListName} from "../../../service/Codelist"
 import {intl, theme} from "../../../util"
-import {Error, ModalLabel} from "../../common/ModalSchema";
-import {ListLegalBases} from "../../common/LegalBasis"
-import {DateModalFields} from "../DateModalFields"
-import {hasSpecifiedDate} from "../../common/Durations"
-import {processSchema} from "../../common/schema"
-import {getTeam, mapTeamToOption, useTeamSearch} from "../../../api"
-import {Textarea} from "baseui/textarea"
-import {Card} from "baseui/card"
-import {renderTagList} from "../../common/TagList"
-import {Slider} from "baseui/slider"
-import {RadioBoolButton} from "../../common/Radio"
-import {codelist, ListName} from "../../../service/Codelist"
-import {intl, theme} from "../../../util"
 import {Error, ModalBlock, ModalLabel} from "../../common/ModalSchema";
 import {ListLegalBases} from "../../common/LegalBasis"
 import {DateModalFields} from "../DateModalFields"
@@ -273,92 +260,124 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
   }, [retention])
 
   const cardOverrides = {
-    Root: {style: {marginTop: "1rem"}},
-    Contents: {style: {marginRight: "4px", marginTop: "4px", marginLeft: "4px", marginBottom: "4px"}},
+    Root: {style: { minWidth: "100%", marginRight: "-5px"}},
+    Contents: {style: {marginRight: "3px", marginTop: "4px", marginLeft: "3px", marginBottom: "4px"}},
     Body: {style: {marginBottom: 0}}
   }
   return (
     <>
       {showAutomation &&
-      <Card overrides={cardOverrides}>
-        <Block {...rowBlockProps} marginTop={0}>
-          <ModalLabel label={intl.automaticProcessing} tooltip={intl.automaticProcessingExtra}/>
-          <BoolField fieldName="automaticProcessing" value={formikBag.values.automaticProcessing}/>
-        </Block>
+      <ModalBlock
+        blockProps={rowBlockProps}
+        content={
+          <Card overrides={cardOverrides}>
+            <Block {...rowBlockProps}>
+              <ModalLabel label={intl.automaticProcessing}/>
+              <BoolField fieldName="automaticProcessing" value={formikBag.values.automaticProcessing}/>
+            </Block>
+          </Card>}
+        tooltip={intl.processAutomationHelpText}
+      />
+      }
 
-        <Block {...rowBlockProps}>
-          <ModalLabel label={intl.profiling} tooltip={intl.profilingExtra}/>
-          <BoolField fieldName="profiling" value={formikBag.values.profiling}/>
-        </Block>
-      </Card>}
+      {showAutomation &&
+      <ModalBlock
+        blockProps={rowBlockProps}
+        content={
+          <Card overrides={cardOverrides}>
+            <Block {...rowBlockProps}>
+              <ModalLabel label={intl.profiling}/>
+              <BoolField fieldName="profiling" value={formikBag.values.profiling}/>
+            </Block>
+          </Card>
+        }
+        tooltip={intl.profilingHelpText}
+      />
+      }
+
 
       {showDataProcessor &&
-      <Card overrides={cardOverrides}>
-        <Block {...rowBlockProps} marginTop={0}>
-          <ModalLabel label={intl.dataProcessor} tooltip={intl.dataProcessorExtra}/>
-          <BoolField fieldName="dataProcessing.dataProcessor" value={formikBag.values.dataProcessing.dataProcessor}/>
-        </Block>
+      <ModalBlock
+        tooltip={intl.dataProcessorHelpText}
+        content={
+          <Card overrides={cardOverrides}>
+            <Block {...rowBlockProps} marginTop={0}>
+              <ModalLabel label={intl.dataProcessor}/>
+              <BoolField fieldName="dataProcessing.dataProcessor"
+                         value={formikBag.values.dataProcessing.dataProcessor}/>
+            </Block>
 
-        {formikBag.values.dataProcessing.dataProcessor && <>
-          <Block {...rowBlockProps}>
-            <ModalLabel label={intl.dataProcessorAgreement}/>
-            <FieldDataProcessorAgreements formikBag={formikBag}/>
-          </Block>
-          <Error fieldName="dataProcessing.dataProcessorAgreement"/>
+            {formikBag.values.dataProcessing.dataProcessor && <>
+              <Block {...rowBlockProps}>
+                <ModalLabel label={intl.dataProcessorAgreement}/>
+                <FieldDataProcessorAgreements formikBag={formikBag}/>
+              </Block>
+              <Error fieldName="dataProcessing.dataProcessorAgreement"/>
 
-          <Block {...rowBlockProps}>
-            <ModalLabel label={intl.dataProcessorOutsideEU} tooltip={intl.dataProcessorOutsideEUExtra}/>
-            <BoolField fieldName="dataProcessing.dataProcessorOutsideEU"
-                       value={formikBag.values.dataProcessing.dataProcessorOutsideEU}/>
-          </Block>
-        </>}
-      </Card>}
+              <Block {...rowBlockProps}>
+                <ModalLabel label={intl.dataProcessorOutsideEU} tooltip={intl.dataProcessorOutsideEUExtra}/>
+                <BoolField fieldName="dataProcessing.dataProcessorOutsideEU"
+                           value={formikBag.values.dataProcessing.dataProcessorOutsideEU}/>
+              </Block>
+            </>}
+          </Card>
+        }
+        blockProps={rowBlockProps}
+      />}
 
       {showRetention &&
-      <Card overrides={cardOverrides}>
-        <Block {...rowBlockProps} marginTop={0}>
-          <ModalLabel label={intl.retention} tooltip={intl.retentionPlan}/>
-          <BoolField fieldName="retention.retentionPlan" value={formikBag.values.retention.retentionPlan}/>
-        </Block>
+      <ModalBlock
+        blockProps={rowBlockProps}
+        content={
+          <Card overrides={cardOverrides}>
+            <Block {...rowBlockProps} marginTop={0}>
+              <ModalLabel label={intl.retention}/>
+              <BoolField fieldName="retention.retentionPlan" value={formikBag.values.retention.retentionPlan}/>
+            </Block>
 
-        {formikBag.values.retention.retentionPlan && <>
-          <Block {...rowBlockProps}>
-            <ModalLabel label={intl.retentionMonths}/>
-            <Field
-              name="retention.retentionMonths"
-              render={({field, form}: FieldProps<DisclosureFormValues>) => (
-                <>
-                  <Slider
-                    overrides={sliderOvveride(intl.years)}
-                    min={0} max={100}
-                    value={[retentionYears]}
-                    onChange={({value}) => setRetention(value[0] * 12 + retentionMonths)}
-                  />
-                  <Slider
-                    overrides={sliderOvveride(intl.months)}
-                    min={0} max={11}
-                    value={[retentionMonths]}
-                    onChange={({value}) => setRetention(value[0] + retentionYears * 12)}
-                  />
-                </>
-              )}/>
-          </Block>
-          <Error fieldName="retention.retentionMonths"/>
+            {formikBag.values.retention.retentionPlan && <>
+              <Block {...rowBlockProps}>
+                <ModalLabel label={intl.retentionMonths}/>
+                <Field
+                  name="retention.retentionMonths"
+                  render={({field, form}: FieldProps<DisclosureFormValues>) => (
+                    <>
+                      <Slider
+                        overrides={sliderOvveride(intl.years)}
+                        min={0} max={100}
+                        value={[retentionYears]}
+                        onChange={({value}) => setRetention(value[0] * 12 + retentionMonths)}
+                      />
+                      <Slider
+                        overrides={sliderOvveride(intl.months)}
+                        min={0} max={11}
+                        value={[retentionMonths]}
+                        onChange={({value}) => setRetention(value[0] + retentionYears * 12)}
+                      />
+                    </>
+                  )}/>
+              </Block>
+              <Error fieldName="retention.retentionMonths"/>
 
-          <Block {...rowBlockProps}>
-            <ModalLabel label={intl.retentionStart}/>
-            <FieldInput fieldName="retention.retentionStart" fieldValue={formikBag.values.retention.retentionStart}/>
-          </Block>
-          <Error fieldName="retention.retentionStart"/>
+              <Block {...rowBlockProps}>
+                <ModalLabel label={intl.retentionStart}/>
+                <FieldInput fieldName="retention.retentionStart"
+                            fieldValue={formikBag.values.retention.retentionStart}/>
+              </Block>
+              <Error fieldName="retention.retentionStart"/>
 
-          <Block {...rowBlockProps}>
-            <ModalLabel label={intl.retentionDescription}/>
-            <FieldInput fieldName="retention.retentionDescription"
-                        fieldValue={formikBag.values.retention.retentionDescription}/>
-          </Block>
-          < Error fieldName="retention.retentionDescription"/>
-        </>}
-      </Card>}
+              <Block {...rowBlockProps}>
+                <ModalLabel label={intl.retentionDescription}/>
+                <FieldInput fieldName="retention.retentionDescription"
+                            fieldValue={formikBag.values.retention.retentionDescription}/>
+              </Block>
+              < Error fieldName="retention.retentionDescription"/>
+            </>}
+          </Card>
+        }
+        tooltip={intl.retentionHelpText}
+      />
+      }
 
       {showDates && <DateModalFields showDates={true} showLabels={true} rowBlockProps={rowBlockProps}/>}
 
@@ -429,20 +448,20 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                   tooltip={intl.processNameHelpText}
                   blockProps={rowBlockProps}
                   content={
-                    <>
+                    <Block display="flex" minWidth="100%">
                       <ModalLabel label={intl.name}/>
                       <FieldName/>
-                    </>
+                    </Block>
                   }
                 />
                 <Error fieldName="name"/>
 
                 <ModalBlock
                   content={
-                    <>
+                    <Block display="flex" minWidth="100%">
                       <ModalLabel label={intl.processPurpose}/>
                       <FieldDescription/>
-                    </>
+                    </Block>
                   }
                   blockProps={rowBlockProps}
                   tooltip={intl.processPurposeHelpText}
@@ -453,29 +472,46 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                   tooltip={intl.departmentHelpText}
                   blockProps={rowBlockProps}
                   content={
-                    <>
+                    <Block display="flex" minWidth="100%">
                       <ModalLabel label={intl.department}/>
                       <FieldDepartment department={formikBag.values.department}/>
-                    </>
+                    </Block>
                   }
                 />
 
                 {codelist.showSubDepartment(formikBag.values.department) && (
-                  <Block {...rowBlockProps}>
-                    <ModalLabel label={intl.subDepartment}/>
-                    <FieldSubDepartment subDepartment={formikBag.values.subDepartment}/>
-                  </Block>
+                  <ModalBlock
+                    content={
+                      <Block  display="flex" minWidth="100%">
+                        <ModalLabel label={intl.subDepartment}/>
+                        <FieldSubDepartment subDepartment={formikBag.values.subDepartment}/>
+                      </Block>
+                    }
+                    blockProps={rowBlockProps}
+                    tooltip={intl.subDepartmentHelpText}
+                  />
                 )}
 
-                <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.productTeam}/>
-                  <FieldProductTeam productTeam={formikBag.values.productTeam}/>
-                </Block>
+                <ModalBlock
+                  content={
+                    <Block  display="flex" minWidth="100%">
+                      <ModalLabel label={intl.productTeam}/>
+                      <FieldProductTeam productTeam={formikBag.values.productTeam}/>
+                    </Block>
+                  }
+                  blockProps={rowBlockProps}
+                  tooltip={intl.productTeamHelpText}
+                />
 
-                <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.system}/>
-                  <FieldProduct products={formikBag.values.products}/>
-                </Block>
+                <ModalBlock
+                  tooltip={intl.systemHelpText}
+                  content={
+                    <Block  display="flex" minWidth="100%">
+                      <ModalLabel label={intl.system}/>
+                      <FieldProduct products={formikBag.values.products}/>
+                    </Block>}
+                  blockProps={rowBlockProps}
+                />
 
                 <OptionalItems formikBag={formikBag}/>
 
