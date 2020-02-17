@@ -19,6 +19,7 @@ import { DateModalFields } from "../DateModalFields"
 import { hasSpecifiedDate } from "../../common/Durations"
 import { policySchema } from "../../common/schema"
 import { Tag, VARIANT } from "baseui/tag";
+import { Docs } from "./TablePolicy"
 
 
 const modalBlockProps: BlockProps = {
@@ -117,16 +118,17 @@ const FieldLegalBasisStatus = (props: { legalBasesStatus?: LegalBasesStatus }) =
 };
 
 type ModalPolicyProps = {
-    title?: string;
-    isOpen: boolean;
-    isEdit: boolean;
-    initialValues: PolicyFormValues;
-    errorOnCreate: any | undefined;
-    submit: (values: PolicyFormValues) => void;
-    onClose: () => void;
+    title?: string
+    isOpen: boolean
+    isEdit: boolean
+    initialValues: PolicyFormValues
+    docs?: Docs
+    errorOnCreate: any | undefined
+    submit: (values: PolicyFormValues) => void
+    onClose: () => void
 };
 
-const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, title }: ModalPolicyProps) => {
+const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, docs, title }: ModalPolicyProps) => {
     const [selectedLegalBasis, setSelectedLegalBasis] = React.useState();
     const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState();
     const [infoTypeValue, setInfoTypeValue] = React.useState<PolicyInformationType | undefined>(initialValues.informationType);
@@ -198,6 +200,16 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, ti
                                     />
                                 </Block>
                                 <Error fieldName="subjectCategories" />
+
+                              {!!formikBag.values.documentIds?.length && docs &&
+                              <Block {...rowBlockProps}>
+                                <ModalLabel label={intl.documents}/>
+                                <FieldArray name="documentIds"
+                                            render={arrayHelpers => (
+                                              <span>{renderTagList(formikBag.values.documentIds.map(id => docs[id].name), arrayHelpers)}</span>
+                                            )}/>
+                              </Block>
+                              }
 
                                 <DateModalFields showDates={hasSpecifiedDate(initialValues)} showLabels={true} rowBlockProps={rowBlockProps} />
 
