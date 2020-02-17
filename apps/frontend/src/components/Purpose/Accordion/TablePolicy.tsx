@@ -1,7 +1,5 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from "baseui/table";
-import { useStyletron, withStyle } from "baseui";
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { Block } from "baseui/block";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -23,40 +21,8 @@ import { ActiveIndicator } from "../../common/Durations"
 import { AuditButton } from "../../audit/AuditButton"
 import _ from "lodash"
 import { getAlertForProcess } from "../../../api/AlertApi"
+import { Cell, HeadCell, Row, SmallCell, SmallHeadCell, Table } from "../../common/Table"
 
-
-const StyledHeader = withStyle(StyledHead, {
-  backgroundColor: "transparent",
-  boxShadow: "none",
-  borderBottom: `2px solid ${theme.colors.mono600}`
-});
-
-type RowProps = {
-  inactiveRow?: boolean,
-  selectedRow?: boolean,
-  infoRow?: boolean,
-  children?: any
-}
-
-const CustomStyledRow = (props: RowProps) => {
-  const styleProps = {
-    borderLeft: "none",
-    borderBottom: `1px solid ${theme.colors.mono600}`,
-    fontSize: "24px",
-    opacity: props.inactiveRow ? '.5' : undefined,
-    backgroundColor: props.infoRow ? theme.colors.accent50 : undefined,
-    borderLeftWidth: props.infoRow || props.selectedRow ? theme.sizing.scale300 : undefined,
-  }
-  const Row = withStyle(StyledRow, styleProps)
-  return <Row>{props.children}</Row>
-}
-
-const SmallerStyledCell = withStyle(StyledCell, {
-  maxWidth: '15%'
-})
-const SmallerStyledHeadCell = withStyle(StyledHeadCell, {
-  maxWidth: '15%'
-})
 
 type TablePurposeProps = {
   process: Process;
@@ -69,7 +35,6 @@ type TablePurposeProps = {
 
 type Docs = { [id: string]: Document }
 const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, submitEditPolicy, submitDeletePolicy}: TablePurposeProps) => {
-  const [useCss, theme] = useStyletron();
   const [policies, setPolicies] = React.useState<Policy[]>(process.policies)
   const [currentPolicy, setCurrentPolicy] = React.useState<Policy>()
   const [showEditModal, setShowEditModal] = React.useState(false)
@@ -102,190 +67,156 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
     })()
   }, [process])
 
-  const headerCellOverride = {
-    HeadCell: {
-      style: {
-        borderLeft: "none",
-        borderRight: "none"
-      }
-    }
-  }
-
-  const tableCss = {
-    overflow: "hidden !important",
-    backgroundColor: theme.colors.primary50,
-    borderTop: "none",
-    borderBottom: "none",
-    borderLeft: "none",
-    borderRight: "none"
-  }
   return (
     <React.Fragment>
-      <StyledTable className={useCss(tableCss)}>
-        <StyledHeader>
-          <SortableHeadCell
-            overrides={headerCellOverride}
-            title={intl.informationType}
-            direction={table.direction.informationType}
-            onSort={() => sortColumn('informationType')}
-            fillClickTarget
-          />
-          <SortableHeadCell
-            overrides={headerCellOverride}
-            title={intl.subjectCategories}
-            direction={table.direction.subjectCategories}
-            onSort={() => sortColumn('subjectCategories')}
-            fillClickTarget
-          />
-          <SortableHeadCell
-            overrides={headerCellOverride}
-            title={intl.legalBasisShort}
-            direction={table.direction.legalBases}
-            onSort={() => sortColumn('legalBases')}
-          />
-          <SmallerStyledHeadCell/>
-
-        </StyledHeader>
-        <StyledBody>
-          {table.data.map((row: Policy, index: number) => {
-            const selectedRow = row.id === currentPolicy?.id
-            return (
-              <React.Fragment key={index}>
-                <CustomStyledRow inactiveRow={!row.active} selectedRow={showPolicyInfo && selectedRow}>
-                  <StyledCell>
-                    <Block display="flex" width="100%" justifyContent="space-between">
-                      <Block>
-                        <Sensitivity sensitivity={row.informationType.sensitivity}/>&nbsp;
-                        <RouteLink href={`/informationtype/${row.informationType.id}`} width="25%">
-                          {row.informationType.name}
-                        </RouteLink>
-                      </Block>
-                      <Block>
-                        <StatefulTooltip content={() => intl.documents}>
-                          <Block $style={{opacity: "80%"}}>
-                            {!!row.documentIds?.length && '(' + row.documentIds?.map(id => (docs[id] || {}).name).join(", ") + ')'}
-                          </Block>
-                        </StatefulTooltip>
-                      </Block>
-                    </Block>
-                  </StyledCell>
-
-                  <StyledCell>{row.subjectCategories.map(sc => codelist.getShortname(ListName.SUBJECT_CATEGORY, sc.code)).join(", ")}</StyledCell>
-                  <StyledCell>
+      <Table
+        backgroundColor={theme.colors.primary50}
+        headers={
+        <>
+          <HeadCell title={intl.informationType} column={'informationType'} tableState={[table, sortColumn]}/>
+          <HeadCell title={intl.subjectCategories} column={'subjectCategories'} tableState={[table, sortColumn]}/>
+          <HeadCell title={intl.legalBasisShort} column={'legalBases'} tableState={[table, sortColumn]}/>
+          <SmallHeadCell/>
+        </>
+      }>
+        {table.data.map((row: Policy, index: number) => {
+          const selectedRow = row.id === currentPolicy?.id
+          return (
+            <React.Fragment key={index}>
+              <Row inactiveRow={!row.active} selectedRow={showPolicyInfo && selectedRow}>
+                <Cell>
+                  <Block display="flex" width="100%" justifyContent="space-between">
                     <Block>
-                      <LegalBasesNotClarified alert={alert?.policies.filter(p => p.policyId === row.id)[0]}/>
-
-                      {row.legalBases && row.legalBases.length > 0 && (
-                        <ListLegalBasesInTable legalBases={row.legalBases}/>
-                      )}
+                      <Sensitivity sensitivity={row.informationType.sensitivity}/>&nbsp;
+                      <RouteLink href={`/informationtype/${row.informationType.id}`} width="25%">
+                        {row.informationType.name}
+                      </RouteLink>
                     </Block>
-                  </StyledCell>
-                  <SmallerStyledCell>
-                    <Block display="flex" justifyContent="flex-end" width="100%">
-                      <StatefulTooltip content={intl.info} placement={PLACEMENT.top}>
-                        <Button
-                          size={ButtonSize.compact}
-                          kind={KIND.tertiary}
-                          onClick={() => {
-                            setCurrentPolicy(row)
-                            setShowPolicyInfo(!selectedRow || !showPolicyInfo)
-                          }}
-                        >
-                          <FontAwesomeIcon icon={showPolicyInfo && selectedRow ? faInfoCircle : faInfo}/>
-                        </Button>
+                    <Block>
+                      <StatefulTooltip content={() => intl.documents}>
+                        <Block $style={{opacity: "80%"}}>
+                          {!!row.documentIds?.length && '(' + row.documentIds?.map(id => (docs[id] || {}).name).join(", ") + ')'}
+                        </Block>
                       </StatefulTooltip>
-                      {hasAccess && (
-                        <>
-                          <StatefulTooltip content={intl.edit} placement={PLACEMENT.top}>
-                            <Button
-                              size={ButtonSize.compact}
-                              kind={KIND.tertiary}
-                              onClick={() => {
-                                setCurrentPolicy(row)
-                                setShowEditModal(true)
-                              }}
-                            >
-                              <FontAwesomeIcon icon={faEdit}/>
-                            </Button>
-                          </StatefulTooltip>
-                          <StatefulTooltip content={intl.delete} placement={PLACEMENT.top}>
-                            <Button
-                              size={ButtonSize.compact}
-                              kind={KIND.tertiary}
-                              onClick={() => {
-                                setCurrentPolicy(row)
-                                setShowDeleteModal(true)
-                              }}
-                            >
-                              <FontAwesomeIcon icon={faTrash}/>
-                            </Button>
-                          </StatefulTooltip>
-                        </>
-                      )}
                     </Block>
-                  </SmallerStyledCell>
-                </CustomStyledRow>
-                {showPolicyInfo && selectedRow &&
-                <CustomStyledRow infoRow={true}>
-                  <StyledCell>
-                    <Block display="flex" justifyContent="space-between" width="100%">
-                      <Block><ActiveIndicator {...row} alwaysShow={true} preText={intl.validityOfPolicy} showDates/></Block>
-                      <AuditButton id={row.id}/>
-                    </Block>
-                  </StyledCell>
-                </CustomStyledRow>
-                }
-              </React.Fragment>
-            )
-          })}
-        </StyledBody>
-        {showEditModal && currentPolicy && (
-          <ModalPolicy
-            title={intl.policyEdit}
-            initialValues={convertPolicyToFormValues(currentPolicy)}
-            onClose={() => {
-              setShowEditModal(false)
-            }}
-            isOpen={showEditModal}
-            isEdit={true}
-            submit={submitEditPolicy}
-            errorOnCreate={errorPolicyModal}
-          />
-        )}
+                  </Block>
+                </Cell>
 
-        {showDeleteModal && currentPolicy && (
-          <Modal
-            onClose={() => setShowDeleteModal(false)}
-            isOpen={showDeleteModal}
-            animate
-            size="default"
-          >
-            <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
-            <ModalBody>
-              <Paragraph2>{intl.confirmDeletePolicyText} {currentPolicy.informationType.name}</Paragraph2>
-            </ModalBody>
+                <Cell>{row.subjectCategories.map(sc => codelist.getShortname(ListName.SUBJECT_CATEGORY, sc.code)).join(", ")}</Cell>
+                <Cell>
+                  <Block>
+                    <LegalBasesNotClarified alert={alert?.policies.filter(p => p.policyId === row.id)[0]}/>
 
-            <ModalFooter>
-              <Block display="flex" justifyContent="flex-end">
-                <Block alignSelf="flex-end">{errorDeleteModal && <p>{errorDeleteModal}</p>}</Block>
-                <Button
-                  kind="secondary"
-                  onClick={() => setShowDeleteModal(false)}
-                  overrides={{BaseButton: {style: {marginRight: '1rem', marginLeft: '1rem'}}}}
-                >
-                  {intl.abort}
-                </Button>
-                <Button onClick={() => {
-                  submitDeletePolicy(currentPolicy).then(() => setShowDeleteModal(false)).catch(() => setShowDeleteModal(true))
-                }
-                }>{intl.delete}</Button>
-              </Block>
-            </ModalFooter>
-          </Modal>
-        )}
-
-      </StyledTable>
+                    {row.legalBases && row.legalBases.length > 0 && (
+                      <ListLegalBasesInTable legalBases={row.legalBases}/>
+                    )}
+                  </Block>
+                </Cell>
+                <SmallCell>
+                  <Block display="flex" justifyContent="flex-end" width="100%">
+                    <StatefulTooltip content={intl.info} placement={PLACEMENT.top}>
+                      <Button
+                        size={ButtonSize.compact}
+                        kind={KIND.tertiary}
+                        onClick={() => {
+                          setCurrentPolicy(row)
+                          setShowPolicyInfo(!selectedRow || !showPolicyInfo)
+                        }}
+                      >
+                        <FontAwesomeIcon icon={showPolicyInfo && selectedRow ? faInfoCircle : faInfo}/>
+                      </Button>
+                    </StatefulTooltip>
+                    {hasAccess && (
+                      <>
+                        <StatefulTooltip content={intl.edit} placement={PLACEMENT.top}>
+                          <Button
+                            size={ButtonSize.compact}
+                            kind={KIND.tertiary}
+                            onClick={() => {
+                              setCurrentPolicy(row)
+                              setShowEditModal(true)
+                            }}
+                          >
+                            <FontAwesomeIcon icon={faEdit}/>
+                          </Button>
+                        </StatefulTooltip>
+                        <StatefulTooltip content={intl.delete} placement={PLACEMENT.top}>
+                          <Button
+                            size={ButtonSize.compact}
+                            kind={KIND.tertiary}
+                            onClick={() => {
+                              setCurrentPolicy(row)
+                              setShowDeleteModal(true)
+                            }}
+                          >
+                            <FontAwesomeIcon icon={faTrash}/>
+                          </Button>
+                        </StatefulTooltip>
+                      </>
+                    )}
+                  </Block>
+                </SmallCell>
+              </Row>
+              {showPolicyInfo && selectedRow &&
+              <Row infoRow={true}>
+                <Cell>
+                  <Block display="flex" justifyContent="space-between" width="100%">
+                    <Block><ActiveIndicator {...row} alwaysShow={true} preText={intl.validityOfPolicy} showDates/></Block>
+                    <AuditButton id={row.id}/>
+                  </Block>
+                </Cell>
+              </Row>
+              }
+            </React.Fragment>
+          )
+        })}
+      </Table>
       {!table.data.length && <Label2 margin="1rem">{intl.emptyTable} {intl.informationTypes}</Label2>}
+
+      {showEditModal && currentPolicy && (
+        <ModalPolicy
+          title={intl.policyEdit}
+          initialValues={convertPolicyToFormValues(currentPolicy)}
+          onClose={() => {
+            setShowEditModal(false)
+          }}
+          isOpen={showEditModal}
+          isEdit={true}
+          submit={submitEditPolicy}
+          errorOnCreate={errorPolicyModal}
+        />
+      )}
+
+      {showDeleteModal && currentPolicy && (
+        <Modal
+          onClose={() => setShowDeleteModal(false)}
+          isOpen={showDeleteModal}
+          animate
+          size="default"
+        >
+          <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
+          <ModalBody>
+            <Paragraph2>{intl.confirmDeletePolicyText} {currentPolicy.informationType.name}</Paragraph2>
+          </ModalBody>
+
+          <ModalFooter>
+            <Block display="flex" justifyContent="flex-end">
+              <Block alignSelf="flex-end">{errorDeleteModal && <p>{errorDeleteModal}</p>}</Block>
+              <Button
+                kind="secondary"
+                onClick={() => setShowDeleteModal(false)}
+                overrides={{BaseButton: {style: {marginRight: '1rem', marginLeft: '1rem'}}}}
+              >
+                {intl.abort}
+              </Button>
+              <Button onClick={() => {
+                submitDeletePolicy(currentPolicy).then(() => setShowDeleteModal(false)).catch(() => setShowDeleteModal(true))
+              }
+              }>{intl.delete}</Button>
+            </Block>
+          </ModalFooter>
+        </Modal>
+      )}
 
     </React.Fragment>
   );

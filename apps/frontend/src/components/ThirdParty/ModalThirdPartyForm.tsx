@@ -6,10 +6,10 @@ import { Block, BlockProps } from 'baseui/block';
 import { Error, ModalLabel } from '../common/ModalSchema';
 import { intl, useDebouncedState } from '../../util';
 import { Button } from 'baseui/button';
-import { Select, StatefulSelect, Value, TYPE, Option } from 'baseui/select';
+import { Select, Value } from 'baseui/select';
 import { codelist, ListName } from '../../service/Codelist';
 import { Textarea } from 'baseui/textarea';
-import { useInfoTypeSearch, searchDocuments } from '../../api';
+import { useInfoTypeSearch } from '../../api';
 import { ListLegalBases } from '../common/LegalBasis';
 import CardLegalBasis from '../Purpose/Accordion/CardLegalBasis';
 import { Plus } from 'baseui/icon';
@@ -199,7 +199,10 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                           <CardLegalBasis
                             titleSubmitButton={selectedLegalBasis ? intl.update : intl.add}
                             initValue={selectedLegalBasis || {}}
-                            hideCard={() => formikBag.setFieldValue('legalBasesOpen', false)}
+                            hideCard={() => {
+                              formikBag.setFieldValue('legalBasesOpen', false)
+                              setSelectedLegalBasis(undefined)
+                            }}
                             submit={values => {
                               if (!values) return;
                               if (selectedLegalBasis) {

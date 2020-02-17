@@ -217,7 +217,10 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, ti
                                                         <CardLegalBasis
                                                             titleSubmitButton={selectedLegalBasis ? intl.update : intl.add}
                                                             initValue={selectedLegalBasis || {}}
-                                                            hideCard={() => formikBag.setFieldValue('legalBasesOpen', false)}
+                                                            hideCard={() => {
+                                                              formikBag.setFieldValue('legalBasesOpen', false)
+                                                              setSelectedLegalBasis(undefined)
+                                                            }}
                                                             submit={values => {
                                                                 if (!values) return;
                                                                 if (selectedLegalBasis) {

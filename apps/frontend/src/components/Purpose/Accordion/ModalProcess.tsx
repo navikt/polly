@@ -432,7 +432,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                 </Block>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.product}/>
+                  <ModalLabel label={intl.system}/>
                   <FieldProduct products={formikBag.values.products}/>
                 </Block>
 
@@ -463,7 +463,10 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                           <CardLegalBasis
                             titleSubmitButton={selectedLegalBasis ? intl.update : intl.add}
                             initValue={selectedLegalBasis || {}}
-                            hideCard={() => formikBag.setFieldValue('legalBasesOpen', false)}
+                            hideCard={() => {
+                              formikBag.setFieldValue('legalBasesOpen', false)
+                              setSelectedLegalBasis(undefined)
+                            }}
                             submit={values => {
                               if (!values) return;
                               if (selectedLegalBasis) {

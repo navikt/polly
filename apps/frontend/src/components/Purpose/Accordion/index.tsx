@@ -1,33 +1,40 @@
 import * as React from 'react'
-import { ReactElement, useEffect } from 'react'
-import { Accordion, Panel } from 'baseui/accordion'
-import { generatePath, RouteComponentProps, withRouter } from 'react-router'
-import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
-import { Spinner } from 'baseui/spinner';
-import { Block } from 'baseui/block';
-import { Label2, Paragraph2 } from 'baseui/typography';
-import { intl, theme, useAwait } from '../../../util';
+import {ReactElement, useEffect} from 'react'
+import {Accordion, Panel} from 'baseui/accordion'
+import {generatePath, RouteComponentProps, withRouter} from 'react-router'
+import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
+import {Spinner} from 'baseui/spinner';
+import {Block} from 'baseui/block';
+import {Label1, Label2, Paragraph2} from 'baseui/typography';
+import {intl, theme, useAwait} from '../../../util';
 import _includes from 'lodash/includes'
-import { user } from "../../../service/User";
-import { Plus } from 'baseui/icon'
-import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues } from "../../../constants"
-import { LegalBasisView } from "../../common/LegalBasis"
-import { codelist, ListName } from "../../../service/Codelist"
+import {user} from "../../../service/User";
+import {Plus} from 'baseui/icon'
+import {
+  AddDocumentToProcessFormValues,
+  LegalBasesStatus,
+  Policy,
+  PolicyFormValues,
+  Process,
+  ProcessFormValues
+} from "../../../constants"
+import {LegalBasisView} from "../../common/LegalBasis"
+import {codelist, ListName} from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy';
-import { convertProcessToFormValues } from "../../../api"
-import { PathParams } from "../../../pages/PurposePage"
-import { ActiveIndicator } from "../../common/Durations"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faChevronRight, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal';
-import { TeamPopover } from "../../common/Team"
-import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
-import { AuditButton } from "../../audit/AuditButton"
-import { AddDocumentModal } from "./AddDocumentModal"
-import { RetentionView } from "../Retention"
-import { boolToText } from "../../common/Radio"
+import {convertProcessToFormValues} from "../../../api"
+import {PathParams} from "../../../pages/PurposePage"
+import {ActiveIndicator} from "../../common/Durations"
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faChevronDown, faChevronRight, faEdit, faTrash} from '@fortawesome/free-solid-svg-icons';
+import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal';
+import {TeamPopover} from "../../common/Team"
+import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
+import {AuditButton} from "../../audit/AuditButton"
+import {AddDocumentModal} from "./AddDocumentModal"
+import {RetentionView} from "../Retention"
+import {boolToText} from "../../common/Radio"
 
 type AccordionProcessProps = {
   isLoading: boolean
@@ -82,11 +89,13 @@ const AccordionTitle = (props: { process: Process, expanded: boolean, hasAccess:
 
   return <>
     <Block>
-      {expanded ?
-        <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
-      <span> </span>
-      <span>{codelist.getShortname(ListName.PURPOSE, process.purposeCode)}: </span>
-      <span>{process.name}</span>
+      <Label1 color={theme.colors.primary600}>
+        {expanded ?
+          <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
+        <span> </span>
+        <span>{codelist.getShortname(ListName.PURPOSE, process.purposeCode)}: </span>
+        <span>{process.name}</span>
+      </Label1>
     </Block>
     <div onClick={(e) => {
       e.stopPropagation()
@@ -180,7 +189,7 @@ const ProcessData = (props: { process: Process }) => {
                 text={process.products.map(product => codelist.getShortname(ListName.SYSTEM, product.code)).join(", ")}
                 hide={!process.products?.length}/>
 
-      <DataText label={intl.automaticProcessing}>
+      <DataText label={intl.automation}>
         <Block>
           <span>{intl.automaticProcessing}: </span>
           <span>{boolToText(process.automaticProcessing)}</span>
@@ -229,7 +238,7 @@ const ProcessData = (props: { process: Process }) => {
               <RetentionView retention={process.retention}/>
             </Block>
             <Block>
-              <span>{process.retention?.retentionDescription && `${intl.description}: `}</span>
+              <span>{process.retention?.retentionDescription && `${intl.retentionDescription}: `}</span>
               <span>{process.retention?.retentionDescription}</span>
             </Block>
           </Block>
@@ -362,9 +371,9 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                 <Block backgroundColor={theme.colors.primary50}>
                   <Block {...({
                     display: 'flex',
-                    marginBottom: '1rem',
                     justifyContent: 'space-between',
-                    padding: theme.sizing.scale800
+                    paddingLeft: theme.sizing.scale800,
+                    paddingRight: theme.sizing.scale800
                   })}>
                     <Label2 alignSelf="center">{intl.informationTypes}</Label2>
                     {hasAccess() && (
@@ -374,7 +383,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                       </Block>
                     )}
                   </Block>
-                  <Block>
+                  <Block padding={theme.sizing.scale800}>
                     <TablePolicy
                       process={currentProcess}
                       hasAccess={hasAccess()}
