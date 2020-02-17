@@ -4,6 +4,7 @@ import { ThemePrimitives } from 'baseui/theme'
 
 const primitives: ThemePrimitives = {
   ...lightThemePrimitives,
+  primaryA: "#3e3832",
   primary: "#19548a",
   primary50: "#eaf4fc",
   primary100: "#B5CCDF",
