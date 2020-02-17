@@ -4,12 +4,12 @@ import { ThemePrimitives } from 'baseui/theme'
 
 const primitives: ThemePrimitives = {
   ...lightThemePrimitives,
-  primary: colors.blue400,
-  primary50: colors.blue50,
+  primary: "#19548a",
+  primary50: "#eaf4fc",
   primary100: colors.blue100,
-  primary200: colors.blue200,
+  primary200: "#99c2e8",
   primary300: colors.blue300,
-  primary400: colors.blue400,
+  primary400: "#19548a",
   primary500: colors.blue500,
   primary600: colors.blue600,
   primary700: colors.blue700,
