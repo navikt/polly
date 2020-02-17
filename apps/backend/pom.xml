@@ -108,11 +108,6 @@
     </build>
 
 	<repositories>
-		<repository>
-			<id>repo.eclipse.org</id>
-			<name>EGit Maven Repository - Releases</name>
-			<url>https://repo.eclipse.org/content/repositories/egit-releases/</url>
-		</repository>
         <repository>
             <id>confluent</id>
             <name>Confluent</name>
