@@ -350,7 +350,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
               }
             }}
           >
-            {isLoading && <Spinner size={18}/>}
+            {isLoading && <Block padding={theme.sizing.scale400}><Spinner size={theme.sizing.scale1200}/></Block>}
 
             {!isLoading && currentProcess && (
               <Block $style={{
