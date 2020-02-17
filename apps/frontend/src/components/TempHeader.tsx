@@ -1,32 +1,28 @@
 import * as React from 'react';
-import {
-    HeaderNavigation,
-    ALIGN,
-    StyledNavigationItem as NavigationItem,
-    StyledNavigationList as NavigationList,
-} from 'baseui/header-navigation';
+import { ALIGN, HeaderNavigation, StyledNavigationItem as NavigationItem, StyledNavigationList as NavigationList, } from 'baseui/header-navigation';
 import { Button } from 'baseui/button';
 import { Block, BlockProps } from 'baseui/block';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { env } from '../util/env';
-import { useAwait, theme, intl } from '../util';
+import { intl, theme, useAwait } from '../util';
 import { user } from '../service/User';
 import { StyledLink } from 'baseui/link';
 import { StatefulPopover } from 'baseui/popover';
 import { Label2 } from 'baseui/typography';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
-import { StatefulMenu, OptionProfile } from 'baseui/menu';
-import { langsArray, Lang, langs } from '../util/intl/intl';
+import { OptionProfile, StatefulMenu } from 'baseui/menu';
+import { Lang, langs, langsArray } from '../util/intl/intl';
 import { TriangleDown } from 'baseui/icon';
 import { FlagIcon } from "./common/Flag"
+import { paddingAll, paddingZero } from "./common/Style"
 
 
 const LoggedInHeader = () => {
     const blockStyle: BlockProps = {
       display: 'flex',
       width: '100%',
-      padding: theme.sizing.scale100
+      ...paddingAll(theme.sizing.scale100)
     }
     return (
       <StatefulPopover
@@ -50,7 +46,7 @@ const LoggedInHeader = () => {
   const Flag = (props: { langCode: string }) => (
     <span role="img" aria-label={langs[props.langCode].name}><FlagIcon country={langs[props.langCode].flag}/></span>
   )
-  
+
   const FlagWithName = (props: { langCode: string }) => (
     <span><Flag langCode={props.langCode}/> {langs[props.langCode].name}</span>
   )
@@ -124,7 +120,7 @@ const AdminOptionsImpl = (props: RouteComponentProps<any>) => {
           }}
         />
       }>
-      <Button endEnhancer={() => <TriangleDown size={24}/>} kind="tertiary" $style={{padding: 0}}>
+      <Button endEnhancer={() => <TriangleDown size={24}/>} kind="tertiary" $style={paddingZero}>
         {intl.administrate}
       </Button>
     </StatefulPopover>

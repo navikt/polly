@@ -24,7 +24,7 @@ import {
 } from "../../api"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faList } from "@fortawesome/free-solid-svg-icons"
-import { Spinner } from "baseui/spinner"
+import { StyledSpinnerNext } from "baseui/spinner"
 
 const rowBlockProps: BlockProps = {
   marginBottom: 'scale800',
@@ -202,7 +202,7 @@ const ProcessList = ({purposeCode}: ProcessListProps) => {
             </React.Fragment>
           )}
         </Block>
-        {isLoadingProcessList && <Spinner size={theme.sizing.scale2400}/>}
+        {isLoadingProcessList && <StyledSpinnerNext size={theme.sizing.scale2400}/>}
 
         {!isLoadingProcessList &&
         <AccordionProcess

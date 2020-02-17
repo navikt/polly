@@ -6,7 +6,6 @@ import React, { useEffect } from "react"
 import { AuditAction, AuditLog } from "../../constants"
 import { Label1 } from "baseui/typography"
 import { AuditActionIcon, AuditLabel as Label } from "./AuditComponents"
-import { Spinner } from "baseui/icon"
 import { Card } from "baseui/card"
 import { Button } from "baseui/button"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -16,6 +15,7 @@ import { ObjectLink } from "../common/RouteLink"
 import { StatefulPopover } from "baseui/popover"
 import DiffViewer from "react-diff-viewer"
 import { useRefs } from "../../util/hooks"
+import { StyledSpinnerNext } from "baseui/spinner"
 
 type AuditViewProps = {
   auditLog?: AuditLog,
@@ -39,7 +39,7 @@ export const AuditView = (props: AuditViewProps) => {
   const newestAudit = auditLog?.audits[0]
 
   return <Card>
-    {loading && <Spinner size={theme.sizing.scale2400}/>}
+    {loading && <StyledSpinnerNext size={theme.sizing.scale2400}/>}
     {!loading && auditLog && !logFound && <Label1>{intl.auditNotFound}</Label1>}
 
     {logFound && <>

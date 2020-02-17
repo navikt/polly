@@ -2,7 +2,6 @@ import * as React from "react";
 import { intl, useAwait } from "../util"
 import { RouteComponentProps } from "react-router-dom";
 import { codelist, ListName } from "../service/Codelist";
-import { Spinner } from "baseui/icon";
 import { Block, BlockProps } from "baseui/block";
 import { StatefulSelect } from "baseui/select";
 import { user } from "../service/User";
@@ -10,6 +9,7 @@ import { useStyletron } from "styletron-react";
 import { ListItem, ListItemLabel } from "baseui/list";
 import RouteLink from "../components/common/RouteLink";
 import { H4 } from "baseui/typography";
+import { StyledSpinnerNext } from "baseui/spinner"
 
 const rowBlockProps: BlockProps = {
   display: 'flex',
@@ -35,7 +35,7 @@ const ThirdPartySearchPage = (props: RouteComponentProps) => {
     <React.Fragment>
       <H4>{intl.thirdParty}</H4>
 
-      {isLoading && <Spinner/>}
+      {isLoading && <StyledSpinnerNext/>}
       {!isLoading && (
         <Block {...rowBlockProps}>
           <StatefulSelect

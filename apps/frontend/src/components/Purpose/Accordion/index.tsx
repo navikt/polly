@@ -3,7 +3,7 @@ import { ReactElement, useEffect } from 'react'
 import { Accordion, Panel } from 'baseui/accordion'
 import { generatePath, RouteComponentProps, withRouter } from 'react-router'
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
-import { Spinner } from 'baseui/spinner';
+import { StyledSpinnerNext } from 'baseui/spinner';
 import { Block } from 'baseui/block';
 import { Label1, Label2, Paragraph2 } from 'baseui/typography';
 import { intl, theme, useAwait } from '../../../util';
@@ -350,7 +350,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
               }
             }}
           >
-            {isLoading && <Block padding={theme.sizing.scale400}><Spinner size={theme.sizing.scale1200}/></Block>}
+            {isLoading && <Block padding={theme.sizing.scale400}><StyledSpinnerNext size={theme.sizing.scale1200}/></Block>}
 
             {!isLoading && currentProcess && (
               <Block $style={{

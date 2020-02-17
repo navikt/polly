@@ -1,22 +1,22 @@
 import React from "react";
-import {RouteComponentProps} from "react-router-dom"
-import {intl, useAwait} from "../util";
-import {codelist} from "../service/Codelist";
-import {Spinner} from "baseui/icon";
-import {Block} from "baseui/block";
-import {Select, TYPE, Value} from "baseui/select";
-import {deleteDocument, getDocument, useDocumentSearch} from "../api";
-import {Document} from "../constants";
+import { RouteComponentProps } from "react-router-dom"
+import { intl, useAwait } from "../util";
+import { codelist } from "../service/Codelist";
+import { Block } from "baseui/block";
+import { Select, TYPE, Value } from "baseui/select";
+import { deleteDocument, getDocument, useDocumentSearch } from "../api";
+import { Document } from "../constants";
 import DocumentMetadata from "../components/document/DocumentMetadata";
-import {user} from "../service/User";
-import {Button, SHAPE} from "baseui/button";
-import {faEdit, faPlusCircle} from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
-import {faTrash} from "@fortawesome/free-solid-svg-icons/faTrash";
+import { user } from "../service/User";
+import { Button, SHAPE } from "baseui/button";
+import { faEdit, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
+import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
 import DeleteDocumentModal from "../components/document/component/DeleteDocumentModal";
-import {Notification} from "baseui/notification";
+import { Notification } from "baseui/notification";
 import { H4 } from "baseui/typography";
+import { StyledSpinnerNext } from "baseui/spinner"
 
 const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
   const [isLoading, setLoading] = React.useState();
@@ -71,7 +71,7 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
 
   return (
     <React.Fragment>
-      {isLoading && <Spinner/>}
+      {isLoading && <StyledSpinnerNext/>}
 
       {!isLoading && (
         <React.Fragment>

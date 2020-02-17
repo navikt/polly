@@ -1,6 +1,4 @@
 import * as React from "react";
-import { styled } from "baseui";
-import { Spinner } from "baseui/spinner";
 
 import InformationtypeForm from "../components/InformationType/InformationtypeForm";
 import { InformationType, InformationtypeFormValues } from "../constants"
@@ -9,14 +7,8 @@ import { intl } from "../util"
 import { getInformationType, updateInformationType } from "../api"
 import { RouteComponentProps } from "react-router-dom";
 import { H4 } from "baseui/typography";
+import { StyledSpinnerNext } from "baseui/spinner"
 
-
-const Centered = styled("div", {
-  height: "100%",
-  margin: "0 auto",
-  width: "80%",
-  paddingBottom: "10rem"
-});
 
 const reduceCodelist = (list: Code[]) => {
   if (!list) return;
@@ -87,14 +79,14 @@ const InformationtypeEditPage = (props: RouteComponentProps<{ id: string }>) => 
   return (
     <React.Fragment>
       {isLoading ? (
-        <Spinner size={30}/>
+        <StyledSpinnerNext size={30}/>
       ) : (
         <React.Fragment>
           <H4>{intl.edit}</H4>
 
           {!error && informationtype ? (
             <React.Fragment>
-                <InformationtypeForm
+              <InformationtypeForm
                 formInitialValues={initFormValues(
                   informationtype
                 )}

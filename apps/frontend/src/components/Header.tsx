@@ -22,6 +22,7 @@ import { codelist } from "../service/Codelist"
 import { features } from "../util/feature-toggle"
 import { env } from "../util/env"
 import { StatefulTooltip } from "baseui/tooltip"
+import { paddingAll, paddingZero } from "./common/Style"
 
 const logo = <svg
   xmlns="http://www.w3.org/2000/svg"
@@ -122,7 +123,7 @@ const LoggedInHeader = () => {
   const blockStyle: BlockProps = {
     display: 'flex',
     width: '100%',
-    padding: theme.sizing.scale100
+    ...paddingAll(theme.sizing.scale100)
   }
   return (
     <StatefulPopover
@@ -160,7 +161,7 @@ const AdminOptionsImpl = (props: RouteComponentProps<any>) => {
           }}
         />
       }>
-      <Button endEnhancer={() => <TriangleDown size={24}/>} size="compact" kind="tertiary" $style={{padding: 0}}>
+      <Button endEnhancer={() => <TriangleDown size={24}/>} size="compact" kind="tertiary" $style={paddingZero}>
         {intl.administrate}
       </Button>
     </StatefulPopover>

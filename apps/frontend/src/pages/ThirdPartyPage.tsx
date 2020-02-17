@@ -2,7 +2,7 @@ import * as React from "react";
 import { intl, useAwait } from "../util"
 import { RouteComponentProps } from "react-router-dom";
 import { codelist, ListName } from "../service/Codelist";
-import { Plus, Spinner } from "baseui/icon";
+import { Plus } from "baseui/icon";
 import { Block, BlockProps } from "baseui/block";
 import { createDisclosure, deleteDisclosure, getCodelistUsage, getDisclosuresByRecipient, updateDisclosure } from "../api";
 import TableDisclosure from "../components/common/TableDisclosure";
@@ -12,6 +12,7 @@ import { user } from "../service/User";
 import { Disclosure, DisclosureFormValues, Use } from "../constants";
 import ModalThirdParty from "../components/ThirdParty/ModalThirdPartyForm";
 import ListRecievedInformationTypes from "../components/ThirdParty/ListRecievedInformationTypes";
+import { StyledSpinnerNext } from "baseui/spinner"
 
 const labelBlockProps: BlockProps = {
   marginBottom: '1rem',
@@ -98,7 +99,7 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
 
   return (
     <React.Fragment>
-      {isLoading && <Spinner/>}
+      {isLoading && <StyledSpinnerNext/>}
 
       {!isLoading && codelist && (
         <React.Fragment>

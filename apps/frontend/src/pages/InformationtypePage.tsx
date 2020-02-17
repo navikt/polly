@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useEffect } from "react";
-import { Spinner } from "baseui/spinner";
 import { Button, SHAPE } from "baseui/button"
 import { Block } from "baseui/block"
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons"
@@ -14,7 +13,7 @@ import { intl, theme, useAwait } from "../util"
 import { CodeUsage, Disclosure, Document, Policy } from "../constants"
 import { codelist, ListName } from "../service/Codelist"
 import { user } from "../service/User";
-import { H3, H4 } from "baseui/typography"
+import { H4 } from "baseui/typography"
 import {
   getCodelistUsageByListName,
   getDisclosuresByInformationTypeId,
@@ -24,6 +23,7 @@ import {
   useInfoTypeSearch
 } from "../api"
 import InformationTypeAccordion from "../components/InformationType/ListCategoryInformationtype";
+import { StyledSpinnerNext } from "baseui/spinner"
 
 export type PurposeMap = { [purpose: string]: Policy[] }
 
@@ -82,7 +82,7 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
     return (
         <React.Fragment>
             {isLoading ? (
-                <Spinner size={30} />
+                <StyledSpinnerNext size={30} />
             ) : (informationTypeId ?
                 <React.Fragment>
                     {!error && informationtype && (
