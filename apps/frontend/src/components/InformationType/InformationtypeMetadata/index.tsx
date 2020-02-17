@@ -4,13 +4,16 @@ import { Block } from 'baseui/block'
 
 import AccordionInformationtype from './AccordionInformationtype'
 import { Disclosure, Document, InformationType, Policy } from "../../../constants"
-import { intl, theme } from "../../../util"
+import { intl, theme, useAwait } from "../../../util"
 import Metadata from "./Metadata";
 import InformationtypePolicyTable from "./InformationtypePolicyTable"
 import { Button } from "baseui/button"
 import TableDisclosure from "../../common/TableDisclosure";
 import { DocumentTable } from "./DocumentTable"
 import { Tab, Tabs } from "baseui/tabs"
+import { H4 } from "baseui/typography";
+import { user } from "../../../service/User";
+import { InformationTypeBannerButtons } from "../InformationTypeBannerButtons";
 
 interface InformationtypeMetadataProps {
   informationtype: InformationType;
@@ -53,11 +56,21 @@ const Disclosures = ({disclosures}: { disclosures: Disclosure[] }) => {
 const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
   const [activeTab, setActiveTab] = useState("purposes")
 
+  useAwait(user.wait())
+
   const tabOverride = {Tab: {style: {fontSize: "1.5rem"}}}
   return (
     <React.Fragment>
       {props.informationtype && (
         <React.Fragment>
+          <Block display="flex" justifyContent="space-between">
+            <H4>{props.informationtype.name}</H4>
+            {user.canWrite() && (
+              <InformationTypeBannerButtons id={props.informationtype.id}/>
+            )}
+          </Block>
+
+
           <Metadata informationtype={props.informationtype}/>
 
           <Tabs activeKey={activeTab} onChange={args => setActiveTab(args.activeKey as string)}>

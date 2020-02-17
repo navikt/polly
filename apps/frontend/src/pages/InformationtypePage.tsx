@@ -14,7 +14,7 @@ import { intl, theme, useAwait } from "../util"
 import { CodeUsage, Disclosure, Document, Policy } from "../constants"
 import { codelist, ListName } from "../service/Codelist"
 import { user } from "../service/User";
-import { H3 } from "baseui/typography"
+import { H3, H4 } from "baseui/typography"
 import {
   getCodelistUsageByListName,
   getDisclosuresByInformationTypeId,
@@ -99,7 +99,7 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
                     {error && (<p>{error}</p>)}
                 </React.Fragment>
                 : <React.Fragment>
-                    <H3 marginTop={theme.sizing.scale200} marginBottom={theme.sizing.scale400}>{intl.informationTypes}</H3>
+                    <H4 marginTop={theme.sizing.scale200} >{intl.informationTypes}</H4>
                     <Block display="flex" justifyContent="space-between">
                         <Block width="80%">
                             <Select

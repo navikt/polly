@@ -1,5 +1,4 @@
 import { Block } from "baseui/block"
-import Banner from "../../components/Banner"
 import React, { useEffect, useState } from "react"
 import { intl, useDebouncedState } from "../../util"
 import { RouteComponentProps, withRouter } from "react-router-dom"
@@ -10,7 +9,7 @@ import { AuditLabel as Label } from "../../components/audit/AuditComponents"
 import { getAuditLog } from "../../api/AuditApi"
 import { AuditLog } from "../../constants"
 import { AuditRecentTable } from "../../components/audit/AuditRecentTable"
-import { Paragraph2 } from "baseui/typography"
+import { Paragraph2, H4 } from "baseui/typography"
 
 const format = (id: string) => _.trim(id, "\"")
 
@@ -51,8 +50,7 @@ const AuditPageImpl = (props: RouteComponentProps<{ id?: string, auditId?: strin
 
     return (
         <>
-            <Banner title={intl.audit}/>
-
+            <H4>{intl.audit}</H4>
             <Block marginBottom="1rem">
                 <Label label={intl.searchId}>
                     <Input size="compact" value={idInput}

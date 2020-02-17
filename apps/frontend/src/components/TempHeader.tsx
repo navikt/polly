@@ -107,6 +107,31 @@ const LoggedInHeader = () => {
     );
 }
 
+const AdminOptionsImpl = (props: RouteComponentProps<any>) => {
+  const pages = [
+    {label: intl.manageCodeListTitle, href: "/admin/codelist"},
+    {label: intl.audit, href: "/admin/audit"},
+    {label: intl.settings, href: "/admin/settings"}
+  ]
+  return (
+    <StatefulPopover
+      content={({close}) =>
+        <StatefulMenu
+          items={pages}
+          onItemSelect={({item}) => {
+            close()
+            props.history.push(item.href)
+          }}
+        />
+      }>
+      <Button endEnhancer={() => <TriangleDown size={24}/>} kind="tertiary" $style={{padding: 0}}>
+        {intl.administrate}
+      </Button>
+    </StatefulPopover>
+  )
+}
+const AdminOptions = withRouter(AdminOptionsImpl)
+
 interface TempHeaderProps {
     setLang: (lang: string) => void
 }
@@ -128,6 +153,11 @@ const TempHeader = (props: TempHeaderProps & RouteComponentProps) => {
         >
             <Block margin="0 auto" width="80%">
                 <NavigationList $align={ALIGN.right}>
+                    {user.isAdmin() && (
+                      <NavigationItem>
+                          <AdminOptions />
+                      </NavigationItem>
+                    )}
 
                     <NavigationItem>
                         <LangDropdown setLang={props.setLang}/>

@@ -3,12 +3,12 @@ import { styled } from "baseui";
 import { Spinner } from "baseui/spinner";
 
 import InformationtypeForm from "../components/InformationType/InformationtypeForm";
-import Banner from "../components/Banner";
 import { InformationType, InformationtypeFormValues } from "../constants"
 import { Code, codelist } from "../service/Codelist";
 import { intl } from "../util"
 import { getInformationType, updateInformationType } from "../api"
 import { RouteComponentProps } from "react-router-dom";
+import { H4 } from "baseui/typography";
 
 
 const Centered = styled("div", {
@@ -90,11 +90,11 @@ const InformationtypeEditPage = (props: RouteComponentProps<{ id: string }>) => 
         <Spinner size={30}/>
       ) : (
         <React.Fragment>
-          <Banner title={intl.edit}/>
+          <H4>{intl.edit}</H4>
 
           {!error && informationtype ? (
-            <Centered>
-              <InformationtypeForm
+            <React.Fragment>
+                <InformationtypeForm
                 formInitialValues={initFormValues(
                   informationtype
                 )}
@@ -102,7 +102,7 @@ const InformationtypeEditPage = (props: RouteComponentProps<{ id: string }>) => 
                 submit={handleSubmit}
               />
               {errorSubmit && <p>{errorSubmit}</p>}
-            </Centered>
+            </React.Fragment>
           ) : (
             <p>{intl.couldntLoad}</p>
           )}

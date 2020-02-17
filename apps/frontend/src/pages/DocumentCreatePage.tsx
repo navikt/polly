@@ -1,6 +1,4 @@
 import React from "react";
-import {intl} from "../util";
-import Banner from "../components/Banner";
 import DocumentForm from "../components/document/component/DocumentForm";
 import {DocumentFormValues} from "../constants";
 import {createInformationTypesDocument} from "../api";

@@ -11,6 +11,7 @@ import { user } from "../service/User";
 import ErrorNotAllowed from "../components/common/ErrorNotAllowed";
 import { createInformationType } from "../api"
 import { RouteComponentProps } from "react-router-dom";
+import { H4 } from "baseui/typography";
 
 const Centered = styled("div", {
     height: "100%",
@@ -69,17 +70,15 @@ const InformationtypeCreatePage = (props: RouteComponentProps) => {
                             <Spinner size={30}/>
                         ) : (
                             <React.Fragment>
-                                <Banner title={intl.informationTypeCreate}/>
+                                <H4>{intl.informationTypeCreate}</H4>
                                 {!error && codelist ? (
                                     <React.Fragment>
-                                        <Centered>
                                             <InformationtypeForm
                                                 formInitialValues={initialFormValues}
                                                 submit={handleSubmit}
                                                 isEdit={false}
                                             />
                                             {errorSubmit && <p>{errorSubmit}</p>}
-                                        </Centered>
                                     </React.Fragment>
                                 ) : (
                                     <p>Feil i henting av codelist</p>

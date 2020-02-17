@@ -6,7 +6,6 @@ import { Button, KIND, SIZE as ButtonSize } from "baseui/button"
 import { RouteComponentProps, withRouter } from "react-router-dom"
 import { Plus, Spinner } from "baseui/icon"
 
-import Banner from "../../components/Banner"
 import { Code, codelist } from "../../service/Codelist"
 import CreateCodeListModal from "../../components/CodeList/ModalCreateCodeList"
 import { user } from "../../service/User"
@@ -14,6 +13,7 @@ import CodeListTable from "../../components/CodeList/CodeListStyledTable"
 import { intl, useAwait, useForceUpdate } from "../../util"
 import { createCodelist } from "../../api"
 import { CodeListFormValues } from "../../constants"
+import { H4 } from "baseui/typography"
 
 const CodeListPage = (props: RouteComponentProps<{ listname?: string }>) => {
     const [loading, setLoading] = React.useState(true)
@@ -51,7 +51,7 @@ const CodeListPage = (props: RouteComponentProps<{ listname?: string }>) => {
     }
 
     return <>
-        <Banner title={intl.manageCodeListTitle}/>
+        <H4>{intl.manageCodeListTitle}</H4>
         {loading ? <Spinner/> : (
             <Block>
                 <StatefulSelect

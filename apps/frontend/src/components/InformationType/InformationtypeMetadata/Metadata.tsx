@@ -74,7 +74,7 @@ const TextWithLabel = (props: { label: string, text?: string, icon?: IconDefinit
     )
 }
 
-const CardOverview = (props: { name: string, termId?: string, description: string }) => {
+const CardOverview = (props: { termId?: string, description: string, keywords: string[] }) => {
     const [term, setTerm] = useState(props.termId)
     const [termError, setTermError] = useState(false)
 
@@ -99,15 +99,16 @@ const CardOverview = (props: { name: string, termId?: string, description: strin
                 flexGridColumnGap="scale400"
                 flexGridRowGap="scale400"
             >
-                <FlexGridItem marginTop="1rem">
-                    <TextWithLabel label={intl.name} text={props.name} icon={faTag}/>
-                </FlexGridItem>
                 <FlexGridItem>
                     <TextWithLabel label={intl.term} text={term} error={termError ? intl.couldntLoadTerm : undefined}/>
                 </FlexGridItem>
                 <FlexGridItem>
                     <TextWithLabel label={intl.description} text={props.description}/>
                 </FlexGridItem>
+                <FlexGridItem>
+                    <TextWithLabel label={intl.keywords} text={arrayToString(props.keywords)} />
+                </FlexGridItem>
+
             </FlexGrid>
         </Card>
     )
@@ -123,7 +124,6 @@ const CardMetadata = (props: { navMaster: Code, sources: Code[], categories: Cod
             <FlexGridItem>{renderTextWithLabelMetadata(intl.navMaster, props.navMaster ? props.navMaster.shortName : '')}</FlexGridItem>
             <FlexGridItem>{renderTextWithLabelMetadata(intl.sources, renderCodesToLinks(props.sources))}</FlexGridItem>
             <FlexGridItem>{renderTextWithLabelMetadata(intl.categories, reduceToList(props.categories).join(', '))}</FlexGridItem>
-            <FlexGridItem>{renderTextWithLabelMetadata(intl.keywords, arrayToString(props.keywords))}</FlexGridItem>
             <FlexGridItem>{renderTextWithLabelMetadata(intl.sensitivity, props.sensitivity ? props.sensitivity.shortName : '', faUserShield, sensitivityColor(props.sensitivity.code))}</FlexGridItem>
         </FlexGrid>
     </Card>
@@ -136,9 +136,9 @@ const Metadata = (props: { informationtype: InformationType }) => {
         <Block display="flex" marginBottom="5rem">
             <Block width="40%" marginRight="5rem">
                 <CardOverview
-                    name={informationtype.name}
                     termId={informationtype.term}
                     description={informationtype.description}
+                    keywords={informationtype.keywords}
                 />
             </Block>
             <Block width="60%" marginRight="0">
