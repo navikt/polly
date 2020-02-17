@@ -20,6 +20,10 @@ const Layout = styled('div', {
 })
 
 const MainContent = styled('div', {
+    height: '100%',
+    width: '80%',
+    marginLeft: '240px', //Width of sidebar
+    marginTop: '2rem'
 })
 
 
@@ -37,11 +41,11 @@ const Main = props => {
                                  <SideBar />
                             </Block>
 
-                            <Block>
-                                <TempHeader />
-                                <Block margin="2rem">
+                            <Block width="100%">
+                                <TempHeader setLang={setLang}/>
+                                <MainContent>
                                     <Routes />
-                                </Block>
+                                </MainContent>
                             </Block>
                         </Block>
                     </Router>

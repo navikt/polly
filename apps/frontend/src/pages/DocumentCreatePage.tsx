@@ -26,7 +26,6 @@ const DocumentCreatePage = (props: RouteComponentProps) => {
 
   return (
     <React.Fragment>
-      <Banner title={intl.document}/>
       <DocumentForm initialValues={initialCreateDocumentFormValues} handleSubmit={handleCreateDocument}/>
     </React.Fragment>
   );

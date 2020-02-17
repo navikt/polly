@@ -50,7 +50,6 @@ const DocumentEditPage = (props: RouteComponentProps<{ id?: string}>) => {
 
   return (
     <React.Fragment>
-      <Banner title={intl.document}/>
       {!isLoading && document && <DocumentForm initialValues={convertToDocumentFormValues(document)} handleSubmit={handleEditDocument}/>}
     </React.Fragment>
   );

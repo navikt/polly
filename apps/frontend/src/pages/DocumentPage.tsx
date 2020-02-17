@@ -53,7 +53,6 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
 
             {!isLoading && (
                 <React.Fragment>
-                    <Banner title={intl.document} />
                     <Block display="flex" justifyContent="space-between">
                         <Block width="80%">
                             <Select

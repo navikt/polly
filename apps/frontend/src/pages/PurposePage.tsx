@@ -3,13 +3,12 @@ import { useEffect, useState } from "react";
 import { Option, StatefulSelect } from 'baseui/select';
 
 import ProcessList from "../components/Purpose";
-import Banner from "../components/Banner";
 import { Block } from "baseui/block";
 import { codelist, ListName } from "../service/Codelist";
 import { intl, theme } from "../util"
 import illustration from "../resources/purpose_illustration.svg"
 import { Spinner } from "baseui/spinner";
-import { Label2, Paragraph2 } from "baseui/typography";
+import { Label2, Paragraph2, H5, H4 } from "baseui/typography";
 import { generatePath } from "react-router";
 import { getProcessPurposeCount } from "../api"
 import { RouteComponentProps } from "react-router-dom";
@@ -74,6 +73,7 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
         <React.Fragment>
             {!isLoading && (
                 <Block marginBottom="3rem">
+                    <H4>Behandlingsaktiviteter</H4>
                     {error && <p>{error}</p>}
                     {!error && (
                         <StatefulSelect
