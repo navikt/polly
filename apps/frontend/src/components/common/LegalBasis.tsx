@@ -42,7 +42,7 @@ const legalBasisLinkProcessor = (law: string, text?: string) => processString([
     // tripe '§§§' is hidden, used as a trick in combination with rule 1 above
     regex: /§(§§)?(§)?\s*(\d+(-\d+)?)/g,
     fn: (key: string, result: string[]) =>
-      <StyledLink key={key} href={`${env.lovdataBaseUrl + codelist.getDescription(ListName.NATIONAL_LAW, law)}/§${result[2]}`} target="_blank" rel="noopener noreferrer">
+      <StyledLink key={key} href={`${env.lovdataBaseUrl + codelist.getDescription(ListName.NATIONAL_LAW, law)}/§${result[3]}`} target="_blank" rel="noopener noreferrer">
         {(!result[1] && !result[2]) && `§`} {result[2] && `§§`} {result[3]}
       </StyledLink>
   }, {
