@@ -13,7 +13,6 @@ import InformationtypeMetadata from "../components/InformationType/Informationty
 import { intl, theme, useAwait } from "../util"
 import { CodeUsage, Disclosure, Document, Policy } from "../constants"
 import { codelist, ListName } from "../service/Codelist"
-import Banner from "../components/Banner";
 import { user } from "../service/User";
 import { H3 } from "baseui/typography"
 import {
@@ -86,7 +85,6 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
                 <Spinner size={30} />
             ) : (informationTypeId ?
                 <React.Fragment>
-                    <Banner title={intl.informationType} informationtypeId={informationTypeId} />
                     {!error && informationtype && (
                         <InformationtypeMetadata
                             informationtype={informationtype}

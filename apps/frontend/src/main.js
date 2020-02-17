@@ -14,12 +14,12 @@ const engine = new Styletron();
 
 const Layout = styled('div', {
     display: 'flex',
-    width: "100%",
+    alignItems: 'flex-start',
     height: '100%',
+    width: '100%'
 })
 
 const MainContent = styled('div', {
-    width: "100%",
 })
 
 
@@ -32,15 +32,18 @@ const Main = props => {
             <StyletronProvider value={engine}>
                 <BaseProvider theme={theme}>
                     <Router history={history}>
-                        <Layout>
-                            <SideBar />
-                            <MainContent>
+                        <Block display="flex" height="100%">
+                            <Block marginRight="2rem">
+                                 <SideBar />
+                            </Block>
+
+                            <Block>
                                 <TempHeader />
                                 <Block margin="2rem">
                                     <Routes />
                                 </Block>
-                            </MainContent>
-                        </Layout>
+                            </Block>
+                        </Block>
                     </Router>
                 </BaseProvider>
             </StyletronProvider>

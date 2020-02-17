@@ -7,15 +7,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
 const sideBarProps: BlockProps = {
-    position: "relative",
+    position: 'relative',
     width: '230px',
     backgroundColor: '#3e3832',
-    padding: '2rem'
+    padding: '2rem',
 }
 
 const items: BlockProps = {
     marginLeft: "1rem",
-    marginTop: '1rem'
+    marginTop: '1rem',
 }
 
 const NavItem = (props: {text: string, to: string}) => (

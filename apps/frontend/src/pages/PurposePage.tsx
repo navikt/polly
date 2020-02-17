@@ -72,7 +72,6 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
 
     return (
         <React.Fragment>
-            <Banner title={intl.processingActivities}/>
             {!isLoading && (
                 <Block marginBottom="3rem">
                     {error && <p>{error}</p>}

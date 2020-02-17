@@ -64,7 +64,6 @@ const ThirdPartySearchPage = (props: RouteComponentProps) => {
 
     return (
         <React.Fragment>
-            <Banner title={intl.thirdParty} />
             {isLoading && <Spinner />}
 
             {!isLoading && codelist && (

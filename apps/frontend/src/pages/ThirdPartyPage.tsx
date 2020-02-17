@@ -100,7 +100,6 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
 
   return (
     <React.Fragment>
-      <Banner title={intl.thirdParty}/>
       {isLoading && <Spinner/>}
 
       {!isLoading && codelist && (
