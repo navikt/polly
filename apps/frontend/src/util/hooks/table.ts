@@ -47,6 +47,8 @@ const toDirection = <T, K extends keyof T>(direction: SORT_DIRECTION, column?: K
     return newDirection
 }
 
+export type TableState<T, K extends keyof T> = [TableData<T, K>, (column: K) => void]
+
 export const useTable = <T, K extends keyof T>(initialData: Array<T>, config?: TableConfig<T, K>) => {
     const {sorting, useDefaultStringCompare, showLast} = config || {}
     const initialSort = newSort<T, K>(config?.initialSortColumn)
@@ -90,5 +92,5 @@ export const useTable = <T, K extends keyof T>(initialData: Array<T>, config?: T
     }
 
     const state: TableData<T, K> = {data, direction, sortColumn, sortDirection}
-    return [state, sort] as [TableData<T, K>, (column: K) => void]
+    return [state, sort] as TableState<T, K>
 }

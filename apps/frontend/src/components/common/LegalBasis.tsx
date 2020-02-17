@@ -27,20 +27,26 @@ export const LegalBasisView = (props: { legalBasis?: LegalBasis, legalBasisForm?
   let descriptionText = nationalLawId ? legalBasisLinkProcessor(nationalLawId, description) : description;
 
   return (
-    <span><ActiveIndicator start={start}
-                           end={end}/> {gdprDisplay}{(nationalLawDisplay || descriptionText) && ', '} {nationalLawDisplay} {descriptionText}</span>
+    <span>
+      <ActiveIndicator start={start} end={end}/> {gdprDisplay}{(nationalLawDisplay || descriptionText) && ', '} {nationalLawDisplay} {descriptionText}
+    </span>
   )
 };
 
 const legalBasisLinkProcessor = (law: string, text?: string) => processString([
   {
-    regex: /(§+)\s?(\d+(-\d+)?)/g,
+    // Replace '§§ 10 og 4' > '§§ 10 og §§§ 4', so that our rewriter picks up the 2nd part
+    regex: /§§\s*(\d+(-\d+)?)\s*og\s*(\d+(-\d+)?)/gi,
+    fn: (key: string, result: string[]) => `§§ ${result[1]} og §§§ ${result[3]}`
+  }, {
+    // tripe '§§§' is hidden, used as a trick in combination with rule 1 above
+    regex: /§(§§)?(§)?\s*(\d+(-\d+)?)/g,
     fn: (key: string, result: string[]) =>
-      <StyledLink key={key} href={`${env.lovdataBaseUrl + codelist.getDescription(ListName.NATIONAL_LAW, law)}/§${result[2]}`} target="_blank" rel="noopener noreferrer">
-        {result[1]} {result[2]}
+      <StyledLink key={key} href={`${env.lovdataBaseUrl + codelist.getDescription(ListName.NATIONAL_LAW, law)}/§${result[3]}`} target="_blank" rel="noopener noreferrer">
+        {(!result[1] && !result[2]) && `§`} {result[2] && `§§`} {result[3]}
       </StyledLink>
   }, {
-    regex: /kap(ittel)?\s?(\d+)/gi,
+    regex: /kap(ittel)?\s*(\d+)/gi,
     fn: (key: string, result: string[]) =>
       <StyledLink key={key} href={`${env.lovdataBaseUrl + codelist.getDescription(ListName.NATIONAL_LAW, law)}/KAPITTEL_${result[2]}`} target="_blank" rel="noopener noreferrer">
         Kapittel {result[2]}
@@ -118,7 +124,7 @@ export const ListLegalBasesInTable = (props: { legalBases: LegalBasis[] }) => {
   const {legalBases} = props;
   return (
     <Block>
-      <ul style={{listStyle: "none", paddingInlineStart: 0}}>
+      <ul style={{listStyle: "none", paddingInlineStart: 0, marginTop: 0, marginBottom: 0}}>
         {legalBases.map((legalBasis, i) => (
           <Block marginBottom="8px" key={i}>
             <li><LegalBasisView legalBasis={legalBasis}/></li>

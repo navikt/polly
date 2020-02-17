@@ -1,7 +1,5 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from "baseui/table";
-import { useStyletron, withStyle } from "baseui";
 
 import { LegalBasesNotClarified, ListLegalBasesInTable } from "../../common/LegalBasis"
 import { codelist, ListName } from "../../../service/Codelist"
@@ -13,18 +11,7 @@ import { Label2 } from "baseui/typography"
 import { RetentionView } from "../../Purpose/Retention"
 import { getAlertForInformationType } from "../../../api/AlertApi"
 import { Block } from "baseui/block"
-
-const StyledHeader = withStyle(StyledHead, {
-  backgroundColor: "transparent",
-  boxShadow: "none",
-  borderBottom: "2px solid #E9E7E7"
-});
-
-const CustomStyledRow = withStyle(StyledRow, {
-  borderBottom: "1px solid #E9E7E7",
-  padding: "8px",
-  fontSize: "24px"
-});
+import { Cell, HeadCell, Row, Table } from "../../common/Table"
 
 type TableInformationtypeProps = {
   policies: Array<Policy>;
@@ -34,7 +21,6 @@ type TableInformationtypeProps = {
 type Alerts = { [id: string]: PolicyAlert }
 
 const InformationtypePolicyTable = ({policies, showPurpose}: TableInformationtypeProps) => {
-  const [useCss, theme] = useStyletron();
   const [table, sortColumn] = useTable<Policy, keyof Policy>(policies, {sorting: policySort, initialSortColumn: showPurpose ? "purposeCode" : "process"})
   const [alerts, setAlerts] = useState<Alerts>()
 
@@ -55,80 +41,57 @@ const InformationtypePolicyTable = ({policies, showPurpose}: TableInformationtyp
   }, [policies])
 
   return (
-    <React.Fragment>
-      <StyledTable className={useCss({overflow: "hidden !important"})}>
-        <StyledHeader>
-          {showPurpose && <SortableHeadCell
-            title={intl.purpose}
-            direction={table.direction.purposeCode}
-            onSort={() => sortColumn('purposeCode')}
-            fillClickTarget
-          />}
+    <>
+      <Table headers={
+        <>
+          <HeadCell title={intl.purpose} column={'purposeCode'} tableState={[table, sortColumn]}/>
+          <HeadCell title={intl.process} column={'process'} tableState={[table, sortColumn]}/>
+          <HeadCell title={intl.subjectCategories} column={'subjectCategories'} tableState={[table, sortColumn]}/>
+          <HeadCell title={intl.legalBasesShort} column={'legalBases'} tableState={[table, sortColumn]}/>
+          <HeadCell title={intl.retention}/>
+        </>
+      }>
+        {table.data.map((row, index) => (
+          <Row key={index}>
+            {showPurpose && <Cell>
+              <RouteLink href={`/purpose/${row.purposeCode.code}`}>
+                {codelist.getShortnameForCode(row.purposeCode)}
+              </RouteLink>
+            </Cell>}
 
-          <SortableHeadCell
-            title={intl.process}
-            direction={table.direction.process}
-            onSort={() => sortColumn('process')}
-            fillClickTarget
-          />
+            <Cell>
+              <RouteLink href={`/purpose/${row.purposeCode.code}/${row.process.id}`}>
+                {row.process && row.process.name}
+              </RouteLink>
+            </Cell>
 
-          <SortableHeadCell
-            title={intl.subjectCategories}
-            direction={table.direction.subjectCategories}
-            onSort={() => sortColumn('subjectCategories')}
-            fillClickTarget
-          />
+            <Cell>{row.subjectCategories.map(sc => codelist.getShortname(ListName.SUBJECT_CATEGORY, sc.code)).join(", ")}</Cell>
 
-          <SortableHeadCell
-            title={intl.legalBasisShort}
-            direction={table.direction.legalBases}
-            onSort={() => sortColumn('legalBases')}
-          />
+            <Cell>
+              <Block>
+                {!row.legalBasesInherited && row.legalBases && row.legalBases.length > 0 && (
+                  <ListLegalBasesInTable legalBases={row.legalBases}/>
+                )}
 
-          <StyledHeadCell>{intl.retention}</StyledHeadCell>
-        </StyledHeader>
+                {row.legalBasesInherited && row.process.legalBases && (
+                  <ListLegalBasesInTable legalBases={row.process.legalBases}/>
+                )}
 
-        <StyledBody>
-          {table.data.map((row, index) => (
-            <CustomStyledRow key={index}>
-              {showPurpose && <StyledCell>
-                <RouteLink href={`/purpose/${row.purposeCode.code}`}>
-                  {codelist.getShortnameForCode(row.purposeCode)}
-                </RouteLink>
-              </StyledCell>}
+                <LegalBasesNotClarified alert={alerts && alerts[row.id]}/>
+              </Block>
+            </Cell>
 
-              <StyledCell>
-                <RouteLink href={`/purpose/${row.purposeCode.code}/${row.process.id}`}>
-                  {row.process && row.process.name}
-                </RouteLink>
-              </StyledCell>
+            <Cell>
+              <RetentionView retention={row.process.retention}/>
+            </Cell>
+          </Row>
+        ))}
 
-              <StyledCell>{row.subjectCategories.map(sc => codelist.getShortname(ListName.SUBJECT_CATEGORY, sc.code)).join(", ")}</StyledCell>
-
-              <StyledCell>
-                <Block>
-                  {!row.legalBasesInherited && row.legalBases && row.legalBases.length > 0 && (
-                    <ListLegalBasesInTable legalBases={row.legalBases}/>
-                  )}
-
-                  {row.legalBasesInherited && row.process.legalBases && (
-                    <ListLegalBasesInTable legalBases={row.process.legalBases}/>
-                  )}
-
-                  <LegalBasesNotClarified alert={alerts && alerts[row.id]}/>
-                </Block>
-              </StyledCell>
-
-              <StyledCell>
-                <RetentionView retention={row.process.retention}/>
-              </StyledCell>
-            </CustomStyledRow>
-          ))}
-        </StyledBody>
-      </StyledTable>
+      </Table>
       {!table.data.length && <Label2 margin="1rem">{intl.emptyTable} {intl.processes}</Label2>}
-    </React.Fragment>
-  );
-};
+    </>
+  )
+
+}
 
 export default InformationtypePolicyTable;
