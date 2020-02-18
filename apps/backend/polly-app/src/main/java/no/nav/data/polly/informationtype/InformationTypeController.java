@@ -102,7 +102,7 @@ public class InformationTypeController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "InformationTypes fetched", response = InformationTypePage.class),
             @ApiResponse(code = 500, message = "Internal server error")})
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<RestResponsePage<InformationTypeResponse>> findAll(PageParameters page) {
         log.info("Received request for all InformationTypes");
         Page<InformationTypeResponse> informationTypes = repository.findAll(page.createIdSortedPage()).map(InformationType::convertToResponse);
