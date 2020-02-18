@@ -1,12 +1,13 @@
 import * as React from 'react'
-import { intl } from '../../util';
+import { intl, theme } from '../../util';
 import { Block, BlockProps } from 'baseui/block';
-import { H6, Paragraph2 } from 'baseui/typography';
+import { H6, Paragraph2, Paragraph4 } from 'baseui/typography';
 import RouteLink from '../common/RouteLink';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { features } from "../../util/feature-toggle"
-import NavLogo from  '../../resources/navlogo.svg'
+import NavLogo from '../../resources/navlogo.svg'
+import Slackogo from '../../resources/Slack_Monochrome_White.svg'
 
 const sideBarProps: BlockProps = {
   position: 'fixed',
@@ -21,30 +22,28 @@ const items: BlockProps = {
 }
 
 const NavItem = (props: { text: string, to: string }) => (
-    <React.Fragment>
-        <RouteLink href={props.to}>
-            <Block display="flex" alignItems="center" >
-                <Block marginRight="scale400"><FontAwesomeIcon icon={faChevronRight} color="white" size="lg" /></Block>
-                <Paragraph2 color="white">{props.text}</Paragraph2>
-            </Block>
-        </RouteLink>
-    </React.Fragment>
+  <React.Fragment>
+    <RouteLink href={props.to}>
+      <Block display="flex" alignItems="center">
+        <Block marginRight="scale400"><FontAwesomeIcon icon={faChevronRight} color="white" size="lg"/></Block>
+        <Paragraph2 color="white">{props.text}</Paragraph2>
+      </Block>
+    </RouteLink>
+  </React.Fragment>
 )
 
 const Brand = () => (
-    <RouteLink href="/">
-        <Block display="flex" alignItems="center" padding="1rem" marginTop="1rem">
-            <H6 color="white" marginTop="0" marginLeft="5px" marginBottom="2rem">Behandlingskatalog</H6>
-        </Block>
-    </RouteLink>
+  <RouteLink href="/">
+    <Block display="flex" alignItems="center" padding="1rem" marginTop="1rem">
+      <H6 color="white" marginTop="0" marginLeft="5px" marginBottom="2rem">Behandlingskatalog</H6>
+    </Block>
+  </RouteLink>
 )
-
-const SidebarFooter = () => <img src={NavLogo} alt='logo' />
 
 const SideBar = () => {
   return (
     <Block {...sideBarProps}>
-      <Brand />
+      <Brand/>
 
       <Block {...items}>
         <NavItem to="/purpose" text={intl.processingActivities}/>
@@ -54,7 +53,15 @@ const SideBar = () => {
       </Block>
 
       <Block position="absolute" bottom="0" width="100%">
-        <SidebarFooter />
+        <Block display="flex" justifyContent="center">
+          <Block paddingBottom={theme.sizing.scale600} width="40%">
+            <img src={NavLogo} alt='NAV logo' width="100%"/>
+          </Block>
+        </Block>
+        <Block display="flex" justifyContent="center" paddingBottom={theme.sizing.scale400} alignItems="center">
+          <img src={Slackogo} width="60px" alt="slack logo"/>
+          <Paragraph4 color={theme.colors.white}>#behandlingskatalogen</Paragraph4>
+        </Block>
       </Block>
     </Block>
   )
