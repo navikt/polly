@@ -416,7 +416,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
           initialValues={convertProcessToFormValues(currentProcess)}
         />
         <ModalPolicy
-          title={intl.policyNew}
+          title={intl.policyAdd}
           initialValues={{
             legalBasesOpen: false,
             informationType: undefined,

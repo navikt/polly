@@ -89,6 +89,7 @@ export interface IStrings {
   informationTypeExternalUse: string;
   policyEdit: string;
   policyNew: string;
+  policyAdd: string;
   legalBasisNotFound: string;
   processEdit: string;
   processingActivitiesNew: string;
