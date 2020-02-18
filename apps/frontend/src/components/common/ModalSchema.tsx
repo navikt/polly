@@ -7,8 +7,12 @@ import {PLACEMENT, StatefulTooltip} from "baseui/tooltip"
 import {theme} from "../../util"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons"
-import { paddingZero } from "./Style"
+import {paddingZero} from "./Style"
 
+type ModalBlockProps = {
+  blockProps?: BlockProps,
+  tooltip?: string
+}
 
 export const Error = (props: { fieldName: string, fullWidth?: boolean }) => (
   <ErrorMessage name={props.fieldName}>
@@ -18,7 +22,8 @@ export const Error = (props: { fieldName: string, fullWidth?: boolean }) => (
         <Block width="100%">
           <Notification overrides={{Body: {style: {width: 'auto', padding: 0, marginTop: 0}}}}
                         kind={NKIND.negative}>{msg}</Notification>
-          <Notification overrides={{Body: {style: {width: 'auto', ...paddingZero, marginTop: 0}}}} kind={NKIND.negative}>{msg}</Notification>
+          <Notification overrides={{Body: {style: {width: 'auto', ...paddingZero, marginTop: 0}}}}
+                        kind={NKIND.negative}>{msg}</Notification>
         </Block>
       </Block>
     )}
@@ -42,10 +47,10 @@ export const ModalLabel = (props: { label?: string, tooltip?: string | React.Rea
   )
 };
 
-export const ModalBlock = (props: { content?: React.ReactElement, blockProps?: BlockProps, tooltip?: string }) => {
+export const ModalBlock: React.FunctionComponent<ModalBlockProps> = (props) => {
   return (
     <Block {...props.blockProps}>
-      {props.content}
+      {props.children}
       {
         props.tooltip &&
         <StatefulTooltip
