@@ -1,9 +1,10 @@
-import {IStrings} from "./intl";
+import { IStrings } from "./intl";
 
 export const no: IStrings = {
   informationType: "Opplysningstype",
   informationTypes: "Opplysningstyper",
   informationTypeSearch: "Søk opplysningstyper",
+  search: "Søk",
   term: "Begrepsdefinisjon",
   termEditHeader: "Begrepsdefinisjon (oppslag i Begrepskatalogen)",
   purpose: "Formål",
@@ -241,13 +242,28 @@ export const no: IStrings = {
   close: "Lukk",
   lastChanges: "Siste endringer",
   settings: "Innstillinger",
-  defaultProcessDocument: "Dokument for standard informasjonstyper i behandling"
+  defaultProcessDocument: "Dokument for standard informasjonstyper i behandling",
+  processNameHelpText: "Et kort og beskrivende navn som sier hva behandlingen går ut på. Eksempel: saksbehandling, saksbehandling sykepenger, håndtere brukerhenvendelser eller rekruttering.",
+  processPurposeHelpText: "Hva er formålet med bruk av personopplysninger i denne behandlingen? Brukes hvis du ønsker å ha en spissere formulert formål enn det overordnede formålet. Eksempel: Behandle og vurdere rett til stønad ved behov for førerhund pga. nedsatt syn.",
+  departmentHelpText: "Avdelingen som har ansvaret for behandlingen.",
+  productTeamHelpText: "Produktteamet i IT-avdelingen som har ansvaret for IT-løsningen som understøtter denne behandlingen. Ikke aktuelt på alle behandlinger. Eksempel: Team Pensjon, Team Bidrag",
+  subDepartmentHelpText: "Oppgi hvor i linja (ytre etat) denne behandlingen foregår.",
+  systemHelpText: "IT-systemene som brukes i denne behandlingen. Eksempel: Pesys, Bidrag, Modia.",
+  processAutomationHelpText: "Brukes det databehandler for å utføre behandlingen/behandle personopplysninger.",
+  profilingHelpText: "Behandles personopplysninger automatisk for å kunne analysere eller forutsi noe om preferanser, evner eller behov til en enkeltperson.",
+  dataProcessorHelpText: "Oppgi om det brukes en databehandler for å behandle personopplysninger. En databehandler er en ekstern virksomhet som behandler personopplysninger på våre vegne.",
+  dataProcessorAgreementHelpText: "Oppgi referanse (typisk saksnummer) til avtalens lagringssted, for eksempel i Websak.",
+  dataProcessorOutsideEUExtraHelpText: "Oppgi om personopplysningene behandles utenfor EU/EØS-området av databehandleren eller eventuelle underdatabehandlere.",
+  legalBasisHelpText: "Oppgi hvilket rettslig grunnlag som benyttes for å kunne behandle personopplysningene.",
+  retentionHelpText: "Oppgi når lagringstiden begynner å løpe. Dette er tidspunktet vi regner lagringsbehovet fra. For eksempel begynner lagringstiden for opplysninger i flere HR-behandlinger å løpe fra ansettelsesforholdets avslutning. Andre eksempler for bruk av personopplysninger om etatens brukere kan være fra søknad mottatt, fødsel, død, søknadens virkningstidspunkt o.l.",
+  retentionDescriptionHelpText: "Begrunnelse for hvorfor vi har behov for å oppbevare personopplysningene i oppgitt lagringstid. For eksempel kan behovet skyldes at vi må kunne forsvare oss mot rettskrav eller at vi må kunne vurdere mulige krav om tilbakebetaling av feilutbetalt ytelse.",
 }
 
 export const en: IStrings = {
   informationType: "Information type",
   informationTypes: "Information types",
   informationTypeSearch: "Information type search",
+  search: "Search",
   term: "Term definition",
   termEditHeader: "Term definition (lookup in Term Catalog)",
   purpose: "Purpose",
@@ -486,7 +502,21 @@ export const en: IStrings = {
   close: "Close",
   lastChanges: "Last changes",
   settings: "Settings",
-  defaultProcessDocument: "Document for the default information types in a process"
+  defaultProcessDocument: "Document for the default information types in a process",
+  processNameHelpText: "A short and descriptive name that states what the process is about. Examples: case management, handling user inquiries or recruitment.",
+  processPurposeHelpText: "What is the purpose of using personal data in this process? Need only to be used if you need to describe a more detailed purpose than the high level purpose. Not mandatory.",
+  departmentHelpText: "The department responsible for the process.",
+  productTeamHelpText: "The IT team responsible for the IT solutions that supports this process. Not applicable to all processes. ",
+  subDepartmentHelpText: "If applicable, specify the sub department or sub division responsible for the process. Not mandatory",
+  systemHelpText: "The IT systems supporting this process. ",
+  processAutomationHelpText: "Are any data processors involved in processing of personal data in this process.",
+  profilingHelpText: "Is personal information automatically processed to analyze or predict something about an individual's preferences, abilities or needs?",
+  dataProcessorHelpText: "Specify whether a data processor is used to process personal data. A data processor is an external entity that processes personal data on our behalf.",
+  dataProcessorAgreementHelpText: "Provide reference (i.e. case number) to the contract's storage location.",
+  dataProcessorOutsideEUExtraHelpText: "Specify whether personal data is processed outside the EU / EEA area by the data processor or any sub-processors.",
+  legalBasisHelpText: "Provide the legal basis used to process personal data.",
+  retentionHelpText: "Specify when retention time starts to run. The calculation of retention period starts from this point. I.e. the retention time for information used in many HR processes start from the end of employment or from start of employment. ",
+  retentionDescriptionHelpText: "Reasons why we need to keep personal data in stated storage time. I.e. the need may be because we need to be able to defend ourselves against future legal claims. ",
 };
 
 export const ta = {
