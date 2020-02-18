@@ -9,6 +9,10 @@ export const getProcess = async (processId: string) => {
   return data
 }
 
+export const searchProcess = async (text: string) => {
+  return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process/search/${text}`)).data
+}
+
 export const getProcessesForPurpose = async (purpose: string) => {
   return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process/purpose/${purpose}`)).data
 }
