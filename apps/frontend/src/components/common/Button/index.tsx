@@ -27,7 +27,7 @@ const Tooltip = (props: TooltipProps) => (
 
 const Button = (props: ButtonProps) => (
     <Tooltip tooltip={props.tooltip}>
-        <BaseUIButton kind={props.kind} size={props.size}>
+        <BaseUIButton kind={props.kind} size={props.size} onClick={() => props.onClick()}>
             {props.icon && <FontAwesomeIcon icon={props.icon} style={{ marginRight: ".5rem" }} />} {props.children}
         </BaseUIButton>
     </Tooltip>
