@@ -18,11 +18,11 @@ const items: BlockProps = {
     paddingLeft: '1rem'
 }
 
-const NavItem = (props: {text: string, to: string}) => (
+const NavItem = (props: { text: string, to: string }) => (
     <React.Fragment>
         <RouteLink href={props.to}>
             <Block display="flex" alignItems="center" >
-                <Block marginRight="scale400"><FontAwesomeIcon icon={faChevronRight} color="white" size="lg"/></Block>
+                <Block marginRight="scale400"><FontAwesomeIcon icon={faChevronRight} color="white" size="lg" /></Block>
                 <Paragraph2 color="white">{props.text}</Paragraph2>
             </Block>
         </RouteLink>
@@ -30,9 +30,12 @@ const NavItem = (props: {text: string, to: string}) => (
 )
 
 const Brand = (
-    <Block display="flex" alignItems="center" padding="1rem" marginTop="1rem">
-        <H6 color="white" marginTop="0" marginLeft="5px" marginBottom="2rem">Behandlingskatalog</H6>
-    </Block>
+    <RouteLink href="/">
+        <Block display="flex" alignItems="center" padding="1rem" marginTop="1rem">
+            <H6 color="white" marginTop="0" marginLeft="5px" marginBottom="2rem">Behandlingskatalog</H6>
+        </Block>
+    </RouteLink>
+
 )
 
 const SideBar = () => {
