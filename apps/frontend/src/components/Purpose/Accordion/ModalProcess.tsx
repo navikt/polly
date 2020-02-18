@@ -46,7 +46,8 @@ const FieldName = () => (
   <Field
     name="name"
     render={({field, form}: FieldProps<string, ProcessFormValues>) => (
-      <Input {...field} type="input" size={InputSIZE.default} autoFocus error={!!form.errors.name && form.touched.name}/>
+      <Input {...field} type="input" size={InputSIZE.default} autoFocus
+             error={!!form.errors.name && form.touched.name}/>
     )}
   />
 );
@@ -55,14 +56,18 @@ const FieldDescription = () => (
   <Field
     name="description"
     render={({field, form}: FieldProps<string, ProcessFormValues>) => (
-      <Textarea {...field} type="input" size={InputSIZE.default} error={!!form.errors.description && form.touched.description}/>
+      <Textarea {...field} type="input" size={InputSIZE.default}
+                error={!!form.errors.description && form.touched.description}/>
     )}
   />
 )
 
 const FieldDepartment = (props: { department?: string }) => {
   const {department} = props;
-  const [value, setValue] = React.useState<Value>(department ? [{id: department, label: codelist.getShortname(ListName.DEPARTMENT, department)}] : []);
+  const [value, setValue] = React.useState<Value>(department ? [{
+    id: department,
+    label: codelist.getShortname(ListName.DEPARTMENT, department)
+  }] : []);
 
   return (
     <Field
@@ -176,7 +181,7 @@ const FieldProductTeam = (props: { productTeam?: string }) => {
   return (
     <Field
       name="productTeam"
-      render={({form,field}: FieldProps<ProcessFormValues>) => (
+      render={({form, field}: FieldProps<ProcessFormValues>) => (
         <Select
           options={teamSearchResult}
           onChange={({value}) => {
@@ -194,7 +199,10 @@ const FieldProductTeam = (props: { productTeam?: string }) => {
 
 const FieldProduct = (props: { products: string[] }) => {
   const {products} = props;
-  const [value, setValue] = React.useState<Value>(products ? products.map(product => ({id: product, label: codelist.getShortname(ListName.SYSTEM, product)})) : []);
+  const [value, setValue] = React.useState<Value>(products ? products.map(product => ({
+    id: product,
+    label: codelist.getShortname(ListName.SYSTEM, product)
+  })) : []);
 
   return <FieldArray
     name="products"
@@ -240,8 +248,8 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
   const {formikBag} = props
   const [showDates, setShowDates] = React.useState(hasSpecifiedDate(formikBag.values));
   const [showAutomation, setShowAutomation] = React.useState(formikBag.values.automaticProcessing || formikBag.values.profiling);
-  const [showDataProcessor, setShowDataProcessor] = React.useState(formikBag.values.dataProcessing.dataProcessor);
-  const [showRetention, setShowRetention] = React.useState(formikBag.values.retention.retentionPlan);
+  const [showDataProcessor, setShowDataProcessor] = React.useState(formikBag.values.dataProcessing.dataProcessor === true || formikBag.values.dataProcessing.dataProcessor === false);
+  const [showRetention, setShowRetention] = React.useState("retentionPlan" in formikBag.values.retention && formikBag.values.retention.retentionPlan !== undefined);
 
   const [retention, setRetention] = useState(formikBag.values.retention.retentionMonths || 0)
   const retentionYears = Math.floor(retention / 12)
@@ -287,7 +295,8 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
 
           <Block {...rowBlockProps}>
             <ModalLabel label={intl.dataProcessorOutsideEU} tooltip={intl.dataProcessorOutsideEUExtra}/>
-            <BoolField fieldName="dataProcessing.dataProcessorOutsideEU" value={formikBag.values.dataProcessing.dataProcessorOutsideEU}/>
+            <BoolField fieldName="dataProcessing.dataProcessorOutsideEU"
+                       value={formikBag.values.dataProcessing.dataProcessorOutsideEU}/>
           </Block>
         </>}
       </Card>}
@@ -299,7 +308,7 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
           <BoolField fieldName="retention.retentionPlan" value={formikBag.values.retention.retentionPlan}/>
         </Block>
 
-        {formikBag.values.retention.retentionPlan && <>
+        {"retentionPlan" in formikBag.values.retention && <>
           <Block {...rowBlockProps}>
             <ModalLabel label={intl.retentionMonths}/>
             <Field
@@ -331,7 +340,8 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
 
           <Block {...rowBlockProps}>
             <ModalLabel label={intl.retentionDescription}/>
-            <FieldInput fieldName="retention.retentionDescription" fieldValue={formikBag.values.retention.retentionDescription}/>
+            <FieldInput fieldName="retention.retentionDescription"
+                        fieldValue={formikBag.values.retention.retentionDescription}/>
           </Block>
           < Error fieldName="retention.retentionDescription"/>
         </>}
@@ -392,7 +402,10 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
       <Block {...modalBlockProps}>
         <Formik
           initialValues={initialValues}
-          onSubmit={(values) => submit(values)} validationSchema={processSchema()}
+          onSubmit={(values) => {
+            submit(values)
+          }}
+          validationSchema={processSchema()}
           render={(formikBag: FormikProps<ProcessFormValues>) => (
             <Form onKeyDown={disableEnter}>
               <ModalHeader>
