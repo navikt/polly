@@ -68,10 +68,31 @@ class InformationTypeControllerIT extends IntegrationTestBase {
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(informationTypeRepository.findAll().size()).isEqualTo(30);
+        assertThat(responseEntity.getBody()).isNotNull();
         assertThat(responseEntity.getBody().getContent().size()).isEqualTo(20);
         assertThat(responseEntity.getBody().getPageNumber()).isEqualTo(0);
         assertThat(responseEntity.getBody().getPageSize()).isEqualTo(20);
         assertThat(responseEntity.getBody().getTotalElements()).isEqualTo(30L);
+    }
+
+    @Test
+    void findByTerm() {
+        createInformationTypeTestData(1);
+
+        ResponseEntity<InformationTypePage> resp = restTemplate.getForEntity("/informationtype?term={term}", InformationTypePage.class, "term");
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(resp.getBody()).isNotNull();
+        assertThat(resp.getBody().getContent().size()).isEqualTo(1);
+    }
+
+    @Test
+    void findBySource() {
+        createInformationTypeTestData(1);
+
+        ResponseEntity<InformationTypePage> resp = restTemplate.getForEntity("/informationtype?source={source}", InformationTypePage.class, "SKATT");
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(resp.getBody()).isNotNull();
+        assertThat(resp.getBody().getContent().size()).isEqualTo(1);
     }
 
     @Test
@@ -93,6 +114,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
                 .exchange("/informationtype", HttpMethod.POST, new HttpEntity<>(List.of(req1, req2)), InformationTypePage.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(responseEntity.getBody()).isNotNull();
         assertThat(responseEntity.getBody().getTotalElements()).isEqualTo(2);
         assertThat(informationTypeRepository.count()).isEqualTo(2L);
         assertThat(informationTypeRepository.findByName("createName1")).isPresent();
@@ -125,6 +147,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
                 "/informationtype", HttpMethod.PUT, new HttpEntity<>(requests), InformationTypePage.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isNotNull();
         assertThat(responseEntity.getBody().getTotalElements()).isEqualTo(3);
         assertThat(informationTypeRepository.count()).isEqualTo(3L);
         assertThat(informationTypeRepository.findByName("InformationType_nr1")
@@ -241,7 +264,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
                 .sensitivity("Personopplysning")
                 .navMaster("TPS")
                 .categories(List.of("PERSONALIA"))
-                .sources(List.of("Skatt"))
+                .sources(List.of("SKATT"))
                 .keywords(List.of("keyword"))
                 .build();
     }

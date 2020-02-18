@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -85,28 +86,28 @@ public class InformationTypeController {
         return new ResponseEntity<>(new RestResponsePage<>(convert(infoTypes, InformationType::convertToResponse)), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get InformationTypes by term")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "InformationTypes fetched", response = InformationTypePage.class),
-            @ApiResponse(code = 500, message = "Internal server error")})
-    @GetMapping("/term/{term}")
-    public ResponseEntity<RestResponsePage<InformationTypeResponse>> findInformationTypesByTerm(@PathVariable String term) {
-        log.info("Received request for InformationTypes with the term {}", term);
-        List<InformationType> infoTypes = repository.findByTermId(term);
-        infoTypes.sort(comparing(it -> it.getData().getName(), String.CASE_INSENSITIVE_ORDER));
-        log.info("Returned {} InformationTypes", infoTypes.size());
-        return new ResponseEntity<>(new RestResponsePage<>(convert(infoTypes, InformationType::convertToResponse)), HttpStatus.OK);
-    }
-
     @ApiOperation(value = "Get All InformationTypes")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "InformationTypes fetched", response = InformationTypePage.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping
-    public ResponseEntity<RestResponsePage<InformationTypeResponse>> findAll(PageParameters page) {
-        log.info("Received request for all InformationTypes");
+    public ResponseEntity<RestResponsePage<InformationTypeResponse>> findAll(PageParameters page,
+            @RequestParam(required = false) String source,
+            @RequestParam(required = false) String term
+    ) {
+        log.info("Received request for all InformationTypes source={} term={}", source, term);
+        List<InformationType> infoTypes = null;
+        if (term != null) {
+            infoTypes = repository.findByTermId(term);
+        } else if (source != null) {
+            infoTypes = repository.findBySource(source);
+        }
+        if (infoTypes != null) {
+            infoTypes.sort(comparing(it -> it.getData().getName(), String.CASE_INSENSITIVE_ORDER));
+            return ResponseEntity.ok(new RestResponsePage<>(convert(infoTypes, InformationType::convertToResponse)));
+        }
+
         Page<InformationTypeResponse> informationTypes = repository.findAll(page.createIdSortedPage()).map(InformationType::convertToResponse);
-        log.info("Returned {} InformationTypes", informationTypes.getContent().size());
         return ResponseEntity.ok(new RestResponsePage<>(informationTypes));
     }
 
