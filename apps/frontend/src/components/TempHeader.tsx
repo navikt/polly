@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect } from 'react';
+import { ReactElement, useEffect } from 'react';
 import { ALIGN, HeaderNavigation, StyledNavigationItem as NavigationItem, StyledNavigationList as NavigationList, } from 'baseui/header-navigation';
 import { Button } from 'baseui/button';
 import { Block, BlockProps } from 'baseui/block';
@@ -21,6 +21,7 @@ import { Select, TYPE } from "baseui/select"
 import { searchInformationType, searchProcess } from "../api"
 import { ObjectType } from "../constants"
 import { urlForObject } from "./common/RouteLink"
+import { prefixBiasedSort } from "../util/sort"
 
 
 const LoggedInHeader = () => {
@@ -137,7 +138,13 @@ interface TempHeaderProps {
   setLang: (lang: string) => void
 }
 
-type SearchItem = { id: string, label: string, type: ObjectType }
+type SearchItem = { id: string, name: string, label: ReactElement, type: ObjectType }
+
+const SearchLabel = (props: { name: string, type: string }) =>
+  <Block display="flex" justifyContent="space-between" width="100%">
+    <span>{props.name}</span>
+    <Block $style={{opacity: .5}}>{props.type}</Block>
+  </Block>
 
 const TempHeader = (props: TempHeaderProps & RouteComponentProps) => {
   useAwait(user.wait())
@@ -148,14 +155,15 @@ const TempHeader = (props: TempHeaderProps & RouteComponentProps) => {
   useEffect(() => {
     (async () => {
       if (search && search.length > 2) {
+        const compareFn = (a: SearchItem, b: SearchItem) => prefixBiasedSort(search, a.name, b.name)
         setLoading(true)
         const res = await searchInformationType(search)
-        const infoTypes = res.content.map(it => ({id: it.id, label: `${intl.informationType}: ${it.name}`, type: ObjectType.INFORMATION_TYPE}))
-        setSearchResult(infoTypes)
+        const infoTypes = res.content.map(it => ({id: it.id, name: it.name, label: <SearchLabel name={it.name} type={intl.informationType}/>, type: ObjectType.INFORMATION_TYPE}))
+        setSearchResult(infoTypes.sort(compareFn))
 
         const resProcess = await searchProcess(search)
-        const processes = resProcess.content.map(it => ({id: it.id, label: `${intl.process}: ${it.name}`, type: ObjectType.PROCESS}))
-        setSearchResult([...processes, ...infoTypes])
+        const processes = resProcess.content.map(it => ({id: it.id, name: it.name, label: <SearchLabel name={it.name} type={intl.process}/>, type: ObjectType.PROCESS}))
+        setSearchResult([...processes, ...infoTypes].sort(compareFn))
         setLoading(false)
       }
     })()
