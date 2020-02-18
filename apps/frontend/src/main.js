@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Block, BlockProps } from "baseui/block";
+import { Block } from "baseui/block";
 import { BrowserRouter as Router } from "react-router-dom";
 import Routes from "./routes";
 import { theme } from "./util/theme";
@@ -12,20 +12,12 @@ import TempHeader from "./components/TempHeader";
 
 const engine = new Styletron();
 
-const Layout = styled('div', {
-    display: 'flex',
-    alignItems: 'flex-start',
-    height: '100%',
-    width: '100%'
-})
-
 const MainContent = styled('div', {
     height: '100%',
     width: '80%',
     marginLeft: '240px', //Width of sidebar
     marginTop: '2rem'
 })
-
 
 const Main = props => {
     const { history } = props;

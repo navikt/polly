@@ -5,7 +5,7 @@ import { useDebouncedState } from "../util"
 import { env } from "../util/env"
 
 export const getInformationTypes = async (page: number, limit: number) => {
-    return (await axios.get<PageResponse<InformationType>>(`${env.pollyBaseUrl}/informationtype/?pageNumber=${page - 1}&pageSize=${limit}`)).data
+    return (await axios.get<PageResponse<InformationType>>(`${env.pollyBaseUrl}/informationtype?pageNumber=${page - 1}&pageSize=${limit}`)).data
 }
 
 export const searchInformationType = async (text: string) => {

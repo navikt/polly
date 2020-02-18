@@ -4,12 +4,11 @@ import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } f
 import { Field, FieldArray, FieldProps, Form, Formik, FormikProps } from 'formik';
 import { Block, BlockProps } from 'baseui/block';
 import { Error, ModalLabel } from '../common/ModalSchema';
-import { intl, useDebouncedState } from '../../util';
+import { intl } from '../../util';
 import { Button } from 'baseui/button';
 import { Select, Value } from 'baseui/select';
 import { codelist, ListName } from '../../service/Codelist';
 import { Textarea } from 'baseui/textarea';
-import { useInfoTypeSearch } from '../../api';
 import { ListLegalBases } from '../common/LegalBasis';
 import CardLegalBasis from '../Purpose/Accordion/CardLegalBasis';
 import { Plus } from 'baseui/icon';
@@ -86,12 +85,9 @@ const FieldInput = (props: { fieldName: string, fieldValue?: string }) => {
   )
 }
 
-
-
 type ModalThirdPartyProps = {
   title?: string;
   isOpen: boolean;
-  isEdit: boolean;
   disableRecipientField?: boolean | undefined;
   initialValues: DisclosureFormValues;
   errorOnCreate: any | undefined;
@@ -99,16 +95,11 @@ type ModalThirdPartyProps = {
   onClose: () => void;
 };
 
-
-
 const ModalThirdParty = (props: ModalThirdPartyProps) => {
-  const [infoTypeSearchResult, setInfoTypeSearch] = useInfoTypeSearch()
-  const [documents, setDocuments] = React.useState<Document[]>([])
-  const [documentSearch, setDocumentSearch] = useDebouncedState<string>('', 400)
   const [selectedLegalBasis, setSelectedLegalBasis] = React.useState();
   const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState();
 
-  const {submit, errorOnCreate, onClose, isOpen, isEdit, disableRecipientField, initialValues, title} = props
+  const {submit, errorOnCreate, onClose, isOpen, disableRecipientField, initialValues, title} = props
 
   return (
     <Modal
