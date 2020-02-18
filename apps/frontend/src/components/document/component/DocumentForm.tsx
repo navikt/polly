@@ -31,13 +31,11 @@ type DocumentFormProps = {
 const DocumentForm = (props: DocumentFormProps) => {
   const [description, setDescription] = React.useState("");
   const [isLoading, setLoading] = React.useState(false);
-  const [responseMessage, setResponseMessage] = React.useState();
   const [errorMessage, setErrorMessage] = React.useState();
 
   const {initialValues, handleSubmit} = props
-
   const hasAccess = () => user.canWrite();
-  useAwait(user.wait())
+  useAwait(user.wait(), setLoading)
 
   const disableEnter = (e: KeyboardEvent) => {
     if (e.key === 'Enter') e.preventDefault()
@@ -49,7 +47,11 @@ const DocumentForm = (props: DocumentFormProps) => {
     if (searchResults.length > 0) {
       actions.setFieldError('name', intl.documentExists)
     } else {
-      handleSubmit(values)
+      try {
+        handleSubmit(values)
+      } catch (e) {
+        setErrorMessage(e.message)
+      }
     }
   }
 
@@ -134,14 +136,6 @@ const DocumentForm = (props: DocumentFormProps) => {
                 >
                   {intl.abort}
                 </Button>
-
-                {responseMessage && (
-                  <Block marginRight="scale800" marginTop="10px">
-                    <Notification kind="positive" autoHideDuration={5000}>
-                      {responseMessage}
-                    </Notification>
-                  </Block>
-                )}
 
                 {errorMessage && (
                   <Block marginRight="scale800" marginTop="10px">

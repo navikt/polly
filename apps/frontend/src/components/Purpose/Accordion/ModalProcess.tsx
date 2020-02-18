@@ -371,7 +371,7 @@ type ModalProcessProps = {
   onClose: () => void;
 };
 
-const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, title, isEdit}: ModalProcessProps) => {
+const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, title}: ModalProcessProps) => {
 
   const [selectedLegalBasis, setSelectedLegalBasis] = React.useState();
   const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState();

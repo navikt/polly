@@ -123,7 +123,6 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
               <ModalThirdParty
                 title={intl.createThirdPartyModalTitle}
                 isOpen={showCreateModal}
-                isEdit={false}
                 initialValues={initialFormValues}
                 submit={handleCreateDisclosure}
                 onClose={() => {
