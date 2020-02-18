@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Route, RouteComponentProps, Switch, withRouter} from "react-router-dom";
+import { Route, RouteComponentProps, Switch, withRouter } from "react-router-dom";
 
 import Root from "./components/Root";
 import PurposePage from "./pages/PurposePage";
@@ -8,14 +8,14 @@ import InformationtypeEditPage from "./pages/InformationtypeEditPage";
 import InformationtypePage from './pages/InformationtypePage'
 import ThirdPartySearchPage from "./pages/ThirdPartySearchPage";
 import ThirdPartyMetadataPage from './pages/ThirdPartyPage'
-import {Main} from "./pages/MainPage"
+import { Main } from "./pages/MainPage"
 import CodelistPage from "./pages/admin/CodelistPage"
-import {AuditPage} from "./pages/admin/AuditPage"
-import {intl, theme} from "./util"
-import {Block} from "baseui/block"
-import {Paragraph1} from "baseui/typography"
+import { AuditPage } from "./pages/admin/AuditPage"
+import { intl, theme } from "./util"
+import { Block } from "baseui/block"
+import { Paragraph1 } from "baseui/typography"
 import notFound from "./resources/notfound.svg"
-import {SettingsPage} from "./pages/admin/SettingsPage"
+import { SettingsPage } from "./pages/admin/SettingsPage"
 import DocumentCreatePage from "./pages/DocumentCreatePage";
 import DocumentPage from "./pages/DocumentPage";
 import DocumentEditPage from "./pages/DocumentEditPage";
@@ -26,7 +26,7 @@ const Routes = (): JSX.Element => (
     <Switch>
       <Route exact path="/purpose/:purposeCode?/:processId?" component={PurposePage}/>
       <Route exact path="/thirdparty" component={ThirdPartySearchPage}/>
-      <Route exact path="/thirdparty/:sourceCode" component={ThirdPartyMetadataPage}/>
+      <Route exact path="/thirdparty/:thirdPartyCode" component={ThirdPartyMetadataPage}/>
       <Route
         exact
         path="/informationtype/create"

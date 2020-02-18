@@ -33,25 +33,23 @@ type TablePurposeProps = {
   submitDeletePolicy: (policy: Policy) => Promise<boolean>;
 };
 
-type Docs = { [id: string]: Document }
+export type Docs = {
+  [id: string]: Document
+}
+
 const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, submitEditPolicy, submitDeletePolicy}: TablePurposeProps) => {
-  const [policies, setPolicies] = React.useState<Policy[]>(process.policies)
   const [currentPolicy, setCurrentPolicy] = React.useState<Policy>()
   const [showEditModal, setShowEditModal] = React.useState(false)
   const [showPolicyInfo, setShowPolicyInfo] = React.useState(false)
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
-  const [table, sortColumn] = useTable<Policy, keyof Policy>(policies, {sorting: policySort, initialSortColumn: "informationType", showLast: (p) => !p.active})
+  const [table, sortColumn] = useTable<Policy, keyof Policy>(process.policies, {sorting: policySort, initialSortColumn: "informationType", showLast: (p) => !p.active})
   const [alert, setAlert] = useState<ProcessAlert>()
 
   useEffect(() => {
     (async () => {
       setAlert(await getAlertForProcess(process.id))
     })()
-  }, [process, policies])
-
-  React.useEffect(() => {
-    setPolicies(process ? process.policies : [])
-  }, [process]);
+  }, [process])
 
   const [docs, setDocs] = useState<Docs>({})
 
@@ -72,13 +70,13 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
       <Table
         backgroundColor={theme.colors.primary50}
         headers={
-        <>
-          <HeadCell title={intl.informationType} column={'informationType'} tableState={[table, sortColumn]}/>
-          <HeadCell title={intl.subjectCategories} column={'subjectCategories'} tableState={[table, sortColumn]}/>
-          <HeadCell title={intl.legalBasisShort} column={'legalBases'} tableState={[table, sortColumn]}/>
-          <SmallHeadCell/>
-        </>
-      }>
+          <>
+            <HeadCell title={intl.informationType} column={'informationType'} tableState={[table, sortColumn]}/>
+            <HeadCell title={intl.subjectCategories} column={'subjectCategories'} tableState={[table, sortColumn]}/>
+            <HeadCell title={intl.legalBasisShort} column={'legalBases'} tableState={[table, sortColumn]}/>
+            <SmallHeadCell/>
+          </>
+        }>
         {table.data.map((row: Policy, index: number) => {
           const selectedRow = row.id === currentPolicy?.id
           return (
@@ -177,6 +175,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
         <ModalPolicy
           title={intl.policyEdit}
           initialValues={convertPolicyToFormValues(currentPolicy)}
+          docs={docs}
           onClose={() => {
             setShowEditModal(false)
           }}

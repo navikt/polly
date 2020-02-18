@@ -17,32 +17,6 @@ import { StatefulTooltip } from "baseui/tooltip"
 import { getSettings } from "../api/SettingsApi"
 import ReactMarkdown from "react-markdown"
 
-export const Main = () => {
-  useAwait(user.wait())
-  const [settings, setSettings] = useState<Settings>()
-
-  useEffect(() => {
-    (async () => {
-      setSettings(await getSettings())
-    })()
-  }, [])
-
-  return (
-    <Block marginTop={theme.sizing.scale400} display="flex" flexWrap>
-      <Block width="100%">
-        <ReactMarkdown source={settings?.frontpageMessage}/>
-      </Block>
-      <Block width="100%" display="flex" justifyContent="center" alignContent="center">
-        {user.isAdmin() ? <LastEvents/> :
-          <Block maxWidth="65%" marginTop={theme.sizing.scale1200}>
-            <img src={startIll} alt={intl.startIllustration} style={{width: "100%"}}/>
-          </Block>
-        }
-      </Block>
-    </Block>
-  )
-}
-
 const LastEvents = () => {
   const [events, setEvents] = useState<PageResponse<Event>>()
   const [table, setTable] = useState<ObjectType>(ObjectType.INFORMATION_TYPE)
@@ -69,8 +43,7 @@ const LastEvents = () => {
   return (
     <Block width="100%">
       <Block display="flex" justifyContent="space-between" alignItems="flex-end" width="100%">
-        <HeadingMedium>Siste hendelser</HeadingMedium>
-        <img src={startIll} alt={intl.startIllustration} style={{width: "30%"}}/>
+        <HeadingMedium>{intl.lastEvents}</HeadingMedium>
         <Block width="25%" marginBottom=".5rem" display="flex" justifyContent="space-between" alignItems="center">
           <Label2 marginRight=".5rem">{intl.eventType}</Label2>
           <StatefulSelect
@@ -90,6 +63,33 @@ const LastEvents = () => {
                  title={(intl as any)[tableName] || tableName}>{content}
             </Tab>)}
         </StatefulTabs>
+      </Block>
+    </Block>
+  )
+}
+
+export const Main = () => {
+  useAwait(user.wait())
+  const [settings, setSettings] = useState<Settings>()
+
+  useEffect(() => {
+    (async () => {
+      setSettings(await getSettings())
+    })()
+  }, [])
+
+  return (
+    <Block marginTop={theme.sizing.scale400} display="flex" flexWrap>
+      <Block width="100%" display="flex" justifyContent="space-between">
+        <Block marginRight={theme.sizing.scale2400}>
+          <ReactMarkdown source={settings?.frontpageMessage}/>
+        </Block>
+        <Block marginTop={theme.sizing.scale1200}>
+            <img src={startIll} alt={intl.startIllustration} style={{width: "50%"}}/>
+        </Block>
+      </Block>
+      <Block width="100%" display="flex" justifyContent="center" alignContent="center">
+        {user.isAdmin() && <LastEvents/> }
       </Block>
     </Block>
   )

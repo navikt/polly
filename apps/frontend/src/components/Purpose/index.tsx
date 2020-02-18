@@ -6,7 +6,7 @@ import { Plus } from "baseui/icon";
 import { Label1 } from "baseui/typography";
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues } from "../../constants"
-import { intl, useAwait } from "../../util"
+import { intl, theme, useAwait } from "../../util"
 import { user } from "../../service/User";
 import ModalProcess from './Accordion/ModalProcess'
 import AccordionProcess from "./Accordion";
@@ -24,6 +24,7 @@ import {
 } from "../../api"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faList } from "@fortawesome/free-solid-svg-icons"
+import { StyledSpinnerNext } from "baseui/spinner"
 
 const rowBlockProps: BlockProps = {
   marginBottom: 'scale800',
@@ -45,6 +46,7 @@ const ProcessList = ({purposeCode}: ProcessListProps) => {
   const [errorPolicyModal, setErrorPolicyModal] = React.useState(null)
   const [errorDocumentModal, setErrorDocumentModal] = React.useState(null)
   const [isLoadingProcessList, setIsLoadingProcessList] = React.useState(true)
+  const [isLoadingProcess, setIsLoadingProcess] = React.useState(true)
 
   const getProcessListByPurpose = async (purpose: string) => {
     setIsLoadingProcessList(true)
@@ -59,10 +61,12 @@ const ProcessList = ({purposeCode}: ProcessListProps) => {
 
   const getProcessById = async (processId: string) => {
     try {
+      setIsLoadingProcess(true)
       setCurrentProcess(await getProcess(processId))
     } catch (err) {
       console.log(err)
     }
+    setIsLoadingProcess(false)
   }
 
   const handleCreateProcess = async (process: ProcessFormValues) => {
@@ -198,10 +202,11 @@ const ProcessList = ({purposeCode}: ProcessListProps) => {
             </React.Fragment>
           )}
         </Block>
+        {isLoadingProcessList && <StyledSpinnerNext size={theme.sizing.scale2400}/>}
 
         {!isLoadingProcessList &&
         <AccordionProcess
-          isLoading={isLoadingProcessList}
+          isLoading={isLoadingProcess}
           purposeCode={purposeCode}
           processList={processList}
           setProcessList={setProcessList}

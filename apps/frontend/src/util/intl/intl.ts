@@ -66,6 +66,7 @@ export interface IStrings {
   retentionDescription: string;
   years: string;
   months: string;
+  lastEvents: string;
 
   // sentence
   loggedInStatus: string;

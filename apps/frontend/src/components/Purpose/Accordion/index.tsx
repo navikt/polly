@@ -1,40 +1,33 @@
 import * as React from 'react'
-import {ReactElement, useEffect} from 'react'
-import {Accordion, Panel} from 'baseui/accordion'
-import {generatePath, RouteComponentProps, withRouter} from 'react-router'
-import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
-import {Spinner} from 'baseui/spinner';
-import {Block} from 'baseui/block';
-import {Label1, Label2, Paragraph2} from 'baseui/typography';
-import {intl, theme, useAwait} from '../../../util';
+import { ReactElement, useEffect } from 'react'
+import { Accordion, Panel } from 'baseui/accordion'
+import { generatePath, RouteComponentProps, withRouter } from 'react-router'
+import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
+import { StyledSpinnerNext } from 'baseui/spinner';
+import { Block } from 'baseui/block';
+import { Label1, Label2, Paragraph2 } from 'baseui/typography';
+import { intl, theme, useAwait } from '../../../util';
 import _includes from 'lodash/includes'
-import {user} from "../../../service/User";
-import {Plus} from 'baseui/icon'
-import {
-  AddDocumentToProcessFormValues,
-  LegalBasesStatus,
-  Policy,
-  PolicyFormValues,
-  Process,
-  ProcessFormValues
-} from "../../../constants"
-import {LegalBasisView} from "../../common/LegalBasis"
-import {codelist, ListName} from "../../../service/Codelist"
+import { user } from "../../../service/User";
+import { Plus } from 'baseui/icon'
+import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues } from "../../../constants"
+import { LegalBasisView } from "../../common/LegalBasis"
+import { codelist, ListName } from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy';
-import {convertProcessToFormValues} from "../../../api"
-import {PathParams} from "../../../pages/PurposePage"
-import {ActiveIndicator} from "../../common/Durations"
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faChevronDown, faChevronRight, faEdit, faTrash} from '@fortawesome/free-solid-svg-icons';
-import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal';
-import {TeamPopover} from "../../common/Team"
-import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
-import {AuditButton} from "../../audit/AuditButton"
-import {AddDocumentModal} from "./AddDocumentModal"
-import {RetentionView} from "../Retention"
-import {boolToText} from "../../common/Radio"
+import { convertProcessToFormValues } from "../../../api"
+import { PathParams } from "../../../pages/PurposePage"
+import { ActiveIndicator } from "../../common/Durations"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown, faChevronRight, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal';
+import { TeamPopover } from "../../common/Team"
+import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
+import { AuditButton } from "../../audit/AuditButton"
+import { AddDocumentModal } from "./AddDocumentModal"
+import { RetentionView } from "../Retention"
+import { boolToText } from "../../common/Radio"
 
 type AccordionProcessProps = {
   isLoading: boolean
@@ -89,7 +82,7 @@ const AccordionTitle = (props: { process: Process, expanded: boolean, hasAccess:
 
   return <>
     <Block>
-      <Label1 color={theme.colors.primary600}>
+      <Label1 color={theme.colors.primary}>
         {expanded ?
           <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
         <span> </span>
@@ -357,11 +350,11 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
               }
             }}
           >
-            {isLoading && <Spinner size={18}/>}
+            {isLoading && <Block padding={theme.sizing.scale400}><StyledSpinnerNext size={theme.sizing.scale1200}/></Block>}
 
             {!isLoading && currentProcess && (
               <Block $style={{
-                outline: `4px ${theme.colors.primary300} solid`
+                outline: `4px ${theme.colors.primary200} solid`
               }}>
 
                 <Block padding={theme.sizing.scale800}>

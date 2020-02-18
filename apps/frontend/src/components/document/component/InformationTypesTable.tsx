@@ -6,7 +6,6 @@ import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
 import { DocumentInformationTypes, DocumentInfoTypeUse } from "../../../constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { useStyletron } from "baseui";
 import { FieldArrayRenderProps } from "formik";
 import FieldInformationType from "./FieldInformationType";
 import FieldSubjectCategory from "./FieldSubjectCategory";
@@ -18,7 +17,6 @@ type InformationTypesTableProps = {
 }
 
 const InformationTypesTable = (props: InformationTypesTableProps) => {
-  const [useCss] = useStyletron();
   const [tableContent, setTableContent] = React.useState([]);
   const { arrayHelpers } = props;
 

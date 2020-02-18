@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useEffect } from "react";
-import { Spinner } from "baseui/spinner";
 import { Button, SHAPE } from "baseui/button"
 import { Block } from "baseui/block"
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons"
@@ -13,9 +12,8 @@ import InformationtypeMetadata from "../components/InformationType/Informationty
 import { intl, theme, useAwait } from "../util"
 import { CodeUsage, Disclosure, Document, Policy } from "../constants"
 import { codelist, ListName } from "../service/Codelist"
-import Banner from "../components/Banner";
 import { user } from "../service/User";
-import { H3 } from "baseui/typography"
+import { H4 } from "baseui/typography"
 import {
   getCodelistUsageByListName,
   getDisclosuresByInformationTypeId,
@@ -25,6 +23,7 @@ import {
   useInfoTypeSearch
 } from "../api"
 import InformationTypeAccordion from "../components/InformationType/ListCategoryInformationtype";
+import { StyledSpinnerNext } from "baseui/spinner"
 
 export type PurposeMap = { [purpose: string]: Policy[] }
 
@@ -83,10 +82,9 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
     return (
         <React.Fragment>
             {isLoading ? (
-                <Spinner size={30} />
+                <StyledSpinnerNext size={30} />
             ) : (informationTypeId ?
                 <React.Fragment>
-                    <Banner title={intl.informationType} informationtypeId={informationTypeId} />
                     {!error && informationtype && (
                         <InformationtypeMetadata
                             informationtype={informationtype}
@@ -101,7 +99,7 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
                     {error && (<p>{error}</p>)}
                 </React.Fragment>
                 : <React.Fragment>
-                    <H3 marginTop={theme.sizing.scale200} marginBottom={theme.sizing.scale400}>{intl.informationTypes}</H3>
+                    <H4 marginTop={theme.sizing.scale200} >{intl.informationTypes}</H4>
                     <Block display="flex" justifyContent="space-between">
                         <Block width="80%">
                             <Select

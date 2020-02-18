@@ -25,7 +25,7 @@ export interface PolicyFormValues {
   legalBasesOpen: boolean
   end?: string
   start?: string
-  documentIds?: string[]
+  documentIds: string[]
 }
 
 export enum LegalBasesStatus {

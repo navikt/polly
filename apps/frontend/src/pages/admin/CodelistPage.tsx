@@ -4,9 +4,8 @@ import { StatefulSelect } from "baseui/select"
 import { Block } from "baseui/block"
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button"
 import { RouteComponentProps, withRouter } from "react-router-dom"
-import { Plus, Spinner } from "baseui/icon"
+import { Plus } from "baseui/icon"
 
-import Banner from "../../components/Banner"
 import { Code, codelist } from "../../service/Codelist"
 import CreateCodeListModal from "../../components/CodeList/ModalCreateCodeList"
 import { user } from "../../service/User"
@@ -14,6 +13,8 @@ import CodeListTable from "../../components/CodeList/CodeListStyledTable"
 import { intl, useAwait, useForceUpdate } from "../../util"
 import { createCodelist } from "../../api"
 import { CodeListFormValues } from "../../constants"
+import { H4 } from "baseui/typography"
+import { StyledSpinnerNext } from "baseui/spinner"
 
 const CodeListPage = (props: RouteComponentProps<{ listname?: string }>) => {
     const [loading, setLoading] = React.useState(true)
@@ -51,8 +52,8 @@ const CodeListPage = (props: RouteComponentProps<{ listname?: string }>) => {
     }
 
     return <>
-        <Banner title={intl.manageCodeListTitle}/>
-        {loading ? <Spinner/> : (
+        <H4>{intl.manageCodeListTitle}</H4>
+        {loading ? <StyledSpinnerNext/> : (
             <Block>
                 <StatefulSelect
                     options={codelist.makeIdLabelForAllCodeLists()}

@@ -1,6 +1,4 @@
 import React from "react";
-import {intl} from "../util";
-import Banner from "../components/Banner";
 import DocumentForm from "../components/document/component/DocumentForm";
 import {DocumentFormValues} from "../constants";
 import {createInformationTypesDocument} from "../api";
@@ -26,7 +24,6 @@ const DocumentCreatePage = (props: RouteComponentProps) => {
 
   return (
     <React.Fragment>
-      <Banner title={intl.document}/>
       <DocumentForm initialValues={initialCreateDocumentFormValues} handleSubmit={handleCreateDocument}/>
     </React.Fragment>
   );

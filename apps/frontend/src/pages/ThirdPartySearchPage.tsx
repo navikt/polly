@@ -1,104 +1,71 @@
 import * as React from "react";
-import Banner from "../components/Banner";
 import { intl, useAwait } from "../util"
 import { RouteComponentProps } from "react-router-dom";
-import { Code, codelist, ListName } from "../service/Codelist";
-import { Spinner } from "baseui/icon";
+import { codelist, ListName } from "../service/Codelist";
 import { Block, BlockProps } from "baseui/block";
 import { StatefulSelect } from "baseui/select";
-import { Disclosure, DisclosureFormValues } from "../constants";
-import { createDisclosure, getAllDisclosures } from "../api";
 import { user } from "../service/User";
 import { useStyletron } from "styletron-react";
 import { ListItem, ListItemLabel } from "baseui/list";
 import RouteLink from "../components/common/RouteLink";
+import { H4 } from "baseui/typography";
+import { StyledSpinnerNext } from "baseui/spinner"
 
 const rowBlockProps: BlockProps = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginBottom: '3rem',
+  display: 'flex',
+  justifyContent: 'space-between',
+  marginBottom: '3rem',
 }
 
 const ThirdPartySearchPage = (props: RouteComponentProps) => {
-    const [isLoading, setIsLoading] = React.useState<boolean>(true)
-    const [showCreateModal, setShowCreateModal] = React.useState(false)
-    const [disclosureList, setDisclosureList] = React.useState<Disclosure[]>()
-    const [thirdPartyList, setThirdPartyList] = React.useState<Code[]>()
-    const [error, setError] = React.useState();
+  const [css] = useStyletron();
+  const [isLoading, setIsLoading] = React.useState<boolean>(true)
+  useAwait(user.wait())
+  useAwait(codelist.wait(), setIsLoading)
 
-    const [css] = useStyletron();
+  const thirdPartyList = codelist.getCodes(ListName.THIRD_PARTY)
 
-    const handleChangeSource = async (source?: string) => {
-        if (source) {
-            props.history.push(`/thirdparty/${source}`)
-        }
+  const handleChangeThirdParty = async (thirdParty?: string) => {
+    if (thirdParty) {
+      props.history.push(`/thirdparty/${thirdParty}`)
     }
+  }
 
-    const handleCreateDisclosure = async (disclosure: DisclosureFormValues) => {
-        try {
-            let createdDisclosure = await createDisclosure(disclosure)
-            if (!disclosureList || disclosureList.length < 1)
-                setDisclosureList([createdDisclosure])
-            else if (disclosureList && createdDisclosure)
-                setDisclosureList([...disclosureList, createdDisclosure])
+  return (
+    <React.Fragment>
+      <H4>{intl.thirdParty}</H4>
 
-            setShowCreateModal(false)
-        } catch (err) {
-            setShowCreateModal(true)
-            setError(err.message)
-        }
-    }
+      {isLoading && <StyledSpinnerNext/>}
+      {!isLoading && (
+        <Block {...rowBlockProps}>
+          <StatefulSelect
+            options={codelist.getParsedOptions(ListName.THIRD_PARTY)}
+            placeholder={intl.disclosureSelect}
+            maxDropdownHeight="350px"
+            onChange={(event) => handleChangeThirdParty((event.option?.id) as string | undefined)}
+          />
+        </Block>
+      )}
 
-    useAwait(user.wait())
-
-    React.useEffect(() => {
-        const fetchData = async () => {
-            setIsLoading(true);
-            await codelist.wait();
-            setDisclosureList(await getAllDisclosures(250, 0))
-            setThirdPartyList(codelist.getCodes(ListName.THIRD_PARTY))
-            setIsLoading(false);
-        };
-        fetchData();
-    }, []);
-
-    return (
-        <React.Fragment>
-            <Banner title={intl.thirdParty} />
-            {isLoading && <Spinner />}
-
-            {!isLoading && codelist && (
-                <React.Fragment>
-                    <Block {...rowBlockProps}>
-                        <StatefulSelect
-                            options={codelist.getParsedOptions(ListName.THIRD_PARTY)}
-                            placeholder={intl.disclosureSelect}
-                            maxDropdownHeight="350px"
-                            onChange={(event) => handleChangeSource((event.option ?.id) as string | undefined)}
-                        />
-                    </Block>
-                </React.Fragment>
-            )}
-
-            {codelist && thirdPartyList && (
-                <ul
-                    className={css({
-                        width: '375px',
-                        paddingLeft: 0,
-                        paddingRight: 0,
-                    })}
-                >
-                    {thirdPartyList.map(thirdParty => (
-                        <ListItem key={thirdParty.code}>
-                            <ListItemLabel>
-                                <RouteLink href={`thirdparty/${thirdParty.code}`}>{thirdParty.shortName}</RouteLink>
-                            </ListItemLabel>
-                        </ListItem>
-                    ))}
-                </ul>
-            )}
-        </React.Fragment>
-    );
+      {!!thirdPartyList.length && (
+        <ul
+          className={css({
+            width: '375px',
+            paddingLeft: 0,
+            paddingRight: 0,
+          })}
+        >
+          {thirdPartyList.map(thirdParty => (
+            <ListItem key={thirdParty.code}>
+              <ListItemLabel>
+                <RouteLink href={`thirdparty/${thirdParty.code}`}>{thirdParty.shortName}</RouteLink>
+              </ListItemLabel>
+            </ListItem>
+          ))}
+        </ul>
+      )}
+    </React.Fragment>
+  );
 };
 
 export default ThirdPartySearchPage;

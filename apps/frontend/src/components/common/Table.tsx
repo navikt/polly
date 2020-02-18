@@ -45,10 +45,6 @@ const StyledHeader = withStyle(StyledHead, {
 const tableStyle = {
   overflow: "hidden !important",
   borderWidth: "0",
-  borderTopWidth: "0",
-  borderBottomWidth: "0",
-  borderLeftWidth: "0",
-  borderRightWidth: "0",
   borderTopLeftRadius: "0",
   borderTopRightRadius: "0",
   borderBottomLeftRadius: "0",
@@ -70,12 +66,12 @@ export const Table = (props: TableProps) => {
 }
 export const Row = (props: RowProps) => {
   const styleProps = {
-    borderLeft: "none",
     borderBottom: `1px solid ${theme.colors.mono600}`,
     fontSize: "24px",
     opacity: props.inactiveRow ? '.5' : undefined,
     backgroundColor: props.infoRow ? theme.colors.accent50 : undefined,
-    borderLeftWidth: props.infoRow || props.selectedRow ? theme.sizing.scale300 : undefined,
+    borderLeftColor: theme.colors.primary500,
+    borderLeftWidth: props.infoRow || props.selectedRow ? theme.sizing.scale300 : "none",
   }
   const StyleRow = withStyle(StyledRow, styleProps)
   return <StyleRow>{props.children}</StyleRow>

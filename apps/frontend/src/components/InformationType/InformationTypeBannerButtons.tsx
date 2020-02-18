@@ -14,7 +14,7 @@ import { Paragraph2 } from "baseui/typography"
 import { PLACEMENT, StatefulTooltip } from "baseui/tooltip"
 import { deleteInformationType, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType } from "../../api"
 import { InformationType } from "../../constants"
-import { Spinner } from "baseui/icon"
+import { StyledSpinnerNext } from "baseui/spinner"
 
 const DeleteModalImpl = (props: RouteComponentProps<any> & { id: string, showDeleteModal: boolean, closeModal: () => void }) => {
   const [errorProcessModal, setErrorProcessModal] = React.useState(false)
@@ -53,7 +53,7 @@ const DeleteModalImpl = (props: RouteComponentProps<any> & { id: string, showDel
     >
       <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
       <ModalBody>
-        {!infoType && <Spinner/>}
+        {!infoType && <StyledSpinnerNext/>}
         {canDelete && <Paragraph2>{intl.confirmDeleteInformationTypeText} {infoType?.name}</Paragraph2>}
         {infoType && !canDelete && <Paragraph2>
           {intl.formatString(intl.cannotDeleteInformationTypes, infoType.name)}

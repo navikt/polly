@@ -2,7 +2,6 @@ import * as React from "react"
 import { useEffect, useRef, useState } from "react"
 import { Block } from "baseui/block"
 import { StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from "baseui/table"
-import { Spinner } from "baseui/icon"
 import { Label2, Label4 } from "baseui/typography"
 import { Select, Value } from "baseui/select"
 import { Button } from "baseui/button"
@@ -12,6 +11,7 @@ import { CodeUsage, ObjectType } from "../../constants"
 import { ObjectLink } from "../common/RouteLink"
 import { codelist, ListName } from "../../service/Codelist"
 import { replaceCodelistUsage } from "../../api"
+import { StyledSpinnerNext } from "baseui/spinner"
 
 const UsageTable = (props: { usage: CodeUsage, rows: number }) => {
   const {usage, rows} = props;
@@ -97,7 +97,7 @@ export const Usage = (props: { usage?: CodeUsage, refresh: () => void }) => {
       )}
 
       {usage && <UsageTable usage={usage} rows={maxRows}/>}
-      {!usage && <Spinner/>}
+      {!usage && <StyledSpinnerNext/>}
       {noUsage && <Label4 marginTop=".5rem">{intl.usageNotFound}</Label4>}
     </Block>
   )

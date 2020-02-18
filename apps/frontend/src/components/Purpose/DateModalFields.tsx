@@ -10,6 +10,7 @@ import * as React from "react"
 import { intl } from "../../util"
 import { LegalBasisFormValues } from "../../constants"
 import { Error, ModalLabel } from "../common/ModalSchema"
+import { padding } from "../common/Style"
 
 interface DateModalProps {
   showDates: boolean;
@@ -32,7 +33,7 @@ export const DateModalFields = (props: DateModalProps) => {
       {!showDates ?
         <Block {...rowBlockProps}>
           <Button size="compact" shape='pill'
-                  overrides={{BaseButton: {style: {padding: '6px 8px'}}}}
+                  overrides={{BaseButton: {style: padding("6px", "8px")}}}
                   onClick={() => setShowDates(true)}>{intl.useDates}</Button>
         </Block>
         : <>

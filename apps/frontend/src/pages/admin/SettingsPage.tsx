@@ -6,9 +6,8 @@ import { getDocument, searchDocuments } from "../../api"
 import { Select, TYPE } from "baseui/select"
 import { intl, theme } from "../../util"
 import { getSettings, writeSettings } from "../../api/SettingsApi"
-import { Spinner } from "baseui/spinner"
-import { Label2 } from "baseui/typography"
-import Banner from "../../components/Banner"
+import { StyledSpinnerNext } from "baseui/spinner"
+import { H4, Label2 } from "baseui/typography"
 import { Button } from "baseui/button"
 import { StatefulTextarea } from "baseui/textarea"
 import ReactMarkdown from "react-markdown"
@@ -43,8 +42,8 @@ export const SettingsPage = () => {
 
   return (
     <Block>
-      <Banner title={intl.settings}/>
-      {loading ? <Spinner size={40}/> :
+      <H4>{intl.settings}</H4>
+      {loading ? <StyledSpinnerNext size={40}/> :
         error || !settings ? {error} :
           <Block>
             <DefaultProcessDocument

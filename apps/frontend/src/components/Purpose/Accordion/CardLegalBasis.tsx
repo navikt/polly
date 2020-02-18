@@ -18,6 +18,7 @@ import { legalBasisSchema } from "../../common/schema"
 import { LegalBasisView } from "../../common/LegalBasis"
 import { hasSpecifiedDate } from "../../common/Durations"
 import { customizeNationalLawPlaceholder } from "./PlaceholderCustomizer";
+import { paddingZero } from "../../common/Style"
 
 const rowBlockProps: BlockProps = {
   display: 'flex',
@@ -29,7 +30,7 @@ const Error = (props: { fieldName: string }) => (
   <ErrorMessage name={props.fieldName}>
     {msg => (
       <Block {...rowBlockProps} marginTop=".2rem">
-        <Notification overrides={{Body: {style: {width: 'auto', padding: 0, marginTop: 0}}}} kind={NKIND.negative}>{msg}</Notification>
+        <Notification overrides={{Body: {style: {width: 'auto', ...paddingZero, marginTop: 0}}}} kind={NKIND.negative}>{msg}</Notification>
       </Block>
     )}
   </ErrorMessage>
