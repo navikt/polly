@@ -1,9 +1,9 @@
-import {DocumentInfoTypeUse, PolicyInformationType} from "../../../constants";
-import {Select, TYPE} from "baseui/select";
+import { DocumentInfoTypeUse, PolicyInformationType } from "../../../constants";
+import { Select, TYPE } from "baseui/select";
 import React from "react";
-import {useInfoTypeSearch} from "../../../api";
-import {intl} from "../../../util";
-import {PLACEMENT} from "baseui/popover";
+import { useInfoTypeSearch } from "../../../api";
+import { intl } from "../../../util";
+import { PLACEMENT } from "baseui/popover";
 
 const FieldInformationType = (props: {
   documentInformationType: DocumentInfoTypeUse,
@@ -20,6 +20,7 @@ const FieldInformationType = (props: {
 
   return (
     <Select
+      isLoading={isLoading}
       maxDropdownHeight="400px"
       searchable={true}
       type={TYPE.search}

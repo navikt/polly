@@ -7,12 +7,11 @@ import {Input, SIZE as InputSIZE} from "baseui/input";
 import {Select, Value} from 'baseui/select';
 import {Button, KIND, SHAPE, SIZE as ButtonSize} from "baseui/button";
 import {Plus} from "baseui/icon";
-
+import {Error, ModalBlock, ModalLabel} from "../../common/ModalSchema";
 import {DisclosureFormValues, ProcessFormValues} from "../../../constants";
 import CardLegalBasis from './CardLegalBasis'
 import {codelist, ListName} from "../../../service/Codelist"
 import {intl, theme} from "../../../util"
-import {Error, ModalBlock, ModalLabel} from "../../common/ModalSchema";
 import {ListLegalBases} from "../../common/LegalBasis"
 import {DateModalFields} from "../DateModalFields"
 import {hasSpecifiedDate} from "../../common/Durations"
@@ -331,7 +330,7 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
         content={
           <Card overrides={cardOverrides}>
             <Block {...rowBlockProps} marginTop={0}>
-              <ModalLabel label={intl.retention}/>
+              <ModalLabel label={intl.retentionStart}/>
               <BoolField fieldName="retention.retentionPlan" value={formikBag.values.retention.retentionPlan}/>
             </Block>
 
@@ -413,7 +412,7 @@ type ModalProcessProps = {
   onClose: () => void;
 };
 
-const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, title, isEdit}: ModalProcessProps) => {
+const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, title}: ModalProcessProps) => {
 
   const [selectedLegalBasis, setSelectedLegalBasis] = React.useState();
   const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState();

@@ -8,7 +8,7 @@ import { IconDefinition } from "@fortawesome/fontawesome-common-types"
 import { intl, theme } from '../../../util'
 import { Label2, Paragraph2 } from 'baseui/typography'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTag, faTimesCircle, faUserShield } from '@fortawesome/free-solid-svg-icons'
+import { faTimesCircle, faUserShield } from '@fortawesome/free-solid-svg-icons'
 import { Code } from '../../../service/Codelist'
 import { sensitivityColor } from "../Sensitivity"
 import { getTerm, mapTermToOption } from "../../../api"
@@ -64,7 +64,7 @@ const renderTextWithLabelMetadata = (label: string, text: string | any, icon?: I
 const TextWithLabel = (props: { label: string, text?: string, icon?: IconDefinition, iconColor?: string, error?: string }) => {
     const errorIcon = <FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500}/>
     const value = <Paragraph2 $style={{ whiteSpace: 'pre-wrap'}} display="flex">{props.error && errorIcon} {props.text}</Paragraph2>
-    
+
     return (
         <Block>
             <Label2>{props.icon && <FontAwesomeIcon icon={props.icon} color={props.iconColor}/>} {props.label}</Label2>

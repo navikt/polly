@@ -24,7 +24,6 @@ let initialFormValues: InformationtypeFormValues = {
 
 const InformationtypeCreatePage = (props: RouteComponentProps) => {
   const [isLoading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState(null);
   const [errorSubmit, setErrorSubmit] = React.useState(null);
 
   const handleSubmit = async (values: InformationtypeFormValues) => {
@@ -42,15 +41,7 @@ const InformationtypeCreatePage = (props: RouteComponentProps) => {
   const hasAccess = () => user.canWrite()
 
   useAwait(user.wait())
-
-  React.useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      await codelist.wait();
-      setLoading(false);
-    };
-    fetchData();
-  }, []);
+  useAwait(codelist.wait(), setLoading)
 
   return (
     <React.Fragment>
@@ -62,7 +53,7 @@ const InformationtypeCreatePage = (props: RouteComponentProps) => {
             ) : (
               <>
                 <H4>{intl.informationTypeCreate}</H4>
-                {!error && codelist ? (
+                {codelist ? (
                   <>
                     <InformationtypeForm
                       formInitialValues={initialFormValues}
