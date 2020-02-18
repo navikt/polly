@@ -58,10 +58,12 @@ const SideBar = () => {
             <img src={NavLogo} alt='NAV logo' width="100%"/>
           </Block>
         </Block>
-        <Block display="flex" justifyContent="center" paddingBottom={theme.sizing.scale400} alignItems="center">
-          <img src={Slackogo} width="60px" alt="slack logo"/>
-          <Paragraph4 color={theme.colors.white}>#behandlingskatalogen</Paragraph4>
-        </Block>
+        <a href="slack://channel?team=T5LNAMWNA&id=CR1B19E6L" style={{textDecoration: "none"}}>
+          <Block display="flex" justifyContent="center" paddingBottom={theme.sizing.scale400} alignItems="center">
+            <img src={Slackogo} width="60px" alt="slack logo"/>
+            <Paragraph4 color={theme.colors.white}>#behandlingskatalogen</Paragraph4>
+          </Block>
+        </a>
       </Block>
     </Block>
   )
