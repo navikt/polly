@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import javax.validation.Valid;
@@ -40,7 +41,7 @@ import static no.nav.data.polly.common.utils.StreamUtils.convert;
 @RestController
 @CrossOrigin
 @RequestMapping("/disclosure")
-@Api(value = "Disclosure", description = "REST API for Disclosure", tags = {"Disclosure"})
+@Api(value = "Disclosure", tags = {"Disclosure"})
 public class DisclosureController {
 
     private final DisclosureRepository repository;
@@ -60,15 +61,20 @@ public class DisclosureController {
     @GetMapping
     public ResponseEntity<RestResponsePage<DisclosureResponse>> getAll(PageParameters pageParameters,
             @RequestParam(required = false) UUID informationTypeId,
-            @RequestParam(required = false) String recipient
+            @RequestParam(required = false) String recipient,
+            @RequestParam(required = false) UUID documentId
     ) {
-        log.info("Received request for all Disclosures. informationType={} recipient={}", informationTypeId, recipient);
+        log.info("Received request for all Disclosures. informationType={} recipient={}, documentId={}", informationTypeId, recipient, documentId);
+        List<Disclosure> filtered = null;
         if (informationTypeId != null) {
-            var disc = repository.findByInformationTypeId(informationTypeId);
-            return returnResults(new RestResponsePage<>(convert(disc, this::convertAndAddDocument)));
+            filtered = repository.findByInformationTypeId(informationTypeId);
         } else if (StringUtils.isNotBlank(recipient)) {
-            var disc = repository.findByRecipient(recipient);
-            return returnResults(new RestResponsePage<>(convert(disc, this::convertAndAddDocument)));
+            filtered = repository.findByRecipient(recipient);
+        } else if (documentId != null) {
+            filtered = repository.findByDocumentId(documentId.toString());
+        }
+        if (filtered != null) {
+            return returnResults(new RestResponsePage<>(convert(filtered, this::convertAndAddDocument)));
         }
         return returnResults(new RestResponsePage<>(repository.findAll(pageParameters.createIdSortedPage()).map(Disclosure::convertToResponse)));
     }

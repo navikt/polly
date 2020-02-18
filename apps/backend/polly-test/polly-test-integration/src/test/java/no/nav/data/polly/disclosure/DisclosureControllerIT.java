@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -89,25 +90,26 @@ class DisclosureControllerIT extends IntegrationTestBase {
         restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
         ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure", DisclosurePage.class);
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        DisclosurePage disclosurePage = resp.getBody();
-        assertThat(disclosurePage).isNotNull();
-
-        assertThat(disclosurePage.getContent()).hasSize(2);
+        assertDisclosures(resp, 2);
     }
 
     @Test
     void getDisclosureByInfoTypeId() {
         restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
         createDisclosureArbeidsgiverWithInformationType();
-        ResponseEntity<DisclosurePage> resp = restTemplate
-                .getForEntity("/disclosure?informationTypeId={infoTypeId}", DisclosurePage.class, document.getData().getInformationTypes().get(0).getInformationTypeId());
+        UUID informationTypeId = document.getData().getInformationTypes().get(0).getInformationTypeId();
+        ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure?informationTypeId={infoTypeId}", DisclosurePage.class, informationTypeId);
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        DisclosurePage disclosurePage = resp.getBody();
-        assertThat(disclosurePage).isNotNull();
+        assertDisclosures(resp, 1);
+    }
 
-        assertThat(disclosurePage.getContent()).hasSize(1);
+    @Test
+    void getDisclosureByDocumentId() {
+        restTemplate.postForEntity("/disclosure", buildDisclosure(), DisclosureResponse.class);
+        createDisclosureArbeidsgiverWithInformationType();
+        ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure?documentId={docId}", DisclosurePage.class, document.getId());
+
+        assertDisclosures(resp, 1);
     }
 
     @Test
@@ -116,11 +118,7 @@ class DisclosureControllerIT extends IntegrationTestBase {
         var disc = createDisclosureArbeidsgiverWithInformationType();
         ResponseEntity<DisclosurePage> resp = restTemplate.getForEntity("/disclosure?recipient={recipient}", DisclosurePage.class, disc.getRecipient().getCode());
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        DisclosurePage disclosurePage = resp.getBody();
-        assertThat(disclosurePage).isNotNull();
-
-        assertThat(disclosurePage.getContent()).hasSize(1);
+        assertDisclosures(resp, 1);
     }
 
     @Test
@@ -172,6 +170,14 @@ class DisclosureControllerIT extends IntegrationTestBase {
         assertThat(errorResp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResp.getBody()).isNotNull();
         assertThat(errorResp.getBody()).contains("fieldIsInvalidCodelist -- recipient: ERROR code not found in codelist THIRD_PARTY");
+    }
+
+    private void assertDisclosures(ResponseEntity<DisclosurePage> resp, int i) {
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        DisclosurePage disclosurePage = resp.getBody();
+        assertThat(disclosurePage).isNotNull();
+
+        assertThat(disclosurePage.getContent()).hasSize(i);
     }
 
     private DisclosureRequest buildDisclosure() {

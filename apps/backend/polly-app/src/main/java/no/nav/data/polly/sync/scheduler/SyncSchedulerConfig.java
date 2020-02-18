@@ -1,4 +1,4 @@
-package no.nav.data.polly.common.scheduler;
+package no.nav.data.polly.sync.scheduler;
 
 import no.nav.data.polly.sync.SyncProperties;
 import no.nav.data.polly.sync.SyncService;
