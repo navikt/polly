@@ -120,7 +120,7 @@ const AdminOptionsImpl = (props: RouteComponentProps<any>) => {
           }}
         />
       }>
-      <Button endEnhancer={() => <TriangleDown size={24}/>} kind="tertiary" $style={paddingZero}>
+      <Button endEnhancer={() => <TriangleDown size={24}/>} kind="tertiary">
         {intl.administrate}
       </Button>
     </StatefulPopover>
