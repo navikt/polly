@@ -6,6 +6,7 @@ import RouteLink from '../common/RouteLink';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { features } from "../../util/feature-toggle"
+import NavLogo from  '../../resources/navlogo.svg'
 
 const sideBarProps: BlockProps = {
   position: 'fixed',
@@ -30,25 +31,30 @@ const NavItem = (props: { text: string, to: string }) => (
     </React.Fragment>
 )
 
-const Brand = (
+const Brand = () => (
     <RouteLink href="/">
         <Block display="flex" alignItems="center" padding="1rem" marginTop="1rem">
             <H6 color="white" marginTop="0" marginLeft="5px" marginBottom="2rem">Behandlingskatalog</H6>
         </Block>
     </RouteLink>
-
 )
+
+const SidebarFooter = () => <img src={NavLogo} alt='logo' />
 
 const SideBar = () => {
   return (
     <Block {...sideBarProps}>
-      {Brand}
+      <Brand />
 
       <Block {...items}>
         <NavItem to="/purpose" text={intl.processingActivities}/>
         <NavItem to="/informationtype" text={intl.informationTypes}/>
         <NavItem to="/document" text={intl.documents}/>
         {features.enableThirdParty && <NavItem to="/thirdparty" text={intl.thirdParty}/>}
+      </Block>
+
+      <Block position="absolute" bottom="0" width="100%">
+        <SidebarFooter />
       </Block>
     </Block>
   )
