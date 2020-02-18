@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.rest.PageParameters;
 import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.process.domain.Process;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -79,6 +81,20 @@ public class ProcessReadController {
         log.info("Received request for all Processes");
         Page<ProcessResponse> page = repository.findAll(pageParameters.createIdSortedPage()).map(Process::convertToResponse);
         return ResponseEntity.ok(new RestResponsePage<>(page));
+    }
+
+    @ApiOperation(value = "Search processes")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Processes fetched", response = ProcessPage.class),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @GetMapping("/search/{search}")
+    public ResponseEntity<RestResponsePage<ProcessResponse>> getAllProcesses(@PathVariable String search) {
+        log.info("Received request for Processes search={}", search);
+        if (search.length() < 3) {
+            throw new ValidationException("Search term must be at least 3 characters");
+        }
+        List<Process> processes = repository.findByNameContaining(search);
+        return ResponseEntity.ok(new RestResponsePage<>(convert(processes, Process::convertToResponse)));
     }
 
     @ApiOperation(value = "Count all Processes")

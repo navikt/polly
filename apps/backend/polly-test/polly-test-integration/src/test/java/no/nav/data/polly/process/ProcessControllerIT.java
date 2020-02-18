@@ -56,6 +56,16 @@ class ProcessControllerIT extends IntegrationTestBase {
     }
 
     @Test
+    void searchProcess() {
+        Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
+        ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process/search/{name}", ProcessPage.class, policy.getProcess().getName().toLowerCase());
+
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(resp.getBody()).isNotNull();
+        assertThat(resp.getBody().getNumberOfElements()).isEqualTo(1L);
+    }
+
+    @Test
     void getAllProcess() {
         Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
         Policy policy2 = createAndSavePolicy(PURPOSE_CODE1 + 2, createAndSaveInformationType());

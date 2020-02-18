@@ -24,6 +24,9 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
     @Query(value = "select * from process where data->>'productTeam' = ?1", nativeQuery = true)
     List<Process> findByProductTeam(String productTeam);
 
+    @Query(value = "select * from process where name ilike %?1%", nativeQuery = true)
+    List<Process> findByNameContaining(String name);
+
     @Query(value = "select p.purposeCode as purposeCode, count(p) as count from Process p group by p.purposeCode")
     List<PurposeCount> countByPurposeCode();
 }
