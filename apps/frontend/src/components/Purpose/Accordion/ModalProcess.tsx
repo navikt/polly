@@ -248,8 +248,8 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
   const {formikBag} = props
   const [showDates, setShowDates] = React.useState(hasSpecifiedDate(formikBag.values));
   const [showAutomation, setShowAutomation] = React.useState(formikBag.values.automaticProcessing || formikBag.values.profiling);
-  const [showDataProcessor, setShowDataProcessor] = React.useState(formikBag.values.dataProcessing.dataProcessor);
-  const [showRetention, setShowRetention] = React.useState(formikBag.values.retention.retentionPlan);
+  const [showDataProcessor, setShowDataProcessor] = React.useState(formikBag.values.dataProcessing.dataProcessor === true || formikBag.values.dataProcessing.dataProcessor === false);
+  const [showRetention, setShowRetention] = React.useState("retentionPlan" in formikBag.values.retention && formikBag.values.retention.retentionPlan !== undefined);
 
   const [retention, setRetention] = useState(formikBag.values.retention.retentionMonths || 0)
   const retentionYears = Math.floor(retention / 12)
@@ -335,29 +335,29 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
             <BoolField fieldName="retention.retentionPlan" value={formikBag.values.retention.retentionPlan}/>
           </Block>
 
-          {formikBag.values.retention.retentionPlan && <>
-            <Block {...rowBlockProps}>
-              <ModalLabel label={intl.retentionMonths}/>
-              <Field
-                name="retention.retentionMonths"
-                render={({field, form}: FieldProps<DisclosureFormValues>) => (
-                  <>
-                    <Slider
-                      overrides={sliderOvveride(intl.years)}
-                      min={0} max={100}
-                      value={[retentionYears]}
-                      onChange={({value}) => setRetention(value[0] * 12 + retentionMonths)}
-                    />
-                    <Slider
-                      overrides={sliderOvveride(intl.months)}
-                      min={0} max={11}
-                      value={[retentionMonths]}
-                      onChange={({value}) => setRetention(value[0] + retentionYears * 12)}
-                    />
-                  </>
-                )}/>
-            </Block>
-            <Error fieldName="retention.retentionMonths"/>
+        {"retentionPlan" in formikBag.values.retention && <>
+          <Block {...rowBlockProps}>
+            <ModalLabel label={intl.retentionMonths}/>
+            <Field
+              name="retention.retentionMonths"
+              render={({field, form}: FieldProps<DisclosureFormValues>) => (
+                <>
+                  <Slider
+                    overrides={sliderOvveride(intl.years)}
+                    min={0} max={100}
+                    value={[retentionYears]}
+                    onChange={({value}) => setRetention(value[0] * 12 + retentionMonths)}
+                  />
+                  <Slider
+                    overrides={sliderOvveride(intl.months)}
+                    min={0} max={11}
+                    value={[retentionMonths]}
+                    onChange={({value}) => setRetention(value[0] + retentionYears * 12)}
+                  />
+                </>
+              )}/>
+          </Block>
+          <Error fieldName="retention.retentionMonths"/>
 
             <Block {...rowBlockProps}>
               <ModalLabel label={intl.retentionStart}/>
@@ -432,7 +432,10 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
       <Block {...modalBlockProps}>
         <Formik
           initialValues={initialValues}
-          onSubmit={(values) => submit(values)} validationSchema={processSchema()}
+          onSubmit={(values) => {
+            submit(values)
+          }}
+          validationSchema={processSchema()}
           render={(formikBag: FormikProps<ProcessFormValues>) => (
             <Form onKeyDown={disableEnter}>
               <ModalHeader>
