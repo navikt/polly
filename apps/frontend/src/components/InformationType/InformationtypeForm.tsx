@@ -271,6 +271,7 @@ const InformationtypeForm = ({
                               .value
                           )
                         }
+                        onBlur={() => onAddKeyword(arrayHelpers)}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') onAddKeyword(arrayHelpers)
                         }}
@@ -280,7 +281,6 @@ const InformationtypeForm = ({
                             <Button
                               type="button"
                               shape={SHAPE.square}
-                              onClick={() => onAddKeyword(arrayHelpers)}
                             >
                               <Plus/>
                             </Button>

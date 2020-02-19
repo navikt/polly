@@ -35,6 +35,7 @@ import {AuditButton} from "../../audit/AuditButton"
 import {AddDocumentModal} from "./AddDocumentModal"
 import {RetentionView} from "../Retention"
 import {boolToText} from "../../common/Radio"
+import NewButton from '../../common/Button'
 
 type AccordionProcessProps = {
   isLoading: boolean
@@ -103,8 +104,25 @@ const AccordionTitle = (props: { process: Process, expanded: boolean, hasAccess:
       {hasAccess && expanded && (
         <>
           <AuditButton id={process.id}/>
-          {renderEditProcessButton()}
-          {renderDeleteProcessButton()}
+          <NewButton 
+              kind={KIND.secondary} 
+              size={ButtonSize.compact}
+              icon={faEdit} 
+              tooltip={intl.edit} 
+              onClick={props.editProcess}
+          >
+              {intl.edit}
+          </NewButton>
+          <Block display="inline" marginRight={theme.sizing.scale500}></Block>
+          <NewButton 
+              kind={KIND.secondary} 
+              size={ButtonSize.compact}
+              icon={faTrash} 
+              tooltip={intl.delete} 
+              onClick={props.deleteProcess}
+          >
+              {intl.delete}
+          </NewButton>
         </>
       )}
     </div>

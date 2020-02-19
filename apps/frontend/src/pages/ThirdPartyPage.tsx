@@ -4,12 +4,12 @@ import { RouteComponentProps } from "react-router-dom";
 import { codelist, ListName } from "../service/Codelist";
 import { Plus } from "baseui/icon";
 import { Block, BlockProps } from "baseui/block";
-import { createDisclosure, deleteDisclosure, getCodelistUsage, getDisclosuresByRecipient, updateDisclosure } from "../api";
+import { createDisclosure, deleteDisclosure, getDisclosuresByRecipient, getInformationTypesBySource, updateDisclosure } from "../api";
 import TableDisclosure from "../components/common/TableDisclosure";
 import { H5, Label2, Paragraph2 } from "baseui/typography";
 import { Button, KIND } from "baseui/button";
 import { user } from "../service/User";
-import { Disclosure, DisclosureFormValues, Use } from "../constants";
+import { Disclosure, DisclosureFormValues, InformationType } from "../constants";
 import ModalThirdParty from "../components/ThirdParty/ModalThirdPartyForm";
 import ListRecievedInformationTypes from "../components/ThirdParty/ListRecievedInformationTypes";
 import { StyledSpinnerNext } from "baseui/spinner"
@@ -24,7 +24,7 @@ export type PathParams = { thirdPartyCode: string }
 const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
   const [disclosureList, setDisclosureList] = React.useState();
-  const [informationTypeList, setInformationTypeList] = React.useState<Use[]>()
+  const [informationTypeList, setInformationTypeList] = React.useState<InformationType[]>()
   const [showCreateModal, setShowCreateModal] = React.useState(false)
   const [error, setError] = React.useState();
 
@@ -89,10 +89,8 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
       await codelist.wait();
       if (props.match.params.thirdPartyCode) {
         setDisclosureList(await getDisclosuresByRecipient(props.match.params.thirdPartyCode))
-        let responseInformationTypeList = await getCodelistUsage(ListName.THIRD_PARTY, props.match.params.thirdPartyCode)
-        setInformationTypeList(responseInformationTypeList.informationTypes)
+        setInformationTypeList((await getInformationTypesBySource(props.match.params.thirdPartyCode)).content)
       }
-
       setIsLoading(false);
     })()
   }, []);
@@ -151,7 +149,7 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
 
 
           <Block marginBottom="3rem">
-            <ListRecievedInformationTypes informationtypeList={informationTypeList ? informationTypeList : []}/>
+            <ListRecievedInformationTypes informationtypeList={informationTypeList || []}/>
           </Block>
         </React.Fragment>
       )}
