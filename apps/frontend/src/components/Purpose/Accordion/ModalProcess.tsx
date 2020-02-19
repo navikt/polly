@@ -331,7 +331,7 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
       >
         <Card overrides={cardOverrides}>
           <Block {...rowBlockProps} marginTop={0}>
-            <ModalLabel label={intl.retention}/>
+            <ModalLabel label={intl.includeConservationPlan}/>
             <BoolField fieldName="retention.retentionPlan" value={formikBag.values.retention.retentionPlan}/>
           </Block>
 
