@@ -1,4 +1,4 @@
-import { IStrings } from "./intl";
+import {IStrings} from "./intl";
 
 export const no: IStrings = {
   informationType: "Opplysningstype",
@@ -33,6 +33,7 @@ export const no: IStrings = {
   remove: 'Fjern',
   yes: 'Ja',
   no: 'Nei',
+  includeConservationPlan: "Omfattes av kassasjons- og bevaringsplan?",
   unclarified: 'Uavklart',
   automation: 'Automatisering',
   automaticProcessing: 'Helautomatisk behandling',
@@ -293,6 +294,7 @@ export const en: IStrings = {
   remove: 'Remove',
   yes: 'Yes',
   no: 'No',
+  includeConservationPlan: "Are you covered by a disposal and retention plan?",
   unclarified: 'Unclarified',
   automation: 'Automation',
   automaticProcessing: 'Automatic Processing',
