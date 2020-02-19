@@ -1,11 +1,12 @@
 import * as React from 'react'
 import { Block, BlockProps } from 'baseui/block';
 import { Label2 } from 'baseui/typography';
-import { Use } from '../../constants';
+import { InformationType } from '../../constants';
 import { ListItem, ListItemLabel } from 'baseui/list';
 import RouteLink from '../common/RouteLink';
 import { useStyletron } from 'styletron-react';
 import { intl } from '../../util';
+import { Sensitivity } from "../InformationType/Sensitivity"
 
 const labelBlockProps: BlockProps = {
     marginBottom: '1rem',
@@ -13,7 +14,7 @@ const labelBlockProps: BlockProps = {
 }
 
 type ListRecievedInformationTypesProps = {
-    informationtypeList: Use[];
+    informationtypeList: InformationType[];
 }
 
 const ListRecievedInformationTypes = ({ informationtypeList }: ListRecievedInformationTypesProps) => {
@@ -32,7 +33,9 @@ const ListRecievedInformationTypes = ({ informationtypeList }: ListRecievedInfor
                 {informationtypeList.map(infotype => (
                     <ListItem sublist key={infotype.id}>
                         <ListItemLabel sublist>
-                            <RouteLink href={`/informationtype/${infotype.id}`}>{infotype.name}</RouteLink>
+                            <RouteLink href={`/informationtype/${infotype.id}`}>
+                              <Sensitivity sensitivity={infotype.sensitivity}/> {infotype.name}
+                            </RouteLink>
                         </ListItemLabel>
                     </ListItem>
                 ))}

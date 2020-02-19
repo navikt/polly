@@ -15,7 +15,7 @@ import { AuditActionIcon } from "../components/audit/AuditComponents"
 import { PLACEMENT } from "baseui/popover"
 import { StatefulTooltip } from "baseui/tooltip"
 import { getSettings } from "../api/SettingsApi"
-import ReactMarkdown from "react-markdown"
+import ReactMarkdown from "react-markdown/with-html"
 
 const LastEvents = () => {
   const [events, setEvents] = useState<PageResponse<Event>>()
@@ -82,7 +82,7 @@ export const Main = () => {
     <Block marginTop={theme.sizing.scale400} display="flex" flexWrap>
       <Block width="100%" display="flex" justifyContent="space-between">
         <Block marginRight={theme.sizing.scale2400}>
-          <ReactMarkdown source={settings?.frontpageMessage}/>
+          <ReactMarkdown source={settings?.frontpageMessage} escapeHtml={false}/>
         </Block>
         <Block marginTop={theme.sizing.scale1200}>
             <img src={startIll} alt={intl.startIllustration} style={{width: "50%"}}/>

@@ -10,7 +10,7 @@ import { StyledSpinnerNext } from "baseui/spinner"
 import { H4, Label2 } from "baseui/typography"
 import { Button } from "baseui/button"
 import { StatefulTextarea } from "baseui/textarea"
-import ReactMarkdown from "react-markdown"
+import ReactMarkdown from "react-markdown/with-html"
 
 export const SettingsPage = () => {
   const [loading, setLoading] = React.useState<boolean>(true)
@@ -130,7 +130,7 @@ const FrontpageMessage = (props: { message?: string, setMessage: (message: strin
             />
           </Block>
           <Block width="50%">
-            <ReactMarkdown source={props.message}/>
+            <ReactMarkdown source={props.message} escapeHtml={false}/>
           </Block>
         </Block>
       </Block>

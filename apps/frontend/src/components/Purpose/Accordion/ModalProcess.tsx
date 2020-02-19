@@ -1,27 +1,27 @@
 import * as React from 'react'
-import {KeyboardEvent, useEffect, useState} from 'react'
-import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
-import {Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps,} from "formik";
-import {Block, BlockProps} from "baseui/block";
-import {Input, SIZE as InputSIZE} from "baseui/input";
-import {Select, Value} from 'baseui/select';
-import {Button, KIND, SHAPE, SIZE as ButtonSize} from "baseui/button";
-import {Plus} from "baseui/icon";
-import {Error, ModalBlock, ModalLabel} from "../../common/ModalSchema";
-import {DisclosureFormValues, ProcessFormValues} from "../../../constants";
+import { KeyboardEvent, useEffect, useState } from 'react'
+import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
+import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps, } from "formik";
+import { Block, BlockProps } from "baseui/block";
+import { Input, SIZE as InputSIZE } from "baseui/input";
+import { Select, Value } from 'baseui/select';
+import { Button, KIND, SHAPE, SIZE as ButtonSize } from "baseui/button";
+import { Plus } from "baseui/icon";
+import { Error, ModalBlock, ModalLabel } from "../../common/ModalSchema";
+import { DisclosureFormValues, ProcessFormValues } from "../../../constants";
 import CardLegalBasis from './CardLegalBasis'
-import {codelist, ListName} from "../../../service/Codelist"
-import {intl, theme} from "../../../util"
-import {ListLegalBases} from "../../common/LegalBasis"
-import {DateModalFields} from "../DateModalFields"
-import {hasSpecifiedDate} from "../../common/Durations"
-import {processSchema} from "../../common/schema"
-import {getTeam, mapTeamToOption, useTeamSearch} from "../../../api"
-import {Textarea} from "baseui/textarea"
-import {Card} from "baseui/card"
-import {renderTagList} from "../../common/TagList"
-import {Slider} from "baseui/slider"
-import {RadioBoolButton} from "../../common/Radio"
+import { codelist, ListName } from "../../../service/Codelist"
+import { intl, theme } from "../../../util"
+import { ListLegalBases } from "../../common/LegalBasis"
+import { DateModalFields } from "../DateModalFields"
+import { hasSpecifiedDate } from "../../common/Durations"
+import { processSchema } from "../../common/schema"
+import { getTeam, mapTeamToOption, useTeamSearch } from "../../../api"
+import { Textarea } from "baseui/textarea"
+import { Card } from "baseui/card"
+import { renderTagList } from "../../common/TagList"
+import { Slider } from "baseui/slider"
+import { RadioBoolButton } from "../../common/Radio"
 
 const modalBlockProps: BlockProps = {
   width: '750px',
@@ -123,6 +123,7 @@ const FieldDataProcessorAgreements = (props: { formikBag: FormikProps<ProcessFor
   const agreementRef = React.useRef<HTMLInputElement>(null);
 
   const onAddAgreement = (arrayHelpers: FieldArrayRenderProps) => {
+    if (!currentKeywordValue) return
     arrayHelpers.push(currentKeywordValue);
     setCurrentKeywordValue("");
     if (agreementRef && agreementRef.current) {
@@ -133,7 +134,7 @@ const FieldDataProcessorAgreements = (props: { formikBag: FormikProps<ProcessFor
     <FieldArray
       name="dataProcessing.dataProcessorAgreements"
       render={arrayHelpers => (
-        <Block>
+        <Block width="100%">
           <Input
             type="text"
             size="compact"
@@ -143,6 +144,7 @@ const FieldDataProcessorAgreements = (props: { formikBag: FormikProps<ProcessFor
             onKeyDown={(e) => {
               if (e.key === 'Enter') onAddAgreement(arrayHelpers)
             }}
+            onBlur={() => onAddAgreement(arrayHelpers)}
             inputRef={agreementRef}
             overrides={{
               After: () => (
@@ -150,7 +152,6 @@ const FieldDataProcessorAgreements = (props: { formikBag: FormikProps<ProcessFor
                   type="button"
                   size="compact"
                   shape={SHAPE.square}
-                  onClick={() => onAddAgreement(arrayHelpers)}
                 >
                   <Plus/>
                 </Button>
