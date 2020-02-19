@@ -1,27 +1,27 @@
 import * as React from 'react'
-import { KeyboardEvent, useEffect, useState } from 'react'
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
-import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps, } from "formik";
-import { Block, BlockProps } from "baseui/block";
-import { Input, SIZE as InputSIZE } from "baseui/input";
-import { Select, Value } from 'baseui/select';
-import { Button, KIND, SHAPE, SIZE as ButtonSize } from "baseui/button";
-import { Plus } from "baseui/icon";
-import { Error, ModalBlock, ModalLabel } from "../../common/ModalSchema";
-import { DisclosureFormValues, ProcessFormValues } from "../../../constants";
+import {KeyboardEvent, useEffect, useState} from 'react'
+import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
+import {Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps,} from "formik";
+import {Block, BlockProps} from "baseui/block";
+import {Input, SIZE as InputSIZE} from "baseui/input";
+import {Select, Value} from 'baseui/select';
+import {Button, KIND, SHAPE, SIZE as ButtonSize} from "baseui/button";
+import {Plus} from "baseui/icon";
+import {Error, ModalBlock, ModalLabel} from "../../common/ModalSchema";
+import {DisclosureFormValues, ProcessFormValues} from "../../../constants";
 import CardLegalBasis from './CardLegalBasis'
-import { codelist, ListName } from "../../../service/Codelist"
-import { intl, theme } from "../../../util"
-import { ListLegalBases } from "../../common/LegalBasis"
-import { DateModalFields } from "../DateModalFields"
-import { hasSpecifiedDate } from "../../common/Durations"
-import { processSchema } from "../../common/schema"
-import { getTeam, mapTeamToOption, useTeamSearch } from "../../../api"
-import { Textarea } from "baseui/textarea"
-import { Card } from "baseui/card"
-import { renderTagList } from "../../common/TagList"
-import { Slider } from "baseui/slider"
-import { RadioBoolButton } from "../../common/Radio"
+import {codelist, ListName} from "../../../service/Codelist"
+import {intl, theme} from "../../../util"
+import {ListLegalBases} from "../../common/LegalBasis"
+import {DateModalFields} from "../DateModalFields"
+import {hasSpecifiedDate} from "../../common/Durations"
+import {processSchema} from "../../common/schema"
+import {getTeam, mapTeamToOption, useTeamSearch} from "../../../api"
+import {Textarea} from "baseui/textarea"
+import {Card} from "baseui/card"
+import {renderTagList} from "../../common/TagList"
+import {Slider} from "baseui/slider"
+import {RadioBoolButton} from "../../common/Radio"
 
 const modalBlockProps: BlockProps = {
   width: '750px',
@@ -331,7 +331,7 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
       >
         <Card overrides={cardOverrides}>
           <Block {...rowBlockProps} marginTop={0}>
-            <ModalLabel label={intl.retentionStart}/>
+            <ModalLabel label={intl.retention}/>
             <BoolField fieldName="retention.retentionPlan" value={formikBag.values.retention.retentionPlan}/>
           </Block>
 
