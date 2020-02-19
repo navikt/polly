@@ -22,6 +22,7 @@ import { searchInformationType, searchProcess } from "../api"
 import { ObjectType } from "../constants"
 import { urlForObject } from "./common/RouteLink"
 import { prefixBiasedSort } from "../util/sort"
+import { codelist, ListName } from "../service/Codelist"
 
 
 const LoggedInHeader = () => {
@@ -162,7 +163,15 @@ const TempHeader = (props: TempHeaderProps & RouteComponentProps) => {
         setSearchResult(infoTypes.sort(compareFn))
 
         const resProcess = await searchProcess(search)
-        const processes = resProcess.content.map(it => ({id: it.id, name: it.name, label: <SearchLabel name={it.name} type={intl.process}/>, type: ObjectType.PROCESS}))
+        const processes = resProcess.content.map(it => {
+          const purpose = codelist.getShortname(ListName.PURPOSE, it.purposeCode)
+          return ({
+            id: it.id,
+            name: `${it.name} ${purpose}`,
+            label: <SearchLabel name={`${purpose}: ${it.name}`} type={intl.process}/>,
+            type: ObjectType.PROCESS
+          })
+        })
         setSearchResult([...processes, ...infoTypes].sort(compareFn))
         setLoading(false)
       }
