@@ -4,7 +4,7 @@ import { Option, StatefulSelect } from 'baseui/select';
 
 import ProcessList from "../components/Purpose";
 import { Block } from "baseui/block";
-import { codelist, ListName } from "../service/Codelist";
+import { codelist, ListName, List } from "../service/Codelist";
 import { intl, theme } from "../util"
 import illustration from "../resources/purpose_illustration.svg"
 import { H4, Label2, Paragraph2 } from "baseui/typography";
@@ -12,6 +12,7 @@ import { generatePath } from "react-router";
 import { getProcessPurposeCount } from "../api"
 import { RouteComponentProps } from "react-router-dom";
 import { StyledSpinnerNext } from "baseui/spinner"
+import { RadioGroup, Radio, ALIGN } from "baseui/radio";
 
 const renderDescription = (description: string) => (
   <Block marginBottom="scale1000">
@@ -28,6 +29,7 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
   const [isLoadingPurpose, setLoadingPurpose] = React.useState(false);
   const [processCount, setProcessCount] = React.useState<{ [purpose: string]: number }>(({}));
   const [statefulSelectOptions, setStatefulSelectOptions] = useState<{ id: string, label: string }[]>();
+  const [selectedRadioValue, setSelectedRadioValue] = React.useState('1')
   const updatePath = (params?: PathParams) => {
     let nextPath
     if (!params) nextPath = generatePath(props.match.path)
@@ -42,7 +44,7 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
       updatePath()
     } else {
       setCurrentPurposeValue(purposeCode)
-      updatePath({purposeCode: purposeCode, processId: processId})
+      updatePath({ purposeCode: purposeCode, processId: processId })
     }
     setLoadingPurpose(false);
   }
@@ -52,9 +54,17 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
       id: option.label!.toString(),
       label: <Block display="flex" justifyContent="space-between" width="100%">
         <span>{option.label}</span>
-        <Block $style={{opacity: .5}}>{option.id && `${intl.processes}: ${processCount[option.id]}`}</Block>
+        <Block $style={{ opacity: .5 }}>{option.id && `${intl.processes}: ${processCount[option.id]}`}</Block>
       </Block>
     }
+  }
+
+  const handleRadioButtonChange = (listname: ListName) => {
+      console.log(listname)
+      setLoading(true)
+      setSelectedRadioValue(listname)
+      setStatefulSelectOptions(codelist.getParsedOptions(listname))
+      setLoading(false)
   }
 
   useEffect(() => {
@@ -72,10 +82,20 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
     <React.Fragment>
       {!isLoading && (
         <Block marginBottom="3rem">
-          <H4>Behandlingsaktiviteter</H4>
+          <H4>{intl.processingActivities}</H4>
+          <Block display="flex" marginBottom="scale400">
+            <RadioGroup
+              value={selectedRadioValue}
+              onChange={e => handleRadioButtonChange(e.target.value as ListName)}
+              align={ALIGN.horizontal}
+            >
+              <Radio value={ListName.PURPOSE as ListName} overrides={{ Root: {style: { marginRight: '1rem'}}}}>{intl.purpose}</Radio>
+              <Radio value={ListName.DEPARTMENT as ListName}>{intl.department}</Radio>
+            </RadioGroup>
+          </Block>
           <StatefulSelect
             options={codelist.getParsedOptions(ListName.PURPOSE).map(purposeLabelView)}
-            initialState={{value: currentPurposeValue ? [{id: currentPurposeValue, label: codelist.getShortname(ListName.PURPOSE, currentPurposeValue)} as Option] : []}}
+            initialState={{ value: currentPurposeValue ? [{ id: currentPurposeValue, label: codelist.getShortname(ListName.PURPOSE, currentPurposeValue) } as Option] : [] }}
             placeholder={intl.purposeSelect}
             maxDropdownHeight="350px"
             onChange={
@@ -99,17 +119,17 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
         </Block>
       )}
 
-      {isLoadingPurpose && <StyledSpinnerNext/>}
+      {isLoadingPurpose && <StyledSpinnerNext />}
       {!isLoadingPurpose && currentPurposeValue && (
         <React.Fragment>
           {renderDescription(codelist.getDescription(ListName.PURPOSE, currentPurposeValue))}
-          <ProcessList purposeCode={currentPurposeValue}/>
+          <ProcessList purposeCode={currentPurposeValue} />
         </React.Fragment>
       )
       }
       {!currentPurposeValue && (
         <Block display="flex" justifyContent="center" alignContent="center" marginTop={theme.sizing.scale2400}>
-          <img src={illustration} alt={intl.treasureIllustration} style={{maxWidth: "65%"}}/>
+          <img src={illustration} alt={intl.treasureIllustration} style={{ maxWidth: "65%" }} />
         </Block>
       )}
     </React.Fragment>

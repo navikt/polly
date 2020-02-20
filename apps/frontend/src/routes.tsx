@@ -24,9 +24,10 @@ import DocumentEditPage from "./pages/DocumentEditPage";
 const Routes = (): JSX.Element => (
   <Root>
     <Switch>
-      <Route exact path="/purpose/:purposeCode?/:processId?" component={PurposePage}/>
       <Route exact path="/thirdparty" component={ThirdPartySearchPage}/>
       <Route exact path="/thirdparty/:thirdPartyCode" component={ThirdPartyMetadataPage}/>
+      <Route exact path="/processActivities/purpose/:purposeCode?/:processId?" component={PurposePage}/>
+
       <Route
         exact
         path="/informationtype/create"

@@ -39,10 +39,10 @@ export const urlForObject = async (type: ObjectType, id: string, audit?: AuditIt
       return `/informationtype/${id}`
     case ObjectType.POLICY:
       const policy = await getPolicy(id)
-      return `/purpose/${policy.purposeCode.code}/${policy.process.id}`
+      return `/processActivities/purpose/${policy.purposeCode.code}/${policy.process.id}`
     case ObjectType.PROCESS:
       const process = await getProcess(id)
-      return `/purpose/${process.purposeCode}/${process.id}`
+      return `/processActivities/purpose/${process.purposeCode}/${process.id}`
     case ObjectType.DISCLOSURE:
       const disclosure = await getDisclosure(id)
       return `/thirdparty/${disclosure.recipient.code}`
