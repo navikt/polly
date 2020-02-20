@@ -7,6 +7,7 @@ import { Block } from "baseui/block"
 import { AuditButton } from "../audit/AuditButton"
 import { AuditItem, ObjectType } from "../../constants"
 import { useStyletron } from "baseui"
+import { ListName } from "../../service/Codelist"
 
 type RouteLinkProps = {
   href: string
@@ -33,7 +34,7 @@ type ObjectLinkProps = {
   disable?: boolean
   hideUnderline?: boolean
 }
-export const urlForObject = async (type: ObjectType, id: string, audit?: AuditItem) => {
+export const urlForObject = async (type: ObjectType | ListName, id: string, audit?: AuditItem) => {
   switch (type) {
     case ObjectType.INFORMATION_TYPE:
       return `/informationtype/${id}`
@@ -54,6 +55,9 @@ export const urlForObject = async (type: ObjectType, id: string, audit?: AuditIt
       if (audit && (audit.data as any)?.type === 'SETTINGS') {
         return '/admin/settings'
       }
+      break;
+    case ListName.PURPOSE:
+      return `/purpose/${id}`
   }
   console.warn('couldn\'t find object type ' + type)
   return ''

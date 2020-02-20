@@ -1,17 +1,17 @@
 import * as React from "react";
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
+import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
 
-import { Field, FieldProps, Form, Formik, } from "formik";
+import {Field, FieldProps, Form, Formik,} from "formik";
 
-import { Button, KIND } from "baseui/button";
-import { Block, BlockProps } from "baseui/block";
-import { Label2 } from "baseui/typography";
-import { Textarea } from "baseui/textarea";
-import { Input, SIZE as InputSIZE } from "baseui/input";
-import { CodeListFormValues, ProcessFormValues } from "../../constants";
-import { intl } from "../../util";
-import { Error } from "../common/ModalSchema";
-import { codeListSchema } from "../common/schema"
+import {Button, KIND} from "baseui/button";
+import {Block, BlockProps} from "baseui/block";
+import {Label2} from "baseui/typography";
+import {Textarea} from "baseui/textarea";
+import {Input, SIZE as InputSIZE} from "baseui/input";
+import {CodeListFormValues, ProcessFormValues} from "../../constants";
+import {intl} from "../../util";
+import {Error} from "../common/ModalSchema";
+import {codeListSchema} from "../common/schema"
 
 const modalBlockProps: BlockProps = {
   width: '700px',
@@ -66,7 +66,9 @@ const UpdateCodeListModal = ({title, initialValues, errorOnUpdate, isOpen, onClo
                     name="shortName"
                     render={({field}: FieldProps<ProcessFormValues>) => (
                       <Input
-                        value={formik.values.shortName} onChange={formik.handleChange}
+                        name="shortName"
+                        value={formik.values.shortName}
+                        onChange={formik.handleChange}
                         type="input"
                         size={InputSIZE.default}
                       />
@@ -82,7 +84,9 @@ const UpdateCodeListModal = ({title, initialValues, errorOnUpdate, isOpen, onClo
                     name="description"
                     render={({field}: FieldProps<ProcessFormValues>) => (
                       <Textarea
-                        value={formik.values.description} onChange={formik.handleChange}
+                        name="description"
+                        value={formik.values.description}
+                        onChange={formik.handleChange}
                         type="input"
                       />
                     )}

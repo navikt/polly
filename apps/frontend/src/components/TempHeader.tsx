@@ -139,7 +139,7 @@ interface TempHeaderProps {
   setLang: (lang: string) => void
 }
 
-type SearchItem = { id: string, name: string, label: ReactElement, type: ObjectType }
+type SearchItem = { id: string, name: string, label: ReactElement, type: ObjectType | ListName }
 
 const SearchLabel = (props: { name: string, type: string }) =>
   <Block display="flex" justifyContent="space-between" width="100%">
@@ -158,9 +158,22 @@ const TempHeader = (props: TempHeaderProps & RouteComponentProps) => {
       if (search && search.length > 2) {
         const compareFn = (a: SearchItem, b: SearchItem) => prefixBiasedSort(search, a.name, b.name)
         setLoading(true)
+        let results
+
+        const purposes = codelist.getCodes(ListName.PURPOSE).filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
+        .map(c => ({
+          id: c.code,
+          name: c.shortName,
+          label: <SearchLabel name={c.shortName} type={intl.purpose}/>,
+          type: ListName.PURPOSE
+        }))
+        results = purposes.sort(compareFn)
+        setSearchResult(results)
+
         const res = await searchInformationType(search)
         const infoTypes = res.content.map(it => ({id: it.id, name: it.name, label: <SearchLabel name={it.name} type={intl.informationType}/>, type: ObjectType.INFORMATION_TYPE}))
-        setSearchResult(infoTypes.sort(compareFn))
+        results = [...results, ...infoTypes].sort(compareFn)
+        setSearchResult(results)
 
         const resProcess = await searchProcess(search)
         const processes = resProcess.content.map(it => {
@@ -172,7 +185,8 @@ const TempHeader = (props: TempHeaderProps & RouteComponentProps) => {
             type: ObjectType.PROCESS
           })
         })
-        setSearchResult([...processes, ...infoTypes].sort(compareFn))
+        results = [...results, ...processes].sort(compareFn)
+        setSearchResult(results)
         setLoading(false)
       }
     })()
