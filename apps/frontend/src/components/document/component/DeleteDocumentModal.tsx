@@ -8,12 +8,13 @@ import * as React from "react";
 type ModalDeleteProps = {
   title: string,
   isOpen: boolean,
+  disable: boolean
   documentName: String,
   submit: () => void,
   onClose: () => void,
 };
 
-const DeleteDocumentModal = ({title, documentName, isOpen, onClose, submit}: ModalDeleteProps) => {
+const DeleteDocumentModal = ({title, documentName, isOpen, onClose, submit, disable}: ModalDeleteProps) => {
   return (
     <Modal
       onClose={onClose}
@@ -36,9 +37,10 @@ const DeleteDocumentModal = ({title, documentName, isOpen, onClose, submit}: Mod
           >
             {intl.abort}
           </Button>
-          <Button onClick={
-            () => submit()
-          }>
+          <Button
+            onClick={() => submit()}
+            disabled={disable}
+          >
             {intl.delete}
           </Button>
         </Block>
