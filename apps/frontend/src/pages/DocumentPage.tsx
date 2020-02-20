@@ -160,10 +160,20 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
               </Block>
             )}
           </Block>
-          <Block>
+          <Block overrides={{
+            Block:{
+              style:{
+                borderStyle:"solid",
+                padding:"5px",
+                marginTop:"5px",
+                borderColor:"#9BC1E6"
+              }
+            }
+          }}>
             {currentDocument && <DocumentMetadata document={currentDocument}/>}
           </Block>
-          <Block marginTop="2rem">
+
+          <Block marginTop="100px">
             {documentUsages && documentUsages!.length > 0 && (
               <DocumentProcessesTable documentUsages={documentUsages}/>)}
           </Block>
