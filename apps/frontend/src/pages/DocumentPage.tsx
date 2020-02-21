@@ -19,13 +19,13 @@ import { H4 } from "baseui/typography";
 import { StyledSpinnerNext } from "baseui/spinner"
 
 const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
-  const [isLoading, setLoading] = React.useState();
+  const [isLoading, setLoading] = React.useState(false);
   const [selectValue, setSelectValue] = React.useState<Value>([]);
   const [currentDocument, setCurrentDocument] = React.useState<Document | undefined>();
   const [documentSearchResult, setDocumentSearch, documentSearchLoading] = useDocumentSearch();
   const [documentId, setDocumentId] = React.useState<string | undefined>(props.match.params.id);
   const [isDeleteModalVisible, setDeleteModalVisibility] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState();
+  const [errorMessage, setErrorMessage] = React.useState<string>();
   useAwait(user.wait());
 
   const handleDelete = () => {
