@@ -12,7 +12,7 @@ const FieldInformationType = (props: {
   const { documentInformationType, handleChange } = props
   const [searchKeyword, setSearchKeyword, isLoading] = useInfoTypeSearch();
 
-  const [selectedInformationType, setSelectedInformationType] = React.useState();
+  const [selectedInformationType, setSelectedInformationType] = React.useState<PolicyInformationType>();
 
   React.useEffect(() => {
     setSelectedInformationType(documentInformationType.informationType)
@@ -35,7 +35,7 @@ const FieldInformationType = (props: {
           }
         }
       }}
-      value={selectedInformationType}
+      value={selectedInformationType as any}
       onInputChange={event => setSearchKeyword(event.currentTarget.value)}
       onChange={(params) => {
           setSelectedInformationType(params.value[0] as PolicyInformationType)
