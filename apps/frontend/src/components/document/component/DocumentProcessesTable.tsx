@@ -17,7 +17,7 @@ const DocumentProcessesTable = (props: DocumentProcessesProps) => {
   })
   return (
     <>
-      <Label2 font="font400" marginBottom="scale800">{intl.purposeUse}</Label2>
+      <Label2 font="font400" marginBottom="scale800">{intl.containsProcesses}</Label2>
       <Table
         headers={
           <>

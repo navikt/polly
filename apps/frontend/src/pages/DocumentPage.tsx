@@ -160,18 +160,22 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
               </Block>
             )}
           </Block>
-          <Block overrides={{
-            Block:{
-              style:{
-                borderStyle:"solid",
-                padding:"5px",
-                marginTop:"5px",
-                borderColor:"#9BC1E6"
-              }
-            }
-          }}>
-            {currentDocument && <DocumentMetadata document={currentDocument}/>}
-          </Block>
+          {
+            currentDocument && (
+              <Block overrides={{
+                Block:{
+                  style:{
+                    borderStyle:"solid",
+                    padding:"5px",
+                    marginTop:"5px",
+                    borderColor: "#9BC1E6"
+                  }
+                }
+              }}>
+                <DocumentMetadata document={currentDocument}/>
+              </Block>
+            )
+          }
 
           <Block marginTop="100px">
             {documentUsages && documentUsages!.length > 0 && (
@@ -191,6 +195,7 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
         submit={handleDelete}
         onClose={() => setDeleteModalVisibility(false)}
         disable={isDeletionAllowed}
+        documentUsageCount={documentUsages?.length}
       />
     </React.Fragment>
   );

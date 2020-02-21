@@ -71,6 +71,8 @@ export interface IStrings {
   lastEvents: string;
 
   // sentence
+  usedProcess: string;
+  containsProcesses: string;
   loggedInStatus: string;
   notLoggedInStatus: string;
   couldntLoad: string;
