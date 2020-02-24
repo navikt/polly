@@ -1,13 +1,14 @@
 import * as React from 'react'
-import { intl, theme } from '../../util';
-import { Block, BlockProps } from 'baseui/block';
-import { H6, Paragraph2, Paragraph4 } from 'baseui/typography';
+import {intl, theme} from '../../util';
+import {Block, BlockProps} from 'baseui/block';
+import {H6, Paragraph2, Paragraph4} from 'baseui/typography';
 import RouteLink from '../common/RouteLink';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { features } from "../../util/feature-toggle"
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faChevronDown, faChevronRight} from '@fortawesome/free-solid-svg-icons';
+import {features} from "../../util/feature-toggle"
 import NavLogo from '../../resources/navlogo.svg'
 import Slackogo from '../../resources/Slack_Monochrome_White.svg'
+import {useLocation} from 'react-router-dom'
 
 const sideBarProps: BlockProps = {
   position: 'fixed',
@@ -21,16 +22,23 @@ const items: BlockProps = {
   paddingLeft: '1rem'
 }
 
-const NavItem = (props: { text: string, to: string }) => (
-  <React.Fragment>
-    <RouteLink href={props.to}>
-      <Block display="flex" alignItems="center">
-        <Block marginRight="scale400"><FontAwesomeIcon icon={faChevronRight} color="white" size="lg"/></Block>
-        <Paragraph2 color="white">{props.text}</Paragraph2>
-      </Block>
-    </RouteLink>
-  </React.Fragment>
-)
+const NavItem = (props: { text: string, to: string, active?: boolean }) => {
+  return (
+    <React.Fragment>
+      <RouteLink href={props.to}>
+        <Block display="flex" alignItems="center">
+          <Block marginRight="scale400">
+            <FontAwesomeIcon
+              icon={useLocation().pathname === props.to ? faChevronDown : faChevronRight}
+              color="white"
+              size="lg"/>
+          </Block>
+          <Paragraph2 color="white">{props.text}</Paragraph2>
+        </Block>
+      </RouteLink>
+    </React.Fragment>
+  )
+}
 
 const Brand = () => (
   <RouteLink href="/">
