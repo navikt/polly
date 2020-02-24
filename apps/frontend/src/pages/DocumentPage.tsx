@@ -26,11 +26,10 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
   const [documentSearchResult, setDocumentSearch, documentSearchLoading] = useDocumentSearch();
   const [documentId, setDocumentId] = React.useState<string | undefined>(props.match.params.id);
   const [isDeleteModalVisible, setDeleteModalVisibility] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState();
   const [documentUsages, setDocumentUsages] = React.useState<[Process]>();
   const [isDeletionAllowed, activateDeletion] = React.useState<boolean>(false);
-
   const [errorMessage, setErrorMessage] = React.useState<string>();
+
   useAwait(user.wait());
 
   const handleDelete = () => {
