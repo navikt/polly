@@ -1,6 +1,6 @@
-import {Code, codelist, ListName} from "./service/Codelist"
-import {ColumnCompares} from "./util/hooks"
-import {intl} from "./util"
+import { Code, codelist, ListName } from "./service/Codelist"
+import { ColumnCompares } from "./util/hooks"
+import { intl } from "./util"
 
 export interface InformationtypeFormValues {
   id?: string
@@ -164,7 +164,7 @@ export interface Process extends IDurationed {
 }
 
 export interface ProcessPurposeCount {
-  purposes: { [purpose: string]: number }
+  counts: { [code: string]: number }
 }
 
 export interface UserInfo {

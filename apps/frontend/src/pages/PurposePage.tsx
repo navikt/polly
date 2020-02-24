@@ -61,7 +61,7 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
     (async () => {
       setLoading(true);
       await codelist.wait();
-      setProcessCount((await getProcessPurposeCount()).purposes)
+      setProcessCount((await getProcessPurposeCount()).counts)
       if (props.match.params.purposeCode) await handleChangePurpose(props.match.params.purposeCode, props.match.params.processId)
       setLoading(false);
       setStatefulSelectOptions(codelist.getParsedOptions(ListName.PURPOSE));
