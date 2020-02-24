@@ -18,7 +18,7 @@ import { TriangleDown } from 'baseui/icon';
 import { FlagIcon } from "./common/Flag"
 import { paddingAll } from "./common/Style"
 import { Select, TYPE } from "baseui/select"
-import { searchInformationType, searchProcess } from "../api"
+import { searchInformationType, searchProcess, searchTeam } from "../api"
 import { ObjectType } from "../constants"
 import { urlForObject } from "./common/RouteLink"
 import { prefixBiasedSort } from "../util/sort"
@@ -139,7 +139,7 @@ interface TempHeaderProps {
   setLang: (lang: string) => void
 }
 
-type SearchItem = { id: string, name: string, label: ReactElement, type: ObjectType | ListName }
+type SearchItem = { id: string, name: string, label: ReactElement, type: ObjectType | ListName | 'team' }
 
 const SearchLabel = (props: { name: string, type: string }) =>
   <Block display="flex" justifyContent="space-between" width="100%">
@@ -147,36 +147,47 @@ const SearchLabel = (props: { name: string, type: string }) =>
     <Block $style={{opacity: .5}}>{props.type}</Block>
   </Block>
 
+function searchCodelist(search: string, list: ListName, typeName: string) {
+  return codelist.getCodes(list).filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
+  .map(c => ({
+    id: c.code,
+    name: c.shortName,
+    label: <SearchLabel name={c.shortName} type={typeName}/>,
+    type: list
+  }))
+}
+
 const TempHeader = (props: TempHeaderProps & RouteComponentProps) => {
   useAwait(user.wait())
-  const [search, setSearch] = useDebouncedState<string>('', 200);
+  const [search, setSearch] = useDebouncedState<string>('', 500);
   const [searchResult, setSearchResult] = React.useState<SearchItem[]>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
       if (search && search.length > 2) {
+        let results: SearchItem[] = []
         const compareFn = (a: SearchItem, b: SearchItem) => prefixBiasedSort(search, a.name, b.name)
+        const add = (items: SearchItem[]) => {
+          results = [...results, ...items].sort(compareFn)
+          setSearchResult(results)
+        }
         setLoading(true)
-        let results
 
-        const purposes = codelist.getCodes(ListName.PURPOSE).filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
-        .map(c => ({
-          id: c.code,
-          name: c.shortName,
-          label: <SearchLabel name={c.shortName} type={intl.purpose}/>,
-          type: ListName.PURPOSE
-        }))
-        results = purposes.sort(compareFn)
-        setSearchResult(results)
+        add(searchCodelist(search, ListName.PURPOSE, intl.purpose))
+        add(searchCodelist(search, ListName.DEPARTMENT, intl.department))
+        add(searchCodelist(search, ListName.SUB_DEPARTMENT, intl.subDepartment))
 
-        const res = await searchInformationType(search)
-        const infoTypes = res.content.map(it => ({id: it.id, name: it.name, label: <SearchLabel name={it.name} type={intl.informationType}/>, type: ObjectType.INFORMATION_TYPE}))
-        results = [...results, ...infoTypes].sort(compareFn)
-        setSearchResult(results)
+        const infoTypesRes = await searchInformationType(search)
+        add(infoTypesRes.content.map(it => ({
+          id: it.id,
+          name: it.name,
+          label: <SearchLabel name={it.name} type={intl.informationType}/>,
+          type: ObjectType.INFORMATION_TYPE
+        })))
 
         const resProcess = await searchProcess(search)
-        const processes = resProcess.content.map(it => {
+        add(resProcess.content.map(it => {
           const purpose = codelist.getShortname(ListName.PURPOSE, it.purposeCode)
           return ({
             id: it.id,
@@ -184,9 +195,15 @@ const TempHeader = (props: TempHeaderProps & RouteComponentProps) => {
             label: <SearchLabel name={`${purpose}: ${it.name}`} type={intl.process}/>,
             type: ObjectType.PROCESS
           })
-        })
-        results = [...results, ...processes].sort(compareFn)
-        setSearchResult(results)
+        }))
+
+        const resTeams = await searchTeam(search)
+        add(resTeams.content.map(it => ({
+          id: it.id,
+          name: it.name,
+          label: <SearchLabel name={it.name} type={intl.productTeam}/>,
+          type: 'team'
+        })))
         setLoading(false)
       }
     })()

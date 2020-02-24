@@ -34,7 +34,7 @@ type ObjectLinkProps = {
   disable?: boolean
   hideUnderline?: boolean
 }
-export const urlForObject = async (type: ObjectType | ListName, id: string, audit?: AuditItem) => {
+export const urlForObject = async (type: ObjectType | ListName | 'team', id: string, audit?: AuditItem) => {
   switch (type) {
     case ObjectType.INFORMATION_TYPE:
       return `/informationtype/${id}`
@@ -58,6 +58,12 @@ export const urlForObject = async (type: ObjectType | ListName, id: string, audi
       break;
     case ListName.PURPOSE:
       return `/purpose/${id}`
+    case 'team':
+      return `/process/team/${id}`
+    case ListName.DEPARTMENT:
+      return `/process/department/${id}`
+    case ListName.SUB_DEPARTMENT:
+      return `/process/subdepartment/${id}`
   }
   console.warn('couldn\'t find object type ' + type)
   return ''
