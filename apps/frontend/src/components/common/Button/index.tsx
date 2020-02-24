@@ -17,6 +17,8 @@ interface ButtonProps {
   tooltip?: string
   children: ReactNode
   onClick?: () => void
+  startEnhancer?: ReactNode
+  disabled?: boolean
 }
 
 interface TooltipProps {
@@ -58,6 +60,7 @@ const Button = (props: ButtonProps) => {
   return (
     <Tooltip tooltip={props.tooltip}>
       <BaseUIButton kind={baseuiKind} size={props.size} shape={props.shape} onClick={() => props.onClick?.()} overrides={{BaseButton: overrides}}
+                    startEnhancer={props.startEnhancer} disabled={props.disabled}
       >
         {props.icon && <FontAwesomeIcon icon={props.icon} style={{marginRight: ".5rem"}}/>} {props.children}
       </BaseUIButton>

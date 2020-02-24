@@ -1,41 +1,34 @@
 import * as React from 'react'
-import {ReactElement, useEffect} from 'react'
-import {Accordion, Panel} from 'baseui/accordion'
-import {generatePath, RouteComponentProps, withRouter} from 'react-router'
-import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
-import {StyledSpinnerNext} from 'baseui/spinner';
-import {Block} from 'baseui/block';
-import {Label1, Label2, Paragraph2} from 'baseui/typography';
-import {intl, theme, useAwait} from '../../../util';
+import { ReactElement, useEffect } from 'react'
+import { Accordion, Panel } from 'baseui/accordion'
+import { generatePath, RouteComponentProps, withRouter } from 'react-router'
+import { KIND, SIZE as ButtonSize } from "baseui/button";
+import { StyledSpinnerNext } from 'baseui/spinner';
+import { Block } from 'baseui/block';
+import { Label1, Label2, Paragraph2 } from 'baseui/typography';
+import { intl, theme, useAwait } from '../../../util';
 import _includes from 'lodash/includes'
-import {user} from "../../../service/User";
-import {Plus} from 'baseui/icon'
-import {
-  AddDocumentToProcessFormValues,
-  LegalBasesStatus,
-  Policy,
-  PolicyFormValues,
-  Process,
-  ProcessFormValues
-} from "../../../constants"
-import {LegalBasisView} from "../../common/LegalBasis"
-import {codelist, ListName} from "../../../service/Codelist"
+import { user } from "../../../service/User";
+import { Plus } from 'baseui/icon'
+import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues } from "../../../constants"
+import { LegalBasisView } from "../../common/LegalBasis"
+import { codelist, ListName } from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy';
-import {convertProcessToFormValues} from "../../../api"
-import {PathParams} from "../../../pages/PurposePage"
-import {ActiveIndicator} from "../../common/Durations"
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faChevronDown, faChevronRight, faEdit, faTrash} from '@fortawesome/free-solid-svg-icons';
-import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal';
-import {TeamPopover} from "../../common/Team"
-import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
-import {AuditButton} from "../../audit/AuditButton"
-import {AddDocumentModal} from "./AddDocumentModal"
-import {RetentionView} from "../Retention"
-import {boolToText} from "../../common/Radio"
-import NewButton from '../../common/Button'
+import { convertProcessToFormValues } from "../../../api"
+import { PathParams } from "../../../pages/PurposePage"
+import { ActiveIndicator } from "../../common/Durations"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown, faChevronRight, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal';
+import { TeamPopover } from "../../common/Team"
+import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
+import { AuditButton } from "../../audit/AuditButton"
+import { AddDocumentModal } from "./AddDocumentModal"
+import { RetentionView } from "../Retention"
+import { boolToText } from "../../common/Radio"
+import Button from '../../common/Button'
 
 type AccordionProcessProps = {
   isLoading: boolean
@@ -57,37 +50,6 @@ type AccordionProcessProps = {
 
 const AccordionTitle = (props: { process: Process, expanded: boolean, hasAccess: boolean, editProcess: () => void, deleteProcess: () => void }) => {
   const {process, expanded, hasAccess} = props
-
-  const renderEditProcessButton = () => (
-    <StatefulTooltip content={intl.edit} placement={PLACEMENT.top}>
-      <Button
-        size={ButtonSize.compact}
-        kind={KIND.secondary}
-        onClick={props.editProcess}
-        overrides={{
-          BaseButton: {
-            style: () => {
-              return {marginRight: theme.sizing.scale500}
-            }
-          }
-        }}
-      >
-        <FontAwesomeIcon icon={faEdit} style={{marginRight: ".5rem"}}/>{intl.edit}
-      </Button>
-    </StatefulTooltip>
-  )
-  const renderDeleteProcessButton = () => (
-    <StatefulTooltip content={intl.delete} placement={PLACEMENT.top}>
-      <Button
-        size={ButtonSize.compact}
-        kind={KIND.secondary}
-        onClick={props.deleteProcess}
-      >
-        <FontAwesomeIcon icon={faTrash} style={{marginRight: ".5rem"}}/>{intl.delete}
-      </Button>
-    </StatefulTooltip>
-  )
-
   return <>
     <Block>
       <Label1 color={theme.colors.primary}>
@@ -104,25 +66,25 @@ const AccordionTitle = (props: { process: Process, expanded: boolean, hasAccess:
       {hasAccess && expanded && (
         <>
           <AuditButton id={process.id}/>
-          <NewButton 
-              kind={KIND.secondary} 
-              size={ButtonSize.compact}
-              icon={faEdit} 
-              tooltip={intl.edit} 
-              onClick={props.editProcess}
+          <Button
+            kind={'outline'}
+            size={ButtonSize.compact}
+            icon={faEdit}
+            tooltip={intl.edit}
+            onClick={props.editProcess}
           >
-              {intl.edit}
-          </NewButton>
-          <Block display="inline" marginRight={theme.sizing.scale500}></Block>
-          <NewButton 
-              kind={KIND.secondary} 
-              size={ButtonSize.compact}
-              icon={faTrash} 
-              tooltip={intl.delete} 
-              onClick={props.deleteProcess}
+            {intl.edit}
+          </Button>
+          <Block display="inline" marginRight={theme.sizing.scale500}/>
+          <Button
+            kind={'outline'}
+            size={ButtonSize.compact}
+            icon={faTrash}
+            tooltip={intl.delete}
+            onClick={props.deleteProcess}
           >
-              {intl.delete}
-          </NewButton>
+            {intl.delete}
+          </Button>
         </>
       )}
     </div>
@@ -310,8 +272,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
         size={ButtonSize.compact}
         kind={KIND.tertiary}
         onClick={() => setShowCreatePolicyModal(true)}
-        startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
-        overrides={{StartEnhancer: {style: {marginRight: theme.sizing.scale100}}}}
+        startEnhancer={() => <Block display="flex" justifyContent="center" marginRight={theme.sizing.scale100}><Plus size={22}/></Block>}
       >
         {intl.informationType}
       </Button>
@@ -324,8 +285,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
         size={ButtonSize.compact}
         kind={KIND.tertiary}
         onClick={() => setShowAddDocumentModal(true)}
-        startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
-        overrides={{StartEnhancer: {style: {marginRight: theme.sizing.scale100}}}}
+        startEnhancer={() => <Block display="flex" justifyContent="center" marginRight={theme.sizing.scale100}><Plus size={22}/></Block>}
       >
         {intl.document}
       </Button>
@@ -484,17 +444,10 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
               <Button
                 kind="secondary"
                 onClick={() => setShowDeleteModal(false)}
-                overrides={{
-                  BaseButton: {
-                    style: {
-                      marginRight: '1rem',
-                      marginLeft: '1rem'
-                    }
-                  }
-                }}
               >
                 {intl.abort}
               </Button>
+              <Block display="inline" marginRight={theme.sizing.scale500}/>
               <Button onClick={() =>
                 submitDeleteProcess(currentProcess).then(() => setShowDeleteModal(false)).catch(() => setShowDeleteModal(true))
               } disabled={!!currentProcess?.policies.length}>
