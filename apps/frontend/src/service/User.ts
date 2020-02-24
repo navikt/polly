@@ -41,8 +41,8 @@ class UserService {
     return this.userInfo.loggedIn
   }
 
-  public getNavIdent(): string {
-    return this.userInfo.navIdent ?? ''
+  public getIdent(): string {
+    return this.userInfo.ident ?? ''
   }
 
   public getEmail(): string {

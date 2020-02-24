@@ -170,7 +170,7 @@ export interface ProcessPurposeCount {
 export interface UserInfo {
   loggedIn: boolean
   groups: string[]
-  navIdent?: string
+  ident?: string
   name?: string
   givenName?: string
   familyName?: string
