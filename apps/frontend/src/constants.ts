@@ -291,6 +291,8 @@ export enum ObjectType {
   GENERIC_STORAGE = "GENERIC_STORAGE"
 }
 
+export type NavigableItem = ObjectType | ListName.PURPOSE | ListName.DEPARTMENT | ListName.SUB_DEPARTMENT | 'team'
+
 export interface AuditItem {
   action: AuditAction
   id: string
