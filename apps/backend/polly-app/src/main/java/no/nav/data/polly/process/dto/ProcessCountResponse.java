@@ -1,6 +1,5 @@
 package no.nav.data.polly.process.dto;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,8 +11,7 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"purposes"})
-public class PurposeCountResponse {
+public class ProcessCountResponse {
 
-    Map<String, Long> purposes;
+    Map<String, Long> counts;
 }

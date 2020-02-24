@@ -8,6 +8,7 @@ import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.dto.PolicyInformationTypeResponse;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.ProcessReadController.ProcessPage;
+import no.nav.data.polly.process.dto.ProcessCountResponse;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -174,6 +176,55 @@ class ProcessControllerIT extends IntegrationTestBase {
         assertThat(errorResp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(errorResp.getBody()).isNotNull();
         assertThat(errorResp.getBody()).contains("Cannot change purpose from AAP to KONTROLL");
+    }
+
+    @Test
+    void countPurposes() {
+        createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
+        createAndSavePolicy(PURPOSE_CODE1 + 2, createAndSaveInformationType());
+
+        ResponseEntity<ProcessCountResponse> resp = restTemplate.getForEntity("/process/count?purpose", ProcessCountResponse.class);
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        ProcessCountResponse purposeResponse = resp.getBody();
+        assertThat(purposeResponse).isNotNull();
+
+        assertThat(purposeResponse).isEqualTo(new ProcessCountResponse(Map.of(PURPOSE_CODE1, 1L, PURPOSE_CODE1 + 2, 1L, PURPOSE_CODE2, 0L)));
+    }
+
+    @Test
+    void countDepartment() {
+        createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
+
+        ResponseEntity<ProcessCountResponse> resp = restTemplate.getForEntity("/process/count?department", ProcessCountResponse.class);
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        ProcessCountResponse purposeResponse = resp.getBody();
+        assertThat(purposeResponse).isNotNull();
+
+        assertThat(purposeResponse).isEqualTo(new ProcessCountResponse(Map.of("DEP", 1L)));
+    }
+
+    @Test
+    void countSubDepartment() {
+        createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
+
+        ResponseEntity<ProcessCountResponse> resp = restTemplate.getForEntity("/process/count?subDepartment", ProcessCountResponse.class);
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        ProcessCountResponse purposeResponse = resp.getBody();
+        assertThat(purposeResponse).isNotNull();
+
+        assertThat(purposeResponse).isEqualTo(new ProcessCountResponse(Map.of("SUBDEP", 1L)));
+    }
+
+    @Test
+    void countTeam() {
+        createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
+
+        ResponseEntity<ProcessCountResponse> resp = restTemplate.getForEntity("/process/count?team", ProcessCountResponse.class);
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        ProcessCountResponse purposeResponse = resp.getBody();
+        assertThat(purposeResponse).isNotNull();
+
+        assertThat(purposeResponse).isEqualTo(new ProcessCountResponse(Map.of("teamname", 1L)));
     }
 
 }

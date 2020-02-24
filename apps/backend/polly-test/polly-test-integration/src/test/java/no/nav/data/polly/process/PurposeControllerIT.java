@@ -3,14 +3,11 @@ package no.nav.data.polly.process;
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.process.ProcessReadController.ProcessPage;
-import no.nav.data.polly.process.dto.PurposeCountResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,18 +30,5 @@ class PurposeControllerIT extends IntegrationTestBase {
         assertThat(purposeResponse.getContent().get(0)).isEqualTo(
                 processResponseBuilder(policy.getProcess().getId())
                         .build());
-    }
-
-    @Test
-    void countPurposes() {
-        createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
-        createAndSavePolicy(PURPOSE_CODE1 + 2, createAndSaveInformationType());
-
-        ResponseEntity<PurposeCountResponse> resp = restTemplate.getForEntity("/process/count/purpose", PurposeCountResponse.class);
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        PurposeCountResponse purposeResponse = resp.getBody();
-        assertThat(purposeResponse).isNotNull();
-
-        assertThat(purposeResponse).isEqualTo(new PurposeCountResponse(Map.of(PURPOSE_CODE1, 1L, PURPOSE_CODE1 + 2, 1L, PURPOSE_CODE2, 0L)));
     }
 }

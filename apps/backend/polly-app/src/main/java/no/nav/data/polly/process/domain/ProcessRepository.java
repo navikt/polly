@@ -27,6 +27,15 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
     @Query(value = "select * from process where name ilike %?1%", nativeQuery = true)
     List<Process> findByNameContaining(String name);
 
-    @Query(value = "select p.purposeCode as purposeCode, count(p) as count from Process p group by p.purposeCode")
-    List<PurposeCount> countByPurposeCode();
+    @Query(value = "select p.purposeCode as code, count(p) as count from Process p group by p.purposeCode")
+    List<ProcessCount> countByPurposeCode();
+
+    @Query(value = "select data->>'department' as code, count(1) as count from process group by data->>'department'", nativeQuery = true)
+    List<ProcessCount> countByDepartmentCode();
+
+    @Query(value = "select data->>'subDepartment' as code, count(1) as count from process group by data->>'subDepartment'", nativeQuery = true)
+    List<ProcessCount> countBySubDepartmentCode();
+
+    @Query(value = "select data->>'productTeam' as code, count(1) as count from process group by data->>'productTeam'", nativeQuery = true)
+    List<ProcessCount> countByTeam();
 }

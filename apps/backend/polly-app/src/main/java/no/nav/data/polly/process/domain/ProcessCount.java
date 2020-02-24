@@ -1,8 +1,8 @@
 package no.nav.data.polly.process.domain;
 
-public interface PurposeCount {
+public interface ProcessCount {
 
-    String getPurposeCode();
+    String getCode();
 
     Long getCount();
 }
