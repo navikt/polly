@@ -29,6 +29,7 @@ export interface IStrings {
   navMaster: string;
   productTeam: string;
   product: string;
+  products: string;
   system: string;
   disclosure: string;
   disclosures: string;
@@ -70,6 +71,8 @@ export interface IStrings {
   lastEvents: string;
 
   // sentence
+  usedProcess: string;
+  containsProcesses: string;
   loggedInStatus: string;
   notLoggedInStatus: string;
   couldntLoad: string;

@@ -1,8 +1,8 @@
 import React from "react";
-import { Block } from "baseui/block";
-import { Label2, Paragraph2 } from "baseui/typography";
-import { Document } from "../../constants";
-import { intl } from "../../util";
+import {Block} from "baseui/block";
+import {Label2, Paragraph2} from "baseui/typography";
+import {Document} from "../../constants";
+import {intl} from "../../util";
 import DocumentInfoTypeTable from "./DocumentInfoTypeTable";
 
 const renderTextWithLabel = (label: string, text: string) => (
@@ -25,7 +25,7 @@ const DocumentMetadata = (props: DocumentMetadata) => {
             {renderTextWithLabel(intl.description, document.description)}
 
             <Block marginTop="scale1000">
-                <Label2 font="font400" marginBottom="scale800">{intl.informationTypes}</Label2>
+                <Label2 font="font400" marginBottom="scale800">{intl.usedProcess}</Label2>
                 <DocumentInfoTypeTable list={document.informationTypes}/>
             </Block>
         </React.Fragment>

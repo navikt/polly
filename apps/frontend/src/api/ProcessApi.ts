@@ -1,7 +1,7 @@
 import axios from "axios"
-import { PageResponse, Process, ProcessFormValues, ProcessPurposeCount } from "../constants"
-import { env } from "../util/env"
-import { convertLegalBasesToFormValues } from "./PolicyApi"
+import {PageResponse, Process, ProcessFormValues, ProcessPurposeCount} from "../constants"
+import {env} from "../util/env"
+import {convertLegalBasesToFormValues} from "./PolicyApi"
 
 export const getProcess = async (processId: string) => {
   const data = (await axios.get<Process>(`${env.pollyBaseUrl}/process/${processId}`)).data
@@ -36,6 +36,10 @@ export const updateProcess = async (process: ProcessFormValues) => {
   data.policies.forEach(p => p.process = {...data, policies: []})
   return data
 }
+
+export const getProcessesByDocument = async (documentId: string) => {
+  return (await axios.get(`${env.pollyBaseUrl}/process/?documentId=${documentId}`)).data
+};
 
 const mapBool = (b?: boolean) => b === true ? true : b === false ? false : undefined
 

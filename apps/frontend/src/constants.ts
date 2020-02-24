@@ -1,6 +1,6 @@
-import { Code, codelist, ListName } from "./service/Codelist"
-import { ColumnCompares } from "./util/hooks"
-import { intl } from "./util"
+import {Code, codelist, ListName} from "./service/Codelist"
+import {ColumnCompares} from "./util/hooks"
+import {intl} from "./util"
 
 export interface InformationtypeFormValues {
   id?: string
@@ -130,6 +130,13 @@ export const disclosureSort: ColumnCompares<Disclosure> = {
 export const documentSort: ColumnCompares<DocumentInfoTypeUse> = {
   informationType: (a, b) => a.informationType.name.localeCompare(b.informationType.name),
   subjectCategories: (a, b) => a.subjectCategories.length - b.subjectCategories.length
+}
+
+export const processSort: ColumnCompares<Process> = {
+  name:(a, b) => a.name.localeCompare(b.name),
+  purposeCode:(a, b) => (codelist.getShortname(ListName.PURPOSE, a.purposeCode) || "").localeCompare(codelist.getShortname(ListName.PURPOSE, b.purposeCode) || ""),
+  department:(a, b) => (a.department?.shortName || "").localeCompare(b.department?.shortName || ""),
+  products: (a,b) => a.products.length - b.products.length
 }
 
 export interface PolicyInformationType {

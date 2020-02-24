@@ -1,22 +1,23 @@
 import React from "react";
-import { RouteComponentProps } from "react-router-dom"
-import { intl, useAwait } from "../util";
-import { codelist } from "../service/Codelist";
-import { Block } from "baseui/block";
-import { Select, TYPE, Value } from "baseui/select";
-import { deleteDocument, getDocument, useDocumentSearch } from "../api";
-import { Document } from "../constants";
+import {RouteComponentProps} from "react-router-dom"
+import {intl, useAwait} from "../util";
+import {codelist} from "../service/Codelist";
+import {Block} from "baseui/block";
+import {Select, TYPE, Value} from "baseui/select";
+import {deleteDocument, getDocument, getProcessesByDocument, useDocumentSearch} from "../api";
+import {Document, Process} from "../constants";
 import DocumentMetadata from "../components/document/DocumentMetadata";
-import { user } from "../service/User";
-import { Button, SHAPE } from "baseui/button";
-import { faEdit, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
-import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
+import {user} from "../service/User";
+import {Button, SHAPE} from "baseui/button";
+import {faEdit, faPlusCircle} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
+import {faTrash} from "@fortawesome/free-solid-svg-icons/faTrash";
 import DeleteDocumentModal from "../components/document/component/DeleteDocumentModal";
-import { Notification } from "baseui/notification";
-import { H4 } from "baseui/typography";
-import { StyledSpinnerNext } from "baseui/spinner"
+import {Notification} from "baseui/notification";
+import {H4} from "baseui/typography";
+import {StyledSpinnerNext} from "baseui/spinner"
+import DocumentProcessesTable from "../components/document/component/DocumentProcessesTable";
 
 const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
   const [isLoading, setLoading] = React.useState(false);
@@ -25,7 +26,9 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
   const [documentSearchResult, setDocumentSearch, documentSearchLoading] = useDocumentSearch();
   const [documentId, setDocumentId] = React.useState<string | undefined>(props.match.params.id);
   const [isDeleteModalVisible, setDeleteModalVisibility] = React.useState(false);
+  const [documentUsages, setDocumentUsages] = React.useState<[Process]>();
   const [errorMessage, setErrorMessage] = React.useState<string>();
+
   useAwait(user.wait());
 
   const handleDelete = () => {
@@ -58,6 +61,7 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
       setErrorMessage("")
       if (documentId) {
         const res = await getDocument(documentId);
+        setDocumentUsages((await getProcessesByDocument(documentId)).content);
         setCurrentDocument(res);
         setSelectValue([{id: res.id, label: res.name}]);
         props.history.push(`/document/${documentId}`)
@@ -154,7 +158,27 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
               </Block>
             )}
           </Block>
-          {currentDocument && <DocumentMetadata document={currentDocument}/>}
+          {
+            currentDocument && (
+              <Block overrides={{
+                Block:{
+                  style:{
+                    borderStyle:"solid",
+                    padding:"5px",
+                    marginTop:"5px",
+                    borderColor: "#9BC1E6"
+                  }
+                }
+              }}>
+                <DocumentMetadata document={currentDocument}/>
+              </Block>
+            )
+          }
+
+          <Block marginTop="100px">
+            {currentDocument && documentUsages && documentUsages!.length > 0 && (
+              <DocumentProcessesTable documentUsages={documentUsages}/>)}
+          </Block>
           {errorMessage &&
           <Notification kind="negative">
             {errorMessage}
@@ -168,6 +192,7 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
         isOpen={isDeleteModalVisible}
         submit={handleDelete}
         onClose={() => setDeleteModalVisibility(false)}
+        documentUsageCount={documentUsages?.length}
       />
     </React.Fragment>
   );
