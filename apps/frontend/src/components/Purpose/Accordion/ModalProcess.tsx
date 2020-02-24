@@ -424,7 +424,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
     <Modal
       onClose={onClose}
       isOpen={isOpen}
-      closeable
+      closeable={false}
       animate
       size={SIZE.auto}
       role={ROLE.dialog}

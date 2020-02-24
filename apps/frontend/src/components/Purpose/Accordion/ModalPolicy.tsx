@@ -148,7 +148,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
         <Modal
             onClose={onCloseModal}
             isOpen={isOpen}
-            closeable
+            closeable={false}
             animate
             size={SIZE.auto}
             role={ROLE.dialog}
