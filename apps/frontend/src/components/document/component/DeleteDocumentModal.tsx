@@ -25,7 +25,7 @@ const DeleteDocumentModal = ({title, documentName = "", isOpen, onClose, submit,
     >
       <ModalHeader>{title}</ModalHeader>
       <ModalBody>
-        {documentUsageCount === 0 || documentUsageCount === undefined ? (
+        {!!!documentUsageCount ? (
             <Paragraph2> {intl.confirmDeleteDocumentText} "{documentName}"</Paragraph2>
           ) :
           (
