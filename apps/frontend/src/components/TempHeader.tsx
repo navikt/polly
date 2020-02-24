@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { ReactElement, useEffect } from 'react';
 import { ALIGN, HeaderNavigation, StyledNavigationItem as NavigationItem, StyledNavigationList as NavigationList, } from 'baseui/header-navigation';
 import { Button } from 'baseui/button';
 import { Block, BlockProps } from 'baseui/block';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { env } from '../util/env';
-import { intl, theme, useAwait, useDebouncedState } from '../util';
+import { intl, theme, useAwait } from '../util';
 import { user } from '../service/User';
 import { StyledLink } from 'baseui/link';
 import { StatefulPopover } from 'baseui/popover';
@@ -17,12 +16,7 @@ import { Lang, langs, langsArray } from '../util/intl/intl';
 import { TriangleDown } from 'baseui/icon';
 import { FlagIcon } from "./common/Flag"
 import { paddingAll } from "./common/Style"
-import { Select, TYPE } from "baseui/select"
-import { searchInformationType, searchProcess, searchTeam } from "../api"
-import { ObjectType } from "../constants"
-import { urlForObject } from "./common/RouteLink"
-import { prefixBiasedSort } from "../util/sort"
-import { codelist, ListName } from "../service/Codelist"
+import MainSearch from "./MainSearch"
 
 
 const LoggedInHeader = () => {
@@ -139,75 +133,9 @@ interface TempHeaderProps {
   setLang: (lang: string) => void
 }
 
-type SearchItem = { id: string, name: string, label: ReactElement, type: ObjectType | ListName | 'team' }
 
-const SearchLabel = (props: { name: string, type: string }) =>
-  <Block display="flex" justifyContent="space-between" width="100%">
-    <span>{props.name}</span>
-    <Block $style={{opacity: .5}}>{props.type}</Block>
-  </Block>
-
-function searchCodelist(search: string, list: ListName, typeName: string) {
-  return codelist.getCodes(list).filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
-  .map(c => ({
-    id: c.code,
-    name: c.shortName,
-    label: <SearchLabel name={c.shortName} type={typeName}/>,
-    type: list
-  }))
-}
-
-const TempHeader = (props: TempHeaderProps & RouteComponentProps) => {
+export default (props: TempHeaderProps) => {
   useAwait(user.wait())
-  const [search, setSearch] = useDebouncedState<string>('', 500);
-  const [searchResult, setSearchResult] = React.useState<SearchItem[]>([]);
-  const [loading, setLoading] = React.useState<boolean>(false);
-
-  useEffect(() => {
-    (async () => {
-      if (search && search.length > 2) {
-        let results: SearchItem[] = []
-        const compareFn = (a: SearchItem, b: SearchItem) => prefixBiasedSort(search, a.name, b.name)
-        const add = (items: SearchItem[]) => {
-          results = [...results, ...items].sort(compareFn)
-          setSearchResult(results)
-        }
-        setLoading(true)
-
-        add(searchCodelist(search, ListName.PURPOSE, intl.purpose))
-        add(searchCodelist(search, ListName.DEPARTMENT, intl.department))
-        add(searchCodelist(search, ListName.SUB_DEPARTMENT, intl.subDepartment))
-
-        const infoTypesRes = await searchInformationType(search)
-        add(infoTypesRes.content.map(it => ({
-          id: it.id,
-          name: it.name,
-          label: <SearchLabel name={it.name} type={intl.informationType}/>,
-          type: ObjectType.INFORMATION_TYPE
-        })))
-
-        const resProcess = await searchProcess(search)
-        add(resProcess.content.map(it => {
-          const purpose = codelist.getShortname(ListName.PURPOSE, it.purposeCode)
-          return ({
-            id: it.id,
-            name: `${it.name} ${purpose}`,
-            label: <SearchLabel name={`${purpose}: ${it.name}`} type={intl.process}/>,
-            type: ObjectType.PROCESS
-          })
-        }))
-
-        const resTeams = await searchTeam(search)
-        add(resTeams.content.map(it => ({
-          id: it.id,
-          name: it.name,
-          label: <SearchLabel name={it.name} type={intl.productTeam}/>,
-          type: 'team'
-        })))
-        setLoading(false)
-      }
-    })()
-  }, [search])
 
   return (
     <Block marginLeft="240px">
@@ -215,22 +143,7 @@ const TempHeader = (props: TempHeaderProps & RouteComponentProps) => {
         <NavigationList $align={ALIGN.left}>
           <NavigationItem>
             <Block width="450px">
-              <Select
-                isLoading={loading}
-                maxDropdownHeight="400px"
-                searchable={true}
-                type={TYPE.search}
-                options={searchResult}
-                placeholder={intl.search}
-                onInputChange={event => setSearch(event.currentTarget.value)}
-                onChange={(params) => {
-                  const item = params.value[0] as SearchItem;
-                  (async () => {
-                    props.history.push(await urlForObject(item.type, item.id))
-                  })()
-                }}
-                filterOptions={options => options}
-              />
+              <MainSearch/>
             </Block>
           </NavigationItem>
         </NavigationList>
@@ -269,6 +182,3 @@ const TempHeader = (props: TempHeaderProps & RouteComponentProps) => {
     </Block>
   );
 }
-
-
-export default withRouter(TempHeader)
