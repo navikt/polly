@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.common.exceptions.PollyNotFoundException;
 import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.common.utils.StreamUtils;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Optional;
 
 import static java.util.Comparator.comparing;
 import static no.nav.data.polly.common.utils.StartsWithComparator.startsWith;
@@ -53,8 +56,11 @@ public class TeamController {
     @GetMapping("/{teamId}")
     public ResponseEntity<TeamResponse> getTeamByName(@PathVariable String teamId) {
         log.info("Received request for Team with id {}", teamId);
-        Team team = teamsService.getTeam(teamId);
-        return new ResponseEntity<>(team.convertToResponse(), HttpStatus.OK);
+        Optional<Team> team = teamsService.getTeam(teamId);
+        if (team.isEmpty()) {
+            throw new PollyNotFoundException("Couldn't find team " + teamId);
+        }
+        return new ResponseEntity<>(team.get().convertToResponse(), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Search teams")

@@ -2,7 +2,6 @@ package no.nav.data.polly.teams.nora;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import no.nav.data.polly.common.exceptions.PollyNotFoundException;
 import no.nav.data.polly.common.utils.MetricUtils;
 import no.nav.data.polly.teams.TeamService;
 import no.nav.data.polly.teams.domain.Team;
@@ -17,13 +16,14 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 
 @Service
-@ConditionalOnProperty("polly.client.nora.enable")
+@ConditionalOnProperty("polly.client.team-nora.enable")
 public class NoraClient implements TeamService {
 
     private final RestTemplate restTemplate;
@@ -51,12 +51,12 @@ public class NoraClient implements TeamService {
     }
 
     @Override
-    public Team getTeam(String teamId) {
+    public Optional<Team> getTeam(String teamId) {
         NoraTeam noraTeam = teamCache.get(teamId);
         if (noraTeam == null) {
-            throw new PollyNotFoundException("Couldn't find team " + teamId);
+            return Optional.empty();
         }
-        return noraTeam.convertToTeam();
+        return Optional.of(noraTeam.convertToTeam());
     }
 
     @Override

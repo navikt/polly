@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "polly.client.nora")
+@ConfigurationProperties(prefix = "polly.client.team-nora")
 public class NoraProperties {
 
     private String url;
