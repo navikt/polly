@@ -88,7 +88,7 @@ public class ProcessReadController {
             @ApiResponse(code = 200, message = "Processes fetched", response = ProcessPage.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/search/{search}")
-    public ResponseEntity<RestResponsePage<ProcessResponse>> getAllProcesses(@PathVariable String search) {
+    public ResponseEntity<RestResponsePage<ProcessResponse>> searchProcesses(@PathVariable String search) {
         log.info("Received request for Processes search={}", search);
         if (search.length() < 3) {
             throw new ValidationException("Search term must be at least 3 characters");
