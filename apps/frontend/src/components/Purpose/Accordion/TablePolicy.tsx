@@ -69,6 +69,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
     <React.Fragment>
       <Table
         backgroundColor={theme.colors.primary50}
+        hoverColor={theme.colors.mono200}
         headers={
           <>
             <HeadCell title={intl.informationType} column={'informationType'} tableState={[table, sortColumn]}/>

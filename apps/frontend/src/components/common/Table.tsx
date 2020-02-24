@@ -1,12 +1,13 @@
 import { SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from "baseui/table"
 import { theme } from "../../util"
 import * as React from "react"
-import { ReactElement } from "react"
+import { ReactElement, useContext } from "react"
 import { withStyle } from "baseui"
 import { TableState } from "../../util/hooks"
 
 type TableProps = {
   backgroundColor?: string,
+  hoverColor?: string,
   headers: ReactElement,
   children: ReactElement | ReactElement[]
 }
@@ -51,20 +52,25 @@ const tableStyle = {
   borderBottomRightRadius: "0"
 }
 
+const TableContext = React.createContext<Partial<TableProps>>({})
+
 export const Table = (props: TableProps) => {
   const StyleTable = withStyle(StyledTable, {...tableStyle, backgroundColor: props.backgroundColor})
   return (
-    <StyleTable>
-      <StyledHeader>
-        {props.headers}
-      </StyledHeader>
-      <StyledBody>
-        {props.children}
-      </StyledBody>
-    </StyleTable>
+    <TableContext.Provider value={props}>
+      <StyleTable>
+        <StyledHeader>
+          {props.headers}
+        </StyledHeader>
+        <StyledBody>
+          {props.children}
+        </StyledBody>
+      </StyleTable>
+    </TableContext.Provider>
   )
 }
 export const Row = (props: RowProps) => {
+  const tableProps = useContext(TableContext)
   const styleProps = {
     borderBottom: `1px solid ${theme.colors.mono600}`,
     fontSize: "24px",
@@ -73,7 +79,7 @@ export const Row = (props: RowProps) => {
     borderLeftColor: theme.colors.primary500,
     borderLeftWidth: props.infoRow || props.selectedRow ? theme.sizing.scale300 : "none",
     ':hover': {
-      backgroundColor: props.infoRow ? theme.colors.mono100 : theme.colors.accent50
+      backgroundColor: tableProps.hoverColor || (props.infoRow ? theme.colors.mono100 : theme.colors.accent50)
     }
   }
   const StyleRow = withStyle(StyledRow, styleProps)
