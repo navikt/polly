@@ -37,8 +37,8 @@ export const updateProcess = async (process: ProcessFormValues) => {
   return data
 }
 
-export const getProcessesByDocument = async (documentId: string, pageNumber: number = 0, pageSize: number = 250) => {
-  return (await axios.get(`${env.pollyBaseUrl}/process/?documentId=${documentId}&pageNumber=${pageNumber}&pageSize=${pageSize}`)).data
+export const getProcessesByDocument = async (documentId: string) => {
+  return (await axios.get(`${env.pollyBaseUrl}/process/?documentId=${documentId}`)).data
 };
 
 const mapBool = (b?: boolean) => b === true ? true : b === false ? false : undefined

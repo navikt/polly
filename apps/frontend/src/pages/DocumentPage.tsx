@@ -62,7 +62,7 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
       setErrorMessage("")
       if (documentId) {
         const res = await getDocument(documentId);
-        setDocumentUsages((await getProcessesByDocument(documentId, 0, 250)).content);
+        setDocumentUsages((await getProcessesByDocument(documentId)).content);
         activateDeletion(documentUsages === undefined ? true : documentUsages.length > 0 ? false : true)
         setCurrentDocument(res);
         setSelectValue([{id: res.id, label: res.name}]);
