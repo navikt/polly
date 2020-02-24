@@ -23,10 +23,10 @@ export type PathParams = { thirdPartyCode: string }
 
 const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
-  const [disclosureList, setDisclosureList] = React.useState();
+  const [disclosureList, setDisclosureList] = React.useState<Disclosure[]>([]);
   const [informationTypeList, setInformationTypeList] = React.useState<InformationType[]>()
   const [showCreateModal, setShowCreateModal] = React.useState(false)
-  const [error, setError] = React.useState();
+  const [error, setError] = React.useState<string>();
 
   const handleCreateDisclosure = async (disclosure: DisclosureFormValues) => {
     try {
@@ -61,7 +61,7 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
     try {
       await deleteDisclosure(disclosure.id)
       setDisclosureList([...disclosureList.filter((d: Disclosure) => d.id !== disclosure.id)])
-      setError(null)
+      setError(undefined)
       return true
     } catch (err) {
       setError(err.message)
@@ -125,7 +125,7 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
                 submit={handleCreateDisclosure}
                 onClose={() => {
                   setShowCreateModal(false)
-                  setError(null)
+                  setError(undefined)
                 }}
                 errorOnCreate={error}
                 disableRecipientField={true}
@@ -142,7 +142,7 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
                 editable
                 submitDeleteDisclosure={handleDeleteDisclosure}
                 submitEditDisclosure={handleEditDisclosure}
-                onCloseModal={() => setError(null)}
+                onCloseModal={() => setError(undefined)}
               />
             </Block>
           </React.Fragment>

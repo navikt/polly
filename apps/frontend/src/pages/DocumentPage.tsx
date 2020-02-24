@@ -20,7 +20,7 @@ import {StyledSpinnerNext} from "baseui/spinner"
 import DocumentProcessesTable from "../components/document/component/DocumentProcessesTable";
 
 const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
-  const [isLoading, setLoading] = React.useState();
+  const [isLoading, setLoading] = React.useState(false);
   const [selectValue, setSelectValue] = React.useState<Value>([]);
   const [currentDocument, setCurrentDocument] = React.useState<Document | undefined>();
   const [documentSearchResult, setDocumentSearch, documentSearchLoading] = useDocumentSearch();
@@ -30,6 +30,7 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
   const [documentUsages, setDocumentUsages] = React.useState<[Process]>();
   const [isDeletionAllowed, activateDeletion] = React.useState<boolean>(false);
 
+  const [errorMessage, setErrorMessage] = React.useState<string>();
   useAwait(user.wait());
 
   const handleDelete = () => {

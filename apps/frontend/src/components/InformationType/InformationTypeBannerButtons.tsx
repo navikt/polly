@@ -19,8 +19,8 @@ import { StyledSpinnerNext } from "baseui/spinner"
 const DeleteModalImpl = (props: RouteComponentProps<any> & { id: string, showDeleteModal: boolean, closeModal: () => void }) => {
   const [errorProcessModal, setErrorProcessModal] = React.useState(false)
   const [infoType, setInfoType] = React.useState<InformationType>()
-  const [policies, setPolicies] = React.useState()
-  const [documents, setDocuments] = React.useState()
+  const [policies, setPolicies] = React.useState<number>()
+  const [documents, setDocuments] = React.useState<number>()
 
 
   useEffect(() => {

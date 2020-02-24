@@ -10,7 +10,7 @@ import { Select, TYPE } from 'baseui/select';
 import CardLegalBasis from "./CardLegalBasis"
 import { codelist, ListName } from "../../../service/Codelist";
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
-import { LegalBasesStatus, PolicyFormValues, PolicyInformationType } from "../../../constants"
+import { LegalBasesStatus, LegalBasisFormValues, PolicyFormValues, PolicyInformationType } from "../../../constants"
 import { ListLegalBases } from "../../common/LegalBasis"
 import { useInfoTypeSearch } from "../../../api"
 import { Error, ModalLabel } from "../../common/ModalSchema";
@@ -129,8 +129,8 @@ type ModalPolicyProps = {
 };
 
 const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, docs, title }: ModalPolicyProps) => {
-    const [selectedLegalBasis, setSelectedLegalBasis] = React.useState();
-    const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState();
+    const [selectedLegalBasis, setSelectedLegalBasis] = React.useState<LegalBasisFormValues>();
+    const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState<number>();
     const [infoTypeValue, setInfoTypeValue] = React.useState<PolicyInformationType | undefined>(initialValues.informationType);
     const [infoTypeSearchResult, setInfoTypeSearch] = useInfoTypeSearch();
 
@@ -236,8 +236,8 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
                                                             submit={values => {
                                                                 if (!values) return;
                                                                 if (selectedLegalBasis) {
-                                                                    arrayHelpers.replace(selectedLegalBasisIndex, values);
-                                                                    setSelectedLegalBasis(null)
+                                                                    arrayHelpers.replace(selectedLegalBasisIndex!, values);
+                                                                    setSelectedLegalBasis(undefined)
                                                                 } else {
                                                                     arrayHelpers.push(values);
                                                                 }

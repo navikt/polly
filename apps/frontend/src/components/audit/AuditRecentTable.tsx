@@ -82,7 +82,7 @@ export const AuditRecentTable = (props: { show: boolean }) => {
             const length = window.innerWidth > 1000 ? window.innerWidth > 1200 ? 40 : 30 : 20
             return (
               <StyledRow key={audit.id}>
-                <Block position="absolute" marginLeft="-40px" display="block">
+                <Block position="absolute" marginLeft="-28px" display="block">
                   {audits.pageNumber * audits.pageSize + index + 1}
                 </Block>
                 <StyledCell $style={{maxWidth: "13%"}}>
