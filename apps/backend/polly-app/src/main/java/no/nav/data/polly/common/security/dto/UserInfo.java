@@ -18,20 +18,19 @@ import static no.nav.data.polly.common.utils.StreamUtils.copyOf;
 public class UserInfo {
 
     public static final String APPID_CLAIM = "appid";
-    public static final String NAV_IDENT_CLAIM = "NAVident";
 
     private String appId;
     private String subject;
-    private String navIdent;
+    private String ident;
     private String name;
     private String givenName;
     private String familyName;
     private String email;
     private List<String> groups;
 
-    public UserInfo(UserPrincipal principal, Set<GrantedAuthority> grantedAuthorities) {
+    public UserInfo(UserPrincipal principal, Set<GrantedAuthority> grantedAuthorities, String identClaimName) {
         this.appId = getClaim(principal, APPID_CLAIM);
-        this.navIdent = getNAVident(principal);
+        this.ident = getIdent(principal, identClaimName);
 
         this.subject = principal.getSubject();
         this.name = principal.getName();
@@ -43,16 +42,16 @@ public class UserInfo {
     }
 
     public String formatUser() {
-        return String.format("%s - %s", navIdent, name);
+        return String.format("%s - %s", ident, name);
     }
 
     public String getAppName() {
         return AppIdMapping.getAppNameForAppId(appId);
     }
 
-    private static String getNAVident(UserPrincipal principal) {
-        String navClaim = getClaim(principal, NAV_IDENT_CLAIM);
-        return navClaim == null ? "missing-ident" : navClaim;
+    private static String getIdent(UserPrincipal principal, String identClaimName) {
+        String identClaim = getClaim(principal, identClaimName);
+        return identClaim == null ? "missing-ident" : identClaim;
     }
 
     @SuppressWarnings("unchecked")
@@ -63,7 +62,7 @@ public class UserInfo {
     public UserInfoResponse convertToResponse() {
         return UserInfoResponse.builder()
                 .loggedIn(true)
-                .navIdent(navIdent)
+                .ident(ident)
                 .name(name)
                 .givenName(givenName)
                 .familyName(familyName)

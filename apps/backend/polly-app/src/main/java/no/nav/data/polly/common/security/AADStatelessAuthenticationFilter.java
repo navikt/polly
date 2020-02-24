@@ -80,7 +80,7 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
                 var principal = buildUserPrincipal(credential.getAccessToken());
                 var grantedAuthorities = azureTokenProvider.getGrantedAuthorities(credential.getAccessToken());
                 var authentication = new PreAuthenticatedAuthenticationToken(principal, credential, grantedAuthorities);
-                authentication.setDetails(new UserInfo(principal, grantedAuthorities));
+                authentication.setDetails(new UserInfo(principal, grantedAuthorities, azureTokenProvider.getIdentClaimName()));
                 authentication.setAuthenticated(true);
                 log.trace("Request token verification success for subject {} with roles {}.", principal.getSubject(), grantedAuthorities);
                 SecurityContextHolder.getContext().setAuthentication(authentication);

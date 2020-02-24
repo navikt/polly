@@ -70,6 +70,10 @@ public class AzureTokenProvider {
         MetricUtils.register("grantedAuthorityCache", grantedAuthorityCache);
     }
 
+    public String getIdentClaimName() {
+        return securityProperties.getIdentClaim();
+    }
+
     public String getConsumerToken(String resource, String appIdUri) {
         if (!securityProperties.isClientEnabled()) {
             return StringUtils.EMPTY;

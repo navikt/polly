@@ -13,11 +13,11 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"loggedIn", "navIdent", "name", "givenName", "familyName", "email", "groups"})
+@JsonPropertyOrder({"loggedIn", "ident", "name", "givenName", "familyName", "email", "groups"})
 public class UserInfoResponse {
 
     private boolean loggedIn;
-    private String navIdent;
+    private String ident;
     private String name;
     private String givenName;
     private String familyName;
@@ -32,7 +32,7 @@ public class UserInfoResponse {
                     .pollyRole(PollyRole.POLLY_WRITE)
                     .pollyRole(PollyRole.POLLY_ADMIN)
                     .name("Anon")
-                    .navIdent("x000000");
+                    .ident("x000000");
         }
         return responseBuilder.build();
     }

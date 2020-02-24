@@ -14,6 +14,5 @@ public final class Constants {
     // application id set by caller
     public static final String HEADER_CONSUMER_ID = "Nav-Consumer-Id";
 
-    public static final String ES_DOC_TYPE = "_doc";
     public static final String APP_ID = "polly";
 }
