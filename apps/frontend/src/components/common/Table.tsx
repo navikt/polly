@@ -72,6 +72,9 @@ export const Row = (props: RowProps) => {
     backgroundColor: props.infoRow ? theme.colors.accent50 : undefined,
     borderLeftColor: theme.colors.primary500,
     borderLeftWidth: props.infoRow || props.selectedRow ? theme.sizing.scale300 : "none",
+    ':hover': {
+      backgroundColor: props.infoRow ? theme.colors.mono100 : theme.colors.accent50
+    }
   }
   const StyleRow = withStyle(StyledRow, styleProps)
   return <StyleRow>{props.children}</StyleRow>
