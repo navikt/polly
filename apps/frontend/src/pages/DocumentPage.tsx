@@ -27,7 +27,6 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
   const [documentId, setDocumentId] = React.useState<string | undefined>(props.match.params.id);
   const [isDeleteModalVisible, setDeleteModalVisibility] = React.useState(false);
   const [documentUsages, setDocumentUsages] = React.useState<[Process]>();
-  const [isDeletionAllowed, activateDeletion] = React.useState<boolean>(false);
   const [errorMessage, setErrorMessage] = React.useState<string>();
 
   useAwait(user.wait());
@@ -63,7 +62,6 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
       if (documentId) {
         const res = await getDocument(documentId);
         setDocumentUsages((await getProcessesByDocument(documentId)).content);
-        activateDeletion(documentUsages === undefined ? true : documentUsages.length > 0 ? false : true)
         setCurrentDocument(res);
         setSelectValue([{id: res.id, label: res.name}]);
         props.history.push(`/document/${documentId}`)
@@ -178,7 +176,7 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
           }
 
           <Block marginTop="100px">
-            {documentUsages && documentUsages!.length > 0 && (
+            {currentDocument && documentUsages && documentUsages!.length > 0 && (
               <DocumentProcessesTable documentUsages={documentUsages}/>)}
           </Block>
           {errorMessage &&
@@ -194,7 +192,6 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
         isOpen={isDeleteModalVisible}
         submit={handleDelete}
         onClose={() => setDeleteModalVisibility(false)}
-        disable={isDeletionAllowed}
         documentUsageCount={documentUsages?.length}
       />
     </React.Fragment>

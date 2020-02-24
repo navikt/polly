@@ -8,14 +8,13 @@ import * as React from "react";
 type ModalDeleteProps = {
   title: string,
   isOpen: boolean,
-  disable: boolean
   documentName: String,
   documentUsageCount?: number,
   submit: () => void,
   onClose: () => void,
 };
 
-const DeleteDocumentModal = ({title, documentName = "", isOpen, onClose, submit, disable, documentUsageCount}: ModalDeleteProps) => {
+const DeleteDocumentModal = ({title, documentName = "", isOpen, onClose, submit, documentUsageCount}: ModalDeleteProps) => {
   return (
     <Modal
       onClose={onClose}
@@ -45,7 +44,7 @@ const DeleteDocumentModal = ({title, documentName = "", isOpen, onClose, submit,
           </Button>
           <Button
             onClick={() => submit()}
-            disabled={disable}
+            disabled={!(documentUsageCount === 0 || documentUsageCount === undefined)}
           >
             {intl.delete}
           </Button>
