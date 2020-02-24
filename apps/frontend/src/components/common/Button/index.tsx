@@ -30,34 +30,34 @@ const Tooltip = (props: TooltipProps) => (
     : props.children
 )
 
-const outlineOverride: () => Override<any> = () => {
-  const width = '2px'
-  const style = 'solid'
-  return ({
-    style: {
-      borderColor: theme.colors.buttonPrimaryFill,
-      backgroundColor: 'inherit',
-      borderLeftWidth: width,
-      borderRightWidth: width,
-      borderTopWidth: width,
-      borderBottomWidth: width,
-      borderLeftStyle: style,
-      borderRightStyle: style,
-      borderTopStyle: style,
-      borderBottomStyle: style
-    }
-  })
+const outlineWidth = '2px'
+const outlineStyle = 'solid'
+const outlineOverride: Override<any> = {
+  style: {
+    borderColor: theme.colors.buttonPrimaryFill,
+    backgroundColor: 'inherit',
+    borderLeftWidth: outlineWidth,
+    borderRightWidth: outlineWidth,
+    borderTopWidth: outlineWidth,
+    borderBottomWidth: outlineWidth,
+    borderLeftStyle: outlineStyle,
+    borderRightStyle: outlineStyle,
+    borderTopStyle: outlineStyle,
+    borderBottomStyle: outlineStyle
+  }
 }
 
 const Button = (props: ButtonProps) => {
   const baseuiKind = props.kind === 'outline' ? KIND.secondary : props.kind
+  const overrides: Override<any> = {
+    style: {
+      ...(props.kind === 'outline' ? outlineOverride.style : {}),
+      ...(props.inline ? {paddingTop: theme.sizing.scale100, paddingBottom: theme.sizing.scale100} : {})
+    }
+  }
   return (
     <Tooltip tooltip={props.tooltip}>
-      <BaseUIButton kind={baseuiKind} size={props.size} shape={props.shape} onClick={() => props.onClick?.()}
-                    $style={props.inline ? {paddingTop: theme.sizing.scale100, paddingBottom: theme.sizing.scale100} : undefined}
-                    overrides={{
-                      BaseButton: props.kind === 'outline' ? outlineOverride() : undefined
-                    }}
+      <BaseUIButton kind={baseuiKind} size={props.size} shape={props.shape} onClick={() => props.onClick?.()} overrides={{BaseButton: overrides}}
       >
         {props.icon && <FontAwesomeIcon icon={props.icon} style={{marginRight: ".5rem"}}/>} {props.children}
       </BaseUIButton>
