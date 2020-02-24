@@ -5,7 +5,7 @@ import { Team } from "../../constants"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faEnvelope, faTimesCircle, faUser, faUsers } from "@fortawesome/free-solid-svg-icons"
 import { copyToClipboard, intl, theme } from "../../util"
-import {PLACEMENT, StatefulTooltip} from "baseui/tooltip"
+import { PLACEMENT, StatefulTooltip } from "baseui/tooltip"
 import { Card, StyledBody } from "baseui/card"
 import { ListItem, ListItemLabel, OverridesT } from "baseui/list"
 import { Button } from "baseui/button"
@@ -82,7 +82,7 @@ export const TeamPopover = (props: { teamId: string }) => {
         <>
             {!error &&
             <StatefulPopover content={() => <TeamContent team={team}/>} overrides={popoverOverride} placement="left">
-              <Button size="compact" shape="pill" $style={{paddingTop: theme.sizing.scale100, paddingBottom: theme.sizing.scale100}}>
+              <Button size="compact" shape="pill" kind="secondary" $style={{paddingTop: theme.sizing.scale100, paddingBottom: theme.sizing.scale100}}>
                 <SmallIcon icon={faUsers}/> {team.name}
               </Button>
             </StatefulPopover>
