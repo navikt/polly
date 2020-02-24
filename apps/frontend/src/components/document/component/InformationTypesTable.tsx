@@ -1,16 +1,15 @@
 import React from "react";
-import { StyledCell, StyledHead, StyledHeadCell, StyledRow } from "baseui/table";
-import { intl } from "../../../util";
-import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
-import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
-import { DocumentInformationTypes, DocumentInfoTypeUse } from "../../../constants";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { FieldArrayRenderProps } from "formik";
+import {StyledCell, StyledHead, StyledHeadCell, StyledRow} from "baseui/table";
+import {intl} from "../../../util";
+import {KIND, SIZE as ButtonSize} from "baseui/button";
+import {DocumentInformationTypes, DocumentInfoTypeUse} from "../../../constants";
+import {faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {FieldArrayRenderProps} from "formik";
 import FieldInformationType from "./FieldInformationType";
 import FieldSubjectCategory from "./FieldSubjectCategory";
-import { Error } from "../../common/ModalSchema";
+import {Error} from "../../common/ModalSchema";
 import shortid from 'shortid'
+import NewButton from '../../common/Button'
 
 type InformationTypesTableProps = {
   arrayHelpers: FieldArrayRenderProps,
@@ -18,7 +17,7 @@ type InformationTypesTableProps = {
 
 const InformationTypesTable = (props: InformationTypesTableProps) => {
   const [tableContent, setTableContent] = React.useState([]);
-  const { arrayHelpers } = props;
+  const {arrayHelpers} = props;
 
   const newRow = {
     id: shortid.generate(),
@@ -40,63 +39,67 @@ const InformationTypesTable = (props: InformationTypesTableProps) => {
   return (
     <>
       <StyledHead>
-        <StyledHeadCell style={{ maxWidth: "45%" }}>{intl.informationType}</StyledHeadCell>
-        <StyledHeadCell style={{ maxWidth: "52.5%" }}>{intl.subjectCategories}</StyledHeadCell>
-        <StyledHeadCell style={{ maxWidth: "2.5%", justifyContent: "center" }}>
-          <StatefulTooltip content={intl.addNew} placement={PLACEMENT.top}>
-            <Button
-              type={"button"}
-              size={ButtonSize.compact}
-              kind={KIND.tertiary}
-              onClick={() => { arrayHelpers.push({ id: shortid.generate(), informationTypeId: "", informationType: undefined, subjectCategories: [] }); }}
-            >
-              <FontAwesomeIcon icon={faPlus} />
-            </Button>
-          </StatefulTooltip>
+        <StyledHeadCell style={{maxWidth: "45%"}}>{intl.informationType}</StyledHeadCell>
+        <StyledHeadCell style={{maxWidth: "45%"}}>{intl.subjectCategories}</StyledHeadCell>
+        <StyledHeadCell style={{maxWidth: "10%", justifyContent: "center"}}>
+          <NewButton
+            kind={KIND.secondary}
+            size={ButtonSize.compact}
+            icon={faPlus}
+            tooltip={intl.addNew}
+            onClick={() => {
+              arrayHelpers.push({
+                id: shortid.generate(),
+                informationTypeId: "",
+                informationType: undefined,
+                subjectCategories: []
+              });
+            }}
+          >
+            {intl.addNew}
+          </NewButton>
         </StyledHeadCell>
       </StyledHead>
 
       {tableContent.map((row: DocumentInfoTypeUse, index: number) => (
         <React.Fragment key={row.id}>
           <StyledRow>
-            <StyledCell style={{ maxWidth: "45%" }}>
+            <StyledCell style={{maxWidth: "45%"}}>
               <FieldInformationType
                 documentInformationType={row}
                 handleChange={(values: DocumentInformationTypes) => arrayHelpers.replace(index, values)}
               />
             </StyledCell>
-            <StyledCell style={{ maxWidth: "52.5%" }}>
+            <StyledCell style={{maxWidth: "45%"}}>
               <FieldSubjectCategory
                 documentInformationType={row}
                 handleChange={(values: DocumentInformationTypes) => arrayHelpers.replace(index, values)}
               />
             </StyledCell>
-            <StyledCell style={{ maxWidth: "2.5%", justifyContent: "center" }}>
+            <StyledCell style={{maxWidth: "10%", justifyContent: "center"}}>
               {showDeleteRowButton && (
-                <StatefulTooltip content={intl.delete}>
-                  <Button
-                    type={"button"}
-                    size={ButtonSize.compact}
-                    kind={KIND.tertiary}
-                    onClick={() => {
-                      arrayHelpers.remove(index);
-                    }}>
-                    <FontAwesomeIcon icon={faTrash} />
-                  </Button>
-                </StatefulTooltip>
+                <NewButton
+                  kind={KIND.secondary}
+                  size={ButtonSize.compact}
+                  icon={faTrash}
+                  tooltip={intl.delete}
+                  onClick={() => {
+                    arrayHelpers.remove(index);
+                  }}
+                >
+                  {intl.delete}
+                </NewButton>
               )}
-
             </StyledCell>
           </StyledRow>
-
           <StyledRow>
-            <StyledCell style={{ maxWidth: "45%" }}>
-              <Error fieldName={`informationTypes[${index}].informationTypeId`} fullWidth={true} />
+            <StyledCell style={{maxWidth: "45%"}}>
+              <Error fieldName={`informationTypes[${index}].informationTypeId`} fullWidth={true}/>
             </StyledCell>
-            <StyledCell style={{ maxWidth: "52.5%" }}>
-              <Error fieldName={`informationTypes[${index}].subjectCategories`} fullWidth={true} />
+            <StyledCell style={{maxWidth: "45%"}}>
+              <Error fieldName={`informationTypes[${index}].subjectCategories`} fullWidth={true}/>
             </StyledCell>
-            <StyledCell style={{ maxWidth: "2.5%", justifyContent: "center" }} />
+            <StyledCell style={{maxWidth: "10%", justifyContent: "center"}}/>
           </StyledRow>
         </React.Fragment>
       ))}
