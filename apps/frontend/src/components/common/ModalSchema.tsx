@@ -20,8 +20,6 @@ export const Error = (props: { fieldName: string, fullWidth?: boolean }) => (
       <Block display="flex" width="100%" marginTop=".2rem">
         {!props.fullWidth && <ModalLabel/>}
         <Block width="100%">
-          <Notification overrides={{Body: {style: {width: 'auto', padding: 0, marginTop: 0}}}}
-                        kind={NKIND.negative}>{msg}</Notification>
           <Notification overrides={{Body: {style: {width: 'auto', ...paddingZero, marginTop: 0}}}}
                         kind={NKIND.negative}>{msg}</Notification>
         </Block>
