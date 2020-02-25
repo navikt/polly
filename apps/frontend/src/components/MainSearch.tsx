@@ -1,14 +1,14 @@
-import { default as React, ReactElement, useEffect } from "react"
-import { NavigableItem, ObjectType } from "../constants"
-import { Block } from "baseui/block"
-import { codelist, ListName } from "../service/Codelist"
-import { useDebouncedState } from "../util/hooks"
-import { prefixBiasedSort } from "../util/sort"
-import { intl } from "../util"
-import { searchInformationType, searchProcess, searchTeam } from "../api"
-import { Select, TYPE } from "baseui/select"
-import { urlForObject } from "./common/RouteLink"
-import { RouteComponentProps, withRouter } from "react-router-dom"
+import { default as React, ReactElement, useEffect } from 'react'
+import { NavigableItem, ObjectType } from '../constants'
+import { Block } from 'baseui/block'
+import { codelist, ListName } from '../service/Codelist'
+import { useDebouncedState } from '../util/hooks'
+import { prefixBiasedSort } from '../util/sort'
+import { intl, theme } from '../util'
+import { searchInformationType, searchProcess, searchTeam } from '../api'
+import { Select, TYPE } from 'baseui/select'
+import { urlForObject } from './common/RouteLink'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
 
 type SearchItem = { id: string, sortKey: string, label: ReactElement, type: NavigableItem }
 
@@ -29,9 +29,9 @@ function searchCodelist(search: string, list: ListName & NavigableItem, typeName
 }
 
 const useMainSearch = () => {
-  const [search, setSearch] = useDebouncedState<string>('', 500);
-  const [searchResult, setSearchResult] = React.useState<SearchItem[]>([]);
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [search, setSearch] = useDebouncedState<string>('', 500)
+  const [searchResult, setSearchResult] = React.useState<SearchItem[]>([])
+  const [loading, setLoading] = React.useState<boolean>(false)
 
   useEffect(() => {
     (async () => {
@@ -86,6 +86,7 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
   const [setSearch, searchResult, loading] = useMainSearch()
 
   return <Select
+    autoFocus
     isLoading={loading}
     maxDropdownHeight="400px"
     searchable={true}
@@ -100,6 +101,17 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
       })()
     }}
     filterOptions={options => options}
+    overrides={{
+      SearchIcon: {
+        style: {
+          width: theme.sizing.scale900,
+          height: theme.sizing.scale900,
+          left: theme.sizing.scale400,
+          top: theme.sizing.scale400
+        }
+      }
+    }
+    }
   />
 }
 

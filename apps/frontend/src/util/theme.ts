@@ -30,7 +30,9 @@ type ThemeOverride = RecursivePartial<Theme> & { borders: Partial<Borders> }
 
 const overrides: ThemeOverride = {
   colors: {
-    linkVisited: primitives.primary400
+    linkVisited: primitives.primary400,
+    inputFill: primitives.primary50,
+    inputFillActive: colors.platinum50
   },
   borders: {
     buttonBorderRadius: '4px'
