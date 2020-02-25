@@ -7,13 +7,13 @@ import { Disclosure, Document, InformationType, Policy } from "../../../constant
 import { intl, theme, useAwait } from "../../../util"
 import Metadata from "./Metadata";
 import InformationtypePolicyTable from "./InformationtypePolicyTable"
-import { Button } from "baseui/button"
 import TableDisclosure from "../../common/TableDisclosure";
 import { DocumentTable } from "./DocumentTable"
 import { Tab, Tabs } from "baseui/tabs"
 import { H4 } from "baseui/typography";
 import { user } from "../../../service/User";
 import { InformationTypeBannerButtons } from "../InformationTypeBannerButtons";
+import Button from "../../common/Button"
 
 interface InformationtypeMetadataProps {
   informationtype: InformationType;
@@ -29,8 +29,8 @@ const Purposes = ({policies, expanded, onSelectPurpose}: { policies: Policy[], e
   return (
     <Block>
       <Block display="flex" justifyContent="flex-end">
-        <Button onClick={() => setAccordion(!accordion)} type="button" size="compact" shape="pill"
-                $style={{position: "absolute", marginTop: "-" + theme.sizing.scale1400}}
+        <Button onClick={() => setAccordion(!accordion)} size="compact" shape="pill" kind='outline'
+                $style={{position: 'absolute', marginTop: `-${theme.sizing.scale1400}`}}
         >
           {accordion ? intl.showAll : intl.groupByPurpose}
         </Button>

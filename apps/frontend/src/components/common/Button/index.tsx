@@ -1,11 +1,12 @@
 import * as React from 'react'
 import { ReactNode } from 'react'
 import { Button as BaseUIButton, KIND, SHAPE, SIZE } from 'baseui/button'
-import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { theme } from "../../../util"
-import { Override } from 'baseui/overrides';
+import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core'
+import { theme } from '../../../util'
+import { Override } from 'baseui/overrides'
+import { StyleObject } from 'styletron-react'
 
 
 interface ButtonProps {
@@ -19,6 +20,7 @@ interface ButtonProps {
   onClick?: () => void
   startEnhancer?: ReactNode
   disabled?: boolean
+  $style?: StyleObject
 }
 
 interface TooltipProps {
@@ -54,7 +56,8 @@ const Button = (props: ButtonProps) => {
   const overrides: Override<any> = {
     style: {
       ...(props.kind === 'outline' ? outlineOverride.style : {}),
-      ...(props.inline ? {paddingTop: theme.sizing.scale100, paddingBottom: theme.sizing.scale100} : {})
+      ...(props.inline ? {paddingTop: theme.sizing.scale100, paddingBottom: theme.sizing.scale100} : {}),
+      ...(props.$style || {})
     }
   }
   return (
@@ -62,7 +65,7 @@ const Button = (props: ButtonProps) => {
       <BaseUIButton kind={baseuiKind} size={props.size} shape={props.shape} onClick={() => props.onClick?.()} overrides={{BaseButton: overrides}}
                     startEnhancer={props.startEnhancer} disabled={props.disabled}
       >
-        {props.icon && <FontAwesomeIcon icon={props.icon} style={{marginRight: ".5rem"}}/>} {props.children}
+        {props.icon && <FontAwesomeIcon icon={props.icon} style={{marginRight: '.5rem'}}/>} {props.children}
       </BaseUIButton>
     </Tooltip>
   )
