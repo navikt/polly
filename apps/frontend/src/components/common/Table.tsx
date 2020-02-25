@@ -4,6 +4,7 @@ import * as React from "react"
 import { ReactElement, useContext } from "react"
 import { withStyle } from "baseui"
 import { TableState } from "../../util/hooks"
+import { StyleObject } from "styletron-standard"
 
 type TableProps = {
   backgroundColor?: string,
@@ -71,15 +72,15 @@ export const Table = (props: TableProps) => {
 }
 export const Row = (props: RowProps) => {
   const tableProps = useContext(TableContext)
-  const styleProps = {
+  const styleProps: StyleObject = {
     borderBottom: `1px solid ${theme.colors.mono600}`,
-    fontSize: "24px",
     opacity: props.inactiveRow ? '.5' : undefined,
-    backgroundColor: props.infoRow ? theme.colors.accent50 : undefined,
-    borderLeftColor: theme.colors.primary500,
-    borderLeftWidth: props.infoRow || props.selectedRow ? theme.sizing.scale300 : "none",
+    backgroundColor: props.infoRow ? theme.colors.primary50 : undefined,
+    borderLeftColor: theme.colors.primary200,
+    borderLeftWidth: props.infoRow || props.selectedRow ? theme.sizing.scale300 : '0',
+    borderLeftStyle: 'solid',
     ':hover': {
-      backgroundColor: tableProps.hoverColor || (props.infoRow ? theme.colors.mono100 : theme.colors.accent50)
+      backgroundColor: tableProps.hoverColor || (props.infoRow ? theme.colors.mono100 : theme.colors.primary50)
     }
   }
   const StyleRow = withStyle(StyledRow, styleProps)

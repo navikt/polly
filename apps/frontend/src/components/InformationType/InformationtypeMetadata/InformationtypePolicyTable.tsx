@@ -54,13 +54,13 @@ const InformationtypePolicyTable = ({policies, showPurpose}: TableInformationtyp
         {table.data.map((row, index) => (
           <Row key={index}>
             {showPurpose && <Cell>
-              <RouteLink href={`/purpose/${row.purposeCode.code}`}>
+              <RouteLink href={`/process/purpose/${row.purposeCode.code}`}>
                 {codelist.getShortnameForCode(row.purposeCode)}
               </RouteLink>
             </Cell>}
 
             <Cell>
-              <RouteLink href={`/purpose/${row.purposeCode.code}/${row.process.id}`}>
+              <RouteLink href={`/process/purpose/${row.purposeCode.code}/${row.process.id}`}>
                 {row.process && row.process.name}
               </RouteLink>
             </Cell>

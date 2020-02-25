@@ -5,7 +5,7 @@ import { Block, BlockProps } from "baseui/block";
 import { Plus } from "baseui/icon";
 import { Label1 } from "baseui/typography";
 import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
-import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues } from "../../constants"
+import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, CodeUsage, UseWithPurpose } from "../../constants"
 import { intl, theme, useAwait } from "../../util"
 import { user } from "../../service/User";
 import ModalProcess from './Accordion/ModalProcess'
@@ -20,11 +20,13 @@ import {
   getProcess,
   getProcessesForPurpose,
   updatePolicy,
-  updateProcess
+  updateProcess,
+  getCodelistUsage
 } from "../../api"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faList } from "@fortawesome/free-solid-svg-icons"
 import { StyledSpinnerNext } from "baseui/spinner"
+import { ListName } from "../../service/Codelist";
 
 const rowBlockProps: BlockProps = {
   marginBottom: 'scale800',
@@ -33,13 +35,14 @@ const rowBlockProps: BlockProps = {
 }
 
 type ProcessListProps = {
-  purposeCode: string;
+  code: string;
+  listName: ListName;
 }
 
-const sortProcess = (list: Process[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, intl.getLanguage()))
+const sortProcess = (list: UseWithPurpose[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, intl.getLanguage()))
 
-const ProcessList = ({purposeCode}: ProcessListProps) => {
-  const [processList, setProcessList] = React.useState<Process[]>([])
+const ProcessList = ({code, listName}: ProcessListProps) => {
+  const [processList, setProcessList] = React.useState<UseWithPurpose[]>([])
   const [currentProcess, setCurrentProcess] = React.useState<Process | undefined>()
   const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
   const [errorProcessModal, setErrorProcessModal] = React.useState(null)
@@ -48,12 +51,12 @@ const ProcessList = ({purposeCode}: ProcessListProps) => {
   const [isLoadingProcessList, setIsLoadingProcessList] = React.useState(true)
   const [isLoadingProcess, setIsLoadingProcess] = React.useState(true)
 
-  const getProcessListByPurpose = async (purpose: string) => {
+  const getProcessList = async () => {
     setIsLoadingProcessList(true)
     try {
-      const list = (await getProcessesForPurpose(purpose)).content
+      const list = (await getCodelistUsage(listName, code)).processes
       setProcessList(sortProcess(list))
-    } catch (err) {
+    } catch (err) {  
       console.log(err)
     }
     setIsLoadingProcessList(false)
@@ -95,7 +98,7 @@ const ProcessList = ({purposeCode}: ProcessListProps) => {
   const handleDeleteProcess = async (process: Process) => {
     try {
       await deleteProcess(process.id)
-      setProcessList(sortProcess(processList.filter((p: Process) => p.id !== process.id)))
+      setProcessList(sortProcess(processList.filter((p: UseWithPurpose) => p.id !== process.id)))
       setErrorProcessModal(null)
       return true
     } catch (err) {
@@ -177,9 +180,9 @@ const ProcessList = ({purposeCode}: ProcessListProps) => {
 
   useEffect(() => {
     (async () => {
-      await getProcessListByPurpose(purposeCode)
+      await getProcessList()
     })()
-  }, [purposeCode]);
+  }, [code]);
 
   return (
     <React.Fragment>
@@ -207,7 +210,7 @@ const ProcessList = ({purposeCode}: ProcessListProps) => {
         {!isLoadingProcessList &&
         <AccordionProcess
           isLoading={isLoadingProcess}
-          purposeCode={purposeCode}
+          code={code}
           processList={processList}
           setProcessList={setProcessList}
           currentProcess={currentProcess}
@@ -231,7 +234,7 @@ const ProcessList = ({purposeCode}: ProcessListProps) => {
           submit={(values: ProcessFormValues) => handleCreateProcess(values)}
           errorOnCreate={errorProcessModal}
           isEdit={false}
-          initialValues={convertProcessToFormValues({purposeCode: purposeCode})}
+          initialValues={convertProcessToFormValues({purposeCode: code})}
         />
       </React.Fragment>
     </React.Fragment>

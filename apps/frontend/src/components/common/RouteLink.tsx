@@ -41,10 +41,10 @@ export const urlForObject = async (type: NavigableItem, id: string, audit?: Audi
       return `/informationtype/${id}`
     case ObjectType.POLICY:
       const policy = await getPolicy(id)
-      return `/purpose/${policy.purposeCode.code}/${policy.process.id}`
+      return `/process/purpose/${policy.purposeCode.code}/${policy.process.id}`
     case ObjectType.PROCESS:
       const process = await getProcess(id)
-      return `/purpose/${process.purposeCode}/${process.id}`
+      return `/process/purpose/${process.purposeCode}/${process.id}`
     case ObjectType.DISCLOSURE:
       const disclosure = await getDisclosure(id)
       return `/thirdparty/${disclosure.recipient.code}`
@@ -58,7 +58,7 @@ export const urlForObject = async (type: NavigableItem, id: string, audit?: Audi
       }
       break;
     case ListName.PURPOSE:
-      return `/purpose/${id}`
+      return `/process/purpose/${id}`
     case 'team':
       return `/process/team/${id}`
     case ListName.DEPARTMENT:

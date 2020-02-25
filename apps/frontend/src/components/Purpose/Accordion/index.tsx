@@ -8,11 +8,19 @@ import { Block } from 'baseui/block';
 import { Label1, Label2, Paragraph2 } from 'baseui/typography';
 import { intl, theme, useAwait } from '../../../util';
 import _includes from 'lodash/includes'
-import { user } from "../../../service/User";
-import { Plus } from 'baseui/icon'
-import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues } from "../../../constants"
-import { LegalBasisView } from "../../common/LegalBasis"
-import { codelist, ListName } from "../../../service/Codelist"
+import {user} from "../../../service/User";
+import {Plus} from 'baseui/icon'
+import {
+  AddDocumentToProcessFormValues,
+  LegalBasesStatus,
+  Policy,
+  PolicyFormValues,
+  Process,
+  ProcessFormValues,
+  UseWithPurpose
+} from "../../../constants"
+import {LegalBasisView} from "../../common/LegalBasis"
+import {codelist, ListName} from "../../../service/Codelist"
 import ModalProcess from './ModalProcess';
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy';
@@ -23,7 +31,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronRight, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal';
 import { TeamPopover } from "../../common/Team"
-import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
 import { AuditButton } from "../../audit/AuditButton"
 import { AddDocumentModal } from "./AddDocumentModal"
 import { RetentionView } from "../Retention"
@@ -32,8 +39,8 @@ import Button from '../../common/Button'
 
 type AccordionProcessProps = {
   isLoading: boolean
-  purposeCode: string
-  processList: Process[]
+  code: string
+  processList: UseWithPurpose[]
   currentProcess?: Process
   errorProcessModal: any | null
   errorPolicyModal: string | null
@@ -48,7 +55,7 @@ type AccordionProcessProps = {
   submitAddDocument: (document: AddDocumentToProcessFormValues) => Promise<boolean>
 }
 
-const AccordionTitle = (props: { process: Process, expanded: boolean, hasAccess: boolean, editProcess: () => void, deleteProcess: () => void }) => {
+const AccordionTitle = (props: { process: UseWithPurpose, expanded: boolean, hasAccess: boolean, editProcess: () => void, deleteProcess: () => void }) => {
   const {process, expanded, hasAccess} = props
   return <>
     <Block>
@@ -239,7 +246,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
 
   const {
     isLoading,
-    purposeCode,
+    code,
     currentProcess,
     onChangeProcess,
     submitDeleteProcess,
@@ -260,36 +267,34 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
 
   const handleChangePanel = async (processId?: string) => {
     if (!processId)
-      updatePath({purposeCode: purposeCode})
+      updatePath({code: code})
     else {
-      updatePath({purposeCode: purposeCode, processId: processId})
+      updatePath({code: code, processId: processId})
     }
   }
 
   const renderCreatePolicyButton = () => (
-    <StatefulTooltip content={intl.addOneInformationType} placement={PLACEMENT.top}>
-      <Button
-        size={ButtonSize.compact}
-        kind={KIND.tertiary}
-        onClick={() => setShowCreatePolicyModal(true)}
-        startEnhancer={() => <Block display="flex" justifyContent="center" marginRight={theme.sizing.scale100}><Plus size={22}/></Block>}
-      >
-        {intl.informationType}
-      </Button>
-    </StatefulTooltip>
+    <Button
+      tooltip={intl.addOneInformationType}
+      size={ButtonSize.compact}
+      kind={KIND.tertiary}
+      onClick={() => setShowCreatePolicyModal(true)}
+      startEnhancer={() => <Block display="flex" justifyContent="center" marginRight={theme.sizing.scale100}><Plus size={22}/></Block>}
+    >
+      {intl.informationType}
+    </Button>
   )
 
   const renderAddDocumentButton = () => (
-    <StatefulTooltip content={intl.addCollectionOfInformationTypes} placement={PLACEMENT.top}>
-      <Button
-        size={ButtonSize.compact}
-        kind={KIND.tertiary}
-        onClick={() => setShowAddDocumentModal(true)}
-        startEnhancer={() => <Block display="flex" justifyContent="center" marginRight={theme.sizing.scale100}><Plus size={22}/></Block>}
-      >
-        {intl.document}
-      </Button>
-    </StatefulTooltip>
+    <Button
+      tooltip={intl.addCollectionOfInformationTypes}
+      size={ButtonSize.compact}
+      kind={KIND.tertiary}
+      onClick={() => setShowAddDocumentModal(true)}
+      startEnhancer={() => <Block display="flex" justifyContent="center" marginRight={theme.sizing.scale100}><Plus size={22}/></Block>}
+    >
+      {intl.document}
+    </Button>
   )
 
   const hasAccess = () => user.canWrite()
@@ -310,7 +315,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
       <Accordion
         onChange={({expanded}) => handleChangePanel(expanded.length ? expanded[0].toString() : undefined)}
         initialState={{expanded: props.match.params.processId ? [props.match.params.processId] : []}}>
-        {props.processList && props.processList.map((p: Process) => (
+        {props.processList && props.processList.map((p: UseWithPurpose) => (
           <Panel
             title={
               <AccordionTitle process={p} expanded={props.match.params.processId === p.id}
@@ -346,7 +351,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                   <ProcessData process={currentProcess}/>
                 </Block>
 
-                <Block backgroundColor={theme.colors.primary50}>
+                <Block backgroundColor={theme.colors.primary100}>
                   <Block {...({
                     display: 'flex',
                     justifyContent: 'space-between',

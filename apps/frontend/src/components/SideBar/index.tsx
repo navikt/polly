@@ -53,7 +53,7 @@ const SideBar = () => {
     <Block {...sideBarProps}>
         <Brand/>
       <Block {...items}>
-        <NavItem to="/purpose" text={intl.processingActivities}/>
+        <NavItem to="/process/purpose" text={intl.processingActivities}/>
         <NavItem to="/informationtype" text={intl.informationTypes}/>
         <NavItem to="/document" text={intl.documents}/>
         {features.enableThirdParty && <NavItem to="/thirdparty" text={intl.thirdParty}/>}

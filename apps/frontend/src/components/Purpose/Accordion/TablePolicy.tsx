@@ -68,7 +68,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
   return (
     <React.Fragment>
       <Table
-        backgroundColor={theme.colors.primary50}
+        backgroundColor={theme.colors.primary100}
         hoverColor={theme.colors.mono200}
         headers={
           <>
