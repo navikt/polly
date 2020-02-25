@@ -16,7 +16,8 @@ import {
   Policy,
   PolicyFormValues,
   Process,
-  ProcessFormValues
+  ProcessFormValues,
+  UseWithPurpose
 } from "../../../constants"
 import {LegalBasisView} from "../../common/LegalBasis"
 import {codelist, ListName} from "../../../service/Codelist"
@@ -39,8 +40,8 @@ import NewButton from '../../common/Button'
 
 type AccordionProcessProps = {
   isLoading: boolean
-  purposeCode: string
-  processList: Process[]
+  code: string
+  processList: UseWithPurpose[]
   currentProcess?: Process
   errorProcessModal: any | null
   errorPolicyModal: string | null
@@ -55,7 +56,7 @@ type AccordionProcessProps = {
   submitAddDocument: (document: AddDocumentToProcessFormValues) => Promise<boolean>
 }
 
-const AccordionTitle = (props: { process: Process, expanded: boolean, hasAccess: boolean, editProcess: () => void, deleteProcess: () => void }) => {
+const AccordionTitle = (props: { process: UseWithPurpose, expanded: boolean, hasAccess: boolean, editProcess: () => void, deleteProcess: () => void }) => {
   const {process, expanded, hasAccess} = props
 
   const renderEditProcessButton = () => (
@@ -277,7 +278,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
 
   const {
     isLoading,
-    purposeCode,
+    code,
     currentProcess,
     onChangeProcess,
     submitDeleteProcess,
@@ -298,9 +299,9 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
 
   const handleChangePanel = async (processId?: string) => {
     if (!processId)
-      updatePath({purposeCode: purposeCode})
+      updatePath({code: code})
     else {
-      updatePath({purposeCode: purposeCode, processId: processId})
+      updatePath({code: code, processId: processId})
     }
   }
 
@@ -350,7 +351,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
       <Accordion
         onChange={({expanded}) => handleChangePanel(expanded.length ? expanded[0].toString() : undefined)}
         initialState={{expanded: props.match.params.processId ? [props.match.params.processId] : []}}>
-        {props.processList && props.processList.map((p: Process) => (
+        {props.processList && props.processList.map((p: UseWithPurpose) => (
           <Panel
             title={
               <AccordionTitle process={p} expanded={props.match.params.processId === p.id}

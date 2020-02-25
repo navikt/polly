@@ -40,10 +40,10 @@ export const urlForObject = async (type: ObjectType | ListName, id: string, audi
       return `/informationtype/${id}`
     case ObjectType.POLICY:
       const policy = await getPolicy(id)
-      return `/processActivities/purpose/${policy.purposeCode.code}/${policy.process.id}`
+      return `/process/purpose/${policy.purposeCode.code}/${policy.process.id}`
     case ObjectType.PROCESS:
       const process = await getProcess(id)
-      return `/processActivities/purpose/${process.purposeCode}/${process.id}`
+      return `/process/purpose/${process.purposeCode}/${process.id}`
     case ObjectType.DISCLOSURE:
       const disclosure = await getDisclosure(id)
       return `/thirdparty/${disclosure.recipient.code}`
@@ -57,7 +57,7 @@ export const urlForObject = async (type: ObjectType | ListName, id: string, audi
       }
       break;
     case ListName.PURPOSE:
-      return `/purpose/${id}`
+      return `/process/purpose/${id}`
   }
   console.warn('couldn\'t find object type ' + type)
   return ''

@@ -156,8 +156,8 @@ export interface Process extends IDurationed {
   retention?: Retention
 }
 
-export interface ProcessPurposeCount {
-  purposes: { [purpose: string]: number }
+export interface ProcessCount {
+  counts: { [code: string]: number }
 }
 
 export interface UserInfo {

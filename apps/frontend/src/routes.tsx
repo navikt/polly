@@ -26,8 +26,9 @@ const Routes = (): JSX.Element => (
     <Switch>
       <Route exact path="/thirdparty" component={ThirdPartySearchPage}/>
       <Route exact path="/thirdparty/:thirdPartyCode" component={ThirdPartyMetadataPage}/>
-      <Route exact path="/processActivities/purpose/:purposeCode?/:processId?" component={PurposePage}/>
-
+      <Route exact path="/process/purpose/:code?/:processId?" component={PurposePage}/>
+      <Route exact path="/process/department/:code?/:processId?" component={PurposePage}/>
+      
       <Route
         exact
         path="/informationtype/create"
