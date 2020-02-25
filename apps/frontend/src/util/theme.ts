@@ -3,12 +3,13 @@ import { colors } from 'baseui/tokens'
 import { Theme, ThemePrimitives } from 'baseui/theme'
 import { RecursivePartial } from '../constants'
 
-const primitives: ThemePrimitives = {
+const primitives: ThemePrimitives & { primary150: string } = {
   ...lightThemePrimitives,
   primaryA: '#3e3832',
   primary: '#19548a',
   primary50: '#F2F8FD',
   primary100: '#eaf4fc',
+  primary150: '#C1DBF2',
   primary200: '#99c2e8',
   primary300: '#396FA1',
   primary400: '#19548a',
@@ -26,16 +27,25 @@ interface Borders {
   surfaceBorderRadius: string
 }
 
-type ThemeOverride = RecursivePartial<Theme> & { borders: Partial<Borders> }
+interface Colors {
+  inputEnhancerFill?: string
+}
+
+type ThemeOverride = RecursivePartial<Theme> & { borders: Partial<Borders>, colors: Colors }
 
 const overrides: ThemeOverride = {
   colors: {
     linkVisited: primitives.primary400,
     inputFill: primitives.primary50,
-    inputFillActive: colors.platinum50
+    inputFillActive: primitives.primary150,
+    inputEnhancerFill: primitives.primary100,
+    borderFocus: primitives.primary150, // same as inputFillActive to hide
+
+    tabBarFill: colors.white
   },
   borders: {
-    buttonBorderRadius: '4px'
+    buttonBorderRadius: '4px',
+    inputBorderRadius: '8px'
   }
 }
 
