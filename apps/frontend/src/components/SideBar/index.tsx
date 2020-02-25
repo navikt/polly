@@ -29,7 +29,7 @@ const NavItem = (props: { text: string, to: string, active?: boolean }) => {
         <Block display="flex" alignItems="center">
           <Block marginRight="scale400">
             <FontAwesomeIcon
-              icon={useLocation().pathname === props.to ? faChevronDown : faChevronRight}
+              icon={useLocation().pathname.includes(props.to) ? faChevronDown : faChevronRight}
               color="white"
               size="lg"/>
           </Block>
