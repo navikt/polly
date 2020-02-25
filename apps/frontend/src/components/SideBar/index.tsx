@@ -12,7 +12,7 @@ const sideBarProps: BlockProps = {
   position: 'fixed',
   height: '100%',
   width: '240px',
-  backgroundColor: '#3e3832',
+  backgroundColor: theme.colors.primaryA,
 }
 
 const items: BlockProps = {
