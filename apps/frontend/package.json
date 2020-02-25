@@ -12,7 +12,7 @@
         "@fortawesome/free-solid-svg-icons": "^5.12.1",
         "@fortawesome/react-fontawesome": "^0.1.8",
         "axios": "^0.19.2",
-        "baseui": "^9.52.0",
+        "baseui": "^9.57.0",
         "flag-icon-css": "^3.4.6",
         "formik": "^2.1.4",
         "lodash": "^4.17.15",
@@ -41,8 +41,14 @@
     "eslintConfig": {
         "extends": "react-app",
         "rules": {
-          "semi": ["warn", "never"],
-          "quotes": ["warn", "single"]
+            "semi": [
+                "warn",
+                "never"
+            ],
+            "quotes": [
+                "warn",
+                "single"
+            ]
         }
     },
     "browserslist": {
