@@ -3,22 +3,26 @@ import RouteLink from '../common/RouteLink'
 import { Block } from 'baseui/block'
 import { Paragraph2 } from 'baseui/typography'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { useLocation } from 'react-router-dom'
 
 interface NavItemProps {
-    text: string;
-    to: string;
+  text: string;
+  to: string;
 }
 
 const NavItem = (props: NavItemProps) => (
-    <React.Fragment>
-        <RouteLink href={props.to}>
-            <Block display="flex" alignItems="center">
-                <Block marginRight="scale400"><FontAwesomeIcon icon={faChevronRight} color="white" size="lg" /></Block>
-                <Paragraph2 color="white">{props.text}</Paragraph2>
-            </Block>
-        </RouteLink>
-    </React.Fragment>
+  <RouteLink href={props.to} style={{textDecoration: 'none'}}>
+    <Block display="flex" alignItems="center">
+      <Block marginRight="scale400">
+        <FontAwesomeIcon
+          icon={useLocation().pathname.startsWith(props.to) ? faChevronDown : faChevronRight}
+          color="white"
+          size="lg"/>
+      </Block>
+      <Paragraph2 color="white">{props.text}</Paragraph2>
+    </Block>
+  </RouteLink>
 )
 
 export default NavItem
