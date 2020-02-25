@@ -346,7 +346,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                   <ProcessData process={currentProcess}/>
                 </Block>
 
-                <Block backgroundColor={theme.colors.primary50}>
+                <Block backgroundColor={theme.colors.primary100}>
                   <Block {...({
                     display: 'flex',
                     justifyContent: 'space-between',

@@ -6,8 +6,8 @@ const primitives: ThemePrimitives = {
   ...lightThemePrimitives,
   primaryA: "#3e3832",
   primary: "#19548a",
-  primary50: "#eaf4fc",
-  primary100: "#B5CCDF",
+  primary50: "#F2F8FD",
+  primary100: "#eaf4fc",
   primary200: "#99c2e8",
   primary300: "#396FA1",
   primary400: "#19548a",
@@ -18,7 +18,7 @@ const primitives: ThemePrimitives = {
 
 const overrides = {
   colors: {
-    buttonSecondaryFill: primitives.primary50,
+    buttonSecondaryFill: primitives.primary100,
     // buttonSecondaryText: primitives.mono900,
 
     linkVisited: primitives.primary400,
