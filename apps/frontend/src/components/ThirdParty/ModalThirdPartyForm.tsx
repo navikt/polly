@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { DisclosureFormValues, Document } from '../../constants';
+import { DisclosureFormValues, Document, LegalBasisFormValues } from '../../constants';
 import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal';
 import { Field, FieldArray, FieldProps, Form, Formik, FormikProps } from 'formik';
 import { Block, BlockProps } from 'baseui/block';
@@ -96,8 +96,8 @@ type ModalThirdPartyProps = {
 };
 
 const ModalThirdParty = (props: ModalThirdPartyProps) => {
-  const [selectedLegalBasis, setSelectedLegalBasis] = React.useState();
-  const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState();
+  const [selectedLegalBasis, setSelectedLegalBasis] = React.useState<LegalBasisFormValues>();
+  const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState<number>();
 
   const {submit, errorOnCreate, onClose, isOpen, disableRecipientField, initialValues, title} = props
 
@@ -197,8 +197,8 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                             submit={values => {
                               if (!values) return;
                               if (selectedLegalBasis) {
-                                arrayHelpers.replace(selectedLegalBasisIndex, values);
-                                setSelectedLegalBasis(null)
+                                arrayHelpers.replace(selectedLegalBasisIndex!, values);
+                                setSelectedLegalBasis(undefined)
                               } else {
                                 arrayHelpers.push(values);
                               }

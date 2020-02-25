@@ -1,6 +1,6 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
-import { Option, StatefulSelect, Select, Value } from 'baseui/select';
+import { useEffect } from "react";
+import { Option, Select, Value } from 'baseui/select';
 
 import ProcessList from "../components/Purpose";
 import { Block } from "baseui/block";
@@ -11,7 +11,6 @@ import { H4, Label2, Paragraph2 } from "baseui/typography";
 import { generatePath, useLocation } from "react-router";
 import { getProcessPurposeCount } from "../api"
 import { RouteComponentProps } from "react-router-dom";
-import { StyledSpinnerNext } from "baseui/spinner"
 import { RadioGroup, Radio, ALIGN } from "baseui/radio";
 
 const renderDescription = (description: string) => (

@@ -1,27 +1,27 @@
 import * as React from 'react'
-import {KeyboardEvent, useEffect, useState} from 'react'
-import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
-import {Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps,} from "formik";
-import {Block, BlockProps} from "baseui/block";
-import {Input, SIZE as InputSIZE} from "baseui/input";
-import {Select, Value} from 'baseui/select';
-import {Button, KIND, SHAPE, SIZE as ButtonSize} from "baseui/button";
-import {Plus} from "baseui/icon";
-import {Error, ModalBlock, ModalLabel} from "../../common/ModalSchema";
-import {DisclosureFormValues, ProcessFormValues} from "../../../constants";
+import { KeyboardEvent, useEffect, useState } from 'react'
+import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
+import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps, } from "formik";
+import { Block, BlockProps } from "baseui/block";
+import { Input, SIZE as InputSIZE } from "baseui/input";
+import { Select, Value } from 'baseui/select';
+import { Button, KIND, SHAPE, SIZE as ButtonSize } from "baseui/button";
+import { Plus } from "baseui/icon";
+import { Error, ModalBlock, ModalLabel } from "../../common/ModalSchema";
+import { DisclosureFormValues, LegalBasisFormValues, ProcessFormValues } from "../../../constants";
 import CardLegalBasis from './CardLegalBasis'
-import {codelist, ListName} from "../../../service/Codelist"
-import {intl, theme} from "../../../util"
-import {ListLegalBases} from "../../common/LegalBasis"
-import {DateModalFields} from "../DateModalFields"
-import {hasSpecifiedDate} from "../../common/Durations"
-import {processSchema} from "../../common/schema"
-import {getTeam, mapTeamToOption, useTeamSearch} from "../../../api"
-import {Textarea} from "baseui/textarea"
-import {Card} from "baseui/card"
-import {renderTagList} from "../../common/TagList"
-import {Slider} from "baseui/slider"
-import {RadioBoolButton} from "../../common/Radio"
+import { codelist, ListName } from "../../../service/Codelist"
+import { intl, theme } from "../../../util"
+import { ListLegalBases } from "../../common/LegalBasis"
+import { DateModalFields } from "../DateModalFields"
+import { hasSpecifiedDate } from "../../common/Durations"
+import { processSchema } from "../../common/schema"
+import { getTeam, mapTeamToOption, useTeamSearch } from "../../../api"
+import { Textarea } from "baseui/textarea"
+import { Card } from "baseui/card"
+import { renderTagList } from "../../common/TagList"
+import { Slider } from "baseui/slider"
+import { RadioBoolButton } from "../../common/Radio"
 
 const modalBlockProps: BlockProps = {
   width: '750px',
@@ -413,8 +413,8 @@ type ModalProcessProps = {
 
 const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, title}: ModalProcessProps) => {
 
-  const [selectedLegalBasis, setSelectedLegalBasis] = React.useState();
-  const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState();
+  const [selectedLegalBasis, setSelectedLegalBasis] = React.useState<LegalBasisFormValues>();
+  const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState<number>();
 
   const disableEnter = (e: KeyboardEvent) => {
     if (e.key === 'Enter') e.preventDefault()
@@ -424,7 +424,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
     <Modal
       onClose={onClose}
       isOpen={isOpen}
-      closeable
+      closeable={false}
       animate
       size={SIZE.auto}
       role={ROLE.dialog}
@@ -543,8 +543,8 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                             submit={values => {
                               if (!values) return;
                               if (selectedLegalBasis) {
-                                arrayHelpers.replace(selectedLegalBasisIndex, values)
-                                setSelectedLegalBasis(null)
+                                arrayHelpers.replace(selectedLegalBasisIndex!, values)
+                                setSelectedLegalBasis(undefined)
                               } else {
                                 arrayHelpers.push(values)
                               }

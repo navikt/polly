@@ -18,12 +18,12 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          node-version: '13.x'
       - name: Build
         run: |
           cp .env.prod .env
-          yarn
-          CI=false yarn run build
+          npm i
+          npm run build
       - name: Docker
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

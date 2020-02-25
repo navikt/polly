@@ -139,7 +139,7 @@ const LoggedInHeader = () => {
         </Block>
       }
     >
-      <Button kind="tertiary" size="compact" endEnhancer={() => <FontAwesomeIcon icon={faUser}/>}>{user.getNavIdent()}</Button>
+      <Button kind="tertiary" size="compact" endEnhancer={() => <FontAwesomeIcon icon={faUser}/>}>{user.getIdent()}</Button>
     </StatefulPopover>
   )
 }

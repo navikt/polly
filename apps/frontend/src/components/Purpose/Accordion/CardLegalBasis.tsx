@@ -52,7 +52,7 @@ const renderCardHeader = (text: string) => {
       >
         <Block display="flex">
           <Label2>{text}</Label2>
-          <FontAwesomeIcon style={{marginLeft: ".25rem"}} icon={faExclamationCircle} color={theme.colors.accent400} size="sm"/>
+          <FontAwesomeIcon style={{marginLeft: ".25rem"}} icon={faExclamationCircle} color={theme.colors.primary300} size="sm"/>
         </Block>
       </StatefulTooltip>
     </Block>

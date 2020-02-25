@@ -132,6 +132,13 @@ export const documentSort: ColumnCompares<DocumentInfoTypeUse> = {
   subjectCategories: (a, b) => a.subjectCategories.length - b.subjectCategories.length
 }
 
+export const processSort: ColumnCompares<Process> = {
+  name:(a, b) => a.name.localeCompare(b.name),
+  purposeCode:(a, b) => (codelist.getShortname(ListName.PURPOSE, a.purposeCode) || "").localeCompare(codelist.getShortname(ListName.PURPOSE, b.purposeCode) || ""),
+  department:(a, b) => (a.department?.shortName || "").localeCompare(b.department?.shortName || ""),
+  products: (a,b) => a.products.length - b.products.length
+}
+
 export interface PolicyInformationType {
   id: string
   name: string
@@ -163,7 +170,7 @@ export interface ProcessCount {
 export interface UserInfo {
   loggedIn: boolean
   groups: string[]
-  navIdent?: string
+  ident?: string
   name?: string
   givenName?: string
   familyName?: string
@@ -291,6 +298,8 @@ export enum ObjectType {
   GENERIC_STORAGE = "GENERIC_STORAGE"
 }
 
+export type NavigableItem = ObjectType | ListName.PURPOSE | ListName.DEPARTMENT | ListName.SUB_DEPARTMENT | 'team'
+
 export interface AuditItem {
   action: AuditAction
   id: string
@@ -355,4 +364,11 @@ export interface PolicyAlert {
   missingLegalBasis: boolean
   missingArt6: boolean
   missingArt9: boolean
+}
+
+export type RecursivePartial<T> = {
+  [P in keyof T]?:
+  T[P] extends (infer U)[] ? RecursivePartial<U>[] :
+    T[P] extends object ? RecursivePartial<T[P]> :
+      T[P];
 }

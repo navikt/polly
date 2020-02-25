@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { ReactElement, useEffect } from 'react';
 import { ALIGN, HeaderNavigation, StyledNavigationItem as NavigationItem, StyledNavigationList as NavigationList, } from 'baseui/header-navigation';
 import { Button } from 'baseui/button';
 import { Block, BlockProps } from 'baseui/block';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { env } from '../util/env';
-import { intl, theme, useAwait, useDebouncedState } from '../util';
+import { intl, theme, useAwait } from '../util';
 import { user } from '../service/User';
 import { StyledLink } from 'baseui/link';
 import { StatefulPopover } from 'baseui/popover';
@@ -17,12 +16,7 @@ import { Lang, langs, langsArray } from '../util/intl/intl';
 import { TriangleDown } from 'baseui/icon';
 import { FlagIcon } from "./common/Flag"
 import { paddingAll } from "./common/Style"
-import { Select, TYPE } from "baseui/select"
-import { searchInformationType, searchProcess } from "../api"
-import { ObjectType } from "../constants"
-import { urlForObject } from "./common/RouteLink"
-import { prefixBiasedSort } from "../util/sort"
-import { codelist, ListName } from "../service/Codelist"
+import MainSearch from "./MainSearch"
 
 
 const LoggedInHeader = () => {
@@ -45,7 +39,7 @@ const LoggedInHeader = () => {
         </Block>
       }
     >
-      <Button kind="tertiary" startEnhancer={() => <FontAwesomeIcon icon={faUser}/>}>{user.getNavIdent()}</Button>
+      <Button kind="tertiary" startEnhancer={() => <FontAwesomeIcon icon={faUser}/>}>{user.getIdent()}</Button>
     </StatefulPopover>
   )
 }
@@ -139,58 +133,9 @@ interface TempHeaderProps {
   setLang: (lang: string) => void
 }
 
-type SearchItem = { id: string, name: string, label: ReactElement, type: ObjectType | ListName }
 
-const SearchLabel = (props: { name: string, type: string }) =>
-  <Block display="flex" justifyContent="space-between" width="100%">
-    <span>{props.name}</span>
-    <Block $style={{opacity: .5}}>{props.type}</Block>
-  </Block>
-
-const TempHeader = (props: TempHeaderProps & RouteComponentProps) => {
+export default (props: TempHeaderProps) => {
   useAwait(user.wait())
-  const [search, setSearch] = useDebouncedState<string>('', 200);
-  const [searchResult, setSearchResult] = React.useState<SearchItem[]>([]);
-  const [loading, setLoading] = React.useState<boolean>(false);
-
-  useEffect(() => {
-    (async () => {
-      if (search && search.length > 2) {
-        const compareFn = (a: SearchItem, b: SearchItem) => prefixBiasedSort(search, a.name, b.name)
-        setLoading(true)
-        let results
-
-        const purposes = codelist.getCodes(ListName.PURPOSE).filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
-        .map(c => ({
-          id: c.code,
-          name: c.shortName,
-          label: <SearchLabel name={c.shortName} type={intl.purpose}/>,
-          type: ListName.PURPOSE
-        }))
-        results = purposes.sort(compareFn)
-        setSearchResult(results)
-
-        const res = await searchInformationType(search)
-        const infoTypes = res.content.map(it => ({id: it.id, name: it.name, label: <SearchLabel name={it.name} type={intl.informationType}/>, type: ObjectType.INFORMATION_TYPE}))
-        results = [...results, ...infoTypes].sort(compareFn)
-        setSearchResult(results)
-
-        const resProcess = await searchProcess(search)
-        const processes = resProcess.content.map(it => {
-          const purpose = codelist.getShortname(ListName.PURPOSE, it.purposeCode)
-          return ({
-            id: it.id,
-            name: `${it.name} ${purpose}`,
-            label: <SearchLabel name={`${purpose}: ${it.name}`} type={intl.process}/>,
-            type: ObjectType.PROCESS
-          })
-        })
-        results = [...results, ...processes].sort(compareFn)
-        setSearchResult(results)
-        setLoading(false)
-      }
-    })()
-  }, [search])
 
   return (
     <Block marginLeft="240px">
@@ -198,22 +143,7 @@ const TempHeader = (props: TempHeaderProps & RouteComponentProps) => {
         <NavigationList $align={ALIGN.left}>
           <NavigationItem>
             <Block width="450px">
-              <Select
-                isLoading={loading}
-                maxDropdownHeight="400px"
-                searchable={true}
-                type={TYPE.search}
-                options={searchResult}
-                placeholder={intl.search}
-                onInputChange={event => setSearch(event.currentTarget.value)}
-                onChange={(params) => {
-                  const item = params.value[0] as SearchItem;
-                  (async () => {
-                    props.history.push(await urlForObject(item.type, item.id))
-                  })()
-                }}
-                filterOptions={options => options}
-              />
+              <MainSearch/>
             </Block>
           </NavigationItem>
         </NavigationList>
@@ -234,7 +164,7 @@ const TempHeader = (props: TempHeaderProps & RouteComponentProps) => {
           {!user.isLoggedIn() && (
             <NavigationItem>
               <StyledLink href={`${env.pollyBaseUrl}/login?redirect_uri=${window.location.href}`}>
-                <Button>
+                <Button $style={{borderRadius: 0}}>
                   {intl.login}
                 </Button>
               </StyledLink>
@@ -252,6 +182,3 @@ const TempHeader = (props: TempHeaderProps & RouteComponentProps) => {
     </Block>
   );
 }
-
-
-export default withRouter(TempHeader)

@@ -17,7 +17,7 @@ export const getProcessesForPurpose = async (purpose: string) => {
   return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process/purpose/${purpose}`)).data
 }
 
-export const getProcessPurposeCount = async (query: string) => {
+export const getProcessPurposeCount = async (query: 'purpose' | 'department' | 'subDepartment' | 'team') => {
   return (await axios.get<ProcessCount>(`${env.pollyBaseUrl}/process/count?${query}`)).data
 }
 
@@ -36,6 +36,10 @@ export const updateProcess = async (process: ProcessFormValues) => {
   data.policies.forEach(p => p.process = {...data, policies: []})
   return data
 }
+
+export const getProcessesByDocument = async (documentId: string) => {
+  return (await axios.get(`${env.pollyBaseUrl}/process/?documentId=${documentId}`)).data
+};
 
 const mapBool = (b?: boolean) => b === true ? true : b === false ? false : undefined
 

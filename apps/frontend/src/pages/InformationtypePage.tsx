@@ -10,7 +10,7 @@ import { RouteComponentProps } from "react-router-dom"
 
 import InformationtypeMetadata from "../components/InformationType/InformationtypeMetadata/";
 import { intl, theme, useAwait } from "../util"
-import { CodeUsage, Disclosure, Document, Policy } from "../constants"
+import { CodeUsage, Disclosure, Document, InformationType, Policy } from "../constants"
 import { codelist, ListName } from "../service/Codelist"
 import { user } from "../service/User";
 import { H4 } from "baseui/typography"
@@ -31,7 +31,7 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
     const [isLoading, setLoading] = React.useState(false);
     const [error, setError] = React.useState(null);
     const [informationTypeId, setInformationTypeId] = React.useState(props.match.params.id)
-    const [informationtype, setInformationtype] = React.useState()
+    const [informationtype, setInformationtype] = React.useState<InformationType>()
     const [policies, setPolicies] = React.useState<Policy[]>([])
     const [disclosures, setDisclosures] = React.useState<Disclosure[]>([])
     const [documents, setDocuments] = React.useState<Document[]>([])

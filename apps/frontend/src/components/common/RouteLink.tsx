@@ -5,7 +5,7 @@ import { KIND } from "baseui/button"
 import { getDisclosure, getPolicy, getProcess } from "../../api"
 import { Block } from "baseui/block"
 import { AuditButton } from "../audit/AuditButton"
-import { AuditItem, ObjectType } from "../../constants"
+import { AuditItem, NavigableItem, ObjectType } from "../../constants"
 import { useStyletron } from "baseui"
 import { ListName } from "../../service/Codelist"
 
@@ -27,14 +27,15 @@ export default withRouter(RouteLinkImpl)
 
 type ObjectLinkProps = {
   id: string
-  type: ObjectType
+  type: NavigableItem
   audit?: AuditItem
   withHistory?: boolean
   children?: any
   disable?: boolean
   hideUnderline?: boolean
 }
-export const urlForObject = async (type: ObjectType | ListName, id: string, audit?: AuditItem) => {
+
+export const urlForObject = async (type: NavigableItem, id: string, audit?: AuditItem) => {
   switch (type) {
     case ObjectType.INFORMATION_TYPE:
       return `/informationtype/${id}`
@@ -58,6 +59,12 @@ export const urlForObject = async (type: ObjectType | ListName, id: string, audi
       break;
     case ListName.PURPOSE:
       return `/process/purpose/${id}`
+    case 'team':
+      return `/process/team/${id}`
+    case ListName.DEPARTMENT:
+      return `/process/department/${id}`
+    case ListName.SUB_DEPARTMENT:
+      return `/process/subdepartment/${id}`
   }
   console.warn('couldn\'t find object type ' + type)
   return ''

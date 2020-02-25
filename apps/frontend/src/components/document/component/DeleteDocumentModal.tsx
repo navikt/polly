@@ -9,11 +9,12 @@ type ModalDeleteProps = {
   title: string,
   isOpen: boolean,
   documentName: String,
+  documentUsageCount?: number,
   submit: () => void,
   onClose: () => void,
 };
 
-const DeleteDocumentModal = ({title, documentName, isOpen, onClose, submit}: ModalDeleteProps) => {
+const DeleteDocumentModal = ({title, documentName = "", isOpen, onClose, submit, documentUsageCount}: ModalDeleteProps) => {
   return (
     <Modal
       onClose={onClose}
@@ -24,7 +25,12 @@ const DeleteDocumentModal = ({title, documentName, isOpen, onClose, submit}: Mod
     >
       <ModalHeader>{title}</ModalHeader>
       <ModalBody>
-        <Paragraph2> {intl.confirmDeleteDocumentText} "{documentName}" </Paragraph2>
+        {!!!documentUsageCount ? (
+            <Paragraph2> {intl.confirmDeleteDocumentText} "{documentName}"</Paragraph2>
+          ) :
+          (
+            <Paragraph2>{intl.formatString(intl.cannotDeleteProcess, documentName.toString(), documentUsageCount.toString())}</Paragraph2>
+          )}
       </ModalBody>
 
       <ModalFooter>
@@ -36,9 +42,10 @@ const DeleteDocumentModal = ({title, documentName, isOpen, onClose, submit}: Mod
           >
             {intl.abort}
           </Button>
-          <Button onClick={
-            () => submit()
-          }>
+          <Button
+            onClick={() => submit()}
+            disabled={!(documentUsageCount === 0 || documentUsageCount === undefined)}
+          >
             {intl.delete}
           </Button>
         </Block>

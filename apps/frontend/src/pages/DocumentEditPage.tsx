@@ -1,9 +1,9 @@
 import React from "react";
 import DocumentForm from "../components/document/component/DocumentForm";
-import {RouteComponentProps} from "react-router-dom";
-import {codelist} from "../service/Codelist";
-import {getDocument, updateInformationTypesDocument} from "../api";
-import {Document, DocumentFormValues, DocumentInfoTypeUse,} from "../constants";
+import { RouteComponentProps } from "react-router-dom";
+import { codelist } from "../service/Codelist";
+import { getDocument, updateInformationTypesDocument } from "../api";
+import { Document, DocumentFormValues, DocumentInfoTypeUse, } from "../constants";
 import shortid from "shortid";
 
 const convertToDocumentFormValues = (document: Document) => {
@@ -24,7 +24,7 @@ const convertToDocumentFormValues = (document: Document) => {
 
 const DocumentEditPage = (props: RouteComponentProps<{ id?: string}>) => {
   const [document, setDocument] = React.useState<Document>()
-  const [isLoading,setLoading] = React.useState();
+  const [isLoading,setLoading] = React.useState(false);
 
   const handleEditDocument = async (values: DocumentFormValues) => {
       try {
