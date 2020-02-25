@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useEffect } from "react";
-import { Button, SHAPE } from "baseui/button"
 import { Block } from "baseui/block"
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -24,6 +23,7 @@ import {
 } from "../api"
 import InformationTypeAccordion from "../components/InformationType/ListCategoryInformationtype";
 import { StyledSpinnerNext } from "baseui/spinner"
+import Button from "../components/common/Button";
 
 export type PurposeMap = { [purpose: string]: Policy[] }
 
@@ -117,7 +117,7 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
                         </Block>
                         <Block>
                             {user.canWrite() &&
-                            <Button type="button" shape={SHAPE.square} onClick={() => props.history.push("/informationtype/create")}>
+                            <Button kind="outline" onClick={() => props.history.push("/informationtype/create")}>
                               <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;{intl.createNew}
                             </Button>
                             }
