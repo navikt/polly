@@ -20,17 +20,22 @@ const renderDescription = (description: string) => (
   </Block>
 )
 
+const setDefaultSelectedRadioValue = (location: string) => {
+  if (location.includes("subdepartment")) return ListName.SUB_DEPARTMENT
+  else if (location.includes("department")) return ListName.DEPARTMENT
+
+  return ListName.PURPOSE
+}
+
 export type PathParams = { context?: string, code?: string, processId?: string }
 
 const PurposePage = (props: RouteComponentProps<PathParams>) => {
   const current_location = useLocation()
-  const setDefaultSelectedRadioValue = () => {
-    return current_location.pathname.includes('department') ? ListName.DEPARTMENT : ListName.PURPOSE
-  }
+  
 
   const [isLoading, setLoading] = React.useState(false);
   const [processCount, setProcessCount] = React.useState<{ [purpose: string]: number }>(({}));
-  const [selectedRadioValue, setSelectedRadioValue] = React.useState(setDefaultSelectedRadioValue())
+  const [selectedRadioValue, setSelectedRadioValue] = React.useState(setDefaultSelectedRadioValue(current_location.pathname))
   const [currentSelectedValue, setCurrentSelectedValue] = React.useState<Value>([])
 
   useAwait(codelist.wait())
@@ -57,6 +62,7 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
     setSelectedRadioValue(listname)
     if (listname === ListName.PURPOSE) props.history.replace("/process/purpose")
     else if (listname === ListName.DEPARTMENT) props.history.replace("/process/department")
+    else if (listname === ListName.SUB_DEPARTMENT) props.history.replace("/process/subdepartment")
     setLoading(false)
   }
 
@@ -72,8 +78,21 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
   }
 
   const optionsForSelectedCode = (selected: string) => {
-    return selected === ListName.DEPARTMENT ? codelist.getParsedOptions(ListName.DEPARTMENT).map(purposeLabelView)
-      : codelist.getParsedOptions(ListName.PURPOSE).map(purposeLabelView)
+    if (selected == ListName.SUB_DEPARTMENT)
+      return codelist.getParsedOptions(ListName.SUB_DEPARTMENT).map(purposeLabelView)
+    else if (selected === ListName.DEPARTMENT) 
+      return codelist.getParsedOptions(ListName.DEPARTMENT).map(purposeLabelView)
+
+    return codelist.getParsedOptions(ListName.PURPOSE).map(purposeLabelView)
+  }
+
+  const getPlaceholder = (selected: string) => {
+    if (selected == ListName.SUB_DEPARTMENT)
+      return intl.subDepartmentSelect
+    else if (selected === ListName.DEPARTMENT) 
+      return intl.departmentSelect
+
+    return intl.purposeSelect
   }
 
   useEffect(() => {
@@ -82,10 +101,15 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
         setSelectedRadioValue(ListName.PURPOSE)
         setProcessCount((await getProcessPurposeCount('purpose')).counts)
       }
+      else if (current_location.pathname.includes('subdepartment')) {
+        setSelectedRadioValue(ListName.SUB_DEPARTMENT)        
+        setProcessCount((await getProcessPurposeCount('subDepartment')).counts)
+      }
       else if (current_location.pathname.includes('department')) {
         setSelectedRadioValue(ListName.DEPARTMENT)        
         setProcessCount((await getProcessPurposeCount('department')).counts)
       }
+     
 
       if (props.match.params.code) setCurrentSelectedValue([{ id: props.match.params.code }])
       else setCurrentSelectedValue([])
@@ -104,8 +128,9 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
               onChange={e => handleRadioButtonChange(e.target.value as ListName)}
               align={ALIGN.horizontal}
             >
-              <Radio value={ListName.PURPOSE as ListName} overrides={{ Root: { style: { marginRight: '1rem' } } }}>{intl.purpose}</Radio>
-              <Radio value={ListName.DEPARTMENT as ListName}>{intl.department}</Radio>
+              <Radio value={ListName.PURPOSE as ListName} overrides={{ Root: { style: { marginRight: '1rem' }}}}>{intl.purpose}</Radio>
+              <Radio value={ListName.DEPARTMENT as ListName} overrides={{ Root: { style: { marginRight: '1rem' }}}}>{intl.department}</Radio>
+              <Radio value={ListName.SUB_DEPARTMENT as ListName}>{intl.subDepartment}</Radio>
             </RadioGroup>
           </Block>
 
@@ -113,7 +138,7 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
           <Select
             value={currentSelectedValue}
             options={optionsForSelectedCode(selectedRadioValue)}
-            placeholder={intl.purposeSelect}
+            placeholder={getPlaceholder(selectedRadioValue)}
             maxDropdownHeight="350px"
             onChange={params => {
               handleChangeSelect(params.option)

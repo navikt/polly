@@ -168,6 +168,8 @@ export interface IStrings {
   searchDocumentPlaceholder: string;
   eventType: string;
   disclosurePurpose: string;
+  departmentSelect: string;
+  subDepartmentSelect: string;
 
   // groups
   POLLY_READ: string;

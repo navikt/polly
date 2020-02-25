@@ -146,6 +146,8 @@ export const no: IStrings = {
   searchDocumentPlaceholder: "Søk dokumenter",
   eventType: "Hendelsetype",
   disclosurePurpose: "Formål med utlevering",
+  departmentSelect: "Velg avdeling",
+  subDepartmentSelect: "Velg linje (Ytre etat)",
 
   POLLY_READ: "Les",
   POLLY_WRITE: "Skriv",
@@ -412,6 +414,8 @@ export const en: IStrings = {
   searchDocumentPlaceholder: "Search documents",
   eventType: "Event type",
   disclosurePurpose: "Purpose for disclosure",
+  departmentSelect: "Select department",
+  subDepartmentSelect: "Select subdepartment",
 
   POLLY_READ: "Read",
   POLLY_WRITE: "Write",
