@@ -23,7 +23,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronRight, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal';
 import { TeamPopover } from "../../common/Team"
-import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
 import { AuditButton } from "../../audit/AuditButton"
 import { AddDocumentModal } from "./AddDocumentModal"
 import { RetentionView } from "../Retention"
@@ -267,29 +266,27 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
   }
 
   const renderCreatePolicyButton = () => (
-    <StatefulTooltip content={intl.addOneInformationType} placement={PLACEMENT.top}>
-      <Button
-        size={ButtonSize.compact}
-        kind={KIND.tertiary}
-        onClick={() => setShowCreatePolicyModal(true)}
-        startEnhancer={() => <Block display="flex" justifyContent="center" marginRight={theme.sizing.scale100}><Plus size={22}/></Block>}
-      >
-        {intl.informationType}
-      </Button>
-    </StatefulTooltip>
+    <Button
+      tooltip={intl.addOneInformationType}
+      size={ButtonSize.compact}
+      kind={KIND.tertiary}
+      onClick={() => setShowCreatePolicyModal(true)}
+      startEnhancer={() => <Block display="flex" justifyContent="center" marginRight={theme.sizing.scale100}><Plus size={22}/></Block>}
+    >
+      {intl.informationType}
+    </Button>
   )
 
   const renderAddDocumentButton = () => (
-    <StatefulTooltip content={intl.addCollectionOfInformationTypes} placement={PLACEMENT.top}>
-      <Button
-        size={ButtonSize.compact}
-        kind={KIND.tertiary}
-        onClick={() => setShowAddDocumentModal(true)}
-        startEnhancer={() => <Block display="flex" justifyContent="center" marginRight={theme.sizing.scale100}><Plus size={22}/></Block>}
-      >
-        {intl.document}
-      </Button>
-    </StatefulTooltip>
+    <Button
+      tooltip={intl.addCollectionOfInformationTypes}
+      size={ButtonSize.compact}
+      kind={KIND.tertiary}
+      onClick={() => setShowAddDocumentModal(true)}
+      startEnhancer={() => <Block display="flex" justifyContent="center" marginRight={theme.sizing.scale100}><Plus size={22}/></Block>}
+    >
+      {intl.document}
+    </Button>
   )
 
   const hasAccess = () => user.canWrite()
