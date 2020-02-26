@@ -48,12 +48,21 @@ const overrides: ThemeOverride = {
     inputBorderRadius: '8px'
   },
   typography: {
-    font350: {
-      fontFamily: primitives.primaryFontFamily,
-      fontSize: '16px',
-      fontWeight: 600,
-      lineHeight: '20px'
-    }
+    // Increase weight 500->600 on bold texts
+    font150: {fontWeight: 600},
+    font250: {fontWeight: 600},
+    font350: {fontWeight: 600},
+    font450: {fontWeight: 600},
+    font550: {fontWeight: 600},
+    font650: {fontWeight: 600},
+    font750: {fontWeight: 600},
+    font850: {fontWeight: 600},
+    font950: {fontWeight: 600},
+    font1050: {fontWeight: 600},
+    font1150: {fontWeight: 600},
+    font1250: {fontWeight: 600},
+    font1350: {fontWeight: 600},
+    font1450: {fontWeight: 600}
   }
 }
 
