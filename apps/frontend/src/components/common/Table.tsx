@@ -1,10 +1,13 @@
-import { SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from "baseui/table"
-import { theme } from "../../util"
-import * as React from "react"
-import { ReactElement, useContext } from "react"
-import { withStyle } from "baseui"
-import { TableState } from "../../util/hooks"
-import { StyleObject } from "styletron-standard"
+import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from 'baseui/table'
+import { theme } from '../../util'
+import * as React from 'react'
+import { ReactElement, useContext } from 'react'
+import { withStyle } from 'baseui'
+import { TableState } from '../../util/hooks'
+import { StyleObject } from 'styletron-standard'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons'
+import { Block } from 'baseui/block'
 
 type TableProps = {
   backgroundColor?: string,
@@ -29,28 +32,28 @@ type RowProps = {
 const headerCellOverride = {
   HeadCell: {
     style: {
-      borderLeft: "none",
-      borderRight: "none",
-      borderTop: "none",
-      borderBottom: "none"
+      borderLeft: 'none',
+      borderRight: 'none',
+      borderTop: 'none',
+      borderBottom: 'none'
     }
   }
 }
 
 const StyledHeader = withStyle(StyledHead, {
-  backgroundColor: "transparent",
-  boxShadow: "none",
+  backgroundColor: 'transparent',
+  boxShadow: 'none',
   borderBottom: `2px solid ${theme.colors.mono600}`,
-  marginBottom: ".5rem"
+  marginBottom: '.5rem'
 })
 
 const tableStyle = {
-  overflow: "hidden !important",
-  borderWidth: "0",
-  borderTopLeftRadius: "0",
-  borderTopRightRadius: "0",
-  borderBottomLeftRadius: "0",
-  borderBottomRightRadius: "0"
+  overflow: 'hidden !important',
+  borderWidth: '0',
+  borderTopLeftRadius: '0',
+  borderTopRightRadius: '0',
+  borderBottomLeftRadius: '0',
+  borderBottomRightRadius: '0'
 }
 
 const TableContext = React.createContext<Partial<TableProps>>({})
@@ -87,6 +90,17 @@ export const Row = (props: RowProps) => {
   return <StyleRow>{props.children}</StyleRow>
 }
 
+const SortDirectionIcon = (props: { direction: SORT_DIRECTION | null }) => {
+  switch (props?.direction) {
+    case SORT_DIRECTION.ASC:
+      return <FontAwesomeIcon icon={faSortDown}/>
+    case SORT_DIRECTION.DESC:
+      return <FontAwesomeIcon icon={faSortUp}/>
+    default:
+      return <FontAwesomeIcon icon={faSort}/>
+  }
+}
+
 const PlainHeadCell = withStyle(StyledHeadCell, headerCellOverride.HeadCell.style)
 
 export const HeadCell = <T, K extends keyof T>(props: HeadProps<K, T>) => {
@@ -98,7 +112,17 @@ export const HeadCell = <T, K extends keyof T>(props: HeadProps<K, T>) => {
 
   return (
     <SortableHeadCell
-      overrides={headerCellOverride}
+      overrides={{
+        ...headerCellOverride,
+        SortableLabel: {
+          component: () => <span>
+            <SortDirectionIcon direction={table.direction[props.column!]}/>
+            <Block marginRight={theme.sizing.scale200} display='inline'/>
+            {props.title}
+          </span>
+        }
+
+      }}
       title={props.title}
       direction={table.direction[props.column]}
       onSort={() => sortColumn(props.column!)}
