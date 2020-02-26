@@ -1,10 +1,10 @@
 import * as React from 'react'
 import RouteLink from '../common/RouteLink'
-import { Block } from 'baseui/block'
-import { Paragraph2 } from 'baseui/typography'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
-import { useLocation } from 'react-router-dom'
+import {Block} from 'baseui/block'
+import {Paragraph2} from 'baseui/typography'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faChevronDown, faChevronRight} from '@fortawesome/free-solid-svg-icons'
+import {useLocation} from 'react-router-dom'
 
 interface NavItemProps {
   text: string;
@@ -16,7 +16,7 @@ const NavItem = (props: NavItemProps) => (
     <Block display="flex" alignItems="center">
       <Block marginRight="scale400">
         <FontAwesomeIcon
-          icon={useLocation().pathname.startsWith(props.to) ? faChevronDown : faChevronRight}
+          icon={useLocation().pathname.split("/")[1].includes(props.to.split("/")[1]) ? faChevronDown : faChevronRight}
           color="white"
           size="lg"/>
       </Block>

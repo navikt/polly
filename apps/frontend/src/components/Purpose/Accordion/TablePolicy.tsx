@@ -1,27 +1,27 @@
-import * as React from "react";
-import { useEffect, useState } from "react";
-import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
-import { Block } from "baseui/block";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faInfo, faInfoCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Modal, ModalBody, ModalFooter, ModalHeader } from "baseui/modal";
-import { Label2, Paragraph2 } from "baseui/typography";
-import { PLACEMENT, StatefulTooltip } from "baseui/tooltip"
+import * as React from 'react'
+import { useEffect, useState } from 'react'
+import { Button, KIND, SIZE as ButtonSize } from 'baseui/button'
+import { Block } from 'baseui/block'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEdit, faInfo, faInfoCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
+import { Paragraph2 } from 'baseui/typography'
+import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
 
-import { codelist, ListName } from "../../../service/Codelist"
-import { Sensitivity } from "../../InformationType/Sensitivity"
-import ModalPolicy from "./ModalPolicy";
-import { LegalBasesNotClarified, ListLegalBasesInTable } from "../../common/LegalBasis"
-import { Document, Policy, PolicyFormValues, policySort, Process, ProcessAlert } from "../../../constants"
-import { intl } from "../../../util"
-import { convertPolicyToFormValues, getDocument } from "../../../api"
-import { useTable } from "../../../util/hooks"
-import RouteLink from "../../common/RouteLink"
-import { ActiveIndicator } from "../../common/Durations"
-import { AuditButton } from "../../audit/AuditButton"
-import _ from "lodash"
-import { getAlertForProcess } from "../../../api/AlertApi"
-import { Cell, HeadCell, Row, SmallCell, SmallHeadCell, Table } from "../../common/Table"
+import { codelist, ListName } from '../../../service/Codelist'
+import { Sensitivity } from '../../InformationType/Sensitivity'
+import ModalPolicy from './ModalPolicy'
+import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
+import { Document, Policy, PolicyFormValues, policySort, Process, ProcessAlert } from '../../../constants'
+import { intl } from '../../../util'
+import { convertPolicyToFormValues, getDocument } from '../../../api'
+import { useTable } from '../../../util/hooks'
+import RouteLink from '../../common/RouteLink'
+import { ActiveIndicator } from '../../common/Durations'
+import { AuditButton } from '../../audit/AuditButton'
+import _ from 'lodash'
+import { getAlertForProcess } from '../../../api/AlertApi'
+import { Cell, HeadCell, Row, SmallCell, SmallHeadCell, Table } from '../../common/Table'
 
 
 type TablePurposeProps = {
@@ -42,7 +42,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
   const [showEditModal, setShowEditModal] = React.useState(false)
   const [showPolicyInfo, setShowPolicyInfo] = React.useState(false)
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
-  const [table, sortColumn] = useTable<Policy, keyof Policy>(process.policies, {sorting: policySort, initialSortColumn: "informationType", showLast: (p) => !p.active})
+  const [table, sortColumn] = useTable<Policy, keyof Policy>(process.policies, {sorting: policySort, initialSortColumn: 'informationType', showLast: (p) => !p.active})
   const [alert, setAlert] = useState<ProcessAlert>()
 
   useEffect(() => {
@@ -57,7 +57,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
     (async () => {
       const allIds = _.uniq(process.policies.flatMap(p => p.documentIds)).filter(id => !!id)
       const docMap = (await Promise.all(allIds.map(id => getDocument(id!)))).reduce((acc: Docs, doc) => {
-        acc[doc.id] = doc;
+        acc[doc.id] = doc
         return acc
       }, {} as Docs)
 
@@ -68,6 +68,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
   return (
     <React.Fragment>
       <Table
+        emptyText={intl.informationTypes}
         headers={
           <>
             <HeadCell title={intl.informationType} column={'informationType'} tableState={[table, sortColumn]}/>
@@ -91,15 +92,15 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                     </Block>
                     <Block>
                       <StatefulTooltip content={() => intl.documents}>
-                        <Block $style={{opacity: "80%"}}>
-                          {!!row.documentIds?.length && '(' + row.documentIds?.map(id => (docs[id] || {}).name).join(", ") + ')'}
+                        <Block $style={{opacity: '80%'}}>
+                          {!!row.documentIds?.length && '(' + row.documentIds?.map(id => (docs[id] || {}).name).join(', ') + ')'}
                         </Block>
                       </StatefulTooltip>
                     </Block>
                   </Block>
                 </Cell>
 
-                <Cell>{row.subjectCategories.map(sc => codelist.getShortname(ListName.SUBJECT_CATEGORY, sc.code)).join(", ")}</Cell>
+                <Cell>{row.subjectCategories.map(sc => codelist.getShortname(ListName.SUBJECT_CATEGORY, sc.code)).join(', ')}</Cell>
                 <Cell>
                   <Block>
                     <LegalBasesNotClarified alert={alert?.policies.filter(p => p.policyId === row.id)[0]}/>
@@ -168,7 +169,6 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
           )
         })}
       </Table>
-      {!table.data.length && <Label2 margin="1rem">{intl.emptyTable} {intl.informationTypes}</Label2>}
 
       {showEditModal && currentPolicy && (
         <ModalPolicy
@@ -217,7 +217,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
       )}
 
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default TablePolicy;
+export default TablePolicy
