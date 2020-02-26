@@ -1,48 +1,59 @@
-import React from "react";
-import {RouteComponentProps} from "react-router-dom"
-import {intl, useAwait} from "../util";
-import {codelist} from "../service/Codelist";
-import {Block} from "baseui/block";
-import {Select, TYPE, Value} from "baseui/select";
-import {deleteDocument, getDocument, getProcessesByDocument, useDocumentSearch} from "../api";
-import {Document, Process} from "../constants";
-import DocumentMetadata from "../components/document/DocumentMetadata";
-import {user} from "../service/User";
-import {Button, SHAPE} from "baseui/button";
-import {faEdit, faPlusCircle} from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
-import {faTrash} from "@fortawesome/free-solid-svg-icons/faTrash";
-import DeleteDocumentModal from "../components/document/component/DeleteDocumentModal";
-import {Notification} from "baseui/notification";
-import {H4} from "baseui/typography";
-import {StyledSpinnerNext} from "baseui/spinner"
-import DocumentProcessesTable from "../components/document/component/DocumentProcessesTable";
+import React from 'react'
+import {RouteComponentProps} from 'react-router-dom'
+import {intl, theme, useAwait} from '../util'
+import {codelist} from '../service/Codelist'
+import {Block} from 'baseui/block'
+import {Select, TYPE, Value} from 'baseui/select'
+import {deleteDocument, getDocument, getProcessesByDocument, useDocumentSearch} from '../api'
+import {Document, Process} from '../constants'
+import DocumentMetadata from '../components/document/DocumentMetadata'
+import {user} from '../service/User'
+import {Button, SHAPE} from 'baseui/button'
+import {faEdit, faPlusCircle} from '@fortawesome/free-solid-svg-icons'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
+import {faTrash} from '@fortawesome/free-solid-svg-icons/faTrash'
+import DeleteDocumentModal from '../components/document/component/DeleteDocumentModal'
+import {Notification} from 'baseui/notification'
+import {H4, Label2, Paragraph2} from 'baseui/typography'
+import {StyledSpinnerNext} from 'baseui/spinner'
+import DocumentProcessesTable from '../components/document/component/DocumentProcessesTable'
+import {Tab, Tabs} from 'baseui/tabs'
+import {paddingAll, paddingZero} from '../components/common/Style'
+
+const renderTextWithLabel = (label: string, text: string) => (
+  <Block marginTop="scale1000">
+    <Label2 font="font400">{label}</Label2>
+    <Paragraph2>{text}</Paragraph2>
+  </Block>
+)
 
 const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
-  const [isLoading, setLoading] = React.useState(false);
-  const [selectValue, setSelectValue] = React.useState<Value>([]);
-  const [currentDocument, setCurrentDocument] = React.useState<Document | undefined>();
-  const [documentSearchResult, setDocumentSearch, documentSearchLoading] = useDocumentSearch();
-  const [documentId, setDocumentId] = React.useState<string | undefined>(props.match.params.id);
-  const [isDeleteModalVisible, setDeleteModalVisibility] = React.useState(false);
-  const [documentUsages, setDocumentUsages] = React.useState<[Process]>();
-  const [errorMessage, setErrorMessage] = React.useState<string>();
+  const [isLoading, setLoading] = React.useState(false)
+  const [selectValue, setSelectValue] = React.useState<Value>([])
+  const [currentDocument, setCurrentDocument] = React.useState<Document | undefined>()
+  const [documentSearchResult, setDocumentSearch, documentSearchLoading] = useDocumentSearch()
+  const [documentId, setDocumentId] = React.useState<string | undefined>(props.match.params.id)
+  const [isDeleteModalVisible, setDeleteModalVisibility] = React.useState(false)
+  const [documentUsages, setDocumentUsages] = React.useState<[Process]>()
+  const [errorMessage, setErrorMessage] = React.useState<string>()
+  const [activeKey, setActiveKey] = React.useState<string | number>('usedProcesses')
+  const tabOverride = {Tab: {style: {fontSize: '1.5rem'}}}
 
-  useAwait(user.wait());
+  useAwait(user.wait())
 
   const handleDelete = () => {
     if (documentId) {
       deleteDocument(documentId)
         .then((response) => {
-          console.log(response);
-          setSelectValue([]);
-          setCurrentDocument(undefined);
-          setDocumentSearch("");
-          setDeleteModalVisibility(false);
-          props.history.push("/document")
+          console.log(response)
+          setSelectValue([])
+          setCurrentDocument(undefined)
+          setDocumentSearch('')
+          setDeleteModalVisibility(false)
+          props.history.push('/document')
         }).catch((e) => {
-        setErrorMessage(e.message);
+        setErrorMessage(e.message)
         console.log(e)
       })
     }
@@ -50,28 +61,28 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
 
   React.useEffect(() => {
     (async () => {
-      setLoading(true);
-      await codelist.wait();
-      setLoading(false);
-    })();
-  }, []);
+      setLoading(true)
+      await codelist.wait()
+      setLoading(false)
+    })()
+  }, [])
 
   React.useEffect(() => {
     (async () => {
-      setErrorMessage("")
+      setErrorMessage('')
       if (documentId) {
-        const res = await getDocument(documentId);
-        setDocumentUsages((await getProcessesByDocument(documentId)).content);
-        setCurrentDocument(res);
-        setSelectValue([{id: res.id, label: res.name}]);
+        const res = await getDocument(documentId)
+        setDocumentUsages((await getProcessesByDocument(documentId)).content)
+        setCurrentDocument(res)
+        setSelectValue([{id: res.id, label: res.name}])
         props.history.push(`/document/${documentId}`)
       } else {
-        setCurrentDocument(undefined);
-        setSelectValue([]);
+        setCurrentDocument(undefined)
+        setSelectValue([])
         props.history.push('/document')
       }
-    })();
-  }, [documentId]);
+    })()
+  }, [documentId, props.history])
 
   return (
     <React.Fragment>
@@ -89,10 +100,10 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
               options={documentSearchResult.map(doc => ({id: doc.id, label: doc.name}))}
               placeholder={intl.searchDocumentPlaceholder}
               onInputChange={event => {
-                setDocumentSearch(event.currentTarget.value);
+                setDocumentSearch(event.currentTarget.value)
               }}
               onChange={(params) => {
-                params.value.length < 1 ? setDocumentId(undefined) : setDocumentId(params.value[0].id as string);
+                params.value.length < 1 ? setDocumentId(undefined) : setDocumentId(params.value[0].id as string)
               }}
               isLoading={documentSearchLoading}
               filterOptions={options => options}
@@ -111,8 +122,8 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
                             overrides={{
                               BaseButton: {
                                 style: {
-                                  marginLeft: "5px",
-                                  height: "100%",
+                                  marginLeft: '5px',
+                                  height: '100%',
                                 }
                               }
                             }}
@@ -130,8 +141,8 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
                       overrides={{
                         BaseButton: {
                           style: {
-                            marginLeft: "5px",
-                            height: "100%",
+                            marginLeft: '5px',
+                            height: '100%',
                           }
                         }
                       }}
@@ -144,11 +155,11 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
                 <Button
                   type="button"
                   shape={SHAPE.square}
-                  onClick={() => props.history.push("/document/create")}
+                  onClick={() => props.history.push('/document/create')}
                   overrides={{
                     BaseButton: {
                       style: {
-                        marginLeft: "5px"
+                        marginLeft: '5px'
                       }
                     }
                   }}
@@ -161,22 +172,58 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
           {
             currentDocument && (
               <Block overrides={{
-                Block:{
-                  style:{
-                    padding:"5px",
-                    marginTop:"5px",
+                Block: {
+                  style: {
+                    padding: '5px',
+                    marginTop: '5px',
                   }
                 }
               }}>
-                <DocumentMetadata document={currentDocument}/>
+                {renderTextWithLabel(intl.name, currentDocument.name)}
+                {renderTextWithLabel(intl.description, currentDocument.description)}
               </Block>
             )
           }
 
-          <Block marginTop="100px">
-            {currentDocument && documentUsages && documentUsages!.length > 0 && (
-              <DocumentProcessesTable documentUsages={documentUsages}/>)}
-          </Block>
+          {
+            currentDocument && (
+              <Tabs
+                onChange={({activeKey}) => {
+                setActiveKey(activeKey)
+              }}
+                activeKey={activeKey}
+                overrides={{
+                  Root: {
+                    style: {
+                      outline: `4px ${theme.colors.primary200} solid`
+                    }
+                  },
+                  TabContent: {
+                    style: paddingZero
+                  },
+                  TabBar: {
+                    style: {
+                      ...paddingAll(theme.sizing.scale600)
+                    }
+                  }
+                }}
+              >
+                <Tab key={'usedProcesses'} title={intl.usedProcess} overrides={tabOverride}>
+                  <Block>
+                    <DocumentMetadata document={currentDocument}/>
+                  </Block>
+                </Tab>
+                {documentUsages && documentUsages!.length > 0 && (
+                  <Tab key={'containsProcesses'} title={intl.containsProcesses} overrides={tabOverride}>
+                    <Block>
+                      <DocumentProcessesTable documentUsages={documentUsages}/>
+                    </Block>
+                  </Tab>
+                )}
+              </Tabs>
+            )
+          }
+
           {errorMessage &&
           <Notification kind="negative">
             {errorMessage}
@@ -193,7 +240,7 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
         documentUsageCount={documentUsages?.length}
       />
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default DocumentPage;
+export default DocumentPage

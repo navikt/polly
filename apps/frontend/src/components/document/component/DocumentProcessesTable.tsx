@@ -4,7 +4,6 @@ import {intl} from "../../../util";
 import {codelist, ListName} from "../../../service/Codelist";
 import {Process, processSort} from "../../../constants";
 import {useTable} from "../../../util/hooks";
-import {Label2} from "baseui/typography";
 
 type DocumentProcessesProps = {
   documentUsages: Process[]
@@ -17,7 +16,6 @@ const DocumentProcessesTable = (props: DocumentProcessesProps) => {
   })
   return (
     <>
-      <Label2 font="font400" marginBottom="scale800">{intl.containsProcesses}</Label2>
       <Table
         headers={
           <>
