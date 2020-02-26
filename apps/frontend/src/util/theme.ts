@@ -3,7 +3,7 @@ import { colors } from 'baseui/tokens'
 import { Theme, ThemePrimitives } from 'baseui/theme'
 import { RecursivePartial } from '../constants'
 
-const primitives: ThemePrimitives & { primary150: string } = {
+export const primitives: ThemePrimitives & { primary150: string } = {
   ...lightThemePrimitives,
   primaryA: '#3e3832',
   primary: '#19548a',
