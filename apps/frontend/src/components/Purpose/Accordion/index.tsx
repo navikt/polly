@@ -1,40 +1,32 @@
 import * as React from 'react'
-import { ReactElement, useEffect } from 'react'
+import { ReactNode, useEffect } from 'react'
 import { Accordion, Panel } from 'baseui/accordion'
 import { generatePath, RouteComponentProps, withRouter } from 'react-router'
-import { KIND, SIZE as ButtonSize } from "baseui/button";
-import { StyledSpinnerNext } from 'baseui/spinner';
-import { Block } from 'baseui/block';
-import { Label1, Label2, Paragraph2 } from 'baseui/typography';
-import { intl, theme, useAwait } from '../../../util';
+import { KIND, SIZE as ButtonSize } from 'baseui/button'
+import { StyledSpinnerNext } from 'baseui/spinner'
+import { Block } from 'baseui/block'
+import { Label1, Label2, Paragraph2 } from 'baseui/typography'
+import { intl, theme, useAwait } from '../../../util'
 import _includes from 'lodash/includes'
-import {user} from "../../../service/User";
-import {Plus} from 'baseui/icon'
-import {
-  AddDocumentToProcessFormValues,
-  LegalBasesStatus,
-  Policy,
-  PolicyFormValues,
-  Process,
-  ProcessFormValues,
-  UseWithPurpose
-} from "../../../constants"
-import {LegalBasisView} from "../../common/LegalBasis"
-import {codelist, ListName} from "../../../service/Codelist"
-import ModalProcess from './ModalProcess';
+import { user } from '../../../service/User'
+import { Plus } from 'baseui/icon'
+import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose } from '../../../constants'
+import { LegalBasisView } from '../../common/LegalBasis'
+import { codelist, ListName } from '../../../service/Codelist'
+import ModalProcess from './ModalProcess'
 import ModalPolicy from './ModalPolicy'
-import TablePolicy from './TablePolicy';
-import { convertProcessToFormValues } from "../../../api"
-import { PathParams } from "../../../pages/PurposePage"
-import { ActiveIndicator } from "../../common/Durations"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faChevronRight, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal';
-import { TeamPopover } from "../../common/Team"
-import { AuditButton } from "../../audit/AuditButton"
-import { AddDocumentModal } from "./AddDocumentModal"
-import { RetentionView } from "../Retention"
-import { boolToText } from "../../common/Radio"
+import TablePolicy from './TablePolicy'
+import { convertProcessToFormValues } from '../../../api'
+import { PathParams } from '../../../pages/PurposePage'
+import { ActiveIndicator } from '../../common/Durations'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronDown, faChevronRight, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
+import { TeamPopover } from '../../common/Team'
+import { AuditButton } from '../../audit/AuditButton'
+import { AddDocumentModal } from './AddDocumentModal'
+import { RetentionView } from '../Retention'
+import { boolToText } from '../../common/Radio'
 import Button from '../../common/Button'
 
 type AccordionProcessProps = {
@@ -99,15 +91,15 @@ const AccordionTitle = (props: { process: UseWithPurpose, expanded: boolean, has
 }
 
 type DataTextProps = {
-  label: string,
-  text?: false | string | string[],
-  children?: ReactElement | Array<ReactElement | false>
+  label: string
+  text?: false | string | string[]
+  children?: ReactNode
   hide?: boolean
 }
 
 const DataText = (props: DataTextProps) => {
   if (props.hide) return null
-  const texts = typeof props.text === "string" ? [props.text] : props.text
+  const texts = typeof props.text === 'string' ? [props.text] : props.text
 
   return (
     <Block display="flex" alignContent="flex-start" marginBottom="1rem" width="100%">
@@ -151,7 +143,7 @@ const ProcessData = (props: { process: Process }) => {
         )}
       </DataText>
 
-      <DataText label={intl.subjectCategories} text={subjectCategories.length ? subjectCategories.join(", ") : intl.subjectCategoriesNotFound}/>
+      <DataText label={intl.subjectCategories} text={subjectCategories.length ? subjectCategories.join(', ') : intl.subjectCategoriesNotFound}/>
 
       <DataText label={intl.validityOfProcess}>
         <ActiveIndicator alwaysShow={true} showDates={true} {...process} />
@@ -173,7 +165,7 @@ const ProcessData = (props: { process: Process }) => {
       </DataText>
 
       <DataText label={intl.system}
-                text={process.products.map(product => codelist.getShortname(ListName.SYSTEM, product.code)).join(", ")}
+                text={process.products.map(product => codelist.getShortname(ListName.SYSTEM, product.code)).join(', ')}
                 hide={!process.products?.length}/>
 
       <DataText label={intl.automation}>
@@ -200,7 +192,7 @@ const ProcessData = (props: { process: Process }) => {
             </Block>
             <Block>
               <span>{dataProcessorAgreements && `${intl.dataProcessorAgreement}: `}</span>
-              <span>{dataProcessorAgreements && process.dataProcessing?.dataProcessorAgreements.join(", ")}</span>
+              <span>{dataProcessorAgreements && process.dataProcessing?.dataProcessorAgreements.join(', ')}</span>
             </Block>
             <Block>
               <span>{intl.dataProcessorOutsideEUExtra}: </span>
@@ -242,7 +234,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
   const [showCreatePolicyModal, setShowCreatePolicyModal] = React.useState(false)
   const [showAddDocumentModal, setShowAddDocumentModal] = React.useState(false)
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
-  const purposeRef = React.useRef<HTMLInputElement>(null);
+  const purposeRef = React.useRef<HTMLInputElement>(null)
 
   const {
     isLoading,
@@ -302,13 +294,13 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
 
   useEffect(() => {
     props.match.params.processId && onChangeProcess(props.match.params.processId)
-  }, [props.match.params.processId])
+  }, [onChangeProcess, props.match.params.processId])
 
   useEffect(() => {
     props.match.params.processId && !isLoading && setTimeout(() => {
       purposeRef.current && window.scrollTo({top: purposeRef.current.offsetTop})
     }, 200)
-  }, [isLoading])
+  }, [isLoading, props.match.params.processId])
 
   return (
     <Block ref={purposeRef}>
@@ -332,10 +324,10 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                 style: {
                   backgroundColor: theme.colors.white,
                   // Outline width
-                  paddingTop: "4px",
-                  paddingBottom: "4px",
-                  paddingLeft: "4px",
-                  paddingRight: "4px",
+                  paddingTop: '4px',
+                  paddingBottom: '4px',
+                  paddingLeft: '4px',
+                  paddingRight: '4px',
                 }
               }
             }}
@@ -347,37 +339,29 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                 outline: `4px ${theme.colors.primary200} solid`
               }}>
 
-                <Block padding={theme.sizing.scale800}>
+                <Block paddingLeft={theme.sizing.scale800} paddingRight={theme.sizing.scale800} paddingTop={theme.sizing.scale800}>
                   <ProcessData process={currentProcess}/>
-                </Block>
 
-                <Block backgroundColor={theme.colors.primary100}>
-                  <Block {...({
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    paddingLeft: theme.sizing.scale800,
-                    paddingRight: theme.sizing.scale800
-                  })}>
-                    <Label2 alignSelf="center">{intl.informationTypes}</Label2>
-                    {hasAccess() && (
-                      <Block alignSelf="flex-end">
+                  <DataText label={intl.informationTypes}>
+                    <Block display='flex' justifyContent='flex-end'>
+                      {hasAccess() &&
+                      <Block>
                         {renderAddDocumentButton()}
                         {renderCreatePolicyButton()}
                       </Block>
-                    )}
-                  </Block>
-                  <Block padding={theme.sizing.scale800}>
-                    <TablePolicy
-                      process={currentProcess}
-                      hasAccess={hasAccess()}
-                      errorPolicyModal={errorPolicyModal}
-                      errorDeleteModal={errorPolicyModal}
-                      submitEditPolicy={submitEditPolicy}
-                      submitDeletePolicy={submitDeletePolicy}
-                    />
-                  </Block>
+                      }
+                    </Block>
+                  </DataText>
                 </Block>
 
+                <TablePolicy
+                  process={currentProcess}
+                  hasAccess={hasAccess()}
+                  errorPolicyModal={errorPolicyModal}
+                  errorDeleteModal={errorPolicyModal}
+                  submitEditPolicy={submitEditPolicy}
+                  submitDeletePolicy={submitDeletePolicy}
+                />
               </Block>
             )}
           </Panel>

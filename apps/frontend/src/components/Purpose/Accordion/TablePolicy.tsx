@@ -13,7 +13,7 @@ import { Sensitivity } from "../../InformationType/Sensitivity"
 import ModalPolicy from "./ModalPolicy";
 import { LegalBasesNotClarified, ListLegalBasesInTable } from "../../common/LegalBasis"
 import { Document, Policy, PolicyFormValues, policySort, Process, ProcessAlert } from "../../../constants"
-import { intl, theme } from "../../../util"
+import { intl } from "../../../util"
 import { convertPolicyToFormValues, getDocument } from "../../../api"
 import { useTable } from "../../../util/hooks"
 import RouteLink from "../../common/RouteLink"
@@ -68,8 +68,6 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
   return (
     <React.Fragment>
       <Table
-        backgroundColor={theme.colors.primary100}
-        hoverColor={theme.colors.mono200}
         headers={
           <>
             <HeadCell title={intl.informationType} column={'informationType'} tableState={[table, sortColumn]}/>

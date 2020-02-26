@@ -1,19 +1,20 @@
-import * as React from "react";
-import { useState } from "react";
+import * as React from 'react'
+import { useState } from 'react'
 import { Block } from 'baseui/block'
 
 import AccordionInformationtype from './AccordionInformationtype'
-import { Disclosure, Document, InformationType, Policy } from "../../../constants"
-import { intl, theme, useAwait } from "../../../util"
-import Metadata from "./Metadata";
-import InformationtypePolicyTable from "./InformationtypePolicyTable"
-import TableDisclosure from "../../common/TableDisclosure";
-import { DocumentTable } from "./DocumentTable"
-import { Tab, Tabs } from "baseui/tabs"
-import { H4 } from "baseui/typography";
-import { user } from "../../../service/User";
-import { InformationTypeBannerButtons } from "../InformationTypeBannerButtons";
-import Button from "../../common/Button"
+import { Disclosure, Document, InformationType, Policy } from '../../../constants'
+import { intl, theme, useAwait } from '../../../util'
+import Metadata from './Metadata'
+import InformationtypePolicyTable from './InformationtypePolicyTable'
+import TableDisclosure from '../../common/TableDisclosure'
+import { DocumentTable } from './DocumentTable'
+import { Tab, Tabs } from 'baseui/tabs'
+import { H4 } from 'baseui/typography'
+import { user } from '../../../service/User'
+import { InformationTypeBannerButtons } from '../InformationTypeBannerButtons'
+import Button from '../../common/Button'
+import { paddingAll, paddingZero } from '../../common/Style'
 
 interface InformationtypeMetadataProps {
   informationtype: InformationType;
@@ -25,12 +26,12 @@ interface InformationtypeMetadataProps {
 }
 
 const Purposes = ({policies, expanded, onSelectPurpose}: { policies: Policy[], expanded: string[], onSelectPurpose: (purpose: string) => void }) => {
-  const [accordion, setAccordion] = React.useState(false);
+  const [accordion, setAccordion] = React.useState(false)
   return (
     <Block>
       <Block display="flex" justifyContent="flex-end">
         <Button onClick={() => setAccordion(!accordion)} size="compact" shape="pill" kind='outline'
-                $style={{position: 'absolute', marginTop: `-${theme.sizing.scale1400}`}}
+                $style={{position: 'absolute', marginTop: `-${theme.sizing.scale1200}`, marginLeft: `-${theme.sizing.scale400}`}}
         >
           {accordion ? intl.showAll : intl.groupByPurpose}
         </Button>
@@ -54,15 +55,15 @@ const Disclosures = ({disclosures}: { disclosures: Disclosure[] }) => {
 }
 
 const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
-  const [activeTab, setActiveTab] = useState("purposes")
+  const [activeTab, setActiveTab] = useState('purposes')
 
   useAwait(user.wait())
 
-  const tabOverride = {Tab: {style: {fontSize: "1.5rem"}}}
+  const tabOverride = {Tab: {style: {fontSize: '1.5rem'}}}
   return (
-    <React.Fragment>
+    <>
       {props.informationtype && (
-        <React.Fragment>
+        <>
           <Block display="flex" justifyContent="space-between">
             <H4>{props.informationtype.name}</H4>
             {user.canWrite() && (
@@ -70,10 +71,25 @@ const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
             )}
           </Block>
 
-
           <Metadata informationtype={props.informationtype}/>
 
-          <Tabs activeKey={activeTab} onChange={args => setActiveTab(args.activeKey as string)}>
+          <Tabs activeKey={activeTab} onChange={args => setActiveTab(args.activeKey as string)}
+                overrides={{
+                  Root: {
+                    style: {
+                      outline: `4px ${theme.colors.primary200} solid`
+                    }
+                  },
+                  TabContent: {
+                    style: paddingZero
+                  },
+                  TabBar: {
+                    style: {
+                      ...paddingAll(theme.sizing.scale600)
+                    }
+                  }
+                }}
+          >
             <Tab key="purposes" title={intl.purposeUse} overrides={tabOverride}>
               <Purposes policies={props.policies} expanded={props.expanded} onSelectPurpose={props.onSelectPurpose}/>
             </Tab>
@@ -84,10 +100,10 @@ const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
               <DocumentTable documents={props.documents}/>
             </Tab>
           </Tabs>
-        </React.Fragment>
+        </>
       )}
-    </React.Fragment>
-  );
-};
+    </>
+  )
+}
 
-export default InformationtypeMetadata;
+export default InformationtypeMetadata

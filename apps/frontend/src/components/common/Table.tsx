@@ -8,6 +8,7 @@ import { StyleObject } from 'styletron-standard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons'
 import { Block } from 'baseui/block'
+import { paddingAll } from './Style'
 
 type TableProps = {
   backgroundColor?: string,
@@ -48,18 +49,20 @@ const StyledHeader = withStyle(StyledHead, {
 })
 
 const tableStyle = {
+  backgroundColor: theme.colors.primary100,
   overflow: 'hidden !important',
   borderWidth: '0',
   borderTopLeftRadius: '0',
   borderTopRightRadius: '0',
   borderBottomLeftRadius: '0',
-  borderBottomRightRadius: '0'
+  borderBottomRightRadius: '0',
+  ...paddingAll(theme.sizing.scale600)
 }
 
 const TableContext = React.createContext<Partial<TableProps>>({})
 
 export const Table = (props: TableProps) => {
-  const StyleTable = withStyle(StyledTable, {...tableStyle, backgroundColor: props.backgroundColor})
+  const StyleTable = withStyle(StyledTable, {...tableStyle, backgroundColor: props.backgroundColor || tableStyle.backgroundColor})
   return (
     <TableContext.Provider value={props}>
       <StyleTable>

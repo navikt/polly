@@ -2,13 +2,14 @@ import * as React from 'react'
 import { Accordion, Panel, SharedProps } from 'baseui/accordion'
 import { Paragraph2 } from 'baseui/typography'
 import InformationtypePolicyTable from './InformationtypePolicyTable'
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faChevronDown, faChevronRight, faUsersCog } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronDown, faChevronRight, faUsersCog } from '@fortawesome/free-solid-svg-icons'
 
-import { codelist, ListName } from "../../../service/Codelist"
-import { intl } from "../../../util"
-import { PurposeMap } from "../../../pages/InformationtypePage"
-import { Policy } from "../../../constants"
+import { codelist, ListName } from '../../../service/Codelist'
+import { intl } from '../../../util'
+import { PurposeMap } from '../../../pages/InformationtypePage'
+import { Policy } from '../../../constants'
+import { paddingZero } from '../../common/Style'
 
 const reducePolicylist = (list: Policy[]) => {
   return list.reduce((acc: PurposeMap, curr) => {
@@ -41,7 +42,8 @@ const AccordionInformationtype = (props: AccordionInformationtypeProps) => {
       {Object.keys(purposeMap).map((key) => (
         <Panel title={<span><FontAwesomeIcon icon={faUsersCog}/> {codelist.getShortname(ListName.PURPOSE, key)}</span>} key={key}
                overrides={{
-                 ToggleIcon: {component: (iconProps: SharedProps) => !!iconProps.$expanded ? <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
+                 ToggleIcon: {component: (iconProps: SharedProps) => !!iconProps.$expanded ? <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>},
+                 Content: {style: paddingZero}
                }}
         >
           <InformationtypePolicyTable policies={getPolicylistForPurpose(key)} showPurpose={false}/>
