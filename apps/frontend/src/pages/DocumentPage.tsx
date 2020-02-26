@@ -1,6 +1,6 @@
 import React from 'react'
 import {RouteComponentProps} from 'react-router-dom'
-import {intl, theme, useAwait} from '../util'
+import {intl, useAwait} from '../util'
 import {codelist} from '../service/Codelist'
 import {Block} from 'baseui/block'
 import {Select, TYPE, Value} from 'baseui/select'
@@ -18,8 +18,8 @@ import {Notification} from 'baseui/notification'
 import {H4, Label2, Paragraph2} from 'baseui/typography'
 import {StyledSpinnerNext} from 'baseui/spinner'
 import DocumentProcessesTable from '../components/document/component/DocumentProcessesTable'
-import {Tab, Tabs} from 'baseui/tabs'
-import {paddingAll, paddingZero} from '../components/common/Style'
+import {Tab} from 'baseui/tabs'
+import {CustomizedTabs} from "../components/common/CustomizedTabs";
 
 const renderTextWithLabel = (label: string, text: string) => (
   <Block marginTop="scale1000">
@@ -187,26 +187,11 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
 
           {
             currentDocument && (
-              <Tabs
+              <CustomizedTabs
                 onChange={({activeKey}) => {
-                setActiveKey(activeKey)
-              }}
-                activeKey={activeKey}
-                overrides={{
-                  Root: {
-                    style: {
-                      outline: `4px ${theme.colors.primary200} solid`
-                    }
-                  },
-                  TabContent: {
-                    style: paddingZero
-                  },
-                  TabBar: {
-                    style: {
-                      ...paddingAll(theme.sizing.scale600)
-                    }
-                  }
+                  setActiveKey(activeKey)
                 }}
+                activeKey={activeKey}
               >
                 <Tab key={'usedProcesses'} title={intl.usedProcess} overrides={tabOverride}>
                   <Block>
@@ -220,7 +205,7 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
                     </Block>
                   </Tab>
                 )}
-              </Tabs>
+              </CustomizedTabs>
             )
           }
 
