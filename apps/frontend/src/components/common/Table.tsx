@@ -32,6 +32,7 @@ type RowProps = {
   selectedRow?: boolean,
   infoRow?: boolean,
   children?: any
+  $style?: StyleObject
 }
 
 const headerCellOverride = {
@@ -85,7 +86,9 @@ export const Table = (props: TableProps) => {
 export const Row = (props: RowProps) => {
   const tableProps = useContext(TableContext)
   const styleProps: StyleObject = {
-    borderBottom: `1px solid ${theme.colors.mono600}`,
+    borderBottomWidth: '1px',
+    borderBottomStyle: 'solid',
+    borderBottomColor: theme.colors.mono600,
     opacity: props.inactiveRow ? '.5' : undefined,
     backgroundColor: props.infoRow ? theme.colors.primary50 : undefined,
     borderLeftColor: theme.colors.primary200,
@@ -93,7 +96,8 @@ export const Row = (props: RowProps) => {
     borderLeftStyle: 'solid',
     ':hover': {
       backgroundColor: tableProps.hoverColor || (props.infoRow ? theme.colors.mono100 : theme.colors.primary50)
-    }
+    },
+    ...props.$style
   }
   const StyleRow = withStyle(StyledRow, styleProps)
   return <StyleRow>{props.children}</StyleRow>
