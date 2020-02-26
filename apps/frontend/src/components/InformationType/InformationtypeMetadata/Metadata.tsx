@@ -5,7 +5,7 @@ import { InformationType } from '../../../constants'
 import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
 import { IconDefinition } from '@fortawesome/fontawesome-common-types'
 import { intl, theme } from '../../../util'
-import { Label2, Paragraph2 } from 'baseui/typography'
+import { Label2 } from 'baseui/typography'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle, faUserShield } from '@fortawesome/free-solid-svg-icons'
 import { Code } from '../../../service/Codelist'
@@ -29,7 +29,12 @@ const renderCodesToLinks = (sources: Code[]) =>
 
 const TextWithLabel = (props: { label: string, text: ReactNode, icon?: IconDefinition, iconColor?: string, error?: string }) => {
   const errorIcon = <FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500}/>
-  const value = <Paragraph2 $style={{whiteSpace: 'pre-wrap', ...marginZero, marginTop: theme.sizing.scale100}} display="flex">{props.error && errorIcon} {props.text}</Paragraph2>
+  const value =
+    <Block font="ParagraphMedium"
+           $style={{whiteSpace: 'pre-wrap', ...marginZero, marginTop: theme.sizing.scale100}}
+           display="flex">
+      {props.error && errorIcon} {props.text}
+    </Block>
 
   return (
     <>
