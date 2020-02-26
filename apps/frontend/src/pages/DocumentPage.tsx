@@ -163,10 +163,8 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
               <Block overrides={{
                 Block:{
                   style:{
-                    borderStyle:"solid",
                     padding:"5px",
                     marginTop:"5px",
-                    borderColor: "#9BC1E6"
                   }
                 }
               }}>
