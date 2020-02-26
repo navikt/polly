@@ -20,12 +20,14 @@ import {
   getCodelistUsage,
   getProcess,
   updatePolicy,
-  updateProcess
+  updateProcess,
+  getProcessesForTeam
 } from '../../api'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faList } from '@fortawesome/free-solid-svg-icons'
 import { StyledSpinnerNext } from 'baseui/spinner'
 import { ListName } from '../../service/Codelist'
+import { useLocation } from 'react-router';
 
 const rowBlockProps: BlockProps = {
   marginBottom: 'scale800',
@@ -35,7 +37,7 @@ const rowBlockProps: BlockProps = {
 
 type ProcessListProps = {
   code: string;
-  listName: ListName;
+  listName?: string;
 }
 
 const sortProcess = (list: UseWithPurpose[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, intl.getLanguage()))
@@ -49,11 +51,20 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
   const [errorDocumentModal, setErrorDocumentModal] = React.useState(null)
   const [isLoadingProcessList, setIsLoadingProcessList] = React.useState(true)
   const [isLoadingProcess, setIsLoadingProcess] = React.useState(true)
+  const current_location = useLocation()
 
   const getProcessList = async () => {
     setIsLoadingProcessList(true)
     try {
-      const list = (await getCodelistUsage(listName, code)).processes
+      let list: UseWithPurpose[] = []
+
+      if (current_location.pathname.includes('team')) {
+        let res = await getProcessesForTeam(code)
+        res.content ? list = res.content as UseWithPurpose[] : list = []
+      } else {
+        list = (await getCodelistUsage(listName as ListName, code)).processes
+      }
+      
       setProcessList(sortProcess(list))
     } catch (err) {
       console.log(err)
@@ -178,9 +189,7 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
   useAwait(user.wait())
 
   useEffect(() => {
-    (async () => {
-      await getProcessList()
-    })()
+    (async () => await getProcessList())()
   }, [code])
 
   return (

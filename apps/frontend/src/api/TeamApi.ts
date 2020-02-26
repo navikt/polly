@@ -5,6 +5,11 @@ import { useDebouncedState } from "../util"
 import { Option } from "baseui/select"
 import { env } from "../util/env"
 
+export const getAllTeams = async () => {
+    const data = (await axios.get<PageResponse<Team>>(`${env.pollyBaseUrl}/team`)).data
+    return data
+}
+
 export const getTeam = async (teamId: string) => {
     const data = (await axios.get<Team>(`${env.pollyBaseUrl}/team/${teamId}`)).data
     data.members = data.members.sort((a,b)=> a.name.localeCompare(b.name))

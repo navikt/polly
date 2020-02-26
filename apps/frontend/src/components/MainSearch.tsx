@@ -86,7 +86,7 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
   const [setSearch, searchResult, loading] = useMainSearch()
 
   return <Select
-    autoFocus
+    autoFocus={props.match.path === "/"}
     isLoading={loading}
     maxDropdownHeight="400px"
     searchable={true}

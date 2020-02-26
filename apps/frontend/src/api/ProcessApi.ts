@@ -17,6 +17,10 @@ export const getProcessesForPurpose = async (purpose: string) => {
   return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process/purpose/${purpose}`)).data
 }
 
+export const getProcessesForTeam = async (team: string) => {
+  return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process?productTeam=${team}&pageSize=250`)).data
+}
+
 export const getProcessPurposeCount = async (query: 'purpose' | 'department' | 'subDepartment' | 'team') => {
   return (await axios.get<ProcessCount>(`${env.pollyBaseUrl}/process/count?${query}`)).data
 }

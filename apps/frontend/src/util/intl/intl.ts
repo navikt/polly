@@ -170,6 +170,7 @@ export interface IStrings {
   disclosurePurpose: string;
   departmentSelect: string;
   subDepartmentSelect: string;
+  teamSelect: string;
 
   // groups
   POLLY_READ: string;

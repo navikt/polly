@@ -148,6 +148,7 @@ export const no: IStrings = {
   disclosurePurpose: "Formål med utlevering",
   departmentSelect: "Velg avdeling",
   subDepartmentSelect: "Velg linje (Ytre etat)",
+  teamSelect: "Velg produktteam (IT)",
 
   POLLY_READ: "Les",
   POLLY_WRITE: "Skriv",
@@ -416,6 +417,7 @@ export const en: IStrings = {
   disclosurePurpose: "Purpose for disclosure",
   departmentSelect: "Select department",
   subDepartmentSelect: "Select subdepartment",
+  teamSelect: "Select team (IT)",
 
   POLLY_READ: "Read",
   POLLY_WRITE: "Write",
