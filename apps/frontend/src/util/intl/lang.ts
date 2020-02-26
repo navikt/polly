@@ -1,4 +1,4 @@
-import {IStrings} from "./intl";
+import { IStrings } from "./intl";
 
 export const no: IStrings = {
   informationType: "Opplysningstype",
@@ -67,7 +67,8 @@ export const no: IStrings = {
   loggedInStatus: "Du er logget inn og kan",
   notLoggedInStatus: "Du er ikke logget inn men kan",
   couldntLoad: "Kunne ikke laste inn siden",
-  couldntLoadTerm: "Kunne ikke finne term",
+  couldntLoadTerm: "Kunne ikke finne begrepsdefinisjon",
+  noTerm: "Ingen begrepsdefinisjon angitt",
   couldntLoadTeam: "Kunne ikke finne team",
   informationTypeCreate: "Opprett opplysningstype",
   informationTypeExists: "Informasjonstypen eksisterer allerede",
@@ -336,6 +337,7 @@ export const en: IStrings = {
   notLoggedInStatus: "You are not logged in but you can still",
   couldntLoad: "Couldn't load the page",
   couldntLoadTerm: "Couldn't load the term",
+  noTerm: "No term given",
   couldntLoadTeam: "Couldn't load the team",
   informationTypeCreate: "Create new information type",
   informationTypeExists: "Information type exists already",

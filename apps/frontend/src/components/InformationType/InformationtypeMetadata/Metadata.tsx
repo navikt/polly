@@ -1,44 +1,21 @@
 import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { Block, BlockProps } from 'baseui/block'
+import { ReactNode, useEffect, useState } from 'react'
+import { Block } from 'baseui/block'
 import { InformationType } from '../../../constants'
-import { Card } from 'baseui/card'
 import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
-import { IconDefinition } from "@fortawesome/fontawesome-common-types"
+import { IconDefinition } from '@fortawesome/fontawesome-common-types'
 import { intl, theme } from '../../../util'
 import { Label2, Paragraph2 } from 'baseui/typography'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle, faUserShield } from '@fortawesome/free-solid-svg-icons'
 import { Code } from '../../../service/Codelist'
-import { sensitivityColor } from "../Sensitivity"
-import { getTerm, mapTermToOption } from "../../../api"
-import { PLACEMENT, StatefulTooltip } from "baseui/tooltip"
-import { StyledLink } from "baseui/link";
-import { features } from "../../../util/feature-toggle"
-
-const itemBlockProps: BlockProps = {
-    display: ['flex', 'block', 'block', 'flex'],
-};
-
-const labelBlockProps: BlockProps = {
-    display: ['flex', 'block', 'block', 'flex'],
-    width: ['30%', '100%', '100%', '30%'],
-    alignSelf: 'flex-start',
-    marginTop: '1rem',
-};
-
-const reduceToList = (list: Array<Code> | undefined) => {
-    if (!list) return []
-    return list.reduce((acc: string[], curr: Code) => {
-        acc = [...acc, curr.shortName]
-        return acc
-    }, [])
-}
-
-const arrayToString = (list: string[]) => {
-    if (!list) return ''
-    return list.join(', ')
-}
+import { sensitivityColor } from '../Sensitivity'
+import { getTerm, mapTermToOption } from '../../../api'
+import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
+import { StyledLink } from 'baseui/link'
+import { features } from '../../../util/feature-toggle'
+import { marginZero } from '../../common/Style'
+import { DotTags } from '../../common/DotTag'
 
 const renderCodesToLinks = (sources: Code[]) =>
   sources.map((source, index) => (
@@ -46,112 +23,97 @@ const renderCodesToLinks = (sources: Code[]) =>
       {features.enableThirdParty ?
         <StyledLink href={`/thirdparty/${source.code}`}>{source.shortName}</StyledLink>
         : source.shortName}
-      <span>{index < sources.length - 1 ? ", " : ""}</span>
+      <span>{index < sources.length - 1 ? ', ' : ''}</span>
     </React.Fragment>
-  ));
+  ))
 
-const renderTextWithLabelMetadata = (label: string, text: string | any, icon?: IconDefinition, iconColor?: string) => {
-    return (
-        <Block {...itemBlockProps}>
-            <Block {...labelBlockProps}>
-                <Label2>{icon && <FontAwesomeIcon icon={icon} color={iconColor}/>} {label}</Label2>
-            </Block>
-            <Block maxWidth="70%"><Paragraph2>{text}</Paragraph2></Block>
-        </Block>
-    )
+const TextWithLabel = (props: { label: string, text: ReactNode, icon?: IconDefinition, iconColor?: string, error?: string }) => {
+  const errorIcon = <FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500}/>
+  const value = <Paragraph2 $style={{whiteSpace: 'pre-wrap', ...marginZero, marginTop: theme.sizing.scale100}} display="flex">{props.error && errorIcon} {props.text}</Paragraph2>
+
+  return (
+    <>
+      <Label2>{props.icon && <FontAwesomeIcon icon={props.icon} color={props.iconColor}/>} {props.label}</Label2>
+      {!props.error && value}
+      {props.error && <StatefulTooltip content={props.error} placement={PLACEMENT.top}>{value}</StatefulTooltip>}
+    </>
+  )
 }
 
-const TextWithLabel = (props: { label: string, text?: string, icon?: IconDefinition, iconColor?: string, error?: string }) => {
-    const errorIcon = <FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500}/>
-    const value = <Paragraph2 $style={{ whiteSpace: 'pre-wrap'}} display="flex">{props.error && errorIcon} {props.text}</Paragraph2>
+const DescriptionData = (props: { termId?: string, description: string, keywords: string[] }) => {
+  const [term, setTerm] = useState(props.termId)
+  const [termError, setTermError] = useState(false)
 
-    return (
-        <Block>
-            <Label2>{props.icon && <FontAwesomeIcon icon={props.icon} color={props.iconColor}/>} {props.label}</Label2>
-            {!props.error && value}
-            {props.error && <StatefulTooltip content={props.error} placement={PLACEMENT.top}>{value}</StatefulTooltip>}
-        </Block>
-    )
+  useEffect(() => {
+    (async () => {
+      if (props.termId) {
+        try {
+          const termResponse = await getTerm(props.termId)
+          setTerm(mapTermToOption(termResponse).label)
+        } catch (e) {
+          console.error('couldnt find term', e)
+          setTermError(true)
+        }
+      }
+    })()
+  }, [props.termId])
+
+  return (
+    <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
+      <FlexGridItem>
+        <TextWithLabel label={intl.term} text={term || intl.noTerm} error={termError ? intl.couldntLoadTerm : undefined}/>
+      </FlexGridItem>
+      <FlexGridItem>
+        <TextWithLabel label={intl.description} text={props.description}/>
+      </FlexGridItem>
+      <FlexGridItem>
+        <TextWithLabel label={intl.keywords} text={<DotTags items={props.keywords}/>}/>
+      </FlexGridItem>
+    </FlexGrid>
+  )
 }
 
-const CardOverview = (props: { termId?: string, description: string, keywords: string[] }) => {
-    const [term, setTerm] = useState(props.termId)
-    const [termError, setTermError] = useState(false)
-
-    useEffect(() => {
-        (async () => {
-            if (props.termId) {
-                try {
-                    const termResponse = await getTerm(props.termId)
-                    setTerm(mapTermToOption(termResponse).label)
-                } catch (e) {
-                    console.error("couldnt find term", e)
-                    setTermError(true)
-                }
-            }
-        })()
-    }, [props.termId])
-
-    return (
-        <Card>
-            <FlexGrid
-                flexGridColumnCount={1}
-                flexGridColumnGap="scale400"
-                flexGridRowGap="scale400"
-            >
-                <FlexGridItem>
-                    <TextWithLabel label={intl.term} text={term} error={termError ? intl.couldntLoadTerm : undefined}/>
-                </FlexGridItem>
-                <FlexGridItem>
-                    <TextWithLabel label={intl.description} text={props.description}/>
-                </FlexGridItem>
-                <FlexGridItem>
-                    <TextWithLabel label={intl.keywords} text={arrayToString(props.keywords)} />
-                </FlexGridItem>
-
-            </FlexGrid>
-        </Card>
-    )
-}
-
-const CardMetadata = (props: { navMaster: Code, sources: Code[], categories: Code[], keywords: string[], sensitivity: Code }) => (
-    <Card>
-        <FlexGrid
-            flexGridColumnCount={1}
-            flexGridColumnGap="scale1000"
-            flexGridRowGap="scale400"
-        >
-            <FlexGridItem>{renderTextWithLabelMetadata(intl.navMaster, props.navMaster ? props.navMaster.shortName : '')}</FlexGridItem>
-            <FlexGridItem>{renderTextWithLabelMetadata(intl.sources, renderCodesToLinks(props.sources))}</FlexGridItem>
-            <FlexGridItem>{renderTextWithLabelMetadata(intl.categories, reduceToList(props.categories).join(', '))}</FlexGridItem>
-            <FlexGridItem>{renderTextWithLabelMetadata(intl.sensitivity, props.sensitivity ? props.sensitivity.shortName : '', faUserShield, sensitivityColor(props.sensitivity.code))}</FlexGridItem>
-        </FlexGrid>
-    </Card>
+const PropertyData = (props: { navMaster: Code, sources: Code[], categories: Code[], keywords: string[], sensitivity: Code }) => (
+  <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
+    <FlexGridItem>
+      <TextWithLabel label={intl.navMaster} text={props.navMaster ? props.navMaster.shortName : ''}/>
+    </FlexGridItem>
+    <FlexGridItem>
+      <TextWithLabel label={intl.sources} text={renderCodesToLinks(props.sources)}/>
+    </FlexGridItem>
+    <FlexGridItem>
+      <TextWithLabel label={intl.categories} text={(props.categories || []).map(c => c.shortName).join(', ')}/>
+    </FlexGridItem>
+    <FlexGridItem>
+      <TextWithLabel label={intl.sensitivity} text={props.sensitivity ? props.sensitivity.shortName : ''} icon={faUserShield} iconColor={sensitivityColor(props.sensitivity.code)}/>
+    </FlexGridItem>
+  </FlexGrid>
 )
 
 const Metadata = (props: { informationtype: InformationType }) => {
-    const {informationtype} = props
+  const {informationtype} = props
 
-    return (
-        <Block display="flex" marginBottom="5rem">
-            <Block width="40%" marginRight="5rem">
-                <CardOverview
-                    termId={informationtype.term}
-                    description={informationtype.description}
-                    keywords={informationtype.keywords}
-                />
-            </Block>
-            <Block width="60%" marginRight="0">
-                <CardMetadata
-                    navMaster={informationtype.navMaster}
-                    sources={informationtype.sources ? informationtype.sources : []}
-                    categories={informationtype.categories ? informationtype.categories : []}
-                    keywords={informationtype.keywords ? informationtype.keywords : []}
-                    sensitivity={informationtype.sensitivity}
-                />
-            </Block>
-        </Block>
-    )
+  const dividerDistance = theme.sizing.scale2400
+  return (
+    <Block display="flex" marginBottom="5rem">
+      <Block width="40%" paddingRight={dividerDistance}>
+        <DescriptionData
+          termId={informationtype.term}
+          description={informationtype.description}
+          keywords={informationtype.keywords}
+        />
+      </Block>
+      <Block width="60%" paddingLeft={dividerDistance} $style={{borderLeft: `1px solid ${theme.colors.mono600}`}}>
+        <PropertyData
+          navMaster={informationtype.navMaster}
+          sources={informationtype.sources ? informationtype.sources : []}
+          categories={informationtype.categories ? informationtype.categories : []}
+          keywords={informationtype.keywords ? informationtype.keywords : []}
+          sensitivity={informationtype.sensitivity}
+        />
+      </Block>
+    </Block>
+  )
 }
 
 export default Metadata

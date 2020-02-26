@@ -7,6 +7,7 @@ import { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import { theme } from '../../../util'
 import { Override } from 'baseui/overrides'
 import { StyleObject } from 'styletron-react'
+import { Block } from 'baseui/block'
 
 
 interface ButtonProps {
@@ -21,6 +22,8 @@ interface ButtonProps {
   startEnhancer?: ReactNode
   disabled?: boolean
   $style?: StyleObject
+  marginRight?: boolean
+  marginLeft?: boolean
 }
 
 interface TooltipProps {
@@ -61,13 +64,17 @@ const Button = (props: ButtonProps) => {
     }
   }
   return (
-    <Tooltip tooltip={props.tooltip}>
-      <BaseUIButton kind={baseuiKind} size={props.size} shape={props.shape} onClick={() => props.onClick?.()} overrides={{BaseButton: overrides}}
-                    startEnhancer={props.startEnhancer} disabled={props.disabled}
-      >
-        {props.icon && <FontAwesomeIcon icon={props.icon} style={{marginRight: '.5rem'}}/>} {props.children}
-      </BaseUIButton>
-    </Tooltip>
+    <>
+      <Block display='inline' marginLeft={props.marginLeft ? theme.sizing.scale400 : 0}/>
+      <Tooltip tooltip={props.tooltip}>
+        <BaseUIButton kind={baseuiKind} size={props.size} shape={props.shape} onClick={() => props.onClick?.()} overrides={{BaseButton: overrides}}
+                      startEnhancer={props.startEnhancer} disabled={props.disabled}
+        >
+          {props.icon && <FontAwesomeIcon icon={props.icon} style={{marginRight: '.5rem'}}/>} {props.children}
+        </BaseUIButton>
+      </Tooltip>
+      <Block display='inline' marginRight={props.marginRight ? theme.sizing.scale400 : 0}/>
+    </>
   )
 }
 
