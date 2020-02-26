@@ -63,7 +63,7 @@ public class Policy extends Auditable<String> {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "INFORMATION_TYPE_ID", nullable = false, updatable = false)
+    @JoinColumn(name = "INFORMATION_TYPE_ID", nullable = false)
     private InformationType informationType;
 
     // Managed by hibernate

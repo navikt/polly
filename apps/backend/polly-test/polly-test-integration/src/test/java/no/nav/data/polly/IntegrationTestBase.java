@@ -186,7 +186,7 @@ public abstract class IntegrationTestBase {
 
     protected InformationType createAndSaveInformationType() {
         if (informationType == null) {
-            informationType = informationTypeRepository.save(createAndSaveInformationType(INFORMATION_TYPE_ID_1, INFORMATION_TYPE_NAME));
+            informationType = createAndSaveInformationType(INFORMATION_TYPE_ID_1, INFORMATION_TYPE_NAME);
         }
         return informationType;
     }

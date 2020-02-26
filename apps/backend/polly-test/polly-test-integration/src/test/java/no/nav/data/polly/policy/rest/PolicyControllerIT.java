@@ -58,7 +58,7 @@ class PolicyControllerIT extends IntegrationTestBase {
                 POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), PolicyPage.class);
         assertThat(createEntity.getBody(), notNullValue());
         assertThat(policyRepository.count(), is(1L));
-        assertPolicy(createEntity.getBody().getContent().get(0), PROCESS_NAME_1);
+        assertPolicy(createEntity.getBody().getContent().get(0), PROCESS_NAME_1, INFORMATION_TYPE_NAME);
         assertBehandlingsgrunnlagDistribusjon(1);
     }
 
@@ -113,7 +113,7 @@ class PolicyControllerIT extends IntegrationTestBase {
                 POLICY_REST_ENDPOINT + createEntity.getBody().getContent().get(0).getId(), HttpMethod.GET, new HttpEntity<>(new HttpHeaders()), PolicyResponse.class);
         assertThat(getEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(getEntity.getBody(), notNullValue());
-        assertPolicy(getEntity.getBody(), PROCESS_NAME_1);
+        assertPolicy(getEntity.getBody(), PROCESS_NAME_1, INFORMATION_TYPE_NAME);
         assertThat(policyRepository.count(), is(1L));
     }
 
@@ -136,12 +136,16 @@ class PolicyControllerIT extends IntegrationTestBase {
         PolicyRequest request = requestList.get(0);
         request.setId(createEntity.getBody().getContent().get(0).getId().toString());
         request.setProcessId(PROCESS_ID_2.toString());
+        var newInfoType = createAndSaveInformationType(UUID.randomUUID(), "newname");
+        request.setInformationTypeId(newInfoType.getId().toString());
+
         ResponseEntity<PolicyResponse> updateEntity = restTemplate
                 .exchange(POLICY_REST_ENDPOINT + createEntity.getBody().getContent().get(0).getId(), HttpMethod.PUT, new HttpEntity<>(request), PolicyResponse.class);
         assertThat(updateEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(policyRepository.count(), is(1L));
         assertThat(updateEntity.getBody(), notNullValue());
-        assertPolicy(updateEntity.getBody(), PROCESS_NAME_1 + " 2nd");
+        assertPolicy(updateEntity.getBody(), PROCESS_NAME_1 + " 2nd", newInfoType.getData().getName());
+        assertThat(policyRepository.findByInformationTypeId(newInfoType.getId()), hasSize(1));
         assertBehandlingsgrunnlagDistribusjon(2);
     }
 
@@ -179,7 +183,7 @@ class PolicyControllerIT extends IntegrationTestBase {
         assertThat(updateEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(updateEntity.getBody(), notNullValue());
         assertThat(updateEntity.getBody().getTotalElements(), is(2L));
-        assertPolicy(updateEntity.getBody().getContent().get(0), PROCESS_NAME_1 + " 2nd");
+        assertPolicy(updateEntity.getBody().getContent().get(0), PROCESS_NAME_1 + " 2nd", INFORMATION_TYPE_NAME);
         assertThat(updateEntity.getBody().getContent().get(1).getProcess().getName(), is(PROCESS_NAME_1 + " 2nd"));
         assertThat(policyRepository.count(), is(2L));
         assertBehandlingsgrunnlagDistribusjon(2);
@@ -385,8 +389,8 @@ class PolicyControllerIT extends IntegrationTestBase {
                 .purposeCode(PURPOSE_CODE1).build();
     }
 
-    private void assertPolicy(PolicyResponse policy, String process) {
-        assertThat(policy.getInformationType().getName(), is(INFORMATION_TYPE_NAME));
+    private void assertPolicy(PolicyResponse policy, String process, String informationTypeName) {
+        assertThat(policy.getInformationType().getName(), is(informationTypeName));
         assertThat(policy.getProcess().getName(), is(process));
         assertThat(policy.getPurposeCode().getCode(), is(PURPOSE_CODE1));
         assertThat(policy.isLegalBasesInherited(), is(false));
