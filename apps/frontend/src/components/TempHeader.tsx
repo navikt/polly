@@ -164,7 +164,7 @@ export default (props: TempHeaderProps) => {
           {!user.isLoggedIn() && (
             <NavigationItem>
               <StyledLink href={`${env.pollyBaseUrl}/login?redirect_uri=${window.location.href}`}>
-                <Button $style={{borderRadius: 0}}>
+                <Button $style={{borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0}}>
                   {intl.login}
                 </Button>
               </StyledLink>

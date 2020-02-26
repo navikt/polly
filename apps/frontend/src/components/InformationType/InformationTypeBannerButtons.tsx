@@ -1,20 +1,21 @@
-import { useStyletron } from "baseui"
-import { Block } from "baseui/block"
-import { AuditButton } from "../audit/AuditButton"
-import RouteLink from "../common/RouteLink"
-import { Button, KIND, SIZE as ButtonSize } from "baseui/button"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons"
-import * as React from "react"
-import { useEffect } from "react"
-import { RouteComponentProps, withRouter } from "react-router-dom"
-import { Modal, ModalBody, ModalFooter, ModalHeader } from "baseui/modal"
-import { intl } from "../../util"
-import { Paragraph2 } from "baseui/typography"
-import { PLACEMENT, StatefulTooltip } from "baseui/tooltip"
-import { deleteInformationType, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType } from "../../api"
-import { InformationType } from "../../constants"
-import { StyledSpinnerNext } from "baseui/spinner"
+import { useStyletron } from 'baseui'
+import { Block } from 'baseui/block'
+import { AuditButton } from '../audit/AuditButton'
+import RouteLink from '../common/RouteLink'
+import { SIZE as ButtonSize } from 'baseui/button'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
+import * as React from 'react'
+import { useEffect } from 'react'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
+import { intl, theme } from '../../util'
+import { Paragraph2 } from 'baseui/typography'
+import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
+import { deleteInformationType, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType } from '../../api'
+import { InformationType } from '../../constants'
+import { StyledSpinnerNext } from 'baseui/spinner'
+import Button from '../common/Button'
 
 const DeleteModalImpl = (props: RouteComponentProps<any> & { id: string, showDeleteModal: boolean, closeModal: () => void }) => {
   const [errorProcessModal, setErrorProcessModal] = React.useState(false)
@@ -31,7 +32,7 @@ const DeleteModalImpl = (props: RouteComponentProps<any> & { id: string, showDel
         setInfoType(await getInformationType(props.id))
       }
     })()
-  }, [props.showDeleteModal, props.id])
+  }, [props.showDeleteModal, props.id, infoType])
 
   const submitDeleteProcess = async () => {
     try {
@@ -66,22 +67,17 @@ const DeleteModalImpl = (props: RouteComponentProps<any> & { id: string, showDel
 
       <ModalFooter>
         <Block display="flex" justifyContent="flex-end">
-          <Block alignSelf="flex-end">{errorProcessModal &&
-          <p>{errorProcessModal}</p>}</Block>
+          <Block alignSelf="flex-end">
+            {errorProcessModal && <p>{errorProcessModal}</p>}
+          </Block>
+          <Block display='inline' marginLeft={theme.sizing.scale400}/>
           <Button
             kind="secondary"
             onClick={props.closeModal}
-            overrides={{
-              BaseButton: {
-                style: {
-                  marginRight: '1rem',
-                  marginLeft: '1rem'
-                }
-              }
-            }}
           >
             {intl.abort}
           </Button>
+          <Block display='inline' marginLeft={theme.sizing.scale400}/>
           <Button onClick={submitDeleteProcess} disabled={!canDelete}>
             {intl.delete}
           </Button>
@@ -95,7 +91,7 @@ export const DeleteModal = withRouter(DeleteModalImpl)
 
 export const InformationTypeBannerButtons = (props: { id: string }) => {
   const [useCss, theme] = useStyletron()
-  const link = useCss({textDecoration: 'none'});
+  const link = useCss({textDecoration: 'none'})
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
 
   return (
@@ -107,7 +103,7 @@ export const InformationTypeBannerButtons = (props: { id: string }) => {
         <Block marginRight={theme.sizing.scale500}>
           <RouteLink href={`/informationtype/edit/${props.id}`} className={link}>
             <StatefulTooltip content={intl.edit} placement={PLACEMENT.top}>
-              <Button size="compact" kind="secondary">
+              <Button size="compact" kind="outline">
                 <FontAwesomeIcon icon={faEdit}/>
               </Button>
             </StatefulTooltip>
@@ -116,7 +112,7 @@ export const InformationTypeBannerButtons = (props: { id: string }) => {
 
         <Block>
           <StatefulTooltip content={intl.delete} placement={PLACEMENT.top}>
-            <Button size={ButtonSize.compact} kind={KIND.secondary} onClick={() => setShowDeleteModal(true)}>
+            <Button size={ButtonSize.compact} kind='outline' onClick={() => setShowDeleteModal(true)}>
               <FontAwesomeIcon icon={faTrash}/>
             </Button>
           </StatefulTooltip>
