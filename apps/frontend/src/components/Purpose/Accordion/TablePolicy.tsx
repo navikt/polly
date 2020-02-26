@@ -21,7 +21,7 @@ import { ActiveIndicator } from '../../common/Durations'
 import { AuditButton } from '../../audit/AuditButton'
 import _ from 'lodash'
 import { getAlertForProcess } from '../../../api/AlertApi'
-import { Cell, HeadCell, Row, SmallCell, SmallHeadCell, Table } from '../../common/Table'
+import { Cell, HeadCell, Row, Table } from '../../common/Table'
 
 
 type TablePurposeProps = {
@@ -74,7 +74,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
             <HeadCell title={intl.informationType} column={'informationType'} tableState={[table, sortColumn]}/>
             <HeadCell title={intl.subjectCategories} column={'subjectCategories'} tableState={[table, sortColumn]}/>
             <HeadCell title={intl.legalBasisShort} column={'legalBases'} tableState={[table, sortColumn]}/>
-            <SmallHeadCell/>
+            <HeadCell small/>
           </>
         }>
         {table.data.map((row: Policy, index: number) => {
@@ -110,7 +110,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                     )}
                   </Block>
                 </Cell>
-                <SmallCell>
+                <Cell small>
                   <Block display="flex" justifyContent="flex-end" width="100%">
                     <StatefulTooltip content={intl.info} placement={PLACEMENT.top}>
                       <Button
@@ -153,7 +153,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                       </>
                     )}
                   </Block>
-                </SmallCell>
+                </Cell>
               </Row>
               {showPolicyInfo && selectedRow &&
               <Row infoRow={true}>
