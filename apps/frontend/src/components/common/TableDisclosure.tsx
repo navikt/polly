@@ -1,21 +1,21 @@
-import * as React from "react";
+import * as React from 'react'
 
-import { ListLegalBasesInTable } from "./LegalBasis"
-import { intl } from "../../util"
-import { Disclosure, DisclosureFormValues, disclosureSort } from "../../constants"
-import { useTable } from "../../util/hooks"
-import RouteLink from "./RouteLink"
-import { PLACEMENT, StatefulTooltip } from "baseui/tooltip";
-import { Button, KIND, SIZE } from "baseui/button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Modal, ModalBody, ModalFooter, ModalHeader } from "baseui/modal";
-import { Label2, Paragraph2 } from "baseui/typography";
-import { Block } from "baseui/block";
-import ModalThirdParty from "../ThirdParty/ModalThirdPartyForm";
-import { mapDisclosureToFormValues } from "../../api"
-import { features } from "../../util/feature-toggle"
-import { Cell, HeadCell, Row, SmallCell, SmallHeadCell, Table } from "./Table"
+import { ListLegalBasesInTable } from './LegalBasis'
+import { intl } from '../../util'
+import { Disclosure, DisclosureFormValues, disclosureSort } from '../../constants'
+import { useTable } from '../../util/hooks'
+import RouteLink from './RouteLink'
+import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
+import { Button, KIND, SIZE } from 'baseui/button'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
+import { Paragraph2 } from 'baseui/typography'
+import { Block } from 'baseui/block'
+import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
+import { mapDisclosureToFormValues } from '../../api'
+import { features } from '../../util/feature-toggle'
+import { Cell, HeadCell, Row, SmallCell, SmallHeadCell, Table } from './Table'
 
 type TableDisclosureProps = {
   list: Array<Disclosure>;
@@ -32,12 +32,13 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
   const [showEditModal, setShowEditModal] = React.useState<boolean>()
   const [selectedDisclosure, setSelectedDisclosure] = React.useState<Disclosure>()
 
-  const [table, sortColumn] = useTable<Disclosure, keyof Disclosure>(list, {sorting: disclosureSort, initialSortColumn: showRecipient ? "recipient" : "name"})
+  const [table, sortColumn] = useTable<Disclosure, keyof Disclosure>(list, {sorting: disclosureSort, initialSortColumn: showRecipient ? 'recipient' : 'name'})
 
   return (
     <React.Fragment>
 
       <Table
+        emptyText={intl.disclosures}
         headers={
           <>
             {showRecipient && (
@@ -110,7 +111,6 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
           </Row>
         ))}
       </Table>
-      {!table.data.length && <Label2 margin="1rem">{intl.emptyTable} {intl.disclosures}</Label2>}
 
       {editable && showEditModal && selectedDisclosure && (
         <ModalThirdParty
@@ -159,7 +159,7 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
         </Modal>
       )}
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default TableDisclosure;
+export default TableDisclosure
