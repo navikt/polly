@@ -294,13 +294,13 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
 
   useEffect(() => {
     props.match.params.processId && onChangeProcess(props.match.params.processId)
-  }, [onChangeProcess, props.match.params.processId])
+  }, [props.match.params.processId])
 
   useEffect(() => {
     props.match.params.processId && !isLoading && setTimeout(() => {
       purposeRef.current && window.scrollTo({top: purposeRef.current.offsetTop})
     }, 200)
-  }, [isLoading, props.match.params.processId])
+  }, [isLoading])
 
   return (
     <Block ref={purposeRef}>
