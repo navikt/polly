@@ -28,6 +28,7 @@ import { AddDocumentModal } from './AddDocumentModal'
 import { RetentionView } from '../Retention'
 import { boolToText } from '../../common/Radio'
 import Button from '../../common/Button'
+import { DotTags } from '../../common/DotTag'
 
 type AccordionProcessProps = {
   isLoading: boolean
@@ -143,7 +144,9 @@ const ProcessData = (props: { process: Process }) => {
         )}
       </DataText>
 
-      <DataText label={intl.subjectCategories} text={subjectCategories.length ? subjectCategories.join(', ') : intl.subjectCategoriesNotFound}/>
+      <DataText label={intl.subjectCategories} text={!subjectCategories.length && intl.subjectCategoriesNotFound}>
+        {!!subjectCategories.length && <DotTags items={subjectCategories}/>}
+      </DataText>
 
       <DataText label={intl.validityOfProcess}>
         <ActiveIndicator alwaysShow={true} showDates={true} {...process} />
@@ -164,9 +167,9 @@ const ProcessData = (props: { process: Process }) => {
         </Block>}
       </DataText>
 
-      <DataText label={intl.system}
-                text={process.products.map(product => codelist.getShortname(ListName.SYSTEM, product.code)).join(', ')}
-                hide={!process.products?.length}/>
+      <DataText label={intl.system} hide={!process.products?.length}>
+        <DotTags items={process.products.map(product => codelist.getShortname(ListName.SYSTEM, product.code))}/>
+      </DataText>
 
       <DataText label={intl.automation}>
         <Block>
@@ -191,8 +194,12 @@ const ProcessData = (props: { process: Process }) => {
               <span>{intl.dataProcessorYes}</span>
             </Block>
             <Block>
-              <span>{dataProcessorAgreements && `${intl.dataProcessorAgreement}: `}</span>
-              <span>{dataProcessorAgreements && process.dataProcessing?.dataProcessorAgreements.join(', ')}</span>
+              {dataProcessorAgreements &&
+              <Block display='flex'>
+                {`${intl.dataProcessorAgreement}: `}
+                <DotTags items={process.dataProcessing?.dataProcessorAgreements || []}/>
+              </Block>
+              }
             </Block>
             <Block>
               <span>{intl.dataProcessorOutsideEUExtra}: </span>

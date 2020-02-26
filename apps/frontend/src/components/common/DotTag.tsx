@@ -14,12 +14,12 @@ export const DotTag = (props: { children: ReactNode }) =>
 
 export const DotTags = (props: { items: string[] }) => {
   return (
-    <>
+    <Block display='flex'>
       {props.items.map((item, i) => (
         <Block key={i} marginRight={i < props.items.length ? theme.sizing.scale200 : 0}>
           <DotTag>{item}</DotTag>
         </Block>
       ))}
-    </>
+    </Block>
   )
 }
