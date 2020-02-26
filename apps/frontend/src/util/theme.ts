@@ -46,6 +46,23 @@ const overrides: ThemeOverride = {
   borders: {
     buttonBorderRadius: '4px',
     inputBorderRadius: '8px'
+  },
+  typography: {
+    // Increase weight 500->600 on bold texts
+    font150: {fontWeight: 600},
+    font250: {fontWeight: 600},
+    font350: {fontWeight: 600},
+    font450: {fontWeight: 600},
+    font550: {fontWeight: 600},
+    font650: {fontWeight: 600},
+    font750: {fontWeight: 600},
+    font850: {fontWeight: 600},
+    font950: {fontWeight: 600},
+    font1050: {fontWeight: 600},
+    font1150: {fontWeight: 600},
+    font1250: {fontWeight: 600},
+    font1350: {fontWeight: 600},
+    font1450: {fontWeight: 600}
   }
 }
 

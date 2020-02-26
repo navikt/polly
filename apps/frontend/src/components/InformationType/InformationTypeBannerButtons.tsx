@@ -3,7 +3,6 @@ import { Block } from 'baseui/block'
 import { AuditButton } from '../audit/AuditButton'
 import RouteLink from '../common/RouteLink'
 import { SIZE as ButtonSize } from 'baseui/button'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import * as React from 'react'
 import { useEffect } from 'react'
@@ -11,7 +10,6 @@ import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { intl, theme } from '../../util'
 import { Paragraph2 } from 'baseui/typography'
-import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
 import { deleteInformationType, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType } from '../../api'
 import { InformationType } from '../../constants'
 import { StyledSpinnerNext } from 'baseui/spinner'
@@ -90,33 +88,25 @@ const DeleteModalImpl = (props: RouteComponentProps<any> & { id: string, showDel
 export const DeleteModal = withRouter(DeleteModalImpl)
 
 export const InformationTypeBannerButtons = (props: { id: string }) => {
-  const [useCss, theme] = useStyletron()
+  const [useCss] = useStyletron()
   const link = useCss({textDecoration: 'none'})
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
 
   return (
     <>
-      <Block alignSelf="center" marginTop="10px" display="flex">
+      <Block alignSelf="center" display="flex">
 
         <AuditButton id={props.id}/>
 
-        <Block marginRight={theme.sizing.scale500}>
-          <RouteLink href={`/informationtype/edit/${props.id}`} className={link}>
-            <StatefulTooltip content={intl.edit} placement={PLACEMENT.top}>
-              <Button size="compact" kind="outline">
-                <FontAwesomeIcon icon={faEdit}/>
-              </Button>
-            </StatefulTooltip>
-          </RouteLink>
-        </Block>
+        <RouteLink href={`/informationtype/edit/${props.id}`} className={link}>
+          <Button size="compact" kind="outline" tooltip={intl.edit} icon={faEdit} marginRight>
+            {intl.edit}
+          </Button>
+        </RouteLink>
 
-        <Block>
-          <StatefulTooltip content={intl.delete} placement={PLACEMENT.top}>
-            <Button size={ButtonSize.compact} kind='outline' onClick={() => setShowDeleteModal(true)}>
-              <FontAwesomeIcon icon={faTrash}/>
-            </Button>
-          </StatefulTooltip>
-        </Block>
+        <Button size={ButtonSize.compact} kind='outline' onClick={() => setShowDeleteModal(true)} tooltip={intl.delete} icon={faTrash}>
+          {intl.delete}
+        </Button>
 
       </Block>
       <DeleteModal id={props.id} showDeleteModal={showDeleteModal} closeModal={() => setShowDeleteModal(false)}/>

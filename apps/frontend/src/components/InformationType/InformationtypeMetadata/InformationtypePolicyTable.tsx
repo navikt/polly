@@ -1,17 +1,16 @@
-import * as React from "react";
-import { useEffect, useState } from "react";
+import * as React from 'react'
+import { useEffect, useState } from 'react'
 
-import { LegalBasesNotClarified, ListLegalBasesInTable } from "../../common/LegalBasis"
-import { codelist, ListName } from "../../../service/Codelist"
-import { intl } from "../../../util"
-import { Policy, PolicyAlert, policySort } from "../../../constants"
-import { useTable } from "../../../util/hooks"
-import RouteLink from "../../common/RouteLink"
-import { Label2 } from "baseui/typography"
-import { RetentionView } from "../../Purpose/Retention"
-import { getAlertForInformationType } from "../../../api/AlertApi"
-import { Block } from "baseui/block"
-import { Cell, HeadCell, Row, Table } from "../../common/Table"
+import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
+import { codelist, ListName } from '../../../service/Codelist'
+import { intl } from '../../../util'
+import { Policy, PolicyAlert, policySort } from '../../../constants'
+import { useTable } from '../../../util/hooks'
+import RouteLink from '../../common/RouteLink'
+import { RetentionView } from '../../Purpose/Retention'
+import { getAlertForInformationType } from '../../../api/AlertApi'
+import { Block } from 'baseui/block'
+import { Cell, HeadCell, Row, Table } from '../../common/Table'
 
 type TableInformationtypeProps = {
   policies: Array<Policy>;
@@ -21,7 +20,7 @@ type TableInformationtypeProps = {
 type Alerts = { [id: string]: PolicyAlert }
 
 const InformationtypePolicyTable = ({policies, showPurpose}: TableInformationtypeProps) => {
-  const [table, sortColumn] = useTable<Policy, keyof Policy>(policies, {sorting: policySort, initialSortColumn: showPurpose ? "purposeCode" : "process"})
+  const [table, sortColumn] = useTable<Policy, keyof Policy>(policies, {sorting: policySort, initialSortColumn: showPurpose ? 'purposeCode' : 'process'})
   const [alerts, setAlerts] = useState<Alerts>()
 
   useEffect(() => {
@@ -41,8 +40,9 @@ const InformationtypePolicyTable = ({policies, showPurpose}: TableInformationtyp
   }, [policies])
 
   return (
-    <>
-      <Table headers={
+    <Table
+      emptyText={intl.processes}
+      headers={
         <>
           <HeadCell title={intl.purpose} column={'purposeCode'} tableState={[table, sortColumn]}/>
           <HeadCell title={intl.process} column={'process'} tableState={[table, sortColumn]}/>
@@ -51,47 +51,45 @@ const InformationtypePolicyTable = ({policies, showPurpose}: TableInformationtyp
           <HeadCell title={intl.retention}/>
         </>
       }>
-        {table.data.map((row, index) => (
-          <Row key={index}>
-            {showPurpose && <Cell>
-              <RouteLink href={`/process/purpose/${row.purposeCode.code}`}>
-                {codelist.getShortnameForCode(row.purposeCode)}
-              </RouteLink>
-            </Cell>}
+      {table.data.map((row, index) => (
+        <Row key={index}>
+          {showPurpose && <Cell>
+            <RouteLink href={`/process/purpose/${row.purposeCode.code}`}>
+              {codelist.getShortnameForCode(row.purposeCode)}
+            </RouteLink>
+          </Cell>}
 
-            <Cell>
-              <RouteLink href={`/process/purpose/${row.purposeCode.code}/${row.process.id}`}>
-                {row.process && row.process.name}
-              </RouteLink>
-            </Cell>
+          <Cell>
+            <RouteLink href={`/process/purpose/${row.purposeCode.code}/${row.process.id}`}>
+              {row.process && row.process.name}
+            </RouteLink>
+          </Cell>
 
-            <Cell>{row.subjectCategories.map(sc => codelist.getShortname(ListName.SUBJECT_CATEGORY, sc.code)).join(", ")}</Cell>
+          <Cell>{row.subjectCategories.map(sc => codelist.getShortname(ListName.SUBJECT_CATEGORY, sc.code)).join(', ')}</Cell>
 
-            <Cell>
-              <Block>
-                {!row.legalBasesInherited && row.legalBases && row.legalBases.length > 0 && (
-                  <ListLegalBasesInTable legalBases={row.legalBases}/>
-                )}
+          <Cell>
+            <Block>
+              {!row.legalBasesInherited && row.legalBases && row.legalBases.length > 0 && (
+                <ListLegalBasesInTable legalBases={row.legalBases}/>
+              )}
 
-                {row.legalBasesInherited && row.process.legalBases && (
-                  <ListLegalBasesInTable legalBases={row.process.legalBases}/>
-                )}
+              {row.legalBasesInherited && row.process.legalBases && (
+                <ListLegalBasesInTable legalBases={row.process.legalBases}/>
+              )}
 
-                <LegalBasesNotClarified alert={alerts && alerts[row.id]}/>
-              </Block>
-            </Cell>
+              <LegalBasesNotClarified alert={alerts && alerts[row.id]}/>
+            </Block>
+          </Cell>
 
-            <Cell>
-              <RetentionView retention={row.process.retention}/>
-            </Cell>
-          </Row>
-        ))}
+          <Cell>
+            <RetentionView retention={row.process.retention}/>
+          </Cell>
+        </Row>
+      ))}
 
-      </Table>
-      {!table.data.length && <Label2 margin="1rem">{intl.emptyTable} {intl.processes}</Label2>}
-    </>
+    </Table>
   )
 
 }
 
-export default InformationtypePolicyTable;
+export default InformationtypePolicyTable

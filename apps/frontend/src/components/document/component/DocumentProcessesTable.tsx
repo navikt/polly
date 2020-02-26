@@ -1,9 +1,10 @@
-import React from "react";
-import {Cell, HeadCell, Row, Table} from "../../common/Table";
-import {intl} from "../../../util";
-import {codelist, ListName} from "../../../service/Codelist";
-import {Process, processSort} from "../../../constants";
-import {useTable} from "../../../util/hooks";
+import React from 'react'
+import { Cell, HeadCell, Row, Table } from '../../common/Table'
+import { intl } from '../../../util'
+import { codelist, ListName } from '../../../service/Codelist'
+import { Process, processSort } from '../../../constants'
+import { useTable } from '../../../util/hooks'
+import { Label2 } from 'baseui/typography'
 
 type DocumentProcessesProps = {
   documentUsages: Process[]
@@ -12,11 +13,12 @@ type DocumentProcessesProps = {
 const DocumentProcessesTable = (props: DocumentProcessesProps) => {
   const [table, sortColumn] = useTable<Process, keyof Process>(props.documentUsages, {
     sorting: processSort,
-    initialSortColumn: "name"
+    initialSortColumn: 'name'
   })
   return (
     <>
       <Table
+        emptyText={intl.processes}
         headers={
           <>
             <HeadCell
@@ -51,10 +53,10 @@ const DocumentProcessesTable = (props: DocumentProcessesProps) => {
                 {process.name}
               </Cell>
               <Cell>
-                {process.department ? process.department.shortName : ""}
+                {process.department ? process.department.shortName : ''}
               </Cell>
               <Cell>
-                {process.products.map(product => product.shortName).join(", ")}
+                {process.products.map(product => product.shortName).join(', ')}
               </Cell>
             </Row>
           ))
@@ -64,4 +66,4 @@ const DocumentProcessesTable = (props: DocumentProcessesProps) => {
   )
 }
 
-export default DocumentProcessesTable;
+export default DocumentProcessesTable

@@ -1,7 +1,7 @@
 import { SORT_DIRECTION, SortableHeadCell, StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from 'baseui/table'
-import { theme } from '../../util'
+import { intl, theme } from '../../util'
 import * as React from 'react'
-import { ReactElement, useContext } from 'react'
+import { ReactElement, ReactNode, useContext } from 'react'
 import { withStyle } from 'baseui'
 import { TableState } from '../../util/hooks'
 import { StyleObject } from 'styletron-standard'
@@ -9,12 +9,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons'
 import { Block } from 'baseui/block'
 import { paddingAll } from './Style'
+import { Label2 } from 'baseui/typography'
 
 type TableProps = {
   backgroundColor?: string,
   hoverColor?: string,
+  emptyText: string,
   headers: ReactElement,
-  children: ReactElement | ReactElement[]
+  children: ReactNode
 }
 
 type HeadProps<K extends keyof T, T> = {
@@ -71,6 +73,8 @@ export const Table = (props: TableProps) => {
         </StyledHeader>
         <StyledBody>
           {props.children}
+          {(!props.children || (Array.isArray(props.children) && !props.children.length))
+          && <Label2 margin="1rem">{intl.emptyTable} {props.emptyText}</Label2>}
         </StyledBody>
       </StyleTable>
     </TableContext.Provider>

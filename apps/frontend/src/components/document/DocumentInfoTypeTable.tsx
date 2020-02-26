@@ -3,7 +3,7 @@ import { useTable } from '../../util/hooks'
 import { DocumentInfoTypeUse, documentSort } from '../../constants'
 import { intl } from '../../util'
 import RouteLink from '../common/RouteLink'
-import { Cell, HeadCell, Row, Table } from "../common/Table"
+import { Cell, HeadCell, Row, Table } from '../common/Table'
 
 type DocumentInfoTypeTableProps = {
   list: DocumentInfoTypeUse[]
@@ -11,10 +11,11 @@ type DocumentInfoTypeTableProps = {
 
 const DocumentInfoTypeTable = (props: DocumentInfoTypeTableProps) => {
   const {list} = props
-  const [table, sortColumn] = useTable<DocumentInfoTypeUse, keyof DocumentInfoTypeUse>(list, {sorting: documentSort, initialSortColumn: "informationType"})
+  const [table, sortColumn] = useTable<DocumentInfoTypeUse, keyof DocumentInfoTypeUse>(list, {sorting: documentSort, initialSortColumn: 'informationType'})
 
   return (
     <Table
+      emptyText={intl.informationTypes}
       headers={
         <>
           <HeadCell
