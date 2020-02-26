@@ -46,6 +46,14 @@ const overrides: ThemeOverride = {
   borders: {
     buttonBorderRadius: '4px',
     inputBorderRadius: '8px'
+  },
+  typography: {
+    font350: {
+      fontFamily: primitives.primaryFontFamily,
+      fontSize: '16px',
+      fontWeight: 600,
+      lineHeight: '20px'
+    }
   }
 }
 
