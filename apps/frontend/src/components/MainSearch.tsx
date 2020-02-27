@@ -91,21 +91,30 @@ const useMainSearch = () => {
   return [setSearch, searchResult, loading, type, setType] as [(text: string) => void, SearchItem[], boolean, SearchType, (type: SearchType) => void]
 }
 
+type RadioProps = {
+  $isHovered: boolean
+  $checked: boolean
+}
+
 const smallRadio = (value: SearchType, text: string) => {
   return (
     <Radio value={value}
            overrides={{
              Label: {
-               style: {...paddingZero}
+               style: (a: RadioProps) => ({
+                 ...paddingZero,
+                 ...(a.$isHovered ? {color: theme.colors.positive400} : {})
+               })
              },
              RadioMarkOuter: {
-               style: {
+               style: (a: RadioProps) => ({
                  width: theme.sizing.scale500,
                  height: theme.sizing.scale500,
-               }
+                 ...(a.$isHovered ? {backgroundColor: theme.colors.positive400} : {})
+               })
              },
              RadioMarkInner: {
-               style: (a: { $checked: boolean }) => ({
+               style: (a: RadioProps) => ({
                  width: a.$checked ? theme.sizing.scale100 : theme.sizing.scale300,
                  height: a.$checked ? theme.sizing.scale100 : theme.sizing.scale300,
                })
