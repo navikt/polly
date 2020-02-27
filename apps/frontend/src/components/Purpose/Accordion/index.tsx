@@ -65,17 +65,17 @@ const AccordionTitle = (props: { process: UseWithPurpose, expanded: boolean, has
     }}>
       {hasAccess && expanded && (
         <>
-          <AuditButton id={process.id}/>
+          <AuditButton id={process.id} marginRight/>
           <Button
             kind={'outline'}
             size={ButtonSize.compact}
             icon={faEdit}
             tooltip={intl.edit}
             onClick={props.editProcess}
+            marginRight
           >
             {intl.edit}
           </Button>
-          <Block display="inline" marginRight={theme.sizing.scale500}/>
           <Button
             kind={'outline'}
             size={ButtonSize.compact}
@@ -196,8 +196,10 @@ const ProcessData = (props: { process: Process }) => {
             <Block>
               {dataProcessorAgreements &&
               <Block display='flex'>
-                {`${intl.dataProcessorAgreement}: `}
-                <DotTags items={process.dataProcessing?.dataProcessorAgreements || []}/>
+                <Block $style={{whiteSpace: 'nowrap'}}>
+                  {`${intl.dataProcessorAgreement}: `}
+                </Block>
+                <DotTags items={process.dataProcessing?.dataProcessorAgreements}/>
               </Block>
               }
             </Block>

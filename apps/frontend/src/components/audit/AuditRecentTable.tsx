@@ -1,36 +1,36 @@
-import { Label1, Label2, Label3 } from "baseui/typography"
-import React, { useEffect, useState } from "react"
-import { getAudits } from "../../api/AuditApi"
-import { AuditItem, ObjectType, PageResponse } from "../../constants"
-import { StyledBody, StyledCell, StyledHead, StyledHeadCell, StyledRow, StyledTable } from "baseui/table"
-import { intl } from "../../util"
-import moment from "moment"
-import { Pagination } from "baseui/pagination"
-import { TriangleDown } from "baseui/icon"
-import { Button, KIND } from "baseui/button"
-import { PLACEMENT, StatefulPopover } from "baseui/popover"
-import { StatefulMenu } from "baseui/menu"
-import { Block } from "baseui/block"
-import { StatefulTooltip } from "baseui/tooltip"
-import { AuditButton } from "./AuditButton"
-import _ from "lodash"
-import ReactJson from "react-json-view"
-import { faBinoculars, faCode } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { AuditActionIcon } from "./AuditComponents"
-import randomColor from "randomcolor"
-import { StatefulSelect } from "baseui/select"
-import { ObjectLink } from "../common/RouteLink"
+import { Label1, Label3 } from 'baseui/typography'
+import React, { useEffect, useState } from 'react'
+import { getAudits } from '../../api/AuditApi'
+import { AuditItem, ObjectType, PageResponse } from '../../constants'
+import { intl, theme } from '../../util'
+import moment from 'moment'
+import { Pagination } from 'baseui/pagination'
+import { TriangleDown } from 'baseui/icon'
+import { Button, KIND } from 'baseui/button'
+import { PLACEMENT, StatefulPopover } from 'baseui/popover'
+import { StatefulMenu } from 'baseui/menu'
+import { Block } from 'baseui/block'
+import { StatefulTooltip } from 'baseui/tooltip'
+import { AuditButton } from './AuditButton'
+import _ from 'lodash'
+import ReactJson from 'react-json-view'
+import { faBinoculars, faCode } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { AuditActionIcon } from './AuditComponents'
+import randomColor from 'randomcolor'
+import { StatefulSelect } from 'baseui/select'
+import { ObjectLink } from '../common/RouteLink'
+import { Cell, HeadCell, Row, Table } from '../common/Table'
 
 export const AuditRecentTable = (props: { show: boolean }) => {
   const [audits, setAudits] = useState<PageResponse<AuditItem>>({content: [], numberOfElements: 0, pageNumber: 0, pages: 0, pageSize: 1, totalElements: 0})
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(20);
+  const [page, setPage] = useState(1)
+  const [limit, setLimit] = useState(20)
   const [table, setTable] = useState<ObjectType | undefined>(undefined)
 
   const colors = _.uniq(audits.content.map(a => a.tableId))
   .reduce((val, id) => {
-    val[id] = randomColor({seed: id, luminosity: "dark"})
+    val[id] = randomColor({seed: id, luminosity: 'dark'})
     return val
   }, {} as { [id: string]: string })
 
@@ -42,18 +42,18 @@ export const AuditRecentTable = (props: { show: boolean }) => {
 
   const handlePageChange = (nextPage: number) => {
     if (nextPage < 1) {
-      return;
+      return
     }
     if (nextPage > audits.pages) {
-      return;
+      return
     }
-    setPage(nextPage);
-  };
+    setPage(nextPage)
+  }
 
   useEffect(() => {
-    const nextPageNum = Math.ceil(audits.totalElements / limit);
+    const nextPageNum = Math.ceil(audits.totalElements / limit)
     if (audits.totalElements && nextPageNum < page) {
-      setPage(nextPageNum);
+      setPage(nextPageNum)
     }
   }, [limit, audits.totalElements])
 
@@ -70,52 +70,53 @@ export const AuditRecentTable = (props: { show: boolean }) => {
           <StatefulSelect size="compact" options={Object.keys(ObjectType).map(ot => ({id: ot, label: ot}))} onChange={p => setTable(p?.value[0]?.id as ObjectType)}/>
         </Block>
       </Block>
-      <StyledTable>
-        <StyledHead>
-          <StyledHeadCell $style={{maxWidth: "13%"}}>{intl.time}</StyledHeadCell>
-          <StyledHeadCell $style={{maxWidth: "17%"}}>{intl.action}</StyledHeadCell>
-          <StyledHeadCell>{intl.id}</StyledHeadCell>
-          <StyledHeadCell>{intl.user}</StyledHeadCell>
-        </StyledHead>
-        <StyledBody>
-          {audits.content.map((audit, index) => {
-            const length = window.innerWidth > 1000 ? window.innerWidth > 1200 ? 40 : 30 : 20
-            return (
-              <StyledRow key={audit.id}>
-                <Block position="absolute" marginLeft="-28px" display="block">
-                  {audits.pageNumber * audits.pageSize + index + 1}
+
+      <Table
+        emptyText={intl.audits}
+        headers={
+          <>
+            <HeadCell $style={{maxWidth: '13%'}} title={intl.time}/>
+            <HeadCell $style={{maxWidth: '17%'}} title={intl.action}/>
+            <HeadCell title={intl.id}/>
+            <HeadCell title={intl.user}/>
+          </>
+        }
+      >
+        {audits.content.map((audit, index) => {
+          const length = window.innerWidth > 1000 ? window.innerWidth > 1200 ? 40 : 30 : 20
+          const rowNum = audits.pageNumber * audits.pageSize + index + 1
+          return (
+            <Row key={audit.id}>
+              <Cell $style={{maxWidth: '13%'}}>
+                <Block marginRight={theme.sizing.scale400}>{rowNum}</Block>
+                <AuditButton kind="tertiary" id={audit.tableId} auditId={audit.id}>
+                  <StatefulTooltip content={audit.time} placement={PLACEMENT.top}>{moment(audit.time).fromNow()}</StatefulTooltip>
+                </AuditButton>
+              </Cell>
+              <Cell $style={{maxWidth: '17%'}}>
+                <AuditActionIcon action={audit.action}/> {audit.table}
+              </Cell>
+              <Cell>
+                <StatefulTooltip content={audit.tableId} placement={PLACEMENT.top}>
+                  <Block color={colors[audit.tableId]}>{_.truncate(audit.tableId, {length})}</Block>
+                </StatefulTooltip>
+              </Cell>
+              <Cell $style={{display: 'flex', justifyContent: 'space-between'}}>
+                <Block>{audit.user}</Block>
+                <Block>
+                  <ObjectLink id={audit.tableId} type={audit.table} audit={audit}>
+                    <Button size="compact" shape="round" kind="tertiary"><FontAwesomeIcon icon={faBinoculars}/></Button>
+                  </ObjectLink>
+                  <StatefulPopover overrides={{Body: {style: {width: '80%'}}}}
+                                   content={() => (<ReactJson src={audit.data} name={null}/>)}>
+                    <Button size="compact" shape="round" kind="tertiary"><FontAwesomeIcon icon={faCode}/></Button>
+                  </StatefulPopover>
                 </Block>
-                <StyledCell $style={{maxWidth: "13%"}}>
-                  <AuditButton kind="tertiary" id={audit.tableId} auditId={audit.id}>
-                    <StatefulTooltip content={audit.time} placement={PLACEMENT.top}>{moment(audit.time).fromNow()}</StatefulTooltip>
-                  </AuditButton>
-                </StyledCell>
-                <StyledCell $style={{maxWidth: "17%"}}>
-                  <AuditActionIcon action={audit.action}/> {audit.table}
-                </StyledCell>
-                <StyledCell>
-                  <StatefulTooltip content={audit.tableId} placement={PLACEMENT.top}>
-                    <Block color={colors[audit.tableId]}>{_.truncate(audit.tableId, {length})}</Block>
-                  </StatefulTooltip>
-                </StyledCell>
-                <StyledCell $style={{display: "flex", justifyContent: "space-between"}}>
-                  <Block>{audit.user}</Block>
-                  <Block>
-                    <ObjectLink id={audit.tableId} type={audit.table} audit={audit}>
-                      <Button size="compact" shape="round" kind="tertiary"><FontAwesomeIcon icon={faBinoculars}/></Button>
-                    </ObjectLink>
-                    <StatefulPopover overrides={{Body: {style: {width: "80%"}}}}
-                                     content={() => (<ReactJson src={audit.data} name={null}/>)}>
-                      <Button size="compact" shape="round" kind="tertiary"><FontAwesomeIcon icon={faCode}/></Button>
-                    </StatefulPopover>
-                  </Block>
-                </StyledCell>
-              </StyledRow>
-            )
-          })}
-        </StyledBody>
-      </StyledTable>
-      {!audits.totalElements && <Label2 margin="1rem">{intl.emptyTable} {intl.audits}</Label2>}
+              </Cell>
+            </Row>
+          )
+        })}
+      </Table>
 
       <Block display="flex" justifyContent="space-between" marginTop="1rem">
         <StatefulPopover
@@ -123,8 +124,8 @@ export const AuditRecentTable = (props: { show: boolean }) => {
             <StatefulMenu
               items={[5, 10, 20, 50, 100].map(i => ({label: i,}))}
               onItemSelect={({item}) => {
-                setLimit(item.label);
-                close();
+                setLimit(item.label)
+                close()
               }}
               overrides={{
                 List: {

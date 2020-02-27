@@ -15,7 +15,7 @@ import { Block } from 'baseui/block'
 import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
 import { mapDisclosureToFormValues } from '../../api'
 import { features } from '../../util/feature-toggle'
-import { Cell, HeadCell, Row, SmallCell, SmallHeadCell, Table } from './Table'
+import { Cell, HeadCell, Row, Table } from './Table'
 
 type TableDisclosureProps = {
   list: Array<Disclosure>;
@@ -50,7 +50,7 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
             <HeadCell title={intl.description} column={'description'} tableState={[table, sortColumn]}/>
             <HeadCell title={intl.legalBasisShort} column={'legalBases'} tableState={[table, sortColumn]}/>
 
-            {editable && <SmallHeadCell/>}
+            {editable && <HeadCell small/>}
           </>
         }
       >
@@ -76,7 +76,7 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
               )}
             </Cell>
             {editable && (
-              <SmallCell>
+              <Cell small>
                 <Block width="100%" display="flex" justifyContent="flex-end">
                   <StatefulTooltip content={intl.edit} placement={PLACEMENT.top}>
                     <Button
@@ -105,7 +105,7 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
                   </StatefulTooltip>
                 </Block>
 
-              </SmallCell>
+              </Cell>
             )}
 
           </Row>

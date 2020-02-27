@@ -96,7 +96,7 @@ export const InformationTypeBannerButtons = (props: { id: string }) => {
     <>
       <Block alignSelf="center" display="flex">
 
-        <AuditButton id={props.id}/>
+        <AuditButton id={props.id} marginRight/>
 
         <RouteLink href={`/informationtype/edit/${props.id}`} className={link}>
           <Button size="compact" kind="outline" tooltip={intl.edit} icon={faEdit} marginRight>

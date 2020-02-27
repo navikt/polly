@@ -20,9 +20,11 @@ type TableProps = {
 }
 
 type HeadProps<K extends keyof T, T> = {
-  title: string,
+  title?: string,
   column?: K,
   tableState?: TableState<T, K>
+  $style?: StyleObject
+  small?: boolean
 }
 
 type RowProps = {
@@ -30,6 +32,7 @@ type RowProps = {
   selectedRow?: boolean,
   infoRow?: boolean,
   children?: any
+  $style?: StyleObject
 }
 
 const headerCellOverride = {
@@ -83,7 +86,9 @@ export const Table = (props: TableProps) => {
 export const Row = (props: RowProps) => {
   const tableProps = useContext(TableContext)
   const styleProps: StyleObject = {
-    borderBottom: `1px solid ${theme.colors.mono600}`,
+    borderBottomWidth: '1px',
+    borderBottomStyle: 'solid',
+    borderBottomColor: theme.colors.mono600,
     opacity: props.inactiveRow ? '.5' : undefined,
     backgroundColor: props.infoRow ? theme.colors.primary50 : undefined,
     borderLeftColor: theme.colors.primary200,
@@ -91,7 +96,8 @@ export const Row = (props: RowProps) => {
     borderLeftStyle: 'solid',
     ':hover': {
       backgroundColor: tableProps.hoverColor || (props.infoRow ? theme.colors.mono100 : theme.colors.primary50)
-    }
+    },
+    ...props.$style
   }
   const StyleRow = withStyle(StyledRow, styleProps)
   return <StyleRow>{props.children}</StyleRow>
@@ -111,39 +117,51 @@ const SortDirectionIcon = (props: { direction: SORT_DIRECTION | null }) => {
 const PlainHeadCell = withStyle(StyledHeadCell, headerCellOverride.HeadCell.style)
 
 export const HeadCell = <T, K extends keyof T>(props: HeadProps<K, T>) => {
-  if (!props.tableState || !props.column) {
-    return <PlainHeadCell>{props.title}</PlainHeadCell>
+  const {title, tableState, column, small} = props
+
+  const widthStyle = small ? {maxWidth: '15%'} : {}
+  const styleOvveride = {...widthStyle, ...props.$style}
+  if (!tableState || !column) {
+    return (
+      <PlainHeadCell style={styleOvveride}>
+        {title}
+      </PlainHeadCell>
+    )
   }
 
-  const [table, sortColumn] = props.tableState
+  const [table, sortColumn] = tableState
 
   return (
     <SortableHeadCell
       overrides={{
-        ...headerCellOverride,
         SortableLabel: {
           component: () => <span>
-            <SortDirectionIcon direction={table.direction[props.column!]}/>
+            <SortDirectionIcon direction={table.direction[column!]}/>
             <Block marginRight={theme.sizing.scale200} display='inline'/>
-            {props.title}
+            {title}
           </span>
-        }
-
+        },
+        HeadCell: {style: {...headerCellOverride.HeadCell.style, ...styleOvveride}}
       }}
-      title={props.title}
-      direction={table.direction[props.column]}
-      onSort={() => sortColumn(props.column!)}
+      title={title || ''}
+      direction={table.direction[column]}
+      onSort={() => sortColumn(column!)}
       fillClickTarget
     />
   )
 }
 
-export const SmallHeadCell = withStyle(StyledHeadCell, {
-  maxWidth: '15%'
-})
-
-export const Cell = StyledCell
-
-export const SmallCell = withStyle(StyledCell, {
-  maxWidth: '15%'
-})
+export const Cell = (props: {
+  small?: boolean,
+  $style?: StyleObject,
+  children?: ReactNode
+}) => {
+  const widthStyle = props.small ? {maxWidth: '15%'} : {}
+  return (
+    <StyledCell style={
+      {...props.$style, ...widthStyle}
+    }>
+      {props.children}
+    </StyledCell>
+  )
+}
