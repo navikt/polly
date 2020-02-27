@@ -206,7 +206,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
                                 <ModalLabel label={intl.documents}/>
                                 <FieldArray name="documentIds"
                                             render={arrayHelpers => (
-                                              <span>{renderTagList(formikBag.values.documentIds.map(id => docs[id].name), arrayHelpers)}</span>
+                                              <Block width='100%'>{renderTagList(formikBag.values.documentIds.map(id => docs[id].name), arrayHelpers)}</Block>
                                             )}/>
                               </Block>
                               }
