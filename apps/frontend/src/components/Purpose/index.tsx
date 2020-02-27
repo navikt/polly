@@ -19,9 +19,9 @@ import {
   deleteProcess,
   getCodelistUsage,
   getProcess,
+  getProcessesForTeam,
   updatePolicy,
-  updateProcess,
-  getProcessesForTeam
+  updateProcess
 } from '../../api'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faList } from '@fortawesome/free-solid-svg-icons'
@@ -64,7 +64,7 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
       } else {
         list = (await getCodelistUsage(listName as ListName, code)).processes
       }
-      
+
       setProcessList(sortProcess(list))
     } catch (err) {
       console.log(err)
@@ -193,59 +193,55 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
   }, [code])
 
   return (
-    <React.Fragment>
-      <React.Fragment>
-        <Block {...rowBlockProps}>
-          <Label1 font="font400">
-            <FontAwesomeIcon icon={faList} style={{marginRight: '.5rem'}}/>
-            {intl.processes}
-          </Label1>
-          {hasAccess() && (
-            <React.Fragment>
-              <Button
-                size={ButtonSize.compact}
-                kind={KIND.minimal}
-                onClick={() => setShowCreateProcessModal(true)}
-                startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
-              >
-                {intl.processingActivitiesNew}
-              </Button>
-            </React.Fragment>
-          )}
-        </Block>
-        {isLoadingProcessList && <StyledSpinnerNext size={theme.sizing.scale2400}/>}
+    <>
+      <Block {...rowBlockProps}>
+        <Label1 font="font400">
+          <FontAwesomeIcon icon={faList} style={{marginRight: '.5rem'}}/>
+          {intl.processes}
+        </Label1>
+        {hasAccess() && listName === ListName.PURPOSE && (
+          <Button
+            size={ButtonSize.compact}
+            kind={KIND.minimal}
+            onClick={() => setShowCreateProcessModal(true)}
+            startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
+          >
+            {intl.processingActivitiesNew}
+          </Button>
+        )}
+      </Block>
+      {isLoadingProcessList && <StyledSpinnerNext size={theme.sizing.scale2400}/>}
 
-        {!isLoadingProcessList &&
-        <AccordionProcess
-          isLoading={isLoadingProcess}
-          code={code}
-          processList={processList}
-          setProcessList={setProcessList}
-          currentProcess={currentProcess}
-          onChangeProcess={getProcessById}
-          submitDeleteProcess={handleDeleteProcess}
-          submitEditProcess={handleEditProcess}
-          submitCreatePolicy={handleCreatePolicy}
-          submitEditPolicy={handleEditPolicy}
-          submitDeletePolicy={handleDeletePolicy}
-          submitAddDocument={handleAddDocument}
-          errorProcessModal={errorProcessModal}
-          errorPolicyModal={errorPolicyModal}
-          errorDocumentModal={errorDocumentModal}
-        />
-        }
+      {!isLoadingProcessList &&
+      <AccordionProcess
+        isLoading={isLoadingProcess}
+        code={code}
+        processList={processList}
+        setProcessList={setProcessList}
+        currentProcess={currentProcess}
+        onChangeProcess={getProcessById}
+        submitDeleteProcess={handleDeleteProcess}
+        submitEditProcess={handleEditProcess}
+        submitCreatePolicy={handleCreatePolicy}
+        submitEditPolicy={handleEditPolicy}
+        submitDeletePolicy={handleDeletePolicy}
+        submitAddDocument={handleAddDocument}
+        errorProcessModal={errorProcessModal}
+        errorPolicyModal={errorPolicyModal}
+        errorDocumentModal={errorDocumentModal}
+      />
+      }
 
-        <ModalProcess
-          title={intl.processingActivitiesNew}
-          onClose={() => setShowCreateProcessModal(false)}
-          isOpen={showCreateProcessModal}
-          submit={(values: ProcessFormValues) => handleCreateProcess(values)}
-          errorOnCreate={errorProcessModal}
-          isEdit={false}
-          initialValues={convertProcessToFormValues({purposeCode: code})}
-        />
-      </React.Fragment>
-    </React.Fragment>
+      <ModalProcess
+        title={intl.processingActivitiesNew}
+        onClose={() => setShowCreateProcessModal(false)}
+        isOpen={showCreateProcessModal}
+        submit={(values: ProcessFormValues) => handleCreateProcess(values)}
+        errorOnCreate={errorProcessModal}
+        isEdit={false}
+        initialValues={convertProcessToFormValues({purposeCode: code})}
+      />
+    </>
   )
 }
 
