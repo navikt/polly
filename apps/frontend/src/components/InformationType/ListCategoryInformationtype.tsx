@@ -92,7 +92,7 @@ const InformationTypeAccordion = ({categoryUsages}: InformationTypeAccordionProp
     };
 
     return (
-        <Block width="800px" marginTop="50px">
+        <Block width="800px">
             <HeadingLevel>
                 <Heading styleLevel={5} paddingLeft="20px">{intl.categories}</Heading>
             </HeadingLevel>
