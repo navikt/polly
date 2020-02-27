@@ -164,7 +164,7 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
 
   return (
     <Block>
-      <Block display='flex' width='600px' position='relative' $style={{zIndex: 1}}>
+      <Block display='flex' width='600px' position='relative' $style={{zIndex: 1}} alignItems='center'>
         <Select
           autoFocus={props.match.path === '/'}
           isLoading={loading}
@@ -189,11 +189,17 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
                 left: theme.sizing.scale400,
                 top: theme.sizing.scale400
               }
+            },
+            ControlContainer: {
+              style: {
+                ...(filter ? {borderBottomLeftRadius: 0} : {})
+              }
             }
           }
           }
         />
-        <Button onClick={() => setFilter(!filter)} icon={faFilter} size='mini' kind='tertiary' marginLeft/>
+        <Button onClick={() => setFilter(!filter)} icon={faFilter} size='compact' kind={filter ? 'primary' : 'tertiary'} marginLeft
+                $style={{height: theme.sizing.scale1000, width: theme.sizing.scale1000}}/>
       </Block>
       {filter && <SelectType type={type} setType={setType}/>}
     </Block>
