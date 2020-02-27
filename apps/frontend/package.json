@@ -38,6 +38,7 @@
         "start": "react-scripts start",
         "build": "react-scripts build"
     },
+    "proxy": "http://localhost:8080",
     "eslintConfig": {
         "extends": "react-app",
         "rules": {
