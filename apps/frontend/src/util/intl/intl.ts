@@ -30,6 +30,7 @@ export interface IStrings {
   productTeam: string;
   product: string;
   products: string;
+  team: string;
   system: string;
   disclosure: string;
   disclosures: string;
@@ -192,6 +193,7 @@ export interface IStrings {
 
   // generic
   department: string;
+  subDepartmentShort: string;
   organizing: string;
   subDepartment: string;
   save: string;

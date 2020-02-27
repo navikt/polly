@@ -1,22 +1,22 @@
-import * as React from 'react';
-import { ALIGN, HeaderNavigation, StyledNavigationItem as NavigationItem, StyledNavigationList as NavigationList, } from 'baseui/header-navigation';
-import { Button } from 'baseui/button';
-import { Block, BlockProps } from 'baseui/block';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { env } from '../util/env';
-import { intl, theme, useAwait } from '../util';
-import { user } from '../service/User';
-import { StyledLink } from 'baseui/link';
-import { StatefulPopover } from 'baseui/popover';
-import { Label2 } from 'baseui/typography';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
-import { OptionProfile, StatefulMenu } from 'baseui/menu';
-import { Lang, langs, langsArray } from '../util/intl/intl';
-import { TriangleDown } from 'baseui/icon';
-import { FlagIcon } from "./common/Flag"
-import { paddingAll } from "./common/Style"
-import MainSearch from "./MainSearch"
+import * as React from 'react'
+import { ALIGN, HeaderNavigation, StyledNavigationItem as NavigationItem, StyledNavigationList as NavigationList, } from 'baseui/header-navigation'
+import { Button } from 'baseui/button'
+import { Block, BlockProps } from 'baseui/block'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
+import { env } from '../util/env'
+import { intl, theme, useAwait } from '../util'
+import { user } from '../service/User'
+import { StyledLink } from 'baseui/link'
+import { StatefulPopover } from 'baseui/popover'
+import { Label2 } from 'baseui/typography'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUser } from '@fortawesome/free-solid-svg-icons'
+import { OptionProfile, StatefulMenu } from 'baseui/menu'
+import { Lang, langs, langsArray } from '../util/intl/intl'
+import { TriangleDown } from 'baseui/icon'
+import { FlagIcon } from './common/Flag'
+import { paddingAll } from './common/Style'
+import MainSearch from './MainSearch'
 
 
 const LoggedInHeader = () => {
@@ -101,14 +101,14 @@ const LangDropdown = (props: { setLang: (lang: string) => void }) => {
         <FlagWithName langCode={intl.getLanguage()}/>
       </Button>
     </StatefulPopover>
-  );
+  )
 }
 
 const AdminOptionsImpl = (props: RouteComponentProps<any>) => {
   const pages = [
-    {label: intl.manageCodeListTitle, href: "/admin/codelist"},
-    {label: intl.audit, href: "/admin/audit"},
-    {label: intl.settings, href: "/admin/settings"}
+    {label: intl.manageCodeListTitle, href: '/admin/codelist'},
+    {label: intl.audit, href: '/admin/audit'},
+    {label: intl.settings, href: '/admin/settings'}
   ]
   return (
     <StatefulPopover
@@ -139,12 +139,10 @@ export default (props: TempHeaderProps) => {
 
   return (
     <Block marginLeft="240px">
-      <HeaderNavigation>
+      <HeaderNavigation overrides={{Root: {style: {paddingBottom: 0}}}}>
         <NavigationList $align={ALIGN.left}>
           <NavigationItem>
-            <Block width="450px">
-              <MainSearch/>
-            </Block>
+            <MainSearch/>
           </NavigationItem>
         </NavigationList>
 
@@ -180,5 +178,5 @@ export default (props: TempHeaderProps) => {
 
       </HeaderNavigation>
     </Block>
-  );
+  )
 }
