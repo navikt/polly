@@ -16,7 +16,7 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br>
 You will also see any lint errors in the console.
 
-Make a `.env.local` file first, to direct backend traffic etc. 
+Make a `.env.local` file first, to direct backend traffic etc. Use `.env.master` as base, use portforward or locally running backend.
 
 ### `npm test`
 
