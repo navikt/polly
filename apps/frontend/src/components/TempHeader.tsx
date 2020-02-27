@@ -115,9 +115,10 @@ const AdminOptionsImpl = (props: RouteComponentProps<any>) => {
       content={({close}) =>
         <StatefulMenu
           items={pages}
-          onItemSelect={({item}) => {
+          onItemSelect={select => {
+            select.event?.preventDefault()
             close()
-            props.history.push(item.href)
+            props.history.push(select.item.href)
           }}
         />
       }>
