@@ -1,10 +1,9 @@
 import * as React from 'react';
-import {FlexGrid, FlexGridItem} from 'baseui/flex-grid';
-import {BlockProps, Block} from 'baseui/block';
-import {LightTheme} from 'baseui';
+import { FlexGrid, FlexGridItem } from 'baseui/flex-grid';
+import { Block } from 'baseui/block';
+import { LightTheme } from 'baseui';
 import SideBar from './SideBar';
 import Routes from "../routes";
-import Header from './Header';
 
 const narrowItemProps = {
   overrides: {
