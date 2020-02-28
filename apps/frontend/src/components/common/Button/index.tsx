@@ -17,7 +17,7 @@ interface ButtonProps {
   icon?: IconDefinition
   inline?: boolean
   tooltip?: string
-  children: ReactNode
+  children?: ReactNode
   onClick?: () => void
   startEnhancer?: ReactNode
   disabled?: boolean
@@ -70,7 +70,7 @@ const Button = (props: ButtonProps) => {
         <BaseUIButton kind={baseuiKind} size={props.size} shape={props.shape} onClick={() => props.onClick?.()} overrides={{BaseButton: overrides}}
                       startEnhancer={props.startEnhancer} disabled={props.disabled}
         >
-          {props.icon && <FontAwesomeIcon icon={props.icon} style={{marginRight: '.5rem'}}/>} {props.children}
+          {props.icon && <FontAwesomeIcon icon={props.icon} style={{marginRight: props.children ? '.5rem' : undefined}}/>} {props.children}
         </BaseUIButton>
       </Tooltip>
       <Block display='inline' marginRight={props.marginRight ? theme.sizing.scale400 : 0}/>

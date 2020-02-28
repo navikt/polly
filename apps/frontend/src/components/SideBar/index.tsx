@@ -4,7 +4,7 @@ import { Block, BlockProps } from 'baseui/block'
 import { H6, Paragraph4 } from 'baseui/typography'
 import { features } from '../../util/feature-toggle'
 import NavLogo from '../../resources/navlogo.svg'
-import Slackogo from '../../resources/Slack_Monochrome_White.svg'
+import SlackLogo from '../../resources/Slack_Monochrome_White.svg'
 import { StyledLink } from 'baseui/link'
 import NavItem from './NavItem'
 
@@ -47,7 +47,7 @@ const SideBar = () => {
         </Block>
         <a href="slack://channel?team=T5LNAMWNA&id=CR1B19E6L" style={{textDecoration: 'none'}}>
           <Block display="flex" justifyContent="center" paddingBottom={theme.sizing.scale400} alignItems="center">
-            <img src={Slackogo} width="60px" alt="slack logo"/>
+            <img src={SlackLogo} width="60px" alt="slack logo"/>
             <Paragraph4 color={theme.colors.white}>#behandlingskatalogen</Paragraph4>
           </Block>
         </a>

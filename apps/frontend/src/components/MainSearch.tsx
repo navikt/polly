@@ -10,7 +10,9 @@ import { Select, TYPE } from 'baseui/select'
 import { urlForObject } from './common/RouteLink'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { Radio, RadioGroup } from 'baseui/radio'
-import { paddingZero } from './common/Style'
+import { padding, paddingZero } from './common/Style'
+import Button from './common/Button'
+import { faFilter } from '@fortawesome/free-solid-svg-icons'
 
 type SearchItem = { id: string, sortKey: string, label: ReactElement, type: NavigableItem }
 type SearchType = 'all' | 'purpose' | 'process' | 'team' | 'department' | 'subDepartment' | 'informationType'
@@ -91,23 +93,33 @@ const useMainSearch = () => {
   return [setSearch, searchResult, loading, type, setType] as [(text: string) => void, SearchItem[], boolean, SearchType, (type: SearchType) => void]
 }
 
+type RadioProps = {
+  $isHovered: boolean
+  $checked: boolean
+}
+
 const smallRadio = (value: SearchType, text: string) => {
   return (
     <Radio value={value}
            overrides={{
              Label: {
-               style: {...paddingZero}
+               style: (a: RadioProps) => ({
+                 ...paddingZero,
+                 ...(a.$isHovered ? {color: theme.colors.positive400} : {})
+               })
              },
              RadioMarkOuter: {
-               style: {
+               style: (a: RadioProps) => ({
                  width: theme.sizing.scale500,
                  height: theme.sizing.scale500,
-               }
+                 ...(a.$isHovered ? {backgroundColor: theme.colors.positive400} : {})
+               })
              },
              RadioMarkInner: {
-               style: (a: { $checked: boolean }) => ({
+               style: (a: RadioProps) => ({
                  width: a.$checked ? theme.sizing.scale100 : theme.sizing.scale300,
                  height: a.$checked ? theme.sizing.scale100 : theme.sizing.scale300,
+                 // backgroundColor: theme.colors.mono200
                })
              }
            }}
@@ -117,43 +129,23 @@ const smallRadio = (value: SearchType, text: string) => {
   )
 }
 
-export const MainSearchImpl = (props: RouteComponentProps) => {
-  const [setSearch, searchResult, loading, type, setType] = useMainSearch()
-
-  return <Block>
-    <Select
-      autoFocus={props.match.path === '/'}
-      isLoading={loading}
-      maxDropdownHeight="400px"
-      searchable={true}
-      type={TYPE.search}
-      options={searchResult}
-      placeholder={intl.search}
-      onInputChange={event => setSearch(event.currentTarget.value)}
-      onChange={(params) => {
-        const item = params.value[0] as SearchItem;
-        (async () => {
-          props.history.push(await urlForObject(item.type, item.id))
-        })()
-      }}
-      filterOptions={options => options}
-      overrides={{
-        SearchIcon: {
-          style: {
-            width: theme.sizing.scale900,
-            height: theme.sizing.scale900,
-            left: theme.sizing.scale400,
-            top: theme.sizing.scale400
-          }
-        }
-      }
-      }
-    />
-    <Block font='ParagraphSmall'>
+const SelectType = (props: { type: SearchType, setType: (type: SearchType) => void }) =>
+  <Block
+    font='ParagraphSmall'
+    position='absolute'
+    marginTop='-4px'
+    backgroundColor={theme.colors.primary50}
+    $style={{
+      ...padding('0', theme.sizing.scale200),
+      zIndex: 0,
+      borderBottomLeftRadius: '10px',
+      borderBottomRightRadius: '10px'
+    }}>
+    <Block>
       <RadioGroup
-        onChange={e => setType(e.target.value as SearchType)}
+        onChange={e => props.setType(e.target.value as SearchType)}
         align='horizontal'
-        value={type}
+        value={props.type}
       >
         {smallRadio('all', intl.all)}
         {smallRadio('informationType', intl.informationType)}
@@ -165,6 +157,53 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
       </RadioGroup>
     </Block>
   </Block>
+
+export const MainSearchImpl = (props: RouteComponentProps) => {
+  const [setSearch, searchResult, loading, type, setType] = useMainSearch()
+  const [filter, setFilter] = useState(false)
+
+  return (
+    <Block>
+      <Block display='flex' width='600px' position='relative' $style={{zIndex: 1}} alignItems='center'>
+        <Select
+          autoFocus={props.match.path === '/'}
+          isLoading={loading}
+          maxDropdownHeight="400px"
+          searchable={true}
+          type={TYPE.search}
+          options={searchResult}
+          placeholder={intl.search}
+          onInputChange={event => setSearch(event.currentTarget.value)}
+          onChange={(params) => {
+            const item = params.value[0] as SearchItem;
+            (async () => {
+              props.history.push(await urlForObject(item.type, item.id))
+            })()
+          }}
+          filterOptions={options => options}
+          overrides={{
+            SearchIcon: {
+              style: {
+                width: theme.sizing.scale900,
+                height: theme.sizing.scale900,
+                left: theme.sizing.scale400,
+                top: theme.sizing.scale400
+              }
+            },
+            ControlContainer: {
+              style: {
+                ...(filter ? {borderBottomLeftRadius: 0} : {})
+              }
+            }
+          }
+          }
+        />
+        <Button onClick={() => setFilter(!filter)} icon={faFilter} size='compact' kind={filter ? 'primary' : 'tertiary'} marginLeft
+                $style={{height: theme.sizing.scale1000, width: theme.sizing.scale1000}}/>
+      </Block>
+      {filter && <SelectType type={type} setType={setType}/>}
+    </Block>
+  )
 }
 
 export default withRouter(MainSearchImpl)
