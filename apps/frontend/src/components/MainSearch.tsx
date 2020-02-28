@@ -10,7 +10,7 @@ import { Select, TYPE } from 'baseui/select'
 import { urlForObject } from './common/RouteLink'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { Radio, RadioGroup } from 'baseui/radio'
-import { padding, paddingZero } from './common/Style'
+import { paddingZero } from './common/Style'
 import Button from './common/Button'
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
 
@@ -102,10 +102,15 @@ const smallRadio = (value: SearchType, text: string) => {
   return (
     <Radio value={value}
            overrides={{
+             Root: {
+               style: {
+                 marginBottom: 0
+               }
+             },
              Label: {
                style: (a: RadioProps) => ({
                  ...paddingZero,
-                 ...(a.$isHovered ? {color: theme.colors.positive400} : {})
+                 ...(a.$isHovered ? {color: theme.colors.positive400} : {}),
                })
              },
              RadioMarkOuter: {
@@ -119,7 +124,6 @@ const smallRadio = (value: SearchType, text: string) => {
                style: (a: RadioProps) => ({
                  width: a.$checked ? theme.sizing.scale100 : theme.sizing.scale300,
                  height: a.$checked ? theme.sizing.scale100 : theme.sizing.scale300,
-                 // backgroundColor: theme.colors.mono200
                })
              }
            }}
@@ -135,17 +139,22 @@ const SelectType = (props: { type: SearchType, setType: (type: SearchType) => vo
     position='absolute'
     marginTop='-4px'
     backgroundColor={theme.colors.primary50}
+    width='600px'
     $style={{
-      ...padding('0', theme.sizing.scale200),
       zIndex: 0,
-      borderBottomLeftRadius: '10px',
-      borderBottomRightRadius: '10px'
+      borderBottomLeftRadius: '8px',
+      borderBottomRightRadius: '8px'
     }}>
-    <Block>
+    <Block
+      marginLeft='3px'
+      marginRight='3px'
+      marginBottom='3px'
+    >
       <RadioGroup
         onChange={e => props.setType(e.target.value as SearchType)}
         align='horizontal'
         value={props.type}
+
       >
         {smallRadio('all', intl.all)}
         {smallRadio('informationType', intl.informationType)}
@@ -160,11 +169,14 @@ const SelectType = (props: { type: SearchType, setType: (type: SearchType) => vo
 
 export const MainSearchImpl = (props: RouteComponentProps) => {
   const [setSearch, searchResult, loading, type, setType] = useMainSearch()
-  const [filter, setFilter] = useState(false)
+  const [filter, setFilter] = useState(true)
 
   return (
     <Block>
-      <Block display='flex' width='600px' position='relative' $style={{zIndex: 1}} alignItems='center'>
+      <Block display='flex'
+             position='relative'
+             $style={{zIndex: 1}}
+             alignItems='center'>
         <Select
           autoFocus={props.match.path === '/'}
           isLoading={loading}
@@ -192,7 +204,13 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
             },
             ControlContainer: {
               style: {
-                ...(filter ? {borderBottomLeftRadius: 0} : {})
+                borderBottomLeftRadius: 0,
+                borderBottomRightRadius: 0
+              }
+            },
+            Root: {
+              style: {
+                width: '600px',
               }
             }
           }
