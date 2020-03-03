@@ -1,6 +1,7 @@
 package no.nav.data.polly.common.security.dto;
 
 import lombok.Value;
+import no.nav.data.polly.common.security.domain.Auth;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -10,10 +11,23 @@ import java.util.Optional;
 public class Credential {
 
     private String accessToken;
-    private String refreshToken;
+    private Auth auth;
 
-    public boolean hasRefreshToken() {
-        return refreshToken != null;
+    public Credential(String accessToken, Auth auth) {
+        this.accessToken = accessToken;
+        this.auth = auth;
+    }
+
+    public Credential(String accessToken) {
+        this(accessToken, null);
+    }
+
+    public Credential(Auth auth) {
+        this(null, auth);
+    }
+
+    public boolean hasAuth() {
+        return auth != null;
     }
 
     public static Optional<Credential> getCredential() {

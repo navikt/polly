@@ -26,10 +26,9 @@ public class SecurityConfig {
 
     @Bean
     public AADStatelessAuthenticationFilter aadStatelessAuthenticationFilter(ResourceRetriever resourceRetriever, AADAuthenticationProperties aadAuthProps,
-            ServiceEndpointsProperties serviceEndpointsProps, AzureTokenProvider azureTokenProvider, AppIdMapping appIdMapping,
-            Encryptor refreshTokenEncryptor) {
+            ServiceEndpointsProperties serviceEndpointsProps, AzureTokenProvider azureTokenProvider, AppIdMapping appIdMapping) {
         var userPrincipalManager = new UserPrincipalManager(serviceEndpointsProps, aadAuthProps, resourceRetriever, true);
-        return new AADStatelessAuthenticationFilter(refreshTokenEncryptor, userPrincipalManager, azureTokenProvider, appIdMapping);
+        return new AADStatelessAuthenticationFilter(userPrincipalManager, azureTokenProvider, appIdMapping);
     }
 
     @Bean
@@ -59,7 +58,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public Encryptor refreshTokenEncryptor(SecurityProperties securityProperties) {
+    public Encryptor encryptor(SecurityProperties securityProperties) {
         return new Encryptor(securityProperties.getEncKey());
     }
 

@@ -7,8 +7,10 @@ import org.springframework.util.Assert;
 
 public class Encryptor {
 
+    private static final int SALT_LENGTH = 16;
+
     private final String key;
-    private StringKeyGenerator saltGenerator = KeyGenerators.string();
+    private final StringKeyGenerator saltGenerator = KeyGenerators.string();
 
     public Encryptor(String key) {
         this.key = key;
@@ -20,7 +22,15 @@ public class Encryptor {
     }
 
     public String decrypt(String encryptedText) {
-        Assert.isTrue(encryptedText != null && encryptedText.length() > 16, "invalid encryptionText");
-        return Encryptors.text(key, encryptedText.substring(0, 16)).decrypt(encryptedText.substring(16));
+        Assert.isTrue(encryptedText != null && encryptedText.length() > SALT_LENGTH, "invalid encryptionText");
+        return Encryptors.text(key, getSalt(encryptedText)).decrypt(getCipher(encryptedText));
+    }
+
+    public String getSalt(String encryptedText) {
+        return encryptedText.substring(0, SALT_LENGTH);
+    }
+
+    String getCipher(String encryptedText) {
+        return encryptedText.substring(SALT_LENGTH);
     }
 }

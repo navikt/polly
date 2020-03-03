@@ -1,7 +1,6 @@
 package no.nav.data.polly.common.security;
 
 
-import com.microsoft.aad.adal4j.AuthenticationResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -31,7 +30,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.time.Duration;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -106,9 +104,8 @@ public class AuthController {
             throw new PollyTechnicalException("invalid state", e);
         }
         if (StringUtils.hasText(code)) {
-            var refreshToken = azureTokenProvider.acquireTokenForAuthCode(code, fullRequestUrlWithoutQuery(request));
-            log.debug("Refreshtoken fetched for {}", refreshToken.getUserInfo().getUniqueId());
-            response.addCookie(createTokenCookie(refreshToken, request));
+            var session = azureTokenProvider.createSession(code, fullRequestUrlWithoutQuery(request));
+            response.addCookie(AADStatelessAuthenticationFilter.createCookie(session, (int) Duration.ofDays(14).toSeconds(), request));
             redirectStrategy.sendRedirect(request, response, state.getRedirectUri());
         } else {
             String errorRedirect = state.errorRedirect(error, errorDesc);
@@ -129,6 +126,7 @@ public class AuthController {
     ) throws IOException {
         log.debug("Request to logout");
         Assert.isTrue(securityProperties.isValidRedirectUri(redirectUri), "Illegal redirect_uri " + redirectUri);
+        azureTokenProvider.destorySession();
         response.addCookie(AADStatelessAuthenticationFilter.createCookie(null, 0, request));
         if (redirectUri != null) {
             redirectStrategy.sendRedirect(request, response, new OAuthState(redirectUri).getRedirectUri());
@@ -155,11 +153,6 @@ public class AuthController {
         return OAuth2AuthorizationRequest.from(resolver.resolve(request, REGISTRATION_ID))
                 .state(new OAuthState(redirectUri, errorUri).toJson(encryptor))
                 .build().getAuthorizationRequestUri();
-    }
-
-    private Cookie createTokenCookie(AuthenticationResult refreshToken, HttpServletRequest request) {
-        String encryptedToken = encryptor.encrypt(refreshToken.getRefreshToken());
-        return AADStatelessAuthenticationFilter.createCookie(encryptedToken, (int) Duration.ofDays(14).toSeconds(), request);
     }
 
     private String fullRequestUrlWithoutQuery(HttpServletRequest request) {

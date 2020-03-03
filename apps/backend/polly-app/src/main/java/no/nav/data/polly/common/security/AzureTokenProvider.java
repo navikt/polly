@@ -14,6 +14,7 @@ import com.microsoft.azure.spring.autoconfigure.aad.ServiceEndpointsProperties;
 import com.microsoft.azure.spring.autoconfigure.aad.UserGroup;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.exceptions.PollyTechnicalException;
+import no.nav.data.polly.common.security.domain.Auth;
 import no.nav.data.polly.common.security.dto.Credential;
 import no.nav.data.polly.common.security.dto.PollyRole;
 import no.nav.data.polly.common.utils.MetricUtils;
@@ -21,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.net.URI;
 import java.time.Duration;
@@ -38,22 +40,26 @@ import static no.nav.data.polly.common.utils.StreamUtils.convert;
 public class AzureTokenProvider {
 
     private static final String TOKEN_TYPE = "Bearer ";
+    private static final int SESS_ID_LEN = 32;
 
     private final Cache<String, AuthenticationResult> accessTokenCache;
     private final LoadingCache<String, Set<GrantedAuthority>> grantedAuthorityCache;
 
     private final AuthenticationContext authenticationContext;
     private final AzureADGraphClient graphClient;
+    private final AuthService authService;
 
     private final ServiceEndpoints serviceEndpoints;
     private final AADAuthenticationProperties aadAuthProps;
     private final ClientCredential azureCredential;
     private final SecurityProperties securityProperties;
 
-    public AzureTokenProvider(AADAuthenticationProperties aadAuthProps, AuthenticationContext authenticationContext, ServiceEndpointsProperties serviceEndpointsProperties,
+    public AzureTokenProvider(AADAuthenticationProperties aadAuthProps, AuthenticationContext authenticationContext, AuthService authService,
+            ServiceEndpointsProperties serviceEndpointsProperties,
             SecurityProperties securityProperties) {
         this.azureCredential = new ClientCredential(aadAuthProps.getClientId(), aadAuthProps.getClientSecret());
         this.aadAuthProps = aadAuthProps;
+        this.authService = authService;
         this.securityProperties = securityProperties;
         this.serviceEndpoints = serviceEndpointsProperties.getServiceEndpoints(aadAuthProps.getEnvironment());
 
@@ -79,23 +85,34 @@ public class AzureTokenProvider {
             return StringUtils.EMPTY;
         }
         return Credential.getCredential()
-                .filter(Credential::hasRefreshToken)
-                .map(cred -> TOKEN_TYPE + getAccessTokenForResource(cred.getRefreshToken(), resource))
+                .filter(Credential::hasAuth)
+                .map(cred -> TOKEN_TYPE + getAccessTokenForResource(cred.getAuth().descryptRefreshToken(), resource))
                 .orElseGet(() -> TOKEN_TYPE + getApplicationTokenForResource(appIdUri));
     }
 
-    public String getAccessToken(String refreshToken) {
-        return getAccessTokenForResource(refreshToken, aadAuthProps.getClientId());
+    public Auth getAuth(String session) {
+        Assert.isTrue(session.length() > SESS_ID_LEN, "invalid session");
+        var sessionId = session.substring(0, SESS_ID_LEN);
+        var sessionKey = session.substring(SESS_ID_LEN);
+        var auth = authService.getAuth(sessionId, sessionKey);
+        String accessToken = getAccessTokenForResource(auth.descryptRefreshToken(), aadAuthProps.getClientId());
+        auth.addAccessToken(accessToken);
+        return auth;
     }
 
-    public Set<GrantedAuthority> getGrantedAuthorities(String token) {
-        return grantedAuthorityCache.get(token);
+    public void destorySession() {
+        Credential.getCredential().map(Credential::getAuth).ifPresent(authService::deleteAuth);
     }
 
-    public AuthenticationResult acquireTokenForAuthCode(String code, String redirectUri) {
+    public Set<GrantedAuthority> getGrantedAuthorities(String accessToken) {
+        return grantedAuthorityCache.get(accessToken);
+    }
+
+    public String createSession(String code, String redirectUri) {
         try {
             log.debug("Looking up token for auth code");
-            return authenticationContext.acquireTokenByAuthorizationCode(code, new URI(redirectUri), azureCredential, aadAuthProps.getClientId(), null).get();
+            var authResult = authenticationContext.acquireTokenByAuthorizationCode(code, new URI(redirectUri), azureCredential, aadAuthProps.getClientId(), null).get();
+            return authService.createAuth(authResult.getUserInfo().getUniqueId(), authResult.getRefreshToken());
         } catch (Exception e) {
             throw new PollyTechnicalException("Failed to get token for auth code", e);
         }

@@ -8,6 +8,7 @@ import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jwt.proc.BadJWTException;
 import io.prometheus.client.Counter;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.common.security.domain.Auth;
 import no.nav.data.polly.common.security.dto.Credential;
 import no.nav.data.polly.common.security.dto.UserInfo;
 import no.nav.data.polly.common.utils.MetricUtils;
@@ -35,19 +36,17 @@ import static org.springframework.util.StringUtils.hasText;
 @Slf4j
 public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthenticationFilter {
 
-    private static final String POLLY_TOKEN_COOKIE_NAME = "polly-token";
+    private static final String POLLY_COOKIE_NAME = "session";
     private static final String TOKEN_TYPE = "Bearer ";
 
-    private final Encryptor refreshTokenEncryptor;
     private final UserPrincipalManager principalManager;
     private final AzureTokenProvider azureTokenProvider;
     private final List<String> allowedAppIds;
     private final Counter counter;
 
-    public AADStatelessAuthenticationFilter(Encryptor refreshTokenEncryptor, UserPrincipalManager userPrincipalManager,
+    public AADStatelessAuthenticationFilter(UserPrincipalManager userPrincipalManager,
             AzureTokenProvider azureTokenProvider, AppIdMapping appIdMapping) {
         super(null);
-        this.refreshTokenEncryptor = refreshTokenEncryptor;
         this.principalManager = userPrincipalManager;
         this.azureTokenProvider = azureTokenProvider;
         this.allowedAppIds = List.copyOf(appIdMapping.getIds());
@@ -104,14 +103,14 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
     private Credential getCredential(HttpServletRequest request, HttpServletResponse response) {
         if (request.getCookies() != null) {
             Optional<Cookie> cookie = Stream.of(request.getCookies())
-                    .filter(c -> c.getName().equals(POLLY_TOKEN_COOKIE_NAME))
+                    .filter(c -> c.getName().equals(POLLY_COOKIE_NAME))
                     .findFirst();
             if (cookie.isPresent()) {
                 try {
-                    String token = refreshTokenEncryptor.decrypt(cookie.get().getValue());
-                    String accessToken = azureTokenProvider.getAccessToken(token);
-                    counter.labels("refresh_cookie").inc();
-                    return new Credential(accessToken, token);
+                    String session = cookie.get().getValue();
+                    Auth auth = azureTokenProvider.getAuth(session);
+                    counter.labels("cookie").inc();
+                    return new Credential(auth);
                 } catch (Exception e) {
                     log.warn("Invalid auth cookie", e);
                     response.addCookie(createCookie(null, 0, request));
@@ -124,7 +123,7 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
             String authHeader1 = request.getHeader(HttpHeaders.AUTHORIZATION);
             String token = authHeader1.replace(TOKEN_TYPE, "");
             counter.labels("direct_token").inc();
-            return new Credential(token, null);
+            return new Credential(token);
         }
         return null;
     }
@@ -143,7 +142,7 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
     }
 
     static Cookie createCookie(String value, int maxAge, HttpServletRequest request) {
-        Cookie cookie = new Cookie(POLLY_TOKEN_COOKIE_NAME, value);
+        Cookie cookie = new Cookie(POLLY_COOKIE_NAME, value);
         cookie.setMaxAge(maxAge);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
@@ -153,7 +152,7 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
 
     private static Counter initCounter() {
         return MetricUtils.counter()
-                .labels("no_auth").labels("refresh_cookie").labels("direct_token").labels("login")
+                .labels("no_auth").labels("cookie").labels("direct_token").labels("login")
                 .name("polly_adal_auth_counter")
                 .help("Counter for authentication events")
                 .labelNames("action")
