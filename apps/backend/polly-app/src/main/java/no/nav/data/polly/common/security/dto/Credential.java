@@ -30,6 +30,10 @@ public class Credential {
         return auth != null;
     }
 
+    public String getAccessToken() {
+        return hasAuth() ? auth.getAccessToken() : accessToken;
+    }
+
     public static Optional<Credential> getCredential() {
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .filter(Authentication::isAuthenticated)
