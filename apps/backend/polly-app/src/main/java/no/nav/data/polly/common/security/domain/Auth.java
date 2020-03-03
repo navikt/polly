@@ -1,12 +1,12 @@
 package no.nav.data.polly.common.security.domain;
 
-import io.jsonwebtoken.lang.Assert;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.polly.common.security.Encryptor;
 import org.hibernate.annotations.Type;
+import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
