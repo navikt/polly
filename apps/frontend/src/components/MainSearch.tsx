@@ -169,7 +169,7 @@ const SelectType = (props: { type: SearchType, setType: (type: SearchType) => vo
 
 export const MainSearchImpl = (props: RouteComponentProps) => {
   const [setSearch, searchResult, loading, type, setType] = useMainSearch()
-  const [filter, setFilter] = useState(true)
+  const [filter, setFilter] = useState(false)
 
   return (
     <Block>
