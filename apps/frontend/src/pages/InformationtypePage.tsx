@@ -1,18 +1,18 @@
 import * as React from 'react'
-import { useEffect } from 'react'
-import { Block } from 'baseui/block'
-import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { RouteComponentProps } from 'react-router-dom'
-import { H4 } from 'baseui/typography'
-import { StyledSpinnerNext } from 'baseui/spinner'
+import {useEffect} from 'react'
+import {Block} from 'baseui/block'
+import {faPlusCircle} from '@fortawesome/free-solid-svg-icons'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {RouteComponentProps} from 'react-router-dom'
+import {H4} from 'baseui/typography'
+import {StyledSpinnerNext} from 'baseui/spinner'
 
 import InformationtypeMetadata from '../components/InformationType/InformationtypeMetadata/'
-import { intl, theme, useAwait } from '../util'
-import { CodeUsage, Disclosure, Document, InformationType, Policy } from '../constants'
-import { codelist, ListName } from '../service/Codelist'
-import { user } from '../service/User'
-import { getCodelistUsageByListName, getDisclosuresByInformationTypeId, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType, } from '../api'
+import {intl, useAwait} from '../util'
+import {CodeUsage, Disclosure, Document, InformationType, Policy} from '../constants'
+import {codelist, ListName} from '../service/Codelist'
+import {user} from '../service/User'
+import {getCodelistUsageByListName, getDisclosuresByInformationTypeId, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType,} from '../api'
 import InformationTypeAccordion from '../components/InformationType/ListCategoryInformationtype'
 import Button from '../components/common/Button'
 
@@ -90,7 +90,7 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
   return (
     <>
       <Block display="flex" justifyContent="space-between">
-        <H4 marginTop={theme.sizing.scale200}>{intl.informationTypes}</H4>
+        <H4 marginTop='0'>{intl.informationTypes}</H4>
         <Block>
           {user.canWrite() &&
           <Button kind="outline" onClick={() => props.history.push('/informationtype/create')}>

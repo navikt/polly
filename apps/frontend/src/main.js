@@ -23,7 +23,8 @@ const MainContent = styled('div', {
 
 const HeaderContent = styled('div', {
   marginLeft: sidebarMargin,
-  width:'80%'
+  width:'80%',
+  marginBottom: '50px'
 })
 
 const Main = props => {
