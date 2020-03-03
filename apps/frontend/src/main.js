@@ -1,12 +1,12 @@
 import * as React from 'react'
-import { Block } from 'baseui/block'
-import { BrowserRouter as Router } from 'react-router-dom'
+import {Block} from 'baseui/block'
+import {BrowserRouter as Router} from 'react-router-dom'
 import Routes from './routes'
-import { theme } from './util/theme'
-import { useLang } from './util/intl/intl'
-import { Provider as StyletronProvider } from 'styletron-react'
-import { BaseProvider, styled } from 'baseui'
-import { Client as Styletron } from 'styletron-engine-atomic'
+import {theme} from './util/theme'
+import {useLang} from './util/intl/intl'
+import {Provider as StyletronProvider} from 'styletron-react'
+import {BaseProvider, styled} from 'baseui'
+import {Client as Styletron} from 'styletron-engine-atomic'
 import SideBar from './components/SideBar'
 import Header from './components/Header'
 
@@ -22,7 +22,8 @@ const MainContent = styled('div', {
 })
 
 const HeaderContent = styled('div', {
-  marginLeft: sidebarMargin
+  marginLeft: sidebarMargin,
+  width:'80%'
 })
 
 const Main = props => {
