@@ -37,7 +37,7 @@ public class ProcessResponse {
     private LocalDate start;
     private LocalDate end;
 
-    private Boolean usesAllInformationTypes;
+    private boolean usesAllInformationTypes;
     private Boolean automaticProcessing;
     private Boolean profiling;
     private DataProcessingResponse dataProcessing;
