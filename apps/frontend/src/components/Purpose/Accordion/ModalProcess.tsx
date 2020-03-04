@@ -509,6 +509,16 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                   </Block>
                 </ModalBlock>
 
+                <ModalBlock
+                  tooltip={intl.usesAllInformationTypesHelpText}
+                  blockProps={rowBlockProps}
+                >
+                  <Block display="flex" minWidth="100%">
+                    <ModalLabel label={intl.usesAllInformationTypes}/>
+                    <BoolField value={formikBag.values.usesAllInformationTypes} fieldName='usesAllInformationTypes'/>
+                  </Block>
+                </ModalBlock>
+
                 <OptionalItems formikBag={formikBag}/>
 
                 <Block {...rowBlockProps}>

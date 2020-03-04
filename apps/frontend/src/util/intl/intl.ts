@@ -93,6 +93,7 @@ export interface IStrings {
   purposeNotFound: string;
   purposeUse: string;
   informationTypeExternalUse: string;
+  usesAllInformationTypes: string;
   policyEdit: string;
   policyNew: string;
   policyAdd: string;
@@ -107,6 +108,7 @@ export interface IStrings {
   productTeamHelpText: string;
   subDepartmentHelpText: string;
   systemHelpText: string;
+  usesAllInformationTypesHelpText: string;
   processAutomationHelpText: string;
   profilingHelpText: string;
   dataProcessorHelpText: string;

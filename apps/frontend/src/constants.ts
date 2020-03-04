@@ -48,6 +48,7 @@ export interface ProcessFormValues {
   end?: string
   start?: string
 
+  usesAllInformationTypes?: boolean
   automaticProcessing?: boolean
   profiling?: boolean
   dataProcessing: DataProcessing
@@ -157,6 +158,7 @@ export interface Process extends IDurationed {
   policies: Policy[]
   purposeCode: string
 
+  usesAllInformationTypes: boolean
   automaticProcessing?: boolean
   profiling?: boolean
   dataProcessing?: DataProcessing
