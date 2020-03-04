@@ -515,7 +515,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                 >
                   <Block display="flex" minWidth="100%">
                     <ModalLabel label={intl.usesAllInformationTypes}/>
-                    <BoolField value={formikBag.values.usesAllInformationTypes} fieldName='usesAllInformationTypes'/>
+                    <BoolField value={formikBag.values.usesAllInformationTypes} fieldName='usesAllInformationTypes' omitUndefined/>
                   </Block>
                 </ModalBlock>
 
