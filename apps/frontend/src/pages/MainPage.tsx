@@ -1,20 +1,20 @@
-import { intl, theme, useAwait } from "../util"
-import { user } from "../service/User"
+import {intl, theme, useAwait} from "../util"
+import {user} from "../service/User"
 import * as React from "react"
-import { useEffect, useState } from "react"
-import { Block } from "baseui/block"
-import startIll from '../resources/start_illustration.svg'
-import { getEvents } from "../api/AuditApi"
-import { AuditAction, Event, ObjectType, PageResponse, Settings } from "../constants"
-import { StatefulTabs, Tab } from "baseui/tabs"
-import { HeadingMedium, Label2 } from "baseui/typography"
+import {useEffect, useState} from "react"
+import {Block} from "baseui/block"
+import startIll from '../resources/Behandlingskatalog_forsideillustrasjon.svg'
+import {getEvents} from "../api/AuditApi"
+import {AuditAction, Event, ObjectType, PageResponse, Settings} from "../constants"
+import {StatefulTabs, Tab} from "baseui/tabs"
+import {HeadingMedium, Label2} from "baseui/typography"
 import moment from "moment"
-import { ObjectLink } from "../components/common/RouteLink"
-import { Option, StatefulSelect, Value } from "baseui/select"
-import { AuditActionIcon } from "../components/audit/AuditComponents"
-import { PLACEMENT } from "baseui/popover"
-import { StatefulTooltip } from "baseui/tooltip"
-import { getSettings } from "../api/SettingsApi"
+import {ObjectLink} from "../components/common/RouteLink"
+import {Option, StatefulSelect, Value} from "baseui/select"
+import {AuditActionIcon} from "../components/audit/AuditComponents"
+import {PLACEMENT} from "baseui/popover"
+import {StatefulTooltip} from "baseui/tooltip"
+import {getSettings} from "../api/SettingsApi"
 import ReactMarkdown from "react-markdown/with-html"
 
 const LastEvents = () => {
@@ -85,7 +85,7 @@ export const Main = () => {
           <ReactMarkdown source={settings?.frontpageMessage} escapeHtml={false}/>
         </Block>
         <Block marginTop={theme.sizing.scale1200}>
-            <img src={startIll} alt={intl.startIllustration} style={{width: "50%"}}/>
+            <img src={startIll} alt={intl.startIllustration} style={{width: "75%"}}/>
         </Block>
       </Block>
       <Block width="100%" display="flex" justifyContent="center" alignContent="center">

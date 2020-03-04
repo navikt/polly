@@ -1,11 +1,12 @@
 import * as React from 'react'
-import { intl, theme } from '../../util'
-import { Block, BlockProps } from 'baseui/block'
-import { H6, Paragraph4 } from 'baseui/typography'
-import { features } from '../../util/feature-toggle'
+import {intl, theme} from '../../util'
+import {Block, BlockProps} from 'baseui/block'
+import {H6, Paragraph4} from 'baseui/typography'
+import {features} from '../../util/feature-toggle'
 import NavLogo from '../../resources/navlogo.svg'
+import BKLogo from '../../resources/Behandlingskatalog_logo.svg'
 import SlackLogo from '../../resources/Slack_Monochrome_White.svg'
-import { StyledLink } from 'baseui/link'
+import {StyledLink} from 'baseui/link'
 import NavItem from './NavItem'
 
 const sideBarProps: BlockProps = {
@@ -21,11 +22,13 @@ const items: BlockProps = {
 }
 
 const Brand = () => (
-  <StyledLink style={{textDecoration: 'none'}} href="/">
-    <Block display="flex" alignItems="center" padding="1rem" marginTop="1rem">
-      <H6 color="white" marginTop="0" marginLeft="5px" marginBottom="2rem">Behandlingskatalog</H6>
+
+    <Block display="flex" flexDirection={"column"} alignItems="center" padding="1rem" marginTop="1rem">
+      <img src={BKLogo}/>
+      <StyledLink style={{textDecoration: 'none'}} href="/">
+        <H6 color="white" marginTop="1rem" marginLeft="5px" marginBottom="2rem">Behandlingskatalog</H6>
+      </StyledLink>
     </Block>
-  </StyledLink>
 )
 
 const SideBar = () => {
