@@ -30,7 +30,7 @@ export function useUpdateOnChange(value: any) {
 
   useEffect(() => {
     update()
-  }, [update, value])
+  }, [value])
 
 }
 
