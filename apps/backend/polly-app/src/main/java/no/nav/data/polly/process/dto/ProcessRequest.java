@@ -48,6 +48,7 @@ public class ProcessRequest implements RequestElement {
     private String end;
     private List<LegalBasisRequest> legalBases;
 
+    private Boolean usesAllInformationTypes;
     private Boolean automaticProcessing;
     private Boolean profiling;
     private DataProcessingRequest dataProcessing;

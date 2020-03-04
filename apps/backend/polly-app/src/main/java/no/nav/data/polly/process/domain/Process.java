@@ -99,6 +99,7 @@ public class Process extends Auditable<String> {
                 .start(data.getStart())
                 .end(data.getEnd())
                 .legalBases(convert(data.getLegalBases(), LegalBasis::convertToResponse))
+                .usesAllInformationTypes(data.getUsesAllInformationTypes())
                 .automaticProcessing(data.getAutomaticProcessing())
                 .profiling(data.getProfiling())
                 .dataProcessing(data.getDataProcessing() == null ? null : DataProcessingResponse.builder()
@@ -139,6 +140,7 @@ public class Process extends Auditable<String> {
         data.setStart(DateUtil.parseStart(request.getStart()));
         data.setEnd(DateUtil.parseEnd(request.getEnd()));
         data.setLegalBases(convert(request.getLegalBases(), LegalBasisRequest::convertToLegalBasis));
+        data.setUsesAllInformationTypes(request.getUsesAllInformationTypes());
         data.setAutomaticProcessing(request.getAutomaticProcessing());
         data.setProfiling(request.getProfiling());
         data.setDataProcessing(convertDataProcessing(request.getDataProcessing()));

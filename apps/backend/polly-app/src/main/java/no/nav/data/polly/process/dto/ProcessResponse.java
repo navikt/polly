@@ -21,7 +21,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonPropertyOrder({"id", "name", "description", "purposeCode", "department", "subDepartment", "productTeams", "products", "start", "end", "active",
-        "automaticProcessing", "profiling", "dataProcessing", "retention",
+        "usesAllInformationTypes", "automaticProcessing", "profiling", "dataProcessing", "retention",
         "legalBases", "policies"})
 public class ProcessResponse {
 
@@ -37,6 +37,7 @@ public class ProcessResponse {
     private LocalDate start;
     private LocalDate end;
 
+    private Boolean usesAllInformationTypes;
     private Boolean automaticProcessing;
     private Boolean profiling;
     private DataProcessingResponse dataProcessing;

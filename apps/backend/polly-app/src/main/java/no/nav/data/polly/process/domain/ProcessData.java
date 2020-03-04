@@ -31,6 +31,7 @@ public class ProcessData {
     @Valid
     private List<LegalBasis> legalBases = new ArrayList<>();
 
+    private Boolean usesAllInformationTypes;
     private Boolean automaticProcessing;
     private Boolean profiling;
     @Default
