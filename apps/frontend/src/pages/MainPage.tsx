@@ -71,26 +71,33 @@ const LastEvents = () => {
 export const Main = () => {
   useAwait(user.wait())
   const [settings, setSettings] = useState<Settings>()
-
+  const [isLoading, setLoading] = useState(true)
   useEffect(() => {
     (async () => {
       setSettings(await getSettings())
+      setLoading(false)
     })()
   }, [])
 
   return (
     <Block marginTop={theme.sizing.scale400} display="flex" flexWrap>
-      <Block width="100%" display="flex" justifyContent="space-between">
-        <Block marginRight={theme.sizing.scale2400}>
-          <ReactMarkdown source={settings?.frontpageMessage} escapeHtml={false}/>
-        </Block>
-        <Block marginTop={theme.sizing.scale1200}>
-            <img src={startIll} alt={intl.startIllustration} style={{width: "75%"}}/>
-        </Block>
-      </Block>
-      <Block width="100%" display="flex" justifyContent="center" alignContent="center">
-        {user.isAdmin() && <LastEvents/> }
-      </Block>
+      {
+        !isLoading && (
+          <>
+            <Block width="100%" display="flex" justifyContent="space-between">
+              <Block marginRight={theme.sizing.scale2400}>
+                <ReactMarkdown source={settings?.frontpageMessage} escapeHtml={false}/>
+              </Block>
+              <Block marginTop={theme.sizing.scale1200}>
+                <img src={startIll} alt={intl.startIllustration} style={{width: "75%"}}/>
+              </Block>
+            </Block>
+            <Block width="100%" display="flex" justifyContent="center" alignContent="center">
+              {user.isAdmin() && <LastEvents/> }
+            </Block>
+          </>
+        )
+      }
     </Block>
   )
 }
