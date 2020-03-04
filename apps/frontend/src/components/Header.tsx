@@ -17,9 +17,11 @@ import { TriangleDown } from 'baseui/icon'
 import { FlagIcon } from './common/Flag'
 import { paddingAll } from './common/Style'
 import MainSearch from './MainSearch'
+import { useUpdateOnChange } from '../util/hooks'
 
 
 const LoggedInHeader = () => {
+  useUpdateOnChange(window.location.href)
   const blockStyle: BlockProps = {
     display: 'flex',
     width: '100%',
@@ -41,6 +43,17 @@ const LoggedInHeader = () => {
     >
       <Button kind="tertiary" startEnhancer={() => <FontAwesomeIcon icon={faUser}/>}>{user.getIdent()}</Button>
     </StatefulPopover>
+  )
+}
+
+const LoginButton = () => {
+  useUpdateOnChange(window.location.href)
+  return (
+    <StyledLink href={`${env.pollyBaseUrl}/login?redirect_uri=${window.location.href}`}>
+      <Button $style={{borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0}}>
+        {intl.login}
+      </Button>
+    </StyledLink>
   )
 }
 
@@ -161,12 +174,7 @@ export default (props: HeaderProps) => {
 
           {!user.isLoggedIn() && (
             <NavigationItem $style={{paddingLeft: 0}}>
-              <StyledLink href={`${env.pollyBaseUrl}/login?redirect_uri=${window.location.href}`}>
-                <Button $style={{borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0}}>
-                  {intl.login}
-                </Button>
-              </StyledLink>
-
+              <LoginButton/>
             </NavigationItem>
           )}
           {user.isLoggedIn() && (
