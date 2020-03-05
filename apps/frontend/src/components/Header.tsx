@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useEffect, useState } from 'react'
 import { ALIGN, HeaderNavigation, StyledNavigationItem as NavigationItem, StyledNavigationList as NavigationList, } from 'baseui/header-navigation'
 import { Button } from 'baseui/button'
 import { Block, BlockProps } from 'baseui/block'
@@ -17,11 +18,9 @@ import { TriangleDown } from 'baseui/icon'
 import { FlagIcon } from './common/Flag'
 import { paddingAll } from './common/Style'
 import MainSearch from './MainSearch'
-import { useUpdateOnChange } from '../util/hooks'
 
 
-const LoggedInHeader = () => {
-  useUpdateOnChange(window.location.href)
+const LoggedInHeader = (props: { location: string }) => {
   const blockStyle: BlockProps = {
     display: 'flex',
     width: '100%',
@@ -34,7 +33,7 @@ const LoggedInHeader = () => {
           <Label2 {...blockStyle}>{intl.name}: {user.getName()}</Label2>
           <Label2 {...blockStyle}>{intl.groups}: {user.getGroupsHumanReadable().join(', ')}</Label2>
           <Block {...blockStyle}>
-            <StyledLink href={`${env.pollyBaseUrl}/logout?redirect_uri=${window.location.href}`}>
+            <StyledLink href={`${env.pollyBaseUrl}/logout?redirect_uri=${props.location}`}>
               {intl.logout}
             </StyledLink>
           </Block>
@@ -46,10 +45,9 @@ const LoggedInHeader = () => {
   )
 }
 
-const LoginButton = () => {
-  useUpdateOnChange(window.location.href)
+const LoginButton = (props: { location: string }) => {
   return (
-    <StyledLink href={`${env.pollyBaseUrl}/login?redirect_uri=${window.location.href}`}>
+    <StyledLink href={`${env.pollyBaseUrl}/login?redirect_uri=${props.location}`}>
       <Button $style={{borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0}}>
         {intl.login}
       </Button>
@@ -147,8 +145,10 @@ interface HeaderProps {
   setLang: (lang: string) => void
 }
 
-export default (props: HeaderProps) => {
+const HeaderImpl = (props: HeaderProps & RouteComponentProps) => {
   useAwait(user.wait())
+  const [url, setUrl] = useState(window.location.href)
+  useEffect(() => setUrl(window.location.href), [props.location.pathname])
 
   return (
     <Block>
@@ -174,12 +174,12 @@ export default (props: HeaderProps) => {
 
           {!user.isLoggedIn() && (
             <NavigationItem $style={{paddingLeft: 0}}>
-              <LoginButton/>
+              <LoginButton location={url}/>
             </NavigationItem>
           )}
           {user.isLoggedIn() && (
             <NavigationItem $style={{paddingLeft: 0}}>
-              <LoggedInHeader/>
+              <LoggedInHeader location={url}/>
             </NavigationItem>
           )}
         </NavigationList>
@@ -188,3 +188,5 @@ export default (props: HeaderProps) => {
     </Block>
   )
 }
+
+export default withRouter(HeaderImpl)
