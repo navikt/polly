@@ -1,10 +1,10 @@
 import React from 'react'
-import { Cell, HeadCell, Row, Table } from '../../common/Table'
-import { intl } from '../../../util'
-import { codelist, ListName } from '../../../service/Codelist'
-import { Process, processSort } from '../../../constants'
-import { useTable } from '../../../util/hooks'
-import { Label2 } from 'baseui/typography'
+import {Cell, HeadCell, Row, Table} from '../../common/Table'
+import {intl} from '../../../util'
+import {codelist, ListName} from '../../../service/Codelist'
+import {Process, processSort} from '../../../constants'
+import {useTable} from '../../../util/hooks'
+import RouteLink from "../../common/RouteLink";
 
 type DocumentProcessesProps = {
   documentUsages: Process[]
@@ -47,13 +47,13 @@ const DocumentProcessesTable = (props: DocumentProcessesProps) => {
           table.data.map((process, index) => (
             <Row key={index}>
               <Cell>
-                {codelist.getShortname(ListName.PURPOSE, process.purposeCode)}
+                <RouteLink href={`/process/purpose/${process.purposeCode}`}>{codelist.getShortname(ListName.PURPOSE, process.purposeCode)}</RouteLink>
               </Cell>
               <Cell>
-                {process.name}
+                <RouteLink href={`/process/purpose/${process.purposeCode}/${process.id}`}>{process.name}</RouteLink>
               </Cell>
               <Cell>
-                {process.department ? process.department.shortName : ''}
+                {process.department ? <RouteLink href={`/process/department/${process.department.code}`}>{process.department.shortName}</RouteLink> : ''}
               </Cell>
               <Cell>
                 {process.products.map(product => product.shortName).join(', ')}
