@@ -89,7 +89,7 @@ export const Main = () => {
                 <ReactMarkdown source={settings?.frontpageMessage} escapeHtml={false}/>
               </Block>
               <Block marginTop={theme.sizing.scale1200}>
-                <img src={startIll} alt={intl.startIllustration} style={{width: "75%"}}/>
+                <img src={startIll} alt={intl.startIllustration}/>
               </Block>
             </Block>
             <Block width="100%" display="flex" justifyContent="center" alignContent="center">
