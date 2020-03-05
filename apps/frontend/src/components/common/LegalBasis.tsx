@@ -22,9 +22,8 @@ export const LegalBasisView = (props: { legalBasis?: LegalBasis, legalBasisForm?
 
   let gdprDisplay = gdpr && codelist.getShortname(ListName.GDPR_ARTICLE, gdpr)
   let nationalLawDisplay = nationalLaw && codelist.getShortname(ListName.NATIONAL_LAW, nationalLaw)
-  let nationalLawId = nationalLaw && codelist.valid(ListName.NATIONAL_LAW, nationalLaw) && codelist.getDescription(ListName.NATIONAL_LAW, nationalLaw)
 
-  let descriptionText = nationalLawId ? legalBasisLinkProcessor(nationalLawId, description) : description
+  let descriptionText = codelist.valid(ListName.NATIONAL_LAW, nationalLaw) ? legalBasisLinkProcessor(nationalLaw!, description) : description
 
   return (
     <span>
