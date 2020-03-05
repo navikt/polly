@@ -141,7 +141,6 @@ const SelectType = (props: { type: SearchType, setType: (type: SearchType) => vo
     backgroundColor={theme.colors.primary50}
     width='600px'
     $style={{
-      zIndex: -1,
       borderBottomLeftRadius: '8px',
       borderBottomRightRadius: '8px'
     }}>
@@ -175,7 +174,6 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
     <Block>
       <Block display='flex'
              position='relative'
-             $style={{zIndex: -1}}
              alignItems='center'>
         <Select
           autoFocus={props.match.path === '/'}
