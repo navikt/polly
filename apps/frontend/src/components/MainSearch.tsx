@@ -1,18 +1,18 @@
-import { default as React, ReactElement, useEffect, useState } from 'react'
-import { NavigableItem, ObjectType } from '../constants'
-import { Block } from 'baseui/block'
-import { codelist, ListName } from '../service/Codelist'
-import { useDebouncedState } from '../util/hooks'
-import { prefixBiasedSort } from '../util/sort'
-import { intl, theme } from '../util'
-import { searchInformationType, searchProcess, searchTeam } from '../api'
-import { Select, TYPE } from 'baseui/select'
-import { urlForObject } from './common/RouteLink'
-import { RouteComponentProps, withRouter } from 'react-router-dom'
-import { Radio, RadioGroup } from 'baseui/radio'
-import { paddingZero } from './common/Style'
+import {default as React, ReactElement, useEffect, useState} from 'react'
+import {NavigableItem, ObjectType} from '../constants'
+import {Block} from 'baseui/block'
+import {codelist, ListName} from '../service/Codelist'
+import {useDebouncedState} from '../util/hooks'
+import {prefixBiasedSort} from '../util/sort'
+import {intl, theme} from '../util'
+import {searchInformationType, searchProcess, searchTeam} from '../api'
+import {Select, TYPE} from 'baseui/select'
+import {urlForObject} from './common/RouteLink'
+import {RouteComponentProps, withRouter} from 'react-router-dom'
+import {Radio, RadioGroup} from 'baseui/radio'
+import {paddingZero} from './common/Style'
 import Button from './common/Button'
-import { faFilter } from '@fortawesome/free-solid-svg-icons'
+import {faFilter} from '@fortawesome/free-solid-svg-icons'
 
 type SearchItem = { id: string, sortKey: string, label: ReactElement, type: NavigableItem }
 type SearchType = 'all' | 'purpose' | 'process' | 'team' | 'department' | 'subDepartment' | 'informationType'
@@ -141,7 +141,7 @@ const SelectType = (props: { type: SearchType, setType: (type: SearchType) => vo
     backgroundColor={theme.colors.primary50}
     width='600px'
     $style={{
-      zIndex: 0,
+      zIndex: -1,
       borderBottomLeftRadius: '8px',
       borderBottomRightRadius: '8px'
     }}>
@@ -175,7 +175,7 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
     <Block>
       <Block display='flex'
              position='relative'
-             $style={{zIndex: 1}}
+             $style={{zIndex: -1}}
              alignItems='center'>
         <Select
           autoFocus={props.match.path === '/'}
