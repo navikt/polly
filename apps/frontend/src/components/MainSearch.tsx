@@ -1,18 +1,18 @@
-import {default as React, ReactElement, useEffect, useState} from 'react'
-import {NavigableItem, ObjectType} from '../constants'
-import {Block} from 'baseui/block'
-import {codelist, ListName} from '../service/Codelist'
-import {useDebouncedState} from '../util/hooks'
-import {prefixBiasedSort} from '../util/sort'
-import {intl, theme} from '../util'
-import {searchInformationType, searchProcess, searchTeam} from '../api'
-import {Select, TYPE} from 'baseui/select'
-import {urlForObject} from './common/RouteLink'
-import {RouteComponentProps, withRouter} from 'react-router-dom'
-import {Radio, RadioGroup} from 'baseui/radio'
-import {paddingZero} from './common/Style'
+import { default as React, ReactElement, useEffect, useState } from 'react'
+import { NavigableItem, ObjectType } from '../constants'
+import { Block } from 'baseui/block'
+import { codelist, ListName } from '../service/Codelist'
+import { useDebouncedState } from '../util/hooks'
+import { prefixBiasedSort } from '../util/sort'
+import { intl, theme } from '../util'
+import { searchInformationType, searchProcess, searchTeam } from '../api'
+import { Select, TYPE } from 'baseui/select'
+import { urlForObject } from './common/RouteLink'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
+import { Radio, RadioGroup } from 'baseui/radio'
+import { paddingZero } from './common/Style'
 import Button from './common/Button'
-import {faFilter} from '@fortawesome/free-solid-svg-icons'
+import { faFilter } from '@fortawesome/free-solid-svg-icons'
 
 type SearchItem = { id: string, sortKey: string, label: ReactElement, type: NavigableItem }
 type SearchType = 'all' | 'purpose' | 'process' | 'team' | 'department' | 'subDepartment' | 'informationType'
@@ -20,17 +20,17 @@ type SearchType = 'all' | 'purpose' | 'process' | 'team' | 'department' | 'subDe
 const SearchLabel = (props: { name: string, type: string }) =>
   <Block display="flex" justifyContent="space-between" width="100%">
     <span>{props.name}</span>
-    <Block $style={{opacity: .5}}>{props.type}</Block>
+    <Block $style={{ opacity: .5 }}>{props.type}</Block>
   </Block>
 
 const searchCodelist = (search: string, list: ListName & NavigableItem, typeName: string) =>
   codelist.getCodes(list).filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
-  .map(c => ({
-    id: c.code,
-    sortKey: c.shortName,
-    label: <SearchLabel name={c.shortName} type={typeName}/>,
-    type: list
-  }))
+    .map(c => ({
+      id: c.code,
+      sortKey: c.shortName,
+      label: <SearchLabel name={c.shortName} type={typeName} />,
+      type: list
+    }))
 
 const useMainSearch = () => {
   const [search, setSearch] = useDebouncedState<string>('', 500)
@@ -58,7 +58,7 @@ const useMainSearch = () => {
           add(infoTypesRes.content.map(it => ({
             id: it.id,
             sortKey: it.name,
-            label: <SearchLabel name={it.name} type={intl.informationType}/>,
+            label: <SearchLabel name={it.name} type={intl.informationType} />,
             type: ObjectType.INFORMATION_TYPE
           })))
         }
@@ -70,7 +70,7 @@ const useMainSearch = () => {
             return ({
               id: it.id,
               sortKey: `${it.name} ${purpose}`,
-              label: <SearchLabel name={`${purpose}: ${it.name}`} type={intl.process}/>,
+              label: <SearchLabel name={`${purpose}: ${it.name}`} type={intl.process} />,
               type: ObjectType.PROCESS
             })
           }))
@@ -81,7 +81,7 @@ const useMainSearch = () => {
           add(resTeams.content.map(it => ({
             id: it.id,
             sortKey: it.name,
-            label: <SearchLabel name={it.name} type={intl.productTeam}/>,
+            label: <SearchLabel name={it.name} type={intl.productTeam} />,
             type: 'team'
           })))
         }
@@ -101,32 +101,32 @@ type RadioProps = {
 const smallRadio = (value: SearchType, text: string) => {
   return (
     <Radio value={value}
-           overrides={{
-             Root: {
-               style: {
-                 marginBottom: 0
-               }
-             },
-             Label: {
-               style: (a: RadioProps) => ({
-                 ...paddingZero,
-                 ...(a.$isHovered ? {color: theme.colors.positive400} : {}),
-               })
-             },
-             RadioMarkOuter: {
-               style: (a: RadioProps) => ({
-                 width: theme.sizing.scale500,
-                 height: theme.sizing.scale500,
-                 ...(a.$isHovered ? {backgroundColor: theme.colors.positive400} : {})
-               })
-             },
-             RadioMarkInner: {
-               style: (a: RadioProps) => ({
-                 width: a.$checked ? theme.sizing.scale100 : theme.sizing.scale300,
-                 height: a.$checked ? theme.sizing.scale100 : theme.sizing.scale300,
-               })
-             }
-           }}
+      overrides={{
+        Root: {
+          style: {
+            marginBottom: 0
+          }
+        },
+        Label: {
+          style: (a: RadioProps) => ({
+            ...paddingZero,
+            ...(a.$isHovered ? { color: theme.colors.positive400 } : {}),
+          })
+        },
+        RadioMarkOuter: {
+          style: (a: RadioProps) => ({
+            width: theme.sizing.scale500,
+            height: theme.sizing.scale500,
+            ...(a.$isHovered ? { backgroundColor: theme.colors.positive400 } : {})
+          })
+        },
+        RadioMarkInner: {
+          style: (a: RadioProps) => ({
+            width: a.$checked ? theme.sizing.scale100 : theme.sizing.scale300,
+            height: a.$checked ? theme.sizing.scale100 : theme.sizing.scale300,
+          })
+        }
+      }}
     >
       <Block font='ParagraphXSmall'>{text}</Block>
     </Radio>
@@ -174,9 +174,9 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
   return (
     <Block>
       <Block display='flex'
-             position='relative'
-             $style={{zIndex: -1}}
-             alignItems='center'>
+        position='relative'
+        $style={{ zIndex: -1 }}
+        alignItems='center'>
         <Select
           autoFocus={props.match.path === '/'}
           isLoading={loading}
@@ -204,8 +204,8 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
             },
             ControlContainer: {
               style: {
-                borderBottomLeftRadius: 0,
-                borderBottomRightRadius: 0
+                ...(filter ? { borderBottomLeftRadius: 0 } : {}),
+                ...(filter ? { borderBottomRightRadius: 0 } : {})
               }
             },
             Root: {
@@ -217,9 +217,9 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
           }
         />
         <Button onClick={() => setFilter(!filter)} icon={faFilter} size='compact' kind={filter ? 'primary' : 'tertiary'} marginLeft
-                $style={{height: theme.sizing.scale1000, width: theme.sizing.scale1000}}/>
+          $style={{ height: theme.sizing.scale1000, width: theme.sizing.scale1000 }} />
       </Block>
-      {filter && <SelectType type={type} setType={setType}/>}
+      {filter && <SelectType type={type} setType={setType} />}
     </Block>
   )
 }
