@@ -23,9 +23,9 @@ const items: BlockProps = {
 
 const Brand = () => (
 
-    <Block display="flex" flexDirection={"column"} alignItems="center" padding="1rem" marginTop="1rem">
-      <img src={BKLogo}/>
-      <StyledLink style={{textDecoration: 'none'}} href="/">
+    <Block display="flex" flexDirection={"column"} padding="1rem" marginTop="1rem">
+      <StyledLink style={{textDecoration: 'none', textAlign: 'center'}} href="/">
+        <img src={BKLogo}/>
         <H6 color="white" marginTop="1rem" marginLeft="5px" marginBottom="2rem">Behandlingskatalog</H6>
       </StyledLink>
     </Block>
