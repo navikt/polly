@@ -65,7 +65,7 @@ const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
       {props.informationtype && (
         <>
           <Block display="flex" justifyContent="space-between">
-            <H4 marginTop={theme.sizing.scale400}>{props.informationtype.name}</H4>
+            <H4 marginTop="0" >{props.informationtype.name}</H4>
             {user.canWrite() && (
               <InformationTypeBannerButtons id={props.informationtype.id}/>
             )}
