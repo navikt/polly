@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static java.time.temporal.ChronoUnit.WEEKS;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -85,8 +84,8 @@ public class AuthService {
     public void gatherMetrics() {
         uniqueUsers.labels("hour").set(countActiveLast(Duration.ofHours(1)));
         uniqueUsers.labels("day").set(countActiveLast(Duration.ofDays(1)));
-        uniqueUsers.labels("week").set(countActiveLast(Duration.of(1, WEEKS)));
-        uniqueUsers.labels("twoweek").set(countActiveLast(Duration.of(2, WEEKS)));
+        uniqueUsers.labels("week").set(countActiveLast(Duration.ofDays(7)));
+        uniqueUsers.labels("twoweek").set(countActiveLast(Duration.ofDays(14)));
     }
 
     private long countActiveLast(Duration duration) {
