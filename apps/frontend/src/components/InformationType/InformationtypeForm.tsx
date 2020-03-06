@@ -1,22 +1,22 @@
 import * as React from "react";
-import { KeyboardEvent, useEffect } from "react";
-import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikHelpers, FormikProps } from "formik";
-import { Label2 } from "baseui/typography";
-import { Input } from "baseui/input";
-import { Block, BlockProps } from "baseui/block";
-import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
-import { Textarea } from "baseui/textarea";
-import { Button, SHAPE } from "baseui/button";
-import { Plus } from "baseui/icon";
-import { Option, Select, TYPE, Value } from "baseui/select";
+import {KeyboardEvent, useEffect} from "react";
+import {Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikHelpers, FormikProps} from "formik";
+import {Label2} from "baseui/typography";
+import {Input} from "baseui/input";
+import {Block, BlockProps} from "baseui/block";
+import {FlexGrid, FlexGridItem} from "baseui/flex-grid";
+import {Textarea} from "baseui/textarea";
+import {Button, SHAPE} from "baseui/button";
+import {Plus} from "baseui/icon";
+import {Option, Select, TYPE, Value} from "baseui/select";
 
-import { codelist, ListName } from "../../service/Codelist";
-import { InformationtypeFormValues } from "../../constants";
-import { intl } from "../../util"
-import { getTerm, mapTermToOption, searchInformationType, useTermSearch } from "../../api"
-import { infoTypeSchema } from "../common/schema"
-import { renderTagList } from "../common/TagList"
-import { Error } from "../common/ModalSchema"
+import {codelist, ListName} from "../../service/Codelist";
+import {InformationtypeFormValues} from "../../constants";
+import {intl} from "../../util"
+import {getTerm, mapTermToOption, searchInformationType, useTermSearch} from "../../api"
+import {infoTypeSchema} from "../common/schema"
+import {renderTagList} from "../common/TagList"
+import {Error} from "../common/ModalSchema"
 
 const labelProps: BlockProps = {
   marginBottom: "8px",
@@ -147,6 +147,32 @@ const InformationtypeForm = ({
 
               <FlexGridItem>
                 <Field
+                  name="navMaster"
+                  render={({form}: FieldProps<InformationtypeFormValues>) => (
+                    <Block marginBottom="1em">
+                      <Block {...labelProps}>
+                        <Label2>{intl.navMaster}</Label2>
+                      </Block>
+
+                      <Select
+                        options={codelist.getParsedOptions(ListName.SYSTEM)}
+                        value={masterValue as Value}
+                        placeholder={intl.navMasterSelect}
+                        onChange={(params) => {
+                          let master = params.value.length ? params.value[0] : undefined
+                          setMasterValue(master as Option)
+                          form.setFieldValue('navMaster', master ? master.id : undefined)
+                        }}
+                        error={!!form.errors.navMaster && !!form.submitCount}
+                      />
+                    </Block>
+                  )}
+                />
+                <Error fieldName="navMaster" fullWidth/>
+              </FlexGridItem>
+
+              <FlexGridItem>
+                <Field
                   name="term"
                   render={({form}: FieldProps<InformationtypeFormValues>) => (
                     <Block>
@@ -173,60 +199,6 @@ const InformationtypeForm = ({
                   )}
                 />
                 <Error fieldName="term" fullWidth/>
-              </FlexGridItem>
-
-              <FlexGridItem>
-                <Field
-                  name="sensitivity"
-                  render={({form}: FieldProps<InformationtypeFormValues>) => (
-                    <Block>
-                      <Block {...labelProps}>
-                        <Label2>{intl.sensitivity}</Label2>
-                      </Block>
-
-                      <Select
-                        options={codelist.getParsedOptions(ListName.SENSITIVITY)}
-                        value={sensitivityValue as Value}
-                        placeholder={intl.sensitivitySelect}
-                        onChange={(params) => {
-                          let sensitivity = params.value.length ? params.value[0] : undefined
-                          setSensitivityValue(sensitivity as Option)
-                          form.setFieldValue('sensitivity', sensitivity ? sensitivity.id : undefined)
-                        }}
-                        error={!!form.errors.sensitivity && !!form.submitCount}
-                      />
-                    </Block>
-                  )}
-                />
-                <Error fieldName="sensitivity" fullWidth/>
-              </FlexGridItem>
-
-              <FlexGridItem>
-                <FieldArray
-                  name="categories"
-                  render={arrayHelpers => (
-                    <Block>
-                      <Block {...labelProps}>
-                        <Label2>{intl.categories}</Label2>
-                      </Block>
-                      <Select
-                        options={getParsedOptions(ListName.CATEGORY, formikBag.values.categories)}
-                        placeholder={intl.categoriesWrite}
-                        maxDropdownHeight="300px"
-                        onChange={({option}) => {
-                          arrayHelpers.push(
-                            option
-                              ? option.id
-                              : null
-                          );
-                        }}
-                        error={!!arrayHelpers.form.errors.categories && !!arrayHelpers.form.submitCount}
-                      />
-                      {renderTagList(codelist.getShortnames(ListName.CATEGORY, formikBag.values.categories), arrayHelpers)}
-                    </Block>
-                  )}
-                />
-                <Error fieldName="categories" fullWidth/>
               </FlexGridItem>
 
               <FlexGridItem>
@@ -296,6 +268,34 @@ const InformationtypeForm = ({
               </FlexGridItem>
 
               <FlexGridItem>
+                <FieldArray
+                  name="categories"
+                  render={arrayHelpers => (
+                    <Block>
+                      <Block {...labelProps}>
+                        <Label2>{intl.categories}</Label2>
+                      </Block>
+                      <Select
+                        options={getParsedOptions(ListName.CATEGORY, formikBag.values.categories)}
+                        placeholder={intl.categoriesWrite}
+                        maxDropdownHeight="300px"
+                        onChange={({option}) => {
+                          arrayHelpers.push(
+                            option
+                              ? option.id
+                              : null
+                          );
+                        }}
+                        error={!!arrayHelpers.form.errors.categories && !!arrayHelpers.form.submitCount}
+                      />
+                      {renderTagList(codelist.getShortnames(ListName.CATEGORY, formikBag.values.categories), arrayHelpers)}
+                    </Block>
+                  )}
+                />
+                <Error fieldName="categories" fullWidth/>
+              </FlexGridItem>
+
+              <FlexGridItem>
                 <Field
                   name="description"
                   render={({
@@ -303,7 +303,7 @@ const InformationtypeForm = ({
                            }: FieldProps) => (
                     <Block>
                       <Block {...labelProps}>
-                        <Label2>{intl.description}</Label2>
+                        <Label2>{intl.additionalDescription}</Label2>
                       </Block>
                       <Textarea onKeyDown={e => {
                         if (e.key === 'Enter') form.setFieldValue('description', form.values.description + '\n')
@@ -311,38 +311,36 @@ const InformationtypeForm = ({
                                 {...field}
                                 placeholder={intl.descriptionWrite}
                                 rows={5}
-                                error={!!form.errors.description && !!form.submitCount}
                       />
                     </Block>
                   )}
                 />
-                <Error fieldName="description" fullWidth/>
               </FlexGridItem>
 
               <FlexGridItem>
                 <Field
-                  name="navMaster"
+                  name="sensitivity"
                   render={({form}: FieldProps<InformationtypeFormValues>) => (
-                    <Block marginBottom="1em">
+                    <Block>
                       <Block {...labelProps}>
-                        <Label2>{intl.navMaster}</Label2>
+                        <Label2>{intl.sensitivity}</Label2>
                       </Block>
 
                       <Select
-                        options={codelist.getParsedOptions(ListName.SYSTEM)}
-                        value={masterValue as Value}
-                        placeholder={intl.navMasterSelect}
+                        options={codelist.getParsedOptions(ListName.SENSITIVITY)}
+                        value={sensitivityValue as Value}
+                        placeholder={intl.sensitivitySelect}
                         onChange={(params) => {
-                          let master = params.value.length ? params.value[0] : undefined
-                          setMasterValue(master as Option)
-                          form.setFieldValue('navMaster', master ? master.id : undefined)
+                          let sensitivity = params.value.length ? params.value[0] : undefined
+                          setSensitivityValue(sensitivity as Option)
+                          form.setFieldValue('sensitivity', sensitivity ? sensitivity.id : undefined)
                         }}
-                        error={!!form.errors.navMaster && !!form.submitCount}
+                        error={!!form.errors.sensitivity && !!form.submitCount}
                       />
                     </Block>
                   )}
                 />
-                <Error fieldName="navMaster" fullWidth/>
+                <Error fieldName="sensitivity" fullWidth/>
               </FlexGridItem>
 
             </FlexGrid>

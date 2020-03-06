@@ -1,4 +1,4 @@
-import { IStrings } from "./intl";
+import {IStrings} from "./intl";
 
 export const no: IStrings = {
   informationType: "Opplysningstype",
@@ -185,6 +185,7 @@ export const no: IStrings = {
   copied: "Kopiert",
   groups: "Grupper",
   description: "Beskrivelse",
+  additionalDescription: "Ytterligere beskrivelse",
   document: "Dokument",
   edit: "Rediger",
   sources: "Kilder",
@@ -459,6 +460,7 @@ export const en: IStrings = {
   copied: "Copied",
   groups: "Groups",
   description: "Description",
+  additionalDescription: "Additional description",
   document: "Document",
   edit: "Edit",
   sources: "Sources",
