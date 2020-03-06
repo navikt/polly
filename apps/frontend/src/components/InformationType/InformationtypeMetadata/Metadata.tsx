@@ -1,21 +1,21 @@
 import * as React from 'react'
-import { ReactNode, useEffect, useState } from 'react'
-import { Block } from 'baseui/block'
-import { InformationType } from '../../../constants'
-import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
-import { IconDefinition } from '@fortawesome/fontawesome-common-types'
-import { intl, theme } from '../../../util'
-import { Label2 } from 'baseui/typography'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimesCircle, faUserShield } from '@fortawesome/free-solid-svg-icons'
-import { Code } from '../../../service/Codelist'
-import { sensitivityColor } from '../Sensitivity'
-import { getTerm, mapTermToOption } from '../../../api'
-import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
-import { StyledLink } from 'baseui/link'
-import { features } from '../../../util/feature-toggle'
-import { marginZero } from '../../common/Style'
-import { DotTags } from '../../common/DotTag'
+import {ReactNode, useEffect, useState} from 'react'
+import {Block} from 'baseui/block'
+import {InformationType} from '../../../constants'
+import {FlexGrid, FlexGridItem} from 'baseui/flex-grid'
+import {IconDefinition} from '@fortawesome/fontawesome-common-types'
+import {intl, theme} from '../../../util'
+import {Label2} from 'baseui/typography'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faTimesCircle, faUserShield} from '@fortawesome/free-solid-svg-icons'
+import {Code} from '../../../service/Codelist'
+import {sensitivityColor} from '../Sensitivity'
+import {getTerm, mapTermToOption} from '../../../api'
+import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
+import {StyledLink} from 'baseui/link'
+import {features} from '../../../util/feature-toggle'
+import {marginZero} from '../../common/Style'
+import {DotTags} from '../../common/DotTag'
 
 const renderCodesToLinks = (sources: Code[]) =>
   sources.map((source, index) => (
@@ -69,10 +69,10 @@ const DescriptionData = (props: { termId?: string, description: string, keywords
         <TextWithLabel label={intl.term} text={term || intl.noTerm} error={termError ? intl.couldntLoadTerm : undefined}/>
       </FlexGridItem>
       <FlexGridItem>
-        <TextWithLabel label={intl.description} text={props.description}/>
+        <TextWithLabel label={intl.keywords} text={<DotTags items={props.keywords}/>}/>
       </FlexGridItem>
       <FlexGridItem>
-        <TextWithLabel label={intl.keywords} text={<DotTags items={props.keywords}/>}/>
+        <TextWithLabel label={intl.description} text={props.description}/>
       </FlexGridItem>
     </FlexGrid>
   )
