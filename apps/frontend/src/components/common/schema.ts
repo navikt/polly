@@ -16,8 +16,8 @@ import {
   ProcessFormValues,
   Retention
 } from "../../constants"
-import { intl } from "../../util"
-import { Code, codelist } from "../../service/Codelist"
+import {intl} from "../../util"
+import {Code, codelist} from "../../service/Codelist"
 
 const DATE_REGEX = /\d{4}-\d{2}-\d{2}/
 const max = 150
@@ -33,7 +33,6 @@ export const infoTypeSchema = () => yup.object<InformationtypeFormValues>({
   sources: yup.array(yup.string()),
   keywords: yup.array(yup.string()),
   navMaster: yup.string(),
-  description: yup.string().required(intl.required)
 })
 
 export const processSchema = () => yup.object<ProcessFormValues>({
