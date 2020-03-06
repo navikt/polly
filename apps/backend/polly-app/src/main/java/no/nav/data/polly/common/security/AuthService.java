@@ -22,7 +22,7 @@ public class AuthService {
 
     private Gauge uniqueUsers = MetricUtils.gauge()
             .labels("hour", "day", "week", "twoweek")
-            .name("polly.auth.users.active").help("Users active")
+            .name("polly_auth_users_active").help("Users active")
             .register();
 
     private final AuthRepository authRepository;
