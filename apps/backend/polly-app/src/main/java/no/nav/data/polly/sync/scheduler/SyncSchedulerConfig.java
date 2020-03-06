@@ -26,7 +26,7 @@ public class SyncSchedulerConfig implements SchedulingConfigurer {
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
         if (!properties.indexingDisabled()) {
             long syncIntervalInMillis = TimeUnit.SECONDS.toMillis(properties.getIntervalSeconds());
-            taskRegistrar.addFixedRateTask(syncTask(syncIntervalInMillis, 1000L));
+            taskRegistrar.addFixedRateTask(syncTask(syncIntervalInMillis, 10_000L));
         }
     }
 
