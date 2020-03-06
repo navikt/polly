@@ -21,7 +21,8 @@ import java.util.List;
 public class AuthService {
 
     private Gauge uniqueUsers = MetricUtils.gauge()
-            .labelNames("hour", "day", "week", "twoweek")
+            .labels("hour").labels("day").labels("week").labels("twoweek")
+            .labelNames("period")
             .name("polly_auth_users_active").help("Users active")
             .register();
 
