@@ -1,5 +1,7 @@
 package no.nav.data.polly.common.utils;
 
+import java.time.Duration;
+
 public final class Constants {
 
     private Constants() {
@@ -15,4 +17,6 @@ public final class Constants {
     public static final String HEADER_CONSUMER_ID = "Nav-Consumer-Id";
 
     public static final String APP_ID = "polly";
+    public static final Duration SESSION_LENGTH = Duration.ofDays(14);
+
 }

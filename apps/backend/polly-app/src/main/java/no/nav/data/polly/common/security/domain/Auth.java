@@ -35,6 +35,8 @@ public class Auth {
     private String encryptedRefreshToken;
     @Column(name = "INITIATED")
     private LocalDateTime initiated;
+    @Column(name = "LAST_ACTIVE")
+    private LocalDateTime lastActive;
 
     @Transient
     private Encryptor encryptor;

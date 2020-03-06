@@ -29,10 +29,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.time.Duration;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static no.nav.data.polly.common.utils.Constants.SESSION_LENGTH;
 import static org.apache.commons.lang3.StringUtils.substringBefore;
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.CODE;
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.ERROR;
@@ -105,7 +105,7 @@ public class AuthController {
         }
         if (StringUtils.hasText(code)) {
             var session = azureTokenProvider.createSession(code, fullRequestUrlWithoutQuery(request));
-            response.addCookie(AADStatelessAuthenticationFilter.createCookie(session, (int) Duration.ofDays(14).toSeconds(), request));
+            response.addCookie(AADStatelessAuthenticationFilter.createCookie(session, (int) SESSION_LENGTH.toSeconds(), request));
             redirectStrategy.sendRedirect(request, response, state.getRedirectUri());
         } else {
             String errorRedirect = state.errorRedirect(error, errorDesc);
