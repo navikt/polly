@@ -11,5 +11,5 @@ public interface AuthRepository extends JpaRepository<Auth, UUID> {
 
     List<Auth> findByInitiatedBefore(LocalDateTime time);
 
-    long countByLastActiveAfter(LocalDateTime time);
+    long countDistinctUserIdByLastActiveAfter(LocalDateTime time);
 }

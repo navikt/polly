@@ -73,9 +73,9 @@ public class AuthService {
 
     @Scheduled(initialDelayString = "PT1M", fixedRateString = "PT1M")
     public void gatherMetrics() {
-        uniqueUsers.labels("hour").set(authRepository.countByLastActiveAfter(LocalDateTime.now().minusHours(1)));
-        uniqueUsers.labels("day").set(authRepository.countByLastActiveAfter(LocalDateTime.now().minusDays(1)));
-        uniqueUsers.labels("week").set(authRepository.countByLastActiveAfter(LocalDateTime.now().minusWeeks(1)));
-        uniqueUsers.labels("twoweek").set(authRepository.countByLastActiveAfter(LocalDateTime.now().minusWeeks(2)));
+        uniqueUsers.labels("hour").set(authRepository.countDistinctUserIdByLastActiveAfter(LocalDateTime.now().minusHours(1)));
+        uniqueUsers.labels("day").set(authRepository.countDistinctUserIdByLastActiveAfter(LocalDateTime.now().minusDays(1)));
+        uniqueUsers.labels("week").set(authRepository.countDistinctUserIdByLastActiveAfter(LocalDateTime.now().minusWeeks(1)));
+        uniqueUsers.labels("twoweek").set(authRepository.countDistinctUserIdByLastActiveAfter(LocalDateTime.now().minusWeeks(2)));
     }
 }
