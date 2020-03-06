@@ -249,7 +249,7 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
   const [showDates, setShowDates] = React.useState(hasSpecifiedDate(formikBag.values));
   const [showAutomation, setShowAutomation] = React.useState(formikBag.values.automaticProcessing || formikBag.values.profiling);
   const [showDataProcessor, setShowDataProcessor] = React.useState(formikBag.values.dataProcessing.dataProcessor === true || formikBag.values.dataProcessing.dataProcessor === false);
-  const [showRetention, setShowRetention] = React.useState("retentionPlan" in formikBag.values.retention && formikBag.values.retention.retentionPlan !== undefined);
+  const [showRetention, setShowRetention] = React.useState(!!formikBag.values.retention?.retentionPlan && formikBag.values.retention.retentionPlan !== undefined);
 
   const [retention, setRetention] = useState(formikBag.values.retention.retentionMonths || 0)
   const retentionYears = Math.floor(retention / 12)
@@ -335,7 +335,7 @@ const OptionalItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => 
             <BoolField fieldName="retention.retentionPlan" value={formikBag.values.retention.retentionPlan}/>
           </Block>
 
-        {"retentionPlan" in formikBag.values.retention && <>
+        {!!formikBag.values.retention?.retentionPlan && <>
           <Block {...rowBlockProps}>
             <ModalLabel label={intl.retentionMonths}/>
             <Field
