@@ -12,6 +12,7 @@ import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.sync.domain.SyncStatus;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
 
 import java.util.HashSet;
@@ -109,7 +110,7 @@ public class InformationType extends Auditable<String> {
     }
 
     public void preUpdate() {
-        data.setSuggest(data.getName() + " " + String.join(" ", data.getKeywords()) + " " + data.getDescription());
+        data.setSuggest(data.getName() + " " + String.join(" ", data.getKeywords()) + " " + StringUtils.trimToEmpty(data.getDescription()));
     }
 
     public static class InformationTypeBuilder {

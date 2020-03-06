@@ -84,7 +84,6 @@ public class InformationTypeRequest implements RequestElement {
         validator.checkUUID(Fields.id, id);
         validator.checkId(this);
         validator.checkBlank(Fields.name, getName());
-        validator.checkBlank(Fields.description, getDescription());
 
         validator.checkCodelists(Fields.categories, getCategories(), ListName.CATEGORY);
         validator.checkCodelists(Fields.sources, getSources(), ListName.THIRD_PARTY);
