@@ -3,6 +3,7 @@ package no.nav.data.polly.common.security;
 import io.prometheus.client.Gauge;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.exceptions.PollyNotFoundException;
+import no.nav.data.polly.common.exceptions.UnauthorizedException;
 import no.nav.data.polly.common.security.domain.Auth;
 import no.nav.data.polly.common.security.domain.AuthRepository;
 import no.nav.data.polly.common.utils.Constants;
@@ -14,6 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
@@ -39,6 +43,9 @@ public class AuthService {
         Auth auth = authRepository.findById(sessUuid)
                 .orElseThrow(() -> new PollyNotFoundException("couldn't find session"))
                 .addSecret(encryptor, sessionKey);
+        if (isBlank(auth.getEncryptedRefreshToken())) {
+            throw new UnauthorizedException("session is terminated");
+        }
         if (auth.getLastActive().isBefore(LocalDateTime.now().minusMinutes(1))) {
             auth.setLastActive(LocalDateTime.now());
         }
@@ -58,8 +65,9 @@ public class AuthService {
         return auth.session();
     }
 
-    public void deleteAuth(Auth auth) {
-        authRepository.deleteById(auth.getId());
+    public void endSession(UUID id) {
+        Auth auth = authRepository.findById(id).orElseThrow();
+        auth.setEncryptedRefreshToken("");
     }
 
     @Scheduled(initialDelayString = "PT1M", fixedRateString = "PT10M")

@@ -55,7 +55,7 @@ public class Auth {
         this.accessToken = accessToken;
     }
 
-    public String descryptRefreshToken() {
+    public String decryptRefreshToken() {
         Assert.notNull(encryptor, "not initialized");
         Assert.notNull(sessionKey, "not initialized");
         return encryptor.decrypt(sessionKey + encryptedRefreshToken);

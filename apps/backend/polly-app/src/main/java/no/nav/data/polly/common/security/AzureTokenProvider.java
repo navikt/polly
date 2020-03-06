@@ -86,7 +86,7 @@ public class AzureTokenProvider {
         }
         return Credential.getCredential()
                 .filter(Credential::hasAuth)
-                .map(cred -> TOKEN_TYPE + getAccessTokenForResource(cred.getAuth().descryptRefreshToken(), resource))
+                .map(cred -> TOKEN_TYPE + getAccessTokenForResource(cred.getAuth().decryptRefreshToken(), resource))
                 .orElseGet(() -> TOKEN_TYPE + getApplicationTokenForResource(appIdUri));
     }
 
@@ -95,13 +95,13 @@ public class AzureTokenProvider {
         var sessionId = session.substring(0, SESS_ID_LEN);
         var sessionKey = session.substring(SESS_ID_LEN);
         var auth = authService.getAuth(sessionId, sessionKey);
-        String accessToken = getAccessTokenForResource(auth.descryptRefreshToken(), aadAuthProps.getClientId());
+        String accessToken = getAccessTokenForResource(auth.decryptRefreshToken(), aadAuthProps.getClientId());
         auth.addAccessToken(accessToken);
         return auth;
     }
 
     public void destorySession() {
-        Credential.getCredential().map(Credential::getAuth).ifPresent(authService::deleteAuth);
+        Credential.getCredential().map(Credential::getAuth).ifPresent(auth -> authService.endSession(auth.getId()));
     }
 
     public Set<GrantedAuthority> getGrantedAuthorities(String accessToken) {
