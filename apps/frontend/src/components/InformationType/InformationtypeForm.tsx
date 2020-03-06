@@ -303,7 +303,7 @@ const InformationtypeForm = ({
                            }: FieldProps) => (
                     <Block>
                       <Block {...labelProps}>
-                        <Label2>{intl.description}</Label2>
+                        <Label2>{intl.additionalDescription}</Label2>
                       </Block>
                       <Textarea onKeyDown={e => {
                         if (e.key === 'Enter') form.setFieldValue('description', form.values.description + '\n')
