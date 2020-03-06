@@ -13,10 +13,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import static java.time.temporal.ChronoUnit.WEEKS;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -81,9 +83,13 @@ public class AuthService {
 
     @Scheduled(initialDelayString = "PT1M", fixedRateString = "PT1M")
     public void gatherMetrics() {
-        uniqueUsers.labels("hour").set(authRepository.countDistinctUserIdByLastActiveAfter(LocalDateTime.now().minusHours(1)));
-        uniqueUsers.labels("day").set(authRepository.countDistinctUserIdByLastActiveAfter(LocalDateTime.now().minusDays(1)));
-        uniqueUsers.labels("week").set(authRepository.countDistinctUserIdByLastActiveAfter(LocalDateTime.now().minusWeeks(1)));
-        uniqueUsers.labels("twoweek").set(authRepository.countDistinctUserIdByLastActiveAfter(LocalDateTime.now().minusWeeks(2)));
+        uniqueUsers.labels("hour").set(countActiveLast(Duration.ofHours(1)));
+        uniqueUsers.labels("day").set(countActiveLast(Duration.ofDays(1)));
+        uniqueUsers.labels("week").set(countActiveLast(Duration.of(1, WEEKS)));
+        uniqueUsers.labels("twoweek").set(countActiveLast(Duration.of(2, WEEKS)));
+    }
+
+    private long countActiveLast(Duration duration) {
+        return authRepository.countDistinctUserIdByLastActiveAfter(LocalDateTime.now().minus(duration));
     }
 }
