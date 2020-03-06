@@ -72,7 +72,7 @@ const DescriptionData = (props: { termId?: string, description: string, keywords
         <TextWithLabel label={intl.keywords} text={<DotTags items={props.keywords}/>}/>
       </FlexGridItem>
       <FlexGridItem>
-        <TextWithLabel label={intl.description} text={props.description}/>
+        <TextWithLabel label={intl.additionalDescription} text={props.description}/>
       </FlexGridItem>
     </FlexGrid>
   )
