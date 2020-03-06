@@ -33,6 +33,7 @@ export const infoTypeSchema = () => yup.object<InformationtypeFormValues>({
   sources: yup.array(yup.string()),
   keywords: yup.array(yup.string()),
   navMaster: yup.string(),
+  description: yup.string()
 })
 
 export const processSchema = () => yup.object<ProcessFormValues>({
