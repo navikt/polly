@@ -71,6 +71,7 @@ const FieldInformationType = (props: {
                     autoFocus
                     maxDropdownHeight="400px"
                     searchable={true}
+                    noResultsMsg={intl.emptyTable}
                     type={TYPE.search}
                     options={props.informationTypes}
                     placeholder={intl.informationTypeSearch}

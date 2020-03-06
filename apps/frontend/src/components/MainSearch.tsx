@@ -176,6 +176,7 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
              position='relative'
              alignItems='center'>
         <Select
+          noResultsMsg={intl.emptyTable}
           autoFocus={props.match.path === '/'}
           isLoading={loading}
           maxDropdownHeight="400px"

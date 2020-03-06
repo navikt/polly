@@ -146,6 +146,7 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
                                  clearable={false}
                                  isLoading={loading}
                                  autoFocus
+                                 noResultsMsg={intl.emptyTable}
                                  maxDropdownHeight="400px"
                                  searchable={true}
                                  type={TYPE.search}

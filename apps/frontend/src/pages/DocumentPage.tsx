@@ -1,25 +1,25 @@
 import React from 'react'
-import {RouteComponentProps} from 'react-router-dom'
-import {intl, useAwait} from '../util'
-import {codelist} from '../service/Codelist'
-import {Block} from 'baseui/block'
-import {Select, TYPE, Value} from 'baseui/select'
-import {deleteDocument, getDocument, getProcessesByDocument, useDocumentSearch} from '../api'
-import {Document, Process} from '../constants'
+import { RouteComponentProps } from 'react-router-dom'
+import { intl, useAwait } from '../util'
+import { codelist } from '../service/Codelist'
+import { Block } from 'baseui/block'
+import { Select, TYPE, Value } from 'baseui/select'
+import { deleteDocument, getDocument, getProcessesByDocument, useDocumentSearch } from '../api'
+import { Document, Process } from '../constants'
 import DocumentMetadata from '../components/document/DocumentMetadata'
-import {user} from '../service/User'
-import {Button, SHAPE} from 'baseui/button'
-import {faEdit, faPlusCircle} from '@fortawesome/free-solid-svg-icons'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
-import {faTrash} from '@fortawesome/free-solid-svg-icons/faTrash'
+import { user } from '../service/User'
+import { Button, SHAPE } from 'baseui/button'
+import { faEdit, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import DeleteDocumentModal from '../components/document/component/DeleteDocumentModal'
-import {Notification} from 'baseui/notification'
-import {H4, Label2, Paragraph2} from 'baseui/typography'
-import {StyledSpinnerNext} from 'baseui/spinner'
+import { Notification } from 'baseui/notification'
+import { H4, Label2, Paragraph2 } from 'baseui/typography'
+import { StyledSpinnerNext } from 'baseui/spinner'
 import DocumentProcessesTable from '../components/document/component/DocumentProcessesTable'
-import {Tab} from 'baseui/tabs'
-import {CustomizedTabs} from "../components/common/CustomizedTabs";
+import { Tab } from 'baseui/tabs'
+import { CustomizedTabs } from "../components/common/CustomizedTabs";
 
 const renderTextWithLabel = (label: string, text: string) => (
   <Block marginTop="scale1000">
@@ -96,6 +96,7 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
               autoFocus
               maxDropdownHeight="400px"
               searchable={true}
+              noResultsMsg={intl.emptyTable}
               type={TYPE.search}
               options={documentSearchResult.map(doc => ({id: doc.id, label: doc.name}))}
               placeholder={intl.searchDocumentPlaceholder}

@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { DocumentFormValues, Document } from '../../constants';
-import { useDebouncedState, intl } from '../../util';
+import { Document, DocumentFormValues } from '../../constants';
+import { intl, useDebouncedState } from '../../util';
 import { searchDocuments } from '../../api';
-import { TYPE, Select, Option } from 'baseui/select';
+import { Option, Select, TYPE } from 'baseui/select';
 
 type SelectDocumentProps = {
     document: DocumentFormValues | undefined;
@@ -33,6 +33,7 @@ const SelectDocument = (props: SelectDocumentProps) => {
             isLoading={isLoadingDocuments}
             clearable
             searchable={true}
+            noResultsMsg={intl.emptyTable}
             type={TYPE.search}
             maxDropdownHeight="400px"
             placeholder={intl.searchDocuments}
