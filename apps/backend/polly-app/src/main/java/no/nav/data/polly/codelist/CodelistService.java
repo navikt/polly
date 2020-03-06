@@ -74,7 +74,7 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
         return CodelistCache.getAll();
     }
 
-    @Scheduled(initialDelayString = "PT10M", fixedRateString = "PT10M")
+    @Scheduled(initialDelayString = "PT1M", fixedRateString = "PT1M")
     @PostConstruct
     public void refreshCache() {
         List<Codelist> allCodelists = codelistRepository.findAll();
