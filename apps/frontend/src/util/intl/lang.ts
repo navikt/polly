@@ -255,7 +255,7 @@ export const no: IStrings = {
   close: "Lukk",
   lastChanges: "Siste endringer",
   settings: "Innstillinger",
-  usedProcess: "Inneholder behandlinger",
+  containsInformationType: "Inneholder opplysningstyper",
   containsProcesses: "Brukt i behandlinger",
   defaultProcessDocument: "Dokument for standard informasjonstyper i behandling",
   processNameHelpText: "Et kort og beskrivende navn som sier hva behandlingen går ut på. Eksempel: saksbehandling, saksbehandling sykepenger, håndtere brukerhenvendelser eller rekruttering.",
@@ -339,8 +339,7 @@ export const en: IStrings = {
   years: "years",
   months: "months",
   lastEvents: "Last events",
-
-  usedProcess: "Contains information type(s)",
+  containsInformationType: "Contains information type(s)",
   containsProcesses: "Used in information type(s)",
   loggedInStatus: "You are logged in and can",
   notLoggedInStatus: "You are not logged in but you can still",
