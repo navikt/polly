@@ -152,6 +152,8 @@ export const no: IStrings = {
   departmentSelect: "Velg avdeling",
   subDepartmentSelect: "Velg linje (Ytre etat)",
   teamSelect: "Velg produktteam (IT)",
+  informationtypesUsedInDocument: "Opplysningstyper brukt i dokumentet",
+  editDocument: "Rediger dokument",
 
   POLLY_READ: "Les",
   POLLY_WRITE: "Skriv",
@@ -427,6 +429,8 @@ export const en: IStrings = {
   departmentSelect: "Select department",
   subDepartmentSelect: "Select subdepartment",
   teamSelect: "Select team (IT)",
+  informationtypesUsedInDocument: "Information types used in document",
+  editDocument: "Edit document",
 
   POLLY_READ: "Read",
   POLLY_WRITE: "Write",
