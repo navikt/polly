@@ -18,7 +18,7 @@ const MainContent = styled('div', {
   height: '100%',
   width: '80%',
   marginLeft: sidebarMargin,
-  marginTop: '2rem'
+  marginTop: '4rem',
 })
 
 const HeaderContent = styled('div', {
