@@ -32,6 +32,14 @@ const searchCodelist = (search: string, list: ListName & NavigableItem, typeName
       type: list
     }))
 
+const getCodelistByListnameAndType = (list: ListName, typeName: string) =>
+  codelist.getCodes(list).map(c => ({
+    id: c.code,
+    sortKey: c.shortName,
+    label: <SearchLabel name={c.shortName} type={typeName} />,
+    type: list
+  } as SearchItem))
+
 const useMainSearch = () => {
   const [search, setSearch] = useDebouncedState<string>('', 500)
   const [searchResult, setSearchResult] = React.useState<SearchItem[]>([])
@@ -39,55 +47,69 @@ const useMainSearch = () => {
   const [type, setType] = useState<SearchType>('all')
 
   useEffect(() => {
-    (async () => {
-      if (search && search.length > 2) {
-        let results: SearchItem[] = []
-        const compareFn = (a: SearchItem, b: SearchItem) => prefixBiasedSort(search, a.sortKey, b.sortKey)
-        const add = (items: SearchItem[]) => {
-          results = [...results, ...items].sort(compareFn)
-          setSearchResult(results)
-        }
-        setLoading(true)
-
-        if (type === 'all' || type === 'purpose') add(searchCodelist(search, ListName.PURPOSE, intl.purpose))
-        if (type === 'all' || type === 'department') add(searchCodelist(search, ListName.DEPARTMENT, intl.department))
-        if (type === 'all' || type === 'subDepartment') add(searchCodelist(search, ListName.SUB_DEPARTMENT, intl.subDepartment))
-
-        if (type === 'all' || type === 'informationType') {
-          const infoTypesRes = await searchInformationType(search)
-          add(infoTypesRes.content.map(it => ({
-            id: it.id,
-            sortKey: it.name,
-            label: <SearchLabel name={it.name} type={intl.informationType} />,
-            type: ObjectType.INFORMATION_TYPE
-          })))
-        }
-
-        if (type === 'all' || type === 'process') {
-          const resProcess = await searchProcess(search)
-          add(resProcess.content.map(it => {
-            const purpose = codelist.getShortname(ListName.PURPOSE, it.purposeCode)
-            return ({
+    setSearchResult([])
+    if (type === 'purpose') {        
+        setSearchResult(getCodelistByListnameAndType(ListName.PURPOSE, intl.purpose))
+    }
+    else if (type === 'department') {        
+      setSearchResult(getCodelistByListnameAndType(ListName.DEPARTMENT, intl.department))
+    }
+    else if (type === 'subDepartment') {        
+      setSearchResult(getCodelistByListnameAndType(ListName.SUB_DEPARTMENT, intl.subDepartment))
+    }
+    else {
+      (async () => {
+        if (search && search.length > 2) {
+          let results: SearchItem[] = []
+          const compareFn = (a: SearchItem, b: SearchItem) => prefixBiasedSort(search, a.sortKey, b.sortKey)
+          const add = (items: SearchItem[]) => {
+            results = [...results, ...items].sort(compareFn)
+            setSearchResult(results)
+          }
+          setLoading(true)
+  
+          add(searchCodelist(search, ListName.PURPOSE, intl.purpose))
+          add(searchCodelist(search, ListName.DEPARTMENT, intl.department))
+          add(searchCodelist(search, ListName.SUB_DEPARTMENT, intl.subDepartment))
+  
+          if (type === 'all' || type === 'informationType') {
+            const infoTypesRes = await searchInformationType(search)
+            add(infoTypesRes.content.map(it => ({
               id: it.id,
-              sortKey: `${it.name} ${purpose}`,
-              label: <SearchLabel name={`${purpose}: ${it.name}`} type={intl.process} />,
-              type: ObjectType.PROCESS
-            })
-          }))
+              sortKey: it.name,
+              label: <SearchLabel name={it.name} type={intl.informationType} />,
+              type: ObjectType.INFORMATION_TYPE
+            })))
+          }
+  
+          if (type === 'all' || type === 'process') {
+            const resProcess = await searchProcess(search)
+            add(resProcess.content.map(it => {
+              const purpose = codelist.getShortname(ListName.PURPOSE, it.purposeCode)
+              return ({
+                id: it.id,
+                sortKey: `${it.name} ${purpose}`,
+                label: <SearchLabel name={`${purpose}: ${it.name}`} type={intl.process} />,
+                type: ObjectType.PROCESS
+              })
+            }))
+          }
+  
+          if (type === 'all' || type === 'team') {
+            const resTeams = await searchTeam(search)
+            add(resTeams.content.map(it => ({
+              id: it.id,
+              sortKey: it.name,
+              label: <SearchLabel name={it.name} type={intl.productTeam} />,
+              type: 'team'
+            })))
+          }
+          setLoading(false)
         }
+      })()
+    }
 
-        if (type === 'all' || type === 'team') {
-          const resTeams = await searchTeam(search)
-          add(resTeams.content.map(it => ({
-            id: it.id,
-            sortKey: it.name,
-            label: <SearchLabel name={it.name} type={intl.productTeam} />,
-            type: 'team'
-          })))
-        }
-        setLoading(false)
-      }
-    })()
+    
   }, [search, type])
 
   return [setSearch, searchResult, loading, type, setType] as [(text: string) => void, SearchItem[], boolean, SearchType, (type: SearchType) => void]
@@ -173,8 +195,8 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
   return (
     <Block>
       <Block display='flex'
-             position='relative'
-             alignItems='center'>
+        position='relative'
+        alignItems='center'>
         <Select
           noResultsMsg={intl.emptyTable}
           autoFocus={props.match.path === '/'}

@@ -51,10 +51,10 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
   const [errorDocumentModal, setErrorDocumentModal] = React.useState(null)
   const [isLoadingProcessList, setIsLoadingProcessList] = React.useState(true)
   const [isLoadingProcess, setIsLoadingProcess] = React.useState(true)
+  const [currentListName, setCurrentListname] = React.useState<string | undefined>(listName)
   const current_location = useLocation()
 
   const getProcessList = async () => {
-    setIsLoadingProcessList(true)
     try {
       let list: UseWithPurpose[] = []
 
@@ -69,7 +69,6 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
     } catch (err) {
       console.log(err)
     }
-    setIsLoadingProcessList(false)
   }
 
   const getProcessById = async (processId: string) => {
@@ -189,7 +188,11 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
   useAwait(user.wait())
 
   useEffect(() => {
-    (async () => await getProcessList())()
+    (async () => {
+      setIsLoadingProcessList(true)
+      await getProcessList()
+      setIsLoadingProcessList(false)
+    })()
   }, [code])
 
   return (

@@ -3,6 +3,8 @@ import DocumentForm from "../components/document/component/DocumentForm";
 import {DocumentFormValues} from "../constants";
 import {createInformationTypesDocument} from "../api";
 import {RouteComponentProps} from "react-router-dom";
+import { H4 } from "baseui/typography";
+import { intl } from "../util";
 
 let initialCreateDocumentFormValues: DocumentFormValues = {
   name: "",
@@ -24,6 +26,7 @@ const DocumentCreatePage = (props: RouteComponentProps) => {
 
   return (
     <React.Fragment>
+      <H4>{intl.createdDocument}</H4>
       <DocumentForm initialValues={initialCreateDocumentFormValues} handleSubmit={handleCreateDocument}/>
     </React.Fragment>
   );

@@ -175,6 +175,8 @@ export interface IStrings {
   departmentSelect: string;
   subDepartmentSelect: string;
   teamSelect: string;
+  informationtypesUsedInDocument: string;
+  editDocument: string;
 
   // groups
   POLLY_READ: string;

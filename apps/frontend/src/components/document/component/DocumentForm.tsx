@@ -15,12 +15,12 @@ import { Notification } from "baseui/notification";
 import { searchDocuments } from "../../../api"
 
 const rowBlockProps: BlockProps = {
-  width: '100%',
-  marginTop: '1rem',
+  width: '50%',
+  marginBottom: '2rem',
 };
 
 const labelProps: BlockProps = {
-  font: 'font400'
+  marginBottom: "1rem"
 }
 
 type DocumentFormProps = {
@@ -66,15 +66,17 @@ const DocumentForm = (props: DocumentFormProps) => {
           (formikProps: FormikProps<DocumentFormValues>) => (
             <Form onKeyDown={disableEnter}>
               <Block {...rowBlockProps}>
-                <Label2 {...labelProps}>{intl.name}</Label2>
-                <Field name="name">
-                  {
-                    (props: FieldProps) => (
-                      <Input type="text" size={SIZE.default} {...props.field}/>
-                    )
-                  }
-                </Field>
-                <Error fieldName="name" fullWidth={true}/>
+                <Block>
+                  <Label2 {...labelProps}>{intl.name}</Label2>
+                  <Field name="name">
+                    {
+                      (props: FieldProps) => (
+                        <Input type="text" size={SIZE.default} {...props.field}/>
+                      )
+                    }
+                  </Field>
+                  <Error fieldName="name" fullWidth={true}/>
+                </Block>
               </Block>
               <Block {...rowBlockProps}>
                 <Label2 {...labelProps}>{intl.description}</Label2>
@@ -92,7 +94,8 @@ const DocumentForm = (props: DocumentFormProps) => {
                 <Error fieldName="description" fullWidth={true}/>
               </Block>
 
-              <Block {...rowBlockProps}>
+              <Block marginTop="3rem">
+                <Label2 marginBottom="2rem">{intl.informationtypesUsedInDocument}</Label2>
                 <FieldArray
                   name="informationTypes"
                   render={
