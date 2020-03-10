@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 import java.util.List;
 import java.util.Set;
 
+import static no.nav.data.polly.common.security.SecurityConstants.APPID_CLAIM;
 import static no.nav.data.polly.common.security.dto.PollyRole.ROLE_PREFIX;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static no.nav.data.polly.common.utils.StreamUtils.copyOf;
@@ -17,16 +18,14 @@ import static no.nav.data.polly.common.utils.StreamUtils.copyOf;
 @Value
 public class UserInfo {
 
-    public static final String APPID_CLAIM = "appid";
-
-    private String appId;
-    private String subject;
-    private String ident;
-    private String name;
-    private String givenName;
-    private String familyName;
-    private String email;
-    private List<String> groups;
+    String appId;
+    String subject;
+    String ident;
+    String name;
+    String givenName;
+    String familyName;
+    String email;
+    List<String> groups;
 
     public UserInfo(UserPrincipal principal, Set<GrantedAuthority> grantedAuthorities, String identClaimName) {
         this.appId = getClaim(principal, APPID_CLAIM);

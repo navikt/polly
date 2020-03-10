@@ -28,6 +28,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static no.nav.data.polly.common.security.SecurityConstants.APPID_CLAIM;
+import static no.nav.data.polly.common.security.SecurityConstants.POLLY_COOKIE_NAME;
+import static no.nav.data.polly.common.security.SecurityConstants.TOKEN_TYPE;
 import static org.springframework.util.StringUtils.hasText;
 
 /**
@@ -36,13 +39,11 @@ import static org.springframework.util.StringUtils.hasText;
 @Slf4j
 public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthenticationFilter {
 
-    private static final String POLLY_COOKIE_NAME = "session";
-    private static final String TOKEN_TYPE = "Bearer ";
+    private static final Counter counter = initCounter();
 
     private final UserPrincipalManager principalManager;
     private final AzureTokenProvider azureTokenProvider;
     private final List<String> allowedAppIds;
-    private final Counter counter;
 
     public AADStatelessAuthenticationFilter(UserPrincipalManager userPrincipalManager,
             AzureTokenProvider azureTokenProvider, AppIdMapping appIdMapping) {
@@ -50,7 +51,6 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
         this.principalManager = userPrincipalManager;
         this.azureTokenProvider = azureTokenProvider;
         this.allowedAppIds = List.copyOf(appIdMapping.getIds());
-        counter = initCounter();
     }
 
     @Override
@@ -135,7 +135,7 @@ public class AADStatelessAuthenticationFilter extends AADAppRoleStatelessAuthent
     }
 
     private void validate(UserPrincipal principal) throws BadJWTException {
-        String appidClaim = (String) principal.getClaim(UserInfo.APPID_CLAIM);
+        String appidClaim = (String) principal.getClaim(APPID_CLAIM);
         if (appidClaim == null || !allowedAppIds.contains(appidClaim)) {
             throw new BadJWTException("Invalid token appid. Provided value " + appidClaim + " does not match allowed appid");
         }

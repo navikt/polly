@@ -32,6 +32,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static no.nav.data.polly.common.security.SecurityConstants.REGISTRATION_ID;
 import static no.nav.data.polly.common.utils.Constants.SESSION_LENGTH;
 import static org.apache.commons.lang3.StringUtils.substringBefore;
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.CODE;
@@ -47,8 +48,6 @@ import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterN
 @RequestMapping
 @Api(tags = {"auth"})
 public class AuthController {
-
-    private static final String REGISTRATION_ID = "azure";
 
     private final SecurityProperties securityProperties;
     private final AzureTokenProvider azureTokenProvider;
