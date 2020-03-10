@@ -398,7 +398,6 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                 </CustomizedModalBlock>
                 <Error fieldName='name'/>
 
-
                 <CustomizedModalBlock>
                   <ModalLabel label={intl.processPurpose} tooltip={intl.processPurposeHelpText}/>
                   <FieldDescription/>
@@ -451,13 +450,18 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                   <FieldProduct products={formikBag.values.products}/>
                 </CustomizedModalBlock>
 
-
                 <CustomizedModalBlock>
                   <ModalLabel label={intl.usesAllInformationTypes} tooltip={intl.usesAllInformationTypesHelpText}/>
                   <BoolField value={formikBag.values.usesAllInformationTypes} fieldName='usesAllInformationTypes' omitUndefined/>
                 </CustomizedModalBlock>
 
-                <Accordion>
+                <Accordion overrides={{
+                  Root:{
+                    style:{
+                      marginTop: "25px"
+                    }
+                  }
+                }}>
                   <Panel
                     title={<AccordionTitle title={intl.legalBasis} expanded={isPanelExpanded}/>}
                     onChange={togglePanel}
