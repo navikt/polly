@@ -1,27 +1,27 @@
-import React from "react";
-import {StyledCell, StyledHead, StyledHeadCell, StyledRow} from "baseui/table";
-import {intl} from "../../../util";
-import {KIND, SIZE as ButtonSize} from "baseui/button";
-import {DocumentInformationTypes, DocumentInfoTypeUse} from "../../../constants";
-import {faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
-import {FieldArrayRenderProps} from "formik";
-import FieldInformationType from "./FieldInformationType";
-import FieldSubjectCategory from "./FieldSubjectCategory";
-import {Error} from "../../common/ModalSchema";
+import React from 'react'
+import { StyledCell, StyledHead, StyledHeadCell, StyledRow } from 'baseui/table'
+import { intl } from '../../../util'
+import { KIND, SIZE as ButtonSize } from 'baseui/button'
+import { DocumentInformationTypes, DocumentInfoTypeUse } from '../../../constants'
+import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { FieldArrayRenderProps } from 'formik'
+import FieldInformationType from './FieldInformationType'
+import FieldSubjectCategory from './FieldSubjectCategory'
+import { Error } from '../../common/ModalSchema'
 import shortid from 'shortid'
-import NewButton from '../../common/Button'
+import Button from '../../common/Button'
 
 type InformationTypesTableProps = {
   arrayHelpers: FieldArrayRenderProps,
 }
 
 const InformationTypesTable = (props: InformationTypesTableProps) => {
-  const [tableContent, setTableContent] = React.useState([]);
-  const {arrayHelpers} = props;
+  const [tableContent, setTableContent] = React.useState([])
+  const {arrayHelpers} = props
 
   const newRow = {
     id: shortid.generate(),
-    informationTypeId: "",
+    informationTypeId: '',
     informationType: undefined,
     subjectCategories: []
   }
@@ -34,15 +34,15 @@ const InformationTypesTable = (props: InformationTypesTableProps) => {
       arrayHelpers.push(newRow)
 
     setTableContent(arrayHelpers.form.values.informationTypes)
-  }, [arrayHelpers]);
+  }, [arrayHelpers])
 
   return (
     <>
       <StyledHead>
-        <StyledHeadCell style={{maxWidth: "45%"}}>{intl.informationType}</StyledHeadCell>
-        <StyledHeadCell style={{maxWidth: "45%"}}>{intl.subjectCategories}</StyledHeadCell>
-        <StyledHeadCell style={{maxWidth: "10%", justifyContent: "center"}}>
-          <NewButton
+        <StyledHeadCell style={{maxWidth: '45%'}}>{intl.informationType}</StyledHeadCell>
+        <StyledHeadCell style={{maxWidth: '45%'}}>{intl.subjectCategories}</StyledHeadCell>
+        <StyledHeadCell style={{maxWidth: '10%', justifyContent: 'center'}}>
+          <Button
             kind={KIND.secondary}
             size={ButtonSize.compact}
             icon={faPlus}
@@ -50,61 +50,61 @@ const InformationTypesTable = (props: InformationTypesTableProps) => {
             onClick={() => {
               arrayHelpers.push({
                 id: shortid.generate(),
-                informationTypeId: "",
+                informationTypeId: '',
                 informationType: undefined,
                 subjectCategories: []
-              });
+              })
             }}
           >
             {intl.addNew}
-          </NewButton>
+          </Button>
         </StyledHeadCell>
       </StyledHead>
 
       {tableContent.map((row: DocumentInfoTypeUse, index: number) => (
         <React.Fragment key={row.id}>
           <StyledRow>
-            <StyledCell style={{maxWidth: "45%"}}>
+            <StyledCell style={{maxWidth: '45%'}}>
               <FieldInformationType
                 documentInformationType={row}
                 handleChange={(values: DocumentInformationTypes) => arrayHelpers.replace(index, values)}
               />
             </StyledCell>
-            <StyledCell style={{maxWidth: "45%"}}>
+            <StyledCell style={{maxWidth: '45%'}}>
               <FieldSubjectCategory
                 documentInformationType={row}
                 handleChange={(values: DocumentInformationTypes) => arrayHelpers.replace(index, values)}
               />
             </StyledCell>
-            <StyledCell style={{maxWidth: "10%", justifyContent: "center"}}>
+            <StyledCell style={{maxWidth: '10%', justifyContent: 'center'}}>
               {showDeleteRowButton && (
-                <NewButton
+                <Button
                   kind={KIND.secondary}
                   size={ButtonSize.compact}
                   icon={faTrash}
                   tooltip={intl.delete}
                   onClick={() => {
-                    arrayHelpers.remove(index);
+                    arrayHelpers.remove(index)
                   }}
                 >
                   {intl.delete}
-                </NewButton>
+                </Button>
               )}
             </StyledCell>
           </StyledRow>
           <StyledRow>
-            <StyledCell style={{maxWidth: "45%"}}>
+            <StyledCell style={{maxWidth: '45%'}}>
               <Error fieldName={`informationTypes[${index}].informationTypeId`} fullWidth={true}/>
             </StyledCell>
-            <StyledCell style={{maxWidth: "45%"}}>
+            <StyledCell style={{maxWidth: '45%'}}>
               <Error fieldName={`informationTypes[${index}].subjectCategories`} fullWidth={true}/>
             </StyledCell>
-            <StyledCell style={{maxWidth: "10%", justifyContent: "center"}}/>
+            <StyledCell style={{maxWidth: '10%', justifyContent: 'center'}}/>
           </StyledRow>
         </React.Fragment>
       ))}
     </>
-  );
-};
+  )
+}
 
-export default InformationTypesTable;
+export default InformationTypesTable

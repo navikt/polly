@@ -12,6 +12,7 @@ import { Block } from 'baseui/block'
 
 interface ButtonProps {
   kind?: KIND[keyof KIND] | 'outline'
+  type?: 'submit' | 'reset' | 'button'
   size?: SIZE[keyof SIZE]
   shape?: SHAPE[keyof SHAPE]
   icon?: IconDefinition
@@ -68,7 +69,7 @@ const Button = (props: ButtonProps) => {
       <Block display='inline' marginLeft={props.marginLeft ? theme.sizing.scale400 : 0}/>
       <Tooltip tooltip={props.tooltip}>
         <BaseUIButton kind={baseuiKind} size={props.size} shape={props.shape} onClick={() => props.onClick?.()} overrides={{BaseButton: overrides}}
-                      startEnhancer={props.startEnhancer} disabled={props.disabled}
+                      startEnhancer={props.startEnhancer} disabled={props.disabled} type={props.type}
         >
           {props.icon && <FontAwesomeIcon icon={props.icon} style={{marginRight: props.children ? '.5rem' : undefined}}/>} {props.children}
         </BaseUIButton>
