@@ -37,7 +37,7 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
   const [isDeleteModalVisible, setDeleteModalVisibility] = React.useState(false)
   const [documentUsages, setDocumentUsages] = React.useState<[Process]>()
   const [errorMessage, setErrorMessage] = React.useState<string>()
-  const [activeKey, setActiveKey] = React.useState<string | number>('usedProcesses')
+  const [activeKey, setActiveKey] = React.useState<string | number>('containsInformationType')
   const tabOverride = {Tab: {style: {fontSize: '1.5rem'}}}
 
   useAwait(user.wait())
@@ -194,7 +194,7 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
                 }}
                 activeKey={activeKey}
               >
-                <Tab key={'usedProcesses'} title={intl.usedProcess} overrides={tabOverride}>
+                <Tab key={'containsInformationType'} title={intl.containsInformationType} overrides={tabOverride}>
                   <Block>
                     <DocumentMetadata document={currentDocument}/>
                   </Block>
