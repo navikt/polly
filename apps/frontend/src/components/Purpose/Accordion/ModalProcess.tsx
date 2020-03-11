@@ -54,6 +54,33 @@ const FieldName = () => (
   />
 )
 
+const FieldPurpose = (props: { purposeCode?: string, disabled?: boolean }) => {
+  const {purposeCode, disabled} = props
+  const [value, setValue] = React.useState<Value>(purposeCode ? [{
+    id: disabled ? purposeCode: "",
+    label: disabled ? codelist.getShortname(ListName.PURPOSE, purposeCode): ""
+  }] : [])
+
+  return (
+    <Field
+      name='purposeCode'
+      render={({form}: FieldProps<ProcessFormValues>) => (
+        <Block marginRight='10px' width={'100%'}>
+          <Select
+            options={codelist.getParsedOptions(ListName.PURPOSE)}
+            onChange={({value}) => {
+              setValue(value)
+              form.setFieldValue('purposeCode', value.length > 0 ? value[0].id : '')
+            }}
+            disabled={disabled}
+            value={value}
+          />
+        </Block>
+      )}
+    />
+  )
+}
+
 const FieldDescription = () => (
   <Field
     name='description'
@@ -361,7 +388,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
   const [selectedLegalBasis, setSelectedLegalBasis] = React.useState<LegalBasisFormValues>()
   const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState<number>()
-  const [isPanelExpanded, togglePanel] = React.useReducer(prevState => !prevState, false);
+  const [isPanelExpanded, togglePanel] = React.useReducer(prevState => !prevState, false)
 
   const disableEnter = (e: KeyboardEvent) => {
     if (e.key === 'Enter') e.preventDefault()
@@ -397,6 +424,14 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                   <FieldName/>
                 </CustomizedModalBlock>
                 <Error fieldName='name'/>
+
+                <CustomizedModalBlock>
+                  <ModalLabel label={intl.purpose}/>
+                  <FieldPurpose
+                    purposeCode={initialValues.purposeCode}
+                    disabled={codelist.getCodes(ListName.PURPOSE).filter( p => p.code === initialValues.purposeCode).length > 0}
+                  />
+                </CustomizedModalBlock>
 
                 <CustomizedModalBlock>
                   <ModalLabel label={intl.processPurpose} tooltip={intl.processPurposeHelpText}/>
