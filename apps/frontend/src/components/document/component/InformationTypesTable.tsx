@@ -16,23 +16,21 @@ type InformationTypesTableProps = {
 }
 
 const InformationTypesTable = (props: InformationTypesTableProps) => {
-  const [tableContent, setTableContent] = React.useState([])
+  const [tableContent, setTableContent] = React.useState<DocumentInfoTypeUse[]>([])
   const {arrayHelpers} = props
 
-  const newRow = {
+  const newRow = () => ({
     id: shortid.generate(),
     informationTypeId: '',
     informationType: undefined,
     subjectCategories: []
-  }
+  })
 
   const showDeleteRowButton = arrayHelpers.form.values.informationTypes.length > 1
 
 
   React.useEffect(() => {
-    if (arrayHelpers.form.values.informationTypes.length < 1)
-      arrayHelpers.push(newRow)
-
+    if (arrayHelpers.form.values.informationTypes.length < 1) arrayHelpers.push(newRow())
     setTableContent(arrayHelpers.form.values.informationTypes)
   }, [arrayHelpers])
 
@@ -43,18 +41,12 @@ const InformationTypesTable = (props: InformationTypesTableProps) => {
         <StyledHeadCell style={{maxWidth: '45%'}}>{intl.subjectCategories}</StyledHeadCell>
         <StyledHeadCell style={{maxWidth: '10%', justifyContent: 'center'}}>
           <Button
+            type='button'
             kind={KIND.secondary}
             size={ButtonSize.compact}
             icon={faPlus}
             tooltip={intl.addNew}
-            onClick={() => {
-              arrayHelpers.push({
-                id: shortid.generate(),
-                informationTypeId: '',
-                informationType: undefined,
-                subjectCategories: []
-              })
-            }}
+            onClick={() => arrayHelpers.push(newRow())}
           >
             {intl.addNew}
           </Button>
