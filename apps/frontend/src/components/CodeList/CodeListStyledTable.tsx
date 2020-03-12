@@ -1,19 +1,19 @@
 import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { Code } from '../../service/Codelist'
-import { Block } from 'baseui/block'
-import { KIND, SIZE as ButtonSize } from 'baseui/button'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEdit, faGhost, faTrash } from '@fortawesome/free-solid-svg-icons'
+import {useEffect, useState} from 'react'
+import {Code} from '../../service/Codelist'
+import {Block} from 'baseui/block'
+import {KIND, SIZE as ButtonSize} from 'baseui/button'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faEdit, faGhost, faTrash} from '@fortawesome/free-solid-svg-icons'
 import UpdateCodeListModal from './ModalUpdateCodeList'
-import { intl } from '../../util'
+import {intl} from '../../util'
 import DeleteCodeListModal from './ModalDeleteCodeList'
-import { useTable } from '../../util/hooks'
-import { deleteCodelist, getCodelistUsage, updateCodelist } from '../../api'
-import { Usage } from './CodeListUsage'
-import { CodeListFormValues, CodeUsage } from '../../constants'
-import { AuditButton } from '../audit/AuditButton'
-import { Cell, HeadCell, Row, Table } from '../common/Table'
+import {useTable} from '../../util/hooks'
+import {deleteCodelist, getCodelistUsage, updateCodelist} from '../../api'
+import {Usage} from './CodeListUsage'
+import {CodeListFormValues, CodeUsage} from '../../constants'
+import {AuditButton} from '../audit/AuditButton'
+import {Cell, HeadCell, Row, Table} from '../common/Table'
 import Button from '../common/Button'
 
 type TableCodelistProps = {
@@ -92,7 +92,7 @@ const CodeListTable = ({tableData, refresh}: TableCodelistProps) => {
         </>
       }>
         {table.data.map((row, index) => <Row key={index}>
-          <Cell small>{row.code}</Cell>
+          <Cell small $style={{wordBreak:"break-word"}}>{row.code}</Cell>
           <Cell small>{row.shortName}</Cell>
           <Cell $style={{width: '55%'}}>{row.description}</Cell>
           <Cell small>

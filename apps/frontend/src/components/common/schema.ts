@@ -1,4 +1,4 @@
-import * as yup from "yup"
+import * as yup from 'yup'
 import {
   AddDocumentToProcessFormValues,
   CreateDocumentFormValues,
@@ -15,9 +15,9 @@ import {
   Process,
   ProcessFormValues,
   Retention
-} from "../../constants"
-import { intl } from "../../util"
-import { Code, codelist } from "../../service/Codelist"
+} from '../../constants'
+import { intl } from '../../util'
+import { Code, codelist } from '../../service/Codelist'
 
 const DATE_REGEX = /\d{4}-\d{2}-\d{2}/
 const max = 150
@@ -33,7 +33,7 @@ export const infoTypeSchema = () => yup.object<InformationtypeFormValues>({
   sources: yup.array(yup.string()),
   keywords: yup.array(yup.string()),
   navMaster: yup.string(),
-  description: yup.string().required(intl.required)
+  description: yup.string()
 })
 
 export const processSchema = () => yup.object<ProcessFormValues>({
@@ -45,8 +45,8 @@ export const processSchema = () => yup.object<ProcessFormValues>({
   products: yup.array(yup.string()),
   legalBases: yup.array(legalBasisSchema()),
   legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
-  start: yup.string().matches(DATE_REGEX, intl.dateFormat),
-  end: yup.string().matches(DATE_REGEX, intl.dateFormat),
+  start: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
+  end: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
   automaticProcessing: yup.boolean(),
   profiling: yup.boolean(),
   dataProcessing: yup.object<DataProcessing>({
@@ -84,7 +84,7 @@ export const createDocumentValidation = () => yup.object<CreateDocumentFormValue
     subjectCategories: yup.array(yup.string()).min(1, intl.required),
     informationTypeId: yup.string().required(intl.required)
   })).min(1, intl.required)
-});
+})
 
 export const policySchema = () => yup.object<PolicyFormValues>({
   informationType: yup.object<PolicyInformationType>().required(intl.required)
@@ -110,8 +110,8 @@ export const policySchema = () => yup.object<PolicyFormValues>({
   process: yup.object(),
   purposeCode: yup.string(),
   id: yup.string(),
-  start: yup.string().matches(DATE_REGEX, intl.dateFormat),
-  end: yup.string().matches(DATE_REGEX, intl.dateFormat),
+  start: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
+  end: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
   documentIds: yup.array(yup.string())
 })
 
@@ -127,8 +127,8 @@ export const legalBasisSchema = () => yup.object<LegalBasisFormValues>({
     then: yup.string().required(intl.requiredDescription),
     otherwise: yup.string()
   }),
-  start: yup.string().matches(DATE_REGEX, intl.dateFormat),
-  end: yup.string().matches(DATE_REGEX, intl.dateFormat)
+  start: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
+  end: yup.string().matches(DATE_REGEX, {message: intl.dateFormat})
 })
 
 export const codeListSchema = () => yup.object<Code>({
@@ -136,7 +136,7 @@ export const codeListSchema = () => yup.object<Code>({
   code: yup.string().required(intl.required),
   shortName: yup.string().required(intl.required),
   description: yup.string().required(intl.required),
-});
+})
 
 export const disclosureSchema = () => yup.object<DisclosureFormValues>({
   id: yup.string(),
@@ -147,8 +147,8 @@ export const disclosureSchema = () => yup.object<DisclosureFormValues>({
   document: yup.mixed().required(intl.required),
   legalBases: yup.array(legalBasisSchema()),
   legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
-  start: yup.string().matches(DATE_REGEX, intl.dateFormat),
-  end: yup.string().matches(DATE_REGEX, intl.dateFormat)
+  start: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
+  end: yup.string().matches(DATE_REGEX, {message: intl.dateFormat})
 })
 
 export const addDocumentToProcessSchema = () => yup.object<AddDocumentToProcessFormValues>({

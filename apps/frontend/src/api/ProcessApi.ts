@@ -1,5 +1,5 @@
 import axios from "axios"
-import { PageResponse, Process, ProcessFormValues, ProcessCount } from "../constants"
+import { PageResponse, Process, ProcessCount, ProcessFormValues } from "../constants"
 import { env } from "../util/env"
 import { convertLegalBasesToFormValues } from "./PolicyApi"
 
@@ -60,6 +60,7 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     legalBases,
     start,
     end,
+    usesAllInformationTypes,
     automaticProcessing,
     profiling,
     dataProcessing,
@@ -79,6 +80,7 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     legalBases: convertLegalBasesToFormValues(legalBases),
     start: start || undefined,
     end: end || undefined,
+    usesAllInformationTypes: process && !!usesAllInformationTypes,
     automaticProcessing: process ? mapBool(automaticProcessing) : false,
     profiling: process ? mapBool(profiling) : false,
     dataProcessing: {
@@ -108,6 +110,7 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
     legalBases: values.legalBases ? values.legalBases : [],
     start: values.start,
     end: values.end,
+    usesAllInformationTypes: values.usesAllInformationTypes,
     automaticProcessing: values.automaticProcessing,
     profiling: values.profiling,
     dataProcessing: values.dataProcessing,

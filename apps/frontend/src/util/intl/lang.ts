@@ -1,4 +1,4 @@
-import { IStrings } from "./intl";
+import {IStrings} from "./intl";
 
 export const no: IStrings = {
   informationType: "Opplysningstype",
@@ -84,6 +84,7 @@ export const no: IStrings = {
   purposeNotFound: "Fant ingen formål",
   purposeUse: "Brukes til formål",
   informationTypeExternalUse: "Utleveres til",
+  usesAllInformationTypes: "Bruker alle opplysningstyper",
   policyEdit: "Rediger behandling for opplysningstype",
   policyNew: "Opprett behandling for opplysningstype",
   policyAdd: "Legg til opplysningstyper brukt i behandlingen",
@@ -151,6 +152,8 @@ export const no: IStrings = {
   departmentSelect: "Velg avdeling",
   subDepartmentSelect: "Velg linje (Ytre etat)",
   teamSelect: "Velg produktteam (IT)",
+  informationtypesUsedInDocument: "Opplysningstyper brukt i dokumentet",
+  editDocument: "Rediger dokument",
 
   POLLY_READ: "Les",
   POLLY_WRITE: "Skriv",
@@ -184,6 +187,7 @@ export const no: IStrings = {
   copied: "Kopiert",
   groups: "Grupper",
   description: "Beskrivelse",
+  additionalDescription: "Ytterligere beskrivelse",
   document: "Dokument",
   edit: "Rediger",
   sources: "Kilder",
@@ -251,7 +255,7 @@ export const no: IStrings = {
   close: "Lukk",
   lastChanges: "Siste endringer",
   settings: "Innstillinger",
-  usedProcess: "Inneholder behandlinger",
+  containsInformationType: "Inneholder opplysningstyper",
   containsProcesses: "Brukt i behandlinger",
   defaultProcessDocument: "Dokument for standard informasjonstyper i behandling",
   processNameHelpText: "Et kort og beskrivende navn som sier hva behandlingen går ut på. Eksempel: saksbehandling, saksbehandling sykepenger, håndtere brukerhenvendelser eller rekruttering.",
@@ -260,6 +264,7 @@ export const no: IStrings = {
   productTeamHelpText: "Produktteamet i IT-avdelingen som har ansvaret for IT-løsningen som understøtter denne behandlingen. Ikke aktuelt på alle behandlinger. Eksempel: Team Pensjon, Team Bidrag",
   subDepartmentHelpText: "Oppgi hvor i linja (ytre etat) denne behandlingen foregår.",
   systemHelpText: "IT-systemene som brukes i denne behandlingen. Eksempel: Pesys, Bidrag, Modia.",
+  usesAllInformationTypesHelpText: "Alle registrerte opplysningstyper brukes i denne behandlingen",
   processAutomationHelpText: "Brukes det databehandler for å utføre behandlingen/behandle personopplysninger.",
   profilingHelpText: "Behandles personopplysninger automatisk for å kunne analysere eller forutsi noe om preferanser, evner eller behov til en enkeltperson.",
   dataProcessorHelpText: "Oppgi om det brukes en databehandler for å behandle personopplysninger. En databehandler er en ekstern virksomhet som behandler personopplysninger på våre vegne.",
@@ -334,8 +339,7 @@ export const en: IStrings = {
   years: "years",
   months: "months",
   lastEvents: "Last events",
-
-  usedProcess: "Contains information type(s)",
+  containsInformationType: "Contains information type(s)",
   containsProcesses: "Used in information type(s)",
   loggedInStatus: "You are logged in and can",
   notLoggedInStatus: "You are not logged in but you can still",
@@ -356,6 +360,7 @@ export const en: IStrings = {
   purposeNotFound: "Found no purposes",
   purposeUse: "Used for purposes",
   informationTypeExternalUse: "External use",
+  usesAllInformationTypes: "Uses all inforamtion types",
   policyEdit: "Edit purpose for information type",
   policyNew: "Create new process for information type",
   policyAdd: "Add information type to process",
@@ -423,6 +428,8 @@ export const en: IStrings = {
   departmentSelect: "Select department",
   subDepartmentSelect: "Select subdepartment",
   teamSelect: "Select team (IT)",
+  informationtypesUsedInDocument: "Information types used in document",
+  editDocument: "Edit document",
 
   POLLY_READ: "Read",
   POLLY_WRITE: "Write",
@@ -456,6 +463,7 @@ export const en: IStrings = {
   copied: "Copied",
   groups: "Groups",
   description: "Description",
+  additionalDescription: "Additional description",
   document: "Document",
   edit: "Edit",
   sources: "Sources",
@@ -531,6 +539,7 @@ export const en: IStrings = {
   productTeamHelpText: "The IT team responsible for the IT solutions that supports this process. Not applicable to all processes. ",
   subDepartmentHelpText: "If applicable, specify the sub department or sub division responsible for the process. Not mandatory",
   systemHelpText: "The IT systems supporting this process. ",
+  usesAllInformationTypesHelpText: "All registered information types are used in the process",
   processAutomationHelpText: "Are any data processors involved in processing of personal data in this process.",
   profilingHelpText: "Is personal information automatically processed to analyze or predict something about an individual's preferences, abilities or needs?",
   dataProcessorHelpText: "Specify whether a data processor is used to process personal data. A data processor is an external entity that processes personal data on our behalf.",

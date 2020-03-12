@@ -1,8 +1,8 @@
-import LocalizedStrings, { GlobalStrings, LocalizedStringsMethods } from "react-localization";
+import LocalizedStrings, {GlobalStrings, LocalizedStringsMethods} from "react-localization";
 import * as React from "react";
-import { useEffect } from "react";
-import { useForceUpdate } from "../hooks";
-import { en, no, ta } from "./lang";
+import {useEffect} from "react";
+import {useForceUpdate} from "../hooks";
+import {en, no, ta} from "./lang";
 import * as moment from "moment";
 import "moment/locale/nb";
 import "moment/locale/ta";
@@ -72,7 +72,7 @@ export interface IStrings {
   lastEvents: string;
 
   // sentence
-  usedProcess: string;
+  containsInformationType: string;
   containsProcesses: string;
   loggedInStatus: string;
   notLoggedInStatus: string;
@@ -93,6 +93,7 @@ export interface IStrings {
   purposeNotFound: string;
   purposeUse: string;
   informationTypeExternalUse: string;
+  usesAllInformationTypes: string;
   policyEdit: string;
   policyNew: string;
   policyAdd: string;
@@ -107,6 +108,7 @@ export interface IStrings {
   productTeamHelpText: string;
   subDepartmentHelpText: string;
   systemHelpText: string;
+  usesAllInformationTypesHelpText: string;
   processAutomationHelpText: string;
   profilingHelpText: string;
   dataProcessorHelpText: string;
@@ -173,6 +175,8 @@ export interface IStrings {
   departmentSelect: string;
   subDepartmentSelect: string;
   teamSelect: string;
+  informationtypesUsedInDocument: string;
+  editDocument: string;
 
   // groups
   POLLY_READ: string;
@@ -208,6 +212,7 @@ export interface IStrings {
   copied: string;
   groups: string;
   description: string;
+  additionalDescription: string;
   document: string;
   edit: string;
   update: string;

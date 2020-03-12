@@ -98,6 +98,7 @@ const DefaultProcessDocument = (props: { documentId?: string, setDocumentId: (id
         <Select
           clearable
           searchable
+          noResultsMsg={intl.emptyTable}
           isLoading={loading}
           maxDropdownHeight="400px"
           type={TYPE.search}

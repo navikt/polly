@@ -1,20 +1,20 @@
-import { intl, theme, useAwait } from "../util"
-import { user } from "../service/User"
+import {intl, theme, useAwait} from "../util"
+import {user} from "../service/User"
 import * as React from "react"
-import { useEffect, useState } from "react"
-import { Block } from "baseui/block"
-import startIll from '../resources/start_illustration.svg'
-import { getEvents } from "../api/AuditApi"
-import { AuditAction, Event, ObjectType, PageResponse, Settings } from "../constants"
-import { StatefulTabs, Tab } from "baseui/tabs"
-import { HeadingMedium, Label2 } from "baseui/typography"
+import {useEffect, useState} from "react"
+import {Block} from "baseui/block"
+import startIll from '../resources/Behandlingskatalog_forsideillustrasjon.svg'
+import {getEvents} from "../api/AuditApi"
+import {AuditAction, Event, ObjectType, PageResponse, Settings} from "../constants"
+import {StatefulTabs, Tab} from "baseui/tabs"
+import {HeadingMedium, Label2} from "baseui/typography"
 import moment from "moment"
-import { ObjectLink } from "../components/common/RouteLink"
-import { Option, StatefulSelect, Value } from "baseui/select"
-import { AuditActionIcon } from "../components/audit/AuditComponents"
-import { PLACEMENT } from "baseui/popover"
-import { StatefulTooltip } from "baseui/tooltip"
-import { getSettings } from "../api/SettingsApi"
+import {ObjectLink} from "../components/common/RouteLink"
+import {Option, StatefulSelect, Value} from "baseui/select"
+import {AuditActionIcon} from "../components/audit/AuditComponents"
+import {PLACEMENT} from "baseui/popover"
+import {StatefulTooltip} from "baseui/tooltip"
+import {getSettings} from "../api/SettingsApi"
 import ReactMarkdown from "react-markdown/with-html"
 
 const LastEvents = () => {
@@ -71,26 +71,33 @@ const LastEvents = () => {
 export const Main = () => {
   useAwait(user.wait())
   const [settings, setSettings] = useState<Settings>()
-
+  const [isLoading, setLoading] = useState(true)
   useEffect(() => {
     (async () => {
       setSettings(await getSettings())
+      setLoading(false)
     })()
   }, [])
 
   return (
     <Block marginTop={theme.sizing.scale400} display="flex" flexWrap>
-      <Block width="100%" display="flex" justifyContent="space-between">
-        <Block marginRight={theme.sizing.scale2400}>
-          <ReactMarkdown source={settings?.frontpageMessage} escapeHtml={false}/>
-        </Block>
-        <Block marginTop={theme.sizing.scale1200}>
-            <img src={startIll} alt={intl.startIllustration} style={{width: "50%"}}/>
-        </Block>
-      </Block>
-      <Block width="100%" display="flex" justifyContent="center" alignContent="center">
-        {user.isAdmin() && <LastEvents/> }
-      </Block>
+      {
+        !isLoading && (
+          <>
+            <Block width="100%" display="flex" justifyContent="space-between">
+              <Block marginRight={theme.sizing.scale2400}>
+                <ReactMarkdown source={settings?.frontpageMessage} escapeHtml={false}/>
+              </Block>
+              <Block marginTop={theme.sizing.scale1200}>
+                <img src={startIll} alt={intl.startIllustration}/>
+              </Block>
+            </Block>
+            <Block width="100%" display="flex" justifyContent="center" alignContent="center">
+              {user.isAdmin() && <LastEvents/> }
+            </Block>
+          </>
+        )
+      }
     </Block>
   )
 }

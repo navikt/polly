@@ -1,25 +1,25 @@
 import React from 'react'
-import {RouteComponentProps} from 'react-router-dom'
-import {intl, theme, useAwait} from '../util'
-import {codelist} from '../service/Codelist'
-import {Block} from 'baseui/block'
-import {Select, TYPE, Value} from 'baseui/select'
-import {deleteDocument, getDocument, getProcessesByDocument, useDocumentSearch} from '../api'
-import {Document, Process} from '../constants'
+import { RouteComponentProps } from 'react-router-dom'
+import { intl, useAwait } from '../util'
+import { codelist } from '../service/Codelist'
+import { Block } from 'baseui/block'
+import { Select, TYPE, Value } from 'baseui/select'
+import { deleteDocument, getDocument, getProcessesByDocument, useDocumentSearch } from '../api'
+import { Document, Process } from '../constants'
 import DocumentMetadata from '../components/document/DocumentMetadata'
-import {user} from '../service/User'
-import {Button, SHAPE} from 'baseui/button'
-import {faEdit, faPlusCircle} from '@fortawesome/free-solid-svg-icons'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
-import {faTrash} from '@fortawesome/free-solid-svg-icons/faTrash'
+import { user } from '../service/User'
+import { faEdit, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
 import DeleteDocumentModal from '../components/document/component/DeleteDocumentModal'
-import {Notification} from 'baseui/notification'
-import {H4, Label2, Paragraph2} from 'baseui/typography'
-import {StyledSpinnerNext} from 'baseui/spinner'
+import { Notification } from 'baseui/notification'
+import { H4, Label2, Paragraph2 } from 'baseui/typography'
+import { StyledSpinnerNext } from 'baseui/spinner'
 import DocumentProcessesTable from '../components/document/component/DocumentProcessesTable'
-import {Tab, Tabs} from 'baseui/tabs'
-import {paddingAll, paddingZero} from '../components/common/Style'
+import { Tab } from 'baseui/tabs'
+import { CustomizedTabs } from '../components/common/CustomizedTabs'
+import Button from '../components/common/Button'
+import { AuditButton } from '../components/audit/AuditButton'
+import { SIZE as ButtonSize } from 'baseui/button'
 
 const renderTextWithLabel = (label: string, text: string) => (
   <Block marginTop="scale1000">
@@ -37,7 +37,7 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
   const [isDeleteModalVisible, setDeleteModalVisibility] = React.useState(false)
   const [documentUsages, setDocumentUsages] = React.useState<[Process]>()
   const [errorMessage, setErrorMessage] = React.useState<string>()
-  const [activeKey, setActiveKey] = React.useState<string | number>('usedProcesses')
+  const [activeKey, setActiveKey] = React.useState<string | number>('containsInformationType')
   const tabOverride = {Tab: {style: {fontSize: '1.5rem'}}}
 
   useAwait(user.wait())
@@ -45,14 +45,14 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
   const handleDelete = () => {
     if (documentId) {
       deleteDocument(documentId)
-        .then((response) => {
-          console.log(response)
-          setSelectValue([])
-          setCurrentDocument(undefined)
-          setDocumentSearch('')
-          setDeleteModalVisibility(false)
-          props.history.push('/document')
-        }).catch((e) => {
+      .then((response) => {
+        console.log(response)
+        setSelectValue([])
+        setCurrentDocument(undefined)
+        setDocumentSearch('')
+        setDeleteModalVisibility(false)
+        props.history.push('/document')
+      }).catch((e) => {
         setErrorMessage(e.message)
         console.log(e)
       })
@@ -96,6 +96,7 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
               autoFocus
               maxDropdownHeight="400px"
               searchable={true}
+              noResultsMsg={intl.emptyTable}
               type={TYPE.search}
               options={documentSearchResult.map(doc => ({id: doc.id, label: doc.name}))}
               placeholder={intl.searchDocumentPlaceholder}
@@ -113,58 +114,43 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
           <Block display="flex" flexDirection="row-reverse" marginTop="10px">
             {user.canWrite() && (
               <Block>
+                {currentDocument && <AuditButton id={currentDocument.id}/>}
+
                 {currentDocument && (
-                  <StatefulTooltip content={intl.delete} placement={PLACEMENT.bottom}>
-                    <Button kind="secondary"
-                            onClick={
-                              () => setDeleteModalVisibility(true)
-                            }
-                            overrides={{
-                              BaseButton: {
-                                style: {
-                                  marginLeft: '5px',
-                                  height: '100%',
-                                }
-                              }
-                            }}
-                    >
-                      <FontAwesomeIcon icon={faTrash}/>
-                    </Button>
-                  </StatefulTooltip>
+                  <Button
+                    tooltip={intl.delete}
+                    icon={faTrash}
+                    kind="outline"
+                    size={ButtonSize.compact}
+                    onClick={() => setDeleteModalVisibility(true)}
+                    marginLeft
+                  >
+                    {intl.delete}
+                  </Button>
                 )}
 
                 {currentDocument && (
-                  <StatefulTooltip content={intl.edit} placement={PLACEMENT.bottom}>
-                    <Button
-                      kind="secondary"
-                      onClick={() => props.history.push(`/document/edit/${currentDocument.id}`)}
-                      overrides={{
-                        BaseButton: {
-                          style: {
-                            marginLeft: '5px',
-                            height: '100%',
-                          }
-                        }
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faEdit}/>
-                    </Button>
-                  </StatefulTooltip>
+                  <Button
+                    tooltip={intl.edit}
+                    icon={faEdit}
+                    kind="outline"
+                    size={ButtonSize.compact}
+                    onClick={() => props.history.push(`/document/edit/${currentDocument.id}`)}
+                    marginLeft
+                  >
+                    {intl.edit}
+                  </Button>
                 )}
 
                 <Button
-                  type="button"
-                  shape={SHAPE.square}
+                  kind='outline'
+                  size={ButtonSize.compact}
+                  icon={faPlusCircle}
+                  tooltip={intl.createNew}
                   onClick={() => props.history.push('/document/create')}
-                  overrides={{
-                    BaseButton: {
-                      style: {
-                        marginLeft: '5px'
-                      }
-                    }
-                  }}
+                  marginLeft
                 >
-                  <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;{intl.createNew}
+                  {intl.createNew}
                 </Button>
               </Block>
             )}
@@ -187,28 +173,13 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
 
           {
             currentDocument && (
-              <Tabs
+              <CustomizedTabs
                 onChange={({activeKey}) => {
-                setActiveKey(activeKey)
-              }}
-                activeKey={activeKey}
-                overrides={{
-                  Root: {
-                    style: {
-                      outline: `4px ${theme.colors.primary200} solid`
-                    }
-                  },
-                  TabContent: {
-                    style: paddingZero
-                  },
-                  TabBar: {
-                    style: {
-                      ...paddingAll(theme.sizing.scale600)
-                    }
-                  }
+                  setActiveKey(activeKey)
                 }}
+                activeKey={activeKey}
               >
-                <Tab key={'usedProcesses'} title={intl.usedProcess} overrides={tabOverride}>
+                <Tab key={'containsInformationType'} title={intl.containsInformationType} overrides={tabOverride}>
                   <Block>
                     <DocumentMetadata document={currentDocument}/>
                   </Block>
@@ -220,7 +191,7 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
                     </Block>
                   </Tab>
                 )}
-              </Tabs>
+              </CustomizedTabs>
             )
           }
 

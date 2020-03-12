@@ -20,6 +20,7 @@ const FieldInformationType = (props: {
 
   return (
     <Select
+      noResultsMsg={intl.emptyTable}
       isLoading={isLoading}
       maxDropdownHeight="400px"
       searchable={true}

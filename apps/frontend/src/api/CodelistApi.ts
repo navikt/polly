@@ -3,7 +3,8 @@ import { AllCodelists, Code, ListName } from "../service/Codelist"
 import { CategoryUsage, CodeUsage } from "../constants"
 import { env } from "../util/env"
 
-export const getAllCodelists = async () => await axios.get<AllCodelists>(`${env.pollyBaseUrl}/codelist`)
+// refresh will force backend to re-read codelists from db, due to caching and multibackend
+export const getAllCodelists = async (refresh?: boolean) => await axios.get<AllCodelists>(`${env.pollyBaseUrl}/codelist?refresh=${refresh ? 'true' : 'false'}`)
 
 export const getCodelistUsageByListName = async (listname: string) => {
   return (await axios.get<CategoryUsage>(`${env.pollyBaseUrl}/codelist/usage/find/${listname}`)).data

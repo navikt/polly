@@ -1,20 +1,20 @@
 import * as React from 'react'
-import { useState } from 'react'
-import { Block } from 'baseui/block'
+import {useState} from 'react'
+import {Block} from 'baseui/block'
 
 import AccordionInformationtype from './AccordionInformationtype'
-import { Disclosure, Document, InformationType, Policy } from '../../../constants'
-import { intl, theme, useAwait } from '../../../util'
+import {Disclosure, Document, InformationType, Policy} from '../../../constants'
+import {intl, theme, useAwait} from '../../../util'
 import Metadata from './Metadata'
 import InformationtypePolicyTable from './InformationtypePolicyTable'
 import TableDisclosure from '../../common/TableDisclosure'
-import { DocumentTable } from './DocumentTable'
-import { Tab, Tabs } from 'baseui/tabs'
-import { H4 } from 'baseui/typography'
-import { user } from '../../../service/User'
-import { InformationTypeBannerButtons } from '../InformationTypeBannerButtons'
+import {DocumentTable} from './DocumentTable'
+import {Tab} from 'baseui/tabs'
+import {H4} from 'baseui/typography'
+import {user} from '../../../service/User'
+import {InformationTypeBannerButtons} from '../InformationTypeBannerButtons'
 import Button from '../../common/Button'
-import { paddingAll, paddingZero } from '../../common/Style'
+import {CustomizedTabs} from "../../common/CustomizedTabs";
 
 interface InformationtypeMetadataProps {
   informationtype: InformationType;
@@ -65,7 +65,7 @@ const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
       {props.informationtype && (
         <>
           <Block display="flex" justifyContent="space-between">
-            <H4 marginTop={theme.sizing.scale400}>{props.informationtype.name}</H4>
+            <H4 marginTop="0" >{props.informationtype.name}</H4>
             {user.canWrite() && (
               <InformationTypeBannerButtons id={props.informationtype.id}/>
             )}
@@ -73,22 +73,9 @@ const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
 
           <Metadata informationtype={props.informationtype}/>
 
-          <Tabs activeKey={activeTab} onChange={args => setActiveTab(args.activeKey as string)}
-                overrides={{
-                  Root: {
-                    style: {
-                      outline: `4px ${theme.colors.primary200} solid`
-                    }
-                  },
-                  TabContent: {
-                    style: paddingZero
-                  },
-                  TabBar: {
-                    style: {
-                      ...paddingAll(theme.sizing.scale600)
-                    }
-                  }
-                }}
+          <CustomizedTabs
+            activeKey={activeTab}
+            onChange={args => setActiveTab(args.activeKey as string)}
           >
             <Tab key="purposes" title={intl.purposeUse} overrides={tabOverride}>
               <Purposes policies={props.policies} expanded={props.expanded} onSelectPurpose={props.onSelectPurpose}/>
@@ -99,7 +86,7 @@ const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
             <Tab key="document" title={intl.documents} overrides={tabOverride}>
               <DocumentTable documents={props.documents}/>
             </Tab>
-          </Tabs>
+          </CustomizedTabs>
         </>
       )}
     </>
