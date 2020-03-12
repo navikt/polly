@@ -473,7 +473,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                       )}
                       <Block minWidth={"33%"} width={"100%"}>
                         <Block {...rowBlockProps}>
-                          <FieldProduct products={formikBag.values.products}/>
+                          <FieldProductTeam productTeam={formikBag.values.productTeam}/>
                         </Block>
                       </Block>
                     </Block>
