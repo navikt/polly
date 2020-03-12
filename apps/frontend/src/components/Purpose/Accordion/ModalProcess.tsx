@@ -57,8 +57,8 @@ const FieldName = () => (
 const FieldPurpose = (props: { purposeCode?: string, disabled?: boolean }) => {
   const {purposeCode, disabled} = props
   const [value, setValue] = React.useState<Value>(purposeCode ? [{
-    id: disabled ? purposeCode: "",
-    label: disabled ? codelist.getShortname(ListName.PURPOSE, purposeCode): ""
+    id: disabled ? purposeCode : "",
+    label: disabled ? codelist.getShortname(ListName.PURPOSE, purposeCode) : ""
   }] : [])
 
   return (
@@ -74,6 +74,7 @@ const FieldPurpose = (props: { purposeCode?: string, disabled?: boolean }) => {
             }}
             disabled={disabled}
             value={value}
+            error={!!(form.errors.purposeCode && form.touched.purposeCode)}
           />
         </Block>
       )}
@@ -371,7 +372,7 @@ const panelOverrides = {
   }
 }
 
-const AccordionTitle = (props: { title: string , expanded: boolean}) => {
+const AccordionTitle = (props: { title: string, expanded: boolean }) => {
   const {title, expanded} = props
   return <>
     <Block>
@@ -429,9 +430,10 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                   <ModalLabel label={intl.purpose}/>
                   <FieldPurpose
                     purposeCode={initialValues.purposeCode}
-                    disabled={codelist.getCodes(ListName.PURPOSE).filter( p => p.code === initialValues.purposeCode).length > 0}
+                    disabled={codelist.getCodes(ListName.PURPOSE).filter(p => p.code === initialValues.purposeCode).length > 0}
                   />
                 </CustomizedModalBlock>
+                <Error fieldName='purposeCode'/>
 
                 <CustomizedModalBlock>
                   <ModalLabel label={intl.processPurpose} tooltip={intl.processPurposeHelpText}/>
@@ -456,7 +458,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                         </Block>
                       )}
 
-                      <Block minWidth={"33%"} width={"100%"} >{intl.productTeam}</Block>
+                      <Block minWidth={"33%"} width={"100%"}>{intl.productTeam}</Block>
                     </Block>
                     <Block display={"flex"} width={"100%"}>
                       <Block minWidth={"33%"} width={"100%"} marginRight={".5rem"}>
@@ -467,7 +469,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                       {codelist.showSubDepartment(formikBag.values.department) && (
                         <Block minWidth={"33%"} width={"100%"} marginRight={"0"}>
                           <Block {...rowBlockProps}>
-                          <FieldSubDepartment subDepartment={formikBag.values.subDepartment}/>
+                            <FieldSubDepartment subDepartment={formikBag.values.subDepartment}/>
                           </Block>
                         </Block>
                       )}
@@ -491,8 +493,8 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                 </CustomizedModalBlock>
 
                 <Accordion overrides={{
-                  Root:{
-                    style:{
+                  Root: {
+                    style: {
                       marginTop: "25px"
                     }
                   }
