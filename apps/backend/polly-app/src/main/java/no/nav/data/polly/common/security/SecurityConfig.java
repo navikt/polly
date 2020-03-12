@@ -70,6 +70,9 @@ public class SecurityConfig {
                 registry.addMapping("/**")
                         .allowedOrigins(securityProperties.getCorsOrigins().toArray(new String[]{}))
                         .allowCredentials(true);
+                registry.addMapping("/login/**")
+                        .allowedOrigins("*");
+
             }
         };
     }
