@@ -67,9 +67,12 @@ public class SecurityConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/login/**")
+                        .allowedOrigins("https://login.microsoftonline.com");
                 registry.addMapping("/**")
                         .allowedOrigins(securityProperties.getCorsOrigins().toArray(new String[]{}))
                         .allowCredentials(true);
+
             }
         };
     }
