@@ -40,8 +40,8 @@ class CodelistService {
     this.promise = this.fetchData()
   }
 
-  private fetchData = async () => {
-    return getAllCodelists()
+  private fetchData = async (refresh?: boolean) => {
+    return getAllCodelists(refresh)
     .then(this.handleGetCodelistResponse)
     .catch(err => (this.error = err.message))
   }
@@ -55,7 +55,7 @@ class CodelistService {
   };
 
   refreshCodeLists() {
-    this.promise = this.fetchData()
+    this.promise = this.fetchData(true)
     return this.promise
   }
 

@@ -1,12 +1,12 @@
-import React from "react";
-import DocumentForm from "../components/document/component/DocumentForm";
-import { RouteComponentProps } from "react-router-dom";
-import { codelist } from "../service/Codelist";
-import { getDocument, updateInformationTypesDocument } from "../api";
-import { Document, DocumentFormValues, DocumentInfoTypeUse, } from "../constants";
-import shortid from "shortid";
-import { H4 } from "baseui/typography";
-import { intl } from "../util";
+import React from 'react'
+import DocumentForm from '../components/document/component/DocumentForm'
+import { RouteComponentProps } from 'react-router-dom'
+import { codelist } from '../service/Codelist'
+import { getDocument, updateInformationTypesDocument } from '../api'
+import { Document, DocumentFormValues, DocumentInfoTypeUse, } from '../constants'
+import shortid from 'shortid'
+import { H4 } from 'baseui/typography'
+import { intl } from '../util'
 
 const convertToDocumentFormValues = (document: Document) => {
   return {
@@ -26,27 +26,27 @@ const convertToDocumentFormValues = (document: Document) => {
 
 const DocumentEditPage = (props: RouteComponentProps<{ id?: string }>) => {
   const [document, setDocument] = React.useState<Document>()
-  const [isLoading, setLoading] = React.useState(false);
+  const [isLoading, setLoading] = React.useState(false)
 
   const handleEditDocument = async (values: DocumentFormValues) => {
     try {
       const res = await updateInformationTypesDocument(values)
       props.history.push(`/document/${res.id}`)
     } catch (err) {
-      console.log(err, "ERR")
+      console.log(err, 'ERR')
     }
   }
 
   React.useEffect(() => {
     (async () => {
-      setLoading(true);
-      await codelist.wait();
+      setLoading(true)
+      await codelist.wait()
       if (props.match.params.id) {
         setDocument(await getDocument(props.match.params.id))
       }
-      setLoading(false);
-    })();
-  }, []);
+      setLoading(false)
+    })()
+  }, [props.match.params.id])
 
   return (
     <React.Fragment>
@@ -58,7 +58,7 @@ const DocumentEditPage = (props: RouteComponentProps<{ id?: string }>) => {
 
       )}
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default DocumentEditPage;
+export default DocumentEditPage
