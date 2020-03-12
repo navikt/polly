@@ -58,7 +58,7 @@ public class CodeUsageService {
                 .labelNames("listname")
                 .name("polly_codeusage_find_summary")
                 .help("Time taken for listname usage lookup times")
-                .quantile(.5, .05).quantile(.9, .01).quantile(.99, .001)
+                .quantile(.9, .01).quantile(.99, .001)
                 .register();
     }
 

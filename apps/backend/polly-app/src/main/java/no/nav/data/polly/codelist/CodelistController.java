@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -48,8 +49,11 @@ public class CodelistController {
             @ApiResponse(code = 200, message = "Entire Codelist fetched", response = AllCodelistResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping
-    public AllCodelistResponse findAll() {
+    public AllCodelistResponse findAll(@RequestParam(value = "refresh", required = false, defaultValue = "false") boolean refresh) {
         log.info("Received a request for and returned the entire Codelist");
+        if (refresh) {
+            service.refreshCache();
+        }
         return new AllCodelistResponse(CodelistService.getAll().stream().map(Codelist::convertToResponse).collect(Collectors.groupingBy(CodelistResponse::getList)));
     }
 

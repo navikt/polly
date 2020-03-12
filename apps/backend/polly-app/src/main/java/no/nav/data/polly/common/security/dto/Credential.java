@@ -10,8 +10,8 @@ import java.util.Optional;
 @Value
 public class Credential {
 
-    private String accessToken;
-    private Auth auth;
+    String accessToken;
+    Auth auth;
 
     public Credential(String accessToken, Auth auth) {
         this.accessToken = accessToken;

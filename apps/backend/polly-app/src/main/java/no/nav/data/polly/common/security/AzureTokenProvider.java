@@ -32,15 +32,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
+import static no.nav.data.polly.common.security.SecurityConstants.SESS_ID_LEN;
+import static no.nav.data.polly.common.security.SecurityConstants.TOKEN_TYPE;
 import static no.nav.data.polly.common.security.dto.PollyRole.ROLE_PREFIX;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Slf4j
 @Service
 public class AzureTokenProvider {
-
-    private static final String TOKEN_TYPE = "Bearer ";
-    private static final int SESS_ID_LEN = 32;
 
     private final Cache<String, AuthenticationResult> accessTokenCache;
     private final LoadingCache<String, Set<GrantedAuthority>> grantedAuthorityCache;
