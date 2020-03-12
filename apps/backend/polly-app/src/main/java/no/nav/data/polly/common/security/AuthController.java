@@ -23,12 +23,14 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -86,7 +88,7 @@ public class AuthController {
             @ApiResponse(code = 302, message = "token accepted"),
             @ApiResponse(code = 500, message = "internal error")
     })
-    @GetMapping("/login/oauth2/code/{registrationId}")
+    @PostMapping("/login/oauth2/code/{registrationId}")
     public void oidc(HttpServletRequest request, HttpServletResponse response,
             @PathVariable String registrationId,
             @RequestParam(value = CODE, required = false) String code,
@@ -95,7 +97,7 @@ public class AuthController {
             @RequestParam(STATE) String stateJson
     ) throws IOException {
         log.debug("Request to auth");
-        Assert.isTrue(REGISTRATION_ID.equals(registrationId), "Invaid registrationId");
+        Assert.isTrue(REGISTRATION_ID.equals(registrationId), "Invalid registrationId");
         OAuthState state;
         try {
             state = OAuthState.fromJson(stateJson, encryptor);
@@ -151,6 +153,7 @@ public class AuthController {
     private String createAuthRequestRedirectUrl(HttpServletRequest request, String redirectUri, String errorUri) {
         return OAuth2AuthorizationRequest.from(resolver.resolve(request, REGISTRATION_ID))
                 .state(new OAuthState(redirectUri, errorUri).toJson(encryptor))
+                .additionalParameters(Map.of("response_mode", "form_post"))
                 .build().getAuthorizationRequestUri();
     }
 
