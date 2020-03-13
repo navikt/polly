@@ -30,11 +30,11 @@ export const Error = (props: { fieldName: string, fullWidth?: boolean }) => (
 
 export const ModalLabel = (props: { label?: string, tooltip?: string | React.ReactElement }) => {
   return (
-    <Block width="25%" minWidth="25%" alignSelf="center" paddingRight=".5rem">
+    <Block  minWidth="25%" alignSelf="center" paddingRight=".5rem">
       {props.tooltip ?
         <StatefulTooltip content={props.tooltip} placement={PLACEMENT.top}>
           <Label2 font="font300" display="flex" width="100%" justifyContent={"flex-start"}>
-            <Block maxWidth={"min-content"}>{props.label}</Block>
+            <Block maxWidth={"100%"}>{props.label}</Block>
             <FontAwesomeIcon style={{marginLeft: ".5rem", alignSelf: "center"}}
                              icon={faExclamationCircle} color={theme.colors.primary300} size="sm"/>
           </Label2>

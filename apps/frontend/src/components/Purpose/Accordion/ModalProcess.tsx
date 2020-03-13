@@ -427,7 +427,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                 <Error fieldName='name'/>
 
                 <CustomizedModalBlock>
-                  <ModalLabel label={intl.overallPurpose}/>
+                  <ModalLabel label={intl.overallPurpose} tooltip={intl.overallPurposeHelpText}/>
                   <FieldPurpose
                     purposeCode={initialValues.purposeCode}
                     disabled={codelist.getCodes(ListName.PURPOSE).filter(p => p.code === initialValues.purposeCode).length > 0}

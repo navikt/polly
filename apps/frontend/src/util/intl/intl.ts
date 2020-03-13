@@ -104,6 +104,7 @@ export interface IStrings {
   processNew: string;
   exceptionalUsage:string;
   overallPurpose: string;
+  overallPurposeHelpText: string;
   validityOfProcessHelpText: string;
   organizingHelpText: string;
   processNameHelpText: string;
