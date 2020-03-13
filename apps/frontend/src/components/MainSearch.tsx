@@ -20,23 +20,23 @@ type SearchType = 'all' | 'purpose' | 'process' | 'team' | 'department' | 'subDe
 const SearchLabel = (props: { name: string, type: string }) =>
   <Block display="flex" justifyContent="space-between" width="100%">
     <span>{props.name}</span>
-    <Block $style={{ opacity: .5 }}>{props.type}</Block>
+    <Block $style={{opacity: .5}}>{props.type}</Block>
   </Block>
 
 const searchCodelist = (search: string, list: ListName & NavigableItem, typeName: string) =>
   codelist.getCodes(list).filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
-    .map(c => ({
-      id: c.code,
-      sortKey: c.shortName,
-      label: <SearchLabel name={c.shortName} type={typeName} />,
-      type: list
-    }))
+  .map(c => ({
+    id: c.code,
+    sortKey: c.shortName,
+    label: <SearchLabel name={c.shortName} type={typeName}/>,
+    type: list
+  }))
 
 const getCodelistByListnameAndType = (list: ListName, typeName: string) =>
   codelist.getCodes(list).map(c => ({
     id: c.code,
     sortKey: c.shortName,
-    label: <SearchLabel name={c.shortName} type={typeName} />,
+    label: <SearchLabel name={c.shortName} type={typeName}/>,
     type: list
   } as SearchItem))
 
@@ -48,16 +48,13 @@ const useMainSearch = () => {
 
   useEffect(() => {
     setSearchResult([])
-    if (type === 'purpose') {        
-        setSearchResult(getCodelistByListnameAndType(ListName.PURPOSE, intl.purpose))
-    }
-    else if (type === 'department') {        
+    if (type === 'purpose') {
+      setSearchResult(getCodelistByListnameAndType(ListName.PURPOSE, intl.purpose))
+    } else if (type === 'department') {
       setSearchResult(getCodelistByListnameAndType(ListName.DEPARTMENT, intl.department))
-    }
-    else if (type === 'subDepartment') {        
+    } else if (type === 'subDepartment') {
       setSearchResult(getCodelistByListnameAndType(ListName.SUB_DEPARTMENT, intl.subDepartment))
-    }
-    else {
+    } else {
       (async () => {
         if (search && search.length > 2) {
           let results: SearchItem[] = []
@@ -67,21 +64,23 @@ const useMainSearch = () => {
             setSearchResult(results)
           }
           setLoading(true)
-  
-          add(searchCodelist(search, ListName.PURPOSE, intl.purpose))
-          add(searchCodelist(search, ListName.DEPARTMENT, intl.department))
-          add(searchCodelist(search, ListName.SUB_DEPARTMENT, intl.subDepartment))
-  
+
+          if (type === 'all') {
+            add(searchCodelist(search, ListName.PURPOSE, intl.purpose))
+            add(searchCodelist(search, ListName.DEPARTMENT, intl.department))
+            add(searchCodelist(search, ListName.SUB_DEPARTMENT, intl.subDepartment))
+          }
+
           if (type === 'all' || type === 'informationType') {
             const infoTypesRes = await searchInformationType(search)
             add(infoTypesRes.content.map(it => ({
               id: it.id,
               sortKey: it.name,
-              label: <SearchLabel name={it.name} type={intl.informationType} />,
+              label: <SearchLabel name={it.name} type={intl.informationType}/>,
               type: ObjectType.INFORMATION_TYPE
             })))
           }
-  
+
           if (type === 'all' || type === 'process') {
             const resProcess = await searchProcess(search)
             add(resProcess.content.map(it => {
@@ -89,18 +88,18 @@ const useMainSearch = () => {
               return ({
                 id: it.id,
                 sortKey: `${it.name} ${purpose}`,
-                label: <SearchLabel name={`${purpose}: ${it.name}`} type={intl.process} />,
+                label: <SearchLabel name={`${purpose}: ${it.name}`} type={intl.process}/>,
                 type: ObjectType.PROCESS
               })
             }))
           }
-  
+
           if (type === 'all' || type === 'team') {
             const resTeams = await searchTeam(search)
             add(resTeams.content.map(it => ({
               id: it.id,
               sortKey: it.name,
-              label: <SearchLabel name={it.name} type={intl.productTeam} />,
+              label: <SearchLabel name={it.name} type={intl.productTeam}/>,
               type: 'team'
             })))
           }
@@ -109,7 +108,7 @@ const useMainSearch = () => {
       })()
     }
 
-    
+
   }, [search, type])
 
   return [setSearch, searchResult, loading, type, setType] as [(text: string) => void, SearchItem[], boolean, SearchType, (type: SearchType) => void]
@@ -123,32 +122,32 @@ type RadioProps = {
 const smallRadio = (value: SearchType, text: string) => {
   return (
     <Radio value={value}
-      overrides={{
-        Root: {
-          style: {
-            marginBottom: 0
-          }
-        },
-        Label: {
-          style: (a: RadioProps) => ({
-            ...paddingZero,
-            ...(a.$isHovered ? { color: theme.colors.positive400 } : {}),
-          })
-        },
-        RadioMarkOuter: {
-          style: (a: RadioProps) => ({
-            width: theme.sizing.scale500,
-            height: theme.sizing.scale500,
-            ...(a.$isHovered ? { backgroundColor: theme.colors.positive400 } : {})
-          })
-        },
-        RadioMarkInner: {
-          style: (a: RadioProps) => ({
-            width: a.$checked ? theme.sizing.scale100 : theme.sizing.scale300,
-            height: a.$checked ? theme.sizing.scale100 : theme.sizing.scale300,
-          })
-        }
-      }}
+           overrides={{
+             Root: {
+               style: {
+                 marginBottom: 0
+               }
+             },
+             Label: {
+               style: (a: RadioProps) => ({
+                 ...paddingZero,
+                 ...(a.$isHovered ? {color: theme.colors.positive400} : {}),
+               })
+             },
+             RadioMarkOuter: {
+               style: (a: RadioProps) => ({
+                 width: theme.sizing.scale500,
+                 height: theme.sizing.scale500,
+                 ...(a.$isHovered ? {backgroundColor: theme.colors.positive400} : {})
+               })
+             },
+             RadioMarkInner: {
+               style: (a: RadioProps) => ({
+                 width: a.$checked ? theme.sizing.scale100 : theme.sizing.scale300,
+                 height: a.$checked ? theme.sizing.scale100 : theme.sizing.scale300,
+               })
+             }
+           }}
     >
       <Block font='ParagraphXSmall'>{text}</Block>
     </Radio>
@@ -190,13 +189,13 @@ const SelectType = (props: { type: SearchType, setType: (type: SearchType) => vo
 
 export const MainSearchImpl = (props: RouteComponentProps) => {
   const [setSearch, searchResult, loading, type, setType] = useMainSearch()
-  const [filter, setFilter] = useState(false)
+  const [filter, setFilter] = useState(true)
 
   return (
     <Block>
       <Block display='flex'
-        position='relative'
-        alignItems='center'>
+             position='relative'
+             alignItems='center'>
         <Select
           noResultsMsg={intl.emptyTable}
           autoFocus={props.match.path === '/'}
@@ -225,8 +224,8 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
             },
             ControlContainer: {
               style: {
-                ...(filter ? { borderBottomLeftRadius: 0 } : {}),
-                ...(filter ? { borderBottomRightRadius: 0 } : {})
+                ...(filter ? {borderBottomLeftRadius: 0} : {}),
+                ...(filter ? {borderBottomRightRadius: 0} : {})
               }
             },
             Root: {
@@ -238,9 +237,9 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
           }
         />
         <Button onClick={() => setFilter(!filter)} icon={faFilter} size='compact' kind={filter ? 'primary' : 'tertiary'} marginLeft
-          $style={{ height: theme.sizing.scale1000, width: theme.sizing.scale1000 }} />
+                $style={{height: theme.sizing.scale1000, width: theme.sizing.scale1000}}/>
       </Block>
-      {filter && <SelectType type={type} setType={setType} />}
+      {filter && <SelectType type={type} setType={setType}/>}
     </Block>
   )
 }
