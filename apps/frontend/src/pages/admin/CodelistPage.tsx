@@ -29,15 +29,6 @@ const CodeListPage = (props: RouteComponentProps<{ listname?: string }>) => {
   const lists = codelist.lists?.codelist
   const currentCodelist = lists && listname ? lists[listname] : undefined
 
-  useEffect(() => {
-    if (listname && listname !== props.match.params.listname) {
-      props.history.replace(`/admin/codelist/${listname}`)
-    }
-  }, [listname, lists])
-
-  if (!user.isAdmin() || !lists) {
-    return <StyledSpinnerNext size={theme.sizing.scale2400}/>
-  }
 
   const handleCreateCodelist = async (values: CodeListFormValues) => {
     setLoading(true)
@@ -51,9 +42,24 @@ const CodeListPage = (props: RouteComponentProps<{ listname?: string }>) => {
     }
     setLoading(false)
   }
+
   const update = async () => {
     await codelist.refreshCodeLists()
     forceUpdate()
+  }
+
+  useEffect(() => {
+    update().catch()
+  }, [])
+
+  useEffect(() => {
+    if (listname && listname !== props.match.params.listname) {
+      props.history.replace(`/admin/codelist/${listname}`)
+    }
+  }, [listname, lists])
+
+  if (!user.isAdmin() || !lists) {
+    return <StyledSpinnerNext size={theme.sizing.scale2400}/>
   }
 
   return <>
