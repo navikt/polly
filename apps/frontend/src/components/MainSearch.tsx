@@ -6,7 +6,7 @@ import { useDebouncedState } from '../util/hooks'
 import { prefixBiasedSort } from '../util/sort'
 import { intl, theme } from '../util'
 import { searchInformationType, searchProcess, searchTeam } from '../api'
-import { Select, TYPE } from 'baseui/select'
+import { Select, TYPE, Value } from 'baseui/select'
 import { urlForObject } from './common/RouteLink'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { Radio, RadioGroup } from 'baseui/radio'
@@ -190,6 +190,7 @@ const SelectType = (props: { type: SearchType, setType: (type: SearchType) => vo
 export const MainSearchImpl = (props: RouteComponentProps) => {
   const [setSearch, searchResult, loading, type, setType] = useMainSearch()
   const [filter, setFilter] = useState(true)
+  const [value, setValue] = useState<Value>()
 
   return (
     <Block>
@@ -205,7 +206,11 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
           type={TYPE.search}
           options={searchResult}
           placeholder={intl.search}
-          onInputChange={event => setSearch(event.currentTarget.value)}
+          value={value}
+          onInputChange={event => {
+            setSearch(event.currentTarget.value)
+            setValue([{id: event.currentTarget.value, label: event.currentTarget.value}])
+          }}
           onChange={(params) => {
             const item = params.value[0] as SearchItem;
             (async () => {
