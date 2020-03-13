@@ -102,6 +102,10 @@ export interface IStrings {
   processingActivitiesNew: string;
   processingActivitiesEdit: string;
   processNew: string;
+  exceptionalUsage:string;
+  overallPurpose: string;
+  validityOfProcessHelpText: string;
+  organizingHelpText: string;
   processNameHelpText: string;
   processPurposeHelpText: string;
   departmentHelpText: string;

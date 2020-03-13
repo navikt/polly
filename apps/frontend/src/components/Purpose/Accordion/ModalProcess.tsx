@@ -427,7 +427,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                 <Error fieldName='name'/>
 
                 <CustomizedModalBlock>
-                  <ModalLabel label={intl.purpose}/>
+                  <ModalLabel label={intl.overallPurpose}/>
                   <FieldPurpose
                     purposeCode={initialValues.purposeCode}
                     disabled={codelist.getCodes(ListName.PURPOSE).filter(p => p.code === initialValues.purposeCode).length > 0}
@@ -442,12 +442,12 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                 <Error fieldName='description'/>
 
                 <CustomizedModalBlock>
-                  <ModalLabel label={intl.validityOfProcess}/>
+                  <ModalLabel label={intl.validityOfProcess} tooltip={intl.validityOfProcessHelpText}/>
                   <DateFieldsProcessModal showDates={true} showLabels={true} rowBlockProps={rowBlockProps}/>
                 </CustomizedModalBlock>
 
                 <CustomizedModalBlock>
-                  <ModalLabel label={intl.organizing}/>
+                  <ModalLabel label={intl.organizing} tooltip={intl.organizingHelpText}/>
 
                   <Block width={"100%"}>
                     <Block display={"flex"} width={"100%"}>
@@ -489,7 +489,10 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
                 <CustomizedModalBlock>
                   <ModalLabel label={intl.usesAllInformationTypes} tooltip={intl.usesAllInformationTypesHelpText}/>
-                  <BoolField value={formikBag.values.usesAllInformationTypes} fieldName='usesAllInformationTypes' omitUndefined/>
+                  <Block>
+                    <BoolField value={formikBag.values.usesAllInformationTypes} fieldName='usesAllInformationTypes' omitUndefined/>
+                  </Block>
+                  <Block margin={"auto 0 auto 0"}>({intl.exceptionalUsage})</Block>
                 </CustomizedModalBlock>
 
                 <Accordion overrides={{
