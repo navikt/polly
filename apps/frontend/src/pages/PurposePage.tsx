@@ -1,16 +1,14 @@
 import * as React from "react";
-import { useEffect } from "react";
+import {useEffect} from "react";
 
 import ProcessList from "../components/Purpose";
-import { Block } from "baseui/block";
-import { codelist, ListName, List } from "../service/Codelist";
-import { intl, theme, useAwait } from "../util"
+import {Block} from "baseui/block";
+import {codelist, ListName} from "../service/Codelist";
+import {intl, theme, useAwait} from "../util"
 import illustration from "../resources/purpose_illustration.svg"
-import { H4, Label2, Paragraph2 } from "baseui/typography";
-import { useLocation } from "react-router";
-import { getProcessPurposeCount, getAllTeams } from "../api"
-import { RouteComponentProps } from "react-router-dom";
-import { Team } from "../constants";
+import {H4, Label2, Paragraph2} from "baseui/typography";
+import {useLocation} from "react-router";
+import {RouteComponentProps} from "react-router-dom";
 
 const routes = {
   subdepartment: 'subdepartment',
@@ -21,7 +19,7 @@ const routes = {
 
 const renderDescription = (description: string) => (
   <Block marginBottom="scale1000">
-    <Label2 font="font400">{intl.purposeDescription}</Label2>
+    <Label2 font="font400">{intl.overallPurpose}</Label2>
     <Paragraph2>{description}</Paragraph2>
   </Block>
 )
@@ -58,7 +56,7 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
     if (location.includes(routes.subdepartment)) return ListName.SUB_DEPARTMENT
     else if (location.includes(routes.department)) return ListName.DEPARTMENT
     else if (location.includes(routes.purpose)) return ListName.PURPOSE
-  
+
     return undefined
   }
 
@@ -83,7 +81,7 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
         <ProcessList code={props.match.params.code} listName={getCurrentListName()} />
         </React.Fragment>
       )}
-      
+
 
       {!props.match.params.code && (
         <Block display="flex" justifyContent="center" alignContent="center" marginTop={theme.sizing.scale2400}>

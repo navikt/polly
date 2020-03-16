@@ -16,6 +16,7 @@ export interface IStrings {
   termEditHeader: string;
   purpose: string;
   processPurpose: string;
+  purposeOfTheProcess: string;
   purposeDescription: string;
   sensitivity: string;
   processingActivities: string;
@@ -247,7 +248,7 @@ export interface IStrings {
   rows: string;
   slack: string;
   add: string;
-
+  summarySubjectCategories: string;
   maxChars: string;
   required: string;
   dateFormat: string;
