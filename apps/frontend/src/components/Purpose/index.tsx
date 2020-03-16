@@ -23,8 +23,6 @@ import {
   updatePolicy,
   updateProcess
 } from '../../api'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faList} from '@fortawesome/free-solid-svg-icons'
 import {StyledSpinnerNext} from 'baseui/spinner'
 import {ListName} from '../../service/Codelist'
 import {useLocation} from 'react-router';
@@ -199,7 +197,6 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
     <>
       <Block {...rowBlockProps}>
         <Label1 font="font400">
-          <FontAwesomeIcon icon={faList} style={{marginRight: '.5rem'}}/>
           {intl.processes}
         </Label1>
         {hasAccess() && (
