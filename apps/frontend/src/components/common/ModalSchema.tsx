@@ -34,7 +34,7 @@ export const ModalLabel = (props: { label?: string, tooltip?: string | React.Rea
       {props.tooltip ?
         <StatefulTooltip content={props.tooltip} placement={PLACEMENT.top}>
           <Label2 font="font300" display="flex" width="100%" justifyContent={"flex-start"}>
-            <Block maxWidth={"100%"}>{props.label}</Block>
+            <Block>{props.label}</Block>
             <FontAwesomeIcon style={{marginLeft: ".5rem", alignSelf: "center"}}
                              icon={faExclamationCircle} color={theme.colors.primary300} size="sm"/>
           </Label2>

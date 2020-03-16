@@ -307,7 +307,7 @@ const RetentionItems = (props: { formikBag: FormikProps<ProcessFormValues> }) =>
           <ModalLabel label={intl.retentionMonths}/>
           <Field
             name='retention.retentionMonths'
-            render={({field, form}: FieldProps<DisclosureFormValues>) => (
+            render={({field, form}: FieldProps<string, ProcessFormValues>) => (
               <>
                 <Slider
                   overrides={sliderOverride(intl.years)}
