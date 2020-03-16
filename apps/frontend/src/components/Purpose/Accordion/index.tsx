@@ -1,34 +1,34 @@
 import * as React from 'react'
-import { ReactNode, useEffect } from 'react'
-import { Accordion, Panel } from 'baseui/accordion'
-import { generatePath, RouteComponentProps, withRouter } from 'react-router'
-import { KIND, SIZE as ButtonSize } from 'baseui/button'
-import { StyledSpinnerNext } from 'baseui/spinner'
-import { Block } from 'baseui/block'
-import { Label1, Label2, Paragraph2 } from 'baseui/typography'
-import { intl, theme, useAwait } from '../../../util'
+import {ReactNode, useEffect} from 'react'
+import {Accordion, Panel} from 'baseui/accordion'
+import {generatePath, RouteComponentProps, withRouter} from 'react-router'
+import {KIND, SIZE as ButtonSize} from 'baseui/button'
+import {StyledSpinnerNext} from 'baseui/spinner'
+import {Block} from 'baseui/block'
+import {Label1, Label2, Paragraph2} from 'baseui/typography'
+import {intl, theme, useAwait} from '../../../util'
 import _includes from 'lodash/includes'
-import { user } from '../../../service/User'
-import { Plus } from 'baseui/icon'
-import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose } from '../../../constants'
-import { LegalBasisView } from '../../common/LegalBasis'
-import { codelist, ListName } from '../../../service/Codelist'
+import {user} from '../../../service/User'
+import {Plus} from 'baseui/icon'
+import {AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose} from '../../../constants'
+import {LegalBasisView} from '../../common/LegalBasis'
+import {codelist, ListName} from '../../../service/Codelist'
 import ModalProcess from './ModalProcess'
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy'
-import { convertProcessToFormValues } from '../../../api'
-import { PathParams } from '../../../pages/PurposePage'
-import { ActiveIndicator } from '../../common/Durations'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faChevronRight, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
-import { TeamPopover } from '../../common/Team'
-import { AuditButton } from '../../audit/AuditButton'
-import { AddDocumentModal } from './AddDocumentModal'
-import { RetentionView } from '../Retention'
-import { boolToText } from '../../common/Radio'
+import {convertProcessToFormValues} from '../../../api'
+import {PathParams} from '../../../pages/PurposePage'
+import {ActiveIndicator} from '../../common/Durations'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faChevronDown, faChevronRight, faEdit, faTrash} from '@fortawesome/free-solid-svg-icons'
+import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal'
+import {TeamPopover} from '../../common/Team'
+import {AuditButton} from '../../audit/AuditButton'
+import {AddDocumentModal} from './AddDocumentModal'
+import {RetentionView} from '../Retention'
+import {boolToText} from '../../common/Radio'
 import Button from '../../common/Button'
-import { DotTags } from '../../common/DotTag'
+import {DotTags} from '../../common/DotTag'
 
 type AccordionProcessProps = {
   isLoading: boolean
@@ -92,7 +92,7 @@ const AccordionTitle = (props: { process: UseWithPurpose, expanded: boolean, has
 }
 
 type DataTextProps = {
-  label: string
+  label?: string
   text?: false | string | string[]
   children?: ReactNode
   hide?: boolean
@@ -136,7 +136,7 @@ const ProcessData = (props: { process: Process }) => {
   return (
     <Block>
 
-      <DataText label={intl.processPurpose} text={process.description} hide={!process.description}/>
+      <DataText label={intl.purposeOfTheProcess} text={process.description} hide={!process.description}/>
 
       <DataText label={intl.legalBasis} text={process.legalBases.length ? undefined : intl.legalBasisNotFound}>
         {process.legalBases.map((legalBasis, index) =>
@@ -144,12 +144,12 @@ const ProcessData = (props: { process: Process }) => {
         )}
       </DataText>
 
-      <DataText label={intl.subjectCategories} text={!subjectCategories.length && intl.subjectCategoriesNotFound}>
-        {!!subjectCategories.length && <DotTags items={subjectCategories}/>}
-      </DataText>
-
       <DataText label={intl.validityOfProcess}>
         <ActiveIndicator alwaysShow={true} showDates={true} {...process} />
+      </DataText>
+
+      <DataText label={intl.summarySubjectCategories} text={!subjectCategories.length && intl.subjectCategoriesNotFound}>
+        {!!subjectCategories.length && <DotTags items={subjectCategories}/>}
       </DataText>
 
       <DataText label={intl.organizing}>
@@ -355,7 +355,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                 <Block paddingLeft={theme.sizing.scale800} paddingRight={theme.sizing.scale800} paddingTop={theme.sizing.scale800}>
                   <ProcessData process={currentProcess}/>
 
-                  <DataText label={intl.informationTypes}>
+                  <DataText>
                     <Block display='flex' justifyContent='flex-end'>
                       {hasAccess() &&
                       <Block>
