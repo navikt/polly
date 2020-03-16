@@ -5,13 +5,15 @@ import {useStyletron} from 'baseui'
 const rowBlockProps: BlockProps = {
   display: 'flex',
   width: '100%',
+  minWidth: '100%',
   marginTop: '1rem',
-};
+  paddingBottom: '1rem',
+}
 
 const CustomizedModalBlock = (props:BlockProps) =>{
   const [css] = useStyletron()
   return (
-    <Block display='flex' minWidth='100%'  paddingBottom={'1rem'} {...rowBlockProps}
+    <Block {...rowBlockProps}
            overrides={{
              Block:
                {props:
