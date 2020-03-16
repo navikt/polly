@@ -1,13 +1,13 @@
-import { ErrorMessage } from 'formik'
-import { Block, BlockProps } from 'baseui/block'
-import { KIND as NKIND, Notification } from 'baseui/notification'
-import { Label2 } from 'baseui/typography'
+import {ErrorMessage} from 'formik'
+import {Block, BlockProps} from 'baseui/block'
+import {KIND as NKIND, Notification} from 'baseui/notification'
+import {Label2} from 'baseui/typography'
 import * as React from 'react'
-import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
-import { theme } from '../../util'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
-import { paddingZero } from './Style'
+import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
+import {theme} from '../../util'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faExclamationCircle} from '@fortawesome/free-solid-svg-icons'
+import {paddingZero} from './Style'
 
 type ModalBlockProps = {
   blockProps?: BlockProps,
@@ -30,12 +30,12 @@ export const Error = (props: { fieldName: string, fullWidth?: boolean }) => (
 
 export const ModalLabel = (props: { label?: string, tooltip?: string | React.ReactElement }) => {
   return (
-    <Block width="25%" alignSelf="center" paddingRight=".5rem">
+    <Block  minWidth="25%" alignSelf="center" paddingRight=".5rem">
       {props.tooltip ?
         <StatefulTooltip content={props.tooltip} placement={PLACEMENT.top}>
-          <Label2 font="font300" display="flex" justifyContent="space-between" width="100%">
-            <>{props.label}</>
-            <FontAwesomeIcon style={{marginRight: '.5rem', alignSelf: 'center'}}
+          <Label2 font="font300" display="flex" width="100%" justifyContent={"flex-start"}>
+            <Block>{props.label}</Block>
+            <FontAwesomeIcon style={{marginLeft: ".5rem", alignSelf: "center"}}
                              icon={faExclamationCircle} color={theme.colors.primary300} size="sm"/>
           </Label2>
         </StatefulTooltip>

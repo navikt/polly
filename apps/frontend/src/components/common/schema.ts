@@ -16,8 +16,8 @@ import {
   ProcessFormValues,
   Retention
 } from '../../constants'
-import { intl } from '../../util'
-import { Code, codelist } from '../../service/Codelist'
+import {intl} from '../../util'
+import {Code, codelist, ListName} from '../../service/Codelist'
 
 const DATE_REGEX = /\d{4}-\d{2}-\d{2}/
 const max = 150
@@ -38,6 +38,7 @@ export const infoTypeSchema = () => yup.object<InformationtypeFormValues>({
 
 export const processSchema = () => yup.object<ProcessFormValues>({
   name: yup.string().max(max, maxError()).required(intl.required),
+  purposeCode: yup.string().oneOf(codelist.getCodes(ListName.PURPOSE).map(p => p.code),intl.required).required(intl.required),
   description: yup.string(),
   department: yup.string(),
   subDepartment: yup.string(),
@@ -88,21 +89,21 @@ export const createDocumentValidation = () => yup.object<CreateDocumentFormValue
 
 export const policySchema = () => yup.object<PolicyFormValues>({
   informationType: yup.object<PolicyInformationType>().required(intl.required)
-  .test({
-    name: 'policyHasArt9',
-    message: intl.requiredGdprArt9,
-    test: function (informationType) {
-      const {parent} = this
-      return !missingArt9LegalBasisForSensitiveInfoType(informationType, parent)
-    }
-  }).test({
-    name: 'policyHasArt6',
-    message: intl.requiredGdprArt6,
-    test: function () {
-      const {parent} = this
-      return !missingArt6LegalBasisForInfoType(parent)
-    }
-  }),
+    .test({
+      name: 'policyHasArt9',
+      message: intl.requiredGdprArt9,
+      test: function (informationType) {
+        const {parent} = this
+        return !missingArt9LegalBasisForSensitiveInfoType(informationType, parent)
+      }
+    }).test({
+      name: 'policyHasArt6',
+      message: intl.requiredGdprArt6,
+      test: function () {
+        const {parent} = this
+        return !missingArt6LegalBasisForInfoType(parent)
+      }
+    }),
   subjectCategories: yup.array().of(yup.string()).min(1, intl.required),
   legalBasesStatus: yup.mixed().oneOf(Object.values(LegalBasesStatus)).required(intl.required),
   legalBases: yup.array(legalBasisSchema()),

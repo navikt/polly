@@ -1,13 +1,13 @@
 import * as React from 'react'
-import { useEffect } from 'react'
+import {useEffect} from 'react'
 
-import { Block, BlockProps } from 'baseui/block'
-import { Plus } from 'baseui/icon'
-import { Label1 } from 'baseui/typography'
-import { Button, KIND, SIZE as ButtonSize } from 'baseui/button'
-import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose } from '../../constants'
-import { intl, theme, useAwait } from '../../util'
-import { user } from '../../service/User'
+import {Block, BlockProps} from 'baseui/block'
+import {Plus} from 'baseui/icon'
+import {Label1} from 'baseui/typography'
+import {Button, KIND, SIZE as ButtonSize} from 'baseui/button'
+import {AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose} from '../../constants'
+import {intl, theme, useAwait} from '../../util'
+import {user} from '../../service/User'
 import ModalProcess from './Accordion/ModalProcess'
 import AccordionProcess from './Accordion'
 import {
@@ -23,11 +23,11 @@ import {
   updatePolicy,
   updateProcess
 } from '../../api'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faList } from '@fortawesome/free-solid-svg-icons'
-import { StyledSpinnerNext } from 'baseui/spinner'
-import { ListName } from '../../service/Codelist'
-import { useLocation } from 'react-router';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faList} from '@fortawesome/free-solid-svg-icons'
+import {StyledSpinnerNext} from 'baseui/spinner'
+import {ListName} from '../../service/Codelist'
+import {useLocation} from 'react-router';
 
 const rowBlockProps: BlockProps = {
   marginBottom: 'scale800',
@@ -202,7 +202,7 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
           <FontAwesomeIcon icon={faList} style={{marginRight: '.5rem'}}/>
           {intl.processes}
         </Label1>
-        {hasAccess() && listName === ListName.PURPOSE && (
+        {hasAccess() && (
           <Button
             size={ButtonSize.compact}
             kind={KIND.minimal}
