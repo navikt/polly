@@ -451,7 +451,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
                   <Block width={"100%"}>
                     <Block display={"flex"} width={"100%"}>
-                      <Block minWidth={"33%"} width={"100%"} marginLeft={".5rem"}>{intl.organizing}</Block>
+                      <Block minWidth={"33%"} width={"100%"} marginLeft={".5rem"}>{intl.department}</Block>
                       {codelist.showSubDepartment(formikBag.values.department) && (
                         <Block minWidth={"33%"} width={"100%"}>
                           {intl.subDepartment}
