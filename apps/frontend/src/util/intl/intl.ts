@@ -71,6 +71,7 @@ export interface IStrings {
   years: string;
   months: string;
   lastEvents: string;
+  disclosureName: string;
 
   // sentence
   containsInformationType: string;

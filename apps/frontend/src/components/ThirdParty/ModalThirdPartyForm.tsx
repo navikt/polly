@@ -1,19 +1,19 @@
 import * as React from 'react'
-import { DisclosureFormValues, Document, LegalBasisFormValues } from '../../constants';
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal';
-import { Field, FieldArray, FieldProps, Form, Formik, FormikProps } from 'formik';
-import { Block, BlockProps } from 'baseui/block';
-import { Error, ModalLabel } from '../common/ModalSchema';
-import { intl } from '../../util';
-import { Button } from 'baseui/button';
-import { Select, Value } from 'baseui/select';
-import { codelist, ListName } from '../../service/Codelist';
-import { Textarea } from 'baseui/textarea';
-import { ListLegalBases } from '../common/LegalBasis';
+import {DisclosureFormValues, Document, LegalBasisFormValues} from '../../constants';
+import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal';
+import {Field, FieldArray, FieldProps, Form, Formik, FormikProps} from 'formik';
+import {Block, BlockProps} from 'baseui/block';
+import {Error, ModalLabel} from '../common/ModalSchema';
+import {intl} from '../../util';
+import {Button} from 'baseui/button';
+import {Select, Value} from 'baseui/select';
+import {codelist, ListName} from '../../service/Codelist';
+import {Textarea} from 'baseui/textarea';
+import {ListLegalBases} from '../common/LegalBasis';
 import CardLegalBasis from '../Purpose/Accordion/CardLegalBasis';
-import { Plus } from 'baseui/icon';
-import { disclosureSchema } from "../common/schema"
-import { Input } from "baseui/input"
+import {Plus} from 'baseui/icon';
+import {disclosureSchema} from "../common/schema"
+import {Input} from "baseui/input"
 import SelectDocument from '../common/SelectDocument';
 
 const modalBlockProps: BlockProps = {
@@ -132,7 +132,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                 </Block>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.name}/>
+                  <ModalLabel label={intl.disclosureName}/>
                   <FieldInput fieldName="name" fieldValue={formikBag.values.name}/>
                 </Block>
                 <Error fieldName="name"/>
@@ -144,7 +144,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                 <Error fieldName="recipientPurpose"/>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.description}/>
+                  <ModalLabel label={intl.additionalDescription}/>
                   <FieldTextarea fieldName="description" fieldValue={formikBag.values.description}/>
                 </Block>
                 <Error fieldName="description"/>
