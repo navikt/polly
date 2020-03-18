@@ -13,14 +13,12 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"loggedIn", "ident", "name", "givenName", "familyName", "email", "groups"})
+@JsonPropertyOrder({"loggedIn", "ident", "name", "email", "groups"})
 public class UserInfoResponse {
 
     private boolean loggedIn;
     private String ident;
     private String name;
-    private String givenName;
-    private String familyName;
     private String email;
     private List<String> groups = new ArrayList<>();
 

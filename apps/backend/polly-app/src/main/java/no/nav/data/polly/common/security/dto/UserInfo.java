@@ -5,7 +5,6 @@ import lombok.Value;
 import no.nav.data.polly.common.security.AppIdMapping;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 
 import java.util.List;
 import java.util.Set;
@@ -19,11 +18,8 @@ import static no.nav.data.polly.common.utils.StreamUtils.copyOf;
 public class UserInfo {
 
     String appId;
-    String subject;
     String ident;
     String name;
-    String givenName;
-    String familyName;
     String email;
     List<String> groups;
 
@@ -31,10 +27,7 @@ public class UserInfo {
         this.appId = getClaim(principal, APPID_CLAIM);
         this.ident = getIdent(principal, identClaimName);
 
-        this.subject = principal.getSubject();
         this.name = principal.getName();
-        this.givenName = getClaim(principal, StandardClaimNames.GIVEN_NAME);
-        this.familyName = getClaim(principal, StandardClaimNames.FAMILY_NAME);
         this.email = principal.getUniqueName();
 
         groups = convert(grantedAuthorities, grantedAuthority -> StringUtils.substringAfter(grantedAuthority.getAuthority(), ROLE_PREFIX));
@@ -63,8 +56,6 @@ public class UserInfo {
                 .loggedIn(true)
                 .ident(ident)
                 .name(name)
-                .givenName(givenName)
-                .familyName(familyName)
                 .email(email)
                 .groups(copyOf(groups))
                 .build();
