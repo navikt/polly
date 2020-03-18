@@ -6,10 +6,9 @@ import {Block, BlockProps} from "baseui/block";
 import {StatefulSelect} from "baseui/select";
 import {user} from "../service/User";
 import {useStyletron} from "styletron-react";
-import {ListItem, ListItemLabel} from "baseui/list";
-import RouteLink from "../components/common/RouteLink";
 import {H4} from "baseui/typography";
 import {StyledSpinnerNext} from "baseui/spinner"
+import AlphabeticList from "../components/common/AlphabeticList";
 
 const rowBlockProps: BlockProps = {
   display: 'flex',
@@ -48,20 +47,8 @@ const ThirdPartySearchPage = (props: RouteComponentProps) => {
       )}
 
       {!!thirdPartyList.length && (
-        <ul
-          className={css({
-            width: '375px',
-            paddingLeft: 0,
-            paddingRight: 0,
-          })}
-        >
-          {thirdPartyList.map(thirdParty => (
-            <ListItem key={thirdParty.code}>
-              <ListItemLabel>
-                <RouteLink href={`thirdparty/${thirdParty.code}`}>{thirdParty.shortName}</RouteLink>
-              </ListItemLabel>
-            </ListItem>
-          ))}
+        <ul>
+          <AlphabeticList listName={ListName.THIRD_PARTY} baseUrl={"/thirdparty/"}/>
         </ul>
       )}
     </React.Fragment>
