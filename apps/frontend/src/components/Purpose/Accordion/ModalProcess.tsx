@@ -1,30 +1,39 @@
 import * as React from 'react'
-import {KeyboardEvent, useEffect, useState} from 'react'
+import {KeyboardEvent} from 'react'
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal'
-import {Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps,} from 'formik'
+import {FieldArray, Form, Formik, FormikProps,} from 'formik'
 import {Block, BlockProps} from 'baseui/block'
-import {Input, SIZE as InputSIZE} from 'baseui/input'
-import {Select, Value} from 'baseui/select'
-import {Button, KIND, SHAPE, SIZE as ButtonSize} from 'baseui/button'
+import {Button, KIND, SIZE as ButtonSize} from 'baseui/button'
 import {Plus} from 'baseui/icon'
 import {Error, ModalLabel} from '../../common/ModalSchema'
-import {DisclosureFormValues, LegalBasisFormValues, ProcessFormValues} from '../../../constants'
+import {LegalBasisFormValues, ProcessFormValues} from '../../../constants'
 import CardLegalBasis from './CardLegalBasis'
 import {codelist, ListName} from '../../../service/Codelist'
 import {intl, theme} from '../../../util'
 import {ListLegalBases} from '../../common/LegalBasis'
 import {processSchema} from '../../common/schema'
-import {getTeam, mapTeamToOption, useTeamSearch} from '../../../api'
-import {Textarea} from 'baseui/textarea'
-import {renderTagList} from '../../common/TagList'
-import {Slider} from 'baseui/slider'
-import {RadioBoolButton} from '../../common/Radio'
 import {Accordion, Panel} from 'baseui/accordion'
 import {Label1} from 'baseui/typography'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faChevronDown, faChevronRight} from '@fortawesome/free-solid-svg-icons'
 import CustomizedModalBlock from '../../common/CustomizedModalBlock'
-import {DateFieldsProcessModal} from "../DateFieldsProcessModal";
+import {DateFieldsProcessModal} from "../DateFieldsProcessModal"
+import FieldName from "../common/FieldName";
+import FieldPurpose from "../common/FieldPurpose";
+import FieldDescription from "../common/FieldDescription";
+import FieldDepartment from "../common/FieldDepartment";
+import FieldSubDepartment from "../common/FieldSubDepartment";
+import FieldProductTeam from "../common/FieldProductTeam";
+import FieldProduct from "../common/FieldProduct";
+import BoolField from "../common/BoolField";
+import FieldDataProcessorAgreements from "../common/FieldDataProcessorAgreements";
+import RetentionItems from "../common/RetentionItems";
+
+const modalHeaderProps: BlockProps = {
+  display: 'flex',
+  justifyContent: 'center',
+  marginBottom: '2rem'
+}
 
 const modalBlockProps: BlockProps = {
   width: '960px',
@@ -36,325 +45,6 @@ const rowBlockProps: BlockProps = {
   display: 'flex',
   width: '100%',
   marginTop: '1rem',
-}
-
-const modalHeaderProps: BlockProps = {
-  display: 'flex',
-  justifyContent: 'center',
-  marginBottom: '2rem'
-}
-
-const FieldName = () => (
-  <Field
-    name='name'
-    render={({field, form}: FieldProps<string, ProcessFormValues>) => (
-      <Input {...field} type='input' size={InputSIZE.default} autoFocus
-             error={!!form.errors.name && form.touched.name}/>
-    )}
-  />
-)
-
-const FieldPurpose = (props: { purposeCode?: string, disabled?: boolean }) => {
-  const {purposeCode, disabled} = props
-  const [value, setValue] = React.useState<Value>(purposeCode ? [{
-    id: disabled ? purposeCode : "",
-    label: disabled ? codelist.getShortname(ListName.PURPOSE, purposeCode) : ""
-  }] : [])
-
-  return (
-    <Field
-      name='purposeCode'
-      render={({form}: FieldProps<ProcessFormValues>) => (
-        <Block marginRight='10px' width={'100%'}>
-          <Select
-            options={codelist.getParsedOptions(ListName.PURPOSE)}
-            onChange={({value}) => {
-              setValue(value)
-              form.setFieldValue('purposeCode', value.length > 0 ? value[0].id : '')
-            }}
-            disabled={disabled}
-            value={value}
-            error={!!(form.errors.purposeCode && form.touched.purposeCode)}
-          />
-        </Block>
-      )}
-    />
-  )
-}
-
-const FieldDescription = () => (
-  <Field
-    name='description'
-    render={({field, form}: FieldProps<string, ProcessFormValues>) => (
-      <Textarea {...field} type='input' size={InputSIZE.default}
-                error={!!form.errors.description && form.touched.description}/>
-    )}
-  />
-)
-
-const FieldDepartment = (props: { department?: string }) => {
-  const {department} = props
-  const [value, setValue] = React.useState<Value>(department ? [{
-    id: department,
-    label: codelist.getShortname(ListName.DEPARTMENT, department)
-  }] : [])
-
-  return (
-    <Field
-      name='department'
-      render={({form}: FieldProps<ProcessFormValues>) => (
-        <Block marginRight='10px' width={'100%'}>
-          <Select
-            options={codelist.getParsedOptions(ListName.DEPARTMENT)}
-            onChange={({value}) => {
-              setValue(value)
-              form.setFieldValue('department', value.length > 0 ? value[0].id : '')
-            }}
-            value={value}
-          />
-        </Block>
-      )}
-    />
-  )
-}
-
-const FieldSubDepartment = (props: { subDepartment?: string }) => {
-  const {subDepartment} = props
-  const [value, setValue] = React.useState<Value>(subDepartment
-    ? [{id: subDepartment, label: codelist.getShortname(ListName.SUB_DEPARTMENT, subDepartment)}]
-    : [])
-
-  return (
-    <Field
-      name='subDepartment'
-      render={({form}: FieldProps<ProcessFormValues>) => (
-        <Block width={'100%'}>
-          <Select
-            options={codelist.getParsedOptions(ListName.SUB_DEPARTMENT)}
-            onChange={({value}) => {
-              setValue(value)
-              form.setFieldValue('subDepartment', value.length > 0 ? value[0].id : '')
-            }}
-            value={value}
-          />
-        </Block>
-      )}
-    />
-  )
-
-}
-
-const FieldProductTeam = (props: { productTeam?: string }) => {
-  const {productTeam} = props
-  const [value, setValue] = React.useState<Value>(productTeam ? [{id: productTeam, label: productTeam}] : [])
-  const [teamSearchResult, setTeamSearch, teamSearchLoading] = useTeamSearch()
-
-  const initialValueTeam = async () => {
-    if (!productTeam) return []
-    return [mapTeamToOption(await getTeam(productTeam))]
-  }
-  useEffect(() => {
-    (async () => setValue(await initialValueTeam()))()
-  }, [productTeam])
-
-  return (
-    <Field
-      name='productTeam'
-      render={({form, field}: FieldProps<ProcessFormValues>) => (
-        <Block width={'100%'}>
-          <Select
-            options={teamSearchResult}
-            onChange={({value}) => {
-              setValue(value)
-              form.setFieldValue('productTeam', value && value.length > 0 ? value[0].id : '')
-            }}
-            onInputChange={event => setTeamSearch(event.currentTarget.value)}
-            value={value}
-            isLoading={teamSearchLoading}
-          />
-        </Block>
-      )}
-    />
-  )
-}
-
-const BoolField = (props: {
-  value?: boolean,
-  fieldName: string,
-  omitUndefined?: boolean,
-  firstButtonLabel?: string,
-  secondButtonLabel?: string
-}) => (
-  <Field
-    name={props.fieldName}
-    render={({form}: FieldProps<ProcessFormValues>) =>
-      <RadioBoolButton
-        value={props.value}
-        setValue={(b) => form.setFieldValue(props.fieldName, b)}
-        omitUndefined={props.omitUndefined}
-        firstButtonLabel={props.firstButtonLabel}
-      />
-    }
-  />
-)
-
-const FieldDataProcessorAgreements = (props: { formikBag: FormikProps<ProcessFormValues> }) => {
-  const [currentKeywordValue, setCurrentKeywordValue] = React.useState('')
-  const agreementRef = React.useRef<HTMLInputElement>(null)
-
-  const onAddAgreement = (arrayHelpers: FieldArrayRenderProps) => {
-    if (!currentKeywordValue) return
-    arrayHelpers.push(currentKeywordValue)
-    setCurrentKeywordValue('')
-    if (agreementRef && agreementRef.current) {
-      agreementRef.current.focus()
-    }
-  }
-
-  return (
-    <FieldArray
-      name='dataProcessing.dataProcessorAgreements'
-      render={arrayHelpers => (
-        <Block width='100%'>
-          <Input
-            type='text'
-            size='compact'
-            placeholder={intl.dataProcessorAgreement}
-            value={currentKeywordValue}
-            onChange={event => setCurrentKeywordValue(event.currentTarget.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') onAddAgreement(arrayHelpers)
-            }}
-            onBlur={() => onAddAgreement(arrayHelpers)}
-            inputRef={agreementRef}
-            overrides={{
-              After: () => (
-                <Button
-                  type='button'
-                  size='compact'
-                  shape={SHAPE.square}
-                >
-                  <Plus/>
-                </Button>
-              )
-            }}
-          />
-          {renderTagList(props.formikBag.values.dataProcessing.dataProcessorAgreements, arrayHelpers)}
-        </Block>
-      )}
-    />
-  )
-}
-
-const FieldProduct = (props: { products: string[] }) => {
-  const {products} = props
-  const [value, setValue] = React.useState<Value>(products ? products.map(product => ({
-    id: product,
-    label: codelist.getShortname(ListName.SYSTEM, product)
-  })) : [])
-
-  return <FieldArray
-    name='products'
-    render={arrayHelpers => <Select
-      multi
-      clearable
-      options={codelist.getParsedOptions(ListName.SYSTEM)}
-      onChange={({value}) => {
-        setValue(value)
-        arrayHelpers.form.setFieldValue('products', value.map(v => v.id))
-      }}
-      value={value}
-    />}
-  />
-}
-
-const FieldInput = (props: { fieldName: string, fieldValue?: string | number }) => {
-  return (
-    <Field
-      name={props.fieldName}
-      render={({field, form}: FieldProps<string, DisclosureFormValues>) => (
-        <Input {...field} size='compact'/>
-      )}
-    />
-  )
-}
-
-function sliderOverride(suffix: string) {
-  return {
-    ThumbValue: {
-      component: (prop: any) => <div style={{
-        position: 'absolute',
-        top: `-${theme.sizing.scale800}`,
-        ...theme.typography.font200,
-        backgroundColor: 'transparent',
-        whiteSpace: 'nowrap',
-      }}>{prop.children} {suffix}</div>
-    }
-  }
-}
-
-const RetentionItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => {
-  const {formikBag} = props
-
-  const [retention, setRetention] = useState(formikBag.values.retention.retentionMonths || 0)
-  const retentionYears = Math.floor(retention / 12)
-  const retentionMonths = retention - retentionYears * 12
-
-  useEffect(() => {
-    (() => formikBag.setFieldValue('retention.retentionMonths', retention))()
-  }, [retention])
-
-  return (
-    <>
-      <Block {...rowBlockProps} marginTop={0}>
-        <ModalLabel/>
-        <ModalLabel label={intl.includeConservationPlan} tooltip={intl.retentionHelpText}/>
-        <BoolField fieldName='retention.retentionPlan' value={formikBag.values.retention.retentionPlan}/>
-      </Block>
-
-      {!!formikBag.values.retention?.retentionPlan && <>
-        <Block {...rowBlockProps}>
-          <ModalLabel/>
-          <ModalLabel label={intl.retentionMonths}/>
-          <Field
-            name='retention.retentionMonths'
-            render={({field, form}: FieldProps<string, ProcessFormValues>) => (
-              <>
-                <Slider
-                  overrides={sliderOverride(intl.years)}
-                  min={0} max={100}
-                  value={[retentionYears]}
-                  onChange={({value}) => setRetention(value[0] * 12 + retentionMonths)}
-                />
-                <Slider
-                  overrides={sliderOverride(intl.months)}
-                  min={0} max={11}
-                  value={[retentionMonths]}
-                  onChange={({value}) => setRetention(value[0] + retentionYears * 12)}
-                />
-              </>
-            )}/>
-        </Block>
-        <Error fieldName='retention.retentionMonths'/>
-
-        <Block {...rowBlockProps}>
-          <ModalLabel/>
-          <ModalLabel label={intl.retentionStart}/>
-          <FieldInput fieldName='retention.retentionStart'
-                      fieldValue={formikBag.values.retention.retentionStart}/>
-        </Block>
-        <Error fieldName='retention.retentionStart'/>
-
-        <Block {...rowBlockProps}>
-          <ModalLabel/>
-          <ModalLabel label={intl.retentionDescription}/>
-          <FieldInput fieldName='retention.retentionDescription'
-                      fieldValue={formikBag.values.retention.retentionDescription}/>
-        </Block>
-        < Error fieldName='retention.retentionDescription'/>
-      </>}
-    </>
-  )
 }
 
 type ModalProcessProps = {
