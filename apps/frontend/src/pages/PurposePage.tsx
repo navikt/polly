@@ -17,9 +17,9 @@ const routes = {
   team: 'team'
 }
 
-const renderDescription = (description: string) => (
+const renderMetadata = (description: string, title: string) => (
   <Block marginBottom='scale1000'>
-    <Label2 font='font400'>{intl.overallPurpose}</Label2>
+    <Label2 font='font400'>{title}</Label2>
     <Paragraph2>{description}</Paragraph2>
   </Block>
 )
@@ -61,6 +61,14 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
     return !props.match.params.code ? '' : props.match.params.code
   }
 
+  const renderTitle = () => {
+    let location = current_location.pathname
+    if (location.includes(routes.subdepartment)) return intl.subDepartment
+    else if (location.includes(routes.department)) return intl.department
+    else if (location.includes(routes.team)) return intl.team
+    return intl.overallPurpose
+  }
+
   const getCurrentListName = () => {
     let location = current_location.pathname
     if (location.includes(routes.subdepartment)) return ListName.SUB_DEPARTMENT
@@ -77,7 +85,7 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
             <H4>{getTitle(props.match.params.code)}</H4>
           </Block>
 
-          {renderDescription(description)}
+          {renderMetadata(description, renderTitle())}
           <ProcessList code={props.match.params.code} listName={getCurrentListName()}/>
         </React.Fragment>
       )}
