@@ -156,7 +156,7 @@ export const no: IStrings = {
   departmentSelect: "Velg avdeling",
   subDepartmentSelect: "Velg linje (Ytre etat)",
   teamSelect: "Velg produktteam (IT)",
-  informationtypesUsedInDocument: "Opplysningstyper brukt i dokumentet",
+  informationtypesUsedInDocument: "Opplysningstyper i dokumentet",
   editDocument: "Rediger dokument",
 
   POLLY_READ: "Les",
@@ -261,7 +261,7 @@ export const no: IStrings = {
   lastChanges: "Siste endringer",
   settings: "Innstillinger",
   containsInformationType: "Inneholder opplysningstyper",
-  containsProcesses: "Brukt i behandlinger",
+  containsProcesses: "Brukes i behandlinger",
   defaultProcessDocument: "Dokument for standard informasjonstyper i behandling",
   overallPurposeHelpText: "Hva er det overordnede formålet med denne behandlingen? Velg blant predefinerte verdier",
   validityOfProcessHelpText: "Valgfritt. Hvis aktuelt angi perioden virksomheten har utført denne behandlingen. Kan stå tomt hvis usikkert, eller for løpende behandlinger som f.eks. saksbehandling av diverse ytelser.",
