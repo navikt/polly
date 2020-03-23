@@ -19,7 +19,7 @@ export const no: IStrings = {
   legalBasisShort: "Rettslig grunnlag",
   legalBasesShort: "Rettslig grunnlag",
   subjectCategories: "Personkategori",
-  summarySubjectCategories: "Oppsummert personkategori",
+  summarySubjectCategories: "Personkategorier oppsummert",
   nationalLaw: "Nasjonal lov",
   navMaster: "Master i NAV",
   productTeam: "Produktteam (IT)",
