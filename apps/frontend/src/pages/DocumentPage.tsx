@@ -1,25 +1,27 @@
 import React from 'react'
-import { RouteComponentProps } from 'react-router-dom'
-import { intl, useAwait } from '../util'
-import { codelist } from '../service/Codelist'
-import { Block } from 'baseui/block'
-import { Select, TYPE, Value } from 'baseui/select'
-import { deleteDocument, getDocument, getProcessesByDocument, useDocumentSearch } from '../api'
-import { Document, Process } from '../constants'
+import {RouteComponentProps} from 'react-router-dom'
+import {intl, useAwait} from '../util'
+import {codelist} from '../service/Codelist'
+import {Block} from 'baseui/block'
+import {Select, TYPE, Value} from 'baseui/select'
+import {deleteDocument, getDocument, getProcessesByDocument, useDocumentSearch} from '../api'
+import {Document, Process} from '../constants'
 import DocumentMetadata from '../components/document/DocumentMetadata'
-import { user } from '../service/User'
-import { faEdit, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
-import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash'
+import {user} from '../service/User'
+import {faEdit, faPlusCircle} from '@fortawesome/free-solid-svg-icons'
+import {faTrash} from '@fortawesome/free-solid-svg-icons/faTrash'
 import DeleteDocumentModal from '../components/document/component/DeleteDocumentModal'
-import { Notification } from 'baseui/notification'
-import { H4, Label2, Paragraph2 } from 'baseui/typography'
-import { StyledSpinnerNext } from 'baseui/spinner'
+import {Notification} from 'baseui/notification'
+import {H4, Label2, Paragraph2} from 'baseui/typography'
+import {StyledSpinnerNext} from 'baseui/spinner'
 import DocumentProcessesTable from '../components/document/component/DocumentProcessesTable'
-import { Tab } from 'baseui/tabs'
-import { CustomizedTabs } from '../components/common/CustomizedTabs'
+import {Tab} from 'baseui/tabs'
+import {CustomizedTabs} from '../components/common/CustomizedTabs'
 import Button from '../components/common/Button'
-import { AuditButton } from '../components/audit/AuditButton'
-import { SIZE as ButtonSize } from 'baseui/button'
+import {AuditButton} from '../components/audit/AuditButton'
+import {SIZE as ButtonSize} from 'baseui/button'
+import {tabOverride} from "../components/common/Style";
+
 
 const renderTextWithLabel = (label: string, text: string) => (
   <Block marginTop="scale1000">
@@ -38,7 +40,6 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
   const [documentUsages, setDocumentUsages] = React.useState<[Process]>()
   const [errorMessage, setErrorMessage] = React.useState<string>()
   const [activeKey, setActiveKey] = React.useState<string | number>('containsInformationType')
-  const tabOverride = {Tab: {style: {fontSize: '1.5rem'}}}
 
   useAwait(user.wait())
 

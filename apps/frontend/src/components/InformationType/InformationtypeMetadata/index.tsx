@@ -15,6 +15,7 @@ import {user} from '../../../service/User'
 import {InformationTypeBannerButtons} from '../InformationTypeBannerButtons'
 import Button from '../../common/Button'
 import {CustomizedTabs} from "../../common/CustomizedTabs";
+import {tabOverride} from "../../common/Style";
 
 interface InformationtypeMetadataProps {
   informationtype: InformationType;
@@ -59,7 +60,6 @@ const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
 
   useAwait(user.wait())
 
-  const tabOverride = {Tab: {style: {fontSize: '1.5rem'}}}
   return (
     <>
       {props.informationtype && (
