@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface AuthRepository extends JpaRepository<Auth, UUID> {
 
-    List<Auth> findByInitiatedBefore(LocalDateTime time);
+    List<Auth> findByLastActiveBefore(LocalDateTime time);
 
     @Query(value = "select count(distinct user_id) "
             + "from auth "

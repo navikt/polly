@@ -68,7 +68,7 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/login/**")
-                        .allowedOrigins("https://login.microsoftonline.com");
+                        .allowedOrigins("*");
                 registry.addMapping("/**")
                         .allowedOrigins(securityProperties.getCorsOrigins().toArray(new String[]{}))
                         .allowCredentials(true);
