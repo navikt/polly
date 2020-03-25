@@ -73,7 +73,7 @@ public class AuthService {
 
     @Scheduled(initialDelayString = "PT1M", fixedRateString = "PT10M")
     public void cleanOldAuth() {
-        List<Auth> auths = authRepository.findByInitiatedBefore(LocalDateTime.now().minus(Constants.SESSION_LENGTH).plusHours(1));
+        List<Auth> auths = authRepository.findByLastActiveBefore(LocalDateTime.now().minus(Constants.SESSION_LENGTH.plusHours(1)));
         for (Auth auth : auths) {
             authRepository.delete(auth);
             log.debug("Deleting old auth for user {}", auth.getUserId());
