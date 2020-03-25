@@ -148,9 +148,29 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                 </CustomizedModalBlock>
 
                 <CustomizedModalBlock>
-                  <ModalLabel label={intl.organizing} tooltip={intl.organizingHelpText}/>
+                  <ModalLabel label={intl.system} tooltip={intl.systemHelpText}/>
+                  <FieldProduct products={formikBag.values.products}/>
+                </CustomizedModalBlock>
 
-                  <Block maxWidth={"672px"} width={"100%"}>
+                <CustomizedModalBlock>
+                  <ModalLabel label={intl.usesAllInformationTypes} tooltip={intl.usesAllInformationTypesHelpText}/>
+                  <Block>
+                    <BoolField value={formikBag.values.usesAllInformationTypes} fieldName='usesAllInformationTypes' omitUndefined firstButtonLabel={`(${intl.exceptionalUsage})`}/>
+                  </Block>
+                </CustomizedModalBlock>
+
+                <Accordion overrides={{
+                  Root: {
+                    style: {
+                      marginTop: "25px"
+                    }
+                  }
+                }}>
+                  <Panel
+                    title={<ModalLabel label={<AccordionTitle title={intl.organizing} expanded={isPanelExpanded}/>} tooltip={intl.organizingHelpText}/>}
+                    onChange={togglePanel}
+                    overrides={{...panelOverrides}}
+                  >
                     <Block display={"flex"} width={"100%"}>
                       <Block minWidth={"33%"} width={"100%"} marginLeft={".5rem"}>{intl.department}</Block>
                       {codelist.showSubDepartment(formikBag.values.department) && (
@@ -158,7 +178,6 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                           {intl.subDepartment}
                         </Block>
                       )}
-
                       <Block minWidth={"33%"} width={"100%"}>{intl.productTeam}</Block>
                     </Block>
                     <Block display={"flex"} width={"100%"}>
@@ -180,35 +199,13 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                         </Block>
                       </Block>
                     </Block>
-                  </Block>
-                </CustomizedModalBlock>
-
-                <CustomizedModalBlock>
-                  <ModalLabel label={intl.system} tooltip={intl.systemHelpText}/>
-                  <FieldProduct products={formikBag.values.products}/>
-                </CustomizedModalBlock>
-
-                <CustomizedModalBlock>
-                  <ModalLabel label={intl.usesAllInformationTypes} tooltip={intl.usesAllInformationTypesHelpText}/>
-                  <Block>
-                    <BoolField value={formikBag.values.usesAllInformationTypes} fieldName='usesAllInformationTypes' omitUndefined firstButtonLabel={`(${intl.exceptionalUsage})`}/>
-                  </Block>
-                </CustomizedModalBlock>
-
-                <Accordion overrides={{
-                  Root: {
-                    style: {
-                      marginTop: "25px"
-                    }
-                  }
-                }}>
+                  </Panel>
                   <Panel
                     title={<AccordionTitle title={intl.legalBasis} expanded={isPanelExpanded}/>}
                     onChange={togglePanel}
                     overrides={{...panelOverrides}}
                   >
                     <Block {...rowBlockProps}>
-                      <ModalLabel/>
                       {!formikBag.values.legalBasesOpen && (
                         <Block width='100%' marginBottom='1rem'>
                           <Button
@@ -277,12 +274,10 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                     overrides={{...panelOverrides}}
                   >
                     <Block {...rowBlockProps}>
-                      <ModalLabel/>
                       <ModalLabel label={intl.automaticProcessing} tooltip={intl.processAutomationHelpText}/>
                       <BoolField fieldName='automaticProcessing' value={formikBag.values.automaticProcessing}/>
                     </Block>
                     <Block {...rowBlockProps}>
-                      <ModalLabel/>
                       <ModalLabel label={intl.profiling} tooltip={intl.profilingHelpText}/>
                       <BoolField fieldName='profiling' value={formikBag.values.profiling}/>
                     </Block>
@@ -294,7 +289,6 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                     overrides={{...panelOverrides}}
                   >
                     <Block {...rowBlockProps} marginTop={0}>
-                      <ModalLabel/>
                       <ModalLabel label={intl.dataProcessor}/>
                       <BoolField fieldName='dataProcessing.dataProcessor'
                                  value={formikBag.values.dataProcessing.dataProcessor}/>
@@ -302,14 +296,12 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
                     {formikBag.values.dataProcessing.dataProcessor && <>
                       <Block {...rowBlockProps}>
-                        <ModalLabel/>
                         <ModalLabel label={intl.dataProcessorAgreement}/>
                         <FieldDataProcessorAgreements formikBag={formikBag}/>
                       </Block>
                       <Error fieldName='dataProcessing.dataProcessorAgreement'/>
 
                       <Block {...rowBlockProps}>
-                        <ModalLabel/>
                         <ModalLabel label={intl.dataProcessorOutsideEU} tooltip={intl.dataProcessorOutsideEUExtra}/>
                         <BoolField fieldName='dataProcessing.dataProcessorOutsideEU'
                                    value={formikBag.values.dataProcessing.dataProcessorOutsideEU}/>
