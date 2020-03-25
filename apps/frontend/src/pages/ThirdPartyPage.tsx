@@ -1,18 +1,18 @@
 import * as React from "react";
-import { intl, useAwait } from "../util"
-import { RouteComponentProps } from "react-router-dom";
-import { codelist, ListName } from "../service/Codelist";
-import { Plus } from "baseui/icon";
-import { Block, BlockProps } from "baseui/block";
-import { createDisclosure, deleteDisclosure, getDisclosuresByRecipient, getInformationTypesBySource, updateDisclosure } from "../api";
+import {intl, useAwait} from "../util"
+import {RouteComponentProps} from "react-router-dom";
+import {codelist, ListName} from "../service/Codelist";
+import {Plus} from "baseui/icon";
+import {Block, BlockProps} from "baseui/block";
+import {createDisclosure, deleteDisclosure, getDisclosuresByRecipient, getInformationTypesBySource, updateDisclosure} from "../api";
 import TableDisclosure from "../components/common/TableDisclosure";
-import { H5, Label2, Paragraph2 } from "baseui/typography";
-import { Button, KIND } from "baseui/button";
-import { user } from "../service/User";
-import { Disclosure, DisclosureFormValues, InformationType } from "../constants";
+import {H5, Label2, Paragraph2} from "baseui/typography";
+import {Button, KIND} from "baseui/button";
+import {user} from "../service/User";
+import {Disclosure, DisclosureFormValues, InformationType} from "../constants";
 import ModalThirdParty from "../components/ThirdParty/ModalThirdPartyForm";
-import ListRecievedInformationTypes from "../components/ThirdParty/ListRecievedInformationTypes";
-import { StyledSpinnerNext } from "baseui/spinner"
+import {StyledSpinnerNext} from "baseui/spinner"
+import ThirdPartiesTable from "../components/common/ThirdPartiesTable";
 
 const labelBlockProps: BlockProps = {
   marginBottom: '1rem',
@@ -95,6 +95,10 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
     })()
   }, []);
 
+  React.useEffect(()=>{
+    console.log(informationTypeList)
+  },[informationTypeList])
+
   return (
     <React.Fragment>
       {isLoading && <StyledSpinnerNext/>}
@@ -146,10 +150,8 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
               />
             </Block>
           </React.Fragment>
-
-
-          <Block marginBottom="3rem">
-            <ListRecievedInformationTypes informationtypeList={informationTypeList || []}/>
+          <Block>
+            <ThirdPartiesTable informationTypes={informationTypeList || []} sortName={true}/>
           </Block>
         </React.Fragment>
       )}
