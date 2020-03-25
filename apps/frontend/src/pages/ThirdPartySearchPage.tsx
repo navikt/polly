@@ -47,9 +47,7 @@ const ThirdPartySearchPage = (props: RouteComponentProps) => {
       )}
 
       {!!thirdPartyList.length && (
-        <ul>
-          <AlphabeticList listName={ListName.THIRD_PARTY} baseUrl={"/thirdparty/"}/>
-        </ul>
+        <AlphabeticList listName={ListName.THIRD_PARTY} baseUrl={"/thirdparty/"}/>
       )}
     </React.Fragment>
   );
