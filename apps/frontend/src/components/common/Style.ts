@@ -7,9 +7,12 @@ export const paddingAll = (pad: string) => ({paddingLeft: pad, paddingRight: pad
 export const tabOverride = {
   Tab: {
     style: {
-      fontSize: '1.5rem',
+      fontSize: '1em',
       backgroundColor: colors.blue50, ':hover' : {backgroundColor: colors.blue100},
-      borderRadius: '25px 25px 0 0'
+      borderRadius: '25px 25px 0 0',
+      paddingRight: '20px',
+      paddingLeft: '20px',
+      paddingBottom: '10px'
     }
   }
 }
