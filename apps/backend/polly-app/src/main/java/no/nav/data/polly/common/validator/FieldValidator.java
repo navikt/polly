@@ -22,12 +22,14 @@ import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 public class FieldValidator {
 
     private static final String ERROR_TYPE = "fieldIsNullOrMissing";
+    private static final String ERROR_TYPE_PATTERN = "fieldWrongFormat";
     private static final String ERROR_TYPE_ENUM = "fieldIsInvalidEnum";
     private static final String ERROR_TYPE_CODELIST = "fieldIsInvalidCodelist";
     private static final String ERROR_TYPE_CODELIST_CODE = "fieldIsInvalidCodelistCode";
     private static final String ERROR_TYPE_DATE = "fieldIsInvalidDate";
     private static final String ERROR_TYPE_UUID = "fieldIsInvalidUUID";
     private static final String ERROR_MESSAGE = "%s was null or missing";
+    private static final String ERROR_MESSAGE_PATTERN = "%s is not valid for pattern '%s'";
     private static final String ERROR_MESSAGE_ENUM = "%s: %s was invalid for type %s";
     private static final String ERROR_MESSAGE_CODELIST = "%s: %s code not found in codelist %s";
     private static final String ERROR_MESSAGE_CODELIST_CODE = "%s: %s code has invalid format (alphanumeric and underscore)";
@@ -74,10 +76,23 @@ public class FieldValidator {
         if (checkBlank(fieldName, fieldValue)) {
             return;
         }
+        checkEnum(fieldName, fieldValue, type);
+    }
+
+    public <T extends Enum<T>> void checkEnum(String fieldName, String fieldValue, Class<T> type) {
         try {
             Enum.valueOf(type, fieldValue);
         } catch (IllegalArgumentException e) {
             validationErrors.add(new ValidationError(reference, ERROR_TYPE_ENUM, String.format(ERROR_MESSAGE_ENUM, getFieldName(fieldName), fieldValue, type.getSimpleName())));
+        }
+    }
+
+    public void checkPattern(String fieldName, String value, Pattern pattern) {
+        if (StringUtils.isBlank(value)) {
+            return;
+        }
+        if (!pattern.matcher(value).matches()) {
+            validationErrors.add(new ValidationError(getFieldName(fieldName), ERROR_TYPE_PATTERN, String.format(ERROR_MESSAGE_PATTERN, value, pattern.toString())));
         }
     }
 

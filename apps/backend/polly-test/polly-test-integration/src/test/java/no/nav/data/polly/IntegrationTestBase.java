@@ -32,11 +32,14 @@ import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
 import no.nav.data.polly.process.domain.ProcessData.DataProcessing;
+import no.nav.data.polly.process.domain.ProcessData.Dpia;
 import no.nav.data.polly.process.domain.ProcessData.Retention;
 import no.nav.data.polly.process.domain.ProcessDistributionRepository;
 import no.nav.data.polly.process.domain.ProcessRepository;
+import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessResponse.DataProcessingResponse;
+import no.nav.data.polly.process.dto.ProcessResponse.DpiaResponse;
 import no.nav.data.polly.process.dto.ProcessResponse.ProcessResponseBuilder;
 import no.nav.data.polly.process.dto.ProcessResponse.RetentionResponse;
 import no.nav.data.polly.term.catalog.CatalogTerm;
@@ -232,6 +235,8 @@ public abstract class IntegrationTestBase {
                                         .profiling(true)
                                         .dataProcessing(DataProcessing.builder().dataProcessor(true).dataProcessorAgreements(List.of("X")).dataProcessorOutsideEU(false).build())
                                         .retention(Retention.builder().retentionPlan(true).retentionMonths(24).retentionStart("Birth").retentionDescription("ret desc").build())
+                                        .dpia(Dpia.builder().needForDpia(true).refToDpia("ref123").grounds("default").processImplemented(true).riskOwner("B222333").build())
+                                        .status(ProcessStatus.IN_PROGRESS)
                                         .build())
                                 .build()));
     }
@@ -309,6 +314,14 @@ public abstract class IntegrationTestBase {
                         .retentionStart("Birth")
                         .retentionDescription("ret desc")
                         .build())
+                .dpia(DpiaResponse.builder()
+                        .needForDpia(true)
+                        .refToDpia("ref123")
+                        .grounds("default")
+                        .processImplemented(true)
+                        .riskOwner("B222333")
+                        .build())
+                .status(ProcessStatus.IN_PROGRESS)
                 ;
     }
 

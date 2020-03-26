@@ -38,6 +38,10 @@ public class ProcessData {
     private DataProcessing dataProcessing = new DataProcessing();
     @Default
     private Retention retention = new Retention();
+    @Default
+    private Dpia dpia = new Dpia();
+    @Default
+    private ProcessStatus status = ProcessStatus.IN_PROGRESS;
 
     @Data
     @Builder
@@ -60,6 +64,22 @@ public class ProcessData {
         private Integer retentionMonths;
         private String retentionStart;
         private String retentionDescription;
+    }
+
+    /**
+     * Data protection impact assessment - PVK
+     */
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Dpia {
+
+        private Boolean needForDpia;
+        private String refToDpia;
+        private String grounds;
+        private boolean processImplemented;
+        private String riskOwner;
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")

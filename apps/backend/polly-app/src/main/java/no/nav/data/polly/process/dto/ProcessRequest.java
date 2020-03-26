@@ -11,8 +11,11 @@ import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
+import no.nav.data.polly.process.domain.ProcessStatus;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static no.nav.data.polly.common.swagger.SwaggerConfig.LOCAL_DATE;
 import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_END;
@@ -28,6 +31,8 @@ import static org.apache.commons.lang3.StringUtils.trimToNull;
 @NoArgsConstructor
 @FieldNameConstants
 public class ProcessRequest implements RequestElement {
+
+    public static final Pattern NAV_IDENT_PATTERN = Pattern.compile("[A-Z][0-9]{6}");
 
     private String id;
     private String name;
@@ -53,6 +58,8 @@ public class ProcessRequest implements RequestElement {
     private Boolean profiling;
     private DataProcessingRequest dataProcessing;
     private RetentionRequest retention;
+    private DpiaRequest dpia;
+    private String status;
 
     @Data
     @Builder
@@ -75,6 +82,20 @@ public class ProcessRequest implements RequestElement {
         private Integer retentionMonths;
         private String retentionStart;
         private String retentionDescription;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @FieldNameConstants
+    public static class DpiaRequest {
+
+        private Boolean needForDpia;
+        private String refToDpia;
+        private String grounds;
+        private boolean processImplemented;
+        private String riskOwner;
     }
 
     private boolean update;
@@ -110,6 +131,13 @@ public class ProcessRequest implements RequestElement {
             getRetention().setRetentionStart(null);
             getRetention().setRetentionDescription(null);
         }
+        if (getDpia() == null) {
+            setDpia(new DpiaRequest());
+        }
+        getDpia().setRiskOwner(StringUtils.upperCase(getDpia().getRiskOwner()));
+        if (StringUtils.isBlank(status)) {
+            setStatus(ProcessStatus.IN_PROGRESS.name());
+        }
     }
 
     @Override
@@ -124,6 +152,8 @@ public class ProcessRequest implements RequestElement {
         validator.checkDate(Fields.start, start);
         validator.checkDate(Fields.end, end);
         validator.validateType(Fields.legalBases, legalBases);
+        validator.checkRequiredEnum(Fields.status, status, ProcessStatus.class);
+        validator.checkPattern(Fields.dpia + "." + DpiaRequest.Fields.riskOwner, dpia.riskOwner, NAV_IDENT_PATTERN);
     }
 
 }

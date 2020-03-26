@@ -11,6 +11,7 @@ import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 import no.nav.data.polly.policy.dto.PolicyResponse;
+import no.nav.data.polly.process.domain.ProcessStatus;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonPropertyOrder({"id", "name", "description", "purposeCode", "department", "subDepartment", "productTeams", "products", "start", "end", "active",
-        "usesAllInformationTypes", "automaticProcessing", "profiling", "dataProcessing", "retention",
+        "usesAllInformationTypes", "automaticProcessing", "profiling", "dataProcessing", "retention", "dpia", "status",
         "legalBases", "policies"})
 public class ProcessResponse {
 
@@ -42,6 +43,8 @@ public class ProcessResponse {
     private Boolean profiling;
     private DataProcessingResponse dataProcessing;
     private RetentionResponse retention;
+    private DpiaResponse dpia;
+    private ProcessStatus status;
 
     @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;
@@ -77,6 +80,20 @@ public class ProcessResponse {
         private Integer retentionMonths;
         private String retentionStart;
         private String retentionDescription;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @JsonPropertyOrder({"needForDpia", "refToDpia", "grounds", "processImplemented", "riskOwner"})
+    public static class DpiaResponse {
+
+        private Boolean needForDpia;
+        private String refToDpia;
+        private String grounds;
+        private boolean processImplemented;
+        private String riskOwner;
     }
 
 }

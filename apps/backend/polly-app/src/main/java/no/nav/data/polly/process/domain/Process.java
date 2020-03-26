@@ -16,12 +16,15 @@ import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.process.domain.ProcessData.DataProcessing;
+import no.nav.data.polly.process.domain.ProcessData.Dpia;
 import no.nav.data.polly.process.domain.ProcessData.Retention;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessRequest.DataProcessingRequest;
+import no.nav.data.polly.process.dto.ProcessRequest.DpiaRequest;
 import no.nav.data.polly.process.dto.ProcessRequest.RetentionRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessResponse.DataProcessingResponse;
+import no.nav.data.polly.process.dto.ProcessResponse.DpiaResponse;
 import no.nav.data.polly.process.dto.ProcessResponse.RetentionResponse;
 import org.hibernate.annotations.Type;
 
@@ -113,6 +116,14 @@ public class Process extends Auditable<String> {
                         .retentionStart(data.getRetention().getRetentionStart())
                         .retentionDescription(data.getRetention().getRetentionDescription())
                         .build())
+                .dpia(data.getDpia() == null ? null : DpiaResponse.builder()
+                        .needForDpia(data.getDpia().getNeedForDpia())
+                        .refToDpia(data.getDpia().getRefToDpia())
+                        .grounds(data.getDpia().getGrounds())
+                        .processImplemented(data.getDpia().isProcessImplemented())
+                        .riskOwner(data.getDpia().getRiskOwner())
+                        .build())
+                .status(data.getStatus())
                 .build();
     }
 
@@ -145,6 +156,8 @@ public class Process extends Auditable<String> {
         data.setProfiling(request.getProfiling());
         data.setDataProcessing(convertDataProcessing(request.getDataProcessing()));
         data.setRetention(convertRetention(request.getRetention()));
+        data.setDpia(convertDpia(request.getDpia()));
+        data.setStatus(request.getStatus() == null ? null : ProcessStatus.valueOf(request.getStatus()));
         return this;
     }
 
@@ -168,6 +181,19 @@ public class Process extends Auditable<String> {
                 .retentionMonths(retention.getRetentionMonths())
                 .retentionStart(retention.getRetentionStart())
                 .retentionDescription(retention.getRetentionDescription())
+                .build();
+    }
+
+    private static Dpia convertDpia(DpiaRequest dpia) {
+        if (dpia == null) {
+            return null;
+        }
+        return Dpia.builder()
+                .needForDpia(dpia.getNeedForDpia())
+                .refToDpia(dpia.getRefToDpia())
+                .grounds(dpia.getGrounds())
+                .processImplemented(dpia.isProcessImplemented())
+                .riskOwner(dpia.getRiskOwner())
                 .build();
     }
 
