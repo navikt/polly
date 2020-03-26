@@ -59,6 +59,7 @@ public class ProcessRequest implements RequestElement {
     private DataProcessingRequest dataProcessing;
     private RetentionRequest retention;
     private DpiaRequest dpia;
+    @ApiModelProperty(allowableValues = "IN_PROGRESS, COMPLETED")
     private String status;
 
     @Data
