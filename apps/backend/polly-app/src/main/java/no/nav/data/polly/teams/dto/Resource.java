@@ -14,7 +14,7 @@ public class Resource {
     private String navIdent;
     private String givenName;
     private String familyName;
-    private String getFullName;
+    private String fullName;
     private String email;
     private ResourceType resourceType;
 }

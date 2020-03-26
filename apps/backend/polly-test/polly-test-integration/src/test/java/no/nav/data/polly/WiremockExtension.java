@@ -74,7 +74,7 @@ public class WiremockExtension implements Extension, BeforeAllCallback, BeforeEa
                 .navIdent(ident)
                 .familyName("Family")
                 .givenName("Given")
-                .getFullName("Given Family")
+                .fullName("Given Family")
                 .resourceType(ResourceType.EXTERNAL)
                 .email("email@norge.no")
                 .build();
