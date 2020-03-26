@@ -24,7 +24,9 @@ const SearchLabel = (props: { name: string, type: string }) =>
   </Block>
 
 const searchCodelist = (search: string, list: ListName & NavigableItem, typeName: string) =>
-  codelist.getCodes(list).filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
+  codelist
+    .getCodes(list)
+    .filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
     .map(c => ({
       id: c.code,
       sortKey: c.shortName,
@@ -32,13 +34,18 @@ const searchCodelist = (search: string, list: ListName & NavigableItem, typeName
       type: list
     }))
 
-const getCodelistByListnameAndType = (list: ListName, typeName: string) =>
-  codelist.getCodes(list).map(c => ({
-    id: c.code,
-    sortKey: c.shortName,
-    label: <SearchLabel name={c.shortName} type={typeName}/>,
-    type: list
-  } as SearchItem))
+const getCodelistByListnameAndType = (search: string, list: ListName, typeName: string) => {
+  return codelist
+    .getCodes(list)
+    .filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
+    .map(c => ({
+      id: c.code,
+      sortKey: c.shortName,
+      label: <SearchLabel name={c.shortName} type={typeName}/>,
+      type: list
+    } as SearchItem))
+}
+
 
 const useMainSearch = () => {
   const [search, setSearch] = useDebouncedState<string>('', 500)
@@ -47,15 +54,24 @@ const useMainSearch = () => {
   const [type, setType] = useState<SearchType>('all')
 
   useEffect(() => {
+    console.log(type)
+  }, [type])
+
+
+  useEffect(() => {
+    console.log(searchResult)
+  }, [searchResult])
+
+  useEffect(() => {
     setSearchResult([])
     if (type === 'purpose') {
-      setSearchResult(getCodelistByListnameAndType(ListName.PURPOSE, intl.purpose))
+      setSearchResult(getCodelistByListnameAndType(search, ListName.PURPOSE, intl.purpose))
     } else if (type === 'department') {
-      setSearchResult(getCodelistByListnameAndType(ListName.DEPARTMENT, intl.department))
+      setSearchResult(getCodelistByListnameAndType(search, ListName.DEPARTMENT, intl.department))
     } else if (type === 'subDepartment') {
-      setSearchResult(getCodelistByListnameAndType(ListName.SUB_DEPARTMENT, intl.subDepartment))
+      setSearchResult(getCodelistByListnameAndType(search, ListName.SUB_DEPARTMENT, intl.subDepartment))
     } else if (type === 'thirdParty') {
-      setSearchResult(getCodelistByListnameAndType(ListName.THIRD_PARTY, intl.thirdParty))
+      setSearchResult(getCodelistByListnameAndType(search, ListName.THIRD_PARTY, intl.thirdParty))
     } else {
       (async () => {
         if (search && search.length > 2) {
@@ -71,6 +87,7 @@ const useMainSearch = () => {
             add(searchCodelist(search, ListName.PURPOSE, intl.purpose))
             add(searchCodelist(search, ListName.DEPARTMENT, intl.department))
             add(searchCodelist(search, ListName.SUB_DEPARTMENT, intl.subDepartment))
+            add(searchCodelist(search, ListName.THIRD_PARTY, intl.thirdParty))
           }
 
           if (type === 'all' || type === 'informationType') {
@@ -211,6 +228,7 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
           placeholder={intl.search}
           value={value}
           onInputChange={event => {
+            console.log(event.currentTarget.value)
             setSearch(event.currentTarget.value)
             setValue([{id: event.currentTarget.value, label: event.currentTarget.value}])
           }}
@@ -220,7 +238,9 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
             (async () => {
               if (item) {
                 props.history.push(await urlForObject(item.type, item.id))
-              } else setValue([])
+              } else {
+                setValue([])
+              }
             })()
           }}
           filterOptions={options => options}
