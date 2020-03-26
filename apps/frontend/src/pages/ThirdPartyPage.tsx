@@ -93,11 +93,11 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
       }
       setIsLoading(false);
     })()
-  }, []);
+  }, [props.match.params.thirdPartyCode]);
 
-  React.useEffect(()=>{
+  React.useEffect(() => {
     console.log(informationTypeList)
-  },[informationTypeList])
+  }, [informationTypeList])
 
   return (
     <React.Fragment>

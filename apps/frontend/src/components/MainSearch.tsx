@@ -1,21 +1,21 @@
-import { default as React, ReactElement, useEffect, useState } from 'react'
-import { NavigableItem, ObjectType } from '../constants'
-import { Block } from 'baseui/block'
-import { codelist, ListName } from '../service/Codelist'
-import { useDebouncedState } from '../util/hooks'
-import { prefixBiasedSort } from '../util/sort'
-import { intl, theme } from '../util'
-import { searchInformationType, searchProcess, searchTeam } from '../api'
-import { Select, TYPE, Value } from 'baseui/select'
-import { urlForObject } from './common/RouteLink'
-import { RouteComponentProps, withRouter } from 'react-router-dom'
-import { Radio, RadioGroup } from 'baseui/radio'
-import { paddingZero } from './common/Style'
-import Button from './common/Button'
-import { faFilter } from '@fortawesome/free-solid-svg-icons'
+import {default as React, ReactElement, useEffect, useState} from 'react'
+import {NavigableItem, ObjectType} from '../constants'
+import {Block} from 'baseui/block'
+import {codelist, ListName} from '../service/Codelist'
+import {useDebouncedState} from '../util/hooks'
+import {prefixBiasedSort} from '../util/sort'
+import {intl, theme} from '../util'
+import {searchInformationType, searchProcess, searchTeam} from '../api'
+import {Select, TYPE, Value} from 'baseui/select'
+import {urlForObject} from './common/RouteLink'
+import {RouteComponentProps, withRouter} from 'react-router-dom'
+import {Radio, RadioGroup} from 'baseui/radio'
+import {paddingZero} from './common/Style'
+import {faFilter} from '@fortawesome/free-solid-svg-icons'
+import Button from "./common/Button";
 
 type SearchItem = { id: string, sortKey: string, label: ReactElement, type: NavigableItem }
-type SearchType = 'all' | 'purpose' | 'process' | 'team' | 'department' | 'subDepartment' | 'informationType'
+type SearchType = 'all' | 'purpose' | 'process' | 'team' | 'department' | 'subDepartment' | 'informationType' | 'thirdParty'
 
 const SearchLabel = (props: { name: string, type: string }) =>
   <Block display="flex" justifyContent="space-between" width="100%">
@@ -25,12 +25,12 @@ const SearchLabel = (props: { name: string, type: string }) =>
 
 const searchCodelist = (search: string, list: ListName & NavigableItem, typeName: string) =>
   codelist.getCodes(list).filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
-  .map(c => ({
-    id: c.code,
-    sortKey: c.shortName,
-    label: <SearchLabel name={c.shortName} type={typeName}/>,
-    type: list
-  }))
+    .map(c => ({
+      id: c.code,
+      sortKey: c.shortName,
+      label: <SearchLabel name={c.shortName} type={typeName}/>,
+      type: list
+    }))
 
 const getCodelistByListnameAndType = (list: ListName, typeName: string) =>
   codelist.getCodes(list).map(c => ({
@@ -54,6 +54,8 @@ const useMainSearch = () => {
       setSearchResult(getCodelistByListnameAndType(ListName.DEPARTMENT, intl.department))
     } else if (type === 'subDepartment') {
       setSearchResult(getCodelistByListnameAndType(ListName.SUB_DEPARTMENT, intl.subDepartment))
+    } else if (type === 'thirdParty') {
+      setSearchResult(getCodelistByListnameAndType(ListName.THIRD_PARTY, intl.thirdParty))
     } else {
       (async () => {
         if (search && search.length > 2) {
@@ -183,6 +185,7 @@ const SelectType = (props: { type: SearchType, setType: (type: SearchType) => vo
         {smallRadio('team', intl.team)}
         {smallRadio('department', intl.department)}
         {smallRadio('subDepartment', intl.subDepartmentShort)}
+        {smallRadio('thirdParty', intl.thirdParty)}
       </RadioGroup>
     </Block>
   </Block>
@@ -212,9 +215,12 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
             setValue([{id: event.currentTarget.value, label: event.currentTarget.value}])
           }}
           onChange={(params) => {
+            console.log(params)
             const item = params.value[0] as SearchItem;
             (async () => {
-              props.history.push(await urlForObject(item.type, item.id))
+              if (item) {
+                props.history.push(await urlForObject(item.type, item.id))
+              } else setValue([])
             })()
           }}
           filterOptions={options => options}
