@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import no.nav.data.polly.common.security.Encryptor;
 import no.nav.data.polly.common.utils.JsonUtils;
 import org.springframework.util.Assert;
+import org.springframework.web.util.HtmlUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.ERROR;
@@ -34,8 +35,8 @@ public class OAuthState {
 
     public String errorRedirect(String error, String errorDesc) {
         return UriComponentsBuilder.fromUriString(getErrorUri())
-                .queryParam(ERROR, error)
-                .queryParam(ERROR_DESCRIPTION, errorDesc)
+                .queryParam(ERROR, HtmlUtils.htmlEscape(error))
+                .queryParam(ERROR_DESCRIPTION, HtmlUtils.htmlEscape(errorDesc))
                 .build().toUriString();
     }
 
