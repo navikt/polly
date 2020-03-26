@@ -9,6 +9,7 @@ import no.nav.data.polly.process.domain.ProcessDistribution;
 import no.nav.data.polly.process.domain.ProcessDistributionRepository;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessRequest;
+import no.nav.data.polly.teams.ResourceService;
 import no.nav.data.polly.teams.TeamService;
 import org.springframework.stereotype.Service;
 
@@ -26,12 +27,16 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
     private final ProcessDistributionRepository distributionRepository;
     private final ProcessRepository processRepository;
     private final TeamService teamService;
+    private final ResourceService resourceService;
 
     public ProcessService(ProcessDistributionRepository distributionRepository,
-            ProcessRepository processRepository, TeamService teamService) {
+            ProcessRepository processRepository,
+            TeamService teamService,
+            ResourceService resourceService) {
         this.distributionRepository = distributionRepository;
         this.processRepository = processRepository;
         this.teamService = teamService;
+        this.resourceService = resourceService;
     }
 
     public void scheduleDistributeForProcess(Process process) {
@@ -57,6 +62,8 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
             if (repoValue.isPresent()) {
                 Process process = repoValue.get();
                 validateTeam(request, process.getData().getProductTeam(), validations);
+                String existingRiskOwner = process.getData().getDpia() == null ? null : process.getData().getDpia().getRiskOwner();
+                validateRiskOwner(request, existingRiskOwner, validations);
                 if (!Objects.equals(process.getPurposeCode(), request.getPurposeCode())) {
                     validations.add(new ValidationError(request.getReference(), "purposeChanged",
                             format("Cannot change purpose from %s to %s", process.getPurposeCode(), request.getPurposeCode())));
@@ -64,6 +71,7 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
             }
         } else {
             validateTeam(request, null, validations);
+            validateRiskOwner(request, null, validations);
             validations.addAll(validateRepositoryValues(request, false));
             if (processRepository.findByNameAndPurposeCode(request.getName(), request.getPurposeCode()).isPresent()) {
                 validations.add(new ValidationError(request.getReference(), "nameAndPurposeExists",
@@ -76,6 +84,13 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
     private void validateTeam(ProcessRequest request, String existingTeam, ArrayList<ValidationError> validations) {
         if (isNotBlank(request.getProductTeam()) && !Objects.equals(request.getProductTeam(), existingTeam) && !teamService.teamExists(request.getProductTeam())) {
             validations.add(new ValidationError(request.getReference(), "invalidProductTeam", "Product team " + request.getProductTeam() + " does not exist"));
+        }
+    }
+
+    private void validateRiskOwner(ProcessRequest request, String existingRiskOwner, ArrayList<ValidationError> validations) {
+        String riskOwner = request.getDpia().getRiskOwner();
+        if (isNotBlank(riskOwner) && !Objects.equals(riskOwner, existingRiskOwner) && resourceService.getResource(riskOwner).isEmpty()) {
+            validations.add(new ValidationError(request.getReference(), "invalidResource", "Resource " + riskOwner + " does not exist"));
         }
     }
 
