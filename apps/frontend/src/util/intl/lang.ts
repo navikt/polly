@@ -223,7 +223,7 @@ export const no: IStrings = {
   processStatusHelpText: "",
   isProcessImplemented: "Er behandlingen implementert i virksomheten?",
   inProgress: "Under arbeid",
-  completed: "Godskjent",
+  completed: "Godkjent",
   inProduction: "I produksjon",
   notInProduction: "Ikke i produksjon",
   isDpiaRequired:"Er det behov for personvernkonsekvensvurdering (PVK)?",
