@@ -1,12 +1,12 @@
 import * as React from 'react'
 import {KeyboardEvent} from 'react'
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal'
-import {FieldArray, Form, Formik, FormikProps,} from 'formik'
+import {Field, FieldArray, FieldProps, Form, Formik, FormikProps,} from 'formik'
 import {Block, BlockProps} from 'baseui/block'
 import {Button, KIND, SIZE as ButtonSize} from 'baseui/button'
 import {Plus} from 'baseui/icon'
 import {Error, ModalLabel} from '../../common/ModalSchema'
-import {LegalBasisFormValues, ProcessFormValues} from '../../../constants'
+import {LegalBasisFormValues, ProcessFormValues, processStatus} from '../../../constants'
 import CardLegalBasis from './CardLegalBasis'
 import {codelist, ListName} from '../../../service/Codelist'
 import {intl, theme} from '../../../util'
@@ -28,6 +28,8 @@ import FieldProduct from "../common/FieldProduct";
 import BoolField from "../common/BoolField";
 import FieldDataProcessorAgreements from "../common/FieldDataProcessorAgreements";
 import RetentionItems from "../common/RetentionItems";
+import {ALIGN, Radio, RadioGroup} from "baseui/radio";
+import DpiaItems from "../common/DpiaItems";
 
 const modalHeaderProps: BlockProps = {
   display: 'flex',
@@ -315,6 +317,61 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                   >
                     <RetentionItems formikBag={formikBag}/>
                   </Panel>
+
+
+                  <Panel
+                    title={<AccordionTitle title={intl.status} expanded={isPanelExpanded}/>}
+                    onChange={togglePanel}
+                    overrides={{...panelOverrides}}
+                  >
+                    <Block {...rowBlockProps}>
+                      <ModalLabel label={intl.processStatus} tooltip={intl.processStatusHelpText}/>
+                      <Field
+                        name='status'
+                        render={({form}: FieldProps<ProcessFormValues>) =>
+                          <RadioGroup
+                            value={formikBag.values.status}
+                            overrides={{RadioGroupRoot: {style: {width: "100%"}}}}
+                            align={ALIGN.horizontal}
+                            onChange={(e) => form.setFieldValue('status', (e.target as HTMLInputElement).value)}
+                          >
+                            <Radio value={processStatus.IN_PROGRESS}>{intl.inProgress}</Radio>
+                            <Radio value={processStatus.COMPLETED}>{intl.completed}</Radio>
+                          </RadioGroup>
+                        }
+                      />
+                    </Block>
+
+
+                    <Block {...rowBlockProps}>
+                      <ModalLabel label={intl.isProcessImplemented}/>
+                      <Field
+                        name='dpia.processImplemented'
+                        render={({form}: FieldProps<ProcessFormValues>) =>
+                          <RadioGroup
+                            value={(formikBag.values.dpia!.processImplemented === false ? "0" : "1")}
+                            align={ALIGN.horizontal}
+                            onChange={(e) => {
+                              form.setFieldValue("dpia.processImplemented", ((e.target as HTMLInputElement).value === "0" ? false : true))
+                              console.log(e.target.value)
+                            }}
+                          >
+                            <Radio value={"0"}>{intl.inProduction}</Radio>
+                            <Radio value={"1"}>{intl.notInProduction}</Radio>
+                          </RadioGroup>
+                        }
+                      />
+                    </Block>
+                  </Panel>
+
+                  <Panel
+                    title={<AccordionTitle title={intl.pvk} expanded={isPanelExpanded}/>}
+                    onChange={togglePanel}
+                    overrides={{...panelOverrides}}
+                  >
+                    <DpiaItems formikBag={formikBag}/>
+                  </Panel>
+
                 </Accordion>
               </ModalBody>
 

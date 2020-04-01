@@ -19,7 +19,12 @@ type radioBoolProps = {
 export const RadioBoolButton = (props: radioBoolProps) =>
   <RadioGroup value={boolToRadio(props.value)} align="horizontal"
               overrides={{RadioGroupRoot: {style: {width: "100%"}}}}
-              onChange={(e) => props.setValue(radioToBool((e.target as HTMLInputElement).value))}
+              onChange={
+                (e) => {
+                  props.setValue(radioToBool((e.target as HTMLInputElement).value))
+                  console.log(e.target.value)
+                }
+              }
   >
     <Radio overrides={{Label: {style: {marginRight: "2rem"}}}} value={YES}>{intl.yes} {props.firstButtonLabel}</Radio>
     <Radio overrides={{Label: {style: {marginRight: "2rem"}}}} value={NO}>{intl.no} {props.secondButtonLabel}</Radio>

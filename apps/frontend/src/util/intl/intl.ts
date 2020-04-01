@@ -45,6 +45,12 @@ export interface IStrings {
   no: string;
   unclarified: string;
   automation: string;
+  status: string;
+  processStatus: string;
+  processStatusHelpText: string;
+  isProcessImplemented: string;
+  inProgress: string;
+  completed: string;
   automaticProcessing: string;
   automaticProcessingExtra: string;
   profiling: string;
@@ -58,6 +64,12 @@ export interface IStrings {
   dataProcessorOutsideEU: string;
   dataProcessorOutsideEUExtra: string;
   includeDefaultDocument: string;
+  inProduction: string;
+  notInProduction: string;
+  isDpiaRequired: string;
+  dpiaReference: string;
+  grounds: string;
+  pvk: string;
   from: string;
   retained: string;
   retention: string;
@@ -105,7 +117,7 @@ export interface IStrings {
   processingActivitiesNew: string;
   processingActivitiesEdit: string;
   processNew: string;
-  exceptionalUsage:string;
+  exceptionalUsage: string;
   overallPurpose: string;
   overallPurposeHelpText: string;
   validityOfProcessHelpText: string;

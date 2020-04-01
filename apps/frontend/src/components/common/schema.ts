@@ -7,6 +7,7 @@ import {
   Document,
   DocumentInformationTypes,
   DocumentInfoTypeUse,
+  Dpia,
   InformationtypeFormValues,
   LegalBasesStatus,
   LegalBasisFormValues,
@@ -14,6 +15,7 @@ import {
   PolicyInformationType,
   Process,
   ProcessFormValues,
+  processStatus,
   Retention
 } from '../../constants'
 import {intl} from '../../util'
@@ -38,7 +40,7 @@ export const infoTypeSchema = () => yup.object<InformationtypeFormValues>({
 
 export const processSchema = () => yup.object<ProcessFormValues>({
   name: yup.string().max(max, maxError()).required(intl.required),
-  purposeCode: yup.string().oneOf(codelist.getCodes(ListName.PURPOSE).map(p => p.code),intl.required).required(intl.required),
+  purposeCode: yup.string().oneOf(codelist.getCodes(ListName.PURPOSE).map(p => p.code), intl.required).required(intl.required),
   description: yup.string(),
   department: yup.string(),
   subDepartment: yup.string(),
@@ -60,6 +62,14 @@ export const processSchema = () => yup.object<ProcessFormValues>({
     retentionMonths: yup.number(),
     retentionStart: yup.string(),
     retentionDescription: yup.string()
+  }),
+  status: yup.mixed().oneOf([processStatus.COMPLETED, processStatus.IN_PROGRESS]),
+  dpia: yup.object<Dpia>({
+    grounds: yup.string(),
+    needForDpia: yup.boolean(),
+    processImplemented: yup.boolean(),
+    refToDpia: yup.string(),
+    riskOwner: yup.string()
   })
 })
 

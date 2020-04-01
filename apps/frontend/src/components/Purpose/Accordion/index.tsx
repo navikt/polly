@@ -10,7 +10,7 @@ import {intl, theme, useAwait} from '../../../util'
 import _includes from 'lodash/includes'
 import {user} from '../../../service/User'
 import {Plus} from 'baseui/icon'
-import {AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose} from '../../../constants'
+import {AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, processStatus, UseWithPurpose} from '../../../constants'
 import {LegalBasisView} from '../../common/LegalBasis'
 import {codelist, ListName} from '../../../service/Codelist'
 import ModalProcess from './ModalProcess'
@@ -238,6 +238,39 @@ const ProcessData = (props: { process: Process }) => {
         </>
       </DataText>
 
+      <DataText label={intl.status}>
+        <Block>
+          <span>{(process.status) === processStatus.IN_PROGRESS ? intl.inProgress : intl.completed}</span>
+        </Block>
+      </DataText>
+
+      <DataText label={intl.isProcessImplemented}>
+        <Block>
+          <span>{!(process.dpia?.processImplemented) ? intl.inProduction : intl.notInProduction}</span>
+        </Block>
+      </DataText>
+
+      <DataText label={intl.isDpiaRequired}>
+        <Block>
+          <span>{process.dpia?.needForDpia ? intl.yes : intl.no}</span>
+        </Block>
+      </DataText>
+      {
+        (process.dpia?.needForDpia) ? <>
+            <DataText label={intl.dpiaReference}>
+              <Block>
+                <span>{process.dpia?.refToDpia}</span>
+              </Block>
+            </DataText>
+          </> :
+          <>
+            <DataText label={intl.grounds}>
+              <Block>
+                <span>{process.dpia?.grounds}</span>
+              </Block>
+            </DataText>
+          </>
+      }
     </Block>
   )
 }

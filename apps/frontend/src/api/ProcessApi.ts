@@ -1,7 +1,7 @@
 import axios from "axios"
-import { PageResponse, Process, ProcessCount, ProcessFormValues } from "../constants"
-import { env } from "../util/env"
-import { convertLegalBasesToFormValues } from "./PolicyApi"
+import {PageResponse, Process, ProcessCount, ProcessFormValues} from "../constants"
+import {env} from "../util/env"
+import {convertLegalBasesToFormValues} from "./PolicyApi"
 
 export const getProcess = async (processId: string) => {
   const data = (await axios.get<Process>(`${env.pollyBaseUrl}/process/${processId}`)).data
@@ -35,9 +35,12 @@ export const deleteProcess = async (processId: string) => {
 }
 
 export const updateProcess = async (process: ProcessFormValues) => {
+  console.log("process ", process)
   let body = mapProcessFromForm(process)
+  console.log(body)
   const data = (await axios.put<Process>(`${env.pollyBaseUrl}/process/${process.id}`, body)).data
   data.policies.forEach(p => p.process = {...data, policies: []})
+  console.log("process returned", data)
   return data
 }
 
@@ -64,7 +67,9 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     automaticProcessing,
     profiling,
     dataProcessing,
-    retention
+    retention,
+    dpia,
+    status
   } = (process || {})
 
   return {
@@ -93,6 +98,14 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
       retentionMonths: retention?.retentionMonths || 0,
       retentionStart: retention?.retentionStart || '',
       retentionDescription: retention?.retentionDescription || ''
+    },
+    status: status,
+    dpia: {
+      grounds: dpia?.grounds || '',
+      needForDpia: dpia?.needForDpia || false,
+      processImplemented: dpia?.processImplemented || false,
+      refToDpia: dpia?.refToDpia || '',
+      riskOwner: dpia?.riskOwner || ''
     }
   }
 }
@@ -114,6 +127,14 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
     automaticProcessing: values.automaticProcessing,
     profiling: values.profiling,
     dataProcessing: values.dataProcessing,
-    retention: values.retention
+    retention: values.retention,
+    status: values.status,
+    dpia: {
+      grounds: values.dpia?.needForDpia ? "" : values.dpia?.grounds,
+      needForDpia: values.dpia?.needForDpia,
+      refToDpia: values.dpia?.needForDpia ? values.dpia.refToDpia : "",
+      processImplemented: values.dpia?.processImplemented,
+      riskOwner: values.dpia?.riskOwner
+    }
   }
 }
