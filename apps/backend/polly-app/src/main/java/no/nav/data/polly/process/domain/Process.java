@@ -11,7 +11,6 @@ import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.codelist.dto.UsedInInstancePurpose;
 import no.nav.data.polly.common.auditing.domain.Auditable;
-import no.nav.data.polly.common.rest.ChangeStampResponse;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
@@ -98,6 +97,7 @@ public class Process extends Auditable {
                 .purposeCode(purposeCode)
                 .department(getDepartmentCode())
                 .subDepartment(getSubDepartmentCode())
+                .commonExternalProcessResponsible(getCommonExternalProcessResponsibleCode())
                 .productTeam(data.getProductTeam())
                 .products(getProductCodes())
                 .start(data.getStart())
@@ -148,6 +148,7 @@ public class Process extends Auditable {
         data.setDescription(request.getDescription());
         data.setDepartment(request.getDepartment());
         data.setSubDepartment(request.getSubDepartment());
+        data.setCommonExternalProcessResponsible(request.getCommonExternalProcessResponsible());
         data.setProductTeam(request.getProductTeam());
         data.setProducts(List.copyOf(request.getProducts()));
         data.setStart(DateUtil.parseStart(request.getStart()));
@@ -199,12 +200,16 @@ public class Process extends Auditable {
                 .build();
     }
 
+    private CodelistResponse getDepartmentCode() {
+        return CodelistService.getCodelistResponse(ListName.DEPARTMENT, data.getDepartment());
+    }
+
     private CodelistResponse getSubDepartmentCode() {
         return CodelistService.getCodelistResponse(ListName.SUB_DEPARTMENT, data.getSubDepartment());
     }
 
-    private CodelistResponse getDepartmentCode() {
-        return CodelistService.getCodelistResponse(ListName.DEPARTMENT, data.getDepartment());
+    private CodelistResponse getCommonExternalProcessResponsibleCode() {
+        return CodelistService.getCodelistResponse(ListName.THIRD_PARTY, data.getCommonExternalProcessResponsible());
     }
 
     private List<CodelistResponse> getProductCodes() {

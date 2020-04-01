@@ -43,6 +43,8 @@ public class ProcessRequest implements RequestElement {
     private String department;
     @ApiModelProperty(value = "Codelist SUB_DEPARTMENT")
     private String subDepartment;
+    @ApiModelProperty(value = "Codelist THIRD_PARTY")
+    private String commonExternalProcessResponsible;
     private String productTeam;
     @Singular
     @ApiModelProperty(value = "Codelist SYSTEM")
@@ -112,6 +114,7 @@ public class ProcessRequest implements RequestElement {
         setPurposeCode(toUpperCaseAndTrim(getPurposeCode()));
         setDepartment(toUpperCaseAndTrim(getDepartment()));
         setSubDepartment(toUpperCaseAndTrim(getSubDepartment()));
+        setCommonExternalProcessResponsible(toUpperCaseAndTrim(getCommonExternalProcessResponsible()));
         setDescription(trimToNull(getDescription()));
         setProductTeam(trimToNull(getProductTeam()));
         setProducts(formatListToUppercase(getProducts()));
@@ -149,6 +152,7 @@ public class ProcessRequest implements RequestElement {
         validator.checkRequiredCodelist(Fields.purposeCode, purposeCode, ListName.PURPOSE);
         validator.checkCodelist(Fields.department, department, ListName.DEPARTMENT);
         validator.checkCodelist(Fields.subDepartment, subDepartment, ListName.SUB_DEPARTMENT);
+        validator.checkCodelist(Fields.commonExternalProcessResponsible, commonExternalProcessResponsible, ListName.THIRD_PARTY);
         products.forEach(product -> validator.checkCodelist(Fields.products, product, ListName.SYSTEM));
         validator.checkDate(Fields.start, start);
         validator.checkDate(Fields.end, end);

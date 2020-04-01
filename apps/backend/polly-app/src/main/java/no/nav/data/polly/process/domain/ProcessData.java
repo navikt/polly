@@ -26,6 +26,7 @@ public class ProcessData {
     private LocalDate end;
     private String department;
     private String subDepartment;
+    private String commonExternalProcessResponsible;
     private String productTeam;
     private List<String> products;
     @Valid
