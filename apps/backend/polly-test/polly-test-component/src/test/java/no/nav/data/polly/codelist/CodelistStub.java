@@ -15,7 +15,7 @@ public class CodelistStub {
         add(ListName.CATEGORY, "ARBEIDSFORHOLD", "ARBEIDSFORHOLD", "Arbeidsforhold");
         add(ListName.CATEGORY, "UTDANNING", "UTDANNING", "Utdanning");
         add(ListName.PURPOSE, "KONTROLL", "Kontroll", "Kontrollering");
-        add(ListName.PURPOSE, "AAP", "AAP", "Arbeidsavklaringspenger");
+        add(ListName.PURPOSE, "AAP", "Arbeidsavklaringspenger", "Arbeidsavklaringspenger");
         add(ListName.NATIONAL_LAW, "SAMTYKKE", "Samtykke", "");
         add(ListName.NATIONAL_LAW, "FTRL", "Ftrl", "1997-02-28-19");
         add(ListName.NATIONAL_LAW, "NY_ALDERSPENSJON", "Ny alderspensjon", "2009-06-05-32");
