@@ -105,6 +105,7 @@ public class CodeUsageService {
                 case THIRD_PARTY:
                     getInformationTypes(usage).forEach(it -> replaceAll(it.getData().getSources(), oldCode, newCode));
                     getDisclosures(usage).forEach(d -> d.getData().setRecipient(newCode));
+                    getProcesses(usage).forEach(d -> d.getData().setCommonExternalProcessResponsible(newCode));
                     break;
                 case SENSITIVITY:
                     getInformationTypes(usage).forEach(it -> it.getData().setSensitivity(newCode));
@@ -175,6 +176,8 @@ public class CodeUsageService {
                 return processRepository.findByNationalLaw(code).stream().map(Process::getInstanceIdentification).collect(toList());
             case SYSTEM:
                 return processRepository.findByProduct(code).stream().map(Process::getInstanceIdentification).collect(toList());
+            case THIRD_PARTY:
+                return processRepository.findByCommonExternalProcessResponsible(code).stream().map(Process::getInstanceIdentification).collect(toList());
             default:
                 return Collections.emptyList();
         }

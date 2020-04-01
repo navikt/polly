@@ -64,7 +64,7 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
     class findCodeUsageByListNameAndCode {
 
         @ParameterizedTest
-        @CsvSource({"PURPOSE,DAGPENGER,1", "DEPARTMENT,YTA,2", "SUB_DEPARTMENT,NAY,2", "GDPR_ARTICLE,ART61E,2", "NATIONAL_LAW,FTRL,2"})
+        @CsvSource({"PURPOSE,DAGPENGER,1", "DEPARTMENT,YTA,2", "SUB_DEPARTMENT,NAY,2", "GDPR_ARTICLE,ART61E,2", "NATIONAL_LAW,FTRL,2", "THIRD_PARTY,SKATTEETATEN,1"})
         void findProcesses(String list, String code, int expectedCountProcess) {
             var response = getForListAndCode(list, code);
 
@@ -113,7 +113,7 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
 
         @ParameterizedTest
         @CsvSource({"PURPOSE,BARNETRYGD,0,1,1", "DEPARTMENT,YTA,0,0,2", "SUB_DEPARTMENT,NAY,0,0,2", "GDPR_ARTICLE,ART92A,0,0,1", "NATIONAL_LAW,FTRL,0,2,2",
-                "SUBJECT_CATEGORY,BRUKER,0,2,0", "SENSITIVITY,POL,2,0,0", "SYSTEM,AA_REG,1,0,1",  "SYSTEM,TPS,1,0,1", "CATEGORY,ARBEIDSFORHOLD,1,0,0", "THIRD_PARTY,SKATTEETATEN,1,0,0"})
+                "SUBJECT_CATEGORY,BRUKER,0,2,0", "SENSITIVITY,POL,2,0,0", "SYSTEM,AA_REG,1,0,1",  "SYSTEM,TPS,1,0,1", "CATEGORY,ARBEIDSFORHOLD,1,0,0", "THIRD_PARTY,SKATTEETATEN,1,0,1"})
         void shouldFindCodeUsage(String list, String code, int expectedCountInformationTypes, int expectedCountPolicy, int expectedCountProcess) {
             ResponseEntity<CodeUsageResponse> response = getForListAndCode(list, code);
 
@@ -133,7 +133,7 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
         @ParameterizedTest
         @CsvSource({"PURPOSE,DAGPENGER,0,1,1,0,0", "CATEGORY,PERSONALIA,1,0,0,0,0",
                 "DEPARTMENT,YTA,0,0,2,0,0", "SUB_DEPARTMENT,NAY,0,0,2,0,0",
-                "SENSITIVITY,POL,2,0,0,0,0", "THIRD_PARTY,SKATTEETATEN,1,0,0,1,0",
+                "SENSITIVITY,POL,2,0,0,0,0", "THIRD_PARTY,SKATTEETATEN,1,0,1,1,0",
                 "SUBJECT_CATEGORY,BRUKER,0,2,0,0,1", "SYSTEM,TPS,1,0,1,0,0",
                 "NATIONAL_LAW,FTRL,0,2,2,1,0", "GDPR_ARTICLE,ART61E,0,2,2,1,0"
         })
@@ -173,8 +173,8 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
         informationTypeRepository.saveAll(List.of(sivilstand, arbeidsforhold));
 
         Process dagpengerSaksbehandling = createProcess("Saksbehandling", "DAGPENGER", "YTA", "NAY",
-                List.of(createLegalBasis("ART61E", "FTRL", "§ 2-1"), createLegalBasis("ART92A", "FTRL", "§ 2-1")), "TPS");
-        Process dagpengerAnalyse = createProcess("Analyse", "BARNETRYGD", "YTA", "NAY", List.of(createLegalBasis("ART61E", "FTRL", "§ 12-4")), "AA_REG");
+                List.of(createLegalBasis("ART61E", "FTRL", "§ 2-1"), createLegalBasis("ART92A", "FTRL", "§ 2-1")), "TPS", "SKATTEETATEN");
+        Process dagpengerAnalyse = createProcess("Analyse", "BARNETRYGD", "YTA", "NAY", List.of(createLegalBasis("ART61E", "FTRL", "§ 12-4")), "AA_REG", "ARBEIDSGIVER");
         processRepository.saveAll(List.of(dagpengerSaksbehandling, dagpengerAnalyse));
 
         Policy dagpengerBruker = createPolicy("DAGPENGER", "BRUKER", List.of(createLegalBasis("ART61E", "FTRL", "§ 2-1")));

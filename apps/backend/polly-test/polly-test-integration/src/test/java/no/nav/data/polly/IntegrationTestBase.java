@@ -204,7 +204,8 @@ public abstract class IntegrationTestBase {
         return createInformationType(UUID.randomUUID(), name, sensitivity, system, category, source);
     }
 
-    protected Process createProcess(String name, String purpose, String department, String subDepartment, List<LegalBasis> legalBases, String product) {
+    protected Process createProcess(String name, String purpose, String department, String subDepartment, List<LegalBasis> legalBases, String product,
+            String commonExternalProcessResponsible) {
         return processRepository.save(Process.builder()
                 .generateId()
                 .name(name)
@@ -213,6 +214,7 @@ public abstract class IntegrationTestBase {
                         .start(LocalDate.now()).end(LocalDate.now())
                         .department(department)
                         .subDepartment(subDepartment)
+                        .commonExternalProcessResponsible(commonExternalProcessResponsible)
                         .productTeam("ProductTeam")
                         .products(List.of(product))
                         .legalBases(legalBases)

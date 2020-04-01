@@ -46,7 +46,7 @@ class ProcessUpdateIT extends KafkaIntegrationTestBase {
                 // Inactive policy should not be sent
                 policy.getData().setEnd(LocalDate.now().minusDays(1));
             } else if (index == 1) {
-                var process = createProcess("ignored process", PURPOSE_CODE1, "", "", List.of(), "");
+                var process = createProcess("ignored process", PURPOSE_CODE1, "", "", List.of(), "", "");
                 policy.setProcess(process);
             }
         });
