@@ -6,7 +6,6 @@ import no.nav.data.polly.informationtype.InformationTypeController.InformationTy
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
-import no.nav.data.polly.sync.domain.SyncStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import java.util.UUID;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.data.polly.sync.domain.SyncStatus.SYNCED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpEntity.EMPTY;
 import static org.springframework.http.HttpMethod.DELETE;
@@ -197,22 +195,18 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         createInformationTypeTestData(3);
 
         List<InformationType> informationTypes = informationTypeRepository.findAll();
-        informationTypes.forEach(d -> d.setSyncStatus(SYNCED));
         informationTypeRepository.saveAll(informationTypes);
         assertThat(informationTypeRepository.count()).isEqualTo(3L);
 
         UUID id = informationTypeRepository.findByName("InformationType_nr2").get().getId();
-        assertThat(informationTypeRepository.findByName("InformationType_nr1").get().getSyncStatus()).isEqualTo(SYNCED);
-        assertThat(informationTypeRepository.findByName("InformationType_nr2").get().getSyncStatus()).isEqualTo(SYNCED);
-        assertThat(informationTypeRepository.findByName("InformationType_nr3").get().getSyncStatus()).isEqualTo(SYNCED);
 
         ResponseEntity<InformationTypeResponse> responseEntity = restTemplate.exchange("/informationtype/" + id, DELETE, EMPTY, InformationTypeResponse.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
-        assertThat(informationTypeRepository.count()).isEqualTo(3L);
-        assertThat(informationTypeRepository.findByName("InformationType_nr1").get().getSyncStatus()).isEqualTo(SYNCED);
-        assertThat(informationTypeRepository.findByName("InformationType_nr2 (To be deleted)").get().getSyncStatus()).isEqualTo(SyncStatus.TO_BE_DELETED);
-        assertThat(informationTypeRepository.findByName("InformationType_nr3").get().getSyncStatus()).isEqualTo(SYNCED);
+        assertThat(informationTypeRepository.count()).isEqualTo(2L);
+        assertThat(informationTypeRepository.findByName("InformationType_nr1")).isPresent();
+        assertThat(informationTypeRepository.findByName("InformationType_nr2")).isEmpty();
+        assertThat(informationTypeRepository.findByName("InformationType_nr3")).isPresent();
     }
 
     @Test
@@ -234,14 +228,6 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         documentRepository.delete(doc);
 
         assertThat(restTemplate.exchange("/informationtype/{id}", DELETE, EMPTY, String.class, informationType.getId()).getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
-    }
-
-    @Test
-    void testSync() {
-        var it = informationTypeRepository.save(createAndSaveInformationType(UUID.randomUUID(), "new-name"));
-
-        restTemplate.postForLocation("/informationtype/sync", List.of(it.getId()), it.getId());
-        assertThat(informationTypeRepository.findById(it.getId()).get().getSyncStatus()).isEqualTo(SyncStatus.TO_BE_UPDATED);
     }
 
     private List<InformationType> createInformationTypeTestData(int nrOfRows) {

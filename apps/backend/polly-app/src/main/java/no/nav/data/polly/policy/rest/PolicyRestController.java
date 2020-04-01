@@ -10,7 +10,6 @@ import no.nav.data.polly.common.exceptions.PollyNotFoundException;
 import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.rest.PageParameters;
 import no.nav.data.polly.common.rest.RestResponsePage;
-import no.nav.data.polly.informationtype.InformationTypeService;
 import no.nav.data.polly.policy.PolicyService;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
@@ -52,15 +51,13 @@ public class PolicyRestController {
     private final PolicyMapper mapper;
     private final PolicyRepository policyRepository;
     private final ProcessService processService;
-    private final InformationTypeService informationTypeService;
 
     public PolicyRestController(PolicyService service, PolicyMapper mapper, PolicyRepository policyRepository,
-            ProcessService processService, InformationTypeService informationTypeService) {
+            ProcessService processService) {
         this.service = service;
         this.mapper = mapper;
         this.policyRepository = policyRepository;
         this.processService = processService;
-        this.informationTypeService = informationTypeService;
     }
 
     @ApiOperation(value = "Get all Policies, filtered  request will always return all policies")
@@ -217,6 +214,5 @@ public class PolicyRestController {
 
     private void onChange(List<Policy> policies) {
         policies.stream().map(Policy::getProcess).distinct().forEach(processService::scheduleDistributeForProcess);
-        informationTypeService.sync(policies.stream().map(Policy::getInformationTypeId).collect(toList()));
     }
 }

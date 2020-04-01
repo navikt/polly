@@ -3,7 +3,6 @@ package no.nav.data.polly.policy.rest;
 import no.nav.data.polly.AppStarter;
 import no.nav.data.polly.common.rest.PageParameters;
 import no.nav.data.polly.common.utils.JsonUtils;
-import no.nav.data.polly.informationtype.InformationTypeService;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
@@ -13,6 +12,7 @@ import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.mapper.PolicyMapper;
 import no.nav.data.polly.process.ProcessService;
+import no.nav.data.polly.process.domain.ProcessRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -66,7 +65,7 @@ class PolicyRestControllerTest {
     @MockBean
     private PolicyRepository policyRepository;
     @MockBean
-    private InformationTypeService informationTypeService;
+    private ProcessRepository processRepository;
     @MockBean
     private ProcessService processService;
 
@@ -144,8 +143,6 @@ class PolicyRestControllerTest {
                 .content(asJsonString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.content", hasSize(1)));
-
-        verify(informationTypeService).sync(List.of(INFORMATION_TYPE_ID_1));
     }
 
     @Test
@@ -164,7 +161,6 @@ class PolicyRestControllerTest {
                 .content(asJsonString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.content", hasSize(2)));
-        verify(informationTypeService).sync(List.of(INFORMATION_TYPE_ID_1, INFORMATION_TYPE_ID_2));
     }
 
     @Test
@@ -181,7 +177,6 @@ class PolicyRestControllerTest {
                 .content(asJsonString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.legalBases[0].description", is("Description")));
-        verify(informationTypeService).sync(List.of(INFORMATION_TYPE_ID_1));
     }
 
     @Test
@@ -202,7 +197,6 @@ class PolicyRestControllerTest {
                 .content(asJsonString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content", hasSize(2)));
-        verify(informationTypeService).sync(List.of(INFORMATION_TYPE_ID_1, INFORMATION_TYPE_ID_2));
     }
 
     @Test
@@ -213,7 +207,6 @@ class PolicyRestControllerTest {
         mvc.perform(delete("/policy/{id}", POLICY_ID_1)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        verify(informationTypeService).sync(List.of(INFORMATION_TYPE_ID_1));
     }
 
     @Test

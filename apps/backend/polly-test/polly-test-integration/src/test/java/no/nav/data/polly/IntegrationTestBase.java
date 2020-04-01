@@ -7,8 +7,8 @@ import no.nav.data.polly.IntegrationTestBase.Initializer;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.common.auditing.domain.AuditVersionRepository;
 import no.nav.data.polly.common.nais.LeaderElectionService;
-import no.nav.data.polly.common.rest.ChangeStampResponse;
 import no.nav.data.polly.common.storage.domain.GenericStorageRepository;
 import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.disclosure.domain.Disclosure;
@@ -68,7 +68,6 @@ import java.util.stream.IntStream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
-import static no.nav.data.polly.sync.domain.SyncStatus.SYNCED;
 
 @Slf4j
 @ActiveProfiles("test")
@@ -102,6 +101,8 @@ public abstract class IntegrationTestBase {
     protected DocumentRepository documentRepository;
     @Autowired
     protected GenericStorageRepository genericStorageRepository;
+    @Autowired
+    protected AuditVersionRepository auditRepository;
     @Autowired
     protected KafkaTopicProperties topicProperties;
 
@@ -174,7 +175,6 @@ public abstract class IntegrationTestBase {
         InformationType informationType = InformationType.builder()
                 .id(id)
                 .termId("term")
-                .syncStatus(SYNCED)
                 .data(InformationTypeData.builder()
                         .name(name)
                         .description("desc")

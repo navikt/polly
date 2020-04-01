@@ -192,17 +192,6 @@ public class InformationTypeController {
         return new ResponseEntity<>(service.delete(id).convertToResponse(), HttpStatus.ACCEPTED);
     }
 
-    @ApiOperation(value = "Trigger InformationType Sync")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "InformationTypes will be synced"),
-            @ApiResponse(code = 400, message = "Illegal arguments"),
-            @ApiResponse(code = 500, message = "Internal server error")})
-    @PostMapping("/sync")
-    public void syncInformationType(@RequestBody List<UUID> ids) {
-        log.info("Received requests to sync InformationType");
-        service.sync(ids);
-    }
-
     static final class InformationTypePage extends RestResponsePage<InformationTypeResponse> {
 
     }

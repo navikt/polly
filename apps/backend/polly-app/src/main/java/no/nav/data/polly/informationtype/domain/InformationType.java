@@ -11,7 +11,6 @@ import no.nav.data.polly.common.auditing.domain.Auditable;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
 import no.nav.data.polly.policy.domain.Policy;
-import no.nav.data.polly.sync.domain.SyncStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
 
@@ -20,8 +19,6 @@ import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -29,9 +26,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import static no.nav.data.polly.common.utils.StreamUtils.copyOf;
-import static no.nav.data.polly.sync.domain.SyncStatus.SYNCED;
-import static no.nav.data.polly.sync.domain.SyncStatus.TO_BE_CREATED;
-import static no.nav.data.polly.sync.domain.SyncStatus.TO_BE_UPDATED;
 
 @Data
 @Builder
@@ -47,11 +41,6 @@ public class InformationType extends Auditable {
     @Type(type = "pg-uuid")
     @Column(name = "INFORMATION_TYPE_ID", nullable = false, updatable = false)
     private UUID id;
-
-    @NotNull
-    @Column(nullable = false, name = "ELASTICSEARCH_STATUS")
-    @Enumerated(EnumType.STRING)
-    private SyncStatus syncStatus;
 
     @Builder.Default
     @Valid
@@ -86,13 +75,11 @@ public class InformationType extends Auditable {
 
     public InformationType convertNewFromRequest(InformationTypeRequest request) {
         id = UUID.randomUUID();
-        syncStatus = TO_BE_CREATED;
         convertFromRequest(request);
         return this;
     }
 
     public void convertUpdateFromRequest(InformationTypeRequest request) {
-        syncStatus = syncStatus == SYNCED ? TO_BE_UPDATED : syncStatus;
         convertFromRequest(request);
     }
 

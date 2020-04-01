@@ -13,13 +13,11 @@ import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.policy.domain.PolicyRepository;
-import no.nav.data.polly.sync.domain.SyncStatus;
 import no.nav.data.polly.term.TermService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -78,19 +76,9 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
             throw new ValidationException(String.format("InformationType %s is used by %d document(s)", id, documents.size()));
         }
 
-        infoType.setSyncStatus(SyncStatus.TO_BE_DELETED);
-        log.info("InformationType with id={} has been set to be deleted during the next scheduled task", id);
-        infoType.getData().setName(infoType.getData().getName() + " (To be deleted)");
+        log.info("InformationType with id={} deleted", id);
+        repository.delete(infoType);
         return infoType;
-    }
-
-    public void deleteAll(Collection<UUID> ids) {
-        ids.forEach(this::delete);
-    }
-
-    public void sync(List<UUID> ids) {
-        int informationTypesUpdated = repository.setSyncForInformationTypeIds(ids);
-        log.info("marked {} informationTypes for sync", informationTypesUpdated);
     }
 
     private Optional<InformationType> find(List<InformationType> informationTypes, UUID id) {

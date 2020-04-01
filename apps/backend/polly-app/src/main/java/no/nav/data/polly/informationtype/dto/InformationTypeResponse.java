@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
-import no.nav.data.polly.sync.domain.SyncStatus;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
 
@@ -23,7 +22,7 @@ import static no.nav.data.polly.common.utils.StreamUtils.copyOf;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonPropertyOrder({"id", "name", "term", "description", "sensitivity", "navMaster", "categories", "sources", "keywords", "toBeDeleted"})
+@JsonPropertyOrder({"id", "name", "term", "description", "sensitivity", "navMaster", "categories", "sources", "keywords"})
 public class InformationTypeResponse {
 
     private UUID id;
@@ -35,12 +34,10 @@ public class InformationTypeResponse {
     private List<CodelistResponse> categories;
     private List<CodelistResponse> sources;
     private List<String> keywords;
-    private boolean toBeDeleted;
 
     public InformationTypeResponse(InformationType informationType) {
         id = informationType.getId();
         setTerm(informationType.getTermId());
-        setToBeDeleted(informationType.getSyncStatus() == SyncStatus.TO_BE_DELETED);
         mapJsonFields(informationType.getData());
     }
 

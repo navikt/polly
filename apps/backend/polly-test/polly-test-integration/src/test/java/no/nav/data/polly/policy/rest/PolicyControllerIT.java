@@ -236,9 +236,10 @@ class PolicyControllerIT extends IntegrationTestBase {
         assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
         assertThat(createEntity.getBody(), notNullValue());
         assertBehandlingsgrunnlagDistribusjon(1);
+        PolicyResponse policy = createEntity.getBody().getContent().get(0);
 
         ResponseEntity<String> deleteEntity = restTemplate.exchange(
-                POLICY_REST_ENDPOINT + createEntity.getBody().getContent().get(0).getId(), HttpMethod.DELETE, new HttpEntity<>(new HttpHeaders()), String.class);
+                POLICY_REST_ENDPOINT + policy.getId(), HttpMethod.DELETE, new HttpEntity<>(new HttpHeaders()), String.class);
         assertThat(deleteEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(policyRepository.count(), is(0L));
         assertBehandlingsgrunnlagDistribusjon(2);
