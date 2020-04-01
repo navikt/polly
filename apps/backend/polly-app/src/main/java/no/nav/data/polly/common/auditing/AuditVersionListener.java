@@ -65,8 +65,8 @@ public class AuditVersionListener {
 
     private void audit(Object entity, Action action) {
         try {
-            Assert.isTrue(entity instanceof Auditable<?>, "Invalid object");
-            String tableName = AuditVersion.tableName(((Auditable<?>) entity).getClass());
+            Assert.isTrue(entity instanceof Auditable, "Invalid object");
+            String tableName = AuditVersion.tableName(((Auditable) entity).getClass());
             String id = getIdForObject(entity);
             String data = wr.writeValueAsString(entity);
             String user = Optional.ofNullable(MdcUtils.getUser()).orElse("no user set");

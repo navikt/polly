@@ -11,6 +11,7 @@ import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.codelist.dto.UsedInInstancePurpose;
 import no.nav.data.polly.common.auditing.domain.Auditable;
+import no.nav.data.polly.common.rest.ChangeStampResponse;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
@@ -51,7 +52,7 @@ import static no.nav.data.polly.common.utils.StreamUtils.nullToEmptyList;
 @NoArgsConstructor
 @Entity
 @Table(name = "PROCESS")
-public class Process extends Auditable<String> {
+public class Process extends Auditable {
 
     @Id
     @Type(type = "pg-uuid")
@@ -123,6 +124,7 @@ public class Process extends Auditable<String> {
                         .processImplemented(data.getDpia().isProcessImplemented())
                         .riskOwner(data.getDpia().getRiskOwner())
                         .build())
+                .changeStamp(convertChangeStampResponse())
                 .status(data.getStatus())
                 .build();
     }

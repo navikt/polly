@@ -39,6 +39,11 @@ class ProcessControllerIT extends IntegrationTestBase {
         ProcessResponse processResponse = resp.getBody();
         assertThat(processResponse).isNotNull();
 
+        // Unimportant date assertion
+        assertThat(processResponse.getChangeStamp().getLastModifiedBy()).isNotNull();
+        assertThat(processResponse.getChangeStamp().getLastModifiedDate()).isNotNull();
+        processResponse.setChangeStamp(null);
+
         assertThat(processResponse).isEqualTo(processResponseBuilder(policy.getProcess().getId())
                 .policy(PolicyResponse.builder()
                         .id(policy.getId())
@@ -79,6 +84,7 @@ class ProcessControllerIT extends IntegrationTestBase {
         assertThat(processPage).isNotNull();
 
         assertThat(processPage.getContent()).hasSize(2);
+        processPage.getContent().forEach(p -> p.setChangeStamp(null));
         assertThat(processPage.getContent()).contains(
                 processResponseBuilder(policy.getProcess().getId())
                         .name("Auto_" + PURPOSE_CODE1)

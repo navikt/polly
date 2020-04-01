@@ -8,6 +8,7 @@ import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.nais.LeaderElectionService;
+import no.nav.data.polly.common.rest.ChangeStampResponse;
 import no.nav.data.polly.common.storage.domain.GenericStorageRepository;
 import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.disclosure.domain.Disclosure;

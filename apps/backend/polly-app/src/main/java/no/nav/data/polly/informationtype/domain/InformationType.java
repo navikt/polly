@@ -41,7 +41,7 @@ import static no.nav.data.polly.sync.domain.SyncStatus.TO_BE_UPDATED;
 @EqualsAndHashCode(callSuper = false, exclude = {"policies"})
 @Entity
 @Table(name = "INFORMATION_TYPE")
-public class InformationType extends Auditable<String> {
+public class InformationType extends Auditable {
 
     @Id
     @Type(type = "pg-uuid")

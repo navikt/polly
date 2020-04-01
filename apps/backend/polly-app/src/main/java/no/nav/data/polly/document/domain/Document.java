@@ -35,7 +35,7 @@ import static no.nav.data.polly.common.utils.StreamUtils.convert;
 @NoArgsConstructor
 @Entity
 @Table(name = "DOCUMENT")
-public class Document extends Auditable<String> {
+public class Document extends Auditable {
 
     @Id
     @Type(type = "pg-uuid")

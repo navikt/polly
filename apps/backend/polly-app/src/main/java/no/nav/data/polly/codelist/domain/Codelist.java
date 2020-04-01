@@ -25,7 +25,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @IdClass(Codelist.IdClass.class)
-public class Codelist extends Auditable<String> {
+public class Codelist extends Auditable {
 
     @Id
     @Column(name = "LIST_NAME")

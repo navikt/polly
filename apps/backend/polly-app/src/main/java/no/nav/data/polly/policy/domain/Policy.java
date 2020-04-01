@@ -43,7 +43,7 @@ import static no.nav.data.polly.common.utils.StreamUtils.convert;
 @NoArgsConstructor
 @Entity
 @Table(name = "POLICY")
-public class Policy extends Auditable<String> {
+public class Policy extends Auditable {
 
     @Id
     @Type(type = "pg-uuid")

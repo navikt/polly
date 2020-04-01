@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import lombok.Getter;
 import lombok.Setter;
 import no.nav.data.polly.common.auditing.AuditVersionListener;
+import no.nav.data.polly.common.rest.ChangeStampResponse;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -20,11 +21,11 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 @JsonFilter("relationFilter")
 @EntityListeners({AuditingEntityListener.class, AuditVersionListener.class})
-public abstract class Auditable<U> {
+public abstract class Auditable {
 
     @CreatedBy
     @Column(name = "CREATED_BY")
-    protected U createdBy;
+    protected String createdBy;
 
     @CreatedDate
     @Column(name = "CREATED_DATE")
@@ -32,9 +33,16 @@ public abstract class Auditable<U> {
 
     @LastModifiedBy
     @Column(name = "LAST_MODIFIED_BY")
-    protected U lastModifiedBy;
+    protected String lastModifiedBy;
 
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_DATE")
     protected LocalDateTime lastModifiedDate;
+
+    protected ChangeStampResponse convertChangeStampResponse() {
+        return ChangeStampResponse.builder()
+                .lastModifiedBy(getLastModifiedBy())
+                .lastModifiedDate(getLastModifiedDate())
+                .build();
+    }
 }

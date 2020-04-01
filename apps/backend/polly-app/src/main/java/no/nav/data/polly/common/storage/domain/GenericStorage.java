@@ -25,7 +25,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Entity
 @Table(name = "GENERIC_STORAGE")
-public class GenericStorage extends Auditable<String> {
+public class GenericStorage extends Auditable {
 
     @Id
     @Type(type = "pg-uuid")
