@@ -6,7 +6,7 @@ import {Block, BlockProps} from 'baseui/block'
 import {Button, KIND, SIZE as ButtonSize} from 'baseui/button'
 import {Plus} from 'baseui/icon'
 import {Error, ModalLabel} from '../../common/ModalSchema'
-import {LegalBasisFormValues, ProcessFormValues, processStatus} from '../../../constants'
+import {LegalBasisFormValues, ProcessFormValues, ProcessStatus} from '../../../constants'
 import CardLegalBasis from './CardLegalBasis'
 import {codelist, ListName} from '../../../service/Codelist'
 import {intl, theme} from '../../../util'
@@ -143,6 +143,34 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                   <FieldDescription/>
                 </CustomizedModalBlock>
                 <Error fieldName='description'/>
+
+                <CustomizedModalBlock>
+                  <ModalLabel label={intl.processStatus} tooltip={intl.processStatusHelpText}/>
+                  <Block {...rowBlockProps}>
+                    <Field
+                      name='status'
+                      render={({form}: FieldProps<ProcessFormValues>) =>
+                        <RadioGroup
+                          value={formikBag.values.status}
+                          align={ALIGN.horizontal}
+                          onChange={(e) => form.setFieldValue('status', (e.target as HTMLInputElement).value)}
+                        >
+                          <Radio value={ProcessStatus.COMPLETED}>{intl.completed}</Radio>
+                          <Radio value={ProcessStatus.IN_PROGRESS}>{intl.inProgress}</Radio>
+                        </RadioGroup>
+                      }
+                    />
+                  </Block>
+                </CustomizedModalBlock>
+
+                <CustomizedModalBlock>
+
+                  <ModalLabel label={intl.isProcessImplemented}/>
+                  <Block>
+                    <BoolField value={formikBag.values.dpia?.processImplemented} fieldName='dpia.processImplemented' omitUndefined/>
+                  </Block>
+
+                </CustomizedModalBlock>
 
                 <CustomizedModalBlock>
                   <ModalLabel label={intl.validityOfProcess} tooltip={intl.validityOfProcessHelpText}/>
@@ -318,54 +346,8 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                     <RetentionItems formikBag={formikBag}/>
                   </Panel>
 
-
                   <Panel
-                    title={<AccordionTitle title={intl.status} expanded={isPanelExpanded}/>}
-                    onChange={togglePanel}
-                    overrides={{...panelOverrides}}
-                  >
-                    <Block {...rowBlockProps}>
-                      <ModalLabel label={intl.processStatus} tooltip={intl.processStatusHelpText}/>
-                      <Field
-                        name='status'
-                        render={({form}: FieldProps<ProcessFormValues>) =>
-                          <RadioGroup
-                            value={formikBag.values.status}
-                            overrides={{RadioGroupRoot: {style: {width: "100%"}}}}
-                            align={ALIGN.horizontal}
-                            onChange={(e) => form.setFieldValue('status', (e.target as HTMLInputElement).value)}
-                          >
-                            <Radio value={processStatus.IN_PROGRESS}>{intl.inProgress}</Radio>
-                            <Radio value={processStatus.COMPLETED}>{intl.completed}</Radio>
-                          </RadioGroup>
-                        }
-                      />
-                    </Block>
-
-
-                    <Block {...rowBlockProps}>
-                      <ModalLabel label={intl.isProcessImplemented}/>
-                      <Field
-                        name='dpia.processImplemented'
-                        render={({form}: FieldProps<ProcessFormValues>) =>
-                          <RadioGroup
-                            value={(formikBag.values.dpia!.processImplemented === false ? "0" : "1")}
-                            align={ALIGN.horizontal}
-                            onChange={(e) => {
-                              form.setFieldValue("dpia.processImplemented", ((e.target as HTMLInputElement).value === "0" ? false : true))
-                              console.log(e.target.value)
-                            }}
-                          >
-                            <Radio value={"0"}>{intl.inProduction}</Radio>
-                            <Radio value={"1"}>{intl.notInProduction}</Radio>
-                          </RadioGroup>
-                        }
-                      />
-                    </Block>
-                  </Panel>
-
-                  <Panel
-                    title={<AccordionTitle title={intl.pvk} expanded={isPanelExpanded}/>}
+                    title={<AccordionTitle title={intl.pvkRequired} expanded={isPanelExpanded}/>}
                     onChange={togglePanel}
                     overrides={{...panelOverrides}}
                   >
