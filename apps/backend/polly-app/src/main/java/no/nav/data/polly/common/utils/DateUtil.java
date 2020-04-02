@@ -8,6 +8,8 @@ public final class DateUtil {
 
     public static final String DEFAULT_START = "0001-01-01";
     public static final String DEFAULT_END = "9999-12-31";
+    public static final LocalDate DEFAULT_START_DATE = parse(DEFAULT_START);
+    public static final LocalDate DEFAULT_END_DATE = parse(DEFAULT_END);
 
     private DateUtil() {
     }
@@ -30,10 +32,10 @@ public final class DateUtil {
     }
 
     public static LocalDate parseStart(String start) {
-        return start == null ? parse(DEFAULT_START) : parse(start);
+        return start == null ? DEFAULT_START_DATE : parse(start);
     }
 
     public static LocalDate parseEnd(String end) {
-        return end == null ? parse(DEFAULT_END) : parse(end);
+        return end == null ? DEFAULT_END_DATE : parse(end);
     }
 }

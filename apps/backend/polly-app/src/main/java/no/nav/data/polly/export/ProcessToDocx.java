@@ -1,6 +1,7 @@
 package no.nav.data.polly.export;
 
 import lombok.SneakyThrows;
+import no.nav.data.polly.Period;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.rest.ChangeStampResponse;
@@ -31,7 +32,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
@@ -74,6 +74,7 @@ public class ProcessToDocx {
             main.addStyledParagraphOfText(TITLE, "Behandling");
 
             main.addStyledParagraphOfText(HEADING_1, purposeName + ": " + process.getName());
+            addText(periodText(process.getData().toPeriod()));
 
             main.addStyledParagraphOfText(HEADING_4, "Formål " + purposeName);
             addText(CodelistService.getCodelist(ListName.PURPOSE, process.getPurposeCode()).getDescription());
@@ -84,7 +85,7 @@ public class ProcessToDocx {
             main.addStyledParagraphOfText(HEADING_3, "Egenskaper ved behandling");
 
             main.addStyledParagraphOfText(HEADING_4, "Rettslig grunnlag for behandlingen");
-            List<Text> legalBases = data.getLegalBases().stream().map(mapLegalBasis()).collect(Collectors.toList());
+            List<Text> legalBases = data.getLegalBases().stream().map(this::mapLegalBasis).collect(Collectors.toList());
             addTexts(legalBases);
 
             main.addStyledParagraphOfText(HEADING_4, "Status");
@@ -137,13 +138,24 @@ public class ProcessToDocx {
 
         }
 
-        private Function<LegalBasis, Text> mapLegalBasis() {
-            return lb -> text(
+        private Text mapLegalBasis(LegalBasis lb) {
+            return text(
                     shortName(ListName.GDPR_ARTICLE, lb.getGdpr()),
                     ", ",
                     shortName(ListName.NATIONAL_LAW, lb.getNationalLaw()) + " ",
-                    lb.getDescription()
+                    lb.getDescription(),
+                    periodText(lb.toPeriod())
             );
+        }
+
+        private String periodText(Period period) {
+            var active = period.isActive() ? "Aktiv" : "Inaktiv";
+            return period.hasStart() || period.hasEnd() ?
+                    String.format(" (%s, periode %s - %s)",
+                            active,
+                            period.getStart().format(df),
+                            period.getEnd().format(df)
+                    ) : null;
         }
 
         private void policies() {
@@ -162,11 +174,11 @@ public class ProcessToDocx {
 
         private void addPolicy(Policy pol, Tr row) {
             List<Object> cells = row.getContent();
-            Text infoTypeName = text(pol.getInformationTypeName());
+            Text infoTypeName = text(pol.getInformationTypeName(), periodText(pol.getData().toPeriod()));
             Text subjCats = text(pol.getData().getSubjectCategories().stream().map(c -> shortName(ListName.SUBJECT_CATEGORY, c)).collect(Collectors.joining(", ")));
             ((Tc) cells.get(0)).getContent().add(paragraph(infoTypeName));
             ((Tc) cells.get(1)).getContent().add(paragraph(subjCats));
-            pol.getData().getLegalBases().stream().map(mapLegalBasis()).map(this::paragraph)
+            pol.getData().getLegalBases().stream().map(this::mapLegalBasis).map(this::paragraph)
                     .forEach(((Tc) cells.get(2)).getContent()::add);
         }
 

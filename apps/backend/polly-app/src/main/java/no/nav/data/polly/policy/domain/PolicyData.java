@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.data.polly.Period;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 
 import java.time.LocalDate;
@@ -30,6 +31,10 @@ public class PolicyData {
     @NotNull
     private List<LegalBasis> legalBases = new ArrayList<>();
     private List<UUID> documentIds;
+
+    public Period toPeriod() {
+        return new Period(start, end);
+    }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static class PolicyDataBuilder {

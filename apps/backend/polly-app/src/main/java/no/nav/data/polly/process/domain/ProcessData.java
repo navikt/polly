@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.data.polly.Period;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 
 import java.time.LocalDate;
@@ -81,6 +82,10 @@ public class ProcessData {
         private String grounds;
         private boolean processImplemented;
         private String riskOwner;
+    }
+
+    public Period toPeriod() {
+        return new Period(start, end);
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")

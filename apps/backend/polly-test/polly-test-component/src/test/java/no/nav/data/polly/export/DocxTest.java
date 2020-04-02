@@ -32,8 +32,8 @@ public class DocxTest {
 
         var docx = processToDocx.generateDocForProcess(createProcess());
 
-        Path tempFile = Files.createTempFile("process", ".docx");
-//        Path tempFile = Paths.get("/Users/s143147/process.docx");
+//        Path tempFile = Files.createTempFile("process", ".docx");
+        Path tempFile = Paths.get("/Users/s143147/process.docx");
         Files.write(tempFile, docx);
         log.info("Written to {}", tempFile.toAbsolutePath());
     }
@@ -48,7 +48,9 @@ public class DocxTest {
                         .description(
                                 "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.")
                         .legalBases(List.of(
-                                LegalBasis.builder().gdpr("ART61C").nationalLaw("FTRL").description("§ 1-1").build(),
+                                LegalBasis.builder().gdpr("ART61C").nationalLaw("FTRL").description("§ 1-1")
+                                        .end(LocalDate.now().minusWeeks(1))
+                                        .build(),
                                 LegalBasis.builder().gdpr("ART61A").nationalLaw("SAMTYKKE").description("Kapittel 4, siste ledd").build()
                         ))
                         .department("AOT")
@@ -95,8 +97,10 @@ public class DocxTest {
                                 .informationTypeName("Personnavn")
                                 .data(PolicyData.builder()
                                         .subjectCategories(List.of("ANDRE"))
+                                        .end(LocalDate.now().minusDays(1))
                                         .legalBases(List.of(
-                                                LegalBasis.builder().gdpr("ART61C").nationalLaw("FTRL").description("§ 1-1").build(),
+                                                LegalBasis.builder().gdpr("ART61C").nationalLaw("FTRL").description("§ 1-1")
+                                                        .start(LocalDate.now().minusDays(5)).end(LocalDate.now().minusDays(2)).build(),
                                                 LegalBasis.builder().gdpr("ART61A").nationalLaw("SAMTYKKE").description("Kapittel 4, siste ledd").build()
                                         ))
                                         .build())

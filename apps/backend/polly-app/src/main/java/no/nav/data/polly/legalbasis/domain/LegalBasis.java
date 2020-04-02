@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.data.polly.Period;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
@@ -31,6 +32,10 @@ public class LegalBasis implements Serializable {
 
     public boolean isActive() {
         return DateUtil.isNow(start, end);
+    }
+
+    public Period toPeriod() {
+        return new Period(start, end);
     }
 
     public LegalBasisResponse convertToResponse() {
