@@ -11,6 +11,7 @@ import no.nav.data.polly.process.domain.ProcessRepository;
 import org.docx4j.openpackaging.contenttype.ContentTypes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,6 +40,7 @@ public class ExportController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Doc fetched", response = byte[].class),
             @ApiResponse(code = 500, message = "Internal server error")})
+    @Transactional(readOnly = true)
     @GetMapping(value = "/process/{processId}", produces = ContentTypes.WORDPROCESSINGML_DOCUMENT)
     public ResponseEntity<byte[]> getTeamByName(@PathVariable UUID processId) {
         log.info("Received request for export of process with id {}", processId);
