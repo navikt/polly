@@ -1,17 +1,17 @@
-import {default as React, ReactElement, useEffect, useState} from 'react'
-import {NavigableItem, ObjectType} from '../constants'
-import {Block} from 'baseui/block'
-import {codelist, ListName} from '../service/Codelist'
-import {useDebouncedState} from '../util/hooks'
-import {prefixBiasedSort} from '../util/sort'
-import {intl, theme} from '../util'
-import {searchInformationType, searchProcess, searchTeam} from '../api'
-import {Select, TYPE, Value} from 'baseui/select'
-import {urlForObject} from './common/RouteLink'
-import {RouteComponentProps, withRouter} from 'react-router-dom'
-import {Radio, RadioGroup} from 'baseui/radio'
-import {paddingZero} from './common/Style'
-import {faFilter} from '@fortawesome/free-solid-svg-icons'
+import { default as React, ReactElement, useEffect, useState } from 'react'
+import { NavigableItem, ObjectType } from '../constants'
+import { Block } from 'baseui/block'
+import { codelist, ListName } from '../service/Codelist'
+import { useDebouncedState } from '../util/hooks'
+import { prefixBiasedSort } from '../util/sort'
+import { intl, theme } from '../util'
+import { searchInformationType, searchProcess, searchTeam } from '../api'
+import { Select, TYPE, Value } from 'baseui/select'
+import { urlForObject } from './common/RouteLink'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
+import { Radio, RadioGroup } from 'baseui/radio'
+import { paddingZero } from './common/Style'
+import { faFilter } from '@fortawesome/free-solid-svg-icons'
 import Button from "./common/Button";
 
 type SearchItem = { id: string, sortKey: string, label: ReactElement, type: NavigableItem }
@@ -209,7 +209,7 @@ const SelectType = (props: { type: SearchType, setType: (type: SearchType) => vo
 
 export const MainSearchImpl = (props: RouteComponentProps) => {
   const [setSearch, searchResult, loading, type, setType] = useMainSearch()
-  const [filter, setFilter] = useState(true)
+  const [filter, setFilter] = useState(false)
   const [value, setValue] = useState<Value>()
 
   return (

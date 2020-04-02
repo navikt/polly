@@ -1,4 +1,4 @@
-import {IStrings} from "./intl";
+import { IStrings } from "./intl";
 
 export const no: IStrings = {
   informationType: "Opplysningstype",
@@ -181,6 +181,7 @@ export const no: IStrings = {
   subDepartmentShort: "Ytre etat",
   save: "Lagre",
   update: "Oppdater",
+  export: "Eksporter",
   abort: "Avbryt",
   login: "Logg inn",
   logout: "Logg ut",
@@ -487,6 +488,7 @@ export const en: IStrings = {
   subDepartmentShort: "Sub dep.",
   save: "Save",
   update: "Update",
+  export: "Export",
   abort: "Cancel",
   login: "Login",
   logout: "Logout",
