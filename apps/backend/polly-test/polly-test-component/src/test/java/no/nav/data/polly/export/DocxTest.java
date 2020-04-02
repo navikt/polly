@@ -1,6 +1,9 @@
 package no.nav.data.polly.export;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.alert.AlertService;
+import no.nav.data.polly.alert.dto.PolicyAlert;
+import no.nav.data.polly.alert.dto.ProcessAlert;
 import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.policy.domain.Policy;
@@ -12,28 +15,42 @@ import no.nav.data.polly.process.domain.ProcessData.Dpia;
 import no.nav.data.polly.process.domain.ProcessData.Retention;
 import no.nav.data.polly.process.domain.ProcessStatus;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
+import static org.mockito.Mockito.when;
+
+
 @Slf4j
+@ExtendWith(MockitoExtension.class)
 public class DocxTest {
 
-    private ProcessToDocx processToDocx = new ProcessToDocx();
+    @Mock
+    private AlertService alertService;
+    @InjectMocks
+    private ProcessToDocx processToDocx;
 
     @Test
     void createDocForProcess() throws IOException {
         CodelistStub.initializeCodelist();
+        Process process = createProcess();
+        Policy policy = process.getPolicies().iterator().next();
+        when(alertService.checkAlertsForProcess(process.getId()))
+                .thenReturn(new ProcessAlert(process.getId(), List.of(new PolicyAlert(policy.getId(), false, false, true))));
 
-        var docx = processToDocx.generateDocForProcess(createProcess());
+        var docx = processToDocx.generateDocForProcess(process);
 
-//        Path tempFile = Files.createTempFile("process", ".docx");
-        Path tempFile = Paths.get("/Users/s143147/process.docx");
+        Path tempFile = Files.createTempFile("process", ".docx");
+//        Path tempFile = Paths.get("/Users/s143147/process.docx");
         Files.write(tempFile, docx);
         log.info("Written to {}", tempFile.toAbsolutePath());
     }
@@ -85,6 +102,7 @@ public class DocxTest {
 
                 .policies(Set.of(
                         Policy.builder()
+                                .generateId()
                                 .informationTypeName("Falsk identitet")
                                 .data(PolicyData.builder()
                                         .subjectCategories(List.of("BRUKER", "PARTNER"))
@@ -94,6 +112,7 @@ public class DocxTest {
                                         .build())
                                 .build(),
                         Policy.builder()
+                                .generateId()
                                 .informationTypeName("Personnavn")
                                 .data(PolicyData.builder()
                                         .subjectCategories(List.of("ANDRE"))

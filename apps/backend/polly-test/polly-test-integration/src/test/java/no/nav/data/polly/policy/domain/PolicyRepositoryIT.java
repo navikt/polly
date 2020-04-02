@@ -46,7 +46,7 @@ class PolicyRepositoryIT extends IntegrationTestBase {
         assertThat(policyRepository.count()).isEqualTo(1L);
 
         Iterable<AuditVersion> audits = auditVersionRepository.findAll();
-        var policyAudit = StreamUtils.find(audits, audit -> audit.getTable().equals("POLICY"));
+        var policyAudit = StreamUtils.get(audits, audit -> audit.getTable().equals("POLICY"));
         assertThat(policyAudit).isNotNull();
         assertThat(policyAudit.getAction()).isEqualTo(Action.CREATE);
     }

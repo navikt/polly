@@ -2,9 +2,12 @@ package no.nav.data.polly.export;
 
 import lombok.SneakyThrows;
 import no.nav.data.polly.Period;
+import no.nav.data.polly.alert.AlertService;
+import no.nav.data.polly.alert.dto.PolicyAlert;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.rest.ChangeStampResponse;
+import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
@@ -44,13 +47,19 @@ public class ProcessToDocx {
     private static DateTimeFormatter dtf = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL, FormatStyle.MEDIUM).localizedBy(Locale.forLanguageTag("nb"));
     private static DateTimeFormatter df = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).localizedBy(Locale.forLanguageTag("nb"));
 
+    private final AlertService alertService;
+
+    public ProcessToDocx(AlertService alertService) {
+        this.alertService = alertService;
+    }
+
     @SneakyThrows
     public byte[] generateDocForProcess(Process process) {
         var doc = new DocumentBuilder(process);
         return doc.build();
     }
 
-    static class DocumentBuilder {
+    class DocumentBuilder {
 
         public static final String TITLE = "Title";
         public static final String HEADING_1 = "Heading1";
@@ -165,21 +174,38 @@ public class ProcessToDocx {
             var cols = 3;
             var table = TblFactory.createTable(process.getPolicies().size(), cols, twips / cols);
             var rows = table.getContent();
+            var alerts = alertService.checkAlertsForProcess(process.getId());
             var policies = List.copyOf(process.getPolicies());
             for (int i = 0; i < policies.size(); i++) {
-                addPolicy(policies.get(i), (Tr) rows.get(i));
+                Policy policy = policies.get(i);
+                var alert = StreamUtils.find(alerts.getPolicies(), pa -> pa.getPolicyId().equals(policy.getId()));
+                addPolicy(policy, alert.orElse(null), (Tr) rows.get(i));
             }
             main.getContent().add(table);
         }
 
-        private void addPolicy(Policy pol, Tr row) {
+        private void addPolicy(Policy pol, PolicyAlert alert, Tr row) {
             List<Object> cells = row.getContent();
             Text infoTypeName = text(pol.getInformationTypeName(), periodText(pol.getData().toPeriod()));
             Text subjCats = text(pol.getData().getSubjectCategories().stream().map(c -> shortName(ListName.SUBJECT_CATEGORY, c)).collect(Collectors.joining(", ")));
             ((Tc) cells.get(0)).getContent().add(paragraph(infoTypeName));
             ((Tc) cells.get(1)).getContent().add(paragraph(subjCats));
-            pol.getData().getLegalBases().stream().map(this::mapLegalBasis).map(this::paragraph)
-                    .forEach(((Tc) cells.get(2)).getContent()::add);
+            List<Object> legalBasisCell = ((Tc) cells.get(2)).getContent();
+            pol.getData().getLegalBases().stream()
+                    .map(this::mapLegalBasis)
+                    .map(this::paragraph)
+                    .forEach(legalBasisCell::add);
+            if (alert != null) {
+                if (alert.isMissingLegalBasis()) {
+                    legalBasisCell.add(paragraph(text("Rettslig grunnlag er ikke avklart")));
+                }
+                if (alert.isMissingArt6()) {
+                    legalBasisCell.add(paragraph(text("Rettslig grunnlag for artikkel 6 mangler")));
+                }
+                if (alert.isMissingArt9()) {
+                    legalBasisCell.add(paragraph(text("Rettslig grunnlag for artikkel 9 mangler")));
+                }
+            }
         }
 
         private void dpia() {

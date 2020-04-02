@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -94,7 +95,11 @@ public final class StreamUtils {
         return safeStream(objects).filter(filter).collect(Collectors.toList());
     }
 
-    public static <T> T find(Iterable<T> objects, Predicate<T> filter) {
-        return safeStream(objects).filter(filter).findFirst().orElseThrow(() -> new PollyNotFoundException("could not find item"));
+    public static <T> T get(Iterable<T> objects, Predicate<T> filter) {
+        return find(objects, filter).orElseThrow(() -> new PollyNotFoundException("could not find item"));
+    }
+
+    public static <T> Optional<T> find(Iterable<T> objects, Predicate<T> filter) {
+        return safeStream(objects).filter(filter).findFirst();
     }
 }
