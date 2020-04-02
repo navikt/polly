@@ -3,6 +3,7 @@ package no.nav.data.polly.export;
 import lombok.SneakyThrows;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.common.rest.ChangeStampResponse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.process.domain.Process;
@@ -106,6 +107,7 @@ public class ProcessToDocx {
             addTexts(
                     text("Avdeling: ", shortName(ListName.DEPARTMENT, data.getDepartment())),
                     text("Linja (Ytre etat): ", shortName(ListName.SUB_DEPARTMENT, data.getSubDepartment())),
+                    // TODO display name
                     text("Produktteam (IT): ", data.getProductTeam())
             );
 
@@ -128,9 +130,10 @@ public class ProcessToDocx {
             main.addStyledParagraphOfText(HEADING_3, "Informasjonstyper");
 
             main.addStyledParagraphOfText(HEADING_3, "Sist endret");
+            ChangeStampResponse changeStamp = process.convertChangeStampResponse();
             addTexts(
-                    text("Av: ", process.getLastModifiedBy()),
-                    text("Tid: ", process.getLastModifiedDate() == null ? null : process.getLastModifiedDate().format(dtf))
+                    text("Av: ", changeStamp.getLastModifiedBy()),
+                    text("Tid: ", changeStamp.getLastModifiedDate().format(dtf))
             );
 
         }

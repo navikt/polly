@@ -11,6 +11,7 @@ import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.codelist.dto.UsedInInstancePurpose;
 import no.nav.data.polly.common.auditing.domain.Auditable;
+import no.nav.data.polly.common.rest.ChangeStampResponse;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
@@ -40,8 +41,10 @@ import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import static java.util.Comparator.comparing;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static no.nav.data.polly.common.utils.StreamUtils.nullToEmptyList;
+import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 
 @Data
 @Builder
@@ -124,7 +127,8 @@ public class Process extends Auditable {
                         .processImplemented(data.getDpia().isProcessImplemented())
                         .riskOwner(data.getDpia().getRiskOwner())
                         .build())
-                .changeStamp(convertChangeStampResponse())
+                // If we dont include policies avoid loading them all from DB
+                .changeStamp(super.convertChangeStampResponse())
                 .status(data.getStatus())
                 .build();
     }
@@ -136,6 +140,7 @@ public class Process extends Auditable {
     public ProcessResponse convertToResponseWithPolicies() {
         var response = convertToResponse();
         response.setPolicies(convert(policies, policy -> policy.convertToResponse(false)));
+        response.setChangeStamp(convertChangeStampResponse());
         return response;
     }
 
@@ -214,6 +219,13 @@ public class Process extends Auditable {
 
     private List<CodelistResponse> getProductCodes() {
         return CodelistService.getCodelistResponseList(ListName.SYSTEM, data.getProducts());
+    }
+
+    @Override
+    public ChangeStampResponse convertChangeStampResponse() {
+        ChangeStampResponse cs = super.convertChangeStampResponse();
+        var policyCs = safeStream(getPolicies()).map(Auditable::convertChangeStampResponse).max(comparing(ChangeStampResponse::getLastModifiedDate));
+        return policyCs.isPresent() && policyCs.get().getLastModifiedDate().isAfter(cs.getLastModifiedDate()) ? policyCs.get() : cs;
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")

@@ -39,10 +39,10 @@ public abstract class Auditable {
     @Column(name = "LAST_MODIFIED_DATE")
     protected LocalDateTime lastModifiedDate;
 
-    protected ChangeStampResponse convertChangeStampResponse() {
+    public ChangeStampResponse convertChangeStampResponse() {
         return ChangeStampResponse.builder()
                 .lastModifiedBy(getLastModifiedBy())
-                .lastModifiedDate(getLastModifiedDate())
+                .lastModifiedDate(getLastModifiedDate() == null ? LocalDateTime.now() : getLastModifiedDate())
                 .build();
     }
 }
