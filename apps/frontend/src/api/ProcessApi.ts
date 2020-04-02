@@ -35,12 +35,9 @@ export const deleteProcess = async (processId: string) => {
 }
 
 export const updateProcess = async (process: ProcessFormValues) => {
-  console.log("process ", process)
   let body = mapProcessFromForm(process)
-  console.log(body)
   const data = (await axios.put<Process>(`${env.pollyBaseUrl}/process/${process.id}`, body)).data
   data.policies.forEach(p => p.process = {...data, policies: []})
-  console.log("process returned", data)
   return data
 }
 

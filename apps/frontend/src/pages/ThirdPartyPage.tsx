@@ -95,9 +95,6 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
     })()
   }, [props.match.params.thirdPartyCode]);
 
-  React.useEffect(() => {
-    console.log(informationTypeList)
-  }, [informationTypeList])
 
   return (
     <React.Fragment>
