@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.rest.ChangeStampResponse;
+import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.process.domain.Process;
@@ -11,12 +12,15 @@ import no.nav.data.polly.process.domain.ProcessData;
 import no.nav.data.polly.process.domain.ProcessStatus;
 import org.apache.commons.lang3.BooleanUtils;
 import org.docx4j.jaxb.Context;
+import org.docx4j.model.table.TblFactory;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.docx4j.wml.ObjectFactory;
 import org.docx4j.wml.P;
 import org.docx4j.wml.R;
+import org.docx4j.wml.Tc;
 import org.docx4j.wml.Text;
+import org.docx4j.wml.Tr;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -27,6 +31,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
@@ -79,13 +84,7 @@ public class ProcessToDocx {
             main.addStyledParagraphOfText(HEADING_3, "Egenskaper ved behandling");
 
             main.addStyledParagraphOfText(HEADING_4, "Rettslig grunnlag for behandlingen");
-            List<Text> legalBases = data.getLegalBases().stream().map(lb ->
-                    text(
-                            shortName(ListName.GDPR_ARTICLE, lb.getGdpr()),
-                            ", ",
-                            shortName(ListName.NATIONAL_LAW, lb.getNationalLaw()) + " ",
-                            lb.getDescription()
-                    )).collect(Collectors.toList());
+            List<Text> legalBases = data.getLegalBases().stream().map(mapLegalBasis()).collect(Collectors.toList());
             addTexts(legalBases);
 
             main.addStyledParagraphOfText(HEADING_4, "Status");
@@ -127,7 +126,7 @@ public class ProcessToDocx {
             retention();
             dpia();
 
-            main.addStyledParagraphOfText(HEADING_3, "Informasjonstyper");
+            policies();
 
             main.addStyledParagraphOfText(HEADING_3, "Sist endret");
             ChangeStampResponse changeStamp = process.convertChangeStampResponse();
@@ -136,6 +135,39 @@ public class ProcessToDocx {
                     text("Tid: ", changeStamp.getLastModifiedDate().format(dtf))
             );
 
+        }
+
+        private Function<LegalBasis, Text> mapLegalBasis() {
+            return lb -> text(
+                    shortName(ListName.GDPR_ARTICLE, lb.getGdpr()),
+                    ", ",
+                    shortName(ListName.NATIONAL_LAW, lb.getNationalLaw()) + " ",
+                    lb.getDescription()
+            );
+        }
+
+        private void policies() {
+            main.addStyledParagraphOfText(HEADING_3, "Informasjonstyper");
+
+            var twips = pack.getDocumentModel().getSections().get(0).getPageDimensions().getWritableWidthTwips();
+            var cols = 3;
+            var table = TblFactory.createTable(process.getPolicies().size(), cols, twips / cols);
+            var rows = table.getContent();
+            var policies = List.copyOf(process.getPolicies());
+            for (int i = 0; i < policies.size(); i++) {
+                addPolicy(policies.get(i), (Tr) rows.get(i));
+            }
+            main.getContent().add(table);
+        }
+
+        private void addPolicy(Policy pol, Tr row) {
+            List<Object> cells = row.getContent();
+            Text infoTypeName = text(pol.getInformationTypeName());
+            Text subjCats = text(pol.getData().getSubjectCategories().stream().map(c -> shortName(ListName.SUBJECT_CATEGORY, c)).collect(Collectors.joining(", ")));
+            ((Tc) cells.get(0)).getContent().add(paragraph(infoTypeName));
+            ((Tc) cells.get(1)).getContent().add(paragraph(subjCats));
+            pol.getData().getLegalBases().stream().map(mapLegalBasis()).map(this::paragraph)
+                    .forEach(((Tc) cells.get(2)).getContent()::add);
         }
 
         private void dpia() {
@@ -210,6 +242,14 @@ public class ProcessToDocx {
         }
 
         private void addTexts(Collection<Text> values) {
+            main.getContent().add(paragraph(values));
+        }
+
+        private P paragraph(Text... values) {
+            return paragraph(Arrays.asList(values));
+        }
+
+        private P paragraph(Collection<Text> values) {
             var texts = filter(values, Objects::nonNull);
             P p = fac.createP();
             R r = fac.createR();
@@ -221,7 +261,7 @@ public class ProcessToDocx {
                 }
             }
             p.getContent().add(r);
-            main.addObject(p);
+            return p;
         }
 
         private void addText(Collection<String> values) {

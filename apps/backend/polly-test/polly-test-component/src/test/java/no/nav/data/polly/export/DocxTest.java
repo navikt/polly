@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -82,13 +83,22 @@ public class DocxTest {
 
                 .policies(Set.of(
                         Policy.builder()
+                                .informationTypeName("Falsk identitet")
                                 .data(PolicyData.builder()
                                         .subjectCategories(List.of("BRUKER", "PARTNER"))
+                                        .legalBases(List.of(
+                                                LegalBasis.builder().gdpr("ART61C").nationalLaw("FTRL").description("§ 1-1").build()
+                                        ))
                                         .build())
                                 .build(),
                         Policy.builder()
+                                .informationTypeName("Personnavn")
                                 .data(PolicyData.builder()
                                         .subjectCategories(List.of("ANDRE"))
+                                        .legalBases(List.of(
+                                                LegalBasis.builder().gdpr("ART61C").nationalLaw("FTRL").description("§ 1-1").build(),
+                                                LegalBasis.builder().gdpr("ART61A").nationalLaw("SAMTYKKE").description("Kapittel 4, siste ledd").build()
+                                        ))
                                         .build())
                                 .build()
                 ))
