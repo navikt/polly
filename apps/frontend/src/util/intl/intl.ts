@@ -84,6 +84,7 @@ export interface IStrings {
   months: string;
   lastEvents: string;
   disclosureName: string;
+  pvkRequired: string;
 
   // sentence
   containsInformationType: string;

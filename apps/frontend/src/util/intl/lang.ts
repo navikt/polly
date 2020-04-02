@@ -238,6 +238,7 @@ export const no: IStrings = {
   datePickEnd: "Velg til og med dato",
   dateFormat: "Feil dato format, eksempel: 2018-08-22",
   useDates: "Velg datoer",
+  pvkRequired: "Behov for personkonsekvensvurdering (PVK)",
 
   requiredGdprArt6:
     "Opplysningstypen krever et rettslig grunnlag med artikkel 6",
@@ -521,6 +522,7 @@ export const en: IStrings = {
   info: "Info",
   period: "Period",
   useDates: "Use dates",
+  pvkRequired: "Need for personal impact assessment (PIA)",
   version: "Version",
   add: "Add",
   inProgress: "In progress",
