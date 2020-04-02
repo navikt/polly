@@ -1,5 +1,5 @@
 import {ErrorMessage} from 'formik'
-import {Block, BlockProps} from 'baseui/block'
+import {Block} from 'baseui/block'
 import {KIND as NKIND, Notification} from 'baseui/notification'
 import {Label2} from 'baseui/typography'
 import * as React from 'react'
@@ -8,11 +8,6 @@ import {theme} from '../../util'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faExclamationCircle} from '@fortawesome/free-solid-svg-icons'
 import {paddingZero} from './Style'
-
-type ModalBlockProps = {
-    blockProps?: BlockProps,
-    tooltip?: string
-}
 
 export const Error = (props: { fieldName: string, fullWidth?: boolean }) => (
     <ErrorMessage name={props.fieldName}>
@@ -30,7 +25,7 @@ export const Error = (props: { fieldName: string, fullWidth?: boolean }) => (
 
 export const ModalLabel = (props: { label?: any, tooltip?: string | React.ReactElement }) => {
     return (
-        <Block minWidth="25%" alignSelf="center" paddingRight=".5rem">
+        <Block minWidth="25%" maxWidth="25%" alignSelf="center" paddingRight="1rem">
             {props.tooltip ?
                 <StatefulTooltip content={props.tooltip} placement={PLACEMENT.top}>
                     <Label2 font="font300" display="flex" width="100%" justifyContent={"flex-start"}>
@@ -45,37 +40,6 @@ export const ModalLabel = (props: { label?: any, tooltip?: string | React.ReactE
                     </Label2>
                 </StatefulTooltip>
                 : <Label2 font="font300">{props.label}</Label2>
-            }
-        </Block>
-    )
-}
-
-export const ModalBlock: React.FunctionComponent<ModalBlockProps> = (props) => {
-    return (
-        <Block {...props.blockProps}>
-            {props.children}
-            {
-                props.tooltip &&
-                <StatefulTooltip
-                    content={props.tooltip}
-                    placement={PLACEMENT.top}
-                    overrides={{
-                        Body: {
-                            style: {
-                                maxWidth: '400px'
-                            }
-                        }
-                    }}
-                >
-                    <Label2 font="font300" display="flex" justifyContent="space-between">
-                        <FontAwesomeIcon
-                            style={{marginRight: '.5rem', marginLeft: '10px'}}
-                            icon={faExclamationCircle}
-                            color={theme.colors.primary300}
-                            size="sm"
-                        />
-                    </Label2>
-                </StatefulTooltip>
             }
         </Block>
     )

@@ -15,7 +15,7 @@ import {
   PolicyInformationType,
   Process,
   ProcessFormValues,
-  processStatus,
+  ProcessStatus,
   Retention
 } from '../../constants'
 import {intl} from '../../util'
@@ -63,7 +63,7 @@ export const processSchema = () => yup.object<ProcessFormValues>({
     retentionStart: yup.string(),
     retentionDescription: yup.string()
   }),
-  status: yup.mixed().oneOf([processStatus.COMPLETED, processStatus.IN_PROGRESS]),
+  status: yup.mixed().oneOf([ProcessStatus.COMPLETED, ProcessStatus.IN_PROGRESS]),
   dpia: yup.object<Dpia>({
     grounds: yup.string(),
     needForDpia: yup.boolean(),
