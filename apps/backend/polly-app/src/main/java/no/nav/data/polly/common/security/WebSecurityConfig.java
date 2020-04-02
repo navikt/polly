@@ -53,7 +53,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/document/**",
                 "/settings/**",
                 "/event/**",
-                "/alert/**"
+                "/alert/**",
+                "/export/**"
         );
 
         adminOnly(http,
