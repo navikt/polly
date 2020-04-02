@@ -1,5 +1,5 @@
 import axios from "axios"
-import {PageResponse, Process, ProcessCount, ProcessFormValues} from "../constants"
+import {PageResponse, Process, ProcessCount, ProcessFormValues, ProcessStatus} from "../constants"
 import {env} from "../util/env"
 import {convertLegalBasesToFormValues} from "./PolicyApi"
 
@@ -96,7 +96,7 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
       retentionStart: retention?.retentionStart || '',
       retentionDescription: retention?.retentionDescription || ''
     },
-    status: status,
+    status: status === ProcessStatus.COMPLETED ? ProcessStatus.COMPLETED : ProcessStatus.IN_PROGRESS,
     dpia: {
       grounds: dpia?.grounds || '',
       needForDpia: dpia?.needForDpia || false,
