@@ -19,9 +19,11 @@ import org.docx4j.jaxb.Context;
 import org.docx4j.model.table.TblFactory;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
+import org.docx4j.wml.BooleanDefaultTrue;
 import org.docx4j.wml.ObjectFactory;
 import org.docx4j.wml.P;
 import org.docx4j.wml.R;
+import org.docx4j.wml.RPr;
 import org.docx4j.wml.Tc;
 import org.docx4j.wml.Text;
 import org.docx4j.wml.Tr;
@@ -168,20 +170,45 @@ public class ProcessToDocx {
         }
 
         private void policies() {
-            main.addStyledParagraphOfText(HEADING_3, "Informasjonstyper");
+            main.addStyledParagraphOfText(HEADING_3, "Opplysningstype");
+            if (process.getPolicies().isEmpty()) {
+                addText("Ingen opplysningstyper");
+                return;
+            }
 
             var twips = pack.getDocumentModel().getSections().get(0).getPageDimensions().getWritableWidthTwips();
             var cols = 3;
-            var table = TblFactory.createTable(process.getPolicies().size(), cols, twips / cols);
+            var table = TblFactory.createTable(process.getPolicies().size() + 1, cols, twips / cols);
             var rows = table.getContent();
+            createPolicyHeader(rows);
+
             var alerts = alertService.checkAlertsForProcess(process.getId());
             var policies = List.copyOf(process.getPolicies());
             for (int i = 0; i < policies.size(); i++) {
                 Policy policy = policies.get(i);
                 var alert = StreamUtils.find(alerts.getPolicies(), pa -> pa.getPolicyId().equals(policy.getId()));
-                addPolicy(policy, alert.orElse(null), (Tr) rows.get(i));
+                addPolicy(policy, alert.orElse(null), (Tr) rows.get(i + 1));
             }
             main.getContent().add(table);
+        }
+
+        private void createPolicyHeader(List<Object> rows) {
+            var header = ((Tr) rows.get(0));
+            P opplysningstype = paragraph(text("Opplysningstype"));
+            ((R) opplysningstype.getContent().get(0)).setRPr(bold());
+            P personkategorier = paragraph(text("Personkategorier"));
+            ((R) personkategorier.getContent().get(0)).setRPr(bold());
+            P rettsligGrunnlag = paragraph(text("Rettslig grunnlag"));
+            ((R) rettsligGrunnlag.getContent().get(0)).setRPr(bold());
+            ((Tc) header.getContent().get(0)).getContent().add(opplysningstype);
+            ((Tc) header.getContent().get(1)).getContent().add(personkategorier);
+            ((Tc) header.getContent().get(2)).getContent().add(rettsligGrunnlag);
+        }
+
+        private RPr bold() {
+            RPr rPr = fac.createRPr();
+            rPr.setB(new BooleanDefaultTrue());
+            return rPr;
         }
 
         private void addPolicy(Policy pol, PolicyAlert alert, Tr row) {
