@@ -25,7 +25,7 @@ export interface PolicyFormValues {
   legalBasesOpen: boolean
   end?: string
   start?: string
-  documentIds: string[]
+  documentIds: string[],
 }
 
 export enum LegalBasesStatus {
@@ -34,7 +34,7 @@ export enum LegalBasesStatus {
   UNKNOWN = "UNKNOWN"
 }
 
-export enum processStatus {
+export enum ProcessStatus {
   IN_PROGRESS = "IN_PROGRESS",
   COMPLETED = "COMPLETED"
 }
@@ -54,7 +54,7 @@ export interface ProcessFormValues {
   start?: string
 
   dpia?: Dpia,
-  status?: processStatus,
+  status?: ProcessStatus,
   usesAllInformationTypes?: boolean
   automaticProcessing?: boolean
   profiling?: boolean
@@ -182,7 +182,7 @@ export interface Process extends IDurationed {
   purposeCode: string
 
   dpia?: Dpia,
-  status?: processStatus,
+  status?: ProcessStatus,
   usesAllInformationTypes: boolean
   automaticProcessing?: boolean
   profiling?: boolean
