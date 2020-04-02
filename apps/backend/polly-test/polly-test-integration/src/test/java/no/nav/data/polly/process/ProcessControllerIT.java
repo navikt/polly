@@ -206,7 +206,7 @@ class ProcessControllerIT extends IntegrationTestBase {
         ProcessCountResponse purposeResponse = resp.getBody();
         assertThat(purposeResponse).isNotNull();
 
-        assertThat(purposeResponse).isEqualTo(new ProcessCountResponse(Map.of("DEP", 1L)));
+        assertThat(purposeResponse).isEqualTo(new ProcessCountResponse(Map.of("AOT", 0L, "DEP", 1L)));
     }
 
     @Test
@@ -218,7 +218,7 @@ class ProcessControllerIT extends IntegrationTestBase {
         ProcessCountResponse purposeResponse = resp.getBody();
         assertThat(purposeResponse).isNotNull();
 
-        assertThat(purposeResponse).isEqualTo(new ProcessCountResponse(Map.of("SUBDEP", 1L)));
+        assertThat(purposeResponse).isEqualTo(new ProcessCountResponse(Map.of("PEN", 0L, "SUBDEP", 1L)));
     }
 
     @Test
