@@ -190,6 +190,15 @@ export interface Process extends IDurationed {
   retention?: Retention
 }
 
+export interface TeamResource {
+  navIdent: string,
+  givenName: string,
+  familyName: string,
+  fullName: string,
+  email: string,
+  resourceType: string
+}
+
 export interface ProcessCount {
   counts: { [code: string]: number }
 }

@@ -16,7 +16,7 @@ import {codelist, ListName} from '../../../service/Codelist'
 import ModalProcess from './ModalProcess'
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy'
-import {convertProcessToFormValues} from '../../../api'
+import {convertProcessToFormValues, getResourceById} from '../../../api'
 import {PathParams} from '../../../pages/PurposePage'
 import {ActiveIndicator} from '../../common/Durations'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
@@ -125,6 +125,17 @@ const DataText = (props: DataTextProps) => {
 const ProcessData = (props: { process: Process }) => {
   const {process} = props
   const dataProcessorAgreements = !!process.dataProcessing?.dataProcessorAgreements.length
+  const [riskOwnerFullName, setRiskOwnerFullName] = React.useState<string>();
+
+  useEffect(() => {
+    (async () => {
+      if (process.dpia?.riskOwner) {
+        setRiskOwnerFullName((await getResourceById(process.dpia.riskOwner)).fullName)
+      } else {
+        setRiskOwnerFullName("")
+      }
+    })()
+  }, [])
 
   const subjectCategories = process.policies.flatMap(p => p.subjectCategories).reduce((acc: string[], curr) => {
     const subjectCategory = codelist.getShortname(ListName.SUBJECT_CATEGORY, curr.code)
@@ -153,6 +164,12 @@ const ProcessData = (props: { process: Process }) => {
       <DataText label={intl.isProcessImplemented}>
         <Block>
           <span>{(process.dpia?.processImplemented) ? intl.yes : intl.no}</span>
+        </Block>
+      </DataText>
+
+      <DataText label={intl.riskOwner}>
+        <Block>
+          <span>{(process.dpia?.riskOwner) ? riskOwnerFullName : intl.no}</span>
         </Block>
       </DataText>
 

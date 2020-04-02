@@ -30,6 +30,7 @@ import FieldDataProcessorAgreements from "../common/FieldDataProcessorAgreements
 import RetentionItems from "../common/RetentionItems";
 import {ALIGN, Radio, RadioGroup} from "baseui/radio";
 import DpiaItems from "../common/DpiaItems";
+import FieldRiskOwner from "../common/FieldRiskOwner";
 
 const modalHeaderProps: BlockProps = {
   display: 'flex',
@@ -164,12 +165,15 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                 </CustomizedModalBlock>
 
                 <CustomizedModalBlock>
-
                   <ModalLabel label={intl.isProcessImplemented}/>
                   <Block>
                     <BoolField value={formikBag.values.dpia?.processImplemented} fieldName='dpia.processImplemented' omitUndefined/>
                   </Block>
+                </CustomizedModalBlock>
 
+                <CustomizedModalBlock>
+                  <ModalLabel label={intl.riskOwner}/>
+                  <FieldRiskOwner riskOwner={formikBag.values.dpia?.riskOwner}/>
                 </CustomizedModalBlock>
 
                 <CustomizedModalBlock>
