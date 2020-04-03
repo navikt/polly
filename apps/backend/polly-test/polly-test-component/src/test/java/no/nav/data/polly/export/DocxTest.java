@@ -25,6 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -59,8 +60,8 @@ public class DocxTest {
 
         var docx = processToDocx.generateDocForProcess(process);
 
-        Path tempFile = Files.createTempFile("process", ".docx");
-//        Path tempFile = Paths.get("/Users/s143147/process.docx");
+//        Path tempFile = Files.createTempFile("process", ".docx");
+        Path tempFile = Paths.get("/Users/s143147/process.docx");
         Files.write(tempFile, docx);
         log.info("Written to {}", tempFile.toAbsolutePath());
     }

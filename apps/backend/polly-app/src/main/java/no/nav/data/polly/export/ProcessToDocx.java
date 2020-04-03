@@ -24,10 +24,12 @@ import org.docx4j.model.table.TblFactory;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.docx4j.wml.BooleanDefaultTrue;
+import org.docx4j.wml.Br;
 import org.docx4j.wml.ObjectFactory;
 import org.docx4j.wml.P;
 import org.docx4j.wml.R;
 import org.docx4j.wml.RPr;
+import org.docx4j.wml.STBrType;
 import org.docx4j.wml.Tc;
 import org.docx4j.wml.Text;
 import org.docx4j.wml.Tr;
@@ -74,7 +76,7 @@ public class ProcessToDocx {
 
         public static final String TITLE = "Title";
         public static final String HEADING_1 = "Heading1";
-        public static final String HEADING_3 = "Heading3";
+        public static final String HEADING_2 = "Heading2";
         public static final String HEADING_4 = "Heading4";
         private final Process process;
         WordprocessingMLPackage pack;
@@ -102,11 +104,10 @@ public class ProcessToDocx {
             main.addStyledParagraphOfText(HEADING_4, "Formål med behandlingen");
             addText(data.getDescription());
 
-            main.addStyledParagraphOfText(HEADING_3, "Egenskaper ved behandling");
+            main.addStyledParagraphOfText(HEADING_2, "Egenskaper ved behandling");
 
             main.addStyledParagraphOfText(HEADING_4, "Rettslig grunnlag for behandlingen");
-            List<Text> legalBases = data.getLegalBases().stream().map(this::mapLegalBasis).collect(Collectors.toList());
-            addTexts(legalBases);
+            addTexts(data.getLegalBases().stream().map(this::mapLegalBasis).collect(Collectors.toList()));
 
             main.addStyledParagraphOfText(HEADING_4, "Status");
             addText(data.getStatus() == ProcessStatus.COMPLETED ? "Godkjent" : "Under arbeid");
@@ -143,7 +144,7 @@ public class ProcessToDocx {
 
             policies();
 
-            main.addStyledParagraphOfText(HEADING_3, "Sist endret");
+            main.addStyledParagraphOfText(HEADING_2, "Sist endret");
             ChangeStampResponse changeStamp = process.convertChangeStampResponse();
             addTexts(
                     text("Av: ", changeStamp.getLastModifiedBy()),
@@ -168,7 +169,8 @@ public class ProcessToDocx {
             return text(
                     shortName(ListName.GDPR_ARTICLE, lb.getGdpr()),
                     ", ",
-                    shortName(ListName.NATIONAL_LAW, lb.getNationalLaw()) + " ",
+                    shortName(ListName.NATIONAL_LAW, lb.getNationalLaw()),
+                    " ",
                     lb.getDescription(),
                     periodText(lb.toPeriod())
             );
@@ -185,7 +187,11 @@ public class ProcessToDocx {
         }
 
         private void policies() {
-            main.addStyledParagraphOfText(HEADING_3, "Opplysningstype");
+            Br br = fac.createBr();
+            br.setType(STBrType.PAGE);
+            main.addObject(br);
+
+            main.addStyledParagraphOfText(HEADING_2, "Opplysningstyper");
             if (process.getPolicies().isEmpty()) {
                 addText("Ingen opplysningstyper");
                 return;
@@ -316,7 +322,6 @@ public class ProcessToDocx {
             text.setValue(String.join("", strings).replaceAll("[\\s]+", " "));
             return text;
         }
-
 
         private P paragraph(Text... values) {
             return paragraph(Arrays.asList(values));
