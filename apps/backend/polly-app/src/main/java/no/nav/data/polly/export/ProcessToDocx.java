@@ -19,6 +19,7 @@ import no.nav.data.polly.teams.TeamService;
 import no.nav.data.polly.teams.domain.Team;
 import no.nav.data.polly.teams.dto.Resource;
 import org.apache.commons.lang3.BooleanUtils;
+import org.docx4j.docProps.core.dc.elements.SimpleLiteral;
 import org.docx4j.jaxb.Context;
 import org.docx4j.model.properties.table.tr.TrCantSplit;
 import org.docx4j.model.table.TblFactory;
@@ -90,6 +91,9 @@ public class ProcessToDocx {
         public DocumentBuilder(Process process) {
             pack = WordprocessingMLPackage.createPackage();
             main = pack.getMainDocumentPart();
+            SimpleLiteral lang = new SimpleLiteral();
+            lang.setLang("nb-NO");
+            pack.getDocPropsCorePart().getJaxbElement().setLanguage(lang);
             this.process = process;
             generate();
         }
