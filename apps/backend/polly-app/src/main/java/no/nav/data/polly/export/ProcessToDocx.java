@@ -40,6 +40,7 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -48,6 +49,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.util.Comparator.comparing;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static no.nav.data.polly.common.utils.StreamUtils.filter;
 
@@ -208,7 +210,8 @@ public class ProcessToDocx {
             createPolicyHeader(rows);
 
             var alerts = alertService.checkAlertsForProcess(process.getId());
-            var policies = List.copyOf(process.getPolicies());
+            var policies = new ArrayList<>(process.getPolicies());
+            policies.sort(comparing(Policy::getInformationTypeName));
             for (int i = 0; i < policies.size(); i++) {
                 Policy policy = policies.get(i);
                 var alert = StreamUtils.find(alerts.getPolicies(), pa -> pa.getPolicyId().equals(policy.getId()));
