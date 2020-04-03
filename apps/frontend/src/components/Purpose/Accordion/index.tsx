@@ -135,6 +135,7 @@ const DataText = (props: DataTextProps) => {
 }
 
 const lastModifiedDate = (lastModifiedDate: string) => {
+  console.log('Temp')
   let lang = localStorage.getItem("polly-lang") === "nb" ? 'nb' : 'en'
   return moment(lastModifiedDate).locale(lang).format('LL')
 }
