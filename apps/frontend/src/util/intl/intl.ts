@@ -199,6 +199,7 @@ export interface IStrings {
   teamSelect: string;
   informationtypesUsedInDocument: string;
   editDocument: string;
+  lastModified: string;
 
   // groups
   POLLY_READ: string;
@@ -305,12 +306,12 @@ export interface IStrings {
 
 // Remember import moment locales up top
 export const langs: Langs = {
-  nb: {flag: "no", name: "Norsk", langCode: "nb", texts: no},
-  en: {flag: "gb", name: "English", langCode: "en", texts: en}
+  nb: { flag: "no", name: "Norsk", langCode: "nb", texts: no },
+  en: { flag: "gb", name: "English", langCode: "en", texts: en }
 };
 
 if (window.location.hostname.indexOf("local") >= 0) {
-  langs["ta"] = {flag: ["lk", "in"][Math.floor(Math.random() * 2)], name: "தமிழ்", langCode: "ta", texts: ta};
+  langs["ta"] = { flag: ["lk", "in"][Math.floor(Math.random() * 2)], name: "தமிழ்", langCode: "ta", texts: ta };
 }
 
 export const langsArray: Lang[] = Object.keys(langs).map(lang => langs[lang]);
@@ -321,20 +322,14 @@ const defaultLang = langs.nb;
 type IIntl = LocalizedStringsMethods & IStrings;
 
 interface LocalizedStringsFactory {
-  new<T>(
-    props: GlobalStrings<T>,
-    options?: { customLanguageInterface: () => string }
-  ): IIntl;
+  new <T>(props: GlobalStrings<T>, options?: { customLanguageInterface: () => string }): IIntl;
 }
 
 const strings: IntlLangs = {};
 
 Object.keys(langs).forEach(lang => (strings[lang] = langs[lang].texts));
 
-export const intl: IIntl = new (LocalizedStrings as LocalizedStringsFactory)(
-  strings as any,
-  {customLanguageInterface: () => defaultLang.langCode}
-);
+export const intl: IIntl = new (LocalizedStrings as LocalizedStringsFactory)(strings as any, { customLanguageInterface: () => defaultLang.langCode });
 
 interface IntlLangs {
   [lang: string]: IStrings;
@@ -356,11 +351,7 @@ interface Langs {
 const localStorageAvailable = storageAvailable();
 
 export const useLang = () => {
-  const [lang, setLang] = React.useState<string>(
-    ((localStorageAvailable &&
-      localStorage.getItem("polly-lang")) as string) ||
-    defaultLang.langCode
-  );
+  const [lang, setLang] = React.useState<string>(((localStorageAvailable && localStorage.getItem("polly-lang")) as string) || defaultLang.langCode);
   const update = useForceUpdate();
   useEffect(() => {
     intl.setLanguage(lang);
