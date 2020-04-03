@@ -14,6 +14,8 @@ import no.nav.data.polly.process.domain.ProcessData.DataProcessing;
 import no.nav.data.polly.process.domain.ProcessData.Dpia;
 import no.nav.data.polly.process.domain.ProcessData.Retention;
 import no.nav.data.polly.process.domain.ProcessStatus;
+import no.nav.data.polly.teams.ResourceService;
+import no.nav.data.polly.teams.TeamService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,10 +25,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 
@@ -36,6 +41,10 @@ public class DocxTest {
 
     @Mock
     private AlertService alertService;
+    @Mock
+    private ResourceService resourceService;
+    @Mock
+    private TeamService teamService;
     @InjectMocks
     private ProcessToDocx processToDocx;
 
@@ -46,11 +55,13 @@ public class DocxTest {
         Policy policy = process.getPolicies().iterator().next();
         when(alertService.checkAlertsForProcess(process.getId()))
                 .thenReturn(new ProcessAlert(process.getId(), List.of(new PolicyAlert(policy.getId(), false, false, true))));
+        when(resourceService.getResource(anyString())).thenReturn(Optional.empty());
+        when(teamService.getTeam(anyString())).thenReturn(Optional.empty());
 
         var docx = processToDocx.generateDocForProcess(process);
 
-        Path tempFile = Files.createTempFile("process", ".docx");
-//        Path tempFile = Paths.get("/Users/s143147/process.docx");
+//        Path tempFile = Files.createTempFile("process", ".docx");
+        Path tempFile = Paths.get("/Users/s143147/process.docx");
         Files.write(tempFile, docx);
         log.info("Written to {}", tempFile.toAbsolutePath());
     }

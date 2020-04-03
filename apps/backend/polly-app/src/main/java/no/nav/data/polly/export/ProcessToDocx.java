@@ -14,6 +14,10 @@ import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
 import no.nav.data.polly.process.domain.ProcessStatus;
+import no.nav.data.polly.teams.ResourceService;
+import no.nav.data.polly.teams.TeamService;
+import no.nav.data.polly.teams.domain.Team;
+import no.nav.data.polly.teams.dto.Resource;
 import org.apache.commons.lang3.BooleanUtils;
 import org.docx4j.jaxb.Context;
 import org.docx4j.model.table.TblFactory;
@@ -37,6 +41,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
@@ -50,9 +55,13 @@ public class ProcessToDocx {
     private static DateTimeFormatter df = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).localizedBy(Locale.forLanguageTag("nb"));
 
     private final AlertService alertService;
+    private final ResourceService resourceService;
+    private final TeamService teamService;
 
-    public ProcessToDocx(AlertService alertService) {
+    public ProcessToDocx(AlertService alertService, ResourceService resourceService, TeamService teamService) {
         this.alertService = alertService;
+        this.resourceService = resourceService;
+        this.teamService = teamService;
     }
 
     @SneakyThrows
@@ -87,7 +96,7 @@ public class ProcessToDocx {
             main.addStyledParagraphOfText(HEADING_1, purposeName + ": " + process.getName());
             addText(periodText(process.getData().toPeriod()));
 
-            main.addStyledParagraphOfText(HEADING_4, "Formål " + purposeName);
+            main.addStyledParagraphOfText(HEADING_4, "Overordnet formål: " + purposeName);
             addText(CodelistService.getCodelist(ListName.PURPOSE, process.getPurposeCode()).getDescription());
 
             main.addStyledParagraphOfText(HEADING_4, "Formål med behandlingen");
@@ -114,13 +123,7 @@ public class ProcessToDocx {
                             Collectors.joining(", "));
             addText(categories);
 
-            main.addStyledParagraphOfText(HEADING_4, "Organisering");
-            addTexts(
-                    text("Avdeling: ", shortName(ListName.DEPARTMENT, data.getDepartment())),
-                    text("Linja (Ytre etat): ", shortName(ListName.SUB_DEPARTMENT, data.getSubDepartment())),
-                    // TODO display name
-                    text("Produktteam (IT): ", data.getProductTeam())
-            );
+            organising();
 
             main.addStyledParagraphOfText(HEADING_4, "System");
             addText(convert(data.getProducts(), p -> shortName(ListName.SYSTEM, p)));
@@ -147,6 +150,18 @@ public class ProcessToDocx {
                     text("Tid: ", changeStamp.getLastModifiedDate().format(dtf))
             );
 
+        }
+
+        private void organising() {
+            var data = process.getData();
+            main.addStyledParagraphOfText(HEADING_4, "Organisering");
+            String teamName = Optional.ofNullable(data.getProductTeam()).flatMap(teamService::getTeam).map(Team::getName).orElse(data.getProductTeam());
+            addTexts(
+                    text("Avdeling: ", shortName(ListName.DEPARTMENT, data.getDepartment())),
+                    text("Linja (Ytre etat): ", shortName(ListName.SUB_DEPARTMENT, data.getSubDepartment())),
+                    text("Produktteam (IT): ", teamName),
+                    text("Felles behandlingsansvarlig: ", shortName(ListName.THIRD_PARTY, data.getCommonExternalProcessResponsible()))
+            );
         }
 
         private Text mapLegalBasis(LegalBasis lb) {
@@ -240,12 +255,12 @@ public class ProcessToDocx {
             if (data == null) {
                 return;
             }
+            var riskOwner = Optional.ofNullable(data.getRiskOwner()).flatMap(resourceService::getResource).map(Resource::getFullName).orElse(data.getRiskOwner());
             main.addStyledParagraphOfText(HEADING_4, "Er det behov for personvernkonsekvensvurdering (PVK)?");
             addTexts(
                     text(boolToText(data.getNeedForDpia())),
                     text("Begrunnelse: ", data.getGrounds()),
-                    // TODO eier navn
-                    text("Risiko eier: ", data.getRiskOwner()),
+                    text("Risiko eier: ", riskOwner),
                     text("PVK referanse: ", data.getRefToDpia())
             );
         }
@@ -302,13 +317,6 @@ public class ProcessToDocx {
             return text;
         }
 
-        private void addTexts(Text... values) {
-            addTexts(Arrays.asList(values));
-        }
-
-        private void addTexts(Collection<Text> values) {
-            main.getContent().add(paragraph(values));
-        }
 
         private P paragraph(Text... values) {
             return paragraph(Arrays.asList(values));
@@ -329,19 +337,20 @@ public class ProcessToDocx {
             return p;
         }
 
+        private void addTexts(Text... values) {
+            addTexts(Arrays.asList(values));
+        }
+
+        private void addTexts(Collection<Text> values) {
+            main.addObject(paragraph(values));
+        }
+
         private void addText(Collection<String> values) {
             addText(String.join(", ", values));
         }
 
         private void addText(String... values) {
-            R r = fac.createR();
-            Text text = fac.createText();
-            text.setValue(String.join("", filter(Arrays.asList(values), Objects::nonNull)).replaceAll("[\\s]+", " "));
-            r.getContent().add(text);
-            P p = fac.createP();
-            p.getContent().add(r);
-
-            main.addObject(p);
+            main.addObject(paragraph(text(values)));
         }
 
         @SneakyThrows
