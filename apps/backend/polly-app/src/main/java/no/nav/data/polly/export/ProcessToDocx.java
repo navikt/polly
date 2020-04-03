@@ -20,6 +20,7 @@ import no.nav.data.polly.teams.domain.Team;
 import no.nav.data.polly.teams.dto.Resource;
 import org.apache.commons.lang3.BooleanUtils;
 import org.docx4j.jaxb.Context;
+import org.docx4j.model.properties.table.tr.TrCantSplit;
 import org.docx4j.model.table.TblFactory;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
@@ -33,6 +34,7 @@ import org.docx4j.wml.STBrType;
 import org.docx4j.wml.Tc;
 import org.docx4j.wml.Text;
 import org.docx4j.wml.Tr;
+import org.docx4j.wml.TrPr;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -115,8 +117,10 @@ public class ProcessToDocx {
             main.addStyledParagraphOfText(HEADING_4, "Er behandlingen implementert i virksomheten?");
             addText(boolToText(data.getDpia() == null ? null : data.getDpia().isProcessImplemented()));
 
-            main.addStyledParagraphOfText(HEADING_4, "Gyldighetsperiode for behandlingen");
-            addText(data.getStart().format(df), " - ", data.getEnd().format(df));
+            if (!data.toPeriod().isDefault()) {
+                main.addStyledParagraphOfText(HEADING_4, "Gyldighetsperiode for behandlingen");
+                addText(data.getStart().format(df), " - ", data.getEnd().format(df));
+            }
 
             main.addStyledParagraphOfText(HEADING_4, "Personkategorier oppsummert");
             var categories = process.getPolicies().stream().map(Policy::getData).map(PolicyData::getSubjectCategories).flatMap(Collection::stream).sorted().distinct()
@@ -233,6 +237,10 @@ public class ProcessToDocx {
         }
 
         private void addPolicy(Policy pol, PolicyAlert alert, Tr row) {
+            TrPr trPr = fac.createTrPr();
+            new TrCantSplit().set(trPr);
+            row.setTrPr(trPr);
+
             List<Object> cells = row.getContent();
             Text infoTypeName = text(pol.getInformationTypeName(), periodText(pol.getData().toPeriod()));
             Text subjCats = text(pol.getData().getSubjectCategories().stream().map(c -> shortName(ListName.SUBJECT_CATEGORY, c)).collect(Collectors.joining(", ")));
