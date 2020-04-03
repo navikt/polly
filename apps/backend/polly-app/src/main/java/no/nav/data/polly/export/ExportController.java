@@ -44,7 +44,7 @@ public class ExportController {
             @ApiResponse(code = 500, message = "Internal server error")})
     @Transactional(readOnly = true)
     @SneakyThrows
-    @GetMapping(value = "/process/{processId}", produces = ContentTypes.WORDPROCESSINGML_DOCUMENT)
+    @GetMapping(value = "/process/{processId}", produces = "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
     public void getTeamByName(@PathVariable UUID processId, HttpServletResponse response) {
         log.info("Received request for export of process with id {}", processId);
         Optional<Process> process = processRepository.findById(processId);
