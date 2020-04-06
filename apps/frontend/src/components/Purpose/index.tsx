@@ -1,12 +1,12 @@
 import * as React from 'react'
-import { useEffect } from 'react'
+import {useEffect} from 'react'
 
-import { Block, BlockProps } from 'baseui/block'
-import { Label1 } from 'baseui/typography'
-import { KIND, SIZE as ButtonSize } from 'baseui/button'
-import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose } from '../../constants'
-import { intl, theme, useAwait } from '../../util'
-import { user } from '../../service/User'
+import {Block, BlockProps} from 'baseui/block'
+import {Label1} from 'baseui/typography'
+import {KIND, SIZE as ButtonSize} from 'baseui/button'
+import {AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose} from '../../constants'
+import {intl, theme, useAwait} from '../../util'
+import {user} from '../../service/User'
 import ModalProcess from './Accordion/ModalProcess'
 import AccordionProcess from './Accordion'
 import {
@@ -22,18 +22,14 @@ import {
   updatePolicy,
   updateProcess
 } from '../../api'
-import { StyledSpinnerNext } from 'baseui/spinner'
-import { ListName } from '../../service/Codelist'
-import { useLocation } from 'react-router'
-import { StyledLink } from 'baseui/link'
-import { env } from '../../util/env'
-import { faFileWord, faPlus } from '@fortawesome/free-solid-svg-icons'
-import Button from '../common/Button'
 import {StyledSpinnerNext} from 'baseui/spinner'
 import {ListName} from '../../service/Codelist'
-import {useLocation} from 'react-router';
+import {useLocation} from 'react-router'
+import {StyledLink} from 'baseui/link'
+import {env} from '../../util/env'
+import {faFileWord, faPlus} from '@fortawesome/free-solid-svg-icons'
+import Button from '../common/Button'
 import {Select} from "baseui/select";
-import {Plus} from "baseui/icon";
 
 const rowBlockProps: BlockProps = {
   marginBottom: 'scale800',
@@ -224,19 +220,8 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
             {intl.processes}
           </Label1>
         </Block>
-        <Block>
-          {hasAccess() && (
-            <Button
-              size={ButtonSize.compact}
-              kind={KIND.minimal}
-              onClick={() => setShowCreateProcessModal(true)}
-              startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
-            >
-              {intl.processingActivitiesNew}
-            </Button>
-          )}
-        </Block>
       </Block>
+
       <Block display={"flex"} flexDirection={"row-reverse"}>
         <Block width={"15%"}>
           <Select
@@ -257,9 +242,6 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
             }}
           />
         </Block>
-        <Label1 font="font400">
-          {intl.processes}
-        </Label1>
         <Block>
           <StyledLink
             style={{textDecoration: 'none'}}
@@ -286,6 +268,7 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
           )}
         </Block>
       </Block>
+
       {isLoadingProcessList && <StyledSpinnerNext size={theme.sizing.scale2400}/>}
 
       {!isLoadingProcessList &&
