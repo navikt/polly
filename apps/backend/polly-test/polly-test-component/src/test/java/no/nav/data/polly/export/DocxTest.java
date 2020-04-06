@@ -14,6 +14,7 @@ import no.nav.data.polly.process.domain.ProcessData.DataProcessing;
 import no.nav.data.polly.process.domain.ProcessData.Dpia;
 import no.nav.data.polly.process.domain.ProcessData.Retention;
 import no.nav.data.polly.process.domain.ProcessStatus;
+import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.teams.ResourceService;
 import no.nav.data.polly.teams.TeamService;
 import org.junit.jupiter.api.Test;
@@ -63,6 +64,18 @@ public class DocxTest {
 //        Path tempFile = Paths.get("/Users/s143147/process.docx");
         Files.write(tempFile, docx);
         log.info("Written to {}", tempFile.toAbsolutePath());
+    }
+
+    @Test
+    void testEmptyProcess() {
+        CodelistStub.initializeCodelist();
+        ProcessRequest req = new ProcessRequest();
+        req.setPurposeCode("AAP");
+        req.setUpdate(false);
+        req.format();
+
+        Process process = new Process().convertFromRequest(req);
+        processToDocx.generateDocForProcess(process);
     }
 
     private Process createProcess() {

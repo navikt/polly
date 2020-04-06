@@ -320,7 +320,7 @@ public class ProcessToDocx {
             main.addStyledParagraphOfText(HEADING_4, "Databehandler");
             addTexts(
                     text("Databehandler benyttes: ", boolToText(data.getDataProcessor())),
-                    text("Ref. til databehandleravtale: ", String.join(", ", data.getDataProcessorAgreements())),
+                    text("Ref. til databehandleravtale: ", data.getDataProcessorAgreements() == null ? "" : String.join(", ", data.getDataProcessorAgreements())),
                     text("Personopplysningene behandles utenfor EU/EØS: ", boolToText(data.getDataProcessorOutsideEU()))
             );
         }
