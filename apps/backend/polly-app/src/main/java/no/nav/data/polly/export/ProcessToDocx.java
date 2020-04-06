@@ -109,7 +109,7 @@ public class ProcessToDocx {
 
         processes.forEach(doc::generate);
 
-        return new byte[0];
+        return doc.build();
     }
 
     class DocumentBuilder {
