@@ -5,7 +5,9 @@ import no.nav.data.polly.Period;
 import no.nav.data.polly.alert.AlertService;
 import no.nav.data.polly.alert.dto.PolicyAlert;
 import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.rest.ChangeStampResponse;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
@@ -13,6 +15,10 @@ import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
+import no.nav.data.polly.process.domain.ProcessData.DataProcessing;
+import no.nav.data.polly.process.domain.ProcessData.Dpia;
+import no.nav.data.polly.process.domain.ProcessData.Retention;
+import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.teams.ResourceService;
 import no.nav.data.polly.teams.TeamService;
@@ -52,6 +58,7 @@ import java.util.stream.Collectors;
 import static java.util.Comparator.comparing;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static no.nav.data.polly.common.utils.StreamUtils.filter;
+import static no.nav.data.polly.export.ProcessToDocx.DocumentBuilder.TITLE;
 
 @Service
 public class ProcessToDocx {
@@ -63,17 +70,46 @@ public class ProcessToDocx {
     private final AlertService alertService;
     private final ResourceService resourceService;
     private final TeamService teamService;
+    private final ProcessRepository processRepository;
 
-    public ProcessToDocx(AlertService alertService, ResourceService resourceService, TeamService teamService) {
+    public ProcessToDocx(AlertService alertService, ResourceService resourceService, TeamService teamService, ProcessRepository processRepository) {
         this.alertService = alertService;
         this.resourceService = resourceService;
         this.teamService = teamService;
+        this.processRepository = processRepository;
     }
 
     @SneakyThrows
     public byte[] generateDocForProcess(Process process) {
-        var doc = new DocumentBuilder(process);
+        var doc = new DocumentBuilder();
+        doc.main.addStyledParagraphOfText(TITLE, "Behandling: " + process.getName());
+        doc.generate(process);
         return doc.build();
+    }
+
+    public byte[] generateDocFor(ListName list, String code) {
+        List<Process> processes;
+        String title;
+        if (list == ListName.DEPARTMENT) {
+            title = "Avdeling";
+            processes = processRepository.findByDepartment(code);
+        } else if (list == ListName.SUB_DEPARTMENT) {
+            title = "Linja (Ytre etat)";
+            processes = processRepository.findBySubDepartment(code);
+        } else if (list == ListName.PURPOSE) {
+            title = "Formål";
+            processes = processRepository.findByPurposeCode(code);
+        } else {
+            throw new ValidationException("no list given");
+        }
+        Codelist codelist = CodelistService.getCodelist(list, code);
+        var doc = new DocumentBuilder();
+        doc.main.addStyledParagraphOfText(TITLE, title + ": " + codelist.getShortName());
+        doc.addText(codelist.getDescription());
+
+        processes.forEach(doc::generate);
+
+        return new byte[0];
     }
 
     class DocumentBuilder {
@@ -82,22 +118,19 @@ public class ProcessToDocx {
         public static final String HEADING_1 = "Heading1";
         public static final String HEADING_2 = "Heading2";
         public static final String HEADING_4 = "Heading4";
-        private final Process process;
+
         WordprocessingMLPackage pack;
         MainDocumentPart main;
 
         @SneakyThrows
-        public DocumentBuilder(Process process) {
-            this.process = process;
+        public DocumentBuilder() {
             pack = WordprocessingMLPackage.createPackage();
             main = pack.getMainDocumentPart();
-            generate();
         }
 
-        public void generate() {
+        public void generate(Process process) {
             ProcessData data = process.getData();
             String purposeName = shortName(ListName.PURPOSE, process.getPurposeCode());
-            main.addStyledParagraphOfText(TITLE, "Behandling");
 
             main.addStyledParagraphOfText(HEADING_1, purposeName + ": " + process.getName());
             addText(periodText(process.getData().toPeriod()));
@@ -130,7 +163,7 @@ public class ProcessToDocx {
                             Collectors.joining(", "));
             addText(categories);
 
-            organising();
+            organising(process.getData());
 
             main.addStyledParagraphOfText(HEADING_4, "System");
             addText(convert(data.getProducts(), p -> shortName(ListName.SYSTEM, p)));
@@ -144,11 +177,11 @@ public class ProcessToDocx {
                     text("Profilering: ", boolToText(data.getProfiling()))
             );
 
-            dataProcessing();
-            retention();
-            dpia();
+            dataProcessing(process.getData().getDataProcessing());
+            retention(process.getData().getRetention());
+            dpia(process.getData().getDpia());
 
-            policies();
+            policies(process);
 
             main.addStyledParagraphOfText(HEADING_2, "Sist endret");
             ChangeStampResponse changeStamp = process.convertChangeStampResponse();
@@ -159,8 +192,7 @@ public class ProcessToDocx {
 
         }
 
-        private void organising() {
-            var data = process.getData();
+        private void organising(ProcessData data) {
             main.addStyledParagraphOfText(HEADING_4, "Organisering");
             String teamName = Optional.ofNullable(data.getProductTeam()).flatMap(teamService::getTeam).map(Team::getName).orElse(data.getProductTeam());
             addTexts(
@@ -192,7 +224,7 @@ public class ProcessToDocx {
                     ) : null;
         }
 
-        private void policies() {
+        private void policies(Process process) {
             Br br = fac.createBr();
             br.setType(STBrType.PAGE);
             main.addObject(br);
@@ -267,8 +299,7 @@ public class ProcessToDocx {
             }
         }
 
-        private void dpia() {
-            var data = process.getData().getDpia();
+        private void dpia(Dpia data) {
             if (data == null) {
                 return;
             }
@@ -282,8 +313,7 @@ public class ProcessToDocx {
             );
         }
 
-        private void dataProcessing() {
-            var data = process.getData().getDataProcessing();
+        private void dataProcessing(DataProcessing data) {
             if (data == null) {
                 return;
             }
@@ -295,8 +325,7 @@ public class ProcessToDocx {
             );
         }
 
-        private void retention() {
-            var retention = process.getData().getRetention();
+        private void retention(Retention retention) {
             if (retention == null) {
                 return;
             }
