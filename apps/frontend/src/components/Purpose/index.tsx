@@ -1,13 +1,12 @@
 import * as React from 'react'
-import {useEffect} from 'react'
+import { useEffect } from 'react'
 
-import {Block, BlockProps} from 'baseui/block'
-import {Plus} from 'baseui/icon'
-import {Label1} from 'baseui/typography'
-import {Button, KIND, SIZE as ButtonSize} from 'baseui/button'
-import {AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose} from '../../constants'
-import {intl, theme, useAwait} from '../../util'
-import {user} from '../../service/User'
+import { Block, BlockProps } from 'baseui/block'
+import { Label1 } from 'baseui/typography'
+import { KIND, SIZE as ButtonSize } from 'baseui/button'
+import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose } from '../../constants'
+import { intl, theme, useAwait } from '../../util'
+import { user } from '../../service/User'
 import ModalProcess from './Accordion/ModalProcess'
 import AccordionProcess from './Accordion'
 import {
@@ -23,10 +22,18 @@ import {
   updatePolicy,
   updateProcess
 } from '../../api'
+import { StyledSpinnerNext } from 'baseui/spinner'
+import { ListName } from '../../service/Codelist'
+import { useLocation } from 'react-router'
+import { StyledLink } from 'baseui/link'
+import { env } from '../../util/env'
+import { faFileWord, faPlus } from '@fortawesome/free-solid-svg-icons'
+import Button from '../common/Button'
 import {StyledSpinnerNext} from 'baseui/spinner'
 import {ListName} from '../../service/Codelist'
 import {useLocation} from 'react-router';
 import {Select} from "baseui/select";
+import {Plus} from "baseui/icon";
 
 const rowBlockProps: BlockProps = {
   marginBottom: 'scale800',
@@ -50,7 +57,6 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
   const [errorDocumentModal, setErrorDocumentModal] = React.useState(null)
   const [isLoadingProcessList, setIsLoadingProcessList] = React.useState(true)
   const [isLoadingProcess, setIsLoadingProcess] = React.useState(true)
-  const [currentListName, setCurrentListname] = React.useState<string | undefined>(listName)
   const current_location = useLocation()
   const [status, setStatus] = React.useState([{label: intl.all, id: "ALL"}]);
 
@@ -203,6 +209,13 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
       setIsLoadingProcessList(false)
     })()
   }, [code, status])
+
+  const listNameToUrl = () => listName && ({
+    'DEPARTMENT': 'department',
+    'SUB_DEPARTMENT': 'subDepartment',
+    'PURPOSE': 'purpose'
+  } as { [l: string]: string })[listName]
+
   return (
     <>
       <Block {...rowBlockProps}>
@@ -243,6 +256,34 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
               setStatus(params.value)
             }}
           />
+        </Block>
+        <Label1 font="font400">
+          {intl.processes}
+        </Label1>
+        <Block>
+          <StyledLink
+            style={{textDecoration: 'none'}}
+            href={`${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}`}>
+            <Button
+              kind={KIND.minimal}
+              size={ButtonSize.compact}
+              icon={faFileWord}
+              tooltip={intl.export}
+              marginRight
+            >
+              {intl.export}
+            </Button>
+          </StyledLink>
+          {hasAccess() && (
+            <Button
+              size={ButtonSize.compact}
+              kind={KIND.minimal}
+              icon={faPlus}
+              onClick={() => setShowCreateProcessModal(true)}
+            >
+              {intl.processingActivitiesNew}
+            </Button>
+          )}
         </Block>
       </Block>
       {isLoadingProcessList && <StyledSpinnerNext size={theme.sizing.scale2400}/>}

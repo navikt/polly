@@ -1,36 +1,36 @@
 import * as React from 'react'
-import {ReactNode, useEffect} from 'react'
-import {Accordion, Panel} from 'baseui/accordion'
-import {generatePath, RouteComponentProps, withRouter} from 'react-router'
-import {KIND, SIZE as ButtonSize} from 'baseui/button'
-import {StyledSpinnerNext} from 'baseui/spinner'
-import {Block} from 'baseui/block'
-import {Label1, Label2, Paragraph2} from 'baseui/typography'
-import {intl, theme, useAwait} from '../../../util'
+import { ReactNode, useEffect } from 'react'
+import { Accordion, Panel } from 'baseui/accordion'
+import { generatePath, RouteComponentProps, withRouter } from 'react-router'
+import { KIND, SIZE as ButtonSize } from 'baseui/button'
+import { StyledSpinnerNext } from 'baseui/spinner'
+import { Block } from 'baseui/block'
+import { Label1, Label2, Paragraph2 } from 'baseui/typography'
+import { intl, theme, useAwait } from '../../../util'
 import _includes from 'lodash/includes'
-import {user} from '../../../service/User'
-import {Plus} from 'baseui/icon'
-import {AddDocumentToProcessFormValues, Dpia, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessStatus, UseWithPurpose} from '../../../constants'
-import {LegalBasisView} from '../../common/LegalBasis'
-import {codelist, ListName} from '../../../service/Codelist'
+import { user } from '../../../service/User'
+import { Plus } from 'baseui/icon'
+import { AddDocumentToProcessFormValues, Dpia, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessStatus, UseWithPurpose } from '../../../constants'
+import { LegalBasisView } from '../../common/LegalBasis'
+import { codelist, ListName } from '../../../service/Codelist'
 import ModalProcess from './ModalProcess'
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy'
-import {convertProcessToFormValues, getResourceById} from '../../../api'
-import {PathParams} from '../../../pages/PurposePage'
-import {ActiveIndicator} from '../../common/Durations'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faChevronDown, faChevronRight, faEdit, faFileWord, faTrash} from '@fortawesome/free-solid-svg-icons'
-import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal'
-import {TeamPopover} from '../../common/Team'
-import {AuditButton} from '../../audit/AuditButton'
-import {AddDocumentModal} from './AddDocumentModal'
-import {RetentionView} from '../Retention'
-import {boolToText} from '../../common/Radio'
+import { convertProcessToFormValues, getResourceById } from '../../../api'
+import { PathParams } from '../../../pages/PurposePage'
+import { ActiveIndicator } from '../../common/Durations'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronDown, faChevronRight, faEdit, faFileWord, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
+import { TeamPopover } from '../../common/Team'
+import { AuditButton } from '../../audit/AuditButton'
+import { AddDocumentModal } from './AddDocumentModal'
+import { RetentionView } from '../Retention'
+import { boolToText } from '../../common/Radio'
 import Button from '../../common/Button'
-import {DotTags} from '../../common/DotTag'
-import {StyledLink} from 'baseui/link'
-import {env} from '../../../util/env'
+import { DotTags } from '../../common/DotTag'
+import { StyledLink } from 'baseui/link'
+import { env } from '../../../util/env'
 import moment from 'moment'
 
 type AccordionProcessProps = {
@@ -66,39 +66,47 @@ const AccordionTitle = (props: { process: UseWithPurpose, expanded: boolean, has
     <div onClick={(e) => {
       e.stopPropagation()
     }}>
-      {hasAccess && expanded && (
-        <>
-          <AuditButton id={process.id} marginRight/>
-          <StyledLink href={`${env.pollyBaseUrl}/export/process/${process.id}`}>
+      <>
+        <AuditButton id={process.id} marginRight/>
+        {expanded &&
+        <StyledLink
+          style={{textDecoration: 'none'}}
+          href={`${env.pollyBaseUrl}/export/process?processId=${process.id}`}>
+          <Button
+            kind={'outline'}
+            size={ButtonSize.compact}
+            icon={faFileWord}
+            tooltip={intl.export}
+            marginRight
+          >
+            {intl.export}
+          </Button>
+        </StyledLink>
+        }
+        {hasAccess && expanded && (
+          <>
             <Button
               kind={'outline'}
               size={ButtonSize.compact}
-              icon={faFileWord}
-              tooltip={intl.export}
+              icon={faEdit}
+              tooltip={intl.edit}
+              onClick={props.editProcess}
               marginRight
-            />
-          </StyledLink>
-          <Button
-            kind={'outline'}
-            size={ButtonSize.compact}
-            icon={faEdit}
-            tooltip={intl.edit}
-            onClick={props.editProcess}
-            marginRight
-          >
-            {intl.edit}
-          </Button>
-          <Button
-            kind={'outline'}
-            size={ButtonSize.compact}
-            icon={faTrash}
-            tooltip={intl.delete}
-            onClick={props.deleteProcess}
-          >
-            {intl.delete}
-          </Button>
-        </>
-      )}
+            >
+              {intl.edit}
+            </Button>
+            <Button
+              kind={'outline'}
+              size={ButtonSize.compact}
+              icon={faTrash}
+              tooltip={intl.delete}
+              onClick={props.deleteProcess}
+            >
+              {intl.delete}
+            </Button>
+          </>
+        )}
+      </>
     </div>
   </>
 }
