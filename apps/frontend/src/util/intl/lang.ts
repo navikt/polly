@@ -1,4 +1,4 @@
-import { IStrings } from "./intl";
+import {IStrings} from "./intl";
 
 export const no: IStrings = {
   informationType: "Opplysningstype",
@@ -40,6 +40,7 @@ export const no: IStrings = {
   no: "Nei",
   includeConservationPlan: "Omfattes av bevarings- og kassasjonsplan?",
   unclarified: "Uavklart",
+  notFilled: "Ikke utfylt",
   automation: "Automatisering",
   automaticProcessing: "Helautomatisk behandling",
   automaticProcessingExtra:
@@ -260,6 +261,8 @@ export const no: IStrings = {
 
   dpiaReference: "Ref. til PVK",
   grounds: "Begrunnelse",
+  reference: "Referanse: ",
+  ground: "Begrunnelse: ",
   pvk: "Personvernkonsekvensvurdering",
   id: "Id",
   searchId: "Søk etter id",
@@ -346,6 +349,7 @@ export const en: IStrings = {
   no: "No",
   includeConservationPlan: "Are you covered by a disposal and retention plan?",
   unclarified: "Unclarified",
+  notFilled: "Not filled",
   automation: "Automation",
   automaticProcessing: "Automatic Processing",
   automaticProcessingExtra: "Is a decision made based on fully automated processing of personal data? In other words, decisions that are made without human involvement.",
@@ -567,6 +571,8 @@ export const en: IStrings = {
 
   dpiaReference: "DPIA Reference",
   grounds: "Grounds",
+  reference: "Reference: ",
+  ground: "Ground: ",
   pvk: "Data Protection Impact Assessment",
   id: "Id",
   searchId: "Search for id",
