@@ -107,7 +107,12 @@ public class ProcessToDocx {
         doc.main.addStyledParagraphOfText(TITLE, title + ": " + codelist.getShortName());
         doc.addText(codelist.getDescription());
 
-        processes.forEach(doc::generate);
+        for (int i = 0; i < processes.size(); i++) {
+            if (i != 0 && i != processes.size() - 1) {
+                doc.pageBreak();
+            }
+            doc.generate(processes.get(i));
+        }
 
         return doc.build();
     }
@@ -225,9 +230,7 @@ public class ProcessToDocx {
         }
 
         private void policies(Process process) {
-            Br br = fac.createBr();
-            br.setType(STBrType.PAGE);
-            main.addObject(br);
+            pageBreak();
 
             main.addStyledParagraphOfText(HEADING_2, "Opplysningstyper");
             if (process.getPolicies().isEmpty()) {
@@ -396,6 +399,12 @@ public class ProcessToDocx {
 
         private void addText(String... values) {
             main.addObject(paragraph(text(values)));
+        }
+
+        private void pageBreak() {
+            Br br = fac.createBr();
+            br.setType(STBrType.PAGE);
+            main.addObject(br);
         }
 
         @SneakyThrows
