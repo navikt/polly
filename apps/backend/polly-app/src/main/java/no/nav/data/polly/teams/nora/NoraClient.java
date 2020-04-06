@@ -79,6 +79,9 @@ public class NoraClient implements TeamService {
 
     private NoraTeam getTeamResponse(String nick) {
         ResponseEntity<NoraTeam> response = restTemplate.getForEntity(noraProperties.getTeamUrl(), NoraTeam.class, nick);
+        if (response.getStatusCode().is2xxSuccessful() && !response.hasBody()) {
+            return null;
+        }
         Assert.isTrue(response.getStatusCode().is2xxSuccessful() && response.hasBody(), "Call to nora failed for team " + nick + " " + response.getStatusCode());
         return response.hasBody() ? requireNonNull(response.getBody()) : null;
     }
