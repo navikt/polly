@@ -2,7 +2,6 @@ import * as React from 'react'
 import { useEffect } from 'react'
 
 import { Block, BlockProps } from 'baseui/block'
-import { Plus } from 'baseui/icon'
 import { Label1 } from 'baseui/typography'
 import { KIND, SIZE as ButtonSize } from 'baseui/button'
 import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose } from '../../constants'
@@ -28,7 +27,7 @@ import { ListName } from '../../service/Codelist'
 import { useLocation } from 'react-router'
 import { StyledLink } from 'baseui/link'
 import { env } from '../../util/env'
-import { faFileWord } from '@fortawesome/free-solid-svg-icons'
+import { faFileWord, faPlus } from '@fortawesome/free-solid-svg-icons'
 import Button from '../common/Button'
 
 const rowBlockProps: BlockProps = {
@@ -209,21 +208,25 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
           {intl.processes}
         </Label1>
         <Block>
-          <StyledLink href={`${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}`}>
+          <StyledLink
+            style={{textDecoration: 'none'}}
+            href={`${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}`}>
             <Button
               kind={KIND.minimal}
               size={ButtonSize.compact}
               icon={faFileWord}
               tooltip={intl.export}
               marginRight
-            />
+            >
+              {intl.export}
+            </Button>
           </StyledLink>
           {hasAccess() && (
             <Button
               size={ButtonSize.compact}
               kind={KIND.minimal}
+              icon={faPlus}
               onClick={() => setShowCreateProcessModal(true)}
-              startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
             >
               {intl.processingActivitiesNew}
             </Button>

@@ -67,18 +67,24 @@ const AccordionTitle = (props: { process: UseWithPurpose, expanded: boolean, has
       e.stopPropagation()
     }}>
       <>
-        <StyledLink href={`${env.pollyBaseUrl}/export/process?processId=${process.id}`}>
+        <AuditButton id={process.id} marginRight/>
+        {expanded &&
+        <StyledLink
+          style={{textDecoration: 'none'}}
+          href={`${env.pollyBaseUrl}/export/process?processId=${process.id}`}>
           <Button
             kind={'outline'}
             size={ButtonSize.compact}
             icon={faFileWord}
             tooltip={intl.export}
             marginRight
-          />
+          >
+            {intl.export}
+          </Button>
         </StyledLink>
+        }
         {hasAccess && expanded && (
           <>
-            <AuditButton id={process.id} marginRight/>
             <Button
               kind={'outline'}
               size={ButtonSize.compact}
