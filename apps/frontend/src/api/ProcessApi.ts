@@ -99,7 +99,7 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     status: status === ProcessStatus.COMPLETED ? ProcessStatus.COMPLETED : ProcessStatus.IN_PROGRESS,
     dpia: {
       grounds: dpia?.grounds || '',
-      needForDpia: dpia?.needForDpia || false,
+      needForDpia: mapBool(dpia?.needForDpia),
       processImplemented: dpia?.processImplemented || false,
       refToDpia: dpia?.refToDpia || '',
       riskOwner: dpia?.riskOwner || ''
@@ -128,7 +128,7 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
     status: values.status,
     dpia: {
       grounds: values.dpia?.needForDpia ? "" : values.dpia?.grounds,
-      needForDpia: values.dpia?.needForDpia,
+      needForDpia: values.dpia.needForDpia,
       refToDpia: values.dpia?.needForDpia ? values.dpia.refToDpia : "",
       processImplemented: values.dpia?.processImplemented,
       riskOwner: values.dpia?.riskOwner

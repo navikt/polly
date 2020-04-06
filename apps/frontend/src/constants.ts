@@ -1,6 +1,6 @@
-import { Code, codelist, ListName } from "./service/Codelist";
-import { ColumnCompares } from "./util/hooks";
-import { intl } from "./util";
+import {Code, codelist, ListName} from "./service/Codelist";
+import {ColumnCompares} from "./util/hooks";
+import {intl} from "./util";
 
 export interface InformationtypeFormValues {
   id?: string;
@@ -53,7 +53,7 @@ export interface ProcessFormValues {
   end?: string;
   start?: string;
 
-  dpia?: Dpia;
+  dpia: Dpia;
   status?: ProcessStatus;
   usesAllInformationTypes?: boolean;
   automaticProcessing?: boolean;
@@ -64,7 +64,7 @@ export interface ProcessFormValues {
 
 export interface Dpia {
   grounds: string;
-  needForDpia: boolean;
+  needForDpia?: boolean;
   processImplemented: boolean;
   refToDpia: string;
   riskOwner?: string;
