@@ -26,6 +26,7 @@ import {
 import {StyledSpinnerNext} from 'baseui/spinner'
 import {ListName} from '../../service/Codelist'
 import {useLocation} from 'react-router';
+import {Select} from "baseui/select";
 
 const rowBlockProps: BlockProps = {
   marginBottom: 'scale800',
@@ -51,6 +52,7 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
   const [isLoadingProcess, setIsLoadingProcess] = React.useState(true)
   const [currentListName, setCurrentListname] = React.useState<string | undefined>(listName)
   const current_location = useLocation()
+  const [status, setStatus] = React.useState([{label: intl.all, id: "ALL"}]);
 
   const getProcessList = async () => {
     try {
@@ -62,8 +64,17 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
       } else {
         list = (await getCodelistUsage(listName as ListName, code)).processes
       }
-
-      setProcessList(sortProcess(list))
+      if (status[0].id === "ALL") {
+        setProcessList(sortProcess(list))
+      } else {
+        let listTemp: UseWithPurpose[] = []
+        for (const value of sortProcess(list)) {
+          if ((await getProcess(value.id)).status === status[0].id) {
+            listTemp = [...listTemp, {id: value.id, purposeCode: value.purposeCode, name: value.name} as UseWithPurpose]
+          }
+        }
+        setProcessList(listTemp)
+      }
     } catch (err) {
       console.log(err)
     }
@@ -191,24 +202,48 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
       await getProcessList()
       setIsLoadingProcessList(false)
     })()
-  }, [code])
-
+  }, [code, status])
   return (
     <>
       <Block {...rowBlockProps}>
-        <Label1 font="font400">
-          {intl.processes}
-        </Label1>
-        {hasAccess() && (
-          <Button
-            size={ButtonSize.compact}
-            kind={KIND.minimal}
-            onClick={() => setShowCreateProcessModal(true)}
-            startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
-          >
-            {intl.processingActivitiesNew}
-          </Button>
-        )}
+        <Block>
+          <Label1 font="font400">
+            {intl.processes}
+          </Label1>
+        </Block>
+        <Block>
+          {hasAccess() && (
+            <Button
+              size={ButtonSize.compact}
+              kind={KIND.minimal}
+              onClick={() => setShowCreateProcessModal(true)}
+              startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
+            >
+              {intl.processingActivitiesNew}
+            </Button>
+          )}
+        </Block>
+      </Block>
+      <Block display={"flex"} flexDirection={"row-reverse"}>
+        <Block width={"15%"}>
+          <Select
+            backspaceRemoves={false}
+            clearable={false}
+            deleteRemoves={false}
+            escapeClearsValue={false}
+            options={[
+              {label: intl.all, id: "ALL"},
+              {label: intl.inProgress, id: "IN_PROGRESS"},
+              {label: intl.completed, id: "COMPLETED"},
+            ]}
+            value={status}
+            filterOutSelected={false}
+            searchable={false}
+            onChange={(params: any) => {
+              setStatus(params.value)
+            }}
+          />
+        </Block>
       </Block>
       {isLoadingProcessList && <StyledSpinnerNext size={theme.sizing.scale2400}/>}
 
