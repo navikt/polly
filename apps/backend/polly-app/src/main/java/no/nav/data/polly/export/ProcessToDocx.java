@@ -177,9 +177,6 @@ public class ProcessToDocx {
             addHeading4("System");
             addText(convert(data.getProducts(), p -> shortName(ListName.SYSTEM, p)));
 
-            addHeading4("Bruker alle opplysningstyper");
-            addText(boolToText(data.isUsesAllInformationTypes()));
-
             addHeading4("Automatisering");
             addTexts(
                     text("Helautomatisk behandling: ", boolToText(data.getAutomaticProcessing())),
@@ -198,22 +195,6 @@ public class ProcessToDocx {
                     text("Av: ", changeStamp.getLastModifiedBy()),
                     text("Tid: ", changeStamp.getLastModifiedDate().format(dtf))
             );
-        }
-
-        private void addTitle(String text) {
-            main.addStyledParagraphOfText(TITLE, text);
-        }
-
-        private void addHeading1(String text) {
-            main.addStyledParagraphOfText(HEADING_1, text);
-        }
-
-        private void addHeading2(String text) {
-            main.addStyledParagraphOfText(HEADING_2, text);
-        }
-
-        private void addHeading4(String text) {
-            main.addStyledParagraphOfText(HEADING_4, text);
         }
 
         private void organising(ProcessData data) {
@@ -252,8 +233,12 @@ public class ProcessToDocx {
             pageBreak();
 
             addHeading2("Opplysningstyper");
-            if (process.getPolicies().isEmpty()) {
+            if (process.getData().isUsesAllInformationTypes()) {
+                addText("Bruker alle opplysningstyper");
+            } else if (process.getPolicies().isEmpty()) {
                 addText("Ingen opplysningstyper");
+            }
+            if (process.getPolicies().isEmpty()) {
                 return;
             }
 
@@ -362,6 +347,22 @@ public class ProcessToDocx {
             var ret2 = retentionDuration ? text("Lagres i ", yearsText, binderText, monthsText, descText) : null;
 
             addTexts(ret1, ret2, ret3);
+        }
+
+        private void addTitle(String text) {
+            main.addStyledParagraphOfText(TITLE, text);
+        }
+
+        private void addHeading1(String text) {
+            main.addStyledParagraphOfText(HEADING_1, text);
+        }
+
+        private void addHeading2(String text) {
+            main.addStyledParagraphOfText(HEADING_2, text);
+        }
+
+        private void addHeading4(String text) {
+            main.addStyledParagraphOfText(HEADING_4, text);
         }
 
         private String boolToText(Boolean aBoolean) {
