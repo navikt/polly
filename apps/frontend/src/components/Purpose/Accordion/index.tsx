@@ -66,9 +66,9 @@ const AccordionTitle = (props: { process: UseWithPurpose, expanded: boolean, has
     <div onClick={(e) => {
       e.stopPropagation()
     }}>
+      {expanded &&
       <>
         <AuditButton id={process.id} marginRight/>
-        {expanded &&
         <StyledLink
           style={{textDecoration: 'none'}}
           href={`${env.pollyBaseUrl}/export/process?processId=${process.id}`}>
@@ -82,31 +82,31 @@ const AccordionTitle = (props: { process: UseWithPurpose, expanded: boolean, has
             {intl.export}
           </Button>
         </StyledLink>
-        }
-        {hasAccess && expanded && (
-          <>
-            <Button
-              kind={'outline'}
-              size={ButtonSize.compact}
-              icon={faEdit}
-              tooltip={intl.edit}
-              onClick={props.editProcess}
-              marginRight
-            >
-              {intl.edit}
-            </Button>
-            <Button
-              kind={'outline'}
-              size={ButtonSize.compact}
-              icon={faTrash}
-              tooltip={intl.delete}
-              onClick={props.deleteProcess}
-            >
-              {intl.delete}
-            </Button>
-          </>
-        )}
       </>
+      }
+      {hasAccess && expanded && (
+        <>
+          <Button
+            kind={'outline'}
+            size={ButtonSize.compact}
+            icon={faEdit}
+            tooltip={intl.edit}
+            onClick={props.editProcess}
+            marginRight
+          >
+            {intl.edit}
+          </Button>
+          <Button
+            kind={'outline'}
+            size={ButtonSize.compact}
+            icon={faTrash}
+            tooltip={intl.delete}
+            onClick={props.deleteProcess}
+          >
+            {intl.delete}
+          </Button>
+        </>
+      )}
     </div>
   </>
 }
