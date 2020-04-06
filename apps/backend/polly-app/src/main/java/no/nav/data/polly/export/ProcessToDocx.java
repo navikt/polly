@@ -37,6 +37,7 @@ import org.docx4j.wml.P;
 import org.docx4j.wml.R;
 import org.docx4j.wml.RPr;
 import org.docx4j.wml.STBrType;
+import org.docx4j.wml.Tbl;
 import org.docx4j.wml.Tc;
 import org.docx4j.wml.Text;
 import org.docx4j.wml.Tr;
@@ -58,7 +59,6 @@ import java.util.stream.Collectors;
 import static java.util.Comparator.comparing;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static no.nav.data.polly.common.utils.StreamUtils.filter;
-import static no.nav.data.polly.export.ProcessToDocx.DocumentBuilder.TITLE;
 
 @Service
 public class ProcessToDocx {
@@ -82,7 +82,7 @@ public class ProcessToDocx {
     @SneakyThrows
     public byte[] generateDocForProcess(Process process) {
         var doc = new DocumentBuilder();
-        doc.main.addStyledParagraphOfText(TITLE, "Behandling: " + process.getName());
+        doc.addTitle("Behandling: " + process.getName());
         doc.generate(process);
         return doc.build();
     }
@@ -104,7 +104,7 @@ public class ProcessToDocx {
         }
         Codelist codelist = CodelistService.getCodelist(list, code);
         var doc = new DocumentBuilder();
-        doc.main.addStyledParagraphOfText(TITLE, title + ": " + codelist.getShortName());
+        doc.addTitle(title + ": " + codelist.getShortName());
         doc.addText(codelist.getDescription());
 
         for (int i = 0; i < processes.size(); i++) {
@@ -137,46 +137,50 @@ public class ProcessToDocx {
             ProcessData data = process.getData();
             String purposeName = shortName(ListName.PURPOSE, process.getPurposeCode());
 
-            main.addStyledParagraphOfText(HEADING_1, purposeName + ": " + process.getName());
+            addHeading1(purposeName + ": " + process.getName());
             addText(periodText(process.getData().toPeriod()));
 
-            main.addStyledParagraphOfText(HEADING_4, "Overordnet formål: " + purposeName);
+            addHeading4("Overordnet formål: " + purposeName);
             addText(CodelistService.getCodelist(ListName.PURPOSE, process.getPurposeCode()).getDescription());
 
-            main.addStyledParagraphOfText(HEADING_4, "Formål med behandlingen");
+            addHeading4("Formål med behandlingen");
             addText(data.getDescription());
 
-            main.addStyledParagraphOfText(HEADING_2, "Egenskaper ved behandling");
+            addHeading2("Egenskaper ved behandling");
 
-            main.addStyledParagraphOfText(HEADING_4, "Rettslig grunnlag for behandlingen");
+            addHeading4("Rettslig grunnlag for behandlingen");
             addTexts(data.getLegalBases().stream().map(this::mapLegalBasis).collect(Collectors.toList()));
 
-            main.addStyledParagraphOfText(HEADING_4, "Status");
+            addHeading4("Status");
             addText(data.getStatus() == ProcessStatus.COMPLETED ? "Godkjent" : "Under arbeid");
 
-            main.addStyledParagraphOfText(HEADING_4, "Er behandlingen implementert i virksomheten?");
+            addHeading4("Er behandlingen implementert i virksomheten?");
             addText(boolToText(data.getDpia() == null ? null : data.getDpia().isProcessImplemented()));
 
             if (!data.toPeriod().isDefault()) {
-                main.addStyledParagraphOfText(HEADING_4, "Gyldighetsperiode for behandlingen");
+                addHeading4("Gyldighetsperiode for behandlingen");
                 addText(data.getStart().format(df), " - ", data.getEnd().format(df));
             }
 
-            main.addStyledParagraphOfText(HEADING_4, "Personkategorier oppsummert");
-            var categories = process.getPolicies().stream().map(Policy::getData).map(PolicyData::getSubjectCategories).flatMap(Collection::stream).sorted().distinct()
-                    .map(c -> shortName(ListName.SUBJECT_CATEGORY, c)).collect(
-                            Collectors.joining(", "));
+            addHeading4("Personkategorier oppsummert");
+            var categories = process.getPolicies().stream()
+                    .map(Policy::getData)
+                    .map(PolicyData::getSubjectCategories)
+                    .flatMap(Collection::stream)
+                    .sorted().distinct()
+                    .map(c -> shortName(ListName.SUBJECT_CATEGORY, c))
+                    .collect(Collectors.joining(", "));
             addText(categories);
 
             organising(process.getData());
 
-            main.addStyledParagraphOfText(HEADING_4, "System");
+            addHeading4("System");
             addText(convert(data.getProducts(), p -> shortName(ListName.SYSTEM, p)));
 
-            main.addStyledParagraphOfText(HEADING_4, "Bruker alle opplysningstyper");
+            addHeading4("Bruker alle opplysningstyper");
             addText(boolToText(data.isUsesAllInformationTypes()));
 
-            main.addStyledParagraphOfText(HEADING_4, "Automatisering");
+            addHeading4("Automatisering");
             addTexts(
                     text("Helautomatisk behandling: ", boolToText(data.getAutomaticProcessing())),
                     text("Profilering: ", boolToText(data.getProfiling()))
@@ -188,17 +192,32 @@ public class ProcessToDocx {
 
             policies(process);
 
-            main.addStyledParagraphOfText(HEADING_2, "Sist endret");
+            addHeading2("Sist endret");
             ChangeStampResponse changeStamp = process.convertChangeStampResponse();
             addTexts(
                     text("Av: ", changeStamp.getLastModifiedBy()),
                     text("Tid: ", changeStamp.getLastModifiedDate().format(dtf))
             );
+        }
 
+        private void addTitle(String text) {
+            main.addStyledParagraphOfText(TITLE, text);
+        }
+
+        private void addHeading1(String text) {
+            main.addStyledParagraphOfText(HEADING_1, text);
+        }
+
+        private void addHeading2(String text) {
+            main.addStyledParagraphOfText(HEADING_2, text);
+        }
+
+        private void addHeading4(String text) {
+            main.addStyledParagraphOfText(HEADING_4, text);
         }
 
         private void organising(ProcessData data) {
-            main.addStyledParagraphOfText(HEADING_4, "Organisering");
+            addHeading4("Organisering");
             String teamName = Optional.ofNullable(data.getProductTeam()).flatMap(teamService::getTeam).map(Team::getName).orElse(data.getProductTeam());
             addTexts(
                     text("Avdeling: ", shortName(ListName.DEPARTMENT, data.getDepartment())),
@@ -232,15 +251,13 @@ public class ProcessToDocx {
         private void policies(Process process) {
             pageBreak();
 
-            main.addStyledParagraphOfText(HEADING_2, "Opplysningstyper");
+            addHeading2("Opplysningstyper");
             if (process.getPolicies().isEmpty()) {
                 addText("Ingen opplysningstyper");
                 return;
             }
 
-            var twips = pack.getDocumentModel().getSections().get(0).getPageDimensions().getWritableWidthTwips();
-            var cols = 3;
-            var table = TblFactory.createTable(process.getPolicies().size() + 1, cols, twips / cols);
+            Tbl table = createTable(process.getPolicies().size() + 1, 3);
             var rows = table.getContent();
             createPolicyHeader(rows);
 
@@ -252,7 +269,6 @@ public class ProcessToDocx {
                 var alert = StreamUtils.find(alerts.getPolicies(), pa -> pa.getPolicyId().equals(policy.getId()));
                 addPolicy(policy, alert.orElse(null), (Tr) rows.get(i + 1));
             }
-            main.getContent().add(table);
         }
 
         private void createPolicyHeader(List<Object> rows) {
@@ -307,7 +323,7 @@ public class ProcessToDocx {
                 return;
             }
             var riskOwner = Optional.ofNullable(data.getRiskOwner()).flatMap(resourceService::getResource).map(Resource::getFullName).orElse(data.getRiskOwner());
-            main.addStyledParagraphOfText(HEADING_4, "Er det behov for personvernkonsekvensvurdering (PVK)?");
+            addHeading4("Er det behov for personvernkonsekvensvurdering (PVK)?");
             addTexts(
                     text(boolToText(data.getNeedForDpia())),
                     text("Begrunnelse: ", data.getGrounds()),
@@ -320,7 +336,7 @@ public class ProcessToDocx {
             if (data == null) {
                 return;
             }
-            main.addStyledParagraphOfText(HEADING_4, "Databehandler");
+            addHeading4("Databehandler");
             addTexts(
                     text("Databehandler benyttes: ", boolToText(data.getDataProcessor())),
                     text("Ref. til databehandleravtale: ", data.getDataProcessorAgreements() == null ? "" : String.join(", ", data.getDataProcessorAgreements())),
@@ -332,7 +348,7 @@ public class ProcessToDocx {
             if (retention == null) {
                 return;
             }
-            main.addStyledParagraphOfText(HEADING_4, "Lagringstid");
+            addHeading4("Lagringstid");
             var ret1 = text("Omfattes av virksomhetens bevarings- og kassasjonsplan: ", boolToText(retention.getRetentionPlan()));
             var ret3 = text("Begrunnelse: ", retention.getRetentionDescription());
 
@@ -405,6 +421,13 @@ public class ProcessToDocx {
             Br br = fac.createBr();
             br.setType(STBrType.PAGE);
             main.addObject(br);
+        }
+
+        private Tbl createTable(int rows, int cols) {
+            var twips = pack.getDocumentModel().getSections().get(0).getPageDimensions().getWritableWidthTwips();
+            Tbl table = TblFactory.createTable(rows, cols, twips / cols);
+            main.getContent().add(table);
+            return table;
         }
 
         @SneakyThrows
