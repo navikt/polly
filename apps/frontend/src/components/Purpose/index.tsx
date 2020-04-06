@@ -1,13 +1,13 @@
 import * as React from 'react'
-import {useEffect} from 'react'
+import { useEffect } from 'react'
 
-import {Block, BlockProps} from 'baseui/block'
-import {Plus} from 'baseui/icon'
-import {Label1} from 'baseui/typography'
-import {Button, KIND, SIZE as ButtonSize} from 'baseui/button'
-import {AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose} from '../../constants'
-import {intl, theme, useAwait} from '../../util'
-import {user} from '../../service/User'
+import { Block, BlockProps } from 'baseui/block'
+import { Plus } from 'baseui/icon'
+import { Label1 } from 'baseui/typography'
+import { KIND, SIZE as ButtonSize } from 'baseui/button'
+import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose } from '../../constants'
+import { intl, theme, useAwait } from '../../util'
+import { user } from '../../service/User'
 import ModalProcess from './Accordion/ModalProcess'
 import AccordionProcess from './Accordion'
 import {
@@ -23,9 +23,13 @@ import {
   updatePolicy,
   updateProcess
 } from '../../api'
-import {StyledSpinnerNext} from 'baseui/spinner'
-import {ListName} from '../../service/Codelist'
-import {useLocation} from 'react-router';
+import { StyledSpinnerNext } from 'baseui/spinner'
+import { ListName } from '../../service/Codelist'
+import { useLocation } from 'react-router'
+import { StyledLink } from 'baseui/link'
+import { env } from '../../util/env'
+import { faFileWord } from '@fortawesome/free-solid-svg-icons'
+import Button from '../common/Button'
 
 const rowBlockProps: BlockProps = {
   marginBottom: 'scale800',
@@ -49,7 +53,6 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
   const [errorDocumentModal, setErrorDocumentModal] = React.useState(null)
   const [isLoadingProcessList, setIsLoadingProcessList] = React.useState(true)
   const [isLoadingProcess, setIsLoadingProcess] = React.useState(true)
-  const [currentListName, setCurrentListname] = React.useState<string | undefined>(listName)
   const current_location = useLocation()
 
   const getProcessList = async () => {
@@ -193,22 +196,39 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
     })()
   }, [code])
 
+  const listNameToUrl = () => listName && ({
+    'DEPARTMENT': 'department',
+    'SUB_DEPARTMENT': 'subDepartment',
+    'PURPOSE': 'purpose'
+  } as { [l: string]: string })[listName]
+
   return (
     <>
       <Block {...rowBlockProps}>
         <Label1 font="font400">
           {intl.processes}
         </Label1>
-        {hasAccess() && (
-          <Button
-            size={ButtonSize.compact}
-            kind={KIND.minimal}
-            onClick={() => setShowCreateProcessModal(true)}
-            startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
-          >
-            {intl.processingActivitiesNew}
-          </Button>
-        )}
+        <Block>
+          <StyledLink href={`${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}`}>
+            <Button
+              kind={KIND.minimal}
+              size={ButtonSize.compact}
+              icon={faFileWord}
+              tooltip={intl.export}
+              marginRight
+            />
+          </StyledLink>
+          {hasAccess() && (
+            <Button
+              size={ButtonSize.compact}
+              kind={KIND.minimal}
+              onClick={() => setShowCreateProcessModal(true)}
+              startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22}/></Block>}
+            >
+              {intl.processingActivitiesNew}
+            </Button>
+          )}
+        </Block>
       </Block>
       {isLoadingProcessList && <StyledSpinnerNext size={theme.sizing.scale2400}/>}
 
