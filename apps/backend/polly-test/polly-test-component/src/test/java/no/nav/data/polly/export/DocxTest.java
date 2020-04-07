@@ -60,15 +60,13 @@ public class DocxTest {
     @BeforeEach
     void setUp() {
         CodelistStub.initializeCodelist();
-        Policy policy = process.getPolicies().iterator().next();
-        lenient().when(alertService.checkAlertsForProcess(process.getId()))
-                .thenReturn(new ProcessAlert(process.getId(), List.of(new PolicyAlert(policy.getId(), false, false, true))));
         lenient().when(resourceService.getResource(anyString())).thenReturn(Optional.empty());
         lenient().when(teamService.getTeam(anyString())).thenReturn(Optional.empty());
     }
 
     @Test
     void createDocForProcess() {
+        mockAlert(process);
         var docx = processToDocx.generateDocForProcess(process);
         assertThat(docx).isNotNull();
         write(docx);
@@ -76,18 +74,12 @@ public class DocxTest {
 
     @Test
     void createBatchDoc() {
-        when(processRepository.findByPurposeCode("AAP")).thenReturn(List.of(process, process, process));
+        List<Process> processes = List.of(createProcess(), createProcess(), createProcess());
+        processes.forEach(this::mockAlert);
+        when(processRepository.findByPurposeCode("AAP")).thenReturn(processes);
         var docx = processToDocx.generateDocFor(ListName.PURPOSE, "AAP");
         assertThat(docx).isNotNull();
         write(docx);
-    }
-
-    @SneakyThrows
-    private void write(byte[] docx) {
-        Path tempFile = Files.createTempFile("process", ".docx");
-//        Path tempFile = Paths.get("/Users/s143147/process.docx");
-        Files.write(tempFile, docx);
-        log.info("Written to {}", tempFile.toAbsolutePath());
     }
 
     @Test
@@ -101,6 +93,21 @@ public class DocxTest {
         Process process = new Process().convertFromRequest(req);
         var docx = processToDocx.generateDocForProcess(process);
         assertThat(docx).isNotNull();
+    }
+
+    @SneakyThrows
+    private void write(byte[] docx) {
+        Path tempFile = Files.createTempFile("process", ".docx");
+//        Path tempFile = Paths.get("/Users/s143147/process.docx");
+        Files.write(tempFile, docx);
+        log.info("Written to {}", tempFile.toAbsolutePath());
+    }
+
+    private void mockAlert(Process mockProcess) {
+        Policy policy = mockProcess.getPolicies().iterator().next();
+        when(alertService.checkAlertsForProcess(mockProcess.getId()))
+                .thenReturn(new ProcessAlert(mockProcess.getId(),
+                        List.of(new PolicyAlert(policy.getId(), false, false, true))));
     }
 
     private Process createProcess() {

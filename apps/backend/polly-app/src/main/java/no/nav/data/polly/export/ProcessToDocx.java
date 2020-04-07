@@ -120,7 +120,7 @@ public class ProcessToDocx {
         doc.addText(codelist.getDescription());
 
         doc.addHeading1("Dokumentet inneholder følgende behandlinger (" + processes.size() + ")");
-        doc.addList(convert(processes, p -> shortName(ListName.PURPOSE, p.getPurposeCode()) + ": " + p.getName()));
+        doc.addToc(processes);
 
         for (int i = 0; i < processes.size(); i++) {
             if (i != processes.size() - 1) {
@@ -142,6 +142,7 @@ public class ProcessToDocx {
         WordprocessingMLPackage pack;
         MainDocumentPart main;
         long listId = 1;
+        long processId = 1;
 
         @SneakyThrows
         public DocumentBuilder() {
@@ -155,7 +156,8 @@ public class ProcessToDocx {
             ProcessData data = process.getData();
             String purposeName = shortName(ListName.PURPOSE, process.getPurposeCode());
 
-            addHeading1(purposeName + ": " + process.getName());
+            var header = addHeading1(purposeName + ": " + process.getName());
+            addBookmark(header, process.getId().toString());
             addText(periodText(process.getData().toPeriod()));
 
             addHeading4("Overordnet formål: " + purposeName);
@@ -248,8 +250,6 @@ public class ProcessToDocx {
         }
 
         private void policies(Process process) {
-            pageBreak();
-
             addHeading2("Opplysningstyper");
             if (process.getData().isUsesAllInformationTypes()) {
                 addText("Bruker alle opplysningstyper");
@@ -380,9 +380,10 @@ public class ProcessToDocx {
             ((R) p.getContent().get(0)).setRPr(createRpr());
         }
 
-        private void addHeading1(String text) {
+        private P addHeading1(String text) {
             P p = main.addStyledParagraphOfText(HEADING_1, text);
             ((R) p.getContent().get(0)).setRPr(createRpr());
+            return p;
         }
 
         private void addHeading2(String text) {
@@ -442,32 +443,51 @@ public class ProcessToDocx {
             main.addObject(paragraph(text(values)));
         }
 
-        private void addList(List<String> texts) {
+        private void addToc(List<Process> processes) {
             long currListId = listId++;
-            for (String text : texts) {
-                var p = paragraph(text(text));
-                PPr pPr = fac.createPPr();
-                NumPr numPr = fac.createPPrBaseNumPr();
-                NumId numId = fac.createPPrBaseNumPrNumId();
-                Spacing pPrBaseSpacing = fac.createPPrBaseSpacing();
-                p.setPPr(pPr);
-                pPr.setNumPr(numPr);
 
-                // Remove spacing
-                pPrBaseSpacing.setBefore(BigInteger.ZERO);
-                pPrBaseSpacing.setAfter(BigInteger.ZERO);
-                pPr.setSpacing(pPrBaseSpacing);
+            for (Process process : processes) {
+                var name = shortName(ListName.PURPOSE, process.getPurposeCode()) + ": " + process.getName();
+                var bookmark = process.getId().toString();
 
-                numPr.setNumId(numId);
-                numId.setVal(BigInteger.valueOf(currListId));
-                main.getContent().add(p);
+                addListItem(name, currListId, bookmark);
+            }
+        }
+
+        private void addListItem(String text, long listId, String bookmark) {
+            var p = paragraph();
+            PPr pPr = fac.createPPr();
+            NumPr numPr = fac.createPPrBaseNumPr();
+            NumId numId = fac.createPPrBaseNumPrNumId();
+            Spacing pPrBaseSpacing = fac.createPPrBaseSpacing();
+            p.setPPr(pPr);
+            pPr.setNumPr(numPr);
+
+            // Remove spacing
+            pPrBaseSpacing.setBefore(BigInteger.ZERO);
+            pPrBaseSpacing.setAfter(BigInteger.ZERO);
+            pPr.setSpacing(pPrBaseSpacing);
+
+            numPr.setNumId(numId);
+            numId.setVal(BigInteger.valueOf(listId));
+            main.getContent().add(p);
+
+            if (bookmark != null) {
+                var h = MainDocumentPart.hyperlinkToBookmark(bookmark, text);
+                p.getContent().add(h);
+            } else {
+                p.getContent().add(text(text));
             }
         }
 
         private void pageBreak() {
+            P p = fac.createP();
+            R r = fac.createR();
             Br br = fac.createBr();
             br.setType(STBrType.PAGE);
-            main.addObject(br);
+            p.getContent().add(r);
+            r.getContent().add(br);
+            main.getContent().add(p);
         }
 
         private Tbl createTable(int rows, int cols) {
@@ -514,6 +534,25 @@ public class ProcessToDocx {
             var sectPr = pack.getDocumentModel().getSections().iterator().next().getSectPr();
             sectPr.getEGHdrFtrReferences().add(ftrRef);
         }
+
+        private void addBookmark(P p, String name) {
+            var id = BigInteger.valueOf(processId++);
+            var size = p.getContent().size();
+
+            // Add bookmark end first
+            var mr = fac.createCTMarkupRange();
+            mr.setId(id);
+            var bmEnd = fac.createBodyBookmarkEnd(mr);
+            p.getContent().add(size, bmEnd);
+
+            // Next, bookmark start
+            var bm = fac.createCTBookmark();
+            bm.setId(id);
+            bm.setName(name);
+            var bmStart = fac.createBodyBookmarkStart(bm);
+            p.getContent().add(0, bmStart);
+        }
+
 
         @SneakyThrows
         public byte[] build() {
