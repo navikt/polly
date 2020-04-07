@@ -12,7 +12,6 @@ import no.nav.data.polly.common.exceptions.PollyNotFoundException;
 import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessRepository;
-import org.docx4j.openpackaging.contenttype.ContentTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
@@ -33,6 +32,8 @@ import javax.servlet.http.HttpServletResponse;
 @Api(value = "Export", description = "REST API for exports", tags = {"Export"})
 public class ExportController {
 
+    private static final String WORDPROCESSINGML_DOCUMENT = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+
     private final ProcessRepository processRepository;
     private final CodelistService codelistService;
     private final ProcessToDocx processToDocx;
@@ -49,7 +50,7 @@ public class ExportController {
             @ApiResponse(code = 500, message = "Internal server error")})
     @Transactional(readOnly = true)
     @SneakyThrows
-    @GetMapping(value = "/process", produces = "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+    @GetMapping(value = "/process", produces = WORDPROCESSINGML_DOCUMENT)
     public void getTeamByName(
             HttpServletResponse response,
             @RequestParam(name = "processId", required = false) UUID processId,
@@ -88,7 +89,7 @@ public class ExportController {
             filename = "behandling_" + list.name().toLowerCase() + "_" + depNameClean + ".docx";
 
         }
-        response.setContentType(ContentTypes.WORDPROCESSINGML_DOCUMENT);
+        response.setContentType(WORDPROCESSINGML_DOCUMENT);
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
         StreamUtils.copy(doc, response.getOutputStream());
         response.flushBuffer();
