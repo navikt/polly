@@ -108,6 +108,7 @@ public class ProcessToDocx {
         } else {
             throw new ValidationException("no list given");
         }
+        processes.sort(comparing(Process::getPurposeCode).thenComparing(Process::getName));
         Codelist codelist = CodelistService.getCodelist(list, code);
         var doc = new DocumentBuilder();
         doc.addTitle(title + ": " + codelist.getShortName());
