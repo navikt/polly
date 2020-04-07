@@ -9,8 +9,9 @@ import java.util.UUID;
 @Value
 public class ProcessAlert {
 
-    private UUID processId;
-    private List<PolicyAlert> policies;
+    UUID processId;
+    boolean usesAllInformationTypes;
+    List<PolicyAlert> policies;
 
     public Optional<ProcessAlert> resolve() {
         return policies.isEmpty() ? Optional.empty() : Optional.of(this);

@@ -173,7 +173,7 @@ public class InformationTypeController {
         InformationType informationType = service.update(request);
 
         log.info("Updated the InformationType");
-        return new ResponseEntity<>(repository.save(informationType).convertToResponse(), HttpStatus.OK);
+        return new ResponseEntity<>(informationType.convertToResponse(), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Delete InformationType")

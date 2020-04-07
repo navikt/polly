@@ -16,6 +16,7 @@ import no.nav.data.polly.common.auditing.domain.Action;
 import no.nav.data.polly.common.auditing.domain.AuditVersion;
 import no.nav.data.polly.common.auditing.domain.AuditVersionRepository;
 import no.nav.data.polly.common.auditing.domain.Auditable;
+import no.nav.data.polly.common.storage.domain.GenericStorage;
 import no.nav.data.polly.common.utils.HibernateUtils;
 import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.common.utils.MdcUtils;
@@ -66,6 +67,9 @@ public class AuditVersionListener {
     private void audit(Object entity, Action action) {
         try {
             Assert.isTrue(entity instanceof Auditable, "Invalid object");
+            if (entity instanceof GenericStorage && !((GenericStorage) entity).getType().isAudit()) {
+                return;
+            }
             String tableName = AuditVersion.tableName(((Auditable) entity).getClass());
             String id = getIdForObject(entity);
             String data = wr.writeValueAsString(entity);

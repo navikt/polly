@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
+import no.nav.data.polly.common.storage.domain.GenericStorageData;
 import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.Validated;
 
@@ -13,7 +14,7 @@ import no.nav.data.polly.common.validator.Validated;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Settings implements Validated {
+public class Settings implements GenericStorageData, Validated {
 
     private String defaultProcessDocument;
     private String frontpageMessage;

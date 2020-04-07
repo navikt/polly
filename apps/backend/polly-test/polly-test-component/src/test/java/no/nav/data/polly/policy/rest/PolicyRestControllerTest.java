@@ -136,7 +136,7 @@ class PolicyRestControllerTest {
         List<Policy> policies = Collections.singletonList(policy1);
 
         given(mapper.mapRequestToPolicy(request.get(0))).willReturn(policy1);
-        given(policyRepository.saveAll(policies)).willReturn(policies);
+        given(service.saveAll(policies)).willReturn(policies);
 
         mvc.perform(post("/policy")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -154,7 +154,7 @@ class PolicyRestControllerTest {
 
         given(mapper.mapRequestToPolicy(request.get(0))).willReturn(policy1);
         given(mapper.mapRequestToPolicy(request.get(1))).willReturn(policy2);
-        given(policyRepository.saveAll(policies)).willReturn(policies);
+        given(service.saveAll(policies)).willReturn(policies);
 
         mvc.perform(post("/policy")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -170,7 +170,7 @@ class PolicyRestControllerTest {
 
         given(mapper.mapRequestToPolicy(request)).willReturn(policy1);
         given(policyRepository.findById(POLICY_ID_1)).willReturn(Optional.of(policy1));
-        given(policyRepository.save(policy1)).willReturn(policy1);
+        given(service.saveAll(List.of(policy1))).willReturn(List.of(policy1));
 
         mvc.perform(put("/policy/{id}", POLICY_ID_1)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -190,7 +190,7 @@ class PolicyRestControllerTest {
         given(mapper.mapRequestToPolicy(request.get(1))).willReturn(policy2);
         given(policyRepository.findById(UUID.fromString(request.get(0).getId()))).willReturn(Optional.of(policy1));
         given(policyRepository.findById(UUID.fromString(request.get(1).getId()))).willReturn(Optional.of(policy2));
-        given(policyRepository.saveAll(policies)).willReturn(policies);
+        given(service.saveAll(policies)).willReturn(policies);
 
         mvc.perform(put("/policy")
                 .contentType(MediaType.APPLICATION_JSON)

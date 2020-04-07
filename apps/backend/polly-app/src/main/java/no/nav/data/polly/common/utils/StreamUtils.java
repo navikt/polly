@@ -17,6 +17,7 @@ import java.util.stream.StreamSupport;
 
 import static java.util.Comparator.comparing;
 import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toList;
 
 public final class StreamUtils {
 
@@ -35,7 +36,7 @@ public final class StreamUtils {
      * @param comparator function to compare if elements are equal
      * @param <T> the type of the collections
      */
-    public static <T> CollectionDifference<T> difference(List<T> before, List<T> after, Comparator<? super T> comparator) {
+    public static <T> CollectionDifference<T> difference(Collection<T> before, Collection<T> after, Comparator<? super T> comparator) {
         List<T> removed = new ArrayList<>(before);
         List<T> shared = new ArrayList<>();
         List<T> added = new ArrayList<>(after);
@@ -49,10 +50,10 @@ public final class StreamUtils {
             }
             return false;
         });
-        return new CollectionDifference<>(before, after, removed, shared, added);
+        return new CollectionDifference<>(new ArrayList<>(before), new ArrayList<>(after), removed, shared, added);
     }
 
-    public static <T extends Comparable<T>> CollectionDifference<T> difference(List<T> before, List<T> after) {
+    public static <T extends Comparable<T>> CollectionDifference<T> difference(Collection<T> before, Collection<T> after) {
         return difference(before, after, comparing(identity()));
     }
 
@@ -72,6 +73,10 @@ public final class StreamUtils {
 
     public static <T, F> List<T> convert(Collection<F> from, Function<F, T> converter) {
         return safeStream(from).map(converter).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    public static <T, F> List<T> convertFlat(Collection<F> from, Function<F, List<T>> converter) {
+        return safeStream(from).flatMap(o -> converter.apply(o).stream()).collect(toList());
     }
 
     @SafeVarargs

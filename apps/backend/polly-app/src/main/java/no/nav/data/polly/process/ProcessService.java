@@ -1,5 +1,6 @@
 package no.nav.data.polly.process;
 
+import no.nav.data.polly.alert.AlertService;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.common.validator.RequestValidator;
@@ -12,11 +13,13 @@ import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.teams.ResourceService;
 import no.nav.data.polly.teams.TeamService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -28,15 +31,31 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
     private final ProcessRepository processRepository;
     private final TeamService teamService;
     private final ResourceService resourceService;
+    private final AlertService alertService;
 
     public ProcessService(ProcessDistributionRepository distributionRepository,
             ProcessRepository processRepository,
             TeamService teamService,
-            ResourceService resourceService) {
+            ResourceService resourceService,
+            AlertService alertService) {
         this.distributionRepository = distributionRepository;
         this.processRepository = processRepository;
         this.teamService = teamService;
         this.resourceService = resourceService;
+        this.alertService = alertService;
+    }
+
+    @Transactional
+    public Process save(Process process) {
+        var saved = processRepository.save(process);
+        alertService.checkAlertsForProcess(saved.getId());
+        return saved;
+    }
+
+    @Transactional
+    public void deleteById(UUID id) {
+        processRepository.deleteById(id);
+        alertService.deleteForProcess(id);
     }
 
     public void scheduleDistributeForProcess(Process process) {

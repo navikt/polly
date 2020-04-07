@@ -8,10 +8,11 @@ import java.util.UUID;
 @Value
 public class PolicyAlert {
 
-    private UUID policyId;
-    private boolean missingLegalBasis;
-    private boolean missingArt6;
-    private boolean missingArt9;
+    UUID policyId;
+    UUID informationTypeId;
+    boolean missingLegalBasis;
+    boolean missingArt6;
+    boolean missingArt9;
 
     public Optional<PolicyAlert> resolve() {
         return missingLegalBasis || missingArt6 || missingArt9 ? Optional.of(this) : Optional.empty();

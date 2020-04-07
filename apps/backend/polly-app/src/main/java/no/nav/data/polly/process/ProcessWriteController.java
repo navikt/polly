@@ -53,7 +53,7 @@ public class ProcessWriteController {
         log.info("Received requests to create Process");
         service.validateRequest(request, false);
 
-        Process process = repository.save(new Process().convertFromRequest(request));
+        Process process = service.save(new Process().convertFromRequest(request));
         return new ResponseEntity<>(process.convertToResponseWithPolicies(), HttpStatus.CREATED);
     }
 
@@ -75,7 +75,7 @@ public class ProcessWriteController {
         }
         service.validateRequest(request, true);
         var process = fromRepository.get().convertFromRequest(request);
-        return ResponseEntity.ok(repository.save(process).convertToResponseWithPolicies());
+        return ResponseEntity.ok(service.save(process).convertToResponseWithPolicies());
     }
 
     @ApiOperation(value = "Delete Process")
@@ -92,7 +92,7 @@ public class ProcessWriteController {
             log.info("Cannot find Process with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        repository.deleteById(id);
+        service.deleteById(id);
         log.info("Process with id={} deleted", id);
         return new ResponseEntity<>(fromRepository.get().convertToResponse(), HttpStatus.OK);
     }

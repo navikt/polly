@@ -7,7 +7,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import no.nav.data.polly.common.auditing.domain.Auditable;
+import no.nav.data.polly.common.utils.JsonUtils;
 import org.hibernate.annotations.Type;
+import org.springframework.util.Assert;
 
 import java.util.UUID;
 import javax.persistence.Column;
@@ -40,6 +42,26 @@ public class GenericStorage extends Auditable {
     @Type(type = "jsonb")
     @Column(name = "DATA", nullable = false)
     private JsonNode data;
+
+    public void setDataObject(GenericStorageData data) {
+        Assert.isTrue(type == null || type == data.type(), "invalid type");
+        this.data = JsonUtils.toJsonNode(data);
+        this.type = data.type();
+        if (data instanceof GenericStorageIdData) {
+            Assert.notNull(id, "GenericStorage has not set it's ID yet");
+            ((GenericStorageIdData) data).setId(id);
+        }
+    }
+
+    public <T extends GenericStorageData> T getDataObject(Class<T> clazz) {
+        Assert.isTrue(type == StorageType.fromClass(clazz), "invalid type");
+        return JsonUtils.toObject(data, clazz);
+    }
+
+    public GenericStorage(GenericStorageData data) {
+        id = UUID.randomUUID();
+        setDataObject(data);
+    }
 
     public static class GenericStorageBuilder {
 

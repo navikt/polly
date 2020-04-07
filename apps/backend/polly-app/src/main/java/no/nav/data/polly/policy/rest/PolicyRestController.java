@@ -16,7 +16,6 @@ import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.policy.mapper.PolicyMapper;
-import no.nav.data.polly.process.ProcessService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,14 +49,11 @@ public class PolicyRestController {
     private final PolicyService service;
     private final PolicyMapper mapper;
     private final PolicyRepository policyRepository;
-    private final ProcessService processService;
 
-    public PolicyRestController(PolicyService service, PolicyMapper mapper, PolicyRepository policyRepository,
-            ProcessService processService) {
+    public PolicyRestController(PolicyService service, PolicyMapper mapper, PolicyRepository policyRepository) {
         this.service = service;
         this.mapper = mapper;
         this.policyRepository = policyRepository;
-        this.processService = processService;
     }
 
     @ApiOperation(value = "Get all Policies, filtered  request will always return all policies")
@@ -123,8 +119,7 @@ public class PolicyRestController {
         log.debug("Received request to create Policies");
         service.validateRequests(policyRequests, false);
         List<Policy> policies = policyRequests.stream().map(mapper::mapRequestToPolicy).collect(toList());
-        onChange(policies);
-        List<PolicyResponse> responses = policyRepository.saveAll(policies).stream().map(policy -> policy.convertToResponse(true)).collect(toList());
+        List<PolicyResponse> responses = service.saveAll(policies).stream().map(policy -> policy.convertToResponse(true)).collect(toList());
         return new ResponseEntity<>(new RestResponsePage<>(responses), HttpStatus.CREATED);
     }
 
@@ -156,8 +151,7 @@ public class PolicyRestController {
             throw notFoundError(id);
         }
         Policy policy = optionalPolicy.get();
-        onChange(List.of(policy));
-        policyRepository.deleteById(id);
+        service.delete(policy);
         return ResponseEntity.ok(policy.convertToResponse(true));
     }
 
@@ -183,8 +177,7 @@ public class PolicyRestController {
         }
         service.validateRequests(List.of(policyRequest), true);
         Policy policy = mapper.mapRequestToPolicy(policyRequest);
-        onChange(List.of(policy));
-        return ResponseEntity.ok(policyRepository.save(policy).convertToResponse(true));
+        return ResponseEntity.ok(service.saveAll(List.of(policy)).get(0).convertToResponse(true));
     }
 
     @ApiOperation(value = "Update Policies")
@@ -197,8 +190,7 @@ public class PolicyRestController {
         log.debug("Received requests to update Policies");
         service.validateRequests(policyRequests, true);
         List<Policy> policies = policyRequests.stream().map(mapper::mapRequestToPolicy).collect(toList());
-        onChange(policies);
-        List<PolicyResponse> response = policyRepository.saveAll(policies).stream().map(policy -> policy.convertToResponse(true)).collect(toList());
+        List<PolicyResponse> response = service.saveAll(policies).stream().map(policy -> policy.convertToResponse(true)).collect(toList());
         return ResponseEntity.ok(new RestResponsePage<>(response));
     }
 
@@ -210,9 +202,5 @@ public class PolicyRestController {
 
     static final class PolicyPage extends RestResponsePage<PolicyResponse> {
 
-    }
-
-    private void onChange(List<Policy> policies) {
-        policies.stream().map(Policy::getProcess).distinct().forEach(processService::scheduleDistributeForProcess);
     }
 }

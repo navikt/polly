@@ -1,10 +1,14 @@
 package no.nav.data.polly.alert;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.alert.domain.AlertEvent;
+import no.nav.data.polly.alert.domain.AlertEventType;
+import no.nav.data.polly.alert.domain.AlertRepository;
 import no.nav.data.polly.alert.dto.InformationTypeAlert;
 import no.nav.data.polly.alert.dto.PolicyAlert;
 import no.nav.data.polly.alert.dto.ProcessAlert;
 import no.nav.data.polly.common.exceptions.PollyNotFoundException;
+import no.nav.data.polly.common.storage.domain.GenericStorage;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
@@ -20,13 +24,14 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 
 @Slf4j
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class AlertService {
 
     private static final String SENSITIVITY_ART9 = "SAERLIGE";
@@ -34,16 +39,88 @@ public class AlertService {
     private static final String ART_6_PREFIX = "ART6";
     private static final String ART_9_PREFIX = "ART9";
 
+    private final AlertRepository alertRepository;
+
     private final ProcessRepository processRepository;
     private final PolicyRepository policyRepository;
     private final InformationTypeRepository informationTypeRepository;
 
-    public AlertService(ProcessRepository processRepository, PolicyRepository policyRepository, InformationTypeRepository informationTypeRepository) {
+    public AlertService(AlertRepository alertRepository, ProcessRepository processRepository, PolicyRepository policyRepository,
+            InformationTypeRepository informationTypeRepository) {
+        this.alertRepository = alertRepository;
         this.processRepository = processRepository;
         this.policyRepository = policyRepository;
         this.informationTypeRepository = informationTypeRepository;
     }
 
+    public void calculateAlertEventsForInforamtionType(UUID informationTypeId) {
+        var alerts = checkAlertsForInformationType(informationTypeId);
+        var currentEvents = StreamUtils.convertFlat(alerts.getProcesses(), this::convertAlertsToEvents);
+        var existingEvents = convert(alertRepository.findByInformationTypeId(informationTypeId), a -> a.getDataObject(AlertEvent.class));
+        updateEvents(existingEvents, currentEvents);
+    }
+
+    public void calculateAlertEventsForProcess(UUID processId) {
+        var alerts = checkAlertsForProcess(processId);
+        var currentEvents = convertAlertsToEvents(alerts);
+        var existingEvents = convert(alertRepository.findByProcessId(processId), a -> a.getDataObject(AlertEvent.class));
+        updateEvents(existingEvents, currentEvents);
+    }
+
+    public void calculateAlertEventsForPolicy(Policy policy) {
+        var alerts = checkProcess(policy.getProcess(), policy.getInformationType());
+        var currentEvents = convertAlertsToEvents(alerts);
+        var existingEvents = convert(alertRepository.findByPolicyId(policy.getId()), a -> a.getDataObject(AlertEvent.class));
+        updateEvents(existingEvents, currentEvents);
+    }
+
+    public void deleteForInformationType(UUID informationTypeId) {
+        log.info("deleted events for informationType {} {}", alertRepository.deleteByInformationTypeId(informationTypeId), informationTypeId);
+    }
+
+    public void deleteForProcess(UUID processId) {
+        log.info("deleted events for process {} {}", alertRepository.deleteByProcessId(processId), processId);
+    }
+
+    public void deleteForPolicy(UUID policyId) {
+        log.info("deleted events for policy {} {}", alertRepository.deleteByPolicyId(policyId), policyId);
+    }
+
+    private void updateEvents(List<AlertEvent> existingEvents, List<AlertEvent> currentEvents) {
+        var diff = StreamUtils.difference(existingEvents, currentEvents);
+
+        diff.getRemoved().forEach(e -> alertRepository.deleteById(e.getId()));
+        var newEvents = convert(diff.getAdded(), GenericStorage::new);
+        alertRepository.saveAll(newEvents);
+    }
+
+    private List<AlertEvent> convertAlertsToEvents(ProcessAlert processAlert) {
+        var alertEvents = new ArrayList<AlertEvent>();
+
+        if (processAlert.isUsesAllInformationTypes()) {
+            alertEvents.add(new AlertEvent(processAlert.getProcessId(), null, AlertEventType.USES_ALL_INFO_TYPE));
+        }
+
+        processAlert.getPolicies().forEach(pa -> alertEvents.addAll(convertAlertsToEvents(pa, processAlert.getProcessId())));
+
+        return alertEvents;
+    }
+
+    private List<AlertEvent> convertAlertsToEvents(PolicyAlert policyAlert, UUID processId) {
+        var alertEvents = new ArrayList<AlertEvent>();
+        if (policyAlert.isMissingLegalBasis()) {
+            alertEvents.add(new AlertEvent(processId, policyAlert.getInformationTypeId(), AlertEventType.MISSING_LEGAL_BASIS));
+        }
+        if (policyAlert.isMissingArt6()) {
+            alertEvents.add(new AlertEvent(processId, policyAlert.getInformationTypeId(), AlertEventType.MISSING_ARTICLE_6));
+        }
+        if (policyAlert.isMissingArt9()) {
+            alertEvents.add(new AlertEvent(processId, policyAlert.getInformationTypeId(), AlertEventType.MISSING_ARTICLE_9));
+        }
+        return alertEvents;
+    }
+
+    @Transactional(readOnly = true)
     public InformationTypeAlert checkAlertsForInformationType(UUID informationTypeId) {
         var informationType = informationTypeRepository.findById(informationTypeId)
                 .orElseThrow(() -> new PollyNotFoundException("No information type for id " + informationTypeId + " found"));
@@ -52,7 +129,7 @@ public class AlertService {
         List<Process> processes = policyRepository.findByInformationTypeId(informationTypeId).stream()
                 .map(Policy::getProcess).distinct()
                 .filter(Process::isActive)
-                .collect(Collectors.toList());
+                .collect(toList());
 
         for (Process process : processes) {
             checkProcess(process, informationType).resolve().ifPresent(alert.getProcesses()::add);
@@ -61,6 +138,7 @@ public class AlertService {
         return alert;
     }
 
+    @Transactional(readOnly = true)
     public ProcessAlert checkAlertsForProcess(UUID processId) {
         var process = processRepository.findById(processId)
                 .orElseThrow(() -> new PollyNotFoundException("No process for id " + processId + " found"));
@@ -68,7 +146,7 @@ public class AlertService {
     }
 
     private ProcessAlert checkProcess(Process process, InformationType informationType) {
-        var alert = new ProcessAlert(process.getId(), new ArrayList<>());
+        var alert = new ProcessAlert(process.getId(), process.getData().isUsesAllInformationTypes(), new ArrayList<>());
 
         var processArt6 = containsArticle(process.getData().getLegalBases(), ART_6_PREFIX);
         var processArt9 = containsArticle(process.getData().getLegalBases(), ART_9_PREFIX);
@@ -93,7 +171,7 @@ public class AlertService {
         var missingArt9 = requiresArt9 && !policyArt9 && !processArt9;
         var missingLegalBasis = !policy.getData().isLegalBasesInherited() && CollectionUtils.isEmpty(policy.getData().getLegalBases());
 
-        return new PolicyAlert(policy.getId(), missingLegalBasis, missingArt6, missingArt9);
+        return new PolicyAlert(policy.getId(), policy.getInformationTypeId(), missingLegalBasis, missingArt6, missingArt9);
     }
 
     private boolean requiresArt9(InformationType informationType) {

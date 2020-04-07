@@ -1,6 +1,7 @@
 package no.nav.data.polly.informationtype;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.alert.AlertService;
 import no.nav.data.polly.common.exceptions.PollyNotFoundException;
 import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.utils.StreamUtils;
@@ -36,13 +37,15 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
     private final PolicyRepository policyRepository;
     private final DocumentRepository documentRepository;
     private final TermService termService;
+    private final AlertService alertService;
 
     public InformationTypeService(InformationTypeRepository repository, PolicyRepository policyRepository,
-            DocumentRepository documentRepository, TermService termService) {
+            DocumentRepository documentRepository, TermService termService, AlertService alertService) {
         this.repository = repository;
         this.policyRepository = policyRepository;
         this.documentRepository = documentRepository;
         this.termService = termService;
+        this.alertService = alertService;
     }
 
     public InformationType save(InformationTypeRequest request) {
@@ -55,7 +58,9 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
 
     public List<InformationType> saveAll(List<InformationTypeRequest> requests) {
         List<InformationType> informationTypes = requests.stream().map(this::convertNew).collect(toList());
-        return repository.saveAll(informationTypes);
+        List<InformationType> all = repository.saveAll(informationTypes);
+        all.forEach(it -> alertService.calculateAlertEventsForInforamtionType(it.getId()));
+        return all;
     }
 
     public List<InformationType> updateAll(List<InformationTypeRequest> requests) {
@@ -63,7 +68,9 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
         List<InformationType> informationTypes = repository.findAllById(ids);
 
         requests.forEach(request -> find(informationTypes, request.getIdAsUUID()).ifPresent(informationType -> convertUpdate(request, informationType)));
-        return repository.saveAll(informationTypes);
+        List<InformationType> all = repository.saveAll(informationTypes);
+        all.forEach(it -> alertService.calculateAlertEventsForInforamtionType(it.getId()));
+        return all;
     }
 
     public InformationType delete(UUID id) {
@@ -78,6 +85,7 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
 
         log.info("InformationType with id={} deleted", id);
         repository.delete(infoType);
+        alertService.deleteForInformationType(infoType.getId());
         return infoType;
     }
 

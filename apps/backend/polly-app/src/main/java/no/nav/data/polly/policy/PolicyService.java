@@ -1,6 +1,7 @@
 package no.nav.data.polly.policy;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.alert.AlertService;
 import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.validator.RequestValidator;
 import no.nav.data.polly.common.validator.ValidationError;
@@ -9,10 +10,12 @@ import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.policy.dto.PolicyRequest;
+import no.nav.data.polly.process.ProcessService;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,12 +31,38 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
     private final PolicyRepository policyRepository;
     private final InformationTypeRepository informationTypeRepository;
     private final ProcessRepository processRepository;
+    private final ProcessService processService;
+    private final AlertService alertService;
 
     public PolicyService(PolicyRepository policyRepository, InformationTypeRepository informationTypeRepository,
-            ProcessRepository processRepository) {
+            ProcessRepository processRepository, ProcessService processService, AlertService alertService) {
         this.policyRepository = policyRepository;
         this.informationTypeRepository = informationTypeRepository;
         this.processRepository = processRepository;
+        this.processService = processService;
+        this.alertService = alertService;
+    }
+
+    @Transactional
+    public List<Policy> saveAll(List<Policy> policies) {
+        var all = policyRepository.saveAll(policies);
+        onChange(all, false);
+        return all;
+    }
+
+    @Transactional
+    public void delete(Policy policy) {
+        policyRepository.deleteById(policy.getId());
+        onChange(List.of(policy), true);
+    }
+
+    private void onChange(List<Policy> policies, boolean delete) {
+        if (delete) {
+            policies.forEach(p -> alertService.deleteForPolicy(p.getId()));
+        } else {
+            policies.forEach(alertService::calculateAlertEventsForPolicy);
+        }
+        policies.stream().map(Policy::getProcess).distinct().forEach(processService::scheduleDistributeForProcess);
     }
 
     public void validateRequests(List<PolicyRequest> requests, boolean isUpdate) {
@@ -106,5 +135,4 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
         return String.format("InformationType: %s and Process: %s Purpose: %s SubjectCategories: %s",
                 request.getInformationTypeId(), request.getProcessId(), request.getPurposeCode(), request.getSubjectCategories());
     }
-
 }

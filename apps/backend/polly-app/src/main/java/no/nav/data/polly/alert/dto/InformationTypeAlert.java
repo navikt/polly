@@ -8,6 +8,6 @@ import java.util.UUID;
 @Value
 public class InformationTypeAlert {
 
-    private UUID informationTypeId;
-    private List<ProcessAlert> processes;
+    UUID informationTypeId;
+    List<ProcessAlert> processes;
 }
