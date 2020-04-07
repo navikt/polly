@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.rest.PageParameters;
@@ -31,12 +30,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
-import static java.util.stream.Collectors.toMap;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Slf4j
@@ -123,22 +120,21 @@ public class ProcessReadController {
         ListName listName = null;
         List<ProcessCount> purposeCounts = null;
         if (isSet(request, "purpose")) {
-            purposeCounts = repository.countByPurposeCode();
+            purposeCounts = repository.countPurposeCode();
             listName = ListName.PURPOSE;
         } else if (isSet(request, "department")) {
-            purposeCounts = repository.countByDepartmentCode();
+            purposeCounts = repository.countDepartmentCode();
             listName = ListName.DEPARTMENT;
         } else if (isSet(request, "subDepartment")) {
-            purposeCounts = repository.countBySubDepartmentCode();
+            purposeCounts = repository.countSubDepartmentCode();
             listName = ListName.SUB_DEPARTMENT;
         }
         Map<String, Long> counts;
         if (purposeCounts != null) {
-            counts = countToResponse(purposeCounts);
-            fillCountsWithZero(counts, listName);
+            counts = ProcessCount.countToMap(purposeCounts, listName);
         } else if (isSet(request, "team")) {
-            var teams = repository.countByTeam();
-            counts = countToResponse(teams);
+            var teams = repository.countTeam();
+            counts = ProcessCount.countToMap(teams);
         } else {
             throw new ValidationException("No count property selected");
         }
@@ -151,17 +147,6 @@ public class ProcessReadController {
     private boolean isSet(HttpServletRequest request, String param) {
         String value = request.getParameter(param);
         return "".equals(value) || BooleanUtils.toBoolean(value);
-    }
-
-    private void fillCountsWithZero(Map<String, Long> counts, ListName listName) {
-        CodelistService.getCodelist(listName).stream().filter(c -> !counts.containsKey(c.getCode())).forEach(c -> counts.put(c.getCode(), 0L));
-    }
-
-    private Map<String, Long> countToResponse(List<ProcessCount> purposeCounts) {
-        return purposeCounts.stream()
-                .filter(c -> c.getCode() != null)
-                .map(c -> Map.entry(c.getCode(), c.getCount()))
-                .collect(toMap(Entry::getKey, Entry::getValue));
     }
 
     static class ProcessPage extends RestResponsePage<ProcessResponse> {
