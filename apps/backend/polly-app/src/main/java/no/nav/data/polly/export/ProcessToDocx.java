@@ -29,10 +29,14 @@ import org.docx4j.jaxb.Context;
 import org.docx4j.model.properties.table.tr.TrCantSplit;
 import org.docx4j.model.table.TblFactory;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
+import org.docx4j.openpackaging.parts.WordprocessingML.FooterPart;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.docx4j.wml.BooleanDefaultTrue;
 import org.docx4j.wml.Br;
 import org.docx4j.wml.CTLanguage;
+import org.docx4j.wml.HdrFtrRef;
+import org.docx4j.wml.HpsMeasure;
+import org.docx4j.wml.JcEnumeration;
 import org.docx4j.wml.ObjectFactory;
 import org.docx4j.wml.P;
 import org.docx4j.wml.PPr;
@@ -143,6 +147,8 @@ public class ProcessToDocx {
         public DocumentBuilder() {
             pack = WordprocessingMLPackage.createPackage();
             main = pack.getMainDocumentPart();
+
+            addFooter();
         }
 
         public void generate(Process process) {
@@ -469,6 +475,44 @@ public class ProcessToDocx {
             Tbl table = TblFactory.createTable(rows, cols, twips / cols);
             main.getContent().add(table);
             return table;
+        }
+
+        @SneakyThrows
+        private void addFooter() {
+            var p = fac.createP();
+            var r = fac.createR();
+
+            var rpr = createRpr();
+            var size = new HpsMeasure();
+            size.setVal(BigInteger.valueOf(16));
+            rpr.setSz(size);
+            rpr.setNoProof(new BooleanDefaultTrue());
+            r.setRPr(rpr);
+
+            var ppr = fac.createPPr();
+            var jc = fac.createJc();
+            jc.setVal(JcEnumeration.RIGHT);
+            ppr.setJc(jc);
+            p.setPPr(ppr);
+
+            var pgnum = fac.createCTSimpleField();
+            pgnum.setInstr(" PAGE \\* MERGEFORMAT ");
+            var fldSimple = fac.createPFldSimple(pgnum);
+            p.getContent().add(fldSimple);
+
+            var footer = fac.createFtr();
+            footer.getContent().add(p);
+
+            var footerPart = new FooterPart();
+            footerPart.setJaxbElement(footer);
+            var ftrRel = main.addTargetPart(footerPart);
+            pack.getParts().put(footerPart);
+
+            var ftrRef = fac.createFooterReference();
+            ftrRef.setId(ftrRel.getId());
+            ftrRef.setType(HdrFtrRef.DEFAULT);
+            var sectPr = pack.getDocumentModel().getSections().iterator().next().getSectPr();
+            sectPr.getEGHdrFtrReferences().add(ftrRef);
         }
 
         @SneakyThrows
