@@ -36,6 +36,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 
@@ -60,10 +61,10 @@ public class DocxTest {
     void setUp() {
         CodelistStub.initializeCodelist();
         Policy policy = process.getPolicies().iterator().next();
-        when(alertService.checkAlertsForProcess(process.getId()))
+        lenient().when(alertService.checkAlertsForProcess(process.getId()))
                 .thenReturn(new ProcessAlert(process.getId(), List.of(new PolicyAlert(policy.getId(), false, false, true))));
-        when(resourceService.getResource(anyString())).thenReturn(Optional.empty());
-        when(teamService.getTeam(anyString())).thenReturn(Optional.empty());
+        lenient().when(resourceService.getResource(anyString())).thenReturn(Optional.empty());
+        lenient().when(teamService.getTeam(anyString())).thenReturn(Optional.empty());
     }
 
     @Test

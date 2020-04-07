@@ -32,6 +32,7 @@ import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.docx4j.wml.BooleanDefaultTrue;
 import org.docx4j.wml.Br;
+import org.docx4j.wml.CTLanguage;
 import org.docx4j.wml.ObjectFactory;
 import org.docx4j.wml.P;
 import org.docx4j.wml.PPr;
@@ -279,8 +280,16 @@ public class ProcessToDocx {
         }
 
         private RPr bold() {
-            RPr rPr = fac.createRPr();
+            RPr rPr = createRpr();
             rPr.setB(new BooleanDefaultTrue());
+            return rPr;
+        }
+
+        private RPr createRpr() {
+            RPr rPr = fac.createRPr();
+            CTLanguage ctLang = fac.createCTLanguage();
+            ctLang.setVal("no-NB");
+            rPr.setLang(ctLang);
             return rPr;
         }
 
@@ -359,19 +368,23 @@ public class ProcessToDocx {
         }
 
         private void addTitle(String text) {
-            main.addStyledParagraphOfText(TITLE, text);
+            P p = main.addStyledParagraphOfText(TITLE, text);
+            ((R) p.getContent().get(0)).setRPr(createRpr());
         }
 
         private void addHeading1(String text) {
-            main.addStyledParagraphOfText(HEADING_1, text);
+            P p = main.addStyledParagraphOfText(HEADING_1, text);
+            ((R) p.getContent().get(0)).setRPr(createRpr());
         }
 
         private void addHeading2(String text) {
-            main.addStyledParagraphOfText(HEADING_2, text);
+            P p = main.addStyledParagraphOfText(HEADING_2, text);
+            ((R) p.getContent().get(0)).setRPr(createRpr());
         }
 
         private void addHeading4(String text) {
-            main.addStyledParagraphOfText(HEADING_4, text);
+            P p = main.addStyledParagraphOfText(HEADING_4, text);
+            ((R) p.getContent().get(0)).setRPr(createRpr());
         }
 
 
@@ -393,6 +406,7 @@ public class ProcessToDocx {
             var texts = filter(values, Objects::nonNull);
             P p = fac.createP();
             R r = fac.createR();
+            r.setRPr(createRpr());
             for (int i = 0; i < texts.size(); i++) {
                 Text txt = texts.get(i);
                 r.getContent().add(txt);
