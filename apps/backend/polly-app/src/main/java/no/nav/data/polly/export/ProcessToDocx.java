@@ -34,6 +34,10 @@ import org.docx4j.wml.BooleanDefaultTrue;
 import org.docx4j.wml.Br;
 import org.docx4j.wml.ObjectFactory;
 import org.docx4j.wml.P;
+import org.docx4j.wml.PPr;
+import org.docx4j.wml.PPrBase.NumPr;
+import org.docx4j.wml.PPrBase.NumPr.NumId;
+import org.docx4j.wml.PPrBase.Spacing;
 import org.docx4j.wml.R;
 import org.docx4j.wml.RPr;
 import org.docx4j.wml.STBrType;
@@ -45,6 +49,7 @@ import org.docx4j.wml.TrPr;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
+import java.math.BigInteger;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
@@ -107,8 +112,11 @@ public class ProcessToDocx {
         doc.addTitle(title + ": " + codelist.getShortName());
         doc.addText(codelist.getDescription());
 
+        doc.addHeading1("Dokumentet inneholder følgende behandlinger (" + processes.size() + ")");
+        doc.addList(convert(processes, p -> shortName(ListName.PURPOSE, p.getPurposeCode()) + ": " + p.getName()));
+
         for (int i = 0; i < processes.size(); i++) {
-            if (i != 0 && i != processes.size() - 1) {
+            if (i != processes.size() - 1) {
                 doc.pageBreak();
             }
             doc.generate(processes.get(i));
@@ -126,6 +134,7 @@ public class ProcessToDocx {
 
         WordprocessingMLPackage pack;
         MainDocumentPart main;
+        long listId = 1;
 
         @SneakyThrows
         public DocumentBuilder() {
@@ -365,13 +374,6 @@ public class ProcessToDocx {
             main.addStyledParagraphOfText(HEADING_4, text);
         }
 
-        private String boolToText(Boolean aBoolean) {
-            return BooleanUtils.toString(aBoolean, "Ja", "Nei", "Uavklart");
-        }
-
-        private String shortName(ListName listName, String code) {
-            return code == null ? "" : CodelistService.getCodelist(listName, code).getShortName();
-        }
 
         private Text text(String... values) {
             List<String> strings = filter(Arrays.asList(values), Objects::nonNull);
@@ -418,6 +420,28 @@ public class ProcessToDocx {
             main.addObject(paragraph(text(values)));
         }
 
+        private void addList(List<String> texts) {
+            long currListId = listId++;
+            for (String text : texts) {
+                var p = paragraph(text(text));
+                PPr pPr = fac.createPPr();
+                NumPr numPr = fac.createPPrBaseNumPr();
+                NumId numId = fac.createPPrBaseNumPrNumId();
+                Spacing pPrBaseSpacing = fac.createPPrBaseSpacing();
+                p.setPPr(pPr);
+                pPr.setNumPr(numPr);
+
+                // Remove spacing
+                pPrBaseSpacing.setBefore(BigInteger.ZERO);
+                pPrBaseSpacing.setAfter(BigInteger.ZERO);
+                pPr.setSpacing(pPrBaseSpacing);
+
+                numPr.setNumId(numId);
+                numId.setVal(BigInteger.valueOf(currListId));
+                main.getContent().add(p);
+            }
+        }
+
         private void pageBreak() {
             Br br = fac.createBr();
             br.setType(STBrType.PAGE);
@@ -439,5 +463,12 @@ public class ProcessToDocx {
         }
     }
 
+    private static String boolToText(Boolean aBoolean) {
+        return BooleanUtils.toString(aBoolean, "Ja", "Nei", "Uavklart");
+    }
+
+    private static String shortName(ListName listName, String code) {
+        return code == null ? "" : CodelistService.getCodelist(listName, code).getShortName();
+    }
 
 }

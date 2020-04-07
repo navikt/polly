@@ -1,10 +1,12 @@
 package no.nav.data.polly.export;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.alert.AlertService;
 import no.nav.data.polly.alert.dto.PolicyAlert;
 import no.nav.data.polly.alert.dto.ProcessAlert;
 import no.nav.data.polly.codelist.CodelistStub;
+import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
@@ -13,17 +15,18 @@ import no.nav.data.polly.process.domain.ProcessData;
 import no.nav.data.polly.process.domain.ProcessData.DataProcessing;
 import no.nav.data.polly.process.domain.ProcessData.Dpia;
 import no.nav.data.polly.process.domain.ProcessData.Retention;
+import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.teams.ResourceService;
 import no.nav.data.polly.teams.TeamService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -31,6 +34,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -45,21 +49,40 @@ public class DocxTest {
     private ResourceService resourceService;
     @Mock
     private TeamService teamService;
+    @Mock
+    private ProcessRepository processRepository;
     @InjectMocks
     private ProcessToDocx processToDocx;
 
-    @Test
-    void createDocForProcess() throws IOException {
+    Process process = createProcess();
+
+    @BeforeEach
+    void setUp() {
         CodelistStub.initializeCodelist();
-        Process process = createProcess();
         Policy policy = process.getPolicies().iterator().next();
         when(alertService.checkAlertsForProcess(process.getId()))
                 .thenReturn(new ProcessAlert(process.getId(), List.of(new PolicyAlert(policy.getId(), false, false, true))));
         when(resourceService.getResource(anyString())).thenReturn(Optional.empty());
         when(teamService.getTeam(anyString())).thenReturn(Optional.empty());
+    }
 
+    @Test
+    void createDocForProcess() {
         var docx = processToDocx.generateDocForProcess(process);
+        assertThat(docx).isNotNull();
+        write(docx);
+    }
 
+    @Test
+    void createBatchDoc() {
+        when(processRepository.findByPurposeCode("AAP")).thenReturn(List.of(process, process, process));
+        var docx = processToDocx.generateDocFor(ListName.PURPOSE, "AAP");
+        assertThat(docx).isNotNull();
+        write(docx);
+    }
+
+    @SneakyThrows
+    private void write(byte[] docx) {
         Path tempFile = Files.createTempFile("process", ".docx");
 //        Path tempFile = Paths.get("/Users/s143147/process.docx");
         Files.write(tempFile, docx);
@@ -75,7 +98,8 @@ public class DocxTest {
         req.format();
 
         Process process = new Process().convertFromRequest(req);
-        processToDocx.generateDocForProcess(process);
+        var docx = processToDocx.generateDocForProcess(process);
+        assertThat(docx).isNotNull();
     }
 
     private Process createProcess() {
