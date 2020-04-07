@@ -2,7 +2,7 @@ import * as React from 'react'
 import {useEffect} from 'react'
 
 import {Block, BlockProps} from 'baseui/block'
-import {Label1} from 'baseui/typography'
+import {Label1, Label2} from 'baseui/typography'
 import {KIND, SIZE as ButtonSize} from 'baseui/button'
 import {AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose} from '../../constants'
 import {intl, theme, useAwait} from '../../util'
@@ -222,26 +222,7 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
         </Block>
       </Block>
 
-      <Block display={"flex"} flexDirection={"row-reverse"}>
-        <Block width={"15%"}>
-          <Select
-            backspaceRemoves={false}
-            clearable={false}
-            deleteRemoves={false}
-            escapeClearsValue={false}
-            options={[
-              {label: intl.all, id: "ALL"},
-              {label: intl.inProgress, id: "IN_PROGRESS"},
-              {label: intl.completed, id: "COMPLETED"},
-            ]}
-            value={status}
-            filterOutSelected={false}
-            searchable={false}
-            onChange={(params: any) => {
-              setStatus(params.value)
-            }}
-          />
-        </Block>
+      <Block display={"flex"} flexDirection={"row-reverse"} alignItems={"center"}>
         <Block>
           <StyledLink
             style={{textDecoration: 'none'}}
@@ -266,6 +247,30 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
               {intl.processingActivitiesNew}
             </Button>
           )}
+        </Block>
+        <Block width={"25%"}>
+          <Select
+            backspaceRemoves={false}
+            clearable={false}
+            deleteRemoves={false}
+            escapeClearsValue={false}
+            options={[
+              {label: intl.allProcesses, id: "ALL"},
+              {label: intl.inProgressProcesses, id: "IN_PROGRESS"},
+              {label: intl.completedProcesses, id: "COMPLETED"},
+            ]}
+            value={status}
+            filterOutSelected={false}
+            searchable={false}
+            onChange={(params: any) => {
+              setStatus(params.value)
+            }}
+          />
+        </Block>
+        <Block>
+          <Label2 color={theme.colors.primary} marginRight={"1rem"}>
+            {intl.filter}
+          </Label2>
         </Block>
       </Block>
 

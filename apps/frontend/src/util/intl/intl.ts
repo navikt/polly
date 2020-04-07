@@ -253,6 +253,10 @@ export interface IStrings {
   appName: string;
   beta: string;
   all: string;
+  allProcesses: string;
+  completedProcesses: string;
+  inProgressProcesses: string;
+  filter:string;
   startDate: string;
   endDate: string;
   active: string;
