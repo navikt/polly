@@ -1,13 +1,13 @@
-import { RouteComponentProps, withRouter } from "react-router-dom";
-import { StyledLink } from "baseui/link"
+import {RouteComponentProps, withRouter} from "react-router-dom";
+import {StyledLink} from "baseui/link"
 import React from "react"
-import { KIND } from "baseui/button"
-import { getDisclosure, getPolicy, getProcess } from "../../api"
-import { Block } from "baseui/block"
-import { AuditButton } from "../audit/AuditButton"
-import { AuditItem, NavigableItem, ObjectType } from "../../constants"
-import { useStyletron } from "baseui"
-import { ListName } from "../../service/Codelist"
+import {KIND} from "baseui/button"
+import {getDisclosure, getPolicy, getProcess} from "../../api"
+import {Block} from "baseui/block"
+import {AuditButton} from "../audit/AuditButton"
+import {AuditItem, NavigableItem, ObjectType} from "../../constants"
+import {useStyletron} from "baseui"
+import {ListName} from "../../service/Codelist"
 
 type RouteLinkProps = {
   href: string
@@ -63,6 +63,8 @@ export const urlForObject = async (type: NavigableItem, id: string, audit?: Audi
       return `/process/team/${id}`
     case ListName.DEPARTMENT:
       return `/process/department/${id}`
+    case ListName.THIRD_PARTY:
+      return `/thirdparty/${id}`
     case ListName.SUB_DEPARTMENT:
       return `/process/subdepartment/${id}`
   }

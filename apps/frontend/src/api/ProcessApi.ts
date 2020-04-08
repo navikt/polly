@@ -1,7 +1,7 @@
 import axios from "axios"
-import { PageResponse, Process, ProcessCount, ProcessFormValues } from "../constants"
-import { env } from "../util/env"
-import { convertLegalBasesToFormValues } from "./PolicyApi"
+import {PageResponse, Process, ProcessCount, ProcessFormValues, ProcessStatus} from "../constants"
+import {env} from "../util/env"
+import {convertLegalBasesToFormValues} from "./PolicyApi"
 
 export const getProcess = async (processId: string) => {
   const data = (await axios.get<Process>(`${env.pollyBaseUrl}/process/${processId}`)).data
@@ -64,7 +64,9 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     automaticProcessing,
     profiling,
     dataProcessing,
-    retention
+    retention,
+    dpia,
+    status
   } = (process || {})
 
   return {
@@ -93,6 +95,14 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
       retentionMonths: retention?.retentionMonths || 0,
       retentionStart: retention?.retentionStart || '',
       retentionDescription: retention?.retentionDescription || ''
+    },
+    status: status === ProcessStatus.COMPLETED ? ProcessStatus.COMPLETED : ProcessStatus.IN_PROGRESS,
+    dpia: {
+      grounds: dpia?.grounds || '',
+      needForDpia: mapBool(dpia?.needForDpia),
+      processImplemented: dpia?.processImplemented || false,
+      refToDpia: dpia?.refToDpia || '',
+      riskOwner: dpia?.riskOwner || ''
     }
   }
 }
@@ -114,6 +124,14 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
     automaticProcessing: values.automaticProcessing,
     profiling: values.profiling,
     dataProcessing: values.dataProcessing,
-    retention: values.retention
+    retention: values.retention,
+    status: values.status,
+    dpia: {
+      grounds: values.dpia?.needForDpia ? "" : values.dpia?.grounds,
+      needForDpia: values.dpia.needForDpia,
+      refToDpia: values.dpia?.needForDpia ? values.dpia.refToDpia : "",
+      processImplemented: values.dpia?.processImplemented,
+      riskOwner: values.dpia?.riskOwner
+    }
   }
 }

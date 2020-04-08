@@ -1,21 +1,21 @@
 import * as React from 'react'
 
-import { ListLegalBasesInTable } from './LegalBasis'
-import { intl } from '../../util'
-import { Disclosure, DisclosureFormValues, disclosureSort } from '../../constants'
-import { useTable } from '../../util/hooks'
+import {ListLegalBasesInTable} from './LegalBasis'
+import {intl} from '../../util'
+import {Disclosure, DisclosureFormValues, disclosureSort} from '../../constants'
+import {useTable} from '../../util/hooks'
 import RouteLink from './RouteLink'
-import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
-import { Button, KIND, SIZE } from 'baseui/button'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
-import { Paragraph2 } from 'baseui/typography'
-import { Block } from 'baseui/block'
+import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
+import {Button, KIND, SIZE} from 'baseui/button'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faEdit, faTrash} from '@fortawesome/free-solid-svg-icons'
+import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal'
+import {Paragraph2} from 'baseui/typography'
+import {Block} from 'baseui/block'
 import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
-import { mapDisclosureToFormValues } from '../../api'
-import { features } from '../../util/feature-toggle'
-import { Cell, HeadCell, Row, Table } from './Table'
+import {mapDisclosureToFormValues} from '../../api'
+import {features} from '../../util/feature-toggle'
+import {Cell, HeadCell, Row, Table} from './Table'
 
 type TableDisclosureProps = {
   list: Array<Disclosure>;
@@ -44,10 +44,10 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
             {showRecipient && (
               <HeadCell title={intl.recipient} column={'recipient'} tableState={[table, sortColumn]}/>
             )}
-            <HeadCell title={intl.name} column={'name'} tableState={[table, sortColumn]}/>
+            <HeadCell title={intl.disclosureName} column={'name'} tableState={[table, sortColumn]}/>
             <HeadCell title={intl.document} column={'document'} tableState={[table, sortColumn]}/>
             <HeadCell title={intl.disclosurePurpose} column={'recipientPurpose'} tableState={[table, sortColumn]}/>
-            <HeadCell title={intl.description} column={'description'} tableState={[table, sortColumn]}/>
+            <HeadCell title={intl.additionalDescription} column={'description'} tableState={[table, sortColumn]}/>
             <HeadCell title={intl.legalBasisShort} column={'legalBases'} tableState={[table, sortColumn]}/>
 
             {editable && <HeadCell small/>}

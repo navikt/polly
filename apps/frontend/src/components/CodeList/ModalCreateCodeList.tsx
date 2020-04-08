@@ -1,15 +1,15 @@
 import * as React from "react";
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
-import { Block, BlockProps } from "baseui/block";
-import { Label2 } from "baseui/typography";
-import { Field, FieldProps, Form, Formik } from "formik";
-import { CodeListFormValues } from "../../constants";
-import { Input, SIZE as InputSIZE } from "baseui/input";
-import { Error } from "../common/ModalSchema";
-import { Textarea } from "baseui/textarea";
-import { Button, KIND } from "baseui/button";
-import { intl } from "../../util";
-import { codeListSchema } from "../common/schema"
+import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
+import {Block, BlockProps} from "baseui/block";
+import {Label2} from "baseui/typography";
+import {Field, FieldProps, Form, Formik} from "formik";
+import {CodeListFormValues} from "../../constants";
+import {Input, SIZE as InputSIZE} from "baseui/input";
+import {Error} from "../common/ModalSchema";
+import {Textarea} from "baseui/textarea";
+import {Button, KIND} from "baseui/button";
+import {intl} from "../../util";
+import {codeListSchema} from "../common/schema"
 
 const modalBlockProps: BlockProps = {
   width: '700px',
@@ -47,7 +47,6 @@ const CreateCodeListModal = ({isOpen, title, list, errorOnCreate, onClose, submi
       <Block {...modalBlockProps}>
         <Formik
           onSubmit={(values) => {
-            console.log(values);
             submit(values);
             onClose();
           }}

@@ -1,0 +1,36 @@
+import * as React from "react";
+import {Select, Value} from "baseui/select";
+import {codelist, ListName} from "../../../service/Codelist";
+import {Field, FieldProps} from "formik";
+import {ProcessFormValues} from "../../../constants";
+import {Block} from "baseui/block";
+
+const FieldPurpose = (props: { purposeCode?: string, disabled?: boolean }) => {
+  const {purposeCode, disabled} = props
+  const [value, setValue] = React.useState<Value>(purposeCode ? [{
+    id: disabled ? purposeCode : "",
+    label: disabled ? codelist.getShortname(ListName.PURPOSE, purposeCode) : ""
+  }] : [])
+
+  return (
+    <Field
+      name='purposeCode'
+      render={({form}: FieldProps<ProcessFormValues>) => (
+        <Block marginRight='10px' width={'100%'}>
+          <Select
+            options={codelist.getParsedOptions(ListName.PURPOSE)}
+            onChange={({value}) => {
+              setValue(value)
+              form.setFieldValue('purposeCode', value.length > 0 ? value[0].id : '')
+            }}
+            disabled={disabled}
+            value={value}
+            error={!!(form.errors.purposeCode && form.touched.purposeCode)}
+          />
+        </Block>
+      )}
+    />
+  )
+}
+
+export default FieldPurpose

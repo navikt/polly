@@ -16,6 +16,7 @@ export interface IStrings {
   termEditHeader: string;
   purpose: string;
   processPurpose: string;
+  purposeOfTheProcess: string;
   purposeDescription: string;
   sensitivity: string;
   processingActivities: string;
@@ -31,6 +32,7 @@ export interface IStrings {
   product: string;
   products: string;
   team: string;
+  riskOwner: string;
   system: string;
   disclosure: string;
   disclosures: string;
@@ -43,7 +45,14 @@ export interface IStrings {
   yes: string;
   no: string;
   unclarified: string;
+  notFilled: string;
   automation: string;
+  status: string;
+  processStatus: string;
+  processStatusHelpText: string;
+  isProcessImplemented: string;
+  inProgress: string;
+  completed: string;
   automaticProcessing: string;
   automaticProcessingExtra: string;
   profiling: string;
@@ -57,6 +66,14 @@ export interface IStrings {
   dataProcessorOutsideEU: string;
   dataProcessorOutsideEUExtra: string;
   includeDefaultDocument: string;
+  inProduction: string;
+  notInProduction: string;
+  isDpiaRequired: string;
+  dpiaReference: string;
+  grounds: string;
+  reference: string;
+  ground: string;
+  pvk: string;
   from: string;
   retained: string;
   retention: string;
@@ -70,6 +87,8 @@ export interface IStrings {
   years: string;
   months: string;
   lastEvents: string;
+  disclosureName: string;
+  pvkRequired: string;
 
   // sentence
   containsInformationType: string;
@@ -94,6 +113,7 @@ export interface IStrings {
   purposeUse: string;
   informationTypeExternalUse: string;
   usesAllInformationTypes: string;
+  thirdParties: string;
   policyEdit: string;
   policyNew: string;
   policyAdd: string;
@@ -102,6 +122,11 @@ export interface IStrings {
   processingActivitiesNew: string;
   processingActivitiesEdit: string;
   processNew: string;
+  exceptionalUsage: string;
+  overallPurpose: string;
+  overallPurposeHelpText: string;
+  validityOfProcessHelpText: string;
+  organizingHelpText: string;
   processNameHelpText: string;
   processPurposeHelpText: string;
   departmentHelpText: string;
@@ -177,6 +202,7 @@ export interface IStrings {
   teamSelect: string;
   informationtypesUsedInDocument: string;
   editDocument: string;
+  lastModified: string;
 
   // groups
   POLLY_READ: string;
@@ -216,6 +242,7 @@ export interface IStrings {
   document: string;
   edit: string;
   update: string;
+  export: string;
   sources: string;
   categories: string;
   keywords: string;
@@ -226,6 +253,10 @@ export interface IStrings {
   appName: string;
   beta: string;
   all: string;
+  allProcesses: string;
+  completedProcesses: string;
+  inProgressProcesses: string;
+  filter:string;
   startDate: string;
   endDate: string;
   active: string;
@@ -242,7 +273,7 @@ export interface IStrings {
   rows: string;
   slack: string;
   add: string;
-
+  summarySubjectCategories: string;
   maxChars: string;
   required: string;
   dateFormat: string;
@@ -282,12 +313,12 @@ export interface IStrings {
 
 // Remember import moment locales up top
 export const langs: Langs = {
-  nb: {flag: "no", name: "Norsk", langCode: "nb", texts: no},
-  en: {flag: "gb", name: "English", langCode: "en", texts: en}
+  nb: { flag: "no", name: "Norsk", langCode: "nb", texts: no },
+  en: { flag: "gb", name: "English", langCode: "en", texts: en }
 };
 
 if (window.location.hostname.indexOf("local") >= 0) {
-  langs["ta"] = {flag: ["lk", "in"][Math.floor(Math.random() * 2)], name: "தமிழ்", langCode: "ta", texts: ta};
+  langs["ta"] = { flag: ["lk", "in"][Math.floor(Math.random() * 2)], name: "தமிழ்", langCode: "ta", texts: ta };
 }
 
 export const langsArray: Lang[] = Object.keys(langs).map(lang => langs[lang]);
@@ -298,20 +329,14 @@ const defaultLang = langs.nb;
 type IIntl = LocalizedStringsMethods & IStrings;
 
 interface LocalizedStringsFactory {
-  new<T>(
-    props: GlobalStrings<T>,
-    options?: { customLanguageInterface: () => string }
-  ): IIntl;
+  new <T>(props: GlobalStrings<T>, options?: { customLanguageInterface: () => string }): IIntl;
 }
 
 const strings: IntlLangs = {};
 
 Object.keys(langs).forEach(lang => (strings[lang] = langs[lang].texts));
 
-export const intl: IIntl = new (LocalizedStrings as LocalizedStringsFactory)(
-  strings as any,
-  {customLanguageInterface: () => defaultLang.langCode}
-);
+export const intl: IIntl = new (LocalizedStrings as LocalizedStringsFactory)(strings as any, { customLanguageInterface: () => defaultLang.langCode });
 
 interface IntlLangs {
   [lang: string]: IStrings;
@@ -333,11 +358,7 @@ interface Langs {
 const localStorageAvailable = storageAvailable();
 
 export const useLang = () => {
-  const [lang, setLang] = React.useState<string>(
-    ((localStorageAvailable &&
-      localStorage.getItem("polly-lang")) as string) ||
-    defaultLang.langCode
-  );
+  const [lang, setLang] = React.useState<string>(((localStorageAvailable && localStorage.getItem("polly-lang")) as string) || defaultLang.langCode);
   const update = useForceUpdate();
   useEffect(() => {
     intl.setLanguage(lang);
