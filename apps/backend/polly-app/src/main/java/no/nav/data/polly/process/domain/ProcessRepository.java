@@ -41,6 +41,9 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
     @Query(value = "select count(1) from process where cast (data -> 'dpia' ->> 'needForDpia' as boolean) = true", nativeQuery = true)
     long countWithDpia();
 
+    @Query(value = "select count(1) from process where data #> '{dpia,needForDpia}' is null", nativeQuery = true)
+    long countUnknownDpia();
+
     @Query(value = "select p.purposeCode as code, count(p) as count from Process p group by p.purposeCode")
     List<ProcessCount> countPurposeCode();
 

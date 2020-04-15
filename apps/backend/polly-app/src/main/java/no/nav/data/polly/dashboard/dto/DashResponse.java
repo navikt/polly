@@ -31,6 +31,7 @@ public class DashResponse {
 
         private long processesUsingAllInfoTypes;
         private long processesWithDpia;
+        private long processesUnknownDpia;
     }
 
     @Data

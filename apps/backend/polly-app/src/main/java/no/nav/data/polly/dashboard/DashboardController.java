@@ -59,6 +59,7 @@ public class DashboardController {
                         .processesInProgress(processRepository.countStatus(ProcessStatus.IN_PROGRESS))
                         .processesUsingAllInfoTypes(processRepository.countUsingAllInfoTypes())
                         .processesWithDpia(processRepository.countWithDpia())
+                        .processesUnknownDpia(processRepository.countUnknownDpia())
                         .build())
                 .departmentProcesses(byDepartment)
                 .build();
