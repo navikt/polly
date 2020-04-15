@@ -59,7 +59,7 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
     public List<InformationType> saveAll(List<InformationTypeRequest> requests) {
         List<InformationType> informationTypes = requests.stream().map(this::convertNew).collect(toList());
         List<InformationType> all = repository.saveAll(informationTypes);
-        all.forEach(it -> alertService.calculateAlertEventsForInforamtionType(it.getId()));
+        all.forEach(it -> alertService.calculateEventsForInforamtionType(it.getId()));
         return all;
     }
 
@@ -69,7 +69,7 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
 
         requests.forEach(request -> find(informationTypes, request.getIdAsUUID()).ifPresent(informationType -> convertUpdate(request, informationType)));
         List<InformationType> all = repository.saveAll(informationTypes);
-        all.forEach(it -> alertService.calculateAlertEventsForInforamtionType(it.getId()));
+        all.forEach(it -> alertService.calculateEventsForInforamtionType(it.getId()));
         return all;
     }
 
@@ -85,7 +85,7 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
 
         log.info("InformationType with id={} deleted", id);
         repository.delete(infoType);
-        alertService.deleteForInformationType(infoType.getId());
+        alertService.deleteEventsForInformationType(infoType.getId());
         return infoType;
     }
 

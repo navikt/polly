@@ -53,36 +53,36 @@ public class AlertService {
         this.informationTypeRepository = informationTypeRepository;
     }
 
-    public void calculateAlertEventsForInforamtionType(UUID informationTypeId) {
+    public void calculateEventsForInforamtionType(UUID informationTypeId) {
         var alerts = checkAlertsForInformationType(informationTypeId);
         var currentEvents = StreamUtils.convertFlat(alerts.getProcesses(), this::convertAlertsToEvents);
         var existingEvents = convert(alertRepository.findByInformationTypeId(informationTypeId), a -> a.getDataObject(AlertEvent.class));
         updateEvents(existingEvents, currentEvents);
     }
 
-    public void calculateAlertEventsForProcess(UUID processId) {
+    public void calculateEventsForProcess(UUID processId) {
         var alerts = checkAlertsForProcess(processId);
         var currentEvents = convertAlertsToEvents(alerts);
         var existingEvents = convert(alertRepository.findByProcessId(processId), a -> a.getDataObject(AlertEvent.class));
         updateEvents(existingEvents, currentEvents);
     }
 
-    public void calculateAlertEventsForPolicy(Policy policy) {
+    public void calculateEventsForPolicy(Policy policy) {
         var alerts = checkProcess(policy.getProcess(), policy.getInformationType());
         var currentEvents = convertAlertsToEvents(alerts);
         var existingEvents = convert(alertRepository.findByPolicyId(policy.getId()), a -> a.getDataObject(AlertEvent.class));
         updateEvents(existingEvents, currentEvents);
     }
 
-    public void deleteForInformationType(UUID informationTypeId) {
+    public void deleteEventsForInformationType(UUID informationTypeId) {
         log.info("deleted events for informationType {} {}", alertRepository.deleteByInformationTypeId(informationTypeId), informationTypeId);
     }
 
-    public void deleteForProcess(UUID processId) {
+    public void deleteEventsForProcess(UUID processId) {
         log.info("deleted events for process {} {}", alertRepository.deleteByProcessId(processId), processId);
     }
 
-    public void deleteForPolicy(UUID policyId) {
+    public void deleteEventsForPolicy(UUID policyId) {
         log.info("deleted events for policy {} {}", alertRepository.deleteByPolicyId(policyId), policyId);
     }
 

@@ -48,14 +48,14 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
     @Transactional
     public Process save(Process process) {
         var saved = processRepository.save(process);
-        alertService.checkAlertsForProcess(saved.getId());
+        alertService.calculateEventsForProcess(saved.getId());
         return saved;
     }
 
     @Transactional
     public void deleteById(UUID id) {
         processRepository.deleteById(id);
-        alertService.deleteForProcess(id);
+        alertService.deleteEventsForProcess(id);
     }
 
     public void scheduleDistributeForProcess(Process process) {
