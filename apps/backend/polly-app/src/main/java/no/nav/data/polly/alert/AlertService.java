@@ -56,14 +56,14 @@ public class AlertService {
     public void calculateEventsForInforamtionType(UUID informationTypeId) {
         var alerts = checkAlertsForInformationType(informationTypeId);
         var currentEvents = StreamUtils.convertFlat(alerts.getProcesses(), this::convertAlertsToEvents);
-        var existingEvents = convert(alertRepository.findByInformationTypeId(informationTypeId), a -> a.getDataObject(AlertEvent.class));
+        var existingEvents = convert(alertRepository.findByInformationTypeId(informationTypeId), GenericStorage::toAlertEvent);
         updateEvents(existingEvents, currentEvents);
     }
 
     public void calculateEventsForProcess(UUID processId) {
         var alerts = checkAlertsForProcess(processId);
         var currentEvents = convertAlertsToEvents(alerts);
-        var existingEvents = convert(alertRepository.findByProcessId(processId), a -> a.getDataObject(AlertEvent.class));
+        var existingEvents = convert(alertRepository.findByProcessId(processId), GenericStorage::toAlertEvent);
         updateEvents(existingEvents, currentEvents);
     }
 
@@ -72,7 +72,7 @@ public class AlertService {
         var currentEvents = convertAlertsToEvents(alerts);
         UUID processId = policy.getProcess().getId();
         UUID informationTypeId = policy.getInformationTypeId();
-        var existingEvents = convert(alertRepository.findByProcessIdAndInformationTypeId(processId, informationTypeId), a -> a.getDataObject(AlertEvent.class));
+        var existingEvents = convert(alertRepository.findByProcessIdAndInformationTypeId(processId, informationTypeId), GenericStorage::toAlertEvent);
         updateEvents(existingEvents, currentEvents);
     }
 
