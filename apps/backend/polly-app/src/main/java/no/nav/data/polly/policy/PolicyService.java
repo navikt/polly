@@ -58,7 +58,7 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
 
     private void onChange(List<Policy> policies, boolean delete) {
         if (delete) {
-            policies.forEach(p -> alertService.deleteEventsForPolicy(p.getId()));
+            policies.forEach(alertService::deleteEventsForPolicy);
         } else {
             policies.forEach(alertService::calculateEventsForPolicy);
         }

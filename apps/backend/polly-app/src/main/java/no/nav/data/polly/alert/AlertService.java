@@ -70,20 +70,25 @@ public class AlertService {
     public void calculateEventsForPolicy(Policy policy) {
         var alerts = checkProcess(policy.getProcess(), policy.getInformationType());
         var currentEvents = convertAlertsToEvents(alerts);
-        var existingEvents = convert(alertRepository.findByPolicyId(policy.getId()), a -> a.getDataObject(AlertEvent.class));
+        UUID processId = policy.getProcess().getId();
+        UUID informationTypeId = policy.getInformationTypeId();
+        var existingEvents = convert(alertRepository.findByProcessIdAndInformationTypeId(processId, informationTypeId), a -> a.getDataObject(AlertEvent.class));
         updateEvents(existingEvents, currentEvents);
     }
 
     public void deleteEventsForInformationType(UUID informationTypeId) {
-        log.info("deleted events for informationType {} {}", alertRepository.deleteByInformationTypeId(informationTypeId), informationTypeId);
+        int deleted = alertRepository.deleteByInformationTypeId(informationTypeId);
+        log.info("deleted {} events for informationType {}", deleted, informationTypeId);
     }
 
     public void deleteEventsForProcess(UUID processId) {
-        log.info("deleted events for process {} {}", alertRepository.deleteByProcessId(processId), processId);
+        int deleted = alertRepository.deleteByProcessId(processId);
+        log.info("deleted {} events for process {}", deleted, processId);
     }
 
-    public void deleteEventsForPolicy(UUID policyId) {
-        log.info("deleted events for policy {} {}", alertRepository.deleteByPolicyId(policyId), policyId);
+    public void deleteEventsForPolicy(Policy policy) {
+        int deleted = alertRepository.deleteByProcessIdAndInformationTypeId(policy.getProcess().getId(), policy.getInformationTypeId());
+        log.info("deleted {} events for process {} informationType {}", deleted, policy.getProcess().getId(), policy.getInformationTypeId());
     }
 
     private void updateEvents(List<AlertEvent> existingEvents, List<AlertEvent> currentEvents) {
