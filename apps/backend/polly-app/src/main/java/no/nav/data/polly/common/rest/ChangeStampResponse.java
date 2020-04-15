@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.data.polly.common.auditing.domain.Auditable.Fields;
 
 import java.time.LocalDateTime;
 
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonPropertyOrder({"lastModifiedBy", "lastModifiedDate"})
+@JsonPropertyOrder({Fields.lastModifiedBy, Fields.lastModifiedDate})
 public class ChangeStampResponse {
 
     private String lastModifiedBy;

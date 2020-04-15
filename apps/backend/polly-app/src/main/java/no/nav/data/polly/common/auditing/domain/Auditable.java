@@ -3,6 +3,7 @@ package no.nav.data.polly.common.auditing.domain;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.FieldNameConstants;
 import no.nav.data.polly.common.auditing.AuditVersionListener;
 import no.nav.data.polly.common.rest.ChangeStampResponse;
 import org.springframework.data.annotation.CreatedBy;
@@ -19,6 +20,7 @@ import javax.persistence.MappedSuperclass;
 @Getter
 @Setter
 @MappedSuperclass
+@FieldNameConstants
 @JsonFilter("relationFilter")
 @EntityListeners({AuditingEntityListener.class, AuditVersionListener.class})
 public abstract class Auditable {

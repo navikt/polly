@@ -5,8 +5,11 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.alert.domain.AlertEvent;
 import no.nav.data.polly.alert.dto.InformationTypeAlert;
 import no.nav.data.polly.alert.dto.ProcessAlert;
+import no.nav.data.polly.common.rest.PageParameters;
+import no.nav.data.polly.common.rest.RestResponsePage;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +50,20 @@ public class AlertController {
     public ResponseEntity<InformationTypeAlert> alertsForInformationType(@PathVariable UUID informationTypeId) {
         var alerts = alertService.checkAlertsForInformationType(informationTypeId);
         return ResponseEntity.ok(alerts);
+    }
+
+    @ApiOperation(value = "Get Alerts events")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Alert events fetched", response = EventPage.class),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @GetMapping("/events")
+    public ResponseEntity<RestResponsePage<AlertEvent>> alertsEvents(PageParameters parameters) {
+        var events = alertService.getEvents(parameters);
+        return ResponseEntity.ok(new RestResponsePage<>(events));
+    }
+
+    static class EventPage extends RestResponsePage<AlertEvent> {
+
     }
 
 }
