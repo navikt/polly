@@ -14,7 +14,7 @@ public interface AlertRepository extends JpaRepository<GenericStorage, UUID> {
     @Query(value = "select * from generic_storage where data ->> 'informationTypeId' = cast(?1 as text) and type = 'ALERT_EVENT'", nativeQuery = true)
     List<GenericStorage> findByInformationTypeId(UUID informationTypeId);
 
-    @Query(value = "select * from generic_storage where data ->> 'processId' = cast(?1 as text) and  data ->> 'informationTypeId' = cast(?1 as text) and type = 'ALERT_EVENT'", nativeQuery = true)
+    @Query(value = "select * from generic_storage where data ->> 'processId' = cast(?1 as text) and data ->> 'informationTypeId' = cast(?2 as text) and type = 'ALERT_EVENT'", nativeQuery = true)
     List<GenericStorage> findByProcessIdAndInformationTypeId(UUID processId, UUID informationTypeId);
 
     @Query(value = "select * from generic_storage where data ->> 'processId' = cast(?1 as text) and type = 'ALERT_EVENT'", nativeQuery = true)
@@ -29,7 +29,7 @@ public interface AlertRepository extends JpaRepository<GenericStorage, UUID> {
     int deleteByInformationTypeId(UUID informationTypeId);
 
     @Modifying
-    @Query(value = "delete from generic_storage where data ->> 'processId' = cast(?1 as text) and  data ->> 'informationTypeId' = cast(?1 as text) and type = 'ALERT_EVENT'", nativeQuery = true)
+    @Query(value = "delete from generic_storage where data ->> 'processId' = cast(?1 as text) and data ->> 'informationTypeId' = cast(?2 as text) and type = 'ALERT_EVENT'", nativeQuery = true)
     int deleteByProcessIdAndInformationTypeId(UUID processId, UUID informationTypeId);
 
     @Modifying
