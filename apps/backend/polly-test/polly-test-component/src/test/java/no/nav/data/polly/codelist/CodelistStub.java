@@ -19,8 +19,8 @@ public class CodelistStub {
         add(ListName.NATIONAL_LAW, "SAMTYKKE", "Samtykke", "");
         add(ListName.NATIONAL_LAW, "FTRL", "Folketrygdloven", "1997-02-28-19");
         add(ListName.NATIONAL_LAW, "NY_ALDERSPENSJON", "Ny alderspensjon", "2009-06-05-32");
-        add(ListName.SENSITIVITY, "SAERLIGE_PERSONOPPLYSNINGER", "Særlige personopplysninger", "Særlige kategorier av personopplysninger");
-        add(ListName.SENSITIVITY, "PERSONOPPLYSNING", "Personopplysning", "Personopplysning");
+        add(ListName.SENSITIVITY, "SAERLIGE", "Særlige personopplysninger", "Særlige kategorier av personopplysninger");
+        add(ListName.SENSITIVITY, "POL", "Personopplysning", "Personopplysning");
         add(ListName.SUBJECT_CATEGORY, "BRUKER", "Bruker", "Bruker");
         add(ListName.SUBJECT_CATEGORY, "ANDRE", "Andre", "Bruker");
         add(ListName.SUBJECT_CATEGORY, "PARTNER", "Partner", "Bruker");

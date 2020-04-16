@@ -11,4 +11,6 @@ public interface GenericStorageRepository extends JpaRepository<GenericStorage, 
     Optional<GenericStorage> findByType(StorageType type);
 
     List<GenericStorage> findAllByType(StorageType type);
+
+    void deleteByType(StorageType type);
 }

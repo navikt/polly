@@ -154,7 +154,11 @@ public abstract class IntegrationTestBase {
     protected Policy createAndSavePolicy(String purpose, InformationType informationType) {
         Policy policy = createPolicy(purpose, "BRUKER", List.of(createLegalBasis()));
         policy.setInformationType(informationType);
-        createAndSaveProcess(purpose).addPolicy(policy);
+        return addPolicy(createAndSaveProcess(purpose), policy);
+    }
+
+    protected Policy addPolicy(Process process, Policy policy) {
+        process.addPolicy(policy);
         return policyRepository.save(policy);
     }
 
@@ -196,7 +200,15 @@ public abstract class IntegrationTestBase {
     }
 
     protected InformationType createAndSaveInformationType(UUID id, String name) {
-        InformationType informationType = createInformationType(id, name, "PERSONOPPLYSNINGER", "TPS", "PERSONALIA", "SKATT");
+        return createAndSaveInformationType(id, name, "POL");
+    }
+
+    protected InformationType createAndSaveInformationType(String name, String sensitivity) {
+        return createAndSaveInformationType(UUID.randomUUID(), name, sensitivity);
+    }
+
+    protected InformationType createAndSaveInformationType(UUID id, String name, String sensitivity) {
+        InformationType informationType = createInformationType(id, name, sensitivity, "TPS", "PERSONALIA", "SKATT");
         return informationTypeRepository.save(informationType);
     }
 
