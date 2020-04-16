@@ -257,7 +257,7 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
             options={[
               {label: intl.allProcesses, id: "ALL"},
               {label: intl.inProgressProcesses, id: "IN_PROGRESS"},
-              {label: intl.completedProcesses, id: "COMPLETED"},
+              {label: intl.showCompletedProcesses, id: "COMPLETED"},
             ]}
             value={status}
             filterOutSelected={false}

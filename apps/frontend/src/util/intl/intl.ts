@@ -255,6 +255,7 @@ export interface IStrings {
   all: string;
   allProcesses: string;
   completedProcesses: string;
+  showCompletedProcesses: string;
   inProgressProcesses: string;
   filter:string;
   startDate: string;

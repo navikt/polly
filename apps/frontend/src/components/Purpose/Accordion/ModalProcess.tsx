@@ -156,7 +156,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                           align={ALIGN.horizontal}
                           onChange={(e) => form.setFieldValue('status', (e.target as HTMLInputElement).value)}
                         >
-                          <Radio value={ProcessStatus.COMPLETED}>{intl.completed}</Radio>
+                          <Radio value={ProcessStatus.COMPLETED}>{intl.completedProcesses}</Radio>
                           <Radio value={ProcessStatus.IN_PROGRESS}>{intl.inProgress}</Radio>
                         </RadioGroup>
                       }

@@ -68,7 +68,7 @@ const ProcessData = (props: { process: Process }) => {
 
       <DataText label={intl.status}>
         <Block>
-          <span>{(process.status) === ProcessStatus.IN_PROGRESS ? intl.inProgress : intl.completed}</span>
+          <span>{(process.status) === ProcessStatus.IN_PROGRESS ? intl.inProgress : intl.completedProcesses}</span>
         </Block>
       </DataText>
 
