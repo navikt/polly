@@ -363,7 +363,7 @@ public class ProcessToDocx {
             var ret1 = text("Omfattes av virksomhetens bevarings- og kassasjonsplan: ", boolToText(retention.getRetentionPlan()));
             var ret3 = text("Begrunnelse: ", retention.getRetentionDescription());
 
-            boolean retentionDuration = retention.getRetentionMonths() != null;
+            boolean retentionDuration = retention.getRetentionMonths() != null && retention.getRetentionMonths() != 0;
             boolean years = retentionDuration && retention.getRetentionMonths() >= 12;
             boolean months = retentionDuration && retention.getRetentionMonths() % 12 != 0;
             var yearsText = years ? retention.getRetentionMonths() / 12 + " år " : null;
