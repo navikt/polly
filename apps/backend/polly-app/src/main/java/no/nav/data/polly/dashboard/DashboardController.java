@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.polly.alert.domain.AlertEventType;
 import no.nav.data.polly.alert.domain.AlertRepository;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.dashboard.dto.DashResponse;
@@ -22,6 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_ARTICLE_6;
+import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_ARTICLE_9;
+import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_LEGAL_BASIS;
 import static no.nav.data.polly.process.domain.ProcessCount.countToMap;
 
 @Slf4j
@@ -51,7 +53,7 @@ public class DashboardController {
         var depInProg = countToMap(processRepository.countDepartmentCodeStatus(ProcessStatus.IN_PROGRESS), department);
         var depLegalBasisAlerts = countToMap(
                 alertRepository.countDepartmentAlertEvents(
-                        List.of(AlertEventType.MISSING_LEGAL_BASIS, AlertEventType.MISSING_ARTICLE_6, AlertEventType.MISSING_ARTICLE_9)
+                        List.of(MISSING_LEGAL_BASIS.name(), MISSING_ARTICLE_6.name(), MISSING_ARTICLE_9.name())
                 ),
                 department);
 

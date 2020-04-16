@@ -28,13 +28,13 @@ public interface AlertRepository extends JpaRepository<GenericStorage, UUID> {
     @Query(value = "select data ->> 'department' as code, count(1) as count "
             + "from process "
             + "where process_id in ( "
-            + "    select (data ->> 'processId')::uuid "
+            + "    select cast(data ->> 'processId' as uuid) "
             + "    from generic_storage "
             + "    where type = 'ALERT_EVENT' "
             + "      and data ->> 'type' in (?1) "
             + ") "
-            + "group by data ->> 'department';", nativeQuery = true)
-    List<ProcessCount> countDepartmentAlertEvents(List<AlertEventType> types);
+            + "group by data ->> 'department'", nativeQuery = true)
+    List<ProcessCount> countDepartmentAlertEvents(List<String> types);
 
     // Deletes
     @Modifying
