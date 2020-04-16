@@ -1,11 +1,14 @@
 package no.nav.data.polly.alert.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import static no.nav.data.polly.alert.domain.AlertEventLevel.ERROR;
 import static no.nav.data.polly.alert.domain.AlertEventLevel.INFO;
 import static no.nav.data.polly.alert.domain.AlertEventLevel.WARNING;
 
+@Getter
+@AllArgsConstructor
 public enum AlertEventType {
 
     MISSING_ARTICLE_6(ERROR),
@@ -15,10 +18,6 @@ public enum AlertEventType {
 
     USES_ALL_INFO_TYPE(INFO);
 
-    @Getter
     private final AlertEventLevel level;
 
-    AlertEventType(AlertEventLevel level) {
-        this.level = level;
-    }
 }
