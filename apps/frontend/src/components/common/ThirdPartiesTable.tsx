@@ -27,7 +27,7 @@ const ThirdPartiesTable = ({informationTypes, sortName}: TableInformationTypes) 
       <Label2 {...labelBlockProps}>{intl.retrievedFromThirdParty}</Label2>
 
       <Table
-        emptyText={intl.disclosures}
+        emptyText={intl.retrievedFromThirdParty.toLowerCase()}
         headers={
           <>
             <HeadCell title={intl.name} column={'name'} tableState={[table, sortColumn]}/>
