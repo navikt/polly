@@ -31,6 +31,7 @@ import javax.validation.Valid;
 @Slf4j
 @RestController
 @CrossOrigin
+@Transactional
 @Api(value = "Data Catalog Process", description = "REST API for Process", tags = {"Process"})
 @RequestMapping("/process")
 public class ProcessWriteController {

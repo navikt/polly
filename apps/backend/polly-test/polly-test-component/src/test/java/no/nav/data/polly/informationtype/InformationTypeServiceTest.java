@@ -177,7 +177,7 @@ class InformationTypeServiceTest {
                 .name(name)
                 .term("term")
                 .description("Description")
-                .sensitivity("Personopplysning")
+                .sensitivity("pol")
                 .navMaster("TPS")
                 .categories(List.of("Personalia"))
                 .sources(List.of("Skatt"))
