@@ -228,7 +228,7 @@ export const no: IStrings = {
   status: "Status",
   processStatus: "Status på behandlingen",
   processStatusHelpText: "",
-  isProcessImplemented: "Er behandlingen implementert i NAV?",
+  isProcessImplemented: "Er behandlingen innført i NAV?",
   inProgress: "Under arbeid",
   completed: "Godkjent",
   inProduction: "I produksjon",
