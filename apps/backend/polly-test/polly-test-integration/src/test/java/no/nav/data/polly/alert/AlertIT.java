@@ -2,6 +2,7 @@ package no.nav.data.polly.alert;
 
 
 import no.nav.data.polly.IntegrationTestBase;
+import no.nav.data.polly.alert.domain.AlertEvent;
 import no.nav.data.polly.alert.domain.AlertEventType;
 import no.nav.data.polly.alert.domain.AlertRepository;
 import no.nav.data.polly.common.storage.domain.GenericStorageRepository;
@@ -91,12 +92,28 @@ public class AlertIT extends IntegrationTestBase {
             var events = alertRepository.findByProcessId(policy.getProcess().getId());
 
             assertThat(events).hasSize(1);
-            assertThat(events.get(0).toAlertEvent().getType()).isEqualTo(AlertEventType.MISSING_LEGAL_BASIS);
+            AlertEvent alertEvent = events.get(0).toAlertEvent();
+            assertThat(alertEvent.getProcessId()).isEqualTo(policy.getProcess().getId());
+            assertThat(alertEvent.getInformationTypeId()).isEqualTo(policy.getInformationTypeId());
+            assertThat(alertEvent.getType()).isEqualTo(AlertEventType.MISSING_LEGAL_BASIS);
+            assertThat(alertEvent.getLevel()).isEqualTo(alertEvent.getType().getLevel());
         }
 
         @Test
         void processAlertNoEvents() {
             var policy = createProcessWithOnePolicy();
+            alertService.calculateEventsForProcess(policy.getProcess().getId());
+            var events = alertRepository.findByProcessId(policy.getProcess().getId());
+            assertThat(events).hasSize(0);
+        }
+
+        @Test
+        void deleteOldAlerts() {
+            processAlertEvents();
+            var policy = policyRepository.findAll().get(0);
+            policy.getData().setLegalBases(List.of(createLegalBasis()));
+            policyRepository.save(policy);
+
             alertService.calculateEventsForProcess(policy.getProcess().getId());
             var events = alertRepository.findByProcessId(policy.getProcess().getId());
             assertThat(events).hasSize(0);
