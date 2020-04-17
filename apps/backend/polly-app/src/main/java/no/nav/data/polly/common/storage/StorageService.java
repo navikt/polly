@@ -1,11 +1,15 @@
 package no.nav.data.polly.common.storage;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import no.nav.data.polly.common.storage.domain.AppState;
 import no.nav.data.polly.common.storage.domain.GenericStorage;
 import no.nav.data.polly.common.storage.domain.GenericStorageData;
 import no.nav.data.polly.common.storage.domain.GenericStorageRepository;
 import no.nav.data.polly.common.storage.domain.StorageType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.function.Consumer;
 
 @Service
 public class StorageService {
@@ -34,5 +38,24 @@ public class StorageService {
 
     public GenericStorage save(GenericStorage storage) {
         return repository.save(storage);
+    }
+
+    @Transactional
+    public void usingAppState(Consumer<AppState> consumer) {
+        var appStateStorage = getSingletonAsStorage(AppState.class);
+        var appState = appStateStorage.getDataObject(AppState.class);
+        if (appState.isLock()) {
+            return;
+        }
+        appState.setLock(true);
+        save(appStateStorage, appState);
+        consumer.accept(appState);
+        appState.setLock(false);
+        save(appStateStorage, appState);
+    }
+
+    private void save(GenericStorage appStateStorage, AppState appState) {
+        appStateStorage.setDataObject(appState);
+        save(appStateStorage);
     }
 }

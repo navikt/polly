@@ -10,6 +10,7 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
@@ -37,6 +38,7 @@ public abstract class Auditable {
     @Column(name = "LAST_MODIFIED_BY")
     protected String lastModifiedBy;
 
+    @Version
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_DATE")
     protected LocalDateTime lastModifiedDate;
