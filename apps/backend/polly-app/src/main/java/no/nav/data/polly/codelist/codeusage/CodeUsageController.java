@@ -45,7 +45,6 @@ public class CodeUsageController {
 
         List<CodeUsageResponse> codeUsages = service.findCodeUsageOfList(ListName.valueOf(list));
         var response = new CodelistUsageResponse(ListName.valueOf(list), codeUsages);
-        log.info("Usage of listName {} : {}", list, response.toString());
         return ResponseEntity.ok(response);
     }
 
@@ -60,7 +59,6 @@ public class CodeUsageController {
         service.validateRequests(list, code);
 
         CodeUsageResponse codeUsage = service.findCodeUsage(ListName.valueOf(list), code);
-        log.info("The code {} in list {} is used in: {}", code, list, codeUsage);
         return ResponseEntity.ok(codeUsage);
     }
 
