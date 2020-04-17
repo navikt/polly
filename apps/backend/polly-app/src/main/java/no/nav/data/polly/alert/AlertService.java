@@ -198,4 +198,5 @@ public class AlertService {
         Pageable pageable = parameters.createSortedPageByFieldDescending(Fields.createdDate);
         return alertRepository.findAll(example, pageable).map(GenericStorage::toAlertEvent);
     }
+
 }

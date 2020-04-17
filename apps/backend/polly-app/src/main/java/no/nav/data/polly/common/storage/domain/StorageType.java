@@ -11,6 +11,7 @@ import java.util.Map;
 public enum StorageType {
 
     SETTINGS(Settings.class),
+    APP_STATE(AppState.class, false),
     ALERT_EVENT(AlertEvent.class, false);
 
     private static Map<Class<?>, StorageType> map = new HashMap<>();
