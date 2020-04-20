@@ -3,3 +3,4 @@ namespace: default
 team: teamdatajegerne
 ingresses:
   - https://polly.nais.preprod.local
+  - https://polly.dev-fss.nais.io
