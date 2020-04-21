@@ -11,6 +11,7 @@
         "@fortawesome/fontawesome-svg-core": "^1.2.27",
         "@fortawesome/free-solid-svg-icons": "^5.12.1",
         "@fortawesome/react-fontawesome": "^0.1.8",
+        "amplitude-js": "^6.0.1",
         "axios": "^0.19.2",
         "baseui": "^9.57.0",
         "flag-icon-css": "^3.4.6",
@@ -64,6 +65,7 @@
         ]
     },
     "devDependencies": {
+        "@types/amplitude-js": "^5.8.0",
         "@types/jest": "^24.9.1",
         "@types/lodash": "^4.14.144",
         "@types/node": "^12.12.26",

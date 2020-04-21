@@ -1,14 +1,15 @@
 import * as React from 'react'
-import {Block} from 'baseui/block'
-import {BrowserRouter as Router} from 'react-router-dom'
+import { Block } from 'baseui/block'
+import { BrowserRouter as Router } from 'react-router-dom'
 import Routes from './routes'
-import {theme} from './util/theme'
-import {useLang} from './util/intl/intl'
-import {Provider as StyletronProvider} from 'styletron-react'
-import {BaseProvider, styled} from 'baseui'
-import {Client as Styletron} from 'styletron-engine-atomic'
+import { theme } from './util'
+import { useLang } from './util/intl/intl'
+import { Provider as StyletronProvider } from 'styletron-react'
+import { BaseProvider, styled } from 'baseui'
+import { Client as Styletron } from 'styletron-engine-atomic'
 import SideBar from './components/SideBar'
 import Header from './components/Header'
+import { ampli } from './service/Amplitude'
 
 const engine = new Styletron()
 
@@ -26,6 +27,8 @@ const HeaderContent = styled('div', {
   width:'80%',
   marginBottom: '50px'
 })
+
+ampli.logEvent('visit_count_behandlingskatalog')
 
 const Main = props => {
   const { history } = props
