@@ -3,7 +3,7 @@ import { env } from '../util/env'
 
 const AmplitudeConfig = {
   apiEndpoint: env.amplitudeEndpoint,
-  saveEvents: true,
+  saveEvents: false,
   includeUtm: true,
   includeReferrer: true,
   trackingOptions: {
