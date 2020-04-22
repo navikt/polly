@@ -1,30 +1,28 @@
-import * as React from 'react';
-import { Select, TYPE, Value } from 'baseui/select';
+import * as React from 'react'
+import { Select, TYPE, Value } from 'baseui/select'
 import { Block, BlockProps } from 'baseui/block'
 import { Card } from 'baseui/card'
-import { StatefulInput } from 'baseui/input';
-import { Label2 } from 'baseui/typography';
-import { Button, KIND, SIZE as ButtonSize } from 'baseui/button';
-import { codelist, ListName } from "../../../service/Codelist";
-import { intl, theme } from "../../../util"
-import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from "formik"
-import { KIND as NKIND, Notification } from "baseui/notification"
-import { LegalBasisFormValues } from "../../../constants"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { DateModalFields } from "../DateModalFields"
-import { faExclamationCircle, faPen } from "@fortawesome/free-solid-svg-icons"
-import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip';
-import { legalBasisSchema } from "../../common/schema"
-import { LegalBasisView } from "../../common/LegalBasis"
-import { hasSpecifiedDate } from "../../common/Durations"
-import { customizeNationalLawPlaceholder } from "./PlaceholderCustomizer";
-import { paddingZero } from "../../common/Style"
+import { StatefulInput } from 'baseui/input'
+import { Label2 } from 'baseui/typography'
+import { Button, KIND, SIZE as ButtonSize } from 'baseui/button'
+import { codelist, ListName } from '../../../service/Codelist'
+import { intl, theme } from '../../../util'
+import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from 'formik'
+import { KIND as NKIND, Notification } from 'baseui/notification'
+import { LegalBasisFormValues } from '../../../constants'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faExclamationCircle, faPen } from '@fortawesome/free-solid-svg-icons'
+import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
+import { legalBasisSchema } from '../../common/schema'
+import { LegalBasisView } from '../../common/LegalBasis'
+import { customizeNationalLawPlaceholder } from './PlaceholderCustomizer'
+import { paddingZero } from '../../common/Style'
 
 const rowBlockProps: BlockProps = {
   display: 'flex',
   marginTop: '1rem',
   width: '100%'
-};
+}
 
 const Error = (props: { fieldName: string }) => (
   <ErrorMessage name={props.fieldName}>
@@ -34,14 +32,14 @@ const Error = (props: { fieldName: string }) => (
       </Block>
     )}
   </ErrorMessage>
-);
+)
 
 const TooltipContent = () => (
   <Block>
     <p>{intl.legalBasisInfo}</p>
     <p>{intl.legalbasisGDPRArt9Info}</p>
   </Block>
-);
+)
 
 const renderCardHeader = (text: string) => {
   return (
@@ -52,12 +50,12 @@ const renderCardHeader = (text: string) => {
       >
         <Block display="flex">
           <Label2>{text}</Label2>
-          <FontAwesomeIcon style={{marginLeft: ".25rem"}} icon={faExclamationCircle} color={theme.colors.primary300} size="sm"/>
+          <FontAwesomeIcon style={{marginLeft: '.25rem'}} icon={faExclamationCircle} color={theme.colors.primary300} size="sm"/>
         </Block>
       </StatefulTooltip>
     </Block>
   )
-};
+}
 
 interface CardLegalBasisProps {
   initValue: LegalBasisFormValues;
@@ -69,18 +67,16 @@ interface CardLegalBasisProps {
 const CardLegalBasis = ({submit, hideCard, initValue, titleSubmitButton}: CardLegalBasisProps) => {
   const [gdpr, setGdpr] = React.useState<Value>(
     initValue.gdpr ? codelist.getParsedOptions(ListName.GDPR_ARTICLE).filter(value => value.id === initValue.gdpr) : []
-  );
+  )
   const [nationalLaw, setNationalLaw] = React.useState<Value>(
     initValue.nationalLaw ? codelist.getParsedOptions(ListName.NATIONAL_LAW).filter(value => value.id === initValue.nationalLaw) : []
-  );
+  )
   // Must be complete to achieve touched on submit
   const initialValues: LegalBasisFormValues = {
     gdpr: initValue.gdpr,
     nationalLaw: initValue.nationalLaw,
     description: initValue.description,
-    start: initValue.start,
-    end: initValue.end
-  };
+  }
 
   return (
     <Formik
@@ -100,7 +96,7 @@ const CardLegalBasis = ({submit, hideCard, initValue, titleSubmitButton}: CardLe
                          maxDropdownHeight="300px"
                          type={TYPE.search}
                          onChange={({value}) => {
-                           setGdpr(value);
+                           setGdpr(value)
                            form.setFieldValue('gdpr', value.length > 0 ? value[0].id : undefined)
                          }}
                          value={gdpr}
@@ -120,7 +116,7 @@ const CardLegalBasis = ({submit, hideCard, initValue, titleSubmitButton}: CardLe
                          maxDropdownHeight="300px"
                          type={TYPE.search}
                          onChange={({value}) => {
-                           setNationalLaw(value);
+                           setNationalLaw(value)
                            form.setFieldValue('nationalLaw', value.length > 0 ? value[0].id : undefined)
                          }}
                          value={nationalLaw}
@@ -145,8 +141,6 @@ const CardLegalBasis = ({submit, hideCard, initValue, titleSubmitButton}: CardLe
             </Block>
             <Error fieldName="description"/>
 
-            <DateModalFields rowBlockProps={rowBlockProps} showDates={hasSpecifiedDate(initialValues)}/>
-
             <Block {...rowBlockProps} justifyContent="flex-end">
               <Button type='button' kind={KIND.minimal} size={ButtonSize.compact} onClick={() => hideCard()}>
                 {intl.abort}
@@ -166,6 +160,6 @@ const CardLegalBasis = ({submit, hideCard, initValue, titleSubmitButton}: CardLe
         )
       }}/>
   )
-};
+}
 
 export default CardLegalBasis

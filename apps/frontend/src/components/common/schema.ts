@@ -18,8 +18,8 @@ import {
   ProcessStatus,
   Retention
 } from '../../constants'
-import {intl} from '../../util'
-import {Code, codelist, ListName} from '../../service/Codelist'
+import { intl } from '../../util'
+import { Code, codelist, ListName } from '../../service/Codelist'
 
 const DATE_REGEX = /\d{4}-\d{2}-\d{2}/
 const max = 150
@@ -137,9 +137,7 @@ export const legalBasisSchema = () => yup.object<LegalBasisFormValues>({
     is: (gdprCode) => codelist.requiresDescription(gdprCode),
     then: yup.string().required(intl.requiredDescription),
     otherwise: yup.string()
-  }),
-  start: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
-  end: yup.string().matches(DATE_REGEX, {message: intl.dateFormat})
+  })
 })
 
 export const codeListSchema = () => yup.object<Code>({

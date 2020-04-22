@@ -1,6 +1,6 @@
-import {Code, codelist, ListName} from "./service/Codelist";
-import {ColumnCompares} from "./util/hooks";
-import {intl} from "./util";
+import { Code, codelist, ListName } from "./service/Codelist";
+import { ColumnCompares } from "./util/hooks";
+import { intl } from "./util";
 
 export interface InformationtypeFormValues {
   id?: string;
@@ -87,8 +87,6 @@ export interface LegalBasisFormValues {
   gdpr?: string;
   nationalLaw?: string;
   description?: string;
-  end?: string;
-  start?: string;
 }
 
 export interface Term {
@@ -97,7 +95,7 @@ export interface Term {
   description: string;
 }
 
-export interface LegalBasis extends IDurationed {
+export interface LegalBasis  {
   description: string;
   gdpr: Code;
   nationalLaw?: Code;

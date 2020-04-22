@@ -57,8 +57,6 @@ export const convertLegalBasesToFormValues = (legalBases?: LegalBasis[]) => (leg
   gdpr: legalBasis.gdpr && legalBasis.gdpr.code,
   nationalLaw: (legalBasis.nationalLaw && legalBasis.nationalLaw.code) || undefined,
   description: legalBasis.description || undefined,
-  start: legalBasis.start || undefined,
-  end: legalBasis.end || undefined
 }))
 
 export const convertPolicyToFormValues = (policy: Policy): PolicyFormValues => ({
