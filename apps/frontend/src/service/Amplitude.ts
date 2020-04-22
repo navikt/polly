@@ -14,4 +14,5 @@ const AmplitudeConfig = {
 
 export const instance = amplitude.getInstance()
 instance.init(env.amplitudeApiKey!, undefined, AmplitudeConfig)
+instance.setUserId(null)
 export const ampli = instance
