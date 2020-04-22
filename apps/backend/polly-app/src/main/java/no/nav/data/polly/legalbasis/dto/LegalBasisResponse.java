@@ -6,25 +6,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
-import no.nav.data.polly.common.utils.DateUtil;
-
-import java.time.LocalDate;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"gdpr", "nationalLaw", "description", "start", "end", "active"})
+@JsonPropertyOrder({"gdpr", "nationalLaw", "description"})
 public class LegalBasisResponse {
 
     private CodelistResponse gdpr;
     private CodelistResponse nationalLaw;
     private String description;
-    private LocalDate start;
-    private LocalDate end;
-
-    public boolean isActive() {
-        return DateUtil.isNow(start, end);
-    }
 
 }

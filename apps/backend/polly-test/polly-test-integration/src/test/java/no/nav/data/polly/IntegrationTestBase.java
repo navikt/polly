@@ -285,14 +285,11 @@ public abstract class IntegrationTestBase {
     }
 
     protected LegalBasisRequest createLegalBasisRequest() {
-        return LegalBasisRequest.builder().gdpr("ART61A").nationalLaw("FTRL").description("§ 2-1")
-                .start(LocalDate.now().toString())
-                .end(LocalDate.now().toString())
-                .build();
+        return LegalBasisRequest.builder().gdpr("ART61A").nationalLaw("FTRL").description("§ 2-1")                .build();
     }
 
     protected LegalBasis createLegalBasis(String gdpr, String nationalLaw, String description) {
-        return LegalBasis.builder().gdpr(gdpr).nationalLaw(nationalLaw).description(description).activeToday().build();
+        return LegalBasis.builder().gdpr(gdpr).nationalLaw(nationalLaw).description(description).build();
     }
 
     protected LegalBasis createLegalBasis() {

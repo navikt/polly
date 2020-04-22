@@ -234,8 +234,7 @@ public class ProcessToDocx {
                     ", ",
                     shortName(ListName.NATIONAL_LAW, lb.getNationalLaw()),
                     " ",
-                    lb.getDescription(),
-                    periodText(lb.toPeriod())
+                    lb.getDescription()
             );
         }
 
