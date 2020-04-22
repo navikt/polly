@@ -1,8 +1,8 @@
-import LocalizedStrings, {GlobalStrings, LocalizedStringsMethods} from "react-localization";
+import LocalizedStrings, { GlobalStrings, LocalizedStringsMethods } from "react-localization";
 import * as React from "react";
-import {useEffect} from "react";
-import {useForceUpdate} from "../hooks";
-import {en, no, ta} from "./lang";
+import { useEffect } from "react";
+import { useForceUpdate } from "../hooks";
+import { en, no, ta } from "./lang";
 import * as moment from "moment";
 import "moment/locale/nb";
 import "moment/locale/ta";
@@ -161,6 +161,7 @@ export interface IStrings {
   notAllowedMessage: string;
   confirmDeleteHeader: string;
   confirmDeletePolicyText: string;
+  deleteProcessText: string;
   confirmDeleteProcessText: string;
   confirmDeleteDocumentText: string;
   cannotDeleteProcess: string;

@@ -1,22 +1,22 @@
 import * as React from 'react'
-import {useEffect} from 'react'
-import {Accordion, Panel} from 'baseui/accordion'
-import {generatePath, RouteComponentProps, withRouter} from 'react-router'
-import {KIND, SIZE as ButtonSize} from 'baseui/button'
-import {StyledSpinnerNext} from 'baseui/spinner'
-import {Block} from 'baseui/block'
-import {Label2, Paragraph2} from 'baseui/typography'
-import {intl, theme, useAwait} from '../../../util'
-import {user} from '../../../service/User'
-import {Plus} from 'baseui/icon'
-import {AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose} from '../../../constants'
+import { useEffect } from 'react'
+import { Accordion, Panel } from 'baseui/accordion'
+import { generatePath, RouteComponentProps, withRouter } from 'react-router'
+import { KIND, SIZE as ButtonSize } from 'baseui/button'
+import { StyledSpinnerNext } from 'baseui/spinner'
+import { Block } from 'baseui/block'
+import { Label2, Paragraph2 } from 'baseui/typography'
+import { intl, theme, useAwait } from '../../../util'
+import { user } from '../../../service/User'
+import { Plus } from 'baseui/icon'
+import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose } from '../../../constants'
 import ModalProcess from './ModalProcess'
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy'
-import {convertProcessToFormValues} from '../../../api'
-import {PathParams} from '../../../pages/PurposePage'
-import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal'
-import {AddDocumentModal} from './AddDocumentModal'
+import { convertProcessToFormValues } from '../../../api'
+import { PathParams } from '../../../pages/PurposePage'
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
+import { AddDocumentModal } from './AddDocumentModal'
 import Button from '../../common/Button'
 import moment from 'moment'
 import AccordionTitle from './AccordionTitle'
@@ -249,6 +249,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
         >
           <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
           <ModalBody>
+            <Paragraph2>{intl.deleteProcessText}</Paragraph2>
             {!currentProcess?.policies.length && <Paragraph2>{intl.confirmDeleteProcessText} {currentProcess.name}</Paragraph2>}
             {!!currentProcess?.policies.length &&
             <Paragraph2>{intl.formatString(intl.cannotDeleteProcess, currentProcess?.name, '' + currentProcess?.policies.length)}</Paragraph2>}
