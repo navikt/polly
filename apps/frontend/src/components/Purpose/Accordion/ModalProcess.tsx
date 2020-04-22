@@ -1,23 +1,23 @@
 import * as React from 'react'
-import {KeyboardEvent} from 'react'
-import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal'
-import {Field, FieldArray, FieldProps, Form, Formik, FormikProps,} from 'formik'
-import {Block, BlockProps} from 'baseui/block'
-import {Button, KIND, SIZE as ButtonSize} from 'baseui/button'
-import {Plus} from 'baseui/icon'
-import {Error, ModalLabel} from '../../common/ModalSchema'
-import {LegalBasisFormValues, ProcessFormValues, ProcessStatus} from '../../../constants'
+import { KeyboardEvent } from 'react'
+import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
+import { Field, FieldArray, FieldProps, Form, Formik, FormikProps, } from 'formik'
+import { Block, BlockProps } from 'baseui/block'
+import { Button, KIND, SIZE as ButtonSize } from 'baseui/button'
+import { Plus } from 'baseui/icon'
+import { Error, ModalLabel } from '../../common/ModalSchema'
+import { LegalBasisFormValues, ProcessFormValues, ProcessStatus } from '../../../constants'
 import CardLegalBasis from './CardLegalBasis'
-import {codelist, ListName} from '../../../service/Codelist'
-import {intl, theme} from '../../../util'
-import {ListLegalBases} from '../../common/LegalBasis'
-import {processSchema} from '../../common/schema'
-import {Accordion, Panel} from 'baseui/accordion'
-import {Label1} from 'baseui/typography'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faChevronDown, faChevronRight} from '@fortawesome/free-solid-svg-icons'
+import { codelist, ListName } from '../../../service/Codelist'
+import { intl, theme } from '../../../util'
+import { ListLegalBases } from '../../common/LegalBasis'
+import { processSchema } from '../../common/schema'
+import { Accordion, Panel } from 'baseui/accordion'
+import { Label1 } from 'baseui/typography'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import CustomizedModalBlock from '../../common/CustomizedModalBlock'
-import {DateFieldsProcessModal} from "../DateFieldsProcessModal"
+import { DateFieldsProcessModal } from "../DateFieldsProcessModal"
 import FieldName from "../common/FieldName";
 import FieldPurpose from "../common/FieldPurpose";
 import FieldDescription from "../common/FieldDescription";
@@ -28,7 +28,7 @@ import FieldProduct from "../common/FieldProduct";
 import BoolField from "../common/BoolField";
 import FieldDataProcessorAgreements from "../common/FieldDataProcessorAgreements";
 import RetentionItems from "../common/RetentionItems";
-import {ALIGN, Radio, RadioGroup} from "baseui/radio";
+import { ALIGN, Radio, RadioGroup } from "baseui/radio";
 import DpiaItems from "../common/DpiaItems";
 import FieldRiskOwner from "../common/FieldRiskOwner";
 
@@ -146,25 +146,6 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                 <Error fieldName='description'/>
 
                 <CustomizedModalBlock>
-                  <ModalLabel label={intl.processStatus} tooltip={intl.processStatusHelpText}/>
-                  <Block {...rowBlockProps}>
-                    <Field
-                      name='status'
-                      render={({form}: FieldProps<ProcessFormValues>) =>
-                        <RadioGroup
-                          value={formikBag.values.status}
-                          align={ALIGN.horizontal}
-                          onChange={(e) => form.setFieldValue('status', (e.target as HTMLInputElement).value)}
-                        >
-                          <Radio value={ProcessStatus.COMPLETED}>{intl.completedProcesses}</Radio>
-                          <Radio value={ProcessStatus.IN_PROGRESS}>{intl.inProgress}</Radio>
-                        </RadioGroup>
-                      }
-                    />
-                  </Block>
-                </CustomizedModalBlock>
-
-                <CustomizedModalBlock>
                   <ModalLabel label={intl.isProcessImplemented}/>
                   <Block>
                     <BoolField value={formikBag.values.dpia?.processImplemented} fieldName='dpia.processImplemented' omitUndefined/>
@@ -190,6 +171,25 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                   <ModalLabel label={intl.usesAllInformationTypes} tooltip={intl.usesAllInformationTypesHelpText}/>
                   <Block>
                     <BoolField value={formikBag.values.usesAllInformationTypes} fieldName='usesAllInformationTypes' omitUndefined firstButtonLabel={`(${intl.exceptionalUsage})`}/>
+                  </Block>
+                </CustomizedModalBlock>
+
+                <CustomizedModalBlock>
+                  <ModalLabel label={intl.processStatus} tooltip={intl.processStatusHelpText}/>
+                  <Block {...rowBlockProps}>
+                    <Field
+                      name='status'
+                      render={({form}: FieldProps<ProcessFormValues>) =>
+                        <RadioGroup
+                          value={formikBag.values.status}
+                          align={ALIGN.horizontal}
+                          onChange={(e) => form.setFieldValue('status', (e.target as HTMLInputElement).value)}
+                        >
+                          <Radio value={ProcessStatus.COMPLETED}>{intl.completedProcesses}</Radio>
+                          <Radio value={ProcessStatus.IN_PROGRESS}>{intl.inProgress}</Radio>
+                        </RadioGroup>
+                      }
+                    />
                   </Block>
                 </CustomizedModalBlock>
 

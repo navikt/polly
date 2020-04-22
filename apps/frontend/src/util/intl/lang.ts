@@ -1,4 +1,4 @@
-import {IStrings} from "./intl";
+import { IStrings } from "./intl";
 
 export const no: IStrings = {
   informationType: "Opplysningstype",
@@ -227,7 +227,7 @@ export const no: IStrings = {
   slack: "Slack kanal",
   add: "Legg til",
   status: "Status",
-  processStatus: "Status på behandlingen",
+  processStatus: "Status på utfylling",
   processStatusHelpText: "",
   isProcessImplemented: "Er behandlingen innført i NAV?",
   inProgress: "Under arbeid",
@@ -476,7 +476,7 @@ export const en: IStrings = {
   informationtypesUsedInDocument: "Information types used in document",
   editDocument: "Edit document",
   status: "Status",
-  processStatus: "Process status:",
+  processStatus: "Process documentation status",
   processStatusHelpText: "",
   isProcessImplemented: "Is process implemented in NAV?",
   inProduction: "In production",
