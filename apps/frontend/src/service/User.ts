@@ -2,6 +2,7 @@ import { AxiosResponse } from "axios";
 import { UserInfo } from "../constants"
 import { intl } from "../util"
 import { getUserInfo } from "../api"
+import { ampli } from './Amplitude'
 
 export enum Group {
   POLLY_READ = "POLLY_READ",
@@ -31,6 +32,7 @@ class UserService {
   handleGetResponse = (response: AxiosResponse<UserInfo>) => {
     if (typeof response.data === "object" && response.data !== null) {
       this.userInfo = response.data
+      ampli.setUserId(this.userInfo.ident || null)
     } else {
       this.error = response.data
     }
