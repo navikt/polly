@@ -1,18 +1,18 @@
-import {Dpia, Process, ProcessStatus} from '../../../constants'
+import { Dpia, Process, ProcessStatus } from '../../../constants'
 import * as React from 'react'
-import {useEffect} from 'react'
-import {getResourceById} from '../../../api'
-import {codelist, ListName} from '../../../service/Codelist'
+import { useEffect } from 'react'
+import { getResourceById } from '../../../api'
+import { codelist, ListName } from '../../../service/Codelist'
 import _includes from 'lodash/includes'
-import {Block} from 'baseui/block'
+import { Block } from 'baseui/block'
 import DataText from '../common/DataText'
-import {intl} from '../../../util'
-import {LegalBasisView} from '../../common/LegalBasis'
-import {ActiveIndicator} from '../../common/Durations'
-import {DotTags} from '../../common/DotTag'
-import {TeamPopover} from '../../common/Team'
-import {boolToText} from '../../common/Radio'
-import {RetentionView} from '../Retention'
+import { intl } from '../../../util'
+import { LegalBasisView } from '../../common/LegalBasis'
+import { ActiveIndicator } from '../../common/Durations'
+import { DotTags } from '../../common/DotTag'
+import { TeamPopover } from '../../common/Team'
+import { boolToText } from '../../common/Radio'
+import { RetentionView } from '../Retention'
 
 const showDpiaRequiredField = (dpia?: Dpia) => {
   if (dpia?.needForDpia === true) {
@@ -111,9 +111,7 @@ const ProcessData = (props: { process: Process }) => {
         <DotTags items={process.products.map(product => codelist.getShortname(ListName.SYSTEM, product.code))}/>
       </DataText>
 
-      {process.usesAllInformationTypes &&
-      <DataText label={intl.usesAllInformationTypes} text={intl.usesAllInformationTypesHelpText}/>
-      }
+      <DataText label={intl.usesAllInformationTypes} text={boolToText(process.usesAllInformationTypes)}/>
 
       <DataText label={intl.automation}>
         <Block>
