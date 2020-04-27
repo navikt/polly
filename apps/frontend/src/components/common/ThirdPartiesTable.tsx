@@ -1,11 +1,11 @@
 import * as React from 'react'
-import {intl} from '../../util'
-import {InformationType, informationTypeSort} from '../../constants'
-import {useTable} from '../../util/hooks'
-import {Cell, HeadCell, Row, Table} from './Table'
+import { intl } from '../../util'
+import { InformationType, informationTypeSort } from '../../constants'
+import { useTable } from '../../util/hooks'
+import { Cell, HeadCell, Row, Table } from './Table'
 import RouteLink from "./RouteLink";
-import {Label2} from "baseui/typography";
-import {BlockProps} from "baseui/block";
+import { Label2 } from "baseui/typography";
+import { BlockProps } from "baseui/block";
 
 type TableInformationTypes = {
   informationTypes: Array<InformationType>;
@@ -41,7 +41,7 @@ const ThirdPartiesTable = ({informationTypes, sortName}: TableInformationTypes) 
               {<RouteLink href={`/informationtype/${row.id}`}>{row.name}</RouteLink>}
             </Cell>
             <Cell>
-              {row.navMaster.shortName}
+              {row.navMaster?.shortName}
             </Cell>
           </Row>
         ))}
