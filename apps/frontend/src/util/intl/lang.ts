@@ -302,7 +302,7 @@ export const no: IStrings = {
   systemHelpText: "IT-systemene som brukes i denne behandlingen. Eksempel: Pesys, Bidrag, Modia.",
   usesAllInformationTypesHelpText:
     "Brukes for å angi at denne behandlingen bruker alle opplysningstyper. Brukes derfor kun unntaksvis for noen spesielle behandlinger som f.eks. logginnsyn, innsyn etter personopplysningsloven, behandlinger knyttet til personvernombudet eller Sikkerhetsseksjonens virksomhet.",
-  processAutomationHelpText: "Brukes det databehandler for å utføre behandlingen/behandle personopplysninger.",
+  processAutomationHelpText: "Treffes det et vedtak eller en avgjørelse som er basert på helautomatisert behandling av personopplysninger? Altså avgjørelser uten menneskelig innvirkning.",
   profilingHelpText: "Behandles personopplysninger automatisk for å kunne analysere eller forutsi noe om preferanser, evner eller behov til en enkeltperson.",
   dataProcessorHelpText:
     "Oppgi om det brukes en databehandler for å behandle personopplysninger. En databehandler er en ekstern virksomhet som behandler personopplysninger på våre vegne.",
@@ -614,7 +614,7 @@ export const en: IStrings = {
   systemHelpText: "The IT systems supporting this process. ",
   usesAllInformationTypesHelpText:
     "Used to indicate that this process uses all information type. Therefore, it is only used exceptionally for some special processes such as. access to Personal Data Act.",
-  processAutomationHelpText: "Are any data processors involved in processing of personal data in this process.",
+  processAutomationHelpText: "Is a decision made based on fully automated processing of personal data? Thus, decisions without human intervention.",
   profilingHelpText: "Is personal information automatically processed to analyze or predict something about an individual's preferences, abilities or needs?",
   dataProcessorHelpText: "Specify whether a data processor is used to process personal data. A data processor is an external entity that processes personal data on our behalf.",
   dataProcessorAgreementHelpText: "Provide reference (i.e. case number) to the contract's storage location.",
