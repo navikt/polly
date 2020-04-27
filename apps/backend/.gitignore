@@ -79,3 +79,5 @@ buildNumber.properties
 
 /travis/datajegerne-private-key.pk8
 /.circleci/datajegerne-private-key.pem
+
+.DS_Store
