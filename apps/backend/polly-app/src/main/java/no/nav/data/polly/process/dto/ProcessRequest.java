@@ -99,6 +99,7 @@ public class ProcessRequest implements RequestElement {
         private String grounds;
         private boolean processImplemented;
         private String riskOwner;
+        private String riskOwnerFunction;
     }
 
     private boolean update;

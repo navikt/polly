@@ -25,6 +25,7 @@ import no.nav.data.polly.teams.TeamService;
 import no.nav.data.polly.teams.domain.Team;
 import no.nav.data.polly.teams.dto.Resource;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.docx4j.jaxb.Context;
 import org.docx4j.model.properties.table.tr.TrCantSplit;
 import org.docx4j.model.table.TblFactory;
@@ -73,9 +74,9 @@ import static no.nav.data.polly.common.utils.StreamUtils.filter;
 @Service
 public class ProcessToDocx {
 
-    private static ObjectFactory fac = Context.getWmlObjectFactory();
-    private static DateTimeFormatter dtf = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL, FormatStyle.MEDIUM).localizedBy(Locale.forLanguageTag("nb"));
-    private static DateTimeFormatter df = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).localizedBy(Locale.forLanguageTag("nb"));
+    private static final ObjectFactory fac = Context.getWmlObjectFactory();
+    private static final DateTimeFormatter dtf = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL, FormatStyle.MEDIUM).localizedBy(Locale.forLanguageTag("nb"));
+    private static final DateTimeFormatter df = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).localizedBy(Locale.forLanguageTag("nb"));
 
     private final AlertService alertService;
     private final ResourceService resourceService;
@@ -337,7 +338,8 @@ public class ProcessToDocx {
             addTexts(
                     text(boolToText(data.getNeedForDpia())),
                     text("Begrunnelse: ", data.getGrounds()),
-                    text("Risiko eier: ", riskOwner),
+                    text("Risiko eier: ", riskOwner,
+                            StringUtils.isNotBlank(data.getRiskOwnerFunction()) ? " i funksjon " + data.getRiskOwnerFunction() : ""),
                     text("PVK referanse: ", data.getRefToDpia())
             );
         }

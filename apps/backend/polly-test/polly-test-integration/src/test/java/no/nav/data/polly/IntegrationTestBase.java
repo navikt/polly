@@ -251,7 +251,7 @@ public abstract class IntegrationTestBase {
                                         .profiling(true)
                                         .dataProcessing(DataProcessing.builder().dataProcessor(true).dataProcessorAgreements(List.of("X")).dataProcessorOutsideEU(false).build())
                                         .retention(Retention.builder().retentionPlan(true).retentionMonths(24).retentionStart("Birth").retentionDescription("ret desc").build())
-                                        .dpia(Dpia.builder().needForDpia(true).refToDpia("ref123").grounds("default").processImplemented(true).riskOwner("A123457").build())
+                                        .dpia(Dpia.builder().needForDpia(true).refToDpia("ref123").grounds("default").processImplemented(true).riskOwner("A123457").riskOwnerFunction("teamlead").build())
                                         .status(ProcessStatus.IN_PROGRESS)
                                         .build())
                                 .build()));
@@ -334,6 +334,7 @@ public abstract class IntegrationTestBase {
                         .grounds("default")
                         .processImplemented(true)
                         .riskOwner("A123457")
+                        .riskOwnerFunction("teamlead")
                         .build())
                 .status(ProcessStatus.IN_PROGRESS)
                 ;

@@ -90,7 +90,7 @@ public class ProcessResponse {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @JsonPropertyOrder({"needForDpia", "refToDpia", "grounds", "processImplemented", "riskOwner"})
+    @JsonPropertyOrder({"needForDpia", "refToDpia", "grounds", "processImplemented", "riskOwner", "riskOwnerFunction"})
     public static class DpiaResponse {
 
         private Boolean needForDpia;
@@ -98,6 +98,7 @@ public class ProcessResponse {
         private String grounds;
         private boolean processImplemented;
         private String riskOwner;
+        private String riskOwnerFunction;
     }
 
 }

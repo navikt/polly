@@ -126,6 +126,7 @@ public class Process extends Auditable {
                         .grounds(data.getDpia().getGrounds())
                         .processImplemented(data.getDpia().isProcessImplemented())
                         .riskOwner(data.getDpia().getRiskOwner())
+                        .riskOwnerFunction(data.getDpia().getRiskOwnerFunction())
                         .build())
                 // If we dont include policies avoid loading them all from DB
                 .changeStamp(super.convertChangeStampResponse())
@@ -202,6 +203,7 @@ public class Process extends Auditable {
                 .grounds(dpia.getGrounds())
                 .processImplemented(dpia.isProcessImplemented())
                 .riskOwner(dpia.getRiskOwner())
+                .riskOwnerFunction(dpia.getRiskOwnerFunction())
                 .build();
     }
 

@@ -138,6 +138,7 @@ public class DocxTest {
                         .status(ProcessStatus.COMPLETED)
                         .dpia(Dpia.builder()
                                 .riskOwner("S145231")
+                                .riskOwnerFunction("teamleder")
                                 .grounds("Standard grunnlag")
                                 .refToDpia("A-2019-04-23")
                                 .needForDpia(true)
