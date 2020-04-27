@@ -116,7 +116,7 @@ public class FieldValidator {
     }
 
     public void checkCodelist(String fieldName, String fieldValue, ListName listName) {
-        if (StringUtils.isBlank(fieldValue)) {
+        if (fieldValue == null) {
             return;
         }
         checkCode(fieldName, fieldValue, listName);

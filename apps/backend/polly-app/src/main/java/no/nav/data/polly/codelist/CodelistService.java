@@ -34,8 +34,8 @@ public class CodelistService extends RequestValidator<CodelistRequest> {
     private static final String FIELD_NAME_LIST = "list";
     private static final String FIELD_NAME_CODE = "code";
     private static final String REFERENCE = "Validate Codelist";
-    private CodelistRepository codelistRepository;
-    private CodeUsageService codeUsageService;
+    private final CodelistRepository codelistRepository;
+    private final CodeUsageService codeUsageService;
 
     // @Lazy to avoid circular dependancy
     public CodelistService(CodelistRepository codelistRepository, @Lazy CodeUsageService codeUsageService) {

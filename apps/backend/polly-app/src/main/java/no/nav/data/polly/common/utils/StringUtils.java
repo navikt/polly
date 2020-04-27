@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.trimToNull;
 
 public final class StringUtils {
 
@@ -18,7 +19,7 @@ public final class StringUtils {
     }
 
     public static String toUpperCaseAndTrim(String field) {
-        return field == null ? null : field.toUpperCase().trim();
+        return field == null ? null : trimToNull(field.toUpperCase());
     }
 
     public static List<String> formatList(List<String> strings) {
