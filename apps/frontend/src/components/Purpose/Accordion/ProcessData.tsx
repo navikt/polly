@@ -81,6 +81,7 @@ const ProcessData = (props: { process: Process }) => {
       <DataText label={intl.riskOwner}>
         <Block>
           <span>{(process.dpia?.riskOwner) ? riskOwnerFullName : intl.notFilled}</span>
+          {!!process.dpia?.riskOwnerFunction && <span> {intl.riskOwnerFunctionBinder} {process.dpia.riskOwnerFunction}</span>}
         </Block>
       </DataText>
 

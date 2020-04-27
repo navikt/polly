@@ -68,6 +68,7 @@ export interface Dpia {
   processImplemented: boolean;
   refToDpia: string;
   riskOwner?: string;
+  riskOwnerFunction?: string;
 }
 
 export interface DataProcessing {

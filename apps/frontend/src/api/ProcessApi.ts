@@ -1,7 +1,7 @@
 import axios from "axios"
-import {PageResponse, Process, ProcessCount, ProcessFormValues, ProcessStatus} from "../constants"
-import {env} from "../util/env"
-import {convertLegalBasesToFormValues} from "./PolicyApi"
+import { PageResponse, Process, ProcessCount, ProcessFormValues, ProcessStatus } from "../constants"
+import { env } from "../util/env"
+import { convertLegalBasesToFormValues } from "./PolicyApi"
 
 export const getProcess = async (processId: string) => {
   const data = (await axios.get<Process>(`${env.pollyBaseUrl}/process/${processId}`)).data
@@ -102,7 +102,8 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
       needForDpia: mapBool(dpia?.needForDpia),
       processImplemented: dpia?.processImplemented || false,
       refToDpia: dpia?.refToDpia || '',
-      riskOwner: dpia?.riskOwner || ''
+      riskOwner: dpia?.riskOwner || '',
+      riskOwnerFunction: dpia?.riskOwnerFunction || ''
     }
   }
 }
@@ -131,7 +132,8 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
       needForDpia: values.dpia.needForDpia,
       refToDpia: values.dpia?.needForDpia ? values.dpia.refToDpia : "",
       processImplemented: values.dpia?.processImplemented,
-      riskOwner: values.dpia?.riskOwner
+      riskOwner: values.dpia?.riskOwner,
+      riskOwnerFunction: values.dpia?.riskOwnerFunction
     }
   }
 }

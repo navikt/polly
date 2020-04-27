@@ -33,6 +33,8 @@ export interface IStrings {
   products: string;
   team: string;
   riskOwner: string;
+  riskOwnerFunctionBinder: string;
+  riskOwnerFunction: string;
   system: string;
   disclosure: string;
   disclosures: string;

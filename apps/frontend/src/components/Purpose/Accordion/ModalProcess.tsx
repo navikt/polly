@@ -31,6 +31,7 @@ import RetentionItems from "../common/RetentionItems";
 import { ALIGN, Radio, RadioGroup } from "baseui/radio";
 import DpiaItems from "../common/DpiaItems";
 import FieldRiskOwner from "../common/FieldRiskOwner";
+import FieldInput from '../common/FieldInput'
 
 const modalHeaderProps: BlockProps = {
   display: 'flex',
@@ -155,6 +156,11 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                 <CustomizedModalBlock>
                   <ModalLabel label={intl.riskOwner}/>
                   <FieldRiskOwner riskOwner={formikBag.values.dpia?.riskOwner}/>
+                </CustomizedModalBlock>
+
+                <CustomizedModalBlock>
+                  <ModalLabel label={intl.riskOwnerFunction}/>
+                  <FieldInput fieldName='dpia.riskOwnerFunction' fieldValue={formikBag.values.dpia?.riskOwnerFunction}/>
                 </CustomizedModalBlock>
 
                 <CustomizedModalBlock>

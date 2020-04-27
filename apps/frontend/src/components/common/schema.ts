@@ -63,13 +63,14 @@ export const processSchema = () => yup.object<ProcessFormValues>({
     retentionStart: yup.string(),
     retentionDescription: yup.string()
   }),
-  status: yup.mixed().oneOf([ProcessStatus.COMPLETED, ProcessStatus.IN_PROGRESS]),
+  status: yup.mixed().oneOf(Object.values(ProcessStatus)),
   dpia: yup.object<Dpia>({
     grounds: yup.string(),
     needForDpia: yup.boolean(),
     processImplemented: yup.boolean(),
     refToDpia: yup.string(),
-    riskOwner: yup.string()
+    riskOwner: yup.string(),
+    riskOwnerFunction: yup.string()
   })
 })
 
