@@ -27,7 +27,7 @@ export const ModalLabel = (props: { label?: any, tooltip?: string | React.ReactE
     return (
         <Block minWidth="25%" maxWidth="25%" alignSelf="center" paddingRight="1rem">
             {props.tooltip ?
-                <StatefulTooltip content={props.tooltip} placement={PLACEMENT.top}>
+                <StatefulTooltip content={props.tooltip} placement={PLACEMENT.top} focusLock={false}>
                     <Label2 font="font300" display="flex" width="100%" justifyContent={"flex-start"}>
                       <Block display={"flex"}>
                         <Block>{props.label}</Block>
