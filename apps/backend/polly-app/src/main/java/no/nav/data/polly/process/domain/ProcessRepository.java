@@ -18,9 +18,6 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
     @Query(value = "select * from process where data->>'department' = ?1", nativeQuery = true)
     List<Process> findByDepartment(String department);
 
-    @Query(value = "select * from process where data->>'subDepartment' = ?1", nativeQuery = true)
-    List<Process> findBySubDepartment(String subDepartment);
-
     @Query(value = "select * from process where data->>'commonExternalProcessResponsible' = ?1", nativeQuery = true)
     List<Process> findByCommonExternalProcessResponsible(String thirdParty);
 
@@ -50,7 +47,7 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
     @Query(value = "select data->>'department' as code, count(1) as count from process group by data->>'department'", nativeQuery = true)
     List<ProcessCount> countDepartmentCode();
 
-    @Query(value = "select data->>'subDepartment' as code, count(1) as count from process group by data->>'subDepartment'", nativeQuery = true)
+    @Query(value = "select jsonb_array_elements(data -> 'subDepartments') ->> 0 as code, count(1) as count from process group by code", nativeQuery = true)
     List<ProcessCount> countSubDepartmentCode();
 
     @Query(value = "select data->>'productTeam' as code, count(1) as count from process group by data->>'productTeam'", nativeQuery = true)

@@ -42,7 +42,7 @@ public class ProcessRequest implements RequestElement {
     @ApiModelProperty(value = "Codelist DEPARTMENT")
     private String department;
     @ApiModelProperty(value = "Codelist SUB_DEPARTMENT")
-    private String subDepartment;
+    private List<String> subDepartments;
     @ApiModelProperty(value = "Codelist THIRD_PARTY")
     private String commonExternalProcessResponsible;
     private String productTeam;
@@ -114,7 +114,7 @@ public class ProcessRequest implements RequestElement {
     public void format() {
         setPurposeCode(toUpperCaseAndTrim(getPurposeCode()));
         setDepartment(toUpperCaseAndTrim(getDepartment()));
-        setSubDepartment(toUpperCaseAndTrim(getSubDepartment()));
+        setSubDepartments(formatListToUppercase(getSubDepartments()));
         setCommonExternalProcessResponsible(toUpperCaseAndTrim(getCommonExternalProcessResponsible()));
         setDescription(trimToNull(getDescription()));
         setProductTeam(trimToNull(getProductTeam()));
@@ -152,7 +152,7 @@ public class ProcessRequest implements RequestElement {
         validator.checkBlank(Fields.name, name);
         validator.checkRequiredCodelist(Fields.purposeCode, purposeCode, ListName.PURPOSE);
         validator.checkCodelist(Fields.department, department, ListName.DEPARTMENT);
-        validator.checkCodelist(Fields.subDepartment, subDepartment, ListName.SUB_DEPARTMENT);
+        subDepartments.forEach(sd -> validator.checkCodelist(Fields.subDepartments, sd, ListName.SUB_DEPARTMENT));
         validator.checkCodelist(Fields.commonExternalProcessResponsible, commonExternalProcessResponsible, ListName.THIRD_PARTY);
         products.forEach(product -> validator.checkCodelist(Fields.products, product, ListName.SYSTEM));
         validator.checkDate(Fields.start, start);

@@ -10,6 +10,8 @@ public interface ProcessRepositoryCustom {
 
     List<Process> findByProduct(String product);
 
+    List<Process> findBySubDepartment(String subDepartment);
+
     List<Process> findByDocumentId(String documentId);
 
 }

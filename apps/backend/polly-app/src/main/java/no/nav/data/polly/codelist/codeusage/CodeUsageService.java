@@ -135,7 +135,7 @@ public class CodeUsageService {
                     getProcesses(usage).forEach(p -> p.getData().setDepartment(newCode));
                     break;
                 case SUB_DEPARTMENT:
-                    getProcesses(usage).forEach(p -> p.getData().setSubDepartment(newCode));
+                    getProcesses(usage).forEach(p -> replaceAll(p.getData().getSubDepartments(), oldCode, newCode));
                     break;
                 case SYSTEM:
                     getInformationTypes(usage).forEach(it -> it.getData().setNavMaster(newCode));

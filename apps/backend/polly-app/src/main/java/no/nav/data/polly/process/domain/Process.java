@@ -99,7 +99,7 @@ public class Process extends Auditable {
                 .description(data.getDescription())
                 .purposeCode(purposeCode)
                 .department(getDepartmentCode())
-                .subDepartment(getSubDepartmentCode())
+                .subDepartments(getSubDepartmentCodes())
                 .commonExternalProcessResponsible(getCommonExternalProcessResponsibleCode())
                 .productTeam(data.getProductTeam())
                 .products(getProductCodes())
@@ -153,7 +153,7 @@ public class Process extends Auditable {
         setPurposeCode(request.getPurposeCode());
         data.setDescription(request.getDescription());
         data.setDepartment(request.getDepartment());
-        data.setSubDepartment(request.getSubDepartment());
+        data.setSubDepartments(List.copyOf(request.getSubDepartments()));
         data.setCommonExternalProcessResponsible(request.getCommonExternalProcessResponsible());
         data.setProductTeam(request.getProductTeam());
         data.setProducts(List.copyOf(request.getProducts()));
@@ -211,8 +211,8 @@ public class Process extends Auditable {
         return CodelistService.getCodelistResponse(ListName.DEPARTMENT, data.getDepartment());
     }
 
-    private CodelistResponse getSubDepartmentCode() {
-        return CodelistService.getCodelistResponse(ListName.SUB_DEPARTMENT, data.getSubDepartment());
+    private List<CodelistResponse> getSubDepartmentCodes() {
+        return CodelistService.getCodelistResponseList(ListName.SUB_DEPARTMENT, data.getSubDepartments());
     }
 
     private CodelistResponse getCommonExternalProcessResponsibleCode() {
