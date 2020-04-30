@@ -122,8 +122,6 @@ export const policySchema = () => yup.object<PolicyFormValues>({
   process: yup.object(),
   purposeCode: yup.string(),
   id: yup.string(),
-  start: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
-  end: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
   documentIds: yup.array(yup.string())
 })
 

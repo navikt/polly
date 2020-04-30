@@ -23,8 +23,6 @@ export interface PolicyFormValues {
   legalBasesStatus?: LegalBasesStatus;
   legalBases: Array<LegalBasisFormValues>;
   legalBasesOpen: boolean;
-  end?: string;
-  start?: string;
   documentIds: string[];
 }
 
@@ -115,7 +113,7 @@ export interface InformationType {
   toBeDeleted: boolean;
 }
 
-export interface Policy extends IDurationed {
+export interface Policy {
   id: string;
   informationType: PolicyInformationType;
   process: Process;
