@@ -162,8 +162,7 @@ public class AlertService {
         var processArt6 = containsArticle(process.getData().getLegalBases(), ART_6_PREFIX);
         var processArt9 = containsArticle(process.getData().getLegalBases(), ART_9_PREFIX);
 
-        List<Policy> policies = StreamUtils.filter(process.getPolicies(),
-                policy -> policy.isActive() && (informationType == null || policy.getInformationType().equals(informationType))
+        List<Policy> policies = StreamUtils.filter(process.getPolicies(), policy -> (informationType == null || policy.getInformationType().equals(informationType))
         );
         for (Policy policy : policies) {
             checkPolicy(processArt6, processArt9, policy).resolve().ifPresent(alert.getPolicies()::add);

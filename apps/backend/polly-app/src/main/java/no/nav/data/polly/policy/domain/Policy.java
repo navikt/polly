@@ -12,14 +12,17 @@ import lombok.ToString;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.UsedInInstancePurpose;
 import no.nav.data.polly.common.auditing.domain.Auditable;
-import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
+import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.dto.PolicyInformationTypeResponse;
+import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.domain.Process;
+import org.apache.commons.lang3.BooleanUtils;
 import org.hibernate.annotations.Type;
 
+import java.util.List;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -88,8 +91,16 @@ public class Policy extends Auditable {
         }
     }
 
-    public boolean isActive() {
-        return DateUtil.isNow(getData().getStart(), getData().getEnd());
+    public static Policy mapRequestToPolicy(PolicyRequest policyRequest) {
+        Policy policy = policyRequest.getExistingPolicy() != null ? policyRequest.getExistingPolicy() : Policy.builder().generateId().data(new PolicyData()).build();
+        policyRequest.getInformationType().addPolicy(policy);
+        policyRequest.getProcess().addPolicy(policy);
+        policy.setPurposeCode(policyRequest.getPurposeCode());
+        policy.getData().setSubjectCategories(List.copyOf(policyRequest.getSubjectCategories()));
+        policy.getData().setLegalBasesInherited(BooleanUtils.toBoolean(policyRequest.getLegalBasesInherited()));
+        policy.getData().setLegalBases(convert(policyRequest.getLegalBases(), LegalBasisRequest::convertToLegalBasis));
+        policy.getData().setDocumentIds(convert(policyRequest.getDocumentIds(), UUID::fromString));
+        return policy;
     }
 
     public PolicyResponse convertToResponse(boolean includeProcess) {
@@ -99,8 +110,6 @@ public class Policy extends Auditable {
                 .subjectCategories(getCodelistResponseList(ListName.SUBJECT_CATEGORY, getData().getSubjectCategories()))
                 .processId(getProcess() == null ? null : getProcess().getId())
                 .process(getProcess() == null || !includeProcess ? null : getProcess().convertToResponse())
-                .start(getData().getStart())
-                .end(getData().getEnd())
                 .informationTypeId(informationTypeId)
                 .informationType(convertInformationTypeNameResponse())
                 .legalBasesInherited(getData().isLegalBasesInherited())

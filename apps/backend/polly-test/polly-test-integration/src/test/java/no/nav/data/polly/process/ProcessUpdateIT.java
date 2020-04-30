@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,13 +38,10 @@ class ProcessUpdateIT extends KafkaIntegrationTestBase {
 
     @Test
     void produserBehandlingsgrunnlag() {
-        createAndSavePolicy(4, (index, policy) -> {
+        createAndSavePolicy(3, (index, policy) -> {
             policy.setInformationTypeName(INFORMATION_TYPE_NAME + index);
             policy.getProcess().setName(PROCESS_NAME_1);
             if (index == 0) {
-                // Inactive policy should not be sent
-                policy.getData().setEnd(LocalDate.now().minusDays(1));
-            } else if (index == 1) {
                 var process = createProcess("ignored process", PURPOSE_CODE1, "", "", List.of(), "", "");
                 policy.setProcess(process);
             }
@@ -61,6 +57,6 @@ class ProcessUpdateIT extends KafkaIntegrationTestBase {
         assertEquals(PROCESS_NAME_1 + "-" + PURPOSE_CODE1, singleRecord.key());
         assertEquals(PROCESS_NAME_1, singleRecord.value().getProcessName());
         assertEquals(PURPOSE_CODE1, singleRecord.value().getPurposeCode());
-        assertThat(singleRecord.value().getInformationTypes()).contains(INFORMATION_TYPE_NAME + 2, INFORMATION_TYPE_NAME + 3);
+        assertThat(singleRecord.value().getInformationTypes()).contains(INFORMATION_TYPE_NAME + 1, INFORMATION_TYPE_NAME + 2);
     }
 }

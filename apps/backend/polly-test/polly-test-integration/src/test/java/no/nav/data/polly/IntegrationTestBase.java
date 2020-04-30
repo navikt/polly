@@ -84,7 +84,7 @@ public abstract class IntegrationTestBase {
     protected static final String PURPOSE_CODE2 = "AAP";
     protected static final String INFORMATION_TYPE_NAME = "Sivilstand";
 
-    private static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:11.3");
+    private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:11.3");
     @Autowired
     protected TransactionTemplate transactionTemplate;
     @Autowired
@@ -110,7 +110,7 @@ public abstract class IntegrationTestBase {
         postgreSQLContainer.start();
     }
 
-    private Map<String, Process> process = new HashMap<>();
+    private final Map<String, Process> process = new HashMap<>();
     private InformationType informationType;
 
     @BeforeEach
@@ -168,7 +168,6 @@ public abstract class IntegrationTestBase {
                 .purposeCode(purpose)
                 .data(PolicyData.builder()
                         .subjectCategories(List.of(subjectCategory))
-                        .activeToday()
                         .legalBases(legalBases)
                         .documentIds(List.of(UUID.fromString("fc32176b-dbee-42be-b16f-eaddd483bf77")))
                         .build())

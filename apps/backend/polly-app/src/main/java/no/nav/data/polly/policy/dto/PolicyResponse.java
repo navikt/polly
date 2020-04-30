@@ -7,11 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
-import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 import no.nav.data.polly.process.dto.ProcessResponse;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,8 +17,8 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "processId", "process", "purposeCode", "subjectCategories", "start", "end", "active", "legalBasesInherited", "informationTypeId", "informationType", "legalBases",
-        "documentIds"})
+@JsonPropertyOrder({"id", "processId", "process", "purposeCode", "subjectCategories", "legalBasesInherited",
+        "informationTypeId", "informationType", "legalBases", "documentIds"})
 public class PolicyResponse {
 
     private UUID id;
@@ -29,8 +27,6 @@ public class PolicyResponse {
     private CodelistResponse purposeCode;
     @Singular
     private List<CodelistResponse> subjectCategories;
-    private LocalDate start;
-    private LocalDate end;
     private boolean legalBasesInherited;
     private UUID informationTypeId;
     private PolicyInformationTypeResponse informationType;
@@ -38,7 +34,4 @@ public class PolicyResponse {
     private List<LegalBasisResponse> legalBases;
     private List<UUID> documentIds;
 
-    public boolean isActive() {
-        return DateUtil.isNow(start, end);
-    }
 }

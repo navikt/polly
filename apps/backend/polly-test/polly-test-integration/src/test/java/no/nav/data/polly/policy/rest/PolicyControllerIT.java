@@ -346,39 +346,16 @@ class PolicyControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void getOnlyActivePoliciesForInformationType() {
-        create5PoliciesWith2Inactive();
+    void getPoliciesForInformationType() {
+        createAndSavePolicy(5);
 
         ResponseEntity<PolicyPage> responseEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT + "?informationTypeId={id}", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()),
                 PolicyPage.class, INFORMATION_TYPE_ID_1);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(responseEntity.getBody(), notNullValue());
-        assertThat(responseEntity.getBody().getTotalElements(), is(3L));
-        assertThat(policyRepository.count(), is(5L));
-    }
-
-    @Test
-    void getInactivePoliciesForInformationType() {
-        create5PoliciesWith2Inactive();
-
-        ResponseEntity<PolicyPage> responseEntity = restTemplate.exchange(
-                POLICY_REST_ENDPOINT + "?informationTypeId={id}&includeInactive=true", HttpMethod.GET, new HttpEntity<>(new HttpHeaders()),
-                PolicyPage.class, INFORMATION_TYPE_ID_1);
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(responseEntity.getBody(), notNullValue());
         assertThat(responseEntity.getBody().getTotalElements(), is(5L));
         assertThat(policyRepository.count(), is(5L));
-    }
-
-    private void create5PoliciesWith2Inactive() {
-        createAndSavePolicy(5, (i, p) -> {
-            p.setInformationTypeName(INFORMATION_TYPE_NAME);
-            if (i > 2) {
-                p.getData().setStart(LocalDate.now().minusDays(2));
-                p.getData().setEnd(LocalDate.now().minusDays(1));
-            }
-        });
     }
 
     private PolicyRequest createPolicyRequest(InformationType informationType) {

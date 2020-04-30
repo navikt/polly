@@ -78,7 +78,6 @@ class PolicyRepositoryIT extends IntegrationTestBase {
                 .purposeCode(purposeCode)
                 .data(PolicyData.builder()
                         .subjectCategories(List.of("BRUKER"))
-                        .activeToday()
                         .legalBasesInherited(false)
                         .legalBasis(createLegalBasis())
                         .build())
