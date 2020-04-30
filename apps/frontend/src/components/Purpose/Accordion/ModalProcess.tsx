@@ -22,7 +22,7 @@ import FieldName from "../common/FieldName";
 import FieldPurpose from "../common/FieldPurpose";
 import FieldDescription from "../common/FieldDescription";
 import FieldDepartment from "../common/FieldDepartment";
-import FieldSubDepartment from "../common/FieldSubDepartment";
+import FieldSubDepartments from "../common/FieldSubDepartment";
 import FieldProductTeam from "../common/FieldProductTeam";
 import FieldProduct from "../common/FieldProduct";
 import BoolField from "../common/BoolField";
@@ -229,7 +229,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                       {codelist.showSubDepartment(formikBag.values.department) && (
                         <Block minWidth={"33%"} width={"100%"} marginRight={".5rem"}>
                           <Block {...rowBlockProps}>
-                            <FieldSubDepartment subDepartment={formikBag.values.subDepartment}/>
+                            <FieldSubDepartments subDepartments={formikBag.values.subDepartments}/>
                           </Block>
                         </Block>
                       )}

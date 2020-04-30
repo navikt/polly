@@ -1,26 +1,28 @@
-import * as React from "react";
-import {Select, Value} from "baseui/select";
-import {codelist, ListName} from "../../../service/Codelist";
-import {Field, FieldProps} from "formik";
-import {ProcessFormValues} from "../../../constants";
-import {Block} from "baseui/block";
+import * as React from 'react'
+import { Select, Value } from 'baseui/select'
+import { codelist, ListName } from '../../../service/Codelist'
+import { Field, FieldProps } from 'formik'
+import { ProcessFormValues } from '../../../constants'
+import { Block } from 'baseui/block'
 
-const FieldSubDepartment = (props: { subDepartment?: string }) => {
-  const {subDepartment} = props
-  const [value, setValue] = React.useState<Value>(subDepartment
-    ? [{id: subDepartment, label: codelist.getShortname(ListName.SUB_DEPARTMENT, subDepartment)}]
+const FieldSubDepartments = (props: { subDepartments: string[] }) => {
+  const {subDepartments} = props
+  const [value, setValue] = React.useState<Value>(subDepartments
+    ? subDepartments.map(subDepartment => ({id: subDepartment, label: codelist.getShortname(ListName.SUB_DEPARTMENT, subDepartment)}))
     : [])
 
   return (
     <Field
-      name='subDepartment'
+      name='subDepartments'
       render={({form}: FieldProps<ProcessFormValues>) => (
         <Block width={'100%'}>
           <Select
+            multi
+            clearable
             options={codelist.getParsedOptions(ListName.SUB_DEPARTMENT)}
             onChange={({value}) => {
               setValue(value)
-              form.setFieldValue('subDepartment', value.length > 0 ? value[0].id : '')
+              form.setFieldValue('subDepartments', value.map(v => v.id))
             }}
             value={value}
           />
@@ -31,4 +33,4 @@ const FieldSubDepartment = (props: { subDepartment?: string }) => {
 
 }
 
-export default FieldSubDepartment
+export default FieldSubDepartments

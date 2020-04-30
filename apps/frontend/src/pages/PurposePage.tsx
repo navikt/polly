@@ -1,14 +1,14 @@
 import * as React from 'react'
-import {useEffect} from 'react'
+import { useEffect } from 'react'
 
 import ProcessList from '../components/Purpose'
-import {Block} from 'baseui/block'
-import {codelist, ListName} from '../service/Codelist'
-import {intl, theme, useAwait} from '../util'
+import { Block } from 'baseui/block'
+import { codelist, ListName } from '../service/Codelist'
+import { intl, theme, useAwait } from '../util'
 import illustration from '../resources/purpose_illustration.svg'
-import {H4, Label2, Paragraph2} from 'baseui/typography'
-import {useLocation} from 'react-router'
-import {RouteComponentProps} from 'react-router-dom'
+import { H4, Label2, Paragraph2 } from 'baseui/typography'
+import { useLocation } from 'react-router'
+import { RouteComponentProps } from 'react-router-dom'
 
 const routes = {
   subdepartment: 'subdepartment',
@@ -29,7 +29,6 @@ export type PathParams = { code?: string, processId?: string }
 const PurposePage = (props: RouteComponentProps<PathParams>) => {
   const current_location = useLocation()
   const [isLoading, setLoading] = React.useState(false)
-  const [title, setTitle] = React.useState<string>('')
   const [description, setDescription] = React.useState<string>('')
 
   useAwait(codelist.wait())
@@ -38,7 +37,6 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
     (async () => {
       if (props.match.params.code) {
         setLoading(true)
-        setTitle(getTitle(props.match.params.code))
         setDescription(getDescription(props.match.params.code))
         setLoading(false)
       }
