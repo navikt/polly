@@ -98,9 +98,9 @@ const ProcessData = (props: { process: Process }) => {
           <span>{intl.department}: </span>
           <span>{codelist.getShortnameForCode(process.department)}</span>
         </Block>}
-        {process.subDepartment && <Block>
+        {!!process?.subDepartments.length && <Block>
           <span>{intl.subDepartment}: </span>
-          <span>{codelist.getShortnameForCode(process.subDepartment)}</span>
+          <DotTags items={process.subDepartments.map(sd => codelist.getShortname(ListName.SUB_DEPARTMENT, sd.code))}/>
         </Block>}
         {!!process.productTeam && <Block>
           <span>{intl.productTeam}: </span>

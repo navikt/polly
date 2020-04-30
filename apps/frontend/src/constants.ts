@@ -45,7 +45,7 @@ export interface ProcessFormValues {
   name?: string;
   description?: string;
   department?: string;
-  subDepartment?: string;
+  subDepartments: string[];
   productTeam?: string;
   products: string[];
   legalBases: Array<LegalBasisFormValues>;
@@ -97,9 +97,9 @@ export interface Term {
 }
 
 export interface LegalBasis  {
-  description: string;
   gdpr: Code;
   nationalLaw?: Code;
+  description?: string;
 }
 
 export interface InformationType {
@@ -174,7 +174,7 @@ export interface Process extends IDurationed {
   description?: string;
   legalBases: LegalBasis[];
   department: Code;
-  subDepartment: Code;
+  subDepartments: Code[];
   productTeam: string;
   products: Code[];
   policies: Policy[];

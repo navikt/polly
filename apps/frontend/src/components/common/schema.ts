@@ -43,7 +43,7 @@ export const processSchema = () => yup.object<ProcessFormValues>({
   purposeCode: yup.string().oneOf(codelist.getCodes(ListName.PURPOSE).map(p => p.code), intl.required).required(intl.required),
   description: yup.string(),
   department: yup.string(),
-  subDepartment: yup.string(),
+  subDepartments: yup.array(yup.string()),
   productTeam: yup.string(),
   products: yup.array(yup.string()),
   legalBases: yup.array(legalBasisSchema()),
