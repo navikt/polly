@@ -32,6 +32,7 @@ import { ALIGN, Radio, RadioGroup } from "baseui/radio";
 import DpiaItems from "../common/DpiaItems";
 import FieldRiskOwner from "../common/FieldRiskOwner";
 import FieldInput from '../common/FieldInput'
+import FieldCommonExternalProcessResponsible from '../common/FieldCommonExternalProcessResponsible'
 
 const modalHeaderProps: BlockProps = {
   display: 'flex',
@@ -161,6 +162,11 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                 <CustomizedModalBlock>
                   <ModalLabel label={intl.riskOwnerFunction}/>
                   <FieldInput fieldName='dpia.riskOwnerFunction' fieldValue={formikBag.values.dpia?.riskOwnerFunction}/>
+                </CustomizedModalBlock>
+
+                <CustomizedModalBlock>
+                  <ModalLabel label={intl.commonExternalProcessResponsible} tooltip={intl.commonExternalProcessResponsibleHelpText}/>
+                  <FieldCommonExternalProcessResponsible thirdParty={formikBag.values.commonExternalProcessResponsible}/>
                 </CustomizedModalBlock>
 
                 <CustomizedModalBlock>

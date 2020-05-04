@@ -35,6 +35,8 @@ export interface IStrings {
   riskOwner: string;
   riskOwnerFunctionBinder: string;
   riskOwnerFunction: string;
+  commonExternalProcessResponsible: string;
+  commonExternalProcessResponsibleHelpText: string;
   system: string;
   disclosure: string;
   disclosures: string;

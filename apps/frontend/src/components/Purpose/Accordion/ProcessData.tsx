@@ -67,23 +67,24 @@ const ProcessData = (props: { process: Process }) => {
       </DataText>
 
       <DataText label={intl.status}>
-        <Block>
-          <span>{(process.status) === ProcessStatus.IN_PROGRESS ? intl.inProgress : intl.completedProcesses}</span>
-        </Block>
+        {(process.status) === ProcessStatus.IN_PROGRESS ? intl.inProgress : intl.completedProcesses}
       </DataText>
 
       <DataText label={intl.isProcessImplemented}>
-        <Block>
-          <span>{(process.dpia?.processImplemented) ? intl.yes : intl.no}</span>
-        </Block>
+        {(process.dpia?.processImplemented) ? intl.yes : intl.no}
       </DataText>
 
       <DataText label={intl.riskOwner}>
-        <Block>
+        <>
           <span>{(process.dpia?.riskOwner) ? riskOwnerFullName : intl.notFilled}</span>
           {!!process.dpia?.riskOwnerFunction && <span> {intl.riskOwnerFunctionBinder} {process.dpia.riskOwnerFunction}</span>}
-        </Block>
+        </>
       </DataText>
+
+      {process.commonExternalProcessResponsible &&
+      <DataText label={intl.commonExternalProcessResponsible}>
+        {codelist.getShortnameForCode(process.commonExternalProcessResponsible)}
+      </DataText>}
 
       <DataText label={intl.validityOfProcess}>
         <ActiveIndicator alwaysShow={true} showDates={true} {...process} />
@@ -133,9 +134,7 @@ const ProcessData = (props: { process: Process }) => {
         <>
           {process.dataProcessing?.dataProcessor &&
           <Block>
-            <Block>
-              <span>{intl.dataProcessorYes}</span>
-            </Block>
+            <Block>{intl.dataProcessorYes}</Block>
             <Block>
               {dataProcessorAgreements &&
               <Block display='flex'>
@@ -162,12 +161,8 @@ const ProcessData = (props: { process: Process }) => {
         <>
           {process.retention?.retentionPlan &&
           <Block>
-            <Block>
-              <span>{intl.retentionPlanYes}</span>
-            </Block>
-            <Block>
-              <RetentionView retention={process.retention}/>
-            </Block>
+            <Block>{intl.retentionPlanYes}</Block>
+            <RetentionView retention={process.retention}/>
             <Block>
               <span>{process.retention?.retentionDescription && `${intl.retentionDescription}: `}</span>
               <span>{process.retention?.retentionDescription}</span>

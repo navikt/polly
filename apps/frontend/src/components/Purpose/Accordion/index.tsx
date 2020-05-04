@@ -126,74 +126,72 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
         initialState={{expanded: props.match.params.processId ? [props.match.params.processId] : []}}>
         {props.processList &&
         props
-          .processList
-          .sort((a, b) => a.purposeCode.localeCompare(b.purposeCode))
-          .map((p: UseWithPurpose) => (
-            <Panel
-              title={
-                <AccordionTitle process={p} expanded={props.match.params.processId === p.id}
-                                hasAccess={hasAccess()} editProcess={() => setShowEditProcessModal(true)}
-                                deleteProcess={() => setShowDeleteModal(true)}
-                />
-              }
-              key={p.id}
-              overrides={{
-                ToggleIcon: {
-                  component: () => null
-                },
-                Content: {
-                  style: {
-                    backgroundColor: theme.colors.white,
-                    // Outline width
-                    paddingTop: '4px',
-                    paddingBottom: '4px',
-                    paddingLeft: '4px',
-                    paddingRight: '4px',
-                  }
+        .processList
+        .sort((a, b) => a.purposeCode.localeCompare(b.purposeCode))
+        .map((p: UseWithPurpose) => (
+          <Panel
+            title={
+              <AccordionTitle process={p} expanded={props.match.params.processId === p.id}
+                              hasAccess={hasAccess()} editProcess={() => setShowEditProcessModal(true)}
+                              deleteProcess={() => setShowDeleteModal(true)}
+              />
+            }
+            key={p.id}
+            overrides={{
+              ToggleIcon: {
+                component: () => null
+              },
+              Content: {
+                style: {
+                  backgroundColor: theme.colors.white,
+                  // Outline width
+                  paddingTop: '4px',
+                  paddingBottom: '4px',
+                  paddingLeft: '4px',
+                  paddingRight: '4px',
                 }
-              }}
-            >
-              {isLoading && <Block padding={theme.sizing.scale400}><StyledSpinnerNext size={theme.sizing.scale1200}/></Block>}
+              }
+            }}
+          >
+            {isLoading && <Block padding={theme.sizing.scale400}><StyledSpinnerNext size={theme.sizing.scale1200}/></Block>}
 
-              {!isLoading && currentProcess && (
-                <Block $style={{
-                  outline: `4px ${theme.colors.primary200} solid`
-                }}>
+            {!isLoading && currentProcess && (
+              <Block $style={{
+                outline: `4px ${theme.colors.primary200} solid`
+              }}>
 
-                  <Block paddingLeft={theme.sizing.scale800} paddingRight={theme.sizing.scale800} paddingTop={theme.sizing.scale800}>
-                    <Block display='flex' width='100%' justifyContent='space-between'>
-                      <Block width='65%'>
-                        <ProcessData process={currentProcess}/>
-                      </Block>
-                      <Block width='35%' display='flex' flexDirection='row-reverse'>
-                        <span><i>{intl.formatString(intl.lastModified, currentProcess.changeStamp.lastModifiedBy, lastModifiedDate(currentProcess.changeStamp.lastModifiedDate))}</i></span>
-                      </Block>
+                <Block paddingLeft={theme.sizing.scale800} paddingRight={theme.sizing.scale800} paddingTop={theme.sizing.scale800}>
+                  <ProcessData process={currentProcess}/>
+
+                  <DataText>
+                    <Block display='flex' justifyContent='flex-end'>
+                      <span><i>{intl.formatString(intl.lastModified, currentProcess.changeStamp.lastModifiedBy, lastModifiedDate(currentProcess.changeStamp.lastModifiedDate))}</i></span>
                     </Block>
-
-                    <DataText>
-                      <Block display='flex' justifyContent='flex-end'>
-                        {hasAccess() &&
-                        <Block>
-                          {renderAddDocumentButton()}
-                          {renderCreatePolicyButton()}
-                        </Block>
-                        }
+                  </DataText>
+                  <DataText>
+                    <Block display='flex' justifyContent='flex-end'>
+                      {hasAccess() &&
+                      <Block>
+                        {renderAddDocumentButton()}
+                        {renderCreatePolicyButton()}
                       </Block>
-                    </DataText>
-                  </Block>
-
-                  <TablePolicy
-                    process={currentProcess}
-                    hasAccess={hasAccess()}
-                    errorPolicyModal={errorPolicyModal}
-                    errorDeleteModal={errorPolicyModal}
-                    submitEditPolicy={submitEditPolicy}
-                    submitDeletePolicy={submitDeletePolicy}
-                  />
+                      }
+                    </Block>
+                  </DataText>
                 </Block>
-              )}
-            </Panel>
-          ))}
+
+                <TablePolicy
+                  process={currentProcess}
+                  hasAccess={hasAccess()}
+                  errorPolicyModal={errorPolicyModal}
+                  errorDeleteModal={errorPolicyModal}
+                  submitEditPolicy={submitEditPolicy}
+                  submitDeletePolicy={submitDeletePolicy}
+                />
+              </Block>
+            )}
+          </Panel>
+        ))}
       </Accordion>
       {!props.processList.length && <Label2 margin='1rem'>{intl.emptyTable} {intl.processes}</Label2>}
 

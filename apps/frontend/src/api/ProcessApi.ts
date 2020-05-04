@@ -1,7 +1,7 @@
-import axios from "axios"
-import { PageResponse, Process, ProcessCount, ProcessFormValues, ProcessStatus } from "../constants"
-import { env } from "../util/env"
-import { convertLegalBasesToFormValues } from "./PolicyApi"
+import axios from 'axios'
+import { PageResponse, Process, ProcessCount, ProcessFormValues, ProcessStatus } from '../constants'
+import { env } from '../util/env'
+import { convertLegalBasesToFormValues } from './PolicyApi'
 
 export const getProcess = async (processId: string) => {
   const data = (await axios.get<Process>(`${env.pollyBaseUrl}/process/${processId}`)).data
@@ -43,7 +43,7 @@ export const updateProcess = async (process: ProcessFormValues) => {
 
 export const getProcessesByDocument = async (documentId: string) => {
   return (await axios.get(`${env.pollyBaseUrl}/process/?documentId=${documentId}`)).data
-};
+}
 
 const mapBool = (b?: boolean) => b === true ? true : b === false ? false : undefined
 
@@ -55,6 +55,7 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     description,
     department,
     subDepartments,
+    commonExternalProcessResponsible,
     productTeam,
     products,
     legalBases,
@@ -77,6 +78,7 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     purposeCode: purposeCode,
     department: (department && department.code) || undefined,
     subDepartments: (subDepartments && subDepartments.map(sd => sd.code)) || [],
+    commonExternalProcessResponsible: (commonExternalProcessResponsible && commonExternalProcessResponsible.code) || undefined,
     productTeam: productTeam || undefined,
     products: (products && products.map(p => p.code)) || [],
     legalBases: convertLegalBasesToFormValues(legalBases),
@@ -116,6 +118,7 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
     purposeCode: values.purposeCode,
     department: values.department ? values.department : undefined,
     subDepartments: values.subDepartments ? values.subDepartments : [],
+    commonExternalProcessResponsible: values.commonExternalProcessResponsible ? values.commonExternalProcessResponsible : undefined,
     productTeam: values.productTeam,
     products: values.products,
     legalBases: values.legalBases ? values.legalBases : [],
