@@ -20,7 +20,6 @@ import { AddDocumentModal } from './AddDocumentModal'
 import Button from '../../common/Button'
 import moment from 'moment'
 import AccordionTitle from './AccordionTitle'
-import DataText from '../common/DataText'
 import ProcessData from './ProcessData'
 
 type AccordionProcessProps = {
@@ -163,21 +162,17 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                 <Block paddingLeft={theme.sizing.scale800} paddingRight={theme.sizing.scale800} paddingTop={theme.sizing.scale800}>
                   <ProcessData process={currentProcess}/>
 
-                  <DataText>
-                    <Block display='flex' justifyContent='flex-end'>
-                      <span><i>{intl.formatString(intl.lastModified, currentProcess.changeStamp.lastModifiedBy, lastModifiedDate(currentProcess.changeStamp.lastModifiedDate))}</i></span>
+                  <Block display='flex' justifyContent='flex-end'>
+                    <span><i>{intl.formatString(intl.lastModified, currentProcess.changeStamp.lastModifiedBy, lastModifiedDate(currentProcess.changeStamp.lastModifiedDate))}</i></span>
+                  </Block>
+                  <Block display='flex' justifyContent='flex-end' paddingTop={theme.sizing.scale800}>
+                    {hasAccess() &&
+                    <Block>
+                      {renderAddDocumentButton()}
+                      {renderCreatePolicyButton()}
                     </Block>
-                  </DataText>
-                  <DataText>
-                    <Block display='flex' justifyContent='flex-end'>
-                      {hasAccess() &&
-                      <Block>
-                        {renderAddDocumentButton()}
-                        {renderCreatePolicyButton()}
-                      </Block>
-                      }
-                    </Block>
-                  </DataText>
+                    }
+                  </Block>
                 </Block>
 
                 <TablePolicy
