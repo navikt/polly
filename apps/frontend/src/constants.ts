@@ -17,7 +17,7 @@ export interface InformationtypeFormValues {
 export interface PolicyFormValues {
   id?: string;
   purposeCode: string;
-  informationType?: PolicyInformationType;
+  informationType?: InformationTypeShort;
   process: { id: string; name: string; legalBases: LegalBasis[] };
   subjectCategories: string[];
   legalBasesStatus?: LegalBasesStatus;
@@ -95,7 +95,7 @@ export interface Term {
   description: string;
 }
 
-export interface LegalBasis  {
+export interface LegalBasis {
   gdpr: Code;
   nationalLaw?: Code;
   description?: string;
@@ -116,7 +116,7 @@ export interface InformationType {
 
 export interface Policy {
   id: string;
-  informationType: PolicyInformationType;
+  informationType: InformationTypeShort;
   process: Process;
   purposeCode: Code;
   subjectCategories: Code[];
@@ -161,10 +161,16 @@ export const processSort: ColumnCompares<Process> = {
   products: (a, b) => a.products.length - b.products.length
 }
 
-export interface PolicyInformationType {
+export interface InformationTypeShort {
   id: string;
   name: string;
   sensitivity: Code;
+}
+
+export interface ProcessShort {
+  id: string;
+  name: string;
+  purposeCode: Code;
 }
 
 export interface Process extends IDurationed {
@@ -299,7 +305,7 @@ export interface Document {
 export interface DocumentInfoTypeUse {
   id?: string;
   informationTypeId: string;
-  informationType: PolicyInformationType;
+  informationType: InformationTypeShort;
   subjectCategories: Code[];
 }
 
@@ -404,6 +410,27 @@ export interface PolicyAlert {
   missingLegalBasis: boolean;
   missingArt6: boolean;
   missingArt9: boolean;
+}
+
+export enum AlertEventLevel {
+  MISSING_LEGAL_BASIS = 'MISSING_LEGAL_BASIS',
+  MISSING_ARTICLE_6 = 'MISSING_ARTICLE_6',
+  MISSING_ARTICLE_9 = 'MISSING_ARTICLE_9',
+  USES_ALL_INFO_TYPE = 'USES_ALL_INFO_TYPE'
+}
+
+export enum AlertEventType {
+  INFO = 'INFO',
+  WARNING = 'WARNING',
+  ERROR = 'ERROr'
+}
+
+export interface AlertEvent {
+  id: string
+  process?: ProcessShort
+  informationType?: InformationTypeShort
+  type: AlertEventType
+  level: AlertEventLevel
 }
 
 export type RecursivePartial<T> = {

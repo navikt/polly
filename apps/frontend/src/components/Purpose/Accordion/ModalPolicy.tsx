@@ -10,7 +10,7 @@ import { Select, TYPE } from 'baseui/select'
 import CardLegalBasis from './CardLegalBasis'
 import { codelist, ListName } from '../../../service/Codelist'
 import { Button, KIND, SIZE as ButtonSize } from 'baseui/button'
-import { LegalBasesStatus, LegalBasisFormValues, PolicyFormValues, PolicyInformationType } from '../../../constants'
+import { InformationTypeShort, LegalBasesStatus, LegalBasisFormValues, PolicyFormValues } from '../../../constants'
 import { ListLegalBases } from '../../common/LegalBasis'
 import { useInfoTypeSearch } from '../../../api'
 import { Error, ModalLabel } from '../../common/ModalSchema'
@@ -57,10 +57,10 @@ const renderTagList = (list: string[], arrayHelpers: FieldArrayRenderProps) => {
 }
 
 const FieldInformationType = (props: {
-    informationTypes: PolicyInformationType[],
+    informationTypes: InformationTypeShort[],
     searchInformationType: (name: string) => void,
-    value?: PolicyInformationType,
-    setValue: (v: PolicyInformationType) => void
+    value?: InformationTypeShort,
+    setValue: (v: InformationTypeShort) => void
 }) => (
         <Field
             name="informationType"
@@ -76,7 +76,7 @@ const FieldInformationType = (props: {
                     value={props.value as any}
                     onInputChange={event => props.searchInformationType(event.currentTarget.value)}
                     onChange={(params) => {
-                        let infoType = params.value[0] as PolicyInformationType
+                        let infoType = params.value[0] as InformationTypeShort
                         props.setValue(infoType)
                         form.setFieldValue('informationType', infoType)
                     }}
@@ -130,7 +130,7 @@ type ModalPolicyProps = {
 const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, docs, title }: ModalPolicyProps) => {
     const [selectedLegalBasis, setSelectedLegalBasis] = React.useState<LegalBasisFormValues>()
     const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState<number>()
-    const [infoTypeValue, setInfoTypeValue] = React.useState<PolicyInformationType | undefined>(initialValues.informationType)
+    const [infoTypeValue, setInfoTypeValue] = React.useState<InformationTypeShort | undefined>(initialValues.informationType)
     const [infoTypeSearchResult, setInfoTypeSearch] = useInfoTypeSearch()
 
     const onCloseModal = () => {

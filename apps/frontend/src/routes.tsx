@@ -20,6 +20,7 @@ import DocumentCreatePage from "./pages/DocumentCreatePage";
 import DocumentPage from "./pages/DocumentPage";
 import DocumentEditPage from "./pages/DocumentEditPage";
 import { PurposeListPage } from './pages/PurposeListPage'
+import { AlertEventPage } from './pages/AlertEventPage'
 
 
 const Routes = (): JSX.Element => (
@@ -77,6 +78,11 @@ const Routes = (): JSX.Element => (
         exact
         path="/document/edit/:id?"
         component={DocumentEditPage}
+      />
+      <Route
+        exact
+        path="/alert/events"
+        component={AlertEventPage}
       />
       <Route
         exact
