@@ -16,7 +16,6 @@ import no.nav.data.polly.common.rest.PageParameters;
 import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
-import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import org.springframework.http.ResponseEntity;
@@ -85,17 +84,17 @@ public class AlertController {
     private AlertEventResponse convertEventResponse(AlertEvent event) {
         AlertEventResponseBuilder builder = AlertEventResponse.builder()
                 .id(event.getId())
-                .informationType(InformationTypeShortResponse.builder()
-                        .id(event.getInformationTypeId())
-                        .build())
                 .type(event.getType())
                 .level(event.getLevel());
+
         Optional.ofNullable(event.getProcessId())
                 .flatMap(processCache::get)
                 .ifPresent(p -> builder.process(p.convertToShortResponse()));
+
         Optional.ofNullable(event.getInformationTypeId())
                 .flatMap(infoTypeCache::get)
                 .ifPresent(it -> builder.informationType(it.convertToShortResponse()));
+
         return builder.build();
     }
 
