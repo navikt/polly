@@ -8,6 +8,7 @@ import no.nav.data.polly.alert.domain.AlertRepository;
 import no.nav.data.polly.common.storage.domain.GenericStorageRepository;
 import no.nav.data.polly.common.storage.domain.StorageType;
 import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.process.domain.Process;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -117,6 +118,28 @@ public class AlertIT extends IntegrationTestBase {
             alertService.calculateEventsForProcess(policy.getProcess().getId());
             var events = alertRepository.findByProcessId(policy.getProcess().getId());
             assertThat(events).hasSize(0);
+        }
+
+        @Test
+        void usesInfoAllInfoTypes() {
+            Policy policy = createProcessWithOnePolicy();
+            Process process = policy.getProcess();
+            process.getData().setUsesAllInformationTypes(true);
+            processRepository.save(process);
+
+            // check no duplicates
+            alertService.calculateEventsForProcess(process.getId());
+            alertService.calculateEventsForProcess(process.getId());
+            transactionTemplate.execute(status -> {
+                alertService.calculateEventsForPolicy(policyRepository.findById(policy.getId()).orElseThrow());
+                alertService.calculateEventsForPolicy(policyRepository.findById(policy.getId()).orElseThrow());
+                return null;
+            });
+            alertService.calculateEventsForInforamtionType(policy.getInformationTypeId());
+            alertService.calculateEventsForInforamtionType(policy.getInformationTypeId());
+
+            var events = alertRepository.findByProcessId(process.getId());
+            assertThat(events).hasSize(1);
         }
     }
 
