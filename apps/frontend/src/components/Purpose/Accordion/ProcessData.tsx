@@ -113,7 +113,7 @@ const ProcessData = (props: { process: Process }) => {
         <DotTags items={process.products.map(product => codelist.getShortname(ListName.SYSTEM, product.code))}/>
       </DataText>
 
-      <DataText label={intl.usesAllInformationTypes} text={boolToText(process.usesAllInformationTypes)}/>
+      <DataText label={intl.USES_ALL_INFO_TYPE} text={boolToText(process.usesAllInformationTypes)}/>
 
       <DataText label={intl.automation}>
         <Block>

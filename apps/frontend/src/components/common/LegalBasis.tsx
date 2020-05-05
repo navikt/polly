@@ -61,13 +61,13 @@ export const LegalBasesNotClarified = (props: { alert?: PolicyAlert }) => {
   return (
     <Block color={color}>
       <Block>
-        {props.alert?.missingLegalBasis && <>{warningIcon} {intl.legalBasesUndecidedWarning}</>}
+        {props.alert?.missingLegalBasis && <>{warningIcon} {intl.MISSING_LEGAL_BASIS}</>}
       </Block>
       <Block>
-        {!props.alert?.missingLegalBasis && props.alert?.missingArt6 && <>{warningIcon} {intl.legalBasesArt6Warning}</>}
+        {!props.alert?.missingLegalBasis && props.alert?.missingArt6 && <>{warningIcon} {intl.MISSING_ARTICLE_6}</>}
       </Block>
       <Block>
-        {!props.alert?.missingLegalBasis && props.alert?.missingArt9 && <>{warningIcon} {intl.legalBasesArt9Warning}</>}
+        {!props.alert?.missingLegalBasis && props.alert?.missingArt9 && <>{warningIcon} {intl.MISSING_ARTICLE_9}</>}
       </Block>
     </Block>
   )

@@ -412,17 +412,17 @@ export interface PolicyAlert {
   missingArt9: boolean;
 }
 
-export enum AlertEventLevel {
+export enum AlertEventType {
   MISSING_LEGAL_BASIS = 'MISSING_LEGAL_BASIS',
   MISSING_ARTICLE_6 = 'MISSING_ARTICLE_6',
   MISSING_ARTICLE_9 = 'MISSING_ARTICLE_9',
   USES_ALL_INFO_TYPE = 'USES_ALL_INFO_TYPE'
 }
 
-export enum AlertEventType {
+export enum AlertEventLevel {
   INFO = 'INFO',
   WARNING = 'WARNING',
-  ERROR = 'ERROr'
+  ERROR = 'ERROR'
 }
 
 export interface AlertEvent {

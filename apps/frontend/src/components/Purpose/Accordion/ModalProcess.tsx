@@ -180,7 +180,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                 </CustomizedModalBlock>
 
                 <CustomizedModalBlock>
-                  <ModalLabel label={intl.usesAllInformationTypes} tooltip={intl.usesAllInformationTypesHelpText}/>
+                  <ModalLabel label={intl.USES_ALL_INFO_TYPE} tooltip={intl.usesAllInformationTypesHelpText}/>
                   <Block>
                     <BoolField value={formikBag.values.usesAllInformationTypes} fieldName='usesAllInformationTypes' omitUndefined firstButtonLabel={`(${intl.exceptionalUsage})`}/>
                   </Block>

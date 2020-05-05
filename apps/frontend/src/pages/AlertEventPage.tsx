@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { AlertEvent, PageResponse } from '../constants'
+import { AlertEvent, ObjectType, PageResponse } from '../constants'
 import { getAlertEvents } from '../api/AlertApi'
 import { Cell, HeadCell, Row, Table } from '../components/common/Table'
 import { intl } from '../util'
@@ -9,6 +9,8 @@ import { StatefulMenu } from 'baseui/menu'
 import { Button, KIND } from 'baseui/button'
 import { TriangleDown } from 'baseui/icon'
 import { Pagination } from 'baseui/pagination'
+import { ObjectLink } from '../components/common/RouteLink'
+import { Sensitivity } from '../components/InformationType/Sensitivity'
 
 
 export const AlertEventPage = () => {
@@ -56,10 +58,25 @@ export const AlertEventPage = () => {
         {events.content.map((event, index) => {
           return (
             <Row key={event.id}>
-              <Cell>{event.informationType?.name}</Cell>
-              <Cell>{event.process?.name}</Cell>
-              <Cell>{event.level}</Cell>
-              <Cell>{event.type}</Cell>
+
+              <Cell>
+                {event.informationType ?
+                  <ObjectLink id={event.informationType.id} type={ObjectType.INFORMATION_TYPE}>
+                    <Sensitivity sensitivity={event.informationType.sensitivity}/>&nbsp;
+                    {event.informationType?.name}
+                  </ObjectLink>
+                  : ''}
+              </Cell>
+
+              <Cell>
+                {event.process ?
+                  <ObjectLink id={event.process.id} type={ObjectType.PROCESS}>
+                    {event.process?.name}
+                  </ObjectLink>
+                  : ''}
+              </Cell>
+              <Cell>{intl[event.level]}</Cell>
+              <Cell>{intl[event.type]}</Cell>
             </Row>
           )
         })}
