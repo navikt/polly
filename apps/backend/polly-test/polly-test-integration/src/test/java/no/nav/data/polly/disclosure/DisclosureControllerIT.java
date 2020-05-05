@@ -7,12 +7,12 @@ import no.nav.data.polly.disclosure.DisclosureController.DisclosurePage;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;
 import no.nav.data.polly.disclosure.dto.DisclosureResponse;
 import no.nav.data.polly.document.domain.Document;
-import no.nav.data.polly.document.dto.DocumentInfoTypeResponse;
 import no.nav.data.polly.document.dto.DocumentInfoTypeUseRequest;
 import no.nav.data.polly.document.dto.DocumentInfoTypeUseResponse;
 import no.nav.data.polly.document.dto.DocumentRequest;
 import no.nav.data.polly.document.dto.DocumentResponse;
 import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +59,7 @@ class DisclosureControllerIT extends IntegrationTestBase {
         var disclosureResponse = resp.getBody();
         assertThat(disclosureResponse).isNotNull();
 
-        DocumentInfoTypeResponse infoTypeRes = new DocumentInfoTypeResponse(infoType.getId(), infoType.getData().getName(),
+        InformationTypeShortResponse infoTypeRes = new InformationTypeShortResponse(infoType.getId(), infoType.getData().getName(),
                 CodelistService.getCodelistResponse(ListName.SENSITIVITY, infoType.getData().getSensitivity()));
 
         assertThat(disclosureResponse).isEqualTo(DisclosureResponse.builder()

@@ -3,9 +3,9 @@ package no.nav.data.polly.process;
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
-import no.nav.data.polly.policy.dto.PolicyInformationTypeResponse;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.ProcessReadController.ProcessPage;
 import no.nav.data.polly.process.dto.ProcessCountResponse;
@@ -51,7 +51,7 @@ class ProcessControllerIT extends IntegrationTestBase {
                         .purposeCode(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1))
                         .informationTypeId(createAndSaveInformationType().getId())
                         .informationType(
-                                new PolicyInformationTypeResponse(createAndSaveInformationType().getId(), INFORMATION_TYPE_NAME,
+                                new InformationTypeShortResponse(createAndSaveInformationType().getId(), INFORMATION_TYPE_NAME,
                                         createAndSaveInformationType().getData().sensitivityCode()))
                         .subjectCategory(CodelistService.getCodelistResponse(ListName.SUBJECT_CATEGORY, policy.getData().getSubjectCategories().get(0)))
                         .legalBasis(legalBasisResponse())

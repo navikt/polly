@@ -27,6 +27,7 @@ import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessResponse.DataProcessingResponse;
 import no.nav.data.polly.process.dto.ProcessResponse.DpiaResponse;
 import no.nav.data.polly.process.dto.ProcessResponse.RetentionResponse;
+import no.nav.data.polly.process.dto.ProcessShortResponse;
 import org.hibernate.annotations.Type;
 
 import java.util.HashSet;
@@ -205,6 +206,10 @@ public class Process extends Auditable {
                 .riskOwner(dpia.getRiskOwner())
                 .riskOwnerFunction(dpia.getRiskOwnerFunction())
                 .build();
+    }
+
+    public ProcessShortResponse convertToShortResponse() {
+        return new ProcessShortResponse(getId(), getName(), CodelistService.getCodelistResponse(ListName.PURPOSE, purposeCode));
     }
 
     private CodelistResponse getDepartmentCode() {

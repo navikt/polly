@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
+import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 import no.nav.data.polly.process.dto.ProcessResponse;
 
@@ -29,7 +30,7 @@ public class PolicyResponse {
     private List<CodelistResponse> subjectCategories;
     private boolean legalBasesInherited;
     private UUID informationTypeId;
-    private PolicyInformationTypeResponse informationType;
+    private InformationTypeShortResponse informationType;
     @Singular("legalBasis")
     private List<LegalBasisResponse> legalBases;
     private List<UUID> documentIds;

@@ -12,9 +12,9 @@ import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.document.domain.Document;
 import no.nav.data.polly.document.domain.DocumentRepository;
-import no.nav.data.polly.document.dto.DocumentInfoTypeResponse;
 import no.nav.data.polly.document.dto.DocumentRequest;
 import no.nav.data.polly.document.dto.DocumentResponse;
+import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -147,7 +147,7 @@ public class DocumentController {
 
     private DocumentResponse convertToResponseWithInfoTypes(Document document) {
         var response = document.convertToResponse();
-        Map<UUID, DocumentInfoTypeResponse> informationTypes = service.getInformationTypes(document);
+        Map<UUID, InformationTypeShortResponse> informationTypes = service.getInformationTypes(document);
         response.getInformationTypes().forEach(it -> it.setInformationType(informationTypes.get(it.getInformationTypeId())));
         return response;
     }

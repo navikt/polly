@@ -13,9 +13,9 @@ import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.UsedInInstancePurpose;
 import no.nav.data.polly.common.auditing.domain.Auditable;
 import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
-import no.nav.data.polly.policy.dto.PolicyInformationTypeResponse;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.domain.Process;
@@ -111,7 +111,7 @@ public class Policy extends Auditable {
                 .processId(getProcess() == null ? null : getProcess().getId())
                 .process(getProcess() == null || !includeProcess ? null : getProcess().convertToResponse())
                 .informationTypeId(informationTypeId)
-                .informationType(convertInformationTypeNameResponse())
+                .informationType(convertInformationTypeShortResponse())
                 .legalBasesInherited(getData().isLegalBasesInherited())
                 .legalBases(convert(getData().getLegalBases(), LegalBasis::convertToResponse))
                 .documentIds(getData().getDocumentIds())
@@ -122,9 +122,9 @@ public class Policy extends Auditable {
         return UsedInInstancePurpose.builder().id(id.toString()).name(informationTypeName).purposeCode(purposeCode).build();
     }
 
-    private PolicyInformationTypeResponse convertInformationTypeNameResponse() {
+    private InformationTypeShortResponse convertInformationTypeShortResponse() {
         return getInformationType() == null ? null :
-                new PolicyInformationTypeResponse(getInformationTypeId(), getInformationTypeName(), getInformationType().getData().sensitivityCode());
+                new InformationTypeShortResponse(getInformationTypeId(), getInformationTypeName(), getInformationType().getData().sensitivityCode());
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")

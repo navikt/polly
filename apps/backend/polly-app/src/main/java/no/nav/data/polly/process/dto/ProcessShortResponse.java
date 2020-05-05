@@ -1,4 +1,4 @@
-package no.nav.data.polly.policy.dto;
+package no.nav.data.polly.process.dto;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
@@ -14,11 +14,11 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "name", "sensitivity"})
-public class PolicyInformationTypeResponse {
+@JsonPropertyOrder({"id", "name", "purposeCode"})
+public class ProcessShortResponse {
 
     private UUID id;
     private String name;
-    private CodelistResponse sensitivity;
+    private CodelistResponse purposeCode;
 
 }
