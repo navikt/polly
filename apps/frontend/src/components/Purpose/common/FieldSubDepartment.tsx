@@ -1,31 +1,31 @@
 import * as React from 'react'
-import { Select, Value } from 'baseui/select'
-import { codelist, ListName } from '../../../service/Codelist'
-import { Field, FieldProps } from 'formik'
-import { ProcessFormValues } from '../../../constants'
-import { Block } from 'baseui/block'
+import {Select} from 'baseui/select'
+import {codelist, ListName} from '../../../service/Codelist'
+import {FieldArray, FormikProps} from 'formik'
+import {ProcessFormValues} from '../../../constants'
+import {Block} from 'baseui/block'
+import {renderTagList} from "../../common/TagList";
 
-const FieldSubDepartments = (props: { subDepartments: string[] }) => {
-  const {subDepartments} = props
-  const [value, setValue] = React.useState<Value>(subDepartments
-    ? subDepartments.map(subDepartment => ({id: subDepartment, label: codelist.getShortname(ListName.SUB_DEPARTMENT, subDepartment)}))
-    : [])
+const FieldSubDepartments = (props: { formikBag: FormikProps<ProcessFormValues> }) => {
 
   return (
-    <Field
+    <FieldArray
       name='subDepartments'
-      render={({form}: FieldProps<ProcessFormValues>) => (
+      render={arrayHelpers => (
         <Block width={'100%'}>
-          <Select
-            multi
-            clearable
-            options={codelist.getParsedOptions(ListName.SUB_DEPARTMENT)}
-            onChange={({value}) => {
-              setValue(value)
-              form.setFieldValue('subDepartments', value.map(v => v.id))
-            }}
-            value={value}
-          />
+          <Block width={'100%'}>
+            <Select
+              multi
+              clearable
+              options={codelist.getParsedOptions(ListName.SUB_DEPARTMENT).filter(o => !props.formikBag.values.subDepartments.includes(o.id))}
+              onChange={({value}) => {
+                arrayHelpers.form.setFieldValue('subDepartments', [...props.formikBag.values.subDepartments, ...value.map(v => v.id)])
+              }}
+            />
+          </Block>
+          <Block>
+            <Block>{renderTagList(props.formikBag.values.subDepartments, arrayHelpers)}</Block>
+          </Block>
         </Block>
       )}
     />

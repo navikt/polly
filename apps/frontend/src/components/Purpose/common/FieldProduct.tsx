@@ -1,27 +1,31 @@
 import * as React from "react";
-import {Select, Value} from "baseui/select";
+import {Select} from "baseui/select";
 import {codelist, ListName} from "../../../service/Codelist";
-import {FieldArray} from "formik";
+import {FieldArray, FormikProps} from "formik";
+import {ProcessFormValues} from "../../../constants";
+import {renderTagList} from "../../common/TagList";
+import {Block} from "baseui/block";
 
-const FieldProduct = (props: { products: string[] }) => {
-  const {products} = props
-  const [value, setValue] = React.useState<Value>(products ? products.map(product => ({
-    id: product,
-    label: codelist.getShortname(ListName.SYSTEM, product)
-  })) : [])
-
+const FieldProduct = (props: { formikBag: FormikProps<ProcessFormValues> }) => {
   return <FieldArray
     name='products'
-    render={arrayHelpers => <Select
-      multi
-      clearable
-      options={codelist.getParsedOptions(ListName.SYSTEM)}
-      onChange={({value}) => {
-        setValue(value)
-        arrayHelpers.form.setFieldValue('products', value.map(v => v.id))
-      }}
-      value={value}
-    />}
+    render={arrayHelpers => (
+      <>
+        <Block width={'100%'}>
+          <Block width={'100%'}>
+            <Select
+              multi
+              clearable
+              options={codelist.getParsedOptions(ListName.SYSTEM).filter(o => !props.formikBag.values.products.includes(o.id))}
+              onChange={({value}) => {
+                arrayHelpers.form.setFieldValue('products', [...props.formikBag.values.products, ...value.map(v => v.id)])
+              }}
+            />
+          </Block>
+          <Block>{renderTagList(props.formikBag.values.products, arrayHelpers)}</Block>
+        </Block>
+      </>
+    )}
   />
 }
 
