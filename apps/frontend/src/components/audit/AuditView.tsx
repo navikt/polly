@@ -105,7 +105,7 @@ export const AuditView = (props: AuditViewProps) => {
                     })
                   }
                 }}>
-                  <Button size="compact" shape="round" kind="tertiary"><FontAwesomeIcon icon={faExchangeAlt}/></Button>
+                  <div><Button size="compact" shape="round" kind="tertiary"><FontAwesomeIcon icon={faExchangeAlt}/></Button></div>
                 </StatefulPopover>
               </Block>
             </Block>
