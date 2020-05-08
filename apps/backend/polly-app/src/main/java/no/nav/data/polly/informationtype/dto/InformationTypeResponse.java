@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
+import no.nav.data.polly.common.rest.ChangeStampResponse;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
 
@@ -22,7 +23,7 @@ import static no.nav.data.polly.common.utils.StreamUtils.copyOf;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonPropertyOrder({"id", "name", "term", "description", "sensitivity", "navMaster", "categories", "sources", "keywords"})
+@JsonPropertyOrder({"id", "name", "term", "description", "sensitivity", "navMaster", "categories", "sources", "keywords", "changeStamp"})
 public class InformationTypeResponse {
 
     private UUID id;
@@ -34,11 +35,13 @@ public class InformationTypeResponse {
     private List<CodelistResponse> categories;
     private List<CodelistResponse> sources;
     private List<String> keywords;
+    private ChangeStampResponse changeStamp;
 
     public InformationTypeResponse(InformationType informationType) {
         id = informationType.getId();
         setTerm(informationType.getTermId());
         mapJsonFields(informationType.getData());
+        setChangeStamp(informationType.convertChangeStampResponse());
     }
 
     private void mapJsonFields(@NotNull InformationTypeData data) {
