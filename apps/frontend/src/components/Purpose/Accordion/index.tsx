@@ -193,6 +193,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
       {!!currentProcess &&
       <>
         <ModalProcess
+          key={currentProcess.id}
           title={intl.processingActivitiesEdit}
           onClose={() => setShowEditProcessModal(false)}
           isOpen={showEditProcessModal}
