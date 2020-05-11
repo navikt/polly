@@ -18,6 +18,7 @@ public class Team {
 
     private String id;
     private String name;
+    private String description;
     private List<Member> members;
 
     public TeamResponse convertToResponse() {

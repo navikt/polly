@@ -1,6 +1,5 @@
-package no.nav.data.polly.teams.nora;
+package no.nav.data.polly.teams.teamcat;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,24 +14,20 @@ import static no.nav.data.polly.common.utils.StreamUtils.convert;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class NoraTeam {
+public class TeamKatTeam {
 
-    @JsonProperty("_id")
     private String id;
     private String name;
-    private String nick;
-    private String groupId;
-    @JsonProperty("created_at")
-    private String createdAt;
-    @JsonProperty("updated_at")
-    private String updatedAt;
-    private List<NoraMember> members;
+    private String description;
+    private String slackChannel;
+    private List<TeamKatMember> members;
 
     public Team convertToTeam() {
         return Team.builder()
-                .id(nick)
+                .id(id)
                 .name(name)
-                .members(convert(members, NoraMember::convertToMember))
+                .description(description)
+                .members(convert(members, TeamKatMember::convertToMember))
                 .build();
     }
 }

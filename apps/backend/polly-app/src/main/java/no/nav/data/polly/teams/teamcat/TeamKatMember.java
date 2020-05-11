@@ -1,6 +1,5 @@
-package no.nav.data.polly.teams.nora;
+package no.nav.data.polly.teams.teamcat;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,11 +10,9 @@ import no.nav.data.polly.teams.domain.Member;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class NoraMember {
+public class TeamKatMember {
 
-    @JsonProperty("_id")
-    private String id;
-    private String azureId;
+    private String navIdent;
     private String name;
     private String email;
 
