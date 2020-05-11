@@ -55,9 +55,8 @@ public class AlertRepositoryImpl implements AlertRepositoryCustom {
 
         List<Map<String, Object>> resp = jdbcTemplate.queryForList(query, params);
         long total = resp.isEmpty() ? 0 : (long) resp.get(0).get("count");
-        List<AlertEvent> alertEvents = get(resp);
+        List<AlertEvent> alertEvents = total >= 0 ? get(resp) : List.of();
         return new PageImpl<>(alertEvents, PageRequest.of(page, pageSize), total);
-
     }
 
     private List<AlertEvent> get(List<Map<String, Object>> resp) {
