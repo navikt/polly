@@ -7,6 +7,7 @@ import BKLogo from '../../resources/Behandlingskatalog_logo.svg'
 import SlackLogo from '../../resources/Slack_Monochrome_White.svg'
 import { StyledLink } from 'baseui/link'
 import NavItem from './NavItem'
+import { env } from '../../util/env'
 
 const sideBarProps: BlockProps = {
   position: 'fixed',
@@ -22,7 +23,7 @@ const items: BlockProps = {
 
 const Brand = () => (
 
-  <Block display="flex" flexDirection={"column"} padding="1rem" marginTop="1rem">
+  <Block display="flex" flexDirection='column' padding="1rem" marginTop="1rem">
     <StyledLink style={{ textDecoration: 'none', textAlign: 'center' }} href="/">
       <img src={BKLogo} />
       <H6 color="white" marginTop="1rem" marginLeft="5px" marginBottom="2rem">Behandlingskatalog</H6>
@@ -47,7 +48,7 @@ const SideBar = () => {
             <img src={NavLogo} alt='NAV logo' width="100%" />
           </Block>
         </Block>
-        <a href="slack://channel?team=T5LNAMWNA&id=CR1B19E6L" style={{ textDecoration: 'none' }}>
+        <a href={`slack://channel?team=${env.slackId}&id=CR1B19E6L`} style={{ textDecoration: 'none' }}>
           <Block display="flex" justifyContent="center" paddingBottom={theme.sizing.scale400} alignItems="center">
             <img src={SlackLogo} width="60px" alt="slack logo" />
             <Paragraph4 color={theme.colors.white}>#behandlingskatalogen</Paragraph4>

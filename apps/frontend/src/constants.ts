@@ -1,6 +1,6 @@
-import {Code, codelist, ListName} from './service/Codelist'
-import {ColumnCompares} from './util/hooks'
-import {intl} from './util'
+import { Code, codelist, ListName } from './service/Codelist'
+import { ColumnCompares } from './util/hooks'
+import { intl } from './util'
 
 export interface InformationtypeFormValues {
   id?: string;
@@ -249,6 +249,8 @@ export interface CodeListFormValues {
 export interface Team {
   id: string;
   name: string;
+  description: string;
+  slackChannel?: string;
   members: Member[];
 }
 

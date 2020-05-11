@@ -1,19 +1,23 @@
-import { Overrides, StatefulPopover } from "baseui/popover"
-import React, { useEffect, useState } from "react"
-import { getTeam } from "../../api/TeamApi"
-import { Team } from "../../constants"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faEnvelope, faTimesCircle, faUser, faUsers } from "@fortawesome/free-solid-svg-icons"
-import { copyToClipboard, intl, theme } from "../../util"
-import { PLACEMENT, StatefulTooltip } from "baseui/tooltip"
-import { Card, StyledBody } from "baseui/card"
-import { ListItem, ListItemLabel, OverridesT } from "baseui/list"
-import { IconProp } from "@fortawesome/fontawesome-svg-core"
-import { Label3, Paragraph3 } from "baseui/typography"
-import Button from "./Button"
+import { Overrides, StatefulPopover } from 'baseui/popover'
+import React, { useEffect, useState } from 'react'
+import { getTeam } from '../../api/TeamApi'
+import { Team } from '../../constants'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEnvelope, faTimesCircle, faUser, faUsers } from '@fortawesome/free-solid-svg-icons'
+import { copyToClipboard, intl, theme } from '../../util'
+import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
+import { Card, StyledBody } from 'baseui/card'
+import { ListItem, ListItemLabel, OverridesT } from 'baseui/list'
+import { IconProp } from '@fortawesome/fontawesome-svg-core'
+import { Label3, Paragraph3 } from 'baseui/typography'
+import Button from './Button'
+import { SlackLink } from './SlackLink'
+import ReactMarkdown from 'react-markdown'
+import { StyledLink } from 'baseui/link'
+import { env } from '../../util/env'
 
 
-const defaultTeam = (teamId: string) => ({id: teamId, name: teamId, members: []})
+const defaultTeam = (teamId: string) => ({id: teamId, name: teamId, description: ' ', members: []})
 
 const listOverrides: OverridesT = {
   Content: {
@@ -26,24 +30,30 @@ const listOverrides: OverridesT = {
 const popoverOverride: Overrides = {
   Body: {
     style: () => ({
-      maxWidth: "60%",
-      maxHeight: "80%",
-      overflowY: "scroll"
+      maxWidth: '60%',
+      maxHeight: '80%',
+      overflowY: 'scroll'
     })
   }
 }
 
-const SmallIcon = (props: { icon: IconProp }) => <FontAwesomeIcon icon={props.icon} size="sm" style={{marginRight: ".5rem"}}/>
+const SmallIcon = (props: { icon: IconProp }) => <FontAwesomeIcon icon={props.icon} size="sm" style={{marginRight: '.5rem'}}/>
 
 const TeamContent = (props: { team: Team }) => (
-  <Card title={props.team.name}>
+  <Card title={
+    <StyledLink target="_blank" rel="noopener noreferrer"
+                href={`${env.teamKatBaseUrl}team/${props.team.id}`}>{props.team.name}</StyledLink>}
+  >
     <StyledBody>
       <dl>
         <dt><Label3>{intl.description}</Label3></dt>
-        <dd><Paragraph3>Omslag nødvendige håndskrift igjennem overlegent forretningsplanen innlagt, vingene forlatelse deilige inntektskilder noe en besynderlighet. Beviset
-          betrodd frelste navne tiltrer De, trappetrinn sykebesøk efter spesier, forlatelse ringeaktende forestillet avtredende skrape jeg. </Paragraph3></dd>
-        <dt><Label3>{intl.slack}</Label3></dt>
-        <dd><Paragraph3>#kommer</Paragraph3></dd>
+        <dd><Paragraph3>
+          <ReactMarkdown source={props.team.description} linkTarget='_blank'/>
+        </Paragraph3></dd>
+        {props.team.slackChannel && <>
+          <dt><Label3>{intl.slack}</Label3></dt>
+          <dd><SlackLink channel={props.team.slackChannel}/></dd>
+        </>}
       </dl>
 
       {props.team.members.map((member, index) =>
