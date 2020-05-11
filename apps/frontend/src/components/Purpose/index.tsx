@@ -49,7 +49,7 @@ const ProcessList = ({code, listName, history}: ProcessListProps & RouteComponen
   const [processList, setProcessList] = React.useState<UseWithPurpose[]>([])
   const [currentProcess, setCurrentProcess] = React.useState<Process | undefined>()
   const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
-  const [errorProcessModal, setErrorProcessModal] = React.useState(null)
+  const [errorProcessModal, setErrorProcessModal] = React.useState<string>("")
   const [errorPolicyModal, setErrorPolicyModal] = React.useState(null)
   const [errorDocumentModal, setErrorDocumentModal] = React.useState(null)
   const [isLoadingProcessList, setIsLoadingProcessList] = React.useState(true)
@@ -117,13 +117,17 @@ const ProcessList = ({code, listName, history}: ProcessListProps & RouteComponen
     try {
       const newProcess = await createProcess(process)
       setProcessList(sortProcess([...processList, newProcess]))
-      setErrorProcessModal(null)
+      setErrorProcessModal("")
       setShowCreateProcessModal(false)
       setCurrentProcess(newProcess)
       history.push(`/process/purpose/${newProcess.purposeCode}/${newProcess.id}`)
       setRefresh()
     } catch (err) {
-      setErrorProcessModal(err.message)
+      if (err.response.data.message.includes("already exists")) {
+        setErrorProcessModal("Behandlingen eksisterer allerede.")
+        return
+      }
+      setErrorProcessModal(err.response.data.message)
     }
   }
 
@@ -142,7 +146,7 @@ const ProcessList = ({code, listName, history}: ProcessListProps & RouteComponen
     try {
       await deleteProcess(process.id)
       setProcessList(sortProcess(processList.filter((p: UseWithPurpose) => p.id !== process.id)))
-      setErrorProcessModal(null)
+      setErrorProcessModal("")
       return true
     } catch (err) {
       setErrorProcessModal(err)
