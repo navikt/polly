@@ -1,4 +1,4 @@
-import { AlertEvent, InformationTypeAlert, PageResponse, ProcessAlert } from "../constants"
+import { AlertEvent, AlertEventLevel, AlertEventType, InformationTypeAlert, PageResponse, ProcessAlert } from "../constants"
 import axios from "axios"
 import { env } from "../util/env"
 
@@ -11,6 +11,9 @@ export const getAlertForProcess = async (processId: string) => {
 }
 
 
-export const getAlertEvents = async (page: number, count: number) => {
-  return (await axios.get<PageResponse<AlertEvent>>(`${env.pollyBaseUrl}/alert/events/?pageNumber=${page}&pageSize=${count}`)).data
+export const getAlertEvents = async (page: number, count: number, type?: AlertEventType, level?: AlertEventLevel) => {
+  return (await axios.get<PageResponse<AlertEvent>>(`${env.pollyBaseUrl}/alert/events/?pageNumber=${page}&pageSize=${count}`
+    + (type ? `&type=${type}` : '')
+    + (level ? `&level=${level}` : '')
+  )).data
 }

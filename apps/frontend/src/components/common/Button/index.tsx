@@ -16,6 +16,7 @@ interface ButtonProps {
   size?: SIZE[keyof SIZE]
   shape?: SHAPE[keyof SHAPE]
   icon?: IconDefinition
+  iconEnd?: IconDefinition
   inline?: boolean
   tooltip?: string
   children?: ReactNode
@@ -71,7 +72,9 @@ const Button = (props: ButtonProps) => {
         <BaseUIButton kind={baseuiKind} size={props.size} shape={props.shape} onClick={() => props.onClick?.()} overrides={{BaseButton: overrides}}
                       startEnhancer={props.startEnhancer} disabled={props.disabled} type={props.type}
         >
-          {props.icon && <FontAwesomeIcon icon={props.icon} style={{marginRight: props.children ? '.5rem' : undefined}}/>} {props.children}
+          {props.icon && <FontAwesomeIcon icon={props.icon} style={{marginRight: props.children ? '.5rem' : undefined}}/>}
+          {props.children}
+          {props.iconEnd && <FontAwesomeIcon icon={props.iconEnd} style={{marginLeft: props.children ? '.5rem' : undefined}}/>}
         </BaseUIButton>
       </Tooltip>
       <Block display='inline' marginRight={props.marginRight ? theme.sizing.scale400 : 0}/>
