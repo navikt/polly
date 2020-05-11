@@ -117,6 +117,7 @@ export interface IStrings {
   purposeUse: string;
   informationTypeExternalUse: string;
   thirdParties: string;
+  alerts: string;
   policyEdit: string;
   policyNew: string;
   policyAdd: string;
