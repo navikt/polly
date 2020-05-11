@@ -8,6 +8,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.alert.domain.AlertEvent;
+import no.nav.data.polly.alert.domain.AlertEventLevel;
+import no.nav.data.polly.alert.domain.AlertEventType;
 import no.nav.data.polly.alert.dto.AlertEventResponse;
 import no.nav.data.polly.alert.dto.AlertEventResponse.AlertEventResponseBuilder;
 import no.nav.data.polly.alert.dto.InformationTypeAlert;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
@@ -75,8 +78,13 @@ public class AlertController {
             @ApiResponse(code = 200, message = "Alert events fetched", response = EventPage.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/events")
-    public ResponseEntity<RestResponsePage<AlertEventResponse>> alertsEvents(PageParameters parameters) {
-        var events = alertService.getEvents(parameters).map(this::convertEventResponse);
+    public ResponseEntity<RestResponsePage<AlertEventResponse>> alertsEvents(PageParameters parameters,
+            @RequestParam(value = "processId", required = false) UUID processId,
+            @RequestParam(value = "informationTypeId", required = false) UUID informationTypeId,
+            @RequestParam(value = "type", required = false) AlertEventType type,
+            @RequestParam(value = "level", required = false) AlertEventLevel level
+    ) {
+        var events = alertService.getEvents(parameters, processId, informationTypeId, type, level).map(this::convertEventResponse);
         return ResponseEntity.ok(new RestResponsePage<>(events));
     }
 
