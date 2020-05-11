@@ -1,6 +1,6 @@
-import { Code, codelist, ListName } from './service/Codelist'
-import { ColumnCompares } from './util/hooks'
-import { intl } from './util'
+import {Code, codelist, ListName} from './service/Codelist'
+import {ColumnCompares} from './util/hooks'
+import {intl} from './util'
 
 export interface InformationtypeFormValues {
   id?: string;
@@ -112,6 +112,7 @@ export interface InformationType {
   sources: Code[];
   categories: Code[];
   toBeDeleted: boolean;
+  changeStamp: ChangeStamp;
 }
 
 export interface Policy {

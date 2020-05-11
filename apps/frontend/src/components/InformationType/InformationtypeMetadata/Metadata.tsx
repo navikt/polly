@@ -1,20 +1,20 @@
 import * as React from 'react'
-import { ReactNode, useEffect, useState } from 'react'
-import { Block } from 'baseui/block'
-import { InformationType } from '../../../constants'
-import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
-import { IconDefinition } from '@fortawesome/fontawesome-common-types'
-import { intl, theme } from '../../../util'
-import { Label2 } from 'baseui/typography'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimesCircle, faUserShield } from '@fortawesome/free-solid-svg-icons'
-import { Code } from '../../../service/Codelist'
-import { sensitivityColor } from '../Sensitivity'
-import { getTerm, mapTermToOption } from '../../../api'
-import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
-import { StyledLink } from 'baseui/link'
-import { marginZero } from '../../common/Style'
-import { DotTags } from '../../common/DotTag'
+import {ReactNode, useEffect, useState} from 'react'
+import {Block} from 'baseui/block'
+import {InformationType} from '../../../constants'
+import {FlexGrid, FlexGridItem} from 'baseui/flex-grid'
+import {IconDefinition} from '@fortawesome/fontawesome-common-types'
+import {intl, theme} from '../../../util'
+import {Label2} from 'baseui/typography'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faTimesCircle, faUserShield} from '@fortawesome/free-solid-svg-icons'
+import {Code} from '../../../service/Codelist'
+import {sensitivityColor} from '../Sensitivity'
+import {getTerm, mapTermToOption} from '../../../api'
+import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
+import {StyledLink} from 'baseui/link'
+import {marginZero} from '../../common/Style'
+import {DotTags} from '../../common/DotTag'
 
 const renderCodesToLinks = (sources: Code[]) =>
   sources.map((source, index) => (
@@ -97,7 +97,7 @@ const Metadata = (props: { informationtype: InformationType }) => {
 
   const dividerDistance = theme.sizing.scale2400
   return (
-    <Block display="flex" marginBottom="5rem">
+    <Block display="flex" marginBottom="1rem">
       <Block width="40%" paddingRight={dividerDistance}>
         <DescriptionData
           termId={informationtype.term}

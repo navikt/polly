@@ -1,26 +1,26 @@
 import * as React from 'react'
-import { useEffect } from 'react'
-import { Accordion, Panel } from 'baseui/accordion'
-import { generatePath, RouteComponentProps, withRouter } from 'react-router'
-import { KIND, SIZE as ButtonSize } from 'baseui/button'
-import { StyledSpinnerNext } from 'baseui/spinner'
-import { Block } from 'baseui/block'
-import { Label2, Paragraph2 } from 'baseui/typography'
-import { intl, theme, useAwait } from '../../../util'
-import { user } from '../../../service/User'
-import { Plus } from 'baseui/icon'
-import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose } from '../../../constants'
+import {useEffect} from 'react'
+import {Accordion, Panel} from 'baseui/accordion'
+import {generatePath, RouteComponentProps, withRouter} from 'react-router'
+import {KIND, SIZE as ButtonSize} from 'baseui/button'
+import {StyledSpinnerNext} from 'baseui/spinner'
+import {Block} from 'baseui/block'
+import {Label2, Paragraph2} from 'baseui/typography'
+import {intl, theme, useAwait} from '../../../util'
+import {user} from '../../../service/User'
+import {Plus} from 'baseui/icon'
+import {AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose} from '../../../constants'
 import ModalProcess from './ModalProcess'
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy'
-import { convertProcessToFormValues } from '../../../api'
-import { PathParams } from '../../../pages/PurposePage'
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
-import { AddDocumentModal } from './AddDocumentModal'
+import {convertProcessToFormValues} from '../../../api'
+import {PathParams} from '../../../pages/PurposePage'
+import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal'
+import {AddDocumentModal} from './AddDocumentModal'
 import Button from '../../common/Button'
-import moment from 'moment'
 import AccordionTitle from './AccordionTitle'
 import ProcessData from './ProcessData'
+import {lastModifiedDate} from "../../../util/date-formatter";
 
 type AccordionProcessProps = {
   isLoading: boolean
@@ -38,11 +38,6 @@ type AccordionProcessProps = {
   submitEditPolicy: (process: PolicyFormValues) => Promise<boolean>
   submitDeletePolicy: (process: Policy) => Promise<boolean>
   submitAddDocument: (document: AddDocumentToProcessFormValues) => Promise<boolean>
-}
-
-const lastModifiedDate = (lastModifiedDate: string) => {
-  let lang = localStorage.getItem('polly-lang') === 'nb' ? 'nb' : 'en'
-  return moment(lastModifiedDate).locale(lang).format('LL')
 }
 
 const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<PathParams>) => {

@@ -10,12 +10,13 @@ import InformationtypePolicyTable from './InformationtypePolicyTable'
 import TableDisclosure from '../../common/TableDisclosure'
 import {DocumentTable} from './DocumentTable'
 import {Tab} from 'baseui/tabs'
-import {H4} from 'baseui/typography'
+import {H4, ParagraphSmall} from 'baseui/typography'
 import {user} from '../../../service/User'
 import {InformationTypeBannerButtons} from '../InformationTypeBannerButtons'
 import Button from '../../common/Button'
 import {CustomizedTabs} from "../../common/CustomizedTabs";
 import {tabOverride} from "../../common/Style";
+import {lastModifiedDate} from "../../../util/date-formatter";
 
 interface InformationtypeMetadataProps {
   informationtype: InformationType;
@@ -57,21 +58,25 @@ const Disclosures = ({disclosures}: { disclosures: Disclosure[] }) => {
 
 const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
   const [activeTab, setActiveTab] = useState('purposes')
-
   useAwait(user.wait())
-
   return (
     <>
       {props.informationtype && (
         <>
           <Block display="flex" justifyContent="space-between">
-            <H4 marginTop="0" >{props.informationtype.name}</H4>
+            <H4 marginTop="0">{props.informationtype.name}</H4>
             {user.canWrite() && (
               <InformationTypeBannerButtons id={props.informationtype.id}/>
             )}
           </Block>
 
           <Metadata informationtype={props.informationtype}/>
+
+          <Block display='flex' justifyContent='flex-end' marginBottom="5rem">
+            <ParagraphSmall>
+              <i>{intl.formatString(intl.lastModified, props.informationtype.changeStamp.lastModifiedBy, lastModifiedDate(props.informationtype.changeStamp.lastModifiedDate))}</i>
+            </ParagraphSmall>
+          </Block>
 
           <CustomizedTabs
             activeKey={activeTab}
