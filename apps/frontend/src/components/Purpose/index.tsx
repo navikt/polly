@@ -30,6 +30,7 @@ import {env} from '../../util/env'
 import {faFileWord, faPlus} from '@fortawesome/free-solid-svg-icons'
 import Button from '../common/Button'
 import {Select} from "baseui/select";
+import {RouteComponentProps, withRouter} from 'react-router-dom'
 
 const rowBlockProps: BlockProps = {
   marginBottom: 'scale800',
@@ -44,7 +45,7 @@ type ProcessListProps = {
 
 const sortProcess = (list: UseWithPurpose[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, intl.getLanguage()))
 
-const ProcessList = ({code, listName}: ProcessListProps) => {
+const ProcessList = ({code, listName, history}: ProcessListProps & RouteComponentProps) => {
   const [processList, setProcessList] = React.useState<UseWithPurpose[]>([])
   const [currentProcess, setCurrentProcess] = React.useState<Process | undefined>()
   const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
@@ -54,7 +55,26 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
   const [isLoadingProcessList, setIsLoadingProcessList] = React.useState(true)
   const [isLoadingProcess, setIsLoadingProcess] = React.useState(true)
   const current_location = useLocation()
+
   const [status, setStatus] = React.useState([{label: intl.all, id: "ALL"}]);
+
+  const listNameToUrl = () => listName && ({
+    'DEPARTMENT': 'department',
+    'SUB_DEPARTMENT': 'subDepartment',
+    'PURPOSE': 'purpose'
+  } as { [l: string]: string })[listName]
+
+  const hasAccess = () => user.canWrite()
+
+  useAwait(user.wait())
+
+  useEffect(() => {
+    (async () => {
+      setIsLoadingProcessList(true)
+      await getProcessList()
+      setIsLoadingProcessList(false)
+    })()
+  }, [code, status])
 
   const getProcessList = async () => {
     try {
@@ -99,6 +119,8 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
       setProcessList(sortProcess([...processList, newProcess]))
       setErrorProcessModal(null)
       setShowCreateProcessModal(false)
+      setCurrentProcess(newProcess)
+      history.push(`/process/purpose/${newProcess.purposeCode}/${newProcess.id}`)
     } catch (err) {
       setErrorProcessModal(err.message)
     }
@@ -193,24 +215,6 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
     }
     return true
   }
-
-  const hasAccess = () => user.canWrite()
-
-  useAwait(user.wait())
-
-  useEffect(() => {
-    (async () => {
-      setIsLoadingProcessList(true)
-      await getProcessList()
-      setIsLoadingProcessList(false)
-    })()
-  }, [code, status])
-
-  const listNameToUrl = () => listName && ({
-    'DEPARTMENT': 'department',
-    'SUB_DEPARTMENT': 'subDepartment',
-    'PURPOSE': 'purpose'
-  } as { [l: string]: string })[listName]
 
   return (
     <>
@@ -309,4 +313,4 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
   )
 }
 
-export default ProcessList
+export default withRouter(ProcessList)

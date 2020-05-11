@@ -10,8 +10,9 @@ import ModalProcess from '../components/Purpose/Accordion/ModalProcess';
 import {ProcessFormValues} from '../constants';
 import {convertProcessToFormValues, createProcess} from '../api';
 import AlphabeticList from "../components/common/AlphabeticList";
+import {RouteComponentProps} from 'react-router-dom'
 
-export const PurposeListPage = () => {
+export const PurposeListPage = (props: RouteComponentProps) => {
   useAwait(codelist.wait())
 
   const hasAccess = () => user.canWrite();
@@ -22,9 +23,10 @@ export const PurposeListPage = () => {
   const handleCreateProcess = async (process: ProcessFormValues) => {
     if (!process) return
     try {
-      createProcess(process)
+      const newProcess = await createProcess(process)
       setErrorProcessModal(null)
       setShowCreateProcessModal(false)
+      props.history.push(`/process/purpose/${newProcess.purposeCode}/${newProcess.id}`)
     } catch (err) {
       setErrorProcessModal(err.message)
     }
