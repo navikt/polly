@@ -27,6 +27,7 @@ public class TeamKatTeam {
                 .id(id)
                 .name(name)
                 .description(description)
+                .slackChannel(slackChannel)
                 .members(convert(members, TeamKatMember::convertToMember))
                 .build();
     }

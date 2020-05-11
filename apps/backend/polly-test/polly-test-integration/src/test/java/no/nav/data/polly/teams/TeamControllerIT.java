@@ -30,6 +30,8 @@ class TeamControllerIT extends IntegrationTestBase {
         assertThat(team.getBody()).isNotNull();
         assertThat(team.getBody().getId()).isEqualTo("teamname");
         assertThat(team.getBody().getName()).isEqualTo("Visual Team Name");
+        assertThat(team.getBody().getDescription()).isEqualTo("desc");
+        assertThat(team.getBody().getSlackChannel()).isEqualTo("slack");
         assertThat(team.getBody().getMembers()).hasSize(1);
         assertThat(team.getBody().getMembers().get(0).getName()).isEqualTo("Member Name");
         assertThat(team.getBody().getMembers().get(0).getEmail()).isEqualTo("member@email.com");
