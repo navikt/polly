@@ -79,7 +79,7 @@ export const AlertEventPage = () => {
       <Block width='100%' display='flex' marginBottom={theme.sizing.scale200}>
 
         <Block width='50%' display='flex' justifyContent='flex-start' alignItems='center'>
-          <Label2 marginRight={theme.sizing.scale600}>Type:</Label2>
+          <Label2 marginRight={theme.sizing.scale600}>{intl.type}: </Label2>
           <StatefulSelect
             options={Object.values(AlertEventType).map(t => ({id: t, label: intl[t]}))}
             onChange={params => dispatch({type: 'EVENT_TYPE', value: params?.option?.id as AlertEventType})}
@@ -87,11 +87,11 @@ export const AlertEventPage = () => {
         </Block>
 
         <Block width='50%' display='flex' justifyContent='flex-end' alignItems='center'>
-          <Label2 marginRight={theme.sizing.scale600}>Nivå: </Label2>
-          {levelButton('Alle')}
-          {levelButton('Info', AlertEventLevel.INFO)}
-          {levelButton('Advarsel', AlertEventLevel.WARNING)}
-          {levelButton('Feil', AlertEventLevel.ERROR)}
+          <Label2 marginRight={theme.sizing.scale600}>{intl.level}: </Label2>
+          {levelButton(intl.all)}
+          {levelButton(intl.INFO, AlertEventLevel.INFO)}
+          {levelButton(intl.WARNING, AlertEventLevel.WARNING)}
+          {levelButton(intl.ERROR, AlertEventLevel.ERROR)}
         </Block>
 
       </Block>
@@ -101,8 +101,8 @@ export const AlertEventPage = () => {
           <>
             <HeadCell title={intl.process}/>
             <HeadCell title={intl.informationType}/>
-            <HeadCell title={'Nivå'}/>
-            <HeadCell title={'Type'}/>
+            <HeadCell title={intl.level}/>
+            <HeadCell title={intl.type}/>
           </>
         }
       >

@@ -265,6 +265,8 @@ export interface IStrings {
   appName: string;
   beta: string;
   all: string;
+  level: string;
+  type: string;
   allProcesses: string;
   completedProcesses: string;
   showCompletedProcesses: string;
