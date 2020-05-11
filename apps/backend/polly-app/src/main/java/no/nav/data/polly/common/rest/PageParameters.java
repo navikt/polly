@@ -30,7 +30,7 @@ public class PageParameters {
         return PageRequest.of(pageNumber, pageSize, Sort.by(fieldName).descending());
     }
 
-    private void validate() {
+    public void validate() {
         if (pageNumber < 0) {
             log.warn("invalid pageNumber {}, setting to 0", pageNumber);
             pageNumber = 0;

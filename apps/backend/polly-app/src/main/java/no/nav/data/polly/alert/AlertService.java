@@ -190,6 +190,7 @@ public class AlertService {
     }
 
     public Page<AlertEvent> getEvents(PageParameters parameters, UUID processId, UUID informationTypeId, AlertEventType type, AlertEventLevel level) {
+        parameters.validate();
         return alertRepository.findAlerts(processId, informationTypeId, type, level, parameters.getPageNumber(), parameters.getPageSize());
     }
 
