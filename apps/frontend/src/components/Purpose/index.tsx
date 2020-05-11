@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {useEffect} from 'react'
+import {useEffect, useReducer} from 'react'
 
 import {Block, BlockProps} from 'baseui/block'
 import {Label1, Label2} from 'baseui/typography'
@@ -55,8 +55,8 @@ const ProcessList = ({code, listName, history}: ProcessListProps & RouteComponen
   const [isLoadingProcessList, setIsLoadingProcessList] = React.useState(true)
   const [isLoadingProcess, setIsLoadingProcess] = React.useState(true)
   const current_location = useLocation()
-
-  const [status, setStatus] = React.useState([{label: intl.all, id: "ALL"}]);
+  const [status, setStatus] = React.useState([{label: intl.all, id: "ALL"}])
+  const [refresh,setRefresh] = useReducer(prevState => !prevState,false)
 
   const listNameToUrl = () => listName && ({
     'DEPARTMENT': 'department',
@@ -74,7 +74,7 @@ const ProcessList = ({code, listName, history}: ProcessListProps & RouteComponen
       await getProcessList()
       setIsLoadingProcessList(false)
     })()
-  }, [code, status])
+  }, [code, status, refresh])
 
   const getProcessList = async () => {
     try {
@@ -121,6 +121,7 @@ const ProcessList = ({code, listName, history}: ProcessListProps & RouteComponen
       setShowCreateProcessModal(false)
       setCurrentProcess(newProcess)
       history.push(`/process/purpose/${newProcess.purposeCode}/${newProcess.id}`)
+      setRefresh()
     } catch (err) {
       setErrorProcessModal(err.message)
     }
