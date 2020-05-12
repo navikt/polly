@@ -1,6 +1,10 @@
 package no.nav.data.polly.common.security;
 
 
+import com.microsoft.aad.msal4j.AuthorizationRequestUrlParameters;
+import com.microsoft.aad.msal4j.ConfidentialClientApplication;
+import com.microsoft.aad.msal4j.Prompt;
+import com.microsoft.aad.msal4j.ResponseMode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -13,8 +17,6 @@ import no.nav.data.polly.common.security.dto.UserInfoResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
-import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.util.UrlUtils;
@@ -30,10 +32,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static no.nav.data.polly.common.security.SecurityConstants.MICROSOFT_GRAPH_SCOPES;
 import static no.nav.data.polly.common.security.SecurityConstants.REGISTRATION_ID;
 import static no.nav.data.polly.common.utils.Constants.SESSION_LENGTH;
 import static org.apache.commons.lang3.StringUtils.substringBefore;
@@ -54,15 +56,16 @@ public class AuthController {
     private final SecurityProperties securityProperties;
     private final AzureTokenProvider azureTokenProvider;
     private final Encryptor encryptor;
-    private final OAuth2AuthorizationRequestResolver resolver;
+    private final ConfidentialClientApplication confidentialClientApplication;
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
-    public AuthController(SecurityProperties securityProperties, AzureTokenProvider azureTokenProvider, Encryptor refreshTokenEncryptor,
-            OAuth2AuthorizationRequestResolver resolver) {
+    public AuthController(SecurityProperties securityProperties,
+            AzureTokenProvider azureTokenProvider, Encryptor refreshTokenEncryptor,
+            ConfidentialClientApplication confidentialClientApplication) {
         this.securityProperties = securityProperties;
         this.azureTokenProvider = azureTokenProvider;
         this.encryptor = refreshTokenEncryptor;
-        this.resolver = resolver;
+        this.confidentialClientApplication = confidentialClientApplication;
     }
 
     @ApiOperation(value = "Login using azure sso")
@@ -79,7 +82,7 @@ public class AuthController {
         Assert.isTrue(securityProperties.isValidRedirectUri(redirectUri), "Illegal redirect_uri " + redirectUri);
         Assert.isTrue(securityProperties.isValidRedirectUri(errorUri), "Illegal error_uri " + errorUri);
         var usedRedirect = redirectUri != null ? redirectUri : substringBefore(fullRequestUrlWithoutQuery(request), "/login");
-        String redirectUrl = createAuthRequestRedirectUrl(request, usedRedirect, errorUri);
+        String redirectUrl = createAuthRequestRedirectUrl(usedRedirect, errorUri, request);
         redirectStrategy.sendRedirect(request, response, redirectUrl);
     }
 
@@ -127,7 +130,7 @@ public class AuthController {
     ) throws IOException {
         log.debug("Request to logout");
         Assert.isTrue(securityProperties.isValidRedirectUri(redirectUri), "Illegal redirect_uri " + redirectUri);
-        azureTokenProvider.destorySession();
+        azureTokenProvider.destroySession();
         response.addCookie(AADStatelessAuthenticationFilter.createCookie(null, 0, request));
         if (redirectUri != null) {
             redirectStrategy.sendRedirect(request, response, new OAuthState(redirectUri).getRedirectUri());
@@ -150,11 +153,16 @@ public class AuthController {
         return ResponseEntity.ok(((UserInfo) authentication.getDetails()).convertToResponse());
     }
 
-    private String createAuthRequestRedirectUrl(HttpServletRequest request, String redirectUri, String errorUri) {
-        return OAuth2AuthorizationRequest.from(resolver.resolve(request, REGISTRATION_ID))
-                .state(new OAuthState(redirectUri, errorUri).toJson(encryptor))
-                .additionalParameters(Map.of("response_mode", "form_post"))
-                .build().getAuthorizationRequestUri();
+    private String createAuthRequestRedirectUrl(String postLoginRedirectUri, String errorUri, HttpServletRequest request) {
+        String redirectUri = UriComponentsBuilder.fromHttpUrl(UrlUtils.buildFullRequestUrl(request))
+                .replacePath("/login/oauth2/code/" + REGISTRATION_ID)
+                .replaceQuery(null).build().toUriString();
+        return confidentialClientApplication.getAuthorizationRequestUrl(AuthorizationRequestUrlParameters
+                .builder(redirectUri, MICROSOFT_GRAPH_SCOPES)
+                .state(new OAuthState(postLoginRedirectUri, errorUri).toJson(encryptor))
+                .responseMode(ResponseMode.FORM_POST)
+                .prompt(Prompt.SELECT_ACCOUNT)
+                .build()).toString();
     }
 
     private String fullRequestUrlWithoutQuery(HttpServletRequest request) {
