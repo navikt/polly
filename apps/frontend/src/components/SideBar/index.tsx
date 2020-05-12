@@ -9,6 +9,7 @@ import {StyledLink} from 'baseui/link'
 import NavItem from './NavItem'
 import {env} from '../../util/env'
 import {user} from '../../service/User'
+import { canViewAlerts } from '../../pages/AlertEventPage'
 
 const sideBarProps: BlockProps = {
   position: 'fixed',
@@ -42,7 +43,7 @@ const SideBar = () => {
         <NavItem to="/informationtype" text={intl.informationTypes} />
         <NavItem to="/document" text={intl.documents} />
         <NavItem to="/thirdparty" text={intl.thirdParties} />
-        {user.isAdmin() && <NavItem to="/alert/events" text={intl.alerts} />}
+        {canViewAlerts() && <NavItem to="/alert/events" text={intl.alerts} />}
       </Block>
 
       <Block position="absolute" bottom="0" width="100%">
