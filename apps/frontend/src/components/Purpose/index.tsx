@@ -1,12 +1,12 @@
 import * as React from 'react'
-import {useEffect} from 'react'
+import { useEffect } from 'react'
 
-import {Block, BlockProps} from 'baseui/block'
-import {Label1, Label2} from 'baseui/typography'
-import {KIND, SIZE as ButtonSize} from 'baseui/button'
-import {AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose} from '../../constants'
-import {intl, theme, useAwait} from '../../util'
-import {user} from '../../service/User'
+import { Block, BlockProps } from 'baseui/block'
+import { Label1, Label2 } from 'baseui/typography'
+import { KIND, SIZE as ButtonSize } from 'baseui/button'
+import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose } from '../../constants'
+import { intl, theme, useAwait } from '../../util'
+import { user } from '../../service/User'
 import ModalProcess from './Accordion/ModalProcess'
 import AccordionProcess from './Accordion'
 import {
@@ -22,14 +22,16 @@ import {
   updatePolicy,
   updateProcess
 } from '../../api'
-import {StyledSpinnerNext} from 'baseui/spinner'
-import {ListName} from '../../service/Codelist'
-import {useLocation} from 'react-router'
-import {StyledLink} from 'baseui/link'
-import {env} from '../../util/env'
-import {faFileWord, faPlus} from '@fortawesome/free-solid-svg-icons'
+import { StyledSpinnerNext } from 'baseui/spinner'
+import { ListName } from '../../service/Codelist'
+import { generatePath, RouteComponentProps, useLocation } from 'react-router'
+import { StyledLink } from 'baseui/link'
+import { env } from '../../util/env'
+import { faFileWord, faPlus } from '@fortawesome/free-solid-svg-icons'
 import Button from '../common/Button'
-import {Select} from "baseui/select";
+import { Select } from 'baseui/select'
+import { PathParams } from '../../pages/PurposePage'
+import { withRouter } from 'react-router-dom'
 
 const rowBlockProps: BlockProps = {
   marginBottom: 'scale800',
@@ -44,7 +46,7 @@ type ProcessListProps = {
 
 const sortProcess = (list: UseWithPurpose[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, intl.getLanguage()))
 
-const ProcessList = ({code, listName}: ProcessListProps) => {
+const ProcessList = ({code, listName, match, history}: ProcessListProps & RouteComponentProps<PathParams>) => {
   const [processList, setProcessList] = React.useState<UseWithPurpose[]>([])
   const [currentProcess, setCurrentProcess] = React.useState<Process | undefined>()
   const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
@@ -54,7 +56,33 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
   const [isLoadingProcessList, setIsLoadingProcessList] = React.useState(true)
   const [isLoadingProcess, setIsLoadingProcess] = React.useState(true)
   const current_location = useLocation()
-  const [status, setStatus] = React.useState([{label: intl.all, id: "ALL"}]);
+  const [status, setStatus] = React.useState([{label: intl.all, id: 'ALL'}])
+
+  useEffect(() => {
+    match.params.processId && getProcessById(match.params.processId)
+  }, [match.params.processId])
+
+  const handleChangePanel = (processId?: string) => {
+    history.push(generatePath(match.path, {code, processId}))
+  }
+
+  const hasAccess = () => user.canWrite()
+
+  useAwait(user.wait())
+
+  useEffect(() => {
+    (async () => {
+      setIsLoadingProcessList(true)
+      await getProcessList()
+      setIsLoadingProcessList(false)
+    })()
+  }, [code, status])
+
+  const listNameToUrl = () => listName && ({
+    'DEPARTMENT': 'department',
+    'SUB_DEPARTMENT': 'subDepartment',
+    'PURPOSE': 'purpose'
+  } as { [l: string]: string })[listName]
 
   const getProcessList = async () => {
     try {
@@ -99,6 +127,7 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
       setProcessList(sortProcess([...processList, newProcess]))
       setErrorProcessModal(null)
       setShowCreateProcessModal(false)
+      handleChangePanel(newProcess.id)
     } catch (err) {
       setErrorProcessModal(err.message)
     }
@@ -194,24 +223,6 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
     return true
   }
 
-  const hasAccess = () => user.canWrite()
-
-  useAwait(user.wait())
-
-  useEffect(() => {
-    (async () => {
-      setIsLoadingProcessList(true)
-      await getProcessList()
-      setIsLoadingProcessList(false)
-    })()
-  }, [code, status])
-
-  const listNameToUrl = () => listName && ({
-    'DEPARTMENT': 'department',
-    'SUB_DEPARTMENT': 'subDepartment',
-    'PURPOSE': 'purpose'
-  } as { [l: string]: string })[listName]
-
   return (
     <>
       <Block {...rowBlockProps}>
@@ -279,11 +290,10 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
       {!isLoadingProcessList &&
       <AccordionProcess
         isLoading={isLoadingProcess}
-        code={code}
         processList={processList}
         setProcessList={setProcessList}
         currentProcess={currentProcess}
-        onChangeProcess={getProcessById}
+        onChangeProcess={handleChangePanel}
         submitDeleteProcess={handleDeleteProcess}
         submitEditProcess={handleEditProcess}
         submitCreatePolicy={handleCreatePolicy}
@@ -309,4 +319,4 @@ const ProcessList = ({code, listName}: ProcessListProps) => {
   )
 }
 
-export default ProcessList
+export default withRouter(ProcessList)
