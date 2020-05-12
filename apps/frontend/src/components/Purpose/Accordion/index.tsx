@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useEffect } from 'react'
-import { Accordion, Panel } from 'baseui/accordion'
-import { generatePath, RouteComponentProps, withRouter } from 'react-router'
+import { Panel, StatelessAccordion } from 'baseui/accordion'
+import { RouteComponentProps, withRouter } from 'react-router'
 import { KIND, SIZE as ButtonSize } from 'baseui/button'
 import { StyledSpinnerNext } from 'baseui/spinner'
 import { Block } from 'baseui/block'
@@ -20,13 +20,12 @@ import { AddDocumentModal } from './AddDocumentModal'
 import Button from '../../common/Button'
 import AccordionTitle from './AccordionTitle'
 import ProcessData from './ProcessData'
-import { lastModifiedDate } from "../../../util/date-formatter";
+import { lastModifiedDate } from '../../../util/date-formatter'
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 import { canViewAlerts } from '../../../pages/AlertEventPage'
 
 type AccordionProcessProps = {
   isLoading: boolean
-  code: string
   processList: UseWithPurpose[]
   currentProcess?: Process
   errorProcessModal: any | null
@@ -45,7 +44,6 @@ type AccordionProcessProps = {
 const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<PathParams>) => {
   const {
     isLoading,
-    code,
     currentProcess,
     onChangeProcess,
     submitDeleteProcess,
@@ -65,21 +63,6 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
 
   const hasAccess = () => user.canWrite()
   useAwait(user.wait())
-
-  const updatePath = (params: PathParams | null) => {
-    let nextPath
-    if (!params) nextPath = generatePath(props.match.path)
-    else nextPath = generatePath(props.match.path, params)
-    props.history.push(nextPath)
-  }
-
-  const handleChangePanel = async (processId?: string) => {
-    if (!processId)
-      updatePath({code: code})
-    else {
-      updatePath({code: code, processId: processId})
-    }
-  }
 
   const renderCreatePolicyButton = () => (
     <Button
@@ -106,10 +89,6 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
   )
 
   useEffect(() => {
-    props.match.params.processId && onChangeProcess(props.match.params.processId)
-  }, [props.match.params.processId])
-
-  useEffect(() => {
     props.match.params.processId && !isLoading && setTimeout(() => {
       purposeRef.current && window.scrollTo({top: purposeRef.current.offsetTop})
     }, 200)
@@ -117,9 +96,10 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
 
   return (
     <Block ref={purposeRef}>
-      <Accordion
-        onChange={({expanded}) => handleChangePanel(expanded.length ? expanded[0].toString() : undefined)}
-        initialState={{expanded: props.match.params.processId ? [props.match.params.processId] : []}}>
+      <StatelessAccordion
+        onChange={({expanded}) => expanded.length && onChangeProcess(expanded[0] as string)}
+        expanded={props.match.params.processId ? [props.match.params.processId] : []}
+      >
         {props.processList &&
         props
         .processList
@@ -188,7 +168,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
             )}
           </Panel>
         ))}
-      </Accordion>
+      </StatelessAccordion>
       {!props.processList.length && <Label2 margin='1rem'>{intl.emptyTable} {intl.processes}</Label2>}
 
       {!!currentProcess &&

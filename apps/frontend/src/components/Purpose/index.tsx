@@ -1,12 +1,12 @@
 import * as React from 'react'
-import {useEffect} from 'react'
+import { useEffect } from 'react'
 
-import {Block, BlockProps} from 'baseui/block'
-import {Label1, Label2} from 'baseui/typography'
-import {KIND, SIZE as ButtonSize} from 'baseui/button'
-import {AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose} from '../../constants'
-import {intl, theme, useAwait} from '../../util'
-import {user} from '../../service/User'
+import { Block, BlockProps } from 'baseui/block'
+import { Label1, Label2 } from 'baseui/typography'
+import { KIND, SIZE as ButtonSize } from 'baseui/button'
+import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose } from '../../constants'
+import { intl, theme, useAwait } from '../../util'
+import { user } from '../../service/User'
 import ModalProcess from './Accordion/ModalProcess'
 import AccordionProcess from './Accordion'
 import {
@@ -22,15 +22,16 @@ import {
   updatePolicy,
   updateProcess
 } from '../../api'
-import {StyledSpinnerNext} from 'baseui/spinner'
-import {ListName} from '../../service/Codelist'
-import {useLocation} from 'react-router'
-import {StyledLink} from 'baseui/link'
-import {env} from '../../util/env'
-import {faFileWord, faPlus} from '@fortawesome/free-solid-svg-icons'
+import { StyledSpinnerNext } from 'baseui/spinner'
+import { ListName } from '../../service/Codelist'
+import { generatePath, RouteComponentProps, useLocation } from 'react-router'
+import { StyledLink } from 'baseui/link'
+import { env } from '../../util/env'
+import { faFileWord, faPlus } from '@fortawesome/free-solid-svg-icons'
 import Button from '../common/Button'
-import {Select} from "baseui/select";
-import {RouteComponentProps, withRouter} from 'react-router-dom'
+import { Select } from 'baseui/select'
+import { PathParams } from '../../pages/PurposePage'
+import { withRouter } from 'react-router-dom'
 
 const rowBlockProps: BlockProps = {
   marginBottom: 'scale800',
@@ -45,7 +46,7 @@ type ProcessListProps = {
 
 const sortProcess = (list: UseWithPurpose[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, intl.getLanguage()))
 
-const ProcessList = ({code, listName, history}: ProcessListProps & RouteComponentProps) => {
+const ProcessList = ({code, listName, match, history}: ProcessListProps & RouteComponentProps<PathParams>) => {
   const [processList, setProcessList] = React.useState<UseWithPurpose[]>([])
   const [currentProcess, setCurrentProcess] = React.useState<Process | undefined>()
   const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
@@ -55,12 +56,15 @@ const ProcessList = ({code, listName, history}: ProcessListProps & RouteComponen
   const [isLoadingProcessList, setIsLoadingProcessList] = React.useState(true)
   const [isLoadingProcess, setIsLoadingProcess] = React.useState(true)
   const current_location = useLocation()
-  const [status, setStatus] = React.useState([{label: intl.all, id: "ALL"}])
-  const listNameToUrl = () => listName && ({
-    'DEPARTMENT': 'department',
-    'SUB_DEPARTMENT': 'subDepartment',
-    'PURPOSE': 'purpose'
-  } as { [l: string]: string })[listName]
+  const [status, setStatus] = React.useState([{label: intl.all, id: 'ALL'}])
+
+  useEffect(() => {
+    match.params.processId && getProcessById(match.params.processId)
+  }, [match.params.processId])
+
+  const handleChangePanel = (processId?: string) => {
+    history.push(generatePath(match.path, {code, processId}))
+  }
 
   const hasAccess = () => user.canWrite()
 
@@ -72,7 +76,13 @@ const ProcessList = ({code, listName, history}: ProcessListProps & RouteComponen
       await getProcessList()
       setIsLoadingProcessList(false)
     })()
-  }, [code, status, showCreateProcessModal])
+  }, [code, status])
+
+  const listNameToUrl = () => listName && ({
+    'DEPARTMENT': 'department',
+    'SUB_DEPARTMENT': 'subDepartment',
+    'PURPOSE': 'purpose'
+  } as { [l: string]: string })[listName]
 
   const getProcessList = async () => {
     try {
@@ -119,6 +129,7 @@ const ProcessList = ({code, listName, history}: ProcessListProps & RouteComponen
       setShowCreateProcessModal(false)
       setCurrentProcess(newProcess)
       history.push(`/process/purpose/${newProcess.purposeCode}/${newProcess.id}`)
+      handleChangePanel(newProcess.id)
     } catch (err) {
       if (err.response.data.message.includes("already exists")) {
         setErrorProcessModal("Behandlingen eksisterer allerede.")
@@ -285,11 +296,10 @@ const ProcessList = ({code, listName, history}: ProcessListProps & RouteComponen
       {!isLoadingProcessList &&
       <AccordionProcess
         isLoading={isLoadingProcess}
-        code={code}
         processList={processList}
         setProcessList={setProcessList}
         currentProcess={currentProcess}
-        onChangeProcess={getProcessById}
+        onChangeProcess={handleChangePanel}
         submitDeleteProcess={handleDeleteProcess}
         submitEditProcess={handleEditProcess}
         submitCreatePolicy={handleCreatePolicy}
