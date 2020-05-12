@@ -70,9 +70,9 @@ public class DocumentController {
         return returnResults(new RestResponsePage<>(repository.findAll(pageParameters.createIdSortedPage()).map(Document::convertToResponse)));
     }
 
-    @ApiOperation(value = "Get All Documents")
+    @ApiOperation(value = "Search Documents")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "All Documents fetched", response = DocumentPage.class),
+            @ApiResponse(code = 200, message = "Found documents fetched", response = DocumentPage.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/search/{name}")
     public ResponseEntity<RestResponsePage<DocumentResponse>> search(@PathVariable String name) {
