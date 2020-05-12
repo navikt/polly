@@ -1,22 +1,25 @@
 import * as React from 'react'
-import {useState} from 'react'
-import {Block} from 'baseui/block'
+import { useState } from 'react'
+import { Block } from 'baseui/block'
 
 import AccordionInformationtype from './AccordionInformationtype'
-import {Disclosure, Document, InformationType, Policy} from '../../../constants'
-import {intl, theme, useAwait} from '../../../util'
+import { Disclosure, Document, InformationType, Policy } from '../../../constants'
+import { intl, theme, useAwait } from '../../../util'
 import Metadata from './Metadata'
 import InformationtypePolicyTable from './InformationtypePolicyTable'
 import TableDisclosure from '../../common/TableDisclosure'
-import {DocumentTable} from './DocumentTable'
-import {Tab} from 'baseui/tabs'
-import {H4, ParagraphSmall} from 'baseui/typography'
-import {user} from '../../../service/User'
-import {InformationTypeBannerButtons} from '../InformationTypeBannerButtons'
+import { DocumentTable } from './DocumentTable'
+import { Tab } from 'baseui/tabs'
+import { H4, ParagraphSmall } from 'baseui/typography'
+import { user } from '../../../service/User'
+import { InformationTypeBannerButtons } from '../InformationTypeBannerButtons'
 import Button from '../../common/Button'
-import {CustomizedTabs} from "../../common/CustomizedTabs";
-import {tabOverride} from "../../common/Style";
-import {lastModifiedDate} from "../../../util/date-formatter";
+import { CustomizedTabs } from "../../common/CustomizedTabs";
+import { tabOverride } from "../../common/Style";
+import { lastModifiedDate } from "../../../util/date-formatter";
+import { canViewAlerts } from '../../../pages/AlertEventPage'
+import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
 
 interface InformationtypeMetadataProps {
   informationtype: InformationType;
@@ -56,7 +59,7 @@ const Disclosures = ({disclosures}: { disclosures: Disclosure[] }) => {
   )
 }
 
-const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
+const InformationtypeMetadata = (props: InformationtypeMetadataProps & RouteComponentProps<any>) => {
   const [activeTab, setActiveTab] = useState('purposes')
   useAwait(user.wait())
   return (
@@ -72,7 +75,11 @@ const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
 
           <Metadata informationtype={props.informationtype}/>
 
-          <Block display='flex' justifyContent='flex-end' marginBottom="5rem">
+          <Block display='flex' justifyContent='flex-end' marginBottom={theme.sizing.scale600}>
+            {canViewAlerts() && <Block marginRight='auto'>
+              <Button type='button' kind='tertiary' size='compact' icon={faExclamationCircle}
+                      onClick={() => props.history.push(`/alert/events/informationtype/${props.informationtype.id}`)}>{intl.alerts}</Button>
+            </Block>}
             <ParagraphSmall>
               <i>{intl.formatString(intl.lastModified, props.informationtype.changeStamp.lastModifiedBy, lastModifiedDate(props.informationtype.changeStamp.lastModifiedDate))}</i>
             </ParagraphSmall>
@@ -98,4 +105,4 @@ const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
   )
 }
 
-export default InformationtypeMetadata
+export default withRouter(InformationtypeMetadata)

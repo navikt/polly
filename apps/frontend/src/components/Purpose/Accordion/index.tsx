@@ -1,26 +1,28 @@
 import * as React from 'react'
-import {useEffect} from 'react'
-import {Accordion, Panel} from 'baseui/accordion'
-import {generatePath, RouteComponentProps, withRouter} from 'react-router'
-import {KIND, SIZE as ButtonSize} from 'baseui/button'
-import {StyledSpinnerNext} from 'baseui/spinner'
-import {Block} from 'baseui/block'
-import {Label2, Paragraph2} from 'baseui/typography'
-import {intl, theme, useAwait} from '../../../util'
-import {user} from '../../../service/User'
-import {Plus} from 'baseui/icon'
-import {AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose} from '../../../constants'
+import { useEffect } from 'react'
+import { Accordion, Panel } from 'baseui/accordion'
+import { generatePath, RouteComponentProps, withRouter } from 'react-router'
+import { KIND, SIZE as ButtonSize } from 'baseui/button'
+import { StyledSpinnerNext } from 'baseui/spinner'
+import { Block } from 'baseui/block'
+import { Label2, Paragraph2 } from 'baseui/typography'
+import { intl, theme, useAwait } from '../../../util'
+import { user } from '../../../service/User'
+import { Plus } from 'baseui/icon'
+import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose } from '../../../constants'
 import ModalProcess from './ModalProcess'
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy'
-import {convertProcessToFormValues} from '../../../api'
-import {PathParams} from '../../../pages/PurposePage'
-import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal'
-import {AddDocumentModal} from './AddDocumentModal'
+import { convertProcessToFormValues } from '../../../api'
+import { PathParams } from '../../../pages/PurposePage'
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
+import { AddDocumentModal } from './AddDocumentModal'
 import Button from '../../common/Button'
 import AccordionTitle from './AccordionTitle'
 import ProcessData from './ProcessData'
-import {lastModifiedDate} from "../../../util/date-formatter";
+import { lastModifiedDate } from "../../../util/date-formatter";
+import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
+import { canViewAlerts } from '../../../pages/AlertEventPage'
 
 type AccordionProcessProps = {
   isLoading: boolean
@@ -160,7 +162,11 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                   <Block display='flex' justifyContent='flex-end'>
                     <span><i>{intl.formatString(intl.lastModified, currentProcess.changeStamp.lastModifiedBy, lastModifiedDate(currentProcess.changeStamp.lastModifiedDate))}</i></span>
                   </Block>
-                  <Block display='flex' justifyContent='flex-end' paddingTop={theme.sizing.scale800}>
+                  <Block display='flex' paddingTop={theme.sizing.scale800} width='100%' justifyContent='flex-end'>
+                    {canViewAlerts() && <Block marginRight='auto'>
+                      <Button type='button' kind='tertiary' size='compact' icon={faExclamationCircle}
+                              onClick={() => props.history.push(`/alert/events/process/${p.id}`)}>{intl.alerts}</Button>
+                    </Block>}
                     {hasAccess() &&
                     <Block>
                       {renderAddDocumentButton()}

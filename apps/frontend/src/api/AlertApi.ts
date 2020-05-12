@@ -11,9 +11,11 @@ export const getAlertForProcess = async (processId: string) => {
 }
 
 
-export const getAlertEvents = async (page: number, count: number, type?: AlertEventType, level?: AlertEventLevel) => {
+export const getAlertEvents = async (page: number, count: number, type?: AlertEventType, level?: AlertEventLevel, processId?: string, informationTypeId?: string) => {
   return (await axios.get<PageResponse<AlertEvent>>(`${env.pollyBaseUrl}/alert/events/?pageNumber=${page}&pageSize=${count}`
     + (type ? `&type=${type}` : '')
     + (level ? `&level=${level}` : '')
+    + (processId ? `&processId=${processId}` : '')
+    + (informationTypeId ? `&informationTypeId=${informationTypeId}` : '')
   )).data
 }
