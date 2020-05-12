@@ -244,7 +244,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                         <FieldProductTeam productTeam={formikBag.values.productTeam}/>
                       </Block>
                       <Block width='48%'>
-                        {showResponsibleSelect && <FieldCommonExternalProcessResponsible thirdParty={formikBag.values.commonExternalProcessResponsible}/>}
+                        {showResponsibleSelect && <FieldCommonExternalProcessResponsible thirdParty={formikBag.values.commonExternalProcessResponsible} hideSelect={()=> setShowResponsibleSelect(false)}/>}
                         {!showResponsibleSelect && <RadioBoolButton
                           value={showResponsibleSelect}
                           setValue={(b) => setShowResponsibleSelect(b!)}

@@ -79,11 +79,7 @@ const Routes = (): JSX.Element => (
         path="/document/edit/:id?"
         component={DocumentEditPage}
       />
-      <Route
-        exact
-        path="/alert/events"
-        component={AlertEventPage}
-      />
+      <Route exact path="/alert/events/:objectType?/:id?" component={AlertEventPage}/>
       <Route
         exact
         path="/"
