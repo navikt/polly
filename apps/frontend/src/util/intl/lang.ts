@@ -1,4 +1,4 @@
-import { IStrings } from './intl'
+import {IStrings} from './intl'
 
 export const no: IStrings = {
   informationType: 'Opplysningstype',
@@ -39,6 +39,7 @@ export const no: IStrings = {
   remove: 'Fjern',
   yes: 'Ja',
   no: 'Nei',
+  aboutUs:"Om Behandlingskatalogen",
   includeConservationPlan: 'Omfattes av bevarings- og kassasjonsplan?',
   unclarified: 'Uavklart',
   notFilled: 'Ikke utfylt',
@@ -366,6 +367,7 @@ export const en: IStrings = {
   remove: 'Remove',
   yes: 'Yes',
   no: 'No',
+  aboutUs:"About process catalog",
   includeConservationPlan: 'Are you covered by a disposal and retention plan?',
   unclarified: 'Unclarified',
   notFilled: 'Not filled',
