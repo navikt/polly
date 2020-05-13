@@ -63,7 +63,7 @@ const ProcessList = ({code, listName, match, history}: ProcessListProps & RouteC
   }, [match.params.processId])
 
   const handleChangePanel = (processId?: string) => {
-    history.push(generatePath(match.path, {code, processId}))
+    history.push(generatePath(match.path, {section: match.params.section, code, processId}))
   }
 
   const hasAccess = () => user.canWrite()
