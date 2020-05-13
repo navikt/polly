@@ -142,7 +142,7 @@ export const AuditRecentTable = (props: { show: boolean }) => {
           currentPage={page}
           numPages={audits.pages}
           onPageChange={({nextPage}) => handlePageChange(nextPage)}
-          labels={{nextButton: intl.nextButton, prevButton: intl.prevButton}}
+          labels={{nextButton: intl.nextButton, preposition: intl.of, prevButton: intl.prevButton}}
         />
       </Block>
     </>

@@ -182,7 +182,7 @@ const AlertEventPageImpl = (props: RouteComponentProps<{ objectType?: 'informati
           currentPage={state.page}
           numPages={state.events.pages}
           onPageChange={a => setPage(a.nextPage)}
-          labels={{nextButton: intl.nextButton, prevButton: intl.prevButton}}
+          labels={{nextButton: intl.nextButton, preposition: intl.of, prevButton: intl.prevButton}}
         />
       </Block>
     </>

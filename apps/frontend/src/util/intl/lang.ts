@@ -1,4 +1,4 @@
-import {IStrings} from './intl'
+import { IStrings } from './intl'
 
 export const no: IStrings = {
   informationType: 'Opplysningstype',
@@ -253,6 +253,7 @@ export const no: IStrings = {
 
   prevButton: 'Forrige',
   nextButton: 'Neste',
+  of: 'av',
   rows: 'Rader',
 
   maxChars: 'Maks {0} tegn',
@@ -584,6 +585,7 @@ export const en: IStrings = {
 
   prevButton: 'Prev',
   nextButton: 'Next',
+  of: 'of',
   rows: 'Rows',
 
   maxChars: 'Max {0} characters',
