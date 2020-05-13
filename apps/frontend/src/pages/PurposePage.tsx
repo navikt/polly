@@ -4,11 +4,12 @@ import { useEffect } from 'react'
 import ProcessList from '../components/Purpose'
 import { Block } from 'baseui/block'
 import { codelist, ListName } from '../service/Codelist'
-import { intl, theme, useAwait } from '../util'
-import illustration from '../resources/purpose_illustration.svg'
+import { intl, useAwait } from '../util'
 import { H4, Label2, Paragraph2 } from 'baseui/typography'
-import { useLocation } from 'react-router'
 import { RouteComponentProps } from 'react-router-dom'
+import { Team } from '../constants'
+import { getTeam } from '../api'
+import ReactMarkdown from 'react-markdown'
 
 const routes = {
   subdepartment: 'subdepartment',
@@ -20,81 +21,84 @@ const routes = {
 const renderMetadata = (description: string, title: string) => (
   <Block marginBottom='scale1000'>
     <Label2 font='font400'>{title}</Label2>
-    <Paragraph2>{description}</Paragraph2>
+    <Paragraph2><ReactMarkdown source={description} linkTarget='_blank'/></Paragraph2>
   </Block>
 )
 
-export type PathParams = { code?: string, processId?: string }
+export type PathParams = {
+  section: 'purpose' | 'department' | 'subdepartment' | 'team',
+  code: string,
+  processId?: string
+}
 
 const PurposePage = (props: RouteComponentProps<PathParams>) => {
-  const current_location = useLocation()
   const [isLoading, setLoading] = React.useState(false)
-  const [description, setDescription] = React.useState<string>('')
+  const [team, setTeam] = React.useState<Team>()
 
+  const {params} = props.match
   useAwait(codelist.wait())
 
   useEffect(() => {
     (async () => {
-      if (props.match.params.code) {
+      if (params.code) {
         setLoading(true)
-        setDescription(getDescription(props.match.params.code))
+        if (params.section === 'team') {
+          setTeam((await getTeam(params.code)))
+        }
         setLoading(false)
       }
     })()
-  })
+  }, [params])
 
-  const getTitle = (codeName: string) => {
+  const getTitle = () => {
     let currentListName = getCurrentListName()
     if (currentListName !== undefined) {
-      return codelist.getShortname(currentListName, codeName)
+      return codelist.getShortname(currentListName, params.code)
     }
-    return !props.match.params.code ? '' : props.match.params.code
+    if (params.section === 'team') {
+      return team?.name || ''
+    }
+    return intl.ERROR
   }
 
-  const getDescription = (codeName: string) => {
-    let currentListName = getCurrentListName()
-    if (currentListName !== undefined) {
-      return codelist.getDescription(currentListName, codeName)
-    }
-    return !props.match.params.code ? '' : props.match.params.code
-  }
-
-  const renderTitle = () => {
-    let location = current_location.pathname
-    if (location.includes(routes.subdepartment)) return intl.subDepartment
-    else if (location.includes(routes.department)) return intl.department
-    else if (location.includes(routes.team)) return intl.team
+  const metadataTitle = () => {
+    if (params.section === routes.subdepartment) return intl.subDepartment
+    else if (params.section === routes.department) return intl.department
+    else if (params.section === routes.team) return intl.team
     return intl.overallPurpose
   }
 
+  const getDescription = () => {
+    let currentListName = getCurrentListName()
+    if (currentListName) {
+      return codelist.getDescription(currentListName, params.code)
+    }
+    if (params.section === 'team') {
+      return team?.description || ''
+    }
+    return ''
+  }
+
   const getCurrentListName = () => {
-    let location = current_location.pathname
-    if (location.includes(routes.subdepartment)) return ListName.SUB_DEPARTMENT
-    else if (location.includes(routes.department)) return ListName.DEPARTMENT
-    else if (location.includes(routes.purpose)) return ListName.PURPOSE
+    if (params.section === routes.subdepartment) return ListName.SUB_DEPARTMENT
+    else if (params.section === routes.department) return ListName.DEPARTMENT
+    else if (params.section === routes.purpose) return ListName.PURPOSE
     return undefined
   }
 
   return (
-    <React.Fragment>
-      {!isLoading && props.match.params.code && (
-        <React.Fragment>
+    <>
+      {!isLoading && params.code && (
+        <>
           <Block marginBottom='3rem'>
-            <H4>{getTitle(props.match.params.code)}</H4>
+            <H4>{getTitle()}</H4>
           </Block>
 
-          {renderMetadata(description, renderTitle())}
-          <ProcessList code={props.match.params.code} listName={getCurrentListName()}/>
-        </React.Fragment>
+          {renderMetadata(getDescription(), metadataTitle())}
+          <ProcessList code={params.code} listName={getCurrentListName()}/>
+        </>
       )}
-
-
-      {!props.match.params.code && (
-        <Block display='flex' justifyContent='center' alignContent='center' marginTop={theme.sizing.scale2400}>
-          <img src={illustration} alt={intl.treasureIllustration} style={{maxWidth: '65%'}}/>
-        </Block>
-      )}
-    </React.Fragment>
+    </>
   )
 }
 
