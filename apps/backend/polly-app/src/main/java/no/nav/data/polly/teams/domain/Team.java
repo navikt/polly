@@ -18,13 +18,22 @@ public class Team {
 
     private String id;
     private String name;
+    private String description;
+    private String slackChannel;
     private List<Member> members;
+
+    public TeamResponse convertToResponseWithMembers() {
+        var resp = convertToResponse();
+        resp.setMembers(convert(members, Member::convertToResponse));
+        return resp;
+    }
 
     public TeamResponse convertToResponse() {
         return TeamResponse.builder()
                 .id(id)
                 .name(name)
-                .members(convert(members, Member::convertToResponse))
+                .description(description)
+                .slackChannel(slackChannel)
                 .build();
     }
 }

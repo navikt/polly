@@ -1,21 +1,19 @@
 package no.nav.data.polly.common.security;
 
-import com.microsoft.aad.adal4j.AuthenticationResult;
+import com.microsoft.aad.msal4j.IAuthenticationResult;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
+import java.time.ZonedDateTime;
+import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class AuthResultExpiryTest {
 
-    private AuthResultExpiry expiry = new AuthResultExpiry();
-
-    @Test
-    void expireAfterNoExpire() {
-        long l = expiry.expireAfterCreate("", createAuth(0), 0);
-        assertThat(l).isEqualTo(Duration.ofMinutes(1).toNanos());
-    }
+    private final AuthResultExpiry expiry = new AuthResultExpiry();
 
     @Test
     void expireAfterCreateShort() {
@@ -39,7 +37,10 @@ class AuthResultExpiryTest {
         assertThat(expiry.expireAfterRead("", null, 0, 100)).isEqualTo(100);
     }
 
-    private AuthenticationResult createAuth(long expiresInSeconds) {
-        return new AuthenticationResult("", "", "", expiresInSeconds, "", null, false);
+    private IAuthenticationResult createAuth(long expiresInSeconds) {
+        var ar = mock(IAuthenticationResult.class);
+        when(ar.expiresOnDate()).thenReturn(new Date(ZonedDateTime.now().plusSeconds(expiresInSeconds).toEpochSecond() * 1000));
+        return ar;
     }
+
 }

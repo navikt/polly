@@ -51,7 +51,7 @@ public class ExportController {
     @Transactional(readOnly = true)
     @SneakyThrows
     @GetMapping(value = "/process", produces = WORDPROCESSINGML_DOCUMENT)
-    public void getTeamByName(
+    public void getExport(
             HttpServletResponse response,
             @RequestParam(name = "processId", required = false) UUID processId,
             @RequestParam(name = "department", required = false) String department,

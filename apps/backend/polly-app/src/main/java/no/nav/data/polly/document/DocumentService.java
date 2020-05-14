@@ -11,10 +11,10 @@ import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.document.domain.Document;
 import no.nav.data.polly.document.domain.DocumentData.InformationTypeUse;
 import no.nav.data.polly.document.domain.DocumentRepository;
-import no.nav.data.polly.document.dto.DocumentInfoTypeResponse;
 import no.nav.data.polly.document.dto.DocumentRequest;
 import no.nav.data.polly.document.dto.DocumentResponse;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
+import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.settings.SettingsService;
 import org.springframework.stereotype.Service;
@@ -51,16 +51,16 @@ public class DocumentService extends RequestValidator<DocumentRequest> {
     public DocumentResponse getDocumentAsResponse(UUID uuid) {
         var document = repository.findById(uuid).orElseThrow(() -> new PollyNotFoundException("Document " + uuid + " not found"));
         DocumentResponse response = document.convertToResponse();
-        Map<UUID, DocumentInfoTypeResponse> informationTypes = getInformationTypes(document);
+        Map<UUID, InformationTypeShortResponse> informationTypes = getInformationTypes(document);
         response.getInformationTypes().forEach(it -> it.setInformationType(informationTypes.get(it.getInformationTypeId())));
         return response;
     }
 
-    public Map<UUID, DocumentInfoTypeResponse> getInformationTypes(Document document) {
+    public Map<UUID, InformationTypeShortResponse> getInformationTypes(Document document) {
         return informationTypeRepository.findAllById(convert(document.getData().getInformationTypes(), InformationTypeUse::getInformationTypeId))
                 .stream()
                 .map(Document::convertToInformationTypeResponse)
-                .collect(Collectors.toMap(DocumentInfoTypeResponse::getId, Function.identity()));
+                .collect(Collectors.toMap(InformationTypeShortResponse::getId, Function.identity()));
     }
 
     @Transactional

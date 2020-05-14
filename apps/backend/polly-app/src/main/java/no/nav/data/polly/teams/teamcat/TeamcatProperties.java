@@ -6,11 +6,12 @@ import org.springframework.context.annotation.Configuration;
 
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "polly.client.resource-teamcat")
+@ConfigurationProperties(prefix = "polly.client.teamcat")
 public class TeamcatProperties {
 
     private String url;
-    private String getUrl;
-    private String searchUrl;
+    private String teamsUrl;
+    private String resourceUrl;
+    private String resourceSearchUrl;
 
 }

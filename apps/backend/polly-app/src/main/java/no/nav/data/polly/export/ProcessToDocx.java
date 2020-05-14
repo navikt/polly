@@ -223,7 +223,7 @@ public class ProcessToDocx {
             String teamName = Optional.ofNullable(data.getProductTeam()).flatMap(teamService::getTeam).map(Team::getName).orElse(data.getProductTeam());
             addTexts(
                     text("Avdeling: ", shortName(ListName.DEPARTMENT, data.getDepartment())),
-                    text("Linja (Ytre etat): ", shortName(ListName.SUB_DEPARTMENT, data.getSubDepartment())),
+                    text("Linja (Ytre etat): ", String.join(", ", convert(data.getSubDepartments(), sd -> shortName(ListName.SUB_DEPARTMENT, sd)))),
                     text("Produktteam (IT): ", teamName),
                     text("Felles behandlingsansvarlig: ", shortName(ListName.THIRD_PARTY, data.getCommonExternalProcessResponsible()))
             );
@@ -307,7 +307,7 @@ public class ProcessToDocx {
             row.setTrPr(trPr);
 
             List<Object> cells = row.getContent();
-            Text infoTypeName = text(pol.getInformationTypeName(), periodText(pol.getData().toPeriod()));
+            Text infoTypeName = text(pol.getInformationTypeName());
             Text subjCats = text(pol.getData().getSubjectCategories().stream().map(c -> shortName(ListName.SUBJECT_CATEGORY, c)).collect(Collectors.joining(", ")));
             ((Tc) cells.get(0)).getContent().add(paragraph(infoTypeName));
             ((Tc) cells.get(1)).getContent().add(paragraph(subjCats));

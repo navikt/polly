@@ -10,11 +10,11 @@ import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.UsedInInstance;
 import no.nav.data.polly.common.auditing.domain.Auditable;
-import no.nav.data.polly.document.dto.DocumentInfoTypeResponse;
 import no.nav.data.polly.document.dto.DocumentInfoTypeUseResponse;
 import no.nav.data.polly.document.dto.DocumentRequest;
 import no.nav.data.polly.document.dto.DocumentResponse;
 import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import org.hibernate.annotations.Type;
 
 import java.util.UUID;
@@ -75,8 +75,8 @@ public class Document extends Auditable {
                 .build();
     }
 
-    public static DocumentInfoTypeResponse convertToInformationTypeResponse(InformationType informationType) {
-        return new DocumentInfoTypeResponse(informationType.getId(), informationType.getData().getName(), informationType.getData().sensitivityCode());
+    public static InformationTypeShortResponse convertToInformationTypeResponse(InformationType informationType) {
+        return new InformationTypeShortResponse(informationType.getId(), informationType.getData().getName(), informationType.getData().sensitivityCode());
     }
 
     public UsedInInstance getInstanceIdentification() {

@@ -6,10 +6,13 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import no.nav.data.polly.codelist.CodelistService;
+import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.UsedInInstance;
 import no.nav.data.polly.common.auditing.domain.Auditable;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
+import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import no.nav.data.polly.policy.domain.Policy;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
@@ -67,6 +70,10 @@ public class InformationType extends Auditable {
 
     public InformationTypeResponse convertToResponse() {
         return new InformationTypeResponse(this);
+    }
+
+    public InformationTypeShortResponse convertToShortResponse() {
+        return new InformationTypeShortResponse(getId(), getData().getName(), CodelistService.getCodelistResponse(ListName.SENSITIVITY, data.getSensitivity()));
     }
 
     public UsedInInstance getInstanceIdentification() {

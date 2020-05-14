@@ -6,9 +6,14 @@ import java.time.format.DateTimeFormatter;
 
 public final class DateUtil {
 
-    public static final String DEFAULT_START = "0001-01-01";
+    public static final String ORIG_START = "0001-01-01";
+
+    /**
+     * Can cange depending on config/organization
+     */
+    private static String defaultStart = ORIG_START;
+    private static LocalDate defaultStartDate = parse(defaultStart);
     public static final String DEFAULT_END = "9999-12-31";
-    public static final LocalDate DEFAULT_START_DATE = parse(DEFAULT_START);
     public static final LocalDate DEFAULT_END_DATE = parse(DEFAULT_END);
 
     private DateUtil() {
@@ -32,10 +37,23 @@ public final class DateUtil {
     }
 
     public static LocalDate parseStart(String start) {
-        return start == null ? DEFAULT_START_DATE : parse(start);
+        return start == null ? defaultStartDate : parse(start);
     }
 
     public static LocalDate parseEnd(String end) {
         return end == null ? DEFAULT_END_DATE : parse(end);
+    }
+
+    public static String getDefaultStart() {
+        return defaultStart;
+    }
+
+    public static LocalDate getDefaultStartDate() {
+        return defaultStartDate;
+    }
+
+    public static void setDefaultStartDate(String defaultStartDate) {
+        defaultStart = defaultStartDate;
+        DateUtil.defaultStartDate = parse(defaultStartDate);
     }
 }

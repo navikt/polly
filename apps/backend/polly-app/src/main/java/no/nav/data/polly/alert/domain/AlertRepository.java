@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface AlertRepository extends JpaRepository<GenericStorage, UUID> {
+public interface AlertRepository extends JpaRepository<GenericStorage, UUID>, AlertRepositoryCustom {
 
     @Query(value = "select * from generic_storage where data ->> 'informationTypeId' = cast(?1 as text) and type = 'ALERT_EVENT'", nativeQuery = true)
     List<GenericStorage> findByInformationTypeId(UUID informationTypeId);
 
-    @Query(value = "select * from generic_storage where data ->> 'processId' = cast(?1 as text) and data ->> 'informationTypeId' = cast(?2 as text) and type = 'ALERT_EVENT'", nativeQuery = true)
+    @Query(value = "select * from generic_storage where data ->> 'processId' = cast(?1 as text) and (data ->> 'informationTypeId' = cast(?2 as text) or data ->> 'informationTypeId' is null) and type = 'ALERT_EVENT'", nativeQuery = true)
     List<GenericStorage> findByProcessIdAndInformationTypeId(UUID processId, UUID informationTypeId);
 
     @Query(value = "select * from generic_storage where data ->> 'processId' = cast(?1 as text) and type = 'ALERT_EVENT'", nativeQuery = true)

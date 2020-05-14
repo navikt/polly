@@ -36,7 +36,7 @@ public class OAuthState {
     public String errorRedirect(String error, String errorDesc) {
         return UriComponentsBuilder.fromUriString(getErrorUri())
                 .queryParam(ERROR, HtmlUtils.htmlEscape(error))
-                .queryParam(ERROR_DESCRIPTION, HtmlUtils.htmlEscape(errorDesc))
+                .queryParam(ERROR_DESCRIPTION, HtmlUtils.htmlEscape(errorDesc.replaceAll("[\\r\\n]", " ")))
                 .build().toUriString();
     }
 

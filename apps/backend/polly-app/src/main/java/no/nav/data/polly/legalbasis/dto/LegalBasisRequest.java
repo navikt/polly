@@ -26,7 +26,7 @@ public class LegalBasisRequest implements Validated {
     private String nationalLaw;
     private String description;
 
-    public LegalBasis convertToLegalBasis() {
+    public LegalBasis convertToDomain() {
         return LegalBasis.builder()
                 .gdpr(gdpr)
                 .nationalLaw(nationalLaw)

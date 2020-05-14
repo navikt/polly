@@ -27,6 +27,7 @@ import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessResponse.DataProcessingResponse;
 import no.nav.data.polly.process.dto.ProcessResponse.DpiaResponse;
 import no.nav.data.polly.process.dto.ProcessResponse.RetentionResponse;
+import no.nav.data.polly.process.dto.ProcessShortResponse;
 import org.hibernate.annotations.Type;
 
 import java.util.HashSet;
@@ -99,7 +100,7 @@ public class Process extends Auditable {
                 .description(data.getDescription())
                 .purposeCode(purposeCode)
                 .department(getDepartmentCode())
-                .subDepartment(getSubDepartmentCode())
+                .subDepartments(getSubDepartmentCodes())
                 .commonExternalProcessResponsible(getCommonExternalProcessResponsibleCode())
                 .productTeam(data.getProductTeam())
                 .products(getProductCodes())
@@ -153,13 +154,13 @@ public class Process extends Auditable {
         setPurposeCode(request.getPurposeCode());
         data.setDescription(request.getDescription());
         data.setDepartment(request.getDepartment());
-        data.setSubDepartment(request.getSubDepartment());
+        data.setSubDepartments(List.copyOf(request.getSubDepartments()));
         data.setCommonExternalProcessResponsible(request.getCommonExternalProcessResponsible());
         data.setProductTeam(request.getProductTeam());
         data.setProducts(List.copyOf(request.getProducts()));
         data.setStart(DateUtil.parseStart(request.getStart()));
         data.setEnd(DateUtil.parseEnd(request.getEnd()));
-        data.setLegalBases(convert(request.getLegalBases(), LegalBasisRequest::convertToLegalBasis));
+        data.setLegalBases(convert(request.getLegalBases(), LegalBasisRequest::convertToDomain));
         data.setUsesAllInformationTypes(request.isUsesAllInformationTypes());
         data.setAutomaticProcessing(request.getAutomaticProcessing());
         data.setProfiling(request.getProfiling());
@@ -207,12 +208,16 @@ public class Process extends Auditable {
                 .build();
     }
 
+    public ProcessShortResponse convertToShortResponse() {
+        return new ProcessShortResponse(getId(), getName(), CodelistService.getCodelistResponse(ListName.PURPOSE, purposeCode));
+    }
+
     private CodelistResponse getDepartmentCode() {
         return CodelistService.getCodelistResponse(ListName.DEPARTMENT, data.getDepartment());
     }
 
-    private CodelistResponse getSubDepartmentCode() {
-        return CodelistService.getCodelistResponse(ListName.SUB_DEPARTMENT, data.getSubDepartment());
+    private List<CodelistResponse> getSubDepartmentCodes() {
+        return CodelistService.getCodelistResponseList(ListName.SUB_DEPARTMENT, data.getSubDepartments());
     }
 
     private CodelistResponse getCommonExternalProcessResponsibleCode() {

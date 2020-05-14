@@ -20,7 +20,7 @@ import java.util.List;
 
 import static no.nav.data.polly.common.swagger.SwaggerConfig.LOCAL_DATE;
 import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_END;
-import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_START;
+import static no.nav.data.polly.common.utils.DateUtil.ORIG_START;
 import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
 
 @Slf4j
@@ -37,7 +37,7 @@ public class DisclosureRequest implements RequestElement {
     @ApiModelProperty(value = "Codelist THIRD_PARTY")
     private String recipient;
     private String recipientPurpose;
-    @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_START)
+    @ApiModelProperty(dataType = LOCAL_DATE, example = ORIG_START)
     private String start;
     @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_END)
     private String end;

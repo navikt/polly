@@ -2,7 +2,6 @@ package no.nav.data.polly.policy.rest;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +14,6 @@ import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
-import no.nav.data.polly.policy.mapper.PolicyMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,12 +47,10 @@ import static java.util.stream.Collectors.toList;
 public class PolicyRestController {
 
     private final PolicyService service;
-    private final PolicyMapper mapper;
     private final PolicyRepository policyRepository;
 
-    public PolicyRestController(PolicyService service, PolicyMapper mapper, PolicyRepository policyRepository) {
+    public PolicyRestController(PolicyService service, PolicyRepository policyRepository) {
         this.service = service;
-        this.mapper = mapper;
         this.policyRepository = policyRepository;
     }
 
@@ -65,13 +61,11 @@ public class PolicyRestController {
     @GetMapping
     public ResponseEntity<RestResponsePage<PolicyResponse>> getPolicies(PageParameters pageParameters,
             @RequestParam(required = false) UUID informationTypeId,
-            @RequestParam(required = false) UUID processId,
-            @ApiParam("If fetching for a InformationType, include inactive policies. For all policies, inactive will always be included")
-            @RequestParam(required = false, defaultValue = "false") Boolean includeInactive) {
+            @RequestParam(required = false) UUID processId
+    ) {
         if (informationTypeId != null) {
             log.debug("Received request for Policies related to InformationType with id={}", informationTypeId);
             var policies = policyRepository.findByInformationTypeId(informationTypeId).stream()
-                    .filter(policy -> includeInactive || policy.isActive())
                     .filter(policy -> processId == null || policy.getProcess().getId().equals(processId))
                     .map(policy1 -> policy1.convertToResponse(true))
                     .collect(toList());
@@ -79,7 +73,6 @@ public class PolicyRestController {
         } else if (processId != null) {
             log.debug("Received request for Policies related to Process with id={}", processId);
             var policies = policyRepository.findByProcessId(processId).stream()
-                    .filter(policy -> includeInactive || policy.isActive())
                     .map(policy1 -> policy1.convertToResponse(true))
                     .collect(toList());
             return ResponseEntity.ok(new RestResponsePage<>(policies));
@@ -120,7 +113,7 @@ public class PolicyRestController {
     public ResponseEntity<RestResponsePage<PolicyResponse>> createPolicy(@Valid @RequestBody List<PolicyRequest> policyRequests) {
         log.debug("Received request to create Policies");
         service.validateRequests(policyRequests, false);
-        List<Policy> policies = policyRequests.stream().map(mapper::mapRequestToPolicy).collect(toList());
+        List<Policy> policies = policyRequests.stream().map(Policy::mapRequestToPolicy).collect(toList());
         List<PolicyResponse> responses = service.saveAll(policies).stream().map(policy -> policy.convertToResponse(true)).collect(toList());
         return new ResponseEntity<>(new RestResponsePage<>(responses), HttpStatus.CREATED);
     }
@@ -178,7 +171,7 @@ public class PolicyRestController {
             throw notFoundError(uuid);
         }
         service.validateRequests(List.of(policyRequest), true);
-        Policy policy = mapper.mapRequestToPolicy(policyRequest);
+        Policy policy = Policy.mapRequestToPolicy(policyRequest);
         return ResponseEntity.ok(service.saveAll(List.of(policy)).get(0).convertToResponse(true));
     }
 
@@ -191,7 +184,7 @@ public class PolicyRestController {
     public ResponseEntity<RestResponsePage<PolicyResponse>> updatePolicies(@Valid @RequestBody List<PolicyRequest> policyRequests) {
         log.debug("Received requests to update Policies");
         service.validateRequests(policyRequests, true);
-        List<Policy> policies = policyRequests.stream().map(mapper::mapRequestToPolicy).collect(toList());
+        List<Policy> policies = policyRequests.stream().map(Policy::mapRequestToPolicy).collect(toList());
         List<PolicyResponse> response = service.saveAll(policies).stream().map(policy -> policy.convertToResponse(true)).collect(toList());
         return ResponseEntity.ok(new RestResponsePage<>(response));
     }

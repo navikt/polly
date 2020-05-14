@@ -9,12 +9,10 @@ import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
-import no.nav.data.polly.policy.mapper.PolicyMapper;
 import no.nav.data.polly.process.domain.Process;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,8 +22,6 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 class PolicyMapperTest {
-
-    private PolicyMapper mapper = new PolicyMapper();
 
     private static final String LEGAL_BASIS_DESCRIPTION1 = "Legal basis 1";
     private static final String PURPOSE_CODE1 = "KONTROLL";
@@ -45,12 +41,10 @@ class PolicyMapperTest {
                 .process(Process.builder().name("process").build())
                 .subjectCategories(List.of("Bruker"))
                 .legalBases(List.of(LegalBasisRequest.builder().gdpr("6e").nationalLaw("Ftrl").description(LEGAL_BASIS_DESCRIPTION1).build()))
-                .start("2019-02-04")
-                .end("2020-02-04")
                 .purposeCode(PURPOSE_CODE1)
                 .informationType(informationType)
                 .build();
-        Policy policy = mapper.mapRequestToPolicy(request);
+        Policy policy = Policy.mapRequestToPolicy(request);
         assertThat(policy.getProcess().getName(), is("process"));
         assertThat(policy.getData().getSubjectCategories(), hasItem("Bruker"));
         assertThat(policy.getPurposeCode(), is(PURPOSE_CODE1));
@@ -80,8 +74,6 @@ class PolicyMapperTest {
                 .data(PolicyData.builder()
                         .subjectCategories(List.of("Bruker"))
                         .legalBases(List.of(LegalBasis.builder().gdpr("6e").nationalLaw("nl").description(LEGAL_BASIS_DESCRIPTION1).build()))
-                        .start(LocalDate.parse("2019-02-04"))
-                        .end(LocalDate.parse("2020-02-04"))
                         .build())
                 .purposeCode(PURPOSE_CODE1)
                 .informationType(informationType)

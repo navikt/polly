@@ -4,12 +4,12 @@ import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.document.DocumentController.DocumentPage;
-import no.nav.data.polly.document.dto.DocumentInfoTypeResponse;
 import no.nav.data.polly.document.dto.DocumentInfoTypeUseRequest;
 import no.nav.data.polly.document.dto.DocumentInfoTypeUseResponse;
 import no.nav.data.polly.document.dto.DocumentRequest;
 import no.nav.data.polly.document.dto.DocumentResponse;
 import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -61,7 +61,7 @@ class DocumentControllerIT extends IntegrationTestBase {
         var documentResponse = resp.getBody();
         assertThat(documentResponse).isNotNull();
 
-        DocumentInfoTypeResponse infoTypeRes = new DocumentInfoTypeResponse(infoType.getId(), infoType.getData().getName(),
+        InformationTypeShortResponse infoTypeRes = new InformationTypeShortResponse(infoType.getId(), infoType.getData().getName(),
                 CodelistService.getCodelistResponse(ListName.SENSITIVITY, infoType.getData().getSensitivity()));
 
         assertThat(documentResponse).isEqualTo(DocumentResponse.builder()

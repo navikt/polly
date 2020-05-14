@@ -65,7 +65,7 @@ public class TeamController {
         if (team.isEmpty()) {
             throw new PollyNotFoundException("Couldn't find team " + teamId);
         }
-        return new ResponseEntity<>(team.get().convertToResponse(), HttpStatus.OK);
+        return new ResponseEntity<>(team.get().convertToResponseWithMembers(), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Search teams")

@@ -59,7 +59,7 @@ public class Disclosure extends Auditable {
         data.setRecipientPurpose(request.getRecipientPurpose());
         data.setStart(DateUtil.parseStart(request.getStart()));
         data.setEnd(DateUtil.parseEnd(request.getEnd()));
-        data.setLegalBases(convert(request.getLegalBases(), LegalBasisRequest::convertToLegalBasis));
+        data.setLegalBases(convert(request.getLegalBases(), LegalBasisRequest::convertToDomain));
         data.setDocumentId(request.getDocumentId() != null ? UUID.fromString(request.getDocumentId()): null);
         return this;
     }

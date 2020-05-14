@@ -21,9 +21,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static no.nav.data.polly.common.swagger.SwaggerConfig.BOOLEAN;
-import static no.nav.data.polly.common.swagger.SwaggerConfig.LOCAL_DATE;
-import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_END;
-import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_START;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static no.nav.data.polly.common.utils.StreamUtils.nullToEmptyList;
 import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
@@ -43,10 +40,6 @@ public class PolicyRequest implements RequestElement {
     @ApiModelProperty(value = "Codelist SUBJECT_CATEGORY")
     private List<String> subjectCategories;
     private String informationTypeId;
-    @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_START)
-    private String start;
-    @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_END)
-    private String end;
     @ApiModelProperty(dataType = BOOLEAN)
     private String legalBasesInherited;
     private List<LegalBasisRequest> legalBases;
@@ -89,8 +82,6 @@ public class PolicyRequest implements RequestElement {
         validator.checkBlank(Fields.processId, processId);
         validator.checkUUID(Fields.processId, processId);
         validator.checkRequiredCodelists(Fields.subjectCategories, subjectCategories, ListName.SUBJECT_CATEGORY);
-        validator.checkDate(Fields.start, start);
-        validator.checkDate(Fields.end, end);
         validator.validateType(Fields.legalBases, legalBases);
         validator.checkId(this);
         documentIds.forEach(docId -> validator.checkUUID(Fields.documentIds, docId));

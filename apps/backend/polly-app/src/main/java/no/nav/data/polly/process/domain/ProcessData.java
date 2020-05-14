@@ -26,7 +26,7 @@ public class ProcessData {
     @NotNull
     private LocalDate end;
     private String department;
-    private String subDepartment;
+    private List<String> subDepartments;
     private String commonExternalProcessResponsible;
     private String productTeam;
     private List<String> products;
@@ -92,8 +92,14 @@ public class ProcessData {
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static class ProcessDataBuilder {
 
+        private List<String> subDepartments = new ArrayList<>();
         private List<LegalBasis> legalBases = new ArrayList<>();
         private List<String> dataProcessorAgreements = new ArrayList<>();
+
+        public ProcessDataBuilder subDepartment(String subDepartment) {
+            subDepartments.add(subDepartment);
+            return this;
+        }
 
         public ProcessDataBuilder legalBasis(LegalBasis legalBasis) {
             legalBases.add(legalBasis);

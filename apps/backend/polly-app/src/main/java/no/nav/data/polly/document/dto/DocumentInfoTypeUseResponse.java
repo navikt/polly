@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
+import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,7 +20,7 @@ import java.util.UUID;
 public class DocumentInfoTypeUseResponse {
 
     private UUID informationTypeId;
-    private DocumentInfoTypeResponse informationType;
+    private InformationTypeShortResponse informationType;
     @Singular
     private List<CodelistResponse> subjectCategories;
 

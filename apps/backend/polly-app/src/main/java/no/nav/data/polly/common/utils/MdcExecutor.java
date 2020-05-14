@@ -2,11 +2,15 @@ package no.nav.data.polly.common.utils;
 
 import org.slf4j.MDC;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 
+import java.util.Map;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import javax.annotation.PreDestroy;
+import javax.validation.constraints.NotNull;
 
 public class MdcExecutor extends ThreadPoolExecutor {
 
@@ -20,11 +24,26 @@ public class MdcExecutor extends ThreadPoolExecutor {
 
     @Override
     public void execute(Runnable command) {
-        super.execute(wrap(command));
+        var parentContext = MDC.getCopyOfContextMap();
+        super.execute(wrap(command, parentContext));
     }
 
-    private static Runnable wrap(Runnable runnable) {
+    public static <T> ListenableFutureCallback<? super T> wrap(Consumer<T> onSuccessCallback, Consumer<Throwable> onErrorCallback) {
         var parentContext = MDC.getCopyOfContextMap();
+        return new ListenableFutureCallback<T>() {
+            @Override
+            public void onSuccess(T result) {
+                wrap(() -> onSuccessCallback.accept(result), parentContext).run();
+            }
+
+            @Override
+            public void onFailure(@NotNull Throwable ex) {
+                wrap(() -> onErrorCallback.accept(ex), parentContext).run();
+            }
+        };
+    }
+
+    private static Runnable wrap(Runnable runnable, Map<String, String> parentContext) {
         return () -> {
             var previous = MDC.getCopyOfContextMap();
             if (parentContext == null) {

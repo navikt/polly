@@ -2,16 +2,15 @@ package no.nav.data.polly.alert;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.alert.domain.AlertEvent;
+import no.nav.data.polly.alert.domain.AlertEventLevel;
 import no.nav.data.polly.alert.domain.AlertEventType;
 import no.nav.data.polly.alert.domain.AlertRepository;
 import no.nav.data.polly.alert.dto.InformationTypeAlert;
 import no.nav.data.polly.alert.dto.PolicyAlert;
 import no.nav.data.polly.alert.dto.ProcessAlert;
-import no.nav.data.polly.common.auditing.domain.Auditable.Fields;
 import no.nav.data.polly.common.exceptions.PollyNotFoundException;
 import no.nav.data.polly.common.rest.PageParameters;
 import no.nav.data.polly.common.storage.domain.GenericStorage;
-import no.nav.data.polly.common.storage.domain.StorageType;
 import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
@@ -20,9 +19,7 @@ import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessRepository;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -162,8 +159,7 @@ public class AlertService {
         var processArt6 = containsArticle(process.getData().getLegalBases(), ART_6_PREFIX);
         var processArt9 = containsArticle(process.getData().getLegalBases(), ART_9_PREFIX);
 
-        List<Policy> policies = StreamUtils.filter(process.getPolicies(),
-                policy -> policy.isActive() && (informationType == null || policy.getInformationType().equals(informationType))
+        List<Policy> policies = StreamUtils.filter(process.getPolicies(), policy -> (informationType == null || policy.getInformationType().equals(informationType))
         );
         for (Policy policy : policies) {
             checkPolicy(processArt6, processArt9, policy).resolve().ifPresent(alert.getPolicies()::add);
@@ -193,10 +189,9 @@ public class AlertService {
         return safeStream(legalBases).anyMatch(lb -> lb.getGdpr().startsWith(articlePrefix));
     }
 
-    public Page<AlertEvent> getEvents(PageParameters parameters) {
-        Example<GenericStorage> example = Example.of(GenericStorage.builder().type(StorageType.ALERT_EVENT).build());
-        Pageable pageable = parameters.createSortedPageByFieldDescending(Fields.createdDate);
-        return alertRepository.findAll(example, pageable).map(GenericStorage::toAlertEvent);
+    public Page<AlertEvent> getEvents(PageParameters parameters, UUID processId, UUID informationTypeId, AlertEventType type, AlertEventLevel level) {
+        parameters.validate();
+        return alertRepository.findAlerts(processId, informationTypeId, type, level, parameters.getPageNumber(), parameters.getPageSize());
     }
 
 }

@@ -17,19 +17,19 @@ import java.time.Duration;
 import java.util.Optional;
 
 @Service
-@ConditionalOnProperty("polly.client.resource-teamcat.enabled")
-public class TeamcatClient implements ResourceService {
+@ConditionalOnProperty("polly.client.teamcat-resource.enabled")
+public class TeamcatResourceClient implements ResourceService {
 
     private final RestTemplate restTemplate;
-    private final TeamcatProperties teamcatProperties;
+    private final TeamcatProperties properties;
 
     private final LoadingCache<String, RestResponsePage<Resource>> searchCache;
     private final LoadingCache<String, Resource> cache;
 
-    public TeamcatClient(RestTemplate restTemplate,
-            TeamcatProperties teamcatProperties) {
+    public TeamcatResourceClient(RestTemplate restTemplate,
+            TeamcatProperties properties) {
         this.restTemplate = restTemplate;
-        this.teamcatProperties = teamcatProperties;
+        this.properties = properties;
 
         this.searchCache = Caffeine.newBuilder().recordStats()
                 .expireAfterAccess(Duration.ofMinutes(1))
@@ -53,7 +53,7 @@ public class TeamcatClient implements ResourceService {
 
     private Resource fetchResource(String ident) {
         try {
-            var response = restTemplate.getForEntity(teamcatProperties.getGetUrl(), Resource.class, ident);
+            var response = restTemplate.getForEntity(properties.getResourceUrl(), Resource.class, ident);
             Assert.isTrue(response.getStatusCode().is2xxSuccessful() && response.hasBody(), "Call to teamcat failed " + response.getStatusCode());
             return response.getBody();
         } catch (HttpClientErrorException e) {
@@ -65,7 +65,7 @@ public class TeamcatClient implements ResourceService {
     }
 
     private RestResponsePage<Resource> doSearch(String name) {
-        var response = restTemplate.getForEntity(teamcatProperties.getSearchUrl(), ResourcePage.class, name);
+        var response = restTemplate.getForEntity(properties.getResourceSearchUrl(), ResourcePage.class, name);
         Assert.isTrue(response.getStatusCode().is2xxSuccessful() && response.hasBody(), "Call to teamcat failed " + response.getStatusCode());
         return response.getBody();
     }

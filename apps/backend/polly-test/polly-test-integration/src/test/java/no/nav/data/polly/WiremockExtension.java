@@ -8,8 +8,8 @@ import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.teams.dto.Resource;
 import no.nav.data.polly.teams.dto.ResourceType;
-import no.nav.data.polly.teams.nora.NoraMember;
-import no.nav.data.polly.teams.nora.NoraTeam;
+import no.nav.data.polly.teams.teamcat.TeamKatMember;
+import no.nav.data.polly.teams.teamcat.TeamKatTeam;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -48,8 +48,7 @@ public class WiremockExtension implements Extension, BeforeAllCallback, BeforeEa
 
     private void stubCommon() {
         getWiremock().stubFor(get("/elector").willReturn(okJson(JsonUtils.toJson(LeaderElectionService.getHostInfo()))));
-        getWiremock().stubFor(get("/nora/teams").willReturn(okJson(JsonUtils.toJson(noraMockResponse()))));
-        getWiremock().stubFor(get("/nora/teams/teamname").willReturn(okJson(JsonUtils.toJson(defaultNoraTeam()))));
+        getWiremock().stubFor(get("/teamcat/team").willReturn(okJson(JsonUtils.toJson(teamMockResponse()))));
 
         getWiremock().stubFor(get("/teamcat/resource/search/fam").willReturn(okJson(JsonUtils.toJson(new RestResponsePage<>(List.of(resource("A123456"), resource("A123457")))))));
         getWiremock().stubFor(get("/teamcat/resource/A123456").willReturn(okJson(JsonUtils.toJson(resource("A123456")))));
@@ -61,12 +60,14 @@ public class WiremockExtension implements Extension, BeforeAllCallback, BeforeEa
         return WIREMOCK;
     }
 
-    private List<NoraTeam> noraMockResponse() {
-        return List.of(defaultNoraTeam(), NoraTeam.builder().name("X Team").nick("xteamR").build());
+    private RestResponsePage<TeamKatTeam> teamMockResponse() {
+        List<TeamKatTeam> teamKatTeams = List.of(defaultNoraTeam(), TeamKatTeam.builder().name("X Team").id("xteamR").build());
+        return new RestResponsePage<>(teamKatTeams);
     }
 
-    private NoraTeam defaultNoraTeam() {
-        return NoraTeam.builder().name("Visual Team Name").nick("teamname").members(List.of(NoraMember.builder().name("Member Name").email("member@email.com").build())).build();
+    private TeamKatTeam defaultNoraTeam() {
+        return TeamKatTeam.builder().name("Visual Team Name").id("teamname").description("desc").slackChannel("slack").members(List.of(TeamKatMember.builder().name("Member Name").email("member@email.com").build()))
+                .build();
     }
 
     private Resource resource(String ident) {
