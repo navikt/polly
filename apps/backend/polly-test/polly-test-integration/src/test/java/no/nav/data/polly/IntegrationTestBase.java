@@ -292,7 +292,7 @@ public abstract class IntegrationTestBase {
     }
 
     protected LegalBasis createLegalBasis() {
-        return createLegalBasisRequest().convertToLegalBasis();
+        return createLegalBasisRequest().convertToDomain();
     }
 
     protected LegalBasisResponse legalBasisResponse() {

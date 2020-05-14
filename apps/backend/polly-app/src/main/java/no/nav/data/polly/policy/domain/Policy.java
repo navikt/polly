@@ -98,7 +98,7 @@ public class Policy extends Auditable {
         policy.setPurposeCode(policyRequest.getPurposeCode());
         policy.getData().setSubjectCategories(List.copyOf(policyRequest.getSubjectCategories()));
         policy.getData().setLegalBasesInherited(BooleanUtils.toBoolean(policyRequest.getLegalBasesInherited()));
-        policy.getData().setLegalBases(convert(policyRequest.getLegalBases(), LegalBasisRequest::convertToLegalBasis));
+        policy.getData().setLegalBases(convert(policyRequest.getLegalBases(), LegalBasisRequest::convertToDomain));
         policy.getData().setDocumentIds(convert(policyRequest.getDocumentIds(), UUID::fromString));
         return policy;
     }

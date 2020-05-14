@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 
 import static no.nav.data.polly.common.swagger.SwaggerConfig.LOCAL_DATE;
 import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_END;
-import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_START;
+import static no.nav.data.polly.common.utils.DateUtil.ORIG_START;
 import static no.nav.data.polly.common.utils.StringUtils.formatList;
 import static no.nav.data.polly.common.utils.StringUtils.formatListToUppercase;
 import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
@@ -49,7 +49,7 @@ public class ProcessRequest implements RequestElement {
     @Singular
     @ApiModelProperty(value = "Codelist SYSTEM")
     private List<String> products;
-    @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_START)
+    @ApiModelProperty(dataType = LOCAL_DATE, example = ORIG_START)
     private String start;
     @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_END)
     private String end;

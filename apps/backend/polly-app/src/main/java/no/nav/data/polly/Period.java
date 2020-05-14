@@ -12,7 +12,7 @@ public class Period {
     LocalDate end;
 
     public Period(LocalDate start, LocalDate end) {
-        this.start = start == null ? DateUtil.DEFAULT_START_DATE : start;
+        this.start = start == null ? DateUtil.getDefaultStartDate() : start;
         this.end = end == null ? DateUtil.DEFAULT_END_DATE : end;
     }
 
@@ -25,7 +25,7 @@ public class Period {
     }
 
     public boolean hasStart() {
-        return !start.equals(DateUtil.DEFAULT_START_DATE);
+        return !start.equals(DateUtil.getDefaultStartDate());
     }
 
     public boolean hasEnd() {

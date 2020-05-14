@@ -160,7 +160,7 @@ public class Process extends Auditable {
         data.setProducts(List.copyOf(request.getProducts()));
         data.setStart(DateUtil.parseStart(request.getStart()));
         data.setEnd(DateUtil.parseEnd(request.getEnd()));
-        data.setLegalBases(convert(request.getLegalBases(), LegalBasisRequest::convertToLegalBasis));
+        data.setLegalBases(convert(request.getLegalBases(), LegalBasisRequest::convertToDomain));
         data.setUsesAllInformationTypes(request.isUsesAllInformationTypes());
         data.setAutomaticProcessing(request.getAutomaticProcessing());
         data.setProfiling(request.getProfiling());

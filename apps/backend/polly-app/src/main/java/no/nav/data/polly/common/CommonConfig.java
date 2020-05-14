@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.hotspot.DefaultExports;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.common.web.TraceHeaderRequestInterceptor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -56,5 +59,11 @@ public class CommonConfig {
         DefaultExports.initialize();
         return CollectorRegistry.defaultRegistry;
     }
+
+    @Bean
+    public ApplicationRunner initStaticConfig(@Value("${polly.default.start-date}") String defaultStartDate) {
+        return args -> DateUtil.setDefaultStartDate(defaultStartDate);
+    }
+
 
 }
