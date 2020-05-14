@@ -35,6 +35,8 @@ export interface IStrings {
   riskOwner: string;
   riskOwnerFunctionBinder: string;
   riskOwnerFunction: string;
+  commonExternalProcessResponsible: string;
+  commonExternalProcessResponsibleHelpText: string;
   system: string;
   disclosure: string;
   disclosures: string;
@@ -114,8 +116,8 @@ export interface IStrings {
   purposeNotFound: string;
   purposeUse: string;
   informationTypeExternalUse: string;
-  usesAllInformationTypes: string;
   thirdParties: string;
+  alerts: string;
   policyEdit: string;
   policyNew: string;
   policyAdd: string;
@@ -157,9 +159,6 @@ export interface IStrings {
   legalBasesProcess: string;
   legalBasesOwn: string;
   legalBasesUndecided: string;
-  legalBasesUndecidedWarning: string;
-  legalBasesArt6Warning: string;
-  legalBasesArt9Warning: string;
   notAllowedMessage: string;
   confirmDeleteHeader: string;
   confirmDeletePolicyText: string;
@@ -224,6 +223,16 @@ export interface IStrings {
   DOCUMENT: string;
   CODELIST: string;
 
+  INFO: string;
+  WARNING: string;
+  ERROR: string;
+
+  // Alert events
+  MISSING_LEGAL_BASIS: string;
+  MISSING_ARTICLE_6: string;
+  MISSING_ARTICLE_9: string;
+  USES_ALL_INFO_TYPE: string;
+
   // generic
   department: string;
   subDepartmentShort: string;
@@ -256,11 +265,13 @@ export interface IStrings {
   appName: string;
   beta: string;
   all: string;
+  level: string;
+  type: string;
   allProcesses: string;
   completedProcesses: string;
   showCompletedProcesses: string;
   inProgressProcesses: string;
-  filter:string;
+  filter: string;
   startDate: string;
   endDate: string;
   active: string;
@@ -274,6 +285,7 @@ export interface IStrings {
   recipient: string;
   prevButton: string;
   nextButton: string;
+  of: string;
   rows: string;
   slack: string;
   add: string;
@@ -288,6 +300,7 @@ export interface IStrings {
   requiredGdprArt9: string;
   requiredNationalLaw: string;
   requiredDescription: string;
+  aboutUs:string;
 
   code: string;
   codes: string;
@@ -317,12 +330,12 @@ export interface IStrings {
 
 // Remember import moment locales up top
 export const langs: Langs = {
-  nb: { flag: "no", name: "Norsk", langCode: "nb", texts: no },
-  en: { flag: "gb", name: "English", langCode: "en", texts: en }
+  nb: {flag: "no", name: "Norsk", langCode: "nb", texts: no},
+  en: {flag: "gb", name: "English", langCode: "en", texts: en}
 };
 
 if (window.location.hostname.indexOf("local") >= 0) {
-  langs["ta"] = { flag: ["lk", "in"][Math.floor(Math.random() * 2)], name: "தமிழ்", langCode: "ta", texts: ta };
+  langs["ta"] = {flag: ["lk", "in"][Math.floor(Math.random() * 2)], name: "தமிழ்", langCode: "ta", texts: ta};
 }
 
 export const langsArray: Lang[] = Object.keys(langs).map(lang => langs[lang]);
@@ -333,14 +346,14 @@ const defaultLang = langs.nb;
 type IIntl = LocalizedStringsMethods & IStrings;
 
 interface LocalizedStringsFactory {
-  new <T>(props: GlobalStrings<T>, options?: { customLanguageInterface: () => string }): IIntl;
+  new<T>(props: GlobalStrings<T>, options?: { customLanguageInterface: () => string }): IIntl;
 }
 
 const strings: IntlLangs = {};
 
 Object.keys(langs).forEach(lang => (strings[lang] = langs[lang].texts));
 
-export const intl: IIntl = new (LocalizedStrings as LocalizedStringsFactory)(strings as any, { customLanguageInterface: () => defaultLang.langCode });
+export const intl: IIntl = new (LocalizedStrings as LocalizedStringsFactory)(strings as any, {customLanguageInterface: () => defaultLang.langCode});
 
 interface IntlLangs {
   [lang: string]: IStrings;

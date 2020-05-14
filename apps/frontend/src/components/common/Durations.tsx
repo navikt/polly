@@ -1,12 +1,13 @@
-import * as React from "react"
-import moment from "moment"
-import {PLACEMENT, StatefulTooltip} from "baseui/tooltip"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faClock } from "@fortawesome/free-solid-svg-icons"
-import { intl, theme } from "../../util"
+import * as React from 'react'
+import moment from 'moment'
+import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faClock } from '@fortawesome/free-solid-svg-icons'
+import { intl, theme } from '../../util'
+import { env } from '../../util/env'
 
-const defaultStart = moment("0001-01-01")
-const defaultEnd = moment("9999-12-31")
+const defaultStart = moment(env.defaultStartDate)
+const defaultEnd = moment('9999-12-31')
 const dateFormat = 'll'
 
 export const hasSpecifiedDate = (obj: { start?: string, end?: string }) => {

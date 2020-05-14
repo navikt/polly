@@ -1,21 +1,21 @@
-import moment from "moment"
-import { Block } from "baseui/block"
-import { intl, theme } from "../../util"
-import ReactJson from "react-json-view"
-import React, { useEffect } from "react"
-import { AuditAction, AuditLog } from "../../constants"
-import { Label1 } from "baseui/typography"
-import { AuditActionIcon, AuditLabel as Label } from "./AuditComponents"
-import { Card } from "baseui/card"
-import { Button } from "baseui/button"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faBinoculars, faExchangeAlt, faTimes } from "@fortawesome/free-solid-svg-icons"
-import { PLACEMENT, StatefulTooltip } from "baseui/tooltip"
-import { ObjectLink } from "../common/RouteLink"
-import { StatefulPopover } from "baseui/popover"
-import DiffViewer from "react-diff-viewer"
-import { useRefs } from "../../util/hooks"
-import { StyledSpinnerNext } from "baseui/spinner"
+import moment from 'moment'
+import { Block } from 'baseui/block'
+import { intl, theme } from '../../util'
+import ReactJson from 'react-json-view'
+import React, { useEffect, useState } from 'react'
+import { AuditAction, AuditLog } from '../../constants'
+import { Label1 } from 'baseui/typography'
+import { AuditActionIcon, AuditLabel as Label } from './AuditComponents'
+import { Card } from 'baseui/card'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBinoculars, faExchangeAlt, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
+import { ObjectLink } from '../common/RouteLink'
+import { StatefulPopover } from 'baseui/popover'
+import DiffViewer from 'react-diff-viewer'
+import { useRefs } from '../../util/hooks'
+import { StyledSpinnerNext } from 'baseui/spinner'
+import Button from '../common/Button'
 
 type AuditViewProps = {
   auditLog?: AuditLog,
@@ -25,14 +25,20 @@ type AuditViewProps = {
 }
 
 
+function initialOpen(auditLog?: AuditLog, auditId?: string) {
+  return auditLog?.audits.map((o, i) => i === 0 || o.id === auditId) || []
+}
+
 export const AuditView = (props: AuditViewProps) => {
   const {auditLog, auditId, loading, viewId} = props
   const refs = useRefs(auditLog?.audits.map(al => al.id) || [])
+  const [open, setOpen] = useState(initialOpen(auditLog, auditId))
 
   useEffect(() => {
     if (auditId && auditLog && refs[auditId] && auditId !== auditLog.audits[0].id) {
-      refs[auditId].current!.scrollIntoView({block: "start"})
+      refs[auditId].current!.scrollIntoView({block: 'start'})
     }
+    setOpen(initialOpen(auditLog, auditId))
   }, [auditId, auditLog])
 
   const logFound = auditLog && !!auditLog.audits.length
@@ -51,6 +57,7 @@ export const AuditView = (props: AuditViewProps) => {
           <Label label={intl.audits}>{auditLog?.audits.length}</Label>
         </Block>
         <Block display="flex">
+          <Button size='compact' kind='tertiary' marginRight onClick={() => setOpen(auditLog!.audits.map(() => true))}>Åpne alle</Button>
           {newestAudit?.action !== AuditAction.DELETE &&
           <StatefulTooltip content={() => intl.view} placement={PLACEMENT.top}>
             <Block>
@@ -92,19 +99,22 @@ export const AuditView = (props: AuditViewProps) => {
                 )} overrides={{
                   Body: {
                     style: () => ({
-                      width: "80%",
-                      maxHeight: "80%",
-                      overflowY: "scroll"
+                      width: '80%',
+                      maxHeight: '80%',
+                      overflowY: 'scroll'
                     })
                   }
                 }}>
-                  <Button size="compact" shape="round" kind="tertiary"><FontAwesomeIcon icon={faExchangeAlt}/></Button>
+                  <div><Button size="compact" shape="round" kind="tertiary"><FontAwesomeIcon icon={faExchangeAlt}/></Button></div>
                 </StatefulPopover>
               </Block>
             </Block>
-            <ReactJson src={audit.data} name={null} onSelect={sel => {
-              (sel.name === 'id' || sel.name?.endsWith("Id")) && viewId(sel.value as string)
-            }}/>
+            <ReactJson src={audit.data}
+                       name={null}
+                       shouldCollapse={p => p.name === null && !open[index]}
+                       onSelect={sel => {
+                         (sel.name === 'id' || sel.name?.endsWith('Id')) && viewId(sel.value as string)
+                       }}/>
           </Block>
         )
       })}

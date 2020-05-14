@@ -1,38 +1,36 @@
-import * as React from "react";
-import { KeyboardEvent, useState } from "react";
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal";
-import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps, } from "formik";
-import { Block, BlockProps } from "baseui/block";
-import { Radio, RadioGroup } from "baseui/radio";
-import { Plus } from "baseui/icon";
-import { Select, TYPE } from 'baseui/select';
+import * as React from 'react'
+import { KeyboardEvent, useState } from 'react'
+import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
+import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps, } from 'formik'
+import { Block, BlockProps } from 'baseui/block'
+import { Radio, RadioGroup } from 'baseui/radio'
+import { Plus } from 'baseui/icon'
+import { Select, TYPE } from 'baseui/select'
 
-import CardLegalBasis from "./CardLegalBasis"
-import { codelist, ListName } from "../../../service/Codelist";
-import { Button, KIND, SIZE as ButtonSize } from "baseui/button";
-import { LegalBasesStatus, LegalBasisFormValues, PolicyFormValues, PolicyInformationType } from "../../../constants"
-import { ListLegalBases } from "../../common/LegalBasis"
-import { useInfoTypeSearch } from "../../../api"
-import { Error, ModalLabel } from "../../common/ModalSchema";
-import { intl } from "../../../util"
-import { DateModalFields } from "../DateModalFields"
-import { hasSpecifiedDate } from "../../common/Durations"
-import { policySchema } from "../../common/schema"
-import { Tag, VARIANT } from "baseui/tag";
-import { Docs } from "./TablePolicy"
+import CardLegalBasis from './CardLegalBasis'
+import { codelist, ListName } from '../../../service/Codelist'
+import { Button, KIND, SIZE as ButtonSize } from 'baseui/button'
+import { InformationTypeShort, LegalBasesStatus, LegalBasisFormValues, PolicyFormValues } from '../../../constants'
+import { ListLegalBases } from '../../common/LegalBasis'
+import { useInfoTypeSearch } from '../../../api'
+import { Error, ModalLabel } from '../../common/ModalSchema'
+import { intl } from '../../../util'
+import { policySchema } from '../../common/schema'
+import { Tag, VARIANT } from 'baseui/tag'
+import { Docs } from './TablePolicy'
 
 
 const modalBlockProps: BlockProps = {
     width: '750px',
     paddingRight: '2rem',
     paddingLeft: '2rem'
-};
+}
 
 const rowBlockProps: BlockProps = {
     display: 'flex',
     width: '100%',
     marginTop: '1rem'
-};
+}
 
 const renderTagList = (list: string[], arrayHelpers: FieldArrayRenderProps) => {
     return (
@@ -55,14 +53,14 @@ const renderTagList = (list: string[], arrayHelpers: FieldArrayRenderProps) => {
                 ))
                 : null}
         </React.Fragment>
-    );
+    )
 }
 
 const FieldInformationType = (props: {
-    informationTypes: PolicyInformationType[],
+    informationTypes: InformationTypeShort[],
     searchInformationType: (name: string) => void,
-    value?: PolicyInformationType,
-    setValue: (v: PolicyInformationType) => void
+    value?: InformationTypeShort,
+    setValue: (v: InformationTypeShort) => void
 }) => (
         <Field
             name="informationType"
@@ -78,8 +76,8 @@ const FieldInformationType = (props: {
                     value={props.value as any}
                     onInputChange={event => props.searchInformationType(event.currentTarget.value)}
                     onChange={(params) => {
-                        let infoType = params.value[0] as PolicyInformationType;
-                        props.setValue(infoType);
+                        let infoType = params.value[0] as InformationTypeShort
+                        props.setValue(infoType)
                         form.setFieldValue('informationType', infoType)
                     }}
                     error={!!form.errors.informationType && !!form.submitCount}
@@ -88,10 +86,10 @@ const FieldInformationType = (props: {
                 />
             )}
         />
-    );
+    )
 
 const FieldLegalBasisStatus = (props: { legalBasesStatus?: LegalBasesStatus }) => {
-    const [value, setValue] = useState(props.legalBasesStatus);
+    const [value, setValue] = useState(props.legalBasesStatus)
     return (
         <Field
             name="legalBasesInherited"
@@ -102,8 +100,8 @@ const FieldLegalBasisStatus = (props: { legalBasesStatus?: LegalBasesStatus }) =
                             value={value}
                             align="vertical" isError={!!form.errors.legalBasesStatus && !!form.submitCount}
                             onChange={e => {
-                                const selected = (e.target as HTMLInputElement).value;
-                                form.setFieldValue("legalBasesStatus", selected);
+                                const selected = (e.target as HTMLInputElement).value
+                                form.setFieldValue('legalBasesStatus', selected)
                                 setValue(selected as LegalBasesStatus)
                             }}
                         >
@@ -116,7 +114,7 @@ const FieldLegalBasisStatus = (props: { legalBasesStatus?: LegalBasesStatus }) =
             }}
         />
     )
-};
+}
 
 type ModalPolicyProps = {
     title?: string
@@ -130,20 +128,20 @@ type ModalPolicyProps = {
 };
 
 const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, docs, title }: ModalPolicyProps) => {
-    const [selectedLegalBasis, setSelectedLegalBasis] = React.useState<LegalBasisFormValues>();
-    const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState<number>();
-    const [infoTypeValue, setInfoTypeValue] = React.useState<PolicyInformationType | undefined>(initialValues.informationType);
-    const [infoTypeSearchResult, setInfoTypeSearch] = useInfoTypeSearch();
+    const [selectedLegalBasis, setSelectedLegalBasis] = React.useState<LegalBasisFormValues>()
+    const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState<number>()
+    const [infoTypeValue, setInfoTypeValue] = React.useState<InformationTypeShort | undefined>(initialValues.informationType)
+    const [infoTypeSearchResult, setInfoTypeSearch] = useInfoTypeSearch()
 
     const onCloseModal = () => {
-        setInfoTypeValue(undefined);
-        setInfoTypeSearch('');
+        setInfoTypeValue(undefined)
+        setInfoTypeSearch('')
         onClose()
-    };
+    }
 
     const disableEnter = (e: KeyboardEvent) => {
         if (e.key === 'Enter') e.preventDefault()
-    };
+    }
 
     return (
         <Modal
@@ -158,7 +156,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
                 <Formik
                     initialValues={initialValues} validationSchema={policySchema()}
                     onSubmit={(values) => {
-                        submit(values);
+                        submit(values)
                         onCloseModal()
                     }}
                     render={(formikBag: FormikProps<PolicyFormValues>) => (
@@ -191,7 +189,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
                                                     options={codelist.getParsedOptionsFilterOutSelected(ListName.SUBJECT_CATEGORY, formikBag.values.subjectCategories)}
                                                     maxDropdownHeight="300px"
                                                     onChange={({ option }) => {
-                                                        arrayHelpers.push(option ? option.id : null);
+                                                        arrayHelpers.push(option ? option.id : null)
                                                     }}
                                                     error={!!arrayHelpers.form.errors.sources && !!arrayHelpers.form.submitCount}
                                                 />
@@ -211,8 +209,6 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
                                             )}/>
                               </Block>
                               }
-
-                                <DateModalFields showDates={hasSpecifiedDate(initialValues)} showLabels={true} rowBlockProps={rowBlockProps} />
 
                                 <Block {...rowBlockProps}>
                                     <ModalLabel label={intl.legalBasesShort} />
@@ -235,14 +231,14 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
                                                               setSelectedLegalBasis(undefined)
                                                             }}
                                                             submit={values => {
-                                                                if (!values) return;
+                                                                if (!values) return
                                                                 if (selectedLegalBasis) {
-                                                                    arrayHelpers.replace(selectedLegalBasisIndex!, values);
+                                                                    arrayHelpers.replace(selectedLegalBasisIndex!, values)
                                                                     setSelectedLegalBasis(undefined)
                                                                 } else {
-                                                                    arrayHelpers.push(values);
+                                                                    arrayHelpers.push(values)
                                                                 }
-                                                                formikBag.setFieldValue('legalBasesOpen', false);
+                                                                formikBag.setFieldValue('legalBasesOpen', false)
                                                             }} />
                                                     </Block>
                                                 ) : (
@@ -262,8 +258,8 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
                                                                         legalBases={formikBag.values.legalBases}
                                                                         onRemove={(index) => arrayHelpers.remove(index)}
                                                                         onEdit={(index) => {
-                                                                            setSelectedLegalBasis(formikBag.values.legalBases[index]);
-                                                                            setSelectedLegalBasisIndex(index);
+                                                                            setSelectedLegalBasis(formikBag.values.legalBases[index])
+                                                                            setSelectedLegalBasisIndex(index)
                                                                             formikBag.setFieldValue('legalBasesOpen', true)
                                                                         }}
                                                                     />
@@ -292,7 +288,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
             </Block>
         </Modal>
 
-    );
-};
+    )
+}
 
 export default ModalPolicy

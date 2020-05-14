@@ -1,7 +1,7 @@
-import axios from "axios"
-import { LegalBasesStatus, LegalBasis, PageResponse, Policy, PolicyFormValues } from "../constants"
-import { Code } from "../service/Codelist";
-import { env } from "../util/env"
+import axios from 'axios'
+import { LegalBasesStatus, LegalBasis, PageResponse, Policy, PolicyFormValues } from '../constants'
+import { Code } from '../service/Codelist'
+import { env } from '../util/env'
 
 export const getPoliciesForInformationType = async (informationTypeId: string) => {
   return (await axios.get<PageResponse<Policy>>(`${env.pollyBaseUrl}/policy/?informationTypeId=${informationTypeId}`)).data
@@ -68,7 +68,5 @@ export const convertPolicyToFormValues = (policy: Policy): PolicyFormValues => (
   subjectCategories: policy.subjectCategories.map((code: Code) => code.code),
   legalBasesStatus: getInitialLegalBasesStatus(policy.legalBasesInherited, policy.legalBases),
   legalBases: convertLegalBasesToFormValues(policy.legalBases),
-  start: policy.start || undefined,
-  end: policy.end || undefined,
   documentIds: policy.documentIds || []
 })

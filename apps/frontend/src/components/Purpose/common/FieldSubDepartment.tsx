@@ -1,29 +1,30 @@
-import * as React from "react";
-import {Select, Value} from "baseui/select";
-import {codelist, ListName} from "../../../service/Codelist";
-import {Field, FieldProps} from "formik";
-import {ProcessFormValues} from "../../../constants";
-import {Block} from "baseui/block";
+import * as React from 'react'
+import {Select} from 'baseui/select'
+import {codelist, ListName} from '../../../service/Codelist'
+import {FieldArray, FormikProps} from 'formik'
+import {ProcessFormValues} from '../../../constants'
+import {Block} from 'baseui/block'
+import {renderTagList} from "../../common/TagList"
 
-const FieldSubDepartment = (props: { subDepartment?: string }) => {
-  const {subDepartment} = props
-  const [value, setValue] = React.useState<Value>(subDepartment
-    ? [{id: subDepartment, label: codelist.getShortname(ListName.SUB_DEPARTMENT, subDepartment)}]
-    : [])
+const FieldSubDepartments = (props: { formikBag: FormikProps<ProcessFormValues> }) => {
 
   return (
-    <Field
-      name='subDepartment'
-      render={({form}: FieldProps<ProcessFormValues>) => (
-        <Block width={'100%'}>
-          <Select
-            options={codelist.getParsedOptions(ListName.SUB_DEPARTMENT)}
-            onChange={({value}) => {
-              setValue(value)
-              form.setFieldValue('subDepartment', value.length > 0 ? value[0].id : '')
-            }}
-            value={value}
-          />
+    <FieldArray
+      name='subDepartments'
+      render={arrayHelpers => (
+        <Block width='100%'>
+          <Block width='100%'>
+            <Select
+              clearable
+              options={codelist.getParsedOptions(ListName.SUB_DEPARTMENT).filter(o => !props.formikBag.values.subDepartments.includes(o.id))}
+              onChange={({value}) => {
+                arrayHelpers.form.setFieldValue('subDepartments', [...props.formikBag.values.subDepartments, ...value.map(v => v.id)])
+              }}
+            />
+          </Block>
+          <Block>
+            <Block>{renderTagList(props.formikBag.values.subDepartments, arrayHelpers)}</Block>
+          </Block>
         </Block>
       )}
     />
@@ -31,4 +32,4 @@ const FieldSubDepartment = (props: { subDepartment?: string }) => {
 
 }
 
-export default FieldSubDepartment
+export default FieldSubDepartments

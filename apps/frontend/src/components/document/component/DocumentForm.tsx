@@ -29,7 +29,6 @@ type DocumentFormProps = {
 }
 
 const DocumentForm = (props: DocumentFormProps) => {
-  const [description, setDescription] = React.useState('')
   const [isLoading, setLoading] = React.useState(false)
   const [errorMessage, setErrorMessage] = React.useState()
 
@@ -87,8 +86,6 @@ const DocumentForm = (props: DocumentFormProps) => {
                 {
                   (props: FieldProps) => (
                     <Textarea
-                      value={description}
-                      onChange={event => setDescription((event.target as HTMLTextAreaElement).value)}
                       {...props.field}
                     />
                   )

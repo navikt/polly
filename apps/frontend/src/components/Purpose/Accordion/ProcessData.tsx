@@ -67,22 +67,18 @@ const ProcessData = (props: { process: Process }) => {
       </DataText>
 
       <DataText label={intl.status}>
-        <Block>
-          <span>{(process.status) === ProcessStatus.IN_PROGRESS ? intl.inProgress : intl.completedProcesses}</span>
-        </Block>
+        {(process.status) === ProcessStatus.IN_PROGRESS ? intl.inProgress : intl.completedProcesses}
       </DataText>
 
       <DataText label={intl.isProcessImplemented}>
-        <Block>
-          <span>{(process.dpia?.processImplemented) ? intl.yes : intl.no}</span>
-        </Block>
+        {(process.dpia?.processImplemented) ? intl.yes : intl.no}
       </DataText>
 
       <DataText label={intl.riskOwner}>
-        <Block>
+        <>
           <span>{(process.dpia?.riskOwner) ? riskOwnerFullName : intl.notFilled}</span>
           {!!process.dpia?.riskOwnerFunction && <span> {intl.riskOwnerFunctionBinder} {process.dpia.riskOwnerFunction}</span>}
-        </Block>
+        </>
       </DataText>
 
       <DataText label={intl.validityOfProcess}>
@@ -98,10 +94,18 @@ const ProcessData = (props: { process: Process }) => {
           <span>{intl.department}: </span>
           <span>{codelist.getShortnameForCode(process.department)}</span>
         </Block>}
-        {process.subDepartment && <Block>
-          <span>{intl.subDepartment}: </span>
-          <span>{codelist.getShortnameForCode(process.subDepartment)}</span>
+        {!!process?.subDepartments.length && <Block>
+          <Block display="flex">
+            <span>{intl.subDepartment}: </span>
+            <DotTags items={process.subDepartments.map(sd => codelist.getShortname(ListName.SUB_DEPARTMENT, sd.code))}/>
+          </Block>
         </Block>}
+
+        {process.commonExternalProcessResponsible && <Block>
+          <span>{intl.commonExternalProcessResponsible}: </span>
+          <span>{codelist.getShortnameForCode(process.commonExternalProcessResponsible)}</span>
+        </Block>}
+
         {!!process.productTeam && <Block>
           <span>{intl.productTeam}: </span>
           <TeamPopover teamId={process.productTeam}/>
@@ -112,7 +116,7 @@ const ProcessData = (props: { process: Process }) => {
         <DotTags items={process.products.map(product => codelist.getShortname(ListName.SYSTEM, product.code))}/>
       </DataText>
 
-      <DataText label={intl.usesAllInformationTypes} text={boolToText(process.usesAllInformationTypes)}/>
+      <DataText label={intl.USES_ALL_INFO_TYPE} text={boolToText(process.usesAllInformationTypes)}/>
 
       <DataText label={intl.automation}>
         <Block>
@@ -133,9 +137,7 @@ const ProcessData = (props: { process: Process }) => {
         <>
           {process.dataProcessing?.dataProcessor &&
           <Block>
-            <Block>
-              <span>{intl.dataProcessorYes}</span>
-            </Block>
+            <Block>{intl.dataProcessorYes}</Block>
             <Block>
               {dataProcessorAgreements &&
               <Block display='flex'>
@@ -162,12 +164,8 @@ const ProcessData = (props: { process: Process }) => {
         <>
           {process.retention?.retentionPlan &&
           <Block>
-            <Block>
-              <span>{intl.retentionPlanYes}</span>
-            </Block>
-            <Block>
-              <RetentionView retention={process.retention}/>
-            </Block>
+            <Block>{intl.retentionPlanYes}</Block>
+            <RetentionView retention={process.retention}/>
             <Block>
               <span>{process.retention?.retentionDescription && `${intl.retentionDescription}: `}</span>
               <span>{process.retention?.retentionDescription}</span>

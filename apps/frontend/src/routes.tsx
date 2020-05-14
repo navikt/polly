@@ -20,6 +20,7 @@ import DocumentCreatePage from "./pages/DocumentCreatePage";
 import DocumentPage from "./pages/DocumentPage";
 import DocumentEditPage from "./pages/DocumentEditPage";
 import { PurposeListPage } from './pages/PurposeListPage'
+import { AlertEventPage } from './pages/AlertEventPage'
 
 
 const Routes = (): JSX.Element => (
@@ -28,10 +29,7 @@ const Routes = (): JSX.Element => (
       <Route exact path="/thirdparty" component={ThirdPartySearchPage}/>
       <Route exact path="/thirdparty/:thirdPartyCode" component={ThirdPartyMetadataPage}/>
       <Route exact path="/process" component={PurposeListPage}/>
-      <Route exact path="/process/purpose/:code?/:processId?" component={PurposePage}/>
-      <Route exact path="/process/department/:code?/:processId?" component={PurposePage}/>
-      <Route exact path="/process/subdepartment/:code?/:processId?" component={PurposePage}/>
-      <Route exact path="/process/team/:code?/:processId?" component={PurposePage}/>
+      <Route exact path="/process/:section/:code/:processId?" component={PurposePage}/>
 
       <Route
         exact
@@ -78,6 +76,7 @@ const Routes = (): JSX.Element => (
         path="/document/edit/:id?"
         component={DocumentEditPage}
       />
+      <Route exact path="/alert/events/:objectType?/:id?" component={AlertEventPage}/>
       <Route
         exact
         path="/"

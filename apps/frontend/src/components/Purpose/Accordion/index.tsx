@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useEffect } from 'react'
-import { Accordion, Panel } from 'baseui/accordion'
-import { generatePath, RouteComponentProps, withRouter } from 'react-router'
+import { Panel, StatelessAccordion } from 'baseui/accordion'
+import { RouteComponentProps, withRouter } from 'react-router'
 import { KIND, SIZE as ButtonSize } from 'baseui/button'
 import { StyledSpinnerNext } from 'baseui/spinner'
 import { Block } from 'baseui/block'
@@ -18,14 +18,14 @@ import { PathParams } from '../../../pages/PurposePage'
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { AddDocumentModal } from './AddDocumentModal'
 import Button from '../../common/Button'
-import moment from 'moment'
 import AccordionTitle from './AccordionTitle'
-import DataText from '../common/DataText'
 import ProcessData from './ProcessData'
+import { lastModifiedDate } from '../../../util/date-formatter'
+import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
+import { canViewAlerts } from '../../../pages/AlertEventPage'
 
 type AccordionProcessProps = {
   isLoading: boolean
-  code: string
   processList: UseWithPurpose[]
   currentProcess?: Process
   errorProcessModal: any | null
@@ -41,15 +41,9 @@ type AccordionProcessProps = {
   submitAddDocument: (document: AddDocumentToProcessFormValues) => Promise<boolean>
 }
 
-const lastModifiedDate = (lastModifiedDate: string) => {
-  let lang = localStorage.getItem('polly-lang') === 'nb' ? 'nb' : 'en'
-  return moment(lastModifiedDate).locale(lang).format('LL')
-}
-
 const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<PathParams>) => {
   const {
     isLoading,
-    code,
     currentProcess,
     onChangeProcess,
     submitDeleteProcess,
@@ -69,21 +63,6 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
 
   const hasAccess = () => user.canWrite()
   useAwait(user.wait())
-
-  const updatePath = (params: PathParams | null) => {
-    let nextPath
-    if (!params) nextPath = generatePath(props.match.path)
-    else nextPath = generatePath(props.match.path, params)
-    props.history.push(nextPath)
-  }
-
-  const handleChangePanel = async (processId?: string) => {
-    if (!processId)
-      updatePath({code: code})
-    else {
-      updatePath({code: code, processId: processId})
-    }
-  }
 
   const renderCreatePolicyButton = () => (
     <Button
@@ -110,10 +89,6 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
   )
 
   useEffect(() => {
-    props.match.params.processId && onChangeProcess(props.match.params.processId)
-  }, [props.match.params.processId])
-
-  useEffect(() => {
     props.match.params.processId && !isLoading && setTimeout(() => {
       purposeRef.current && window.scrollTo({top: purposeRef.current.offsetTop})
     }, 200)
@@ -121,85 +96,85 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
 
   return (
     <Block ref={purposeRef}>
-      <Accordion
-        onChange={({expanded}) => handleChangePanel(expanded.length ? expanded[0].toString() : undefined)}
-        initialState={{expanded: props.match.params.processId ? [props.match.params.processId] : []}}>
+      <StatelessAccordion
+        onChange={({expanded}) => expanded.length && onChangeProcess(expanded[0] as string)}
+        expanded={props.match.params.processId ? [props.match.params.processId] : []}
+      >
         {props.processList &&
         props
-          .processList
-          .sort((a, b) => a.purposeCode.localeCompare(b.purposeCode))
-          .map((p: UseWithPurpose) => (
-            <Panel
-              title={
-                <AccordionTitle process={p} expanded={props.match.params.processId === p.id}
-                                hasAccess={hasAccess()} editProcess={() => setShowEditProcessModal(true)}
-                                deleteProcess={() => setShowDeleteModal(true)}
-                />
-              }
-              key={p.id}
-              overrides={{
-                ToggleIcon: {
-                  component: () => null
-                },
-                Content: {
-                  style: {
-                    backgroundColor: theme.colors.white,
-                    // Outline width
-                    paddingTop: '4px',
-                    paddingBottom: '4px',
-                    paddingLeft: '4px',
-                    paddingRight: '4px',
-                  }
+        .processList
+        .sort((a, b) => a.purposeCode.localeCompare(b.purposeCode))
+        .map((p: UseWithPurpose) => (
+          <Panel
+            title={
+              <AccordionTitle process={p} expanded={props.match.params.processId === p.id}
+                              hasAccess={hasAccess()} editProcess={() => setShowEditProcessModal(true)}
+                              deleteProcess={() => setShowDeleteModal(true)}
+              />
+            }
+            key={p.id}
+            overrides={{
+              ToggleIcon: {
+                component: () => null
+              },
+              Content: {
+                style: {
+                  backgroundColor: theme.colors.white,
+                  // Outline width
+                  paddingTop: '4px',
+                  paddingBottom: '4px',
+                  paddingLeft: '4px',
+                  paddingRight: '4px',
                 }
-              }}
-            >
-              {isLoading && <Block padding={theme.sizing.scale400}><StyledSpinnerNext size={theme.sizing.scale1200}/></Block>}
+              }
+            }}
+          >
+            {isLoading && <Block padding={theme.sizing.scale400}><StyledSpinnerNext size={theme.sizing.scale1200}/></Block>}
 
-              {!isLoading && currentProcess && (
-                <Block $style={{
-                  outline: `4px ${theme.colors.primary200} solid`
-                }}>
+            {!isLoading && currentProcess && (
+              <Block $style={{
+                outline: `4px ${theme.colors.primary200} solid`
+              }}>
 
-                  <Block paddingLeft={theme.sizing.scale800} paddingRight={theme.sizing.scale800} paddingTop={theme.sizing.scale800}>
-                    <Block display='flex' width='100%' justifyContent='space-between'>
-                      <Block width='65%'>
-                        <ProcessData process={currentProcess}/>
-                      </Block>
-                      <Block width='35%' display='flex' flexDirection='row-reverse'>
-                        <span><i>{intl.formatString(intl.lastModified, currentProcess.changeStamp.lastModifiedBy, lastModifiedDate(currentProcess.changeStamp.lastModifiedDate))}</i></span>
-                      </Block>
-                    </Block>
+                <Block paddingLeft={theme.sizing.scale800} paddingRight={theme.sizing.scale800} paddingTop={theme.sizing.scale800}>
+                  <ProcessData process={currentProcess}/>
 
-                    <DataText>
-                      <Block display='flex' justifyContent='flex-end'>
-                        {hasAccess() &&
-                        <Block>
-                          {renderAddDocumentButton()}
-                          {renderCreatePolicyButton()}
-                        </Block>
-                        }
-                      </Block>
-                    </DataText>
+                  <Block display='flex' justifyContent='flex-end'>
+                    <span><i>{intl.formatString(intl.lastModified, currentProcess.changeStamp.lastModifiedBy, lastModifiedDate(currentProcess.changeStamp.lastModifiedDate))}</i></span>
                   </Block>
-
-                  <TablePolicy
-                    process={currentProcess}
-                    hasAccess={hasAccess()}
-                    errorPolicyModal={errorPolicyModal}
-                    errorDeleteModal={errorPolicyModal}
-                    submitEditPolicy={submitEditPolicy}
-                    submitDeletePolicy={submitDeletePolicy}
-                  />
+                  <Block display='flex' paddingTop={theme.sizing.scale800} width='100%' justifyContent='flex-end'>
+                    {canViewAlerts() && <Block marginRight='auto'>
+                      <Button type='button' kind='tertiary' size='compact' icon={faExclamationCircle}
+                              onClick={() => props.history.push(`/alert/events/process/${p.id}`)}>{intl.alerts}</Button>
+                    </Block>}
+                    {hasAccess() &&
+                    <Block>
+                      {renderAddDocumentButton()}
+                      {renderCreatePolicyButton()}
+                    </Block>
+                    }
+                  </Block>
                 </Block>
-              )}
-            </Panel>
-          ))}
-      </Accordion>
+
+                <TablePolicy
+                  process={currentProcess}
+                  hasAccess={hasAccess()}
+                  errorPolicyModal={errorPolicyModal}
+                  errorDeleteModal={errorPolicyModal}
+                  submitEditPolicy={submitEditPolicy}
+                  submitDeletePolicy={submitDeletePolicy}
+                />
+              </Block>
+            )}
+          </Panel>
+        ))}
+      </StatelessAccordion>
       {!props.processList.length && <Label2 margin='1rem'>{intl.emptyTable} {intl.processes}</Label2>}
 
       {!!currentProcess &&
       <>
         <ModalProcess
+          key={currentProcess.id}
           title={intl.processingActivitiesEdit}
           onClose={() => setShowEditProcessModal(false)}
           isOpen={showEditProcessModal}
@@ -219,8 +194,6 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
             process: currentProcess,
             purposeCode: currentProcess.purposeCode,
             subjectCategories: [],
-            start: undefined,
-            end: undefined,
             legalBases: [],
             documentIds: [],
           }}

@@ -1,7 +1,7 @@
-import axios from "axios"
-import { PageResponse, Process, ProcessCount, ProcessFormValues, ProcessStatus } from "../constants"
-import { env } from "../util/env"
-import { convertLegalBasesToFormValues } from "./PolicyApi"
+import axios from 'axios'
+import { PageResponse, Process, ProcessCount, ProcessFormValues, ProcessStatus } from '../constants'
+import { env } from '../util/env'
+import { convertLegalBasesToFormValues } from './PolicyApi'
 
 export const getProcess = async (processId: string) => {
   const data = (await axios.get<Process>(`${env.pollyBaseUrl}/process/${processId}`)).data
@@ -43,7 +43,7 @@ export const updateProcess = async (process: ProcessFormValues) => {
 
 export const getProcessesByDocument = async (documentId: string) => {
   return (await axios.get(`${env.pollyBaseUrl}/process/?documentId=${documentId}`)).data
-};
+}
 
 const mapBool = (b?: boolean) => b === true ? true : b === false ? false : undefined
 
@@ -54,7 +54,8 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     name,
     description,
     department,
-    subDepartment,
+    subDepartments,
+    commonExternalProcessResponsible,
     productTeam,
     products,
     legalBases,
@@ -76,7 +77,8 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     description: description || '',
     purposeCode: purposeCode,
     department: (department && department.code) || undefined,
-    subDepartment: (subDepartment && subDepartment.code) || undefined,
+    subDepartments: (subDepartments && subDepartments.map(sd => sd.code)) || [],
+    commonExternalProcessResponsible: (commonExternalProcessResponsible && commonExternalProcessResponsible.code) || undefined,
     productTeam: productTeam || undefined,
     products: (products && products.map(p => p.code)) || [],
     legalBases: convertLegalBasesToFormValues(legalBases),
@@ -115,7 +117,8 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
     description: values.description,
     purposeCode: values.purposeCode,
     department: values.department ? values.department : undefined,
-    subDepartment: values.subDepartment ? values.subDepartment : undefined,
+    subDepartments: values.subDepartments ? values.subDepartments : [],
+    commonExternalProcessResponsible: values.commonExternalProcessResponsible ? values.commonExternalProcessResponsible : undefined,
     productTeam: values.productTeam,
     products: values.products,
     legalBases: values.legalBases ? values.legalBases : [],
@@ -128,9 +131,9 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
     retention: values.retention,
     status: values.status,
     dpia: {
-      grounds: values.dpia?.needForDpia ? "" : values.dpia?.grounds,
+      grounds: values.dpia?.needForDpia ? '' : values.dpia?.grounds,
       needForDpia: values.dpia.needForDpia,
-      refToDpia: values.dpia?.needForDpia ? values.dpia.refToDpia : "",
+      refToDpia: values.dpia?.needForDpia ? values.dpia.refToDpia : '',
       processImplemented: values.dpia?.processImplemented,
       riskOwner: values.dpia?.riskOwner,
       riskOwnerFunction: values.dpia?.riskOwnerFunction

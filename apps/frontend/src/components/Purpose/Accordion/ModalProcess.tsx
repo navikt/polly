@@ -17,21 +17,23 @@ import { Label1 } from 'baseui/typography'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import CustomizedModalBlock from '../../common/CustomizedModalBlock'
-import { DateFieldsProcessModal } from "../DateFieldsProcessModal"
-import FieldName from "../common/FieldName";
-import FieldPurpose from "../common/FieldPurpose";
-import FieldDescription from "../common/FieldDescription";
-import FieldDepartment from "../common/FieldDepartment";
-import FieldSubDepartment from "../common/FieldSubDepartment";
-import FieldProductTeam from "../common/FieldProductTeam";
-import FieldProduct from "../common/FieldProduct";
-import BoolField from "../common/BoolField";
-import FieldDataProcessorAgreements from "../common/FieldDataProcessorAgreements";
-import RetentionItems from "../common/RetentionItems";
-import { ALIGN, Radio, RadioGroup } from "baseui/radio";
-import DpiaItems from "../common/DpiaItems";
-import FieldRiskOwner from "../common/FieldRiskOwner";
+import { DateFieldsProcessModal } from '../DateFieldsProcessModal'
+import FieldName from '../common/FieldName'
+import FieldPurpose from '../common/FieldPurpose'
+import FieldDescription from '../common/FieldDescription'
+import FieldDepartment from '../common/FieldDepartment'
+import FieldSubDepartments from '../common/FieldSubDepartment'
+import FieldProductTeam from '../common/FieldProductTeam'
+import FieldProduct from '../common/FieldProduct'
+import BoolField from '../common/BoolField'
+import FieldDataProcessorAgreements from '../common/FieldDataProcessorAgreements'
+import RetentionItems from '../common/RetentionItems'
+import { ALIGN, Radio, RadioGroup } from 'baseui/radio'
+import DpiaItems from '../common/DpiaItems'
+import FieldRiskOwner from '../common/FieldRiskOwner'
 import FieldInput from '../common/FieldInput'
+import FieldCommonExternalProcessResponsible from '../common/FieldCommonExternalProcessResponsible'
+import { RadioBoolButton } from '../../common/Radio'
 
 const modalHeaderProps: BlockProps = {
   display: 'flex',
@@ -95,6 +97,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
   const [selectedLegalBasis, setSelectedLegalBasis] = React.useState<LegalBasisFormValues>()
   const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState<number>()
   const [isPanelExpanded, togglePanel] = React.useReducer(prevState => !prevState, false)
+  const [showResponsibleSelect, setShowResponsibleSelect] = React.useState<boolean>(!!initialValues.commonExternalProcessResponsible)
 
   const disableEnter = (e: KeyboardEvent) => {
     if (e.key === 'Enter') e.preventDefault()
@@ -170,11 +173,11 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
                 <CustomizedModalBlock>
                   <ModalLabel label={intl.system} tooltip={intl.systemHelpText}/>
-                  <FieldProduct products={formikBag.values.products}/>
+                  <FieldProduct formikBag={formikBag}/>
                 </CustomizedModalBlock>
 
                 <CustomizedModalBlock>
-                  <ModalLabel label={intl.usesAllInformationTypes} tooltip={intl.usesAllInformationTypesHelpText}/>
+                  <ModalLabel label={intl.USES_ALL_INFO_TYPE} tooltip={intl.usesAllInformationTypesHelpText}/>
                   <Block>
                     <BoolField value={formikBag.values.usesAllInformationTypes} fieldName='usesAllInformationTypes' omitUndefined firstButtonLabel={`(${intl.exceptionalUsage})`}/>
                   </Block>
@@ -202,7 +205,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                 <Accordion overrides={{
                   Root: {
                     style: {
-                      marginTop: "25px"
+                      marginTop: '25px'
                     }
                   }
                 }}>
@@ -211,35 +214,46 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                     onChange={togglePanel}
                     overrides={{...panelOverrides}}
                   >
-                    <Block display={"flex"} width={"100%"}>
-                      <Block minWidth={"33%"} width={"100%"} marginLeft={".5rem"}>{intl.department}</Block>
+                    <Block display='flex' width='100%' justifyContent='space-between'>
+                      <Block width='48%'>{intl.department}</Block>
                       {codelist.showSubDepartment(formikBag.values.department) && (
-                        <Block minWidth={"33%"} width={"100%"}>
-                          {intl.subDepartment}
-                        </Block>
+                        <Block width='48%'>{intl.subDepartment}</Block>
                       )}
-                      <Block minWidth={"33%"} width={"100%"}>{intl.productTeam}</Block>
                     </Block>
-                    <Block display={"flex"} width={"100%"}>
-                      <Block minWidth={"33%"} width={"100%"} marginRight={".5rem"}>
-                        <Block {...rowBlockProps}>
-                          <FieldDepartment department={formikBag.values.department}/>
-                        </Block>
+
+                    <Block display='flex' width='100%' justifyContent='space-between'>
+                      <Block width='48%'>
+                        <FieldDepartment department={formikBag.values.department}/>
                       </Block>
                       {codelist.showSubDepartment(formikBag.values.department) && (
-                        <Block minWidth={"33%"} width={"100%"} marginRight={".5rem"}>
-                          <Block {...rowBlockProps}>
-                            <FieldSubDepartment subDepartment={formikBag.values.subDepartment}/>
-                          </Block>
+                        <Block width='48%'>
+                          <FieldSubDepartments formikBag={formikBag}/>
                         </Block>
                       )}
-                      <Block minWidth={"33%"} width={"100%"}>
-                        <Block {...rowBlockProps}>
-                          <FieldProductTeam productTeam={formikBag.values.productTeam}/>
-                        </Block>
+                    </Block>
+
+                    <Block display='flex' width='100%' justifyContent='space-between' marginTop={theme.sizing.scale400}>
+                      <Block width='48%'>{intl.productTeam}</Block>
+                      <Block width='48%'>
+                        <ModalLabel fullwidth label={intl.commonExternalProcessResponsible} tooltip={intl.commonExternalProcessResponsibleHelpText}/>
+                      </Block>
+                    </Block>
+
+                    <Block display='flex' width='100%' justifyContent='space-between'>
+                      <Block width='48%'>
+                        <FieldProductTeam productTeam={formikBag.values.productTeam}/>
+                      </Block>
+                      <Block width='48%'>
+                        {showResponsibleSelect && <FieldCommonExternalProcessResponsible thirdParty={formikBag.values.commonExternalProcessResponsible} hideSelect={()=> setShowResponsibleSelect(false)}/>}
+                        {!showResponsibleSelect && <RadioBoolButton
+                          value={showResponsibleSelect}
+                          setValue={(b) => setShowResponsibleSelect(b!)}
+                          omitUndefined
+                        />}
                       </Block>
                     </Block>
                   </Panel>
+
                   <Panel
                     title={<AccordionTitle title={intl.legalBasis} expanded={isPanelExpanded}/>}
                     onChange={togglePanel}

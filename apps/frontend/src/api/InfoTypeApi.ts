@@ -1,8 +1,8 @@
-import axios from "axios"
-import { InformationType, InformationtypeFormValues, PageResponse, Policy, PolicyInformationType } from "../constants"
-import { default as React, Dispatch, SetStateAction, useEffect } from "react"
-import { useDebouncedState } from "../util"
-import { env } from "../util/env"
+import axios from 'axios'
+import { InformationType, InformationtypeFormValues, InformationTypeShort, PageResponse, Policy } from '../constants'
+import { default as React, Dispatch, SetStateAction, useEffect } from 'react'
+import { useDebouncedState } from '../util'
+import { env } from '../util/env'
 
 export const getInformationTypes = async (page: number, limit: number) => {
   return (await axios.get<PageResponse<InformationType>>(`${env.pollyBaseUrl}/informationtype?pageNumber=${page - 1}&pageSize=${limit}`)).data
@@ -33,9 +33,9 @@ export const updateInformationType = async (informationType: InformationtypeForm
 }
 
 export const useInfoTypeSearch = () => {
-  const [infoTypeSearch, setInfoTypeSearch] = useDebouncedState<string>('', 200);
-  const [infoTypeSearchResult, setInfoTypeSearchResult] = React.useState<PolicyInformationType[]>([]);
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [infoTypeSearch, setInfoTypeSearch] = useDebouncedState<string>('', 200)
+  const [infoTypeSearchResult, setInfoTypeSearchResult] = React.useState<InformationTypeShort[]>([])
+  const [loading, setLoading] = React.useState<boolean>(false)
 
   useEffect(() => {
     const search = async () => {
@@ -49,5 +49,5 @@ export const useInfoTypeSearch = () => {
     search()
   }, [infoTypeSearch])
 
-  return [infoTypeSearchResult, setInfoTypeSearch, loading] as [PolicyInformationType[], Dispatch<SetStateAction<string>>, boolean]
+  return [infoTypeSearchResult, setInfoTypeSearch, loading] as [InformationTypeShort[], Dispatch<SetStateAction<string>>, boolean]
 }

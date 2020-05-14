@@ -9,10 +9,10 @@ import {
   DocumentInfoTypeUse,
   Dpia,
   InformationtypeFormValues,
+  InformationTypeShort,
   LegalBasesStatus,
   LegalBasisFormValues,
   PolicyFormValues,
-  PolicyInformationType,
   Process,
   ProcessFormValues,
   ProcessStatus,
@@ -43,7 +43,8 @@ export const processSchema = () => yup.object<ProcessFormValues>({
   purposeCode: yup.string().oneOf(codelist.getCodes(ListName.PURPOSE).map(p => p.code), intl.required).required(intl.required),
   description: yup.string(),
   department: yup.string(),
-  subDepartment: yup.string(),
+  commonExternalProcessResponsible: yup.string(),
+  subDepartments: yup.array(yup.string()),
   productTeam: yup.string(),
   products: yup.array(yup.string()),
   legalBases: yup.array(legalBasisSchema()),
@@ -74,7 +75,7 @@ export const processSchema = () => yup.object<ProcessFormValues>({
   })
 })
 
-const missingArt9LegalBasisForSensitiveInfoType = (informationType: PolicyInformationType, policy: PolicyFormValues) => {
+const missingArt9LegalBasisForSensitiveInfoType = (informationType: InformationTypeShort, policy: PolicyFormValues) => {
   const ownLegalBasis = policy.legalBasesStatus !== LegalBasesStatus.UNKNOWN
   const reqArt9 = informationType && codelist.requiresArt9(informationType.sensitivity && informationType.sensitivity.code)
   const missingArt9 = !policy.legalBases.filter((lb) => codelist.isArt9(lb.gdpr)).length
@@ -99,7 +100,7 @@ export const createDocumentValidation = () => yup.object<CreateDocumentFormValue
 })
 
 export const policySchema = () => yup.object<PolicyFormValues>({
-  informationType: yup.object<PolicyInformationType>().required(intl.required)
+  informationType: yup.object<InformationTypeShort>().required(intl.required)
     .test({
       name: 'policyHasArt9',
       message: intl.requiredGdprArt9,
@@ -122,8 +123,6 @@ export const policySchema = () => yup.object<PolicyFormValues>({
   process: yup.object(),
   purposeCode: yup.string(),
   id: yup.string(),
-  start: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
-  end: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
   documentIds: yup.array(yup.string())
 })
 

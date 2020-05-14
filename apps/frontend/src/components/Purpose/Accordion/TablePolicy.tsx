@@ -1,27 +1,26 @@
 import * as React from 'react'
-import {useEffect, useState} from 'react'
-import {Button, KIND, SIZE as ButtonSize} from 'baseui/button'
-import {Block} from 'baseui/block'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faEdit, faInfo, faInfoCircle, faTrash} from '@fortawesome/free-solid-svg-icons'
-import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal'
-import {Paragraph2} from 'baseui/typography'
-import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
+import { useEffect, useState } from 'react'
+import { Button, KIND, SIZE as ButtonSize } from 'baseui/button'
+import { Block } from 'baseui/block'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
+import { Paragraph2 } from 'baseui/typography'
+import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
 
-import {codelist, ListName} from '../../../service/Codelist'
-import {Sensitivity} from '../../InformationType/Sensitivity'
+import { codelist, ListName } from '../../../service/Codelist'
+import { Sensitivity } from '../../InformationType/Sensitivity'
 import ModalPolicy from './ModalPolicy'
-import {LegalBasesNotClarified, ListLegalBasesInTable} from '../../common/LegalBasis'
-import {Document, Policy, PolicyFormValues, policySort, Process, ProcessAlert} from '../../../constants'
-import {intl} from '../../../util'
-import {convertPolicyToFormValues, getDocument} from '../../../api'
-import {useTable} from '../../../util/hooks'
+import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
+import { Document, Policy, PolicyFormValues, policySort, Process, ProcessAlert } from '../../../constants'
+import { intl } from '../../../util'
+import { convertPolicyToFormValues, getDocument } from '../../../api'
+import { useTable } from '../../../util/hooks'
 import RouteLink from '../../common/RouteLink'
-import {ActiveIndicator} from '../../common/Durations'
-import {AuditButton} from '../../audit/AuditButton'
+import { AuditButton } from '../../audit/AuditButton'
 import _ from 'lodash'
-import {getAlertForProcess} from '../../../api/AlertApi'
-import {Cell, HeadCell, Row, Table} from '../../common/Table'
+import { getAlertForProcess } from '../../../api/AlertApi'
+import { Cell, HeadCell, Row, Table } from '../../common/Table'
 
 
 type TablePurposeProps = {
@@ -40,9 +39,8 @@ export type Docs = {
 const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, submitEditPolicy, submitDeletePolicy}: TablePurposeProps) => {
   const [currentPolicy, setCurrentPolicy] = React.useState<Policy>()
   const [showEditModal, setShowEditModal] = React.useState(false)
-  const [showPolicyInfo, setShowPolicyInfo] = React.useState(false)
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
-  const [table, sortColumn] = useTable<Policy, keyof Policy>(process.policies, {sorting: policySort, initialSortColumn: 'informationType', showLast: (p) => !p.active})
+  const [table, sortColumn] = useTable<Policy, keyof Policy>(process.policies, {sorting: policySort, initialSortColumn: 'informationType'})
   const [alert, setAlert] = useState<ProcessAlert>()
 
   useEffect(() => {
@@ -78,10 +76,9 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
           </>
         }>
         {table.data.map((row: Policy, index: number) => {
-          const selectedRow = row.id === currentPolicy?.id
           return (
             <React.Fragment key={index}>
-              <Row inactiveRow={!row.active} selectedRow={showPolicyInfo && selectedRow}>
+              <Row>
                 <Cell>
                   <Block display="flex" width="100%" justifyContent="space-between">
                     <Block>
@@ -112,30 +109,13 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                 </Cell>
                 <Cell small>
                   <Block display="flex" justifyContent="flex-end" width="100%">
-                    <StatefulTooltip content={intl.info} overrides={{
-                      Body: {
-                        style: {
-                          marginBottom: "50px"
-                        }
-                      }
-                    }}>
-                      <Button
-                        size={ButtonSize.compact}
-                        kind={KIND.tertiary}
-                        onClick={() => {
-                          setCurrentPolicy(row)
-                          setShowPolicyInfo(!selectedRow || !showPolicyInfo)
-                        }}
-                      >
-                        <FontAwesomeIcon icon={showPolicyInfo && selectedRow ? faInfoCircle : faInfo}/>
-                      </Button>
-                    </StatefulTooltip>
+                    <AuditButton id={row.id} kind='tertiary'/>
                     {hasAccess && (
                       <>
                         <StatefulTooltip content={intl.edit} placement={PLACEMENT.top} overrides={{
                           Body: {
                             style: {
-                              marginBottom: "50px"
+                              marginBottom: '50px'
                             }
                           }
                         }}>
@@ -153,7 +133,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                         <StatefulTooltip content={intl.delete} placement={PLACEMENT.top} overrides={{
                           Body: {
                             style: {
-                              marginBottom: "50px"
+                              marginBottom: '50px'
                             }
                           }
                         }}>
@@ -173,16 +153,6 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                   </Block>
                 </Cell>
               </Row>
-              {showPolicyInfo && selectedRow &&
-              <Row infoRow={true}>
-                <Cell>
-                  <Block display="flex" justifyContent="space-between" width="100%">
-                    <Block><ActiveIndicator {...row} alwaysShow={true} preText={intl.validityOfPolicy} showDates/></Block>
-                    <AuditButton id={row.id}/>
-                  </Block>
-                </Cell>
-              </Row>
-              }
             </React.Fragment>
           )
         })}

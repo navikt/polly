@@ -1,13 +1,13 @@
 import * as React from "react";
 
 import InformationtypeForm from "../components/InformationType/InformationtypeForm";
-import { InformationType, InformationtypeFormValues } from "../constants"
-import { Code, codelist } from "../service/Codelist";
-import { intl } from "../util"
-import { getInformationType, updateInformationType } from "../api"
-import { RouteComponentProps } from "react-router-dom";
-import { H4 } from "baseui/typography";
-import { StyledSpinnerNext } from "baseui/spinner"
+import {InformationType, InformationtypeFormValues} from "../constants"
+import {Code, codelist} from "../service/Codelist";
+import {intl} from "../util"
+import {getInformationType, updateInformationType} from "../api"
+import {RouteComponentProps} from "react-router-dom";
+import {H4} from "baseui/typography";
+import {StyledSpinnerNext} from "baseui/spinner"
 
 
 const reduceCodelist = (list: Code[]) => {
@@ -26,7 +26,7 @@ const initFormValues = (data: InformationType) => {
     categories: reduceCodelist(data.categories),
     sources: reduceCodelist(data.sources),
     keywords: data.keywords,
-    description: data.description,
+    description: data.description || "",
     navMaster: !data.navMaster ? '' : data.navMaster.code,
   } as InformationtypeFormValues;
 };
