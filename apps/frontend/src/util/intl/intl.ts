@@ -1,8 +1,8 @@
-import LocalizedStrings, { GlobalStrings, LocalizedStringsMethods } from "react-localization";
+import LocalizedStrings, {GlobalStrings, LocalizedStringsMethods} from "react-localization";
 import * as React from "react";
-import { useEffect } from "react";
-import { useForceUpdate } from "../hooks";
-import { en, no, ta } from "./lang";
+import {useEffect} from "react";
+import {useForceUpdate} from "../hooks";
+import {en, no, ta} from "./lang";
 import * as moment from "moment";
 import "moment/locale/nb";
 import "moment/locale/ta";
@@ -110,7 +110,9 @@ export interface IStrings {
   nameWrite: string;
   categoriesWrite: string;
   sourcesWrite: string;
+  usefulInformation: string;
   keywordsWrite: string;
+  searchWordsWrite: string;
   navMasterSelect: string;
   purposeSelect: string;
   purposeNotFound: string;
@@ -258,6 +260,7 @@ export interface IStrings {
   sources: string;
   categories: string;
   keywords: string;
+  searchWords: string;
   read: string;
   write: string;
   administrate: string;
