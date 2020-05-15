@@ -1,4 +1,4 @@
-import { IStrings } from './intl'
+import {IStrings} from './intl'
 
 export const no: IStrings = {
   informationType: 'Opplysningstype',
@@ -102,7 +102,7 @@ export const no: IStrings = {
   riskOwnerFunction: 'Risikoeier funksjon',
   riskOwnerFunctionBinder: 'i funksjon',
   commonExternalProcessResponsible: 'Felles behandlingsansvarlig',
-  commonExternalProcessResponsibleHelpText: 'Er virksomheten behandlingsansvarlig sammen med annen virksomhet?',
+  commonExternalProcessResponsibleHelpText: 'Er NAV behandlingsansvarlig sammen med annen virksomhet?',
   processingActivitiesEdit: 'Rediger behandling',
   processNew: 'Legg til ny behandling',
   legalBasisNotFound: 'Fant ingen rettslige grunnlag',
@@ -313,7 +313,7 @@ export const no: IStrings = {
   productTeamHelpText:
     'Produktteamet i IT-avdelingen som har ansvaret for IT-løsningen som understøtter denne behandlingen. Ikke aktuelt på alle behandlinger. Eksempel: Team Pensjon, Team Bidrag',
   subDepartmentHelpText: 'Oppgi hvor i linja (ytre etat) denne behandlingen foregår.',
-  systemHelpText: 'IT-systemene som brukes i denne behandlingen. Eksempel: Pesys, Bidrag, Modia.',
+  systemHelpText: 'Angi hvilke systemer som er primært i bruk i denne behandlingen.',
   usesAllInformationTypesHelpText:
     'Brukes for å angi at denne behandlingen bruker alle opplysningstyper. Brukes derfor kun unntaksvis for noen spesielle behandlinger som f.eks. logginnsyn, innsyn etter personopplysningsloven, behandlinger knyttet til personvernombudet eller Sikkerhetsseksjonens virksomhet.',
   processAutomationHelpText: 'Treffes det et vedtak eller en avgjørelse som er basert på helautomatisert behandling av personopplysninger? Altså avgjørelser uten menneskelig innvirkning.',
@@ -391,7 +391,7 @@ export const en: IStrings = {
   riskOwnerFunction: 'Risk owner function',
   riskOwnerFunctionBinder: 'in function of',
   commonExternalProcessResponsible: 'Common process responsible',
-  commonExternalProcessResponsibleHelpText: 'Is the business responsible for the process with another business?',
+  commonExternalProcessResponsibleHelpText: 'Is the NAV responsible for the process with another business?',
   from: 'from',
   retained: 'Retained',
   retention: 'Retention',
@@ -639,7 +639,7 @@ export const en: IStrings = {
   departmentHelpText: 'The department responsible for the process.',
   productTeamHelpText: 'The IT team responsible for the IT solutions that supports this process. Not applicable to all processes. ',
   subDepartmentHelpText: 'If applicable, specify the sub department or sub division responsible for the process. Not mandatory',
-  systemHelpText: 'The IT systems supporting this process. ',
+  systemHelpText: 'Indicate which IT systems are primarily used in this process',
   usesAllInformationTypesHelpText:
     'Used to indicate that this process uses all information type. Therefore, it is only used exceptionally for some special processes such as. access to Personal Data Act.',
   processAutomationHelpText: 'Is a decision made based on fully automated processing of personal data? Thus, decisions without human intervention.',
