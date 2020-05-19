@@ -84,11 +84,14 @@ public class JpaConfig {
                 while (true) {
                     Page<Process> page = processRepository.findAll(pageReq);
                     page.getContent().forEach(process -> {
-                        var prevUser = MdcUtils.getUser();
-                        MdcUtils.setUser(process.getLastModifiedBy());
-                        process.getPolicies().forEach(p -> p.getData().setLegalBasesUse(legalBasesUseFor(p.getData())));
-                        processService.save(process);
-                        MdcUtils.setUser(prevUser);
+                        if (process.getPolicies().stream().anyMatch(p -> p.getData().getLegalBasesUse() == null)) {
+                            log.debug("Migrating process {}", process.getId());
+                            var prevUser = MdcUtils.getUser();
+                            MdcUtils.setUser(process.getLastModifiedBy());
+                            process.getPolicies().forEach(p -> p.getData().setLegalBasesUse(legalBasesUseFor(p.getData())));
+                            processService.save(process);
+                            MdcUtils.setUser(prevUser);
+                        }
                     });
                     if (!page.hasNext()) {
                         break;
