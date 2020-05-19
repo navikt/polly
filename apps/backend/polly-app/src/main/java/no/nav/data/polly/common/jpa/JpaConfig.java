@@ -1,5 +1,6 @@
 package no.nav.data.polly.common.jpa;
 
+import io.prometheus.client.hibernate.HibernateStatisticsCollector;
 import no.nav.data.polly.AppStarter;
 import no.nav.data.polly.codelist.CodelistRepository;
 import no.nav.data.polly.codelist.domain.Codelist;
@@ -7,6 +8,7 @@ import no.nav.data.polly.common.auditing.AuditVersionListener;
 import no.nav.data.polly.common.auditing.AuditorAwareImpl;
 import no.nav.data.polly.common.auditing.domain.AuditVersionRepository;
 import no.nav.data.polly.common.utils.MdcUtils;
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationRunner;
@@ -20,6 +22,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
+import javax.persistence.EntityManagerFactory;
 
 @EntityScan(basePackageClasses = AppStarter.class)
 @EnableJpaRepositories(basePackageClasses = AppStarter.class)
@@ -57,5 +60,10 @@ public class JpaConfig {
             });
         };
         return (args) -> MdcUtils.wrapAsync(updateMissing, "system").run();
+    }
+
+    @Bean
+    public ApplicationRunner initHibernateMetrics(EntityManagerFactory emf) {
+        return args -> new HibernateStatisticsCollector(emf.unwrap(SessionFactory.class), "main").register();
     }
 }

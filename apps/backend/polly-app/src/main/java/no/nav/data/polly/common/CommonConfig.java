@@ -2,7 +2,6 @@ package no.nav.data.polly.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.prometheus.client.CollectorRegistry;
-import io.prometheus.client.hotspot.DefaultExports;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.common.utils.JsonUtils;
@@ -56,7 +55,6 @@ public class CommonConfig {
      */
     @Bean
     public CollectorRegistry collectorRegistry() {
-        DefaultExports.initialize();
         return CollectorRegistry.defaultRegistry;
     }
 
