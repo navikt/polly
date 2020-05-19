@@ -16,6 +16,6 @@ public class PolicyAlert {
     boolean missingArt9;
 
     public Optional<PolicyAlert> resolve() {
-        return missingLegalBasis || missingArt6 || missingArt9 ? Optional.of(this) : Optional.empty();
+        return missingLegalBasis || excessInfo || missingArt6 || missingArt9 ? Optional.of(this) : Optional.empty();
     }
 }

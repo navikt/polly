@@ -53,6 +53,7 @@ public class AlertIT extends IntegrationTestBase {
             assertThat(alerts.getPolicies().get(0).getPolicyId()).isEqualTo(policy.getId());
             assertThat(alerts.getPolicies().get(0).getInformationTypeId()).isEqualTo(policy.getInformationTypeId());
             assertThat(alerts.getPolicies().get(0).isMissingLegalBasis()).isFalse();
+            assertThat(alerts.getPolicies().get(0).isExcessInfo()).isFalse();
             assertThat(alerts.getPolicies().get(0).isMissingArt6()).isTrue();
             assertThat(alerts.getPolicies().get(0).isMissingArt9()).isFalse();
         }
@@ -68,8 +69,27 @@ public class AlertIT extends IntegrationTestBase {
             assertThat(alerts.getPolicies().get(0).getPolicyId()).isEqualTo(policy.getId());
             assertThat(alerts.getPolicies().get(0).getInformationTypeId()).isEqualTo(policy.getInformationTypeId());
             assertThat(alerts.getPolicies().get(0).isMissingLegalBasis()).isFalse();
+            assertThat(alerts.getPolicies().get(0).isExcessInfo()).isFalse();
             assertThat(alerts.getPolicies().get(0).isMissingArt6()).isFalse();
             assertThat(alerts.getPolicies().get(0).isMissingArt9()).isTrue();
+        }
+
+        @Test
+        void processAlertsPolicyExcessInfo() {
+            var policy = createProcessWithOnePolicyNoLegalBasis();
+            policy.getData().setLegalBasesUse(LegalBasesUse.EXCESS_INFO);
+            policyRepository.save(policy);
+
+            var alerts = alertService.checkAlertsForProcess(policy.getProcess().getId());
+
+            assertThat(alerts.getProcessId()).isEqualTo(policy.getProcess().getId());
+            assertThat(alerts.getPolicies()).hasSize(1);
+            assertThat(alerts.getPolicies().get(0).getPolicyId()).isEqualTo(policy.getId());
+            assertThat(alerts.getPolicies().get(0).getInformationTypeId()).isEqualTo(policy.getInformationTypeId());
+            assertThat(alerts.getPolicies().get(0).isMissingLegalBasis()).isFalse();
+            assertThat(alerts.getPolicies().get(0).isExcessInfo()).isTrue();
+            assertThat(alerts.getPolicies().get(0).isMissingArt6()).isFalse();
+            assertThat(alerts.getPolicies().get(0).isMissingArt9()).isFalse();
         }
 
         @Test
