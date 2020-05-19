@@ -8,6 +8,7 @@ import no.nav.data.polly.alert.domain.AlertEventType;
 import no.nav.data.polly.alert.domain.AlertRepository;
 import no.nav.data.polly.common.storage.domain.GenericStorageRepository;
 import no.nav.data.polly.common.storage.domain.StorageType;
+import no.nav.data.polly.policy.domain.LegalBasesUse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.process.domain.Process;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +43,7 @@ public class AlertIT extends IntegrationTestBase {
     class Alerts {
 
         @Test
-        void processAlertsPolicyMissingLegalBasis() {
+        void processAlertsPolicyMissingArt6() {
             var policy = createProcessWithOnePolicyNoLegalBasis();
 
             var alerts = alertService.checkAlertsForProcess(policy.getProcess().getId());
@@ -51,13 +52,13 @@ public class AlertIT extends IntegrationTestBase {
             assertThat(alerts.getPolicies()).hasSize(1);
             assertThat(alerts.getPolicies().get(0).getPolicyId()).isEqualTo(policy.getId());
             assertThat(alerts.getPolicies().get(0).getInformationTypeId()).isEqualTo(policy.getInformationTypeId());
-            assertThat(alerts.getPolicies().get(0).isMissingLegalBasis()).isTrue();
-            assertThat(alerts.getPolicies().get(0).isMissingArt6()).isFalse();
+            assertThat(alerts.getPolicies().get(0).isMissingLegalBasis()).isFalse();
+            assertThat(alerts.getPolicies().get(0).isMissingArt6()).isTrue();
             assertThat(alerts.getPolicies().get(0).isMissingArt9()).isFalse();
         }
 
         @Test
-        void processAlertsPolicyMissingLegalBasisArt9() {
+        void processAlertsPolicyMissingArt9() {
             var policy = createProcessWithOnePolicyArt9NoLegalBasis();
 
             var alerts = alertService.checkAlertsForProcess(policy.getProcess().getId());
@@ -66,7 +67,7 @@ public class AlertIT extends IntegrationTestBase {
             assertThat(alerts.getPolicies()).hasSize(1);
             assertThat(alerts.getPolicies().get(0).getPolicyId()).isEqualTo(policy.getId());
             assertThat(alerts.getPolicies().get(0).getInformationTypeId()).isEqualTo(policy.getInformationTypeId());
-            assertThat(alerts.getPolicies().get(0).isMissingLegalBasis()).isTrue();
+            assertThat(alerts.getPolicies().get(0).isMissingLegalBasis()).isFalse();
             assertThat(alerts.getPolicies().get(0).isMissingArt6()).isFalse();
             assertThat(alerts.getPolicies().get(0).isMissingArt9()).isTrue();
         }
@@ -78,7 +79,7 @@ public class AlertIT extends IntegrationTestBase {
             assertThat(alerts.getPolicies()).hasSize(0);
 
             policy.getData().setLegalBases(List.of());
-            policy.getData().setLegalBasesInherited(true);
+            policy.getData().setLegalBasesUse(LegalBasesUse.INHERITED_FROM_PROCESS);
             policyRepository.save(policy);
             policy.getProcess().getData().setLegalBases(List.of(createLegalBasis()));
             processRepository.save(policy.getProcess());
@@ -102,7 +103,7 @@ public class AlertIT extends IntegrationTestBase {
             AlertEvent alertEvent = events.get(0).toAlertEvent();
             assertThat(alertEvent.getProcessId()).isEqualTo(policy.getProcess().getId());
             assertThat(alertEvent.getInformationTypeId()).isEqualTo(policy.getInformationTypeId());
-            assertThat(alertEvent.getType()).isEqualTo(AlertEventType.MISSING_LEGAL_BASIS);
+            assertThat(alertEvent.getType()).isEqualTo(AlertEventType.MISSING_ARTICLE_6);
             assertThat(alertEvent.getLevel()).isEqualTo(alertEvent.getType().getLevel());
         }
 
@@ -119,7 +120,7 @@ public class AlertIT extends IntegrationTestBase {
                                     + "&level={level}",
                             EventPage.class,
                             policy.getProcess().getId(), policy.getInformationTypeId(),
-                            AlertEventType.MISSING_LEGAL_BASIS, AlertEventType.MISSING_LEGAL_BASIS.getLevel(),
+                            AlertEventType.MISSING_ARTICLE_6, AlertEventType.MISSING_ARTICLE_6.getLevel(),
                             5, 0);
 
             assertThat(eventsResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -191,6 +192,7 @@ public class AlertIT extends IntegrationTestBase {
     private Policy createProcessWithOnePolicyNoLegalBasis() {
         var process = createAndSaveProcess("AAP");
         process.getData().setUsesAllInformationTypes(false);
+        process.getData().setLegalBases(List.of());
         processRepository.save(process);
         var policy = createPolicy("AAP", "BRUKER", List.of());
         policy.setInformationType(createAndSaveInformationType("name", "POL"));

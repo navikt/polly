@@ -19,7 +19,6 @@ import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.domain.Process;
-import org.apache.commons.lang3.BooleanUtils;
 import org.hibernate.annotations.Type;
 
 import java.util.List;
@@ -97,7 +96,7 @@ public class Policy extends Auditable {
         policyRequest.getProcess().addPolicy(policy);
         policy.setPurposeCode(policyRequest.getPurposeCode());
         policy.getData().setSubjectCategories(List.copyOf(policyRequest.getSubjectCategories()));
-        policy.getData().setLegalBasesInherited(BooleanUtils.toBoolean(policyRequest.getLegalBasesInherited()));
+        policy.getData().setLegalBasesUse(policyRequest.getLegalBasesUse());
         policy.getData().setLegalBases(convert(policyRequest.getLegalBases(), LegalBasisRequest::convertToDomain));
         policy.getData().setDocumentIds(convert(policyRequest.getDocumentIds(), UUID::fromString));
         return policy;
@@ -112,7 +111,7 @@ public class Policy extends Auditable {
                 .process(getProcess() == null || !includeProcess ? null : getProcess().convertToResponse())
                 .informationTypeId(informationTypeId)
                 .informationType(convertInformationTypeShortResponse())
-                .legalBasesInherited(getData().isLegalBasesInherited())
+                .legalBasesUse(getData().getLegalBasesUse())
                 .legalBases(convert(getData().getLegalBases(), LegalBasis::convertToResponse))
                 .documentIds(getData().getDocumentIds())
                 .build();

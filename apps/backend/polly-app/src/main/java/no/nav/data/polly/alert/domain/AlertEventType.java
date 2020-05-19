@@ -16,6 +16,7 @@ public enum AlertEventType {
 
     MISSING_LEGAL_BASIS(WARNING),
 
+    EXCESS_INFO(INFO),
     USES_ALL_INFO_TYPE(INFO);
 
     private final AlertEventLevel level;

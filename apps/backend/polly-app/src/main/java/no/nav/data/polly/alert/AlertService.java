@@ -15,6 +15,7 @@ import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
+import no.nav.data.polly.policy.domain.LegalBasesUse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.process.domain.Process;
@@ -22,7 +23,6 @@ import no.nav.data.polly.process.domain.ProcessRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,6 +119,9 @@ public class AlertService {
         if (policyAlert.isMissingLegalBasis()) {
             alertEvents.add(new AlertEvent(processId, policyAlert.getInformationTypeId(), AlertEventType.MISSING_LEGAL_BASIS));
         }
+        if (policyAlert.isExcessInfo()) {
+            alertEvents.add(new AlertEvent(processId, policyAlert.getInformationTypeId(), AlertEventType.EXCESS_INFO));
+        }
         if (policyAlert.isMissingArt6()) {
             alertEvents.add(new AlertEvent(processId, policyAlert.getInformationTypeId(), AlertEventType.MISSING_ARTICLE_6));
         }
@@ -174,11 +177,13 @@ public class AlertService {
         var policyArt6 = containsArticle(policy.getData().getLegalBases(), ART_6_PREFIX);
         var policyArt9 = containsArticle(policy.getData().getLegalBases(), ART_9_PREFIX);
 
-        var missingArt6 = !policyArt6 && !processArt6;
-        var missingArt9 = requiresArt9 && !policyArt9 && !processArt9;
-        var missingLegalBasis = !policy.getData().isLegalBasesInherited() && CollectionUtils.isEmpty(policy.getData().getLegalBases());
+        var missingLegalBasis = policy.getData().getLegalBasesUse() == LegalBasesUse.UNRESOLVED;
+        var excessInfo = policy.getData().getLegalBasesUse() == LegalBasesUse.EXCESS_INFO;
 
-        return new PolicyAlert(policy.getId(), policy.getInformationTypeId(), missingLegalBasis, missingArt6, missingArt9);
+        var missingArt6 = !missingLegalBasis && !excessInfo && !policyArt6 && !processArt6;
+        var missingArt9 = !missingLegalBasis && !excessInfo && requiresArt9 && !policyArt9 && !processArt9;
+
+        return new PolicyAlert(policy.getId(), policy.getInformationTypeId(), missingLegalBasis, excessInfo, missingArt6, missingArt9);
     }
 
     private boolean requiresArt9(InformationType informationType) {

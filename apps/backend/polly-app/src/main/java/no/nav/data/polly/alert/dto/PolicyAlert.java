@@ -11,6 +11,7 @@ public class PolicyAlert {
     UUID policyId;
     UUID informationTypeId;
     boolean missingLegalBasis;
+    boolean excessInfo;
     boolean missingArt6;
     boolean missingArt9;
 

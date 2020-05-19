@@ -320,6 +320,9 @@ public class ProcessToDocx {
                 if (alert.isMissingLegalBasis()) {
                     legalBasisCell.add(paragraph(text("Rettslig grunnlag er ikke avklart")));
                 }
+                if (alert.isExcessInfo()) {
+                    legalBasisCell.add(paragraph(text("Overskuddsinformasjon")));
+                }
                 if (alert.isMissingArt6()) {
                     legalBasisCell.add(paragraph(text("Rettslig grunnlag for artikkel 6 mangler")));
                 }

@@ -8,7 +8,7 @@ Applikasjonen polly samler all funksjonalitet knyttet til informasjonstyper og p
 gruppering av sammenhørende data. Applikasjonen inneholder også kodeverk som benttes av alle applikasjoner i Datakatalog-prosjektet
 
 ## Kom i gang
-Prosjektet krever maven og java 11
+Prosjektet krever maven og java 14
 
 #####For å bygge
 
