@@ -10,7 +10,7 @@ import {
   Dpia,
   InformationtypeFormValues,
   InformationTypeShort,
-  LegalBasesStatus,
+  LegalBasesUse,
   LegalBasisFormValues,
   PolicyFormValues,
   Process,
@@ -76,7 +76,7 @@ export const processSchema = () => yup.object<ProcessFormValues>({
 })
 
 const missingArt9LegalBasisForSensitiveInfoType = (informationType: InformationTypeShort, policy: PolicyFormValues) => {
-  const ownLegalBasis = policy.legalBasesStatus !== LegalBasesStatus.UNKNOWN
+  const ownLegalBasis = policy.legalBasesUse === LegalBasesUse.DEDICATED_LEGAL_BASES
   const reqArt9 = informationType && codelist.requiresArt9(informationType.sensitivity && informationType.sensitivity.code)
   const missingArt9 = !policy.legalBases.filter((lb) => codelist.isArt9(lb.gdpr)).length
   const processMissingArt9 = !policy.process.legalBases.filter(lb => codelist.isArt9(lb.gdpr.code)).length
@@ -84,7 +84,7 @@ const missingArt9LegalBasisForSensitiveInfoType = (informationType: InformationT
 }
 
 const missingArt6LegalBasisForInfoType = (policy: PolicyFormValues) => {
-  const ownLegalBasis = policy.legalBasesStatus !== LegalBasesStatus.UNKNOWN
+  const ownLegalBasis = policy.legalBasesUse === LegalBasesUse.DEDICATED_LEGAL_BASES
   const missingArt6 = !policy.legalBases.filter((lb) => codelist.isArt6(lb.gdpr)).length
   const processMissingArt6 = !policy.process.legalBases.filter(lb => codelist.isArt6(lb.gdpr.code)).length
   return ownLegalBasis && missingArt6 && processMissingArt6
@@ -117,7 +117,7 @@ export const policySchema = () => yup.object<PolicyFormValues>({
       }
     }),
   subjectCategories: yup.array().of(yup.string()).min(1, intl.required),
-  legalBasesStatus: yup.mixed().oneOf(Object.values(LegalBasesStatus)).required(intl.required),
+  legalBasesUse: yup.mixed().oneOf(Object.values(LegalBasesUse)).required(intl.required),
   legalBases: yup.array(legalBasisSchema()),
   legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
   process: yup.object(),

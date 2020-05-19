@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { LegalBasesStatus, LegalBasis, PageResponse, Policy, PolicyFormValues } from '../constants'
+import { LegalBasesUse, LegalBasis, PageResponse, Policy, PolicyFormValues } from '../constants'
 import { Code } from '../service/Codelist'
 import { env } from '../util/env'
 
@@ -38,17 +38,8 @@ export const mapPolicyFromForm = (values: PolicyFormValues) => {
     informationTypeId: values.informationType?.id,
     process: undefined,
     processId: values.process.id,
-    legalBases: values.legalBasesStatus !== LegalBasesStatus.OWN ? [] : values.legalBases,
-    legalBasesInherited: values.legalBasesStatus === LegalBasesStatus.INHERITED,
-    legalBasesStatus: undefined
-  }
-}
-
-const getInitialLegalBasesStatus = (legalBasesInherited: boolean, legalBases: LegalBasis[]) => {
-  if (legalBasesInherited) return LegalBasesStatus.INHERITED
-  else {
-    if (!legalBases || !legalBases.length) return LegalBasesStatus.UNKNOWN
-    return LegalBasesStatus.OWN
+    legalBases: values.legalBasesUse !== LegalBasesUse.DEDICATED_LEGAL_BASES ? [] : values.legalBases,
+    legalBasesUse: values.legalBasesUse
   }
 }
 
@@ -66,7 +57,7 @@ export const convertPolicyToFormValues = (policy: Policy): PolicyFormValues => (
   purposeCode: policy.purposeCode.code,
   informationType: policy.informationType,
   subjectCategories: policy.subjectCategories.map((code: Code) => code.code),
-  legalBasesStatus: getInitialLegalBasesStatus(policy.legalBasesInherited, policy.legalBases),
+  legalBasesUse: policy.legalBasesUse,
   legalBases: convertLegalBasesToFormValues(policy.legalBases),
   documentIds: policy.documentIds || []
 })
