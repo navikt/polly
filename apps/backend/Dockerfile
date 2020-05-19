@@ -1,6 +1,6 @@
 FROM adoptopenjdk:14-jre-hotspot as builder
 WORKDIR application
-COPY target/app-exec.jar application.jar
+COPY polly-app/target/app-exec.jar application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
 FROM navikt/java:14
