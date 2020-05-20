@@ -1,13 +1,12 @@
-import {RouteComponentProps, withRouter} from "react-router-dom";
-import {StyledLink} from "baseui/link"
-import React from "react"
-import {KIND} from "baseui/button"
-import {getDisclosure, getPolicy, getProcess} from "../../api"
-import {Block} from "baseui/block"
-import {AuditButton} from "../audit/AuditButton"
-import {AuditItem, NavigableItem, ObjectType} from "../../constants"
-import {useStyletron} from "baseui"
-import {ListName} from "../../service/Codelist"
+import { RouteComponentProps, withRouter } from 'react-router-dom'
+import { StyledLink } from 'baseui/link'
+import React from 'react'
+import { KIND } from 'baseui/button'
+import { Block } from 'baseui/block'
+import { AuditButton } from '../audit/AuditButton'
+import { AuditItem, NavigableItem, ObjectType } from '../../constants'
+import { useStyletron } from 'baseui'
+import { ListName } from '../../service/Codelist'
 
 type RouteLinkProps = {
   href: string
@@ -23,7 +22,8 @@ const RouteLinkImpl = (props: RouteComponentProps<any> & RouteLinkProps & any) =
   )
 }
 
-export default withRouter(RouteLinkImpl)
+const RouteLink = withRouter(RouteLinkImpl)
+export default RouteLink
 
 type ObjectLinkProps = {
   id: string
@@ -35,19 +35,16 @@ type ObjectLinkProps = {
   hideUnderline?: boolean
 }
 
-export const urlForObject = async (type: NavigableItem, id: string, audit?: AuditItem) => {
+export const urlForObject = (type: NavigableItem, id: string, audit?: AuditItem) => {
   switch (type) {
     case ObjectType.INFORMATION_TYPE:
       return `/informationtype/${id}`
     case ObjectType.POLICY:
-      const policy = await getPolicy(id)
-      return `/process/purpose/${policy.purposeCode.code}/${policy.process.id}`
+      return `/policy/${id}`
     case ObjectType.PROCESS:
-      const process = await getProcess(id)
-      return `/process/purpose/${process.purposeCode}/${process.id}`
+      return `/process/${id}`
     case ObjectType.DISCLOSURE:
-      const disclosure = await getDisclosure(id)
-      return `/thirdparty/${disclosure.recipient.code}`
+      return `/disclosure/${id}`
     case ObjectType.DOCUMENT:
       return `/document/${id}`
     case ObjectType.CODELIST:
@@ -56,7 +53,7 @@ export const urlForObject = async (type: NavigableItem, id: string, audit?: Audi
       if (audit && (audit.data as any)?.type === 'SETTINGS') {
         return '/admin/settings'
       }
-      break;
+      return '/'
     case ListName.PURPOSE:
       return `/process/purpose/${id}`
     case 'team':
@@ -73,17 +70,15 @@ export const urlForObject = async (type: NavigableItem, id: string, audit?: Audi
 }
 
 const ObjectLinkImpl = (props: RouteComponentProps & ObjectLinkProps) => {
-  const [useCss] = useStyletron();
-  const linkCss = useCss({textDecoration: 'none'});
+  const [useCss] = useStyletron()
+  const linkCss = useCss({textDecoration: 'none'})
 
   const link =
     props.disable ? props.children :
-      <StyledLink onClick={(e: Event) => {
-        e.preventDefault();
-        (async () => props.history.push(await urlForObject(props.type, props.id, props.audit)))()
-      }} href='#' className={props.hideUnderline ? linkCss : undefined}>
+      <RouteLink href={urlForObject(props.type, props.id, props.audit)}
+                 className={props.hideUnderline ? linkCss : undefined}>
         {props.children}
-      </StyledLink>
+      </RouteLink>
 
   return props.withHistory ?
     <Block display="flex" justifyContent="space-between" width="100%" alignItems="center">
