@@ -3,6 +3,7 @@ package no.nav.data.polly.alert.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.data.polly.common.storage.domain.ChangeStamp;
 import no.nav.data.polly.common.storage.domain.GenericStorageIdData;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
@@ -18,6 +19,8 @@ public class AlertEvent implements GenericStorageIdData, Comparable<AlertEvent> 
     private UUID informationTypeId;
     private AlertEventType type;
     private AlertEventLevel level;
+
+    private ChangeStamp changeStamp;
 
     public AlertEvent(UUID processId, UUID informationTypeId, AlertEventType type) {
         this.processId = processId;
