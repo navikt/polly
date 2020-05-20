@@ -93,7 +93,8 @@ public class AlertController {
         AlertEventResponseBuilder builder = AlertEventResponse.builder()
                 .id(event.getId())
                 .type(event.getType())
-                .level(event.getLevel());
+                .level(event.getLevel())
+                .time(event.getChangeStamp().getCreatedDate());
 
         Optional.ofNullable(event.getProcessId())
                 .flatMap(processCache::get)

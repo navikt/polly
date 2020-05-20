@@ -8,6 +8,7 @@ import no.nav.data.polly.alert.dto.ProcessAlert;
 import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
+import no.nav.data.polly.policy.domain.LegalBasesUse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.process.domain.Process;
@@ -107,7 +108,7 @@ public class DocxTest {
         Policy policy = mockProcess.getPolicies().iterator().next();
         when(alertService.checkAlertsForProcess(mockProcess.getId()))
                 .thenReturn(new ProcessAlert(mockProcess.getId(), false,
-                        List.of(new PolicyAlert(policy.getId(), null, false, false, true))));
+                        List.of(new PolicyAlert(policy.getId(), null, false, false, false, true))));
     }
 
     private Process createProcess() {
@@ -159,6 +160,7 @@ public class DocxTest {
                                 .generateId()
                                 .informationTypeName("Falsk identitet")
                                 .data(PolicyData.builder()
+                                        .legalBasesUse(LegalBasesUse.DEDICATED_LEGAL_BASES)
                                         .subjectCategories(List.of("BRUKER", "PARTNER"))
                                         .legalBases(List.of(
                                                 LegalBasis.builder().gdpr("ART61C").nationalLaw("FTRL").description("§ 1-1").build()
@@ -169,6 +171,7 @@ public class DocxTest {
                                 .generateId()
                                 .informationTypeName("Personnavn")
                                 .data(PolicyData.builder()
+                                        .legalBasesUse(LegalBasesUse.DEDICATED_LEGAL_BASES)
                                         .subjectCategories(List.of("ANDRE"))
                                         .legalBases(List.of(
                                                 LegalBasis.builder().gdpr("ART61C").nationalLaw("FTRL").description("§ 1-1").build(),

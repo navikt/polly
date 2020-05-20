@@ -21,6 +21,8 @@ public class PolicyData {
     @NotNull
     private List<String> subjectCategories;
     private boolean legalBasesInherited = false;
+    @NotNull
+    private LegalBasesUse legalBasesUse;
     @Valid
     @NotNull
     private List<LegalBasis> legalBases = new ArrayList<>();

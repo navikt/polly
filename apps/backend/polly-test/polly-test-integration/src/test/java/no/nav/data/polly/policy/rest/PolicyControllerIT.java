@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
+import no.nav.data.polly.policy.domain.LegalBasesUse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
@@ -360,6 +361,7 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     private PolicyRequest createPolicyRequest(InformationType informationType) {
         return PolicyRequest.builder()
+                .legalBasesUse(LegalBasesUse.DEDICATED_LEGAL_BASES)
                 .subjectCategory("Bruker")
                 .processId(PROCESS_ID_1.toString())
                 .informationTypeId(informationType.getId().toString())
@@ -371,6 +373,6 @@ class PolicyControllerIT extends IntegrationTestBase {
         assertThat(policy.getInformationType().getName(), is(informationTypeName));
         assertThat(policy.getProcess().getName(), is(process));
         assertThat(policy.getPurposeCode().getCode(), is(PURPOSE_CODE1));
-        assertThat(policy.isLegalBasesInherited(), is(false));
+        assertThat(policy.getLegalBasesUse(), is(LegalBasesUse.DEDICATED_LEGAL_BASES));
     }
 }

@@ -13,4 +13,5 @@ public class AppState implements GenericStorageData {
 
     private boolean lock;
     private boolean alertEventsInitialized;
+    private ChangeStamp changeStamp;
 }

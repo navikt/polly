@@ -78,7 +78,7 @@ class PolicyRepositoryIT extends IntegrationTestBase {
                 .purposeCode(purposeCode)
                 .data(PolicyData.builder()
                         .subjectCategories(List.of("BRUKER"))
-                        .legalBasesInherited(false)
+                        .legalBasesUse(LegalBasesUse.DEDICATED_LEGAL_BASES)
                         .legalBasis(createLegalBasis())
                         .build())
                 .informationType(createAndSaveInformationType())

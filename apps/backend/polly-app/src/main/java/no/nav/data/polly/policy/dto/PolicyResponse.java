@@ -9,6 +9,7 @@ import lombok.Singular;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
+import no.nav.data.polly.policy.domain.LegalBasesUse;
 import no.nav.data.polly.process.dto.ProcessResponse;
 
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "processId", "process", "purposeCode", "subjectCategories", "legalBasesInherited",
+@JsonPropertyOrder({"id", "processId", "process", "purposeCode", "subjectCategories", "legalBasesUse",
         "informationTypeId", "informationType", "legalBases", "documentIds"})
 public class PolicyResponse {
 
@@ -28,7 +29,7 @@ public class PolicyResponse {
     private CodelistResponse purposeCode;
     @Singular
     private List<CodelistResponse> subjectCategories;
-    private boolean legalBasesInherited;
+    private LegalBasesUse legalBasesUse;
     private UUID informationTypeId;
     private InformationTypeShortResponse informationType;
     @Singular("legalBasis")

@@ -14,13 +14,14 @@ import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
+import no.nav.data.polly.policy.domain.LegalBasesUse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.process.domain.Process;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.UUID;
 
-import static no.nav.data.polly.common.swagger.SwaggerConfig.BOOLEAN;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static no.nav.data.polly.common.utils.StreamUtils.nullToEmptyList;
 import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
@@ -40,8 +41,8 @@ public class PolicyRequest implements RequestElement {
     @ApiModelProperty(value = "Codelist SUBJECT_CATEGORY")
     private List<String> subjectCategories;
     private String informationTypeId;
-    @ApiModelProperty(dataType = BOOLEAN)
-    private String legalBasesInherited;
+    private boolean legalBasesInherited;
+    private LegalBasesUse legalBasesUse;
     private List<LegalBasisRequest> legalBases;
     private List<String> documentIds;
 
@@ -71,6 +72,13 @@ public class PolicyRequest implements RequestElement {
         setPurposeCode(toUpperCaseAndTrim(getPurposeCode()));
         setSubjectCategories(convert(getSubjectCategories(), StringUtils::toUpperCaseAndTrim));
         setDocumentIds(nullToEmptyList(documentIds));
+        if (legalBasesUse == null) {
+            if (legalBasesInherited) {
+                setLegalBasesUse(LegalBasesUse.INHERITED_FROM_PROCESS);
+            } else {
+                setLegalBasesUse(CollectionUtils.isEmpty(legalBases) ? LegalBasesUse.UNRESOLVED : LegalBasesUse.DEDICATED_LEGAL_BASES);
+            }
+        }
     }
 
     @Override

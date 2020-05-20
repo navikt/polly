@@ -11,10 +11,11 @@ public class PolicyAlert {
     UUID policyId;
     UUID informationTypeId;
     boolean missingLegalBasis;
+    boolean excessInfo;
     boolean missingArt6;
     boolean missingArt9;
 
     public Optional<PolicyAlert> resolve() {
-        return missingLegalBasis || missingArt6 || missingArt9 ? Optional.of(this) : Optional.empty();
+        return missingLegalBasis || excessInfo || missingArt6 || missingArt9 ? Optional.of(this) : Optional.empty();
     }
 }

@@ -5,6 +5,7 @@ import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
+import no.nav.data.polly.policy.domain.LegalBasesUse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.ProcessReadController.ProcessPage;
@@ -53,6 +54,7 @@ class ProcessControllerIT extends IntegrationTestBase {
                         .informationType(
                                 new InformationTypeShortResponse(createAndSaveInformationType().getId(), INFORMATION_TYPE_NAME,
                                         createAndSaveInformationType().getData().sensitivityCode()))
+                        .legalBasesUse(LegalBasesUse.DEDICATED_LEGAL_BASES)
                         .subjectCategory(CodelistService.getCodelistResponse(ListName.SUBJECT_CATEGORY, policy.getData().getSubjectCategories().get(0)))
                         .legalBasis(legalBasisResponse())
                         .documentIds(policy.getData().getDocumentIds())

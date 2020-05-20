@@ -27,6 +27,7 @@ import no.nav.data.polly.kafka.SchemaRegistryContainer;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
+import no.nav.data.polly.policy.domain.LegalBasesUse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.policy.domain.PolicyRepository;
@@ -167,6 +168,7 @@ public abstract class IntegrationTestBase {
                 .generateId()
                 .purposeCode(purpose)
                 .data(PolicyData.builder()
+                        .legalBasesUse(LegalBasesUse.DEDICATED_LEGAL_BASES)
                         .subjectCategories(List.of(subjectCategory))
                         .legalBases(legalBases)
                         .documentIds(List.of(UUID.fromString("fc32176b-dbee-42be-b16f-eaddd483bf77")))
