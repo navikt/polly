@@ -94,7 +94,7 @@ public class AlertController {
                 .id(event.getId())
                 .type(event.getType())
                 .level(event.getLevel())
-                .changeStamp(event.convertChangeStampResponse());
+                .time(event.getChangeStamp().getCreatedDate());
 
         Optional.ofNullable(event.getProcessId())
                 .flatMap(processCache::get)
