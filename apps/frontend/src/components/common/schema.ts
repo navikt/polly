@@ -10,7 +10,7 @@ import {
   Dpia,
   InformationtypeFormValues,
   InformationTypeShort,
-  LegalBasesStatus,
+  LegalBasesUse,
   LegalBasisFormValues,
   PolicyFormValues,
   Process,
@@ -75,21 +75,6 @@ export const processSchema = () => yup.object<ProcessFormValues>({
   })
 })
 
-const missingArt9LegalBasisForSensitiveInfoType = (informationType: InformationTypeShort, policy: PolicyFormValues) => {
-  const ownLegalBasis = policy.legalBasesStatus !== LegalBasesStatus.UNKNOWN
-  const reqArt9 = informationType && codelist.requiresArt9(informationType.sensitivity && informationType.sensitivity.code)
-  const missingArt9 = !policy.legalBases.filter((lb) => codelist.isArt9(lb.gdpr)).length
-  const processMissingArt9 = !policy.process.legalBases.filter(lb => codelist.isArt9(lb.gdpr.code)).length
-  return ownLegalBasis && reqArt9 && missingArt9 && processMissingArt9
-}
-
-const missingArt6LegalBasisForInfoType = (policy: PolicyFormValues) => {
-  const ownLegalBasis = policy.legalBasesStatus !== LegalBasesStatus.UNKNOWN
-  const missingArt6 = !policy.legalBases.filter((lb) => codelist.isArt6(lb.gdpr)).length
-  const processMissingArt6 = !policy.process.legalBases.filter(lb => codelist.isArt6(lb.gdpr.code)).length
-  return ownLegalBasis && missingArt6 && processMissingArt6
-}
-
 export const createDocumentValidation = () => yup.object<CreateDocumentFormValues>({
   name: yup.string().required(intl.required),
   description: yup.string().required(intl.required),
@@ -99,25 +84,53 @@ export const createDocumentValidation = () => yup.object<CreateDocumentFormValue
   })).min(1, intl.required)
 })
 
+const missingArt9LegalBasisForSensitiveInfoType = (informationType: InformationTypeShort, policy: PolicyFormValues) => {
+  const ownLegalBasis = policy.legalBasesUse === LegalBasesUse.DEDICATED_LEGAL_BASES
+  const reqArt9 = informationType && codelist.requiresArt9(informationType.sensitivity && informationType.sensitivity.code)
+  const missingArt9 = !policy.legalBases.filter((lb) => codelist.isArt9(lb.gdpr)).length
+  const processMissingArt9 = !policy.process.legalBases.filter(lb => codelist.isArt9(lb.gdpr.code)).length
+  return ownLegalBasis && reqArt9 && missingArt9 && processMissingArt9
+}
+
+const missingArt6LegalBasisForInfoType = (policy: PolicyFormValues) => {
+  const ownLegalBasis = policy.legalBasesUse === LegalBasesUse.DEDICATED_LEGAL_BASES
+  const missingArt6 = !policy.legalBases.filter((lb) => codelist.isArt6(lb.gdpr)).length
+  const processMissingArt6 = !policy.process.legalBases.filter(lb => codelist.isArt6(lb.gdpr.code)).length
+  return ownLegalBasis && missingArt6 && processMissingArt6
+}
+
+const missingLegalBasisForDedicated = (policy: PolicyFormValues) => {
+  return policy.legalBasesUse === LegalBasesUse.DEDICATED_LEGAL_BASES && !policy.legalBases.length
+}
+
 export const policySchema = () => yup.object<PolicyFormValues>({
   informationType: yup.object<InformationTypeShort>().required(intl.required)
-    .test({
-      name: 'policyHasArt9',
-      message: intl.requiredGdprArt9,
-      test: function (informationType) {
-        const {parent} = this
-        return !missingArt9LegalBasisForSensitiveInfoType(informationType, parent)
-      }
-    }).test({
-      name: 'policyHasArt6',
-      message: intl.requiredGdprArt6,
-      test: function () {
-        const {parent} = this
-        return !missingArt6LegalBasisForInfoType(parent)
-      }
-    }),
+  .test({
+    name: 'policyHasArt9',
+    message: intl.requiredGdprArt9,
+    test: function (informationType) {
+      const {parent} = this
+      return !missingArt9LegalBasisForSensitiveInfoType(informationType, parent)
+    }
+  }).test({
+    name: 'policyHasArt6',
+    message: intl.requiredGdprArt6,
+    test: function () {
+      const {parent} = this
+      return !missingArt6LegalBasisForInfoType(parent)
+    }
+  }),
   subjectCategories: yup.array().of(yup.string()).min(1, intl.required),
-  legalBasesStatus: yup.mixed().oneOf(Object.values(LegalBasesStatus)).required(intl.required),
+  legalBasesUse: yup.mixed()
+  .oneOf(Object.values(LegalBasesUse))
+  .required(intl.required).test({
+    name: 'policyHasLegalBasisIfDedicated',
+    message: intl.requiredLegalBasisForDedicated,
+    test: function () {
+      const {parent} = this
+      return !missingLegalBasisForDedicated(parent)
+    }
+  }),
   legalBases: yup.array(legalBasisSchema()),
   legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
   process: yup.object(),

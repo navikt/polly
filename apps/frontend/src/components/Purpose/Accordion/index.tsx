@@ -9,7 +9,7 @@ import { Label2, Paragraph2 } from 'baseui/typography'
 import { intl, theme, useAwait } from '../../../util'
 import { user } from '../../../service/User'
 import { Plus } from 'baseui/icon'
-import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose } from '../../../constants'
+import { AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose } from '../../../constants'
 import ModalProcess from './ModalProcess'
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy'
@@ -190,7 +190,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
           initialValues={{
             legalBasesOpen: false,
             informationType: undefined,
-            legalBasesStatus: LegalBasesStatus.INHERITED,
+            legalBasesUse: LegalBasesUse.INHERITED_FROM_PROCESS,
             process: currentProcess,
             purposeCode: currentProcess.purposeCode,
             subjectCategories: [],

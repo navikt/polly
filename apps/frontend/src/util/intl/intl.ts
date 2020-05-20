@@ -110,7 +110,9 @@ export interface IStrings {
   nameWrite: string;
   categoriesWrite: string;
   sourcesWrite: string;
+  usefulInformation: string;
   keywordsWrite: string;
+  searchWordsWrite: string;
   navMasterSelect: string;
   purposeSelect: string;
   purposeNotFound: string;
@@ -229,6 +231,7 @@ export interface IStrings {
 
   // Alert events
   MISSING_LEGAL_BASIS: string;
+  EXCESS_INFO: string;
   MISSING_ARTICLE_6: string;
   MISSING_ARTICLE_9: string;
   USES_ALL_INFO_TYPE: string;
@@ -258,6 +261,7 @@ export interface IStrings {
   sources: string;
   categories: string;
   keywords: string;
+  searchWords: string;
   read: string;
   write: string;
   administrate: string;
@@ -298,6 +302,7 @@ export interface IStrings {
   useDates: string;
   requiredGdprArt6: string;
   requiredGdprArt9: string;
+  requiredLegalBasisForDedicated: string;
   requiredNationalLaw: string;
   requiredDescription: string;
   aboutUs:string;

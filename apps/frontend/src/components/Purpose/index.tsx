@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { Block, BlockProps } from 'baseui/block'
 import { Label1, Label2 } from 'baseui/typography'
 import { KIND, SIZE as ButtonSize } from 'baseui/button'
-import { AddDocumentToProcessFormValues, LegalBasesStatus, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose } from '../../constants'
+import { AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose } from '../../constants'
 import { intl, theme, useAwait } from '../../util'
 import { user } from '../../service/User'
 import ModalProcess from './Accordion/ModalProcess'
@@ -216,7 +216,7 @@ const ProcessList = ({code, listName, match, history}: ProcessListProps & RouteC
         purposeCode: formValues.process.purposeCode,
         legalBases: [],
         legalBasesOpen: false,
-        legalBasesStatus: LegalBasesStatus.INHERITED,
+        legalBasesUse: LegalBasesUse.INHERITED_FROM_PROCESS,
         documentIds: formValues.defaultDocument ? [] : [formValues.document!.id]
       }))
       await createPolicies(policies)

@@ -16,6 +16,8 @@ import { StatefulSelect } from 'baseui/select'
 import { HeadingLarge, Label2 } from 'baseui/typography'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { user } from '../service/User'
+import { codelist } from '../service/Codelist'
+import moment from 'moment'
 
 
 type State = {
@@ -133,6 +135,7 @@ const AlertEventPageImpl = (props: RouteComponentProps<{ objectType?: 'informati
             <HeadCell title={intl.informationType}/>
             <HeadCell title={intl.level}/>
             <HeadCell title={intl.type}/>
+            <HeadCell title={intl.time}/>
           </>
         }
       >
@@ -141,7 +144,7 @@ const AlertEventPageImpl = (props: RouteComponentProps<{ objectType?: 'informati
             <Cell>
               {event.process ?
                 <ObjectLink id={event.process.id} type={ObjectType.PROCESS}>
-                  {event.process?.name}
+                  {codelist.getShortnameForCode(event.process.purposeCode)}: {event.process?.name}
                 </ObjectLink>
                 : ''}
             </Cell>
@@ -157,6 +160,7 @@ const AlertEventPageImpl = (props: RouteComponentProps<{ objectType?: 'informati
 
             <Cell>{intl[event.level]}</Cell>
             <Cell>{intl[event.type]}</Cell>
+            <Cell>{moment(event.time).format('lll')}</Cell>
           </Row>)}
       </Table>
       <Block display="flex" justifyContent="space-between" marginTop="1rem">

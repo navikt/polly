@@ -1,22 +1,22 @@
 import * as React from "react";
-import { KeyboardEvent, useEffect } from "react";
-import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikHelpers, FormikProps } from "formik";
-import { Label2 } from "baseui/typography";
-import { Input } from "baseui/input";
-import { Block, BlockProps } from "baseui/block";
-import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
-import { Textarea } from "baseui/textarea";
-import { Button, SHAPE } from "baseui/button";
-import { Plus } from "baseui/icon";
-import { Option, Select, TYPE, Value } from "baseui/select";
+import {KeyboardEvent, useEffect} from "react";
+import {Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikHelpers, FormikProps} from "formik";
+import {Label2} from "baseui/typography";
+import {Input} from "baseui/input";
+import {Block, BlockProps} from "baseui/block";
+import {FlexGrid, FlexGridItem} from "baseui/flex-grid";
+import {Textarea} from "baseui/textarea";
+import {Button, SHAPE} from "baseui/button";
+import {Plus} from "baseui/icon";
+import {Option, Select, TYPE, Value} from "baseui/select";
 
-import { codelist, ListName } from "../../service/Codelist";
-import { InformationtypeFormValues } from "../../constants";
-import { intl } from "../../util"
-import { getTerm, mapTermToOption, searchInformationType, useTermSearch } from "../../api"
-import { infoTypeSchema } from "../common/schema"
-import { renderTagList } from "../common/TagList"
-import { Error } from "../common/ModalSchema"
+import {codelist, ListName} from "../../service/Codelist";
+import {InformationtypeFormValues} from "../../constants";
+import {intl} from "../../util"
+import {getTerm, mapTermToOption, searchInformationType, useTermSearch} from "../../api"
+import {infoTypeSchema} from "../common/schema"
+import {renderTagList} from "../common/TagList"
+import {Error} from "../common/ModalSchema"
 
 const labelProps: BlockProps = {
   marginBottom: "8px",
@@ -232,11 +232,11 @@ const InformationtypeForm = ({
                   render={arrayHelpers => (
                     <Block>
                       <Block {...labelProps}>
-                        <Label2>{intl.keywords}</Label2>
+                        <Label2>{intl.searchWords}</Label2>
                       </Block>
                       <Input
                         type="text"
-                        placeholder={intl.keywordsWrite}
+                        placeholder={intl.searchWordsWrite}
                         value={currentKeywordValue}
                         onChange={event =>
                           setCurrentKeywordValue(
@@ -304,7 +304,7 @@ const InformationtypeForm = ({
                            }: FieldProps) => (
                     <Block>
                       <Block {...labelProps}>
-                        <Label2>{intl.additionalDescription}</Label2>
+                        <Label2>{intl.usefulInformation}</Label2>
                       </Block>
                       <Textarea onKeyDown={e => {
                         if (e.key === 'Enter') form.setFieldValue('description', form.values.description + '\n')

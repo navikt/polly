@@ -10,7 +10,7 @@ import { Select, TYPE } from 'baseui/select'
 import CardLegalBasis from './CardLegalBasis'
 import { codelist, ListName } from '../../../service/Codelist'
 import { Button, KIND, SIZE as ButtonSize } from 'baseui/button'
-import { InformationTypeShort, LegalBasesStatus, LegalBasisFormValues, PolicyFormValues } from '../../../constants'
+import { InformationTypeShort, LegalBasesUse, LegalBasisFormValues, PolicyFormValues } from '../../../constants'
 import { ListLegalBases } from '../../common/LegalBasis'
 import { useInfoTypeSearch } from '../../../api'
 import { Error, ModalLabel } from '../../common/ModalSchema'
@@ -88,26 +88,27 @@ const FieldInformationType = (props: {
         />
     )
 
-const FieldLegalBasisStatus = (props: { legalBasesStatus?: LegalBasesStatus }) => {
-    const [value, setValue] = useState(props.legalBasesStatus)
+const FieldLegalBasesUse = (props: { legalBasesUse: LegalBasesUse }) => {
+    const [value, setValue] = useState(props.legalBasesUse)
     return (
         <Field
-            name="legalBasesInherited"
-            render={({ field, form }: FieldProps<PolicyFormValues>) => {
+            name="legalBasesUse"
+            render={({ form }: FieldProps<PolicyFormValues>) => {
                 return (
                     <Block width="100%">
                         <RadioGroup
                             value={value}
-                            align="vertical" isError={!!form.errors.legalBasesStatus && !!form.submitCount}
+                            align="vertical" isError={!!form.errors.legalBasesUse && !!form.submitCount}
                             onChange={e => {
                                 const selected = (e.target as HTMLInputElement).value
-                                form.setFieldValue('legalBasesStatus', selected)
-                                setValue(selected as LegalBasesStatus)
+                                form.setFieldValue('legalBasesUse', selected)
+                                setValue(selected as LegalBasesUse)
                             }}
                         >
-                            <Radio value={LegalBasesStatus.INHERITED}>{intl.legalBasesProcess}</Radio>
-                            <Radio value={LegalBasesStatus.UNKNOWN}>{intl.legalBasesUndecided}</Radio>
-                            <Radio value={LegalBasesStatus.OWN}>{intl.legalBasesOwn}</Radio>
+                            <Radio value={LegalBasesUse.INHERITED_FROM_PROCESS}>{intl.legalBasesProcess}</Radio>
+                            <Radio value={LegalBasesUse.UNRESOLVED}>{intl.legalBasesUndecided}</Radio>
+                            <Radio value={LegalBasesUse.DEDICATED_LEGAL_BASES}>{intl.legalBasesOwn}</Radio>
+                            <Radio value={LegalBasesUse.EXCESS_INFO}>{intl.EXCESS_INFO}</Radio>
                         </RadioGroup>
                     </Block>
                 )
@@ -212,11 +213,11 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
 
                                 <Block {...rowBlockProps}>
                                     <ModalLabel label={intl.legalBasesShort} />
-                                    <FieldLegalBasisStatus legalBasesStatus={formikBag.values.legalBasesStatus} />
+                                    <FieldLegalBasesUse legalBasesUse={formikBag.values.legalBasesUse} />
                                 </Block>
-                                <Error fieldName="legalBasesStatus" />
+                                <Error fieldName="legalBasesUse" />
 
-                                {formikBag.values.legalBasesStatus === LegalBasesStatus.OWN && (
+                                {formikBag.values.legalBasesUse === LegalBasesUse.DEDICATED_LEGAL_BASES && (
                                     <FieldArray
                                         name="legalBases"
                                         render={arrayHelpers => (

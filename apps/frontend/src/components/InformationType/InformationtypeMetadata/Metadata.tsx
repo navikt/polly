@@ -66,10 +66,10 @@ const DescriptionData = (props: { termId?: string, description: string, keywords
         <TextWithLabel label={intl.term} text={term || intl.noTerm} error={termError ? intl.couldntLoadTerm : undefined} />
       </FlexGridItem>
       <FlexGridItem>
-        <TextWithLabel label={intl.keywords} text={<DotTags items={props.keywords} />} />
+        <TextWithLabel label={intl.searchWords} text={<DotTags items={props.keywords} />} />
       </FlexGridItem>
       <FlexGridItem>
-        <TextWithLabel label={intl.additionalDescription} text={props.description} />
+        <TextWithLabel label={intl.usefulInformation} text={props.description} />
       </FlexGridItem>
     </FlexGrid>
   )
