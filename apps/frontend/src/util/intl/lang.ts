@@ -270,6 +270,7 @@ export const no: IStrings = {
 
   requiredGdprArt6: 'Opplysningstypen krever et rettslig grunnlag med artikkel 6',
   requiredGdprArt9: 'Opplysningstypen krever et rettslig grunnlag med artikkel 9',
+  requiredLegalBasisForDedicated: 'Ingen rettslig grunnlag valgt',
   requiredNationalLaw: 'Artikkelen krever nasjonal lov',
   requiredDescription: 'Artikkelen krever ytterligere beskrivelse',
 
@@ -604,6 +605,7 @@ export const en: IStrings = {
 
   requiredGdprArt6: 'The information type requires a legal basis for article 6',
   requiredGdprArt9: 'The information type requires a legal basis for article 9',
+  requiredLegalBasisForDedicated: 'No legal bases selected',
   requiredNationalLaw: 'The article requires national law',
   requiredDescription: 'The article requires additional description',
 
