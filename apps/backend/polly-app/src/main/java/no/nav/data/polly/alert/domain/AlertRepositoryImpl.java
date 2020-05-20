@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -55,12 +56,15 @@ public class AlertRepositoryImpl implements AlertRepositoryCustom {
 
         List<Map<String, Object>> resp = jdbcTemplate.queryForList(query, params);
         long total = resp.isEmpty() ? 0 : (long) resp.get(0).get("count");
-        List<AlertEvent> alertEvents = total >= 0 ? get(resp) : List.of();
+        List<AlertEvent> alertEvents = total > 0 ? get(resp) : List.of();
         return new PageImpl<>(alertEvents, PageRequest.of(page, pageSize), total);
     }
 
     private List<AlertEvent> get(List<Map<String, Object>> resp) {
         List<UUID> ids = resp.stream().map(i -> ((UUID) i.values().iterator().next())).collect(Collectors.toList());
-        return alertRepository.findAllById(ids).stream().map(GenericStorage::toAlertEvent).collect(Collectors.toList());
+        return alertRepository.findAllById(ids).stream()
+                .sorted(Comparator.comparing(GenericStorage::getCreatedDate).reversed())
+                .map(GenericStorage::toAlertEvent)
+                .collect(Collectors.toList());
     }
 }

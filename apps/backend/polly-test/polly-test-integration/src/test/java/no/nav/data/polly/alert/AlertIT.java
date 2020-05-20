@@ -6,6 +6,7 @@ import no.nav.data.polly.alert.AlertController.EventPage;
 import no.nav.data.polly.alert.domain.AlertEvent;
 import no.nav.data.polly.alert.domain.AlertEventType;
 import no.nav.data.polly.alert.domain.AlertRepository;
+import no.nav.data.polly.common.storage.domain.GenericStorage;
 import no.nav.data.polly.common.storage.domain.GenericStorageRepository;
 import no.nav.data.polly.common.storage.domain.StorageType;
 import no.nav.data.polly.policy.domain.LegalBasesUse;
@@ -21,6 +22,8 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
+import static java.util.UUID.randomUUID;
+import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AlertIT extends IntegrationTestBase {
@@ -128,39 +131,6 @@ public class AlertIT extends IntegrationTestBase {
         }
 
         @Test
-        void getEventsWithAllParams() {
-            var policy = createProcessWithOnePolicyNoLegalBasis();
-            alertService.calculateEventsForProcess(policy.getProcess().getId());
-
-            ResponseEntity<EventPage> eventsResponse = restTemplate
-                    .getForEntity("/alert/events"
-                                    + "?processId={processId}"
-                                    + "&informationTypeId={informationTypeId}"
-                                    + "&type={type}"
-                                    + "&level={level}",
-                            EventPage.class,
-                            policy.getProcess().getId(), policy.getInformationTypeId(),
-                            AlertEventType.MISSING_ARTICLE_6, AlertEventType.MISSING_ARTICLE_6.getLevel(),
-                            5, 0);
-
-            assertThat(eventsResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(eventsResponse.getBody()).isNotNull();
-            assertThat(eventsResponse.getBody().getContent()).hasSize(1);
-        }
-
-        @Test
-        void getEventsWithoutParams() {
-            var policy = createProcessWithOnePolicyNoLegalBasis();
-            alertService.calculateEventsForProcess(policy.getProcess().getId());
-
-            ResponseEntity<EventPage> eventsResponse = restTemplate.getForEntity("/alert/events", EventPage.class);
-
-            assertThat(eventsResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(eventsResponse.getBody()).isNotNull();
-            assertThat(eventsResponse.getBody().getContent()).hasSize(1);
-        }
-
-        @Test
         void processAlertNoEvents() {
             var policy = createProcessWithOnePolicy();
             alertService.calculateEventsForProcess(policy.getProcess().getId());
@@ -200,6 +170,58 @@ public class AlertIT extends IntegrationTestBase {
 
             var events = alertRepository.findByProcessId(process.getId());
             assertThat(events).hasSize(1);
+        }
+
+        @Nested
+        class Controller {
+
+            AlertEvent alertEvent1 = new AlertEvent(randomUUID(), randomUUID(), AlertEventType.MISSING_ARTICLE_6);
+            AlertEvent alertEvent2 = new AlertEvent(alertEvent1.getProcessId(), alertEvent1.getInformationTypeId(), AlertEventType.MISSING_ARTICLE_6);
+            AlertEvent alertEvent3 = new AlertEvent(alertEvent1.getProcessId(), alertEvent1.getInformationTypeId(), AlertEventType.MISSING_ARTICLE_6);
+            AlertEvent alertEvent4 = new AlertEvent(randomUUID(), randomUUID(), AlertEventType.MISSING_LEGAL_BASIS);
+            AlertEvent alertEvent5 = new AlertEvent(randomUUID(), randomUUID(), AlertEventType.MISSING_ARTICLE_6);
+
+            @BeforeEach
+            void setUp() {
+                alertRepository.saveAll(convert(List.of(alertEvent1, alertEvent2, alertEvent3, alertEvent4, alertEvent5), GenericStorage::new));
+            }
+
+            @Test
+            void getEventsWithAllParams() throws InterruptedException {
+                GenericStorage alert = new GenericStorage(
+                        new AlertEvent(alertEvent1.getProcessId(), alertEvent1.getInformationTypeId(), AlertEventType.MISSING_ARTICLE_6));
+                Thread.sleep(1000);
+                var gs = alertRepository.save(alert);
+
+                ResponseEntity<EventPage> eventsResponse = restTemplate
+                        .getForEntity("/alert/events"
+                                        + "?processId={processId}"
+                                        + "&informationTypeId={informationTypeId}"
+                                        + "&type={type}"
+                                        + "&level={level}"
+                                        + "&pageSize={pageSize}"
+                                        + "&page={page}",
+                                EventPage.class,
+                                alertEvent1.getProcessId(), alertEvent1.getInformationTypeId(),
+                                AlertEventType.MISSING_ARTICLE_6, AlertEventType.MISSING_ARTICLE_6.getLevel(),
+                                2, 0);
+
+                assertThat(eventsResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+                assertThat(eventsResponse.getBody()).isNotNull();
+                assertThat(eventsResponse.getBody().getContent()).hasSize(2);
+                assertThat(eventsResponse.getBody().getTotalElements()).isEqualTo(4L);
+
+                assertThat(eventsResponse.getBody().getContent().get(0).getTime()).isEqualTo(gs.getCreatedDate());
+            }
+
+            @Test
+            void getEventsWithoutParams() {
+                ResponseEntity<EventPage> eventsResponse = restTemplate.getForEntity("/alert/events", EventPage.class);
+
+                assertThat(eventsResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+                assertThat(eventsResponse.getBody()).isNotNull();
+                assertThat(eventsResponse.getBody().getContent()).hasSize(5);
+            }
         }
     }
 
