@@ -302,6 +302,7 @@ export interface IStrings {
   useDates: string;
   requiredGdprArt6: string;
   requiredGdprArt9: string;
+  requiredLegalBasisForDedicated: string;
   requiredNationalLaw: string;
   requiredDescription: string;
   aboutUs:string;
