@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
 import { codelist, ListName } from '../../../service/Codelist'
 import { intl } from '../../../util'
-import { Policy, PolicyAlert, policySort } from '../../../constants'
+import { LegalBasesUse, Policy, PolicyAlert, policySort } from '../../../constants'
 import { useTable } from '../../../util/hooks'
 import RouteLink from '../../common/RouteLink'
 import { RetentionView } from '../../Purpose/Retention'
@@ -69,11 +69,12 @@ const InformationtypePolicyTable = ({policies, showPurpose}: TableInformationtyp
 
           <Cell>
             <Block>
-              {!row.legalBasesInherited && row.legalBases && row.legalBases.length > 0 && (
+              {row.legalBasesUse === LegalBasesUse.DEDICATED_LEGAL_BASES && row.legalBases && row.legalBases.length > 0 && (
                 <ListLegalBasesInTable legalBases={row.legalBases}/>
               )}
 
-              {row.legalBasesInherited && row.process.legalBases && (
+              {!(row.legalBasesUse === LegalBasesUse.EXCESS_INFO || row.legalBasesUse === LegalBasesUse.UNRESOLVED) &&
+              row.process.legalBases && (
                 <ListLegalBasesInTable legalBases={row.process.legalBases}/>
               )}
 

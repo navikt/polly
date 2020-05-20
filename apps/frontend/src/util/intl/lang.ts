@@ -1,4 +1,4 @@
-import {IStrings} from './intl'
+import { IStrings } from './intl'
 
 export const no: IStrings = {
   informationType: 'Opplysningstype',
@@ -185,6 +185,7 @@ export const no: IStrings = {
   ERROR: 'Feil',
 
   MISSING_LEGAL_BASIS : 'Rettslig grunnlag er ikke avklart',
+  EXCESS_INFO : 'Overskuddsinformasjon',
   MISSING_ARTICLE_6 : 'Rettslig grunnlag for artikkel 6 mangler',
   MISSING_ARTICLE_9 : 'Rettslig grunnlag for artikkel 9 mangler',
   USES_ALL_INFO_TYPE : 'Bruker alle opplysningstyper',
@@ -526,6 +527,7 @@ export const en: IStrings = {
   ERROR: 'Error',
 
   MISSING_LEGAL_BASIS: 'Legal bases missing',
+  EXCESS_INFO: 'Excess info',
   MISSING_ARTICLE_6: 'Legal basis for article 6 is missing',
   MISSING_ARTICLE_9: 'Legal basis for article 9 is missing',
   USES_ALL_INFO_TYPE : 'Uses all information type',

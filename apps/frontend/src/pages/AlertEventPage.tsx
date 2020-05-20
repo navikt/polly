@@ -16,6 +16,7 @@ import { StatefulSelect } from 'baseui/select'
 import { HeadingLarge, Label2 } from 'baseui/typography'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { user } from '../service/User'
+import { codelist } from '../service/Codelist'
 
 
 type State = {
@@ -141,7 +142,7 @@ const AlertEventPageImpl = (props: RouteComponentProps<{ objectType?: 'informati
             <Cell>
               {event.process ?
                 <ObjectLink id={event.process.id} type={ObjectType.PROCESS}>
-                  {event.process?.name}
+                  {codelist.getShortnameForCode(event.process.purposeCode)}: {event.process?.name}
                 </ObjectLink>
                 : ''}
             </Cell>

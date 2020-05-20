@@ -20,16 +20,17 @@ export interface PolicyFormValues {
   informationType?: InformationTypeShort;
   process: { id: string; name: string; legalBases: LegalBasis[] };
   subjectCategories: string[];
-  legalBasesStatus?: LegalBasesStatus;
+  legalBasesUse: LegalBasesUse;
   legalBases: Array<LegalBasisFormValues>;
   legalBasesOpen: boolean;
   documentIds: string[];
 }
 
-export enum LegalBasesStatus {
-  OWN = 'OWN',
-  INHERITED = 'INHERITED',
-  UNKNOWN = 'UNKNOWN'
+export enum LegalBasesUse {
+  INHERITED_FROM_PROCESS = 'INHERITED_FROM_PROCESS',
+  EXCESS_INFO = 'EXCESS_INFO',
+  UNRESOLVED = 'UNRESOLVED',
+  DEDICATED_LEGAL_BASES = 'DEDICATED_LEGAL_BASES',
 }
 
 export enum ProcessStatus {
@@ -121,7 +122,7 @@ export interface Policy {
   process: Process;
   purposeCode: Code;
   subjectCategories: Code[];
-  legalBasesInherited: boolean;
+  legalBasesUse: LegalBasesUse;
   legalBases: LegalBasis[];
   documentIds?: string[];
 }
@@ -411,12 +412,14 @@ export interface ProcessAlert {
 export interface PolicyAlert {
   policyId: string;
   missingLegalBasis: boolean;
+  excessInfo: boolean;
   missingArt6: boolean;
   missingArt9: boolean;
 }
 
 export enum AlertEventType {
   MISSING_LEGAL_BASIS = 'MISSING_LEGAL_BASIS',
+  EXCESS_INFO = 'EXCESS_INFO',
   MISSING_ARTICLE_6 = 'MISSING_ARTICLE_6',
   MISSING_ARTICLE_9 = 'MISSING_ARTICLE_9',
   USES_ALL_INFO_TYPE = 'USES_ALL_INFO_TYPE'
