@@ -19,7 +19,7 @@ import Button from '../components/common/Button'
 import {AuditButton} from '../components/audit/AuditButton'
 import {SIZE as ButtonSize} from 'baseui/button'
 import {tabOverride} from '../components/common/Style'
-import AlphabeticDocumentList from "../components/common/AlphabeticDocumentList";
+import DocumentList from "../components/document/DocumentList";
 
 
 const renderTextWithLabel = (label: string, text: string) => (
@@ -128,7 +128,7 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
             </Block>
           )}
         </Block>
-        { !currentDocument && <AlphabeticDocumentList documents={documents} baseUrl={"/document/"}/>}
+        { !currentDocument && <DocumentList documents={documents} baseUrl={"/document/"}/>}
         {
           currentDocument && (
             <Block overrides={{

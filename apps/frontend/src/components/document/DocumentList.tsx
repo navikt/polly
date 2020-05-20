@@ -4,10 +4,10 @@ import {theme} from "../../util";
 import {primitives} from "../../util/theme";
 import {Label1} from "baseui/typography";
 import {FlexGrid, FlexGridItem} from "baseui/flex-grid";
-import RouteLink from "./RouteLink";
+import RouteLink from "../common/RouteLink";
 import {Document} from "../../constants"
 
-const AlphabeticDocumentList = (props: { documents: Array<Document>, baseUrl: string }) => {
+const DocumentList = (props: { documents: Array<Document>, baseUrl: string }) => {
 
   const documents = props.documents
     .sort((a, b) => a.name.localeCompare(b.name))
@@ -56,4 +56,4 @@ const AlphabeticDocumentList = (props: { documents: Array<Document>, baseUrl: st
   )
 }
 
-export default AlphabeticDocumentList
+export default DocumentList
