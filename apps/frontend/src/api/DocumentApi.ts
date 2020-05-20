@@ -9,6 +9,25 @@ export const getDocument = async (documentId: string) => {
   return (await axios.get<Document>(`${env.pollyBaseUrl}/document/${documentId}`)).data
 }
 
+
+export const getAllDocument = async () => {
+  const PAGE_SIZE = 20
+  const firstPage = await getDocumentByPageAndPageSize(0, PAGE_SIZE)
+  if (firstPage.pages === 0) {
+    return [...firstPage.content]
+  } else {
+    let allDocuments: Document[] = [...firstPage.content]
+    for (let currentPage = 1; currentPage < firstPage.pages; currentPage++) {
+      allDocuments = [...allDocuments, ...(await getDocumentByPageAndPageSize(currentPage, PAGE_SIZE)).content]
+    }
+    return allDocuments
+  }
+}
+
+export const getDocumentByPageAndPageSize = async (pageNumber: number, pageSize: number) => {
+  return (await axios.get<PageResponse<Document>>(`${env.pollyBaseUrl}/document?pageNumber=${pageNumber}&pageSize=${pageSize}`)).data
+}
+
 export const getDefaultProcessDocument = async () => {
   const settings = await getSettings()
   return await getDocument(settings.defaultProcessDocument)
