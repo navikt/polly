@@ -128,6 +128,8 @@ export interface IStrings {
   processingActivitiesNew: string;
   processingActivitiesEdit: string;
   processNew: string;
+  processCreated: string;
+  doYouWantToAddPolicies: string;
   exceptionalUsage: string;
   overallPurpose: string;
   overallPurposeHelpText: string;

@@ -85,7 +85,7 @@ export const createDocumentValidation = () => yup.object<CreateDocumentFormValue
 })
 
 const missingArt9LegalBasisForSensitiveInfoType = (informationType: InformationTypeShort, policy: PolicyFormValues) => {
-  const ownLegalBasis = policy.legalBasesUse === LegalBasesUse.DEDICATED_LEGAL_BASES
+  const ownLegalBasis = policy.legalBasesUse === LegalBasesUse.DEDICATED_LEGAL_BASES || policy.legalBasesUse === LegalBasesUse.INHERITED_FROM_PROCESS
   const reqArt9 = informationType && codelist.requiresArt9(informationType.sensitivity && informationType.sensitivity.code)
   const missingArt9 = !policy.legalBases.filter((lb) => codelist.isArt9(lb.gdpr)).length
   const processMissingArt9 = !policy.process.legalBases.filter(lb => codelist.isArt9(lb.gdpr.code)).length
@@ -93,7 +93,7 @@ const missingArt9LegalBasisForSensitiveInfoType = (informationType: InformationT
 }
 
 const missingArt6LegalBasisForInfoType = (policy: PolicyFormValues) => {
-  const ownLegalBasis = policy.legalBasesUse === LegalBasesUse.DEDICATED_LEGAL_BASES
+  const ownLegalBasis = policy.legalBasesUse === LegalBasesUse.DEDICATED_LEGAL_BASES || policy.legalBasesUse === LegalBasesUse.INHERITED_FROM_PROCESS
   const missingArt6 = !policy.legalBases.filter((lb) => codelist.isArt6(lb.gdpr)).length
   const processMissingArt6 = !policy.process.legalBases.filter(lb => codelist.isArt6(lb.gdpr.code)).length
   return ownLegalBasis && missingArt6 && processMissingArt6
