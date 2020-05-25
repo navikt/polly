@@ -219,7 +219,8 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                             errorProcessModal={errorProcessModal} submitDeleteProcess={submitDeleteProcess}
                             process={currentProcess}/>
 
-        <ProcessCreatedModal openAddPolicy={() => setShowCreatePolicyModal(true)}/>
+        <ProcessCreatedModal openAddPolicy={() => setShowCreatePolicyModal(true)}
+                             openAddDocument={() => setShowAddDocumentModal(true)}/>
       </>}
     </Block>
 
