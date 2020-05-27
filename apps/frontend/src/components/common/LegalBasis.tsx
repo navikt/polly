@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faExclamation, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { ARTWORK_SIZES, ListItem, ListItemLabel } from 'baseui/list'
+import { ARTWORK_SIZES, ListItem } from 'baseui/list'
 import { Block } from 'baseui/block'
 import { Button } from 'baseui/button'
 
@@ -11,6 +11,7 @@ import { processString } from '../../util/string-processor'
 import { intl, theme } from '../../util'
 import { StyledLink } from 'baseui/link'
 import { env } from '../../util/env'
+import { Paragraph2 } from 'baseui/typography'
 
 export const LegalBasisView = (props: { legalBasis?: LegalBasis, legalBasisForm?: LegalBasisFormValues }) => {
   const input = props.legalBasis ? props.legalBasis : props.legalBasisForm
@@ -92,8 +93,7 @@ export const ListLegalBases = (
           overrides={{
             Content: {
               style: {
-                marginLeft: '4rem'
-
+                height: 'auto'
               }
             },
             EndEnhancerContainer: {},
@@ -126,9 +126,9 @@ export const ListLegalBases = (
           sublist
           key={i}
         >
-          <ListItemLabel sublist>
+          <Paragraph2 $style={{marginTop: theme.sizing.scale100, marginBottom: theme.sizing.scale100}}>
             <LegalBasisView legalBasisForm={legalBasis}/>
-          </ListItemLabel>
+          </Paragraph2>
         </ListItem>
       ))}
     </React.Fragment>

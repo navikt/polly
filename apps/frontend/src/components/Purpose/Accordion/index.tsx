@@ -5,7 +5,7 @@ import { RouteComponentProps, withRouter } from 'react-router'
 import { KIND, SIZE as ButtonSize } from 'baseui/button'
 import { StyledSpinnerNext } from 'baseui/spinner'
 import { Block } from 'baseui/block'
-import { Label2, Paragraph2 } from 'baseui/typography'
+import { Label2 } from 'baseui/typography'
 import { intl, theme, useAwait } from '../../../util'
 import { user } from '../../../service/User'
 import { Plus } from 'baseui/icon'
@@ -15,7 +15,6 @@ import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy'
 import { convertProcessToFormValues } from '../../../api'
 import { PathParams } from '../../../pages/PurposePage'
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
 import { AddDocumentModal } from './AddDocumentModal'
 import Button from '../../common/Button'
 import AccordionTitle from './AccordionTitle'
@@ -23,6 +22,8 @@ import ProcessData from './ProcessData'
 import { lastModifiedDate } from '../../../util/date-formatter'
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 import { canViewAlerts } from '../../../pages/AlertEventPage'
+import { DeleteProcessModal } from './DeleteProcessModal'
+import { ProcessCreatedModal } from './ProcessCreatedModal'
 
 type AccordionProcessProps = {
   isLoading: boolean
@@ -214,39 +215,12 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
           error={props.errorDocumentModal}
         />
 
-        <Modal
-          onClose={() => setShowDeleteModal(false)}
-          isOpen={showDeleteModal}
-          animate
-          size='default'
-        >
-          <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>
-          <ModalBody>
-            <Paragraph2>{intl.deleteProcessText}</Paragraph2>
-            {!currentProcess?.policies.length && <Paragraph2>{intl.confirmDeleteProcessText} {currentProcess.name}</Paragraph2>}
-            {!!currentProcess?.policies.length &&
-            <Paragraph2>{intl.formatString(intl.cannotDeleteProcess, currentProcess?.name, '' + currentProcess?.policies.length)}</Paragraph2>}
-          </ModalBody>
+        <DeleteProcessModal onClose={() => setShowDeleteModal(false)} isOpen={showDeleteModal}
+                            errorProcessModal={errorProcessModal} submitDeleteProcess={submitDeleteProcess}
+                            process={currentProcess}/>
 
-          <ModalFooter>
-            <Block display='flex' justifyContent='flex-end'>
-              <Block alignSelf='flex-end'>{errorProcessModal &&
-              <p>{errorProcessModal}</p>}</Block>
-              <Button
-                kind='secondary'
-                onClick={() => setShowDeleteModal(false)}
-              >
-                {intl.abort}
-              </Button>
-              <Block display='inline' marginRight={theme.sizing.scale500}/>
-              <Button onClick={() =>
-                submitDeleteProcess(currentProcess).then(() => setShowDeleteModal(false)).catch(() => setShowDeleteModal(true))
-              } disabled={!!currentProcess?.policies.length}>
-                {intl.delete}
-              </Button>
-            </Block>
-          </ModalFooter>
-        </Modal>
+        <ProcessCreatedModal openAddPolicy={() => setShowCreatePolicyModal(true)}
+                             openAddDocument={() => setShowAddDocumentModal(true)}/>
       </>}
     </Block>
 

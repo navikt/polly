@@ -128,8 +128,7 @@ const ProcessList = ({code, listName, match, history}: ProcessListProps & RouteC
       setErrorProcessModal("")
       setShowCreateProcessModal(false)
       setCurrentProcess(newProcess)
-      history.push(`/process/purpose/${newProcess.purposeCode}/${newProcess.id}`)
-      handleChangePanel(newProcess.id)
+      history.push(`/process/purpose/${newProcess.purposeCode}/${newProcess.id}?create`)
     } catch (err) {
       if (err.response.data.message.includes("already exists")) {
         setErrorProcessModal("Behandlingen eksisterer allerede.")
