@@ -1,5 +1,8 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import Main from './main';
+import "react-app-polyfill/ie11";
+import "react-app-polyfill/stable";
 
-ReactDOM.render(<Main />, document.getElementById('root'));
+import React from "react";
+import ReactDOM from "react-dom";
+import Main from "./main";
+
+ReactDOM.render(<Main />, document.getElementById("root"));
