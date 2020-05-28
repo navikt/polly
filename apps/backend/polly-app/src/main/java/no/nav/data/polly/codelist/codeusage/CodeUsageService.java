@@ -95,52 +95,40 @@ public class CodeUsageService {
         var usage = findCodeUsage(listName, oldCode);
         if (usage.isInUse()) {
             switch (listName) {
-                case PURPOSE:
+                case PURPOSE -> {
                     getProcesses(usage).forEach(p -> p.setPurposeCode(newCode));
                     getPolicies(usage).forEach(p -> p.setPurposeCode(newCode));
-                    break;
-                case CATEGORY:
-                    getInformationTypes(usage).forEach(it -> replaceAll(it.getData().getCategories(), oldCode, newCode));
-                    break;
-                case THIRD_PARTY:
+                }
+                case CATEGORY -> getInformationTypes(usage).forEach(it -> replaceAll(it.getData().getCategories(), oldCode, newCode));
+                case THIRD_PARTY -> {
                     getInformationTypes(usage).forEach(it -> replaceAll(it.getData().getSources(), oldCode, newCode));
                     getDisclosures(usage).forEach(d -> d.getData().setRecipient(newCode));
                     getProcesses(usage).forEach(d -> d.getData().setCommonExternalProcessResponsible(newCode));
-                    break;
-                case SENSITIVITY:
-                    getInformationTypes(usage).forEach(it -> it.getData().setSensitivity(newCode));
-                    break;
-                case SUBJECT_CATEGORY:
+                }
+                case SENSITIVITY -> getInformationTypes(usage).forEach(it -> it.getData().setSensitivity(newCode));
+                case SUBJECT_CATEGORY -> {
                     getPolicies(usage).forEach(p -> replaceAll(p.getData().getSubjectCategories(), oldCode, newCode));
                     getDocuments(usage).forEach(d -> nullToEmptyList(d.getData().getInformationTypes())
                             .forEach(it -> replaceAll(nullToEmptyList(it.getSubjectCategories()), oldCode, newCode)));
-                    break;
-                case NATIONAL_LAW:
-                    replaceNationalLaw(
-                            oldCode, newCode,
-                            convert(getProcesses(usage), p -> p.getData().getLegalBases()),
-                            convert(getPolicies(usage), p -> p.getData().getLegalBases()),
-                            convert(getDisclosures(usage), p -> p.getData().getLegalBases())
-                    );
-                    break;
-                case GDPR_ARTICLE:
-                    replaceGdprArticle(
-                            oldCode, newCode,
-                            convert(getProcesses(usage), p -> p.getData().getLegalBases()),
-                            convert(getPolicies(usage), p -> p.getData().getLegalBases()),
-                            convert(getDisclosures(usage), p -> p.getData().getLegalBases())
-                    );
-                    break;
-                case DEPARTMENT:
-                    getProcesses(usage).forEach(p -> p.getData().setDepartment(newCode));
-                    break;
-                case SUB_DEPARTMENT:
-                    getProcesses(usage).forEach(p -> replaceAll(p.getData().getSubDepartments(), oldCode, newCode));
-                    break;
-                case SYSTEM:
+                }
+                case NATIONAL_LAW -> replaceNationalLaw(
+                        oldCode, newCode,
+                        convert(getProcesses(usage), p -> p.getData().getLegalBases()),
+                        convert(getPolicies(usage), p -> p.getData().getLegalBases()),
+                        convert(getDisclosures(usage), p -> p.getData().getLegalBases())
+                );
+                case GDPR_ARTICLE -> replaceGdprArticle(
+                        oldCode, newCode,
+                        convert(getProcesses(usage), p -> p.getData().getLegalBases()),
+                        convert(getPolicies(usage), p -> p.getData().getLegalBases()),
+                        convert(getDisclosures(usage), p -> p.getData().getLegalBases())
+                );
+                case DEPARTMENT -> getProcesses(usage).forEach(p -> p.getData().setDepartment(newCode));
+                case SUB_DEPARTMENT -> getProcesses(usage).forEach(p -> replaceAll(p.getData().getSubDepartments(), oldCode, newCode));
+                case SYSTEM -> {
                     getInformationTypes(usage).forEach(it -> it.getData().setNavMaster(newCode));
                     getProcesses(usage).forEach(p -> replaceAll(p.getData().getProducts(), oldCode, newCode));
-                    break;
+                }
             }
         }
         return usage;
@@ -163,67 +151,45 @@ public class CodeUsageService {
     }
 
     private List<UsedInInstancePurpose> findProcesses(ListName listName, String code) {
-        switch (listName) {
-            case PURPOSE:
-                return processRepository.findByPurposeCode(code).stream().map(Process::getInstanceIdentification).collect(toList());
-            case DEPARTMENT:
-                return processRepository.findByDepartment(code).stream().map(Process::getInstanceIdentification).collect(toList());
-            case SUB_DEPARTMENT:
-                return processRepository.findBySubDepartment(code).stream().map(Process::getInstanceIdentification).collect(toList());
-            case GDPR_ARTICLE:
-                return processRepository.findByGDPRArticle(code).stream().map(Process::getInstanceIdentification).collect(toList());
-            case NATIONAL_LAW:
-                return processRepository.findByNationalLaw(code).stream().map(Process::getInstanceIdentification).collect(toList());
-            case SYSTEM:
-                return processRepository.findByProduct(code).stream().map(Process::getInstanceIdentification).collect(toList());
-            case THIRD_PARTY:
-                return processRepository.findByCommonExternalProcessResponsible(code).stream().map(Process::getInstanceIdentification).collect(toList());
-            default:
-                return Collections.emptyList();
-        }
+        return convert(switch (listName) {
+            case PURPOSE -> processRepository.findByPurposeCode(code);
+            case DEPARTMENT -> processRepository.findByDepartment(code);
+            case SUB_DEPARTMENT -> processRepository.findBySubDepartment(code);
+            case GDPR_ARTICLE -> processRepository.findByGDPRArticle(code);
+            case NATIONAL_LAW -> processRepository.findByNationalLaw(code);
+            case SYSTEM -> processRepository.findByProduct(code);
+            case THIRD_PARTY -> processRepository.findByCommonExternalProcessResponsible(code);
+            default -> List.<Process>of();
+        }, Process::getInstanceIdentification);
     }
 
     private List<UsedInInstancePurpose> findPolicies(ListName listName, String code) {
-        switch (listName) {
-            case PURPOSE:
-                return policyRepository.findByPurposeCode(code).stream().map(Policy::getInstanceIdentification).collect(toList());
-            case SUBJECT_CATEGORY:
-                return policyRepository.findBySubjectCategory(code).stream().map(Policy::getInstanceIdentification).collect(toList());
-            case GDPR_ARTICLE:
-                return policyRepository.findByGDPRArticle(code).stream().map(Policy::getInstanceIdentification).collect(toList());
-            case NATIONAL_LAW:
-                return policyRepository.findByNationalLaw(code).stream().map(Policy::getInstanceIdentification).collect(toList());
-            default:
-                return Collections.emptyList();
-        }
+        return convert(switch (listName) {
+            case PURPOSE -> policyRepository.findByPurposeCode(code);
+            case SUBJECT_CATEGORY -> policyRepository.findBySubjectCategory(code);
+            case GDPR_ARTICLE -> policyRepository.findByGDPRArticle(code);
+            case NATIONAL_LAW -> policyRepository.findByNationalLaw(code);
+            default -> List.<Policy>of();
+        }, Policy::getInstanceIdentification);
     }
 
     private List<UsedInInstance> findInformationTypes(ListName listName, String code) {
-        switch (listName) {
-            case SENSITIVITY:
-                return informationTypeRepository.findBySensitivity(code).stream().map(InformationType::getInstanceIdentification).collect(toList());
-            case SYSTEM:
-                return informationTypeRepository.findByNavMaster(code).stream().map(InformationType::getInstanceIdentification).collect(toList());
-            case CATEGORY:
-                return informationTypeRepository.findByCategory(code).stream().map(InformationType::getInstanceIdentification).collect(toList());
-            case THIRD_PARTY:
-                return informationTypeRepository.findBySource(code).stream().map(InformationType::getInstanceIdentification).collect(toList());
-            default:
-                return Collections.emptyList();
-        }
+        return convert(switch (listName) {
+            case SENSITIVITY -> informationTypeRepository.findBySensitivity(code);
+            case SYSTEM -> informationTypeRepository.findByNavMaster(code);
+            case CATEGORY -> informationTypeRepository.findByCategory(code);
+            case THIRD_PARTY -> informationTypeRepository.findBySource(code);
+            default -> List.<InformationType>of();
+        }, InformationType::getInstanceIdentification);
     }
 
     private List<UsedInInstance> findDisclosures(ListName listName, String code) {
-        switch (listName) {
-            case GDPR_ARTICLE:
-                return disclosureRepository.findByGDPRArticle(code).stream().map(Disclosure::getInstanceIdentification).collect(toList());
-            case NATIONAL_LAW:
-                return disclosureRepository.findByNationalLaw(code).stream().map(Disclosure::getInstanceIdentification).collect(toList());
-            case THIRD_PARTY:
-                return disclosureRepository.findByRecipient(code).stream().map(Disclosure::getInstanceIdentification).collect(toList());
-            default:
-                return Collections.emptyList();
-        }
+        return convert(switch (listName) {
+            case GDPR_ARTICLE -> disclosureRepository.findByGDPRArticle(code);
+            case NATIONAL_LAW -> disclosureRepository.findByNationalLaw(code);
+            case THIRD_PARTY -> disclosureRepository.findByRecipient(code);
+            default -> List.<Disclosure>of();
+        }, Disclosure::getInstanceIdentification);
     }
 
     private List<UsedInInstance> findDocuments(ListName listName, String code) {
