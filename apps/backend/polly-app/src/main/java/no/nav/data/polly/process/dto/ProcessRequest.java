@@ -123,18 +123,17 @@ public class ProcessRequest implements RequestElement {
         if (getDataProcessing() == null) {
             setDataProcessing(new DataProcessingRequest());
         }
-        if (getRetention() == null) {
-            setRetention(new RetentionRequest());
-        }
         getDataProcessing().setDataProcessorAgreements(formatList(getDataProcessing().getDataProcessorAgreements()));
         if (Boolean.FALSE.equals(getDataProcessing().getDataProcessor())) {
             getDataProcessing().setDataProcessorAgreements(List.of());
             getDataProcessing().setDataProcessorOutsideEU(null);
         }
+        if (getRetention() == null) {
+            setRetention(new RetentionRequest());
+        }
         if (Boolean.FALSE.equals(getRetention().getRetentionPlan())) {
             getRetention().setRetentionMonths(null);
             getRetention().setRetentionStart(null);
-            getRetention().setRetentionDescription(null);
         }
         if (getDpia() == null) {
             setDpia(new DpiaRequest());
