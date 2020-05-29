@@ -51,7 +51,7 @@ const DescriptionData = (props: { termId?: string, description: string, keywords
       if (props.termId) {
         try {
           const termResponse = await getTerm(props.termId)
-          setTerm(mapTermToOption(termResponse).description)
+          setTerm(mapTermToOption(termResponse).label)
         } catch (e) {
           console.error('couldnt find term', e)
           setTermError(true)
