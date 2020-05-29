@@ -247,7 +247,7 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
             const item = params.value[0] as SearchItem;
             (async () => {
               if (item) {
-                props.history.push(await urlForObject(item.type, item.id))
+                props.history.push(urlForObject(item.type, item.id))
               } else {
                 setValue([])
               }
