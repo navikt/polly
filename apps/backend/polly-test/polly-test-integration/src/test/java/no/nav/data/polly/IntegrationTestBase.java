@@ -308,6 +308,7 @@ public abstract class IntegrationTestBase {
                 .description("process description")
                 .purposeCode(PURPOSE_CODE1)
                 .productTeam("teamname")
+                .productTeamOld("teamname")
                 .product(CodelistService.getCodelistResponse(ListName.SYSTEM, "PESYS"))
                 .department(CodelistService.getCodelistResponse(ListName.DEPARTMENT, "DEP"))
                 .subDepartment(CodelistService.getCodelistResponse(ListName.SUB_DEPARTMENT, "SUBDEP"))

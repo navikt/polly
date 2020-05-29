@@ -104,7 +104,7 @@ public class Process extends Auditable {
                 .subDepartments(getSubDepartmentCodes())
                 .commonExternalProcessResponsible(getCommonExternalProcessResponsibleCode())
                 .productTeamOld(isEmpty(data.getProductTeams()) ? null : data.getProductTeams().get(0))
-                .productTeams(data.getProductTeams())
+                .productTeams(nullToEmptyList(data.getProductTeams()))
                 .products(getProductCodes())
                 .start(data.getStart())
                 .end(data.getEnd())
