@@ -126,7 +126,7 @@ public class DocxTest {
                         ))
                         .department("AOT")
                         .subDepartment("PEN")
-                        .productTeam("teamdatajegerne")
+                        .productTeams(List.of("teamdatajegerne"))
                         .products(List.of("TPS", "PESYS"))
                         .usesAllInformationTypes(false)
                         .automaticProcessing(true)

@@ -63,11 +63,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static no.nav.data.polly.common.utils.StreamUtils.filter;
 
@@ -170,7 +172,7 @@ public class ProcessToDocx {
             addHeading2("Egenskaper ved behandling");
 
             addHeading4("Rettslig grunnlag for behandlingen");
-            addTexts(data.getLegalBases().stream().map(this::mapLegalBasis).collect(Collectors.toList()));
+            addTexts(data.getLegalBases().stream().map(this::mapLegalBasis).collect(toList()));
 
             addHeading4("Status");
             addText(data.getStatus() == ProcessStatus.COMPLETED ? "Godkjent" : "Under arbeid");
@@ -220,11 +222,15 @@ public class ProcessToDocx {
 
         private void organising(ProcessData data) {
             addHeading4("Organisering");
-            String teamName = Optional.ofNullable(data.getProductTeam()).flatMap(teamService::getTeam).map(Team::getName).orElse(data.getProductTeam());
+            var teamNames = data.getProductTeams().stream()
+                    .map(teamId -> Map.entry(teamId, teamService.getTeam(teamId)))
+                    .map(t -> t.getValue().map(Team::getName).orElse(t.getKey()))
+                    .collect(toList());
+
             addTexts(
                     text("Avdeling: ", shortName(ListName.DEPARTMENT, data.getDepartment())),
                     text("Linja (Ytre etat): ", String.join(", ", convert(data.getSubDepartments(), sd -> shortName(ListName.SUB_DEPARTMENT, sd)))),
-                    text("Produktteam (IT): ", teamName),
+                    text("Produktteam (IT): ", String.join(", ", teamNames)),
                     text("Felles behandlingsansvarlig: ", shortName(ListName.THIRD_PARTY, data.getCommonExternalProcessResponsible()))
             );
         }

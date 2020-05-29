@@ -28,7 +28,7 @@ public class ProcessData {
     private String department;
     private List<String> subDepartments;
     private String commonExternalProcessResponsible;
-    private String productTeam;
+    private List<String> productTeams;
     private List<String> products;
     @Valid
     private List<LegalBasis> legalBases = new ArrayList<>();

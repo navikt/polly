@@ -51,6 +51,13 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
     }
 
     @Override
+    public List<Process> findByProductTeam(String productTeam) {
+        var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{productTeams}' ?? :productTeam",
+                new MapSqlParameterSource().addValue("productTeam", productTeam));
+        return getProcesses(resp);
+    }
+
+    @Override
     public List<Process> findByDocumentId(String documentId) {
         var resp = jdbcTemplate.queryForList("select distinct(process_id) from policy where data #>'{documentIds}' ?? :documentId",
                 new MapSqlParameterSource().addValue("documentId", documentId));

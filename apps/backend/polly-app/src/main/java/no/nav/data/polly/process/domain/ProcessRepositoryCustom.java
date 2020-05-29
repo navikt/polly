@@ -12,6 +12,8 @@ public interface ProcessRepositoryCustom {
 
     List<Process> findBySubDepartment(String subDepartment);
 
+    List<Process> findByProductTeam(String productTeam);
+
     List<Process> findByDocumentId(String documentId);
 
 }

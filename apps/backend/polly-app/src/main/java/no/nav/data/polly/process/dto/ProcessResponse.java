@@ -1,5 +1,6 @@
 package no.nav.data.polly.process.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonPropertyOrder({"id", "name", "description", "purposeCode", "department", "subDepartments", "commonExternalProcessResponsible",
-        "productTeam", "products", "start", "end", "active",
+        "productTeam",  "productTeams", "products", "start", "end", "active",
         "usesAllInformationTypes", "automaticProcessing", "profiling", "dataProcessing", "retention", "dpia", "status", "changeStamp",
         "legalBases", "policies"})
 public class ProcessResponse {
@@ -36,7 +37,10 @@ public class ProcessResponse {
     @Singular
     private List<CodelistResponse> subDepartments;
     private CodelistResponse commonExternalProcessResponsible;
-    private String productTeam;
+    @JsonProperty("productTeam")
+    private String productTeamOld;
+    @Singular
+    private List<String> productTeams;
     @Singular
     private List<CodelistResponse> products;
     private LocalDate start;

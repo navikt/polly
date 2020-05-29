@@ -80,7 +80,7 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
 
             if (repoValue.isPresent()) {
                 Process process = repoValue.get();
-                validateTeam(request, process.getData().getProductTeam(), validations);
+                validateTeams(request, process.getData().getProductTeams(), validations);
                 String existingRiskOwner = process.getData().getDpia() == null ? null : process.getData().getDpia().getRiskOwner();
                 validateRiskOwner(request, existingRiskOwner, validations);
                 if (!Objects.equals(process.getPurposeCode(), request.getPurposeCode())) {
@@ -89,7 +89,7 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
                 }
             }
         } else {
-            validateTeam(request, null, validations);
+            validateTeams(request, List.of(), validations);
             validateRiskOwner(request, null, validations);
             validations.addAll(validateRepositoryValues(request, false));
             if (processRepository.findByNameAndPurposeCode(request.getName(), request.getPurposeCode()).isPresent()) {
@@ -100,9 +100,13 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
         return validations;
     }
 
-    private void validateTeam(ProcessRequest request, String existingTeam, ArrayList<ValidationError> validations) {
-        if (isNotBlank(request.getProductTeam()) && !Objects.equals(request.getProductTeam(), existingTeam) && !teamService.teamExists(request.getProductTeam())) {
-            validations.add(new ValidationError(request.getReference(), "invalidProductTeam", "Product team " + request.getProductTeam() + " does not exist"));
+    private void validateTeams(ProcessRequest request, List<String> existingTeams, ArrayList<ValidationError> validations) {
+        if (!request.getProductTeams().isEmpty() && !existingTeams.equals(request.getProductTeams())) {
+            request.getProductTeams().forEach(t -> {
+                if (!teamService.teamExists(t)) {
+                    validations.add(new ValidationError(request.getReference(), "invalidProductTeam", "Product team " + t + " does not exist"));
+                }
+            });
         }
     }
 

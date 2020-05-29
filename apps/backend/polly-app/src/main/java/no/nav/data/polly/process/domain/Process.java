@@ -46,6 +46,7 @@ import static java.util.Comparator.comparing;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static no.nav.data.polly.common.utils.StreamUtils.nullToEmptyList;
 import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Data
 @Builder
@@ -102,7 +103,8 @@ public class Process extends Auditable {
                 .department(getDepartmentCode())
                 .subDepartments(getSubDepartmentCodes())
                 .commonExternalProcessResponsible(getCommonExternalProcessResponsibleCode())
-                .productTeam(data.getProductTeam())
+                .productTeamOld(isEmpty(data.getProductTeams()) ? null : data.getProductTeams().get(0))
+                .productTeams(data.getProductTeams())
                 .products(getProductCodes())
                 .start(data.getStart())
                 .end(data.getEnd())
@@ -156,7 +158,7 @@ public class Process extends Auditable {
         data.setDepartment(request.getDepartment());
         data.setSubDepartments(List.copyOf(request.getSubDepartments()));
         data.setCommonExternalProcessResponsible(request.getCommonExternalProcessResponsible());
-        data.setProductTeam(request.getProductTeam());
+        data.setProductTeams(List.copyOf(request.getProductTeams()));
         data.setProducts(List.copyOf(request.getProducts()));
         data.setStart(DateUtil.parseStart(request.getStart()));
         data.setEnd(DateUtil.parseEnd(request.getEnd()));

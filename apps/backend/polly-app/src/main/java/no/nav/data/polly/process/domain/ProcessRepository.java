@@ -21,9 +21,6 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
     @Query(value = "select * from process where data->>'commonExternalProcessResponsible' = ?1", nativeQuery = true)
     List<Process> findByCommonExternalProcessResponsible(String thirdParty);
 
-    @Query(value = "select * from process where data->>'productTeam' = ?1", nativeQuery = true)
-    List<Process> findByProductTeam(String productTeam);
-
     @Query(value = "select * from process where name ilike %?1%", nativeQuery = true)
     List<Process> findByNameContaining(String name);
 
@@ -44,15 +41,15 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
     @Query(value = "select p.purposeCode as code, count(p) as count from Process p group by p.purposeCode")
     List<ProcessCount> countPurposeCode();
 
-    @Query(value = "select data->>'department' as code, count(1) as count from process group by data->>'department'", nativeQuery = true)
+    @Query(value = "select data->>'department' as code, count(1) as count from process group by code", nativeQuery = true)
     List<ProcessCount> countDepartmentCode();
 
     @Query(value = "select jsonb_array_elements(data -> 'subDepartments') ->> 0 as code, count(1) as count from process group by code", nativeQuery = true)
     List<ProcessCount> countSubDepartmentCode();
 
-    @Query(value = "select data->>'productTeam' as code, count(1) as count from process group by data->>'productTeam'", nativeQuery = true)
+    @Query(value = "select jsonb_array_elements(data -> 'productTeams') ->> 0  as code, count(1) as count from process group by code", nativeQuery = true)
     List<ProcessCount> countTeam();
 
-    @Query(value = "select data->>'department' as code, count(1) as count from process where data->>'status' = cast(?1 as text) group by data->>'department'", nativeQuery = true)
+    @Query(value = "select data->>'department' as code, count(1) as count from process where data->>'status' = cast(?1 as text) group by code", nativeQuery = true)
     List<ProcessCount> countDepartmentCodeStatus(ProcessStatus status);
 }
