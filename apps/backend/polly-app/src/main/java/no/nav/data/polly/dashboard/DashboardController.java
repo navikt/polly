@@ -69,19 +69,24 @@ public class DashboardController {
                 .collect(Collectors.toList());
 
         long processes = processRepository.count();
-        long dpia = processRepository.countWithDpia();
-        long unknownDpia = processRepository.countUnknownDpia();
         var dash = DashResponse.builder()
                 .allProcesses(ProcessDashCount.builder()
                         .processes(processes)
                         .processesCompleted(processRepository.countStatus(ProcessStatus.COMPLETED))
                         .processesInProgress(processRepository.countStatus(ProcessStatus.IN_PROGRESS))
                         .processesUsingAllInfoTypes(processRepository.countUsingAllInfoTypes())
-                        .dpia(new Counter(dpia, processes - dpia - unknownDpia, unknownDpia))
+                        .dpia(getDpia(processes))
                         .processesMissingLegalBases(depLegalBasisAlerts.values().stream().mapToLong(Long::longValue).sum())
                         .build())
                 .departmentProcesses(byDepartment)
                 .build();
         return ResponseEntity.ok(dash);
     }
+
+    private Counter getDpia(long processes) {
+        long yes = processRepository.countWithDpia();
+        long unknown = processRepository.countUnknownDpia();
+        return new Counter(yes, processes - yes - unknown, unknown);
+    }
+
 }
