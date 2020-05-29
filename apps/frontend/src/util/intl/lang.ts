@@ -1,4 +1,4 @@
-import { IStrings } from './intl'
+import {IStrings} from './intl'
 
 export const no: IStrings = {
   informationType: 'Opplysningstype',
@@ -23,6 +23,7 @@ export const no: IStrings = {
   nationalLaw: 'Nasjonal lov',
   navMaster: 'Master i NAV',
   productTeam: 'Produktteam (IT)',
+  productTeamFromTK: 'Produktteam (Oppslag i Teamkatalogen)',
   product: 'Produkt',
   products: 'Produkter',
   team: 'Team',
@@ -359,6 +360,7 @@ export const en: IStrings = {
   subjectCategories: 'Subject categories',
   summarySubjectCategories: 'Summary subject categories',
   productTeam: 'Product team (IT)',
+  productTeamFromTK: 'Produktteam (lookup in in Team Catalog)',
   product: 'Product',
   products: 'Products',
   team: 'Team',
