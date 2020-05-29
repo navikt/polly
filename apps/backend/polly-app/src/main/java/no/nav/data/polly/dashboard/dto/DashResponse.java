@@ -1,5 +1,8 @@
 package no.nav.data.polly.dashboard.dto;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,9 +33,18 @@ public class DashResponse {
         private long processesMissingLegalBases;
 
         private long processesUsingAllInfoTypes;
-        private long processesWithDpia;
-        private long processesUnknownDpia;
+
+        private Counter dpia;
+        private Counter profiling;
+        private Counter automation;
+        private Counter retention;
     }
+
+    @JsonAutoDetect(fieldVisibility = Visibility.ANY)
+    public record Counter(@JsonProperty("yes")long yes, @JsonProperty("no")long no, @JsonProperty("unknown")long unknown) {
+
+    }
+
 
     @Data
     @Builder

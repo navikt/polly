@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.alert.domain.AlertRepository;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.dashboard.dto.DashResponse;
+import no.nav.data.polly.dashboard.dto.DashResponse.Counter;
 import no.nav.data.polly.dashboard.dto.DashResponse.ProcessDashCount;
 import no.nav.data.polly.dashboard.dto.DashResponse.ProcessDepartmentDashCount;
 import no.nav.data.polly.process.domain.ProcessRepository;
@@ -67,14 +68,16 @@ public class DashboardController {
                         .build())
                 .collect(Collectors.toList());
 
+        long processes = processRepository.count();
+        long dpia = processRepository.countWithDpia();
+        long unknownDpia = processRepository.countUnknownDpia();
         var dash = DashResponse.builder()
                 .allProcesses(ProcessDashCount.builder()
-                        .processes(processRepository.count())
+                        .processes(processes)
                         .processesCompleted(processRepository.countStatus(ProcessStatus.COMPLETED))
                         .processesInProgress(processRepository.countStatus(ProcessStatus.IN_PROGRESS))
                         .processesUsingAllInfoTypes(processRepository.countUsingAllInfoTypes())
-                        .processesWithDpia(processRepository.countWithDpia())
-                        .processesUnknownDpia(processRepository.countUnknownDpia())
+                        .dpia(new Counter(dpia, processes - dpia - unknownDpia, unknownDpia))
                         .processesMissingLegalBases(depLegalBasisAlerts.values().stream().mapToLong(Long::longValue).sum())
                         .build())
                 .departmentProcesses(byDepartment)
