@@ -100,7 +100,11 @@ export const Main = () => {
             </Block>
 
             <Block width="100%" display="flex" justifyContent="center" alignContent="center">
-              {user.isAdmin() && <LastEvents />}
+              {user.isAdmin() &&
+                <Card overrides={cardShadow}>
+                  <LastEvents />
+                </Card>
+              }
             </Block>
           </>
         )
