@@ -1,18 +1,18 @@
-import {Dpia, Process, ProcessStatus} from '../../../constants'
+import { Dpia, Process, ProcessStatus } from '../../../constants'
 import * as React from 'react'
-import {useEffect} from 'react'
-import {getResourceById} from '../../../api'
-import {codelist, ListName} from '../../../service/Codelist'
+import { useEffect } from 'react'
+import { getResourceById } from '../../../api'
+import { codelist, ListName } from '../../../service/Codelist'
 import _includes from 'lodash/includes'
-import {Block} from 'baseui/block'
+import { Block } from 'baseui/block'
 import DataText from '../common/DataText'
-import {intl} from '../../../util'
-import {LegalBasisView} from '../../common/LegalBasis'
-import {ActiveIndicator} from '../../common/Durations'
-import {DotTags} from '../../common/DotTag'
-import {TeamPopover} from '../../common/Team'
-import {boolToText} from '../../common/Radio'
-import {RetentionView} from '../Retention'
+import { intl, theme } from '../../../util'
+import { LegalBasisView } from '../../common/LegalBasis'
+import { ActiveIndicator } from '../../common/Durations'
+import { DotTags } from '../../common/DotTag'
+import { TeamPopover } from '../../common/Team'
+import { boolToText } from '../../common/Radio'
+import { RetentionView } from '../Retention'
 
 const showDpiaRequiredField = (dpia?: Dpia) => {
   if (dpia?.needForDpia === true) {
@@ -106,9 +106,13 @@ const ProcessData = (props: { process: Process }) => {
           <span>{codelist.getShortnameForCode(process.commonExternalProcessResponsible)}</span>
         </Block>}
 
-        {!!process.productTeam && <Block>
+        {!!process.productTeams?.length && <Block>
           <span>{intl.productTeam}: </span>
-          <TeamPopover teamId={process.productTeam}/>
+          {process.productTeams.map((t, i) =>
+            <Block key={i} display='inline' marginRight={theme.sizing.scale100}>
+              <TeamPopover teamId={t}/>
+            </Block>
+          )}
         </Block>}
       </DataText>
 
