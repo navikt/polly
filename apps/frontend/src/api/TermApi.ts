@@ -1,9 +1,9 @@
 import axios from "axios"
-import { PageResponse, Term } from "../constants"
-import { default as React, Dispatch, SetStateAction, useEffect } from "react"
-import { useDebouncedState } from "../util"
-import { Option } from "baseui/select"
-import { env } from "../util/env"
+import {PageResponse, Term} from "../constants"
+import {default as React, Dispatch, SetStateAction, useEffect} from "react"
+import {useDebouncedState} from "../util"
+import {Option} from "baseui/select"
+import {env} from "../util/env"
 
 export const getTerm = async (termId: string) => {
     return (await axios.get<Term>(`${env.pollyBaseUrl}/term/${termId}`)).data

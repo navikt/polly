@@ -46,7 +46,7 @@ export interface ProcessFormValues {
   department?: string;
   commonExternalProcessResponsible?: string;
   subDepartments: string[];
-  productTeam?: string;
+  productTeams: string[];
   products: string[];
   legalBases: Array<LegalBasisFormValues>;
   legalBasesOpen: boolean;
@@ -183,7 +183,7 @@ export interface Process extends IDurationed {
   department: Code;
   commonExternalProcessResponsible: Code;
   subDepartments: Code[];
-  productTeam: string;
+  productTeams: string[];
   products: Code[];
   policies: Policy[];
   purposeCode: string;

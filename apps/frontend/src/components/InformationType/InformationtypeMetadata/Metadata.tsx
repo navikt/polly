@@ -7,7 +7,7 @@ import {IconDefinition} from '@fortawesome/fontawesome-common-types'
 import {intl, theme} from '../../../util'
 import {Label2} from 'baseui/typography'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faTimesCircle, faUserShield} from '@fortawesome/free-solid-svg-icons'
+import {faExternalLinkAlt, faTimesCircle, faUserShield} from '@fortawesome/free-solid-svg-icons'
 import {Code} from '../../../service/Codelist'
 import {sensitivityColor} from '../Sensitivity'
 import {getTerm, mapTermToOption} from '../../../api'
@@ -25,17 +25,17 @@ const renderCodesToLinks = (sources: Code[]) =>
   ))
 
 const TextWithLabel = (props: { label: string, text: ReactNode, icon?: IconDefinition, iconColor?: string, error?: string }) => {
-  const errorIcon = <FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500} />
+  const errorIcon = <FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500}/>
   const value =
     <Block font="ParagraphMedium"
-      $style={{ whiteSpace: 'pre-wrap', ...marginZero, marginTop: theme.sizing.scale100 }}
-      display="flex">
+           $style={{whiteSpace: 'pre-wrap', ...marginZero, marginTop: theme.sizing.scale100}}
+           display="flex">
       {props.error && errorIcon} {props.text}
     </Block>
 
   return (
     <>
-      <Label2>{props.icon && <FontAwesomeIcon icon={props.icon} color={props.iconColor} />} {props.label}</Label2>
+      <Label2>{props.icon && <FontAwesomeIcon icon={props.icon} color={props.iconColor}/>} {props.label}</Label2>
       {!props.error && value}
       {props.error && <StatefulTooltip content={props.error} placement={PLACEMENT.top}>{value}</StatefulTooltip>}
     </>
@@ -63,13 +63,19 @@ const DescriptionData = (props: { termId?: string, description: string, keywords
   return (
     <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
       <FlexGridItem>
-        <TextWithLabel label={intl.term} text={term || intl.noTerm} error={termError ? intl.couldntLoadTerm : undefined} />
+        <Block display={"flex"}/>
+        <TextWithLabel label={intl.term} text={term || intl.noTerm} error={termError ? intl.couldntLoadTerm : undefined}/>
+        {term && (
+          <StyledLink href={`https://data.adeo.no/begrep/${props.termId}`}>
+            <FontAwesomeIcon icon={faExternalLinkAlt}/>
+          </StyledLink>
+        )}
       </FlexGridItem>
       <FlexGridItem>
-        <TextWithLabel label={intl.searchWords} text={<DotTags items={props.keywords} />} />
+        <TextWithLabel label={intl.searchWords} text={<DotTags items={props.keywords}/>}/>
       </FlexGridItem>
       <FlexGridItem>
-        <TextWithLabel label={intl.usefulInformation} text={props.description} />
+        <TextWithLabel label={intl.usefulInformation} text={props.description}/>
       </FlexGridItem>
     </FlexGrid>
   )
@@ -78,22 +84,22 @@ const DescriptionData = (props: { termId?: string, description: string, keywords
 const PropertyData = (props: { navMaster: Code, sources: Code[], categories: Code[], keywords: string[], sensitivity: Code }) => (
   <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
     <FlexGridItem>
-      <TextWithLabel label={intl.navMaster} text={props.navMaster ? props.navMaster.shortName : ''} />
+      <TextWithLabel label={intl.navMaster} text={props.navMaster ? props.navMaster.shortName : ''}/>
     </FlexGridItem>
     <FlexGridItem>
-      <TextWithLabel label={intl.sources} text={renderCodesToLinks(props.sources)} />
+      <TextWithLabel label={intl.sources} text={renderCodesToLinks(props.sources)}/>
     </FlexGridItem>
     <FlexGridItem>
-      <TextWithLabel label={intl.categories} text={(props.categories || []).map(c => c.shortName).join(', ')} />
+      <TextWithLabel label={intl.categories} text={(props.categories || []).map(c => c.shortName).join(', ')}/>
     </FlexGridItem>
     <FlexGridItem>
-      <TextWithLabel label={intl.sensitivity} text={props.sensitivity ? props.sensitivity.shortName : ''} icon={faUserShield} iconColor={sensitivityColor(props.sensitivity.code)} />
+      <TextWithLabel label={intl.sensitivity} text={props.sensitivity ? props.sensitivity.shortName : ''} icon={faUserShield} iconColor={sensitivityColor(props.sensitivity.code)}/>
     </FlexGridItem>
   </FlexGrid>
 )
 
 const Metadata = (props: { informationtype: InformationType }) => {
-  const { informationtype } = props
+  const {informationtype} = props
 
   const dividerDistance = theme.sizing.scale2400
   return (
@@ -105,7 +111,7 @@ const Metadata = (props: { informationtype: InformationType }) => {
           keywords={informationtype.keywords}
         />
       </Block>
-      <Block width="60%" paddingLeft={dividerDistance} $style={{ borderLeft: `1px solid ${theme.colors.mono600}` }}>
+      <Block width="60%" paddingLeft={dividerDistance} $style={{borderLeft: `1px solid ${theme.colors.mono600}`}}>
         <PropertyData
           navMaster={informationtype.navMaster}
           sources={informationtype.sources ? informationtype.sources : []}
