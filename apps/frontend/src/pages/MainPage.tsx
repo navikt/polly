@@ -99,7 +99,7 @@ export const Main = () => {
               </Card>
             </Block>
 
-            <Block width="100%" display="flex" justifyContent="center" alignContent="center">
+            <Block width="100%" display="flex" alignContent="center" marginTop="2.5rem">
               {user.isAdmin() &&
                 <Card overrides={cardShadow}>
                   <LastEvents />
