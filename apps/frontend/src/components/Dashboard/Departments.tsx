@@ -18,10 +18,10 @@ const parsedDepartmentName = (department: string) => {
     let parsedValue
     switch (department) {
         case 'KOMMUNIKASJON':
-            parsedValue = 'Kommunikasjonsavd.'
+            parsedValue = 'Kommunikasjon'
             break;
         case 'KUNNSKAP':
-            parsedValue = 'Kunnskapsavd.'
+            parsedValue = 'Kunnskap'
             break;
         case 'HRAVD':
             parsedValue = 'HR'
@@ -55,8 +55,8 @@ const DepartmentCard = (props: DepartmentCardProps) => {
                     flexDirection='column'
                     alignItems='center'
                     justifyContent='space-around'
-                    width='160px'
-                    height={theme.sizing.scale4800}
+                    width="130px"
+                    height="130px"
                 >
                     <Label1 color={theme.colors.accent300} $style={{ textAlign: 'center' }}>{parsedDepartmentName(department.department)}</Label1>
                     <TextWithNumber label="Fullførte" number={department.processesCompleted} />
@@ -76,8 +76,12 @@ const Departments = (props: DepartmentsProps) => {
 
     const sortedData = () => data.departmentProcesses.sort((a, b) => parsedDepartmentName(a.department).localeCompare(b.department))
     return (
-        <Block width="100%" display="flex" justifyContent="space-between" flexWrap>
-            {sortedData().map((department: DepartmentProcess) => <DepartmentCard department={department} />)}
+        <Block width="100%" display="flex" flexWrap >
+            {sortedData().map((department: DepartmentProcess) => (
+                <Block marginTop={theme.sizing.scale600} marginRight={theme.sizing.scale600}>
+                    <DepartmentCard department={department} />
+                </Block>
+            ))}
         </Block>
     )
 }
