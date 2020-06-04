@@ -2,6 +2,7 @@ package no.nav.data.polly.process.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,8 +27,8 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
 
     // Count
 
-    @Query(value = "select count(1) from process where data->>'status' = cast(?1 as text) ", nativeQuery = true)
-    long countStatus(ProcessStatus status);
+    @Query(value = "select count(1) from process where data->>'status' = :#{#status.name()}", nativeQuery = true)
+    long countStatus(@Param("status") ProcessStatus status);
 
     @Query(value = "select count(1) from process where cast(data ->> 'usesAllInformationTypes' as boolean) = true", nativeQuery = true)
     long countUsingAllInfoTypes();
@@ -50,6 +51,6 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
     @Query(value = "select jsonb_array_elements(data -> 'productTeams') ->> 0  as code, count(1) as count from process group by code", nativeQuery = true)
     List<ProcessCount> countTeam();
 
-    @Query(value = "select data->>'department' as code, count(1) as count from process where data->>'status' = cast(?1 as text) group by code", nativeQuery = true)
-    List<ProcessCount> countDepartmentCodeStatus(ProcessStatus status);
+    @Query(value = "select data->>'department' as code, count(1) as count from process where data->>'status' = :#{#status.name()} group by code", nativeQuery = true)
+    List<ProcessCount> countDepartmentCodeStatus(@Param("status") ProcessStatus status);
 }
