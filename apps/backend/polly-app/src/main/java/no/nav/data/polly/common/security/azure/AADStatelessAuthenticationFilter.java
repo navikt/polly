@@ -1,4 +1,4 @@
-package no.nav.data.polly.common.security;
+package no.nav.data.polly.common.security.azure;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
@@ -18,10 +18,11 @@ import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import com.nimbusds.jwt.proc.JWTClaimsSetVerifier;
 import io.prometheus.client.Counter;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.common.security.AppIdMapping;
+import no.nav.data.polly.common.security.AuthController;
 import no.nav.data.polly.common.security.domain.Auth;
 import no.nav.data.polly.common.security.dto.AADAuthenticationProperties;
 import no.nav.data.polly.common.security.dto.Credential;
-import no.nav.data.polly.common.security.dto.UserInfo;
 import no.nav.data.polly.common.utils.MetricUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
@@ -44,7 +45,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static no.nav.data.polly.common.security.SecurityConstants.POLLY_COOKIE_NAME;
+import static no.nav.data.polly.common.security.SecurityConstants.COOKIE_NAME;
 import static no.nav.data.polly.common.security.SecurityConstants.TOKEN_TYPE;
 import static org.springframework.util.StringUtils.hasText;
 
@@ -99,9 +100,9 @@ public class AADStatelessAuthenticationFilter extends OncePerRequestFilter {
                 var principal = buildUserPrincipal(credential.getAccessToken());
                 var graphData = azureTokenProvider.getGraphData(credential.getAccessToken());
                 var authentication = new PreAuthenticatedAuthenticationToken(principal, credential, graphData.getGrantedAuthorities());
-                authentication.setDetails(new UserInfo(principal, graphData.getGrantedAuthorities(), graphData.getNavIdent()));
+                authentication.setDetails(new AzureUserInfo(principal, graphData.getGrantedAuthorities(), graphData.getNavIdent()));
                 authentication.setAuthenticated(true);
-                log.trace("Request token verification success for subject {} with roles {}.", UserInfo.getUserId(principal), graphData.getGrantedAuthorities());
+                log.trace("Request token verification success for subject {} with roles {}.", AzureUserInfo.getUserId(principal), graphData.getGrantedAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 return true;
             } catch (BadJWTException ex) {
@@ -123,7 +124,7 @@ public class AADStatelessAuthenticationFilter extends OncePerRequestFilter {
     private Credential getCredential(HttpServletRequest request, HttpServletResponse response) {
         if (request.getCookies() != null) {
             Optional<Cookie> cookie = Stream.of(request.getCookies())
-                    .filter(c -> c.getName().equals(POLLY_COOKIE_NAME))
+                    .filter(c -> c.getName().equals(COOKIE_NAME))
                     .findFirst();
             if (cookie.isPresent()) {
                 try {
@@ -133,7 +134,7 @@ public class AADStatelessAuthenticationFilter extends OncePerRequestFilter {
                     return new Credential(auth);
                 } catch (Exception e) {
                     log.warn("Invalid auth cookie", e);
-                    response.addCookie(createCookie(null, 0, request));
+                    response.addCookie(AuthController.createCookie(null, 0, request));
                     return null;
                 }
             }
@@ -150,20 +151,11 @@ public class AADStatelessAuthenticationFilter extends OncePerRequestFilter {
 
     private JWTClaimsSet buildUserPrincipal(String token) throws ParseException, JOSEException, BadJOSEException {
         var principal = buildAndValidateClaims(token);
-        String appIdClaim = UserInfo.getAppId(principal);
+        String appIdClaim = AzureUserInfo.getAppId(principal);
         if (appIdClaim == null || !allowedAppIds.contains(appIdClaim)) {
             throw new BadJWTException("Invalid token appId. Provided value " + appIdClaim + " does not match allowed appId");
         }
         return principal;
-    }
-
-    static Cookie createCookie(String value, int maxAge, HttpServletRequest request) {
-        Cookie cookie = new Cookie(POLLY_COOKIE_NAME, value);
-        cookie.setMaxAge(maxAge);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setSecure(!"localhost".equals(request.getServerName()));
-        return cookie;
     }
 
     private static Counter initCounter() {

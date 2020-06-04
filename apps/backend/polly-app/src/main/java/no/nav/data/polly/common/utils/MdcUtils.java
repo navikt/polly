@@ -98,7 +98,7 @@ public final class MdcUtils {
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .filter(Authentication::isAuthenticated)
                 .map(authentication -> authentication.getDetails() instanceof UserInfo ? (UserInfo) authentication.getDetails() : null)
-                .map(userInfo -> StringUtils.isBlank(userInfo.getName()) ? userInfo.getAppName() : userInfo.formatUser())
+                .map(userInfo -> StringUtils.isBlank(userInfo.getName()) ? userInfo.getAppName() : userInfo.getIdentName())
                 .orElse("no-auth");
     }
 

@@ -1,4 +1,4 @@
-package no.nav.data.polly.common.security;
+package no.nav.data.polly.common.security.azure.support;
 
 import com.github.benmanes.caffeine.cache.Expiry;
 import com.microsoft.aad.msal4j.IAuthenticationResult;

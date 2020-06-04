@@ -1,4 +1,4 @@
-package no.nav.data.polly.common.security;
+package no.nav.data.polly.common.security.azure;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -21,12 +21,15 @@ import com.microsoft.graph.requests.extensions.IDirectoryObjectCollectionWithRef
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.exceptions.PollyTechnicalException;
+import no.nav.data.polly.common.security.AuthService;
+import no.nav.data.polly.common.security.SecurityProperties;
+import no.nav.data.polly.common.security.azure.support.AuthResultExpiry;
+import no.nav.data.polly.common.security.azure.support.GraphLogger;
 import no.nav.data.polly.common.security.domain.Auth;
 import no.nav.data.polly.common.security.dto.AADAuthenticationProperties;
 import no.nav.data.polly.common.security.dto.Credential;
 import no.nav.data.polly.common.security.dto.GraphData;
 import no.nav.data.polly.common.security.dto.PollyRole;
-import no.nav.data.polly.common.utils.MdcExecutor;
 import no.nav.data.polly.common.utils.MetricUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
@@ -49,9 +52,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
-import static no.nav.data.polly.common.security.SecurityConstants.MICROSOFT_GRAPH_SCOPES;
 import static no.nav.data.polly.common.security.SecurityConstants.SESS_ID_LEN;
 import static no.nav.data.polly.common.security.SecurityConstants.TOKEN_TYPE;
+import static no.nav.data.polly.common.security.azure.AzureConstants.MICROSOFT_GRAPH_SCOPES;
 import static no.nav.data.polly.common.security.dto.PollyRole.ROLE_PREFIX;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
@@ -71,13 +74,13 @@ public class AzureTokenProvider {
 
     public AzureTokenProvider(AADAuthenticationProperties aadAuthProps,
             IConfidentialClientApplication msalClient, AuthService authService,
-            SecurityProperties securityProperties, MdcExecutor msalExecutor
+            SecurityProperties securityProperties, ThreadPoolExecutor msalThreadPool
     ) {
         this.aadAuthProps = aadAuthProps;
         this.msalClient = msalClient;
         this.authService = authService;
         this.securityProperties = securityProperties;
-        this.msalExecutor = new MdcMsalExecutor(msalExecutor);
+        this.msalExecutor = new MdcMsalExecutor(msalThreadPool);
 
         this.accessTokenCache = Caffeine.newBuilder().recordStats()
                 .expireAfter(new AuthResultExpiry())
@@ -89,7 +92,7 @@ public class AzureTokenProvider {
         MetricUtils.register("graphDataCache", graphDataCache);
     }
 
-    private IGraphServiceClient getGraphClient(String accessToken) {
+    IGraphServiceClient getGraphClient(String accessToken) {
         return GraphServiceClient.builder()
                 .authenticationProvider(request -> request.addHeader(HttpHeaders.AUTHORIZATION, TOKEN_TYPE + accessToken))
                 .executors(msalExecutor)
@@ -97,7 +100,7 @@ public class AzureTokenProvider {
                 .buildClient();
     }
 
-    public String getConsumerToken(String resource, String appIdUri) {
+    String getConsumerToken(String resource, String appIdUri) {
         return Credential.getCredential()
                 .filter(Credential::hasAuth)
                 .map(cred -> TOKEN_TYPE + getAccessTokenForResource(cred.getAuth().decryptRefreshToken(), resource))
@@ -129,7 +132,6 @@ public class AzureTokenProvider {
         return new GraphData(navIdent, grantedAuthorities);
     }
 
-    @SneakyThrows
     public String createSession(String code, String redirectUri) {
         try {
             log.debug("Looking up token for auth code");
@@ -209,7 +211,7 @@ public class AzureTokenProvider {
         return new SimpleGrantedAuthority(ROLE_PREFIX + role);
     }
 
-    private String getApplicationTokenForResource(String resource) {
+    String getApplicationTokenForResource(String resource) {
         log.trace("Getting application token for resource {}", resource);
         return requireNonNull(accessTokenCache.get("credential" + resource, cacheKey -> acquireTokenByCredential(resource))).accessToken();
     }
@@ -259,9 +261,9 @@ public class AzureTokenProvider {
         }
 
         @SneakyThrows
-        public MdcMsalExecutor(MdcExecutor msalExecutor) {
+        public MdcMsalExecutor(ThreadPoolExecutor threadPoolExecutor) {
             super(new DefaultLogger());
-            backgroundExecutor.set(this, msalExecutor);
+            backgroundExecutor.set(this, threadPoolExecutor);
         }
     }
 

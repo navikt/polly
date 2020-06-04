@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.common.exceptions.PollyTechnicalException;
+import no.nav.data.polly.common.security.azure.AzureTokenProvider;
 import no.nav.data.polly.common.security.dto.OAuthState;
 import no.nav.data.polly.common.security.dto.UserInfo;
 import no.nav.data.polly.common.security.dto.UserInfoResponse;
@@ -32,11 +33,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static no.nav.data.polly.common.security.SecurityConstants.MICROSOFT_GRAPH_SCOPES;
-import static no.nav.data.polly.common.security.SecurityConstants.REGISTRATION_ID;
+import static no.nav.data.polly.common.security.SecurityConstants.COOKIE_NAME;
+import static no.nav.data.polly.common.security.azure.AzureConstants.MICROSOFT_GRAPH_SCOPES;
+import static no.nav.data.polly.common.security.azure.AzureConstants.REGISTRATION_ID;
 import static no.nav.data.polly.common.utils.Constants.SESSION_LENGTH;
 import static org.apache.commons.lang3.StringUtils.substringBefore;
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.CODE;
@@ -109,7 +112,7 @@ public class AuthController {
         }
         if (StringUtils.hasText(code)) {
             var session = azureTokenProvider.createSession(code, fullRequestUrlWithoutQuery(request));
-            response.addCookie(AADStatelessAuthenticationFilter.createCookie(session, (int) SESSION_LENGTH.toSeconds(), request));
+            response.addCookie(createCookie(session, (int) SESSION_LENGTH.toSeconds(), request));
             redirectStrategy.sendRedirect(request, response, state.getRedirectUri());
         } else {
             String errorRedirect = state.errorRedirect(error, errorDesc);
@@ -131,7 +134,7 @@ public class AuthController {
         log.debug("Request to logout");
         Assert.isTrue(securityProperties.isValidRedirectUri(redirectUri), "Illegal redirect_uri " + redirectUri);
         azureTokenProvider.destroySession();
-        response.addCookie(AADStatelessAuthenticationFilter.createCookie(null, 0, request));
+        response.addCookie(createCookie(null, 0, request));
         if (redirectUri != null) {
             redirectStrategy.sendRedirect(request, response, new OAuthState(redirectUri).getRedirectUri());
         }
@@ -151,6 +154,15 @@ public class AuthController {
             return ResponseEntity.ok(UserInfoResponse.noUser(securityProperties.isEnabled()));
         }
         return ResponseEntity.ok(((UserInfo) authentication.getDetails()).convertToResponse());
+    }
+
+    public static Cookie createCookie(String value, int maxAge, HttpServletRequest request) {
+        Cookie cookie = new Cookie(COOKIE_NAME, value);
+        cookie.setMaxAge(maxAge);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setSecure(!"localhost".equals(request.getServerName()));
+        return cookie;
     }
 
     private String createAuthRequestRedirectUrl(String postLoginRedirectUri, String errorUri, HttpServletRequest request) {

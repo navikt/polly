@@ -25,7 +25,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Transactional
 public class AuthService {
 
-    private static Gauge uniqueUsers = MetricUtils.gauge()
+    private static final Gauge uniqueUsers = MetricUtils.gauge()
             .labels("hour").labels("day").labels("week").labels("twoweek")
             .labelNames("period")
             .name("polly_auth_users_active").help("Users active")

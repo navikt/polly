@@ -1,6 +1,7 @@
 package no.nav.data.polly.common.security;
 
 import com.microsoft.aad.msal4j.IAuthenticationResult;
+import no.nav.data.polly.common.security.azure.support.AuthResultExpiry;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;

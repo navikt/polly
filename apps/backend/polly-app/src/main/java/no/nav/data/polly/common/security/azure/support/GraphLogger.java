@@ -1,12 +1,14 @@
-package no.nav.data.polly.common.security;
+package no.nav.data.polly.common.security.azure.support;
 
 import com.microsoft.graph.http.GraphServiceException;
 import com.microsoft.graph.logger.ILogger;
 import com.microsoft.graph.logger.LoggerLevel;
 import lombok.extern.slf4j.Slf4j;
 
+import java.net.SocketTimeoutException;
+
 @Slf4j
-class GraphLogger implements ILogger {
+public class GraphLogger implements ILogger {
 
     @Override
     public void setLoggingLevel(LoggerLevel level) {
@@ -28,8 +30,15 @@ class GraphLogger implements ILogger {
         if (isNotError(throwable)) {
             log.debug(message, throwable);
             return;
+        } else if (isWarning(throwable)) {
+            log.warn(message, throwable);
+            return;
         }
         log.error(message, throwable);
+    }
+
+    private boolean isWarning(Throwable throwable) {
+        return throwable.getCause() instanceof SocketTimeoutException;
     }
 
     private boolean isNotError(Throwable throwable) {

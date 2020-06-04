@@ -1,5 +1,6 @@
 package no.nav.data.polly.common.security;
 
+import no.nav.data.polly.common.security.azure.AADStatelessAuthenticationFilter;
 import no.nav.data.polly.common.security.dto.PollyRole;
 import no.nav.data.polly.common.web.CorrelationFilter;
 import no.nav.data.polly.common.web.UserFilter;
