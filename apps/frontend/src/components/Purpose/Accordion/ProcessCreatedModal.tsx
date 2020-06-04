@@ -22,11 +22,11 @@ const ProcessCreatedModalImpl = (props: { openAddPolicy: () => void, openAddDocu
           <Button size='compact' kind='primary' marginRight onClick={() => {
             closeModal()
             props.openAddPolicy()
-          }}>{intl.policyAdd}</Button>
+          }}>{intl.addPolicies}</Button>
           <Button size='compact' kind='primary' onClick={() => {
             closeModal()
             props.openAddDocument()
-          }}>{intl.addDocument}</Button>
+          }}>{intl.addDefaultDocument}</Button>
         </Block>
       </ModalFooter>
 

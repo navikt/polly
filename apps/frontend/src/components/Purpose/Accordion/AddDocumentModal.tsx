@@ -1,38 +1,40 @@
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from "baseui/modal"
-import { Button, KIND } from "baseui/button"
-import * as React from "react"
-import { KeyboardEvent, useEffect, useState } from "react"
-import { AddDocumentToProcessFormValues, Document, DocumentInfoTypeUse, Process } from "../../../constants"
-import { Block, BlockProps } from "baseui/block"
-import { ArrayHelpers, Field, FieldArray, FieldProps, Form, Formik, FormikProps } from "formik"
-import { intl, useDebouncedState } from "../../../util"
-import { addDocumentToProcessSchema } from "../../common/schema"
-import { Error, ModalLabel } from "../../common/ModalSchema"
-import { Option, Select, TYPE } from "baseui/select"
-import { getDefaultProcessDocument, searchDocuments } from "../../../api"
-import { ListItem } from "baseui/list"
-import { useStyletron } from "baseui"
-import { codelist, ListName } from "../../../service/Codelist"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faMinusCircle } from "@fortawesome/free-solid-svg-icons"
-import { Sensitivity } from "../../InformationType/Sensitivity"
-import { PLACEMENT, StatefulTooltip } from "baseui/tooltip"
-import { Paragraph3 } from "baseui/typography"
+import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
+import { Button, KIND } from 'baseui/button'
+import * as React from 'react'
+import { KeyboardEvent, useEffect, useState } from 'react'
+import { AddDocumentToProcessFormValues, Document, DocumentInfoTypeUse, Process } from '../../../constants'
+import { Block, BlockProps } from 'baseui/block'
+import { ArrayHelpers, Field, FieldArray, FieldProps, Form, Formik, FormikProps } from 'formik'
+import { intl, useDebouncedState } from '../../../util'
+import { addDocumentToProcessSchema } from '../../common/schema'
+import { Error, ModalLabel } from '../../common/ModalSchema'
+import { Option, Select, TYPE } from 'baseui/select'
+import { getDefaultProcessDocument, searchDocuments } from '../../../api'
+import { ListItem } from 'baseui/list'
+import { useStyletron } from 'baseui'
+import { codelist, ListName } from '../../../service/Codelist'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMinusCircle } from '@fortawesome/free-solid-svg-icons'
+import { Sensitivity } from '../../InformationType/Sensitivity'
+import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
+import { Paragraph3 } from 'baseui/typography'
+import { Spinner } from 'baseui/spinner'
 
 const modalBlockProps: BlockProps = {
   width: '750px',
   paddingRight: '2rem',
   paddingLeft: '2rem'
-};
+}
 
 const rowBlockProps: BlockProps = {
   display: 'flex',
   width: '100%',
   marginTop: '1rem'
-};
+}
 
 type AddDocumentProps = {
   isOpen: boolean
+  addDefaultDocument: boolean
   submit: (values: AddDocumentToProcessFormValues) => void;
   onClose: () => void;
 
@@ -41,10 +43,10 @@ type AddDocumentProps = {
 }
 
 const ListInformationTypes = (props: { informationTypes: DocumentInfoTypeUse[], formik: FormikProps<AddDocumentToProcessFormValues>, arrayHelpers: ArrayHelpers }) => {
-  const {informationTypes, formik, arrayHelpers} = props;
+  const {informationTypes, formik, arrayHelpers} = props
   const [css] = useStyletron()
 
-  return <ul className={css({paddingLeft: 0, width: "100%"})}>
+  return <ul className={css({paddingLeft: 0, width: '100%'})}>
     {informationTypes.map((informationType, index) => (
 
       <ListItem key={informationType.informationTypeId} sublist>
@@ -54,14 +56,14 @@ const ListInformationTypes = (props: { informationTypes: DocumentInfoTypeUse[], 
               <Sensitivity sensitivity={informationType.informationType.sensitivity}/>&nbsp;
               {informationType.informationType.name}
             </Block>
-            <Block $style={{opacity: "80%"}}>
-              {informationType.subjectCategories.map(s => codelist.getShortname(ListName.SUBJECT_CATEGORY, s.code)).join(", ")}
+            <Block $style={{opacity: '80%'}}>
+              {informationType.subjectCategories.map(s => codelist.getShortname(ListName.SUBJECT_CATEGORY, s.code)).join(', ')}
             </Block>
           </Block>
           <StatefulTooltip content={intl.remove} placement={PLACEMENT.top}>
             <Button size="compact" kind="tertiary" shape="round" onClick={() => {
               const length = formik.values.informationTypes.length
-              arrayHelpers.remove(index);
+              arrayHelpers.remove(index)
               if (length === 1) {
                 formik.setFieldValue('document', undefined)
               }
@@ -74,10 +76,12 @@ const ListInformationTypes = (props: { informationTypes: DocumentInfoTypeUse[], 
 }
 
 export const AddDocumentModal = (props: AddDocumentProps) => {
-  const [defaultDoc, setDefaultDoc] = React.useState<Document | undefined>();
+  const [defaultDoc, setDefaultDoc] = useState<Document | undefined>()
   const [documents, setDocuments] = useState<Document[]>([])
   const [documentSearch, setDocumentSearch] = useDebouncedState<string>('', 400)
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [searchLoading, setSearchLoading] = useState<boolean>(false)
+
+  const loading = !defaultDoc
 
   useEffect(() => {
     (async () => {
@@ -88,10 +92,10 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
   useEffect(() => {
     (async () => {
       if (documentSearch && documentSearch.length > 2) {
-        setLoading(true)
+        setSearchLoading(true)
         const res = await searchDocuments(documentSearch)
         setDocuments(res.content)
-        setLoading(false)
+        setSearchLoading(false)
       }
     })()
   }, [documentSearch])
@@ -106,6 +110,12 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
     if (e.key === 'Enter') e.preventDefault()
   }
 
+  function extractInfoTypes(document: Document) {
+    const infoTypeUses = document.informationTypes.filter(infoType => !!infoType.subjectCategories.length)
+    infoTypeUses.sort((a, b) => a.informationType.name.localeCompare(b.informationType.name, intl.getLanguage()))
+    return infoTypeUses
+  }
+
   return (
     <Modal
       onClose={onCloseModal} isOpen={props.isOpen}
@@ -113,22 +123,23 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
       size={SIZE.auto}
       role={ROLE.dialog}
     >
+      {loading && <Spinner/>}
+      {!loading &&
       <Formik
         onSubmit={props.submit}
-        initialValues={{document: undefined, informationTypes: [], process: props.process, defaultDocument: false} as AddDocumentToProcessFormValues}
+        initialValues={{
+          document: props.addDefaultDocument ? defaultDoc : undefined,
+          informationTypes: props.addDefaultDocument ? extractInfoTypes(defaultDoc!) : [],
+          process: props.process,
+          defaultDocument: props.addDefaultDocument
+        } as AddDocumentToProcessFormValues}
         validationSchema={addDocumentToProcessSchema()}
         render={(formik: FormikProps<AddDocumentToProcessFormValues>) => {
 
-          const selectDefaultDocument = () => {
-            formik.setFieldValue('defaultDocument', true)
-            selectDocument(defaultDoc!)
-          }
-
-          const selectDocument = (document: Document) => {
+          const selectDocument = (document: Document, isDefault: boolean) => {
+            formik.setFieldValue('defaultDocument', isDefault)
             formik.setFieldValue('document', document)
-            const infoTypeUses = document.informationTypes.filter(infoType => !!infoType.subjectCategories.length)
-            infoTypeUses.sort((a, b) => a.informationType.name.localeCompare(b.informationType.name, intl.getLanguage()))
-            formik.setFieldValue('informationTypes', infoTypeUses)
+            formik.setFieldValue('informationTypes', extractInfoTypes(document))
           }
 
           return (
@@ -144,7 +155,7 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
                              <>
                                <Select
                                  clearable={false}
-                                 isLoading={loading}
+                                 isLoading={searchLoading}
                                  autoFocus
                                  noResultsMsg={intl.emptyTable}
                                  maxDropdownHeight="400px"
@@ -155,17 +166,17 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
                                  value={form.values.document ? [form.values.document as Option] : []}
                                  onInputChange={event => setDocumentSearch(event.currentTarget.value)}
                                  onChange={(params) => {
-                                   let document = params.value[0] as Document;
+                                   let document = params.value[0] as Document
                                    formik.setFieldValue('defaultDocument', false)
-                                   selectDocument(document)
+                                   selectDocument(document, false)
                                  }}
                                  error={!!form.errors.document && !!form.submitCount}
                                  filterOptions={options => options.filter((doc) => !!doc.informationTypes.length)}
                                  labelKey="name"
                                />
                                {!formik.values.document && defaultDoc &&
-                               <Button type="button" kind="secondary" size="compact" $style={{marginLeft: ".5rem"}}
-                                       onClick={selectDefaultDocument}
+                               <Button type="button" kind="secondary" size="compact" $style={{marginLeft: '.5rem'}}
+                                       onClick={() => selectDocument(defaultDoc, true)}
                                >{intl.includeDefaultDocument}</Button>}
                              </>
                            )}/>
@@ -197,7 +208,7 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
             </Form>
           )
         }}
-      />
+      />}
     </Modal>
   )
 }

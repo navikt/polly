@@ -1,4 +1,4 @@
-import {IStrings} from './intl'
+import { IStrings } from './intl'
 
 export const no: IStrings = {
   informationType: 'Opplysningstype',
@@ -109,6 +109,8 @@ export const no: IStrings = {
   processNew: 'Legg til ny behandling',
   processCreated: 'Behandling opprettet',
   doYouWantToAddPolicies: 'Vil du legge til opplysningstyper?',
+  addPolicies: 'Legg til opplysningstyper enkeltvis',
+  addDefaultDocument: 'Legg til standardopplysningstyper',
   legalBasisNotFound: 'Fant ingen rettslige grunnlag',
   legalBasisNew: 'Nytt behandlingsgrunnlag',
   legalBasisAdd: 'Legg til nytt behandlingsgrunnlag',
@@ -444,6 +446,8 @@ export const en: IStrings = {
   processNew: 'Add new process',
   processCreated: 'Process created',
   doYouWantToAddPolicies: 'Do you want to add information types?',
+  addPolicies: 'Add information types one by one',
+  addDefaultDocument: 'Add standard information types',
   legalBasisNotFound: 'Found no legal bases',
   processEdit: 'Edit process for information type',
   processingActivitiesNew: 'Create new processing activity',
