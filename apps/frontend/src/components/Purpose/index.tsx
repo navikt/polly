@@ -46,7 +46,7 @@ type ProcessListProps = {
 
 const sortProcess = (list: UseWithPurpose[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, intl.getLanguage()))
 
-const ProcessList = ({code, listName, match, history}: ProcessListProps & RouteComponentProps<PathParams>) => {
+const ProcessList = ({ code, listName, match, history }: ProcessListProps & RouteComponentProps<PathParams>) => {
   const [processList, setProcessList] = React.useState<UseWithPurpose[]>([])
   const [currentProcess, setCurrentProcess] = React.useState<Process | undefined>()
   const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
@@ -56,14 +56,14 @@ const ProcessList = ({code, listName, match, history}: ProcessListProps & RouteC
   const [isLoadingProcessList, setIsLoadingProcessList] = React.useState(true)
   const [isLoadingProcess, setIsLoadingProcess] = React.useState(true)
   const current_location = useLocation()
-  const [status, setStatus] = React.useState([{label: intl.all, id: 'ALL'}])
+  const [status, setStatus] = React.useState([{ label: intl.all, id: 'ALL' }])
 
   useEffect(() => {
     match.params.processId && getProcessById(match.params.processId)
   }, [match.params.processId])
 
   const handleChangePanel = (processId?: string) => {
-    history.push(generatePath(match.path, {section: match.params.section, code, processId}))
+    history.push(generatePath(match.path, { section: match.params.section, code, processId }))
   }
 
   const hasAccess = () => user.canWrite()
@@ -100,7 +100,7 @@ const ProcessList = ({code, listName, match, history}: ProcessListProps & RouteC
         let listTemp: UseWithPurpose[] = []
         for (const value of sortProcess(list)) {
           if ((await getProcess(value.id)).status === status[0].id) {
-            listTemp = [...listTemp, {id: value.id, purposeCode: value.purposeCode, name: value.name} as UseWithPurpose]
+            listTemp = [...listTemp, { id: value.id, purposeCode: value.purposeCode, name: value.name } as UseWithPurpose]
           }
         }
         setProcessList(listTemp)
@@ -195,7 +195,7 @@ const ProcessList = ({code, listName, match, history}: ProcessListProps & RouteC
     try {
       await deletePolicy(policy.id)
       if (currentProcess) {
-        setCurrentProcess({...currentProcess, policies: [...currentProcess.policies.filter((p: Policy) => p.id !== policy.id)]})
+        setCurrentProcess({ ...currentProcess, policies: [...currentProcess.policies.filter((p: Policy) => p.id !== policy.id)] })
         setErrorPolicyModal(null)
       }
       return true
@@ -211,7 +211,7 @@ const ProcessList = ({code, listName, match, history}: ProcessListProps & RouteC
       const policies: PolicyFormValues[] = formValues.informationTypes.map(infoType => ({
         subjectCategories: infoType.subjectCategories.map(c => c.code),
         informationType: infoType.informationType,
-        process: {...formValues.process, legalBases: []},
+        process: { ...formValues.process, legalBases: [] },
         purposeCode: formValues.process.purposeCode,
         legalBases: [],
         legalBasesOpen: false,
@@ -241,7 +241,7 @@ const ProcessList = ({code, listName, match, history}: ProcessListProps & RouteC
       <Block display={"flex"} flexDirection={"row-reverse"} alignItems={"center"}>
         <Block>
           <StyledLink
-            style={{textDecoration: 'none'}}
+            style={{ textDecoration: 'none' }}
             href={`${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}`}>
             <Button
               kind={KIND.minimal}
@@ -271,9 +271,9 @@ const ProcessList = ({code, listName, match, history}: ProcessListProps & RouteC
             deleteRemoves={false}
             escapeClearsValue={false}
             options={[
-              {label: intl.allProcesses, id: "ALL"},
-              {label: intl.inProgressProcesses, id: "IN_PROGRESS"},
-              {label: intl.showCompletedProcesses, id: "COMPLETED"},
+              { label: intl.allProcesses, id: "ALL" },
+              { label: intl.inProgressProcesses, id: "IN_PROGRESS" },
+              { label: intl.showCompletedProcesses, id: "COMPLETED" },
             ]}
             value={status}
             filterOutSelected={false}
@@ -290,25 +290,25 @@ const ProcessList = ({code, listName, match, history}: ProcessListProps & RouteC
         </Block>
       </Block>
 
-      {isLoadingProcessList && <StyledSpinnerNext size={theme.sizing.scale2400}/>}
+      {isLoadingProcessList && <StyledSpinnerNext size={theme.sizing.scale2400} />}
 
       {!isLoadingProcessList &&
-      <AccordionProcess
-        isLoading={isLoadingProcess}
-        processList={processList}
-        setProcessList={setProcessList}
-        currentProcess={currentProcess}
-        onChangeProcess={handleChangePanel}
-        submitDeleteProcess={handleDeleteProcess}
-        submitEditProcess={handleEditProcess}
-        submitCreatePolicy={handleCreatePolicy}
-        submitEditPolicy={handleEditPolicy}
-        submitDeletePolicy={handleDeletePolicy}
-        submitAddDocument={handleAddDocument}
-        errorProcessModal={errorProcessModal}
-        errorPolicyModal={errorPolicyModal}
-        errorDocumentModal={errorDocumentModal}
-      />
+        <AccordionProcess
+          isLoading={isLoadingProcess}
+          processList={processList}
+          setProcessList={setProcessList}
+          currentProcess={currentProcess}
+          onChangeProcess={handleChangePanel}
+          submitDeleteProcess={handleDeleteProcess}
+          submitEditProcess={handleEditProcess}
+          submitCreatePolicy={handleCreatePolicy}
+          submitEditPolicy={handleEditPolicy}
+          submitDeletePolicy={handleDeletePolicy}
+          submitAddDocument={handleAddDocument}
+          errorProcessModal={errorProcessModal}
+          errorPolicyModal={errorPolicyModal}
+          errorDocumentModal={errorDocumentModal}
+        />
       }
 
       <ModalProcess
@@ -318,7 +318,7 @@ const ProcessList = ({code, listName, match, history}: ProcessListProps & RouteC
         submit={(values: ProcessFormValues) => handleCreateProcess(values)}
         errorOnCreate={errorProcessModal}
         isEdit={false}
-        initialValues={convertProcessToFormValues({purposeCode: code})}
+        initialValues={convertProcessToFormValues({ purposeCode: code })}
       />
     </>
   )
