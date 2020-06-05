@@ -29,6 +29,7 @@ export interface IStrings {
   nationalLaw: string;
   navMaster: string;
   productTeam: string;
+  productTeamFromTK: string;
   product: string;
   products: string;
   team: string;
@@ -130,6 +131,8 @@ export interface IStrings {
   processNew: string;
   processCreated: string;
   doYouWantToAddPolicies: string;
+  addPolicies: string;
+  addDefaultDocument: string;
   exceptionalUsage: string;
   overallPurpose: string;
   overallPurposeHelpText: string;

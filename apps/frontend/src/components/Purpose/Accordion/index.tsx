@@ -58,6 +58,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
 
   const [showEditProcessModal, setShowEditProcessModal] = React.useState(false)
   const [showCreatePolicyModal, setShowCreatePolicyModal] = React.useState(false)
+  const [addDefaultDocument, setAddDefaultDocument] = React.useState(false)
   const [showAddDocumentModal, setShowAddDocumentModal] = React.useState(false)
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
   const purposeRef = React.useRef<HTMLInputElement>(null)
@@ -208,10 +209,14 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
         />
 
         <AddDocumentModal
-          onClose={() => setShowAddDocumentModal(false)}
+          onClose={() => {
+            setAddDefaultDocument(false)
+            setShowAddDocumentModal(false)
+          }}
           isOpen={showAddDocumentModal}
           submit={(formValues) => props.submitAddDocument(formValues).then(() => setShowAddDocumentModal(false))}
           process={currentProcess}
+          addDefaultDocument={addDefaultDocument}
           error={props.errorDocumentModal}
         />
 
@@ -220,7 +225,10 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                             process={currentProcess}/>
 
         <ProcessCreatedModal openAddPolicy={() => setShowCreatePolicyModal(true)}
-                             openAddDocument={() => setShowAddDocumentModal(true)}/>
+                             openAddDocument={() => {
+                               setAddDefaultDocument(true)
+                               setShowAddDocumentModal(true)
+                             }}/>
       </>}
     </Block>
 

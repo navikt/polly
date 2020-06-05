@@ -233,7 +233,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                     </Block>
 
                     <Block display='flex' width='100%' justifyContent='space-between' marginTop={theme.sizing.scale400}>
-                      <Block width='48%'>{intl.productTeam}</Block>
+                      <Block width='48%'>{intl.productTeamFromTK}</Block>
                       <Block width='48%'>
                         <ModalLabel fullwidth label={intl.commonExternalProcessResponsible} tooltip={intl.commonExternalProcessResponsibleHelpText}/>
                       </Block>
@@ -241,7 +241,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
                     <Block display='flex' width='100%' justifyContent='space-between'>
                       <Block width='48%'>
-                        <FieldProductTeam productTeam={formikBag.values.productTeam}/>
+                        <FieldProductTeam productTeams={formikBag.values.productTeams}/>
                       </Block>
                       <Block width='48%'>
                         {showResponsibleSelect && <FieldCommonExternalProcessResponsible thirdParty={formikBag.values.commonExternalProcessResponsible} hideSelect={()=> setShowResponsibleSelect(false)}/>}

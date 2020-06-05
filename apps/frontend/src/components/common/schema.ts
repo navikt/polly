@@ -45,7 +45,7 @@ export const processSchema = () => yup.object<ProcessFormValues>({
   department: yup.string(),
   commonExternalProcessResponsible: yup.string(),
   subDepartments: yup.array(yup.string()),
-  productTeam: yup.string(),
+  productTeams: yup.array(yup.string()),
   products: yup.array(yup.string()),
   legalBases: yup.array(legalBasisSchema()),
   legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),

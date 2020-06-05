@@ -6,7 +6,7 @@ import { codelist, ListName } from '../../../service/Codelist'
 import _includes from 'lodash/includes'
 import { Block } from 'baseui/block'
 import DataText from '../common/DataText'
-import { intl } from '../../../util'
+import { intl, theme } from '../../../util'
 import { LegalBasisView } from '../../common/LegalBasis'
 import { ActiveIndicator } from '../../common/Durations'
 import { DotTags } from '../../common/DotTag'
@@ -106,9 +106,13 @@ const ProcessData = (props: { process: Process }) => {
           <span>{codelist.getShortnameForCode(process.commonExternalProcessResponsible)}</span>
         </Block>}
 
-        {!!process.productTeam && <Block>
+        {!!process.productTeams?.length && <Block>
           <span>{intl.productTeam}: </span>
-          <TeamPopover teamId={process.productTeam}/>
+          {process.productTeams.map((t, i) =>
+            <Block key={i} display='inline' marginRight={theme.sizing.scale100}>
+              <TeamPopover teamId={t}/>
+            </Block>
+          )}
         </Block>}
       </DataText>
 
@@ -166,12 +170,12 @@ const ProcessData = (props: { process: Process }) => {
           <Block>
             <Block>{intl.retentionPlanYes}</Block>
             <RetentionView retention={process.retention}/>
-            <Block>
-              <span>{process.retention?.retentionDescription && `${intl.retentionDescription}: `}</span>
-              <span>{process.retention?.retentionDescription}</span>
-            </Block>
           </Block>
           }
+          <Block>
+            <span>{process.retention?.retentionDescription && `${intl.retentionDescription}: `}</span>
+            <span>{process.retention?.retentionDescription}</span>
+          </Block>
         </>
       </DataText>
 
