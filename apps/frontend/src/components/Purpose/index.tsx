@@ -56,12 +56,10 @@ const ProcessList = ({code, listName, match, history}: ProcessListProps & RouteC
   const [isLoadingProcessList, setIsLoadingProcessList] = React.useState(true)
   const [isLoadingProcess, setIsLoadingProcess] = React.useState(true)
   const current_location = useLocation()
-  const [status, setStatus] = React.useState([
-    {
-      label: match.params.filter === 'ALL' ? intl.allProcesses : match.params.filter === 'COMPLETED' ? intl.showCompletedProcesses : intl.inProgressProcesses,
-      id: match.params.filter
-    }]
-  )
+  const [status, setStatus] = React.useState([{
+    label: match.params.filter === 'ALL' ? intl.allProcesses : match.params.filter === 'COMPLETED' ? intl.showCompletedProcesses : intl.inProgressProcesses,
+    id: match.params.filter
+  }])
 
   useEffect(() => {
     switch (match.params.filter) {
@@ -82,7 +80,7 @@ const ProcessList = ({code, listName, match, history}: ProcessListProps & RouteC
   }, [match.params.processId])
 
   const handleChangePanel = (processId?: string) => {
-    history.push(generatePath(match.path, {section: match.params.section, code, filter: status.length > 0 && status ? status[0].id : 'ALL', processId}))
+    history.push(generatePath(match.path, {section: match.params.section, code, filter: status.length > 0 && status ? status[0].id : match.params.filter, processId}))
   }
 
   const hasAccess = () => user.canWrite()
@@ -299,6 +297,9 @@ const ProcessList = ({code, listName, match, history}: ProcessListProps & RouteC
             searchable={false}
             onChange={(params: any) => {
               setStatus(params.value)
+              history.push(generatePath(match.path,
+                {section: match.params.section, code, filter: params.value[0].id, processId: match.params.processId}
+              ))
             }}
           />
         </Block>
