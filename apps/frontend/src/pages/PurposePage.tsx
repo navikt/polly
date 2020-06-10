@@ -1,14 +1,14 @@
 import * as React from 'react'
-import { useEffect } from 'react'
+import {useEffect} from 'react'
 
 import ProcessList from '../components/Purpose'
-import { Block } from 'baseui/block'
-import { codelist, ListName } from '../service/Codelist'
-import { intl, useAwait } from '../util'
-import { H4, Label2, Paragraph2 } from 'baseui/typography'
-import { RouteComponentProps } from 'react-router-dom'
-import { Team } from '../constants'
-import { getTeam } from '../api'
+import {Block} from 'baseui/block'
+import {codelist, ListName} from '../service/Codelist'
+import {intl, useAwait} from '../util'
+import {H4, Label2, Paragraph2} from 'baseui/typography'
+import {RouteComponentProps} from 'react-router-dom'
+import {Team} from '../constants'
+import {getTeam} from '../api'
 import ReactMarkdown from 'react-markdown'
 
 const routes = {
@@ -28,6 +28,7 @@ const renderMetadata = (description: string, title: string) => (
 export type PathParams = {
   section: 'purpose' | 'department' | 'subdepartment' | 'team',
   code: string,
+  filter?: 'ALL' | 'COMPLETED' | 'IN_PROGRESS' ,
   processId?: string
 }
 

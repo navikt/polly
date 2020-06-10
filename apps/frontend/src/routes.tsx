@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { Route, RouteComponentProps, Switch, withRouter } from 'react-router-dom'
-import { Block } from 'baseui/block'
-import { Paragraph1 } from 'baseui/typography'
-import { Spinner } from 'baseui/icon'
+import {Route, RouteComponentProps, Switch, withRouter} from 'react-router-dom'
+import {Block} from 'baseui/block'
+import {Paragraph1} from 'baseui/typography'
+import {Spinner} from 'baseui/icon'
 
 
 import Root from './components/Root'
@@ -12,18 +12,18 @@ import InformationtypeEditPage from './pages/InformationtypeEditPage'
 import InformationtypePage from './pages/InformationtypePage'
 import ThirdPartySearchPage from './pages/ThirdPartySearchPage'
 import ThirdPartyMetadataPage from './pages/ThirdPartyPage'
-import { Main } from './pages/MainPage'
+import {Main} from './pages/MainPage'
 import CodelistPage from './pages/admin/CodelistPage'
-import { AuditPage } from './pages/admin/AuditPage'
-import { intl, theme } from './util'
+import {AuditPage} from './pages/admin/AuditPage'
+import {intl, theme} from './util'
 import notFound from './resources/notfound.svg'
-import { SettingsPage } from './pages/admin/SettingsPage'
+import {SettingsPage} from './pages/admin/SettingsPage'
 import DocumentCreatePage from './pages/DocumentCreatePage'
 import DocumentPage from './pages/DocumentPage'
 import DocumentEditPage from './pages/DocumentEditPage'
-import { PurposeListPage } from './pages/PurposeListPage'
-import { AlertEventPage } from './pages/AlertEventPage'
-import { getDisclosure, getPolicy, getProcess } from './api'
+import {PurposeListPage} from './pages/PurposeListPage'
+import {AlertEventPage} from './pages/AlertEventPage'
+import {getDisclosure, getPolicy, getProcess} from './api'
 
 
 const Routes = (): JSX.Element => (
@@ -32,7 +32,7 @@ const Routes = (): JSX.Element => (
       <Route exact path="/thirdparty" component={ThirdPartySearchPage}/>
       <Route exact path="/thirdparty/:thirdPartyCode" component={ThirdPartyMetadataPage}/>
       <Route exact path="/process" component={PurposeListPage}/>
-      <Route exact path="/process/:section/:code/:processId?" component={PurposePage}/>
+      <Route exact path="/process/:section/:code/:filter/:processId?" component={PurposePage}/>
 
       <Route exact path="/process/:id" component={redirect(processUrl)}/>
       <Route exact path="/policy/:id" component={redirect(policyUrl)}/>
@@ -103,12 +103,12 @@ const NotFound = (props: RouteComponentProps<any>) => (
 
 const processUrl = async (id: string) => {
   const process = await getProcess(id)
-  return `/process/purpose/${process.purposeCode}/${process.id}`
+  return `/process/purpose/${process.purposeCode}/ALL/${process.id}`
 }
 
 const policyUrl = async (id: string) => {
   const policy = await getPolicy(id)
-  return `/process/purpose/${policy.purposeCode.code}/${policy.process.id}`
+  return `/process/purpose/${policy.purposeCode.code}/ALL/${policy.process.id}`
 }
 
 const disclosureUrl = async (id: string) => {

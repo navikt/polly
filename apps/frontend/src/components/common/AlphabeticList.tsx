@@ -7,7 +7,7 @@ import {FlexGrid, FlexGridItem} from "baseui/flex-grid";
 import RouteLink from "./RouteLink";
 import {Code, codelist, ListName} from "../../service/Codelist";
 
-const AlphabeticList = (props:{listName:ListName, baseUrl:string}) => {
+const AlphabeticList = (props: { listName: ListName, baseUrl: string }) => {
 
   const codes = codelist.getCodes(props.listName)
     .sort((a, b) => a.shortName.localeCompare(b.shortName))
@@ -43,7 +43,7 @@ const AlphabeticList = (props:{listName:ListName, baseUrl:string}) => {
             <FlexGrid flexGridRowGap={theme.sizing.scale600} flexGridColumnGap={theme.sizing.scale600} flexGridColumnCount={4}>
               {codes[letter].map(code =>
                 <FlexGridItem key={code.code}>
-                  <RouteLink href={`${props.baseUrl}${code.code}`}>
+                  <RouteLink href={props.listName === ListName.PURPOSE ? `${props.baseUrl}${code.code}/ALL` : `${props.baseUrl}${code.code}`}>
                     {code.shortName}
                   </RouteLink>
                 </FlexGridItem>

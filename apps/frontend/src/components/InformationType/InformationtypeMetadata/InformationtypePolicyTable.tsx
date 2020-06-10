@@ -1,16 +1,16 @@
 import * as React from 'react'
-import { useEffect, useState } from 'react'
+import {useEffect, useState} from 'react'
 
-import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
-import { codelist, ListName } from '../../../service/Codelist'
-import { intl } from '../../../util'
-import { LegalBasesUse, Policy, PolicyAlert, policySort } from '../../../constants'
-import { useTable } from '../../../util/hooks'
+import {LegalBasesNotClarified, ListLegalBasesInTable} from '../../common/LegalBasis'
+import {codelist, ListName} from '../../../service/Codelist'
+import {intl} from '../../../util'
+import {LegalBasesUse, Policy, PolicyAlert, policySort} from '../../../constants'
+import {useTable} from '../../../util/hooks'
 import RouteLink from '../../common/RouteLink'
-import { RetentionView } from '../../Purpose/Retention'
-import { getAlertForInformationType } from '../../../api/AlertApi'
-import { Block } from 'baseui/block'
-import { Cell, HeadCell, Row, Table } from '../../common/Table'
+import {RetentionView} from '../../Purpose/Retention'
+import {getAlertForInformationType} from '../../../api/AlertApi'
+import {Block} from 'baseui/block'
+import {Cell, HeadCell, Row, Table} from '../../common/Table'
 
 type TableInformationtypeProps = {
   policies: Array<Policy>;
@@ -54,13 +54,13 @@ const InformationtypePolicyTable = ({policies, showPurpose}: TableInformationtyp
       {table.data.map((row, index) => (
         <Row key={index}>
           {showPurpose && <Cell>
-            <RouteLink href={`/process/purpose/${row.purposeCode.code}`}>
+            <RouteLink href={`/process/purpose/${row.purposeCode.code}/ALL`}>
               {codelist.getShortnameForCode(row.purposeCode)}
             </RouteLink>
           </Cell>}
 
           <Cell>
-            <RouteLink href={`/process/purpose/${row.purposeCode.code}/${row.process.id}`}>
+            <RouteLink href={`/process/purpose/${row.purposeCode.code}/ALL/${row.process.id}`}>
               {row.process && row.process.name}
             </RouteLink>
           </Cell>

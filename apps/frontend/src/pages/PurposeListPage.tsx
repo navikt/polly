@@ -1,16 +1,16 @@
-import { intl, theme, useAwait } from '../util'
-import { codelist, ListName } from '../service/Codelist'
-import { H4, Label1 } from 'baseui/typography'
+import {intl, theme, useAwait} from '../util'
+import {codelist, ListName} from '../service/Codelist'
+import {H4, Label1} from 'baseui/typography'
 import React from 'react'
-import { Block } from 'baseui/block'
-import { Button, KIND, SIZE as ButtonSize } from 'baseui/button';
-import { Plus } from 'baseui/icon';
-import { user } from '../service/User';
+import {Block} from 'baseui/block'
+import {Button, KIND, SIZE as ButtonSize} from 'baseui/button';
+import {Plus} from 'baseui/icon';
+import {user} from '../service/User';
 import ModalProcess from '../components/Purpose/Accordion/ModalProcess';
-import { ProcessFormValues } from '../constants';
-import { convertProcessToFormValues, createProcess } from '../api';
+import {ProcessFormValues} from '../constants';
+import {convertProcessToFormValues, createProcess} from '../api';
 import AlphabeticList from "../components/common/AlphabeticList";
-import { RouteComponentProps } from 'react-router-dom'
+import {RouteComponentProps} from 'react-router-dom'
 
 export const PurposeListPage = (props: RouteComponentProps) => {
   useAwait(codelist.wait())
@@ -26,7 +26,7 @@ export const PurposeListPage = (props: RouteComponentProps) => {
       const newProcess = await createProcess(process)
       setErrorProcessModal(null)
       setShowCreateProcessModal(false)
-      props.history.push(`/process/purpose/${newProcess.purposeCode}/${newProcess.id}?create`)
+      props.history.push(`/process/purpose/${newProcess.purposeCode}/ALL/${newProcess.id}?create`)
     } catch (err) {
       setErrorProcessModal(err.message)
     }
