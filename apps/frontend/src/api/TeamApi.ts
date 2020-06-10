@@ -12,7 +12,7 @@ export const getAllTeams = async () => {
 
 export const getTeam = async (teamId: string) => {
     const data = (await axios.get<Team>(`${env.pollyBaseUrl}/team/${teamId}`)).data
-    data.members = data.members.sort((a,b)=> a.name.localeCompare(b.name))
+    data.members = data.members.sort((a,b)=> (a.name || '').localeCompare(b.name || ''))
     return data
 }
 
