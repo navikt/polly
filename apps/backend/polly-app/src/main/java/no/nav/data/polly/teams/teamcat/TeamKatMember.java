@@ -13,10 +13,20 @@ import no.nav.data.polly.teams.domain.Member;
 public class TeamKatMember {
 
     private String navIdent;
-    private String name;
-    private String email;
+    private Resource resource;
 
     public Member convertToMember() {
-        return Member.builder().name(name).email(email).build();
+        return Member.builder().name(resource.fullName).email(resource.email).build();
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Resource {
+
+        private String fullName;
+        private String email;
+
     }
 }
