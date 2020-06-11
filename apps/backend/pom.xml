@@ -35,6 +35,12 @@
         <microsoft-graph.version>1.7.1</microsoft-graph.version>
         <msal4j.version>1.6.0</msal4j.version>
 
+        <!-- transitive versions -->
+        <commons-compress.version>1.20</commons-compress.version>
+        <commons-io.version>2.7</commons-io.version>
+        <guava.version>29.0-jre</guava.version>
+        <json-smart.version>2.3</json-smart.version>
+
         <!-- kafka -->
         <confluent.version>5.3.1</confluent.version>
         <!-- From io.confluent:common-parent kafka-avro-serializer -->
@@ -92,17 +98,17 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-compress</artifactId>
-                <version>1.20</version>
+                <version>${commons-compress.version}</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.6</version>
+                <version>${commons-io.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>29.0-jre</version>
+                <version>${guava.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.checkerframework</groupId>
@@ -114,7 +120,7 @@
             <dependency>
                 <groupId>net.minidev</groupId>
                 <artifactId>json-smart</artifactId>
-                <version>2.3</version>
+                <version>${json-smart.version}</version>
             </dependency>
 
             <dependency>
