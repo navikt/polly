@@ -58,6 +58,8 @@ export const urlForObject = (type: NavigableItem, id: string, audit?: AuditItem)
       return `/process/purpose/${id}`
     case 'team':
       return `/process/team/${id}`
+    case 'productarea':
+      return `/process/productarea/${id}`
     case ListName.DEPARTMENT:
       return `/process/department/${id}`
     case ListName.THIRD_PARTY:

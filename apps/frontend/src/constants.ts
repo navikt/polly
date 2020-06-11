@@ -251,7 +251,17 @@ export interface Team {
   id: string;
   name: string;
   description: string;
+  productAreaId?: string;
   slackChannel?: string;
+  tags: string[];
+  members: Member[];
+}
+
+export interface ProductArea {
+  id: string;
+  name: string;
+  description: string;
+  tags: string[];
   members: Member[];
 }
 
@@ -348,7 +358,7 @@ export enum ObjectType {
   GENERIC_STORAGE = "GENERIC_STORAGE",
 }
 
-export type NavigableItem = ObjectType | ListName.PURPOSE | ListName.DEPARTMENT | ListName.SUB_DEPARTMENT | ListName.THIRD_PARTY | "team";
+export type NavigableItem = ObjectType | ListName.PURPOSE | ListName.DEPARTMENT | ListName.SUB_DEPARTMENT | ListName.THIRD_PARTY | 'team' | 'productarea';
 
 export interface AuditItem {
   action: AuditAction;

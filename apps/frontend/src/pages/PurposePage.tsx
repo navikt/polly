@@ -7,15 +7,16 @@ import { codelist, ListName } from '../service/Codelist'
 import { intl, useAwait } from '../util'
 import { H4, Label2, Paragraph2 } from 'baseui/typography'
 import { RouteComponentProps } from 'react-router-dom'
-import { Team } from '../constants'
-import { getTeam } from '../api'
+import { ProductArea, Team } from '../constants'
+import { getProductArea, getTeam } from '../api'
 import ReactMarkdown from 'react-markdown'
 
 const routes = {
   subdepartment: 'subdepartment',
   department: 'department',
   purpose: 'purpose',
-  team: 'team'
+  team: 'team',
+  productarea: 'productarea'
 }
 
 const renderMetadata = (description: string, title: string) => (
@@ -26,7 +27,7 @@ const renderMetadata = (description: string, title: string) => (
 )
 
 export type PathParams = {
-  section: 'purpose' | 'department' | 'subdepartment' | 'team',
+  section: 'purpose' | 'department' | 'subdepartment' | 'team' | 'productarea',
   code: string,
   processId?: string
 }
@@ -34,6 +35,7 @@ export type PathParams = {
 const PurposePage = (props: RouteComponentProps<PathParams>) => {
   const [isLoading, setLoading] = React.useState(false)
   const [team, setTeam] = React.useState<Team>()
+  const [productArea, setProductArea] = React.useState<ProductArea>()
 
   const {params} = props.match
   useAwait(codelist.wait())
@@ -45,6 +47,9 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
         if (params.section === 'team') {
           setTeam((await getTeam(params.code)))
         }
+        if (params.section === 'productarea') {
+          setProductArea((await getProductArea(params.code)))
+        }
         setLoading(false)
       }
     })()
@@ -55,8 +60,11 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
     if (currentListName !== undefined) {
       return codelist.getShortname(currentListName, params.code)
     }
-    if (params.section === 'team') {
+    if (params.section === routes.team) {
       return team?.name || ''
+    }
+    if (params.section === routes.productarea) {
+      return productArea?.name || ''
     }
     return intl.ERROR
   }
@@ -65,6 +73,7 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
     if (params.section === routes.subdepartment) return intl.subDepartment
     else if (params.section === routes.department) return intl.department
     else if (params.section === routes.team) return intl.team
+    else if (params.section === routes.productarea) return intl.productArea
     return intl.overallPurpose
   }
 
@@ -73,8 +82,11 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
     if (currentListName) {
       return codelist.getDescription(currentListName, params.code)
     }
-    if (params.section === 'team') {
+    if (params.section === routes.team) {
       return team?.description || ''
+    }
+    if (params.section === routes.productarea) {
+      return productArea?.description || ''
     }
     return ''
   }

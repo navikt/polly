@@ -18,6 +18,7 @@ import {
   deleteProcess,
   getCodelistUsage,
   getProcess,
+  getProcessesForProductArea,
   getProcessesForTeam,
   updatePolicy,
   updateProcess
@@ -90,6 +91,9 @@ const ProcessList = ({code, listName, match, history}: ProcessListProps & RouteC
 
       if (current_location.pathname.includes('team')) {
         let res = await getProcessesForTeam(code)
+        res.content ? list = res.content as UseWithPurpose[] : list = []
+      } else if (current_location.pathname.includes('productarea')) {
+        let res = await getProcessesForProductArea(code)
         res.content ? list = res.content as UseWithPurpose[] : list = []
       } else {
         list = (await getCodelistUsage(listName as ListName, code)).processes
