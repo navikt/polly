@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.data.polly.teams.domain.Team;
+import no.nav.data.polly.teams.domain.ProductArea;
 
 import java.util.List;
 
@@ -14,23 +14,19 @@ import static no.nav.data.polly.common.utils.StreamUtils.convert;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TeamKatTeam {
+public class TeamKatProductArea {
 
     private String id;
     private String name;
     private String description;
-    private String slackChannel;
-    private String productAreaId;
     private List<String> tags;
     private List<TeamKatMember> members;
 
-    public Team convertToTeam() {
-        return Team.builder()
+    public ProductArea convertToProductArea() {
+        return ProductArea.builder()
                 .id(id)
                 .name(name)
                 .description(description)
-                .slackChannel(slackChannel)
-                .productAreaId(productAreaId)
                 .tags(tags)
                 .members(convert(members, TeamKatMember::convertToMember))
                 .build();

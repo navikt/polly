@@ -5,10 +5,10 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.common.utils.MetricUtils;
 import no.nav.data.polly.teams.TeamService;
+import no.nav.data.polly.teams.domain.ProductArea;
 import no.nav.data.polly.teams.domain.Team;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
@@ -21,6 +21,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
+import static no.nav.data.polly.common.utils.StreamUtils.filter;
 import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 
 @Service
@@ -31,6 +32,7 @@ public class TeamcatTeamClient implements TeamService {
     private final TeamcatProperties properties;
 
     private final LoadingCache<String, Map<String, Team>> allTeamsCache;
+    private final LoadingCache<String, Map<String, ProductArea>> allPaCache;
 
     public TeamcatTeamClient(RestTemplate restTemplate,
             TeamcatProperties properties) {
@@ -41,6 +43,11 @@ public class TeamcatTeamClient implements TeamService {
                 .expireAfterAccess(Duration.ofMinutes(10))
                 .maximumSize(1).build(k -> getTeamsResponse());
         MetricUtils.register("teamsCache", allTeamsCache);
+
+        this.allPaCache = Caffeine.newBuilder().recordStats()
+                .expireAfterAccess(Duration.ofMinutes(10))
+                .maximumSize(1).build(k -> getProductAreasResponse());
+        MetricUtils.register("productAreaCache", allPaCache);
     }
 
     @Override
@@ -56,6 +63,35 @@ public class TeamcatTeamClient implements TeamService {
     }
 
     @Override
+    public List<ProductArea> getAllProductAreas() {
+        var pas = new ArrayList<>(getProductAreas().values());
+        pas.sort(Comparator.comparing(ProductArea::getName));
+        return pas;
+    }
+
+    @Override
+    public Optional<ProductArea> getProductArea(String productAreaId) {
+        return Optional.ofNullable(getProductAreas().get(productAreaId));
+    }
+
+    @Override
+    public List<Team> getTeamsForProductArea(String productAreaId) {
+        return filter(getAllTeams(), t -> productAreaId.equals(t.getProductAreaId()));
+    }
+
+    private Map<String, ProductArea> getProductAreasResponse() {
+        var response = restTemplate.getForEntity(properties.getProductAreasUrl(), ProductAreaPage.class);
+        List<TeamKatProductArea> teams = response.hasBody() ? requireNonNull(response.getBody()).getContent() : List.of();
+        return safeStream(teams)
+                .map(TeamKatProductArea::convertToProductArea)
+                .collect(Collectors.toMap(ProductArea::getId, Function.identity()));
+    }
+
+    private Map<String, ProductArea> getProductAreas() {
+        return allPaCache.get("singleton");
+    }
+
+    @Override
     public boolean teamExists(String teamId) {
         return getTeams().containsKey(teamId);
     }
@@ -65,15 +101,18 @@ public class TeamcatTeamClient implements TeamService {
     }
 
     private Map<String, Team> getTeamsResponse() {
-        var response = restTemplate.getForEntity(properties.getTeamsUrl(), TeamKatPage.class);
-        Assert.isTrue(response.getStatusCode().is2xxSuccessful() && response.hasBody(), "Call to teams failed " + response.getStatusCode());
+        var response = restTemplate.getForEntity(properties.getTeamsUrl(), TeamPage.class);
         List<TeamKatTeam> teams = response.hasBody() ? requireNonNull(response.getBody()).getContent() : List.of();
         return safeStream(teams)
                 .map(TeamKatTeam::convertToTeam)
                 .collect(Collectors.toMap(Team::getId, Function.identity()));
     }
 
-    static class TeamKatPage extends RestResponsePage<TeamKatTeam> {
+    static class TeamPage extends RestResponsePage<TeamKatTeam> {
+
+    }
+
+    static class ProductAreaPage extends RestResponsePage<TeamKatProductArea> {
 
     }
 

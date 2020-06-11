@@ -9,7 +9,9 @@ import no.nav.data.polly.common.exceptions.PollyNotFoundException;
 import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.common.utils.StreamUtils;
+import no.nav.data.polly.teams.domain.ProductArea;
 import no.nav.data.polly.teams.domain.Team;
+import no.nav.data.polly.teams.dto.ProductAreaResponse;
 import no.nav.data.polly.teams.dto.Resource;
 import no.nav.data.polly.teams.dto.TeamResponse;
 import org.springframework.http.HttpStatus;
@@ -44,12 +46,14 @@ public class TeamController {
         this.resourceService = resourceService;
     }
 
+    // Teams
+
     @ApiOperation(value = "Get all teams")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Teams fetched", response = TeamPage.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping
-    public RestResponsePage<TeamResponse> findAll() {
+    public RestResponsePage<TeamResponse> findAllTeams() {
         log.info("Received a request for all teams");
         return new RestResponsePage<>(convert(teamsService.getAllTeams(), Team::convertToResponse));
     }
@@ -83,6 +87,50 @@ public class TeamController {
         log.info("Returned {} teams", teams.size());
         return new ResponseEntity<>(new RestResponsePage<>(convert(teams, Team::convertToResponse)), HttpStatus.OK);
     }
+
+    // Product Areas
+
+    @ApiOperation(value = "Get all product areas")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Product areas fetched", response = ProductAreaPage.class),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @GetMapping("/productarea")
+    public RestResponsePage<ProductAreaResponse> findAllProductAreas() {
+        log.info("Received a request for all product areas");
+        return new RestResponsePage<>(convert(teamsService.getAllProductAreas(), ProductArea::convertToResponse));
+    }
+
+    @ApiOperation(value = "Get product area")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Product area fetched", response = ProductAreaResponse.class),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @GetMapping("/productarea/{paId}")
+    public ResponseEntity<ProductAreaResponse> getProductAreaByName(@PathVariable String paId) {
+        log.info("Received request for Product area with id {}", paId);
+        var pa = teamsService.getProductArea(paId);
+        if (pa.isEmpty()) {
+            throw new PollyNotFoundException("Couldn't find product area " + paId);
+        }
+        return new ResponseEntity<>(pa.get().convertToResponseWithMembers(), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Search product areas")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Product areas fetched", response = ProductAreaPage.class),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @GetMapping("/productarea/search/{name}")
+    public ResponseEntity<RestResponsePage<ProductAreaResponse>> searchProductAreaByName(@PathVariable String name) {
+        log.info("Received request for product areas with the name like {}", name);
+        if (name.length() < 3) {
+            throw new ValidationException("Search product area must be at least 3 characters");
+        }
+        var pas = StreamUtils.filter(teamsService.getAllProductAreas(), pa -> containsIgnoreCase(pa.getName(), name));
+        pas.sort(comparing(ProductArea::getName, startsWith(name)));
+        log.info("Returned {} pas", pas.size());
+        return new ResponseEntity<>(new RestResponsePage<>(convert(pas, ProductArea::convertToResponse)), HttpStatus.OK);
+    }
+
+    // Resources
 
     @ApiOperation(value = "Search resources")
     @ApiResponses(value = {
@@ -119,6 +167,10 @@ public class TeamController {
     }
 
     static class TeamPage extends RestResponsePage<TeamResponse> {
+
+    }
+
+    static class ProductAreaPage extends RestResponsePage<ProductAreaResponse> {
 
     }
 }

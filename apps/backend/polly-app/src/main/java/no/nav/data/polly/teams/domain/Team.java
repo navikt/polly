@@ -20,6 +20,8 @@ public class Team {
     private String name;
     private String description;
     private String slackChannel;
+    private String productAreaId;
+    private List<String> tags;
     private List<Member> members;
 
     public TeamResponse convertToResponseWithMembers() {
@@ -34,6 +36,8 @@ public class Team {
                 .name(name)
                 .description(description)
                 .slackChannel(slackChannel)
+                .productAreaId(productAreaId)
+                .tags(tags)
                 .build();
     }
 }

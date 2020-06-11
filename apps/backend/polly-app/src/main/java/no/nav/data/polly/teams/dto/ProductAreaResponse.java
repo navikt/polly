@@ -1,6 +1,5 @@
 package no.nav.data.polly.teams.dto;
 
-
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,15 +12,14 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "name", "description", "slackChannel", "productAreaId", "tags", "members"})
-public class TeamResponse {
+@JsonPropertyOrder({"id", "name", "description", "tags", "members"})
+public class ProductAreaResponse {
 
     private String id;
     private String name;
     private String description;
-    private String slackChannel;
-    private String productAreaId;
     private List<String> tags;
     private List<MemberResponse> members;
+
 
 }
