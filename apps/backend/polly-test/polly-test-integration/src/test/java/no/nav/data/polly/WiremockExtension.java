@@ -75,7 +75,7 @@ public class WiremockExtension implements Extension, BeforeAllCallback, BeforeEa
     }
 
     private TeamKatTeam defaultNoraTeam() {
-        return TeamKatTeam.builder().name("Visual Team Name").id("teamname").description("desc").productAreaId("productarea1").slackChannel("slack")
+        return TeamKatTeam.builder().name("Visual Team Name").id("teamid1").description("desc").productAreaId("productarea1").slackChannel("slack")
                 .members(List.of(member()))
                 .build();
     }

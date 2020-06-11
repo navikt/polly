@@ -16,6 +16,7 @@ import no.nav.data.polly.process.domain.ProcessCount;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessCountResponse;
 import no.nav.data.polly.process.dto.ProcessResponse;
+import no.nav.data.polly.teams.TeamService;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,7 @@ import java.util.Optional;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
+import static java.util.stream.Collectors.toList;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Slf4j
@@ -43,9 +45,11 @@ import static no.nav.data.polly.common.utils.StreamUtils.convert;
 @RequestMapping("/process")
 public class ProcessReadController {
 
+    private final TeamService teamService;
     private final ProcessRepository repository;
 
-    public ProcessReadController(ProcessRepository repository) {
+    public ProcessReadController(TeamService teamService, ProcessRepository repository) {
+        this.teamService = teamService;
         this.repository = repository;
     }
 
@@ -73,11 +77,18 @@ public class ProcessReadController {
     @GetMapping
     public ResponseEntity<RestResponsePage<ProcessResponse>> getAllProcesses(PageParameters pageParameters,
             @RequestParam(required = false) String productTeam,
+            @RequestParam(required = false) String productArea,
             @RequestParam(required = false) String documentId
     ) {
         if (productTeam != null) {
             log.info("Received request for Processeses for productTeam {}", productTeam);
             var processes = repository.findByProductTeam(productTeam);
+            return ResponseEntity.ok(new RestResponsePage<>(convert(processes, Process::convertToResponse)));
+        }
+        if (productArea != null) {
+            log.info("Received request for Processeses for productArea {}", productArea);
+            var teams = teamService.getTeamsForProductArea(productArea);
+            var processes = teams.stream().flatMap(t -> repository.findByProductTeam(t.getId()).stream()).collect(toList());
             return ResponseEntity.ok(new RestResponsePage<>(convert(processes, Process::convertToResponse)));
         }
         if (documentId != null) {

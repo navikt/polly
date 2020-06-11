@@ -1,6 +1,5 @@
 package no.nav.data.polly.process.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,8 +45,7 @@ public class ProcessRequest implements RequestElement {
     private List<String> subDepartments;
     @ApiModelProperty(value = "Codelist THIRD_PARTY")
     private String commonExternalProcessResponsible;
-    @JsonProperty("productTeam")
-    private String productTeamOld;
+    @Singular
     private List<String> productTeams;
     @Singular
     @ApiModelProperty(value = "Codelist SYSTEM")
@@ -120,13 +118,8 @@ public class ProcessRequest implements RequestElement {
         setSubDepartments(formatListToUppercase(getSubDepartments()));
         setCommonExternalProcessResponsible(toUpperCaseAndTrim(getCommonExternalProcessResponsible()));
         setDescription(trimToNull(getDescription()));
-        setProductTeamOld(trimToNull(getProductTeamOld()));
         setProductTeams(formatList(getProductTeams()));
         setProducts(formatListToUppercase(getProducts()));
-
-        if (getProductTeams().isEmpty() && getProductTeamOld() != null) {
-            setProductTeams(List.of(getProductTeamOld()));
-        }
 
         if (getDataProcessing() == null) {
             setDataProcessing(new DataProcessingRequest());

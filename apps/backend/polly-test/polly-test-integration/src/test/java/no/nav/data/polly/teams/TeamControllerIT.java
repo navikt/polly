@@ -22,15 +22,15 @@ class TeamControllerIT extends IntegrationTestBase {
         ResponseEntity<TeamPage> teams = restTemplate.getForEntity("/team", TeamPage.class);
         assertThat(teams.getBody()).isNotNull();
         assertThat(teams.getBody().getContent()).hasSize(2);
-        assertThat(teams.getBody().getContent().get(0).getId()).isEqualTo("teamname");
+        assertThat(teams.getBody().getContent().get(0).getId()).isEqualTo("teamid1");
         assertThat(teams.getBody().getContent().get(0).getName()).isEqualTo("Visual Team Name");
     }
 
     @Test
     void getTeam() {
-        ResponseEntity<TeamResponse> team = restTemplate.getForEntity("/team/{teamId}", TeamResponse.class, "teamname");
+        ResponseEntity<TeamResponse> team = restTemplate.getForEntity("/team/{teamId}", TeamResponse.class, "teamid1");
         assertThat(team.getBody()).isNotNull();
-        assertThat(team.getBody().getId()).isEqualTo("teamname");
+        assertThat(team.getBody().getId()).isEqualTo("teamid1");
         assertThat(team.getBody().getName()).isEqualTo("Visual Team Name");
         assertThat(team.getBody().getDescription()).isEqualTo("desc");
         assertThat(team.getBody().getSlackChannel()).isEqualTo("slack");
@@ -45,7 +45,7 @@ class TeamControllerIT extends IntegrationTestBase {
         ResponseEntity<TeamPage> teams = restTemplate.getForEntity("/team/search/{name}", TeamPage.class, "Visual");
         assertThat(teams.getBody()).isNotNull();
         assertThat(teams.getBody().getContent()).hasSize(1);
-        assertThat(teams.getBody().getContent().get(0).getId()).isEqualTo("teamname");
+        assertThat(teams.getBody().getContent().get(0).getId()).isEqualTo("teamid1");
         assertThat(teams.getBody().getContent().get(0).getName()).isEqualTo("Visual Team Name");
     }
 

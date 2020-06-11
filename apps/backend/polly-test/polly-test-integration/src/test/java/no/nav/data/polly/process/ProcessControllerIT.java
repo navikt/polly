@@ -99,9 +99,22 @@ class ProcessControllerIT extends IntegrationTestBase {
 
     @Test
     void getForProductTeam() {
-        Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
+        createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
 
-        ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process?productTeam={productTeam}", ProcessPage.class, policy.getProcess().getData().getProductTeams().get(0));
+        ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process?productTeam={productTeam}", ProcessPage.class, "teamid1");
+
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        ProcessPage processPage = resp.getBody();
+        assertThat(processPage).isNotNull();
+
+        assertThat(processPage.getContent()).hasSize(1);
+    }
+
+    @Test
+    void getForProductArea() {
+        createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
+
+        ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process?productArea={productArea}", ProcessPage.class, "productarea1");
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         ProcessPage processPage = resp.getBody();
@@ -230,7 +243,7 @@ class ProcessControllerIT extends IntegrationTestBase {
         ProcessCountResponse purposeResponse = resp.getBody();
         assertThat(purposeResponse).isNotNull();
 
-        assertThat(purposeResponse).isEqualTo(new ProcessCountResponse(Map.of("teamname", 1L)));
+        assertThat(purposeResponse).isEqualTo(new ProcessCountResponse(Map.of("teamid1", 1L)));
     }
 
 }
