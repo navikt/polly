@@ -35,14 +35,15 @@ type RowProps = {
   $style?: StyleObject
 }
 
+const noBorder = {
+  borderLeftWidth: '0',
+  borderRightWidth: '0',
+  borderTopWidth: '0',
+  borderBottomWidth: '0'
+}
 const headerCellOverride = {
   HeadCell: {
-    style: {
-      borderLeft: 'none',
-      borderRight: 'none',
-      borderTop: 'none',
-      borderBottom: 'none'
-    }
+    style: noBorder
   }
 }
 
@@ -56,7 +57,7 @@ const StyledHeader = withStyle(StyledHead, {
 const tableStyle = {
   backgroundColor: theme.colors.primary100,
   overflow: 'hidden !important',
-  borderWidth: '0',
+  ...noBorder,
   borderTopLeftRadius: '0',
   borderTopRightRadius: '0',
   borderBottomLeftRadius: '0',
