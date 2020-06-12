@@ -384,7 +384,7 @@ export interface Lang {
   name: string
   langCode: string
   texts: any
-  dateLocale?: Locale
+  dateLocale: Locale
 }
 
 interface Langs {
