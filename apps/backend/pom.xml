@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.0.RELEASE</version>
+        <version>2.3.1.RELEASE</version>
     </parent>
 
     <groupId>no.nav.data</groupId>
@@ -33,7 +33,7 @@
         <docx4j.version>11.1.8</docx4j.version>
 
         <microsoft-graph.version>1.7.1</microsoft-graph.version>
-        <msal4j.version>1.6.0</msal4j.version>
+        <msal4j.version>1.6.1</msal4j.version>
 
         <!-- transitive versions -->
         <commons-compress.version>1.20</commons-compress.version>
