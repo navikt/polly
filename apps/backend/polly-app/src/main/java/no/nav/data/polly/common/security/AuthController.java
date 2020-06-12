@@ -51,7 +51,6 @@ import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterN
 
 @Slf4j
 @RestController
-@CrossOrigin
 @RequestMapping
 @Api(tags = {"auth"})
 public class AuthController {
@@ -94,6 +93,7 @@ public class AuthController {
             @ApiResponse(code = 302, message = "token accepted"),
             @ApiResponse(code = 500, message = "internal error")
     })
+    @CrossOrigin
     @PostMapping("/login/oauth2/code/{registrationId}")
     public void oidc(HttpServletRequest request, HttpServletResponse response,
             @PathVariable String registrationId,
@@ -145,7 +145,6 @@ public class AuthController {
             @ApiResponse(code = 200, message = "userinfo returned", response = UserInfoResponse.class),
             @ApiResponse(code = 500, message = "internal error")
     })
-    @CrossOrigin
     @GetMapping("/userinfo")
     public ResponseEntity<UserInfoResponse> userinfo() {
         log.debug("Request to userinfo");

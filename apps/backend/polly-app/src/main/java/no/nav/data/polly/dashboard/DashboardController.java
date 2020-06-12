@@ -14,7 +14,6 @@ import no.nav.data.polly.dashboard.dto.DashResponse.ProcessDepartmentDashCount;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.process.domain.ProcessStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +28,6 @@ import static no.nav.data.polly.process.domain.ProcessCount.countToMap;
 
 @Slf4j
 @RestController
-@CrossOrigin
 @RequestMapping("/dash")
 @Api(value = "Dashboard", tags = {"Dashboard"})
 public class DashboardController {

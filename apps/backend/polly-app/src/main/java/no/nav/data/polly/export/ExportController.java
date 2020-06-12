@@ -15,7 +15,6 @@ import no.nav.data.polly.process.domain.ProcessRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
 @RestController
-@CrossOrigin
 @RequestMapping("/export")
 @Api(value = "Export", description = "REST API for exports", tags = {"Export"})
 public class ExportController {

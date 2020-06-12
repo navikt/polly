@@ -13,7 +13,6 @@ import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.common.utils.StreamUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +32,6 @@ import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
 
 @Slf4j
 @RestController
-@CrossOrigin
 @RequestMapping("/codelist")
 @Api(value = "Codelist", description = "REST API for common list of values", tags = {"Codelist"})
 public class CodelistController {

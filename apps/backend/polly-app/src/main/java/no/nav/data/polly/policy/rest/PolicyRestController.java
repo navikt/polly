@@ -18,7 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,7 +39,6 @@ import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @RestController
-@CrossOrigin
 @Api(value = "Data Catalog Policies", description = "REST API for Policies", tags = {"Policies"})
 @RequestMapping("/policy")
 @Transactional

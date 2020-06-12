@@ -16,7 +16,6 @@ import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +25,6 @@ import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @RestController
-@CrossOrigin
 @Api(value = "Data Catalog Purpose", description = "REST API for Purpose", tags = {"Purpose", "Process"})
 @RequestMapping("/process")
 public class PurposeController {

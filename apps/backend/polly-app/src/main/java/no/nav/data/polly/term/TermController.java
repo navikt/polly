@@ -14,7 +14,6 @@ import no.nav.data.polly.term.dto.TermCountResponse;
 import no.nav.data.polly.term.dto.TermResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +31,6 @@ import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Slf4j
 @RestController
-@CrossOrigin
 @RequestMapping("/term")
 @Api(value = "Term", description = "REST API for Term", tags = {"Term"})
 public class TermController {

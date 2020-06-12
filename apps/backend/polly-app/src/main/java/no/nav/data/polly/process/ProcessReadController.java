@@ -22,7 +22,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,7 +39,6 @@ import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Slf4j
 @RestController
-@CrossOrigin
 @Api(value = "Data Catalog Process", description = "REST API for Process", tags = {"Process"})
 @RequestMapping("/process")
 public class ProcessReadController {

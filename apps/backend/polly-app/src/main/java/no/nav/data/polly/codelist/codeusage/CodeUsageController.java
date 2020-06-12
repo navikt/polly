@@ -10,7 +10,6 @@ import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.codelist.dto.CodelistUsageResponse;
 import no.nav.data.polly.codelist.dto.ReplaceCodelistRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +21,6 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@CrossOrigin
 @Api(value = "Data Catalog CodeUsage", description = "REST API for usage of codes in the Data Catalog", tags = {"Codelist"})
 @RequestMapping("/codelist/usage")
 public class CodeUsageController {

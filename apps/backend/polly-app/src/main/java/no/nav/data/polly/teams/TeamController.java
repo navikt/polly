@@ -16,7 +16,6 @@ import no.nav.data.polly.teams.dto.Resource;
 import no.nav.data.polly.teams.dto.TeamResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +32,6 @@ import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
 
 @Slf4j
 @RestController
-@CrossOrigin
 @RequestMapping("/team")
 @Api(value = "Team", description = "REST API for teams", tags = {"Team"})
 public class TeamController {
