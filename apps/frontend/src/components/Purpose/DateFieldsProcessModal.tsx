@@ -4,16 +4,15 @@ import { Field, FieldProps } from 'formik'
 import { Datepicker } from 'baseui/datepicker'
 import moment from 'moment'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendar, faTimesCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
+import { faCalendar, faExclamationCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import { StatefulTooltip } from 'baseui/tooltip'
 import * as React from 'react'
 
 import { intl, theme } from '../../util'
 import { ProcessFormValues } from '../../constants'
 import { Error } from '../common/ModalSchema'
 import { padding } from '../common/Style'
-import nb from 'date-fns/locale/nb'
-import en from 'date-fns/locale/en-GB'
-import { StatefulTooltip } from 'baseui/tooltip'
+import { currentLang } from '../../util/intl/intl'
 
 interface DateModalProps {
   showDates: boolean;
@@ -73,7 +72,7 @@ export const DateFieldsProcessModal = (props: DateModalProps) => {
                         onChange={({ date }) => {
                           form.setFieldValue('start', dateToDateString(date))
                         }}
-                        locale={localStorage.getItem('polly-lang') === 'nb' ? nb : en}
+                        locale={currentLang().dateLocale}
                         formatString={'dd-MM-yyyy'}
                         error={!!form.errors.start && (form.touched.start || !!form.submitCount)}
                         overrides={{
@@ -106,7 +105,7 @@ export const DateFieldsProcessModal = (props: DateModalProps) => {
                         }}
                         formatString={'dd-MM-yyyy'}
                         error={!!form.errors.end && (form.touched.end || !!form.submitCount)}
-                        locale={localStorage.getItem('polly-lang') === 'nb' ? nb : en}
+                        locale={currentLang().dateLocale}
                         overrides={{
                           Input: {
                             props: {
