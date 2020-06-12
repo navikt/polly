@@ -6,5 +6,6 @@ export const env = {
   slackId: process.env.REACT_APP_SLACK_ID,
   amplitudeEndpoint: process.env.REACT_APP_AMPLITUDE_ENDPOINT,
   amplitudeApiKey: process.env.REACT_APP_AMPLITUDE_API_KEY,
-  defaultStartDate: process.env.REACT_APP_DEFAULT_START_DATE || '0001-01-01'
-};
+  defaultStartDate: process.env.REACT_APP_DEFAULT_START_DATE || '0001-01-01',
+  disableRiskOwner: process.env.REACT_APP_DISABLE_RISK_OWNER
+}

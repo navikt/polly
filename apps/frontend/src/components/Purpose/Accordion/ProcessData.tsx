@@ -13,6 +13,7 @@ import { DotTags } from '../../common/DotTag'
 import { TeamPopover } from '../../common/Team'
 import { boolToText } from '../../common/Radio'
 import { RetentionView } from '../Retention'
+import { env } from '../../../util/env'
 
 const showDpiaRequiredField = (dpia?: Dpia) => {
   if (dpia?.needForDpia === true) {
@@ -40,7 +41,7 @@ const ProcessData = (props: { process: Process }) => {
 
   useEffect(() => {
     (async () => {
-      if (process.dpia?.riskOwner) {
+      if (!env.disableRiskOwner && process.dpia?.riskOwner) {
         setRiskOwnerFullName((await getResourceById(process.dpia.riskOwner)).fullName)
       } else {
         setRiskOwnerFullName('')
@@ -74,12 +75,13 @@ const ProcessData = (props: { process: Process }) => {
         {(process.dpia?.processImplemented) ? intl.yes : intl.no}
       </DataText>
 
+      {!env.disableRiskOwner &&
       <DataText label={intl.riskOwner}>
         <>
           <span>{(process.dpia?.riskOwner) ? riskOwnerFullName : intl.notFilled}</span>
           {!!process.dpia?.riskOwnerFunction && <span> {intl.riskOwnerFunctionBinder} {process.dpia.riskOwnerFunction}</span>}
         </>
-      </DataText>
+      </DataText>}
 
       <DataText label={intl.validityOfProcess}>
         <ActiveIndicator alwaysShow={true} showDates={true} {...process} />

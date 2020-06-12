@@ -34,6 +34,7 @@ import FieldRiskOwner from '../common/FieldRiskOwner'
 import FieldInput from '../common/FieldInput'
 import FieldCommonExternalProcessResponsible from '../common/FieldCommonExternalProcessResponsible'
 import { RadioBoolButton } from '../../common/Radio'
+import { env } from '../../../util/env'
 
 const modalHeaderProps: BlockProps = {
   display: 'flex',
@@ -156,10 +157,10 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
                   </Block>
                 </CustomizedModalBlock>
 
-                <CustomizedModalBlock>
+                {!env.disableRiskOwner && <CustomizedModalBlock>
                   <ModalLabel label={intl.riskOwner} />
                   <FieldRiskOwner riskOwner={formikBag.values.dpia?.riskOwner} />
-                </CustomizedModalBlock>
+                </CustomizedModalBlock>}
 
                 <CustomizedModalBlock>
                   <ModalLabel label={intl.riskOwnerFunction} />
