@@ -1,5 +1,5 @@
 app: polly
-namespace: default
+namespace: teamdatajegerne
 team: teamdatajegerne
 ingresses:
   - https://polly.nais.preprod.local
