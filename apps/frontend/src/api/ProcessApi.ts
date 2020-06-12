@@ -86,7 +86,7 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     productTeams: productTeams || [],
     products: (products && products.map(p => p.code)) || [],
     legalBases: convertLegalBasesToFormValues(legalBases),
-    start: start || undefined,
+    start: start || env.defaultStartDate,
     end: end || undefined,
     usesAllInformationTypes: process && !!usesAllInformationTypes,
     automaticProcessing: process ? mapBool(automaticProcessing) : false,
