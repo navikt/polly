@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.common.utils.JsonUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +26,12 @@ public class FrontendLogController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Log written")})
     @PostMapping
     public void write(@RequestBody LogRequest request) {
-        log.warn(request.toString());
+        var string = JsonUtils.toJson(request);
+        switch (request.level) {
+            case info -> log.info(string);
+            case warn -> log.warn(string);
+            case error -> log.error(string);
+        }
     }
 
     @Data
@@ -34,6 +40,9 @@ public class FrontendLogController {
     @AllArgsConstructor
     public static class LogRequest {
 
+        public enum Level {info, warn, error}
+
+        private Level level;
         private String context;
         private String content;
 
