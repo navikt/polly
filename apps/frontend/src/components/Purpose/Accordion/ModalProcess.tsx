@@ -82,11 +82,11 @@ const panelOverrides = {
 }
 
 const AccordionTitle = (props: { title: string, expanded: boolean }) => {
-  const { title, expanded } = props
+  const {title, expanded} = props
   return <>
     <Block>
       <Label1 color={theme.colors.primary}>
-        {expanded ? <FontAwesomeIcon icon={faChevronDown} /> : <FontAwesomeIcon icon={faChevronRight} />}
+        {expanded ? <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
         <span> </span>
         <span>{title}</span>
       </Label1>
@@ -94,7 +94,7 @@ const AccordionTitle = (props: { title: string, expanded: boolean }) => {
   </>
 }
 
-const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, title }: ModalProcessProps) => {
+const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, title}: ModalProcessProps) => {
 
   const [selectedLegalBasis, setSelectedLegalBasis] = React.useState<LegalBasisFormValues>()
   const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState<number>()
@@ -124,7 +124,7 @@ const ModalProcess = ({ submit, errorOnCreate, onClose, isOpen, initialValues, t
           render={(formikBag: FormikProps<ProcessFormValues>) => {
             if (formikBag.isValidating && formikBag.isSubmitting && !formikBag.isValid) {
               console.log(formikBag.errors)
-              writeLog('submit process', JSON.stringify(formikBag.errors))
+              writeLog('warn', 'submit process', JSON.stringify(formikBag.errors))
             }
             return (
               <Form onKeyDown={disableEnter}>
