@@ -41,7 +41,7 @@ const DepartmentCard = (props: DepartmentCardProps) => {
         >
           <Label1 color={theme.colors.accent300} $style={{ textAlign: 'center' }}>{parsedDepartmentName(department.department)}</Label1>
           <StyledLink href={`/process/department/${department.department}/COMPLETED`}>
-            <TextWithNumber label="Fullførte" number={department.processesCompleted} />
+            <TextWithNumber label="Fullført" number={department.processesCompleted} />
           </StyledLink>
           <StyledLink href={`/process/department/${department.department}/IN_PROGRESS`}>
             <TextWithNumber label="Under arbeid" number={department.processesInProgress} />
