@@ -16,11 +16,14 @@ public interface Validated {
         return "";
     }
 
-    @JsonIgnore
     default List<ValidationError> validateFields() {
         format();
         FieldValidator validator = new FieldValidator(getReference());
         validate(validator);
         return validator.getErrors();
+    }
+
+    default void validateFieldsAndThrow() {
+        RequestValidator.ifErrorsThrowValidationException(validateFields());
     }
 }

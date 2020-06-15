@@ -34,7 +34,7 @@ public class ProcessStateController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Process fetched", response = ProcessShortPage.class)})
     @GetMapping
     public RestResponsePage<ProcessShortResponse> getProcesses(ProcessStateRequest request) {
-        request.validateFields();
+        request.validateFieldsAndThrow();
         List<Process> processes = processRepository.findForState(request.getProcessField(), request.getProcessState(), request.getDepartment());
         return new RestResponsePage<>(convert(processes, Process::convertToShortResponse));
     }
