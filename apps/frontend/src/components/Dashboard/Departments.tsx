@@ -2,13 +2,13 @@ import * as React from 'react'
 import { Card } from 'baseui/card'
 import { cardShadow } from '../common/Style'
 import { Block } from 'baseui/block'
-import { Paragraph2, Label1 } from 'baseui/typography'
+import { Label1, Paragraph2 } from 'baseui/typography'
 import { theme, useAwait } from '../../util'
 import { DashboardData, DepartmentProcess } from '../../constants'
 import { StyledLink } from 'baseui/link'
 import { useStyletron } from 'styletron-react'
 import { codelist, ListName } from '../../service/Codelist'
-import { StatefulTooltip, PLACEMENT } from 'baseui/tooltip'
+import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
 
 const TextWithNumber = (props: { label: string; number: number }) => (
   <Block display="flex" width="100%" marginBottom="0" justifyContent="center">
@@ -27,7 +27,6 @@ type DepartmentCardProps = {
 }
 const DepartmentCard = (props: DepartmentCardProps) => {
   const [useCss] = useStyletron();
-  const linkCss = useCss({ textDecoration: 'none' });
   const { department } = props
 
   return (
@@ -64,9 +63,9 @@ const Departments = (props: DepartmentsProps) => {
   const sortedData = () => data.departmentProcesses.sort((a, b) => parsedDepartmentName(a.department).localeCompare(b.department))
 
   return (
-    <Block width="100%" display="flex" flexWrap >
-      {sortedData().map((department: DepartmentProcess) => (
-        <Block marginTop={theme.sizing.scale600} marginRight={theme.sizing.scale600}>
+    <Block width="100%" display="flex" flexWrap>
+      {sortedData().map((department: DepartmentProcess, i: number) => (
+        <Block key={i} marginTop={theme.sizing.scale600} marginRight={theme.sizing.scale600}>
           <DepartmentCard department={department} />
         </Block>
       ))}

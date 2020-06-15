@@ -1,6 +1,6 @@
 import moment from "moment";
+import { currentLang } from './intl/intl'
 
-export const lastModifiedDate = (lastModifiedDate: string) => {
-  let lang = localStorage.getItem('polly-lang') === 'nb' ? 'nb' : 'en'
-  return moment(lastModifiedDate).locale(lang).format('LL')
+export const lastModifiedDate = (lastModifiedDateString: string) => {
+  return moment(lastModifiedDateString).locale(currentLang().langCode).format('LL')
 }

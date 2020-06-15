@@ -1,6 +1,6 @@
 import { Overrides, StatefulPopover } from 'baseui/popover'
 import React, { useEffect, useState } from 'react'
-import { getTeam } from '../../api/TeamApi'
+import { getTeam } from '../../api'
 import { Team } from '../../constants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope, faTimesCircle, faUser, faUsers } from '@fortawesome/free-solid-svg-icons'
@@ -17,7 +17,7 @@ import { StyledLink } from 'baseui/link'
 import { env } from '../../util/env'
 
 
-const defaultTeam = (teamId: string) => ({id: teamId, name: teamId, description: ' ', members: []})
+const defaultTeam = (teamId: string) => ({id: teamId, name: teamId, description: ' ', productarea: undefined, tags: [], members: []})
 
 const listOverrides: OverridesT = {
   Content: {

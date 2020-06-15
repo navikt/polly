@@ -5,7 +5,7 @@ import { codelist, ListName } from '../service/Codelist'
 import { useDebouncedState } from '../util/hooks'
 import { prefixBiasedSort } from '../util/sort'
 import { intl, theme } from '../util'
-import { searchDocuments, searchInformationType, searchProcess, searchTeam } from '../api'
+import { searchDocuments, searchInformationType, searchProcess, searchProductArea, searchTeam } from '../api'
 import { Select, TYPE, Value } from 'baseui/select'
 import { urlForObject } from './common/RouteLink'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
@@ -15,7 +15,7 @@ import { faFilter } from '@fortawesome/free-solid-svg-icons'
 import Button from './common/Button'
 
 type SearchItem = { id: string, sortKey: string, label: ReactElement, type: NavigableItem }
-type SearchType = 'all' | 'purpose' | 'process' | 'team' | 'department' | 'subDepartment' | 'informationType' | 'thirdParty' | 'document'
+type SearchType = 'all' | 'purpose' | 'process' | 'team' | 'productarea' | 'department' | 'subDepartment' | 'informationType' | 'thirdParty' | 'document'
 
 const SearchLabel = (props: { name: string, type: string }) =>
   <Block display="flex" justifyContent="space-between" width="100%">
@@ -121,6 +121,18 @@ const useMainSearch = () => {
             })())
           }
 
+          if (type === 'all' || type === 'productarea') {
+            searches.push((async () => {
+              const res = await searchProductArea(search)
+              add(res.content.map(it => ({
+                id: it.id,
+                sortKey: it.name,
+                label: <SearchLabel name={it.name} type={intl.productArea}/>,
+                type: 'productarea'
+              })))
+            })())
+          }
+
           if (type === 'all' || type === 'document') {
             searches.push((async () => {
               const resDocs = await searchDocuments(search)
@@ -211,6 +223,7 @@ const SelectType = (props: { type: SearchType, setType: (type: SearchType) => vo
         {smallRadio('purpose', intl.purpose)}
         {smallRadio('process', intl.processes)}
         {smallRadio('team', intl.team)}
+        {smallRadio('productarea', intl.productArea)}
         {smallRadio('department', intl.department)}
         {smallRadio('subDepartment', intl.subDepartmentShort)}
         {smallRadio('thirdParty', intl.thirdParty)}

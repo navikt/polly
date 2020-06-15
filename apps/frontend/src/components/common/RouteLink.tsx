@@ -1,24 +1,24 @@
-import {RouteComponentProps, withRouter} from 'react-router-dom'
-import {StyledLink} from 'baseui/link'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
+import { StyledLink } from 'baseui/link'
 import React from 'react'
-import {KIND} from 'baseui/button'
-import {Block} from 'baseui/block'
-import {AuditButton} from '../audit/AuditButton'
-import {AuditItem, NavigableItem, ObjectType} from '../../constants'
-import {useStyletron} from 'baseui'
-import {ListName} from '../../service/Codelist'
+import { KIND } from 'baseui/button'
+import { Block } from 'baseui/block'
+import { AuditButton } from '../audit/AuditButton'
+import { AuditItem, NavigableItem, ObjectType } from '../../constants'
+import { useStyletron } from 'baseui'
+import { ListName } from '../../service/Codelist'
 
 type RouteLinkProps = {
   href: string
 }
 
 const RouteLinkImpl = (props: RouteComponentProps<any> & RouteLinkProps & any) => {
-  const {history, location, match, staticContext, ...restprops} = props
+  const { history, location, match, staticContext, ...restprops } = props
   return (
     <StyledLink {...restprops} onClick={(e: Event) => {
       e.preventDefault()
       props.history.push(props.href)
-    }}/>
+    }} />
   )
 }
 
@@ -58,6 +58,8 @@ export const urlForObject = (type: NavigableItem, id: string, audit?: AuditItem)
       return `/process/purpose/ALL/${id}`
     case 'team':
       return `/process/team/ALL/${id}`
+    case 'productarea':
+      return `/process/productarea/${id}`
     case ListName.DEPARTMENT:
       return `/process/department/ALL/${id}`
     case ListName.THIRD_PARTY:
@@ -71,19 +73,19 @@ export const urlForObject = (type: NavigableItem, id: string, audit?: AuditItem)
 
 const ObjectLinkImpl = (props: RouteComponentProps & ObjectLinkProps) => {
   const [useCss] = useStyletron()
-  const linkCss = useCss({textDecoration: 'none'})
+  const linkCss = useCss({ textDecoration: 'none' })
 
   const link =
     props.disable ? props.children :
       <RouteLink href={urlForObject(props.type, props.id, props.audit)}
-                 className={props.hideUnderline ? linkCss : undefined}>
+        className={props.hideUnderline ? linkCss : undefined}>
         {props.children}
       </RouteLink>
 
   return props.withHistory ?
     <Block display="flex" justifyContent="space-between" width="100%" alignItems="center">
       {link}
-      <AuditButton id={props.id} kind={KIND.tertiary}/>
+      <AuditButton id={props.id} kind={KIND.tertiary} />
     </Block> :
     link
 }

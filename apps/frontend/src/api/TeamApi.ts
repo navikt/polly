@@ -1,9 +1,9 @@
 import axios from "axios"
-import {PageResponse, Team, TeamResource} from "../constants"
-import {default as React, Dispatch, SetStateAction, useEffect} from "react"
-import {useDebouncedState} from "../util"
-import {Option} from "baseui/select"
-import {env} from "../util/env"
+import { PageResponse, ProductArea, Team, TeamResource } from "../constants"
+import { default as React, Dispatch, SetStateAction, useEffect } from "react"
+import { useDebouncedState } from "../util"
+import { Option } from "baseui/select"
+import { env } from "../util/env"
 
 export const getAllTeams = async () => {
     const data = (await axios.get<PageResponse<Team>>(`${env.pollyBaseUrl}/team`)).data
@@ -18,6 +18,15 @@ export const getTeam = async (teamId: string) => {
 
 export const searchTeam = async (teamSearch: string) => {
     return (await axios.get<PageResponse<Team>>(`${env.pollyBaseUrl}/team/search/${teamSearch}`)).data
+}
+export const getProductArea = async (paId: string) => {
+    const data = (await axios.get<ProductArea>(`${env.pollyBaseUrl}/team/productarea/${paId}`)).data
+    data.members = data.members.sort((a,b)=> (a.name || '').localeCompare(b.name || ''))
+    return data
+}
+
+export const searchProductArea = async (search: string) => {
+    return (await axios.get<PageResponse<ProductArea>>(`${env.pollyBaseUrl}/team/productarea/search/${search}`)).data
 }
 
 export const getResourceById = async (resourceId: string) => {
