@@ -24,6 +24,7 @@ import DocumentEditPage from './pages/DocumentEditPage'
 import {PurposeListPage} from './pages/PurposeListPage'
 import {AlertEventPage} from './pages/AlertEventPage'
 import {getDisclosure, getPolicy, getProcess} from './api'
+import PurposeTable from "./components/Dashboard/PurposeTable";
 
 
 const Routes = (): JSX.Element => (
@@ -33,6 +34,8 @@ const Routes = (): JSX.Element => (
       <Route exact path="/thirdparty/:thirdPartyCode" component={ThirdPartyMetadataPage}/>
       <Route exact path="/process" component={PurposeListPage}/>
       <Route exact path="/process/:section/:code/:filter/:processId?" component={PurposePage}/>
+
+      <Route exact path="/dashboard/:filterName/:filterValue" component={PurposeTable}/>
 
       <Route exact path="/process/:id" component={redirect(processUrl)}/>
       <Route exact path="/policy/:id" component={redirect(policyUrl)}/>

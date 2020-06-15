@@ -1,11 +1,16 @@
 import axios from 'axios'
-import { PageResponse, Process, ProcessCount, ProcessFormValues, ProcessStatus } from '../constants'
-import { env } from '../util/env'
-import { convertLegalBasesToFormValues } from './PolicyApi'
+import {PageResponse, Process, ProcessCount, ProcessFormValues, ProcessStatus} from '../constants'
+import {env} from '../util/env'
+import {convertLegalBasesToFormValues} from './PolicyApi'
 
 export const getProcess = async (processId: string) => {
   const data = (await axios.get<Process>(`${env.pollyBaseUrl}/process/${processId}`)).data
   data.policies.forEach(p => p.process = {...data, policies: []})
+  return data
+}
+
+export const getAllProcesses = async () =>{
+  const data = (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process/`)).data.content
   return data
 }
 
