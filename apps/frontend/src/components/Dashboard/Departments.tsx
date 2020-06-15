@@ -26,7 +26,6 @@ type DepartmentCardProps = {
   department: DepartmentProcess;
 }
 const DepartmentCard = (props: DepartmentCardProps) => {
-  const [useCss] = useStyletron();
   const { department } = props
 
   return (
