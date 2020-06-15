@@ -75,8 +75,8 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
         };
 
         var val = switch (processState) {
-            case YES -> "::boolean = true ";
-            case NO -> "::boolean = false ";
+            case YES -> " = 'true'::jsonb";
+            case NO -> " = 'false'::jsonb";
             case UNKNOWN -> " is null ";
         };
 

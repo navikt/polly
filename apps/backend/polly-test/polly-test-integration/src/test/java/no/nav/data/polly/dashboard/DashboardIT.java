@@ -19,14 +19,17 @@ public class DashboardIT extends IntegrationTestBase {
     @Test
     void getProcess() {
         createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
+        var p2 =  createAndSaveProcess(PURPOSE_CODE2);
+        p2.getData().getDpia().setNeedForDpia(null);
+        processRepository.save(p2);
 
         ResponseEntity<DashResponse> resp = restTemplate.getForEntity("/dash", DashResponse.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         DashResponse response = resp.getBody();
         assertThat(response).isNotNull();
-        assertThat(get(response.getDepartmentProcesses(), d -> d.getDepartment().equals("DEP")).getProcessesInProgress()).isEqualTo(1L);
-        assertThat(response.getAllProcesses().getProcessesInProgress()).isEqualTo(1L);
+        assertThat(get(response.getDepartmentProcesses(), d -> d.getDepartment().equals("DEP")).getProcessesInProgress()).isEqualTo(2L);
+        assertThat(response.getAllProcesses().getProcessesInProgress()).isEqualTo(2L);
     }
 
 }
