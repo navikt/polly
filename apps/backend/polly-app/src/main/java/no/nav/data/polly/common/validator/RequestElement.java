@@ -3,7 +3,6 @@ package no.nav.data.polly.common.validator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface RequestElement extends Validated {
@@ -30,17 +29,8 @@ public interface RequestElement extends Validated {
     @JsonIgnore
     void setRequestIndex(int index);
 
-    @JsonIgnore
     default String getReference() {
         return "Request:" + getRequestIndex();
-    }
-
-    @JsonIgnore
-    default List<ValidationError> validateFields() {
-        format();
-        FieldValidator validator = new FieldValidator(getReference());
-        validate(validator);
-        return validator.getErrors();
     }
 
     @JsonIgnore

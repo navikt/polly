@@ -72,6 +72,12 @@ public class FieldValidator {
         }
     }
 
+    public <T extends Enum<T>> void checkRequiredEnum(String fieldName, Enum<T> fieldValue) {
+        if (fieldValue == null) {
+            validationErrors.add(new ValidationError(reference, ERROR_TYPE, String.format(ERROR_MESSAGE, getFieldName(fieldName))));
+        }
+    }
+
     public <T extends Enum<T>> void checkRequiredEnum(String fieldName, String fieldValue, Class<T> type) {
         if (checkBlank(fieldName, fieldValue)) {
             return;

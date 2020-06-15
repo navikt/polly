@@ -17,7 +17,7 @@ import java.util.List;
 public class DashResponse {
 
     private ProcessDashCount allProcesses;
-    private List<ProcessDepartmentDashCount> departmentProcesses;
+    private List<ProcessDashCount> departmentProcesses;
 
     @Data
     @Builder
@@ -25,12 +25,15 @@ public class DashResponse {
     @NoArgsConstructor
     public static class ProcessDashCount {
 
+        private String department;
         private long processes;
 
         private long processesCompleted;
         private long processesInProgress;
 
         private long processesMissingLegalBases;
+        private long processesMissingArt6;
+        private long processesMissingArt9;
 
         private long processesUsingAllInfoTypes;
 
@@ -42,23 +45,6 @@ public class DashResponse {
 
     @JsonAutoDetect(fieldVisibility = Visibility.ANY)
     public record Counter(@JsonProperty("yes")long yes, @JsonProperty("no")long no, @JsonProperty("unknown")long unknown) {
-
-    }
-
-
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class ProcessDepartmentDashCount {
-
-        private String department;
-        private long processes;
-
-        private long processesCompleted;
-        private long processesInProgress;
-
-        private long processesMissingLegalBases;
 
     }
 }

@@ -1,5 +1,7 @@
 package no.nav.data.polly.process.domain;
 
+import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessField;
+import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessState;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -13,9 +15,8 @@ import java.util.stream.Collectors;
 @Repository
 public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
 
-    private NamedParameterJdbcTemplate jdbcTemplate;
-    private ProcessRepository processRepository;
-
+    private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final ProcessRepository processRepository;
 
     public ProcessRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate, @Lazy ProcessRepository processRepository) {
         this.jdbcTemplate = jdbcTemplate;
@@ -62,6 +63,33 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
         var resp = jdbcTemplate.queryForList("select distinct(process_id) from policy where data #>'{documentIds}' ?? :documentId",
                 new MapSqlParameterSource().addValue("documentId", documentId));
         return getProcesses(resp);
+    }
+
+    @Override
+    public List<Process> findForState(ProcessField processField, ProcessState processState, String department) {
+        var query = switch (processField) {
+            case DPIA -> " (data #> '{dpia,needForDpia}')";
+            case PROFILING -> " (data #> '{profiling}')";
+            case AUTOMATION -> " (data #> '{automaticProcessing}')";
+            case RETENTION -> " (data #> '{retention,retentionPlan}')";
+        };
+
+        var val = switch (processState) {
+            case YES -> "::boolean = true ";
+            case NO -> "::boolean = false ";
+            case UNKNOWN -> " is null ";
+        };
+
+        var sql = "select distinct(process_id) from process where " + query + val;
+
+        Map<String, Object> params;
+        if (department != null) {
+            sql += " and data->>'department' = :department";
+            params = Map.of("department", department);
+        } else {
+            params = Map.of();
+        }
+        return getProcesses(jdbcTemplate.queryForList(sql, params));
     }
 
     private List<Process> getProcesses(List<Map<String, Object>> resp) {
