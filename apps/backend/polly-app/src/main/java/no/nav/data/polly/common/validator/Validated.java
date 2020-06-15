@@ -13,7 +13,7 @@ public interface Validated {
 
     @JsonIgnore
     default String getReference() {
-        return "";
+        return "Request";
     }
 
     default List<ValidationError> validateFields() {
