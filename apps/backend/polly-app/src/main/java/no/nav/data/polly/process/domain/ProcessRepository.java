@@ -30,11 +30,11 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
     @Query(value = "select count(1) from process where data->>'status' = :#{#status.name()}", nativeQuery = true)
     long countStatus(@Param("status") ProcessStatus status);
 
-    @Query(value = "select count(1) from process where cast(data ->> 'usesAllInformationTypes' as boolean) = true", nativeQuery = true)
-    long countUsingAllInfoTypes();
-
     @Query(value = "select p.purposeCode as code, count(p) as count from Process p group by p.purposeCode")
     List<ProcessCount> countPurposeCode();
+
+    @Query(value = "select data->>'department' as code, count(1) as count from process where cast(data ->> 'usesAllInformationTypes' as boolean) = true group by code", nativeQuery = true)
+    List<ProcessCount> countUsingAllInfoTypes();
 
     @Query(value = "select data->>'department' as code, count(1) as count from process group by code", nativeQuery = true)
     List<ProcessCount> countDepartmentCode();

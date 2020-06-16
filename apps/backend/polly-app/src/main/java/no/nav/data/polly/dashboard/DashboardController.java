@@ -63,6 +63,7 @@ public class DashboardController {
         var processCounts = countToMap(processRepository.countDepartmentCode(), department);
         var depComplete = countToMap(processRepository.countDepartmentCodeStatus(ProcessStatus.COMPLETED), department);
         var depInProg = countToMap(processRepository.countDepartmentCodeStatus(ProcessStatus.IN_PROGRESS), department);
+        var usesAllInfoTypes = countToMap(processRepository.countUsingAllInfoTypes(), department, true);
         var depLegalBasisMissing = countToMap(alertRepository.countDepartmentAlertEvents(MISSING_LEGAL_BASIS.name()), department, true);
         var depArt6Missing = countToMap(alertRepository.countDepartmentAlertEvents(MISSING_ARTICLE_6.name()), department, true);
         var depArt9Missing = countToMap(alertRepository.countDepartmentAlertEvents(MISSING_ARTICLE_9.name()), department, true);
@@ -74,6 +75,8 @@ public class DashboardController {
                         .processes(e.getValue())
                         .processesCompleted(depComplete.get(e.getKey()))
                         .processesInProgress(depInProg.get(e.getKey()))
+
+                        .processesUsingAllInfoTypes(usesAllInfoTypes.get(e.getKey()))
                         .processesMissingLegalBases(depLegalBasisMissing.get(e.getKey()))
                         .processesMissingArt6(depArt6Missing.get(e.getKey()))
                         .processesMissingArt9(depArt9Missing.get(e.getKey()))
@@ -92,7 +95,7 @@ public class DashboardController {
                         .processesCompleted(processRepository.countStatus(ProcessStatus.COMPLETED))
                         .processesInProgress(processRepository.countStatus(ProcessStatus.IN_PROGRESS))
 
-                        .processesUsingAllInfoTypes(processRepository.countUsingAllInfoTypes())
+                        .processesUsingAllInfoTypes(usesAllInfoTypes.values().stream().mapToLong(Long::longValue).sum())
                         .processesMissingLegalBases(depLegalBasisMissing.values().stream().mapToLong(Long::longValue).sum())
                         .processesMissingArt6(depArt6Missing.values().stream().mapToLong(Long::longValue).sum())
                         .processesMissingArt9(depArt9Missing.values().stream().mapToLong(Long::longValue).sum())
