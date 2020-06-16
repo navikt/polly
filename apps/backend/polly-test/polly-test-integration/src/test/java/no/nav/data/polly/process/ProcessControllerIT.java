@@ -128,13 +128,9 @@ class ProcessControllerIT extends IntegrationTestBase {
             createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
             ResponseEntity<ProcessShortPage> resp = get(field, ProcessState.UNKNOWN);
 
-            if (!field.alertEvent) {
-                assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-                assertThat(resp.getBody()).isNotNull();
-                assertThat(resp.getBody().getNumberOfElements()).isEqualTo(0L);
-            } else {
-                assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-            }
+            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(resp.getBody()).isNotNull();
+            assertThat(resp.getBody().getNumberOfElements()).isEqualTo(0L);
         }
 
         private ResponseEntity<ProcessShortPage> get(ProcessField field, ProcessState yes) {
