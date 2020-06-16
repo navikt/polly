@@ -12,10 +12,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_ARTICLE_6;
-import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_ARTICLE_9;
-import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_LEGAL_BASIS;
-
 @Repository
 public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
 
@@ -81,20 +77,19 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
 
     private List<Map<String, Object>> queryForState(ProcessField processField, ProcessState processState, String department) {
         var alertQuery = """
-                    process_id in ( 
-                    select cast(data ->> 'processId' as uuid) 
-                    from generic_storage 
-                    where type = 'ALERT_EVENT' 
-                      and data ->> 'type' = '%s' 
-                )
+                     process_id in ( 
+                     select cast(data ->> 'processId' as uuid) 
+                     from generic_storage 
+                     where type = 'ALERT_EVENT' 
+                       and data ->> 'type' = '%s' 
+                 )
                 """;
-        String query = switch (processField) {
-            case ALL_INFO_TYPES -> " cast(data ->> 'usesAllInformationTypes' as boolean) = true";
-            case MISSING_LEGBAS -> alertQuery.formatted(MISSING_LEGAL_BASIS);
-            case MISSING_ART6 -> alertQuery.formatted(MISSING_ARTICLE_6);
-            case MISSING_ART9 -> alertQuery.formatted(MISSING_ARTICLE_9);
-            case DPIA, AUTOMATION, PROFILING, RETENTION -> stateQuery(processField, processState);
-        };
+        String query;
+        if (processField.alertEvent) {
+            query = alertQuery.formatted(processField);
+        } else {
+            query = stateQuery(processField, processState);
+        }
 
         var sql = "select distinct(process_id) from process where " + query;
 
@@ -114,7 +109,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
             case PROFILING -> " (data #> '{profiling}')";
             case AUTOMATION -> " (data #> '{automaticProcessing}')";
             case RETENTION -> " (data #> '{retention,retentionPlan}')";
-            case ALL_INFO_TYPES, MISSING_LEGBAS, MISSING_ART6, MISSING_ART9 -> throw new IllegalArgumentException("invalid field " + processField);
+            default -> throw new IllegalArgumentException("invalid field for stateQuery " + processField);
         };
 
         var equate = switch (processState) {

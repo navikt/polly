@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
+import no.nav.data.polly.alert.domain.AlertEventType;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.common.validator.FieldValidator;
 import no.nav.data.polly.common.validator.Validated;
@@ -21,16 +22,26 @@ public class ProcessStateRequest implements Validated {
     }
 
     public enum ProcessField {
-        DPIA, PROFILING, AUTOMATION, RETENTION, ALL_INFO_TYPES(false), MISSING_LEGBAS(false), MISSING_ART6(false), MISSING_ART9(false);
+        DPIA, PROFILING, AUTOMATION, RETENTION,
 
-        public final boolean canBeUnknown;
+        // Alert events
+        EXCESS_INFO(true),
+        USES_ALL_INFO_TYPE(true),
+        MISSING_LEGAL_BASIS(true),
+        MISSING_ARTICLE_6(true),
+        MISSING_ARTICLE_9(true);
+
+        public final boolean alertEvent;
 
         ProcessField() {
-            canBeUnknown = true;
+            this(false);
         }
 
-        ProcessField(boolean canBeUnknown) {
-            this.canBeUnknown = canBeUnknown;
+        ProcessField(boolean alertEvent) {
+            this.alertEvent = alertEvent;
+            if (alertEvent) {
+                AlertEventType.valueOf(name());
+            }
         }
     }
 
@@ -43,7 +54,7 @@ public class ProcessStateRequest implements Validated {
         validator.checkRequiredEnum(Fields.processField, processField);
         validator.checkRequiredEnum(Fields.processState, processState);
         validator.checkCodelist(Fields.department, department, ListName.DEPARTMENT);
-        if (processState == ProcessState.UNKNOWN && processField != null && !processField.canBeUnknown) {
+        if (processState == ProcessState.UNKNOWN && processField != null && processField.alertEvent) {
             validator.addError(Fields.processState, processState.name(), "INVALID_STATE_FOR_FIELD", " is invalid for %s".formatted(processField));
         }
     }

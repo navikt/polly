@@ -97,9 +97,15 @@ class ProcessControllerIT extends IntegrationTestBase {
 
             assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(resp.getBody()).isNotNull();
-            if (field != ProcessField.MISSING_ART9 && field != ProcessField.MISSING_LEGBAS) {
+            if (trueAlerts(field)) {
                 assertThat(resp.getBody().getNumberOfElements()).isEqualTo(1L);
+            } else {
+                assertThat(resp.getBody().getNumberOfElements()).isEqualTo(0L);
             }
+        }
+
+        private boolean trueAlerts(ProcessField field) {
+            return field != ProcessField.MISSING_ARTICLE_9 && field != ProcessField.MISSING_LEGAL_BASIS && field != ProcessField.EXCESS_INFO;
         }
 
         @ParameterizedTest
@@ -122,7 +128,7 @@ class ProcessControllerIT extends IntegrationTestBase {
             createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
             ResponseEntity<ProcessShortPage> resp = get(field, ProcessState.UNKNOWN);
 
-            if (field.canBeUnknown) {
+            if (!field.alertEvent) {
                 assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
                 assertThat(resp.getBody()).isNotNull();
                 assertThat(resp.getBody().getNumberOfElements()).isEqualTo(0L);
