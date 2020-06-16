@@ -22,4 +22,6 @@ public interface ProcessRepositoryCustom {
 
     List<Process> findForState(ProcessField processField, ProcessState processState, @Nullable String department);
 
+    long countForState(ProcessField processField, ProcessState processState, @Nullable String department);
+
 }

@@ -65,8 +65,17 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
         return getProcesses(resp);
     }
 
-    @Override
     public List<Process> findForState(ProcessField processField, ProcessState processState, String department) {
+        List<Map<String, Object>> resp = queryForState(processField, processState, department);
+        return getProcesses(resp);
+    }
+
+    @Override
+    public long countForState(ProcessField processField, ProcessState processState, String department) {
+        return queryForState(processField, processState, department).size();
+    }
+
+    private List<Map<String, Object>> queryForState(ProcessField processField, ProcessState processState, String department) {
         var query = switch (processField) {
             case DPIA -> " (data #> '{dpia,needForDpia}')";
             case PROFILING -> " (data #> '{profiling}')";
@@ -89,7 +98,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
         } else {
             params = Map.of();
         }
-        return getProcesses(jdbcTemplate.queryForList(sql, params));
+        return jdbcTemplate.queryForList(sql, params);
     }
 
     private List<Process> getProcesses(List<Map<String, Object>> resp) {

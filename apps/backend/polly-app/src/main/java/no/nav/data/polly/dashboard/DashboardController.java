@@ -106,8 +106,8 @@ public class DashboardController {
     }
 
     private Counter getCount(ProcessField field, long processes, String department) {
-        long yes = processRepository.findForState(field, ProcessState.YES, department).size();
-        long no = processRepository.findForState(field, ProcessState.NO, department).size();
+        long yes = processRepository.countForState(field, ProcessState.YES, department);
+        long no = processRepository.countForState(field, ProcessState.NO, department);
         return new Counter(yes, no, processes - yes - no);
     }
 
