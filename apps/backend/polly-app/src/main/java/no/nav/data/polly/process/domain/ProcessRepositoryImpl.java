@@ -12,6 +12,10 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_ARTICLE_6;
+import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_ARTICLE_9;
+import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_LEGAL_BASIS;
+
 @Repository
 public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
 
@@ -76,20 +80,23 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
     }
 
     private List<Map<String, Object>> queryForState(ProcessField processField, ProcessState processState, String department) {
-        var query = switch (processField) {
-            case DPIA -> " (data #> '{dpia,needForDpia}')";
-            case PROFILING -> " (data #> '{profiling}')";
-            case AUTOMATION -> " (data #> '{automaticProcessing}')";
-            case RETENTION -> " (data #> '{retention,retentionPlan}')";
+        var alertQuery = """
+                    process_id in ( 
+                    select cast(data ->> 'processId' as uuid) 
+                    from generic_storage 
+                    where type = 'ALERT_EVENT' 
+                      and data ->> 'type' = '%s' 
+                )
+                """;
+        String query = switch (processField) {
+            case ALL_INFO_TYPES -> " cast(data ->> 'usesAllInformationTypes' as boolean) = true";
+            case MISSING_LEGBAS -> alertQuery.formatted(MISSING_LEGAL_BASIS);
+            case MISSING_ART6 -> alertQuery.formatted(MISSING_ARTICLE_6);
+            case MISSING_ART9 -> alertQuery.formatted(MISSING_ARTICLE_9);
+            case DPIA, AUTOMATION, PROFILING, RETENTION -> stateQuery(processField, processState);
         };
 
-        var val = switch (processState) {
-            case YES -> " = 'true'::jsonb";
-            case NO -> " = 'false'::jsonb";
-            case UNKNOWN -> " is null ";
-        };
-
-        var sql = "select distinct(process_id) from process where " + query + val;
+        var sql = "select distinct(process_id) from process where " + query;
 
         Map<String, Object> params;
         if (department != null) {
@@ -99,6 +106,23 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
             params = Map.of();
         }
         return jdbcTemplate.queryForList(sql, params);
+    }
+
+    private String stateQuery(ProcessField processField, ProcessState processState) {
+        var loc = switch (processField) {
+            case DPIA -> " (data #> '{dpia,needForDpia}')";
+            case PROFILING -> " (data #> '{profiling}')";
+            case AUTOMATION -> " (data #> '{automaticProcessing}')";
+            case RETENTION -> " (data #> '{retention,retentionPlan}')";
+            case ALL_INFO_TYPES, MISSING_LEGBAS, MISSING_ART6, MISSING_ART9 -> throw new IllegalArgumentException("invalid field " + processField);
+        };
+
+        var equate = switch (processState) {
+            case YES -> " = 'true'::jsonb";
+            case NO -> " = 'false'::jsonb";
+            case UNKNOWN -> " is null ";
+        };
+        return loc + equate;
     }
 
     private List<Process> getProcesses(List<Map<String, Object>> resp) {

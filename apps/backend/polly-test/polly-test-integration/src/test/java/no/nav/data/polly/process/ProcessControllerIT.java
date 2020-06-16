@@ -13,7 +13,6 @@ import no.nav.data.polly.process.ProcessStateController.ProcessShortPage;
 import no.nav.data.polly.process.dto.ProcessCountResponse;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
-import no.nav.data.polly.process.dto.ProcessStateRequest;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessField;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessState;
 import org.junit.jupiter.api.Nested;
@@ -36,6 +35,8 @@ class ProcessControllerIT extends IntegrationTestBase {
 
     @Autowired
     private TestRestTemplate restTemplate;
+    @Autowired
+    private ProcessService processService;
 
     @Test
     void getProcess() {
@@ -83,23 +84,32 @@ class ProcessControllerIT extends IntegrationTestBase {
     class State {
 
         @ParameterizedTest
-        @EnumSource(ProcessStateRequest.ProcessField.class)
+        @EnumSource(ProcessField.class)
         void processByStateYes(ProcessField field) {
-            createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
-            ResponseEntity<ProcessShortPage> resp = restTemplate
-                    .getForEntity("/process/state?processField={field}&processState={state}", ProcessShortPage.class, field, ProcessState.YES);
+            var p = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
+            p.getData().setLegalBases(List.of());
+            policyRepository.save(p);
+            p.getProcess().getData().setLegalBases(List.of());
+            p.getProcess().getData().setUsesAllInformationTypes(true);
+            processService.save(p.getProcess());
+
+            ResponseEntity<ProcessShortPage> resp = get(field, ProcessState.YES);
 
             assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(resp.getBody()).isNotNull();
-            assertThat(resp.getBody().getNumberOfElements()).isEqualTo(1L);
+            if (field != ProcessField.MISSING_ART9 && field != ProcessField.MISSING_LEGBAS) {
+                assertThat(resp.getBody().getNumberOfElements()).isEqualTo(1L);
+            }
         }
 
         @ParameterizedTest
-        @EnumSource(ProcessStateRequest.ProcessField.class)
+        @EnumSource(ProcessField.class)
         void processByStateNo(ProcessField field) {
-            createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
-            ResponseEntity<ProcessShortPage> resp = restTemplate
-                    .getForEntity("/process/state?processField={field}&processState={state}", ProcessShortPage.class, field, ProcessState.NO);
+            var p = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
+            p.getProcess().getData().setUsesAllInformationTypes(false);
+            processService.save(p.getProcess());
+
+            ResponseEntity<ProcessShortPage> resp = get(field, ProcessState.NO);
 
             assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(resp.getBody()).isNotNull();
@@ -107,15 +117,23 @@ class ProcessControllerIT extends IntegrationTestBase {
         }
 
         @ParameterizedTest
-        @EnumSource(ProcessStateRequest.ProcessField.class)
+        @EnumSource(ProcessField.class)
         void processByStateUnknown(ProcessField field) {
             createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
-            ResponseEntity<ProcessShortPage> resp = restTemplate
-                    .getForEntity("/process/state?processField={field}&processState={state}", ProcessShortPage.class, field, ProcessState.UNKNOWN);
+            ResponseEntity<ProcessShortPage> resp = get(field, ProcessState.UNKNOWN);
 
-            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(resp.getBody()).isNotNull();
-            assertThat(resp.getBody().getNumberOfElements()).isEqualTo(0L);
+            if (field.canBeUnknown) {
+                assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+                assertThat(resp.getBody()).isNotNull();
+                assertThat(resp.getBody().getNumberOfElements()).isEqualTo(0L);
+            } else {
+                assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            }
+        }
+
+        private ResponseEntity<ProcessShortPage> get(ProcessField field, ProcessState yes) {
+            return restTemplate
+                    .getForEntity("/process/state?processField={field}&processState={state}", ProcessShortPage.class, field, yes);
         }
 
     }

@@ -17,11 +17,21 @@ import no.nav.data.polly.common.validator.Validated;
 public class ProcessStateRequest implements Validated {
 
     public enum ProcessState {
-        YES, NO, UNKNOWN;
+        YES, NO, UNKNOWN
     }
 
     public enum ProcessField {
-        DPIA, PROFILING, AUTOMATION, RETENTION;
+        DPIA, PROFILING, AUTOMATION, RETENTION, ALL_INFO_TYPES(false), MISSING_LEGBAS(false), MISSING_ART6(false), MISSING_ART9(false);
+
+        public final boolean canBeUnknown;
+
+        ProcessField() {
+            canBeUnknown = true;
+        }
+
+        ProcessField(boolean canBeUnknown) {
+            this.canBeUnknown = canBeUnknown;
+        }
     }
 
     private ProcessField processField;
@@ -33,6 +43,9 @@ public class ProcessStateRequest implements Validated {
         validator.checkRequiredEnum(Fields.processField, processField);
         validator.checkRequiredEnum(Fields.processState, processState);
         validator.checkCodelist(Fields.department, department, ListName.DEPARTMENT);
+        if (processState == ProcessState.UNKNOWN && processField != null && !processField.canBeUnknown) {
+            validator.addError(Fields.processState, processState.name(), "INVALID_STATE_FOR_FIELD", " is invalid for %s".formatted(processField));
+        }
     }
 
 }

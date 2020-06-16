@@ -93,6 +93,10 @@ public class FieldValidator {
         }
     }
 
+    public  <T extends Enum<T>> void addError(String fieldName, String fieldValue, String errorType, String message) {
+        validationErrors.add(new ValidationError(reference, errorType, "%s: %s %s".formatted(getFieldName(fieldName), fieldValue, message)));
+    }
+
     public void checkPattern(String fieldName, String value, Pattern pattern) {
         if (StringUtils.isBlank(value)) {
             return;
