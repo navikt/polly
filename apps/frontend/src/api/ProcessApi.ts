@@ -9,9 +9,20 @@ export const getProcess = async (processId: string) => {
   return data
 }
 
-export const getAllProcesses = async () =>{
-  const data = (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process/`)).data.content
-  return data
+export const getAllProcesses = async () => {
+  let processes: Process[] = []
+  const firstPage = await getProcessByPageNumber()
+  processes = [...firstPage.content]
+  console.log("Page size:", firstPage.pages)
+  console.log("Current page:", firstPage.pageNumber)
+  for (let pageNumber = firstPage.pageNumber + 1; pageNumber < firstPage.pages; pageNumber++) {
+    processes = [...processes, ...((await getProcessByPageNumber(pageNumber)).content)]
+  }
+  return processes
+}
+
+export const getProcessByPageNumber = async (pageNumber: number = 0, pageSize: number = 20) => {
+  return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process/?pageNumber=${pageNumber}&pageSize=${pageSize}`)).data
 }
 
 export const searchProcess = async (text: string) => {
