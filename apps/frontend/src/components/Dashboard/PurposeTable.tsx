@@ -1,21 +1,23 @@
 import React, {useEffect} from "react";
 import {getAllProcesses} from "../../api";
-import {Process} from "../../constants";
+import {Dpia, Process} from "../../constants";
 import {RouteComponentProps} from "react-router-dom";
 import {HeadingLarge} from "baseui/typography";
 import {Spinner} from "baseui/spinner";
 import {Cell, HeadCell, Row, Table} from "../common/Table";
 import {useTable} from "../../util/hooks";
 import {StyleObject} from "styletron-standard";
+import {codelist, ListName} from "../../service/Codelist";
+import RouteLink from "../common/RouteLink";
 
 interface PathProps {
-  filter?: 'PVK',
+  filterName?: 'PVK',
   filterValue?: string
 }
 
-const cellStyle:StyleObject = {
+const cellStyle: StyleObject = {
   maxWidth: '25%',
-  wordBreak:"break-word"
+  wordBreak: "break-word"
 }
 
 const PurposeTable = (props: RouteComponentProps<PathProps>) => {
@@ -35,30 +37,14 @@ const PurposeTable = (props: RouteComponentProps<PathProps>) => {
   }, [])
 
   const filter = (processes: Process[]) => {
-    if (props.match.params.filter === "PVK") {
-      processes = processes.filter(p => p.dpia === props.match.params.filterValue)
+    if (props.match.params.filterName === "PVK") {
+      console.log(processes.filter(p => (p.dpia as Dpia).needForDpia === (props.match.params.filterValue === 'NO' ? false : props.match.params.filterValue === 'UNSPECIFIED' ? null : true)))
+      return processes.filter(p => (p.dpia as Dpia).needForDpia === (props.match.params.filterValue === 'NO' ? false : props.match.params.filterValue === 'UNSPECIFIED' ? null : true))
     }
-    // if (teamType) {
-    //   processes = processes.filter(t => t.teamType === teamType)
-    // }
-    // if (teamSize) {
-    //   const from = parseInt(teamSize.substr(0, teamSize.indexOf('_')))
-    //   const to = parseInt(teamSize.substr(teamSize.indexOf('_') + 1))
-    //   processes = processes.filter(t => t.members.length >= from && t.members.length < to)
-    // }
-    // if (teamExt) {
-    //   const from = parseInt(teamExt.substr(0, teamExt.indexOf('_')))
-    //   const to = parseInt(teamExt.substr(teamExt.indexOf('_') + 1))
-    //   processes = processes.filter(t => {
-    //     const ext = t.members.filter(m => m.resource.resourceType === ResourceType.EXTERNAL).length
-    //     const extP = t.members.length === 0 ? 0 : ext * 100 / t.members.length
-    //     return extP >= from && extP < to
-    //   })
-    // }
     return processes
   }
 
-  const [table, sortColumn] = useTable<Process, keyof Process>(processes, {
+  const [table, sortColumn] = useTable<Process, keyof Process>(filtered, {
       useDefaultStringCompare: true,
       initialSortColumn: 'name',
       sorting: {
@@ -85,8 +71,8 @@ const PurposeTable = (props: RouteComponentProps<PathProps>) => {
       }>
         {table.data.map(process =>
           <Row key={process.id}>
-            <Cell $style={cellStyle}>{process.name}</Cell>
-            <Cell $style={cellStyle} >{process.purposeCode}</Cell>
+            <Cell $style={cellStyle}><RouteLink href={`/process/purpose/${process.purposeCode}/ALL/${process.id}`}>{process.name}</RouteLink></Cell>
+            <Cell $style={cellStyle}>{codelist.getShortname(ListName.PURPOSE, process.purposeCode)}</Cell>
             <Cell $style={cellStyle}>{(process.department) === null ? '' : process.department.shortName}</Cell>
             <Cell $style={cellStyle}>{process.status}</Cell>
           </Row>)}

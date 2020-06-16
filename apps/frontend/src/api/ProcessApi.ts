@@ -20,7 +20,7 @@ export const getAllProcesses = async () => {
   return [...processes, ...(await Promise.all(processPromises)).flatMap(p => p.content)]
 }
 
-export const getProcessByPageNumber = async (pageNumber: number = 0, pageSize: number = 20) => {
+export const getProcessByPageNumber = async (pageNumber: number = 0, pageSize: number = 200) => {
   return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process/?pageNumber=${pageNumber}&pageSize=${pageSize}`)).data
 }
 
