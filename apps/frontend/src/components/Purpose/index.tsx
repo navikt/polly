@@ -63,7 +63,6 @@ const ProcessList = ({ code, listName, match, history }: ProcessListProps & Rout
   }])
 
   useEffect(() => {
-    handleChangePanel(undefined)
     switch (match.params.filter) {
       case "ALL":
         setStatus([{ label: intl.allProcesses, id: 'ALL' }])
@@ -303,7 +302,7 @@ const ProcessList = ({ code, listName, match, history }: ProcessListProps & Rout
             onChange={(params: any) => {
               setStatus(params.value)
               history.push(generatePath(match.path,
-                { section: match.params.section, code, filter: params.value[0].id, processId: match.params.processId }
+                { section: match.params.section, code, filter: params.value[0].id, processId: undefined }
               ))
             }}
           />

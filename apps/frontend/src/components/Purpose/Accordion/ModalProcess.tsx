@@ -168,10 +168,10 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                     <FieldRiskOwner riskOwner={formikBag.values.dpia?.riskOwner}/>
                   </CustomizedModalBlock>}
 
-                  <CustomizedModalBlock>
+                  {!env.disableRiskOwner &&<CustomizedModalBlock>
                     <ModalLabel label={intl.riskOwnerFunction}/>
                     <FieldInput fieldName='dpia.riskOwnerFunction' fieldValue={formikBag.values.dpia?.riskOwnerFunction}/>
-                  </CustomizedModalBlock>
+                  </CustomizedModalBlock>}
 
                   <CustomizedModalBlock>
                     <ModalLabel label={intl.validityOfProcess}/>
