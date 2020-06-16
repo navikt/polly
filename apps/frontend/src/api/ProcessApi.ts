@@ -13,15 +13,15 @@ export const getAllProcesses = async () => {
   let processes: Process[] = []
   const firstPage = await getProcessByPageNumber()
   processes = [...firstPage.content]
-  console.log("Page size:", firstPage.pages)
-  console.log("Current page:", firstPage.pageNumber)
+  let processPromises: Promise<any>[] = []
   for (let pageNumber = firstPage.pageNumber + 1; pageNumber < firstPage.pages; pageNumber++) {
-    processes = [...processes, ...((await getProcessByPageNumber(pageNumber)).content)]
+    processPromises.push(getProcessByPageNumber(pageNumber))
   }
-  return processes
+  return [...processes, ...(await Promise.all(processPromises)).flatMap(p => p.content)]
 }
 
 export const getProcessByPageNumber = async (pageNumber: number = 0, pageSize: number = 20) => {
+  console.log(pageNumber)
   return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process/?pageNumber=${pageNumber}&pageSize=${pageSize}`)).data
 }
 
