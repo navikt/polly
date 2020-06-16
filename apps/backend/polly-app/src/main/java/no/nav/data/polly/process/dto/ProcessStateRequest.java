@@ -54,9 +54,6 @@ public class ProcessStateRequest implements Validated {
         validator.checkRequiredEnum(Fields.processField, processField);
         validator.checkRequiredEnum(Fields.processState, processState);
         validator.checkCodelist(Fields.department, department, ListName.DEPARTMENT);
-        if (processState == ProcessState.UNKNOWN && processField != null && processField.alertEvent) {
-            validator.addError(Fields.processState, processState.name(), "INVALID_STATE_FOR_FIELD", " is invalid for %s".formatted(processField));
-        }
     }
 
 }

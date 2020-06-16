@@ -10,6 +10,7 @@ import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessShortResponse;
 import no.nav.data.polly.process.dto.ProcessStateRequest;
+import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessState;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,6 +36,9 @@ public class ProcessStateController {
     @GetMapping
     public RestResponsePage<ProcessShortResponse> getProcesses(ProcessStateRequest request) {
         request.validateFieldsAndThrow();
+        if (request.getProcessField().alertEvent && request.getProcessState() != ProcessState.YES) {
+            return new RestResponsePage<>(List.of());
+        }
         List<Process> processes = processRepository.findForState(request.getProcessField(), request.getProcessState(), request.getDepartment());
         return new RestResponsePage<>(convert(processes, Process::convertToShortResponse));
     }

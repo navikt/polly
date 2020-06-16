@@ -65,6 +65,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
         return getProcesses(resp);
     }
 
+    @Override
     public List<Process> findForState(ProcessField processField, ProcessState processState, String department) {
         List<Map<String, Object>> resp = queryForState(processField, processState, department);
         return getProcesses(resp);
