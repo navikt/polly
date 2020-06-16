@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
@@ -64,11 +63,9 @@ public class DashboardController {
         var processCounts = countToMap(processRepository.countDepartmentCode(), department);
         var depComplete = countToMap(processRepository.countDepartmentCodeStatus(ProcessStatus.COMPLETED), department);
         var depInProg = countToMap(processRepository.countDepartmentCodeStatus(ProcessStatus.IN_PROGRESS), department);
-        var depLegalBasisAlerts = countToMap(
-                alertRepository.countDepartmentAlertEvents(
-                        List.of(MISSING_LEGAL_BASIS.name(), MISSING_ARTICLE_6.name(), MISSING_ARTICLE_9.name())
-                ),
-                department);
+        var depLegalBasisMissing = countToMap(alertRepository.countDepartmentAlertEvents(MISSING_LEGAL_BASIS.name()), department, true);
+        var depArt6Missing = countToMap(alertRepository.countDepartmentAlertEvents(MISSING_ARTICLE_6.name()), department, true);
+        var depArt9Missing = countToMap(alertRepository.countDepartmentAlertEvents(MISSING_ARTICLE_9.name()), department, true);
 
         var byDepartment = processCounts.entrySet().stream()
                 .map(e -> ProcessDashCount.builder()
@@ -77,7 +74,9 @@ public class DashboardController {
                         .processes(e.getValue())
                         .processesCompleted(depComplete.get(e.getKey()))
                         .processesInProgress(depInProg.get(e.getKey()))
-                        .processesMissingLegalBases(depLegalBasisAlerts.get(e.getKey()))
+                        .processesMissingLegalBases(depLegalBasisMissing.get(e.getKey()))
+                        .processesMissingArt6(depArt6Missing.get(e.getKey()))
+                        .processesMissingArt9(depArt9Missing.get(e.getKey()))
 
                         .dpia(getCount(ProcessField.DPIA, e.getValue(), e.getKey()))
                         .profiling(getCount(ProcessField.PROFILING, e.getValue(), e.getKey()))
@@ -94,7 +93,9 @@ public class DashboardController {
                         .processesInProgress(processRepository.countStatus(ProcessStatus.IN_PROGRESS))
 
                         .processesUsingAllInfoTypes(processRepository.countUsingAllInfoTypes())
-                        .processesMissingLegalBases(depLegalBasisAlerts.values().stream().mapToLong(Long::longValue).sum())
+                        .processesMissingLegalBases(depLegalBasisMissing.values().stream().mapToLong(Long::longValue).sum())
+                        .processesMissingArt6(depArt6Missing.values().stream().mapToLong(Long::longValue).sum())
+                        .processesMissingArt9(depArt9Missing.values().stream().mapToLong(Long::longValue).sum())
 
                         .dpia(getCount(ProcessField.DPIA, processes, null))
                         .profiling(getCount(ProcessField.PROFILING, processes, null))
