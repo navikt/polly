@@ -21,7 +21,6 @@ export const getAllProcesses = async () => {
 }
 
 export const getProcessByPageNumber = async (pageNumber: number = 0, pageSize: number = 20) => {
-  console.log(pageNumber)
   return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process/?pageNumber=${pageNumber}&pageSize=${pageSize}`)).data
 }
 
