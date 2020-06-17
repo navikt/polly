@@ -34,7 +34,7 @@ const PurposeTable = (props: RouteComponentProps<PathProps>) => {
   }, [])
 
   const filter = (processes: Process[]) => {
-    if (props.match.params.filterName === "PVK") {
+    if (props.match.params.filterName === 'PVK') {
       return processes.filter(p => (p.dpia as Dpia).needForDpia === (props.match.params.filterValue === 'NO' ? false : props.match.params.filterValue === 'UNSPECIFIED' ? null : true))
     }
     return processes
