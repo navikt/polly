@@ -1,12 +1,12 @@
-import { RouteComponentProps, withRouter } from 'react-router-dom'
-import { StyledLink } from 'baseui/link'
+import {RouteComponentProps, withRouter} from 'react-router-dom'
+import {StyledLink} from 'baseui/link'
 import React from 'react'
-import { KIND } from 'baseui/button'
-import { Block } from 'baseui/block'
-import { AuditButton } from '../audit/AuditButton'
-import { AuditItem, NavigableItem, ObjectType } from '../../constants'
-import { useStyletron } from 'baseui'
-import { ListName } from '../../service/Codelist'
+import {KIND} from 'baseui/button'
+import {Block} from 'baseui/block'
+import {AuditButton} from '../audit/AuditButton'
+import {AuditItem, NavigableItem, ObjectType} from '../../constants'
+import {useStyletron} from 'baseui'
+import {ListName} from '../../service/Codelist'
 
 type RouteLinkProps = {
   href: string
@@ -55,17 +55,17 @@ export const urlForObject = (type: NavigableItem, id: string, audit?: AuditItem)
       }
       return '/'
     case ListName.PURPOSE:
-      return `/process/purpose/ALL/${id}`
+      return `/process/purpose/${id}/ALL/`
     case 'team':
-      return `/process/team/ALL/${id}`
+      return `/process/team/${id}/ALL/`
     case 'productarea':
-      return `/process/productarea/${id}`
+      return `/process/productarea/${id}/ALL/`
     case ListName.DEPARTMENT:
-      return `/process/department/ALL/${id}`
+      return `/process/department/${id}/ALL/`
     case ListName.THIRD_PARTY:
       return `/thirdparty/${id}`
     case ListName.SUB_DEPARTMENT:
-      return `/process/subdepartment/ALL/${id}`
+      return `/process/subdepartment/${id}/ALL/`
   }
   console.warn('couldn\'t find object type ' + type)
   return ''
