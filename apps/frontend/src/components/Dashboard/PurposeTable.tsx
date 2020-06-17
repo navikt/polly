@@ -9,6 +9,7 @@ import {useTable} from "../../util/hooks";
 import {StyleObject} from "styletron-standard";
 import {codelist, ListName} from "../../service/Codelist";
 import RouteLink from "../common/RouteLink";
+import {intl} from "../../util";
 
 interface PathProps {
   filterName?: 'PVK',
@@ -21,24 +22,19 @@ const cellStyle: StyleObject = {
 }
 
 const PurposeTable = (props: RouteComponentProps<PathProps>) => {
-  const [processes, setProcesses] = React.useState<Process[]>([])
   const [loading, setLoading] = React.useState<boolean>(false)
   const [filtered, setFiltered] = React.useState<Process[]>([])
 
   useEffect(() => {
     (async () => {
       setLoading(true)
-      let response = await getAllProcesses()
-      setProcesses(response)
-      setFiltered(filter(response))
+      setFiltered(filter(await getAllProcesses()))
       setLoading(false)
-      console.log(response)
     })()
   }, [])
 
   const filter = (processes: Process[]) => {
     if (props.match.params.filterName === "PVK") {
-      console.log(processes.filter(p => (p.dpia as Dpia).needForDpia === (props.match.params.filterValue === 'NO' ? false : props.match.params.filterValue === 'UNSPECIFIED' ? null : true)))
       return processes.filter(p => (p.dpia as Dpia).needForDpia === (props.match.params.filterValue === 'NO' ? false : props.match.params.filterValue === 'UNSPECIFIED' ? null : true))
     }
     return processes
@@ -63,10 +59,10 @@ const PurposeTable = (props: RouteComponentProps<PathProps>) => {
       {!loading &&
       <Table emptyText={'teams'} headers={
         <>
-          <HeadCell title='Navn' column='name' tableState={[table, sortColumn]} $style={{maxWidth: '25%'}}/>
-          <HeadCell title='Formål' column='purposeCode' tableState={[table, sortColumn]} $style={{maxWidth: '25%'}}/>
-          <HeadCell title='Avdeling' column='department' tableState={[table, sortColumn]} $style={{maxWidth: '25%'}}/>
-          <HeadCell title='Status' column='status' tableState={[table, sortColumn]} $style={{maxWidth: '25%'}}/>
+          <HeadCell title={intl.name} column='name' tableState={[table, sortColumn]} $style={{maxWidth: '25%'}}/>
+          <HeadCell title={intl.purpose} column='purposeCode' tableState={[table, sortColumn]} $style={{maxWidth: '25%'}}/>
+          <HeadCell title={intl.department} column='department' tableState={[table, sortColumn]} $style={{maxWidth: '25%'}}/>
+          <HeadCell title={intl.status} column='status' tableState={[table, sortColumn]} $style={{maxWidth: '25%'}}/>
         </>
       }>
         {table.data.map(process =>
