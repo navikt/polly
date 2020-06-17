@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {getAllProcesses} from "../../api";
-import {Dpia, Process} from "../../constants";
+import {Dpia, Process, ProcessStatus} from "../../constants";
 import {RouteComponentProps} from "react-router-dom";
 import {HeadingLarge} from "baseui/typography";
 import {Spinner} from "baseui/spinner";
@@ -17,7 +17,6 @@ interface PathProps {
 }
 
 const cellStyle: StyleObject = {
-  maxWidth: '25%',
   wordBreak: "break-word"
 }
 
@@ -36,7 +35,7 @@ const PurposeTable = (props: RouteComponentProps<PathProps>) => {
   }, [])
 
   const changeTitle = () => {
-    if(props.match.params.filterName === "PVK"){
+    if (props.match.params.filterName === "PVK") {
       setTitle(`${intl.dpiaNeeded}: ${intl.getString(props.match.params.filterValue || '')} `)
     }
   }
@@ -52,8 +51,7 @@ const PurposeTable = (props: RouteComponentProps<PathProps>) => {
       useDefaultStringCompare: true,
       initialSortColumn: 'name',
       sorting: {
-        name: (a, b) => (a.name || '').localeCompare(b.name || ''),
-        purposeCode: (a, b) => (a.purposeCode || '').localeCompare(b.purposeCode || ''),
+        name: (a, b) => ((a.purposeCode) || '' + ':' + (a.name || '')).localeCompare(b.purposeCode || '' + ': ' + b.name || ''),
         department: (a, b) => (a.department === null ? ' ' : a.department.shortName).localeCompare(b.department === null ? ' ' : b.department.shortName),
         status: (a, b) => (a.status || '').localeCompare(b.status || '')
       }
@@ -67,20 +65,21 @@ const PurposeTable = (props: RouteComponentProps<PathProps>) => {
       {!loading &&
       <Table emptyText={'teams'} headers={
         <>
-          <HeadCell title={intl.name} column='name' tableState={[table, sortColumn]} $style={{maxWidth: '25%'}}/>
-          <HeadCell title={intl.purpose} column='purposeCode' tableState={[table, sortColumn]} $style={{maxWidth: '25%'}}/>
-          <HeadCell title={intl.department} column='department' tableState={[table, sortColumn]} $style={{maxWidth: '25%'}}/>
-          <HeadCell title={intl.status} column='status' tableState={[table, sortColumn]} $style={{maxWidth: '25%'}}/>
+          <HeadCell title={intl.process} column='name' tableState={[table, sortColumn]} $style={cellStyle}/>
+          <HeadCell title={intl.department} column='department' tableState={[table, sortColumn]} $style={cellStyle}/>
+          <HeadCell title={intl.status} column='status' tableState={[table, sortColumn]} $style={cellStyle}/>
         </>
       }>
         {table.data.map(process =>
           <Row key={process.id}>
-            <Cell $style={cellStyle}><RouteLink href={`/process/purpose/${process.purposeCode}/ALL/${process.id}`}>{process.name}</RouteLink></Cell>
-            <Cell $style={cellStyle}><RouteLink
-              href={`/process/purpose/${process.purposeCode}/ALL/`}>{codelist.getShortname(ListName.PURPOSE, process.purposeCode)}</RouteLink></Cell>
+            <Cell $style={cellStyle}>
+              <RouteLink href={`/process/purpose/${process.purposeCode}/ALL/${process.id}`}>
+                {codelist.getShortname(ListName.PURPOSE, process.purposeCode) + ': ' + process.name}
+              </RouteLink>
+            </Cell>
             <Cell $style={cellStyle}>{(process.department) === null ? '' :
               <RouteLink href={`/process/department/${process.department.code}/ALL/`}>{process.department.shortName}</RouteLink>}</Cell>
-            <Cell $style={cellStyle}>{process.status}</Cell>
+            <Cell $style={cellStyle}>{(process.status) === ProcessStatus.IN_PROGRESS ? intl.inProgress : intl.completedProcesses}</Cell>
           </Row>)}
       </Table>}
     </>
