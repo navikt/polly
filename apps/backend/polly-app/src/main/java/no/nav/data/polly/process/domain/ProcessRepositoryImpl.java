@@ -116,7 +116,8 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
         var equate = switch (processState) {
             case YES -> " = 'true'::jsonb";
             case NO -> " = 'false'::jsonb";
-            case UNKNOWN -> " is null ";
+            // force jsonb null to null
+            case UNKNOWN -> "->>0 is null ";
         };
         return loc + equate;
     }
