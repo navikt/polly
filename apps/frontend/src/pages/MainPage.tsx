@@ -98,7 +98,7 @@ export const Main = (props: RouteComponentProps) => {
             <Departments data={dashData}/>
 
             <Block marginTop={"2.5rem"}>
-              <Chart title='Behov for PVK' size={chartSize}
+              <Chart title={intl.dpiaNeeded} size={chartSize}
                      data={
                        [
                          {label: `${intl.yes}`, size: dashData.allProcesses.dpia.yes, onClick: () => pvkClick("yes")},
