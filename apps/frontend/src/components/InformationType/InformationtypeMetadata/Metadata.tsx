@@ -1,20 +1,20 @@
 import * as React from 'react'
-import {ReactNode, useEffect, useState} from 'react'
-import {Block} from 'baseui/block'
-import {InformationType} from '../../../constants'
-import {FlexGrid, FlexGridItem} from 'baseui/flex-grid'
-import {IconDefinition} from '@fortawesome/fontawesome-common-types'
-import {intl, theme} from '../../../util'
-import {Label2} from 'baseui/typography'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faExternalLinkAlt, faTimesCircle, faUserShield} from '@fortawesome/free-solid-svg-icons'
-import {Code} from '../../../service/Codelist'
-import {sensitivityColor} from '../Sensitivity'
-import {getTerm, mapTermToOption} from '../../../api'
-import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
-import {StyledLink} from 'baseui/link'
-import {marginZero} from '../../common/Style'
-import {DotTags} from '../../common/DotTag'
+import { ReactNode, useEffect, useState } from 'react'
+import { Block } from 'baseui/block'
+import { InformationType } from '../../../constants'
+import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
+import { IconDefinition } from '@fortawesome/fontawesome-common-types'
+import { intl, theme } from '../../../util'
+import { Label2 } from 'baseui/typography'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faExternalLinkAlt, faTimesCircle, faUserShield } from '@fortawesome/free-solid-svg-icons'
+import { Code } from '../../../service/Codelist'
+import { sensitivityColor } from '../Sensitivity'
+import { getTerm, mapTermToOption } from '../../../api'
+import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
+import { StyledLink } from 'baseui/link'
+import { marginZero } from '../../common/Style'
+import { DotTags } from '../../common/DotTag'
 
 const renderCodesToLinks = (sources: Code[]) =>
   sources.map((source, index) => (
@@ -63,10 +63,10 @@ const DescriptionData = (props: { termId?: string, description: string, keywords
   return (
     <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
       <FlexGridItem>
-        <Block display={"flex"}/>
+        <Block display='flex'/>
         <TextWithLabel label={intl.term} text={term || intl.noTerm} error={termError ? intl.couldntLoadTerm : undefined}/>
         {term && (
-          <StyledLink href={`https://data.adeo.no/begrep/${props.termId}`}>
+          <StyledLink target="_blank" rel="noopener noreferrer" href={`https://data.adeo.no/begrep/${props.termId}`}>
             <FontAwesomeIcon icon={faExternalLinkAlt}/>
           </StyledLink>
         )}
