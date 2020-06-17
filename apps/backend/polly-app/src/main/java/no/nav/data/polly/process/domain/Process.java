@@ -99,11 +99,11 @@ public class Process extends Auditable {
                 .name(name)
                 .description(data.getDescription())
                 .purposeCode(purposeCode)
-                .department(getDepartmentCode())
-                .subDepartments(getSubDepartmentCodes())
-                .commonExternalProcessResponsible(getCommonExternalProcessResponsibleCode())
+                .department(getDepartmentCodeResponse())
+                .subDepartments(getSubDepartmentCodeResponses())
+                .commonExternalProcessResponsible(getCommonExternalProcessResponsibleCodeResponse())
                 .productTeams(nullToEmptyList(data.getProductTeams()))
-                .products(getProductCodes())
+                .products(getProductCodeResponses())
                 .start(data.getStart())
                 .end(data.getEnd())
                 .legalBases(convert(data.getLegalBases(), LegalBasis::convertToResponse))
@@ -209,22 +209,32 @@ public class Process extends Auditable {
     }
 
     public ProcessShortResponse convertToShortResponse() {
-        return new ProcessShortResponse(getId(), getName(), CodelistService.getCodelistResponse(ListName.PURPOSE, purposeCode));
+        return ProcessShortResponse.builder()
+                .id(getId())
+                .name(getName())
+                .department(getDepartmentCodeResponse())
+                .purposeCode(getPurposeCodeResponse())
+                .status(getData().getStatus())
+                .build();
     }
 
-    private CodelistResponse getDepartmentCode() {
+    private CodelistResponse getPurposeCodeResponse() {
+        return CodelistService.getCodelistResponse(ListName.PURPOSE, purposeCode);
+    }
+
+    private CodelistResponse getDepartmentCodeResponse() {
         return CodelistService.getCodelistResponse(ListName.DEPARTMENT, data.getDepartment());
     }
 
-    private List<CodelistResponse> getSubDepartmentCodes() {
+    private List<CodelistResponse> getSubDepartmentCodeResponses() {
         return CodelistService.getCodelistResponseList(ListName.SUB_DEPARTMENT, data.getSubDepartments());
     }
 
-    private CodelistResponse getCommonExternalProcessResponsibleCode() {
+    private CodelistResponse getCommonExternalProcessResponsibleCodeResponse() {
         return CodelistService.getCodelistResponse(ListName.THIRD_PARTY, data.getCommonExternalProcessResponsible());
     }
 
-    private List<CodelistResponse> getProductCodes() {
+    private List<CodelistResponse> getProductCodeResponses() {
         return CodelistService.getCodelistResponseList(ListName.SYSTEM, data.getProducts());
     }
 
