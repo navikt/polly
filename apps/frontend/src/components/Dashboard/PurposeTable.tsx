@@ -24,18 +24,26 @@ const cellStyle: StyleObject = {
 const PurposeTable = (props: RouteComponentProps<PathProps>) => {
   const [loading, setLoading] = React.useState<boolean>(false)
   const [filtered, setFiltered] = React.useState<Process[]>([])
+  const [title, setTitle] = React.useState('')
 
   useEffect(() => {
     (async () => {
       setLoading(true)
+      changeTitle()
       setFiltered(filter(await getAllProcesses()))
       setLoading(false)
     })()
   }, [])
 
+  const changeTitle = () => {
+    if(props.match.params.filterName === "PVK"){
+      setTitle(`${intl.dpiaNeeded}: ${intl.getString(props.match.params.filterValue || '')} `)
+    }
+  }
+
   const filter = (processes: Process[]) => {
     if (props.match.params.filterName === 'PVK') {
-      return processes.filter(p => (p.dpia as Dpia).needForDpia === (props.match.params.filterValue === 'NO' ? false : props.match.params.filterValue === 'UNSPECIFIED' ? null : true))
+      return processes.filter(p => (p.dpia as Dpia).needForDpia === (props.match.params.filterValue === 'no' ? false : props.match.params.filterValue === 'unclarified' ? null : true))
     }
     return processes
   }
@@ -54,7 +62,7 @@ const PurposeTable = (props: RouteComponentProps<PathProps>) => {
 
   return (
     <>
-      <HeadingLarge>Teams ({table.data.length})</HeadingLarge>
+      <HeadingLarge>{title}</HeadingLarge>
       {loading && <Spinner size='80px'/>}
       {!loading &&
       <Table emptyText={'teams'} headers={
@@ -68,8 +76,10 @@ const PurposeTable = (props: RouteComponentProps<PathProps>) => {
         {table.data.map(process =>
           <Row key={process.id}>
             <Cell $style={cellStyle}><RouteLink href={`/process/purpose/${process.purposeCode}/ALL/${process.id}`}>{process.name}</RouteLink></Cell>
-            <Cell $style={cellStyle}><RouteLink href={`/process/purpose/${process.purposeCode}/ALL/`}>{codelist.getShortname(ListName.PURPOSE, process.purposeCode)}</RouteLink></Cell>
-            <Cell $style={cellStyle}>{(process.department) === null ? '' : <RouteLink href={`/process/department/${process.department.code}/ALL/`}>{process.department.shortName}</RouteLink>}</Cell>
+            <Cell $style={cellStyle}><RouteLink
+              href={`/process/purpose/${process.purposeCode}/ALL/`}>{codelist.getShortname(ListName.PURPOSE, process.purposeCode)}</RouteLink></Cell>
+            <Cell $style={cellStyle}>{(process.department) === null ? '' :
+              <RouteLink href={`/process/department/${process.department.code}/ALL/`}>{process.department.shortName}</RouteLink>}</Cell>
             <Cell $style={cellStyle}>{process.status}</Cell>
           </Row>)}
       </Table>}

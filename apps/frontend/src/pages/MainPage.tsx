@@ -101,9 +101,9 @@ export const Main = (props: RouteComponentProps) => {
               <Chart title='Behov for PVK' size={chartSize}
                      data={
                        [
-                         {label: 'Ja', size: dashData.allProcesses.dpia.yes, onClick: () => pvkClick("YES")},
-                         {label: 'Nei', size: dashData.allProcesses.dpia.no, onClick: () => pvkClick("NO")},
-                         {label: 'Uavklart', size: dashData.allProcesses.dpia.unknown, onClick: () => pvkClick("UNSPECIFIED")},
+                         {label: `${intl.yes}`, size: dashData.allProcesses.dpia.yes, onClick: () => pvkClick("yes")},
+                         {label: `${intl.no}`, size: dashData.allProcesses.dpia.no, onClick: () => pvkClick("no")},
+                         {label: `${intl.unclarified}`, size: dashData.allProcesses.dpia.unknown, onClick: () => pvkClick("unclarified")},
                        ]
                      }/>
             </Block>
