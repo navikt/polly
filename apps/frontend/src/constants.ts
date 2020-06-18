@@ -447,7 +447,7 @@ export interface AlertEvent {
   informationType?: InformationTypeShort;
   type: AlertEventType;
   level: AlertEventLevel;
-  time: string;
+  changeStamp: ChangeStamp;
 }
 
 export type RecursivePartial<T> = {
