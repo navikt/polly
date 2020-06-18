@@ -211,7 +211,7 @@ public class AlertIT extends IntegrationTestBase {
                 assertThat(eventsResponse.getBody().getContent()).hasSize(2);
                 assertThat(eventsResponse.getBody().getTotalElements()).isEqualTo(4L);
 
-                assertThat(eventsResponse.getBody().getContent().get(0).getTime()).isEqualTo(gs.getCreatedDate());
+                assertThat(eventsResponse.getBody().getContent().get(0).getChangeStamp().getLastModifiedDate()).isEqualTo(gs.getCreatedDate());
             }
 
             @Test
