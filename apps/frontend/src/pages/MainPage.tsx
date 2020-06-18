@@ -80,7 +80,7 @@ export const Main = (props: RouteComponentProps) => {
   const [dashData, setDashData] = useState<DashboardData>()
   const chartSize = 80
 
-  const clickOnPieChartSlice = (processField: ProcessField, processState: ProcessState) => props.history.push(`/dashboard/${ProcessField.DPIA}/${processState}`)
+  const clickOnPieChartSlice = (processField: ProcessField, processState: ProcessState) => props.history.push(`/dashboard/${processField}/${processState}`)
 
   useEffect(() => {
     (async () => {
