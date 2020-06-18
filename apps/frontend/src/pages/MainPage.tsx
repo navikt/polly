@@ -1,30 +1,31 @@
-import { intl, theme, useAwait } from "../util"
-import { user } from "../service/User"
+import {intl, theme, useAwait} from "../util"
+import {user} from "../service/User"
 import * as React from "react"
-import { useEffect, useState } from "react"
-import { Block } from "baseui/block"
-import { getEvents } from "../api/AuditApi"
-import { AuditAction, Event, ObjectType, PageResponse, Settings, DashboardData } from "../constants"
-import { StatefulTabs, Tab } from "baseui/tabs"
-import { HeadingMedium, Label2 } from "baseui/typography"
+import {useEffect, useState} from "react"
+import {Block} from "baseui/block"
+import {getEvents} from "../api/AuditApi"
+import {AuditAction, DashboardData, Event, ObjectType, PageResponse, ProcessField, ProcessState, Settings} from "../constants"
+import {StatefulTabs, Tab} from "baseui/tabs"
+import {HeadingMedium, Label2} from "baseui/typography"
 import moment from "moment"
-import { ObjectLink } from "../components/common/RouteLink"
-import { Option, StatefulSelect, Value } from "baseui/select"
-import { AuditActionIcon } from "../components/audit/AuditComponents"
-import { PLACEMENT } from "baseui/popover"
-import { StatefulTooltip } from "baseui/tooltip"
-import { getSettings } from "../api/SettingsApi"
+import {ObjectLink} from "../components/common/RouteLink"
+import {Option, StatefulSelect, Value} from "baseui/select"
+import {AuditActionIcon} from "../components/audit/AuditComponents"
+import {PLACEMENT} from "baseui/popover"
+import {StatefulTooltip} from "baseui/tooltip"
+import {getSettings} from "../api/SettingsApi"
 import ReactMarkdown from "react-markdown/with-html"
-import { Card } from "baseui/card"
-import { cardShadow } from "../components/common/Style"
-import DepartmentCard from "../components/Dashboard/Departments"
+import {Card} from "baseui/card"
+import {cardShadow} from "../components/common/Style"
 import Departments from "../components/Dashboard/Departments"
-import { getDashboard } from "../api"
+import {getDashboard} from "../api"
+import {Chart} from "../components/Dashboard/Chart";
+import {RouteComponentProps} from "react-router-dom"
 
 const LastEvents = () => {
   const [events, setEvents] = useState<PageResponse<Event>>()
   const [table, setTable] = useState<ObjectType>(ObjectType.INFORMATION_TYPE)
-  const [action, setAction] = useState<Value>([{ id: AuditAction.CREATE, label: intl.CREATE } as Option])
+  const [action, setAction] = useState<Value>([{id: AuditAction.CREATE, label: intl.CREATE} as Option])
 
   useEffect(() => {
     (async () => {
@@ -36,7 +37,7 @@ const LastEvents = () => {
     <Block key={event.id} marginBottom=".3rem">
       <ObjectLink id={event.tableId} type={event.table} disable={event.action === AuditAction.DELETE} hideUnderline>
         <span>
-          <AuditActionIcon action={event.action} />
+          <AuditActionIcon action={event.action}/>
           <StatefulTooltip content={moment(event.time).format('lll')} placement={PLACEMENT.top}>{moment(event.time).fromNow()}</StatefulTooltip>
           : {event.name}
         </span>
@@ -53,8 +54,8 @@ const LastEvents = () => {
           <StatefulSelect
             size="compact"
             clearable={false}
-            options={Object.keys(AuditAction).map(auditAction => ({ id: auditAction, label: intl[auditAction as AuditAction] }))}
-            initialState={{ value: action }} onChange={params => setAction(params.value)}
+            options={Object.keys(AuditAction).map(auditAction => ({id: auditAction, label: intl[auditAction as AuditAction]}))}
+            initialState={{value: action}} onChange={params => setAction(params.value)}
           />
         </Block>
       </Block>
@@ -64,7 +65,7 @@ const LastEvents = () => {
           {Object.keys(ObjectType).filter(tableName => tableName !== ObjectType.GENERIC_STORAGE && tableName !== ObjectType.CODELIST)
             .map(tableName =>
               <Tab key={tableName}
-                title={(intl as any)[tableName] || tableName}>{content}
+                   title={(intl as any)[tableName] || tableName}>{content}
               </Tab>)}
         </StatefulTabs>
       </Block>
@@ -72,11 +73,14 @@ const LastEvents = () => {
   )
 }
 
-export const Main = () => {
+export const Main = (props: RouteComponentProps) => {
   useAwait(user.wait())
   const [settings, setSettings] = useState<Settings>()
   const [isLoading, setLoading] = useState(true)
   const [dashData, setDashData] = useState<DashboardData>()
+  const chartSize = 80
+
+  const clickOnPieChartSlice = (processField: ProcessField, processState: ProcessState) => props.history.push(`/dashboard/${processField}/${processState}`)
 
   useEffect(() => {
     (async () => {
@@ -91,17 +95,28 @@ export const Main = () => {
       {
         !isLoading && dashData && (
           <>
-            <Departments data={dashData} />
+            <Departments data={dashData}/>
+
+            <Block marginTop={"2.5rem"}>
+              <Chart title={intl.dpiaNeeded} size={chartSize}
+                     data={
+                       [
+                         {label: `${intl.yes}`, size: dashData.allProcesses.dpia.yes, onClick: () => clickOnPieChartSlice(ProcessField.DPIA, ProcessState.YES)},
+                         {label: `${intl.no}`, size: dashData.allProcesses.dpia.no, onClick: () => clickOnPieChartSlice(ProcessField.DPIA, ProcessState.NO)},
+                         {label: `${intl.unclarified}`, size: dashData.allProcesses.dpia.unknown, onClick: () => clickOnPieChartSlice(ProcessField.DPIA, ProcessState.UNKNOWN)},
+                       ]
+                     }/>
+            </Block>
 
             <Block marginTop="2.5rem">
               <Card overrides={cardShadow}>
-                <ReactMarkdown source={settings?.frontpageMessage} escapeHtml={false} />
+                <ReactMarkdown source={settings?.frontpageMessage} escapeHtml={false}/>
               </Card>
             </Block>
 
             <Block width="100%" display="flex" alignContent="center" marginTop="2.5rem">
               {user.isAdmin() &&
-                <LastEvents />
+              <LastEvents/>
               }
             </Block>
           </>

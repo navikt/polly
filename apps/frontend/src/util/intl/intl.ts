@@ -1,8 +1,8 @@
-import LocalizedStrings, { GlobalStrings, LocalizedStringsMethods } from 'react-localization'
+import LocalizedStrings, {GlobalStrings, LocalizedStringsMethods} from 'react-localization'
 import * as React from 'react'
-import { useEffect } from 'react'
-import { useForceUpdate } from '../hooks'
-import { en, no, ta } from './lang'
+import {useEffect} from 'react'
+import {useForceUpdate} from '../hooks'
+import {en, no, ta} from './lang'
 
 import * as moment from 'moment'
 import 'moment/locale/nb'
@@ -57,6 +57,7 @@ export interface IStrings {
   yes: string;
   no: string;
   unclarified: string;
+  unknown: string;
   notFilled: string;
   automation: string;
   status: string;
@@ -82,6 +83,7 @@ export interface IStrings {
   notInProduction: string;
   isDpiaRequired: string;
   dpiaReference: string;
+  dpiaNeeded:string;
   grounds: string;
   reference: string;
   ground: string;

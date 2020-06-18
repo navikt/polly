@@ -1,4 +1,4 @@
-import { IStrings } from "./intl";
+import {IStrings} from "./intl";
 
 export const no: IStrings = {
   informationType: "Opplysningstype",
@@ -44,6 +44,7 @@ export const no: IStrings = {
   aboutUs: "Om Behandlingskatalogen",
   includeConservationPlan: "Omfattes av bevarings- og kassasjonsplan?",
   unclarified: "Uavklart",
+  unknown: "Uavklart",
   notFilled: "Ikke utfylt",
   automation: "Automatisering",
   automaticProcessing: "Helautomatisk behandling",
@@ -259,6 +260,7 @@ export const no: IStrings = {
   inProduction: "I produksjon",
   notInProduction: "Ikke i produksjon",
   isDpiaRequired: "Er det behov for personvernkonsekvensvurdering (PVK)?",
+  dpiaNeeded: "Behov for PVK",
   lastModified: "Sist endret av {0}, {1}",
   fomDateHelpText: "Fra og med-dato er preutfylt med den datoen NAV ble opprettet. For behandlinger med senere fom-dato, må denne endres. Datoen kan også settes frem i tid.",
   tomDateHelpText: "Til og med-dato skal kun oppgis dersom behandlingen er midlertidig og har en sluttdato.",
@@ -386,6 +388,7 @@ export const en: IStrings = {
   aboutUs: "About process catalog",
   includeConservationPlan: "Are you covered by a disposal and retention plan?",
   unclarified: "Unclarified",
+  unknown: "Unknown",
   notFilled: "Not filled",
   automation: "Automation",
   automaticProcessing: "Automatic Processing",
@@ -520,6 +523,7 @@ export const en: IStrings = {
   inProduction: "In production",
   notInProduction: "Not in production",
   isDpiaRequired: "Is DPIA required?",
+  dpiaNeeded: "Need for DPIA",
   lastModified: "Last modified by {0}, {1}",
 
   POLLY_READ: "Read",

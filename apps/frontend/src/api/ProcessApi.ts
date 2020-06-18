@@ -1,12 +1,31 @@
 import axios from 'axios'
-import { PageResponse, Process, ProcessCount, ProcessFormValues, ProcessStatus } from '../constants'
-import { env } from '../util/env'
-import { convertLegalBasesToFormValues } from './PolicyApi'
+import {PageResponse, Process, ProcessCount, ProcessField, ProcessFormValues, ProcessState, ProcessStatus, SimpleProcess} from '../constants'
+import {env} from '../util/env'
+import {convertLegalBasesToFormValues} from './PolicyApi'
 
 export const getProcess = async (processId: string) => {
   const data = (await axios.get<Process>(`${env.pollyBaseUrl}/process/${processId}`)).data
   data.policies.forEach(p => p.process = {...data, policies: []})
   return data
+}
+
+export const getAllProcesses = async () => {
+  let processes: Process[] = []
+  const firstPage = await getProcessByPageNumber()
+  processes = [...firstPage.content]
+  let processPromises: Promise<any>[] = []
+  for (let pageNumber = firstPage.pageNumber + 1; pageNumber < firstPage.pages; pageNumber++) {
+    processPromises.push(getProcessByPageNumber(pageNumber))
+  }
+  return [...processes, ...(await Promise.all(processPromises)).flatMap(p => p.content)]
+}
+
+export const getProcessByPageNumber = async (pageNumber: number = 0, pageSize: number = 200) => {
+  return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process/?pageNumber=${pageNumber}&pageSize=${pageSize}`)).data
+}
+
+export const getProcessByState = async (processField: ProcessField, processState: ProcessState) => {
+  return (await axios.get<PageResponse<SimpleProcess>>(`${env.pollyBaseUrl}/process/state?processField=${processField}&processState=${processState}`)).data.content
 }
 
 export const searchProcess = async (text: string) => {

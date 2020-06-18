@@ -1,6 +1,6 @@
-import { Code, codelist, ListName } from "./service/Codelist";
-import { ColumnCompares } from "./util/hooks";
-import { intl } from "./util";
+import {Code, codelist, ListName} from "./service/Codelist";
+import {ColumnCompares} from "./util/hooks";
+import {intl} from "./util";
 
 export interface InformationtypeFormValues {
   id?: string;
@@ -197,6 +197,14 @@ export interface Process extends IDurationed {
   retention?: Retention;
 }
 
+export interface SimpleProcess {
+  id:string;
+  name: string;
+  department: Code;
+  purposeCode:Code;
+  status?: ProcessStatus;
+}
+
 export interface ChangeStamp {
   lastModifiedBy: string;
   lastModifiedDate: string;
@@ -358,6 +366,24 @@ export enum ObjectType {
   GENERIC_STORAGE = "GENERIC_STORAGE",
 }
 
+export enum ProcessField {
+  DPIA = "DPIA",
+  PROFILING = "PROFILING",
+  AUTOMATION = "AUTOMATION",
+  RETENTION = "RETENTION",
+  EXCESS_INFO = "EXCESS_INFO",
+  USES_ALL_INFO_TYPE = "USES_ALL_INFO_TYPE",
+  MISSING_LEGAL_BASIS = "MISSING_LEGAL_BASIS",
+  MISSING_ARTICLE_6 = "MISSING_ARTICLE_6",
+  MISSING_ARTICLE_9 = "MISSING_ARTICLE_9",
+}
+
+export enum ProcessState {
+  YES = "YES",
+  NO = "NO",
+  UNKNOWN = "UNKNOWN"
+}
+
 export type NavigableItem = ObjectType | ListName.PURPOSE | ListName.DEPARTMENT | ListName.SUB_DEPARTMENT | ListName.THIRD_PARTY | 'team' | 'productarea';
 
 export interface AuditItem {
@@ -465,6 +491,8 @@ export interface AllProcesses {
   processesInProgress: number;
   processesMissingLegalBases: number;
   processesUsingAllInfoTypes: number;
+  processesMissingArt6: number;
+  processesMissingArt9: number;
   dpia: Counter;
   profiling: Counter | null;
   automation: Counter | null;
