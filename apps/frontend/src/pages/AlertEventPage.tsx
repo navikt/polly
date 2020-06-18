@@ -133,7 +133,7 @@ const AlertEventPageImpl = (props: RouteComponentProps<{ objectType?: 'informati
           <>
             <HeadCell title={intl.process}/>
             <HeadCell title={intl.informationType}/>
-            <HeadCell title={intl.level + ' ' + intl.type}/>
+            <HeadCell title={intl.level + ' - ' + intl.type}/>
             <HeadCell title={intl.time}/>
             <HeadCell title={intl.user}/>
           </>
@@ -158,7 +158,7 @@ const AlertEventPageImpl = (props: RouteComponentProps<{ objectType?: 'informati
                 : ''}
             </Cell>
 
-            <Cell>{intl[event.level]} {intl[event.type]}</Cell>
+            <Cell>{intl[event.level]} - {intl[event.type]}</Cell>
             <Cell>{moment(event.changeStamp.lastModifiedDate).format('lll')}</Cell>
             <Cell>{event.changeStamp.lastModifiedBy}</Cell>
           </Row>)}
