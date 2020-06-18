@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {getProcessByState} from "../../api";
-import {Dpia, Process, ProcessField, ProcessState, ProcessStatus, SimpleProcess} from "../../constants";
+import {ProcessField, ProcessState, ProcessStatus, SimpleProcess} from "../../constants";
 import {RouteComponentProps} from "react-router-dom";
 import {HeadingLarge} from "baseui/typography";
 import {Spinner} from "baseui/spinner";
@@ -38,13 +38,6 @@ const PurposeTable = (props: RouteComponentProps<PathProps>) => {
     if (props.match.params.filterName === ProcessField.DPIA) {
       setTitle(`${intl.dpiaNeeded}: ${intl.getString(props.match.params.filterValue.toLowerCase() || '')} `)
     }
-  }
-
-  const filter = (processes: Process[]) => {
-    if (props.match.params.filterName === ProcessField.DPIA) {
-      return processes.filter(p => (p.dpia as Dpia).needForDpia === (props.match.params.filterValue === ProcessState.NO ? false : props.match.params.filterValue === ProcessState.UNKNOWN ? null : true))
-    }
-    return processes
   }
 
   const [table, sortColumn] = useTable<SimpleProcess, keyof SimpleProcess>(filtered, {
