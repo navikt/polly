@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
-import {getAllProcesses} from "../../api";
-import {Dpia, Process, ProcessStatus} from "../../constants";
+import {getProcessByState} from "../../api";
+import {Dpia, Process, ProcessField, ProcessState, ProcessStatus, SimpleProcess} from "../../constants";
 import {RouteComponentProps} from "react-router-dom";
 import {HeadingLarge} from "baseui/typography";
 import {Spinner} from "baseui/spinner";
@@ -12,8 +12,8 @@ import RouteLink from "../common/RouteLink";
 import {intl} from "../../util";
 
 interface PathProps {
-  filterName?: 'PVK',
-  filterValue?: string
+  filterName: ProcessField,
+  filterValue: ProcessState
 }
 
 const cellStyle: StyleObject = {
@@ -22,36 +22,36 @@ const cellStyle: StyleObject = {
 
 const PurposeTable = (props: RouteComponentProps<PathProps>) => {
   const [loading, setLoading] = React.useState<boolean>(false)
-  const [filtered, setFiltered] = React.useState<Process[]>([])
+  const [filtered, setFiltered] = React.useState<SimpleProcess[]>([])
   const [title, setTitle] = React.useState('')
 
   useEffect(() => {
     (async () => {
       setLoading(true)
       changeTitle()
-      setFiltered(filter(await getAllProcesses()))
+      setFiltered(await getProcessByState(props.match.params.filterName, props.match.params.filterValue))
       setLoading(false)
     })()
   }, [])
 
   const changeTitle = () => {
-    if (props.match.params.filterName === "PVK") {
-      setTitle(`${intl.dpiaNeeded}: ${intl.getString(props.match.params.filterValue || '')} `)
+    if (props.match.params.filterName === ProcessField.DPIA) {
+      setTitle(`${intl.dpiaNeeded}: ${intl.getString(props.match.params.filterValue.toLowerCase() || '')} `)
     }
   }
 
   const filter = (processes: Process[]) => {
-    if (props.match.params.filterName === 'PVK') {
-      return processes.filter(p => (p.dpia as Dpia).needForDpia === (props.match.params.filterValue === 'no' ? false : props.match.params.filterValue === 'unclarified' ? null : true))
+    if (props.match.params.filterName === ProcessField.DPIA) {
+      return processes.filter(p => (p.dpia as Dpia).needForDpia === (props.match.params.filterValue === ProcessState.NO ? false : props.match.params.filterValue === ProcessState.UNKNOWN ? null : true))
     }
     return processes
   }
 
-  const [table, sortColumn] = useTable<Process, keyof Process>(filtered, {
+  const [table, sortColumn] = useTable<SimpleProcess, keyof SimpleProcess>(filtered, {
       useDefaultStringCompare: true,
       initialSortColumn: 'name',
       sorting: {
-        name: (a, b) => ((a.purposeCode) || '' + ':' + (a.name || '')).localeCompare(b.purposeCode || '' + ': ' + b.name || ''),
+        name: (a, b) => ((a.purposeCode.shortName) || '' + ':' + (a.name || '')).localeCompare(b.purposeCode.shortName || '' + ': ' + b.name || ''),
         department: (a, b) => (a.department === null ? ' ' : a.department.shortName).localeCompare(b.department === null ? ' ' : b.department.shortName),
         status: (a, b) => (a.status || '').localeCompare(b.status || '')
       }
@@ -74,7 +74,7 @@ const PurposeTable = (props: RouteComponentProps<PathProps>) => {
           <Row key={process.id}>
             <Cell $style={cellStyle}>
               <RouteLink href={`/process/purpose/${process.purposeCode}/ALL/${process.id}`}>
-                {codelist.getShortname(ListName.PURPOSE, process.purposeCode) + ': ' + process.name}
+                {codelist.getShortname(ListName.PURPOSE, process.purposeCode.shortName) + ': ' + process.name}
               </RouteLink>
             </Cell>
             <Cell $style={cellStyle}>{(process.department) === null ? '' :

@@ -4,7 +4,7 @@ import * as React from "react"
 import {useEffect, useState} from "react"
 import {Block} from "baseui/block"
 import {getEvents} from "../api/AuditApi"
-import {AuditAction, DashboardData, Event, ObjectType, PageResponse, Settings} from "../constants"
+import {AuditAction, DashboardData, Event, ObjectType, PageResponse, ProcessField, ProcessState, Settings} from "../constants"
 import {StatefulTabs, Tab} from "baseui/tabs"
 import {HeadingMedium, Label2} from "baseui/typography"
 import moment from "moment"
@@ -80,7 +80,7 @@ export const Main = (props: RouteComponentProps) => {
   const [dashData, setDashData] = useState<DashboardData>()
   const chartSize = 80
 
-  const pvkClick = (pvkState: string) => props.history.push(`/dashboard/PVK/${pvkState}`)
+  const clickOnPieChartSlice = (processField: ProcessField, processState: ProcessState) => props.history.push(`/dashboard/${ProcessField.DPIA}/${processState}`)
 
   useEffect(() => {
     (async () => {
@@ -101,9 +101,9 @@ export const Main = (props: RouteComponentProps) => {
               <Chart title={intl.dpiaNeeded} size={chartSize}
                      data={
                        [
-                         {label: `${intl.yes}`, size: dashData.allProcesses.dpia.yes, onClick: () => pvkClick("yes")},
-                         {label: `${intl.no}`, size: dashData.allProcesses.dpia.no, onClick: () => pvkClick("no")},
-                         {label: `${intl.unclarified}`, size: dashData.allProcesses.dpia.unknown, onClick: () => pvkClick("unclarified")},
+                         {label: `${intl.yes}`, size: dashData.allProcesses.dpia.yes, onClick: () => clickOnPieChartSlice(ProcessField.DPIA, ProcessState.YES)},
+                         {label: `${intl.no}`, size: dashData.allProcesses.dpia.no, onClick: () => clickOnPieChartSlice(ProcessField.DPIA, ProcessState.NO)},
+                         {label: `${intl.unclarified}`, size: dashData.allProcesses.dpia.unknown, onClick: () => clickOnPieChartSlice(ProcessField.DPIA, ProcessState.UNKNOWN)},
                        ]
                      }/>
             </Block>

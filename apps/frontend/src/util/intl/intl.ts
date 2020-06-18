@@ -57,6 +57,7 @@ export interface IStrings {
   yes: string;
   no: string;
   unclarified: string;
+  unknown: string;
   notFilled: string;
   automation: string;
   status: string;
