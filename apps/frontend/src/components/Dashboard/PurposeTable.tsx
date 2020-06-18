@@ -73,7 +73,7 @@ const PurposeTable = (props: RouteComponentProps<PathProps>) => {
         {table.data.map(process =>
           <Row key={process.id}>
             <Cell $style={cellStyle}>
-              <RouteLink href={`/process/purpose/${process.purposeCode}/ALL/${process.id}`}>
+              <RouteLink href={`/process/purpose/${process.purposeCode.code}/ALL/${process.id}`}>
                 {codelist.getShortname(ListName.PURPOSE, process.purposeCode.shortName) + ': ' + process.name}
               </RouteLink>
             </Cell>
