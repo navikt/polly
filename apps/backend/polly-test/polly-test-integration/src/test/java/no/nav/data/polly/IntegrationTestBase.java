@@ -306,6 +306,7 @@ public abstract class IntegrationTestBase {
                 .id(processId)
                 .name("Auto_" + PURPOSE_CODE1)
                 .description("process description")
+                .purpose(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1))
                 .purposeCode(PURPOSE_CODE1)
                 .productTeam("teamid1")
                 .product(CodelistService.getCodelistResponse(ListName.SYSTEM, "PESYS"))

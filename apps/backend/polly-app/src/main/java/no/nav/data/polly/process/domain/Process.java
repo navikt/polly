@@ -98,6 +98,7 @@ public class Process extends Auditable {
                 .id(id)
                 .name(name)
                 .description(data.getDescription())
+                .purpose(getPurposeCodeResponse())
                 .purposeCode(purposeCode)
                 .department(getDepartmentCodeResponse())
                 .subDepartments(getSubDepartmentCodeResponses())
@@ -213,7 +214,7 @@ public class Process extends Auditable {
                 .id(getId())
                 .name(getName())
                 .department(getDepartmentCodeResponse())
-                .purposeCode(getPurposeCodeResponse())
+                .purpose(getPurposeCodeResponse())
                 .status(getData().getStatus())
                 .build();
     }
