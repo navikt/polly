@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.alert.AlertController.EventPage.AlertSort;
+import no.nav.data.polly.alert.AlertController.EventPage.SortDir;
 import no.nav.data.polly.alert.domain.AlertEvent;
 import no.nav.data.polly.alert.domain.AlertEventLevel;
 import no.nav.data.polly.alert.domain.AlertEventType;
@@ -70,9 +72,11 @@ public class AlertController {
             @RequestParam(value = "processId", required = false) UUID processId,
             @RequestParam(value = "informationTypeId", required = false) UUID informationTypeId,
             @RequestParam(value = "type", required = false) AlertEventType type,
-            @RequestParam(value = "level", required = false) AlertEventLevel level
+            @RequestParam(value = "level", required = false) AlertEventLevel level,
+            @RequestParam(value = "sort", required = false) AlertSort sort,
+            @RequestParam(value = "dir", required = false) SortDir dir
     ) {
-        var events = alertService.getEvents(parameters, processId, informationTypeId, type, level).map(this::convertEventResponse);
+        var events = alertService.getEvents(parameters, processId, informationTypeId, type, level,sort,dir).map(this::convertEventResponse);
         return ResponseEntity.ok(new RestResponsePage<>(events));
     }
 
@@ -95,8 +99,15 @@ public class AlertController {
         return builder.build();
     }
 
-    static class EventPage extends RestResponsePage<AlertEventResponse> {
+    public static class EventPage extends RestResponsePage<AlertEventResponse> {
 
+        public enum AlertSort {
+            PROCESS, INFORMATION_TYPE, TYPE, LEVEL, TIME, USER
+        }
+
+        public enum SortDir {
+            ASC, DESC
+        }
     }
 
 }

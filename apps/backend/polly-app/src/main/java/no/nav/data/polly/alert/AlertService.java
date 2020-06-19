@@ -1,6 +1,8 @@
 package no.nav.data.polly.alert;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.polly.alert.AlertController.EventPage.AlertSort;
+import no.nav.data.polly.alert.AlertController.EventPage.SortDir;
 import no.nav.data.polly.alert.domain.AlertEvent;
 import no.nav.data.polly.alert.domain.AlertEventLevel;
 import no.nav.data.polly.alert.domain.AlertEventType;
@@ -194,9 +196,12 @@ public class AlertService {
         return safeStream(legalBases).anyMatch(lb -> lb.getGdpr().startsWith(articlePrefix));
     }
 
-    public Page<AlertEvent> getEvents(PageParameters parameters, UUID processId, UUID informationTypeId, AlertEventType type, AlertEventLevel level) {
+    public Page<AlertEvent> getEvents(PageParameters parameters, UUID processId, UUID informationTypeId, AlertEventType type, AlertEventLevel level, AlertSort sort, SortDir dir) {
         parameters.validate();
-        return alertRepository.findAlerts(processId, informationTypeId, type, level, parameters.getPageNumber(), parameters.getPageSize());
+        return alertRepository.findAlerts(processId, informationTypeId, type, level,
+                parameters.getPageNumber(), parameters.getPageSize(),
+                sort,dir
+        );
     }
 
 }

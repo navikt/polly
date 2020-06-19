@@ -3,24 +3,32 @@ package no.nav.data.polly.alert;
 
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.alert.AlertController.EventPage;
+import no.nav.data.polly.alert.AlertController.EventPage.AlertSort;
 import no.nav.data.polly.alert.domain.AlertEvent;
 import no.nav.data.polly.alert.domain.AlertEventType;
 import no.nav.data.polly.alert.domain.AlertRepository;
 import no.nav.data.polly.common.storage.domain.GenericStorage;
 import no.nav.data.polly.common.storage.domain.GenericStorageRepository;
 import no.nav.data.polly.common.storage.domain.StorageType;
+import no.nav.data.polly.informationtype.domain.InformationType;
+import no.nav.data.polly.informationtype.domain.InformationTypeData;
 import no.nav.data.polly.policy.domain.LegalBasesUse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.process.domain.Process;
+import no.nav.data.polly.process.domain.ProcessData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import static java.util.UUID.randomUUID;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
@@ -186,11 +194,14 @@ public class AlertIT extends IntegrationTestBase {
                 alertRepository.saveAll(convert(List.of(alertEvent1, alertEvent2, alertEvent3, alertEvent4, alertEvent5), GenericStorage::new));
             }
 
-            @Test
-            void getEventsWithAllParams() throws InterruptedException {
+            @ParameterizedTest
+            @EnumSource(AlertSort.class)
+            void getEventsWithAllParams(AlertSort sort) throws InterruptedException {
                 GenericStorage alert = new GenericStorage(
                         new AlertEvent(alertEvent1.getProcessId(), alertEvent1.getInformationTypeId(), AlertEventType.MISSING_ARTICLE_6));
                 Thread.sleep(1000);
+                saveProcesses(alertEvent1.getProcessId(), alertEvent4.getProcessId(), alertEvent5.getProcessId());
+                saveInfoTypes(alertEvent1.getInformationTypeId(), alertEvent4.getInformationTypeId(), alertEvent5.getInformationTypeId());
                 var gs = alertRepository.save(alert);
 
                 ResponseEntity<EventPage> eventsResponse = restTemplate
@@ -200,18 +211,33 @@ public class AlertIT extends IntegrationTestBase {
                                         + "&type={type}"
                                         + "&level={level}"
                                         + "&pageSize={pageSize}"
-                                        + "&page={page}",
+                                        + "&page={page}"
+                                        + "&sort={sort}"
+                                        + "&dir=DESC",
                                 EventPage.class,
                                 alertEvent1.getProcessId(), alertEvent1.getInformationTypeId(),
                                 AlertEventType.MISSING_ARTICLE_6, AlertEventType.MISSING_ARTICLE_6.getLevel(),
-                                2, 0);
+                                2, 0, sort);
 
                 assertThat(eventsResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
                 assertThat(eventsResponse.getBody()).isNotNull();
                 assertThat(eventsResponse.getBody().getContent()).hasSize(2);
                 assertThat(eventsResponse.getBody().getTotalElements()).isEqualTo(4L);
+            }
 
-                assertThat(eventsResponse.getBody().getContent().get(0).getChangeStamp().getLastModifiedDate()).isEqualTo(gs.getCreatedDate());
+            private void saveProcesses(UUID... ids) {
+                for (UUID id : ids) {
+                    processRepository
+                            .save(Process.builder().id(id).purposeCode("AAP").name("a name")
+                                    .data(ProcessData.builder().start(LocalDate.now()).end(LocalDate.now()).build())
+                                    .build());
+                }
+            }
+
+            private void saveInfoTypes(UUID... ids) {
+                for (UUID id : ids) {
+                    informationTypeRepository.save(InformationType.builder().id(id).data(InformationTypeData.builder().name("a name").build()).build());
+                }
             }
 
             @Test

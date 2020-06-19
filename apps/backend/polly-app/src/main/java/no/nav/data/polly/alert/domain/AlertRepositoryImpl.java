@@ -1,5 +1,7 @@
 package no.nav.data.polly.alert.domain;
 
+import no.nav.data.polly.alert.AlertController.EventPage.AlertSort;
+import no.nav.data.polly.alert.AlertController.EventPage.SortDir;
 import no.nav.data.polly.common.storage.domain.GenericStorage;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -27,9 +29,10 @@ public class AlertRepositoryImpl implements AlertRepositoryCustom {
     }
 
     @Override
-    public Page<AlertEvent> findAlerts(UUID processId, UUID informationTypeId, AlertEventType type, AlertEventLevel level, int page, int pageSize) {
+    public Page<AlertEvent> findAlerts(UUID processId, UUID informationTypeId, AlertEventType type, AlertEventLevel level,
+            int page, int pageSize, AlertSort sort, SortDir dir) {
         var query = "select id , count(*) over () as count "
-                + "from generic_storage "
+                + "from generic_storage gs "
                 + "where type = 'ALERT_EVENT' ";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
@@ -51,13 +54,31 @@ public class AlertRepositoryImpl implements AlertRepositoryCustom {
             query += "and data ->> 'level' = :level ";
             params.addValue("level", level.toString());
         }
-        query += "order by created_date desc "
-                + "limit :pageSize offset (:page * :pageSize);";
+        query += "order by " + order(sort, dir) + " "
+                + "limit :pageSize offset (:page * :pageSize)";
 
         List<Map<String, Object>> resp = jdbcTemplate.queryForList(query, params);
         long total = resp.isEmpty() ? 0 : (long) resp.get(0).get("count");
         List<AlertEvent> alertEvents = total > 0 ? get(resp) : List.of();
         return new PageImpl<>(alertEvents, PageRequest.of(page, pageSize), total);
+    }
+
+    private String order(AlertSort sort, SortDir dir) {
+        if (sort == null) {
+            return "created_date desc";
+        }
+        var dirSql = dir != null ? switch (dir) {
+            case ASC -> " asc";
+            case DESC -> " desc";
+        } : " desc";
+        return switch (sort) {
+            case PROCESS -> "(select name from process p where p.process_id = cast(gs.data ->>'processId' as uuid))";
+            case INFORMATION_TYPE -> "(select it.data ->> 'name' from information_type it where it.information_type_id = cast(gs.data ->>'informationTypeId' as uuid))";
+            case TYPE -> "data ->> 'type'";
+            case LEVEL -> "data ->> 'level'";
+            case TIME -> "created_date";
+            case USER -> "created_by";
+        } + dirSql;
     }
 
     private List<AlertEvent> get(List<Map<String, Object>> resp) {
