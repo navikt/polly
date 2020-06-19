@@ -1,6 +1,6 @@
-import {Code, codelist, ListName} from "./service/Codelist";
-import {ColumnCompares} from "./util/hooks";
-import {intl} from "./util";
+import { Code, codelist, ListName } from "./service/Codelist";
+import { ColumnCompares } from "./util/hooks";
+import { intl } from "./util";
 
 export interface InformationtypeFormValues {
   id?: string;
@@ -473,7 +473,7 @@ export interface AlertEvent {
   informationType?: InformationTypeShort;
   type: AlertEventType;
   level: AlertEventLevel;
-  time: string;
+  changeStamp: ChangeStamp;
 }
 
 export type RecursivePartial<T> = {
