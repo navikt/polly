@@ -45,6 +45,8 @@ const PurposeTable = (props: RouteComponentProps<PathProps>) => {
       setTitle(intl.processesWithoutArticle9LegalBasis)
     } else if (props.match.params.filterName === ProcessField.PROFILING) {
       setTitle(`${intl.profiling}: ${intl.getString(props.match.params.filterValue.toLowerCase() || '')} `)
+    } else if (props.match.params.filterName === ProcessField.AUTOMATION) {
+      setTitle(`${intl.automaticProcessing}: ${intl.getString(props.match.params.filterValue.toLowerCase() || '')} `)
     }
   }
 
