@@ -98,7 +98,7 @@ export const Main = (props: RouteComponentProps) => {
             <Departments data={dashData}/>
 
             <Block display='flex' flexWrap={true} width={"100%"}>
-              <Block marginTop={theme.sizing.scale600} marginRight={theme.sizing.scale600}>
+              <Block marginTop={theme.sizing.scale600} marginRight={theme.sizing.scale600} minWidth={"520px"}>
                 <Chart title={intl.dpiaNeeded} size={chartSize}
                        data={
                          [
@@ -121,7 +121,7 @@ export const Main = (props: RouteComponentProps) => {
                        }/>
               </Block>
 
-              <Block marginTop={theme.sizing.scale600} marginRight={theme.sizing.scale600}>
+              <Block marginTop={theme.sizing.scale600} marginRight={theme.sizing.scale600} minWidth={"520px"}>
                 <Chart title={intl.profiling} size={chartSize}
                        data={
                          [
@@ -144,7 +144,7 @@ export const Main = (props: RouteComponentProps) => {
                        }/>
               </Block>
 
-              <Block marginTop={theme.sizing.scale600} marginRight={theme.sizing.scale600}>
+              <Block marginTop={theme.sizing.scale600} marginRight={theme.sizing.scale600} minWidth={"520px"}>
                 <Chart title={intl.automaticProcessing} size={chartSize}
                        data={
                          [
@@ -167,7 +167,7 @@ export const Main = (props: RouteComponentProps) => {
                        }/>
               </Block>
 
-              <Block marginTop={theme.sizing.scale600}>
+              <Block marginTop={theme.sizing.scale600}  minWidth={"520px"}>
                 <Chart title={intl.incompleteLegalBasis} size={chartSize}
                        data={
                          [
