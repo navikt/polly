@@ -25,6 +25,7 @@ type HeadProps<K extends keyof T, T> = {
   tableState?: TableState<T, K>
   $style?: StyleObject
   small?: boolean
+  sort?: [string, { column: string, dir: SORT_DIRECTION }, (column: K) => void]
 }
 
 type RowProps = {
@@ -137,7 +138,7 @@ export const HeadCell = <T, K extends keyof T>(props: HeadProps<K, T>) => {
       overrides={{
         SortableLabel: {
           component: () => <span>
-            <SortDirectionIcon direction={table.direction[column!]}/>
+            <SortDirectionIcon direction={table.direction[column]}/>
             <Block marginRight={theme.sizing.scale200} display='inline'/>
             {title}
           </span>
@@ -146,7 +147,7 @@ export const HeadCell = <T, K extends keyof T>(props: HeadProps<K, T>) => {
       }}
       title={title || ''}
       direction={table.direction[column]}
-      onSort={() => sortColumn(column!)}
+      onSort={() => sortColumn(column)}
       fillClickTarget
     />
   )

@@ -18,7 +18,10 @@ import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { user } from '../service/User'
 import { codelist } from '../service/Codelist'
 import moment from 'moment'
+import { SORT_DIRECTION } from 'baseui/table'
 
+
+type SortCol = 'PROCESS' | 'INFORMATION_TYPE' | 'TYPE' | 'LEVEL' | 'TIME' | 'USER'
 
 type State = {
   events: PageResponse<AlertEvent>,
@@ -28,6 +31,7 @@ type State = {
   type?: AlertEventType,
   processId?: string,
   informationTypeId?: string,
+  sort: { column: SortCol, dir: SORT_DIRECTION }
 }
 
 type Action =
@@ -36,7 +40,8 @@ type Action =
   { type: 'LIMIT', value: number } |
   { type: 'EVENT_TYPE', value?: AlertEventType } |
   { type: 'EVENT_LEVEL', value?: AlertEventLevel } |
-  { type: 'OBJECT_FILTER', objectType?: 'informationtype' | 'process', id?: string }
+  { type: 'OBJECT_FILTER', objectType?: 'informationtype' | 'process', id?: string } |
+  { type: 'SORT', column: SortCol, dir: SORT_DIRECTION }
 
 const clampPage = (state: State, page: number, limit: number): number => {
   if (page < 1 || page > state.events.pages) {
@@ -64,6 +69,8 @@ const reducer = (state: State, action: Action): State => {
       return {...state, page: 1, type: action.value}
     case 'EVENT_LEVEL':
       return {...state, page: 1, level: action.value}
+    case 'SORT':
+      return {...state, sort: {column: action.column, dir: action.dir}}
   }
 }
 
@@ -76,12 +83,17 @@ const AlertEventPageImpl = (props: RouteComponentProps<{ objectType?: 'informati
     level: undefined,
     type: undefined,
     processId: objectType === 'process' ? id : undefined,
-    informationTypeId: objectType === 'informationtype' ? id : undefined
+    informationTypeId: objectType === 'informationtype' ? id : undefined,
+    sort: {column: 'TIME', dir: SORT_DIRECTION.DESC}
   })
   const setPage = (p: number) => dispatch({type: 'PAGE', value: p})
   const setLimit = (l: number) => dispatch({type: 'LIMIT', value: l})
   const setType = (t?: AlertEventType) => dispatch({type: 'EVENT_TYPE', value: t})
   const setLevel = (l?: AlertEventLevel) => dispatch({type: 'EVENT_LEVEL', value: l})
+  const setSort = (column: SortCol) => dispatch({
+    type: 'SORT', column, dir: state.sort.column !== column ? SORT_DIRECTION.ASC :
+      state.sort.dir === SORT_DIRECTION.ASC ? SORT_DIRECTION.DESC : SORT_DIRECTION.ASC
+  })
 
   useEffect(() => {
     getAlertEvents(state.page - 1, state.limit, state.type, state.level, state.processId, state.informationTypeId)
