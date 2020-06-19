@@ -43,7 +43,6 @@ const PurposeTable = (props: RouteComponentProps<PathProps>) => {
       setTitle(intl.processesWithoutArticle6LegalBasis)
     } else if (props.match.params.filterName === ProcessField.MISSING_ARTICLE_9) {
       setTitle(intl.processesWithoutArticle9LegalBasis)
-
     }
   }
 
