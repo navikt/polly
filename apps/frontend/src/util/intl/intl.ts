@@ -58,6 +58,13 @@ export interface IStrings {
   no: string;
   unclarified: string;
   unknown: string;
+  numberOfProcessesWithUnknownLegalBasis : string;
+  numberOfProcessesWithoutArticle6LegalBasis : string;
+  numberOfProcessesWithoutArticle9LegalBasis : string;
+  processesWithUnknownLegalBasis : string;
+  processesWithoutArticle6LegalBasis : string;
+  processesWithoutArticle9LegalBasis : string;
+  incompleteLegalBasis: string;
   notFilled: string;
   automation: string;
   status: string;
