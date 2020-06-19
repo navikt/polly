@@ -156,10 +156,12 @@ class ProcessControllerIT extends IntegrationTestBase {
         assertThat(processPage.getContent()).contains(
                 processResponseBuilder(policy.getProcess().getId())
                         .name("Auto_" + PURPOSE_CODE1)
+                        .purpose(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1))
                         .purposeCode(PURPOSE_CODE1)
                         .build(),
                 processResponseBuilder(policy2.getProcess().getId())
                         .name("Auto_" + PURPOSE_CODE1 + 2)
+                        .purpose(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1 + 2))
                         .purposeCode(PURPOSE_CODE1 + 2)
                         .build()
         );
