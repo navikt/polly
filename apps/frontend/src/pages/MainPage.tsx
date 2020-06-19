@@ -97,15 +97,53 @@ export const Main = (props: RouteComponentProps) => {
           <>
             <Departments data={dashData}/>
 
-            <Block marginTop={"2.5rem"}>
-              <Chart title={intl.dpiaNeeded} size={chartSize}
-                     data={
-                       [
-                         {label: `${intl.yes}`, size: dashData.allProcesses.dpia.yes, onClick: () => clickOnPieChartSlice(ProcessField.DPIA, ProcessState.YES)},
-                         {label: `${intl.no}`, size: dashData.allProcesses.dpia.no, onClick: () => clickOnPieChartSlice(ProcessField.DPIA, ProcessState.NO)},
-                         {label: `${intl.unclarified}`, size: dashData.allProcesses.dpia.unknown, onClick: () => clickOnPieChartSlice(ProcessField.DPIA, ProcessState.UNKNOWN)},
-                       ]
-                     }/>
+            <Block display='flex' flexWrap={true} width={"100%"}>
+              <Block marginTop={theme.sizing.scale600} marginRight={theme.sizing.scale600}>
+                <Chart title={intl.dpiaNeeded} size={chartSize}
+                       data={
+                         [
+                           {
+                             label: `${intl.yes}`,
+                             size: dashData.allProcesses.dpia.yes,
+                             onClick: () => clickOnPieChartSlice(ProcessField.DPIA, ProcessState.YES)
+                           },
+                           {
+                             label: `${intl.no}`,
+                             size: dashData.allProcesses.dpia.no,
+                             onClick: () => clickOnPieChartSlice(ProcessField.DPIA, ProcessState.NO)
+                           },
+                           {
+                             label: `${intl.unclarified}`,
+                             size: dashData.allProcesses.dpia.unknown,
+                             onClick: () => clickOnPieChartSlice(ProcessField.DPIA, ProcessState.UNKNOWN)
+                           },
+                         ]
+                       }/>
+              </Block>
+
+              <Block marginTop={theme.sizing.scale600}>
+                <Chart title={intl.incompleteLegalBasis} size={chartSize}
+                       data={
+                         [
+                           {
+                             label: `${intl.numberOfProcessesWithUnknownLegalBasis}`,
+                             size: dashData.allProcesses.processesMissingLegalBases,
+                             onClick: () => clickOnPieChartSlice(ProcessField.MISSING_LEGAL_BASIS, ProcessState.YES)
+                           },
+                           {
+                             label: `${intl.numberOfProcessesWithoutArticle6LegalBasis}`,
+                             size: dashData.allProcesses.processesMissingArt6,
+                             onClick: () => clickOnPieChartSlice(ProcessField.MISSING_ARTICLE_6, ProcessState.YES)
+                           },
+                           {
+                             label: `${intl.numberOfProcessesWithoutArticle9LegalBasis}`,
+                             size: dashData.allProcesses.processesMissingArt9,
+                             onClick: () => clickOnPieChartSlice(ProcessField.MISSING_ARTICLE_9, ProcessState.YES)
+                           },
+                         ]
+                       }/>
+              </Block>
+
             </Block>
 
             <Block marginTop="2.5rem">

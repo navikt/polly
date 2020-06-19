@@ -37,6 +37,12 @@ const PurposeTable = (props: RouteComponentProps<PathProps>) => {
   const changeTitle = () => {
     if (props.match.params.filterName === ProcessField.DPIA) {
       setTitle(`${intl.dpiaNeeded}: ${intl.getString(props.match.params.filterValue.toLowerCase() || '')} `)
+    } else if (props.match.params.filterName === ProcessField.MISSING_LEGAL_BASIS) {
+      setTitle(intl.processesWithUnknownLegalBasis)
+    } else if (props.match.params.filterName === ProcessField.MISSING_ARTICLE_6) {
+      setTitle(intl.processesWithoutArticle6LegalBasis)
+    } else if (props.match.params.filterName === ProcessField.MISSING_ARTICLE_9) {
+      setTitle(intl.processesWithoutArticle9LegalBasis)
     }
   }
 
