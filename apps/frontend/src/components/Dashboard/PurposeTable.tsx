@@ -1,15 +1,15 @@
-import React, {useEffect} from "react";
-import {getProcessByState} from "../../api";
-import {ProcessField, ProcessState, ProcessStatus, SimpleProcess} from "../../constants";
-import {RouteComponentProps} from "react-router-dom";
-import {HeadingLarge} from "baseui/typography";
-import {Spinner} from "baseui/spinner";
-import {Cell, HeadCell, Row, Table} from "../common/Table";
-import {useTable} from "../../util/hooks";
-import {StyleObject} from "styletron-standard";
-import {codelist, ListName} from "../../service/Codelist";
-import RouteLink from "../common/RouteLink";
-import {intl} from "../../util";
+import React, { useEffect } from 'react'
+import { getProcessByState } from '../../api'
+import { ProcessField, ProcessShort, ProcessState, ProcessStatus } from '../../constants'
+import { RouteComponentProps } from 'react-router-dom'
+import { HeadingLarge } from 'baseui/typography'
+import { Spinner } from 'baseui/spinner'
+import { Cell, HeadCell, Row, Table } from '../common/Table'
+import { useTable } from '../../util/hooks'
+import { StyleObject } from 'styletron-standard'
+import { codelist, ListName } from '../../service/Codelist'
+import RouteLink from '../common/RouteLink'
+import { intl } from '../../util'
 
 interface PathProps {
   filterName: ProcessField,
@@ -17,12 +17,12 @@ interface PathProps {
 }
 
 const cellStyle: StyleObject = {
-  wordBreak: "break-word"
+  wordBreak: 'break-word'
 }
 
 const PurposeTable = (props: RouteComponentProps<PathProps>) => {
   const [loading, setLoading] = React.useState<boolean>(false)
-  const [filtered, setFiltered] = React.useState<SimpleProcess[]>([])
+  const [filtered, setFiltered] = React.useState<ProcessShort[]>([])
   const [title, setTitle] = React.useState('')
 
   useEffect(() => {
@@ -50,11 +50,11 @@ const PurposeTable = (props: RouteComponentProps<PathProps>) => {
     }
   }
 
-  const [table, sortColumn] = useTable<SimpleProcess, keyof SimpleProcess>(filtered, {
+  const [table, sortColumn] = useTable<ProcessShort, keyof ProcessShort>(filtered, {
       useDefaultStringCompare: true,
       initialSortColumn: 'name',
       sorting: {
-        name: (a, b) => ((a.purposeCode.shortName) || '' + ':' + (a.name || '')).localeCompare(b.purposeCode.shortName || '' + ': ' + b.name || ''),
+        name: (a, b) => ((a.purpose.shortName || '') + ':' + (a.name || '')).localeCompare((b.purpose.shortName || '') + ': ' + b.name || ''),
         department: (a, b) => (a.department === null ? ' ' : a.department.shortName).localeCompare(b.department === null ? ' ' : b.department.shortName),
         status: (a, b) => (a.status || '').localeCompare(b.status || '')
       }
@@ -76,8 +76,8 @@ const PurposeTable = (props: RouteComponentProps<PathProps>) => {
         {table.data.map(process =>
           <Row key={process.id}>
             <Cell $style={cellStyle}>
-              <RouteLink href={`/process/purpose/${process.purposeCode.code}/ALL/${process.id}`}>
-                {codelist.getShortname(ListName.PURPOSE, process.purposeCode.shortName) + ': ' + process.name}
+              <RouteLink href={`/process/purpose/${process.purpose.code}/ALL/${process.id}`}>
+                {codelist.getShortname(ListName.PURPOSE, process.purpose.shortName) + ': ' + process.name}
               </RouteLink>
             </Cell>
             <Cell $style={cellStyle}>{(process.department) === null ? '' :

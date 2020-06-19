@@ -156,7 +156,7 @@ const AlertEventPageImpl = (props: RouteComponentProps<{ objectType?: 'informati
             <Cell>
               {event.process ?
                 <ObjectLink id={event.process.id} type={ObjectType.PROCESS}>
-                  {codelist.getShortnameForCode(event.process.purposeCode)}: {event.process?.name}
+                  {codelist.getShortnameForCode(event.process.purpose)}: {event.process?.name}
                 </ObjectLink>
                 : ''}
             </Cell>
