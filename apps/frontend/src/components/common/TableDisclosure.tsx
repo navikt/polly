@@ -126,6 +126,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
           onClose={() => setShowDeleteModal(false)}
           isOpen={showDeleteModal}
           animate
+          unstable_ModalBackdropScroll={true}
           size="default"
         >
           <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>

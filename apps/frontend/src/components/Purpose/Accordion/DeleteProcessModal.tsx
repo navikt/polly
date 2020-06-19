@@ -1,10 +1,10 @@
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
-import { intl, theme } from '../../../util'
-import { Paragraph2 } from 'baseui/typography'
-import { Block } from 'baseui/block'
+import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal'
+import {intl, theme} from '../../../util'
+import {Paragraph2} from 'baseui/typography'
+import {Block} from 'baseui/block'
 import Button from '../../common/Button'
 import * as React from 'react'
-import { Process } from '../../../constants'
+import {Process} from '../../../constants'
 
 
 interface DeleteProcessProps {
@@ -23,6 +23,7 @@ export const DeleteProcessModal = (props: DeleteProcessProps) => {
       onClose={onClose}
       isOpen={isOpen}
       animate
+      unstable_ModalBackdropScroll={true}
       size='default'
     >
       <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>

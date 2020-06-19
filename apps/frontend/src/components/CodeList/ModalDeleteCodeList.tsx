@@ -1,10 +1,10 @@
 import * as React from "react";
-import { Modal, ModalBody, ModalFooter, ModalHeader } from "baseui/modal";
-import { intl } from "../../util";
-import { Paragraph2 } from "baseui/typography";
-import { Button } from "baseui/button";
-import { Block } from "baseui/block";
-import { CodeListFormValues } from "../../constants";
+import {Modal, ModalBody, ModalFooter, ModalHeader} from "baseui/modal";
+import {intl} from "../../util";
+import {Paragraph2} from "baseui/typography";
+import {Button} from "baseui/button";
+import {Block} from "baseui/block";
+import {CodeListFormValues} from "../../constants";
 
 type ModalDeleteProps = {
   title: string,
@@ -22,6 +22,7 @@ const DeleteCodeListModal = ({title, initialValues, isOpen, errorOnDelete, submi
       isOpen={isOpen}
       autoFocus
       animate
+      unstable_ModalBackdropScroll={true}
       size="default"
     >
       <ModalHeader>{title}</ModalHeader>

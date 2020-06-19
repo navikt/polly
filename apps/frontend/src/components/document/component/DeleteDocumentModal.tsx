@@ -21,6 +21,7 @@ const DeleteDocumentModal = ({title, documentName = "", isOpen, onClose, submit,
       isOpen={isOpen}
       autoFocus
       animate
+      unstable_ModalBackdropScroll={true}
       size="default"
     >
       <ModalHeader>{title}</ModalHeader>

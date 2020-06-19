@@ -1,18 +1,18 @@
-import { useStyletron } from 'baseui'
-import { Block } from 'baseui/block'
-import { AuditButton } from '../audit/AuditButton'
+import {useStyletron} from 'baseui'
+import {Block} from 'baseui/block'
+import {AuditButton} from '../audit/AuditButton'
 import RouteLink from '../common/RouteLink'
-import { SIZE as ButtonSize } from 'baseui/button'
-import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
+import {SIZE as ButtonSize} from 'baseui/button'
+import {faEdit, faTrash} from '@fortawesome/free-solid-svg-icons'
 import * as React from 'react'
-import { useEffect } from 'react'
-import { RouteComponentProps, withRouter } from 'react-router-dom'
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
-import { intl, theme } from '../../util'
-import { Paragraph2 } from 'baseui/typography'
-import { deleteInformationType, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType } from '../../api'
-import { InformationType } from '../../constants'
-import { StyledSpinnerNext } from 'baseui/spinner'
+import {useEffect} from 'react'
+import {RouteComponentProps, withRouter} from 'react-router-dom'
+import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal'
+import {intl, theme} from '../../util'
+import {Paragraph2} from 'baseui/typography'
+import {deleteInformationType, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType} from '../../api'
+import {InformationType} from '../../constants'
+import {StyledSpinnerNext} from 'baseui/spinner'
 import Button from '../common/Button'
 
 const DeleteModalImpl = (props: RouteComponentProps<any> & { id: string, showDeleteModal: boolean, closeModal: () => void }) => {
@@ -48,6 +48,7 @@ const DeleteModalImpl = (props: RouteComponentProps<any> & { id: string, showDel
       onClose={props.closeModal}
       isOpen={props.showDeleteModal}
       animate
+      unstable_ModalBackdropScroll={true}
       size="default"
     >
       <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>

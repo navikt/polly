@@ -1,24 +1,24 @@
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
-import { Button, KIND } from 'baseui/button'
+import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal'
+import {Button, KIND} from 'baseui/button'
 import * as React from 'react'
-import { KeyboardEvent, useEffect, useState } from 'react'
-import { AddDocumentToProcessFormValues, Document, DocumentInfoTypeUse, Process } from '../../../constants'
-import { Block, BlockProps } from 'baseui/block'
-import { ArrayHelpers, Field, FieldArray, FieldProps, Form, Formik, FormikProps } from 'formik'
-import { intl, useDebouncedState } from '../../../util'
-import { addDocumentToProcessSchema } from '../../common/schema'
-import { Error, ModalLabel } from '../../common/ModalSchema'
-import { Option, Select, TYPE } from 'baseui/select'
-import { getDefaultProcessDocument, searchDocuments } from '../../../api'
-import { ListItem } from 'baseui/list'
-import { useStyletron } from 'baseui'
-import { codelist, ListName } from '../../../service/Codelist'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMinusCircle } from '@fortawesome/free-solid-svg-icons'
-import { Sensitivity } from '../../InformationType/Sensitivity'
-import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
-import { Paragraph3 } from 'baseui/typography'
-import { Spinner } from 'baseui/spinner'
+import {KeyboardEvent, useEffect, useState} from 'react'
+import {AddDocumentToProcessFormValues, Document, DocumentInfoTypeUse, Process} from '../../../constants'
+import {Block, BlockProps} from 'baseui/block'
+import {ArrayHelpers, Field, FieldArray, FieldProps, Form, Formik, FormikProps} from 'formik'
+import {intl, useDebouncedState} from '../../../util'
+import {addDocumentToProcessSchema} from '../../common/schema'
+import {Error, ModalLabel} from '../../common/ModalSchema'
+import {Option, Select, TYPE} from 'baseui/select'
+import {getDefaultProcessDocument, searchDocuments} from '../../../api'
+import {ListItem} from 'baseui/list'
+import {useStyletron} from 'baseui'
+import {codelist, ListName} from '../../../service/Codelist'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faMinusCircle} from '@fortawesome/free-solid-svg-icons'
+import {Sensitivity} from '../../InformationType/Sensitivity'
+import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
+import {Paragraph3} from 'baseui/typography'
+import {Spinner} from 'baseui/spinner'
 
 const modalBlockProps: BlockProps = {
   width: '750px',
@@ -121,6 +121,7 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
       onClose={onCloseModal} isOpen={props.isOpen}
       animate
       size={SIZE.auto}
+      unstable_ModalBackdropScroll={true}
       role={ROLE.dialog}
     >
       {loading && <Spinner/>}

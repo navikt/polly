@@ -1,26 +1,26 @@
 import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { Button, KIND, SIZE as ButtonSize } from 'baseui/button'
-import { Block } from 'baseui/block'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
-import { Paragraph2 } from 'baseui/typography'
-import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
+import {useEffect, useState} from 'react'
+import {Button, KIND, SIZE as ButtonSize} from 'baseui/button'
+import {Block} from 'baseui/block'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faEdit, faTrash} from '@fortawesome/free-solid-svg-icons'
+import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal'
+import {Paragraph2} from 'baseui/typography'
+import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
 
-import { codelist, ListName } from '../../../service/Codelist'
-import { Sensitivity } from '../../InformationType/Sensitivity'
+import {codelist, ListName} from '../../../service/Codelist'
+import {Sensitivity} from '../../InformationType/Sensitivity'
 import ModalPolicy from './ModalPolicy'
-import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
-import { Document, Policy, PolicyFormValues, policySort, Process, ProcessAlert } from '../../../constants'
-import { intl } from '../../../util'
-import { convertPolicyToFormValues, getDocument } from '../../../api'
-import { useTable } from '../../../util/hooks'
+import {LegalBasesNotClarified, ListLegalBasesInTable} from '../../common/LegalBasis'
+import {Document, Policy, PolicyFormValues, policySort, Process, ProcessAlert} from '../../../constants'
+import {intl} from '../../../util'
+import {convertPolicyToFormValues, getDocument} from '../../../api'
+import {useTable} from '../../../util/hooks'
 import RouteLink from '../../common/RouteLink'
-import { AuditButton } from '../../audit/AuditButton'
+import {AuditButton} from '../../audit/AuditButton'
 import _ from 'lodash'
-import { getAlertForProcess } from '../../../api/AlertApi'
-import { Cell, HeadCell, Row, Table } from '../../common/Table'
+import {getAlertForProcess} from '../../../api/AlertApi'
+import {Cell, HeadCell, Row, Table} from '../../common/Table'
 
 
 type TablePurposeProps = {
@@ -178,6 +178,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
           onClose={() => setShowDeleteModal(false)}
           isOpen={showDeleteModal}
           animate
+          unstable_ModalBackdropScroll={true}
           size="default"
         >
           <ModalHeader>{intl.confirmDeleteHeader}</ModalHeader>

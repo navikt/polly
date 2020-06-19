@@ -1,23 +1,23 @@
 import * as React from 'react'
-import { KeyboardEvent, useState } from 'react'
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal'
-import { Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps, } from 'formik'
-import { Block, BlockProps } from 'baseui/block'
-import { Radio, RadioGroup } from 'baseui/radio'
-import { Plus } from 'baseui/icon'
-import { Select, StatefulSelect, TYPE } from 'baseui/select'
+import {KeyboardEvent, useState} from 'react'
+import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal'
+import {Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps,} from 'formik'
+import {Block, BlockProps} from 'baseui/block'
+import {Radio, RadioGroup} from 'baseui/radio'
+import {Plus} from 'baseui/icon'
+import {Select, StatefulSelect, TYPE} from 'baseui/select'
 
 import CardLegalBasis from './CardLegalBasis'
-import { codelist, ListName } from '../../../service/Codelist'
-import { Button, KIND, SIZE as ButtonSize } from 'baseui/button'
-import { InformationTypeShort, LegalBasesUse, LegalBasisFormValues, PolicyFormValues } from '../../../constants'
-import { ListLegalBases } from '../../common/LegalBasis'
-import { useInfoTypeSearch } from '../../../api'
-import { Error, ModalLabel } from '../../common/ModalSchema'
-import { intl } from '../../../util'
-import { policySchema } from '../../common/schema'
-import { Tag, VARIANT } from 'baseui/tag'
-import { Docs } from './TablePolicy'
+import {codelist, ListName} from '../../../service/Codelist'
+import {Button, KIND, SIZE as ButtonSize} from 'baseui/button'
+import {InformationTypeShort, LegalBasesUse, LegalBasisFormValues, PolicyFormValues} from '../../../constants'
+import {ListLegalBases} from '../../common/LegalBasis'
+import {useInfoTypeSearch} from '../../../api'
+import {Error, ModalLabel} from '../../common/ModalSchema'
+import {intl} from '../../../util'
+import {policySchema} from '../../common/schema'
+import {Tag, VARIANT} from 'baseui/tag'
+import {Docs} from './TablePolicy'
 
 
 const modalBlockProps: BlockProps = {
@@ -138,6 +138,7 @@ const ModalPolicy = ({submit, errorOnCreate, onClose, isOpen, initialValues, doc
       animate
       size={SIZE.auto}
       role={ROLE.dialog}
+      unstable_ModalBackdropScroll={true}
     >
       <Block {...modalBlockProps}>
         <Formik
