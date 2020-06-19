@@ -121,6 +121,52 @@ export const Main = (props: RouteComponentProps) => {
                        }/>
               </Block>
 
+              <Block marginTop={theme.sizing.scale600} marginRight={theme.sizing.scale600}>
+                <Chart title={intl.profiling} size={chartSize}
+                       data={
+                         [
+                           {
+                             label: `${intl.yes}`,
+                             size: dashData.allProcesses.profiling?.yes || 0,
+                             onClick: () => clickOnPieChartSlice(ProcessField.PROFILING, ProcessState.YES)
+                           },
+                           {
+                             label: `${intl.no}`,
+                             size: dashData.allProcesses.profiling?.no || 0,
+                             onClick: () => clickOnPieChartSlice(ProcessField.PROFILING, ProcessState.NO)
+                           },
+                           {
+                             label: `${intl.unclarified}`,
+                             size: dashData.allProcesses.profiling?.unknown || 0,
+                             onClick: () => clickOnPieChartSlice(ProcessField.PROFILING, ProcessState.UNKNOWN)
+                           },
+                         ]
+                       }/>
+              </Block>
+
+              <Block marginTop={theme.sizing.scale600} marginRight={theme.sizing.scale600}>
+                <Chart title={intl.automaticProcessing} size={chartSize}
+                       data={
+                         [
+                           {
+                             label: `${intl.yes}`,
+                             size: dashData.allProcesses.automation?.yes || 0,
+                             onClick: () => clickOnPieChartSlice(ProcessField.AUTOMATION, ProcessState.YES)
+                           },
+                           {
+                             label: `${intl.no}`,
+                             size: dashData.allProcesses.automation?.no || 0,
+                             onClick: () => clickOnPieChartSlice(ProcessField.AUTOMATION, ProcessState.NO)
+                           },
+                           {
+                             label: `${intl.unclarified}`,
+                             size: dashData.allProcesses.automation?.unknown || 0,
+                             onClick: () => clickOnPieChartSlice(ProcessField.AUTOMATION, ProcessState.UNKNOWN)
+                           },
+                         ]
+                       }/>
+              </Block>
+
               <Block marginTop={theme.sizing.scale600}>
                 <Chart title={intl.incompleteLegalBasis} size={chartSize}
                        data={
@@ -143,53 +189,6 @@ export const Main = (props: RouteComponentProps) => {
                          ]
                        }/>
               </Block>
-
-                <Block marginTop={theme.sizing.scale600} marginRight={theme.sizing.scale600}>
-                  <Chart title={intl.profiling} size={chartSize}
-                         data={
-                           [
-                             {
-                               label: `${intl.yes}`,
-                               size: dashData.allProcesses.profiling?.yes || 0,
-                               onClick: () => clickOnPieChartSlice(ProcessField.PROFILING, ProcessState.YES)
-                             },
-                             {
-                               label: `${intl.no}`,
-                               size: dashData.allProcesses.profiling?.no || 0,
-                               onClick: () => clickOnPieChartSlice(ProcessField.PROFILING, ProcessState.NO)
-                             },
-                             {
-                               label: `${intl.unclarified}`,
-                               size: dashData.allProcesses.profiling?.unknown || 0,
-                               onClick: () => clickOnPieChartSlice(ProcessField.PROFILING, ProcessState.UNKNOWN)
-                             },
-                           ]
-                         }/>
-                </Block>
-
-                <Block marginTop={theme.sizing.scale600} marginRight={theme.sizing.scale600}>
-                  <Chart title={intl.automaticProcessing} size={chartSize}
-                         data={
-                           [
-                             {
-                               label: `${intl.yes}`,
-                               size: dashData.allProcesses.automation?.yes || 0,
-                               onClick: () => clickOnPieChartSlice(ProcessField.AUTOMATION, ProcessState.YES)
-                             },
-                             {
-                               label: `${intl.no}`,
-                               size: dashData.allProcesses.automation?.no || 0,
-                               onClick: () => clickOnPieChartSlice(ProcessField.AUTOMATION, ProcessState.NO)
-                             },
-                             {
-                               label: `${intl.unclarified}`,
-                               size: dashData.allProcesses.automation?.unknown || 0,
-                               onClick: () => clickOnPieChartSlice(ProcessField.AUTOMATION, ProcessState.UNKNOWN)
-                             },
-                           ]
-                         }/>
-                </Block>
-
             </Block>
 
 
