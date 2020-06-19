@@ -172,7 +172,9 @@ export interface InformationTypeShort {
 export interface ProcessShort {
   id: string;
   name: string;
-  purposeCode: Code;
+  purpose: Code;
+  department: Code;
+  status?: ProcessStatus;
 }
 
 export interface Process extends IDurationed {
@@ -186,6 +188,7 @@ export interface Process extends IDurationed {
   productTeams: string[];
   products: Code[];
   policies: Policy[];
+  purpose: Code;
   purposeCode: string;
   changeStamp: ChangeStamp;
   dpia?: Dpia;
@@ -195,14 +198,6 @@ export interface Process extends IDurationed {
   profiling?: boolean;
   dataProcessing?: DataProcessing;
   retention?: Retention;
-}
-
-export interface SimpleProcess {
-  id:string;
-  name: string;
-  department: Code;
-  purposeCode:Code;
-  status?: ProcessStatus;
 }
 
 export interface ChangeStamp {
