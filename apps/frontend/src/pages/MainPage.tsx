@@ -166,7 +166,32 @@ export const Main = (props: RouteComponentProps) => {
                            ]
                          }/>
                 </Block>
+
+                <Block marginTop={theme.sizing.scale600} marginRight={theme.sizing.scale600}>
+                  <Chart title={intl.automaticProcessing} size={chartSize}
+                         data={
+                           [
+                             {
+                               label: `${intl.yes}`,
+                               size: dashData.allProcesses.automation?.yes || 0,
+                               onClick: () => clickOnPieChartSlice(ProcessField.AUTOMATION, ProcessState.YES)
+                             },
+                             {
+                               label: `${intl.no}`,
+                               size: dashData.allProcesses.automation?.no || 0,
+                               onClick: () => clickOnPieChartSlice(ProcessField.AUTOMATION, ProcessState.NO)
+                             },
+                             {
+                               label: `${intl.unclarified}`,
+                               size: dashData.allProcesses.automation?.unknown || 0,
+                               onClick: () => clickOnPieChartSlice(ProcessField.AUTOMATION, ProcessState.UNKNOWN)
+                             },
+                           ]
+                         }/>
+                </Block>
+
             </Block>
+
 
             <Block marginTop="2.5rem">
               <Card overrides={cardShadow}>
