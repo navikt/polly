@@ -7,7 +7,9 @@ import no.nav.data.polly.informationtype.dto.InformationTypeShortResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.LegalBasesUse;
 import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
+import no.nav.data.polly.policy.rest.PolicyRestController.PolicyPage;
 import no.nav.data.polly.process.ProcessReadController.ProcessPage;
 import no.nav.data.polly.process.ProcessStateController.ProcessShortPage;
 import no.nav.data.polly.process.dto.ProcessCountResponse;
@@ -253,18 +255,26 @@ class ProcessControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void updateProcessValidationError() {
+    void updateProcessChangePurpose() {
         ResponseEntity<ProcessResponse> resp = restTemplate
                 .postForEntity("/process", ProcessRequest.builder().name("newprocess").purposeCode("AAP").build(), ProcessResponse.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(resp.getBody()).isNotNull();
+        ResponseEntity<PolicyPage> polResp = restTemplate
+                .postForEntity("/policy", List.of(PolicyRequest.builder().processId(resp.getBody().getId().toString()).purposeCode("AAP")
+                        .informationTypeId(createAndSaveInformationType().getId().toString())
+                        .subjectCategory("BRUKER")
+                        .build()), PolicyPage.class);
+        assertThat(polResp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(polResp.getBody()).isNotNull();
+        assertThat(polResp.getBody().getNumberOfElements()).isEqualTo(1);
 
         String id = resp.getBody().getId().toString();
         ProcessRequest update = ProcessRequest.builder().id(id).name("newprocess").purposeCode("KONTROLL").department("dep").build();
         var errorResp = restTemplate.exchange("/process/{id}", HttpMethod.PUT, new HttpEntity<>(update), String.class, id);
-        assertThat(errorResp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(errorResp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(errorResp.getBody()).isNotNull();
-        assertThat(errorResp.getBody()).contains("Cannot change purpose from AAP to KONTROLL");
+        assertThat(policyRepository.findById(polResp.getBody().getContent().get(0).getId()).orElseThrow().getPurposeCode()).isEqualTo("KONTROLL");
     }
 
     @Test

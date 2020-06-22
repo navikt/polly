@@ -39,7 +39,7 @@ import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @RestController
-@Api(value = "Data Catalog Policies", description = "REST API for Policies", tags = {"Policies"})
+@Api(value = "Data Catalog Policies", tags = {"Policies"})
 @RequestMapping("/policy")
 @Transactional
 public class PolicyRestController {
@@ -193,7 +193,7 @@ public class PolicyRestController {
         throw new PollyNotFoundException(message);
     }
 
-    static final class PolicyPage extends RestResponsePage<PolicyResponse> {
+    public static final class PolicyPage extends RestResponsePage<PolicyResponse> {
 
     }
 }

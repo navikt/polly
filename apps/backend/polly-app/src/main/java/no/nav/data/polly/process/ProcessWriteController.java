@@ -73,8 +73,7 @@ public class ProcessWriteController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         service.validateRequest(request, true);
-        var process = fromRepository.get().convertFromRequest(request);
-        return ResponseEntity.ok(service.save(process).convertToResponseWithPolicies());
+        return ResponseEntity.ok(service.update(request).convertToResponseWithPolicies());
     }
 
     @ApiOperation(value = "Delete Process")
