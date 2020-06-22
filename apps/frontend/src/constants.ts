@@ -406,7 +406,7 @@ export interface CodeUsage {
   documents: [Use];
   informationTypes: [Use];
   policies: [UseWithPurpose];
-  processes: [UseWithPurpose];
+  processes: [ProcessShort];
 }
 
 export interface Use {

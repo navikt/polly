@@ -9,7 +9,7 @@ import { Label2 } from 'baseui/typography'
 import { intl, theme, useAwait } from '../../../util'
 import { user } from '../../../service/User'
 import { Plus } from 'baseui/icon'
-import { AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose } from '../../../constants'
+import { AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort } from '../../../constants'
 import ModalProcess from './ModalProcess'
 import ModalPolicy from './ModalPolicy'
 import TablePolicy from './TablePolicy'
@@ -27,7 +27,7 @@ import { ProcessCreatedModal } from './ProcessCreatedModal'
 
 type AccordionProcessProps = {
   isLoading: boolean
-  processList: UseWithPurpose[]
+  processList: ProcessShort[]
   currentProcess?: Process
   errorProcessModal: any | null
   errorPolicyModal: string | null
@@ -105,8 +105,8 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
         {props.processList &&
         props
         .processList
-        .sort((a, b) => a.purposeCode.localeCompare(b.purposeCode))
-        .map((p: UseWithPurpose) => (
+        .sort((a, b) => a.purpose.shortName.localeCompare(b.purpose.shortName))
+        .map((p: ProcessShort) => (
           <Panel
             title={
               <AccordionTitle process={p} expanded={props.match.params.processId === p.id}

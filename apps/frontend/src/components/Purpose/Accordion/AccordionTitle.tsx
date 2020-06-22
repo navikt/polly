@@ -1,18 +1,18 @@
-import {UseWithPurpose} from '../../../constants'
-import {Block} from 'baseui/block'
-import {Label1} from 'baseui/typography'
-import {intl, theme} from '../../../util'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faChevronDown, faChevronRight, faEdit, faFileWord, faTrash} from '@fortawesome/free-solid-svg-icons'
-import {codelist, ListName} from '../../../service/Codelist'
-import {AuditButton} from '../../audit/AuditButton'
-import {StyledLink} from 'baseui/link'
-import {env} from '../../../util/env'
+import { ProcessShort } from '../../../constants'
+import { Block } from 'baseui/block'
+import { Label1 } from 'baseui/typography'
+import { intl, theme } from '../../../util'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronDown, faChevronRight, faEdit, faFileWord, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { codelist, ListName } from '../../../service/Codelist'
+import { AuditButton } from '../../audit/AuditButton'
+import { StyledLink } from 'baseui/link'
+import { env } from '../../../util/env'
 import Button from '../../common/Button'
-import {SIZE as ButtonSize} from 'baseui/button'
+import { SIZE as ButtonSize } from 'baseui/button'
 import * as React from 'react'
 
-const AccordionTitle = (props: { process: UseWithPurpose, expanded: boolean, hasAccess: boolean, editProcess: () => void, deleteProcess: () => void }) => {
+const AccordionTitle = (props: { process: ProcessShort, expanded: boolean, hasAccess: boolean, editProcess: () => void, deleteProcess: () => void }) => {
   const {process, expanded, hasAccess} = props
   return <>
     <Block>
@@ -20,7 +20,7 @@ const AccordionTitle = (props: { process: UseWithPurpose, expanded: boolean, has
         {expanded ?
           <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
         <span> </span>
-        <span>{codelist.getShortname(ListName.PURPOSE, process.purposeCode)}: </span>
+        <span>{codelist.getShortname(ListName.PURPOSE, process.purpose.code)}: </span>
         <span>{process.name}</span>
       </Label1>
     </Block>

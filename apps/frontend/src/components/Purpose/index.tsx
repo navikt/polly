@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { Block, BlockProps } from 'baseui/block'
 import { Label1, Label2 } from 'baseui/typography'
 import { KIND, SIZE as ButtonSize } from 'baseui/button'
-import { AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, UseWithPurpose } from '../../constants'
+import { AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort } from '../../constants'
 import { intl, theme, useAwait } from '../../util'
 import { user } from '../../service/User'
 import ModalProcess from './Accordion/ModalProcess'
@@ -45,10 +45,10 @@ type ProcessListProps = {
   listName?: string;
 }
 
-const sortProcess = (list: UseWithPurpose[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, intl.getLanguage()))
+const sortProcess = (list: ProcessShort[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, intl.getLanguage()))
 
 const ProcessList = ({ code, listName, match, history }: ProcessListProps & RouteComponentProps<PathParams>) => {
-  const [processList, setProcessList] = React.useState<UseWithPurpose[]>([])
+  const [processList, setProcessList] = React.useState<ProcessShort[]>([])
   const [currentProcess, setCurrentProcess] = React.useState<Process | undefined>()
   const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
   const [errorProcessModal, setErrorProcessModal] = React.useState<string>("")
@@ -104,24 +104,24 @@ const ProcessList = ({ code, listName, match, history }: ProcessListProps & Rout
 
   const getProcessList = async () => {
     try {
-      let list: UseWithPurpose[] = []
+      let list: ProcessShort[] = []
 
       if (current_location.pathname.includes('team')) {
         let res = await getProcessesForTeam(code)
-        res.content ? list = res.content as UseWithPurpose[] : list = []
+        res.content ? list = res.content as ProcessShort[] : list = []
       } else if (current_location.pathname.includes('productarea')) {
         let res = await getProcessesForProductArea(code)
-        res.content ? list = res.content as UseWithPurpose[] : list = []
+        res.content ? list = res.content as ProcessShort[] : list = []
       } else {
         list = (await getCodelistUsage(listName as ListName, code)).processes
       }
       if (status[0].id === "ALL") {
         setProcessList(sortProcess(list))
       } else {
-        let listTemp: UseWithPurpose[] = []
+        let listTemp: ProcessShort[] = []
         for (const value of sortProcess(list)) {
           if ((await getProcess(value.id)).status === status[0].id) {
-            listTemp = [...listTemp, { id: value.id, purposeCode: value.purposeCode, name: value.name } as UseWithPurpose]
+            listTemp = [...listTemp, { id: value.id, purpose: value.purpose, name: value.name } as ProcessShort]
           }
         }
         setProcessList(listTemp)
@@ -173,7 +173,7 @@ const ProcessList = ({ code, listName, match, history }: ProcessListProps & Rout
   const handleDeleteProcess = async (process: Process) => {
     try {
       await deleteProcess(process.id)
-      setProcessList(sortProcess(processList.filter((p: UseWithPurpose) => p.id !== process.id)))
+      setProcessList(sortProcess(processList.filter((p: ProcessShort) => p.id !== process.id)))
       setErrorProcessModal("")
       return true
     } catch (err) {

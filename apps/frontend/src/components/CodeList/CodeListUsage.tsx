@@ -46,7 +46,7 @@ const UsageTable = (props: { usage: CodeUsage, rows: number }) => {
               {it && <ObjectLink id={it.id} type={ObjectType.INFORMATION_TYPE} withHistory={true}>{it.name}</ObjectLink>}
             </Cell>}
             {processes && <Cell>
-              {pr && <ObjectLink id={pr.id} type={ObjectType.PROCESS} withHistory={true}>{codelist.getShortname(ListName.PURPOSE, pr.purposeCode)} {pr.name}</ObjectLink>}
+              {pr && <ObjectLink id={pr.id} type={ObjectType.PROCESS} withHistory={true}>{codelist.getShortname(ListName.PURPOSE, pr.purpose.code)} {pr.name}</ObjectLink>}
             </Cell>}
             {policies && <Cell>
               {po && <ObjectLink id={po.id} type={ObjectType.POLICY} withHistory={true}>{codelist.getShortname(ListName.PURPOSE, po.purposeCode)} {po.name}</ObjectLink>}
