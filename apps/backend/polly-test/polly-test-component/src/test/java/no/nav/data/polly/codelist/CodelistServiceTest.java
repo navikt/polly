@@ -5,10 +5,10 @@ import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
-import no.nav.data.polly.codelist.dto.UsedInInstancePurpose;
 import no.nav.data.polly.common.exceptions.CodelistNotErasableException;
 import no.nav.data.polly.common.exceptions.CodelistNotFoundException;
 import no.nav.data.polly.common.exceptions.ValidationException;
+import no.nav.data.polly.process.dto.ProcessShortResponse;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static no.nav.data.polly.codelist.CodelistUtils.createCodelist;
 import static no.nav.data.polly.codelist.CodelistUtils.createCodelistRequest;
@@ -106,7 +107,7 @@ class CodelistServiceTest {
         @Test
         void delete_shouldThrowCodelistNotErasableException_whenCodelistIsInUse() {
             CodeUsageResponse codeUsage = new CodeUsageResponse(ListName.THIRD_PARTY, "DELETE_CODE");
-            codeUsage.setProcesses(List.of(UsedInInstancePurpose.builder().id("id").name("name").build()));
+            codeUsage.setProcesses(List.of(ProcessShortResponse.builder().id(UUID.randomUUID()).name("name").build()));
             when(repository.findByListAndCode(ListName.PURPOSE, "DELETE_CODE")).thenReturn(Optional.of(createCodelist(ListName.THIRD_PARTY, "DELETE_CODE")));
             when(codeUsageService.findCodeUsage(ListName.PURPOSE, "DELETE_CODE")).thenReturn(codeUsage);
 

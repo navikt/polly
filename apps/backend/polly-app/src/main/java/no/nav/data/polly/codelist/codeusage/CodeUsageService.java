@@ -19,6 +19,7 @@ import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessRepository;
+import no.nav.data.polly.process.dto.ProcessShortResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -150,7 +151,7 @@ public class CodeUsageService {
                 .forEach(lb -> lb.setGdpr(newCode));
     }
 
-    private List<UsedInInstancePurpose> findProcesses(ListName listName, String code) {
+    private List<ProcessShortResponse> findProcesses(ListName listName, String code) {
         return convert(switch (listName) {
             case PURPOSE -> processRepository.findByPurposeCode(code);
             case DEPARTMENT -> processRepository.findByDepartment(code);
@@ -160,7 +161,7 @@ public class CodeUsageService {
             case SYSTEM -> processRepository.findByProduct(code);
             case THIRD_PARTY -> processRepository.findByCommonExternalProcessResponsible(code);
             default -> List.<Process>of();
-        }, Process::getInstanceIdentification);
+        }, Process::convertToShortResponse);
     }
 
     private List<UsedInInstancePurpose> findPolicies(ListName listName, String code) {
@@ -208,7 +209,7 @@ public class CodeUsageService {
     }
 
     private List<Process> getProcesses(CodeUsageResponse usage) {
-        return processRepository.findAllById(convert(usage.getProcesses(), UsedInInstancePurpose::getIdAsUUID));
+        return processRepository.findAllById(convert(usage.getProcesses(), ProcessShortResponse::getId));
     }
 
     private List<Disclosure> getDisclosures(CodeUsageResponse usage) {
