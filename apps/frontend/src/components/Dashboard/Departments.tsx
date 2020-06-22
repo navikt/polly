@@ -6,7 +6,6 @@ import { Label1, Paragraph2 } from 'baseui/typography'
 import { theme, useAwait } from '../../util'
 import { DashboardData, DepartmentProcess } from '../../constants'
 import { StyledLink } from 'baseui/link'
-import { useStyletron } from 'styletron-react'
 import { codelist, ListName } from '../../service/Codelist'
 import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
 
@@ -26,28 +25,30 @@ type DepartmentCardProps = {
   department: DepartmentProcess;
 }
 const DepartmentCard = (props: DepartmentCardProps) => {
-  const { department } = props
+  const {department} = props
 
   return (
     <StatefulTooltip content={codelist.getCode(ListName.DEPARTMENT, department.department)?.shortName} placement={PLACEMENT.topLeft}>
-      <Card overrides={cardShadow}>
-        <Block
-          display='flex'
-          flexDirection='column'
-          alignItems='center'
-          justifyContent='space-around'
-          width="130px"
-          height="130px"
-        >
-          <Label1 color={theme.colors.accent300} $style={{ textAlign: 'center' }}>{parsedDepartmentName(department.department)}</Label1>
-          <StyledLink href={`/process/department/${department.department}/COMPLETED`}>
-            <TextWithNumber label="Fullført" number={department.processesCompleted} />
-          </StyledLink>
-          <StyledLink href={`/process/department/${department.department}/IN_PROGRESS`}>
-            <TextWithNumber label="Under arbeid" number={department.processesInProgress} />
-          </StyledLink>
-        </Block>
-      </Card>
+      <Block>
+        <Card overrides={cardShadow}>
+          <Block
+            display='flex'
+            flexDirection='column'
+            alignItems='center'
+            justifyContent='space-around'
+            width="130px"
+            height="130px"
+          >
+            <Label1 color={theme.colors.accent300} $style={{textAlign: 'center'}}>{parsedDepartmentName(department.department)}</Label1>
+            <StyledLink href={`/process/department/${department.department}/COMPLETED`}>
+              <TextWithNumber label="Fullført" number={department.processesCompleted}/>
+            </StyledLink>
+            <StyledLink href={`/process/department/${department.department}/IN_PROGRESS`}>
+              <TextWithNumber label="Under arbeid" number={department.processesInProgress}/>
+            </StyledLink>
+          </Block>
+        </Card>
+      </Block>
     </StatefulTooltip>
   )
 }
@@ -56,7 +57,7 @@ type DepartmentsProps = {
   data: DashboardData;
 }
 const Departments = (props: DepartmentsProps) => {
-  const { data } = props
+  const {data} = props
   useAwait(codelist.wait())
 
   const sortedData = () => data.departmentProcesses.sort((a, b) => parsedDepartmentName(a.department).localeCompare(b.department))
@@ -65,7 +66,7 @@ const Departments = (props: DepartmentsProps) => {
     <Block width="100%" display="flex" flexWrap>
       {sortedData().map((department: DepartmentProcess, i: number) => (
         <Block key={i} marginTop={theme.sizing.scale600} marginRight={theme.sizing.scale600}>
-          <DepartmentCard department={department} />
+          <DepartmentCard department={department}/>
         </Block>
       ))}
     </Block>
