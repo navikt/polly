@@ -1,14 +1,14 @@
 import * as React from 'react'
-import {intl, theme, useAwait} from '../../util'
-import {Block, BlockProps} from 'baseui/block'
-import {H6, Paragraph4} from 'baseui/typography'
+import { intl, theme, useAwait } from '../../util'
+import { Block, BlockProps } from 'baseui/block'
+import { H6, Paragraph4 } from 'baseui/typography'
 import NavLogo from '../../resources/navlogo.svg'
 import BKLogo from '../../resources/Behandlingskatalog_logo.svg'
 import SlackLogo from '../../resources/Slack_Monochrome_White.svg'
-import {StyledLink} from 'baseui/link'
+import { StyledLink } from 'baseui/link'
 import NavItem from './NavItem'
-import {env} from '../../util/env'
-import {user} from '../../service/User'
+import { env } from '../../util/env'
+import { user } from '../../service/User'
 import { canViewAlerts } from '../../pages/AlertEventPage'
 
 const sideBarProps: BlockProps = {
@@ -27,7 +27,7 @@ const Brand = () => (
 
   <Block display="flex" flexDirection='column' padding="1rem" marginTop="1rem">
     <StyledLink style={{ textDecoration: 'none', textAlign: 'center' }} href="/">
-      <img src={BKLogo} />
+      <img alt='logo' src={BKLogo} />
       <H6 color="white" marginTop="1rem" marginLeft="5px" marginBottom="2rem">Behandlingskatalog</H6>
     </StyledLink>
   </Block>
@@ -58,7 +58,7 @@ const SideBar = () => {
             <Paragraph4 color={theme.colors.white}>#behandlingskatalogen</Paragraph4>
           </Block>
         </a>
-        <a href={"https://dataplattform.gitbook.io/nada/kataloger/behandlingskatalog"} style={{ textDecoration: 'none' }}>
+        <a href='https://dataplattform.gitbook.io/nada/kataloger/behandlingskatalog' style={{ textDecoration: 'none' }}>
           <Block display="flex" justifyContent="center" paddingBottom={theme.sizing.scale400} alignItems="center">
             <Paragraph4 color={theme.colors.white}>{intl.aboutUs}</Paragraph4>
           </Block>

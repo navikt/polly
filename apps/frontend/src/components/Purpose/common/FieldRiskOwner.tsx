@@ -1,10 +1,10 @@
-import * as React from "react";
-import {useEffect} from "react";
-import {Select, Value} from "baseui/select";
-import {Field, FieldProps} from "formik";
-import {ProcessFormValues} from "../../../constants";
-import {Block} from "baseui/block";
-import {getResourceById, useTeamResourceSearch} from "../../../api";
+import * as React from 'react'
+import { useEffect } from 'react'
+import { Select, Value } from 'baseui/select'
+import { Field, FieldProps } from 'formik'
+import { ProcessFormValues } from '../../../constants'
+import { Block } from 'baseui/block'
+import { getResourceById, useTeamResourceSearch } from '../../../api'
 
 const FieldRiskOwner = (props: { riskOwner?: string }) => {
   const {riskOwner} = props
@@ -19,7 +19,7 @@ const FieldRiskOwner = (props: { riskOwner?: string }) => {
         setValue([])
       }
     })()
-  }, [])
+  }, [riskOwner])
 
   return (
     <Field

@@ -1,9 +1,9 @@
-import {DocumentInfoTypeUse, InformationTypeShort} from '../../../constants'
-import {Select, TYPE} from 'baseui/select'
+import { DocumentInfoTypeUse, InformationTypeShort } from '../../../constants'
+import { Select, TYPE } from 'baseui/select'
 import React from 'react'
-import {useInfoTypeSearch} from '../../../api'
-import {intl} from '../../../util'
-import {PLACEMENT} from 'baseui/popover'
+import { useInfoTypeSearch } from '../../../api'
+import { intl } from '../../../util'
+import { PLACEMENT } from 'baseui/popover'
 
 const FieldInformationType = (props: {
   documentInformationType: DocumentInfoTypeUse,
@@ -12,11 +12,7 @@ const FieldInformationType = (props: {
   const {documentInformationType, handleChange} = props
   const [searchKeyword, setSearchKeyword, isLoading] = useInfoTypeSearch()
 
-  const [selectedInformationType, setSelectedInformationType] = React.useState<InformationTypeShort>()
-
-  React.useEffect(() => {
-    setSelectedInformationType(documentInformationType.informationType)
-  }, [])
+  const [selectedInformationType, setSelectedInformationType] = React.useState<InformationTypeShort>(documentInformationType.informationType)
 
   return (
     <Select
@@ -26,7 +22,7 @@ const FieldInformationType = (props: {
       searchable={true}
       type={TYPE.search}
       options={searchKeyword}
-      placeholder={selectedInformationType ? "" : intl.informationTypeSearch}
+      placeholder={selectedInformationType ? '' : intl.informationTypeSearch}
       overrides={{
         Popover: {
           props: {

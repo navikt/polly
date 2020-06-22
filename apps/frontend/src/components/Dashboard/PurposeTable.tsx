@@ -32,7 +32,7 @@ const PurposeTable = (props: RouteComponentProps<PathProps>) => {
       setFiltered(await getProcessByState(props.match.params.filterName, props.match.params.filterValue))
       setLoading(false)
     })()
-  }, [])
+  }, [props.match.params.filterName, props.match.params.filterValue])
 
   const changeTitle = () => {
     if (props.match.params.filterName === ProcessField.DPIA) {
