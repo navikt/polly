@@ -1,12 +1,12 @@
 import * as React from 'react'
-import { useEffect } from 'react'
+import {useEffect} from 'react'
 
-import { Block, BlockProps } from 'baseui/block'
-import { Label1, Label2 } from 'baseui/typography'
-import { KIND, SIZE as ButtonSize } from 'baseui/button'
-import { AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort } from '../../constants'
-import { intl, theme, useAwait } from '../../util'
-import { user } from '../../service/User'
+import {Block, BlockProps} from 'baseui/block'
+import {Label1, Label2} from 'baseui/typography'
+import {KIND, SIZE as ButtonSize} from 'baseui/button'
+import {AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort} from '../../constants'
+import {intl, theme, useAwait} from '../../util'
+import {user} from '../../service/User'
 import ModalProcess from './Accordion/ModalProcess'
 import AccordionProcess from './Accordion'
 import {
@@ -23,16 +23,16 @@ import {
   updatePolicy,
   updateProcess
 } from '../../api'
-import { StyledSpinnerNext } from 'baseui/spinner'
-import { ListName } from '../../service/Codelist'
-import { generatePath, RouteComponentProps, useLocation } from 'react-router'
-import { StyledLink } from 'baseui/link'
-import { env } from '../../util/env'
-import { faFileWord, faPlus } from '@fortawesome/free-solid-svg-icons'
+import {StyledSpinnerNext} from 'baseui/spinner'
+import {ListName} from '../../service/Codelist'
+import {generatePath, RouteComponentProps, useLocation} from 'react-router'
+import {StyledLink} from 'baseui/link'
+import {env} from '../../util/env'
+import {faFileWord, faPlus} from '@fortawesome/free-solid-svg-icons'
 import Button from '../common/Button'
-import { Select } from 'baseui/select'
-import { PathParams } from '../../pages/PurposePage'
-import { withRouter } from 'react-router-dom'
+import {Select} from 'baseui/select'
+import {PathParams} from '../../pages/PurposePage'
+import {withRouter} from 'react-router-dom'
 
 const rowBlockProps: BlockProps = {
   marginBottom: 'scale800',
@@ -47,7 +47,7 @@ type ProcessListProps = {
 
 const sortProcess = (list: ProcessShort[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, intl.getLanguage()))
 
-const ProcessList = ({ code, listName, match, history }: ProcessListProps & RouteComponentProps<PathParams>) => {
+const ProcessList = ({code, listName, match, history}: ProcessListProps & RouteComponentProps<PathParams>) => {
   const [processList, setProcessList] = React.useState<ProcessShort[]>([])
   const [currentProcess, setCurrentProcess] = React.useState<Process | undefined>()
   const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
@@ -63,30 +63,8 @@ const ProcessList = ({ code, listName, match, history }: ProcessListProps & Rout
   }])
 
   useEffect(() => {
-    switch (match.params.filter) {
-      case "ALL":
-        setStatus([{ label: intl.allProcesses, id: 'ALL' }])
-        break
-      case "COMPLETED":
-        setStatus([{ label: intl.showCompletedProcesses, id: 'COMPLETED' }])
-        break
-      case "IN_PROGRESS":
-        setStatus([{ label: intl.inProgressProcesses, id: 'IN_PROGRESS' }])
-        break
-    }
-  }, [match.params.filter])
-
-  useEffect(() => {
     match.params.processId && getProcessById(match.params.processId)
   }, [match.params.processId])
-
-  const handleChangePanel = (processId?: string) => {
-    history.push(generatePath(match.path, { section: match.params.section, code, filter: status.length > 0 && status ? status[0].id : match.params.filter, processId }))
-  }
-
-  const hasAccess = () => user.canWrite()
-
-  useAwait(user.wait())
 
   useEffect(() => {
     (async () => {
@@ -95,6 +73,14 @@ const ProcessList = ({ code, listName, match, history }: ProcessListProps & Rout
       setIsLoadingProcessList(false)
     })()
   }, [code, status])
+
+  const handleChangePanel = (processId?: string) => {
+    history.push(generatePath(match.path, {section: match.params.section, code, filter: status.length > 0 && status ? status[0].id : match.params.filter, processId}))
+  }
+
+  const hasAccess = () => user.canWrite()
+
+  useAwait(user.wait())
 
   const listNameToUrl = () => listName && ({
     'DEPARTMENT': 'department',
@@ -118,13 +104,7 @@ const ProcessList = ({ code, listName, match, history }: ProcessListProps & Rout
       if (status[0].id === "ALL") {
         setProcessList(sortProcess(list))
       } else {
-        let listTemp: ProcessShort[] = []
-        for (const value of sortProcess(list)) {
-          if ((await getProcess(value.id)).status === status[0].id) {
-            listTemp = [...listTemp, { id: value.id, purpose: value.purpose, name: value.name } as ProcessShort]
-          }
-        }
-        setProcessList(listTemp)
+        setProcessList(sortProcess(list).filter(p => p.status === status[0].id))
       }
     } catch (err) {
       console.log(err)
@@ -216,7 +196,7 @@ const ProcessList = ({ code, listName, match, history }: ProcessListProps & Rout
     try {
       await deletePolicy(policy.id)
       if (currentProcess) {
-        setCurrentProcess({ ...currentProcess, policies: [...currentProcess.policies.filter((p: Policy) => p.id !== policy.id)] })
+        setCurrentProcess({...currentProcess, policies: [...currentProcess.policies.filter((p: Policy) => p.id !== policy.id)]})
         setErrorPolicyModal(null)
       }
       return true
@@ -232,7 +212,7 @@ const ProcessList = ({ code, listName, match, history }: ProcessListProps & Rout
       const policies: PolicyFormValues[] = formValues.informationTypes.map(infoType => ({
         subjectCategories: infoType.subjectCategories.map(c => c.code),
         informationType: infoType.informationType,
-        process: { ...formValues.process, legalBases: [] },
+        process: {...formValues.process, legalBases: []},
         purposeCode: formValues.process.purposeCode,
         legalBases: [],
         legalBasesOpen: false,
@@ -262,7 +242,7 @@ const ProcessList = ({ code, listName, match, history }: ProcessListProps & Rout
       <Block display={"flex"} flexDirection={"row-reverse"} alignItems={"center"}>
         <Block>
           <StyledLink
-            style={{ textDecoration: 'none' }}
+            style={{textDecoration: 'none'}}
             href={`${env.pollyBaseUrl}/export/process?${listNameToUrl()}=${code}`}>
             <Button
               kind={KIND.minimal}
@@ -292,9 +272,9 @@ const ProcessList = ({ code, listName, match, history }: ProcessListProps & Rout
             deleteRemoves={false}
             escapeClearsValue={false}
             options={[
-              { label: intl.allProcesses, id: "ALL" },
-              { label: intl.inProgressProcesses, id: "IN_PROGRESS" },
-              { label: intl.showCompletedProcesses, id: "COMPLETED" },
+              {label: intl.allProcesses, id: "ALL"},
+              {label: intl.inProgressProcesses, id: "IN_PROGRESS"},
+              {label: intl.showCompletedProcesses, id: "COMPLETED"},
             ]}
             value={status}
             filterOutSelected={false}
@@ -302,7 +282,7 @@ const ProcessList = ({ code, listName, match, history }: ProcessListProps & Rout
             onChange={(params: any) => {
               setStatus(params.value)
               history.push(generatePath(match.path,
-                { section: match.params.section, code, filter: params.value[0].id, processId: undefined }
+                {section: match.params.section, code, filter: params.value[0].id, processId: undefined}
               ))
             }}
           />
@@ -314,25 +294,25 @@ const ProcessList = ({ code, listName, match, history }: ProcessListProps & Rout
         </Block>
       </Block>
 
-      {isLoadingProcessList && <StyledSpinnerNext size={theme.sizing.scale2400} />}
+      {isLoadingProcessList && <StyledSpinnerNext size={theme.sizing.scale2400}/>}
 
       {!isLoadingProcessList &&
-        <AccordionProcess
-          isLoading={isLoadingProcess}
-          processList={processList}
-          setProcessList={setProcessList}
-          currentProcess={currentProcess}
-          onChangeProcess={handleChangePanel}
-          submitDeleteProcess={handleDeleteProcess}
-          submitEditProcess={handleEditProcess}
-          submitCreatePolicy={handleCreatePolicy}
-          submitEditPolicy={handleEditPolicy}
-          submitDeletePolicy={handleDeletePolicy}
-          submitAddDocument={handleAddDocument}
-          errorProcessModal={errorProcessModal}
-          errorPolicyModal={errorPolicyModal}
-          errorDocumentModal={errorDocumentModal}
-        />
+      <AccordionProcess
+        isLoading={isLoadingProcess}
+        processList={processList}
+        setProcessList={setProcessList}
+        currentProcess={currentProcess}
+        onChangeProcess={handleChangePanel}
+        submitDeleteProcess={handleDeleteProcess}
+        submitEditProcess={handleEditProcess}
+        submitCreatePolicy={handleCreatePolicy}
+        submitEditPolicy={handleEditPolicy}
+        submitDeletePolicy={handleDeletePolicy}
+        submitAddDocument={handleAddDocument}
+        errorProcessModal={errorProcessModal}
+        errorPolicyModal={errorPolicyModal}
+        errorDocumentModal={errorDocumentModal}
+      />
       }
 
       <ModalProcess
@@ -342,7 +322,7 @@ const ProcessList = ({ code, listName, match, history }: ProcessListProps & Rout
         submit={(values: ProcessFormValues) => handleCreateProcess(values)}
         errorOnCreate={errorProcessModal}
         isEdit={false}
-        initialValues={convertProcessToFormValues({ purposeCode: code })}
+        initialValues={convertProcessToFormValues({purposeCode: code})}
       />
     </>
   )
