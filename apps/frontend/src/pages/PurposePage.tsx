@@ -1,14 +1,14 @@
 import * as React from 'react'
-import { useEffect } from 'react'
+import {useEffect} from 'react'
 
 import ProcessList from '../components/Purpose'
-import { Block } from 'baseui/block'
-import { codelist, ListName } from '../service/Codelist'
-import { intl, useAwait } from '../util'
-import { H4, Label2, Paragraph2 } from 'baseui/typography'
-import { RouteComponentProps } from 'react-router-dom'
-import { ProductArea, Team } from '../constants'
-import { getProductArea, getTeam } from '../api'
+import {Block} from 'baseui/block'
+import {codelist, ListName} from '../service/Codelist'
+import {intl, useAwait} from '../util'
+import {H4, Label2, Paragraph2} from 'baseui/typography'
+import {RouteComponentProps} from 'react-router-dom'
+import {ProductArea, Team} from '../constants'
+import {getProductArea, getTeam} from '../api'
 import ReactMarkdown from 'react-markdown'
 
 const routes = {
@@ -103,7 +103,7 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
     <>
       {!isLoading && params.code && (
         <>
-          <Block marginBottom='3rem'>
+          <Block marginBottom="3rem">
             <H4>{getTitle()}</H4>
           </Block>
 
