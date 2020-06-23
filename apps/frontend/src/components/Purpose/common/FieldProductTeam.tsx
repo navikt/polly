@@ -1,24 +1,31 @@
 import * as React from 'react'
-import { useEffect } from 'react'
-import { Select, Value } from 'baseui/select'
-import { getTeam, mapTeamToOption, useTeamSearch } from '../../../api'
-import { FieldArray } from 'formik'
-import { Block } from 'baseui/block'
-import { renderTagList } from '../../common/TagList'
+import {useEffect} from 'react'
+import {Option, Select, Value} from 'baseui/select'
+import {getTeam, mapTeamToOption, useTeamSearch} from '../../../api'
+import {FieldArray, FormikProps} from 'formik'
+import {Block} from 'baseui/block'
+import {renderTagList} from '../../common/TagList'
+import {ProcessFormValues} from '../../../constants'
 
-const initialValueTeam = async (productTeams: string[]) => {
-  if (!productTeams.length) return []
-  return (await Promise.all(productTeams.map(t => getTeam(t)))).map(mapTeamToOption)
-}
 
-const FieldProductTeam = (props: { productTeams: string[] }) => {
-  const {productTeams} = props
+const FieldProductTeam = (props: {formikBag: FormikProps<ProcessFormValues>}) => {
+  const productTeams = props.formikBag.values.productTeams
   const [values, setValues] = React.useState<Value>(productTeams.map(t => ({id: t, label: t})))
   const [teamSearchResult, setTeamSearch, teamSearchLoading] = useTeamSearch()
 
-
   useEffect(() => {
-    (async () => setValues(await initialValueTeam(productTeams)))()
+    (async () => {
+      const vals: Option[] = []
+      const fs = productTeams.map((id, idx) => (async () => {
+        try {
+          vals.push(mapTeamToOption(await getTeam(id), idx))
+        } catch (e) {
+          vals.push({id, label: 'na: ' + id, idx})
+        }
+      })())
+      await Promise.all(fs)
+      setValues(vals.sort(v => v.idx))
+    })()
   }, [productTeams])
 
   return (
@@ -31,7 +38,6 @@ const FieldProductTeam = (props: { productTeams: string[] }) => {
               clearable
               options={teamSearchResult}
               onChange={({value}) => {
-                setValues(value)
                 arrayHelpers.form.setFieldValue('productTeams', [...productTeams, ...value.map(v => v.id)])
               }}
               onInputChange={event => setTeamSearch(event.currentTarget.value)}
