@@ -249,7 +249,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
                       <Block display='flex' width='100%' justifyContent='space-between'>
                         <Block width='48%'>
-                          <FieldProductTeam productTeams={formikBag.values.productTeams}/>
+                          <FieldProductTeam formikBag={formikBag}/>
                         </Block>
                         <Block width='48%'>
                           {showResponsibleSelect && <FieldCommonExternalProcessResponsible thirdParty={formikBag.values.commonExternalProcessResponsible}
