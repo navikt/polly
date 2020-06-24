@@ -1,22 +1,22 @@
 import * as React from 'react'
-import { Select, TYPE, Value } from 'baseui/select'
-import { Block, BlockProps } from 'baseui/block'
-import { Card } from 'baseui/card'
-import { StatefulInput } from 'baseui/input'
-import { Label2 } from 'baseui/typography'
-import { Button, KIND, SIZE as ButtonSize } from 'baseui/button'
-import { codelist, ListName } from '../../../service/Codelist'
-import { intl, theme } from '../../../util'
-import { ErrorMessage, Field, FieldProps, Formik, FormikProps } from 'formik'
-import { KIND as NKIND, Notification } from 'baseui/notification'
-import { LegalBasisFormValues } from '../../../constants'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExclamationCircle, faPen } from '@fortawesome/free-solid-svg-icons'
-import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
-import { legalBasisSchema } from '../../common/schema'
-import { LegalBasisView } from '../../common/LegalBasis'
-import { customizeNationalLawPlaceholder } from './PlaceholderCustomizer'
-import { paddingZero } from '../../common/Style'
+import {Select, TYPE, Value} from 'baseui/select'
+import {Block, BlockProps} from 'baseui/block'
+import {Card} from 'baseui/card'
+import {StatefulInput} from 'baseui/input'
+import {Label2} from 'baseui/typography'
+import {Button, KIND, SIZE as ButtonSize} from 'baseui/button'
+import {codelist, ListName, SensitivityLevel} from '../../../service/Codelist'
+import {intl, theme} from '../../../util'
+import {ErrorMessage, Field, FieldProps, Formik, FormikProps} from 'formik'
+import {KIND as NKIND, Notification} from 'baseui/notification'
+import {LegalBasisFormValues} from '../../../constants'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faExclamationCircle, faPen} from '@fortawesome/free-solid-svg-icons'
+import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
+import {legalBasisSchema} from '../../common/schema'
+import {LegalBasisView} from '../../common/LegalBasis'
+import {customizeNationalLawPlaceholder} from './PlaceholderCustomizer'
+import {paddingZero} from '../../common/Style'
 
 const rowBlockProps: BlockProps = {
   display: 'flex',
@@ -62,9 +62,10 @@ interface CardLegalBasisProps {
   hideCard: () => void;
   submit: (val: LegalBasisFormValues) => void;
   titleSubmitButton: string;
+  sensitivityLevel?: SensitivityLevel;
 }
 
-const CardLegalBasis = ({submit, hideCard, initValue, titleSubmitButton}: CardLegalBasisProps) => {
+const CardLegalBasis = ({submit, hideCard, initValue, titleSubmitButton, sensitivityLevel}: CardLegalBasisProps) => {
   const [gdpr, setGdpr] = React.useState<Value>(
     initValue.gdpr ? codelist.getParsedOptions(ListName.GDPR_ARTICLE).filter(value => value.id === initValue.gdpr) : []
   )
@@ -76,6 +77,15 @@ const CardLegalBasis = ({submit, hideCard, initValue, titleSubmitButton}: CardLe
     gdpr: initValue.gdpr,
     nationalLaw: initValue.nationalLaw,
     description: initValue.description,
+  }
+
+  const getOptionsBySensitivityLevel = () => {
+    if (sensitivityLevel === SensitivityLevel.ART6) {
+      return codelist.getParsedOptions(ListName.GDPR_ARTICLE).filter(l => codelist.isArt6(l.id))
+    } else if (sensitivityLevel === SensitivityLevel.ART9) {
+      return codelist.getParsedOptions(ListName.GDPR_ARTICLE).filter(l => codelist.isArt9(l.id))
+    }
+    return codelist.getParsedOptions(ListName.GDPR_ARTICLE)
   }
 
   return (
@@ -91,7 +101,7 @@ const CardLegalBasis = ({submit, hideCard, initValue, titleSubmitButton}: CardLe
                      render={() => (
                        <Select
                          autoFocus={true}
-                         options={codelist.getParsedOptions(ListName.GDPR_ARTICLE)}
+                         options={getOptionsBySensitivityLevel()}
                          placeholder={intl.gdprSelect}
                          maxDropdownHeight="300px"
                          type={TYPE.search}

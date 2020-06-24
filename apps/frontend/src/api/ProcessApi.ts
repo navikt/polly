@@ -1,7 +1,7 @@
 import axios from 'axios'
-import { PageResponse, Process, ProcessCount, ProcessField, ProcessFormValues, ProcessShort, ProcessState, ProcessStatus } from '../constants'
-import { env } from '../util/env'
-import { convertLegalBasesToFormValues } from './PolicyApi'
+import {PageResponse, Process, ProcessCount, ProcessField, ProcessFormValues, ProcessShort, ProcessState, ProcessStatus} from '../constants'
+import {env} from '../util/env'
+import {convertLegalBasesToFormValues} from './PolicyApi'
 
 export const getProcess = async (processId: string) => {
   const data = (await axios.get<Process>(`${env.pollyBaseUrl}/process/${processId}`)).data
@@ -75,7 +75,7 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
   } = (process || {})
 
   return {
-    legalBasesOpen: false,
+    legalBasesOpen: !legalBases ? true : legalBases.length > 0 ? false : true,
     id: id,
     name: name || '',
     description: description || '',

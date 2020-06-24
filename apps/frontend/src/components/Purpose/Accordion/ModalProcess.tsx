@@ -8,9 +8,8 @@ import {Plus} from 'baseui/icon'
 import {Error, ModalLabel} from '../../common/ModalSchema'
 import {LegalBasisFormValues, ProcessFormValues, ProcessStatus} from '../../../constants'
 import CardLegalBasis from './CardLegalBasis'
-import {codelist} from '../../../service/Codelist'
+import {codelist, SensitivityLevel} from '../../../service/Codelist'
 import {intl, theme} from '../../../util'
-import {ListLegalBases} from '../../common/LegalBasis'
 import {processSchema} from '../../common/schema'
 import {Accordion, Panel} from 'baseui/accordion'
 import {Label1} from 'baseui/typography'
@@ -36,6 +35,7 @@ import FieldCommonExternalProcessResponsible from '../common/FieldCommonExternal
 import {RadioBoolButton} from '../../common/Radio'
 import {env} from '../../../util/env'
 import {writeLog} from '../../../api/LogApi'
+import {ListLegalBases} from '../../common/LegalBasis'
 
 const modalHeaderProps: BlockProps = {
   display: 'flex',
@@ -100,6 +100,9 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
   const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState<number>()
   const [isPanelExpanded, togglePanel] = React.useReducer(prevState => !prevState, false)
   const [showResponsibleSelect, setShowResponsibleSelect] = React.useState<boolean>(!!initialValues.commonExternalProcessResponsible)
+  const [sensitivityLevel, setSensitivityLevel] = React.useState<SensitivityLevel>(SensitivityLevel.ART6)
+
+    console.log(initialValues, "initval")
 
   const disableEnter = (e: KeyboardEvent) => {
     if (e.key === 'Enter') e.preventDefault()
@@ -263,73 +266,167 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                       </Block>
                     </Panel>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     <Panel
                       title={<AccordionTitle title={intl.legalBasis} expanded={isPanelExpanded}/>}
                       onChange={togglePanel}
                       overrides={{...panelOverrides}}
                     >
-                      <Block {...rowBlockProps}>
-                        {!formikBag.values.legalBasesOpen && (
-                          <Block width='100%' marginBottom='1rem'>
-                            <Button
-                              size={ButtonSize.compact}
-                              kind={KIND.minimal}
-                              onClick={() => formikBag.setFieldValue('legalBasesOpen', true)}
-                              startEnhancer={() => <Block display='flex' justifyContent='center'><Plus size={22}/></Block>}
-                            >
-                              {intl.legalBasisAdd}
-                            </Button>
-                          </Block>
-                        )}
-                      </Block>
 
                       <FieldArray
                         name='legalBases'
                         render={arrayHelpers => (
-                          <React.Fragment>
+                          <>
                             {formikBag.values.legalBasesOpen ? (
-                              <Block width='100%' marginTop='2rem'>
-                                <CardLegalBasis
-                                  titleSubmitButton={selectedLegalBasis ? intl.update : intl.add}
-                                  initValue={selectedLegalBasis || {}}
-                                  hideCard={() => {
-                                    formikBag.setFieldValue('legalBasesOpen', false)
+                              <CardLegalBasis
+                                titleSubmitButton={selectedLegalBasis ? intl.update : intl.add}
+                                initValue={selectedLegalBasis || {}}
+                                hideCard={() => {
+                                  formikBag.setFieldValue('legalBasesOpen', false)
+                                  setSelectedLegalBasis(undefined)
+                                }}
+                                submit={values => {
+                                  if (!values) return
+                                  if (selectedLegalBasis) {
+                                    arrayHelpers.replace(selectedLegalBasisIndex!, values)
                                     setSelectedLegalBasis(undefined)
-                                  }}
-                                  submit={values => {
-                                    if (!values) return
-                                    if (selectedLegalBasis) {
-                                      arrayHelpers.replace(selectedLegalBasisIndex!, values)
-                                      setSelectedLegalBasis(undefined)
-                                    } else {
-                                      arrayHelpers.push(values)
-                                    }
-                                    formikBag.setFieldValue('legalBasesOpen', false)
-                                  }}/>
-                              </Block>
+                                  } else {
+                                    arrayHelpers.push(values)
+                                  }
+                                  formikBag.setFieldValue('legalBasesOpen', false)
+                                }}
+                                sensitivityLevel={sensitivityLevel}
+                              />
                             ) : (
-                              <Block display='flex'>
-                                <ModalLabel/>
-                                <Block width='100%'>
-                                  <ListLegalBases
-                                    legalBases={formikBag.values.legalBases}
-                                    onRemove={(index) => arrayHelpers.remove(index)}
-                                    onEdit={
-                                      (index) => {
-                                        setSelectedLegalBasis(formikBag.values.legalBases[index])
-                                        setSelectedLegalBasisIndex(index)
+                              <Block display={"flex"} width={"100%"}>
+                                <Block width={"100%"}>
+                                  <Block>
+                                    <Button
+                                      size={ButtonSize.compact}
+                                      kind={KIND.minimal}
+                                      onClick={() => {
                                         formikBag.setFieldValue('legalBasesOpen', true)
+                                        setSensitivityLevel(SensitivityLevel.ART6)
+                                      }}
+                                      startEnhancer={() => <Block display='flex' justifyContent='center'><Plus size={22}/></Block>}
+                                    >
+                                      {intl.legalBasisAdd} + "6"
+                                    </Button>
+                                  </Block>
+
+                                  <Block>
+
+                                    <ListLegalBases
+                                      legalBases={formikBag.values.legalBases.filter(l=>codelist.isArt6(l.gdpr))}
+                                      onRemove={(index) => arrayHelpers.remove(index)}
+                                      onEdit={
+                                        (index) => {
+                                          setSelectedLegalBasis(formikBag.values.legalBases[index])
+                                          setSelectedLegalBasisIndex(index)
+                                          formikBag.setFieldValue('legalBasesOpen', true)
+                                        }
                                       }
-                                    }
-                                  />
+                                    />
+                                  </Block>
+                                </Block>
+
+                                <Block width={"100%"}>
+                                  <Block>
+                                    <Button
+                                      size={ButtonSize.compact}
+                                      kind={KIND.minimal}
+                                      onClick={() => {
+                                        formikBag.setFieldValue('legalBasesOpen', true)
+                                        setSensitivityLevel(SensitivityLevel.ART9)
+                                      }}
+                                      startEnhancer={() => <Block display='flex' justifyContent='center'><Plus size={22}/></Block>}
+                                    >
+                                      {intl.legalBasisAdd} + "9"
+                                    </Button>
+                                  </Block>
+                                  <Block>
+                                    {/*<CardLegalBasis*/}
+                                    {/*  titleSubmitButton={selectedLegalBasis ? intl.update : intl.add}*/}
+                                    {/*  initValue={selectedLegalBasis || {}}*/}
+                                    {/*  hideCard={() => {*/}
+                                    {/*    formikBag.setFieldValue('legalBasesOpen', false)*/}
+                                    {/*    setSelectedLegalBasis(undefined)*/}
+                                    {/*  }}*/}
+                                    {/*  submit={values => {*/}
+                                    {/*    if (!values) return*/}
+                                    {/*    if (selectedLegalBasis) {*/}
+                                    {/*      arrayHelpers.replace(selectedLegalBasisIndex!, values)*/}
+                                    {/*      setSelectedLegalBasis(undefined)*/}
+                                    {/*    } else {*/}
+                                    {/*      arrayHelpers.push(values)*/}
+                                    {/*    }*/}
+                                    {/*    formikBag.setFieldValue('legalBasesOpen', false)*/}
+                                    {/*  }}*/}
+                                    {/*  sensitivityLevel={SensitivityLevel.ART9}*/}
+                                    {/*/>*/}
+
+                                    <ListLegalBases
+                                      legalBases={formikBag.values.legalBases.filter(l=>codelist.isArt9(l.gdpr))}
+                                      onRemove={(index) => arrayHelpers.remove(index)}
+                                      onEdit={
+                                        (index) => {
+                                          setSelectedLegalBasis(formikBag.values.legalBases[index])
+                                          setSelectedLegalBasisIndex(index)
+                                          formikBag.setFieldValue('legalBasesOpen', true)
+                                        }
+                                      }
+                                    />
+                                  </Block>
                                 </Block>
                               </Block>
                             )}
-                          </React.Fragment>
+                          </>
                         )}
                       />
                       <Error fieldName='legalBasesOpen' fullWidth={true}/>
                     </Panel>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                     <Panel
                       title={<AccordionTitle title={intl.automation} expanded={isPanelExpanded}/>}
