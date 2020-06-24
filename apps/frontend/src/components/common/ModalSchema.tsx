@@ -24,7 +24,7 @@ export const Error = (props: { fieldName: string, fullWidth?: boolean }) => (
 )
 
 export const ModalLabel = (props: { label?: any, tooltip?: string | React.ReactElement, fullwidth?: boolean }) => {
-  const width = props.fullwidth ? {witdh: '100%'} : {minWidth: '25%', maxWidth: '25%'}
+  const width = props.fullwidth ? {witdh: '100%'} : {minWidth: '25%'}
   return (
     <Block {...width} alignSelf="center" paddingRight="1rem">
       {props.tooltip ?

@@ -19,7 +19,7 @@ const DpiaItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => {
   return (
     <>
       <Block {...rowBlockProps} marginTop={0}>
-        <ModalLabel label={intl.isDpiaRequired}/>
+        <ModalLabel label={intl.isDpiaRequired} tooltip={intl.dpiaHelpText}/>
         <BoolField fieldName='dpia.needForDpia' value={formikBag.values.dpia.needForDpia} omitUndefined={false}/>
       </Block>
       {formikBag.values.dpia?.needForDpia === undefined ? <></> : formikBag.values.dpia?.needForDpia ? <>

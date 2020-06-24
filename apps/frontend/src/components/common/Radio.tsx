@@ -1,6 +1,7 @@
 import {intl} from "../../util"
 import {Radio, RadioGroup} from "baseui/radio"
 import * as React from "react"
+import {JustifyContent} from "baseui/block";
 
 const YES = "YES", NO = "NO", UNCLARIFIED = "UNCLARIFIED"
 const boolToRadio = (bool?: boolean) => bool === undefined ? UNCLARIFIED : bool ? YES : NO
@@ -13,12 +14,13 @@ type radioBoolProps = {
   setValue: (b?: boolean) => void,
   omitUndefined?: boolean,
   firstButtonLabel?: string,
-  secondButtonLabel?: string
+  secondButtonLabel?: string,
+  justifyContent?: JustifyContent;
 }
 
 export const RadioBoolButton = (props: radioBoolProps) =>
   <RadioGroup value={boolToRadio(props.value)} align="horizontal"
-              overrides={{RadioGroupRoot: {style: {width: "100%"}}}}
+              overrides={{RadioGroupRoot: {style: {width: "100%", justifyContent: props.justifyContent ? props.justifyContent : "stretch"}}}}
               onChange={
                 (e) => {
                   props.setValue(radioToBool((e.target as HTMLInputElement).value))

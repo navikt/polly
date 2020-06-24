@@ -36,6 +36,7 @@ export interface IStrings {
   navMaster: string;
   productTeam: string;
   productTeamFromTK: string;
+  productTeamFromTKHelpText: string;
   product: string;
   products: string;
   team: string;
@@ -58,15 +59,16 @@ export interface IStrings {
   no: string;
   unclarified: string;
   unknown: string;
-  numberOfProcessesWithUnknownLegalBasis : string;
-  numberOfProcessesWithoutArticle6LegalBasis : string;
-  numberOfProcessesWithoutArticle9LegalBasis : string;
-  processesWithUnknownLegalBasis : string;
-  processesWithoutArticle6LegalBasis : string;
-  processesWithoutArticle9LegalBasis : string;
+  numberOfProcessesWithUnknownLegalBasis: string;
+  numberOfProcessesWithoutArticle6LegalBasis: string;
+  numberOfProcessesWithoutArticle9LegalBasis: string;
+  processesWithUnknownLegalBasis: string;
+  processesWithoutArticle6LegalBasis: string;
+  processesWithoutArticle9LegalBasis: string;
   incompleteLegalBasis: string;
   notFilled: string;
   automation: string;
+  isAutomationNeeded: string;
   status: string;
   processStatus: string;
   processStatusHelpText: string;
@@ -76,6 +78,7 @@ export interface IStrings {
   automaticProcessing: string;
   automaticProcessingExtra: string;
   profiling: string;
+  isProfilingUsed: string;
   profilingExtra: string;
   dataProcessor: string;
   dataProcessorYes: string;
@@ -84,13 +87,15 @@ export interface IStrings {
   dataProcessorExtra: string;
   dataProcessorAgreement: string;
   dataProcessorOutsideEU: string;
-  dataProcessorOutsideEUExtra: string;
+  isDataProcessedOutsideEUEEAHelpText: string;
+  isDataProcessedOutsideEUEEA: string;
   includeDefaultDocument: string;
   inProduction: string;
   notInProduction: string;
   isDpiaRequired: string;
   dpiaReference: string;
-  dpiaNeeded:string;
+  dpiaNeeded: string;
+  dpiaHelpText: string;
   grounds: string;
   reference: string;
   ground: string;
@@ -110,7 +115,7 @@ export interface IStrings {
   lastEvents: string;
   disclosureName: string;
   pvkRequired: string;
-
+  overallPurposeActivity: string;
   // sentence
   containsInformationType: string;
   containsProcesses: string;
@@ -163,6 +168,7 @@ export interface IStrings {
   usesAllInformationTypesHelpText: string;
   processAutomationHelpText: string;
   profilingHelpText: string;
+  isDataProcessorUsed: string;
   dataProcessorHelpText: string;
   dataProcessorAgreementHelpText: string;
   dataProcessorOutsideEUExtraHelpText: string;
@@ -374,14 +380,14 @@ const defaultLang = langs.nb
 type IIntl = LocalizedStringsMethods & IStrings;
 
 interface LocalizedStringsFactory {
-  new <T>(props: GlobalStrings<T>, options?: { customLanguageInterface: () => string }): IIntl
+  new<T>(props: GlobalStrings<T>, options?: { customLanguageInterface: () => string }): IIntl
 }
 
 const strings: IntlLangs = {}
 
 Object.keys(langs).forEach((lang) => (strings[lang] = langs[lang].texts))
 
-export const intl: IIntl = new (LocalizedStrings as LocalizedStringsFactory)(strings as any, { customLanguageInterface: () => defaultLang.langCode })
+export const intl: IIntl = new (LocalizedStrings as LocalizedStringsFactory)(strings as any, {customLanguageInterface: () => defaultLang.langCode})
 export const currentLang = () => langs[intl.getLanguage()]
 
 interface IntlLangs {

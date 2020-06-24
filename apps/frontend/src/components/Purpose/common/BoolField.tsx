@@ -2,6 +2,7 @@ import {Field, FieldProps} from "formik";
 import {ProcessFormValues} from "../../../constants";
 import {RadioBoolButton} from "../../common/Radio";
 import * as React from "react";
+import {JustifyContent} from "baseui/block";
 
 const BoolField = (props: {
   value?: boolean,
@@ -9,6 +10,7 @@ const BoolField = (props: {
   omitUndefined?: boolean,
   firstButtonLabel?: string,
   secondButtonLabel?: string
+  justifyContent ?: JustifyContent;
 }) => (
   <Field
     name={props.fieldName}
@@ -18,6 +20,7 @@ const BoolField = (props: {
         setValue={(b) => form.setFieldValue(props.fieldName, b)}
         omitUndefined={props.omitUndefined}
         firstButtonLabel={props.firstButtonLabel}
+        justifyContent={props.justifyContent}
       />
     }
   />

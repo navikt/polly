@@ -75,7 +75,7 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
     else if (params.section === routes.department) return intl.department
     else if (params.section === routes.team) return intl.team
     else if (params.section === routes.productarea) return intl.productArea
-    return intl.overallPurpose
+    return intl.overallPurposeActivity
   }
 
   const getDescription = () => {
