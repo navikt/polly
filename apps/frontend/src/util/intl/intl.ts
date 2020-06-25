@@ -33,7 +33,7 @@ export interface IStrings {
   legalBasesShort: string;
   subjectCategories: string;
   nationalLaw: string;
-  navMaster: string;
+  orgMaster: string;
   productTeam: string;
   productTeamFromTK: string;
   productTeamFromTKHelpText: string;
@@ -47,6 +47,7 @@ export interface IStrings {
   commonExternalProcessResponsible: string;
   commonExternalProcessResponsibleHelpText: string;
   system: string;
+  systems: string;
   disclosure: string;
   disclosures: string;
   documents: string;
@@ -135,7 +136,7 @@ export interface IStrings {
   usefulInformation: string;
   keywordsWrite: string;
   searchWordsWrite: string;
-  navMasterSelect: string;
+  orgMasterSelect: string;
   purposeSelect: string;
   purposeNotFound: string;
   purposeUse: string;

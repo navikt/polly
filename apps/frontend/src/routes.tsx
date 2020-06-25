@@ -10,7 +10,7 @@ import PurposePage from './pages/PurposePage'
 import InformationtypeCreatePage from './pages/InformationtypeCreatePage'
 import InformationtypeEditPage from './pages/InformationtypeEditPage'
 import InformationtypePage from './pages/InformationtypePage'
-import ThirdPartySearchPage from './pages/ThirdPartySearchPage'
+import {SystemSearchPage, ThirdPartySearchPage} from './pages/ListSearchPage'
 import ThirdPartyMetadataPage from './pages/ThirdPartyPage'
 import {Main} from './pages/MainPage'
 import CodelistPage from './pages/admin/CodelistPage'
@@ -24,16 +24,20 @@ import DocumentEditPage from './pages/DocumentEditPage'
 import {PurposeListPage} from './pages/PurposeListPage'
 import {AlertEventPage} from './pages/AlertEventPage'
 import {getDisclosure, getPolicy, getProcess} from './api'
-import PurposeTable from "./components/Dashboard/PurposeTable";
+import PurposeTable from './components/Dashboard/PurposeTable'
+import {SystemPage} from './pages/SystemPage'
 
+export const processPath = "/process/:section/:code/:filter/:processId?"
 
 const Routes = (): JSX.Element => (
   <Root>
     <Switch>
       <Route exact path="/thirdparty" component={ThirdPartySearchPage}/>
       <Route exact path="/thirdparty/:thirdPartyCode" component={ThirdPartyMetadataPage}/>
+      <Route exact path="/system" component={SystemSearchPage}/>
+      <Route exact path="/system/:systemCode" component={SystemPage}/>
       <Route exact path="/process" component={PurposeListPage}/>
-      <Route exact path="/process/:section/:code/:filter/:processId?" component={PurposePage}/>
+      <Route exact path={processPath} component={PurposePage}/>
 
       <Route exact path="/dashboard/:filterName/:filterValue" component={PurposeTable}/>
 

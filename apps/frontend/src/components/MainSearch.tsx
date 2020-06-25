@@ -1,23 +1,23 @@
-import { default as React, ReactElement, useEffect, useState } from 'react'
-import { NavigableItem, ObjectType } from '../constants'
-import { Block } from 'baseui/block'
-import { codelist, ListName } from '../service/Codelist'
-import { useDebouncedState } from '../util/hooks'
-import { prefixBiasedSort } from '../util/sort'
-import { intl, theme } from '../util'
-import { searchDocuments, searchInformationType, searchProcess, searchProductArea, searchTeam } from '../api'
-import { Select, TYPE, Value } from 'baseui/select'
-import { urlForObject } from './common/RouteLink'
-import { RouteComponentProps, withRouter } from 'react-router-dom'
-import { Radio, RadioGroup } from 'baseui/radio'
-import { paddingZero } from './common/Style'
-import { faFilter } from '@fortawesome/free-solid-svg-icons'
+import {default as React, ReactElement, useEffect, useState} from 'react'
+import {NavigableItem, ObjectType} from '../constants'
+import {Block} from 'baseui/block'
+import {codelist, ListName} from '../service/Codelist'
+import {useDebouncedState} from '../util/hooks'
+import {prefixBiasedSort} from '../util/sort'
+import {intl, theme} from '../util'
+import {searchDocuments, searchInformationType, searchProcess, searchProductArea, searchTeam} from '../api'
+import {Select, TYPE, Value} from 'baseui/select'
+import {urlForObject} from './common/RouteLink'
+import {RouteComponentProps, withRouter} from 'react-router-dom'
+import {Radio, RadioGroup} from 'baseui/radio'
+import {paddingZero} from './common/Style'
+import {faFilter} from '@fortawesome/free-solid-svg-icons'
 import Button from './common/Button'
 
-type SearchItem = { id: string, sortKey: string, label: ReactElement, type: NavigableItem }
-type SearchType = 'all' | 'purpose' | 'process' | 'team' | 'productarea' | 'department' | 'subDepartment' | 'informationType' | 'thirdParty' | 'document'
+type SearchItem = {id: string, sortKey: string, label: ReactElement, type: NavigableItem}
+type SearchType = 'all' | 'purpose' | 'process' | 'team' | 'productarea' | 'department' | 'subDepartment' | 'informationType' | 'thirdParty' | 'system' | 'document'
 
-const SearchLabel = (props: { name: string, type: string }) =>
+const SearchLabel = (props: {name: string, type: string}) =>
   <Block display="flex" justifyContent="space-between" width="100%">
     <span>{props.name}</span>
     <Block $style={{opacity: .5}}>{props.type}</Block>
@@ -63,6 +63,8 @@ const useMainSearch = () => {
       setSearchResult(getCodelistByListnameAndType(search, ListName.SUB_DEPARTMENT, intl.subDepartment))
     } else if (type === 'thirdParty') {
       setSearchResult(getCodelistByListnameAndType(search, ListName.THIRD_PARTY, intl.thirdParty))
+    } else if (type === 'system') {
+      setSearchResult(getCodelistByListnameAndType(search, ListName.SYSTEM, intl.system))
     } else {
       (async () => {
         if (search && search.replace(/ /g, '').length > 2) {
@@ -80,6 +82,7 @@ const useMainSearch = () => {
             add(searchCodelist(search, ListName.DEPARTMENT, intl.department))
             add(searchCodelist(search, ListName.SUB_DEPARTMENT, intl.subDepartment))
             add(searchCodelist(search, ListName.THIRD_PARTY, intl.thirdParty))
+            add(searchCodelist(search, ListName.SYSTEM, intl.system))
           }
 
           if (type === 'all' || type === 'informationType') {
@@ -196,7 +199,7 @@ const smallRadio = (value: SearchType, text: string) => {
   )
 }
 
-const SelectType = (props: { type: SearchType, setType: (type: SearchType) => void }) =>
+const SelectType = (props: {type: SearchType, setType: (type: SearchType) => void}) =>
   <Block
     font='ParagraphSmall'
     position='absolute'
@@ -227,6 +230,7 @@ const SelectType = (props: { type: SearchType, setType: (type: SearchType) => vo
         {smallRadio('department', intl.department)}
         {smallRadio('subDepartment', intl.subDepartmentShort)}
         {smallRadio('thirdParty', intl.thirdParty)}
+        {smallRadio('system', intl.system)}
         {smallRadio('document', intl.document)}
       </RadioGroup>
     </Block>

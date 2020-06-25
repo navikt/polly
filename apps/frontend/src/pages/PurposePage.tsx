@@ -4,32 +4,35 @@ import {useEffect} from 'react'
 import ProcessList from '../components/Purpose'
 import {Block} from 'baseui/block'
 import {codelist, ListName} from '../service/Codelist'
-import {intl, useAwait} from '../util'
+import {intl} from '../util'
 import {H4, Label2, Paragraph2} from 'baseui/typography'
 import {RouteComponentProps} from 'react-router-dom'
 import {ProductArea, Team} from '../constants'
 import {getProductArea, getTeam} from '../api'
 import ReactMarkdown from 'react-markdown'
 
-const routes = {
-  subdepartment: 'subdepartment',
-  department: 'department',
-  purpose: 'purpose',
-  team: 'team',
-  productarea: 'productarea'
+export enum Section {
+  subdepartment = 'subdepartment',
+  department = 'department',
+  purpose = 'purpose',
+  team = 'team',
+  productarea = 'productarea',
+  system = 'system'
 }
 
 const renderMetadata = (description: string, title: string) => (
   <Block marginBottom='scale1000'>
     <Label2 font='font400'>{title}</Label2>
-    <Paragraph2><ReactMarkdown source={description} linkTarget='_blank' /></Paragraph2>
+    <Paragraph2 as='div'><ReactMarkdown source={description} linkTarget='_blank'/></Paragraph2>
   </Block>
 )
 
+export type Filter = 'ALL' | 'COMPLETED' | 'IN_PROGRESS'
+
 export type PathParams = {
-  section: 'purpose' | 'department' | 'subdepartment' | 'team' | 'productarea',
+  section: Section,
   code: string,
-  filter?: 'ALL' | 'COMPLETED' | 'IN_PROGRESS',
+  filter: Filter,
   processId?: string
 }
 
@@ -38,77 +41,79 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
   const [team, setTeam] = React.useState<Team>()
   const [productArea, setProductArea] = React.useState<ProductArea>()
 
-  const { params } = props.match
-  useAwait(codelist.wait())
+  const {params} = props.match
+  const {section, code, filter, processId} = params
 
   useEffect(() => {
     (async () => {
-      if (params.code) {
+      if (code) {
         setLoading(true)
-        if (params.section === 'team') {
-          setTeam((await getTeam(params.code)))
+        if (section === 'team') {
+          setTeam((await getTeam(code)))
         }
-        if (params.section === 'productarea') {
-          setProductArea((await getProductArea(params.code)))
+        if (section === 'productarea') {
+          setProductArea((await getProductArea(code)))
         }
         setLoading(false)
       }
     })()
-  }, [params])
+  }, [code, section])
 
   const getTitle = () => {
     let currentListName = getCurrentListName()
     if (currentListName !== undefined) {
-      return codelist.getShortname(currentListName, params.code)
+      return codelist.getShortname(currentListName, code)
     }
-    if (params.section === routes.team) {
+    if (section === Section.team) {
       return team?.name || ''
     }
-    if (params.section === routes.productarea) {
+    if (section === Section.productarea) {
       return productArea?.name || ''
     }
     return intl.ERROR
   }
 
   const metadataTitle = () => {
-    if (params.section === routes.subdepartment) return intl.subDepartment
-    else if (params.section === routes.department) return intl.department
-    else if (params.section === routes.team) return intl.team
-    else if (params.section === routes.productarea) return intl.productArea
+    if (section === Section.subdepartment) return intl.subDepartment
+    else if (section === Section.department) return intl.department
+    else if (section === Section.team) return intl.team
+    else if (section === Section.productarea) return intl.productArea
+    else if (section === Section.system) return intl.system
     return intl.overallPurposeActivity
   }
 
   const getDescription = () => {
     let currentListName = getCurrentListName()
     if (currentListName) {
-      return codelist.getDescription(currentListName, params.code)
+      return codelist.getDescription(currentListName, code)
     }
-    if (params.section === routes.team) {
+    if (section === Section.team) {
       return team?.description || ''
     }
-    if (params.section === routes.productarea) {
+    if (section === Section.productarea) {
       return productArea?.description || ''
     }
     return ''
   }
 
   const getCurrentListName = () => {
-    if (params.section === routes.subdepartment) return ListName.SUB_DEPARTMENT
-    else if (params.section === routes.department) return ListName.DEPARTMENT
-    else if (params.section === routes.purpose) return ListName.PURPOSE
+    if (section === Section.subdepartment) return ListName.SUB_DEPARTMENT
+    else if (section === Section.department) return ListName.DEPARTMENT
+    else if (section === Section.purpose) return ListName.PURPOSE
+    else if (section === Section.system) return ListName.SYSTEM
     return undefined
   }
 
   return (
     <>
-      {!isLoading && params.code && (
+      {!isLoading && code && (
         <>
           <Block marginBottom="3rem">
             <H4>{getTitle()}</H4>
           </Block>
 
           {renderMetadata(getDescription(), metadataTitle())}
-          <ProcessList code={params.code} listName={getCurrentListName()} />
+          <ProcessList code={code} listName={getCurrentListName()} processId={processId} filter={filter} section={section}/>
         </>
       )}
     </>

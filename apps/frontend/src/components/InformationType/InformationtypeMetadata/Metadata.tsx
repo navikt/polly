@@ -82,10 +82,10 @@ const DescriptionData = (props: { termId?: string, description: string, keywords
   )
 }
 
-const PropertyData = (props: { navMaster: Code, sources: Code[], categories: Code[], keywords: string[], sensitivity: Code }) => (
+const PropertyData = (props: { orgMaster: Code, sources: Code[], categories: Code[], keywords: string[], sensitivity: Code }) => (
   <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
     <FlexGridItem>
-      <TextWithLabel label={intl.navMaster} text={props.navMaster ? props.navMaster.shortName : ''}/>
+      <TextWithLabel label={intl.orgMaster} text={props.orgMaster ? props.orgMaster.shortName : ''}/>
     </FlexGridItem>
     <FlexGridItem>
       <TextWithLabel label={intl.sources} text={renderCodesToLinks(props.sources)}/>
@@ -114,7 +114,7 @@ const Metadata = (props: { informationtype: InformationType }) => {
       </Block>
       <Block width="60%" paddingLeft={dividerDistance} $style={{borderLeft: `1px solid ${theme.colors.mono600}`}}>
         <PropertyData
-          navMaster={informationtype.navMaster}
+          orgMaster={informationtype.orgMaster}
           sources={informationtype.sources ? informationtype.sources : []}
           categories={informationtype.categories ? informationtype.categories : []}
           keywords={informationtype.keywords ? informationtype.keywords : []}

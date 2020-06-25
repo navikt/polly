@@ -6,7 +6,7 @@ import {KIND, SIZE as ButtonSize} from 'baseui/button'
 import {StyledSpinnerNext} from 'baseui/spinner'
 import {Block} from 'baseui/block'
 import {Label2} from 'baseui/typography'
-import {intl, theme, useAwait} from '../../../util'
+import {intl, theme} from '../../../util'
 import {user} from '../../../service/User'
 import {Plus} from 'baseui/icon'
 import {AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort} from '../../../constants'
@@ -33,7 +33,7 @@ type AccordionProcessProps = {
   errorPolicyModal: string | null
   errorDocumentModal: string | null
   setProcessList: (processes: Process[]) => void
-  onChangeProcess: (processId: string) => void
+  onChangeProcess: (processId?: string) => void
   submitDeleteProcess: (process: Process) => Promise<boolean>
   submitEditProcess: (process: ProcessFormValues) => Promise<boolean>
   submitCreatePolicy: (process: PolicyFormValues) => Promise<boolean>
@@ -64,7 +64,6 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
   const purposeRef = React.useRef<HTMLInputElement>(null)
 
   const hasAccess = () => user.canWrite()
-  useAwait(user.wait())
 
   const renderCreatePolicyButton = () => (
     <Button
@@ -99,7 +98,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
   return (
     <Block>
       <StatelessAccordion
-        onChange={({expanded}) => expanded.length && onChangeProcess(expanded[0] as string)}
+        onChange={({expanded}) => onChangeProcess(expanded.length ? expanded[0] as string : undefined)}
         expanded={props.match.params.processId ? [props.match.params.processId] : []}
       >
         {props.processList &&

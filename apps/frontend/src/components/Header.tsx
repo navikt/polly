@@ -1,22 +1,22 @@
 import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { ALIGN, HeaderNavigation, StyledNavigationItem as NavigationItem, StyledNavigationList as NavigationList, } from 'baseui/header-navigation'
-import { Button } from 'baseui/button'
-import { Block, BlockProps } from 'baseui/block'
-import { RouteComponentProps, withRouter } from 'react-router-dom'
-import { env } from '../util/env'
-import { intl, theme, useAwait } from '../util'
-import { user } from '../service/User'
-import { StyledLink } from 'baseui/link'
-import { StatefulPopover } from 'baseui/popover'
-import { Label2 } from 'baseui/typography'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser } from '@fortawesome/free-solid-svg-icons'
-import { OptionProfile, StatefulMenu } from 'baseui/menu'
-import { Lang, langs, langsArray } from '../util/intl/intl'
-import { TriangleDown } from 'baseui/icon'
-import { FlagIcon } from './common/Flag'
-import { paddingAll } from './common/Style'
+import {useEffect, useState} from 'react'
+import {ALIGN, HeaderNavigation, StyledNavigationItem as NavigationItem, StyledNavigationList as NavigationList,} from 'baseui/header-navigation'
+import {Button} from 'baseui/button'
+import {Block, BlockProps} from 'baseui/block'
+import {RouteComponentProps, withRouter} from 'react-router-dom'
+import {env} from '../util/env'
+import {intl, theme} from '../util'
+import {user} from '../service/User'
+import {StyledLink} from 'baseui/link'
+import {StatefulPopover} from 'baseui/popover'
+import {Label2} from 'baseui/typography'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faUser} from '@fortawesome/free-solid-svg-icons'
+import {OptionProfile, StatefulMenu} from 'baseui/menu'
+import {Lang, langs, langsArray} from '../util/intl/intl'
+import {TriangleDown} from 'baseui/icon'
+import {FlagIcon} from './common/Flag'
+import {paddingAll} from './common/Style'
 import MainSearch from './MainSearch'
 
 
@@ -146,7 +146,6 @@ interface HeaderProps {
 }
 
 const HeaderImpl = (props: HeaderProps & RouteComponentProps) => {
-  useAwait(user.wait())
   const [url, setUrl] = useState(window.location.href)
   useEffect(() => setUrl(window.location.href), [props.location.pathname])
 

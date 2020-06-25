@@ -8,9 +8,9 @@ import {H4} from 'baseui/typography'
 import {StyledSpinnerNext} from 'baseui/spinner'
 
 import InformationtypeMetadata from '../components/InformationType/InformationtypeMetadata/'
-import {intl, useAwait} from '../util'
+import {intl} from '../util'
 import {CodeUsage, Disclosure, Document, InformationType, Policy} from '../constants'
-import {codelist, ListName} from '../service/Codelist'
+import {ListName} from '../service/Codelist'
 import {user} from '../service/User'
 import {getCodelistUsageByListName, getDisclosuresByInformationTypeId, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType,} from '../api'
 import InformationTypeAccordion from '../components/InformationType/ListCategoryInformationtype'
@@ -28,10 +28,7 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
   const [documents, setDocuments] = React.useState<Document[]>([])
   const [categoryUsages, setCategoryUsages] = React.useState<CodeUsage[]>()
 
-  useAwait(user.wait())
-  useAwait(codelist.wait())
-
-  React.useEffect(() => {
+  useEffect(() => {
     (async () => {
       setLoading(true)
       let response = await getCodelistUsageByListName(ListName.CATEGORY)

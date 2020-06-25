@@ -1,18 +1,19 @@
-import * as React from "react";
-import {intl, useAwait} from "../util"
-import {RouteComponentProps} from "react-router-dom";
-import {codelist, ListName} from "../service/Codelist";
-import {Plus} from "baseui/icon";
-import {Block, BlockProps} from "baseui/block";
-import {createDisclosure, deleteDisclosure, getDisclosuresByRecipient, getInformationTypesBySource, updateDisclosure} from "../api";
-import TableDisclosure from "../components/common/TableDisclosure";
-import {H5, Label2, Paragraph2} from "baseui/typography";
-import {Button, KIND} from "baseui/button";
-import {user} from "../service/User";
-import {Disclosure, DisclosureFormValues, InformationType} from "../constants";
-import ModalThirdParty from "../components/ThirdParty/ModalThirdPartyForm";
-import {StyledSpinnerNext} from "baseui/spinner"
-import ThirdPartiesTable from "../components/common/ThirdPartiesTable";
+import * as React from 'react'
+import {useEffect} from 'react'
+import {intl} from '../util'
+import {RouteComponentProps} from 'react-router-dom'
+import {codelist, ListName} from '../service/Codelist'
+import {Plus} from 'baseui/icon'
+import {Block, BlockProps} from 'baseui/block'
+import {createDisclosure, deleteDisclosure, getDisclosuresByRecipient, getInformationTypesBySource, updateDisclosure} from '../api'
+import TableDisclosure from '../components/common/TableDisclosure'
+import {H5, Label2, Paragraph2} from 'baseui/typography'
+import {Button, KIND} from 'baseui/button'
+import {user} from '../service/User'
+import {Disclosure, DisclosureFormValues, InformationType} from '../constants'
+import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
+import {StyledSpinnerNext} from 'baseui/spinner'
+import ThirdPartiesTable from '../components/common/ThirdPartiesTable'
 
 const labelBlockProps: BlockProps = {
   marginBottom: '1rem',
@@ -23,10 +24,10 @@ export type PathParams = { thirdPartyCode: string }
 
 const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
-  const [disclosureList, setDisclosureList] = React.useState<Disclosure[]>([]);
+  const [disclosureList, setDisclosureList] = React.useState<Disclosure[]>([])
   const [informationTypeList, setInformationTypeList] = React.useState<InformationType[]>()
   const [showCreateModal, setShowCreateModal] = React.useState(false)
-  const [error, setError] = React.useState<string>();
+  const [error, setError] = React.useState<string>()
 
   const handleCreateDisclosure = async (disclosure: DisclosureFormValues) => {
     try {
@@ -81,19 +82,17 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
     end: undefined
   }
 
-  useAwait(user.wait())
-
-  React.useEffect(() => {
+  useEffect(() => {
     (async () => {
-      setIsLoading(true);
-      await codelist.wait();
+      setIsLoading(true)
+      await codelist.wait()
       if (props.match.params.thirdPartyCode) {
         setDisclosureList(await getDisclosuresByRecipient(props.match.params.thirdPartyCode))
         setInformationTypeList((await getInformationTypesBySource(props.match.params.thirdPartyCode)).content)
       }
-      setIsLoading(false);
+      setIsLoading(false)
     })()
-  }, [props.match.params.thirdPartyCode]);
+  }, [props.match.params.thirdPartyCode])
 
 
   return (
@@ -153,7 +152,7 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
         </React.Fragment>
       )}
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default ThirdPartyPage;
+export default ThirdPartyPage

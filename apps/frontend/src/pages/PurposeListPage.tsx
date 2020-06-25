@@ -1,5 +1,5 @@
-import {intl, theme, useAwait} from '../util'
-import {codelist, ListName} from '../service/Codelist'
+import {intl, theme} from '../util'
+import {ListName} from '../service/Codelist'
 import {H4, Label1} from 'baseui/typography'
 import React from 'react'
 import {Block} from 'baseui/block'
@@ -13,8 +13,6 @@ import AlphabeticList from "../components/common/AlphabeticList";
 import {RouteComponentProps} from 'react-router-dom'
 
 export const PurposeListPage = (props: RouteComponentProps) => {
-  useAwait(codelist.wait())
-
   const hasAccess = () => user.canWrite();
   const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
   const [errorProcessModal, setErrorProcessModal] = React.useState(null)

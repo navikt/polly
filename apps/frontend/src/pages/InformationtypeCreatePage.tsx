@@ -1,21 +1,21 @@
 import * as React from "react";
 
 import InformationtypeForm from "../components/InformationType/InformationtypeForm";
-import { codelist } from "../service/Codelist";
-import { InformationtypeFormValues } from "../constants"
-import { intl, useAwait } from "../util"
-import { user } from "../service/User";
+import {codelist} from "../service/Codelist";
+import {InformationtypeFormValues} from "../constants"
+import {intl, useAwait} from "../util"
+import {user} from "../service/User";
 import ErrorNotAllowed from "../components/common/ErrorNotAllowed";
-import { createInformationType } from "../api"
-import { RouteComponentProps } from "react-router-dom";
-import { H4 } from "baseui/typography";
-import { StyledSpinnerNext } from "baseui/spinner"
+import {createInformationType} from "../api"
+import {RouteComponentProps} from "react-router-dom";
+import {H4} from "baseui/typography";
+import {StyledSpinnerNext} from "baseui/spinner"
 
 let initialFormValues: InformationtypeFormValues = {
   term: "",
   name: "",
   sensitivity: undefined,
-  navMaster: undefined,
+  orgMaster: undefined,
   keywords: [],
   categories: [],
   sources: [],
@@ -40,7 +40,6 @@ const InformationtypeCreatePage = (props: RouteComponentProps) => {
 
   const hasAccess = () => user.canWrite()
 
-  useAwait(user.wait())
   useAwait(codelist.wait(), setLoading)
 
   return (

@@ -64,11 +64,11 @@ export const urlForObject = (type: NavigableItem, id: string, audit?: AuditItem)
       return `/process/department/${id}/ALL/`
     case ListName.THIRD_PARTY:
       return `/thirdparty/${id}`
+    case ListName.SYSTEM:
+      return `/system/${id}`
     case ListName.SUB_DEPARTMENT:
       return `/process/subdepartment/${id}/ALL/`
   }
-  console.warn('couldn\'t find object type ' + type)
-  return ''
 }
 
 const ObjectLinkImpl = (props: RouteComponentProps & ObjectLinkProps) => {

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {intl, theme, useAwait} from '../../util'
+import {intl, theme} from '../../util'
 import {Block, BlockProps} from 'baseui/block'
 import {H6, Paragraph4} from 'baseui/typography'
 import NavLogo from '../../resources/navlogo.svg'
@@ -7,7 +7,6 @@ import BKLogo from '../../resources/Behandlingskatalog_logo.svg'
 import SlackLogo from '../../resources/Slack_Monochrome_White.svg'
 import {StyledLink} from 'baseui/link'
 import NavItem from './NavItem'
-import {user} from '../../service/User'
 import {canViewAlerts} from '../../pages/AlertEventPage'
 import {datajegerSlackLink, documentationLink} from '../../util/config'
 
@@ -34,7 +33,6 @@ const Brand = () => (
 )
 
 const SideBar = () => {
-  useAwait(user.wait())
   return (
     <Block {...sideBarProps}>
       <Brand />
@@ -43,6 +41,7 @@ const SideBar = () => {
         <NavItem to="/informationtype" text={intl.informationTypes} />
         <NavItem to="/document" text={intl.documents} />
         <NavItem to="/thirdparty" text={intl.thirdParties} />
+        <NavItem to="/system" text={intl.systems} />
         {canViewAlerts() && <NavItem to="/alert/events" text={intl.alerts} />}
       </Block>
 

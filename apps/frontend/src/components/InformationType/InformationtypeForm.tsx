@@ -42,10 +42,10 @@ const InformationtypeForm = ({
     }]
   }
   const initialValueMaster = () => {
-    if (!formInitialValues.navMaster || !codelist) return []
+    if (!formInitialValues.orgMaster || !codelist) return []
     return [{
-      id: formInitialValues.navMaster,
-      label: codelist.getShortname(ListName.SYSTEM, formInitialValues.navMaster)
+      id: formInitialValues.orgMaster,
+      label: codelist.getShortname(ListName.SYSTEM, formInitialValues.orgMaster)
     }]
   }
   const initialValueTerm = async () => {
@@ -147,28 +147,28 @@ const InformationtypeForm = ({
 
               <FlexGridItem>
                 <Field
-                  name="navMaster"
+                  name="orgMaster"
                   render={({form}: FieldProps<InformationtypeFormValues>) => (
                     <Block marginBottom="1em">
                       <Block {...labelProps}>
-                        <Label2>{intl.navMaster}</Label2>
+                        <Label2>{intl.orgMaster}</Label2>
                       </Block>
 
                       <Select
                         options={codelist.getParsedOptions(ListName.SYSTEM)}
                         value={masterValue as Value}
-                        placeholder={intl.navMasterSelect}
+                        placeholder={intl.orgMasterSelect}
                         onChange={(params) => {
                           let master = params.value.length ? params.value[0] : undefined
                           setMasterValue(master as Option)
-                          form.setFieldValue('navMaster', master ? master.id : undefined)
+                          form.setFieldValue('orgMaster', master ? master.id : undefined)
                         }}
-                        error={!!form.errors.navMaster && !!form.submitCount}
+                        error={!!form.errors.orgMaster && !!form.submitCount}
                       />
                     </Block>
                   )}
                 />
-                <Error fieldName="navMaster" fullWidth/>
+                <Error fieldName="orgMaster" fullWidth/>
               </FlexGridItem>
 
               <FlexGridItem>
