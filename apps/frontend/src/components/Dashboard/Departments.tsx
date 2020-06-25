@@ -5,9 +5,9 @@ import {Block} from 'baseui/block'
 import {Label1, Paragraph2} from 'baseui/typography'
 import {theme} from '../../util'
 import {DashboardData, DepartmentProcess} from '../../constants'
-import {StyledLink} from 'baseui/link'
 import {codelist, ListName} from '../../service/Codelist'
 import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
+import RouteLink from '../common/RouteLink'
 
 const TextWithNumber = (props: { label: string; number: number }) => (
   <Block display="flex" width="100%" marginBottom="0" justifyContent="center">
@@ -40,12 +40,12 @@ const DepartmentCard = (props: DepartmentCardProps) => {
             height="130px"
           >
             <Label1 color={theme.colors.accent300} $style={{textAlign: 'center'}}>{parsedDepartmentName(department.department)}</Label1>
-            <StyledLink href={`/process/department/${department.department}/COMPLETED`}>
+            <RouteLink href={`/process/department/${department.department}/COMPLETED`}>
               <TextWithNumber label="Fullført" number={department.processesCompleted}/>
-            </StyledLink>
-            <StyledLink href={`/process/department/${department.department}/IN_PROGRESS`}>
+            </RouteLink>
+            <RouteLink href={`/process/department/${department.department}/IN_PROGRESS`}>
               <TextWithNumber label="Under arbeid" number={department.processesInProgress}/>
-            </StyledLink>
+            </RouteLink>
           </Block>
         </Card>
       </Block>
