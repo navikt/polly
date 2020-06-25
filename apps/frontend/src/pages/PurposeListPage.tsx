@@ -3,17 +3,17 @@ import {ListName} from '../service/Codelist'
 import {H4, Label1} from 'baseui/typography'
 import React from 'react'
 import {Block} from 'baseui/block'
-import {Button, KIND, SIZE as ButtonSize} from 'baseui/button';
-import {Plus} from 'baseui/icon';
-import {user} from '../service/User';
-import ModalProcess from '../components/Purpose/Accordion/ModalProcess';
-import {ProcessFormValues} from '../constants';
-import {convertProcessToFormValues, createProcess} from '../api';
-import AlphabeticList from "../components/common/AlphabeticList";
+import {Button, KIND, SIZE as ButtonSize} from 'baseui/button'
+import {Plus} from 'baseui/icon'
+import {user} from '../service/User'
+import ModalProcess from '../components/Purpose/Accordion/ModalProcess'
+import {ProcessFormValues} from '../constants'
+import {convertProcessToFormValues, createProcess} from '../api'
+import AlphabeticList from '../components/common/AlphabeticList'
 import {RouteComponentProps} from 'react-router-dom'
 
 export const PurposeListPage = (props: RouteComponentProps) => {
-  const hasAccess = () => user.canWrite();
+  const hasAccess = () => user.canWrite()
   const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
   const [errorProcessModal, setErrorProcessModal] = React.useState(null)
 
@@ -24,7 +24,7 @@ export const PurposeListPage = (props: RouteComponentProps) => {
       const newProcess = await createProcess(process)
       setErrorProcessModal(null)
       setShowCreateProcessModal(false)
-      props.history.push(`/process/purpose/${newProcess.purposeCode}/ALL/${newProcess.id}?create`)
+      props.history.push(`/process/purpose/${newProcess.purpose.code}/ALL/${newProcess.id}?create`)
     } catch (err) {
       setErrorProcessModal(err.message)
     }
@@ -34,11 +34,11 @@ export const PurposeListPage = (props: RouteComponentProps) => {
     <>
       <H4>{intl.processingActivities}</H4>
 
-      <Block display={'flex'} width={'100%'} justifyContent={"space-between"}>
+      <Block display={'flex'} width={'100%'} justifyContent={'space-between'}>
         <Block>
           <Label1>{intl.purposeSelect}</Label1>
         </Block>
-        <Block marginTop={"auto"}>
+        <Block marginTop={'auto'}>
           {hasAccess() && (
             <Button
               size={ButtonSize.compact}
@@ -61,9 +61,9 @@ export const PurposeListPage = (props: RouteComponentProps) => {
         submit={(values: ProcessFormValues) => handleCreateProcess(values)}
         errorOnCreate={errorProcessModal}
         isEdit={false}
-        initialValues={convertProcessToFormValues({purposeCode: ''})}
+        initialValues={convertProcessToFormValues()}
       />
-      <AlphabeticList listName={ListName.PURPOSE} baseUrl={"/process/purpose/"}/>
+      <AlphabeticList listName={ListName.PURPOSE} baseUrl={'/process/purpose/'}/>
     </>
   )
 }

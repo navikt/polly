@@ -197,7 +197,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
             informationType: undefined,
             legalBasesUse: LegalBasesUse.INHERITED_FROM_PROCESS,
             process: currentProcess,
-            purposeCode: currentProcess.purposeCode,
+            purposeCode: currentProcess.purpose.code,
             subjectCategories: [],
             legalBases: [],
             documentIds: [],

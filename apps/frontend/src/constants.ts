@@ -158,7 +158,7 @@ export const documentSort: ColumnCompares<DocumentInfoTypeUse> = {
 
 export const processSort: ColumnCompares<Process> = {
   name: (a, b) => a.name.localeCompare(b.name),
-  purposeCode: (a, b) => (codelist.getShortname(ListName.PURPOSE, a.purposeCode) || '').localeCompare(codelist.getShortname(ListName.PURPOSE, b.purposeCode) || ''),
+  purpose: (a, b) => (codelist.getShortnameForCode(a.purpose) || '').localeCompare(codelist.getShortnameForCode(b.purpose) || ''),
   department: (a, b) => (a.department?.shortName || '').localeCompare(b.department?.shortName || ''),
   products: (a, b) => a.products.length - b.products.length,
 }
@@ -189,7 +189,6 @@ export interface Process extends IDurationed {
   products: Code[];
   policies: Policy[];
   purpose: Code;
-  purposeCode: string;
   changeStamp: ChangeStamp;
   dpia?: Dpia;
   status?: ProcessStatus;
@@ -330,7 +329,7 @@ export interface AddDocumentToProcessFormValues {
   document?: Document;
   informationTypes: DocumentInfoTypeUse[];
   defaultDocument: boolean;
-  process: {id: string; name: string; purposeCode: string};
+  process: {id: string; name: string; purpose: Code};
 }
 
 export interface CreateDocumentFormValues {

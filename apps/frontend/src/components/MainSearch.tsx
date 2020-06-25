@@ -101,7 +101,7 @@ const useMainSearch = () => {
             searches.push((async () => {
               const resProcess = await searchProcess(search)
               add(resProcess.content.map(it => {
-                const purpose = codelist.getShortname(ListName.PURPOSE, it.purposeCode)
+                const purpose = codelist.getShortnameForCode(it.purpose)
                 return ({
                   id: it.id,
                   sortKey: `${it.name} ${purpose}`,

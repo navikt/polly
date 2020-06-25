@@ -54,7 +54,7 @@ const mapBool = (b?: boolean) => b === true ? true : b === false ? false : undef
 export const convertProcessToFormValues: (process?: Partial<Process>) => ProcessFormValues = process => {
   const {
     id,
-    purposeCode,
+    purpose,
     name,
     description,
     department,
@@ -79,7 +79,7 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     id: id,
     name: name || '',
     description: description || '',
-    purposeCode: purposeCode,
+    purpose: purpose?.code ||'',
     department: (department && department.code) || undefined,
     subDepartments: (subDepartments && subDepartments.map(sd => sd.code)) || [],
     commonExternalProcessResponsible: (commonExternalProcessResponsible && commonExternalProcessResponsible.code) || undefined,
