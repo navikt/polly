@@ -75,11 +75,11 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
   } = (process || {})
 
   return {
-    legalBasesOpen: !legalBases ? true : legalBases.length > 0 ? false : true,
+    legalBasesOpen: !legalBases ? true : legalBases.length <= 0,
     id: id,
     name: name || '',
     description: description || '',
-    purpose: purpose?.code ||'',
+    purposeCode: purpose?.code || '',
     department: (department && department.code) || undefined,
     subDepartments: (subDepartments && subDepartments.map(sd => sd.code)) || [],
     commonExternalProcessResponsible: (commonExternalProcessResponsible && commonExternalProcessResponsible.code) || undefined,
