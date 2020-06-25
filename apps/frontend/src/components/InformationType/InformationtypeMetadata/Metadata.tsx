@@ -1,14 +1,14 @@
 import * as React from 'react'
 import {ReactNode, useEffect, useState} from 'react'
 import {Block} from 'baseui/block'
-import {InformationType, NavigableItem} from '../../../constants'
+import {InformationType} from '../../../constants'
 import {FlexGrid, FlexGridItem} from 'baseui/flex-grid'
 import {IconDefinition} from '@fortawesome/fontawesome-common-types'
 import {intl, theme} from '../../../util'
 import {Label2} from 'baseui/typography'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faExternalLinkAlt, faTimesCircle, faUserShield} from '@fortawesome/free-solid-svg-icons'
-import {Code} from '../../../service/Codelist'
+import {Code, ListName} from '../../../service/Codelist'
 import {sensitivityColor} from '../Sensitivity'
 import {getTerm, mapTermToOption} from '../../../api'
 import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
@@ -16,15 +16,7 @@ import {StyledLink} from 'baseui/link'
 import {marginZero} from '../../common/Style'
 import {DotTags} from '../../common/DotTag'
 import {termUrl} from '../../../util/config'
-import RouteLink, {urlForObject} from '../../common/RouteLink'
-
-const renderCodesToLinks = (codes: Code[]) =>
-  codes.map((code, index) => (
-    <React.Fragment key={index}>
-       <RouteLink href={urlForObject(code.list as NavigableItem, code.code)}>{code.shortName}</RouteLink>
-      <span>{index < codes.length - 1 ? ', ' : ''}</span>
-    </React.Fragment>
-  ))
+import {CodesLinks} from '../../common/NavigableCodeList'
 
 const TextWithLabel = (props: {label: string, text: ReactNode, icon?: IconDefinition, iconColor?: string, error?: string}) => {
   const errorIcon = <FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500}/>
@@ -86,10 +78,10 @@ const DescriptionData = (props: {termId?: string, description?: string, keywords
 const PropertyData = (props: {orgMaster?: Code, sources: Code[], categories: Code[], keywords: string[], sensitivity: Code}) => (
   <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
     <FlexGridItem>
-      <TextWithLabel label={intl.orgMaster} text={renderCodesToLinks(props.orgMaster ? [props.orgMaster] : [])}/>
+      <TextWithLabel label={intl.orgMaster} text={<CodesLinks list={ListName.SYSTEM} code={props.orgMaster?.code}/>}/>
     </FlexGridItem>
     <FlexGridItem>
-      <TextWithLabel label={intl.sources} text={renderCodesToLinks(props.sources)}/>
+      <TextWithLabel label={intl.sources} text={<CodesLinks list={ListName.THIRD_PARTY} codes={props.sources}/>}/>
     </FlexGridItem>
     <FlexGridItem>
       <TextWithLabel label={intl.categories} text={(props.categories || []).map(c => c.shortName).join(', ')}/>

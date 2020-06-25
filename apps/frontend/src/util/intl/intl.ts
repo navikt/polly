@@ -34,6 +34,7 @@ export interface IStrings {
   subjectCategories: string;
   nationalLaw: string;
   orgMaster: string;
+  orgMasterInfTypeHeader: string;
   productTeam: string;
   productTeamFromTK: string;
   productTeamFromTKHelpText: string;

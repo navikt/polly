@@ -13,6 +13,7 @@ import {useTable} from '../util/hooks'
 import {Cell, HeadCell, Row, Table} from '../components/common/Table'
 import RouteLink from '../components/common/RouteLink'
 import {Sensitivity} from '../components/InformationType/Sensitivity'
+import {CodesLinks} from '../components/common/NavigableCodeList'
 
 const SystemPageImpl = (props: RouteComponentProps<{systemCode: string}>) => {
   const {systemCode} = props.match.params
@@ -50,7 +51,7 @@ const InfoTypeTable = ({informationTypes}: {informationTypes: InformationType[]}
 
   return (
     <Block marginBottom={theme.sizing.scale1200}>
-      <HeadingSmall>{intl.orgMaster}: {intl.informationTypes}</HeadingSmall>
+      <HeadingSmall>{intl.orgMasterInfTypeHeader}</HeadingSmall>
 
       <Table
         emptyText={intl.orgMaster.toLowerCase()}
@@ -66,15 +67,14 @@ const InfoTypeTable = ({informationTypes}: {informationTypes: InformationType[]}
           <Row key={index}>
             <Cell>
               <RouteLink href={`/informationtype/${row.id}`}>
-                <Sensitivity sensitivity={row.sensitivity}/>
-                {row.name}
+                <Sensitivity sensitivity={row.sensitivity}/> {row.name}
               </RouteLink>
             </Cell>
             <Cell>
               {row.description}
             </Cell>
             <Cell>
-              {row.sources.map(s => codelist.getShortname(ListName.THIRD_PARTY, s.code)).join(", ")}
+              <CodesLinks list={ListName.THIRD_PARTY} codes={row.sources}/>
             </Cell>
           </Row>
         ))}
