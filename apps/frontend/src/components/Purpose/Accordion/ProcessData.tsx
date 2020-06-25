@@ -14,11 +14,12 @@ import {TeamPopover} from '../../common/Team'
 import {boolToText} from '../../common/Radio'
 import {RetentionView} from '../Retention'
 import {env} from '../../../util/env'
+import ReactMarkdown from "react-markdown";
 
 const showDpiaRequiredField = (dpia?: Dpia) => {
   if (dpia?.needForDpia === true) {
     if (dpia.refToDpia) {
-      return `${intl.yes}. ${intl.reference}${dpia.refToDpia}`
+      return <ReactMarkdown source={`${intl.yes}. ${intl.reference}${dpia.refToDpia}`} linkTarget={"_blank"}/>
     } else {
       return intl.yes
     }
@@ -147,7 +148,7 @@ const ProcessData = (props: { process: Process }) => {
             <Block>
               {dataProcessorAgreements &&
               <Block display='flex'>
-                <Block $style={{whiteSpace: 'nowrap'}}>
+                <Block $style={{whiteSpace: 'nowrap', margin:"1rem 0"}}>
                   {`${intl.dataProcessorAgreement}: `}
                 </Block>
                 <DotTags items={process.dataProcessing?.dataProcessorAgreements}/>
