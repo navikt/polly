@@ -127,7 +127,7 @@ public class CodeUsageService {
                 case DEPARTMENT -> getProcesses(usage).forEach(p -> p.getData().setDepartment(newCode));
                 case SUB_DEPARTMENT -> getProcesses(usage).forEach(p -> replaceAll(p.getData().getSubDepartments(), oldCode, newCode));
                 case SYSTEM -> {
-                    getInformationTypes(usage).forEach(it -> it.getData().setNavMaster(newCode));
+                    getInformationTypes(usage).forEach(it -> it.getData().setOrgMaster(newCode));
                     getProcesses(usage).forEach(p -> replaceAll(p.getData().getProducts(), oldCode, newCode));
                 }
             }
@@ -177,7 +177,7 @@ public class CodeUsageService {
     private List<UsedInInstance> findInformationTypes(ListName listName, String code) {
         return convert(switch (listName) {
             case SENSITIVITY -> informationTypeRepository.findBySensitivity(code);
-            case SYSTEM -> informationTypeRepository.findByNavMaster(code);
+            case SYSTEM -> informationTypeRepository.findByOrgMaster(code);
             case CATEGORY -> informationTypeRepository.findByCategory(code);
             case THIRD_PARTY -> informationTypeRepository.findBySource(code);
             default -> List.<InformationType>of();

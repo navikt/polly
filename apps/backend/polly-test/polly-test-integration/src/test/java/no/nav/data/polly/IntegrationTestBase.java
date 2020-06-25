@@ -184,7 +184,7 @@ public abstract class IntegrationTestBase {
                         .name(name)
                         .description("desc")
                         .sensitivity(sensitivity)
-                        .navMaster(system)
+                        .orgMaster(system)
                         .category(category)
                         .source(source)
                         .build())

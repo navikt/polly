@@ -23,7 +23,7 @@ public class InformationTypeData {
     private String name;
     private String description;
     private String sensitivity;
-    private String navMaster;
+    private String orgMaster;
     private List<String> categories = new ArrayList<>();
     private List<String> sources = new ArrayList<>();
     private List<String> keywords = new ArrayList<>();

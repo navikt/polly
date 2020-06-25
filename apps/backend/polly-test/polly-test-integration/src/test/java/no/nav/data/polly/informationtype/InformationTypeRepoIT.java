@@ -23,7 +23,7 @@ class InformationTypeRepoIT extends IntegrationTestBase {
                         .name("name")
                         .description("desc")
                         .sensitivity("much")
-                        .navMaster("TPS")
+                        .orgMaster("TPS")
                         .category("cat")
                         .source("source")
                         .keyword("keyword")

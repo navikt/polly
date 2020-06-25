@@ -91,6 +91,7 @@ public class InformationTypeController {
     @GetMapping
     public ResponseEntity<RestResponsePage<InformationTypeResponse>> findAll(PageParameters page,
             @RequestParam(required = false) String source,
+            @RequestParam(required = false) String orgMaster,
             @RequestParam(required = false) String term
     ) {
         log.info("Received request for all InformationTypes source={} term={}", source, term);
@@ -99,6 +100,8 @@ public class InformationTypeController {
             infoTypes = repository.findByTermId(term);
         } else if (source != null) {
             infoTypes = repository.findBySource(source);
+        } else if (orgMaster != null) {
+            infoTypes = repository.findByOrgMaster(orgMaster);
         }
         if (infoTypes != null) {
             infoTypes.sort(comparing(it -> it.getData().getName(), String.CASE_INSENSITIVE_ORDER));

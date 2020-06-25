@@ -23,7 +23,7 @@ import static no.nav.data.polly.common.utils.StreamUtils.copyOf;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonPropertyOrder({"id", "name", "term", "description", "sensitivity", "navMaster", "categories", "sources", "keywords", "changeStamp"})
+@JsonPropertyOrder({"id", "name", "term", "description", "sensitivity", "orgMaster", "categories", "sources", "keywords", "changeStamp"})
 public class InformationTypeResponse {
 
     private UUID id;
@@ -31,7 +31,7 @@ public class InformationTypeResponse {
     private String term;
     private String description;
     private CodelistResponse sensitivity;
-    private CodelistResponse navMaster;
+    private CodelistResponse orgMaster;
     private List<CodelistResponse> categories;
     private List<CodelistResponse> sources;
     private List<String> keywords;
@@ -48,7 +48,7 @@ public class InformationTypeResponse {
         setName(data.getName());
         setDescription(data.getDescription());
         setSensitivity(CodelistService.getCodelistResponse(ListName.SENSITIVITY, data.getSensitivity()));
-        setNavMaster(CodelistService.getCodelistResponse(ListName.SYSTEM, data.getNavMaster()));
+        setOrgMaster(CodelistService.getCodelistResponse(ListName.SYSTEM, data.getOrgMaster()));
         setCategories(CodelistService.getCodelistResponseList(ListName.CATEGORY, data.getCategories()));
         setSources(CodelistService.getCodelistResponseList(ListName.THIRD_PARTY, data.getSources()));
         setKeywords(copyOf(data.getKeywords()));

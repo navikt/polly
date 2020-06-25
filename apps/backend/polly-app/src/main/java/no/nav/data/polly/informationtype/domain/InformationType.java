@@ -95,7 +95,7 @@ public class InformationType extends Auditable {
         data.setName(request.getName());
         data.setDescription(request.getDescription());
         data.setSensitivity(request.getSensitivity());
-        data.setNavMaster(request.getNavMaster());
+        data.setOrgMaster(request.getOrgMaster());
         data.setCategories(copyOf(request.getCategories()));
         data.setSources(copyOf(request.getSources()));
         data.setKeywords(copyOf(request.getKeywords()));

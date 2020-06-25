@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -25,17 +26,18 @@ public class InformationTypeRepositoryImpl implements InformationTypeRepositoryC
     public List<InformationType> findByCategory(String category) {
         var resp = jdbcTemplate.queryForList("select information_type_id from information_type where data #>'{categories}' ?? :category ",
                 new MapSqlParameterSource().addValue("category", category));
-        List<UUID> ids = resp.stream().map(i -> ((UUID) i.values().iterator().next())).collect(Collectors.toList());
-
-        return informationTypeRepository.findAllById(ids);
+        return fetch(resp);
     }
 
     @Override
     public List<InformationType> findBySource(String source) {
         var resp = jdbcTemplate.queryForList("select information_type_id from information_type where data #>'{sources}' ?? :source ",
                 new MapSqlParameterSource().addValue("source", source));
-        List<UUID> ids = resp.stream().map(i -> ((UUID) i.values().iterator().next())).collect(Collectors.toList());
+        return fetch(resp);
+    }
 
+    private List<InformationType> fetch(List<Map<String, Object>> resp) {
+        List<UUID> ids = resp.stream().map(i -> ((UUID) i.values().iterator().next())).collect(Collectors.toList());
         return informationTypeRepository.findAllById(ids);
     }
 }

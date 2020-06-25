@@ -35,7 +35,7 @@ public class InformationTypeRequest implements RequestElement {
     @ApiModelProperty(value = "Codelist SENSITIVITY")
     private String sensitivity;
     @ApiModelProperty(value = "Codelist SYSTEM")
-    private String navMaster;
+    private String orgMaster;
     @ApiModelProperty(value = "Codelist CATEGORY", example = "[\"CODELIST\"]")
     private List<String> categories;
     @ApiModelProperty(value = "Codelist THIRD_PARTY", example = "[\"CODELIST\"]")
@@ -56,7 +56,7 @@ public class InformationTypeRequest implements RequestElement {
         setDescription(StringUtils.stripToNull(description));
         setTerm(StringUtils.stripToNull(term));
         setSensitivity(toUpperCaseAndTrim(getSensitivity()));
-        setNavMaster(toUpperCaseAndTrim(getNavMaster()));
+        setOrgMaster(toUpperCaseAndTrim(getOrgMaster()));
         setCategories(nullToEmptyList(categories).stream()
                 .map(StringUtils::stripToNull)
                 .map(String::toUpperCase)
@@ -88,6 +88,6 @@ public class InformationTypeRequest implements RequestElement {
         validator.checkCodelists(Fields.categories, getCategories(), ListName.CATEGORY);
         validator.checkCodelists(Fields.sources, getSources(), ListName.THIRD_PARTY);
         validator.checkRequiredCodelist(Fields.sensitivity, getSensitivity(), ListName.SENSITIVITY);
-        validator.checkCodelist(Fields.navMaster, getNavMaster(), ListName.SYSTEM);
+        validator.checkCodelist(Fields.orgMaster, getOrgMaster(), ListName.SYSTEM);
     }
 }
