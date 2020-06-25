@@ -80,8 +80,13 @@ const ProcessList = ({code, listName, filter, processId, section, history}: Proc
     })()
   }, [code, status])
 
-  const handleChangePanel = (newProcessId?: string) => {
-    history.push(generatePath(processPath, {section, code, filter: status.length > 0 && status ? status[0].id : filter, processId: newProcessId}))
+  const handleChangePanel = (process?: Process) => {
+    history.push(generatePath(processPath, {
+      section,
+      code: section === Section.purpose && !!process ? process.purpose.code : code,
+      filter: status.length > 0 && status ? status[0].id : filter,
+      processId: process?.id
+    }))
   }
 
   const hasAccess = () => user.canWrite()
@@ -149,6 +154,7 @@ const ProcessList = ({code, listName, filter, processId, section, history}: Proc
       const updatedProcess = await updateProcess(values)
       setCurrentProcess(updatedProcess)
       setProcessList(sortProcess([...processList.filter(p => p.id !== updatedProcess.id), updatedProcess]))
+      handleChangePanel(updatedProcess)
       return true
     } catch (err) {
       console.log(err)
