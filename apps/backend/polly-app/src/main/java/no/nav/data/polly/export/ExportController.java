@@ -54,6 +54,7 @@ public class ExportController {
             @RequestParam(name = "processId", required = false) UUID processId,
             @RequestParam(name = "department", required = false) String department,
             @RequestParam(name = "subDepartment", required = false) String subDepartment,
+            @RequestParam(name = "system", required = false) String system,
             @RequestParam(name = "purpose", required = false) String purpose
     ) {
         byte[] doc;
@@ -78,6 +79,9 @@ public class ExportController {
             } else if (purpose != null) {
                 list = ListName.PURPOSE;
                 code = purpose;
+            } else if (system != null) {
+                list = ListName.SYSTEM;
+                code = system;
             } else {
                 throw new ValidationException("No paramater given");
             }

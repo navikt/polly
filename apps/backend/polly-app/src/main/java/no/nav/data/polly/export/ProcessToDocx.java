@@ -112,6 +112,9 @@ public class ProcessToDocx {
         } else if (list == ListName.PURPOSE) {
             title = "Formål";
             processes = processRepository.findByPurposeCode(code);
+        } else if (list == ListName.SYSTEM) {
+            title = "System";
+            processes = processRepository.findByProduct(code);
         } else {
             throw new ValidationException("no list given");
         }
