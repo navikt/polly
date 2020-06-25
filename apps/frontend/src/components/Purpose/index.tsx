@@ -2,7 +2,7 @@ import * as React from 'react'
 import {useEffect} from 'react'
 
 import {Block, BlockProps} from 'baseui/block'
-import {Label1, Label2} from 'baseui/typography'
+import {HeadingSmall, Label2} from 'baseui/typography'
 import {KIND, SIZE as ButtonSize} from 'baseui/button'
 import {AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort} from '../../constants'
 import {intl, theme, useAwait} from '../../util'
@@ -238,9 +238,9 @@ const ProcessList = ({code, listName, filter, processId, section, history}: Proc
     <>
       <Block {...rowBlockProps}>
         <Block>
-          <Label1 font="font400">
+          <HeadingSmall>
             {intl.processes}
-          </Label1>
+          </HeadingSmall>
         </Block>
       </Block>
 
