@@ -27,7 +27,7 @@ const initFormValues = (data: InformationType) => {
     sources: reduceCodelist(data.sources),
     keywords: data.keywords,
     description: data.description || "",
-    navMaster: !data.navMaster ? '' : data.navMaster.code,
+    orgMaster: !data.orgMaster ? '' : data.orgMaster.code,
   } as InformationtypeFormValues;
 };
 

@@ -1,7 +1,6 @@
 import React, {useEffect} from 'react'
 import {RouteComponentProps} from 'react-router-dom'
-import {intl, useAwait} from '../util'
-import {codelist} from '../service/Codelist'
+import {intl} from '../util'
 import {Block} from 'baseui/block'
 import {deleteDocument, getAllDocument, getDocument, getProcessesByDocument} from '../api'
 import {Document, Process} from '../constants'
@@ -38,8 +37,6 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
   const [activeKey, setActiveKey] = React.useState<string | number>('containsInformationType')
   const [documents, setDocuments] = React.useState<Document[]>([])
 
-  useAwait(user.wait())
-  useAwait(codelist.wait())
   useEffect(() => setDocumentId(props.match.params.id), [props.match.params.id])
 
   useEffect(()=>{

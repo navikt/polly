@@ -34,7 +34,7 @@ export const infoTypeSchema = () => yup.object<InformationtypeFormValues>({
   categories: yup.array(yup.string()).required(intl.required),
   sources: yup.array(yup.string()),
   keywords: yup.array(yup.string()),
-  navMaster: yup.string(),
+  orgMaster: yup.string(),
   description: yup.string()
 })
 

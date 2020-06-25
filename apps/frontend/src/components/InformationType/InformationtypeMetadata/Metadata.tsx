@@ -1,20 +1,21 @@
 import * as React from 'react'
-import { ReactNode, useEffect, useState } from 'react'
-import { Block } from 'baseui/block'
-import { InformationType } from '../../../constants'
-import { FlexGrid, FlexGridItem } from 'baseui/flex-grid'
-import { IconDefinition } from '@fortawesome/fontawesome-common-types'
-import { intl, theme } from '../../../util'
-import { Label2 } from 'baseui/typography'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExternalLinkAlt, faTimesCircle, faUserShield } from '@fortawesome/free-solid-svg-icons'
-import { Code } from '../../../service/Codelist'
-import { sensitivityColor } from '../Sensitivity'
-import { getTerm, mapTermToOption } from '../../../api'
-import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
-import { StyledLink } from 'baseui/link'
-import { marginZero } from '../../common/Style'
-import { DotTags } from '../../common/DotTag'
+import {ReactNode, useEffect, useState} from 'react'
+import {Block} from 'baseui/block'
+import {InformationType} from '../../../constants'
+import {FlexGrid, FlexGridItem} from 'baseui/flex-grid'
+import {IconDefinition} from '@fortawesome/fontawesome-common-types'
+import {intl, theme} from '../../../util'
+import {Label2} from 'baseui/typography'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faExternalLinkAlt, faTimesCircle, faUserShield} from '@fortawesome/free-solid-svg-icons'
+import {Code} from '../../../service/Codelist'
+import {sensitivityColor} from '../Sensitivity'
+import {getTerm, mapTermToOption} from '../../../api'
+import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
+import {StyledLink} from 'baseui/link'
+import {marginZero} from '../../common/Style'
+import {DotTags} from '../../common/DotTag'
+import {termUrl} from '../../../util/config'
 
 const renderCodesToLinks = (sources: Code[]) =>
   sources.map((source, index) => (
@@ -65,8 +66,8 @@ const DescriptionData = (props: { termId?: string, description: string, keywords
       <FlexGridItem>
         <Block display='flex'/>
         <TextWithLabel label={intl.term} text={term || intl.noTerm} error={termError ? intl.couldntLoadTerm : undefined}/>
-        {term && (
-          <StyledLink target="_blank" rel="noopener noreferrer" href={`https://data.adeo.no/begrep/${props.termId}`}>
+        {props.termId && (
+          <StyledLink target="_blank" rel="noopener noreferrer" href={termUrl(props.termId)}>
             <FontAwesomeIcon icon={faExternalLinkAlt}/>
           </StyledLink>
         )}
@@ -81,10 +82,10 @@ const DescriptionData = (props: { termId?: string, description: string, keywords
   )
 }
 
-const PropertyData = (props: { navMaster: Code, sources: Code[], categories: Code[], keywords: string[], sensitivity: Code }) => (
+const PropertyData = (props: { orgMaster: Code, sources: Code[], categories: Code[], keywords: string[], sensitivity: Code }) => (
   <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
     <FlexGridItem>
-      <TextWithLabel label={intl.navMaster} text={props.navMaster ? props.navMaster.shortName : ''}/>
+      <TextWithLabel label={intl.orgMaster} text={props.orgMaster ? props.orgMaster.shortName : ''}/>
     </FlexGridItem>
     <FlexGridItem>
       <TextWithLabel label={intl.sources} text={renderCodesToLinks(props.sources)}/>
@@ -113,7 +114,7 @@ const Metadata = (props: { informationtype: InformationType }) => {
       </Block>
       <Block width="60%" paddingLeft={dividerDistance} $style={{borderLeft: `1px solid ${theme.colors.mono600}`}}>
         <PropertyData
-          navMaster={informationtype.navMaster}
+          orgMaster={informationtype.orgMaster}
           sources={informationtype.sources ? informationtype.sources : []}
           categories={informationtype.categories ? informationtype.categories : []}
           keywords={informationtype.keywords ? informationtype.keywords : []}

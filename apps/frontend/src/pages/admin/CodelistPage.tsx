@@ -1,21 +1,21 @@
 import * as React from 'react'
-import { useEffect } from 'react'
-import { StatefulSelect } from 'baseui/select'
-import { Block } from 'baseui/block'
-import { KIND, SIZE as ButtonSize } from 'baseui/button'
-import { RouteComponentProps, withRouter } from 'react-router-dom'
+import {useEffect} from 'react'
+import {StatefulSelect} from 'baseui/select'
+import {Block} from 'baseui/block'
+import {KIND, SIZE as ButtonSize} from 'baseui/button'
+import {RouteComponentProps, withRouter} from 'react-router-dom'
 
-import { Code, codelist } from '../../service/Codelist'
+import {Code, codelist} from '../../service/Codelist'
 import CreateCodeListModal from '../../components/CodeList/ModalCreateCodeList'
-import { user } from '../../service/User'
+import {user} from '../../service/User'
 import CodeListTable from '../../components/CodeList/CodeListStyledTable'
-import { intl, theme, useAwait, useForceUpdate } from '../../util'
-import { createCodelist } from '../../api'
-import { CodeListFormValues } from '../../constants'
-import { H4 } from 'baseui/typography'
-import { StyledSpinnerNext } from 'baseui/spinner'
+import {intl, theme, useAwait, useForceUpdate} from '../../util'
+import {createCodelist} from '../../api'
+import {CodeListFormValues} from '../../constants'
+import {H4} from 'baseui/typography'
+import {StyledSpinnerNext} from 'baseui/spinner'
 import Button from '../../components/common/Button'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import {faPlus} from '@fortawesome/free-solid-svg-icons'
 
 const CodeListPage = (props: RouteComponentProps<{ listname?: string }>) => {
   const [loading, setLoading] = React.useState(true)
@@ -24,7 +24,6 @@ const CodeListPage = (props: RouteComponentProps<{ listname?: string }>) => {
   const [errorOnResponse, setErrorOnResponse] = React.useState(null)
   const forceUpdate = useForceUpdate()
   useAwait(codelist.wait(), setLoading)
-  useAwait(user.wait())
 
   const lists = codelist.lists?.codelist
   const currentCodelist = lists && listname ? lists[listname] : undefined
