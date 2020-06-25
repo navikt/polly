@@ -106,13 +106,12 @@ export interface InformationType {
   id: string;
   name: string;
   term?: string;
-  description: string;
+  description?: string;
   sensitivity: Code;
-  orgMaster: Code;
+  orgMaster?: Code;
   keywords: string[];
   sources: Code[];
   categories: Code[];
-  toBeDeleted: boolean;
   changeStamp: ChangeStamp;
 }
 
@@ -147,7 +146,7 @@ export const disclosureSort: ColumnCompares<Disclosure> = {
 export const informationTypeSort: ColumnCompares<InformationType> = {
   name: (a, b) => (a.name || '').localeCompare(b.name || ''),
   description: (a, b) => (a.description || '').localeCompare(b.description || ''),
-  orgMaster: (a, b) => (a.orgMaster.shortName || '').localeCompare(b.orgMaster.shortName || ''),
+  orgMaster: (a, b) => (a.orgMaster?.shortName || '').localeCompare(b.orgMaster?.shortName || ''),
   term: (a, b) => (a.term || '').localeCompare(b.term || ''),
 }
 
