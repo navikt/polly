@@ -12,7 +12,7 @@ import {StyledSpinnerNext} from 'baseui/spinner'
 import {useTable} from '../util/hooks'
 import {Cell, HeadCell, Row, Table} from '../components/common/Table'
 import RouteLink from '../components/common/RouteLink'
-
+import {Sensitivity} from '../components/InformationType/Sensitivity'
 
 const SystemPageImpl = (props: RouteComponentProps<{systemCode: string}>) => {
   const {systemCode} = props.match.params
@@ -50,7 +50,7 @@ const InfoTypeTable = ({informationTypes}: {informationTypes: InformationType[]}
 
   return (
     <Block marginBottom={theme.sizing.scale1200}>
-      <HeadingSmall>{intl.orgMaster}</HeadingSmall>
+      <HeadingSmall>{intl.orgMaster}: {intl.informationTypes}</HeadingSmall>
 
       <Table
         emptyText={intl.orgMaster.toLowerCase()}
@@ -58,16 +58,23 @@ const InfoTypeTable = ({informationTypes}: {informationTypes: InformationType[]}
           <>
             <HeadCell title={intl.name} column={'name'} tableState={[table, sortColumn]}/>
             <HeadCell title={intl.description} column={'description'} tableState={[table, sortColumn]}/>
+            <HeadCell title={intl.sources} column={'sources'} tableState={[table, sortColumn]}/>
           </>
         }
       >
         {table.data.map((row, index) => (
           <Row key={index}>
             <Cell>
-              {<RouteLink href={`/informationtype/${row.id}`}>{row.name}</RouteLink>}
+              <RouteLink href={`/informationtype/${row.id}`}>
+                <Sensitivity sensitivity={row.sensitivity}/>
+                {row.name}
+              </RouteLink>
             </Cell>
             <Cell>
               {row.description}
+            </Cell>
+            <Cell>
+              {row.sources.map(s => codelist.getShortname(ListName.THIRD_PARTY, s.code)).join(", ")}
             </Cell>
           </Row>
         ))}

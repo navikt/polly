@@ -33,7 +33,7 @@ type AccordionProcessProps = {
   errorPolicyModal: string | null
   errorDocumentModal: string | null
   setProcessList: (processes: Process[]) => void
-  onChangeProcess: (process?: Process) => void
+  onChangeProcess: (processId?: string) => void
   submitDeleteProcess: (process: Process) => Promise<boolean>
   submitEditProcess: (process: ProcessFormValues) => Promise<boolean>
   submitCreatePolicy: (process: PolicyFormValues) => Promise<boolean>
@@ -98,7 +98,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
   return (
     <Block>
       <StatelessAccordion
-        onChange={({expanded}) => onChangeProcess(currentProcess)}
+        onChange={({expanded}) => onChangeProcess(expanded.length ? expanded[0] as string : undefined)}
         expanded={props.match.params.processId ? [props.match.params.processId] : []}
       >
         {props.processList &&

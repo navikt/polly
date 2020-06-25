@@ -80,10 +80,10 @@ const ProcessList = ({code, listName, filter, processId, section, history}: Proc
     })()
   }, [code, status])
 
-  const handleChangePanel = (process?: Process) => {
+  const handleChangePanel = (process?: Partial<Process>) => {
     history.push(generatePath(processPath, {
       section,
-      code: section === Section.purpose && !!process ? process.purpose.code : code,
+      code: section === Section.purpose && !!process?.purpose ? process.purpose.code : code,
       filter: status.length > 0 && status ? status[0].id : filter,
       processId: process?.id
     }))
@@ -313,7 +313,7 @@ const ProcessList = ({code, listName, filter, processId, section, history}: Proc
         processList={processList}
         setProcessList={setProcessList}
         currentProcess={currentProcess}
-        onChangeProcess={handleChangePanel}
+        onChangeProcess={id => handleChangePanel({id})}
         submitDeleteProcess={handleDeleteProcess}
         submitEditProcess={handleEditProcess}
         submitCreatePolicy={handleCreatePolicy}
