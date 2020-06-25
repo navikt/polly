@@ -102,8 +102,6 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
   const [showResponsibleSelect, setShowResponsibleSelect] = React.useState<boolean>(!!initialValues.commonExternalProcessResponsible)
   const [sensitivityLevel, setSensitivityLevel] = React.useState<SensitivityLevel>(SensitivityLevel.ART6)
 
-    console.log(initialValues, "initval")
-
   const disableEnter = (e: KeyboardEvent) => {
     if (e.key === 'Enter') e.preventDefault()
   }
@@ -122,6 +120,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
         <Formik
           initialValues={initialValues}
           onSubmit={(values) => {
+            values.legalBasesOpen = false
             submit(values)
           }}
           validationSchema={processSchema()}
@@ -266,28 +265,6 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                       </Block>
                     </Panel>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                     <Panel
                       title={<AccordionTitle title={intl.legalBasis} expanded={isPanelExpanded}/>}
                       onChange={togglePanel}
@@ -298,7 +275,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                         name='legalBases'
                         render={arrayHelpers => (
                           <>
-                            {formikBag.values.legalBasesOpen ? (
+                            {formikBag.values.legalBasesOpen || formikBag.values.legalBases.length < 1 ? (
                               <CardLegalBasis
                                 titleSubmitButton={selectedLegalBasis ? intl.update : intl.add}
                                 initValue={selectedLegalBasis || {}}
@@ -331,18 +308,18 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                                       }}
                                       startEnhancer={() => <Block display='flex' justifyContent='center'><Plus size={22}/></Block>}
                                     >
-                                      {intl.legalBasisAdd} + "6"
+                                      {intl.addArticle6}
                                     </Button>
                                   </Block>
 
                                   <Block>
 
                                     <ListLegalBases
-                                      legalBases={formikBag.values.legalBases.filter(l=>codelist.isArt6(l.gdpr))}
+                                      legalBases={formikBag.values.legalBases.filter(l => codelist.isArt6(l.gdpr))}
                                       onRemove={(index) => arrayHelpers.remove(index)}
                                       onEdit={
                                         (index) => {
-                                          setSelectedLegalBasis(formikBag.values.legalBases[index])
+                                          setSelectedLegalBasis(formikBag.values.legalBases.filter(l => codelist.isArt6(l.gdpr))[index])
                                           setSelectedLegalBasisIndex(index)
                                           formikBag.setFieldValue('legalBasesOpen', true)
                                         }
@@ -362,36 +339,18 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                                       }}
                                       startEnhancer={() => <Block display='flex' justifyContent='center'><Plus size={22}/></Block>}
                                     >
-                                      {intl.legalBasisAdd} + "9"
+                                      {intl.addArticle9}
                                     </Button>
                                   </Block>
                                   <Block>
-                                    {/*<CardLegalBasis*/}
-                                    {/*  titleSubmitButton={selectedLegalBasis ? intl.update : intl.add}*/}
-                                    {/*  initValue={selectedLegalBasis || {}}*/}
-                                    {/*  hideCard={() => {*/}
-                                    {/*    formikBag.setFieldValue('legalBasesOpen', false)*/}
-                                    {/*    setSelectedLegalBasis(undefined)*/}
-                                    {/*  }}*/}
-                                    {/*  submit={values => {*/}
-                                    {/*    if (!values) return*/}
-                                    {/*    if (selectedLegalBasis) {*/}
-                                    {/*      arrayHelpers.replace(selectedLegalBasisIndex!, values)*/}
-                                    {/*      setSelectedLegalBasis(undefined)*/}
-                                    {/*    } else {*/}
-                                    {/*      arrayHelpers.push(values)*/}
-                                    {/*    }*/}
-                                    {/*    formikBag.setFieldValue('legalBasesOpen', false)*/}
-                                    {/*  }}*/}
-                                    {/*  sensitivityLevel={SensitivityLevel.ART9}*/}
-                                    {/*/>*/}
-
                                     <ListLegalBases
-                                      legalBases={formikBag.values.legalBases.filter(l=>codelist.isArt9(l.gdpr))}
-                                      onRemove={(index) => arrayHelpers.remove(index)}
+                                      legalBases={formikBag.values.legalBases.filter(l => codelist.isArt9(l.gdpr))}
+                                      onRemove={(index) => {
+                                        arrayHelpers.remove(formikBag.values.legalBases.filter(l => codelist.isArt6(l.gdpr)).length + index)
+                                      }}
                                       onEdit={
                                         (index) => {
-                                          setSelectedLegalBasis(formikBag.values.legalBases[index])
+                                          setSelectedLegalBasis(formikBag.values.legalBases.filter(l => codelist.isArt9(l.gdpr))[index])
                                           setSelectedLegalBasisIndex(index)
                                           formikBag.setFieldValue('legalBasesOpen', true)
                                         }
@@ -406,27 +365,6 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                       />
                       <Error fieldName='legalBasesOpen' fullWidth={true}/>
                     </Panel>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                     <Panel
                       title={<AccordionTitle title={intl.automation} expanded={isPanelExpanded}/>}

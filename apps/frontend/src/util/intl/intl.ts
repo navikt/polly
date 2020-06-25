@@ -177,6 +177,12 @@ export interface IStrings {
   retentionDescriptionHelpText: string;
   legalBasisNew: string;
   legalBasisAdd: string;
+  addArticle6: string;
+  addArticle9: string;
+  cardHeaderArticle6: string;
+  cardHeaderArticle9: string;
+  placeHolderArticle6: string;
+  placeHolderArticle9: string;
   gdprSelect: string;
   nationalLawSelect: string;
   descriptionWrite: string;

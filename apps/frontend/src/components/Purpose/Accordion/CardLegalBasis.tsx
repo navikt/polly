@@ -47,6 +47,7 @@ const renderCardHeader = (text: string) => {
       <StatefulTooltip
         content={() => <TooltipContent/>}
         placement={PLACEMENT.top}
+        focusLock={false}
       >
         <Block display="flex">
           <Label2>{text}</Label2>
@@ -95,14 +96,14 @@ const CardLegalBasis = ({submit, hideCard, initValue, titleSubmitButton, sensiti
       render={(form: FormikProps<LegalBasisFormValues>) => {
         return (
           <Card>
-            {renderCardHeader(intl.legalBasisNew)}
+            {renderCardHeader(sensitivityLevel === SensitivityLevel.ART9 ? intl.cardHeaderArticle9 : intl.cardHeaderArticle6)}
             <Block {...rowBlockProps}>
               <Field name="gdpr"
                      render={() => (
                        <Select
                          autoFocus={true}
                          options={getOptionsBySensitivityLevel()}
-                         placeholder={intl.gdprSelect}
+                         placeholder={sensitivityLevel === SensitivityLevel.ART9 ? intl.placeHolderArticle9 : intl.placeHolderArticle6}
                          maxDropdownHeight="300px"
                          type={TYPE.search}
                          onChange={({value}) => {
