@@ -27,7 +27,7 @@ import {getDisclosure, getPolicy, getProcess} from './api'
 import PurposeTable from './components/Dashboard/PurposeTable'
 import {SystemPage} from './pages/SystemPage'
 
-export const processPath = "/process/:section/:code/:filter/:processId?"
+export const processPath = '/process/:section/:code/:filter/:processId?'
 
 const Routes = (): JSX.Element => (
   <Root>
@@ -110,7 +110,7 @@ const NotFound = (props: RouteComponentProps<any>) => (
 
 const processUrl = async (id: string) => {
   const process = await getProcess(id)
-  return `/process/purpose/${process.purposeCode}/ALL/${process.id}`
+  return `/process/purpose/${process.purpose.code}/ALL/${process.id}`
 }
 
 const policyUrl = async (id: string) => {

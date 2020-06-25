@@ -106,13 +106,12 @@ export interface InformationType {
   id: string;
   name: string;
   term?: string;
-  description: string;
+  description?: string;
   sensitivity: Code;
-  orgMaster: Code;
+  orgMaster?: Code;
   keywords: string[];
   sources: Code[];
   categories: Code[];
-  toBeDeleted: boolean;
   changeStamp: ChangeStamp;
 }
 
@@ -147,7 +146,7 @@ export const disclosureSort: ColumnCompares<Disclosure> = {
 export const informationTypeSort: ColumnCompares<InformationType> = {
   name: (a, b) => (a.name || '').localeCompare(b.name || ''),
   description: (a, b) => (a.description || '').localeCompare(b.description || ''),
-  orgMaster: (a, b) => (a.orgMaster.shortName || '').localeCompare(b.orgMaster.shortName || ''),
+  orgMaster: (a, b) => (a.orgMaster?.shortName || '').localeCompare(b.orgMaster?.shortName || ''),
   term: (a, b) => (a.term || '').localeCompare(b.term || ''),
 }
 
@@ -158,7 +157,7 @@ export const documentSort: ColumnCompares<DocumentInfoTypeUse> = {
 
 export const processSort: ColumnCompares<Process> = {
   name: (a, b) => a.name.localeCompare(b.name),
-  purposeCode: (a, b) => (codelist.getShortname(ListName.PURPOSE, a.purposeCode) || '').localeCompare(codelist.getShortname(ListName.PURPOSE, b.purposeCode) || ''),
+  purpose: (a, b) => (codelist.getShortnameForCode(a.purpose) || '').localeCompare(codelist.getShortnameForCode(b.purpose) || ''),
   department: (a, b) => (a.department?.shortName || '').localeCompare(b.department?.shortName || ''),
   products: (a, b) => a.products.length - b.products.length,
 }
@@ -189,7 +188,6 @@ export interface Process extends IDurationed {
   products: Code[];
   policies: Policy[];
   purpose: Code;
-  purposeCode: string;
   changeStamp: ChangeStamp;
   dpia?: Dpia;
   status?: ProcessStatus;
@@ -330,7 +328,7 @@ export interface AddDocumentToProcessFormValues {
   document?: Document;
   informationTypes: DocumentInfoTypeUse[];
   defaultDocument: boolean;
-  process: {id: string; name: string; purposeCode: string};
+  process: {id: string; name: string; purpose: Code};
 }
 
 export interface CreateDocumentFormValues {

@@ -1,13 +1,13 @@
-import {H4, Label2, Paragraph2} from 'baseui/typography'
+import {H4, HeadingSmall, Label2, Paragraph2} from 'baseui/typography'
 import {intl, theme} from '../util'
 import {RouteComponentProps, withRouter} from 'react-router-dom'
 import React, {useEffect, useState} from 'react'
-import {Block, BlockProps} from 'baseui/block'
+import {Block} from 'baseui/block'
 import {codelist, ListName} from '../service/Codelist'
 import ProcessList from '../components/Purpose'
 import {Section} from './PurposePage'
 import {InformationType, informationTypeSort} from '../constants'
-import {getInformationTypesBySource} from '../api'
+import {getInformationTypesByOrgMaster} from '../api'
 import {StyledSpinnerNext} from 'baseui/spinner'
 import {useTable} from '../util/hooks'
 import {Cell, HeadCell, Row, Table} from '../components/common/Table'
@@ -22,7 +22,7 @@ const SystemPageImpl = (props: RouteComponentProps<{systemCode: string}>) => {
   useEffect(() => {
     (async () => {
       setIsLoading(true)
-      setInformationTypeList((await getInformationTypesBySource(systemCode)).content)
+      setInformationTypeList((await getInformationTypesByOrgMaster(systemCode)).content)
       setIsLoading(false)
     })()
   }, [systemCode])
@@ -44,20 +44,13 @@ const SystemPageImpl = (props: RouteComponentProps<{systemCode: string}>) => {
   )
 }
 
-
-const labelBlockProps: BlockProps = {
-  marginBottom: '2rem',
-  font: 'font400',
-  marginTop: '2rem'
-}
-
 const InfoTypeTable = ({informationTypes}: {informationTypes: InformationType[]}) => {
 
   const [table, sortColumn] = useTable<InformationType, keyof InformationType>(informationTypes, {sorting: informationTypeSort, initialSortColumn: 'name'})
 
   return (
     <Block marginBottom={theme.sizing.scale1200}>
-      <Label2 {...labelBlockProps}>{intl.orgMaster}</Label2>
+      <HeadingSmall>{intl.orgMaster}</HeadingSmall>
 
       <Table
         emptyText={intl.orgMaster.toLowerCase()}

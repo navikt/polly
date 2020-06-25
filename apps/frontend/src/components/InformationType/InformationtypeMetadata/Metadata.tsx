@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {ReactNode, useEffect, useState} from 'react'
 import {Block} from 'baseui/block'
-import {InformationType} from '../../../constants'
+import {InformationType, NavigableItem} from '../../../constants'
 import {FlexGrid, FlexGridItem} from 'baseui/flex-grid'
 import {IconDefinition} from '@fortawesome/fontawesome-common-types'
 import {intl, theme} from '../../../util'
@@ -16,16 +16,17 @@ import {StyledLink} from 'baseui/link'
 import {marginZero} from '../../common/Style'
 import {DotTags} from '../../common/DotTag'
 import {termUrl} from '../../../util/config'
+import RouteLink, {urlForObject} from '../../common/RouteLink'
 
-const renderCodesToLinks = (sources: Code[]) =>
-  sources.map((source, index) => (
+const renderCodesToLinks = (codes: Code[]) =>
+  codes.map((code, index) => (
     <React.Fragment key={index}>
-      <StyledLink href={`/thirdparty/${source.code}`}>{source.shortName}</StyledLink>
-      <span>{index < sources.length - 1 ? ', ' : ''}</span>
+       <RouteLink href={urlForObject(code.list as NavigableItem, code.code)}>{code.shortName}</RouteLink>
+      <span>{index < codes.length - 1 ? ', ' : ''}</span>
     </React.Fragment>
   ))
 
-const TextWithLabel = (props: { label: string, text: ReactNode, icon?: IconDefinition, iconColor?: string, error?: string }) => {
+const TextWithLabel = (props: {label: string, text: ReactNode, icon?: IconDefinition, iconColor?: string, error?: string}) => {
   const errorIcon = <FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500}/>
   const value =
     <Block font="ParagraphMedium"
@@ -43,7 +44,7 @@ const TextWithLabel = (props: { label: string, text: ReactNode, icon?: IconDefin
   )
 }
 
-const DescriptionData = (props: { termId?: string, description: string, keywords: string[] }) => {
+const DescriptionData = (props: {termId?: string, description?: string, keywords: string[]}) => {
   const [term, setTerm] = useState(props.termId)
   const [termError, setTermError] = useState(false)
 
@@ -82,10 +83,10 @@ const DescriptionData = (props: { termId?: string, description: string, keywords
   )
 }
 
-const PropertyData = (props: { orgMaster: Code, sources: Code[], categories: Code[], keywords: string[], sensitivity: Code }) => (
+const PropertyData = (props: {orgMaster?: Code, sources: Code[], categories: Code[], keywords: string[], sensitivity: Code}) => (
   <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
     <FlexGridItem>
-      <TextWithLabel label={intl.orgMaster} text={props.orgMaster ? props.orgMaster.shortName : ''}/>
+      <TextWithLabel label={intl.orgMaster} text={renderCodesToLinks(props.orgMaster ? [props.orgMaster] : [])}/>
     </FlexGridItem>
     <FlexGridItem>
       <TextWithLabel label={intl.sources} text={renderCodesToLinks(props.sources)}/>
@@ -99,7 +100,7 @@ const PropertyData = (props: { orgMaster: Code, sources: Code[], categories: Cod
   </FlexGrid>
 )
 
-const Metadata = (props: { informationtype: InformationType }) => {
+const Metadata = (props: {informationtype: InformationType}) => {
   const {informationtype} = props
 
   const dividerDistance = theme.sizing.scale2400

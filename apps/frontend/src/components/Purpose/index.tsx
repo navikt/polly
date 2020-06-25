@@ -2,10 +2,10 @@ import * as React from 'react'
 import {useEffect} from 'react'
 
 import {Block, BlockProps} from 'baseui/block'
-import {Label1, Label2} from 'baseui/typography'
+import {HeadingSmall, Label2} from 'baseui/typography'
 import {KIND, SIZE as ButtonSize} from 'baseui/button'
 import {AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort} from '../../constants'
-import {intl, theme} from '../../util'
+import {intl, theme, useAwait} from '../../util'
 import {user} from '../../service/User'
 import ModalProcess from './Accordion/ModalProcess'
 import AccordionProcess from './Accordion'
@@ -24,7 +24,7 @@ import {
   updateProcess
 } from '../../api'
 import {StyledSpinnerNext} from 'baseui/spinner'
-import {ListName} from '../../service/Codelist'
+import {codelist, ListName} from '../../service/Codelist'
 import {generatePath, RouteComponentProps, useLocation} from 'react-router'
 import {StyledLink} from 'baseui/link'
 import {env} from '../../util/env'
@@ -51,7 +51,7 @@ type ProcessListProps = {
 
 const sortProcess = (list: ProcessShort[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, intl.getLanguage()))
 
-const ProcessList = ({code, listName, filter, processId, section, match, history}: ProcessListProps & RouteComponentProps<any>) => {
+const ProcessList = ({code, listName, filter, processId, section, history}: ProcessListProps & RouteComponentProps<any>) => {
   const [processList, setProcessList] = React.useState<ProcessShort[]>([])
   const [currentProcess, setCurrentProcess] = React.useState<Process | undefined>()
   const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
@@ -65,6 +65,8 @@ const ProcessList = ({code, listName, filter, processId, section, match, history
     label: filter === 'ALL' ? intl.allProcesses : filter === 'COMPLETED' ? intl.showCompletedProcesses : intl.inProgressProcesses,
     id: filter
   }])
+  const [codelistLoading, setCodelistLoading] = React.useState(true)
+  useAwait(codelist.wait(), setCodelistLoading)
 
   useEffect(() => {
     processId && getProcessById(processId)
@@ -93,7 +95,7 @@ const ProcessList = ({code, listName, filter, processId, section, match, history
 
   const getProcessList = async () => {
     try {
-      let list: ProcessShort[] = []
+      let list: ProcessShort[]
 
       if (current_location.pathname.includes('team')) {
         let res = await getProcessesForTeam(code)
@@ -132,7 +134,7 @@ const ProcessList = ({code, listName, filter, processId, section, match, history
       setErrorProcessModal('')
       setShowCreateProcessModal(false)
       setCurrentProcess(newProcess)
-      history.push(`/process/purpose/${newProcess.purposeCode}/ALL/${newProcess.id}?create`)
+      history.push(`/process/purpose/${newProcess.purpose.code}/ALL/${newProcess.id}?create`)
     } catch (err) {
       if (err.response.data.message.includes('already exists')) {
         setErrorProcessModal('Behandlingen eksisterer allerede.')
@@ -216,7 +218,7 @@ const ProcessList = ({code, listName, filter, processId, section, match, history
         subjectCategories: infoType.subjectCategories.map(c => c.code),
         informationType: infoType.informationType,
         process: {...formValues.process, legalBases: []},
-        purposeCode: formValues.process.purposeCode,
+        purposeCode: formValues.process.purpose.code,
         legalBases: [],
         legalBasesOpen: false,
         legalBasesUse: LegalBasesUse.INHERITED_FROM_PROCESS,
@@ -236,9 +238,9 @@ const ProcessList = ({code, listName, filter, processId, section, match, history
     <>
       <Block {...rowBlockProps}>
         <Block>
-          <Label1 font="font400">
+          <HeadingSmall>
             {intl.processes}
-          </Label1>
+          </HeadingSmall>
         </Block>
       </Block>
 
@@ -317,7 +319,7 @@ const ProcessList = ({code, listName, filter, processId, section, match, history
         errorDocumentModal={errorDocumentModal}
       />
       }
-
+      {!codelistLoading &&
       <ModalProcess
         title={intl.processingActivitiesNew}
         onClose={() => setShowCreateProcessModal(false)}
@@ -325,8 +327,14 @@ const ProcessList = ({code, listName, filter, processId, section, match, history
         submit={(values: ProcessFormValues) => handleCreateProcess(values)}
         errorOnCreate={errorProcessModal}
         isEdit={false}
-        initialValues={convertProcessToFormValues({purposeCode: code})}
-      />
+        initialValues={convertProcessToFormValues({
+          purpose: section === Section.purpose ? codelist.getCode(ListName.PURPOSE, code) : undefined,
+          department: section === Section.department ? codelist.getCode(ListName.DEPARTMENT, code) : undefined,
+          subDepartments: section === Section.subdepartment ? [codelist.getCode(ListName.SUB_DEPARTMENT, code)!] : [],
+          products: section === Section.system ? [codelist.getCode(ListName.SYSTEM, code)!] : [],
+          productTeams: section === Section.team ? [code] : []
+        })}
+      />}
     </>
   )
 }
