@@ -16,12 +16,12 @@ import {StyledLink} from 'baseui/link'
 import {marginZero} from '../../common/Style'
 import {DotTags} from '../../common/DotTag'
 import {termUrl} from '../../../util/config'
-import {urlForObject} from '../../common/RouteLink'
+import RouteLink, {urlForObject} from '../../common/RouteLink'
 
 const renderCodesToLinks = (codes: Code[]) =>
   codes.map((code, index) => (
     <React.Fragment key={index}>
-       <StyledLink href={urlForObject(code.list as NavigableItem, code.code)}>{code.shortName}</StyledLink>
+       <RouteLink href={urlForObject(code.list as NavigableItem, code.code)}>{code.shortName}</RouteLink>
       <span>{index < codes.length - 1 ? ', ' : ''}</span>
     </React.Fragment>
   ))
