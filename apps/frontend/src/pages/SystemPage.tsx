@@ -7,7 +7,7 @@ import {codelist, ListName} from '../service/Codelist'
 import ProcessList from '../components/Purpose'
 import {Section} from './PurposePage'
 import {InformationType, informationTypeSort} from '../constants'
-import {getInformationTypesBySource} from '../api'
+import {getInformationTypesByOrgMaster} from '../api'
 import {StyledSpinnerNext} from 'baseui/spinner'
 import {useTable} from '../util/hooks'
 import {Cell, HeadCell, Row, Table} from '../components/common/Table'
@@ -22,7 +22,7 @@ const SystemPageImpl = (props: RouteComponentProps<{systemCode: string}>) => {
   useEffect(() => {
     (async () => {
       setIsLoading(true)
-      setInformationTypeList((await getInformationTypesBySource(systemCode)).content)
+      setInformationTypeList((await getInformationTypesByOrgMaster(systemCode)).content)
       setIsLoading(false)
     })()
   }, [systemCode])

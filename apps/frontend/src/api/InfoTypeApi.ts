@@ -1,8 +1,8 @@
 import axios from 'axios'
-import { InformationType, InformationtypeFormValues, InformationTypeShort, PageResponse, Policy } from '../constants'
-import { default as React, Dispatch, SetStateAction, useEffect } from 'react'
-import { useDebouncedState } from '../util'
-import { env } from '../util/env'
+import {InformationType, InformationtypeFormValues, InformationTypeShort, PageResponse, Policy} from '../constants'
+import {default as React, Dispatch, SetStateAction, useEffect} from 'react'
+import {useDebouncedState} from '../util'
+import {env} from '../util/env'
 
 export const getInformationTypes = async (page: number, limit: number) => {
   return (await axios.get<PageResponse<InformationType>>(`${env.pollyBaseUrl}/informationtype?pageNumber=${page - 1}&pageSize=${limit}`)).data
@@ -10,6 +10,10 @@ export const getInformationTypes = async (page: number, limit: number) => {
 
 export const getInformationTypesBySource = async (source: string) => {
   return (await axios.get<PageResponse<InformationType>>(`${env.pollyBaseUrl}/informationtype?source=${source}`)).data
+}
+
+export const getInformationTypesByOrgMaster = async (source: string) => {
+  return (await axios.get<PageResponse<InformationType>>(`${env.pollyBaseUrl}/informationtype?orgMaster=${source}`)).data
 }
 
 export const searchInformationType = async (text: string) => {
