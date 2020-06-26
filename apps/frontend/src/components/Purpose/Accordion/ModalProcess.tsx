@@ -400,7 +400,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                         <Error fieldName='dataProcessing.dataProcessorAgreement'/>
 
                         <Block {...rowBlockProps}>
-                          <ModalLabel label={intl.isDataProcessedOutsideEUEEA} tooltip={intl.isDataProcessedOutsideEUEEAHelpText}/>
+                          <ModalLabel label={intl.isDataProcessedOutsideEUEEA} />
                           <BoolField fieldName='dataProcessing.dataProcessorOutsideEU'
                                      value={formikBag.values.dataProcessing.dataProcessorOutsideEU}/>
                         </Block>

@@ -10,44 +10,44 @@ import {faExclamationCircle} from '@fortawesome/free-solid-svg-icons'
 import {paddingZero} from './Style'
 
 export const Error = (props: { fieldName: string, fullWidth?: boolean }) => (
-  <ErrorMessage name={props.fieldName}>
-    {msg => (
-      <Block display="flex" width="100%" marginTop=".2rem">
-        {!props.fullWidth && <ModalLabel/>}
-        <Block width="100%">
-          <Notification overrides={{Body: {style: {width: 'auto', ...paddingZero, marginTop: 0}}}}
-                        kind={NKIND.negative}>{msg}</Notification>
-        </Block>
-      </Block>
-    )}
-  </ErrorMessage>
+    <ErrorMessage name={props.fieldName}>
+        {msg => (
+            <Block display="flex" width="100%" marginTop=".2rem">
+                {!props.fullWidth && <ModalLabel/>}
+                <Block width="100%">
+                    <Notification overrides={{Body: {style: {width: 'auto', ...paddingZero, marginTop: 0}}}}
+                                  kind={NKIND.negative}>{msg}</Notification>
+                </Block>
+            </Block>
+        )}
+    </ErrorMessage>
 )
 
 export const ModalLabel = (props: { label?: any, tooltip?: string | React.ReactElement, fullwidth?: boolean }) => {
-  const width = props.fullwidth ? {witdh: '100%'} : {minWidth: '25%'}
-  return (
-    <Block {...width} alignSelf="center" paddingRight="1rem">
-      {props.tooltip ?
-        <StatefulTooltip content={props.tooltip} placement={PLACEMENT.top} focusLock={false} overrides={{
-          Body:{
-            style:{
-              width: '25%'
+    const width = props.fullwidth ? {witdh: '100%'} : {minWidth: '25%', maxWidth: '25%'}
+    return (
+        <Block {...width} alignSelf="center" paddingRight="1rem">
+            {props.tooltip ?
+                <StatefulTooltip content={props.tooltip} placement={PLACEMENT.top} focusLock={false} overrides={{
+                    Body: {
+                        style: {
+                            width: '25%'
+                        }
+                    }
+                }}>
+                    <Label2 font="font300" display="flex" width="100%" justifyContent='flex-start'>
+                        <Block display='flex'>
+                            <Block>{props.label}</Block>
+                            <Block>
+                                <FontAwesomeIcon style={{marginLeft: '.5rem', alignSelf: 'center'}}
+                                                 icon={faExclamationCircle} color={theme.colors.primary300}
+                                                 size="sm"/>
+                            </Block>
+                        </Block>
+                    </Label2>
+                </StatefulTooltip>
+                : <Label2 font="font300">{props.label}</Label2>
             }
-          }
-        }}>
-          <Label2 font="font300" display="flex" width="100%" justifyContent='flex-start'>
-            <Block display='flex'>
-              <Block >{props.label}</Block>
-              <Block>
-                <FontAwesomeIcon style={{marginLeft: '.5rem', alignSelf: 'center'}}
-                                 icon={faExclamationCircle} color={theme.colors.primary300}
-                                 size="sm"/>
-              </Block>
-            </Block>
-          </Label2>
-        </StatefulTooltip>
-        : <Label2 font="font300">{props.label}</Label2>
-      }
-    </Block>
-  )
+        </Block>
+    )
 }
