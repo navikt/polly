@@ -147,7 +147,7 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
 
         if (request.isUpdate() && existingInformationType.isPresent()) {
             InformationTypeData existingInformationTypeData = existingInformationType.get().getData();
-            validateTeams(request, existingInformationTypeData.getProductTeams(), validations);
+            validateTeams(request, nullToEmptyList(existingInformationTypeData.getProductTeams()), validations);
 
             if (!existingInformationTypeData.getName().equals(request.getName()) && repository.findByName(request.getName()).isPresent()) {
                 validations.add(new ValidationError(request.getReference(), "nameAlreadyExistsNameChange"

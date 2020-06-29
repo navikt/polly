@@ -24,7 +24,7 @@ public class InformationTypeData {
     private String description;
     private String sensitivity;
     private String orgMaster;
-    private List<String> productTeams;
+    private List<String> productTeams = new ArrayList<>();
     private List<String> categories = new ArrayList<>();
     private List<String> sources = new ArrayList<>();
     private List<String> keywords = new ArrayList<>();
@@ -40,9 +40,15 @@ public class InformationTypeData {
     public static class InformationTypeDataBuilder {
 
         // lombok @Singular enforcer immutable after build
+        private List<String> productTeams = new ArrayList<>();
         private List<String> categories = new ArrayList<>();
         private List<String> keywords = new ArrayList<>();
         private List<String> sources = new ArrayList<>();
+
+        public InformationTypeDataBuilder productTeams(String productTeam) {
+            productTeams.add(productTeam);
+            return this;
+        }
 
         public InformationTypeDataBuilder category(String category) {
             categories.add(category);
