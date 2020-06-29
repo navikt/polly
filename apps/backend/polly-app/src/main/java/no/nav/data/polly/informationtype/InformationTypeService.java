@@ -14,6 +14,7 @@ import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.policy.domain.PolicyRepository;
+import no.nav.data.polly.teams.TeamService;
 import no.nav.data.polly.term.TermService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,14 +39,16 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
     private final DocumentRepository documentRepository;
     private final TermService termService;
     private final AlertService alertService;
+    private final TeamService teamService;
 
     public InformationTypeService(InformationTypeRepository repository, PolicyRepository policyRepository,
-            DocumentRepository documentRepository, TermService termService, AlertService alertService) {
+            DocumentRepository documentRepository, TermService termService, AlertService alertService, TeamService teamService) {
         this.repository = repository;
         this.policyRepository = policyRepository;
         this.documentRepository = documentRepository;
         this.termService = termService;
         this.alertService = alertService;
+        this.teamService = teamService;
     }
 
     public InformationType save(InformationTypeRequest request) {
@@ -132,22 +135,36 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
 
     private List<ValidationError> validateInformationTypeRepositoryValues(InformationTypeRequest request) {
         var existingInformationType = Optional.ofNullable(request.getIdAsUUID()).flatMap(repository::findById);
-        List<ValidationError> validationErrors = new ArrayList<>(validateRepositoryValues(request, existingInformationType.isPresent()));
+        List<ValidationError> validations = new ArrayList<>(validateRepositoryValues(request, existingInformationType.isPresent()));
 
-        if (!request.isUpdate() && repository.findByName(request.getName()).isPresent()) {
-            validationErrors.add(new ValidationError(request.getReference(), "nameAlreadyExists"
-                    , String.format("The InformationType %s already exists", request.getIdentifyingFields())));
+        if (!request.isUpdate()) {
+            validateTeams(request, List.of(), validations);
+            if (repository.findByName(request.getName()).isPresent()) {
+                validations.add(new ValidationError(request.getReference(), "nameAlreadyExists"
+                        , String.format("The InformationType %s already exists", request.getIdentifyingFields())));
+            }
         }
 
         if (request.isUpdate() && existingInformationType.isPresent()) {
             InformationTypeData existingInformationTypeData = existingInformationType.get().getData();
+            validateTeams(request, existingInformationTypeData.getProductTeams(), validations);
 
             if (!existingInformationTypeData.getName().equals(request.getName()) && repository.findByName(request.getName()).isPresent()) {
-                validationErrors.add(new ValidationError(request.getReference(), "nameAlreadyExistsNameChange"
+                validations.add(new ValidationError(request.getReference(), "nameAlreadyExistsNameChange"
                         , String.format("Cannot change name, InformationType %s already exists", request.getIdentifyingFields())));
             }
         }
-        validateTerm(request, existingInformationType.map(InformationType::getTermId).orElse(null), validationErrors);
-        return validationErrors;
+        validateTerm(request, existingInformationType.map(InformationType::getTermId).orElse(null), validations);
+        return validations;
+    }
+
+    private void validateTeams(InformationTypeRequest request, List<String> existingTeams, List<ValidationError> validations) {
+        if (!request.getProductTeams().isEmpty() && !existingTeams.equals(request.getProductTeams())) {
+            request.getProductTeams().forEach(t -> {
+                if (!teamService.teamExists(t)) {
+                    validations.add(new ValidationError(request.getReference(), "invalidProductTeam", "Product team " + t + " does not exist"));
+                }
+            });
+        }
     }
 }

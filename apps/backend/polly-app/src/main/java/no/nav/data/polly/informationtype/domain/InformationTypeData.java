@@ -24,6 +24,7 @@ public class InformationTypeData {
     private String description;
     private String sensitivity;
     private String orgMaster;
+    private List<String> productTeams;
     private List<String> categories = new ArrayList<>();
     private List<String> sources = new ArrayList<>();
     private List<String> keywords = new ArrayList<>();

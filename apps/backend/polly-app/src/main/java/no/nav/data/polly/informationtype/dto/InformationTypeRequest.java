@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Singular;
 import lombok.experimental.FieldNameConstants;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.polly.codelist.domain.ListName;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 import static no.nav.data.polly.common.utils.StreamUtils.nullToEmptyList;
 import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
+import static no.nav.data.polly.common.utils.StringUtils.formatList;
 import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
 
 @Slf4j
@@ -36,6 +38,8 @@ public class InformationTypeRequest implements RequestElement {
     private String sensitivity;
     @ApiModelProperty(value = "Codelist SYSTEM")
     private String orgMaster;
+    @Singular
+    private List<String> productTeams;
     @ApiModelProperty(value = "Codelist CATEGORY", example = "[\"CODELIST\"]")
     private List<String> categories;
     @ApiModelProperty(value = "Codelist THIRD_PARTY", example = "[\"CODELIST\"]")
@@ -57,6 +61,7 @@ public class InformationTypeRequest implements RequestElement {
         setTerm(StringUtils.stripToNull(term));
         setSensitivity(toUpperCaseAndTrim(getSensitivity()));
         setOrgMaster(toUpperCaseAndTrim(getOrgMaster()));
+        setProductTeams(formatList(getProductTeams()));
         setCategories(nullToEmptyList(categories).stream()
                 .map(StringUtils::stripToNull)
                 .map(String::toUpperCase)

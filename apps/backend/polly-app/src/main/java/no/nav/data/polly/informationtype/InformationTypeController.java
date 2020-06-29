@@ -12,6 +12,7 @@ import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
+import no.nav.data.polly.teams.TeamService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 import static no.nav.data.polly.common.utils.StartsWithComparator.startsWith;
 import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
@@ -44,11 +46,13 @@ public class InformationTypeController {
 
     private final InformationTypeRepository repository;
     private final InformationTypeService service;
+    private final TeamService teamService;
 
     public InformationTypeController(InformationTypeRepository informationTypeRepository,
-            InformationTypeService informationTypeService) {
+            InformationTypeService informationTypeService, TeamService teamService) {
         this.repository = informationTypeRepository;
         this.service = informationTypeService;
+        this.teamService = teamService;
     }
 
     @ApiOperation(value = "Get InformationType")
@@ -92,7 +96,9 @@ public class InformationTypeController {
     public ResponseEntity<RestResponsePage<InformationTypeResponse>> findAll(PageParameters page,
             @RequestParam(required = false) String source,
             @RequestParam(required = false) String orgMaster,
-            @RequestParam(required = false) String term
+            @RequestParam(required = false) String term,
+            @RequestParam(required = false) String productArea,
+            @RequestParam(required = false) String productTeam
     ) {
         log.info("Received request for all InformationTypes source={} term={}", source, term);
         List<InformationType> infoTypes = null;
@@ -102,6 +108,11 @@ public class InformationTypeController {
             infoTypes = repository.findBySource(source);
         } else if (orgMaster != null) {
             infoTypes = repository.findByOrgMaster(orgMaster);
+        } else if (productTeam != null) {
+            infoTypes = repository.findByProductTeam(productTeam);
+        } else if (productArea != null) {
+            var teams = teamService.getTeamsForProductArea(productArea);
+            infoTypes = teams.stream().flatMap(t -> repository.findByProductTeam(t.getId()).stream()).collect(toList());
         }
         if (infoTypes != null) {
             infoTypes.sort(comparing(it -> it.getData().getName(), String.CASE_INSENSITIVE_ORDER));

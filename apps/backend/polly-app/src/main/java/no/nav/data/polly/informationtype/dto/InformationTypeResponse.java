@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Singular;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
@@ -23,7 +24,7 @@ import static no.nav.data.polly.common.utils.StreamUtils.copyOf;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonPropertyOrder({"id", "name", "term", "description", "sensitivity", "orgMaster", "categories", "sources", "keywords", "changeStamp"})
+@JsonPropertyOrder({"id", "name", "term", "description", "sensitivity", "orgMaster", "productTeams", "categories", "sources", "keywords", "changeStamp"})
 public class InformationTypeResponse {
 
     private UUID id;
@@ -32,6 +33,8 @@ public class InformationTypeResponse {
     private String description;
     private CodelistResponse sensitivity;
     private CodelistResponse orgMaster;
+    @Singular
+    private List<String> productTeams;
     private List<CodelistResponse> categories;
     private List<CodelistResponse> sources;
     private List<String> keywords;
@@ -49,6 +52,7 @@ public class InformationTypeResponse {
         setDescription(data.getDescription());
         setSensitivity(CodelistService.getCodelistResponse(ListName.SENSITIVITY, data.getSensitivity()));
         setOrgMaster(CodelistService.getCodelistResponse(ListName.SYSTEM, data.getOrgMaster()));
+        setProductTeams(copyOf(data.getProductTeams()));
         setCategories(CodelistService.getCodelistResponseList(ListName.CATEGORY, data.getCategories()));
         setSources(CodelistService.getCodelistResponseList(ListName.THIRD_PARTY, data.getSources()));
         setKeywords(copyOf(data.getKeywords()));

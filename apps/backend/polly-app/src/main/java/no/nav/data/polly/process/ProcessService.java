@@ -120,7 +120,7 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
         }
     }
 
-    private void validateRiskOwner(ProcessRequest request, String existingRiskOwner, ArrayList<ValidationError> validations) {
+    private void validateRiskOwner(ProcessRequest request, String existingRiskOwner, List<ValidationError> validations) {
         String riskOwner = request.getDpia().getRiskOwner();
         if (isNotBlank(riskOwner) && !Objects.equals(riskOwner, existingRiskOwner) && resourceService.getResource(riskOwner).isEmpty()) {
             validations.add(new ValidationError(request.getReference(), "invalidResource", "Resource " + riskOwner + " does not exist"));

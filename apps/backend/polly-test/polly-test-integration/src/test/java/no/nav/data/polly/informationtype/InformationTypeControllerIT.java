@@ -7,6 +7,7 @@ import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -58,40 +59,64 @@ class InformationTypeControllerIT extends IntegrationTestBase {
         assertThat(responseEntity.getBody().getContent().get(1).getName()).isEqualTo("InformationTypeData");
     }
 
-    @Test
-    void findAll() {
-        createInformationTypeTestData(30);
+    @Nested
+    class findAll {
 
-        ResponseEntity<InformationTypePage> responseEntity = restTemplate.getForEntity("/informationtype/", InformationTypePage.class);
+        @Test
+        void get() {
+            createInformationTypeTestData(30);
 
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(informationTypeRepository.findAll().size()).isEqualTo(30);
-        assertThat(responseEntity.getBody()).isNotNull();
-        assertThat(responseEntity.getBody().getContent().size()).isEqualTo(20);
-        assertThat(responseEntity.getBody().getPageNumber()).isEqualTo(0);
-        assertThat(responseEntity.getBody().getPageSize()).isEqualTo(20);
-        assertThat(responseEntity.getBody().getTotalElements()).isEqualTo(30L);
+            ResponseEntity<InformationTypePage> responseEntity = restTemplate.getForEntity("/informationtype/", InformationTypePage.class);
+
+            assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(informationTypeRepository.findAll().size()).isEqualTo(30);
+            assertThat(responseEntity.getBody()).isNotNull();
+            assertThat(responseEntity.getBody().getContent().size()).isEqualTo(20);
+            assertThat(responseEntity.getBody().getPageNumber()).isEqualTo(0);
+            assertThat(responseEntity.getBody().getPageSize()).isEqualTo(20);
+            assertThat(responseEntity.getBody().getTotalElements()).isEqualTo(30L);
+        }
+
+        @Test
+        void findBySource() {
+            createInformationTypeTestData(1);
+            assertGetOne("/informationtype?source={source}", "SKATT");
+        }
+
+        @Test
+        void getForTerm() {
+            createInformationTypeTestData(1);
+            assertGetOne("/informationtype?term={term}", "term");
+        }
+
+        @Test
+        void getForOrgMaster() {
+            createInformationTypeTestData(1);
+            assertGetOne("/informationtype?orgMaster={orgMaster}", "TPS");
+        }
+
+        @Test
+        void getForProductTeam() {
+            createInformationTypeTestData(1);
+            assertGetOne("/informationtype?productTeam={productTeam}", "teamid1");
+        }
+
+        @Test
+        void getForProductArea() {
+            createInformationTypeTestData(1);
+            assertGetOne("/informationtype?productArea={productArea}", "productarea1");
+        }
+
+        private void assertGetOne(String url, String arg) {
+            ResponseEntity<InformationTypePage> resp = restTemplate.getForEntity(url, InformationTypePage.class, arg);
+
+            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+            InformationTypePage page = resp.getBody();
+            assertThat(page).isNotNull();
+            assertThat(page.getContent()).hasSize(1);
+        }
     }
 
-    @Test
-    void findByTerm() {
-        createInformationTypeTestData(1);
-
-        ResponseEntity<InformationTypePage> resp = restTemplate.getForEntity("/informationtype?term={term}", InformationTypePage.class, "term");
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody().getContent().size()).isEqualTo(1);
-    }
-
-    @Test
-    void findBySource() {
-        createInformationTypeTestData(1);
-
-        ResponseEntity<InformationTypePage> resp = restTemplate.getForEntity("/informationtype?source={source}", InformationTypePage.class, "SKATT");
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody().getContent().size()).isEqualTo(1);
-    }
 
     @Test
     void countAllInformationTypes() {
@@ -252,6 +277,7 @@ class InformationTypeControllerIT extends IntegrationTestBase {
                 .categories(List.of("PERSONALIA"))
                 .sources(List.of("SKATT"))
                 .keywords(List.of("keyword"))
+                .productTeam("teamid1")
                 .build();
     }
 }
