@@ -11,7 +11,7 @@ import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
 import RouteLink from '../common/RouteLink'
 import {Spinner} from 'baseui/spinner'
 
-const TextWithNumber = (props: { label: string; number: number }) => (
+const TextWithNumber = (props: {label: string; number: number}) => (
   <Block display="flex" width="100%" marginBottom="0" justifyContent="center">
     <Paragraph2 margin="0">{props.label} <b>{props.number}</b></Paragraph2>
   </Block>
@@ -67,7 +67,7 @@ const Departments = (props: DepartmentsProps) => {
     return <Spinner/>
   }
 
-  const sortedData = () => data.departmentProcesses.sort((a, b) => parsedDepartmentName(!!a ? a.department : '').localeCompare(!!b ? b.department : ''))
+  const sortedData = () => data.departmentProcesses.sort((a, b) => parsedDepartmentName(a.department).localeCompare(parsedDepartmentName(b.department)))
 
   return (
     <Block width="100%" display="flex" flexWrap>
