@@ -16,7 +16,6 @@ import {StyledLink} from 'baseui/link'
 import {marginZero} from '../../common/Style'
 import {DotTags} from '../../common/DotTag'
 import {termUrl} from '../../../util/config'
-import {CodesLinks} from '../../common/NavigableCodeList'
 
 const TextWithLabel = (props: {label: string, text: ReactNode, icon?: IconDefinition, iconColor?: string, error?: string}) => {
   const errorIcon = <FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500}/>
@@ -78,10 +77,10 @@ const DescriptionData = (props: {termId?: string, description?: string, keywords
 const PropertyData = (props: {orgMaster?: Code, sources: Code[], categories: Code[], keywords: string[], sensitivity: Code}) => (
   <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
     <FlexGridItem>
-      <TextWithLabel label={intl.orgMaster} text={<CodesLinks list={ListName.SYSTEM} code={props.orgMaster?.code}/>}/>
+      <TextWithLabel label={intl.orgMaster} text={<DotTags list={ListName.SYSTEM} codes={props.orgMaster ? [props.orgMaster] : []} linkCodelist commaSeparator/>}/>
     </FlexGridItem>
     <FlexGridItem>
-      <TextWithLabel label={intl.sources} text={<CodesLinks list={ListName.THIRD_PARTY} codes={props.sources}/>}/>
+      <TextWithLabel label={intl.sources} text={<DotTags list={ListName.THIRD_PARTY} codes={props.sources} linkCodelist commaSeparator/>}/>
     </FlexGridItem>
     <FlexGridItem>
       <TextWithLabel label={intl.categories} text={(props.categories || []).map(c => c.shortName).join(', ')}/>

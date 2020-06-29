@@ -13,7 +13,7 @@ import {useTable} from '../util/hooks'
 import {Cell, HeadCell, Row, Table} from '../components/common/Table'
 import RouteLink from '../components/common/RouteLink'
 import {Sensitivity} from '../components/InformationType/Sensitivity'
-import {CodesLinks} from '../components/common/NavigableCodeList'
+import {DotTags} from '../components/common/DotTag'
 
 const SystemPageImpl = (props: RouteComponentProps<{systemCode: string}>) => {
   const {systemCode} = props.match.params
@@ -74,7 +74,7 @@ const InfoTypeTable = ({informationTypes}: {informationTypes: InformationType[]}
               {row.description}
             </Cell>
             <Cell>
-              <CodesLinks list={ListName.THIRD_PARTY} codes={row.sources}/>
+              <DotTags list={ListName.THIRD_PARTY} codes={row.sources} linkCodelist commaSeparator/>
             </Cell>
           </Row>
         ))}
