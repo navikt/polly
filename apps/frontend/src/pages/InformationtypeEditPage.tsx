@@ -1,52 +1,30 @@
-import * as React from "react";
+import * as React from 'react'
 
-import InformationtypeForm from "../components/InformationType/InformationtypeForm";
-import {InformationType, InformationtypeFormValues} from "../constants"
-import {Code, codelist} from "../service/Codelist";
-import {intl} from "../util"
-import {getInformationType, updateInformationType} from "../api"
-import {RouteComponentProps} from "react-router-dom";
-import {H4} from "baseui/typography";
-import {StyledSpinnerNext} from "baseui/spinner"
+import InformationtypeForm from '../components/InformationType/InformationtypeForm'
+import {InformationType, InformationtypeFormValues} from '../constants'
+import {codelist} from '../service/Codelist'
+import {intl} from '../util'
+import {getInformationType, mapInfoTypeToFormVals, updateInformationType} from '../api'
+import {RouteComponentProps} from 'react-router-dom'
+import {H4} from 'baseui/typography'
+import {StyledSpinnerNext} from 'baseui/spinner'
 
-
-const reduceCodelist = (list: Code[]) => {
-  if (!list) return;
-  return list.reduce((acc: Array<string | null>, curr: Code) => {
-    return [...acc, !curr ? null : curr.code];
-  }, []);
-};
-
-const initFormValues = (data: InformationType) => {
-  return {
-    id: data.id,
-    name: data.name,
-    term: data.term || undefined,
-    sensitivity: !data.sensitivity ? '' : data.sensitivity.code,
-    categories: reduceCodelist(data.categories),
-    sources: reduceCodelist(data.sources),
-    keywords: data.keywords,
-    description: data.description || "",
-    orgMaster: !data.orgMaster ? '' : data.orgMaster.code,
-  } as InformationtypeFormValues;
-};
-
-const InformationtypeEditPage = (props: RouteComponentProps<{ id: string }>) => {
-  const [isLoading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState(null);
-  const [errorSubmit, setErrorSubmit] = React.useState(null);
-  const [informationtype, setInformationType] = React.useState<InformationType>();
+const InformationtypeEditPage = (props: RouteComponentProps<{id: string}>) => {
+  const [isLoading, setLoading] = React.useState(true)
+  const [error, setError] = React.useState(null)
+  const [errorSubmit, setErrorSubmit] = React.useState(null)
+  const [informationtype, setInformationType] = React.useState<InformationType>()
 
   const handleAxiosError = (error: any) => {
     if (error.response) {
-      console.log(error.response.data);
-      console.log(error.response.status);
-      console.log(error.response.headers);
+      console.log(error.response.data)
+      console.log(error.response.status)
+      console.log(error.response.headers)
     } else {
-      console.log(error.message);
-      setError(error.message);
+      console.log(error.message)
+      setError(error.message)
     }
-  };
+  }
 
   const handleSubmit = async (values: InformationtypeFormValues) => {
     if (!values) return
@@ -59,22 +37,22 @@ const InformationtypeEditPage = (props: RouteComponentProps<{ id: string }>) => 
     } catch (e) {
       setErrorSubmit(e.message)
     }
-  };
+  }
 
   React.useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
+      setLoading(true)
       try {
         const infoType = await getInformationType(props.match.params.id)
         setInformationType(infoType)
       } catch (e) {
         handleAxiosError(e)
       }
-      await codelist.wait();
-      setLoading(false);
-    };
-    fetchData();
-  }, []);
+      await codelist.wait()
+      setLoading(false)
+    }
+    fetchData()
+  }, [])
 
   return (
     <React.Fragment>
@@ -87,9 +65,7 @@ const InformationtypeEditPage = (props: RouteComponentProps<{ id: string }>) => 
           {!error && informationtype ? (
             <React.Fragment>
               <InformationtypeForm
-                formInitialValues={initFormValues(
-                  informationtype
-                )}
+                formInitialValues={mapInfoTypeToFormVals(informationtype)}
                 isEdit
                 submit={handleSubmit}
               />
@@ -101,7 +77,7 @@ const InformationtypeEditPage = (props: RouteComponentProps<{ id: string }>) => 
         </React.Fragment>
       )}
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default InformationtypeEditPage;
+export default InformationtypeEditPage

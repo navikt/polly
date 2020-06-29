@@ -16,6 +16,7 @@ import {StyledLink} from 'baseui/link'
 import {marginZero} from '../../common/Style'
 import {DotTags} from '../../common/DotTag'
 import {termUrl} from '../../../util/config'
+import {TeamList} from '../../common/Team'
 
 const TextWithLabel = (props: {label: string, text: ReactNode, icon?: IconDefinition, iconColor?: string, error?: string}) => {
   const errorIcon = <FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500}/>
@@ -74,13 +75,16 @@ const DescriptionData = (props: {termId?: string, description?: string, keywords
   )
 }
 
-const PropertyData = (props: {orgMaster?: Code, sources: Code[], categories: Code[], keywords: string[], sensitivity: Code}) => (
+const PropertyData = (props: {orgMaster?: Code, sources: Code[], categories: Code[], productTeams: string[], keywords: string[], sensitivity: Code}) => (
   <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
     <FlexGridItem>
       <TextWithLabel label={intl.orgMaster} text={<DotTags list={ListName.SYSTEM} codes={props.orgMaster ? [props.orgMaster] : []} linkCodelist commaSeparator/>}/>
     </FlexGridItem>
     <FlexGridItem>
       <TextWithLabel label={intl.sources} text={<DotTags list={ListName.THIRD_PARTY} codes={props.sources} linkCodelist commaSeparator/>}/>
+    </FlexGridItem>
+    <FlexGridItem>
+      <TextWithLabel label={intl.productTeam} text={props.productTeams.length ? <TeamList teamIds={props.productTeams}/> : intl.emptyMessage}/>
     </FlexGridItem>
     <FlexGridItem>
       <TextWithLabel label={intl.categories} text={(props.categories || []).map(c => c.shortName).join(', ')}/>
@@ -107,9 +111,10 @@ const Metadata = (props: {informationtype: InformationType}) => {
       <Block width="60%" paddingLeft={dividerDistance} $style={{borderLeft: `1px solid ${theme.colors.mono600}`}}>
         <PropertyData
           orgMaster={informationtype.orgMaster}
-          sources={informationtype.sources ? informationtype.sources : []}
-          categories={informationtype.categories ? informationtype.categories : []}
-          keywords={informationtype.keywords ? informationtype.keywords : []}
+          sources={informationtype.sources || []}
+          productTeams={informationtype.productTeams || []}
+          categories={informationtype.categories || []}
+          keywords={informationtype.keywords || []}
           sensitivity={informationtype.sensitivity}
         />
       </Block>

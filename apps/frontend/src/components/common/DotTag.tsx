@@ -1,7 +1,7 @@
 import React, {ReactNode} from 'react'
 import {faCircle} from '@fortawesome/free-solid-svg-icons'
 import {Block} from 'baseui/block'
-import {theme} from '../../util'
+import {intl, theme} from '../../util'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import ReactMarkdown from 'react-markdown'
 import {Code, codelist, ListName} from '../../service/Codelist'
@@ -57,6 +57,7 @@ export const DotTags = (props: DotTagsParams) => {
           </DotTag>}
         </Block>
       ))}
+      {!items.length && intl.emptyMessage}
     </Block>
   )
 }

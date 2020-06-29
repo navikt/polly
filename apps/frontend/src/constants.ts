@@ -8,6 +8,7 @@ export interface InformationtypeFormValues {
   name?: string;
   description?: string;
   orgMaster?: string;
+  productTeams: string[];
   sensitivity?: string;
   categories: string[];
   sources: string[];
@@ -109,6 +110,7 @@ export interface InformationType {
   description?: string;
   sensitivity: Code;
   orgMaster?: Code;
+  productTeams: string[];
   keywords: string[];
   sources: Code[];
   categories: Code[];
@@ -267,8 +269,8 @@ export interface ProductArea {
 }
 
 export interface Member {
-  name: string;
-  email: string;
+  name?: string;
+  email?: string;
 }
 
 export interface CodeListFormValues {
