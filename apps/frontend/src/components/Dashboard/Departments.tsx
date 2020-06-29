@@ -59,7 +59,7 @@ type DepartmentsProps = {
 const Departments = (props: DepartmentsProps) => {
   const {data} = props
 
-  const sortedData = () => data.departmentProcesses.sort((a, b) => parsedDepartmentName(a.department).localeCompare(b.department))
+  const sortedData = () => data.departmentProcesses.sort((a, b) => parsedDepartmentName(!!a ? a.department : '').localeCompare(!!b ? b.department : ''))
 
   return (
     <Block width="100%" display="flex" flexWrap>
