@@ -13,6 +13,7 @@ const cursor = {cursor: 'pointer'}
 
 interface ChartData {
   label: string,
+  color?: string,
   size: number,
   onClick?: () => void
 }
@@ -93,7 +94,7 @@ export const Chart = (props: ChartProps) => {
     const colorIndex = data.length - 1 === colors.length && idx >= data.length - 1 ? idx + 1 : idx
     const pieData = {
       ...d,
-      color: colors[colorIndex % colors.length],
+      color: d.color || colors[colorIndex % colors.length],
       start: s,
       sizeFraction: totSize == 0 ? 0 : d.size / totSize,
       fraction: totalFraction === 0 ? 0 : d.size / totalFraction
@@ -167,7 +168,7 @@ const Visualization = (props: VisualizationProps) => {
   )
 }
 
-const BarChart = (props: { data: ChartDataExpanded[], size: number, hover: number, setHover: (i: number) => void }) => {
+const BarChart = (props: {data: ChartDataExpanded[], size: number, hover: number, setHover: (i: number) => void}) => {
   const {data, size, hover, setHover} = props
   const max = _.max(data.map(d => d.sizeFraction))!
   const maxVal = _.max(data.map(d => d.size))!
@@ -224,7 +225,7 @@ const Bar = (props: PartProps) => {
   )
 }
 
-const PieChart = (props: { data: ChartDataExpanded[], radius: number, hover: number, setHover: (i: number) => void }) => {
+const PieChart = (props: {data: ChartDataExpanded[], radius: number, hover: number, setHover: (i: number) => void}) => {
   const {data, radius, hover, setHover} = props
   return (
     <svg height={radius * 2} width={radius * 2} viewBox='-1.1 -1.1 2.2 2.2' style={{transform: 'rotate(-90deg)'}}>
