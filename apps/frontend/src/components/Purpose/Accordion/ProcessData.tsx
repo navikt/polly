@@ -1,24 +1,25 @@
-import { Dpia, Process, ProcessStatus } from '../../../constants'
+import {Dpia, Process, ProcessStatus} from '../../../constants'
 import * as React from 'react'
-import { useEffect } from 'react'
-import { getResourceById } from '../../../api'
-import { codelist, ListName, Code } from '../../../service/Codelist'
-import { Block } from 'baseui/block'
+import {useEffect} from 'react'
+import {getResourceById} from '../../../api'
+import {codelist, ListName} from '../../../service/Codelist'
+import {Block} from 'baseui/block'
 import DataText from '../common/DataText'
-import { intl, theme } from '../../../util'
-import { LegalBasisView } from '../../common/LegalBasis'
-import { ActiveIndicator } from '../../common/Durations'
-import { DotTags } from '../../common/DotTag'
-import { TeamPopover } from '../../common/Team'
-import { boolToText } from '../../common/Radio'
-import { RetentionView } from '../Retention'
-import { env } from '../../../util/env'
+import {intl, theme} from '../../../util'
+import {LegalBasisView} from '../../common/LegalBasis'
+import {ActiveIndicator} from '../../common/Durations'
+import {DotTags} from '../../common/DotTag'
+import {TeamPopover} from '../../common/Team'
+import {boolToText} from '../../common/Radio'
+import {RetentionView} from '../Retention'
+import {env} from '../../../util/env'
 import ReactMarkdown from 'react-markdown'
+import {uniqBy} from 'lodash'
 
 const showDpiaRequiredField = (dpia?: Dpia) => {
   if (dpia?.needForDpia === true) {
     if (dpia.refToDpia) {
-      return <ReactMarkdown source={`${intl.yes}. ${intl.reference}${dpia.refToDpia}`} linkTarget='_blank' />
+      return <ReactMarkdown source={`${intl.yes}. ${intl.reference}${dpia.refToDpia}`} linkTarget='_blank'/>
     } else {
       return intl.yes
     }
@@ -33,8 +34,8 @@ const showDpiaRequiredField = (dpia?: Dpia) => {
   }
 }
 
-const ProcessData = (props: { process: Process }) => {
-  const { process } = props
+const ProcessData = (props: {process: Process}) => {
+  const {process} = props
   const dataProcessorAgreements = !!process.dataProcessing?.dataProcessorAgreements.length
   const [riskOwnerFullName, setRiskOwnerFullName] = React.useState<string>()
 
@@ -50,19 +51,16 @@ const ProcessData = (props: { process: Process }) => {
   }, [process])
 
 
-  const subjectCategoriesSummarised = process.policies.flatMap(p => p.subjectCategories).reduce((acc, curr) => {
-    if (!acc.find(sc => sc.code === sc.code)) acc = [...acc, curr]
-    return acc
-  }, [] as Code[])
+  const subjectCategoriesSummarised = uniqBy(process.policies.flatMap(p => p.subjectCategories), 'code')
 
   return (
     <Block>
 
-      <DataText label={intl.purposeOfTheProcess} text={process.description} hide={!process.description} />
+      <DataText label={intl.purposeOfTheProcess} text={process.description} hide={!process.description}/>
 
       <DataText label={intl.legalBasis} text={process.legalBases.length ? undefined : intl.legalBasisNotFound}>
         {process.legalBases.map((legalBasis, index) =>
-          <Block key={index}><LegalBasisView legalBasis={legalBasis} /></Block>
+          <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
         )}
       </DataText>
 
@@ -75,19 +73,19 @@ const ProcessData = (props: { process: Process }) => {
       </DataText>
 
       {!env.disableRiskOwner &&
-        <DataText label={intl.riskOwner}>
-          <>
-            <span>{(process.dpia?.riskOwner) ? riskOwnerFullName : intl.notFilled}</span>
-            {!!process.dpia?.riskOwnerFunction && <span> {intl.riskOwnerFunctionBinder} {process.dpia.riskOwnerFunction}</span>}
-          </>
-        </DataText>}
+      <DataText label={intl.riskOwner}>
+        <>
+          <span>{(process.dpia?.riskOwner) ? riskOwnerFullName : intl.notFilled}</span>
+          {!!process.dpia?.riskOwnerFunction && <span> {intl.riskOwnerFunctionBinder} {process.dpia.riskOwnerFunction}</span>}
+        </>
+      </DataText>}
 
       <DataText label={intl.validityOfProcess}>
         <ActiveIndicator alwaysShow={true} showDates={true} {...process} />
       </DataText>
 
       <DataText label={intl.summarySubjectCategories} text={!subjectCategoriesSummarised.length && intl.subjectCategoriesNotFound}>
-        {!!subjectCategoriesSummarised.length && <DotTags list={ListName.SUBJECT_CATEGORY} codes={subjectCategoriesSummarised} />}
+        {!!subjectCategoriesSummarised.length && <DotTags list={ListName.SUBJECT_CATEGORY} codes={subjectCategoriesSummarised}/>}
       </DataText>
 
       <DataText label={intl.organizing}>
@@ -98,7 +96,7 @@ const ProcessData = (props: { process: Process }) => {
         {!!process?.subDepartments.length && <Block>
           <Block display="flex">
             <span>{intl.subDepartment}: </span>
-            <DotTags list={ListName.SUB_DEPARTMENT} codes={process.subDepartments} />
+            <DotTags list={ListName.SUB_DEPARTMENT} codes={process.subDepartments}/>
           </Block>
         </Block>}
 
@@ -111,17 +109,17 @@ const ProcessData = (props: { process: Process }) => {
           <span>{intl.productTeam}: </span>
           {process.productTeams.map((t, i) =>
             <Block key={i} display='inline' marginRight={theme.sizing.scale100}>
-              <TeamPopover teamId={t} />
+              <TeamPopover teamId={t}/>
             </Block>
           )}
         </Block>}
       </DataText>
 
       <DataText label={intl.system} hide={!process.products?.length}>
-        <DotTags list={ListName.SYSTEM} codes={process.products} linkCodelist />
+        <DotTags list={ListName.SYSTEM} codes={process.products} linkCodelist/>
       </DataText>
 
-      <DataText label={intl.USES_ALL_INFO_TYPE} text={boolToText(process.usesAllInformationTypes)} />
+      <DataText label={intl.USES_ALL_INFO_TYPE} text={boolToText(process.usesAllInformationTypes)}/>
 
       <DataText label={intl.automation}>
         <Block>
@@ -141,23 +139,23 @@ const ProcessData = (props: { process: Process }) => {
         </>
         <>
           {process.dataProcessing?.dataProcessor &&
+          <Block>
+            <Block>{intl.dataProcessorYes}</Block>
             <Block>
-              <Block>{intl.dataProcessorYes}</Block>
-              <Block>
-                {dataProcessorAgreements &&
-                  <Block display='flex'>
-                    <Block $style={{ whiteSpace: 'nowrap', margin: '1rem 0' }}>
-                      {`${intl.dataProcessorAgreement}: `}
-                    </Block>
-                    <DotTags items={process.dataProcessing?.dataProcessorAgreements} markdown />
-                  </Block>
-                }
+              {dataProcessorAgreements &&
+              <Block display='flex'>
+                <Block $style={{whiteSpace: 'nowrap', margin: '1rem 0'}}>
+                  {`${intl.dataProcessorAgreement}: `}
+                </Block>
+                <DotTags items={process.dataProcessing?.dataProcessorAgreements} markdown/>
               </Block>
-              <Block>
-                <span>{intl.isDataProcessedOutsideEUEEAHelpText}: </span>
-                <span>{boolToText(process.dataProcessing?.dataProcessorOutsideEU)}</span>
-              </Block>
-            </Block>}
+              }
+            </Block>
+            <Block>
+              <span>{intl.isDataProcessedOutsideEUEEAHelpText}: </span>
+              <span>{boolToText(process.dataProcessing?.dataProcessorOutsideEU)}</span>
+            </Block>
+          </Block>}
         </>
       </DataText>
 
@@ -168,10 +166,10 @@ const ProcessData = (props: { process: Process }) => {
         </>
         <>
           {process.retention?.retentionPlan &&
-            <Block>
-              <Block>{intl.retentionPlanYes}</Block>
-              <RetentionView retention={process.retention} />
-            </Block>
+          <Block>
+            <Block>{intl.retentionPlanYes}</Block>
+            <RetentionView retention={process.retention}/>
+          </Block>
           }
           <Block>
             <span>{process.retention?.retentionDescription && `${intl.retentionDescription}: `}</span>
