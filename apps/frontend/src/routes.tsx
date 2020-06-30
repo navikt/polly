@@ -125,7 +125,7 @@ const disclosureUrl = async (id: string) => {
 
 const redirect = (fetch: (id: string) => Promise<string>) =>
   (props: RouteComponentProps<{ id: string }>) => {
-    fetch(props.match.params.id).then(props.history.push)
+    fetch(props.match.params.id).then(props.history.replace)
     return <Spinner/>
   }
 
