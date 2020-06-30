@@ -1,9 +1,8 @@
-import {Overrides, StatefulPopover} from 'baseui/popover'
 import React, {useEffect, useState} from 'react'
 import {getTeam} from '../../api'
 import {Team} from '../../constants'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faEnvelope, faTimesCircle, faUser, faUsers} from '@fortawesome/free-solid-svg-icons'
+import {faEnvelope, faTimesCircle, faUser} from '@fortawesome/free-solid-svg-icons'
 import {copyToClipboard, intl, theme} from '../../util'
 import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
 import {Card, StyledBody} from 'baseui/card'
@@ -14,8 +13,9 @@ import Button from './Button'
 import {SlackLink} from './SlackLink'
 import {StyledLink} from 'baseui/link'
 import {env} from '../../util/env'
-import {Block} from 'baseui/block'
 import {Markdown} from './Markdown'
+import {ObjectLink} from './RouteLink'
+import {Block} from 'baseui/block'
 
 
 const defaultTeam = (teamId: string) => ({id: teamId, name: teamId, description: ' ', productarea: undefined, tags: [], members: []})
@@ -28,15 +28,6 @@ const listOverrides: OverridesT = {
   }
 } as OverridesT
 
-const popoverOverride: Overrides = {
-  Body: {
-    style: () => ({
-      maxWidth: '60%',
-      maxHeight: '80%',
-      overflowY: 'scroll'
-    })
-  }
-}
 
 const SmallIcon = (props: {icon: IconProp}) => <FontAwesomeIcon icon={props.icon} size="sm" style={{marginRight: '.5rem'}}/>
 
@@ -75,7 +66,7 @@ const TeamContent = (props: {team: Team}) => (
   </Card>
 )
 
-export const TeamPopover = (props: {teamId: string}) => {
+const TeamView = (props: {teamId: string}) => {
   const teamId = props.teamId
   const [team, setTeam] = useState<Team>(defaultTeam(props.teamId))
   const [error, setError] = useState(false)
@@ -95,13 +86,9 @@ export const TeamPopover = (props: {teamId: string}) => {
   return (
     <>
       {!error &&
-      <StatefulPopover content={() => <TeamContent team={team}/>} overrides={popoverOverride} placement="left">
-        <span>
-        <Button size="compact" shape="pill" kind="outline" inline>
-          <SmallIcon icon={faUsers}/> {team.name}
-        </Button>
-        </span>
-      </StatefulPopover>
+      <ObjectLink id={teamId} type={'team'}>
+        {team.name}
+      </ObjectLink>
       }
       {error && <StatefulTooltip content={intl.couldntLoadTeam} placement={PLACEMENT.top}>
         <span><FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500}/> {team.name}</span>
@@ -114,6 +101,6 @@ export const TeamList = (props: {teamIds: string[]}) =>
   <>
     {props.teamIds.map((t, i) =>
       <Block key={i} display='inline' marginRight={theme.sizing.scale100}>
-        <TeamPopover teamId={t}/>
+        <TeamView teamId={t}/>
       </Block>)}
   </>

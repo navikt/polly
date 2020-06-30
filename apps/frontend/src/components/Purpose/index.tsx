@@ -4,7 +4,7 @@ import {useEffect} from 'react'
 import {Block, BlockProps} from 'baseui/block'
 import {HeadingSmall, Label2} from 'baseui/typography'
 import {KIND, SIZE as ButtonSize} from 'baseui/button'
-import {AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort} from '../../constants'
+import {AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort, ProcessStatus} from '../../constants'
 import {intl, theme, useAwait} from '../../util'
 import {user} from '../../service/User'
 import ModalProcess from './Accordion/ModalProcess'
@@ -25,15 +25,14 @@ import {
 } from '../../api'
 import {StyledSpinnerNext} from 'baseui/spinner'
 import {codelist, ListName} from '../../service/Codelist'
-import {generatePath, RouteComponentProps, useLocation} from 'react-router'
+import {RouteComponentProps, useLocation} from 'react-router'
 import {StyledLink} from 'baseui/link'
 import {env} from '../../util/env'
 import {faFileWord, faPlus} from '@fortawesome/free-solid-svg-icons'
 import Button from '../common/Button'
 import {Select} from 'baseui/select'
-import {Filter, Section} from '../../pages/PurposePage'
+import {genProcessPath, Section} from '../../pages/ProcessPage'
 import {withRouter} from 'react-router-dom'
-import {processPath} from '../../routes'
 
 const rowBlockProps: BlockProps = {
   marginBottom: 'scale800',
@@ -43,7 +42,7 @@ const rowBlockProps: BlockProps = {
 
 type ProcessListProps = {
   section: Section;
-  filter: Filter;
+  filter?: ProcessStatus;
   processId?: string;
   code: string;
   listName?: ListName;
@@ -62,7 +61,7 @@ const ProcessList = ({code, listName, filter, processId, section, history}: Proc
   const [isLoadingProcess, setIsLoadingProcess] = React.useState(true)
   const current_location = useLocation()
   const [status, setStatus] = React.useState([{
-    label: filter === 'ALL' ? intl.allProcesses : filter === 'COMPLETED' ? intl.showCompletedProcesses : intl.inProgressProcesses,
+    label: !filter ? intl.allProcesses : filter === ProcessStatus.COMPLETED ? intl.showCompletedProcesses : intl.inProgressProcesses,
     id: filter
   }])
   const [codelistLoading, setCodelistLoading] = React.useState(true)
@@ -81,12 +80,7 @@ const ProcessList = ({code, listName, filter, processId, section, history}: Proc
   }, [code, status])
 
   const handleChangePanel = (process?: Partial<Process>) => {
-    history.push(generatePath(processPath, {
-      section,
-      code: section === Section.purpose && !!process?.purpose ? process.purpose.code : code,
-      filter: status.length > 0 && status ? status[0].id : filter,
-      processId: process?.id
-    }))
+    history.push(genProcessPath(section, code, process, status[0].id))
   }
 
   const hasAccess = () => user.canWrite()
@@ -111,7 +105,7 @@ const ProcessList = ({code, listName, filter, processId, section, history}: Proc
       } else {
         list = (await getCodelistUsage(listName as ListName, code)).processes
       }
-      if (status[0].id === 'ALL') {
+      if (!status[0].id) {
         setProcessList(sortProcess(list))
       } else {
         setProcessList(sortProcess(list).filter(p => p.status === status[0].id))
@@ -139,7 +133,7 @@ const ProcessList = ({code, listName, filter, processId, section, history}: Proc
       setErrorProcessModal('')
       setShowCreateProcessModal(false)
       setCurrentProcess(newProcess)
-      history.push(`/process/purpose/${newProcess.purpose.code}/ALL/${newProcess.id}?create`)
+      history.push(`/process/purpose/${newProcess.purpose.code}/${newProcess.id}?create`)
     } catch (err) {
       if (err.response.data.message.includes('already exists')) {
         setErrorProcessModal('Behandlingen eksisterer allerede.')
@@ -283,7 +277,7 @@ const ProcessList = ({code, listName, filter, processId, section, history}: Proc
             deleteRemoves={false}
             escapeClearsValue={false}
             options={[
-              {label: intl.allProcesses, id: 'ALL'},
+              {label: intl.allProcesses, id: undefined},
               {label: intl.inProgressProcesses, id: 'IN_PROGRESS'},
               {label: intl.showCompletedProcesses, id: 'COMPLETED'},
             ]}
@@ -292,11 +286,9 @@ const ProcessList = ({code, listName, filter, processId, section, history}: Proc
             searchable={false}
             onChange={(params: any) => {
               setStatus(params.value)
-              history.push(generatePath(processPath,
-                {section, code, filter: params.value[0].id, processId: undefined}
-              ))
-            }}
-          />
+              history.push(genProcessPath(section, code, undefined, params.value[0].id))
+            }
+            }/>
         </Block>
         <Block>
           <Label2 color={theme.colors.primary} marginRight={'1rem'}>

@@ -47,13 +47,13 @@ const DocumentProcessesTable = (props: DocumentProcessesProps) => {
           table.data.map((process, index) => (
             <Row key={index}>
               <Cell>
-                <RouteLink href={`/process/purpose/${process.purpose.code}/ALL`}>{codelist.getShortnameForCode(process.purpose)}</RouteLink>
+                <RouteLink href={`/process/purpose/${process.purpose.code}`}>{codelist.getShortnameForCode(process.purpose)}</RouteLink>
               </Cell>
               <Cell>
-                <RouteLink href={`/process/purpose/${process.purpose.code}/ALL/${process.id}`}>{process.name}</RouteLink>
+                <RouteLink href={`/process/purpose/${process.purpose.code}/${process.id}`}>{process.name}</RouteLink>
               </Cell>
               <Cell>
-                {process.department ? <RouteLink href={`/process/department/${process.department.code}/ALL`}>{process.department.shortName}</RouteLink> : ''}
+                {process.department ? <RouteLink href={`/process/department/${process.department.code}`}>{process.department.shortName}</RouteLink> : ''}
               </Cell>
               <Cell>
                 {process.products.map(product => product.shortName).join(', ')}

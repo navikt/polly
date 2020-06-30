@@ -55,19 +55,19 @@ export const urlForObject = (type: NavigableItem, id: string, audit?: AuditItem)
       }
       return '/'
     case ListName.PURPOSE:
-      return `/process/purpose/${id}/ALL/`
+      return `/process/purpose/${id}`
     case 'team':
-      return `/process/team/${id}/ALL/`
+      return `/process/team/${id}`
     case 'productarea':
-      return `/process/productarea/${id}/ALL/`
+      return `/process/productarea/${id}`
     case ListName.DEPARTMENT:
-      return `/process/department/${id}/ALL/`
+      return `/process/department/${id}`
+    case ListName.SUB_DEPARTMENT:
+      return `/process/subdepartment/${id}`
     case ListName.THIRD_PARTY:
       return `/thirdparty/${id}`
     case ListName.SYSTEM:
       return `/system/${id}`
-    case ListName.SUB_DEPARTMENT:
-      return `/process/subdepartment/${id}/ALL/`
   }
 }
 
