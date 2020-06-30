@@ -12,10 +12,10 @@ import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {Label3, Paragraph3} from 'baseui/typography'
 import Button from './Button'
 import {SlackLink} from './SlackLink'
-import ReactMarkdown from 'react-markdown'
 import {StyledLink} from 'baseui/link'
 import {env} from '../../util/env'
 import {Block} from 'baseui/block'
+import {Markdown} from './Markdown'
 
 
 const defaultTeam = (teamId: string) => ({id: teamId, name: teamId, description: ' ', productarea: undefined, tags: [], members: []})
@@ -49,7 +49,7 @@ const TeamContent = (props: {team: Team}) => (
       <dl>
         <dt><Label3>{intl.description}</Label3></dt>
         <dd><Paragraph3>
-          <ReactMarkdown source={props.team.description} linkTarget='_blank'/>
+          <Markdown source={props.team.description}/>
         </Paragraph3></dd>
         {props.team.slackChannel && <>
           <dt><Label3>{intl.slack}</Label3></dt>
