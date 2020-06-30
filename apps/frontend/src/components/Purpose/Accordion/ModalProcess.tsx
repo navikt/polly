@@ -313,13 +313,14 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                                   </Block>
 
                                   <Block>
-
                                     <ListLegalBases
-                                      legalBases={formikBag.values.legalBases.filter(l => codelist.isArt6(l.gdpr))}
+                                      sensitivityLevel={SensitivityLevel.ART6}
+                                      legalBases={formikBag.values.legalBases}
                                       onRemove={(index) => arrayHelpers.remove(index)}
                                       onEdit={
                                         (index) => {
-                                          setSelectedLegalBasis(formikBag.values.legalBases.filter(l => codelist.isArt6(l.gdpr))[index])
+                                          setSensitivityLevel(SensitivityLevel.ART6)
+                                          setSelectedLegalBasis(formikBag.values.legalBases[index])
                                           setSelectedLegalBasisIndex(index)
                                           formikBag.setFieldValue('legalBasesOpen', true)
                                         }
@@ -344,13 +345,15 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                                   </Block>
                                   <Block>
                                     <ListLegalBases
-                                      legalBases={formikBag.values.legalBases.filter(l => codelist.isArt9(l.gdpr))}
+                                      sensitivityLevel={SensitivityLevel.ART9}
+                                      legalBases={formikBag.values.legalBases}
                                       onRemove={(index) => {
-                                        arrayHelpers.remove(formikBag.values.legalBases.filter(l => codelist.isArt6(l.gdpr)).length + index)
+                                        arrayHelpers.remove(index)
                                       }}
                                       onEdit={
                                         (index) => {
-                                          setSelectedLegalBasis(formikBag.values.legalBases.filter(l => codelist.isArt9(l.gdpr))[index])
+                                          setSensitivityLevel(SensitivityLevel.ART9)
+                                          setSelectedLegalBasis(formikBag.values.legalBases[index])
                                           setSelectedLegalBasisIndex(index)
                                           formikBag.setFieldValue('legalBasesOpen', true)
                                         }
@@ -400,7 +403,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                         <Error fieldName='dataProcessing.dataProcessorAgreement'/>
 
                         <Block {...rowBlockProps}>
-                          <ModalLabel label={intl.isDataProcessedOutsideEUEEA} />
+                          <ModalLabel label={intl.isDataProcessedOutsideEUEEA}/>
                           <BoolField fieldName='dataProcessing.dataProcessorOutsideEU'
                                      value={formikBag.values.dataProcessing.dataProcessorOutsideEU}/>
                         </Block>

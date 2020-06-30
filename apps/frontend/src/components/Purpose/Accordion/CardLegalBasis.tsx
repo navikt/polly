@@ -17,6 +17,7 @@ import {legalBasisSchema} from '../../common/schema'
 import {LegalBasisView} from '../../common/LegalBasis'
 import {customizeNationalLawPlaceholder} from './PlaceholderCustomizer'
 import {paddingZero} from '../../common/Style'
+import shortid from "shortid";
 
 const rowBlockProps: BlockProps = {
   display: 'flex',
@@ -78,6 +79,7 @@ const CardLegalBasis = ({submit, hideCard, initValue, titleSubmitButton, sensiti
     gdpr: initValue.gdpr,
     nationalLaw: initValue.nationalLaw,
     description: initValue.description,
+    key: shortid.generate()
   }
 
   const getOptionsBySensitivityLevel = () => {

@@ -89,6 +89,7 @@ export interface LegalBasisFormValues {
   gdpr?: string;
   nationalLaw?: string;
   description?: string;
+  key?: string;
 }
 
 export interface Term {
