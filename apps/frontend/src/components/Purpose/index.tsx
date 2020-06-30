@@ -30,7 +30,7 @@ import {StyledLink} from 'baseui/link'
 import {env} from '../../util/env'
 import {faFileWord, faPlus} from '@fortawesome/free-solid-svg-icons'
 import Button from '../common/Button'
-import {Select} from 'baseui/select'
+import {StatefulSelect} from 'baseui/select'
 import {genProcessPath, Section} from '../../pages/ProcessPage'
 import {withRouter} from 'react-router-dom'
 
@@ -60,10 +60,6 @@ const ProcessList = ({code, listName, filter, processId, section, history}: Proc
   const [isLoadingProcessList, setIsLoadingProcessList] = React.useState(true)
   const [isLoadingProcess, setIsLoadingProcess] = React.useState(true)
   const current_location = useLocation()
-  const [status, setStatus] = React.useState([{
-    label: !filter ? intl.allProcesses : filter === ProcessStatus.COMPLETED ? intl.showCompletedProcesses : intl.inProgressProcesses,
-    id: filter
-  }])
   const [codelistLoading, setCodelistLoading] = React.useState(true)
   useAwait(codelist.wait(), setCodelistLoading)
 
@@ -77,10 +73,10 @@ const ProcessList = ({code, listName, filter, processId, section, history}: Proc
       await getProcessList()
       setIsLoadingProcessList(false)
     })()
-  }, [code, status])
+  }, [code, filter])
 
   const handleChangePanel = (process?: Partial<Process>) => {
-    history.push(genProcessPath(section, code, process, status[0].id))
+    history.push(genProcessPath(section, code, process, filter))
   }
 
   const hasAccess = () => user.canWrite()
@@ -105,11 +101,7 @@ const ProcessList = ({code, listName, filter, processId, section, history}: Proc
       } else {
         list = (await getCodelistUsage(listName as ListName, code)).processes
       }
-      if (!status[0].id) {
-        setProcessList(sortProcess(list))
-      } else {
-        setProcessList(sortProcess(list).filter(p => p.status === status[0].id))
-      }
+      setProcessList(sortProcess(list).filter(p => !filter || p.status === filter))
     } catch (err) {
       console.log(err)
     }
@@ -271,7 +263,7 @@ const ProcessList = ({code, listName, filter, processId, section, history}: Proc
           )}
         </Block>
         <Block width={'25%'}>
-          <Select
+          <StatefulSelect
             backspaceRemoves={false}
             clearable={false}
             deleteRemoves={false}
@@ -281,14 +273,10 @@ const ProcessList = ({code, listName, filter, processId, section, history}: Proc
               {label: intl.inProgressProcesses, id: 'IN_PROGRESS'},
               {label: intl.showCompletedProcesses, id: 'COMPLETED'},
             ]}
-            value={status}
+            initialState={{value: [{id: filter}]}}
             filterOutSelected={false}
             searchable={false}
-            onChange={(params: any) => {
-              setStatus(params.value)
-              history.push(genProcessPath(section, code, undefined, params.value[0].id))
-            }
-            }/>
+            onChange={(params: any) => history.push(genProcessPath(section, code, undefined, params.value[0].id))}/>
         </Block>
         <Block>
           <Label2 color={theme.colors.primary} marginRight={'1rem'}>
