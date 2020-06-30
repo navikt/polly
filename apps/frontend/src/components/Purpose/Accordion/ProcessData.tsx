@@ -51,7 +51,7 @@ const ProcessData = (props: { process: Process }) => {
 
 
   const subjectCategoriesSummarised = process.policies.flatMap(p => p.subjectCategories).reduce((acc, curr) => {
-    if (!acc.find(item => item.code === curr.code)) acc = [...acc, curr]
+    if (!acc.find(sc => sc.code === sc.code)) acc = [...acc, curr]
     return acc
   }, [] as Code[])
 
