@@ -1,16 +1,16 @@
-import React, { FormEvent, useEffect, useState } from "react"
-import { Block } from "baseui/block"
-import { Document, Settings } from "../../constants"
-import { useDebouncedState } from "../../util/hooks"
-import { getDocument, searchDocuments } from "../../api"
-import { Select, TYPE } from "baseui/select"
-import { intl, theme } from "../../util"
-import { getSettings, writeSettings } from "../../api/SettingsApi"
-import { StyledSpinnerNext } from "baseui/spinner"
-import { H4, Label2 } from "baseui/typography"
-import { Button } from "baseui/button"
-import { StatefulTextarea } from "baseui/textarea"
-import ReactMarkdown from "react-markdown/with-html"
+import React, {FormEvent, useEffect, useState} from 'react'
+import {Block} from 'baseui/block'
+import {Document, Settings} from '../../constants'
+import {useDebouncedState} from '../../util/hooks'
+import {getDocument, searchDocuments} from '../../api'
+import {Select, TYPE} from 'baseui/select'
+import {intl, theme} from '../../util'
+import {getSettings, writeSettings} from '../../api/SettingsApi'
+import {StyledSpinnerNext} from 'baseui/spinner'
+import {H4, Label2} from 'baseui/typography'
+import {Button} from 'baseui/button'
+import {StatefulTextarea} from 'baseui/textarea'
+import {Markdown} from '../../components/common/Markdown'
 
 export const SettingsPage = () => {
   const [loading, setLoading] = React.useState<boolean>(true)
@@ -77,7 +77,7 @@ const DefaultProcessDocument = (props: { documentId?: string, setDocumentId: (id
         setLoading(false)
       }
     })()
-  }, [props.documentId])
+  }, [document, props.documentId])
 
 
   useEffect(() => {
@@ -131,7 +131,7 @@ const FrontpageMessage = (props: { message?: string, setMessage: (message: strin
             />
           </Block>
           <Block width="50%">
-            <ReactMarkdown source={props.message} escapeHtml={false}/>
+            <Markdown source={props.message} escapeHtml={false}/>
           </Block>
         </Block>
       </Block>

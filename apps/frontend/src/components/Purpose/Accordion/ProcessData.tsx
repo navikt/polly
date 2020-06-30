@@ -13,13 +13,13 @@ import {TeamPopover} from '../../common/Team'
 import {boolToText} from '../../common/Radio'
 import {RetentionView} from '../Retention'
 import {env} from '../../../util/env'
-import ReactMarkdown from 'react-markdown'
 import {uniqBy} from 'lodash'
+import {Markdown} from '../../common/Markdown'
 
 const showDpiaRequiredField = (dpia?: Dpia) => {
   if (dpia?.needForDpia === true) {
     if (dpia.refToDpia) {
-      return <ReactMarkdown source={`${intl.yes}. ${intl.reference}${dpia.refToDpia}`} linkTarget='_blank'/>
+      return <Markdown source={`${intl.yes}. ${intl.reference}${dpia.refToDpia}`} />
     } else {
       return intl.yes
     }

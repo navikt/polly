@@ -3,10 +3,10 @@ import {faCircle} from '@fortawesome/free-solid-svg-icons'
 import {Block} from 'baseui/block'
 import {intl, theme} from '../../util'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import ReactMarkdown from 'react-markdown'
 import {Code, codelist, ListName} from '../../service/Codelist'
 import {NavigableItem} from '../../constants'
 import RouteLink, {urlForObject} from './RouteLink'
+import {Markdown} from './Markdown'
 
 const DotTag = (props: {children: ReactNode}) =>
   <Block marginLeft={theme.sizing.scale100} marginRight={theme.sizing.scale100} display='flex' alignItems='center'>
@@ -27,7 +27,7 @@ const Content = (props: {item: string, list?: ListName, linkCodelist?: boolean, 
     )
     return <>{codelist.getShortname(list, item)}</>
   }
-  if (markdown) return <ReactMarkdown source={item} linkTarget='_blank'/>
+  if (markdown) return <Markdown source={item}/>
   return <>{item}</>
 }
 

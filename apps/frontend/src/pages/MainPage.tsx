@@ -1,17 +1,17 @@
-import { intl, theme } from '../util'
+import {intl, theme} from '../util'
 import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { Block } from 'baseui/block'
-import { DashboardData, ProcessField, ProcessState, Settings } from '../constants'
-import { getSettings } from '../api/SettingsApi'
-import ReactMarkdown from 'react-markdown/with-html'
-import { Card } from 'baseui/card'
-import { cardShadow } from '../components/common/Style'
+import {useEffect, useState} from 'react'
+import {Block} from 'baseui/block'
+import {DashboardData, ProcessField, ProcessState, Settings} from '../constants'
+import {getSettings} from '../api/SettingsApi'
+import {Card} from 'baseui/card'
+import {cardShadow} from '../components/common/Style'
 import Departments from '../components/Dashboard/Departments'
-import { getDashboard } from '../api'
-import { Chart } from '../components/Dashboard/Chart'
-import { RouteComponentProps } from 'react-router-dom'
-import { LastEvents } from '../components/audit/LastEvents'
+import {getDashboard} from '../api'
+import {Chart} from '../components/Dashboard/Chart'
+import {RouteComponentProps} from 'react-router-dom'
+import {LastEvents} from '../components/audit/LastEvents'
+import {Markdown} from '../components/common/Markdown'
 
 export const Main = (props: RouteComponentProps) => {
   const [settings, setSettings] = useState<Settings>()
@@ -146,7 +146,7 @@ export const Main = (props: RouteComponentProps) => {
 
             <Block marginTop="2.5rem">
               <Card overrides={cardShadow}>
-                <ReactMarkdown source={settings?.frontpageMessage} escapeHtml={false} />
+                <Markdown source={settings?.frontpageMessage} escapeHtml={false} />
               </Card>
             </Block>
 

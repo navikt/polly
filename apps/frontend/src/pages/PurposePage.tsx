@@ -9,7 +9,7 @@ import {H4, Label2, Paragraph2} from 'baseui/typography'
 import {RouteComponentProps} from 'react-router-dom'
 import {ProductArea, Team} from '../constants'
 import {getProductArea, getTeam} from '../api'
-import ReactMarkdown from 'react-markdown'
+import {Markdown} from '../components/common/Markdown'
 
 export enum Section {
   subdepartment = 'subdepartment',
@@ -23,7 +23,7 @@ export enum Section {
 const renderMetadata = (description: string, title: string) => (
   <Block marginBottom='scale1000'>
     <Label2 font='font400'>{title}</Label2>
-    <Paragraph2 as='div'><ReactMarkdown source={description} linkTarget='_blank'/></Paragraph2>
+    <Paragraph2 as='div'><Markdown source={description}/></Paragraph2>
   </Block>
 )
 
