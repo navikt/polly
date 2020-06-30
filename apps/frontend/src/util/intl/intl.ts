@@ -177,6 +177,11 @@ export interface IStrings {
   legalBasisHelpText: string;
   retentionHelpText: string;
   retentionDescriptionHelpText: string;
+  processSideMenuHelpText: string;
+  informationTypeSideMenuHelpText: string;
+  documentSideMenuHelpText: string;
+  externalPartsSideMenuHelpText: string;
+  systemSideMenuHelpText: string;
   legalBasisNew: string;
   legalBasisAdd: string;
   addArticle6: string;

@@ -37,11 +37,11 @@ const SideBar = () => {
     <Block {...sideBarProps}>
       <Brand />
       <Block {...items}>
-        <NavItem to="/process" text={intl.processes} />
-        <NavItem to="/informationtype" text={intl.informationTypes} />
-        <NavItem to="/document" text={intl.documents} />
-        <NavItem to="/thirdparty" text={intl.thirdParties} />
-        <NavItem to="/system" text={intl.systems} />
+        <NavItem to="/process" text={intl.processes} tooltip={intl.processSideMenuHelpText}/>
+        <NavItem to="/informationtype" text={intl.informationTypes}  tooltip={intl.informationTypeSideMenuHelpText}/>
+        <NavItem to="/document" text={intl.documents}  tooltip={intl.documentSideMenuHelpText}/>
+        <NavItem to="/thirdparty" text={intl.thirdParties}  tooltip={intl.externalPartsSideMenuHelpText}/>
+        <NavItem to="/system" text={intl.systems}  tooltip={intl.systemSideMenuHelpText}/>
         {canViewAlerts() && <NavItem to="/alert/events" text={intl.alerts} />}
       </Block>
 
