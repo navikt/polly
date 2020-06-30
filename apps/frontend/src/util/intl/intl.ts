@@ -182,6 +182,7 @@ export interface IStrings {
   documentSideMenuHelpText: string;
   externalPartsSideMenuHelpText: string;
   systemSideMenuHelpText: string;
+  processActivity: string;
   legalBasisNew: string;
   legalBasisAdd: string;
   addArticle6: string;

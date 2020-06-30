@@ -78,7 +78,7 @@ const useMainSearch = () => {
           setLoading(true)
 
           if (type === 'all') {
-            add(searchCodelist(search, ListName.PURPOSE, intl.purpose))
+            add(searchCodelist(search, ListName.PURPOSE, intl.processActivity))
             add(searchCodelist(search, ListName.DEPARTMENT, intl.department))
             add(searchCodelist(search, ListName.SUB_DEPARTMENT, intl.subDepartment))
             add(searchCodelist(search, ListName.THIRD_PARTY, intl.thirdParty))
