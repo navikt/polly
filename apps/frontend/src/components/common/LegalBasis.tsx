@@ -1,17 +1,17 @@
 import * as React from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEdit, faExclamation, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { ARTWORK_SIZES, ListItem } from 'baseui/list'
-import { Block } from 'baseui/block'
-import { Button } from 'baseui/button'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faEdit, faExclamation, faTrash} from '@fortawesome/free-solid-svg-icons'
+import {ARTWORK_SIZES, ListItem} from 'baseui/list'
+import {Block} from 'baseui/block'
+import {Button} from 'baseui/button'
 
-import { LegalBasis, LegalBasisFormValues, PolicyAlert } from '../../constants'
-import { codelist, ListName } from '../../service/Codelist'
-import { processString } from '../../util/string-processor'
-import { intl, theme } from '../../util'
-import { StyledLink } from 'baseui/link'
-import { env } from '../../util/env'
-import { Paragraph2 } from 'baseui/typography'
+import {LegalBasis, LegalBasisFormValues, PolicyAlert} from '../../constants'
+import {codelist, ListName, SensitivityLevel} from '../../service/Codelist'
+import {processString} from '../../util/string-processor'
+import {intl, theme} from '../../util'
+import {StyledLink} from 'baseui/link'
+import {env} from '../../util/env'
+import {Paragraph2} from 'baseui/typography'
 
 export const LegalBasisView = (props: { legalBasis?: LegalBasis, legalBasisForm?: LegalBasisFormValues }) => {
   const input = props.legalBasis ? props.legalBasis : props.legalBasisForm
@@ -82,55 +82,60 @@ export const ListLegalBases = (
     legalBases?: LegalBasisFormValues[],
     onRemove: (index: number) => void,
     onEdit: (index: number) => void
+    sensitivityLevel?: SensitivityLevel.ART6 | SensitivityLevel.ART9
   },) => {
-  const {legalBases, onRemove, onEdit} = props
+  const {legalBases, onRemove, onEdit, sensitivityLevel} = props
   if (!legalBases) return null
   return (
     <React.Fragment>
-      {legalBases.map((legalBasis: LegalBasisFormValues, i: number) => (
-        <ListItem
-          artworkSize={ARTWORK_SIZES.SMALL}
-          overrides={{
-            Content: {
-              style: {
-                height: 'auto'
-              }
-            },
-            EndEnhancerContainer: {},
-            Root: {},
-            ArtworkContainer: {}
-          }}
-          endEnhancer={
-            () =>
-              <Block minWidth="100px">
-                <Button
-                  type="button"
-                  kind="minimal"
-                  size="compact"
-                  onClick={() => {
-                    onEdit(i)
-                  }}
-                >
-                  <FontAwesomeIcon icon={faEdit}/>
-                </Button>
-                <Button
-                  type="button"
-                  kind="minimal"
-                  size="compact"
-                  onClick={() => onRemove(i)}
-                >
-                  <FontAwesomeIcon icon={faTrash}/>
-                </Button>
-              </Block>
-          }
-          sublist
-          key={i}
-        >
-          <Paragraph2 $style={{marginTop: theme.sizing.scale100, marginBottom: theme.sizing.scale100}}>
-            <LegalBasisView legalBasisForm={legalBasis}/>
-          </Paragraph2>
-        </ListItem>
-      ))}
+      {legalBases
+        .filter(l => !!sensitivityLevel ? (sensitivityLevel === SensitivityLevel.ART6 ? codelist.isArt6(l.gdpr) : codelist.isArt9(l.gdpr)) : true)
+        .map((legalBasis: LegalBasisFormValues, i: number) => (
+          <ListItem
+            artworkSize={ARTWORK_SIZES.SMALL}
+            overrides={{
+              Content: {
+                style: {
+                  height: 'auto'
+                }
+              },
+              EndEnhancerContainer: {},
+              Root: {},
+              ArtworkContainer: {}
+            }}
+            endEnhancer={
+              () =>
+                <Block minWidth="100px">
+                  <Button
+                    type="button"
+                    kind="minimal"
+                    size="compact"
+                    onClick={() => {
+                      onEdit(legalBases?.findIndex(l => l.key === legalBasis.key))
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faEdit}/>
+                  </Button>
+                  <Button
+                    type="button"
+                    kind="minimal"
+                    size="compact"
+                    onClick={() => {
+                      onRemove(legalBases?.findIndex(l => l.key === legalBasis.key))
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faTrash}/>
+                  </Button>
+                </Block>
+            }
+            sublist
+            key={i}
+          >
+            <Paragraph2 $style={{marginTop: theme.sizing.scale100, marginBottom: theme.sizing.scale100}}>
+              <LegalBasisView legalBasisForm={legalBasis}/>
+            </Paragraph2>
+          </ListItem>
+        ))}
     </React.Fragment>
   )
 }

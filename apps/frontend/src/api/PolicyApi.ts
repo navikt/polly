@@ -1,7 +1,8 @@
 import axios from 'axios'
-import { LegalBasesUse, LegalBasis, PageResponse, Policy, PolicyFormValues } from '../constants'
-import { Code } from '../service/Codelist'
-import { env } from '../util/env'
+import {LegalBasesUse, LegalBasis, PageResponse, Policy, PolicyFormValues} from '../constants'
+import {Code} from '../service/Codelist'
+import {env} from '../util/env'
+import shortid from "shortid";
 
 export const getPoliciesForInformationType = async (informationTypeId: string) => {
   return (await axios.get<PageResponse<Policy>>(`${env.pollyBaseUrl}/policy/?informationTypeId=${informationTypeId}`)).data
@@ -48,6 +49,7 @@ export const convertLegalBasesToFormValues = (legalBases?: LegalBasis[]) => (leg
   gdpr: legalBasis.gdpr && legalBasis.gdpr.code,
   nationalLaw: (legalBasis.nationalLaw && legalBasis.nationalLaw.code) || undefined,
   description: legalBasis.description || undefined,
+  key: shortid.generate()
 }))
 
 export const convertPolicyToFormValues = (policy: Policy): PolicyFormValues => ({

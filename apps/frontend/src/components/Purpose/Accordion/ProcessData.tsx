@@ -59,7 +59,10 @@ const ProcessData = (props: {process: Process}) => {
       <DataText label={intl.purposeOfTheProcess} text={process.description} hide={!process.description}/>
 
       <DataText label={intl.legalBasis} text={process.legalBases.length ? undefined : intl.legalBasisNotFound}>
-        {process.legalBases.map((legalBasis, index) =>
+        {process
+          .legalBases
+          .sort((a,b)=> (a.gdpr && codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code)).localeCompare(b.gdpr && codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
+          .map((legalBasis, index) =>
           <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
         )}
       </DataText>
