@@ -17,6 +17,7 @@ import {getTerm, mapTermToOption, searchInformationType, useTermSearch} from "..
 import {infoTypeSchema} from "../common/schema"
 import {renderTagList} from "../common/TagList"
 import {Error} from "../common/ModalSchema"
+import FieldProductTeam from '../common/form/FieldProductTeam'
 
 const labelProps: BlockProps = {
   marginBottom: "8px",
@@ -266,6 +267,15 @@ const InformationtypeForm = ({
                   )}
                 />
                 <Error fieldName="keywords" fullWidth/>
+              </FlexGridItem>
+
+              <FlexGridItem>
+                <Block>
+                  <Block {...labelProps}>
+                    <Label2>{intl.productTeam}</Label2>
+                  </Block>
+                  <FieldProductTeam productTeams={formikBag.values.productTeams}/>
+                </Block>
               </FlexGridItem>
 
               <FlexGridItem>

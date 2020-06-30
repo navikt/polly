@@ -3,7 +3,6 @@ import * as React from 'react'
 import {useEffect} from 'react'
 import {getResourceById} from '../../../api'
 import {codelist, ListName} from '../../../service/Codelist'
-import _includes from 'lodash/includes'
 import {Block} from 'baseui/block'
 import DataText from '../common/DataText'
 import {intl, theme} from '../../../util'
@@ -14,12 +13,12 @@ import {TeamPopover} from '../../common/Team'
 import {boolToText} from '../../common/Radio'
 import {RetentionView} from '../Retention'
 import {env} from '../../../util/env'
-import ReactMarkdown from "react-markdown";
+import ReactMarkdown from 'react-markdown'
 
 const showDpiaRequiredField = (dpia?: Dpia) => {
   if (dpia?.needForDpia === true) {
     if (dpia.refToDpia) {
-      return <ReactMarkdown source={`${intl.yes}. ${intl.reference}${dpia.refToDpia}`} linkTarget={"_blank"}/>
+      return <ReactMarkdown source={`${intl.yes}. ${intl.reference}${dpia.refToDpia}`} linkTarget='_blank'/>
     } else {
       return intl.yes
     }
@@ -34,7 +33,7 @@ const showDpiaRequiredField = (dpia?: Dpia) => {
   }
 }
 
-const ProcessData = (props: { process: Process }) => {
+const ProcessData = (props: {process: Process}) => {
   const {process} = props
   const dataProcessorAgreements = !!process.dataProcessing?.dataProcessorAgreements.length
   const [riskOwnerFullName, setRiskOwnerFullName] = React.useState<string>()
@@ -50,12 +49,7 @@ const ProcessData = (props: { process: Process }) => {
     })()
   }, [process])
 
-  const subjectCategories = process.policies.flatMap(p => p.subjectCategories).reduce((acc: string[], curr) => {
-    const subjectCategory = codelist.getShortname(ListName.SUBJECT_CATEGORY, curr.code)
-    if (!_includes(acc, subjectCategory) && subjectCategory)
-      acc = [...acc, subjectCategory]
-    return acc
-  }, [])
+  const subjectCategories = process.policies.flatMap(p => p.subjectCategories)
 
   return (
     <Block>
@@ -89,7 +83,7 @@ const ProcessData = (props: { process: Process }) => {
       </DataText>
 
       <DataText label={intl.summarySubjectCategories} text={!subjectCategories.length && intl.subjectCategoriesNotFound}>
-        {!!subjectCategories.length && <DotTags items={subjectCategories}/>}
+        {!!subjectCategories.length && <DotTags list={ListName.SUBJECT_CATEGORY} codes={subjectCategories}/>}
       </DataText>
 
       <DataText label={intl.organizing}>
@@ -100,7 +94,7 @@ const ProcessData = (props: { process: Process }) => {
         {!!process?.subDepartments.length && <Block>
           <Block display="flex">
             <span>{intl.subDepartment}: </span>
-            <DotTags items={process.subDepartments.map(sd => codelist.getShortname(ListName.SUB_DEPARTMENT, sd.code))}/>
+            <DotTags list={ListName.SUB_DEPARTMENT} codes={process.subDepartments}/>
           </Block>
         </Block>}
 
@@ -120,7 +114,7 @@ const ProcessData = (props: { process: Process }) => {
       </DataText>
 
       <DataText label={intl.system} hide={!process.products?.length}>
-        <DotTags items={process.products.map(product => codelist.getShortname(ListName.SYSTEM, product.code))}/>
+        <DotTags list={ListName.SYSTEM} codes={process.products} linkCodelist/>
       </DataText>
 
       <DataText label={intl.USES_ALL_INFO_TYPE} text={boolToText(process.usesAllInformationTypes)}/>
@@ -148,10 +142,10 @@ const ProcessData = (props: { process: Process }) => {
             <Block>
               {dataProcessorAgreements &&
               <Block display='flex'>
-                <Block $style={{whiteSpace: 'nowrap', margin:"1rem 0"}}>
+                <Block $style={{whiteSpace: 'nowrap', margin: '1rem 0'}}>
                   {`${intl.dataProcessorAgreement}: `}
                 </Block>
-                <DotTags items={process.dataProcessing?.dataProcessorAgreements}/>
+                <DotTags items={process.dataProcessing?.dataProcessorAgreements} markdown/>
               </Block>
               }
             </Block>

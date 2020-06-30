@@ -1,15 +1,17 @@
 import * as React from 'react'
+import {useState} from 'react'
 import {Card} from 'baseui/card'
 import {cardShadow} from '../common/Style'
 import {Block} from 'baseui/block'
 import {Label1, Paragraph2} from 'baseui/typography'
-import {theme} from '../../util'
+import {theme, useAwait} from '../../util'
 import {DashboardData, DepartmentProcess} from '../../constants'
 import {codelist, ListName} from '../../service/Codelist'
 import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
 import RouteLink from '../common/RouteLink'
+import {Spinner} from 'baseui/spinner'
 
-const TextWithNumber = (props: { label: string; number: number }) => (
+const TextWithNumber = (props: {label: string; number: number}) => (
   <Block display="flex" width="100%" marginBottom="0" justifyContent="center">
     <Paragraph2 margin="0">{props.label} <b>{props.number}</b></Paragraph2>
   </Block>
@@ -58,8 +60,14 @@ type DepartmentsProps = {
 }
 const Departments = (props: DepartmentsProps) => {
   const {data} = props
+  const [loading, setLoading] = useState(true)
+  useAwait(codelist.wait(), setLoading)
 
-  const sortedData = () => data.departmentProcesses.sort((a, b) => parsedDepartmentName(!!a ? a.department : '').localeCompare(!!b ? b.department : ''))
+  if (loading) {
+    return <Spinner/>
+  }
+
+  const sortedData = () => data.departmentProcesses.sort((a, b) => parsedDepartmentName(a.department).localeCompare(parsedDepartmentName(b.department)))
 
   return (
     <Block width="100%" display="flex" flexWrap>

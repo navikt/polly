@@ -22,7 +22,7 @@ import FieldPurpose from '../common/FieldPurpose'
 import FieldDescription from '../common/FieldDescription'
 import FieldDepartment from '../common/FieldDepartment'
 import FieldSubDepartments from '../common/FieldSubDepartment'
-import FieldProductTeam from '../common/FieldProductTeam'
+import FieldProductTeam from '../../common/form/FieldProductTeam'
 import FieldProduct from '../common/FieldProduct'
 import BoolField from '../common/BoolField'
 import FieldDataProcessorAgreements from '../common/FieldDataProcessorAgreements'
@@ -251,7 +251,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
                       <Block display='flex' width='100%' justifyContent='space-between'>
                         <Block width='48%'>
-                          <FieldProductTeam formikBag={formikBag}/>
+                          <FieldProductTeam productTeams={formikBag.values.productTeams}/>
                         </Block>
                         <Block width='48%'>
                           {showResponsibleSelect && <FieldCommonExternalProcessResponsible thirdParty={formikBag.values.commonExternalProcessResponsible}

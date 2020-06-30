@@ -29,6 +29,10 @@ export const Main = (props: RouteComponentProps) => {
     })()
   }, [])
 
+  const colorYes = theme.colors.positive300
+  const colorNo = theme.colors.negative300
+  const colorUnknown = theme.colors.warning300
+
   return (
     <Block marginTop={theme.sizing.scale400} display="flex" flexWrap>
       {
@@ -43,16 +47,19 @@ export const Main = (props: RouteComponentProps) => {
                          [
                            {
                              label: `${intl.yes}`,
+                             color: colorYes,
                              size: dashData.allProcesses.dpia.yes,
                              onClick: () => clickOnPieChartSlice(ProcessField.DPIA, ProcessState.YES)
                            },
                            {
                              label: `${intl.no}`,
+                             color: colorNo,
                              size: dashData.allProcesses.dpia.no,
                              onClick: () => clickOnPieChartSlice(ProcessField.DPIA, ProcessState.NO)
                            },
                            {
                              label: `${intl.unclarified}`,
+                             color: colorUnknown,
                              size: dashData.allProcesses.dpia.unknown,
                              onClick: () => clickOnPieChartSlice(ProcessField.DPIA, ProcessState.UNKNOWN)
                            },
@@ -66,16 +73,19 @@ export const Main = (props: RouteComponentProps) => {
                          [
                            {
                              label: `${intl.yes}`,
+                             color: colorYes,
                              size: dashData.allProcesses.profiling?.yes || 0,
                              onClick: () => clickOnPieChartSlice(ProcessField.PROFILING, ProcessState.YES)
                            },
                            {
                              label: `${intl.no}`,
+                             color: colorNo,
                              size: dashData.allProcesses.profiling?.no || 0,
                              onClick: () => clickOnPieChartSlice(ProcessField.PROFILING, ProcessState.NO)
                            },
                            {
                              label: `${intl.unclarified}`,
+                             color: colorUnknown,
                              size: dashData.allProcesses.profiling?.unknown || 0,
                              onClick: () => clickOnPieChartSlice(ProcessField.PROFILING, ProcessState.UNKNOWN)
                            },
@@ -89,16 +99,19 @@ export const Main = (props: RouteComponentProps) => {
                          [
                            {
                              label: `${intl.yes}`,
+                             color: colorYes,
                              size: dashData.allProcesses.automation?.yes || 0,
                              onClick: () => clickOnPieChartSlice(ProcessField.AUTOMATION, ProcessState.YES)
                            },
                            {
                              label: `${intl.no}`,
+                             color: colorNo,
                              size: dashData.allProcesses.automation?.no || 0,
                              onClick: () => clickOnPieChartSlice(ProcessField.AUTOMATION, ProcessState.NO)
                            },
                            {
                              label: `${intl.unclarified}`,
+                             color: colorUnknown,
                              size: dashData.allProcesses.automation?.unknown || 0,
                              onClick: () => clickOnPieChartSlice(ProcessField.AUTOMATION, ProcessState.UNKNOWN)
                            },
@@ -106,7 +119,7 @@ export const Main = (props: RouteComponentProps) => {
                        }/>
               </Block>
 
-              <Block marginTop={theme.sizing.scale600}  minWidth={'520px'}>
+              <Block marginTop={theme.sizing.scale600} minWidth={'520px'}>
                 <Chart title={intl.incompleteLegalBasis} size={chartSize}
                        data={
                          [

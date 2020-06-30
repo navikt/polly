@@ -55,3 +55,18 @@ export const useInfoTypeSearch = () => {
 
   return [infoTypeSearchResult, setInfoTypeSearch, loading] as [InformationTypeShort[], Dispatch<SetStateAction<string>>, boolean]
 }
+
+export const mapInfoTypeToFormVals = (data: Partial<InformationType>): InformationtypeFormValues => {
+  return {
+    id: data.id,
+    name: data.name || '',
+    term: data.term || '',
+    sensitivity: data.sensitivity?.code || '',
+    categories: data?.categories?.map(c => c.code) || [],
+    sources: data?.sources?.map(c => c.code) || [],
+    productTeams: data.productTeams || [],
+    keywords: data.keywords || [],
+    description: data.description || '',
+    orgMaster: data.orgMaster?.code || ''
+  }
+}

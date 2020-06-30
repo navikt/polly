@@ -236,6 +236,7 @@ export interface IStrings {
   addOneInformationType: string;
   addCollectionOfInformationTypes: string;
   emptyTable: string;
+  emptyMessage: string;
   pageNotFound: string;
   createdDocument: string;
   searchDocumentPlaceholder: string;
