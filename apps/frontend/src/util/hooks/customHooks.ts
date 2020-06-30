@@ -1,4 +1,5 @@
-import React, { Dispatch, RefObject, SetStateAction, useEffect, useState } from 'react'
+import React, {Dispatch, RefObject, SetStateAction, useEffect, useState} from 'react'
+import {useLocation} from 'react-router-dom'
 
 export function useDebouncedState<T>(
   initialValue: T,
@@ -47,7 +48,7 @@ export function useAwait<T>(p: Promise<T>, setLoading?: Dispatch<SetStateAction<
   }, [])
 }
 
-type Refs = { [id: string]: RefObject<HTMLElement> }
+type Refs = {[id: string]: RefObject<HTMLElement>}
 
 export function useRefs(ids: string[]) {
   const refs: Refs = ids.reduce((acc, value) => {
@@ -56,4 +57,12 @@ export function useRefs(ids: string[]) {
   }, {} as Refs) || {}
 
   return refs
+}
+
+export function useQuery() {
+  return new URLSearchParams(useLocation().search)
+}
+
+export function useQueryParam<T extends string>(queryParam: string) {
+  return useQuery().get(queryParam) as T || undefined
 }

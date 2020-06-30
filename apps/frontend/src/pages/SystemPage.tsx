@@ -5,7 +5,7 @@ import React, {useEffect, useState} from 'react'
 import {Block} from 'baseui/block'
 import {codelist, ListName} from '../service/Codelist'
 import ProcessList from '../components/Purpose'
-import {Section} from './PurposePage'
+import {Section} from './ProcessPage'
 import {InformationType, informationTypeSort} from '../constants'
 import {getInformationTypesByOrgMaster} from '../api'
 import {StyledSpinnerNext} from 'baseui/spinner'
@@ -37,7 +37,7 @@ const SystemPageImpl = (props: RouteComponentProps<{systemCode: string}>) => {
         <Label2 font='font400'>{intl.system}</Label2>
         <Paragraph2>{codelist.getDescription(ListName.SYSTEM, systemCode)}</Paragraph2>
       </Block>
-      <ProcessList code={systemCode} listName={ListName.SYSTEM} section={Section.system} filter={'ALL'}/>
+      <ProcessList code={systemCode} listName={ListName.SYSTEM} section={Section.system}/>
 
       {isLoading && <StyledSpinnerNext/>}
       {!isLoading && <InfoTypeTable informationTypes={informationTypeList}/>}

@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react'
-import { getProcessByState } from '../../api'
-import { ProcessField, ProcessShort, ProcessState, ProcessStatus } from '../../constants'
-import { RouteComponentProps } from 'react-router-dom'
-import { HeadingLarge } from 'baseui/typography'
-import { Spinner } from 'baseui/spinner'
-import { Cell, HeadCell, Row, Table } from '../common/Table'
-import { useTable } from '../../util/hooks'
-import { StyleObject } from 'styletron-standard'
-import { codelist, ListName } from '../../service/Codelist'
+import React, {useEffect} from 'react'
+import {getProcessByState} from '../../api'
+import {ProcessField, ProcessShort, ProcessState, ProcessStatus} from '../../constants'
+import {RouteComponentProps} from 'react-router-dom'
+import {HeadingLarge} from 'baseui/typography'
+import {Spinner} from 'baseui/spinner'
+import {Cell, HeadCell, Row, Table} from '../common/Table'
+import {useTable} from '../../util/hooks'
+import {StyleObject} from 'styletron-standard'
+import {codelist, ListName} from '../../service/Codelist'
 import RouteLink from '../common/RouteLink'
-import { intl } from '../../util'
+import {intl} from '../../util'
 
 interface PathProps {
   filterName: ProcessField,
@@ -76,12 +76,12 @@ const PurposeTable = (props: RouteComponentProps<PathProps>) => {
         {table.data.map(process =>
           <Row key={process.id}>
             <Cell $style={cellStyle}>
-              <RouteLink href={`/process/purpose/${process.purpose.code}/ALL/${process.id}`}>
+              <RouteLink href={`/process/purpose/${process.purpose.code}/${process.id}`}>
                 {codelist.getShortname(ListName.PURPOSE, process.purpose.shortName) + ': ' + process.name}
               </RouteLink>
             </Cell>
             <Cell $style={cellStyle}>{(process.department) === null ? '' :
-              <RouteLink href={`/process/department/${process.department.code}/ALL/`}>{process.department.shortName}</RouteLink>}</Cell>
+              <RouteLink href={`/process/department/${process.department.code}`}>{process.department.shortName}</RouteLink>}</Cell>
             <Cell $style={cellStyle}>{(process.status) === ProcessStatus.IN_PROGRESS ? intl.inProgress : intl.completedProcesses}</Cell>
           </Row>)}
       </Table>}

@@ -5,11 +5,12 @@ import {cardShadow} from '../common/Style'
 import {Block} from 'baseui/block'
 import {Label1, Paragraph2} from 'baseui/typography'
 import {theme, useAwait} from '../../util'
-import {DashboardData, DepartmentProcess} from '../../constants'
+import {DashboardData, DepartmentProcess, ProcessStatus} from '../../constants'
 import {codelist, ListName} from '../../service/Codelist'
 import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
 import RouteLink from '../common/RouteLink'
 import {Spinner} from 'baseui/spinner'
+import {genProcessPath, Section} from '../../pages/ProcessPage'
 
 const TextWithNumber = (props: {label: string; number: number}) => (
   <Block display="flex" width="100%" marginBottom="0" justifyContent="center">
@@ -42,10 +43,10 @@ const DepartmentCard = (props: DepartmentCardProps) => {
             height="130px"
           >
             <Label1 color={theme.colors.accent300} $style={{textAlign: 'center'}}>{parsedDepartmentName(department.department)}</Label1>
-            <RouteLink href={`/process/department/${department.department}/COMPLETED`}>
+            <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.COMPLETED)}>
               <TextWithNumber label="Fullført" number={department.processesCompleted}/>
             </RouteLink>
-            <RouteLink href={`/process/department/${department.department}/IN_PROGRESS`}>
+            <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.IN_PROGRESS)}>
               <TextWithNumber label="Under arbeid" number={department.processesInProgress}/>
             </RouteLink>
           </Block>

@@ -24,7 +24,7 @@ export const PurposeListPage = (props: RouteComponentProps) => {
       const newProcess = await createProcess(process)
       setErrorProcessModal(null)
       setShowCreateProcessModal(false)
-      props.history.push(`/process/purpose/${newProcess.purpose.code}/ALL/${newProcess.id}?create`)
+      props.history.push(`/process/purpose/${newProcess.purpose.code}/${newProcess.id}?create`)
     } catch (err) {
       setErrorProcessModal(err.message)
     }
