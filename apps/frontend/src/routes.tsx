@@ -6,7 +6,7 @@ import {Spinner} from 'baseui/icon'
 
 
 import Root from './components/Root'
-import PurposePage from './pages/PurposePage'
+import ProcessPage from './pages/ProcessPage'
 import InformationtypeCreatePage from './pages/InformationtypeCreatePage'
 import InformationtypeEditPage from './pages/InformationtypeEditPage'
 import InformationtypePage from './pages/InformationtypePage'
@@ -27,7 +27,7 @@ import {getDisclosure, getPolicy, getProcess} from './api'
 import PurposeTable from './components/Dashboard/PurposeTable'
 import {SystemPage} from './pages/SystemPage'
 
-export const processPath = '/process/:section/:code/:filter/:processId?'
+export const processPath = '/process/:section/:code/:processId?'
 
 const Routes = (): JSX.Element => (
   <Root>
@@ -37,7 +37,7 @@ const Routes = (): JSX.Element => (
       <Route exact path="/system" component={SystemSearchPage}/>
       <Route exact path="/system/:systemCode" component={SystemPage}/>
       <Route exact path="/process" component={PurposeListPage}/>
-      <Route exact path={processPath} component={PurposePage}/>
+      <Route exact path={processPath} component={ProcessPage}/>
 
       <Route exact path="/dashboard/:filterName/:filterValue" component={PurposeTable}/>
 
@@ -45,57 +45,21 @@ const Routes = (): JSX.Element => (
       <Route exact path="/policy/:id" component={redirect(policyUrl)}/>
       <Route exact path="/disclosure/:id" component={redirect(disclosureUrl)}/>
 
-      <Route
-        exact
-        path="/informationtype/create"
-        component={InformationtypeCreatePage}
-      />
-      <Route
-        exact
-        path="/informationtype/edit/:id"
-        component={InformationtypeEditPage}
-      />
-      <Route
-        exact
-        path="/informationtype/:id?/:purpose?"
-        component={InformationtypePage}
-      />
-      <Route
-        exact
-        path="/admin/codelist/:listname?"
-        component={CodelistPage}
-      />
-      <Route
-        exact
-        path="/admin/audit/:id?/:auditId?"
-        component={AuditPage}
-      />
-      <Route
-        exact
-        path="/admin/settings"
-        component={SettingsPage}
-      />
-      <Route
-        exact
-        path="/document/create"
-        component={DocumentCreatePage}
-      />
-      <Route
-        exact
-        path="/document/:id?"
-        component={DocumentPage}
-      />
-      <Route
-        exact
-        path="/document/edit/:id?"
-        component={DocumentEditPage}
-      />
+      <Route exact path="/informationtype/create" component={InformationtypeCreatePage}/>
+      <Route exact path="/informationtype/edit/:id" component={InformationtypeEditPage}/>
+      <Route exact path="/informationtype/:id?/:purpose?" component={InformationtypePage}/>
+
+      <Route exact path="/admin/codelist/:listname?" component={CodelistPage}/>
+      <Route exact path="/admin/audit/:id?/:auditId?" component={AuditPage}/>
+      <Route exact path="/admin/settings" component={SettingsPage}/>
+
+      <Route exact path="/document/:id?" component={DocumentPage}/>
+      <Route exact path="/document/create" component={DocumentCreatePage}/>
+      <Route exact path="/document/edit/:id?" component={DocumentEditPage}/>
+
       <Route exact path="/alert/events/:objectType?/:id?" component={AlertEventPage}/>
-      <Route
-        exact
-        path="/"
-        component={Main}
-      />
+
+      <Route exact path="/" component={Main}/>
       <Route component={withRouter(NotFound)}/>
     </Switch>
   </Root>
@@ -110,12 +74,12 @@ const NotFound = (props: RouteComponentProps<any>) => (
 
 const processUrl = async (id: string) => {
   const process = await getProcess(id)
-  return `/process/purpose/${process.purpose.code}/ALL/${process.id}`
+  return `/process/purpose/${process.purpose.code}/${process.id}`
 }
 
 const policyUrl = async (id: string) => {
   const policy = await getPolicy(id)
-  return `/process/purpose/${policy.purposeCode.code}/ALL/${policy.process.id}`
+  return `/process/purpose/${policy.purposeCode.code}/${policy.process.id}`
 }
 
 const disclosureUrl = async (id: string) => {
@@ -124,7 +88,7 @@ const disclosureUrl = async (id: string) => {
 }
 
 const redirect = (fetch: (id: string) => Promise<string>) =>
-  (props: RouteComponentProps<{ id: string }>) => {
+  (props: RouteComponentProps<{id: string}>) => {
     fetch(props.match.params.id).then(props.history.replace)
     return <Spinner/>
   }

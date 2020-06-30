@@ -4,45 +4,37 @@ import {useEffect} from 'react'
 import ProcessList from '../components/Purpose'
 import {Block} from 'baseui/block'
 import {codelist, ListName} from '../service/Codelist'
-import {intl} from '../util'
-import {H4, Label2, Paragraph2} from 'baseui/typography'
-import {RouteComponentProps} from 'react-router-dom'
-import {ProductArea, Team} from '../constants'
+import {intl, theme} from '../util'
+import {H4, LabelLarge, Paragraph2} from 'baseui/typography'
+import {generatePath, useParams} from 'react-router-dom'
+import {Process, ProcessStatus, ProductArea, Team} from '../constants'
 import {getProductArea, getTeam} from '../api'
 import {Markdown} from '../components/common/Markdown'
+import {useQueryParam} from '../util/hooks'
+import {processPath} from '../routes'
 
 export enum Section {
-  subdepartment = 'subdepartment',
-  department = 'department',
   purpose = 'purpose',
+  system = 'system',
+  department = 'department',
+  subdepartment = 'subdepartment',
   team = 'team',
-  productarea = 'productarea',
-  system = 'system'
+  productarea = 'productarea'
 }
-
-const renderMetadata = (description: string, title: string) => (
-  <Block marginBottom='scale1000'>
-    <Label2 font='font400'>{title}</Label2>
-    <Paragraph2 as='div'><Markdown source={description}/></Paragraph2>
-  </Block>
-)
-
-export type Filter = 'ALL' | 'COMPLETED' | 'IN_PROGRESS'
 
 export type PathParams = {
   section: Section,
   code: string,
-  filter: Filter,
   processId?: string
 }
 
-const PurposePage = (props: RouteComponentProps<PathParams>) => {
+const ProcessPage = () => {
   const [isLoading, setLoading] = React.useState(false)
   const [team, setTeam] = React.useState<Team>()
   const [productArea, setProductArea] = React.useState<ProductArea>()
-
-  const {params} = props.match
-  const {section, code, filter, processId} = params
+  const filter = useQueryParam<ProcessStatus>('filter')
+  const params = useParams<PathParams>()
+  const {section, code, processId} = params
 
   useEffect(() => {
     (async () => {
@@ -112,7 +104,10 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
             <H4>{getTitle()}</H4>
           </Block>
 
-          {renderMetadata(getDescription(), metadataTitle())}
+          <Block marginBottom='scale1000'>
+            <LabelLarge marginBottom={theme.sizing.scale600}>{metadataTitle()}</LabelLarge>
+            <Paragraph2 as='div'><Markdown source={getDescription()}/></Paragraph2>
+          </Block>
           <ProcessList code={code} listName={getCurrentListName()} processId={processId} filter={filter} section={section}/>
         </>
       )}
@@ -120,4 +115,11 @@ const PurposePage = (props: RouteComponentProps<PathParams>) => {
   )
 }
 
-export default PurposePage
+export default ProcessPage
+
+export const genProcessPath = (section: Section, code: string, process?: Partial<Process>, filter?: ProcessStatus) =>
+  generatePath(processPath, {
+    section,
+    code: section === Section.purpose && !!process?.purpose ? process.purpose.code : code,
+    processId: process?.id
+  }) + (filter ? `?filter=${filter}` : '')

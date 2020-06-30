@@ -5,11 +5,11 @@ import { getResourceById } from '../../../api'
 import { codelist, ListName } from '../../../service/Codelist'
 import { Block } from 'baseui/block'
 import DataText from '../common/DataText'
-import { intl, theme } from '../../../util'
+import { intl } from '../../../util'
 import { LegalBasisView } from '../../common/LegalBasis'
 import { ActiveIndicator } from '../../common/Durations'
 import { DotTags } from '../../common/DotTag'
-import { TeamPopover } from '../../common/Team'
+import { TeamList } from '../../common/Team'
 import { boolToText } from '../../common/Radio'
 import { RetentionView } from '../Retention'
 import { env } from '../../../util/env'
@@ -107,11 +107,7 @@ const ProcessData = (props: { process: Process }) => {
 
         {!!process.productTeams?.length && <Block>
           <span>{intl.productTeam}: </span>
-          {process.productTeams.map((t, i) =>
-            <Block key={i} display='inline' marginRight={theme.sizing.scale100}>
-              <TeamPopover teamId={t} />
-            </Block>
-          )}
+          <TeamList teamIds={process.productTeams} />
         </Block>}
       </DataText>
 
@@ -143,7 +139,7 @@ const ProcessData = (props: { process: Process }) => {
               <Block>{intl.dataProcessorYes}</Block>
               <Block>
                 {dataProcessorAgreements &&
-                  <Block display='flex'>
+                  <Block display='flex' alignItems="center">
                     <Block $style={{ whiteSpace: 'nowrap', margin: '1rem 0' }}>
                       {`${intl.dataProcessorAgreement}: `}
                     </Block>
