@@ -12,6 +12,7 @@ import {getProductArea, getTeam} from '../api'
 import {Markdown} from '../components/common/Markdown'
 import {useQueryParam} from '../util/hooks'
 import {processPath} from '../routes'
+import {Spinner} from '../components/common/Spinner'
 
 export enum Section {
   purpose = 'purpose',
@@ -98,6 +99,7 @@ const ProcessPage = () => {
 
   return (
     <>
+      {isLoading && <Spinner size={theme.sizing.scale2400}/>}
       {!isLoading && code && (
         <>
           <Block marginBottom="3rem">
