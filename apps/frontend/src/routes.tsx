@@ -26,6 +26,8 @@ import {AlertEventPage} from './pages/AlertEventPage'
 import {getDisclosure, getPolicy, getProcess} from './api'
 import PurposeTable from './components/Dashboard/PurposeTable'
 import {SystemPage} from './pages/SystemPage'
+import {TeamPage} from './pages/TeamPage'
+import {ProductAreaPage} from './pages/ProductAreaPage'
 
 export const processPath = '/process/:section/:code/:processId?'
 
@@ -36,6 +38,8 @@ const Routes = (): JSX.Element => (
       <Route exact path="/thirdparty/:thirdPartyCode" component={ThirdPartyMetadataPage}/>
       <Route exact path="/system" component={SystemSearchPage}/>
       <Route exact path="/system/:systemCode" component={SystemPage}/>
+      <Route exact path="/team/:teamId" component={TeamPage}/>
+      <Route exact path="/productarea/:productAreaId" component={ProductAreaPage}/>
       <Route exact path="/process" component={PurposeListPage}/>
       <Route exact path={processPath} component={ProcessPage}/>
 

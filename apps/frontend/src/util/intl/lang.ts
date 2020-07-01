@@ -366,13 +366,15 @@ export const no: IStrings = {
   retentionHelpText:
     'Oppgi når lagringstiden begynner å løpe. Dette er tidspunktet vi regner lagringsbehovet fra. For eksempel begynner lagringstiden for opplysninger i flere HR-behandlinger å løpe fra ansettelsesforholdets avslutning. Andre eksempler for bruk av personopplysninger om etatens brukere kan være fra søknad mottatt, fødsel, død, søknadens virkningstidspunkt o.l.',
   retentionDescriptionHelpText:
-    "Begrunnelse for hvorfor vi har behov for å oppbevare personopplysningene i oppgitt lagringstid. For eksempel kan behovet skyldes at vi må kunne forsvare oss mot rettskrav eller at vi må kunne vurdere mulige krav om tilbakebetaling av feilutbetalt ytelse.",
-  processSideMenuHelpText: "En aktivitet du gjør på personopplysninger for å oppnå et formål. Eks. på behandling: Saksbehandling av alderspensjon",
-  informationTypeSideMenuHelpText: "Personopplysninger som f.eks. kjønn, sivilstand, pensjonsopptjening.",
-  documentSideMenuHelpText: "En samling av opplysningstyper. Sykmelding og inntektsmelding er eksempler på dokumenter som inneholder flere opplysningstyper.",
-  externalPartsSideMenuHelpText: "Parter utenfor NAV som vi samhandler med. Eksempler er Folkeregisteret, Lånekassen, brukere, arbeidsgivere",
-  systemSideMenuHelpText: "En samling av beslektede applikasjoner som sammen løser et forretningsbehov. F.eks. Pesys, Modia, Aa-reg",
-};
+    'Begrunnelse for hvorfor vi har behov for å oppbevare personopplysningene i oppgitt lagringstid. For eksempel kan behovet skyldes at vi må kunne forsvare oss mot rettskrav eller at vi må kunne vurdere mulige krav om tilbakebetaling av feilutbetalt ytelse.',
+  processSideMenuHelpText: 'En aktivitet du gjør på personopplysninger for å oppnå et formål. Eks. på behandling: Saksbehandling av alderspensjon',
+  informationTypeSideMenuHelpText: 'Personopplysninger som f.eks. kjønn, sivilstand, pensjonsopptjening.',
+  documentSideMenuHelpText: 'En samling av opplysningstyper. Sykmelding og inntektsmelding er eksempler på dokumenter som inneholder flere opplysningstyper.',
+  externalPartsSideMenuHelpText: 'Parter utenfor NAV som vi samhandler med. Eksempler er Folkeregisteret, Lånekassen, brukere, arbeidsgivere',
+  systemSideMenuHelpText: 'En samling av beslektede applikasjoner som sammen løser et forretningsbehov. F.eks. Pesys, Modia, Aa-reg',
+
+  goToSite: 'Gå til side'
+}
 
 export const en: IStrings = {
   informationType: 'Information type',
@@ -736,13 +738,15 @@ export const en: IStrings = {
   retentionHelpText:
     'Specify when retention time starts to run. The calculation of retention period starts from this point. I.e. the retention time for information used in many HR processes start from the end of employment or from start of employment. ',
   retentionDescriptionHelpText:
-    "Reasons why we need to keep personal data in stated storage time. I.e. the need may be because we need to be able to defend ourselves against future legal claims. ",
-  processSideMenuHelpText: "An activity that you do on personal data to achieve a purpose. Eg on processing: Case management of retirement pension",
-  informationTypeSideMenuHelpText: "Personal information such as gender, marital status, pension benefits.",
-  documentSideMenuHelpText: "A collection of information types. Sick leave and income message are examples of documents containing multiple types of information.",
-  externalPartsSideMenuHelpText: "Parties outside the NAV that we interact with. Examples are the National Register, the Loan Fund, users, employers",
-  systemSideMenuHelpText: "A collection of related applications that together solve a business need. For example, Pesys, Modia, Aa-reg",
-};
+    'Reasons why we need to keep personal data in stated storage time. I.e. the need may be because we need to be able to defend ourselves against future legal claims. ',
+  processSideMenuHelpText: 'An activity that you do on personal data to achieve a purpose. Eg on processing: Case management of retirement pension',
+  informationTypeSideMenuHelpText: 'Personal information such as gender, marital status, pension benefits.',
+  documentSideMenuHelpText: 'A collection of information types. Sick leave and income message are examples of documents containing multiple types of information.',
+  externalPartsSideMenuHelpText: 'Parties outside the NAV that we interact with. Examples are the National Register, the Loan Fund, users, employers',
+  systemSideMenuHelpText: 'A collection of related applications that together solve a business need. For example, Pesys, Modia, Aa-reg',
+
+  goToSite: 'Go to site'
+}
 
 export const ta = {
   POLLY_ADMIN: 'நிர்வாகம்',
