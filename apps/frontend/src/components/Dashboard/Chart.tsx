@@ -1,4 +1,4 @@
-import React, {useReducer, useState} from 'react'
+import React, {ReactElement, useReducer, useState} from 'react'
 import {Block} from 'baseui/block'
 import {theme} from '../../util'
 import {Label1} from 'baseui/typography'
@@ -12,7 +12,7 @@ import {StatefulTooltip} from 'baseui/tooltip'
 const cursor = {cursor: 'pointer'}
 
 interface ChartData {
-  label: string,
+  label: string | ReactElement,
   color?: string,
   size: number,
   onClick?: () => void

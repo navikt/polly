@@ -12,6 +12,7 @@ import {intl, theme} from '../../util'
 import {StyledLink} from 'baseui/link'
 import {env} from '../../util/env'
 import {Paragraph2} from 'baseui/typography'
+import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
 
 export const LegalBasisView = (props: { legalBasis?: LegalBasis, legalBasisForm?: LegalBasisFormValues }) => {
   const input = props.legalBasis ? props.legalBasis : props.legalBasisForm
@@ -65,7 +66,7 @@ export const LegalBasesNotClarified = (props: { alert?: PolicyAlert }) => {
         {props.alert?.missingLegalBasis && <>{warningIcon} {intl.MISSING_LEGAL_BASIS}</>}
       </Block>
       <Block>
-        {props.alert?.excessInfo && <>{warningIcon} {intl.EXCESS_INFO}</>}
+        {props.alert?.excessInfo && <StatefulTooltip content={intl.excessInfoHelpText} placement={PLACEMENT.top}><span>{warningIcon} {intl.EXCESS_INFO}</span></StatefulTooltip>}
       </Block>
       <Block>
         {props.alert?.missingArt6 && <>{warningIcon} {intl.MISSING_ARTICLE_6}</>}

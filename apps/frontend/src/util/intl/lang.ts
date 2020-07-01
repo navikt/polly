@@ -138,6 +138,9 @@ export const no: IStrings = {
   processesWithUnknownLegalBasis: 'Behandlinger med rettslig grunnlag uavklart',
   processesWithoutArticle6LegalBasis: 'Behandlinger med rettslig grunnlag artikkel 6 mangler',
   processesWithoutArticle9LegalBasis: 'Behandlinger med rettslig grunnlag artikkel 9 mangler',
+  numberOfProcessesWithoutArticle6LegalBasisHelpText: "Alle behandlinger av personopplysninger må ha et rettslig grunnlag iht. personopplysningsloven artikkel 6.",
+  numberOfProcessesWithoutArticle9LegalBasisHelpText: "Behandling av personopplysninger som anses som særlige kategorier (tidl. sensitive opplysninger) krever et ytterligere behandlingsgrunnlag iht. personopplysningsloven art. 9",
+  numberOfProcessesWithUnknownLegalBasisHelpText: "Alle behandlinger av personopplysninger må ha et rettslig grunnlag iht. personopplysningsloven artikkel 6.",
   incompleteLegalBasis: 'Ufullstendig behandlingsgrunnlag',
   gdprSelect: 'Velg GDPR artikkel',
   nationalLawSelect: 'Velg lov eller forskrift',
@@ -372,7 +375,7 @@ export const no: IStrings = {
   documentSideMenuHelpText: 'En samling av opplysningstyper. Sykmelding og inntektsmelding er eksempler på dokumenter som inneholder flere opplysningstyper.',
   externalPartsSideMenuHelpText: 'Parter utenfor NAV som vi samhandler med. Eksempler er Folkeregisteret, Lånekassen, brukere, arbeidsgivere',
   systemSideMenuHelpText: 'En samling av beslektede applikasjoner som sammen løser et forretningsbehov. F.eks. Pesys, Modia, Aa-reg',
-
+  excessInfoHelpText: 'Informasjon som er tilgjengelig i dokumenter eller systemet som brukes, uten at dette trengs eller brukes i behandlingen.',
   goToSite: 'Gå til side'
 }
 
@@ -512,6 +515,9 @@ export const en: IStrings = {
   numberOfProcessesWithUnknownLegalBasis: 'Processes with unknown legal basis',
   numberOfProcessesWithoutArticle6LegalBasis: 'Processes without article 6',
   numberOfProcessesWithoutArticle9LegalBasis: 'Processes without article 9',
+  numberOfProcessesWithoutArticle6LegalBasisHelpText: "All processing of personal data must have a legal basis in accordance with Article 6 of the Personal Data Act",
+  numberOfProcessesWithoutArticle9LegalBasisHelpText: "Processing of personal data considered as special categories (formerly sensitive information) requires a further processing basis in accordance with the Personal Data Act Art. 9",
+  numberOfProcessesWithUnknownLegalBasisHelpText: "All processing of personal data must have a legal basis in accordance with Article 6 of the Personal Data Act",
   processesWithUnknownLegalBasis: 'Processes with unknown legal basis',
   processesWithoutArticle6LegalBasis: 'Processes without article 6',
   processesWithoutArticle9LegalBasis: 'Processes without article 9',
@@ -744,6 +750,7 @@ export const en: IStrings = {
   documentSideMenuHelpText: 'A collection of information types. Sick leave and income message are examples of documents containing multiple types of information.',
   externalPartsSideMenuHelpText: 'Parties outside the NAV that we interact with. Examples are the National Register, the Loan Fund, users, employers',
   systemSideMenuHelpText: 'A collection of related applications that together solve a business need. For example, Pesys, Modia, Aa-reg',
+  excessInfoHelpText: 'Information that is available in the documents or the system being used, without this being needed or used in processing.',
 
   goToSite: 'Go to site'
 }
