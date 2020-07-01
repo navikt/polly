@@ -17,6 +17,7 @@ import {marginZero} from '../../common/Style'
 import {DotTags} from '../../common/DotTag'
 import {termUrl} from '../../../util/config'
 import {TeamList} from '../../common/Team'
+import {Markdown} from '../../common/Markdown'
 
 const TextWithLabel = (props: {label: string, text: ReactNode, icon?: IconDefinition, iconColor?: string, error?: string}) => {
   const errorIcon = <FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500}/>
@@ -69,7 +70,7 @@ const DescriptionData = (props: {termId?: string, description?: string, keywords
         <TextWithLabel label={intl.searchWords} text={<DotTags items={props.keywords}/>}/>
       </FlexGridItem>
       <FlexGridItem>
-        <TextWithLabel label={intl.usefulInformation} text={props.description}/>
+        <TextWithLabel label={intl.usefulInformation} text={<Markdown source={props.description}/>}/>
       </FlexGridItem>
     </FlexGrid>
   )
