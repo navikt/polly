@@ -125,7 +125,7 @@ const ProcessList = ({code, listName, filter, processId, section, history}: Proc
       setErrorProcessModal('')
       setShowCreateProcessModal(false)
       setCurrentProcess(newProcess)
-      history.push(`/process/purpose/${newProcess.purpose.code}/${newProcess.id}?create`)
+      history.push(genProcessPath(Section.purpose, newProcess.purpose.code,newProcess,undefined,true))
     } catch (err) {
       if (err.response.data.message.includes('already exists')) {
         setErrorProcessModal('Behandlingen eksisterer allerede.')
