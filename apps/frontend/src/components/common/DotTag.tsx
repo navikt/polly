@@ -27,7 +27,7 @@ const Content = (props: {item: string, list?: ListName, linkCodelist?: boolean, 
     )
     return <>{codelist.getShortname(list, item)}</>
   }
-  if (markdown) return <Markdown source={item}/>
+  if (markdown) return <Markdown source={item} singleWord/>
   return <>{item}</>
 }
 
