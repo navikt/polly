@@ -376,8 +376,7 @@ export const no: IStrings = {
   externalPartsSideMenuHelpText: 'Parter utenfor NAV som vi samhandler med. Eksempler er Folkeregisteret, Lånekassen, brukere, arbeidsgivere',
   systemSideMenuHelpText: 'En samling av beslektede applikasjoner som sammen løser et forretningsbehov. F.eks. Pesys, Modia, Aa-reg',
 
-  goToSite: 'Gå til side',
-  categoryNotInUse: 'Kategori {0} er ikke i bruk'
+  categoryNotInUse: 'Kategori {0} er ikke i bruk',
   excessInfoHelpText: 'Informasjon som er tilgjengelig i dokumenter eller systemet som brukes, uten at dette trengs eller brukes i behandlingen.',
   goToSite: 'Gå til side'
 }
