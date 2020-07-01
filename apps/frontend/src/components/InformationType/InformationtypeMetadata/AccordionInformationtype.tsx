@@ -1,15 +1,15 @@
 import * as React from 'react'
-import { Accordion, Panel, SharedProps } from 'baseui/accordion'
-import { Paragraph2 } from 'baseui/typography'
+import {Accordion, Panel, SharedProps} from 'baseui/accordion'
+import {Paragraph2} from 'baseui/typography'
 import InformationtypePolicyTable from './InformationtypePolicyTable'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faChevronRight, faUsersCog } from '@fortawesome/free-solid-svg-icons'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faChevronDown, faChevronRight, faUsersCog} from '@fortawesome/free-solid-svg-icons'
 
-import { codelist, ListName } from '../../../service/Codelist'
-import { intl } from '../../../util'
-import { PurposeMap } from '../../../pages/InformationtypePage'
-import { Policy } from '../../../constants'
-import { paddingZero } from '../../common/Style'
+import {codelist, ListName} from '../../../service/Codelist'
+import {intl} from '../../../util'
+import {PurposeMap} from '../../../pages/InformationtypePage'
+import {Policy} from '../../../constants'
+import {paddingZero} from '../../common/Style'
 
 const reducePolicylist = (list: Policy[]) => {
   return list.reduce((acc: PurposeMap, curr) => {
@@ -25,12 +25,11 @@ const reducePolicylist = (list: Policy[]) => {
 
 export interface AccordionInformationtypeProps {
   policies: Policy[];
-  expaneded: string[];
-  onChange?: (args: { expanded: React.Key[] }) => void;
+  onChange?: (args: {expanded: React.Key[]}) => void;
 }
 
 const AccordionInformationtype = (props: AccordionInformationtypeProps) => {
-  const {policies, onChange, expaneded} = props
+  const {policies, onChange} = props
   if (!policies) return <Paragraph2>{intl.purposeNotFound}</Paragraph2>
   if (!codelist.isLoaded()) return <Paragraph2>{intl.couldntLoad}</Paragraph2>
 
@@ -38,7 +37,7 @@ const AccordionInformationtype = (props: AccordionInformationtypeProps) => {
   const getPolicylistForPurpose = (purpose: string) => !purposeMap[purpose] ? [] : purposeMap[purpose]
 
   return (
-    <Accordion initialState={{expanded: expaneded}} onChange={onChange}>
+    <Accordion onChange={onChange}>
       {Object.keys(purposeMap).map((key) => (
         <Panel title={<span><FontAwesomeIcon icon={faUsersCog}/> {codelist.getShortname(ListName.PURPOSE, key)}</span>} key={key}
                overrides={{

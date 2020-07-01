@@ -19,7 +19,7 @@ import {Spinner} from '../components/common/Spinner'
 export type PurposeMap = {[purpose: string]: Policy[]}
 
 const InformationtypePage = () => {
-  const params = useParams<{id?: string, purpose?: string}>()
+  const params = useParams<{id?: string}>()
   const history = useHistory()
 
   const [error, setError] = React.useState(null)
@@ -66,7 +66,6 @@ const InformationtypePage = () => {
           policies={policies}
           disclosures={disclosures}
           documents={documents}
-          expanded={params.purpose ? [params.purpose] : []}
           onSelectPurpose={purpose => history.push(`/informationtype/${informationTypeId}/${purpose}`)}
         />
       )}

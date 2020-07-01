@@ -49,9 +49,9 @@ const Routes = (): JSX.Element => (
       <Route exact path="/policy/:id" component={redirect(policyUrl)}/>
       <Route exact path="/disclosure/:id" component={redirect(disclosureUrl)}/>
 
+      <Route exact path="/informationtype/:id?" component={InformationtypePage}/>
+      <Route exact path="/informationtype/:id/edit" component={InformationtypeEditPage}/>
       <Route exact path="/informationtype/create" component={InformationtypeCreatePage}/>
-      <Route exact path="/informationtype/edit/:id" component={InformationtypeEditPage}/>
-      <Route exact path="/informationtype/:id?/:purpose?" component={InformationtypePage}/>
 
       <Route exact path="/admin/codelist/:listname?" component={CodelistPage}/>
       <Route exact path="/admin/audit/:id?/:auditId?" component={AuditPage}/>
@@ -59,7 +59,7 @@ const Routes = (): JSX.Element => (
 
       <Route exact path="/document/:id?" component={DocumentPage}/>
       <Route exact path="/document/create" component={DocumentCreatePage}/>
-      <Route exact path="/document/edit/:id?" component={DocumentEditPage}/>
+      <Route exact path="/document/:id/edit" component={DocumentEditPage}/>
 
       <Route exact path="/alert/events/:objectType?/:id?" component={AlertEventPage}/>
 

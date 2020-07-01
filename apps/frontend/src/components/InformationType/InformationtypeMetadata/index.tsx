@@ -27,11 +27,10 @@ interface InformationtypeMetadataProps {
   policies?: Policy[];
   disclosures?: Disclosure[],
   documents?: Document[],
-  expanded: string[]
   onSelectPurpose: (purpose: string) => void
 }
 
-const Purposes = ({policies, expanded, onSelectPurpose}: {policies: Policy[], expanded: string[], onSelectPurpose: (purpose: string) => void}) => {
+const Purposes = ({policies, onSelectPurpose}: {policies: Policy[], onSelectPurpose: (purpose: string) => void}) => {
   const [accordion, setAccordion] = React.useState(false)
   return (
     <Block>
@@ -43,7 +42,7 @@ const Purposes = ({policies, expanded, onSelectPurpose}: {policies: Policy[], ex
         </Button>
       </Block>
       {accordion ?
-        <AccordionInformationtype policies={policies} expaneded={expanded} onChange={args => args.expanded.length && onSelectPurpose(args.expanded[0] as string)}/>
+        <AccordionInformationtype policies={policies} onChange={args => args.expanded.length && onSelectPurpose(args.expanded[0] as string)}/>
         : <InformationtypePolicyTable policies={policies} showPurpose={true}/>}
     </Block>
   )
@@ -92,7 +91,7 @@ export const InformationtypeMetadata = (props: InformationtypeMetadataProps) => 
           >
             <Tab key="purposes" title={intl.purposeUse} overrides={tabOverride}>
               {!props.policies && <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200}/>}
-              {props.policies && <Purposes policies={props.policies} expanded={props.expanded} onSelectPurpose={props.onSelectPurpose}/>}
+              {props.policies && <Purposes policies={props.policies} onSelectPurpose={props.onSelectPurpose}/>}
             </Tab>
             <Tab key="disclose" title={intl.disclosuresToThirdParty} overrides={tabOverride}>
               {!props.disclosures && <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200}/>}

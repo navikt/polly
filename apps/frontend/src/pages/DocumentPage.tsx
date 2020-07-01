@@ -108,7 +108,7 @@ const DocumentPage = () => {
                   icon={faEdit}
                   kind="outline"
                   size={ButtonSize.compact}
-                  onClick={() => history.push(`/document/edit/${currentDocument.id}`)}
+                  onClick={() => history.push(`/document/${currentDocument.id}/edit`)}
                   marginLeft
                 >
                   {intl.edit}
