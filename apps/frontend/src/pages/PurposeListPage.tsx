@@ -11,6 +11,7 @@ import {ProcessFormValues} from '../constants'
 import {convertProcessToFormValues, createProcess} from '../api'
 import AlphabeticList from '../components/common/AlphabeticList'
 import {RouteComponentProps} from 'react-router-dom'
+import {genProcessPath, Section} from './ProcessPage'
 
 export const PurposeListPage = (props: RouteComponentProps) => {
   const hasAccess = () => user.canWrite()
@@ -24,7 +25,7 @@ export const PurposeListPage = (props: RouteComponentProps) => {
       const newProcess = await createProcess(process)
       setErrorProcessModal(null)
       setShowCreateProcessModal(false)
-      props.history.push(`/process/purpose/${newProcess.purpose.code}/${newProcess.id}?create`)
+      props.history.push(genProcessPath(Section.purpose, newProcess.purpose.code, newProcess, undefined, true))
     } catch (err) {
       setErrorProcessModal(err.message)
     }

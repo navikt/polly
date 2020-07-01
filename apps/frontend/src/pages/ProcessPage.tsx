@@ -13,6 +13,7 @@ import {Markdown} from '../components/common/Markdown'
 import {useQueryParam} from '../util/hooks'
 import {processPath} from '../routes'
 import {Spinner} from '../components/common/Spinner'
+import * as queryString from 'query-string'
 
 export enum Section {
   purpose = 'purpose',
@@ -119,9 +120,9 @@ const ProcessPage = () => {
 
 export default ProcessPage
 
-export const genProcessPath = (section: Section, code: string, process?: Partial<Process>, filter?: ProcessStatus) =>
+export const genProcessPath = (section: Section, code: string, process?: Partial<Process>, filter?: ProcessStatus, create?: boolean) =>
   generatePath(processPath, {
     section,
     code: section === Section.purpose && !!process?.purpose ? process.purpose.code : code,
     processId: process?.id
-  }) + (filter ? `?filter=${filter}` : '')
+  }) + '?' + queryString.stringify({filter, create}, {skipNull: true})

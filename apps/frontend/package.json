@@ -14,6 +14,7 @@
     "formik": "^2.1.4",
     "lodash": "^4.17.15",
     "moment": "2.26.0",
+    "query-string": "^6.13.1",
     "randomcolor": "^0.5.4",
     "react": "^16.12.0",
     "react-app-polyfill": "^1.0.6",
