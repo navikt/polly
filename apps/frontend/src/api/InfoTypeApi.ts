@@ -3,17 +3,14 @@ import {InformationType, InformationtypeFormValues, InformationTypeShort, PageRe
 import {default as React, Dispatch, SetStateAction, useEffect} from 'react'
 import {useDebouncedState} from '../util'
 import {env} from '../util/env'
+import * as queryString from 'query-string'
 
 export const getInformationTypes = async (page: number, limit: number) => {
   return (await axios.get<PageResponse<InformationType>>(`${env.pollyBaseUrl}/informationtype?pageNumber=${page - 1}&pageSize=${limit}`)).data
 }
 
-export const getInformationTypesBySource = async (source: string) => {
-  return (await axios.get<PageResponse<InformationType>>(`${env.pollyBaseUrl}/informationtype?source=${source}`)).data
-}
-
-export const getInformationTypesByOrgMaster = async (source: string) => {
-  return (await axios.get<PageResponse<InformationType>>(`${env.pollyBaseUrl}/informationtype?orgMaster=${source}`)).data
+export const getInformationTypesBy = async (params: {source?: string, orgMaster?: string, productTeam?: string, productArea?: string}) => {
+  return (await axios.get<PageResponse<InformationType>>(`${env.pollyBaseUrl}/informationtype?${queryString.stringify(params, {skipNull: true})}`)).data
 }
 
 export const searchInformationType = async (text: string) => {
