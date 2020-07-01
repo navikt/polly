@@ -1,5 +1,5 @@
 import {Block} from 'baseui/block'
-import {H4, LabelLarge, Paragraph2} from 'baseui/typography'
+import {HeadingLarge, LabelLarge, Paragraph2} from 'baseui/typography'
 import {intl, theme} from '../../util'
 import {Markdown} from './Markdown'
 import * as React from 'react'
@@ -9,6 +9,11 @@ import {listNameForSection, Section} from '../../pages/ProcessPage'
 import {ProductArea, Team} from '../../constants'
 import {getProductArea, getTeam} from '../../api'
 import {Spinner} from './Spinner'
+import {productAreaLink, teamLink} from '../../util/config'
+import {StyledLink} from 'baseui/link'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons'
+import {StatefulTooltip} from 'baseui/tooltip'
 
 
 export const PageHeader = (props: {section: Section, code: string}) => {
@@ -66,13 +71,32 @@ export const PageHeader = (props: {section: Section, code: string}) => {
     }
     return ''
   }
+
+  const externalLink = () => {
+    let url
+    if (section === Section.team) url = teamLink(code)
+    else if (section === Section.productarea) url = productAreaLink(code)
+    if (!url) return null
+    return (
+      <>
+        <Block marginRight={theme.sizing.scale1200}/>
+        <StyledLink target="_blank" rel="noopener noreferrer" href={url}>
+          <StatefulTooltip content={intl.goToSite}>
+            <span><FontAwesomeIcon icon={faExternalLinkAlt} size='lg'/></span>
+          </StatefulTooltip>
+        </StyledLink>
+      </>
+    )
+  }
+
   return (
     <>
       {isLoading && <Spinner size={theme.sizing.scale2400}/>}
       {!isLoading &&
       <>
-        <Block marginBottom="3rem">
-          <H4>{getTitle()}</H4>
+        <Block marginBottom="3rem" display='flex' alignItems='center'>
+          <HeadingLarge>{getTitle()}</HeadingLarge>
+          {externalLink()}
         </Block>
 
         <Block marginBottom='scale1000'>
