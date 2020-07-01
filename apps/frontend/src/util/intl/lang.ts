@@ -191,7 +191,7 @@ export const no: IStrings = {
   eventType: 'Hendelsetype',
   disclosurePurpose: 'Formål med utlevering',
   departmentSelect: 'Velg avdeling',
-  subDepartmentSelect: 'Velg linje (Ytre etat)',
+  subDepartmentSelect: 'Velg linje',
   teamSelect: 'Velg produktteam (IT)',
   informationtypesUsedInDocument: 'Opplysningstyper i dokumentet',
   editDocument: 'Rediger dokument',
@@ -224,7 +224,7 @@ export const no: IStrings = {
   organizing: 'Organisering',
   department: 'Avdeling',
   subDepartment: 'Linja',
-  subDepartmentShort: 'Ytre etat',
+  subDepartmentShort: 'Linja',
   save: 'Lagre',
   update: 'Oppdater',
   export: 'Eksporter',
@@ -344,7 +344,7 @@ export const no: IStrings = {
   validityOfProcessHelpText:
     'Valgfritt. Hvis aktuelt angi perioden virksomheten har utført denne behandlingen. Kan stå tomt hvis usikkert, eller for løpende behandlinger som f.eks. saksbehandling av diverse ytelser.',
   organizingHelpText:
-    'Angi hvilken avdeling som er ansvarlig for behandlingen. Der hvor behandlingen utføres i linja (ytre etat) så angi hvor i linja behandlingen utføres. Dersom behandlingen understøttes av IT-systemer, angi hvilke produktteam (IT) som har forvaltningsansvaret for systemene.',
+    'Angi hvilken avdeling som er ansvarlig for behandlingen. Der hvor behandlingen utføres i linja så angi hvor i linja behandlingen utføres. Dersom behandlingen understøttes av IT-systemer, angi hvilke produktteam (IT) som har forvaltningsansvaret for systemene.',
   processNameHelpText: 'Et kort navn som beskriver hva behandlingen går ut på. Eksempel: Saksbehandling, håndtere brukerhenvendelser eller rekruttering.',
   processPurposeHelpText:
     'Beskriv formålet med å bruke personopplysninger i denne behandlingen. Eksempel: Behandle og vurdere rett til stønad ved behov for førerhund pga nedsatt syn.',
