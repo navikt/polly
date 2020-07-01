@@ -19,20 +19,23 @@ import {termUrl} from '../../../util/config'
 import {TeamList} from '../../common/Team'
 import {Markdown} from '../../common/Markdown'
 
-const TextWithLabel = (props: {label: string, text: ReactNode, icon?: IconDefinition, iconColor?: string, error?: string}) => {
+const TextWithLabel = (props: {label: string, text?: ReactNode, icon?: IconDefinition, iconColor?: string, error?: string, children?: ReactNode}) => {
   const errorIcon = <FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500}/>
-  const value =
+  const value = props.text &&
     <Block font="ParagraphMedium"
-           $style={{whiteSpace: 'pre-wrap', ...marginZero, marginTop: theme.sizing.scale100}}
+           $style={{whiteSpace: 'pre-wrap', ...marginZero}}
            display="flex">
       {props.error && errorIcon} {props.text}
     </Block>
 
   return (
     <>
-      <Label2>{props.icon && <FontAwesomeIcon icon={props.icon} color={props.iconColor}/>} {props.label}</Label2>
+      <Label2 marginBottom={theme.sizing.scale100}>
+        {props.icon && <FontAwesomeIcon icon={props.icon} color={props.iconColor}/>} {props.label}
+      </Label2>
       {!props.error && value}
       {props.error && <StatefulTooltip content={props.error} placement={PLACEMENT.top}>{value}</StatefulTooltip>}
+      {props.children}
     </>
   )
 }
@@ -70,7 +73,9 @@ const DescriptionData = (props: {termId?: string, description?: string, keywords
         <TextWithLabel label={intl.searchWords} text={<DotTags items={props.keywords}/>}/>
       </FlexGridItem>
       <FlexGridItem>
-        <TextWithLabel label={intl.usefulInformation} text={<Markdown source={props.description}/>}/>
+        <TextWithLabel label={intl.usefulInformation}>
+          <Markdown source={props.description}/>
+        </TextWithLabel>
       </FlexGridItem>
     </FlexGrid>
   )
@@ -79,10 +84,14 @@ const DescriptionData = (props: {termId?: string, description?: string, keywords
 const PropertyData = (props: {orgMaster?: Code, sources: Code[], categories: Code[], productTeams: string[], keywords: string[], sensitivity: Code}) => (
   <FlexGrid flexGridColumnCount={1} flexGridRowGap={theme.sizing.scale800}>
     <FlexGridItem>
-      <TextWithLabel label={intl.orgMaster} text={<DotTags list={ListName.SYSTEM} codes={props.orgMaster ? [props.orgMaster] : []} linkCodelist commaSeparator/>}/>
+      <TextWithLabel label={intl.orgMaster}>
+        <DotTags list={ListName.SYSTEM} codes={props.orgMaster ? [props.orgMaster] : []} linkCodelist commaSeparator/>
+      </TextWithLabel>
     </FlexGridItem>
     <FlexGridItem>
-      <TextWithLabel label={intl.sources} text={<DotTags list={ListName.THIRD_PARTY} codes={props.sources} linkCodelist commaSeparator/>}/>
+      <TextWithLabel label={intl.sources}>
+        <DotTags list={ListName.THIRD_PARTY} codes={props.sources} linkCodelist commaSeparator/>
+      </TextWithLabel>
     </FlexGridItem>
     <FlexGridItem>
       <TextWithLabel label={intl.productTeam} text={props.productTeams.length ? <TeamList teamIds={props.productTeams}/> : intl.emptyMessage}/>
