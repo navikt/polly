@@ -5,7 +5,7 @@ import {RouteComponentProps} from 'react-router-dom'
 import {codelist, ListName} from '../service/Codelist'
 import {Plus} from 'baseui/icon'
 import {Block, BlockProps} from 'baseui/block'
-import {createDisclosure, deleteDisclosure, getDisclosuresByRecipient, getInformationTypesBySource, updateDisclosure} from '../api'
+import {createDisclosure, deleteDisclosure, getDisclosuresByRecipient, getInformationTypesBy, updateDisclosure} from '../api'
 import TableDisclosure from '../components/common/TableDisclosure'
 import {H5, Label2, Paragraph2} from 'baseui/typography'
 import {Button, KIND} from 'baseui/button'
@@ -20,7 +20,7 @@ const labelBlockProps: BlockProps = {
   font: 'font400'
 }
 
-export type PathParams = { thirdPartyCode: string }
+export type PathParams = {thirdPartyCode: string}
 
 const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
@@ -88,7 +88,7 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
       await codelist.wait()
       if (props.match.params.thirdPartyCode) {
         setDisclosureList(await getDisclosuresByRecipient(props.match.params.thirdPartyCode))
-        setInformationTypeList((await getInformationTypesBySource(props.match.params.thirdPartyCode)).content)
+        setInformationTypeList((await getInformationTypesBy({source: props.match.params.thirdPartyCode})).content)
       }
       setIsLoading(false)
     })()

@@ -172,7 +172,7 @@ const ProcessData = (props: { process: Process }) => {
           }
           <Block>
             <span>{process.retention?.retentionDescription && `${intl.retentionDescription}: `}</span>
-            <span>{process.retention?.retentionDescription}</span>
+            <span><Markdown source={process.retention?.retentionDescription}/></span>
           </Block>
         </>
       </DataText>

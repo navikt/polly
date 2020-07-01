@@ -46,7 +46,7 @@ export const no: IStrings = {
   no: 'Nei',
   processActivity: 'Behandlingsaktivitet',
   aboutUs: 'Om Behandlingskatalogen',
-  includeConservationPlan: 'Omfattes av bevarings- og kassasjonsplan?',
+  includeConservationPlan: 'Omfattes av NAVs bevarings- og kassasjonsplan?',
   unclarified: 'Uavklart',
   unknown: 'Uavklart',
   notFilled: 'Ikke utfylt',
@@ -76,10 +76,11 @@ export const no: IStrings = {
   retentionPlan: 'Er området omfattet av etatens bevarings- og kassasjonsplan?',
   retentionPlanYes: 'Omfattes av virksomhetens bevarings- og kassasjonsplan',
   retentionPlanNo: 'Omfattes ikke av virksomhetens bevarings- og kassasjonsplan',
-  retentionPlanUnclarified: 'Uavklart om omfattes av virksomhetens bevarings- og kassasjonsplan',
+  retentionPlanUnclarified: 'Uavklart om omfattes av NAVs bevarings- og kassasjonsplan',
   retentionMonths: 'Lagringstid',
-  retentionStart: 'Lagres fra',
+  retentionStart: 'Lagringstiden beregnes fra følgende tidspunkt eller hendelse',
   retentionDescription: 'Begrunnelse',
+  retentionDescriptionPlaceHolder: 'Ref. til relevant dokumentasjon',
   years: 'år',
   months: 'måneder',
   lastEvents: 'Siste hendelser',
@@ -190,7 +191,7 @@ export const no: IStrings = {
   eventType: 'Hendelsetype',
   disclosurePurpose: 'Formål med utlevering',
   departmentSelect: 'Velg avdeling',
-  subDepartmentSelect: 'Velg linje (Ytre etat)',
+  subDepartmentSelect: 'Velg linje',
   teamSelect: 'Velg produktteam (IT)',
   informationtypesUsedInDocument: 'Opplysningstyper i dokumentet',
   editDocument: 'Rediger dokument',
@@ -223,7 +224,7 @@ export const no: IStrings = {
   organizing: 'Organisering',
   department: 'Avdeling',
   subDepartment: 'Linja',
-  subDepartmentShort: 'Ytre etat',
+  subDepartmentShort: 'Linja',
   save: 'Lagre',
   update: 'Oppdater',
   export: 'Eksporter',
@@ -343,7 +344,7 @@ export const no: IStrings = {
   validityOfProcessHelpText:
     'Valgfritt. Hvis aktuelt angi perioden virksomheten har utført denne behandlingen. Kan stå tomt hvis usikkert, eller for løpende behandlinger som f.eks. saksbehandling av diverse ytelser.',
   organizingHelpText:
-    'Angi hvilken avdeling som er ansvarlig for behandlingen. Der hvor behandlingen utføres i linja (ytre etat) så angi hvor i linja behandlingen utføres. Dersom behandlingen understøttes av IT-systemer, angi hvilke produktteam (IT) som har forvaltningsansvaret for systemene.',
+    'Angi hvilken avdeling som er ansvarlig for behandlingen. Der hvor behandlingen utføres i linja så angi hvor i linja behandlingen utføres. Dersom behandlingen understøttes av IT-systemer, angi hvilke produktteam (IT) som har forvaltningsansvaret for systemene.',
   processNameHelpText: 'Et kort navn som beskriver hva behandlingen går ut på. Eksempel: Saksbehandling, håndtere brukerhenvendelser eller rekruttering.',
   processPurposeHelpText:
     'Beskriv formålet med å bruke personopplysninger i denne behandlingen. Eksempel: Behandle og vurdere rett til stønad ved behov for førerhund pga nedsatt syn.',
@@ -365,13 +366,15 @@ export const no: IStrings = {
   retentionHelpText:
     'Oppgi når lagringstiden begynner å løpe. Dette er tidspunktet vi regner lagringsbehovet fra. For eksempel begynner lagringstiden for opplysninger i flere HR-behandlinger å løpe fra ansettelsesforholdets avslutning. Andre eksempler for bruk av personopplysninger om etatens brukere kan være fra søknad mottatt, fødsel, død, søknadens virkningstidspunkt o.l.',
   retentionDescriptionHelpText:
-    "Begrunnelse for hvorfor vi har behov for å oppbevare personopplysningene i oppgitt lagringstid. For eksempel kan behovet skyldes at vi må kunne forsvare oss mot rettskrav eller at vi må kunne vurdere mulige krav om tilbakebetaling av feilutbetalt ytelse.",
-  processSideMenuHelpText: "En aktivitet du gjør på personopplysninger for å oppnå et formål. Eks. på behandling: Saksbehandling av alderspensjon",
-  informationTypeSideMenuHelpText: "Personopplysninger som f.eks. kjønn, sivilstand, pensjonsopptjening.",
-  documentSideMenuHelpText: "En samling av opplysningstyper. Sykmelding og inntektsmelding er eksempler på dokumenter som inneholder flere opplysningstyper.",
-  externalPartsSideMenuHelpText: "Parter utenfor NAV som vi samhandler med. Eksempler er Folkeregisteret, Lånekassen, brukere, arbeidsgivere",
-  systemSideMenuHelpText: "En samling av beslektede applikasjoner som sammen løser et forretningsbehov. F.eks. Pesys, Modia, Aa-reg",
-};
+    'Begrunnelse for hvorfor vi har behov for å oppbevare personopplysningene i oppgitt lagringstid. For eksempel kan behovet skyldes at vi må kunne forsvare oss mot rettskrav eller at vi må kunne vurdere mulige krav om tilbakebetaling av feilutbetalt ytelse.',
+  processSideMenuHelpText: 'En aktivitet du gjør på personopplysninger for å oppnå et formål. Eks. på behandling: Saksbehandling av alderspensjon',
+  informationTypeSideMenuHelpText: 'Personopplysninger som f.eks. kjønn, sivilstand, pensjonsopptjening.',
+  documentSideMenuHelpText: 'En samling av opplysningstyper. Sykmelding og inntektsmelding er eksempler på dokumenter som inneholder flere opplysningstyper.',
+  externalPartsSideMenuHelpText: 'Parter utenfor NAV som vi samhandler med. Eksempler er Folkeregisteret, Lånekassen, brukere, arbeidsgivere',
+  systemSideMenuHelpText: 'En samling av beslektede applikasjoner som sammen løser et forretningsbehov. F.eks. Pesys, Modia, Aa-reg',
+
+  goToSite: 'Gå til side'
+}
 
 export const en: IStrings = {
   informationType: 'Information type',
@@ -419,7 +422,7 @@ export const en: IStrings = {
   no: 'No',
   processActivity: 'Process activity',
   aboutUs: 'About process catalog',
-  includeConservationPlan: 'Are you covered by a disposal and retention plan?',
+  includeConservationPlan: 'Is NAV\'s conservation and disposal plan covered?',
   unclarified: 'Unclarified',
   unknown: 'Unknown',
   notFilled: 'Not filled',
@@ -453,10 +456,11 @@ export const en: IStrings = {
   retentionPlan: 'Is the area covered by the agency\'s disposal and conservation plan?',
   retentionPlanYes: 'Covered by the business\' disposal and conservation plan',
   retentionPlanNo: 'Not covered by the business\' disposal and conservation plan',
-  retentionPlanUnclarified: 'Unclarified whether covered by the business\' disposal and conservation plan',
+  retentionPlanUnclarified: 'Unclarified whether covered by the NAV\'s disposal and conservation plan',
   retentionMonths: 'Retention time',
-  retentionStart: 'Retention from',
+  retentionStart: 'Retention time is calculated from the following time or event',
   retentionDescription: 'Retention grounds',
+  retentionDescriptionPlaceHolder: 'Ref. to relevant documentation',
   years: 'years',
   months: 'months',
   lastEvents: 'Last events',
@@ -734,13 +738,15 @@ export const en: IStrings = {
   retentionHelpText:
     'Specify when retention time starts to run. The calculation of retention period starts from this point. I.e. the retention time for information used in many HR processes start from the end of employment or from start of employment. ',
   retentionDescriptionHelpText:
-    "Reasons why we need to keep personal data in stated storage time. I.e. the need may be because we need to be able to defend ourselves against future legal claims. ",
-  processSideMenuHelpText: "An activity that you do on personal data to achieve a purpose. Eg on processing: Case management of retirement pension",
-  informationTypeSideMenuHelpText: "Personal information such as gender, marital status, pension benefits.",
-  documentSideMenuHelpText: "A collection of information types. Sick leave and income message are examples of documents containing multiple types of information.",
-  externalPartsSideMenuHelpText: "Parties outside the NAV that we interact with. Examples are the National Register, the Loan Fund, users, employers",
-  systemSideMenuHelpText: "A collection of related applications that together solve a business need. For example, Pesys, Modia, Aa-reg",
-};
+    'Reasons why we need to keep personal data in stated storage time. I.e. the need may be because we need to be able to defend ourselves against future legal claims. ',
+  processSideMenuHelpText: 'An activity that you do on personal data to achieve a purpose. Eg on processing: Case management of retirement pension',
+  informationTypeSideMenuHelpText: 'Personal information such as gender, marital status, pension benefits.',
+  documentSideMenuHelpText: 'A collection of information types. Sick leave and income message are examples of documents containing multiple types of information.',
+  externalPartsSideMenuHelpText: 'Parties outside the NAV that we interact with. Examples are the National Register, the Loan Fund, users, employers',
+  systemSideMenuHelpText: 'A collection of related applications that together solve a business need. For example, Pesys, Modia, Aa-reg',
+
+  goToSite: 'Go to site'
+}
 
 export const ta = {
   POLLY_ADMIN: 'நிர்வாகம்',

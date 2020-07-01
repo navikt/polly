@@ -44,20 +44,28 @@ export const DotTags = (props: DotTagsParams) => {
   const {commaSeparator} = props
   const items = props.items || props.codes?.map(c => c.code) || []
 
+  if (!items.length) return <>{intl.emptyMessage}</>
+
+  if (commaSeparator)
+    return (
+      <Block>
+        {items.map((item, i) => (
+          <React.Fragment key={i}>
+            <Content {...props} item={item}/>
+            <span>{i < items.length - 1 ? ', ' : ''}</span>
+          </React.Fragment>
+        ))}
+      </Block>
+    )
+
   return (
     <Block display='flex' flexWrap>
       {items.map((item, i) => (
         <Block key={i} marginRight={i < items.length && !commaSeparator ? theme.sizing.scale200 : 0}>
-          {commaSeparator && <>
-            <Content {...props} item={item}/>
-            <span>{i < items.length - 1 ? ', ' : ''}</span>
-          </>}
-          {!commaSeparator && <DotTag>
-            <Content {...props} item={item}/>
-          </DotTag>}
+
+          <DotTag> <Content {...props} item={item}/> </DotTag>
         </Block>
       ))}
-      {!items.length && intl.emptyMessage}
     </Block>
   )
 }

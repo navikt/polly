@@ -25,14 +25,14 @@ import {
 } from '../../api'
 import {StyledSpinnerNext} from 'baseui/spinner'
 import {codelist, ListName} from '../../service/Codelist'
-import {RouteComponentProps, useLocation} from 'react-router'
+import {useLocation} from 'react-router'
 import {StyledLink} from 'baseui/link'
 import {env} from '../../util/env'
 import {faFileWord, faPlus} from '@fortawesome/free-solid-svg-icons'
 import Button from '../common/Button'
 import {StatefulSelect} from 'baseui/select'
 import {genProcessPath, Section} from '../../pages/ProcessPage'
-import {withRouter} from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
 
 const rowBlockProps: BlockProps = {
   marginBottom: 'scale800',
@@ -50,7 +50,7 @@ type ProcessListProps = {
 
 const sortProcess = (list: ProcessShort[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, intl.getLanguage()))
 
-const ProcessList = ({code, listName, filter, processId, section, history}: ProcessListProps & RouteComponentProps<any>) => {
+const ProcessList = ({code, listName, filter, processId, section}: ProcessListProps) => {
   const [processList, setProcessList] = React.useState<ProcessShort[]>([])
   const [currentProcess, setCurrentProcess] = React.useState<Process | undefined>()
   const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
@@ -61,6 +61,7 @@ const ProcessList = ({code, listName, filter, processId, section, history}: Proc
   const [isLoadingProcess, setIsLoadingProcess] = React.useState(true)
   const current_location = useLocation()
   const [codelistLoading, setCodelistLoading] = React.useState(true)
+  const history = useHistory()
   useAwait(codelist.wait(), setCodelistLoading)
 
   useEffect(() => {
@@ -325,4 +326,4 @@ const ProcessList = ({code, listName, filter, processId, section, history}: Proc
   )
 }
 
-export default withRouter(ProcessList)
+export default ProcessList
