@@ -88,7 +88,7 @@ const InformationtypePage = () => {
         </Block>
       </Block>
       {!categoryUsages && <Spinner size={theme.sizing.scale1200}/>}
-      {!categoryUsages && <ListCategoryInformationtype categoryUsages={categoryUsages}/>}
+      {categoryUsages && <ListCategoryInformationtype categoryUsages={categoryUsages}/>}
     </>
   )
 }
