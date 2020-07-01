@@ -1,5 +1,5 @@
 import {Block} from 'baseui/block'
-import {HeadingLarge, LabelLarge, Paragraph2} from 'baseui/typography'
+import {HeadingLarge, LabelLarge} from 'baseui/typography'
 import {intl, theme} from '../../util'
 import {Markdown} from './Markdown'
 import * as React from 'react'
@@ -101,7 +101,7 @@ export const PageHeader = (props: {section: Section, code: string}) => {
 
         <Block marginBottom='scale1000'>
           <LabelLarge marginBottom={theme.sizing.scale600}>{metadataTitle()}</LabelLarge>
-          <Paragraph2 as='div'><Markdown source={getDescription()}/></Paragraph2>
+          <Markdown source={getDescription()}/>
         </Block>
       </>}
     </>

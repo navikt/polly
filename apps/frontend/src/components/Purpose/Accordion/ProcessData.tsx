@@ -19,7 +19,7 @@ import {Markdown} from '../../common/Markdown'
 const showDpiaRequiredField = (dpia?: Dpia) => {
   if (dpia?.needForDpia === true) {
     if (dpia.refToDpia) {
-      return <Markdown source={`${intl.yes}. ${intl.reference}${dpia.refToDpia}`}/>
+      return <Markdown source={`${intl.yes}. ${intl.reference}${dpia.refToDpia}`} singleWord/>
     } else {
       return intl.yes
     }
@@ -172,7 +172,7 @@ const ProcessData = (props: {process: Process}) => {
           }
           <Block>
             <span>{process.retention?.retentionDescription && `${intl.retentionDescription}: `}</span>
-            <span><Markdown source={process.retention?.retentionDescription}/></span>
+            <span><Markdown source={process.retention?.retentionDescription} singleWord/></span>
           </Block>
         </>
       </DataText>
