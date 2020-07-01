@@ -158,7 +158,7 @@ export const Main = () => {
 
             <Block marginTop="2.5rem">
               <Card overrides={cardShadow}>
-                <Markdown source={settings?.frontpageMessage} escapeHtml={false}/>
+                <Markdown source={settings?.frontpageMessage} escapeHtml={false} verbatim/>
               </Card>
             </Block>
 

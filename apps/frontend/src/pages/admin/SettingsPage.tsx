@@ -131,7 +131,7 @@ const FrontpageMessage = (props: { message?: string, setMessage: (message: strin
             />
           </Block>
           <Block width="50%">
-            <Markdown source={props.message} escapeHtml={false}/>
+            <Markdown source={props.message} escapeHtml={false} verbatim/>
           </Block>
         </Block>
       </Block>
