@@ -97,7 +97,9 @@ const PropertyData = (props: {orgMaster?: Code, sources: Code[], categories: Cod
       <TextWithLabel label={intl.productTeam} text={props.productTeams.length ? <TeamList teamIds={props.productTeams}/> : intl.emptyMessage}/>
     </FlexGridItem>
     <FlexGridItem>
-      <TextWithLabel label={intl.categories} text={(props.categories || []).map(c => c.shortName).join(', ')}/>
+      <TextWithLabel label={intl.categories}>
+        <DotTags list={ListName.CATEGORY} codes={props.categories} linkCodelist commaSeparator/>
+      </TextWithLabel>
     </FlexGridItem>
     <FlexGridItem>
       <TextWithLabel label={intl.sensitivity} text={props.sensitivity ? props.sensitivity.shortName : ''} icon={faUserShield} iconColor={sensitivityColor(props.sensitivity.code)}/>

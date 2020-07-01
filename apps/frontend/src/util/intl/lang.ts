@@ -373,7 +373,8 @@ export const no: IStrings = {
   externalPartsSideMenuHelpText: 'Parter utenfor NAV som vi samhandler med. Eksempler er Folkeregisteret, Lånekassen, brukere, arbeidsgivere',
   systemSideMenuHelpText: 'En samling av beslektede applikasjoner som sammen løser et forretningsbehov. F.eks. Pesys, Modia, Aa-reg',
 
-  goToSite: 'Gå til side'
+  goToSite: 'Gå til side',
+  categoryNotInUse: 'Kategori {0} er ikke i bruk'
 }
 
 export const en: IStrings = {
@@ -745,7 +746,8 @@ export const en: IStrings = {
   externalPartsSideMenuHelpText: 'Parties outside the NAV that we interact with. Examples are the National Register, the Loan Fund, users, employers',
   systemSideMenuHelpText: 'A collection of related applications that together solve a business need. For example, Pesys, Modia, Aa-reg',
 
-  goToSite: 'Go to site'
+  goToSite: 'Go to site',
+  categoryNotInUse: 'Category {0} is not in use'
 }
 
 export const ta = {

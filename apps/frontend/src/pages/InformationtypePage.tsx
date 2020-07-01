@@ -13,7 +13,7 @@ import {CodeUsage, Disclosure, Document, InformationType, Policy} from '../const
 import {ListName} from '../service/Codelist'
 import {user} from '../service/User'
 import {getCodelistUsageByListName, getDisclosuresByInformationTypeId, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType,} from '../api'
-import InformationTypeAccordion from '../components/InformationType/ListCategoryInformationtype'
+import ListCategoryInformationtype from '../components/InformationType/ListCategoryInformationtype'
 import Button from '../components/common/Button'
 
 export type PurposeMap = { [purpose: string]: Policy[] }
@@ -96,7 +96,7 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
           }
         </Block>
       </Block>
-      <InformationTypeAccordion categoryUsages={categoryUsages}/>
+      <ListCategoryInformationtype categoryUsages={categoryUsages}/>
     </>
   )
 }
