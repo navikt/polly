@@ -112,6 +112,7 @@ export interface IStrings {
   retentionMonths: string;
   retentionStart: string;
   retentionDescription: string;
+  retentionDescriptionPlaceHolder: string;
   years: string;
   months: string;
   lastEvents: string;

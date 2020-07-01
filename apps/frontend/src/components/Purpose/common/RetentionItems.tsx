@@ -46,7 +46,7 @@ const RetentionItems = (props: { formikBag: FormikProps<ProcessFormValues> }) =>
         <BoolField fieldName='retention.retentionPlan' value={formikBag.values.retention.retentionPlan}/>
       </Block>
 
-      {!!formikBag.values.retention?.retentionPlan && <>
+      {<>
         <Block {...rowBlockProps}>
           <ModalLabel label={intl.retentionMonths}/>
           <Field
@@ -72,15 +72,20 @@ const RetentionItems = (props: { formikBag: FormikProps<ProcessFormValues> }) =>
 
         <Block {...rowBlockProps}>
           <ModalLabel label={intl.retentionStart}/>
-          <FieldInput fieldName='retention.retentionStart'
-                      fieldValue={formikBag.values.retention.retentionStart}/>
+          <Block width={"100%"}>
+            <FieldInput fieldName='retention.retentionStart'
+                        fieldValue={formikBag.values.retention.retentionStart}/>
+          </Block>
         </Block>
         <Error fieldName='retention.retentionStart'/>
-        </>}
+      </>}
       <Block {...rowBlockProps}>
         <ModalLabel label={intl.retentionDescription}/>
-        <FieldInput fieldName='retention.retentionDescription'
-                    fieldValue={formikBag.values.retention.retentionDescription}/>
+        <FieldInput
+          fieldName='retention.retentionDescription'
+          fieldValue={formikBag.values.retention.retentionDescription}
+          placeHolder={intl.retentionDescriptionPlaceHolder}
+        />
       </Block>
       < Error fieldName='retention.retentionDescription'/>
     </>
