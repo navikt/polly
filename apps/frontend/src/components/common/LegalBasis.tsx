@@ -77,6 +77,16 @@ export const LegalBasesNotClarified = (props: { alert?: PolicyAlert }) => {
   )
 }
 
+const getLegalBasisBySensitivity = (legalBasis: LegalBasisFormValues, sensitivityLevel?: SensitivityLevel) => {
+  if (!!SensitivityLevel && sensitivityLevel === SensitivityLevel.ART6) {
+    return codelist.isArt6(legalBasis.gdpr)
+  } else if (!!SensitivityLevel && sensitivityLevel === SensitivityLevel.ART9) {
+    return codelist.isArt9(legalBasis.gdpr)
+  } else {
+    return true
+  }
+}
+
 export const ListLegalBases = (
   props: {
     legalBases?: LegalBasisFormValues[],
@@ -89,7 +99,7 @@ export const ListLegalBases = (
   return (
     <React.Fragment>
       {legalBases
-        .filter(l => !!sensitivityLevel ? (sensitivityLevel === SensitivityLevel.ART6 ? codelist.isArt6(l.gdpr) : codelist.isArt9(l.gdpr)) : true)
+        .filter(l => getLegalBasisBySensitivity(l, sensitivityLevel))
         .map((legalBasis: LegalBasisFormValues, i: number) => (
           <ListItem
             artworkSize={ARTWORK_SIZES.SMALL}
