@@ -380,7 +380,16 @@ export enum ProcessState {
   UNKNOWN = 'UNKNOWN'
 }
 
-export type NavigableItem = ObjectType | ListName.PURPOSE | ListName.DEPARTMENT | ListName.SUB_DEPARTMENT | ListName.THIRD_PARTY | ListName.SYSTEM | 'team' | 'productarea';
+export type NavigableItem =
+  ObjectType
+  | ListName.CATEGORY
+  | ListName.PURPOSE
+  | ListName.DEPARTMENT
+  | ListName.SUB_DEPARTMENT
+  | ListName.THIRD_PARTY
+  | ListName.SYSTEM
+  | 'team'
+  | 'productarea';
 
 export interface AuditItem {
   action: AuditAction;

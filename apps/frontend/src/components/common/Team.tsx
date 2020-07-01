@@ -16,6 +16,7 @@ import {env} from '../../util/env'
 import {Markdown} from './Markdown'
 import {ObjectLink} from './RouteLink'
 import {Block} from 'baseui/block'
+import {DotTag} from './DotTag'
 
 
 const defaultTeam = (teamId: string) => ({id: teamId, name: teamId, description: ' ', productarea: undefined, tags: [], members: []})
@@ -98,9 +99,10 @@ const TeamView = (props: {teamId: string}) => {
 }
 
 export const TeamList = (props: {teamIds: string[]}) =>
-  <>
+  <Block display='inline-flex'>
     {props.teamIds.map((t, i) =>
-      <Block key={i} display='inline' marginRight={theme.sizing.scale100}>
+      <DotTag key={i}>
         <TeamView teamId={t}/>
-      </Block>)}
-  </>
+      </DotTag>
+    )}
+  </Block>

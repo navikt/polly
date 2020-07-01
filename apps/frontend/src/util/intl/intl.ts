@@ -381,6 +381,7 @@ export interface IStrings {
   settings: string;
   defaultProcessDocument: string;
   goToSite: string
+  categoryNotInUse: string
 }
 
 // Remember import moment locales up top

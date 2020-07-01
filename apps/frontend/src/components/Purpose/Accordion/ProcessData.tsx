@@ -34,7 +34,7 @@ const showDpiaRequiredField = (dpia?: Dpia) => {
   }
 }
 
-const ProcessData = (props: { process: Process }) => {
+const ProcessData = (props: {process: Process}) => {
   const {process} = props
   const dataProcessorAgreements = !!process.dataProcessing?.dataProcessorAgreements.length
   const [riskOwnerFullName, setRiskOwnerFullName] = React.useState<string>()
@@ -60,11 +60,11 @@ const ProcessData = (props: { process: Process }) => {
 
       <DataText label={intl.legalBasis} text={process.legalBases.length ? undefined : intl.legalBasisNotFound}>
         {process
-          .legalBases
-          .sort((a, b) => (codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code)).localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
-          .map((legalBasis, index) =>
-            <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
-          )}
+        .legalBases
+        .sort((a, b) => (codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code)).localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
+        .map((legalBasis, index) =>
+          <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
+        )}
       </DataText>
 
       <DataText label={intl.status}>
@@ -94,12 +94,12 @@ const ProcessData = (props: { process: Process }) => {
       <DataText label={intl.organizing}>
         {process.department && <Block>
           <span>{intl.department}: </span>
-          <span>{codelist.getShortnameForCode(process.department)}</span>
+          <span><DotTags list={ListName.DEPARTMENT} codes={[process.department]} commaSeparator linkCodelist/> </span>
         </Block>}
         {!!process?.subDepartments.length && <Block>
           <Block display="flex">
             <span>{intl.subDepartment}: </span>
-            <DotTags list={ListName.SUB_DEPARTMENT} codes={process.subDepartments}/>
+            <DotTags list={ListName.SUB_DEPARTMENT} codes={process.subDepartments} linkCodelist/>
           </Block>
         </Block>}
 

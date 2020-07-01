@@ -39,6 +39,8 @@ export const urlForObject = (type: NavigableItem, id: string, audit?: AuditItem)
   switch (type) {
     case ObjectType.INFORMATION_TYPE:
       return `/informationtype/${id}`
+    case ListName.CATEGORY:
+      return `/informationtype?category=${id}`
     case ObjectType.POLICY:
       return `/policy/${id}`
     case ObjectType.PROCESS:
