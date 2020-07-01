@@ -14,23 +14,24 @@ import {H4, ParagraphSmall} from 'baseui/typography'
 import {user} from '../../../service/User'
 import {InformationTypeBannerButtons} from '../InformationTypeBannerButtons'
 import Button from '../../common/Button'
-import {CustomizedTabs} from "../../common/CustomizedTabs";
-import {tabOverride} from "../../common/Style";
-import {lastModifiedDate} from "../../../util/date-formatter";
+import {CustomizedTabs} from '../../common/CustomizedTabs'
+import {tabOverride} from '../../common/Style'
+import {lastModifiedDate} from '../../../util/date-formatter'
 import {canViewAlerts} from '../../../pages/AlertEventPage'
 import {faExclamationCircle} from '@fortawesome/free-solid-svg-icons'
-import {RouteComponentProps, withRouter} from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
+import {Spinner} from '../../common/Spinner'
 
 interface InformationtypeMetadataProps {
   informationtype: InformationType;
-  policies: Policy[];
-  disclosures: Disclosure[],
-  documents: Document[],
+  policies?: Policy[];
+  disclosures?: Disclosure[],
+  documents?: Document[],
   expanded: string[]
   onSelectPurpose: (purpose: string) => void
 }
 
-const Purposes = ({policies, expanded, onSelectPurpose}: { policies: Policy[], expanded: string[], onSelectPurpose: (purpose: string) => void }) => {
+const Purposes = ({policies, expanded, onSelectPurpose}: {policies: Policy[], expanded: string[], onSelectPurpose: (purpose: string) => void}) => {
   const [accordion, setAccordion] = React.useState(false)
   return (
     <Block>
@@ -48,7 +49,7 @@ const Purposes = ({policies, expanded, onSelectPurpose}: { policies: Policy[], e
   )
 }
 
-const Disclosures = ({disclosures}: { disclosures: Disclosure[] }) => {
+const Disclosures = ({disclosures}: {disclosures: Disclosure[]}) => {
   return (
     <TableDisclosure
       list={disclosures}
@@ -59,8 +60,9 @@ const Disclosures = ({disclosures}: { disclosures: Disclosure[] }) => {
   )
 }
 
-const InformationtypeMetadata = (props: InformationtypeMetadataProps & RouteComponentProps<any>) => {
+export const InformationtypeMetadata = (props: InformationtypeMetadataProps) => {
   const [activeTab, setActiveTab] = useState('purposes')
+  const history = useHistory()
   return (
     <>
       {props.informationtype && (
@@ -77,7 +79,7 @@ const InformationtypeMetadata = (props: InformationtypeMetadataProps & RouteComp
           <Block display='flex' justifyContent='flex-end' marginBottom={theme.sizing.scale600}>
             {canViewAlerts() && <Block marginRight='auto'>
               <Button type='button' kind='tertiary' size='compact' icon={faExclamationCircle}
-                      onClick={() => props.history.push(`/alert/events/informationtype/${props.informationtype.id}`)}>{intl.alerts}</Button>
+                      onClick={() => history.push(`/alert/events/informationtype/${props.informationtype.id}`)}>{intl.alerts}</Button>
             </Block>}
             <ParagraphSmall>
               <i>{intl.formatString(intl.lastModified, props.informationtype.changeStamp.lastModifiedBy, lastModifiedDate(props.informationtype.changeStamp.lastModifiedDate))}</i>
@@ -89,13 +91,16 @@ const InformationtypeMetadata = (props: InformationtypeMetadataProps & RouteComp
             onChange={args => setActiveTab(args.activeKey as string)}
           >
             <Tab key="purposes" title={intl.purposeUse} overrides={tabOverride}>
-              <Purposes policies={props.policies} expanded={props.expanded} onSelectPurpose={props.onSelectPurpose}/>
+              {!props.policies && <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200}/>}
+              {props.policies && <Purposes policies={props.policies} expanded={props.expanded} onSelectPurpose={props.onSelectPurpose}/>}
             </Tab>
             <Tab key="disclose" title={intl.disclosuresToThirdParty} overrides={tabOverride}>
-              <Disclosures disclosures={props.disclosures}/>
+              {!props.disclosures && <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200}/>}
+              {props.disclosures && <Disclosures disclosures={props.disclosures}/>}
             </Tab>
             <Tab key="document" title={intl.documents} overrides={tabOverride}>
-              <DocumentTable documents={props.documents}/>
+              {!props.documents && <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200}/>}
+              {props.documents && <DocumentTable documents={props.documents}/>}
             </Tab>
           </CustomizedTabs>
         </>
@@ -103,5 +108,3 @@ const InformationtypeMetadata = (props: InformationtypeMetadataProps & RouteComp
     </>
   )
 }
-
-export default withRouter(InformationtypeMetadata)

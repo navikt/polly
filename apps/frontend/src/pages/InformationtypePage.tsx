@@ -5,35 +5,32 @@ import {faPlusCircle} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {RouteComponentProps} from 'react-router-dom'
 import {H4} from 'baseui/typography'
-import {StyledSpinnerNext} from 'baseui/spinner'
 
-import InformationtypeMetadata from '../components/InformationType/InformationtypeMetadata/'
-import {intl} from '../util'
+import {InformationtypeMetadata} from '../components/InformationType/InformationtypeMetadata/'
+import {intl, theme} from '../util'
 import {CodeUsage, Disclosure, Document, InformationType, Policy} from '../constants'
 import {ListName} from '../service/Codelist'
 import {user} from '../service/User'
 import {getCodelistUsageByListName, getDisclosuresByInformationTypeId, getDocumentsForInformationType, getInformationType, getPoliciesForInformationType,} from '../api'
 import ListCategoryInformationtype from '../components/InformationType/ListCategoryInformationtype'
 import Button from '../components/common/Button'
+import {Spinner} from '../components/common/Spinner'
 
-export type PurposeMap = { [purpose: string]: Policy[] }
+export type PurposeMap = {[purpose: string]: Policy[]}
 
-const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?: string }>) => {
-  const [isLoading, setLoading] = React.useState(false)
+const InformationtypePage = (props: RouteComponentProps<{id?: string, purpose?: string}>) => {
   const [error, setError] = React.useState(null)
   const [informationTypeId, setInformationTypeId] = React.useState(props.match.params.id)
   const [informationtype, setInformationtype] = React.useState<InformationType>()
-  const [policies, setPolicies] = React.useState<Policy[]>([])
-  const [disclosures, setDisclosures] = React.useState<Disclosure[]>([])
-  const [documents, setDocuments] = React.useState<Document[]>([])
+  const [policies, setPolicies] = React.useState<Policy[]>()
+  const [disclosures, setDisclosures] = React.useState<Disclosure[]>()
+  const [documents, setDocuments] = React.useState<Document[]>()
   const [categoryUsages, setCategoryUsages] = React.useState<CodeUsage[]>()
 
   useEffect(() => {
     (async () => {
-      setLoading(true)
       let response = await getCodelistUsageByListName(ListName.CATEGORY)
       setCategoryUsages(response.codesInUse)
-      setLoading(false)
     })()
   }, [])
 
@@ -44,31 +41,22 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
       if (!informationTypeId) {
         return
       }
-      setLoading(true)
       try {
-        const infoTypeRes = await getInformationType(informationTypeId)
-        const policiesRes = await getPoliciesForInformationType(informationTypeId)
-        const disclosuresRes = await getDisclosuresByInformationTypeId(informationTypeId)
-        const docsRes = await getDocumentsForInformationType(informationTypeId)
-        setInformationtype(infoTypeRes)
-        setPolicies(policiesRes.content)
-        setDisclosures(disclosuresRes)
-        setDocuments(docsRes.content)
+        setInformationtype(await getInformationType(informationTypeId))
+        setPolicies((await getPoliciesForInformationType(informationTypeId)).content)
+        setDisclosures(await getDisclosuresByInformationTypeId(informationTypeId))
+        setDocuments((await getDocumentsForInformationType(informationTypeId)).content)
       } catch (err) {
         setError(err.message)
       }
 
       if (!props.match.params.id) props.history.push(`/informationtype/${informationTypeId}`)
-      setLoading(false)
     })()
   }, [informationTypeId])
 
-  if (isLoading) {
-    return <StyledSpinnerNext size={30}/>
-  }
-
   if (informationTypeId) {
     return <>
+      {!informationtype && <Spinner size={theme.sizing.scale1200}/>}
       {!error && informationtype && (
         <InformationtypeMetadata
           informationtype={informationtype}
@@ -96,7 +84,8 @@ const InformationtypePage = (props: RouteComponentProps<{ id?: string, purpose?:
           }
         </Block>
       </Block>
-      <ListCategoryInformationtype categoryUsages={categoryUsages}/>
+      {!categoryUsages && <Spinner size={theme.sizing.scale1200}/>}
+      {!categoryUsages && <ListCategoryInformationtype categoryUsages={categoryUsages}/>}
     </>
   )
 }
