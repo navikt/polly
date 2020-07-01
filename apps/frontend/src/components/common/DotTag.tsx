@@ -8,7 +8,7 @@ import {NavigableItem} from '../../constants'
 import RouteLink, {urlForObject} from './RouteLink'
 import {Markdown} from './Markdown'
 
-const DotTag = (props: {children: ReactNode}) =>
+export const DotTag = (props: {children: ReactNode}) =>
   <Block marginLeft={theme.sizing.scale100} marginRight={theme.sizing.scale100} display='flex' alignItems='center'>
     <FontAwesomeIcon icon={faCircle} color={theme.colors.positive400} style={{fontSize: '.45rem'}}/>
     <Block display='inline' marginRight={theme.sizing.scale100}/>
@@ -48,7 +48,7 @@ export const DotTags = (props: DotTagsParams) => {
 
   if (commaSeparator)
     return (
-      <Block>
+      <Block display='inline'>
         {items.map((item, i) => (
           <React.Fragment key={i}>
             <Content {...props} item={item}/>

@@ -94,12 +94,12 @@ const ProcessData = (props: { process: Process }) => {
       <DataText label={intl.organizing}>
         {process.department && <Block>
           <span>{intl.department}: </span>
-          <span>{codelist.getShortnameForCode(process.department)}</span>
+          <span><DotTags list={ListName.DEPARTMENT} codes={[process.department]} commaSeparator linkCodelist/> </span>
         </Block>}
         {!!process?.subDepartments.length && <Block>
           <Block display="flex">
             <span>{intl.subDepartment}: </span>
-            <DotTags list={ListName.SUB_DEPARTMENT} codes={process.subDepartments}/>
+            <DotTags list={ListName.SUB_DEPARTMENT} codes={process.subDepartments} linkCodelist/>
           </Block>
         </Block>}
 
