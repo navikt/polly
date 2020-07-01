@@ -132,10 +132,6 @@ public class ProcessRequest implements RequestElement {
         if (getRetention() == null) {
             setRetention(new RetentionRequest());
         }
-        if (Boolean.FALSE.equals(getRetention().getRetentionPlan())) {
-            getRetention().setRetentionMonths(null);
-            getRetention().setRetentionStart(null);
-        }
         if (getDpia() == null) {
             setDpia(new DpiaRequest());
         }
