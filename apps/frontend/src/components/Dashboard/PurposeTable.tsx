@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react'
 import {getProcessByState} from '../../api'
 import {ProcessField, ProcessShort, ProcessState, ProcessStatus} from '../../constants'
-import {RouteComponentProps} from 'react-router-dom'
+import {useParams} from 'react-router-dom'
 import {HeadingLarge} from 'baseui/typography'
 import {Spinner} from 'baseui/spinner'
 import {Cell, HeadCell, Row, Table} from '../common/Table'
@@ -20,33 +20,34 @@ const cellStyle: StyleObject = {
   wordBreak: 'break-word'
 }
 
-const PurposeTable = (props: RouteComponentProps<PathProps>) => {
+const PurposeTable = () => {
   const [loading, setLoading] = React.useState<boolean>(false)
   const [filtered, setFiltered] = React.useState<ProcessShort[]>([])
   const [title, setTitle] = React.useState('')
+  const {filterName, filterValue} = useParams<PathProps>()
 
   useEffect(() => {
     (async () => {
       setLoading(true)
       changeTitle()
-      setFiltered(await getProcessByState(props.match.params.filterName, props.match.params.filterValue))
+      setFiltered(await getProcessByState(filterName, filterValue))
       setLoading(false)
     })()
-  }, [props.match.params.filterName, props.match.params.filterValue])
+  }, [filterName, filterValue])
 
   const changeTitle = () => {
-    if (props.match.params.filterName === ProcessField.DPIA) {
-      setTitle(`${intl.dpiaNeeded}: ${intl.getString(props.match.params.filterValue.toLowerCase() || '')} `)
-    } else if (props.match.params.filterName === ProcessField.MISSING_LEGAL_BASIS) {
+    if (filterName === ProcessField.DPIA) {
+      setTitle(`${intl.dpiaNeeded}: ${intl.getString(filterValue.toLowerCase() || '')} `)
+    } else if (filterName === ProcessField.MISSING_LEGAL_BASIS) {
       setTitle(intl.processesWithUnknownLegalBasis)
-    } else if (props.match.params.filterName === ProcessField.MISSING_ARTICLE_6) {
+    } else if (filterName === ProcessField.MISSING_ARTICLE_6) {
       setTitle(intl.processesWithoutArticle6LegalBasis)
-    } else if (props.match.params.filterName === ProcessField.MISSING_ARTICLE_9) {
+    } else if (filterName === ProcessField.MISSING_ARTICLE_9) {
       setTitle(intl.processesWithoutArticle9LegalBasis)
-    } else if (props.match.params.filterName === ProcessField.PROFILING) {
-      setTitle(`${intl.profiling}: ${intl.getString(props.match.params.filterValue.toLowerCase() || '')} `)
-    } else if (props.match.params.filterName === ProcessField.AUTOMATION) {
-      setTitle(`${intl.automaticProcessing}: ${intl.getString(props.match.params.filterValue.toLowerCase() || '')} `)
+    } else if (filterName === ProcessField.PROFILING) {
+      setTitle(`${intl.profiling}: ${intl.getString(filterValue.toLowerCase() || '')} `)
+    } else if (filterName === ProcessField.AUTOMATION) {
+      setTitle(`${intl.automaticProcessing}: ${intl.getString(filterValue.toLowerCase() || '')} `)
     }
   }
 

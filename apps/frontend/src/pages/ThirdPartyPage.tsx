@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {useEffect} from 'react'
 import {intl} from '../util'
-import {RouteComponentProps} from 'react-router-dom'
+import {useParams} from 'react-router-dom'
 import {codelist, ListName} from '../service/Codelist'
 import {Plus} from 'baseui/icon'
 import {Block, BlockProps} from 'baseui/block'
@@ -22,7 +22,8 @@ const labelBlockProps: BlockProps = {
 
 export type PathParams = {thirdPartyCode: string}
 
-const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
+const ThirdPartyPage = () => {
+  const params = useParams<PathParams>()
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
   const [disclosureList, setDisclosureList] = React.useState<Disclosure[]>([])
   const [informationTypeList, setInformationTypeList] = React.useState<InformationType[]>()
@@ -72,7 +73,7 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
 
   const initialFormValues: DisclosureFormValues = {
     name: '',
-    recipient: props.match.params.thirdPartyCode,
+    recipient: params.thirdPartyCode,
     recipientPurpose: '',
     description: '',
     document: undefined,
@@ -86,13 +87,13 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
     (async () => {
       setIsLoading(true)
       await codelist.wait()
-      if (props.match.params.thirdPartyCode) {
-        setDisclosureList(await getDisclosuresByRecipient(props.match.params.thirdPartyCode))
-        setInformationTypeList((await getInformationTypesBy({source: props.match.params.thirdPartyCode})).content)
+      if (params.thirdPartyCode) {
+        setDisclosureList(await getDisclosuresByRecipient(params.thirdPartyCode))
+        setInformationTypeList((await getInformationTypesBy({source: params.thirdPartyCode})).content)
       }
       setIsLoading(false)
     })()
-  }, [props.match.params.thirdPartyCode])
+  }, [params.thirdPartyCode])
 
 
   return (
@@ -102,8 +103,8 @@ const ThirdPartyPage = (props: RouteComponentProps<PathParams>) => {
       {!isLoading && codelist && (
         <React.Fragment>
           <Block marginBottom="3rem">
-            <H5>{codelist.getShortname(ListName.THIRD_PARTY, props.match.params.thirdPartyCode)}</H5>
-            <Paragraph2>{codelist.getDescription(ListName.THIRD_PARTY, props.match.params.thirdPartyCode)}</Paragraph2>
+            <H5>{codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)}</H5>
+            <Paragraph2>{codelist.getDescription(ListName.THIRD_PARTY, params.thirdPartyCode)}</Paragraph2>
           </Block>
 
           <Block display="flex" justifyContent="space-between">

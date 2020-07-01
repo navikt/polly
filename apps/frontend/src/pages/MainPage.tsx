@@ -9,18 +9,20 @@ import {cardShadow} from '../components/common/Style'
 import Departments from '../components/Dashboard/Departments'
 import {getDashboard} from '../api'
 import {Chart} from '../components/Dashboard/Chart'
-import {RouteComponentProps} from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
 import {LastEvents} from '../components/audit/LastEvents'
 import {Markdown} from '../components/common/Markdown'
 import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
 
-export const Main = (props: RouteComponentProps) => {
+export const Main = () => {
+  const history = useHistory()
+
   const [settings, setSettings] = useState<Settings>()
   const [isLoading, setLoading] = useState(true)
   const [dashData, setDashData] = useState<DashboardData>()
   const chartSize = 80
 
-  const clickOnPieChartSlice = (processField: ProcessField, processState: ProcessState) => props.history.push(`/dashboard/${processField}/${processState}`)
+  const clickOnPieChartSlice = (processField: ProcessField, processState: ProcessState) => history.push(`/dashboard/${processField}/${processState}`)
 
   useEffect(() => {
     (async () => {

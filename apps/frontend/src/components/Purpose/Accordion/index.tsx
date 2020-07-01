@@ -1,7 +1,6 @@
 import * as React from 'react'
 import {useEffect} from 'react'
 import {Panel, StatelessAccordion} from 'baseui/accordion'
-import {RouteComponentProps, withRouter} from 'react-router'
 import {KIND, SIZE as ButtonSize} from 'baseui/button'
 import {StyledSpinnerNext} from 'baseui/spinner'
 import {Block} from 'baseui/block'
@@ -24,6 +23,7 @@ import {faExclamationCircle} from '@fortawesome/free-solid-svg-icons'
 import {canViewAlerts} from '../../../pages/AlertEventPage'
 import {DeleteProcessModal} from './DeleteProcessModal'
 import {ProcessCreatedModal} from './ProcessCreatedModal'
+import {useHistory, useParams} from 'react-router-dom'
 
 type AccordionProcessProps = {
   isLoading: boolean
@@ -42,7 +42,7 @@ type AccordionProcessProps = {
   submitAddDocument: (document: AddDocumentToProcessFormValues) => Promise<boolean>
 }
 
-const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<PathParams>) => {
+const AccordionProcess = (props: AccordionProcessProps) => {
   const {
     isLoading,
     currentProcess,
@@ -62,6 +62,8 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
   const [showAddDocumentModal, setShowAddDocumentModal] = React.useState(false)
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
   const purposeRef = React.useRef<HTMLInputElement>(null)
+  const params = useParams<PathParams>()
+  const history = useHistory()
 
   const hasAccess = () => user.canWrite()
 
@@ -90,7 +92,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
   )
 
   useEffect(() => {
-    props.match.params.processId && !isLoading && setTimeout(() => {
+    params.processId && !isLoading && setTimeout(() => {
       purposeRef.current && window.scrollTo({top: purposeRef.current.offsetTop - 40})
     }, 200)
   }, [isLoading])
@@ -99,14 +101,14 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
     <Block>
       <StatelessAccordion
         onChange={({expanded}) => onChangeProcess(expanded.length ? expanded[0] as string : undefined)}
-        expanded={props.match.params.processId ? [props.match.params.processId] : []}
+        expanded={params.processId ? [params.processId] : []}
       >
         {props.processList &&
         props
         .processList
         .sort((a, b) => a.purpose.shortName.localeCompare(b.purpose.shortName))
         .map((p: ProcessShort) => {
-          const expanded = props.match.params.processId === p.id
+          const expanded = params.processId === p.id
           return (
             <Panel
               title={
@@ -149,7 +151,7 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
                     <Block display='flex' paddingTop={theme.sizing.scale800} width='100%' justifyContent='flex-end'>
                       {canViewAlerts() && <Block marginRight='auto'>
                         <Button type='button' kind='tertiary' size='compact' icon={faExclamationCircle}
-                                onClick={() => props.history.push(`/alert/events/process/${p.id}`)}>{intl.alerts}</Button>
+                                onClick={() => history.push(`/alert/events/process/${p.id}`)}>{intl.alerts}</Button>
                       </Block>}
                       {hasAccess() &&
                       <Block>
@@ -238,4 +240,4 @@ const AccordionProcess = (props: AccordionProcessProps & RouteComponentProps<Pat
   )
 }
 
-export default withRouter(AccordionProcess)
+export default AccordionProcess

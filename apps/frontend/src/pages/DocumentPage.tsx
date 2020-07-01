@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import {RouteComponentProps} from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 import {intl} from '../util'
 import {Block} from 'baseui/block'
 import {deleteDocument, getAllDocument, getDocument, getProcessesByDocument} from '../api'
@@ -18,7 +18,7 @@ import Button from '../components/common/Button'
 import {AuditButton} from '../components/audit/AuditButton'
 import {SIZE as ButtonSize} from 'baseui/button'
 import {tabOverride} from '../components/common/Style'
-import DocumentList from "../components/document/DocumentList";
+import DocumentList from '../components/document/DocumentList';
 
 
 const renderTextWithLabel = (label: string, text: string) => (
@@ -28,16 +28,19 @@ const renderTextWithLabel = (label: string, text: string) => (
   </Block>
 )
 
-const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
+const DocumentPage = () => {
+  const params = useParams<{id?: string}>()
+  const history = useHistory()
+
   const [currentDocument, setCurrentDocument] = React.useState<Document | undefined>()
-  const [documentId, setDocumentId] = React.useState<string | undefined>(props.match.params.id)
+  const [documentId, setDocumentId] = React.useState<string | undefined>(params.id)
   const [isDeleteModalVisible, setDeleteModalVisibility] = React.useState(false)
   const [documentUsages, setDocumentUsages] = React.useState<[Process]>()
   const [errorMessage, setErrorMessage] = React.useState<string>()
   const [activeKey, setActiveKey] = React.useState<string | number>('containsInformationType')
   const [documents, setDocuments] = React.useState<Document[]>([])
 
-  useEffect(() => setDocumentId(props.match.params.id), [props.match.params.id])
+  useEffect(() => setDocumentId(params.id), [params.id])
 
   useEffect(()=>{
     (async ()=>{
@@ -48,10 +51,10 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
   const handleDelete = () => {
     if (documentId) {
       deleteDocument(documentId)
-      .then((response) => {
+      .then(() => {
         setCurrentDocument(undefined)
         setDeleteModalVisibility(false)
-        props.history.push('/document')
+        history.push('/document')
       }).catch((e) => {
         setErrorMessage(e.message)
         console.log(e)
@@ -66,10 +69,10 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
         const res = await getDocument(documentId)
         setDocumentUsages((await getProcessesByDocument(documentId)).content)
         setCurrentDocument(res)
-        if (props.match.params.id !== documentId) props.history.push(`/document/${documentId}`)
+        if (params.id !== documentId) history.push(`/document/${documentId}`)
       } else {
         setCurrentDocument(undefined)
-        if (!!props.match.params.id) props.history.push('/document')
+        if (!!params.id) history.push('/document')
       }
     })()
   }, [documentId])
@@ -105,7 +108,7 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
                   icon={faEdit}
                   kind="outline"
                   size={ButtonSize.compact}
-                  onClick={() => props.history.push(`/document/edit/${currentDocument.id}`)}
+                  onClick={() => history.push(`/document/edit/${currentDocument.id}`)}
                   marginLeft
                 >
                   {intl.edit}
@@ -117,7 +120,7 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
                 size={ButtonSize.compact}
                 icon={faPlusCircle}
                 tooltip={intl.createNew}
-                onClick={() => props.history.push('/document/create')}
+                onClick={() => history.push('/document/create')}
                 marginLeft
               >
                 {intl.createNew}
@@ -125,7 +128,7 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
             </Block>
           )}
         </Block>
-        { !currentDocument && <DocumentList documents={documents} baseUrl={"/document/"}/>}
+        { !currentDocument && <DocumentList documents={documents} baseUrl={'/document/'}/>}
         {
           currentDocument && (
             <Block overrides={{
@@ -155,7 +158,7 @@ const DocumentPage = (props: RouteComponentProps<{ id?: string }>) => {
                   <DocumentMetadata document={currentDocument}/>
                 </Block>
               </Tab>
-              {documentUsages && documentUsages!.length > 0 && (
+              {documentUsages && documentUsages.length > 0 && (
                 <Tab key={'containsProcesses'} title={intl.containsProcesses} overrides={tabOverride}>
                   <Block>
                     <DocumentProcessesTable documentUsages={documentUsages}/>

@@ -3,7 +3,7 @@ import {useEffect} from 'react'
 import {StatefulSelect} from 'baseui/select'
 import {Block} from 'baseui/block'
 import {KIND, SIZE as ButtonSize} from 'baseui/button'
-import {RouteComponentProps, withRouter} from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 
 import {Code, codelist} from '../../service/Codelist'
 import CreateCodeListModal from '../../components/CodeList/ModalCreateCodeList'
@@ -17,9 +17,11 @@ import {StyledSpinnerNext} from 'baseui/spinner'
 import Button from '../../components/common/Button'
 import {faPlus} from '@fortawesome/free-solid-svg-icons'
 
-const CodeListPage = (props: RouteComponentProps<{ listname?: string }>) => {
+const CodeListPage = () => {
+  const params = useParams<{ listname?: string }>()
+  const history = useHistory()
   const [loading, setLoading] = React.useState(true)
-  const [listname, setListname] = React.useState(props.match.params.listname)
+  const [listname, setListname] = React.useState(params.listname)
   const [createCodeListModal, setCreateCodeListModal] = React.useState(false)
   const [errorOnResponse, setErrorOnResponse] = React.useState(null)
   const forceUpdate = useForceUpdate()
@@ -52,8 +54,8 @@ const CodeListPage = (props: RouteComponentProps<{ listname?: string }>) => {
   }, [])
 
   useEffect(() => {
-    if (listname && listname !== props.match.params.listname) {
-      props.history.replace(`/admin/codelist/${listname}`)
+    if (listname && listname !== params.listname) {
+      history.replace(`/admin/codelist/${listname}`)
     }
   }, [listname, lists])
 
@@ -113,4 +115,4 @@ const CodeListPage = (props: RouteComponentProps<{ listname?: string }>) => {
   </>
 }
 
-export default withRouter(CodeListPage)
+export default CodeListPage

@@ -5,15 +5,17 @@ import {InformationType, InformationtypeFormValues} from '../constants'
 import {codelist} from '../service/Codelist'
 import {intl} from '../util'
 import {getInformationType, mapInfoTypeToFormVals, updateInformationType} from '../api'
-import {RouteComponentProps} from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 import {H4} from 'baseui/typography'
 import {StyledSpinnerNext} from 'baseui/spinner'
 
-const InformationtypeEditPage = (props: RouteComponentProps<{id: string}>) => {
+const InformationtypeEditPage = () => {
   const [isLoading, setLoading] = React.useState(true)
   const [error, setError] = React.useState(null)
   const [errorSubmit, setErrorSubmit] = React.useState(null)
   const [informationtype, setInformationType] = React.useState<InformationType>()
+  const params = useParams<{id: string}>()
+  const history = useHistory()
 
   const handleAxiosError = (error: any) => {
     if (error.response) {
@@ -33,7 +35,7 @@ const InformationtypeEditPage = (props: RouteComponentProps<{id: string}>) => {
 
     try {
       await updateInformationType(body)
-      props.history.push(`/informationtype/${props.match.params.id}`)
+      history.push(`/informationtype/${params.id}`)
     } catch (e) {
       setErrorSubmit(e.message)
     }
@@ -43,7 +45,7 @@ const InformationtypeEditPage = (props: RouteComponentProps<{id: string}>) => {
     const fetchData = async () => {
       setLoading(true)
       try {
-        const infoType = await getInformationType(props.match.params.id)
+        const infoType = await getInformationType(params.id)
         setInformationType(infoType)
       } catch (e) {
         handleAxiosError(e)

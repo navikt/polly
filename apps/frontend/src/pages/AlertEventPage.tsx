@@ -1,24 +1,24 @@
-import React, { useEffect, useReducer } from 'react'
-import { AlertEvent, AlertEventLevel, AlertEventType, ObjectType, PageResponse } from '../constants'
-import { getAlertEvents } from '../api/AlertApi'
-import { Cell, HeadCell, Row, Table } from '../components/common/Table'
-import { intl, theme } from '../util'
-import { Block } from 'baseui/block'
-import { PLACEMENT, StatefulPopover } from 'baseui/popover'
-import { StatefulMenu } from 'baseui/menu'
-import { KIND } from 'baseui/button'
-import { Pagination } from 'baseui/pagination'
-import { ObjectLink } from '../components/common/RouteLink'
-import { Sensitivity } from '../components/InformationType/Sensitivity'
+import React, {useEffect, useReducer} from 'react'
+import {AlertEvent, AlertEventLevel, AlertEventType, ObjectType, PageResponse} from '../constants'
+import {getAlertEvents} from '../api/AlertApi'
+import {Cell, HeadCell, Row, Table} from '../components/common/Table'
+import {intl, theme} from '../util'
+import {Block} from 'baseui/block'
+import {PLACEMENT, StatefulPopover} from 'baseui/popover'
+import {StatefulMenu} from 'baseui/menu'
+import {KIND} from 'baseui/button'
+import {Pagination} from 'baseui/pagination'
+import {ObjectLink} from '../components/common/RouteLink'
+import {Sensitivity} from '../components/InformationType/Sensitivity'
 import Button from '../components/common/Button'
-import { faChevronDown, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { StatefulSelect } from 'baseui/select'
-import { HeadingLarge, Label2 } from 'baseui/typography'
-import { RouteComponentProps, withRouter } from 'react-router-dom'
-import { user } from '../service/User'
-import { codelist } from '../service/Codelist'
+import {faChevronDown, faTimes} from '@fortawesome/free-solid-svg-icons'
+import {StatefulSelect} from 'baseui/select'
+import {HeadingLarge, Label2} from 'baseui/typography'
+import {useParams} from 'react-router-dom'
+import {user} from '../service/User'
+import {codelist} from '../service/Codelist'
 import moment from 'moment'
-import { SORT_DIRECTION } from 'baseui/table'
+import {SORT_DIRECTION} from 'baseui/table'
 
 
 type SortCol = 'PROCESS' | 'INFORMATION_TYPE' | 'TYPE' | 'LEVEL' | 'TIME' | 'USER'
@@ -31,17 +31,17 @@ type State = {
   type?: AlertEventType,
   processId?: string,
   informationTypeId?: string,
-  sort: { column: SortCol, dir: SORT_DIRECTION }
+  sort: {column: SortCol, dir: SORT_DIRECTION}
 }
 
 type Action =
-  { type: 'EVENTS', value: PageResponse<AlertEvent> } |
-  { type: 'PAGE', value: number } |
-  { type: 'LIMIT', value: number } |
-  { type: 'EVENT_TYPE', value?: AlertEventType } |
-  { type: 'EVENT_LEVEL', value?: AlertEventLevel } |
-  { type: 'OBJECT_FILTER', objectType?: 'informationtype' | 'process', id?: string } |
-  { type: 'SORT', column: SortCol, dir: SORT_DIRECTION }
+  {type: 'EVENTS', value: PageResponse<AlertEvent>} |
+  {type: 'PAGE', value: number} |
+  {type: 'LIMIT', value: number} |
+  {type: 'EVENT_TYPE', value?: AlertEventType} |
+  {type: 'EVENT_LEVEL', value?: AlertEventLevel} |
+  {type: 'OBJECT_FILTER', objectType?: 'informationtype' | 'process', id?: string} |
+  {type: 'SORT', column: SortCol, dir: SORT_DIRECTION}
 
 const clampPage = (state: State, page: number, limit: number): number => {
   if (page < 1 || page > state.events.pages) {
@@ -74,8 +74,8 @@ const reducer = (state: State, action: Action): State => {
   }
 }
 
-const AlertEventPageImpl = (props: RouteComponentProps<{ objectType?: 'informationtype' | 'process', id?: string }>) => {
-  const {objectType, id} = props.match.params
+export const AlertEventPage = () => {
+  const {objectType, id} = useParams<{objectType?: 'informationtype' | 'process', id?: string}>()
   const [state, dispatch] = useReducer(reducer, {
     events: {content: [], numberOfElements: 0, pageNumber: 0, pages: 0, pageSize: 1, totalElements: 0},
     page: 1,
@@ -205,5 +205,4 @@ const AlertEventPageImpl = (props: RouteComponentProps<{ objectType?: 'informati
   )
 }
 
-export const AlertEventPage = withRouter(AlertEventPageImpl)
 export const canViewAlerts = () => user.isAdmin()

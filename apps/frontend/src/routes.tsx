@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Route, RouteComponentProps, Switch, withRouter} from 'react-router-dom'
+import {Route, Switch, useHistory, useLocation, useParams} from 'react-router-dom'
 import {Block} from 'baseui/block'
 import {Paragraph1} from 'baseui/typography'
 import {Spinner} from 'baseui/icon'
@@ -64,14 +64,14 @@ const Routes = (): JSX.Element => (
       <Route exact path="/alert/events/:objectType?/:id?" component={AlertEventPage}/>
 
       <Route exact path="/" component={Main}/>
-      <Route component={withRouter(NotFound)}/>
+      <Route component={NotFound}/>
     </Switch>
   </Root>
 )
 
-const NotFound = (props: RouteComponentProps<any>) => (
+const NotFound = () => (
   <Block display="flex" justifyContent="center" alignContent="center" marginTop={theme.sizing.scale4800}>
-    <Paragraph1>{intl.pageNotFound} - {props.location.pathname}</Paragraph1>
+    <Paragraph1>{intl.pageNotFound} - {useLocation().pathname}</Paragraph1>
     <img src={notFound} alt={intl.pageNotFound} style={{maxWidth: '65%'}}/>
   </Block>
 )
@@ -91,10 +91,11 @@ const disclosureUrl = async (id: string) => {
   return `/thirdparty/${disclosure.recipient.code}`
 }
 
-const redirect = (fetch: (id: string) => Promise<string>) =>
-  (props: RouteComponentProps<{id: string}>) => {
-    fetch(props.match.params.id).then(props.history.replace)
-    return <Spinner/>
-  }
+const redirect = (fetch: (id: string) => Promise<string>) => () => {
+  const {id} = useParams<{id: string}>()
+  const history = useHistory()
+  fetch(id).then(history.replace)
+  return <Spinner/>
+}
 
 export default Routes

@@ -1,17 +1,19 @@
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'baseui/modal'
-import { intl } from '../../../util'
-import { Block } from 'baseui/block'
+import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal'
+import {intl} from '../../../util'
+import {Block} from 'baseui/block'
 import Button from '../../common/Button'
 import * as React from 'react'
-import { RouteComponentProps, withRouter } from 'react-router-dom'
-import { Paragraph2 } from 'baseui/typography'
+import {useHistory, useLocation} from 'react-router-dom'
+import {Paragraph2} from 'baseui/typography'
 
 
-const ProcessCreatedModalImpl = (props: { openAddPolicy: () => void, openAddDocument: () => void } & RouteComponentProps<any>) => {
-  const closeModal = () => props.history.push(props.location.pathname)
+export const ProcessCreatedModal = (props: {openAddPolicy: () => void, openAddDocument: () => void}) => {
+  const history = useHistory()
+  const location = useLocation()
+  const closeModal = () => history.push(location.pathname)
 
   return (
-    <Modal isOpen={props.history.location.search.indexOf('create') >= 0} closeable={false}>
+    <Modal isOpen={history.location.search.indexOf('create') >= 0} closeable={false}>
       <ModalHeader>{intl.processCreated}</ModalHeader>
       <ModalBody>
         <Paragraph2>{intl.doYouWantToAddPolicies}</Paragraph2>
@@ -33,5 +35,3 @@ const ProcessCreatedModalImpl = (props: { openAddPolicy: () => void, openAddDocu
     </Modal>
   )
 }
-
-export const ProcessCreatedModal = withRouter(ProcessCreatedModalImpl)

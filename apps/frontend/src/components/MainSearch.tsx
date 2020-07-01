@@ -8,7 +8,7 @@ import {intl, theme} from '../util'
 import {searchDocuments, searchInformationType, searchProcess, searchProductArea, searchTeam} from '../api'
 import {Select, TYPE, Value} from 'baseui/select'
 import {urlForObject} from './common/RouteLink'
-import {RouteComponentProps, withRouter} from 'react-router-dom'
+import {useHistory, useLocation} from 'react-router-dom'
 import {Radio, RadioGroup} from 'baseui/radio'
 import {paddingZero} from './common/Style'
 import {faFilter} from '@fortawesome/free-solid-svg-icons'
@@ -236,10 +236,12 @@ const SelectType = (props: {type: SearchType, setType: (type: SearchType) => voi
     </Block>
   </Block>
 
-export const MainSearchImpl = (props: RouteComponentProps) => {
+export const MainSearch = () => {
   const [setSearch, searchResult, loading, type, setType] = useMainSearch()
   const [filter, setFilter] = useState(false)
   const [value, setValue] = useState<Value>()
+  const history = useHistory()
+  const location = useLocation()
 
   return (
     <Block>
@@ -248,7 +250,7 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
              alignItems='center'>
         <Select
           noResultsMsg={intl.emptyTable}
-          autoFocus={props.match.path === '/'}
+          autoFocus={location.pathname === '/'}
           isLoading={loading}
           maxDropdownHeight="400px"
           searchable={true}
@@ -264,7 +266,7 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
             const item = params.value[0] as SearchItem;
             (async () => {
               if (item) {
-                props.history.push(urlForObject(item.type, item.id))
+                history.push(urlForObject(item.type, item.id))
               } else {
                 setValue([])
               }
@@ -302,4 +304,4 @@ export const MainSearchImpl = (props: RouteComponentProps) => {
   )
 }
 
-export default withRouter(MainSearchImpl)
+export default MainSearch

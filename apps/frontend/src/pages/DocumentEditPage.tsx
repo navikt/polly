@@ -1,12 +1,12 @@
 import React from 'react'
 import DocumentForm from '../components/document/component/DocumentForm'
-import { RouteComponentProps } from 'react-router-dom'
-import { codelist } from '../service/Codelist'
-import { getDocument, updateInformationTypesDocument } from '../api'
-import { Document, DocumentFormValues, DocumentInfoTypeUse, } from '../constants'
+import {useHistory, useParams} from 'react-router-dom'
+import {codelist} from '../service/Codelist'
+import {getDocument, updateInformationTypesDocument} from '../api'
+import {Document, DocumentFormValues, DocumentInfoTypeUse,} from '../constants'
 import shortid from 'shortid'
-import { H4 } from 'baseui/typography'
-import { intl } from '../util'
+import {H4} from 'baseui/typography'
+import {intl} from '../util'
 
 const convertToDocumentFormValues = (document: Document) => {
   return {
@@ -24,14 +24,16 @@ const convertToDocumentFormValues = (document: Document) => {
   } as DocumentFormValues
 }
 
-const DocumentEditPage = (props: RouteComponentProps<{ id?: string }>) => {
+const DocumentEditPage = () => {
   const [document, setDocument] = React.useState<Document>()
   const [isLoading, setLoading] = React.useState(false)
+  const params = useParams<{id: string}>()
+  const history = useHistory()
 
   const handleEditDocument = async (values: DocumentFormValues) => {
     try {
       const res = await updateInformationTypesDocument(values)
-      props.history.push(`/document/${res.id}`)
+      history.push(`/document/${res.id}`)
     } catch (err) {
       console.log(err, 'ERR')
     }
@@ -41,12 +43,12 @@ const DocumentEditPage = (props: RouteComponentProps<{ id?: string }>) => {
     (async () => {
       setLoading(true)
       await codelist.wait()
-      if (props.match.params.id) {
-        setDocument(await getDocument(props.match.params.id))
+      if (params.id) {
+        setDocument(await getDocument(params.id))
       }
       setLoading(false)
     })()
-  }, [props.match.params.id])
+  }, [params.id])
 
   return (
     <React.Fragment>

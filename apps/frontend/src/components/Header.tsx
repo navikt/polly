@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react'
 import {ALIGN, HeaderNavigation, StyledNavigationItem as NavigationItem, StyledNavigationList as NavigationList,} from 'baseui/header-navigation'
 import {Button} from 'baseui/button'
 import {Block, BlockProps} from 'baseui/block'
-import {RouteComponentProps, withRouter} from 'react-router-dom'
+import {useHistory, useLocation} from 'react-router-dom'
 import {env} from '../util/env'
 import {intl, theme} from '../util'
 import {user} from '../service/User'
@@ -115,7 +115,8 @@ const LangDropdown = (props: { setLang: (lang: string) => void }) => {
   )
 }
 
-const AdminOptionsImpl = (props: RouteComponentProps<any>) => {
+const AdminOptions = () => {
+  const history = useHistory()
   const pages = [
     {label: intl.manageCodeListTitle, href: '/admin/codelist'},
     {label: intl.audit, href: '/admin/audit'},
@@ -129,7 +130,7 @@ const AdminOptionsImpl = (props: RouteComponentProps<any>) => {
           onItemSelect={select => {
             select.event?.preventDefault()
             close()
-            props.history.push(select.item.href)
+            history.push(select.item.href)
           }}
         />
       }>
@@ -139,15 +140,15 @@ const AdminOptionsImpl = (props: RouteComponentProps<any>) => {
     </StatefulPopover>
   )
 }
-const AdminOptions = withRouter(AdminOptionsImpl)
 
 interface HeaderProps {
   setLang: (lang: string) => void
 }
 
-const HeaderImpl = (props: HeaderProps & RouteComponentProps) => {
+const Header = (props: HeaderProps) => {
   const [url, setUrl] = useState(window.location.href)
-  useEffect(() => setUrl(window.location.href), [props.location.pathname])
+  const location = useLocation()
+  useEffect(() => setUrl(window.location.href), [location.pathname])
 
   return (
     <Block>
@@ -188,4 +189,4 @@ const HeaderImpl = (props: HeaderProps & RouteComponentProps) => {
   )
 }
 
-export default withRouter(HeaderImpl)
+export default Header

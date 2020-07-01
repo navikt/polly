@@ -3,7 +3,7 @@ import {useEffect} from 'react'
 import {Block} from 'baseui/block'
 import {faPlusCircle} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {RouteComponentProps} from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 import {H4} from 'baseui/typography'
 
 import {InformationtypeMetadata} from '../components/InformationType/InformationtypeMetadata/'
@@ -18,9 +18,12 @@ import {Spinner} from '../components/common/Spinner'
 
 export type PurposeMap = {[purpose: string]: Policy[]}
 
-const InformationtypePage = (props: RouteComponentProps<{id?: string, purpose?: string}>) => {
+const InformationtypePage = () => {
+  const params = useParams<{id?: string, purpose?: string}>()
+  const history = useHistory()
+
   const [error, setError] = React.useState(null)
-  const [informationTypeId, setInformationTypeId] = React.useState(props.match.params.id)
+  const [informationTypeId, setInformationTypeId] = React.useState(params.id)
   const [informationtype, setInformationtype] = React.useState<InformationType>()
   const [policies, setPolicies] = React.useState<Policy[]>()
   const [disclosures, setDisclosures] = React.useState<Disclosure[]>()
@@ -34,7 +37,7 @@ const InformationtypePage = (props: RouteComponentProps<{id?: string, purpose?: 
     })()
   }, [])
 
-  useEffect(() => setInformationTypeId(props.match.params.id), [props.match.params.id])
+  useEffect(() => setInformationTypeId(params.id), [params.id])
 
   useEffect(() => {
     (async () => {
@@ -50,7 +53,7 @@ const InformationtypePage = (props: RouteComponentProps<{id?: string, purpose?: 
         setError(err.message)
       }
 
-      if (!props.match.params.id) props.history.push(`/informationtype/${informationTypeId}`)
+      if (!params.id) history.push(`/informationtype/${informationTypeId}`)
     })()
   }, [informationTypeId])
 
@@ -63,8 +66,8 @@ const InformationtypePage = (props: RouteComponentProps<{id?: string, purpose?: 
           policies={policies}
           disclosures={disclosures}
           documents={documents}
-          expanded={props.match.params.purpose ? [props.match.params.purpose] : []}
-          onSelectPurpose={purpose => props.history.push(`/informationtype/${informationTypeId}/${purpose}`)}
+          expanded={params.purpose ? [params.purpose] : []}
+          onSelectPurpose={purpose => history.push(`/informationtype/${informationTypeId}/${purpose}`)}
         />
       )}
 
@@ -78,7 +81,7 @@ const InformationtypePage = (props: RouteComponentProps<{id?: string, purpose?: 
         <H4 marginTop='0'>{intl.informationTypes}</H4>
         <Block>
           {user.canWrite() &&
-          <Button kind="outline" onClick={() => props.history.push('/informationtype/create')}>
+          <Button kind="outline" onClick={() => history.push('/informationtype/create')}>
             <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;{intl.createNew}
           </Button>
           }

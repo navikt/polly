@@ -6,7 +6,7 @@ import {SIZE as ButtonSize} from 'baseui/button'
 import {faEdit, faTrash} from '@fortawesome/free-solid-svg-icons'
 import * as React from 'react'
 import {useEffect} from 'react'
-import {RouteComponentProps, withRouter} from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
 import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal'
 import {intl, theme} from '../../util'
 import {Paragraph2} from 'baseui/typography'
@@ -15,12 +15,12 @@ import {InformationType} from '../../constants'
 import {StyledSpinnerNext} from 'baseui/spinner'
 import Button from '../common/Button'
 
-const DeleteModalImpl = (props: RouteComponentProps<any> & { id: string, showDeleteModal: boolean, closeModal: () => void }) => {
+export const DeleteModal = (props: { id: string, showDeleteModal: boolean, closeModal: () => void }) => {
   const [errorProcessModal, setErrorProcessModal] = React.useState(false)
   const [infoType, setInfoType] = React.useState<InformationType>()
   const [policies, setPolicies] = React.useState<number>()
   const [documents, setDocuments] = React.useState<number>()
-
+  const history = useHistory()
 
   useEffect(() => {
     (async () => {
@@ -35,7 +35,7 @@ const DeleteModalImpl = (props: RouteComponentProps<any> & { id: string, showDel
   const submitDeleteProcess = async () => {
     try {
       await deleteInformationType(props.id)
-      props.history.replace('/informationtype')
+      history.replace('/informationtype')
     } catch (e) {
       setErrorProcessModal(e.message)
     }
@@ -85,8 +85,6 @@ const DeleteModalImpl = (props: RouteComponentProps<any> & { id: string, showDel
     </Modal>
   )
 }
-
-export const DeleteModal = withRouter(DeleteModalImpl)
 
 export const InformationTypeBannerButtons = (props: { id: string }) => {
   const [useCss] = useStyletron()

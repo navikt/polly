@@ -1,10 +1,10 @@
 import React from 'react'
 import DocumentForm from '../components/document/component/DocumentForm'
-import { DocumentFormValues } from '../constants'
-import { createInformationTypesDocument } from '../api'
-import { RouteComponentProps } from 'react-router-dom'
-import { H4 } from 'baseui/typography'
-import { intl } from '../util'
+import {DocumentFormValues} from '../constants'
+import {createInformationTypesDocument} from '../api'
+import {useHistory} from 'react-router-dom'
+import {H4} from 'baseui/typography'
+import {intl} from '../util'
 
 let initialCreateDocumentFormValues: DocumentFormValues = {
   name: '',
@@ -12,13 +12,14 @@ let initialCreateDocumentFormValues: DocumentFormValues = {
   informationTypes: []
 }
 
-const DocumentCreatePage = (props: RouteComponentProps) => {
+const DocumentCreatePage = () => {
+  const history = useHistory()
 
   const handleCreateDocument = async (values: DocumentFormValues) => {
     let body = {...values}
     try {
       const res = await createInformationTypesDocument(body)
-      props.history.push(`/document/${res.id}`)
+      history.push(`/document/${res.id}`)
     } catch (error) {
       console.log(error, 'Error')
     }
