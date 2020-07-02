@@ -1,13 +1,13 @@
 package no.nav.data.polly.codelist.codeusage;
 
 import io.prometheus.client.Summary;
+import no.nav.data.common.utils.MetricUtils;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodeUsageRequest;
 import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.codelist.dto.UsedInInstance;
 import no.nav.data.polly.codelist.dto.UsedInInstancePurpose;
-import no.nav.data.polly.common.utils.MetricUtils;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.document.domain.Document;
@@ -30,8 +30,8 @@ import java.util.stream.Stream;
 
 import static java.util.Collections.replaceAll;
 import static java.util.stream.Collectors.toList;
-import static no.nav.data.polly.common.utils.StreamUtils.convert;
-import static no.nav.data.polly.common.utils.StreamUtils.nullToEmptyList;
+import static no.nav.data.common.utils.StreamUtils.convert;
+import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
 
 @Service
 @Transactional

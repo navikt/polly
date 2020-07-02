@@ -1,6 +1,6 @@
 package no.nav.data.polly.alert.domain;
 
-import no.nav.data.polly.common.storage.domain.GenericStorage;
+import no.nav.data.common.storage.domain.GenericStorage;
 import no.nav.data.polly.process.domain.ProcessCount;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

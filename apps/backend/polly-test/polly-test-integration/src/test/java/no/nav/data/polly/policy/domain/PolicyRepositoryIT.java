@@ -1,10 +1,10 @@
 package no.nav.data.polly.policy.domain;
 
+import no.nav.data.common.auditing.domain.Action;
+import no.nav.data.common.auditing.domain.AuditVersion;
+import no.nav.data.common.auditing.domain.AuditVersionRepository;
+import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.polly.IntegrationTestBase;
-import no.nav.data.polly.common.auditing.domain.Action;
-import no.nav.data.polly.common.auditing.domain.AuditVersion;
-import no.nav.data.polly.common.auditing.domain.AuditVersionRepository;
-import no.nav.data.polly.common.utils.StreamUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -7,10 +7,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
+import no.nav.data.common.rest.ChangeStampResponse;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
-import no.nav.data.polly.common.rest.ChangeStampResponse;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
 
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.UUID;
 import javax.validation.constraints.NotNull;
 
-import static no.nav.data.polly.common.utils.StreamUtils.copyOf;
+import static no.nav.data.common.utils.StreamUtils.copyOf;
 
 @Data
 @Builder

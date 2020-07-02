@@ -1,9 +1,9 @@
 package no.nav.data.polly.settings;
 
+import no.nav.data.common.storage.domain.GenericStorage;
+import no.nav.data.common.storage.domain.StorageType;
+import no.nav.data.common.utils.JsonUtils;
 import no.nav.data.polly.IntegrationTestBase;
-import no.nav.data.polly.common.storage.domain.GenericStorage;
-import no.nav.data.polly.common.storage.domain.StorageType;
-import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.document.domain.Document;
 import no.nav.data.polly.settings.dto.Settings;
 import org.junit.jupiter.api.Test;

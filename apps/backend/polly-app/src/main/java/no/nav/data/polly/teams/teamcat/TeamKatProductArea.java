@@ -8,7 +8,7 @@ import no.nav.data.polly.teams.domain.ProductArea;
 
 import java.util.List;
 
-import static no.nav.data.polly.common.utils.StreamUtils.convert;
+import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Data
 @Builder

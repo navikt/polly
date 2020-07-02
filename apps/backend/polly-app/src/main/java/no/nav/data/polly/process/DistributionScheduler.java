@@ -1,6 +1,6 @@
 package no.nav.data.polly.process;
 
-import no.nav.data.polly.common.nais.LeaderElectionService;
+import no.nav.data.common.nais.LeaderElectionService;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.process.domain.ProcessDistribution;
@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
-import static no.nav.data.polly.common.utils.MdcUtils.wrapAsync;
-import static no.nav.data.polly.common.utils.StreamUtils.convert;
+import static no.nav.data.common.utils.MdcUtils.wrapAsync;
+import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Service
 public class DistributionScheduler {

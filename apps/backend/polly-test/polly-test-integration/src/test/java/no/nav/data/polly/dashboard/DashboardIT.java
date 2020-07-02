@@ -8,7 +8,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static no.nav.data.polly.common.utils.StreamUtils.get;
+import static no.nav.data.common.utils.StreamUtils.get;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DashboardIT extends IntegrationTestBase {
