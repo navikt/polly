@@ -1,4 +1,4 @@
-package no.nav.data.common.auditing.event.event;
+package no.nav.data.common.auditing.event;
 
 import no.nav.data.common.auditing.domain.Action;
 import no.nav.data.common.auditing.domain.AuditVersion;
