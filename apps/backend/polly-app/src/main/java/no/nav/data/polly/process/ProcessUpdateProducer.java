@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-import static no.nav.data.polly.common.utils.MetricUtils.counter;
+import static no.nav.data.common.utils.MetricUtils.counter;
 
 
 @Slf4j

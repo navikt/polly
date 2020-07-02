@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Singular;
 import lombok.experimental.FieldNameConstants;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.common.validator.FieldValidator;
+import no.nav.data.common.validator.RequestElement;
 import no.nav.data.polly.codelist.domain.ListName;
-import no.nav.data.polly.common.validator.FieldValidator;
-import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -18,10 +18,10 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static no.nav.data.polly.common.swagger.SwaggerConfig.LOCAL_DATE;
-import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_END;
-import static no.nav.data.polly.common.utils.DateUtil.ORIG_START;
-import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
+import static no.nav.data.common.swagger.SwaggerConfig.LOCAL_DATE;
+import static no.nav.data.common.utils.DateUtil.DEFAULT_END;
+import static no.nav.data.common.utils.DateUtil.ORIG_START;
+import static no.nav.data.common.utils.StringUtils.toUpperCaseAndTrim;
 
 @Slf4j
 @Data

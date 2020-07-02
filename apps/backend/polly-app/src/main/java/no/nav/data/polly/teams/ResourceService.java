@@ -1,6 +1,6 @@
 package no.nav.data.polly.teams;
 
-import no.nav.data.polly.common.rest.RestResponsePage;
+import no.nav.data.common.rest.RestResponsePage;
 import no.nav.data.polly.teams.dto.Resource;
 
 import java.util.Optional;

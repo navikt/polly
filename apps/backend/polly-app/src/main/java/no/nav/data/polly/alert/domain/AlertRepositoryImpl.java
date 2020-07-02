@@ -1,8 +1,8 @@
 package no.nav.data.polly.alert.domain;
 
+import no.nav.data.common.storage.domain.GenericStorage;
 import no.nav.data.polly.alert.AlertController.EventPage.AlertSort;
 import no.nav.data.polly.alert.AlertController.EventPage.SortDir;
-import no.nav.data.polly.common.storage.domain.GenericStorage;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

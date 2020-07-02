@@ -21,7 +21,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 import java.util.UUID;
 
-import static no.nav.data.polly.common.utils.StreamUtils.convert;
+import static no.nav.data.common.utils.StreamUtils.convert;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpEntity.EMPTY;
 import static org.springframework.http.HttpMethod.DELETE;

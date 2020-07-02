@@ -5,8 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import no.nav.data.common.auditing.domain.Auditable;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
-import no.nav.data.polly.common.auditing.domain.Auditable;
 
 import java.io.Serializable;
 import javax.persistence.Column;

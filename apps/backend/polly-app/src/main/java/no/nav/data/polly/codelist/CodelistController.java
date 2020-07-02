@@ -5,12 +5,12 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.AllCodelistResponse;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
-import no.nav.data.polly.common.utils.StreamUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 
-import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
+import static no.nav.data.common.utils.StringUtils.toUpperCaseAndTrim;
 
 @Slf4j
 @RestController

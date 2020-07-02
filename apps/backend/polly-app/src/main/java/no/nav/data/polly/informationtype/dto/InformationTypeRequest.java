@@ -8,19 +8,19 @@ import lombok.NoArgsConstructor;
 import lombok.Singular;
 import lombok.experimental.FieldNameConstants;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.common.validator.FieldValidator;
+import no.nav.data.common.validator.RequestElement;
 import no.nav.data.polly.codelist.domain.ListName;
-import no.nav.data.polly.common.validator.FieldValidator;
-import no.nav.data.polly.common.validator.RequestElement;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import static no.nav.data.polly.common.utils.StreamUtils.nullToEmptyList;
-import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
-import static no.nav.data.polly.common.utils.StringUtils.formatList;
-import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
+import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
+import static no.nav.data.common.utils.StreamUtils.safeStream;
+import static no.nav.data.common.utils.StringUtils.formatList;
+import static no.nav.data.common.utils.StringUtils.toUpperCaseAndTrim;
 
 @Slf4j
 @Data

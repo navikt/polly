@@ -8,10 +8,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
 import lombok.experimental.FieldNameConstants;
+import no.nav.data.common.utils.StringUtils;
+import no.nav.data.common.validator.FieldValidator;
+import no.nav.data.common.validator.RequestElement;
 import no.nav.data.polly.codelist.domain.ListName;
-import no.nav.data.polly.common.utils.StringUtils;
-import no.nav.data.polly.common.validator.FieldValidator;
-import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.LegalBasesUse;
@@ -22,9 +22,9 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 import java.util.UUID;
 
-import static no.nav.data.polly.common.utils.StreamUtils.convert;
-import static no.nav.data.polly.common.utils.StreamUtils.nullToEmptyList;
-import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
+import static no.nav.data.common.utils.StreamUtils.convert;
+import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
+import static no.nav.data.common.utils.StringUtils.toUpperCaseAndTrim;
 
 @Data
 @Builder

@@ -1,13 +1,13 @@
 package no.nav.data.polly.informationtype;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.common.exceptions.PollyNotFoundException;
+import no.nav.data.common.exceptions.ValidationException;
+import no.nav.data.common.utils.StreamUtils;
+import no.nav.data.common.validator.RequestElement;
+import no.nav.data.common.validator.RequestValidator;
+import no.nav.data.common.validator.ValidationError;
 import no.nav.data.polly.alert.AlertService;
-import no.nav.data.polly.common.exceptions.PollyNotFoundException;
-import no.nav.data.polly.common.exceptions.ValidationException;
-import no.nav.data.polly.common.utils.StreamUtils;
-import no.nav.data.polly.common.validator.RequestElement;
-import no.nav.data.polly.common.validator.RequestValidator;
-import no.nav.data.polly.common.validator.ValidationError;
 import no.nav.data.polly.document.domain.Document;
 import no.nav.data.polly.document.domain.DocumentRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
@@ -26,8 +26,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.data.polly.common.utils.StreamUtils.convert;
-import static no.nav.data.polly.common.utils.StreamUtils.nullToEmptyList;
+import static no.nav.data.common.utils.StreamUtils.convert;
+import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
 
 @Slf4j
 @Service

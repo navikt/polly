@@ -1,8 +1,8 @@
 package no.nav.data.polly.security;
 
+import no.nav.data.common.security.domain.Auth;
+import no.nav.data.common.security.domain.AuthRepository;
 import no.nav.data.polly.IntegrationTestBase;
-import no.nav.data.polly.common.security.domain.Auth;
-import no.nav.data.polly.common.security.domain.AuthRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

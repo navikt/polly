@@ -1,12 +1,12 @@
 package no.nav.data.polly.codelist;
 
+import no.nav.data.common.exceptions.CodelistNotFoundException;
+import no.nav.data.common.utils.JsonUtils;
 import no.nav.data.polly.AppStarter;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.AllCodelistResponse;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
-import no.nav.data.polly.common.exceptions.CodelistNotFoundException;
-import no.nav.data.polly.common.utils.JsonUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

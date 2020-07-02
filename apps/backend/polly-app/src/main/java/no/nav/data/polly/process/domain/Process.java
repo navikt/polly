@@ -6,12 +6,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import no.nav.data.common.auditing.domain.Auditable;
+import no.nav.data.common.rest.ChangeStampResponse;
+import no.nav.data.common.utils.DateUtil;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
-import no.nav.data.polly.common.auditing.domain.Auditable;
-import no.nav.data.polly.common.rest.ChangeStampResponse;
-import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
@@ -42,10 +42,10 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import static java.util.Comparator.comparing;
-import static no.nav.data.polly.common.utils.StreamUtils.convert;
-import static no.nav.data.polly.common.utils.StreamUtils.copyOf;
-import static no.nav.data.polly.common.utils.StreamUtils.nullToEmptyList;
-import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
+import static no.nav.data.common.utils.StreamUtils.convert;
+import static no.nav.data.common.utils.StreamUtils.copyOf;
+import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
+import static no.nav.data.common.utils.StreamUtils.safeStream;
 
 @Data
 @Builder

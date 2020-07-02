@@ -4,7 +4,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.polly.common.utils.MetricUtils;
+import no.nav.data.common.utils.MetricUtils;
 import no.nav.data.polly.term.TermService;
 import no.nav.data.polly.term.domain.PollyTerm;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
-import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
+import static no.nav.data.common.utils.StreamUtils.safeStream;
 
 @Slf4j
 @Component
