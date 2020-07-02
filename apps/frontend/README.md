@@ -1,3 +1,5 @@
+[![Frontend](https://github.com/navikt/polly/workflows/Frontend/badge.svg?branch=master)](https://github.com/navikt/polly/actions)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
