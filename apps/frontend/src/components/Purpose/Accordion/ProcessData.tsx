@@ -167,9 +167,11 @@ const ProcessData = (props: {process: Process}) => {
           {process.retention?.retentionPlan &&
           <Block>
             <Block>{intl.retentionPlanYes}</Block>
-            <RetentionView retention={process.retention}/>
           </Block>
           }
+          <Block>
+            <RetentionView retention={process.retention}/>
+          </Block>
           <Block>
             <span>{process.retention?.retentionDescription && `${intl.retentionDescription}: `}</span>
             <span><Markdown source={process.retention?.retentionDescription} singleWord/></span>
