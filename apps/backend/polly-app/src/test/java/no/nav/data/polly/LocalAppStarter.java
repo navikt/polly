@@ -1,8 +1,6 @@
 package no.nav.data.polly;
 
 
-import no.nav.data.AppStarter;
-
 public class LocalAppStarter {
 
     public static void main(String[] args) {

@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.data.polly.common.Period;
+import no.nav.data.polly.Period;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 
 import java.time.LocalDate;

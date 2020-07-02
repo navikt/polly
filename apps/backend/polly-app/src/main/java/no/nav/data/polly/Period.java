@@ -1,4 +1,4 @@
-package no.nav.data.polly.common;
+package no.nav.data.polly;
 
 import lombok.Value;
 import no.nav.data.common.utils.DateUtil;

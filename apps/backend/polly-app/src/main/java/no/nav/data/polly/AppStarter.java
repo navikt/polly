@@ -1,4 +1,4 @@
-package no.nav.data;
+package no.nav.data.polly;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

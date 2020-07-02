@@ -1,4 +1,4 @@
-package no.nav.data.common.security.azure;
+package no.nav.data.common.security.dto;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

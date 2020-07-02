@@ -3,7 +3,6 @@ package no.nav.data.polly;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import io.prometheus.client.CollectorRegistry;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.AppStarter;
 import no.nav.data.common.auditing.domain.AuditVersionRepository;
 import no.nav.data.common.nais.LeaderElectionService;
 import no.nav.data.common.storage.domain.GenericStorageRepository;

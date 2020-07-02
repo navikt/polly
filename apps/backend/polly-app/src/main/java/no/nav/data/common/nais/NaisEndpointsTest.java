@@ -1,7 +1,7 @@
 package no.nav.data.common.nais;
 
 import io.micrometer.core.instrument.MeterRegistry;
-import no.nav.data.AppStarter;
+import no.nav.data.polly.AppStarter;
 import no.nav.data.polly.codelist.CodelistRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
