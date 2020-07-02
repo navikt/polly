@@ -21,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.security.AppIdMapping;
 import no.nav.data.common.security.AuthController;
 import no.nav.data.common.security.domain.Auth;
-import no.nav.data.common.security.dto.AADAuthenticationProperties;
 import no.nav.data.common.security.dto.Credential;
 import no.nav.data.common.utils.MetricUtils;
 import org.apache.commons.lang3.StringUtils;

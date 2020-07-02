@@ -6,7 +6,6 @@ import com.nimbusds.jose.jwk.source.RemoteJWKSet;
 import com.nimbusds.jose.util.DefaultResourceRetriever;
 import com.nimbusds.jose.util.ResourceRetriever;
 import no.nav.data.common.security.AppIdMapping;
-import no.nav.data.common.security.dto.AADAuthenticationProperties;
 import no.nav.data.common.utils.MdcExecutor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

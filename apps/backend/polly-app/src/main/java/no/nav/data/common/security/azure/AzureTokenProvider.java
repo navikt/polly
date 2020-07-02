@@ -26,7 +26,6 @@ import no.nav.data.common.security.SecurityProperties;
 import no.nav.data.common.security.azure.support.AuthResultExpiry;
 import no.nav.data.common.security.azure.support.GraphLogger;
 import no.nav.data.common.security.domain.Auth;
-import no.nav.data.common.security.dto.AADAuthenticationProperties;
 import no.nav.data.common.security.dto.Credential;
 import no.nav.data.common.security.dto.GraphData;
 import no.nav.data.common.security.dto.PollyRole;

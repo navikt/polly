@@ -22,7 +22,7 @@
 
     <properties>
         <java.version>14</java.version>
-        <start-class>no.nav.data.polly.AppStarter</start-class>
+        <start-class>no.nav.data.AppStarter</start-class>
 
         <springfox.version>2.9.2</springfox.version>
         <swagger.version>1.6.1</swagger.version>
