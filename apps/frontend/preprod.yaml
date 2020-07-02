@@ -1,5 +1,0 @@
-app: data-catalog-editor
-namespace: teamdatajegerne
-team: teamdatajegerne
-ingresses:
-  - https://behandlingskatalog.nais.preprod.local

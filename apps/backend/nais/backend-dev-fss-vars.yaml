@@ -1,6 +1,3 @@
-app: polly
-namespace: teamdatajegerne
-team: teamdatajegerne
 ingresses:
   - https://polly.nais.preprod.local
   - https://polly.dev-fss.nais.io

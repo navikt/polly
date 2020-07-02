@@ -1,13 +1,20 @@
-name: Java CI
+name: Backend
 
-on: [push]
+on: 
+  push:
+      - '.github/workflows/backend.yml'
+      - 'apps/backend/**'
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/polly:${{ github.sha }}
 
+defaults:
+  run:
+    working-directory: apps/backend
+
 jobs:
   build:
-    name: Build and push docker
+    name: Backend - build and push docker
     runs-on: ubuntu-latest
 
     steps:
@@ -35,7 +42,7 @@ jobs:
           docker push ${IMAGE}
 
   deploy-preprod:
-    name: Deploy to NAIS Preprod
+    name: Backend - deploy Dev FSS
     needs: build
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
@@ -45,11 +52,12 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
-          RESOURCE: nais.yaml
-          VARS: preprod.yaml
+          RESOURCE: apps/backend/nais/backend-fss.yaml
+          VARS: apps/backend/nais/backend-dev-fss-vars.yaml
+          ENVIRONMENT: dev-fss:teamdatajegerne:polly-backend
 
   deploy-prod:
-    name: Deploy to NAIS Prod
+    name: Backend - deploy Prod FSS
     needs: build
     if: github.ref == 'refs/heads/prod'
     runs-on: ubuntu-latest
@@ -59,5 +67,6 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-fss
-          RESOURCE: nais.yaml
-          VARS: prod.yaml
+          RESOURCE: apps/backend/nais/backend-fss.yaml
+          VARS: apps/backend/nais/backend-prod-fss-vars.yaml
+          ENVIRONMENT: prod-fss:teamdatajegerne:polly-backend
