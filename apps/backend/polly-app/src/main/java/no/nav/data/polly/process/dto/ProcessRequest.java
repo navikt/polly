@@ -7,9 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
 import lombok.experimental.FieldNameConstants;
-import no.nav.data.common.validator.FieldValidator;
-import no.nav.data.common.validator.RequestElement;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.common.validator.FieldValidator;
+import no.nav.data.polly.common.validator.RequestElement;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.process.domain.ProcessStatus;
 import org.apache.commons.lang3.StringUtils;
@@ -17,12 +17,12 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static no.nav.data.common.swagger.SwaggerConfig.LOCAL_DATE;
-import static no.nav.data.common.utils.DateUtil.DEFAULT_END;
-import static no.nav.data.common.utils.DateUtil.ORIG_START;
-import static no.nav.data.common.utils.StringUtils.formatList;
-import static no.nav.data.common.utils.StringUtils.formatListToUppercase;
-import static no.nav.data.common.utils.StringUtils.toUpperCaseAndTrim;
+import static no.nav.data.polly.common.swagger.SwaggerConfig.LOCAL_DATE;
+import static no.nav.data.polly.common.utils.DateUtil.DEFAULT_END;
+import static no.nav.data.polly.common.utils.DateUtil.ORIG_START;
+import static no.nav.data.polly.common.utils.StringUtils.formatList;
+import static no.nav.data.polly.common.utils.StringUtils.formatListToUppercase;
+import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
 import static org.apache.commons.lang3.StringUtils.trimToNull;
 
 @Data

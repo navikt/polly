@@ -6,12 +6,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
-import no.nav.data.common.validator.FieldValidator;
-import no.nav.data.common.validator.RequestValidator;
-import no.nav.data.common.validator.Validated;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.common.validator.FieldValidator;
+import no.nav.data.polly.common.validator.RequestValidator;
+import no.nav.data.polly.common.validator.Validated;
 
-import static no.nav.data.common.utils.StringUtils.toUpperCaseAndTrim;
+import static no.nav.data.polly.common.utils.StringUtils.toUpperCaseAndTrim;
 
 @Data
 @Builder

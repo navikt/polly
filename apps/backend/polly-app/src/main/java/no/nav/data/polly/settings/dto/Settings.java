@@ -5,10 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
-import no.nav.data.common.storage.domain.ChangeStamp;
-import no.nav.data.common.storage.domain.GenericStorageData;
-import no.nav.data.common.validator.FieldValidator;
-import no.nav.data.common.validator.Validated;
+import no.nav.data.polly.common.storage.domain.ChangeStamp;
+import no.nav.data.polly.common.storage.domain.GenericStorageData;
+import no.nav.data.polly.common.validator.FieldValidator;
+import no.nav.data.polly.common.validator.Validated;
 
 @FieldNameConstants
 @Data

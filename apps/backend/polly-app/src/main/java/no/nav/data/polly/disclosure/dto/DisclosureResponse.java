@@ -6,8 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
-import no.nav.data.common.utils.DateUtil;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
+import no.nav.data.polly.common.utils.DateUtil;
 import no.nav.data.polly.document.dto.DocumentResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 

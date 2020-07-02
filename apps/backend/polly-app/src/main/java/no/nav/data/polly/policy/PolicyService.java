@@ -1,10 +1,10 @@
 package no.nav.data.polly.policy;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.common.exceptions.ValidationException;
-import no.nav.data.common.validator.RequestValidator;
-import no.nav.data.common.validator.ValidationError;
 import no.nav.data.polly.alert.AlertService;
+import no.nav.data.polly.common.exceptions.ValidationException;
+import no.nav.data.polly.common.validator.RequestValidator;
+import no.nav.data.polly.common.validator.ValidationError;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.policy.domain.Policy;

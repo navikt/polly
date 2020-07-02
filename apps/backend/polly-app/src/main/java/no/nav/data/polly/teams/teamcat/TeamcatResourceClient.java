@@ -2,8 +2,8 @@ package no.nav.data.polly.teams.teamcat;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import no.nav.data.common.rest.RestResponsePage;
-import no.nav.data.common.utils.MetricUtils;
+import no.nav.data.polly.common.rest.RestResponsePage;
+import no.nav.data.polly.common.utils.MetricUtils;
 import no.nav.data.polly.teams.ResourceService;
 import no.nav.data.polly.teams.dto.Resource;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

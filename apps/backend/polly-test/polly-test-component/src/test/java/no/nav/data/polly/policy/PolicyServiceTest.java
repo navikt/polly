@@ -1,8 +1,8 @@
 package no.nav.data.polly.policy;
 
-import no.nav.data.common.exceptions.ValidationException;
-import no.nav.data.common.utils.JsonUtils;
 import no.nav.data.polly.codelist.CodelistStub;
+import no.nav.data.polly.common.exceptions.ValidationException;
+import no.nav.data.polly.common.utils.JsonUtils;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;

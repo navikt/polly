@@ -1,9 +1,9 @@
 package no.nav.data.polly.disclosure;
 
-import no.nav.data.common.utils.StreamUtils;
-import no.nav.data.common.validator.RequestElement;
-import no.nav.data.common.validator.RequestValidator;
-import no.nav.data.common.validator.ValidationError;
+import no.nav.data.polly.common.utils.StreamUtils;
+import no.nav.data.polly.common.validator.RequestElement;
+import no.nav.data.polly.common.validator.RequestValidator;
+import no.nav.data.polly.common.validator.ValidationError;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;

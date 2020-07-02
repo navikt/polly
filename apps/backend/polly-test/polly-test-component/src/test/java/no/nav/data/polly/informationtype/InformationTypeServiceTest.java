@@ -1,7 +1,7 @@
 package no.nav.data.polly.informationtype;
 
-import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.polly.codelist.CodelistStub;
+import no.nav.data.polly.common.exceptions.ValidationException;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.term.TermService;

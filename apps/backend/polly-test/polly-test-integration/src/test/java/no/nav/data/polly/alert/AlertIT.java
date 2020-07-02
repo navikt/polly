@@ -1,15 +1,15 @@
 package no.nav.data.polly.alert;
 
 
-import no.nav.data.common.storage.domain.GenericStorage;
-import no.nav.data.common.storage.domain.GenericStorageRepository;
-import no.nav.data.common.storage.domain.StorageType;
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.alert.AlertController.EventPage;
 import no.nav.data.polly.alert.AlertController.EventPage.AlertSort;
 import no.nav.data.polly.alert.domain.AlertEvent;
 import no.nav.data.polly.alert.domain.AlertEventType;
 import no.nav.data.polly.alert.domain.AlertRepository;
+import no.nav.data.polly.common.storage.domain.GenericStorage;
+import no.nav.data.polly.common.storage.domain.GenericStorageRepository;
+import no.nav.data.polly.common.storage.domain.StorageType;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
 import no.nav.data.polly.policy.domain.LegalBasesUse;
@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static java.util.UUID.randomUUID;
-import static no.nav.data.common.utils.StreamUtils.convert;
+import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AlertIT extends IntegrationTestBase {

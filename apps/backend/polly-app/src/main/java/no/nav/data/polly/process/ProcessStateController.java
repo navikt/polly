@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.common.rest.RestResponsePage;
+import no.nav.data.polly.common.rest.RestResponsePage;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessShortResponse;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static no.nav.data.common.utils.StreamUtils.convert;
+import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Slf4j
 @RestController

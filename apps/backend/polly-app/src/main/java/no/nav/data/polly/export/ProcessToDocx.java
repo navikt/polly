@@ -1,15 +1,15 @@
 package no.nav.data.polly.export;
 
 import lombok.SneakyThrows;
-import no.nav.data.common.exceptions.ValidationException;
-import no.nav.data.common.rest.ChangeStampResponse;
-import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.polly.Period;
 import no.nav.data.polly.alert.AlertService;
 import no.nav.data.polly.alert.dto.PolicyAlert;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.common.exceptions.ValidationException;
+import no.nav.data.polly.common.rest.ChangeStampResponse;
+import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
@@ -70,8 +70,8 @@ import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
-import static no.nav.data.common.utils.StreamUtils.convert;
-import static no.nav.data.common.utils.StreamUtils.filter;
+import static no.nav.data.polly.common.utils.StreamUtils.convert;
+import static no.nav.data.polly.common.utils.StreamUtils.filter;
 
 @Service
 public class ProcessToDocx {

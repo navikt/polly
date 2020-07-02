@@ -1,9 +1,9 @@
 package no.nav.data.polly.settings;
 
-import no.nav.data.common.exceptions.ValidationException;
-import no.nav.data.common.storage.StorageService;
-import no.nav.data.common.storage.domain.GenericStorage;
-import no.nav.data.common.validator.RequestValidator;
+import no.nav.data.polly.common.exceptions.ValidationException;
+import no.nav.data.polly.common.storage.StorageService;
+import no.nav.data.polly.common.storage.domain.GenericStorage;
+import no.nav.data.polly.common.validator.RequestValidator;
 import no.nav.data.polly.document.domain.DocumentRepository;
 import no.nav.data.polly.settings.dto.Settings;
 import org.springframework.stereotype.Service;

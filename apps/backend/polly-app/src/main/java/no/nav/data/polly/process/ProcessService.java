@@ -1,10 +1,10 @@
 package no.nav.data.polly.process;
 
-import no.nav.data.common.utils.StreamUtils;
-import no.nav.data.common.validator.RequestElement;
-import no.nav.data.common.validator.RequestValidator;
-import no.nav.data.common.validator.ValidationError;
 import no.nav.data.polly.alert.AlertService;
+import no.nav.data.polly.common.utils.StreamUtils;
+import no.nav.data.polly.common.validator.RequestElement;
+import no.nav.data.polly.common.validator.RequestValidator;
+import no.nav.data.polly.common.validator.ValidationError;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessDistribution;
 import no.nav.data.polly.process.domain.ProcessDistributionRepository;

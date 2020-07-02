@@ -6,10 +6,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.common.auditing.domain.Auditable;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.UsedInInstance;
+import no.nav.data.polly.common.auditing.domain.Auditable;
 import no.nav.data.polly.document.dto.DocumentInfoTypeUseResponse;
 import no.nav.data.polly.document.dto.DocumentRequest;
 import no.nav.data.polly.document.dto.DocumentResponse;
@@ -25,7 +25,7 @@ import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import static no.nav.data.common.utils.StreamUtils.convert;
+import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Slf4j
 @Data

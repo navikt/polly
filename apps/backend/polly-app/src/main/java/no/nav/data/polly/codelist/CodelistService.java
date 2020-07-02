@@ -1,12 +1,6 @@
 package no.nav.data.polly.codelist;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.common.exceptions.CodelistNotErasableException;
-import no.nav.data.common.exceptions.CodelistNotFoundException;
-import no.nav.data.common.utils.StreamUtils;
-import no.nav.data.common.validator.FieldValidator;
-import no.nav.data.common.validator.RequestElement;
-import no.nav.data.common.validator.RequestValidator;
 import no.nav.data.polly.codelist.codeusage.CodeUsageService;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
@@ -14,6 +8,12 @@ import no.nav.data.polly.codelist.dto.CodeUsageRequest;
 import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
+import no.nav.data.polly.common.exceptions.CodelistNotErasableException;
+import no.nav.data.polly.common.exceptions.CodelistNotFoundException;
+import no.nav.data.polly.common.utils.StreamUtils;
+import no.nav.data.polly.common.validator.FieldValidator;
+import no.nav.data.polly.common.validator.RequestElement;
+import no.nav.data.polly.common.validator.RequestValidator;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 
-import static no.nav.data.common.utils.StreamUtils.convert;
+import static no.nav.data.polly.common.utils.StreamUtils.convert;
 
 @Slf4j
 @Service

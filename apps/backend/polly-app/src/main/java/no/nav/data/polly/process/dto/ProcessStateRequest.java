@@ -5,10 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
-import no.nav.data.common.validator.FieldValidator;
-import no.nav.data.common.validator.Validated;
 import no.nav.data.polly.alert.domain.AlertEventType;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.common.validator.FieldValidator;
+import no.nav.data.polly.common.validator.Validated;
 
 @Data
 @Builder

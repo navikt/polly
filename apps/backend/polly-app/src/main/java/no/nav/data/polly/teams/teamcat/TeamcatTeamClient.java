@@ -2,8 +2,8 @@ package no.nav.data.polly.teams.teamcat;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import no.nav.data.common.rest.RestResponsePage;
-import no.nav.data.common.utils.MetricUtils;
+import no.nav.data.polly.common.rest.RestResponsePage;
+import no.nav.data.polly.common.utils.MetricUtils;
 import no.nav.data.polly.teams.TeamService;
 import no.nav.data.polly.teams.domain.ProductArea;
 import no.nav.data.polly.teams.domain.Team;
@@ -21,8 +21,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
-import static no.nav.data.common.utils.StreamUtils.filter;
-import static no.nav.data.common.utils.StreamUtils.safeStream;
+import static no.nav.data.polly.common.utils.StreamUtils.filter;
+import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 
 @Service
 @ConditionalOnProperty("polly.client.teamcat-team.enabled")

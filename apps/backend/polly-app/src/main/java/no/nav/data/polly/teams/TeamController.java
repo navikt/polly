@@ -5,10 +5,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.common.exceptions.PollyNotFoundException;
-import no.nav.data.common.exceptions.ValidationException;
-import no.nav.data.common.rest.RestResponsePage;
-import no.nav.data.common.utils.StreamUtils;
+import no.nav.data.polly.common.exceptions.PollyNotFoundException;
+import no.nav.data.polly.common.exceptions.ValidationException;
+import no.nav.data.polly.common.rest.RestResponsePage;
+import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.teams.domain.ProductArea;
 import no.nav.data.polly.teams.domain.Team;
 import no.nav.data.polly.teams.dto.ProductAreaResponse;
@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
-import static no.nav.data.common.utils.StartsWithComparator.startsWith;
-import static no.nav.data.common.utils.StreamUtils.convert;
+import static no.nav.data.polly.common.utils.StartsWithComparator.startsWith;
+import static no.nav.data.polly.common.utils.StreamUtils.convert;
 import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
 
 @Slf4j

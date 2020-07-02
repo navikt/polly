@@ -1,12 +1,12 @@
 package no.nav.data.polly.document;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.common.exceptions.PollyNotFoundException;
-import no.nav.data.common.exceptions.ValidationException;
-import no.nav.data.common.utils.StreamUtils;
-import no.nav.data.common.validator.RequestElement;
-import no.nav.data.common.validator.RequestValidator;
-import no.nav.data.common.validator.ValidationError;
+import no.nav.data.polly.common.exceptions.PollyNotFoundException;
+import no.nav.data.polly.common.exceptions.ValidationException;
+import no.nav.data.polly.common.utils.StreamUtils;
+import no.nav.data.polly.common.validator.RequestElement;
+import no.nav.data.polly.common.validator.RequestValidator;
+import no.nav.data.polly.common.validator.ValidationError;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.document.domain.Document;
 import no.nav.data.polly.document.domain.DocumentData.InformationTypeUse;
@@ -26,8 +26,8 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static no.nav.data.common.utils.StreamUtils.convert;
-import static no.nav.data.common.utils.StreamUtils.filter;
+import static no.nav.data.polly.common.utils.StreamUtils.convert;
+import static no.nav.data.polly.common.utils.StreamUtils.filter;
 
 @Slf4j
 @Service

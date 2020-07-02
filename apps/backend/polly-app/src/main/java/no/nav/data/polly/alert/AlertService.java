@@ -1,10 +1,6 @@
 package no.nav.data.polly.alert;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.common.exceptions.PollyNotFoundException;
-import no.nav.data.common.rest.PageParameters;
-import no.nav.data.common.storage.domain.GenericStorage;
-import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.polly.alert.AlertController.EventPage.AlertSort;
 import no.nav.data.polly.alert.AlertController.EventPage.SortDir;
 import no.nav.data.polly.alert.domain.AlertEvent;
@@ -14,6 +10,10 @@ import no.nav.data.polly.alert.domain.AlertRepository;
 import no.nav.data.polly.alert.dto.InformationTypeAlert;
 import no.nav.data.polly.alert.dto.PolicyAlert;
 import no.nav.data.polly.alert.dto.ProcessAlert;
+import no.nav.data.polly.common.exceptions.PollyNotFoundException;
+import no.nav.data.polly.common.rest.PageParameters;
+import no.nav.data.polly.common.storage.domain.GenericStorage;
+import no.nav.data.polly.common.utils.StreamUtils;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
@@ -31,8 +31,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
-import static no.nav.data.common.utils.StreamUtils.convert;
-import static no.nav.data.common.utils.StreamUtils.safeStream;
+import static no.nav.data.polly.common.utils.StreamUtils.convert;
+import static no.nav.data.polly.common.utils.StreamUtils.safeStream;
 
 @Slf4j
 @Service
