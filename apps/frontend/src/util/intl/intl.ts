@@ -64,9 +64,9 @@ export interface IStrings {
   numberOfProcessesWithUnknownLegalBasis: string;
   numberOfProcessesWithoutArticle6LegalBasis: string;
   numberOfProcessesWithoutArticle9LegalBasis: string;
-  numberOfProcessesWithUnknownLegalBasisHelpText: string;
-  numberOfProcessesWithoutArticle6LegalBasisHelpText: string;
-  numberOfProcessesWithoutArticle9LegalBasisHelpText: string;
+  unknownLegalBasisHelpText: string;
+  withoutArticle6LegalBasisHelpText: string;
+  withoutArticle9LegalBasisHelpText: string;
   processesWithUnknownLegalBasis: string;
   processesWithoutArticle6LegalBasis: string;
   processesWithoutArticle9LegalBasis: string;

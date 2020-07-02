@@ -12,7 +12,6 @@ import {Chart} from '../components/Dashboard/Chart'
 import {useHistory} from 'react-router-dom'
 import {LastEvents} from '../components/audit/LastEvents'
 import {Markdown} from '../components/common/Markdown'
-import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
 
 export const Main = () => {
   const history = useHistory()
@@ -127,26 +126,17 @@ export const Main = () => {
                        data={
                          [
                            {
-                             label:
-                               <StatefulTooltip content={intl.numberOfProcessesWithUnknownLegalBasisHelpText} placement={PLACEMENT.topLeft}>
-                                 {intl.numberOfProcessesWithUnknownLegalBasis}
-                               </StatefulTooltip>,
+                             label: intl.numberOfProcessesWithUnknownLegalBasis,
                              size: dashData.allProcesses.processesMissingLegalBases,
                              onClick: () => clickOnPieChartSlice(ProcessField.MISSING_LEGAL_BASIS, ProcessState.YES)
                            },
                            {
-                             label:
-                               <StatefulTooltip content={intl.numberOfProcessesWithoutArticle6LegalBasisHelpText} placement={PLACEMENT.topLeft}>
-                                 {intl.numberOfProcessesWithoutArticle6LegalBasis}
-                               </StatefulTooltip>,
+                             label: intl.numberOfProcessesWithoutArticle6LegalBasis,
                              size: dashData.allProcesses.processesMissingArt6,
                              onClick: () => clickOnPieChartSlice(ProcessField.MISSING_ARTICLE_6, ProcessState.YES)
                            },
                            {
-                             label:
-                               <StatefulTooltip content={intl.numberOfProcessesWithoutArticle9LegalBasisHelpText} placement={PLACEMENT.topLeft}>
-                                 {intl.numberOfProcessesWithoutArticle9LegalBasis}
-                               </StatefulTooltip>,
+                             label: intl.numberOfProcessesWithoutArticle9LegalBasis,
                              size: dashData.allProcesses.processesMissingArt9,
                              onClick: () => clickOnPieChartSlice(ProcessField.MISSING_ARTICLE_9, ProcessState.YES)
                            },

@@ -63,16 +63,19 @@ export const LegalBasesNotClarified = (props: { alert?: PolicyAlert }) => {
   return (
     <Block color={color}>
       <Block>
-        {props.alert?.missingLegalBasis && <>{warningIcon} {intl.MISSING_LEGAL_BASIS}</>}
+        {props.alert?.missingLegalBasis &&
+        <StatefulTooltip content={intl.unknownLegalBasisHelpText} placement={PLACEMENT.top}><span>{warningIcon} {intl.MISSING_LEGAL_BASIS}</span></StatefulTooltip>}
       </Block>
       <Block>
         {props.alert?.excessInfo && <StatefulTooltip content={intl.excessInfoHelpText} placement={PLACEMENT.top}><span>{warningIcon} {intl.EXCESS_INFO}</span></StatefulTooltip>}
       </Block>
       <Block>
-        {props.alert?.missingArt6 && <>{warningIcon} {intl.MISSING_ARTICLE_6}</>}
+        {props.alert?.missingArt6 &&
+        <StatefulTooltip content={intl.withoutArticle6LegalBasisHelpText} placement={PLACEMENT.top}><span>{warningIcon} {intl.MISSING_ARTICLE_6}</span></StatefulTooltip>}
       </Block>
       <Block>
-        {props.alert?.missingArt9 && <>{warningIcon} {intl.MISSING_ARTICLE_9}</>}
+        {props.alert?.missingArt9 &&
+        <StatefulTooltip content={intl.withoutArticle9LegalBasisHelpText} placement={PLACEMENT.top}><span>{warningIcon} {intl.MISSING_ARTICLE_9}</span></StatefulTooltip>}
       </Block>
     </Block>
   )
