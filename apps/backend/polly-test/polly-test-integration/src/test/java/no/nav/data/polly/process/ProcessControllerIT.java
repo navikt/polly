@@ -107,7 +107,10 @@ class ProcessControllerIT extends IntegrationTestBase {
         }
 
         private boolean trueAlerts(ProcessField field) {
-            return field != ProcessField.MISSING_ARTICLE_9 && field != ProcessField.MISSING_LEGAL_BASIS && field != ProcessField.EXCESS_INFO;
+            return field != ProcessField.MISSING_ARTICLE_9 &&
+                    field != ProcessField.MISSING_LEGAL_BASIS &&
+                    field != ProcessField.EXCESS_INFO &&
+                    field != ProcessField.RETENTION_DATA;
         }
 
         @ParameterizedTest

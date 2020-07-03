@@ -22,7 +22,7 @@ public class ProcessStateRequest implements Validated {
     }
 
     public enum ProcessField {
-        DPIA, PROFILING, AUTOMATION, RETENTION,
+        DPIA, PROFILING, AUTOMATION, RETENTION, RETENTION_DATA,
 
         // Alert events
         EXCESS_INFO(true),

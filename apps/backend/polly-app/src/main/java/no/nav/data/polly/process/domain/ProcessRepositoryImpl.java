@@ -110,6 +110,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
             case PROFILING -> " (data #> '{profiling}')";
             case AUTOMATION -> " (data #> '{automaticProcessing}')";
             case RETENTION -> " (data #> '{retention,retentionPlan}')";
+            case RETENTION_DATA -> " (data #> '{retention,retentionMonths}')";
             default -> throw new IllegalArgumentException("invalid field for stateQuery " + processField);
         };
 
