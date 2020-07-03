@@ -85,8 +85,7 @@ public class DashboardController {
                         .profiling(getCount(ProcessField.PROFILING, e.getValue(), e.getKey()))
                         .automation(getCount(ProcessField.AUTOMATION, e.getValue(), e.getKey()))
                         .retention(getCount(ProcessField.RETENTION, e.getValue(), e.getKey()))
-                        .retentionStartUnknown(processRepository.countForState(ProcessField.RETENTION_START, ProcessState.UNKNOWN, e.getKey()))
-                        .retentionMonthsUnknown(processRepository.countForState(ProcessField.RETENTION_MONTHS, ProcessState.UNKNOWN, e.getKey()))
+                        .retentionDataIncomplete(processRepository.countForState(ProcessField.RETENTION_DATA, ProcessState.UNKNOWN, e.getKey()))
                         .build())
                 .collect(Collectors.toList());
 
@@ -106,8 +105,7 @@ public class DashboardController {
                         .profiling(getCount(ProcessField.PROFILING, processes, null))
                         .automation(getCount(ProcessField.AUTOMATION, processes, null))
                         .retention(getCount(ProcessField.RETENTION, processes, null))
-                        .retentionStartUnknown(processRepository.countForState(ProcessField.RETENTION_START, ProcessState.UNKNOWN, null))
-                        .retentionMonthsUnknown(processRepository.countForState(ProcessField.RETENTION_MONTHS, ProcessState.UNKNOWN, null))
+                        .retentionDataIncomplete(processRepository.countForState(ProcessField.RETENTION_DATA, ProcessState.UNKNOWN, null))
                         .build())
                 .departmentProcesses(byDepartment);
         return dash.build();
