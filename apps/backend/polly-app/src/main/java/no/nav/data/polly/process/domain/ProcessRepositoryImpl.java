@@ -106,11 +106,12 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
 
     private String stateQuery(ProcessField processField, ProcessState processState) {
         var loc = switch (processField) {
-            case DPIA -> " (data #> '{dpia,needForDpia}')";
-            case PROFILING -> " (data #> '{profiling}')";
-            case AUTOMATION -> " (data #> '{automaticProcessing}')";
-            case RETENTION -> " (data #> '{retention,retentionPlan}')";
-            case RETENTION_DATA -> " (data #> '{retention,retentionMonths}')";
+            case DPIA -> " data #> '{dpia,needForDpia}' ";
+            case PROFILING -> " data #> '{profiling}' ";
+            case AUTOMATION -> " data #> '{automaticProcessing}' ";
+            case RETENTION -> " data #> '{retention,retentionPlan}' ";
+            case RETENTION_START -> " data #> '{retention,retentionStart}' ";
+            case RETENTION_MONTHS -> " data #> '{retention,retentionMonths}' ";
             default -> throw new IllegalArgumentException("invalid field for stateQuery " + processField);
         };
 
@@ -118,7 +119,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
             case YES -> " = 'true'::jsonb";
             case NO -> " = 'false'::jsonb";
             // force jsonb null to null
-            case UNKNOWN -> "->>0 is null ";
+            case UNKNOWN -> "->> 0 is null ";
         };
         return loc + equate;
     }

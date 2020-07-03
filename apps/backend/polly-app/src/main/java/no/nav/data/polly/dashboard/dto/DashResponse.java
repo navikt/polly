@@ -38,7 +38,8 @@ public class DashResponse {
         private Counter profiling;
         private Counter automation;
         private Counter retention;
-        private Counter retentionData;
+        private long retentionStartUnknown;
+        private long retentionMonthsUnknown;
     }
 
     @Data
@@ -50,8 +51,5 @@ public class DashResponse {
         private Long no;
         private Long unknown;
 
-        public static Counter unknown(long unknown) {
-            return new Counter(null, null, unknown);
-        }
     }
 }
