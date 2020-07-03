@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { Route, Switch, useHistory, useLocation, useParams } from 'react-router-dom'
-import { Block } from 'baseui/block'
-import { Paragraph1 } from 'baseui/typography'
-import { Spinner } from 'baseui/icon'
+import {Route, Switch, useHistory, useLocation, useParams} from 'react-router-dom'
+import {Block} from 'baseui/block'
+import {Paragraph1} from 'baseui/typography'
+import {Spinner} from 'baseui/icon'
 
 
 import Root from './components/Root'
@@ -10,24 +10,24 @@ import ProcessPage from './pages/ProcessPage'
 import InformationtypeCreatePage from './pages/InformationtypeCreatePage'
 import InformationtypeEditPage from './pages/InformationtypeEditPage'
 import InformationtypePage from './pages/InformationtypePage'
-import { SystemSearchPage, ThirdPartySearchPage } from './pages/ListSearchPage'
+import {SystemSearchPage, ThirdPartySearchPage} from './pages/ListSearchPage'
 import ThirdPartyMetadataPage from './pages/ThirdPartyPage'
-import { Main } from './pages/MainPage'
+import {Main} from './pages/MainPage'
 import CodelistPage from './pages/admin/CodelistPage'
-import { AuditPage } from './pages/admin/AuditPage'
-import { intl, theme } from './util'
+import {AuditPage} from './pages/admin/AuditPage'
+import {intl, theme} from './util'
 import notFound from './resources/notfound.svg'
-import { SettingsPage } from './pages/admin/SettingsPage'
+import {SettingsPage} from './pages/admin/SettingsPage'
 import DocumentCreatePage from './pages/DocumentCreatePage'
 import DocumentPage from './pages/DocumentPage'
 import DocumentEditPage from './pages/DocumentEditPage'
-import { PurposeListPage } from './pages/PurposeListPage'
-import { AlertEventPage } from './pages/AlertEventPage'
-import { getDisclosure, getPolicy, getProcess } from './api'
+import {PurposeListPage} from './pages/PurposeListPage'
+import {AlertEventPage} from './pages/AlertEventPage'
+import {getDisclosure, getPolicy, getProcess} from './api'
 import PurposeTable from './components/Dashboard/PurposeTable'
-import { SystemPage } from './pages/SystemPage'
-import { TeamPage } from './pages/TeamPage'
-import { ProductAreaPage } from './pages/ProductAreaPage'
+import {SystemPage} from './pages/SystemPage'
+import {TeamPage} from './pages/TeamPage'
+import {ProductAreaPage} from './pages/ProductAreaPage'
 
 export const processPath = '/process/:section/:code/:processId?'
 
@@ -49,9 +49,9 @@ const Routes = (): JSX.Element => (
       <Route exact path="/policy/:id" component={redirect(policyUrl)} />
       <Route exact path="/disclosure/:id" component={redirect(disclosureUrl)} />
 
+      <Route exact path="/informationtype/create" component={InformationtypeCreatePage} />
       <Route exact path="/informationtype/:id?" component={InformationtypePage} />
       <Route exact path="/informationtype/:id/edit" component={InformationtypeEditPage} />
-      <Route exact path="/informationtype/create" component={InformationtypeCreatePage} />
 
       <Route exact path="/admin/codelist/:listname?" component={CodelistPage} />
       <Route exact path="/admin/audit/:id?/:auditId?" component={AuditPage} />
