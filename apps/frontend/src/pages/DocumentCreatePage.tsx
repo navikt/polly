@@ -27,7 +27,7 @@ const DocumentCreatePage = () => {
 
   return (
     <React.Fragment>
-      <H4>{intl.createdDocument}</H4>
+      <H4>{intl.createDocument}</H4>
       <DocumentForm initialValues={initialCreateDocumentFormValues} handleSubmit={handleCreateDocument}/>
     </React.Fragment>
   )

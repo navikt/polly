@@ -244,7 +244,7 @@ export interface IStrings {
   emptyTable: string;
   emptyMessage: string;
   pageNotFound: string;
-  createdDocument: string;
+  createDocument: string;
   searchDocumentPlaceholder: string;
   eventType: string;
   disclosurePurpose: string;
