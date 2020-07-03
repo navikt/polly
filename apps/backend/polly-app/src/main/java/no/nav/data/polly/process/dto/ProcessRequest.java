@@ -24,6 +24,7 @@ import static no.nav.data.common.utils.StringUtils.formatList;
 import static no.nav.data.common.utils.StringUtils.formatListToUppercase;
 import static no.nav.data.common.utils.StringUtils.toUpperCaseAndTrim;
 import static org.apache.commons.lang3.StringUtils.trimToNull;
+import static org.apache.commons.lang3.StringUtils.upperCase;
 
 @Data
 @Builder
@@ -129,16 +130,31 @@ public class ProcessRequest implements RequestElement {
             getDataProcessing().setDataProcessorAgreements(List.of());
             getDataProcessing().setDataProcessorOutsideEU(null);
         }
-        if (getRetention() == null) {
-            setRetention(new RetentionRequest());
-        }
-        if (getDpia() == null) {
-            setDpia(new DpiaRequest());
-        }
-        getDpia().setRiskOwner(StringUtils.upperCase(getDpia().getRiskOwner()));
+        formatRetention();
+        formatDpia();
         if (StringUtils.isBlank(status)) {
             setStatus(ProcessStatus.IN_PROGRESS.name());
         }
+    }
+
+    private void formatRetention() {
+        if (getRetention() == null) {
+            setRetention(new RetentionRequest());
+        }
+        var r = getRetention();
+        r.setRetentionStart(trimToNull(r.getRetentionStart()));
+        r.setRetentionDescription(trimToNull(r.getRetentionDescription()));
+    }
+
+    private void formatDpia() {
+        if (getDpia() == null) {
+            setDpia(new DpiaRequest());
+        }
+        var d = getDpia();
+        d.setGrounds(trimToNull(d.getGrounds()));
+        d.setRefToDpia(trimToNull(d.getRefToDpia()));
+        d.setRiskOwner(upperCase(trimToNull(d.getRiskOwner())));
+        d.setRiskOwnerFunction(trimToNull(d.getRiskOwnerFunction()));
     }
 
     @Override
