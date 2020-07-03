@@ -1,16 +1,16 @@
 import * as React from 'react'
-import {useEffect, useState} from 'react'
+import { useEffect, useState } from 'react'
 
-import {LegalBasesNotClarified, ListLegalBasesInTable} from '../../common/LegalBasis'
-import {codelist, ListName} from '../../../service/Codelist'
-import {intl} from '../../../util'
-import {LegalBasesUse, Policy, PolicyAlert, policySort} from '../../../constants'
-import {useTable} from '../../../util/hooks'
+import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
+import { codelist, ListName } from '../../../service/Codelist'
+import { intl } from '../../../util'
+import { LegalBasesUse, Policy, PolicyAlert, policySort } from '../../../constants'
+import { useTable } from '../../../util/hooks'
 import RouteLink from '../../common/RouteLink'
-import {RetentionView} from '../../Purpose/Retention'
-import {getAlertForInformationType} from '../../../api/AlertApi'
-import {Block} from 'baseui/block'
-import {Cell, HeadCell, Row, Table} from '../../common/Table'
+import { RetentionView } from '../../Process/Retention'
+import { getAlertForInformationType } from '../../../api/AlertApi'
+import { Block } from 'baseui/block'
+import { Cell, HeadCell, Row, Table } from '../../common/Table'
 
 type TableInformationtypeProps = {
   policies: Array<Policy>;
@@ -19,8 +19,8 @@ type TableInformationtypeProps = {
 
 type Alerts = { [id: string]: PolicyAlert }
 
-const InformationtypePolicyTable = ({policies, showPurpose}: TableInformationtypeProps) => {
-  const [table, sortColumn] = useTable<Policy, keyof Policy>(policies, {sorting: policySort, initialSortColumn: showPurpose ? 'purposeCode' : 'process'})
+const InformationtypePolicyTable = ({ policies, showPurpose }: TableInformationtypeProps) => {
+  const [table, sortColumn] = useTable<Policy, keyof Policy>(policies, { sorting: policySort, initialSortColumn: showPurpose ? 'purposeCode' : 'process' })
   const [alerts, setAlerts] = useState<Alerts>()
 
   useEffect(() => {
@@ -29,11 +29,11 @@ const InformationtypePolicyTable = ({policies, showPurpose}: TableInformationtyp
       if (infoTypeId) {
         const infoTypeAlert = await getAlertForInformationType(infoTypeId)
         const reduced: Alerts = infoTypeAlert.processes
-        .flatMap(p => p.policies)
-        .reduce((agg, policy) => {
-          agg[policy.policyId] = policy
-          return agg
-        }, {} as Alerts)
+          .flatMap(p => p.policies)
+          .reduce((agg, policy) => {
+            agg[policy.policyId] = policy
+            return agg
+          }, {} as Alerts)
         setAlerts(reduced)
       }
     })()
@@ -44,11 +44,11 @@ const InformationtypePolicyTable = ({policies, showPurpose}: TableInformationtyp
       emptyText={intl.processes}
       headers={
         <>
-          <HeadCell title={intl.purpose} column={'purposeCode'} tableState={[table, sortColumn]}/>
-          <HeadCell title={intl.process} column={'process'} tableState={[table, sortColumn]}/>
-          <HeadCell title={intl.subjectCategories} column={'subjectCategories'} tableState={[table, sortColumn]}/>
-          <HeadCell title={intl.legalBasesShort} column={'legalBases'} tableState={[table, sortColumn]}/>
-          <HeadCell title={intl.retention}/>
+          <HeadCell title={intl.purpose} column={'purposeCode'} tableState={[table, sortColumn]} />
+          <HeadCell title={intl.process} column={'process'} tableState={[table, sortColumn]} />
+          <HeadCell title={intl.subjectCategories} column={'subjectCategories'} tableState={[table, sortColumn]} />
+          <HeadCell title={intl.legalBasesShort} column={'legalBases'} tableState={[table, sortColumn]} />
+          <HeadCell title={intl.retention} />
         </>
       }>
       {table.data.map((row, index) => (
@@ -70,20 +70,20 @@ const InformationtypePolicyTable = ({policies, showPurpose}: TableInformationtyp
           <Cell>
             <Block>
               {row.legalBasesUse === LegalBasesUse.DEDICATED_LEGAL_BASES && row.legalBases && row.legalBases.length > 0 && (
-                <ListLegalBasesInTable legalBases={row.legalBases}/>
+                <ListLegalBasesInTable legalBases={row.legalBases} />
               )}
 
               {!(row.legalBasesUse === LegalBasesUse.EXCESS_INFO || row.legalBasesUse === LegalBasesUse.UNRESOLVED) &&
-              row.process.legalBases && (
-                <ListLegalBasesInTable legalBases={row.process.legalBases}/>
-              )}
+                row.process.legalBases && (
+                  <ListLegalBasesInTable legalBases={row.process.legalBases} />
+                )}
 
-              <LegalBasesNotClarified alert={alerts && alerts[row.id]}/>
+              <LegalBasesNotClarified alert={alerts && alerts[row.id]} />
             </Block>
           </Cell>
 
           <Cell>
-            <RetentionView retention={row.process.retention}/>
+            <RetentionView retention={row.process.retention} />
           </Cell>
         </Row>
       ))}

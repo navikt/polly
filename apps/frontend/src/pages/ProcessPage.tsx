@@ -1,13 +1,13 @@
 import * as React from 'react'
 
-import ProcessList from '../components/Purpose'
-import {ListName} from '../service/Codelist'
-import {generatePath, useParams} from 'react-router-dom'
-import {Process, ProcessStatus} from '../constants'
-import {useQueryParam} from '../util/hooks'
-import {processPath} from '../routes'
+import ProcessList from '../components/Process'
+import { ListName } from '../service/Codelist'
+import { generatePath, useParams } from 'react-router-dom'
+import { Process, ProcessStatus } from '../constants'
+import { useQueryParam } from '../util/hooks'
+import { processPath } from '../routes'
 import * as queryString from 'query-string'
-import {PageHeader} from '../components/common/PageHeader'
+import { PageHeader } from '../components/common/PageHeader'
 
 export enum Section {
   purpose = 'purpose',
@@ -35,12 +35,12 @@ export type PathParams = {
 const ProcessPage = () => {
   const filter = useQueryParam<ProcessStatus>('filter')
   const params = useParams<PathParams>()
-  const {section, code, processId} = params
+  const { section, code, processId } = params
 
   return (
     <>
-      <PageHeader section={section} code={code}/>
-      <ProcessList code={code} listName={listNameForSection(section)} processId={processId} filter={filter} section={section}/>
+      <PageHeader section={section} code={code} />
+      <ProcessList code={code} listName={listNameForSection(section)} processId={processId} filter={filter} section={section} />
     </>
   )
 }
@@ -52,4 +52,4 @@ export const genProcessPath = (section: Section, code: string, process?: Partial
     section,
     code: section === Section.purpose && !!process?.purpose ? process.purpose.code : code,
     processId: process?.id
-  }) + '?' + queryString.stringify({filter, create}, {skipNull: true})
+  }) + '?' + queryString.stringify({ filter, create }, { skipNull: true })
