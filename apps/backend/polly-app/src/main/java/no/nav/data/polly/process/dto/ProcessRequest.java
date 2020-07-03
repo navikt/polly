@@ -122,18 +122,23 @@ public class ProcessRequest implements RequestElement {
         setProductTeams(formatList(getProductTeams()));
         setProducts(formatListToUppercase(getProducts()));
 
-        if (getDataProcessing() == null) {
-            setDataProcessing(new DataProcessingRequest());
-        }
-        getDataProcessing().setDataProcessorAgreements(formatList(getDataProcessing().getDataProcessorAgreements()));
-        if (Boolean.FALSE.equals(getDataProcessing().getDataProcessor())) {
-            getDataProcessing().setDataProcessorAgreements(List.of());
-            getDataProcessing().setDataProcessorOutsideEU(null);
-        }
+        formatDataProcessing();
         formatRetention();
         formatDpia();
         if (StringUtils.isBlank(status)) {
             setStatus(ProcessStatus.IN_PROGRESS.name());
+        }
+    }
+
+    private void formatDataProcessing() {
+        if (getDataProcessing() == null) {
+            setDataProcessing(new DataProcessingRequest());
+        }
+        var dp = getDataProcessing();
+        dp.setDataProcessorAgreements(formatList(dp.getDataProcessorAgreements()));
+        if (Boolean.FALSE.equals(dp.getDataProcessor())) {
+            dp.setDataProcessorAgreements(List.of());
+            dp.setDataProcessorOutsideEU(null);
         }
     }
 
