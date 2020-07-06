@@ -51,6 +51,7 @@ export interface IStrings {
   systems: string;
   disclosure: string;
   disclosures: string;
+  editDisclosure: string;
   documents: string;
   thirdParty: string;
   policy: string;

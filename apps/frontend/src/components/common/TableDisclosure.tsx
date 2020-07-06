@@ -108,7 +108,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
 
       {editable && showEditModal && selectedDisclosure && (
         <ModalThirdParty
-          title="Rediger utlevering"
+          title={intl.editDisclosure}
           isOpen={showEditModal}
           initialValues={mapDisclosureToFormValues(selectedDisclosure)}
           submit={async (values) => submitEditDisclosure && await submitEditDisclosure(values) ? setShowEditModal(false) : setShowEditModal(true)}
