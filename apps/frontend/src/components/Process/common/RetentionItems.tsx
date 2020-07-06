@@ -36,7 +36,7 @@ const RetentionItems = (props: { formikBag: FormikProps<ProcessFormValues> }) =>
   const retentionMonths = retention - retentionYears * 12
 
   useEffect(() => {
-    (() => formikBag.setFieldValue('retention.retentionMonths', retention))()
+    (() => formikBag.setFieldValue('retention.retentionMonths', retention === 0 ? undefined : retention))()
   }, [retention])
 
   return (
