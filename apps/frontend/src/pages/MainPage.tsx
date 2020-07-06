@@ -143,6 +143,28 @@ export const Main = () => {
                          ]
                        }/>
               </Block>
+              <Block marginTop={theme.sizing.scale600} minWidth={'520px'}>
+                <Chart title={intl.retentionPieChartTitle} size={chartSize}
+                       data={
+                         [
+                           {
+                             label: intl.yes,
+                             size: dashData.allProcesses.retention!.yes || 0,
+                             onClick: () => clickOnPieChartSlice(ProcessField.RETENTION, ProcessState.YES)
+                           },
+                           {
+                             label: intl.no,
+                             size: dashData.allProcesses.retention!.no || 0,
+                             onClick: () => clickOnPieChartSlice(ProcessField.RETENTION, ProcessState.NO)
+                           },
+                           {
+                             label: intl.unclarified,
+                             size: dashData.allProcesses.retention!.unknown || 0,
+                             onClick: () => clickOnPieChartSlice(ProcessField.RETENTION, ProcessState.UNKNOWN)
+                           },
+                         ]
+                       }/>
+              </Block>
             </Block>
 
 

@@ -117,6 +117,7 @@ export interface IStrings {
   retentionStart: string;
   retentionDescription: string;
   retentionDescriptionPlaceHolder: string;
+  retentionPieChartTitle: string;
   retentionReference: string;
   years: string;
   months: string;
