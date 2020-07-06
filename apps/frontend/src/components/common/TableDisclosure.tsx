@@ -72,7 +72,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
             {editable && (
               <Cell small>
                 <Block width="100%" display="flex" justifyContent="flex-end">
-                  <StatefulTooltip content={intl.edit} placement={PLACEMENT.top}>
+                  <StatefulTooltip content={intl.edit} placement={PLACEMENT.top} ignoreBoundary={true}>
                     <Button
                       size={SIZE.compact}
                       kind={KIND.tertiary}
@@ -85,7 +85,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
                     </Button>
                   </StatefulTooltip>
 
-                  <StatefulTooltip content={intl.delete} placement={PLACEMENT.top}>
+                  <StatefulTooltip content={intl.delete} placement={PLACEMENT.top} ignoreBoundary={true}>
                     <Button
                       size={SIZE.compact}
                       kind={KIND.tertiary}
