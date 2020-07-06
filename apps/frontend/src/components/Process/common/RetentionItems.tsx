@@ -53,18 +53,22 @@ const RetentionItems = (props: { formikBag: FormikProps<ProcessFormValues> }) =>
             name='retention.retentionMonths'
             render={({field, form}: FieldProps<string, ProcessFormValues>) => (
               <>
-                <Slider
-                  overrides={sliderOverride(intl.years)}
-                  min={0} max={100}
-                  value={[retentionYears]}
-                  onChange={({value}) => setRetention(value[0] * 12 + retentionMonths)}
-                />
-                <Slider
-                  overrides={sliderOverride(intl.months)}
-                  min={0} max={11}
-                  value={[retentionMonths]}
-                  onChange={({value}) => setRetention(value[0] + retentionYears * 12)}
-                />
+                <Block width={"50%"} marginRight={"25px"}>
+                  <Slider
+                    overrides={sliderOverride(intl.years)}
+                    min={0} max={100}
+                    value={[retentionYears]}
+                    onChange={({value}) => setRetention(value[0] * 12 + retentionMonths)}
+                  />
+                </Block>
+                <Block width={"50%"} marginLeft={"25px"}>
+                  <Slider
+                    overrides={sliderOverride(intl.months)}
+                    min={0} max={11}
+                    value={[retentionMonths]}
+                    onChange={({value}) => setRetention(value[0] + retentionYears * 12)}
+                  />
+                </Block>
               </>
             )}/>
         </Block>
