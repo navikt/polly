@@ -167,7 +167,7 @@ export const disclosureSchema = () => yup.object<DisclosureFormValues>({
   name: yup.string().required(intl.required),
   recipientPurpose: yup.string().required(intl.required),
   description: yup.string(),
-  document: yup.mixed().required(intl.required),
+  document: yup.mixed(),
   legalBases: yup.array(legalBasisSchema()),
   legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
   start: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
