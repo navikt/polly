@@ -82,7 +82,9 @@ export const LegalBasesNotClarified = (props: { alert?: PolicyAlert }) => {
 }
 
 const isLegalBasisFilteredBySensitivity = (legalBasis: LegalBasisFormValues, sensitivityLevel?: SensitivityLevel) => {
-  return (sensitivityLevel === SensitivityLevel.ART6 && codelist.isArt6(legalBasis.gdpr)) || (sensitivityLevel === SensitivityLevel.ART9 && codelist.isArt9(legalBasis.gdpr))
+  return (sensitivityLevel === SensitivityLevel.ART6 && codelist.isArt6(legalBasis.gdpr)) ||
+    (sensitivityLevel === SensitivityLevel.ART9 && codelist.isArt9(legalBasis.gdpr)) ||
+    !sensitivityLevel
 }
 
 export const ListLegalBases = (
