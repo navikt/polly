@@ -503,6 +503,7 @@ export interface AllProcesses {
   profiling: Counter | null;
   automation: Counter | null;
   retention: Counter | null;
+  retentionDataIncomplete: number;
 }
 
 export interface DepartmentProcess {

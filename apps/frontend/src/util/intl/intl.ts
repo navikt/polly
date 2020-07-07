@@ -119,6 +119,7 @@ export interface IStrings {
   retentionDescriptionPlaceHolder: string;
   retentionPieChartTitle: string;
   retentionReference: string;
+  processWithIncompleteRetention: string;
   years: string;
   months: string;
   lastEvents: string;
@@ -405,7 +406,7 @@ const defaultLang = langs.nb
 type IIntl = LocalizedStringsMethods & IStrings;
 
 interface LocalizedStringsFactory {
-  new<T>(props: GlobalStrings<T>, options?: {customLanguageInterface: () => string}): IIntl
+  new<T>(props: GlobalStrings<T>, options?: { customLanguageInterface: () => string }): IIntl
 }
 
 const strings: IntlLangs = {}

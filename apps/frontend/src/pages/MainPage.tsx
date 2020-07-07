@@ -1,7 +1,7 @@
 import {intl, theme} from '../util'
 import * as React from 'react'
 import {useEffect, useState} from 'react'
-import {Block} from 'baseui/block'
+import {Block, BlockProps} from 'baseui/block'
 import {DashboardData, ProcessField, ProcessState, Settings} from '../constants'
 import {getSettings} from '../api/SettingsApi'
 import {Card} from 'baseui/card'
@@ -12,6 +12,14 @@ import {Chart} from '../components/Dashboard/Chart'
 import {useHistory} from 'react-router-dom'
 import {LastEvents} from '../components/audit/LastEvents'
 import {Markdown} from '../components/common/Markdown'
+import {Paragraph1} from "baseui/typography";
+
+const boxProps: BlockProps = {
+  marginTop: theme.sizing.scale600,
+  marginRight: theme.sizing.scale600,
+  minWidth: '520px',
+  $style: {boxShadow: '0px 0px 6px 3px rgba(0,0,0,0.08)', padding: '15px'}
+}
 
 export const Main = () => {
   const history = useHistory()
@@ -43,8 +51,8 @@ export const Main = () => {
             <Departments data={dashData}/>
 
             <Block display='flex' flexWrap={true} width={'100%'}>
-              <Block marginTop={theme.sizing.scale600} marginRight={theme.sizing.scale600} minWidth={'520px'}>
-                <Chart title={intl.dpiaNeeded} size={chartSize}
+              <Block {...boxProps}>
+                <Chart chartTitle={intl.dpiaNeeded} size={chartSize}
                        data={
                          [
                            {
@@ -69,8 +77,8 @@ export const Main = () => {
                        }/>
               </Block>
 
-              <Block marginTop={theme.sizing.scale600} marginRight={theme.sizing.scale600} minWidth={'520px'}>
-                <Chart title={intl.profiling} size={chartSize}
+              <Block {...boxProps}>
+                <Chart chartTitle={intl.profiling} size={chartSize}
                        data={
                          [
                            {
@@ -95,8 +103,8 @@ export const Main = () => {
                        }/>
               </Block>
 
-              <Block marginTop={theme.sizing.scale600} marginRight={theme.sizing.scale600} minWidth={'520px'}>
-                <Chart title={intl.automaticProcessing} size={chartSize}
+              <Block {...boxProps}>
+                <Chart chartTitle={intl.automaticProcessing} size={chartSize}
                        data={
                          [
                            {
@@ -121,8 +129,8 @@ export const Main = () => {
                        }/>
               </Block>
 
-              <Block marginTop={theme.sizing.scale600} minWidth={'520px'}>
-                <Chart title={intl.incompleteLegalBasis} size={chartSize}
+              <Block {...boxProps}>
+                <Chart chartTitle={intl.incompleteLegalBasis} size={chartSize}
                        data={
                          [
                            {
@@ -143,8 +151,8 @@ export const Main = () => {
                          ]
                        }/>
               </Block>
-              <Block marginTop={theme.sizing.scale600} minWidth={'520px'}>
-                <Chart title={intl.retentionPieChartTitle} size={chartSize}
+              <Block {...boxProps}>
+                <Chart headerTitle={intl.retention} chartTitle={intl.retentionPieChartTitle} size={chartSize}
                        data={
                          [
                            {
@@ -164,6 +172,9 @@ export const Main = () => {
                            },
                          ]
                        }/>
+                <Paragraph1>
+                  {`${intl.processWithIncompleteRetention}: ${dashData.allProcesses.retentionDataIncomplete}`}
+                </Paragraph1>
               </Block>
             </Block>
 
