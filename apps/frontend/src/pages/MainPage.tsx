@@ -13,6 +13,7 @@ import {useHistory} from 'react-router-dom'
 import {LastEvents} from '../components/audit/LastEvents'
 import {Markdown} from '../components/common/Markdown'
 import {Paragraph1} from "baseui/typography";
+import RouteLink from "../components/common/RouteLink";
 
 const boxProps: BlockProps = {
   marginTop: theme.sizing.scale600,
@@ -173,7 +174,7 @@ export const Main = () => {
                          ]
                        }/>
                 <Paragraph1>
-                  {`${intl.processWithIncompleteRetention}: ${dashData.allProcesses.retentionDataIncomplete}`}
+                  {intl.processWithIncompleteRetention} <RouteLink href={`/dashboard/${ProcessField.RETENTION_DATA}/${ProcessState.UNKNOWN}`}>{dashData.allProcesses.retentionDataIncomplete}</RouteLink>
                 </Paragraph1>
               </Block>
             </Block>
