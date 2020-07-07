@@ -1,7 +1,7 @@
 import React, {useReducer, useState} from 'react'
 import {Block} from 'baseui/block'
 import {theme} from '../../util'
-import {HeadingSmall, Label1} from 'baseui/typography'
+import {Label1} from 'baseui/typography'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faChartBar, faChartPie, faCircle} from '@fortawesome/free-solid-svg-icons'
 import {Card} from 'baseui/card'
@@ -105,7 +105,7 @@ export const Chart = (props: ChartProps) => {
   })
 
   return <>
-    <Block display={"flex"} justifyContent={"center"}><HeadingSmall margin={0}>{headerTitle}</HeadingSmall></Block>
+    <Block display={"flex"} justifyContent={"center"}><Label1 margin={0}>{headerTitle}</Label1></Block>
     <Block><Visualization data={expData} size={size} chartTitle={chartTitle} leftLegend={!!leftLegend} type={props.type || 'pie'}/></Block>
   </>
 }
@@ -135,12 +135,12 @@ const Visualization = (props: VisualizationProps) => {
         Body: {style: {marginBottom: 0}}
       }}>
         <div onMouseLeave={() => setHover(-1)}>
-          <Block display='flex' alignItems='center' flexDirection={leftLegend ? 'row-reverse' : 'row'}>
+          <Block display='flex' alignItems='center' flexDirection={leftLegend ? 'row-reverse' : 'row'} maxWidth={"fit-content"}>
             {!!data.length && <Block>
               {type === 'pie' && <PieChart data={data} radius={size} hover={hover} setHover={setHover}/>}
               {type === 'bar' && <BarChart data={data} size={size} hover={hover} setHover={setHover}/>}
             </Block>}
-            {!data.length && <Block width={size * 2 + "px"} height={size * 2 + "px"}/>}
+            {!data.length && <Block width={size * 2 + "px"} height={size * 2 + "px"} />}
             <Block marginLeft={theme.sizing.scale200} marginRight={theme.sizing.scale200}>
               <Label1 marginBottom={theme.sizing.scale300}>
                 {chartTitle}
