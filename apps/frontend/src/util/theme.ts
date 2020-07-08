@@ -20,7 +20,7 @@ export const primitives: ThemePrimitives & { primary150: string } = {
 
 export const chartColor = {
   generalBlue: '#409FDD',
-  generalRed: '#FF7983',
+  generalRed: '#E85C4A',
   generalMustard: '#FFCC40',
 
   lightGreen: '#C9EA95',
