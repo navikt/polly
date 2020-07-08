@@ -120,7 +120,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
             // force jsonb null to null
             case UNKNOWN -> " ->> 0 is null ";
         };
-        return loc.formatted(equate);
+        return "(" + loc.formatted(equate) + ")";
     }
 
     private List<Process> getProcesses(List<Map<String, Object>> resp) {
