@@ -105,8 +105,12 @@ export const Chart = (props: ChartProps) => {
   })
 
   return <>
-    <Block display={"flex"} justifyContent={"center"}><Label1 margin={0}>{headerTitle}</Label1></Block>
-    <Block><Visualization data={expData} size={size} chartTitle={chartTitle} leftLegend={!!leftLegend} type={props.type || 'pie'}/></Block>
+    {headerTitle && (<Block marginLeft={(size - 1) * 2 + "px"}>
+      <Label1 marginLeft={theme.sizing.scale700}>{headerTitle}</Label1>
+    </Block>)}
+    <Block>
+      <Visualization data={expData} size={size} chartTitle={chartTitle} leftLegend={!!leftLegend} type={props.type || 'pie'}/>
+    </Block>
   </>
 }
 
@@ -140,7 +144,7 @@ const Visualization = (props: VisualizationProps) => {
               {type === 'pie' && <PieChart data={data} radius={size} hover={hover} setHover={setHover}/>}
               {type === 'bar' && <BarChart data={data} size={size} hover={hover} setHover={setHover}/>}
             </Block>}
-            {!data.length && <Block width={size * 2 + "px"} height={size * 2 + "px"} />}
+            {!data.length && <Block width={size * 2 + "px"} height={size * 2 + "px"}/>}
             <Block marginLeft={theme.sizing.scale200} marginRight={theme.sizing.scale200}>
               <Label1 marginBottom={theme.sizing.scale300}>
                 {chartTitle}
