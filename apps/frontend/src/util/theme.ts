@@ -1,7 +1,7 @@
-import { createTheme, lightThemePrimitives } from 'baseui'
-import { colors } from 'baseui/tokens'
-import { Theme, ThemePrimitives } from 'baseui/theme'
-import { RecursivePartial } from '../constants'
+import {createTheme, lightThemePrimitives} from 'baseui'
+import {colors} from 'baseui/tokens'
+import {Theme, ThemePrimitives} from 'baseui/theme'
+import {RecursivePartial} from '../constants'
 
 export const primitives: ThemePrimitives & { primary150: string } = {
   ...lightThemePrimitives,
@@ -16,6 +16,16 @@ export const primitives: ThemePrimitives & { primary150: string } = {
   primary500: colors.blue500,
   primary600: colors.blue600,
   primary700: colors.blue700,
+}
+
+export const chartColor = {
+  generalBlue: '#409FDD',
+  generalRed: '#FF7983',
+  generalMustard: '#FFCC40',
+
+  lightGreen: '#C9EA95',
+  orange: '#FFAB66',
+  darkGreen: '#408DA0'
 }
 
 // Official type is wrong

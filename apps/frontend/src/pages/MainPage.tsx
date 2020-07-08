@@ -14,6 +14,7 @@ import {LastEvents} from '../components/audit/LastEvents'
 import {Markdown} from '../components/common/Markdown'
 import {Paragraph1} from "baseui/typography";
 import RouteLink from "../components/common/RouteLink";
+import {chartColor} from "../util/theme";
 
 const boxProps: BlockProps = {
   marginTop: theme.sizing.scale600,
@@ -40,10 +41,6 @@ export const Main = () => {
     })()
   }, [])
 
-  const colorYes = theme.colors.positive300
-  const colorNo = theme.colors.negative300
-  const colorUnknown = theme.colors.warning300
-
   return (
     <Block marginTop={theme.sizing.scale400} display="flex" flexWrap>
       {
@@ -58,19 +55,19 @@ export const Main = () => {
                          [
                            {
                              label: `${intl.yes}`,
-                             color: colorYes,
+                             color: chartColor.generalBlue,
                              size: dashData.allProcesses.dpia.yes,
                              onClick: () => clickOnPieChartSlice(ProcessField.DPIA, ProcessState.YES)
                            },
                            {
                              label: `${intl.no}`,
-                             color: colorNo,
+                             color: chartColor.generalMustard,
                              size: dashData.allProcesses.dpia.no,
                              onClick: () => clickOnPieChartSlice(ProcessField.DPIA, ProcessState.NO)
                            },
                            {
                              label: `${intl.unclarified}`,
-                             color: colorUnknown,
+                             color: chartColor.generalRed,
                              size: dashData.allProcesses.dpia.unknown,
                              onClick: () => clickOnPieChartSlice(ProcessField.DPIA, ProcessState.UNKNOWN)
                            },
@@ -84,19 +81,19 @@ export const Main = () => {
                          [
                            {
                              label: `${intl.yes}`,
-                             color: colorYes,
+                             color: chartColor.generalBlue,
                              size: dashData.allProcesses.profiling?.yes || 0,
                              onClick: () => clickOnPieChartSlice(ProcessField.PROFILING, ProcessState.YES)
                            },
                            {
                              label: `${intl.no}`,
-                             color: colorNo,
+                             color: chartColor.generalMustard,
                              size: dashData.allProcesses.profiling?.no || 0,
                              onClick: () => clickOnPieChartSlice(ProcessField.PROFILING, ProcessState.NO)
                            },
                            {
                              label: `${intl.unclarified}`,
-                             color: colorUnknown,
+                             color: chartColor.generalRed,
                              size: dashData.allProcesses.profiling?.unknown || 0,
                              onClick: () => clickOnPieChartSlice(ProcessField.PROFILING, ProcessState.UNKNOWN)
                            },
@@ -110,19 +107,19 @@ export const Main = () => {
                          [
                            {
                              label: `${intl.yes}`,
-                             color: colorYes,
+                             color: chartColor.generalBlue,
                              size: dashData.allProcesses.automation?.yes || 0,
                              onClick: () => clickOnPieChartSlice(ProcessField.AUTOMATION, ProcessState.YES)
                            },
                            {
                              label: `${intl.no}`,
-                             color: colorNo,
+                             color: chartColor.generalMustard,
                              size: dashData.allProcesses.automation?.no || 0,
                              onClick: () => clickOnPieChartSlice(ProcessField.AUTOMATION, ProcessState.NO)
                            },
                            {
                              label: `${intl.unclarified}`,
-                             color: colorUnknown,
+                             color: chartColor.generalRed,
                              size: dashData.allProcesses.automation?.unknown || 0,
                              onClick: () => clickOnPieChartSlice(ProcessField.AUTOMATION, ProcessState.UNKNOWN)
                            },
@@ -137,16 +134,19 @@ export const Main = () => {
                            {
                              label: intl.numberOfProcessesWithUnknownLegalBasis,
                              size: dashData.allProcesses.processesMissingLegalBases,
+                             color:chartColor.generalRed,
                              onClick: () => clickOnPieChartSlice(ProcessField.MISSING_LEGAL_BASIS, ProcessState.YES)
                            },
                            {
                              label: intl.numberOfProcessesWithoutArticle6LegalBasis,
                              size: dashData.allProcesses.processesMissingArt6,
+                             color:chartColor.generalMustard,
                              onClick: () => clickOnPieChartSlice(ProcessField.MISSING_ARTICLE_6, ProcessState.YES)
                            },
                            {
                              label: intl.numberOfProcessesWithoutArticle9LegalBasis,
                              size: dashData.allProcesses.processesMissingArt9,
+                             color:chartColor.generalBlue,
                              onClick: () => clickOnPieChartSlice(ProcessField.MISSING_ARTICLE_9, ProcessState.YES)
                            },
                          ]
@@ -159,22 +159,26 @@ export const Main = () => {
                            {
                              label: intl.yes,
                              size: dashData.allProcesses.retention!.yes || 0,
+                             color: chartColor.generalBlue,
                              onClick: () => clickOnPieChartSlice(ProcessField.RETENTION, ProcessState.YES)
                            },
                            {
                              label: intl.no,
                              size: dashData.allProcesses.retention!.no || 0,
+                             color: chartColor.generalMustard,
                              onClick: () => clickOnPieChartSlice(ProcessField.RETENTION, ProcessState.NO)
                            },
                            {
                              label: intl.unclarified,
                              size: dashData.allProcesses.retention!.unknown || 0,
+                             color: chartColor.generalRed,
                              onClick: () => clickOnPieChartSlice(ProcessField.RETENTION, ProcessState.UNKNOWN)
                            },
                          ]
                        }/>
                 <Paragraph1>
-                  {intl.processWithIncompleteRetention} <RouteLink href={`/dashboard/${ProcessField.RETENTION_DATA}/${ProcessState.UNKNOWN}`}>{dashData.allProcesses.retentionDataIncomplete}</RouteLink>
+                  {intl.processWithIncompleteRetention} <RouteLink
+                  href={`/dashboard/${ProcessField.RETENTION_DATA}/${ProcessState.UNKNOWN}`}>{dashData.allProcesses.retentionDataIncomplete}</RouteLink>
                 </Paragraph1>
               </Block>
             </Block>
