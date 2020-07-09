@@ -158,7 +158,7 @@ const InformationtypeForm = ({
                       <Select
                         options={codelist.getParsedOptions(ListName.SYSTEM)}
                         value={masterValue as Value}
-                        placeholder={intl.orgMasterSelect}
+                        placeholder={!form.values.orgMaster?intl.orgMasterSelect:''}
                         onChange={(params) => {
                           let master = params.value.length ? params.value[0] : undefined
                           setMasterValue(master as Option)
