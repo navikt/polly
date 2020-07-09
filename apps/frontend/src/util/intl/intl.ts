@@ -195,6 +195,8 @@ export interface IStrings {
   legalBasisAdd: string;
   addArticle6: string;
   addArticle9: string;
+  article6HelpText: string;
+  article9HelpText: string;
   cardHeaderArticle6: string;
   cardHeaderArticle9: string;
   placeHolderArticle6: string;

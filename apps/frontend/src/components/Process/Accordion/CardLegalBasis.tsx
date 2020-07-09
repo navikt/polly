@@ -35,18 +35,11 @@ const Error = (props: { fieldName: string }) => (
   </ErrorMessage>
 )
 
-const TooltipContent = () => (
-  <Block>
-    <p>{intl.legalBasisInfo}</p>
-    <p>{intl.legalbasisGDPRArt9Info}</p>
-  </Block>
-)
-
-const renderCardHeader = (text: string) => {
+const renderCardHeader = (text: string, sensitivityLevel: SensitivityLevel) => {
   return (
     <Block display="flex">
       <StatefulTooltip
-        content={() => <TooltipContent/>}
+        content={sensitivityLevel === SensitivityLevel.ART6 ? intl.article6HelpText : intl.article9HelpText}
         placement={PLACEMENT.top}
         focusLock={false}
       >
@@ -98,7 +91,10 @@ const CardLegalBasis = ({submit, hideCard, initValue, titleSubmitButton, sensiti
       render={(form: FormikProps<LegalBasisFormValues>) => {
         return (
           <Card>
-            {renderCardHeader(sensitivityLevel === SensitivityLevel.ART9 ? intl.cardHeaderArticle9 : intl.cardHeaderArticle6)}
+            {renderCardHeader(
+              sensitivityLevel === SensitivityLevel.ART9 ? intl.cardHeaderArticle9 : intl.cardHeaderArticle6,
+              sensitivityLevel === SensitivityLevel.ART9 ? SensitivityLevel.ART9 : SensitivityLevel.ART6,
+            )}
             <Block {...rowBlockProps}>
               <Field name="gdpr"
                      render={() => (
