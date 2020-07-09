@@ -1,14 +1,12 @@
 import * as React from 'react'
 import {KeyboardEvent} from 'react'
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal'
-import {Field, FieldArray, FieldProps, Form, Formik, FormikProps,} from 'formik'
+import {Field, FieldProps, Form, Formik, FormikProps,} from 'formik'
 import {Block, BlockProps} from 'baseui/block'
-import {Button, KIND, SIZE as ButtonSize} from 'baseui/button'
-import {Plus} from 'baseui/icon'
+import {Button, KIND} from 'baseui/button'
 import {Error, ModalLabel} from '../../common/ModalSchema'
-import {LegalBasisFormValues, ProcessFormValues, ProcessStatus} from '../../../constants'
-import CardLegalBasis from './CardLegalBasis'
-import {codelist, SensitivityLevel} from '../../../service/Codelist'
+import {ProcessFormValues, ProcessStatus} from '../../../constants'
+import {codelist} from '../../../service/Codelist'
 import {intl, theme} from '../../../util'
 import {processSchema} from '../../common/schema'
 import {Accordion, Panel} from 'baseui/accordion'
@@ -35,7 +33,7 @@ import FieldCommonExternalProcessResponsible from '../common/FieldCommonExternal
 import {RadioBoolButton} from '../../common/Radio'
 import {env} from '../../../util/env'
 import {writeLog} from '../../../api/LogApi'
-import {ListLegalBases} from '../../common/LegalBasis'
+import FieldLegalBasis from "../common/FieldLegalBasis";
 
 const modalHeaderProps: BlockProps = {
   display: 'flex',
@@ -96,11 +94,8 @@ const AccordionTitle = (props: { title: string, expanded: boolean }) => {
 
 const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, title}: ModalProcessProps) => {
 
-  const [selectedLegalBasis, setSelectedLegalBasis] = React.useState<LegalBasisFormValues>()
-  const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState<number>()
   const [isPanelExpanded, togglePanel] = React.useReducer(prevState => !prevState, false)
   const [showResponsibleSelect, setShowResponsibleSelect] = React.useState<boolean>(!!initialValues.commonExternalProcessResponsible)
-  const [sensitivityLevel, setSensitivityLevel] = React.useState<SensitivityLevel>(SensitivityLevel.ART6)
 
   const disableEnter = (e: KeyboardEvent) => {
     if (e.key === 'Enter') e.preventDefault()
@@ -270,102 +265,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                       onChange={togglePanel}
                       overrides={{...panelOverrides}}
                     >
-
-                      <FieldArray
-                        name='legalBases'
-                        render={arrayHelpers => (
-                          <>
-                            {formikBag.values.legalBasesOpen || formikBag.values.legalBases.length < 1 ? (
-                              <CardLegalBasis
-                                titleSubmitButton={selectedLegalBasis ? intl.update : intl.add}
-                                initValue={selectedLegalBasis || {}}
-                                hideCard={() => {
-                                  formikBag.setFieldValue('legalBasesOpen', false)
-                                  setSelectedLegalBasis(undefined)
-                                }}
-                                submit={values => {
-                                  if (!values) return
-                                  if (selectedLegalBasis) {
-                                    arrayHelpers.replace(selectedLegalBasisIndex!, values)
-                                    setSelectedLegalBasis(undefined)
-                                  } else {
-                                    arrayHelpers.push(values)
-                                  }
-                                  formikBag.setFieldValue('legalBasesOpen', false)
-                                }}
-                                sensitivityLevel={sensitivityLevel}
-                              />
-                            ) : (
-                              <Block display={"flex"} width={"100%"}>
-                                <Block width={"100%"}>
-                                  <Block>
-                                    <Button
-                                      size={ButtonSize.compact}
-                                      kind={KIND.minimal}
-                                      onClick={() => {
-                                        formikBag.setFieldValue('legalBasesOpen', true)
-                                        setSensitivityLevel(SensitivityLevel.ART6)
-                                      }}
-                                      startEnhancer={() => <Block display='flex' justifyContent='center'><Plus size={22}/></Block>}
-                                    >
-                                      {intl.addArticle6}
-                                    </Button>
-                                  </Block>
-
-                                  <Block>
-                                    <ListLegalBases
-                                      sensitivityLevel={SensitivityLevel.ART6}
-                                      legalBases={formikBag.values.legalBases}
-                                      onRemove={(index) => arrayHelpers.remove(index)}
-                                      onEdit={
-                                        (index) => {
-                                          setSensitivityLevel(SensitivityLevel.ART6)
-                                          setSelectedLegalBasis(formikBag.values.legalBases[index])
-                                          setSelectedLegalBasisIndex(index)
-                                          formikBag.setFieldValue('legalBasesOpen', true)
-                                        }
-                                      }
-                                    />
-                                  </Block>
-                                </Block>
-
-                                <Block width={"100%"}>
-                                  <Block>
-                                    <Button
-                                      size={ButtonSize.compact}
-                                      kind={KIND.minimal}
-                                      onClick={() => {
-                                        formikBag.setFieldValue('legalBasesOpen', true)
-                                        setSensitivityLevel(SensitivityLevel.ART9)
-                                      }}
-                                      startEnhancer={() => <Block display='flex' justifyContent='center'><Plus size={22}/></Block>}
-                                    >
-                                      {intl.addArticle9}
-                                    </Button>
-                                  </Block>
-                                  <Block>
-                                    <ListLegalBases
-                                      sensitivityLevel={SensitivityLevel.ART9}
-                                      legalBases={formikBag.values.legalBases}
-                                      onRemove={(index) => {
-                                        arrayHelpers.remove(index)
-                                      }}
-                                      onEdit={
-                                        (index) => {
-                                          setSensitivityLevel(SensitivityLevel.ART9)
-                                          setSelectedLegalBasis(formikBag.values.legalBases[index])
-                                          setSelectedLegalBasisIndex(index)
-                                          formikBag.setFieldValue('legalBasesOpen', true)
-                                        }
-                                      }
-                                    />
-                                  </Block>
-                                </Block>
-                              </Block>
-                            )}
-                          </>
-                        )}
-                      />
+                      <FieldLegalBasis formikBag={formikBag}/>
                       <Error fieldName='legalBasesOpen' fullWidth={true}/>
                     </Panel>
 
