@@ -4,14 +4,10 @@ import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} fro
 import {Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, FormikProps,} from 'formik'
 import {Block, BlockProps} from 'baseui/block'
 import {Radio, RadioGroup} from 'baseui/radio'
-import {Plus} from 'baseui/icon'
 import {Select, StatefulSelect, TYPE} from 'baseui/select'
-
-import CardLegalBasis from './CardLegalBasis'
 import {codelist, ListName, SensitivityLevel} from '../../../service/Codelist'
-import {Button, KIND, SIZE as ButtonSize} from 'baseui/button'
+import {Button, KIND} from 'baseui/button'
 import {InformationTypeShort, LegalBasesUse, LegalBasisFormValues, PolicyFormValues} from '../../../constants'
-import {ListLegalBases} from '../../common/LegalBasis'
 import {useInfoTypeSearch} from '../../../api'
 import {Error, ModalLabel} from '../../common/ModalSchema'
 import {intl} from '../../../util'
@@ -19,6 +15,7 @@ import {policySchema} from '../../common/schema'
 import {Tag, VARIANT} from 'baseui/tag'
 import {Docs} from './TablePolicy'
 import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
+import FieldLegalBasis from "../common/FieldLegalBasis";
 
 
 const modalBlockProps: BlockProps = {
@@ -204,94 +201,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
                 <Error fieldName="legalBasesUse" />
 
                 {formikBag.values.legalBasesUse === LegalBasesUse.DEDICATED_LEGAL_BASES && (
-                  <FieldArray
-                    name="legalBases"
-                    render={arrayHelpers => (
-                      <React.Fragment>
-                        {formikBag.values.legalBasesOpen ? (
-                          <Block width="100%" marginTop="2rem">
-                            <CardLegalBasis
-                              titleSubmitButton={selectedLegalBasis ? intl.update : intl.add}
-                              initValue={selectedLegalBasis || {}}
-                              sensitivityLevel={sensitivityLevel}
-                              hideCard={() => {
-                                formikBag.setFieldValue('legalBasesOpen', false)
-                                setSelectedLegalBasis(undefined)
-                              }}
-                              submit={values => {
-                                if (!values) return
-                                if (selectedLegalBasis) {
-                                  arrayHelpers.replace(selectedLegalBasisIndex!, values)
-                                  setSelectedLegalBasis(undefined)
-                                } else {
-                                  arrayHelpers.push(values)
-                                }
-                                formikBag.setFieldValue('legalBasesOpen', false)
-                              }}
-                            />
-                          </Block>
-                        ) : (
-                            <Block {...rowBlockProps}>
-                              <Block width={"100%"}>
-                                <Button
-                                  size={ButtonSize.compact}
-                                  kind={KIND.minimal}
-                                  onClick={() => {
-                                    formikBag.setFieldValue('legalBasesOpen', true)
-                                    setSensitivityLevel(SensitivityLevel.ART6)
-                                  }}
-                                  startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
-                                >
-                                  {intl.addArticle6}
-                                </Button>
-                                <Block>
-                                  <ListLegalBases
-                                    legalBases={formikBag.values.legalBases}
-                                    onRemove={(index) => arrayHelpers.remove(index)}
-                                    onEdit={(index) => {
-                                      setSelectedLegalBasis(formikBag.values.legalBases.filter(l => codelist.isArt6(l.gdpr))[index])
-                                      setSelectedLegalBasisIndex(index)
-                                      formikBag.setFieldValue('legalBasesOpen', true)
-                                    }}
-                                    sensitivityLevel={SensitivityLevel.ART6}
-                                  />
-                                </Block>
-                              </Block>
-
-                              <Block width={"100%"}>
-                                <Button
-                                  size={ButtonSize.compact}
-                                  kind={KIND.minimal}
-                                  onClick={() => {
-                                    formikBag.setFieldValue('legalBasesOpen', true)
-                                    setSensitivityLevel(SensitivityLevel.ART9)
-                                  }}
-                                  startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
-                                >
-                                  {intl.addArticle9}
-                                </Button>
-                                <Block>
-                                  <ListLegalBases
-                                    legalBases={formikBag.values.legalBases.filter(l => codelist.isArt9(l.gdpr))}
-                                    onRemove={(index) => {
-                                      arrayHelpers.remove(formikBag.values.legalBases.filter(l => codelist.isArt6(l.gdpr)).length + index)
-                                    }}
-                                    onEdit={
-                                      (index) => {
-                                        setSelectedLegalBasis(formikBag.values.legalBases.filter(l => codelist.isArt9(l.gdpr))[index])
-                                        setSelectedLegalBasisIndex(index)
-                                        formikBag.setFieldValue('legalBasesOpen', true)
-                                      }
-                                    }
-                                    sensitivityLevel={SensitivityLevel.ART9}
-                                  />
-                                </Block>
-                              </Block>
-                            </Block>
-                          )}
-                      </React.Fragment>
-                    )}
-                  />
+                  <FieldLegalBasis formikBag={formikBag}/>
                 )}
               </ModalBody>
               <Error fieldName="legalBasesOpen" fullWidth={true} />

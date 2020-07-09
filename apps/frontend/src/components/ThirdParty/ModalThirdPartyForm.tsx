@@ -1,20 +1,18 @@
 import * as React from 'react'
-import { DisclosureFormValues, Document, LegalBasisFormValues } from '../../constants';
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal';
-import { Field, FieldArray, FieldProps, Form, Formik, FormikProps } from 'formik';
-import { Block, BlockProps } from 'baseui/block';
-import { Error, ModalLabel } from '../common/ModalSchema';
-import { intl } from '../../util';
-import { Button } from 'baseui/button';
-import { Select, Value } from 'baseui/select';
-import { codelist, ListName } from '../../service/Codelist';
-import { Textarea } from 'baseui/textarea';
-import { ListLegalBases } from '../common/LegalBasis';
-import CardLegalBasis from '../Process/Accordion/CardLegalBasis';
-import { Plus } from 'baseui/icon';
-import { disclosureSchema } from "../common/schema"
-import { Input } from "baseui/input"
+import {DisclosureFormValues, Document, LegalBasisFormValues} from '../../constants';
+import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal';
+import {Field, FieldProps, Form, Formik, FormikProps} from 'formik';
+import {Block, BlockProps} from 'baseui/block';
+import {Error, ModalLabel} from '../common/ModalSchema';
+import {intl} from '../../util';
+import {Button} from 'baseui/button';
+import {Select, Value} from 'baseui/select';
+import {codelist, ListName} from '../../service/Codelist';
+import {Textarea} from 'baseui/textarea';
+import {disclosureSchema} from "../common/schema"
+import {Input} from "baseui/input"
 import SelectDocument from '../common/SelectDocument';
+import FieldLegalBasis from "../Process/common/FieldLegalBasis";
 
 const modalBlockProps: BlockProps = {
   width: '750px',
@@ -166,66 +164,9 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                 </Block>
                 <Error fieldName="document" />
 
-                <Block {...rowBlockProps}>
-                  <ModalLabel />
-                  {!formikBag.values.legalBasesOpen && (
-                    <Block width="100%" marginBottom="1rem">
-                      <Button
-                        size="compact"
-                        kind="minimal"
-                        onClick={() => formikBag.setFieldValue('legalBasesOpen', true)}
-                        startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
-                      >
-                        {intl.legalBasisAdd}
-                      </Button>
-                    </Block>
-                  )}
+                <Block marginTop={"1rem"}>
+                  <FieldLegalBasis formikBag={formikBag}/>
                 </Block>
-
-                <FieldArray
-                  name="legalBases"
-                  render={arrayHelpers => (
-                    <React.Fragment>
-                      {formikBag.values.legalBasesOpen && (
-                        <Block width="100%" marginTop="2rem">
-                          <CardLegalBasis
-                            titleSubmitButton={selectedLegalBasis ? intl.update : intl.add}
-                            initValue={selectedLegalBasis || {}}
-                            hideCard={() => {
-                              formikBag.setFieldValue('legalBasesOpen', false)
-                              setSelectedLegalBasis(undefined)
-                            }}
-                            submit={values => {
-                              if (!values) return;
-                              if (selectedLegalBasis) {
-                                arrayHelpers.replace(selectedLegalBasisIndex!, values);
-                                setSelectedLegalBasis(undefined)
-                              } else {
-                                arrayHelpers.push(values);
-                              }
-                              formikBag.setFieldValue('legalBasesOpen', false);
-                            }} />
-                        </Block>
-                      )}
-                      {!formikBag.values.legalBasesOpen && (
-                        <Block display="flex">
-                          <ModalLabel />
-                          <Block width="100%">
-                            <ListLegalBases
-                              legalBases={formikBag.values.legalBases}
-                              onRemove={(index) => arrayHelpers.remove(index)}
-                              onEdit={(index) => {
-                                setSelectedLegalBasis(formikBag.values.legalBases[index]);
-                                setSelectedLegalBasisIndex(index);
-                                formikBag.setFieldValue('legalBasesOpen', true)
-                              }}
-                            />
-                          </Block>
-                        </Block>
-                      )}
-                    </React.Fragment>
-                  )}
-                />
                 <Error fieldName="legalBasesOpen" fullWidth={true} />
 
               </ModalBody>

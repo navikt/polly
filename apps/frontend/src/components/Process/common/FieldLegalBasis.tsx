@@ -8,11 +8,13 @@ import {SensitivityLevel} from "../../../service/Codelist";
 import {Plus} from "baseui/icon";
 import {ListLegalBases} from "../../common/LegalBasis";
 import {FieldArray, FormikProps} from "formik";
-import {LegalBasisFormValues, ProcessFormValues} from "../../../constants";
+import {DisclosureFormValues, LegalBasisFormValues, PolicyFormValues, ProcessFormValues} from "../../../constants";
 
-const FieldLegalBasis = (props:{
-  formikBag: FormikProps<ProcessFormValues>
-})=>{
+type fieldLegalBasisProps = {
+  formikBag: FormikProps<ProcessFormValues> | FormikProps<PolicyFormValues> | FormikProps<DisclosureFormValues>
+}
+
+const FieldLegalBasis = (props: fieldLegalBasisProps) => {
   const {formikBag} = props
 
   const [selectedLegalBasis, setSelectedLegalBasis] = React.useState<LegalBasisFormValues>()
@@ -46,7 +48,7 @@ const FieldLegalBasis = (props:{
         ) : (
           <Block display={"flex"} width={"100%"}>
             <Block width={"100%"}>
-              <StatefulTooltip content={intl.article6HelpText}>
+              <StatefulTooltip content={intl.article6HelpText} focusLock={false}>
                 <Block>
                   <Button
                     size={ButtonSize.compact}
@@ -80,7 +82,7 @@ const FieldLegalBasis = (props:{
             </Block>
 
             <Block width={"100%"}>
-              <StatefulTooltip content={intl.article9HelpText}>
+              <StatefulTooltip content={intl.article9HelpText} focusLock={false}>
                 <Block>
                   <Button
                     size={ButtonSize.compact}
