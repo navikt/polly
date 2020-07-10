@@ -2,13 +2,13 @@ import React from "react";
 import CardLegalBasis from "../Accordion/CardLegalBasis";
 import {intl} from "../../../util";
 import {Block} from "baseui/block";
-import {StatefulTooltip} from "baseui/tooltip";
 import {Button, KIND, SIZE as ButtonSize} from "baseui/button";
 import {SensitivityLevel} from "../../../service/Codelist";
 import {Plus} from "baseui/icon";
 import {ListLegalBases} from "../../common/LegalBasis";
 import {FieldArray, FormikProps} from "formik";
 import {DisclosureFormValues, LegalBasisFormValues, PolicyFormValues, ProcessFormValues} from "../../../constants";
+import CustomizedStatefulTooltip from "../../common/CustomizedStatefulTooltip";
 
 type fieldLegalBasisProps = {
   formikBag: FormikProps<ProcessFormValues> | FormikProps<PolicyFormValues> | FormikProps<DisclosureFormValues>
@@ -48,7 +48,7 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
         ) : (
           <Block display={"flex"} width={"100%"}>
             <Block width={"100%"}>
-              <StatefulTooltip content={intl.article6HelpText} focusLock={false}>
+              <CustomizedStatefulTooltip content={intl.article6HelpText}>
                 <Block>
                   <Button
                     size={ButtonSize.compact}
@@ -62,7 +62,7 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
                     {intl.addArticle6}
                   </Button>
                 </Block>
-              </StatefulTooltip>
+              </CustomizedStatefulTooltip>
 
               <Block>
                 <ListLegalBases
@@ -82,7 +82,7 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
             </Block>
 
             <Block width={"100%"}>
-              <StatefulTooltip content={intl.article9HelpText} focusLock={false}>
+              <CustomizedStatefulTooltip content={intl.article9HelpText}>
                 <Block>
                   <Button
                     size={ButtonSize.compact}
@@ -96,7 +96,7 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
                     {intl.addArticle9}
                   </Button>
                 </Block>
-              </StatefulTooltip>
+              </CustomizedStatefulTooltip>
               <Block>
                 <ListLegalBases
                   sensitivityLevel={SensitivityLevel.ART9}

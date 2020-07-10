@@ -5,7 +5,6 @@ import {Datepicker} from 'baseui/datepicker'
 import moment from 'moment'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faCalendar, faExclamationCircle} from '@fortawesome/free-solid-svg-icons'
-import {StatefulTooltip} from 'baseui/tooltip'
 import * as React from 'react'
 
 import {intl, theme} from '../../util'
@@ -13,6 +12,7 @@ import {ProcessFormValues} from '../../constants'
 import {Error} from '../common/ModalSchema'
 import {padding} from '../common/Style'
 import {currentLang} from '../../util/intl/intl'
+import CustomizedStatefulTooltip from "../common/CustomizedStatefulTooltip";
 
 interface DateModalProps {
   showDates: boolean;
@@ -27,10 +27,7 @@ function dateToDateString(date: Date | Date[]) {
 }
 
 const LabelWithTooltip = (props: {text: string; tooltip: string}) => (
-  <StatefulTooltip
-    content={props.tooltip}
-    focusLock={false}
-  >
+  <CustomizedStatefulTooltip>
     <Block display='flex'>
       {props.text}
       <FontAwesomeIcon
@@ -40,7 +37,7 @@ const LabelWithTooltip = (props: {text: string; tooltip: string}) => (
         size="sm"
       />
     </Block>
-  </StatefulTooltip>
+  </CustomizedStatefulTooltip>
 )
 
 export const DateFieldsProcessModal = (props: DateModalProps) => {

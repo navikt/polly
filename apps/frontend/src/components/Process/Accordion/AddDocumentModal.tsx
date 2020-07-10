@@ -16,9 +16,9 @@ import {codelist, ListName} from '../../../service/Codelist'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faMinusCircle} from '@fortawesome/free-solid-svg-icons'
 import {Sensitivity} from '../../InformationType/Sensitivity'
-import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
 import {Paragraph3} from 'baseui/typography'
 import {Spinner} from 'baseui/spinner'
+import CustomizedStatefulTooltip from "../../common/CustomizedStatefulTooltip";
 
 const modalBlockProps: BlockProps = {
   width: '750px',
@@ -60,7 +60,7 @@ const ListInformationTypes = (props: { informationTypes: DocumentInfoTypeUse[], 
               {informationType.subjectCategories.map(s => codelist.getShortname(ListName.SUBJECT_CATEGORY, s.code)).join(', ')}
             </Block>
           </Block>
-          <StatefulTooltip content={intl.remove} placement={PLACEMENT.top}>
+          <CustomizedStatefulTooltip content={intl.remove} >
             <Button size="compact" kind="tertiary" shape="round" onClick={() => {
               const length = formik.values.informationTypes.length
               arrayHelpers.remove(index)
@@ -68,7 +68,7 @@ const ListInformationTypes = (props: { informationTypes: DocumentInfoTypeUse[], 
                 formik.setFieldValue('document', undefined)
               }
             }}> <FontAwesomeIcon icon={faMinusCircle}/> </Button>
-          </StatefulTooltip>
+          </CustomizedStatefulTooltip>
         </Block>
       </ListItem>
     ))}

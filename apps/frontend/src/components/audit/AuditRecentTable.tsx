@@ -1,26 +1,26 @@
-import { Label1, Label3 } from 'baseui/typography'
-import React, { useEffect, useState } from 'react'
-import { getAudits } from '../../api/AuditApi'
-import { AuditItem, ObjectType, PageResponse } from '../../constants'
-import { intl, theme } from '../../util'
+import {Label1, Label3} from 'baseui/typography'
+import React, {useEffect, useState} from 'react'
+import {getAudits} from '../../api/AuditApi'
+import {AuditItem, ObjectType, PageResponse} from '../../constants'
+import {intl, theme} from '../../util'
 import moment from 'moment'
-import { Pagination } from 'baseui/pagination'
-import { TriangleDown } from 'baseui/icon'
-import { Button, KIND } from 'baseui/button'
-import { PLACEMENT, StatefulPopover } from 'baseui/popover'
-import { StatefulMenu } from 'baseui/menu'
-import { Block } from 'baseui/block'
-import { StatefulTooltip } from 'baseui/tooltip'
-import { AuditButton } from './AuditButton'
+import {Pagination} from 'baseui/pagination'
+import {TriangleDown} from 'baseui/icon'
+import {Button, KIND} from 'baseui/button'
+import {PLACEMENT, StatefulPopover} from 'baseui/popover'
+import {StatefulMenu} from 'baseui/menu'
+import {Block} from 'baseui/block'
+import {AuditButton} from './AuditButton'
 import _ from 'lodash'
 import ReactJson from 'react-json-view'
-import { faBinoculars, faCode } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { AuditActionIcon } from './AuditComponents'
+import {faBinoculars, faCode} from '@fortawesome/free-solid-svg-icons'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {AuditActionIcon} from './AuditComponents'
 import randomColor from 'randomcolor'
-import { StatefulSelect } from 'baseui/select'
-import { ObjectLink } from '../common/RouteLink'
-import { Cell, HeadCell, Row, Table } from '../common/Table'
+import {StatefulSelect} from 'baseui/select'
+import {ObjectLink} from '../common/RouteLink'
+import {Cell, HeadCell, Row, Table} from '../common/Table'
+import CustomizedStatefulTooltip from "../common/CustomizedStatefulTooltip";
 
 export const AuditRecentTable = (props: { show: boolean }) => {
   const [audits, setAudits] = useState<PageResponse<AuditItem>>({content: [], numberOfElements: 0, pageNumber: 0, pages: 0, pageSize: 1, totalElements: 0})
@@ -90,16 +90,16 @@ export const AuditRecentTable = (props: { show: boolean }) => {
               <Cell $style={{maxWidth: '13%'}}>
                 <Block marginRight={theme.sizing.scale400}>{rowNum}</Block>
                 <AuditButton kind="tertiary" id={audit.tableId} auditId={audit.id}>
-                  <StatefulTooltip content={audit.time} placement={PLACEMENT.top}>{moment(audit.time).fromNow()}</StatefulTooltip>
+                  <CustomizedStatefulTooltip content={audit.time}>{moment(audit.time).fromNow()}</CustomizedStatefulTooltip>
                 </AuditButton>
               </Cell>
               <Cell $style={{maxWidth: '17%'}}>
                 <AuditActionIcon action={audit.action}/> {audit.table}
               </Cell>
               <Cell>
-                <StatefulTooltip content={audit.tableId} placement={PLACEMENT.top}>
+                <CustomizedStatefulTooltip content={audit.tableId}>
                   <Block color={colors[audit.tableId]}>{_.truncate(audit.tableId, {length})}</Block>
-                </StatefulTooltip>
+                </CustomizedStatefulTooltip>
               </Cell>
               <Cell $style={{display: 'flex', justifyContent: 'space-between'}}>
                 <Block>{audit.user}</Block>

@@ -12,12 +12,12 @@ import {KIND as NKIND, Notification} from 'baseui/notification'
 import {LegalBasisFormValues} from '../../../constants'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faExclamationCircle, faPen} from '@fortawesome/free-solid-svg-icons'
-import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
 import {legalBasisSchema} from '../../common/schema'
 import {LegalBasisView} from '../../common/LegalBasis'
 import {customizeNationalLawPlaceholder} from './PlaceholderCustomizer'
 import {paddingZero} from '../../common/Style'
 import shortid from "shortid";
+import CustomizedStatefulTooltip from "../../common/CustomizedStatefulTooltip";
 
 const rowBlockProps: BlockProps = {
   display: 'flex',
@@ -38,16 +38,12 @@ const Error = (props: { fieldName: string }) => (
 const renderCardHeader = (text: string, sensitivityLevel: SensitivityLevel) => {
   return (
     <Block display="flex">
-      <StatefulTooltip
-        content={sensitivityLevel === SensitivityLevel.ART6 ? intl.article6HelpText : intl.article9HelpText}
-        placement={PLACEMENT.top}
-        focusLock={false}
-      >
+      <CustomizedStatefulTooltip content={sensitivityLevel === SensitivityLevel.ART6 ? intl.article6HelpText : intl.article9HelpText}>
         <Block display="flex">
           <Label2>{text}</Label2>
           <FontAwesomeIcon style={{marginLeft: '.25rem'}} icon={faExclamationCircle} color={theme.colors.primary300} size="sm"/>
         </Block>
-      </StatefulTooltip>
+      </CustomizedStatefulTooltip>
     </Block>
   )
 }

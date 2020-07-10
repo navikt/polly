@@ -1,13 +1,13 @@
 import * as React from 'react'
-import { ReactNode } from 'react'
-import { Button as BaseUIButton, KIND, SHAPE, SIZE } from 'baseui/button'
-import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { IconDefinition } from '@fortawesome/fontawesome-svg-core'
-import { theme } from '../../../util'
-import { Override } from 'baseui/overrides'
-import { StyleObject } from 'styletron-react'
-import { Block } from 'baseui/block'
+import {ReactNode} from 'react'
+import {Button as BaseUIButton, KIND, SHAPE, SIZE} from 'baseui/button'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {IconDefinition} from '@fortawesome/fontawesome-svg-core'
+import {theme} from '../../../util'
+import {Override} from 'baseui/overrides'
+import {StyleObject} from 'styletron-react'
+import {Block} from 'baseui/block'
+import CustomizedStatefulTooltip from "../CustomizedStatefulTooltip";
 
 
 interface ButtonProps {
@@ -35,7 +35,7 @@ interface TooltipProps {
 
 const Tooltip = (props: TooltipProps) => (
   props.tooltip ?
-    <StatefulTooltip content={props.tooltip} placement={PLACEMENT.top}>{props.children}</StatefulTooltip>
+    <CustomizedStatefulTooltip content={props.tooltip}>{props.children}</CustomizedStatefulTooltip>
     : props.children
 )
 

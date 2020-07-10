@@ -13,7 +13,7 @@ import {productAreaLink, teamLink} from '../../util/config'
 import {StyledLink} from 'baseui/link'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons'
-import {StatefulTooltip} from 'baseui/tooltip'
+import CustomizedStatefulTooltip from "./CustomizedStatefulTooltip";
 
 
 export const PageHeader = (props: {section: Section, code: string}) => {
@@ -81,9 +81,9 @@ export const PageHeader = (props: {section: Section, code: string}) => {
       <>
         <Block marginRight={theme.sizing.scale1200}/>
         <StyledLink target="_blank" rel="noopener noreferrer" href={url}>
-          <StatefulTooltip content={intl.goToSite}>
+          <CustomizedStatefulTooltip content={intl.goToSite}>
             <span><FontAwesomeIcon icon={faExternalLinkAlt} size='lg'/></span>
-          </StatefulTooltip>
+          </CustomizedStatefulTooltip>
         </StyledLink>
       </>
     )

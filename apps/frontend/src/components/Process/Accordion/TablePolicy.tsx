@@ -6,7 +6,6 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faEdit, faTrash} from '@fortawesome/free-solid-svg-icons'
 import {Modal, ModalBody, ModalFooter, ModalHeader} from 'baseui/modal'
 import {Paragraph2} from 'baseui/typography'
-import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
 
 import {codelist, ListName} from '../../../service/Codelist'
 import {Sensitivity} from '../../InformationType/Sensitivity'
@@ -21,6 +20,7 @@ import {AuditButton} from '../../audit/AuditButton'
 import _ from 'lodash'
 import {getAlertForProcess} from '../../../api/AlertApi'
 import {Cell, HeadCell, Row, Table} from '../../common/Table'
+import CustomizedStatefulTooltip from "../../common/CustomizedStatefulTooltip";
 
 
 type TablePurposeProps = {
@@ -88,11 +88,11 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                       </RouteLink>
                     </Block>
                     <Block>
-                      <StatefulTooltip content={() => intl.documents}>
+                      <CustomizedStatefulTooltip content={() => intl.documents}>
                         <Block $style={{opacity: '80%'}}>
                           {!!row.documentIds?.length && '(' + row.documentIds?.map(id => (docs[id] || {}).name).join(', ') + ')'}
                         </Block>
-                      </StatefulTooltip>
+                      </CustomizedStatefulTooltip>
                     </Block>
                   </Block>
                 </Cell>
@@ -112,13 +112,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                     <AuditButton id={row.id} kind='tertiary'/>
                     {hasAccess && (
                       <>
-                        <StatefulTooltip content={intl.edit} placement={PLACEMENT.top} overrides={{
-                          Body: {
-                            style: {
-                              marginBottom: '50px'
-                            }
-                          }
-                        }}>
+                        <CustomizedStatefulTooltip content={intl.edit}>
                           <Button
                             size={ButtonSize.compact}
                             kind={KIND.tertiary}
@@ -129,14 +123,8 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                           >
                             <FontAwesomeIcon icon={faEdit}/>
                           </Button>
-                        </StatefulTooltip>
-                        <StatefulTooltip content={intl.delete} placement={PLACEMENT.top} overrides={{
-                          Body: {
-                            style: {
-                              marginBottom: '50px'
-                            }
-                          }
-                        }}>
+                        </CustomizedStatefulTooltip>
+                        <CustomizedStatefulTooltip content={intl.delete}>
                           <Button
                             size={ButtonSize.compact}
                             kind={KIND.tertiary}
@@ -147,7 +135,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
                           >
                             <FontAwesomeIcon icon={faTrash}/>
                           </Button>
-                        </StatefulTooltip>
+                        </CustomizedStatefulTooltip>
                       </>
                     )}
                   </Block>

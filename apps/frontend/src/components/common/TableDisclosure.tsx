@@ -5,7 +5,6 @@ import {intl} from '../../util'
 import {Disclosure, DisclosureFormValues, disclosureSort} from '../../constants'
 import {useTable} from '../../util/hooks'
 import RouteLink from './RouteLink'
-import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
 import {Button, KIND, SIZE} from 'baseui/button'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faEdit, faTrash} from '@fortawesome/free-solid-svg-icons'
@@ -15,6 +14,7 @@ import {Block} from 'baseui/block'
 import ModalThirdParty from '../ThirdParty/ModalThirdPartyForm'
 import {mapDisclosureToFormValues} from '../../api'
 import {Cell, HeadCell, Row, Table} from './Table'
+import CustomizedStatefulTooltip from "./CustomizedStatefulTooltip";
 
 type TableDisclosureProps = {
   list: Array<Disclosure>;
@@ -72,7 +72,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
             {editable && (
               <Cell small>
                 <Block width="100%" display="flex" justifyContent="flex-end">
-                  <StatefulTooltip content={intl.edit} placement={PLACEMENT.top} ignoreBoundary={true}>
+                  <CustomizedStatefulTooltip content={intl.edit}>
                     <Button
                       size={SIZE.compact}
                       kind={KIND.tertiary}
@@ -83,9 +83,9 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
                     >
                       <FontAwesomeIcon icon={faEdit} />
                     </Button>
-                  </StatefulTooltip>
+                  </CustomizedStatefulTooltip>
 
-                  <StatefulTooltip content={intl.delete} placement={PLACEMENT.top} ignoreBoundary={true}>
+                  <CustomizedStatefulTooltip content={intl.delete}>
                     <Button
                       size={SIZE.compact}
                       kind={KIND.tertiary}
@@ -96,7 +96,7 @@ const TableDisclosure = ({ list, showRecipient, submitDeleteDisclosure, submitEd
                     >
                       <FontAwesomeIcon icon={faTrash} />
                     </Button>
-                  </StatefulTooltip>
+                  </CustomizedStatefulTooltip>
                 </Block>
 
               </Cell>

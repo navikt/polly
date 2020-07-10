@@ -7,7 +7,7 @@ import {faChartBar, faChartPie, faCircle} from '@fortawesome/free-solid-svg-icon
 import {Card} from 'baseui/card'
 import {hideBorder, marginAll} from '../common/Style'
 import * as _ from 'lodash'
-import {StatefulTooltip} from 'baseui/tooltip'
+import CustomizedStatefulTooltip from "../common/CustomizedStatefulTooltip";
 
 const cursor = {cursor: 'pointer'}
 
@@ -166,11 +166,11 @@ const Visualization = (props: VisualizationProps) => {
       </Card>
 
       <div onClick={toggle} style={{position: 'absolute', top: '5px', left: '5px'}}>
-        <StatefulTooltip content={type === 'bar' ? 'Kakediagram' : 'Søyledriagram'}>
+        <CustomizedStatefulTooltip content={type === 'bar' ? 'Kakediagram' : 'Søyledriagram'}>
           <Block $style={{cursor: 'pointer'}}>
             <FontAwesomeIcon icon={type === 'bar' ? faChartPie : faChartBar}/>
           </Block>
-        </StatefulTooltip>
+        </CustomizedStatefulTooltip>
       </div>
     </Block>
   )

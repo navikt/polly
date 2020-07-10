@@ -14,8 +14,8 @@ import {intl} from '../../../util'
 import {policySchema} from '../../common/schema'
 import {Tag, VARIANT} from 'baseui/tag'
 import {Docs} from './TablePolicy'
-import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
 import FieldLegalBasis from "../common/FieldLegalBasis";
+import CustomizedStatefulTooltip from "../../common/CustomizedStatefulTooltip";
 
 
 const modalBlockProps: BlockProps = {
@@ -101,7 +101,7 @@ const FieldLegalBasesUse = (props: { legalBasesUse: LegalBasesUse }) => {
               <Radio value={LegalBasesUse.UNRESOLVED}>{intl.legalBasesUndecided}</Radio>
               <Radio value={LegalBasesUse.DEDICATED_LEGAL_BASES}>{intl.legalBasesOwn}</Radio>
               <Radio value={LegalBasesUse.EXCESS_INFO}>
-                <StatefulTooltip content={intl.excessInfoHelpText} placement={PLACEMENT.top}>{intl.EXCESS_INFO}</StatefulTooltip>
+                <CustomizedStatefulTooltip content={intl.excessInfoHelpText}>{intl.EXCESS_INFO}</CustomizedStatefulTooltip>
               </Radio>
             </RadioGroup>
           </Block>

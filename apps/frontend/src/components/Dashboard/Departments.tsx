@@ -7,10 +7,10 @@ import {Label1, Paragraph2} from 'baseui/typography'
 import {theme, useAwait} from '../../util'
 import {DashboardData, DepartmentProcess, ProcessStatus} from '../../constants'
 import {codelist, ListName} from '../../service/Codelist'
-import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
 import RouteLink from '../common/RouteLink'
 import {Spinner} from 'baseui/spinner'
 import {genProcessPath, Section} from '../../pages/ProcessPage'
+import CustomizedStatefulTooltip from "../common/CustomizedStatefulTooltip";
 
 const TextWithNumber = (props: {label: string; number: number}) => (
   <Block display="flex" width="100%" marginBottom="0" justifyContent="center">
@@ -31,7 +31,7 @@ const DepartmentCard = (props: DepartmentCardProps) => {
   const {department} = props
 
   return (
-    <StatefulTooltip content={codelist.getCode(ListName.DEPARTMENT, department.department)?.shortName} placement={PLACEMENT.topLeft}>
+    <CustomizedStatefulTooltip content={codelist.getCode(ListName.DEPARTMENT, department.department)?.shortName}>
       <Block>
         <Card overrides={cardShadow}>
           <Block
@@ -52,7 +52,7 @@ const DepartmentCard = (props: DepartmentCardProps) => {
           </Block>
         </Card>
       </Block>
-    </StatefulTooltip>
+    </CustomizedStatefulTooltip>
   )
 }
 
