@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {DisclosureFormValues, Document, LegalBasisFormValues} from '../../constants';
+import {DisclosureFormValues, Document} from '../../constants';
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal';
 import {Field, FieldProps, Form, Formik, FormikProps} from 'formik';
 import {Block, BlockProps} from 'baseui/block';
@@ -72,12 +72,12 @@ const FieldTextarea = (props: { fieldName: string, fieldValue?: string, placehol
   )
 }
 
-const FieldInput = (props: { fieldName: string, fieldValue?: string }) => {
+const FieldInput = (props: { fieldName: string, fieldValue?: string,}) => {
   return (
     <Field
       name={props.fieldName}
       render={({ field, form }: FieldProps<string, DisclosureFormValues>) => (
-        <Input {...field} />
+        <Input {...field}/>
       )}
     />
   )
@@ -94,8 +94,6 @@ type ModalThirdPartyProps = {
 };
 
 const ModalThirdParty = (props: ModalThirdPartyProps) => {
-  const [selectedLegalBasis, setSelectedLegalBasis] = React.useState<LegalBasisFormValues>();
-  const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState<number>();
 
   const { submit, errorOnCreate, onClose, isOpen, disableRecipientField, initialValues, title } = props
 
@@ -132,7 +130,7 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
 
                 <Block {...rowBlockProps}>
                   <ModalLabel label={intl.disclosureName} />
-                  <FieldInput fieldName="name" fieldValue={formikBag.values.name} />
+                  <FieldInput fieldName="name" fieldValue={formikBag.values.name}/>
                 </Block>
                 <Error fieldName="name" />
 

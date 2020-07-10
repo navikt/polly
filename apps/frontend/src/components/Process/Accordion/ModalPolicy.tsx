@@ -5,9 +5,9 @@ import {Field, FieldArray, FieldArrayRenderProps, FieldProps, Form, Formik, Form
 import {Block, BlockProps} from 'baseui/block'
 import {Radio, RadioGroup} from 'baseui/radio'
 import {Select, StatefulSelect, TYPE} from 'baseui/select'
-import {codelist, ListName, SensitivityLevel} from '../../../service/Codelist'
+import {codelist, ListName} from '../../../service/Codelist'
 import {Button, KIND} from 'baseui/button'
-import {InformationTypeShort, LegalBasesUse, LegalBasisFormValues, PolicyFormValues} from '../../../constants'
+import {InformationTypeShort, LegalBasesUse, PolicyFormValues} from '../../../constants'
 import {useInfoTypeSearch} from '../../../api'
 import {Error, ModalLabel} from '../../common/ModalSchema'
 import {intl} from '../../../util'
@@ -123,9 +123,6 @@ type ModalPolicyProps = {
 };
 
 const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, docs, title }: ModalPolicyProps) => {
-  const [selectedLegalBasis, setSelectedLegalBasis] = React.useState<LegalBasisFormValues>()
-  const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState<number>()
-  const [sensitivityLevel, setSensitivityLevel] = React.useState<SensitivityLevel>(SensitivityLevel.ART6)
 
   const disableEnter = (e: KeyboardEvent) => {
     if (e.key === 'Enter') e.preventDefault()
