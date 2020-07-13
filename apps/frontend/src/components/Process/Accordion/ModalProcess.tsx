@@ -9,10 +9,7 @@ import {ProcessFormValues, ProcessStatus} from '../../../constants'
 import {codelist} from '../../../service/Codelist'
 import {intl, theme} from '../../../util'
 import {processSchema} from '../../common/schema'
-import {Accordion, Panel} from 'baseui/accordion'
-import {Label1} from 'baseui/typography'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faChevronDown, faChevronRight} from '@fortawesome/free-solid-svg-icons'
+import {Accordion, Panel, PanelOverrides} from 'baseui/accordion'
 import CustomizedModalBlock from '../../common/CustomizedModalBlock'
 import {DateFieldsProcessModal} from '../DateFieldsProcessModal'
 import FieldName from '../common/FieldName'
@@ -34,6 +31,7 @@ import {RadioBoolButton} from '../../common/Radio'
 import {env} from '../../../util/env'
 import {writeLog} from '../../../api/LogApi'
 import FieldLegalBasis from "../common/FieldLegalBasis";
+import PanelTitle from "../common/PanelTitle";
 
 const modalHeaderProps: BlockProps = {
   display: 'flex',
@@ -63,7 +61,7 @@ type ModalProcessProps = {
   onClose: () => void
 }
 
-const panelOverrides = {
+const panelOverrides:PanelOverrides<any> = {
   Header: {
     style: {
       paddingLeft: '0'
@@ -77,19 +75,6 @@ const panelOverrides = {
   ToggleIcon: {
     component: () => null
   }
-}
-
-const AccordionTitle = (props: { title: string, expanded: boolean }) => {
-  const {title, expanded} = props
-  return <>
-    <Block>
-      <Label1 color={theme.colors.primary}>
-        {expanded ? <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
-        <span> </span>
-        <span>{title}</span>
-      </Label1>
-    </Block>
-  </>
 }
 
 const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, title}: ModalProcessProps) => {
@@ -215,7 +200,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                     }
                   }}>
                     <Panel
-                      title={<ModalLabel label={<AccordionTitle title={intl.organizing} expanded={isPanelExpanded}/>}/>}
+                      title={<ModalLabel label={<PanelTitle title={intl.organizing} expanded={isPanelExpanded}/>}/>}
                       onChange={togglePanel}
                       overrides={{...panelOverrides}}
                     >
@@ -261,7 +246,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                     </Panel>
 
                     <Panel
-                      title={<AccordionTitle title={intl.legalBasis} expanded={isPanelExpanded}/>}
+                      title={<PanelTitle title={intl.legalBasis} expanded={isPanelExpanded}/>}
                       onChange={togglePanel}
                       overrides={{...panelOverrides}}
                     >
@@ -270,7 +255,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                     </Panel>
 
                     <Panel
-                      title={<AccordionTitle title={intl.automation} expanded={isPanelExpanded}/>}
+                      title={<PanelTitle title={intl.automation} expanded={isPanelExpanded}/>}
                       onChange={togglePanel}
                       overrides={{...panelOverrides}}
                     >
@@ -285,7 +270,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                     </Panel>
 
                     <Panel
-                      title={<AccordionTitle title={intl.dataProcessor} expanded={isPanelExpanded}/>}
+                      title={<PanelTitle title={intl.dataProcessor} expanded={isPanelExpanded}/>}
                       onChange={togglePanel}
                       overrides={{...panelOverrides}}
                     >
@@ -310,7 +295,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                       </>}
                     </Panel>
                     <Panel
-                      title={<AccordionTitle title={intl.retention} expanded={isPanelExpanded}/>}
+                      title={<PanelTitle title={intl.retention} expanded={isPanelExpanded}/>}
                       onChange={togglePanel}
                       overrides={{...panelOverrides}}
                     >
@@ -318,7 +303,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                     </Panel>
 
                     <Panel
-                      title={<AccordionTitle title={intl.pvkRequired} expanded={isPanelExpanded}/>}
+                      title={<PanelTitle title={intl.pvkRequired} expanded={isPanelExpanded}/>}
                       onChange={togglePanel}
                       overrides={{...panelOverrides}}
                     >
