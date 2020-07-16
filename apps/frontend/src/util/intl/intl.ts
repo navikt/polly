@@ -148,7 +148,7 @@ export interface IStrings {
   orgMasterSelect: string;
   purposeSelect: string;
   purposeNotFound: string;
-  purposeUse: string;
+  processingActivityUse: string;
   informationTypeExternalUse: string;
   thirdParties: string;
   alerts: string;
@@ -227,7 +227,7 @@ export interface IStrings {
   treasureIllustration: string;
   legalbasisGDPRArt9Info: string;
   legalBasisInfo: string;
-  groupByPurpose: string;
+  groupByProcessingActivities: string;
   showAll: string;
   createThirdPartyModalTitle: string;
   disclosuresToThirdParty: string;

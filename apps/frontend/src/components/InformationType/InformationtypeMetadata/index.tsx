@@ -30,15 +30,24 @@ interface InformationtypeMetadataProps {
   onSelectPurpose: (purpose: string) => void
 }
 
-const Purposes = ({policies, onSelectPurpose}: {policies: Policy[], onSelectPurpose: (purpose: string) => void}) => {
+const Purposes = ({policies, onSelectPurpose}: { policies: Policy[], onSelectPurpose: (purpose: string) => void }) => {
   const [accordion, setAccordion] = React.useState(false)
   return (
     <Block>
       <Block display="flex" justifyContent="flex-end">
-        <Button onClick={() => setAccordion(!accordion)} size="compact" shape="pill" kind='outline'
-                $style={{position: 'absolute', marginTop: `-${theme.sizing.scale1200}`, marginLeft: `-${theme.sizing.scale400}`}}
+        <Button onClick={() => setAccordion(!accordion)}
+                size="compact"
+                shape="pill"
+                kind='outline'
+                $style={{
+                  position: 'relative',
+                  marginTop: `-${theme.sizing.scale1200}`,
+                  marginLeft: `-${theme.sizing.scale400}`,
+                  right: theme.sizing.scale600,
+                  bottom: theme.sizing.scale600
+                }}
         >
-          {accordion ? intl.showAll : intl.groupByPurpose}
+          {accordion ? intl.showAll : intl.groupByProcessingActivities}
         </Button>
       </Block>
       {accordion ?
@@ -48,7 +57,7 @@ const Purposes = ({policies, onSelectPurpose}: {policies: Policy[], onSelectPurp
   )
 }
 
-const Disclosures = ({disclosures}: {disclosures: Disclosure[]}) => {
+const Disclosures = ({disclosures}: { disclosures: Disclosure[] }) => {
   return (
     <TableDisclosure
       list={disclosures}
@@ -89,7 +98,7 @@ export const InformationtypeMetadata = (props: InformationtypeMetadataProps) => 
             activeKey={activeTab}
             onChange={args => setActiveTab(args.activeKey as string)}
           >
-            <Tab key="purposes" title={intl.purposeUse} overrides={tabOverride}>
+            <Tab key="purposes" title={intl.processingActivityUse} overrides={tabOverride}>
               {!props.policies && <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200}/>}
               {props.policies && <Purposes policies={props.policies} onSelectPurpose={props.onSelectPurpose}/>}
             </Tab>
