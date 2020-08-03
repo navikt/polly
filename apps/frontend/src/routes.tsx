@@ -50,7 +50,7 @@ const Routes = (): JSX.Element => (
       <Route exact path="/disclosure/:id" component={redirect(disclosureUrl)} />
 
       <Route exact path="/informationtype/create" component={InformationtypeCreatePage} />
-      <Route exact path="/informationtype/:id?" component={InformationtypePage} />
+      <Route exact path="/informationtype/:id?/:purpose?" component={InformationtypePage} />
       <Route exact path="/informationtype/:id/edit" component={InformationtypeEditPage} />
 
       <Route exact path="/admin/codelist/:listname?" component={CodelistPage} />
