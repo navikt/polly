@@ -2,7 +2,7 @@ import * as React from 'react'
 import {useState} from 'react'
 import {Block} from 'baseui/block'
 
-import AccordionInformationtype from './AccordionInformationtype'
+import AccordionInformationType from './AccordionInformationType'
 import {Disclosure, Document, InformationType, Policy} from '../../../constants'
 import {intl, theme} from '../../../util'
 import Metadata from './Metadata'
@@ -21,17 +21,18 @@ import {canViewAlerts} from '../../../pages/AlertEventPage'
 import {faExclamationCircle} from '@fortawesome/free-solid-svg-icons'
 import {useHistory} from 'react-router-dom'
 import {Spinner} from '../../common/Spinner'
+import {useQueryParam} from '../../../util/hooks'
 
 interface InformationtypeMetadataProps {
   informationtype: InformationType;
   policies?: Policy[];
   disclosures?: Disclosure[],
-  documents?: Document[],
-  onSelectPurpose: (purpose: string) => void
+  documents?: Document[]
 }
 
-const Purposes = ({policies, onSelectPurpose}: { policies: Policy[], onSelectPurpose: (purpose: string) => void }) => {
-  const [accordion, setAccordion] = React.useState(false)
+const Purposes = ({policies}: { policies: Policy[] }) => {
+  const selectedPurpose = useQueryParam('purpose')
+  const [accordion, setAccordion] = React.useState(!!selectedPurpose)
   return (
     <Block>
       <Block display="flex" justifyContent="flex-end">
@@ -51,7 +52,7 @@ const Purposes = ({policies, onSelectPurpose}: { policies: Policy[], onSelectPur
         </Button>
       </Block>
       {accordion ?
-        <AccordionInformationtype policies={policies} onChange={args => args.expanded.length && onSelectPurpose(args.expanded[0] as string)}/>
+        <AccordionInformationType policies={policies}/>
         : <InformationtypePolicyTable policies={policies} showPurpose={true}/>}
     </Block>
   )
@@ -100,7 +101,7 @@ export const InformationtypeMetadata = (props: InformationtypeMetadataProps) => 
           >
             <Tab key="purposes" title={intl.processingActivityUse} overrides={tabOverride}>
               {!props.policies && <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200}/>}
-              {props.policies && <Purposes policies={props.policies} onSelectPurpose={props.onSelectPurpose}/>}
+              {props.policies && <Purposes policies={props.policies}/>}
             </Tab>
             <Tab key="disclose" title={intl.disclosuresToThirdParty} overrides={tabOverride}>
               {!props.disclosures && <Spinner size={theme.sizing.scale1200} margin={theme.sizing.scale1200}/>}

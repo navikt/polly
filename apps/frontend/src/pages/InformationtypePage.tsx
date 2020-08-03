@@ -66,7 +66,6 @@ const InformationtypePage = () => {
           policies={policies}
           disclosures={disclosures}
           documents={documents}
-          onSelectPurpose={purpose => history.push(`/informationtype/${informationTypeId}/${purpose}`)}
         />
       )}
 
