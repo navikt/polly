@@ -21,6 +21,9 @@ public interface AlertRepository extends JpaRepository<GenericStorage, UUID>, Al
     @Query(value = "select * from generic_storage where data ->> 'processId' = cast(?1 as text) and type = 'ALERT_EVENT'", nativeQuery = true)
     List<GenericStorage> findByProcessId(UUID processId);
 
+    @Query(value = "select * from generic_storage where data ->> 'disclosureId' = cast(?1 as text) and type = 'ALERT_EVENT'", nativeQuery = true)
+    List<GenericStorage> findByDisclosureId(UUID disclosureId);
+
     @Query(value = "select * from generic_storage where data ->> 'processId' = cast(?1 as text) and data ->> 'type' = ?2 and type = 'ALERT_EVENT'", nativeQuery = true)
     Optional<GenericStorage> findByProcessIdAndEventType(UUID processId, AlertEventType eventType);
 
@@ -48,4 +51,8 @@ public interface AlertRepository extends JpaRepository<GenericStorage, UUID>, Al
     @Modifying
     @Query(value = "delete from generic_storage where data ->> 'processId' = cast(?1 as text) and type = 'ALERT_EVENT'", nativeQuery = true)
     int deleteByProcessId(UUID processId);
+
+    @Modifying
+    @Query(value = "delete from generic_storage where data ->> 'disclosureId' = cast(?1 as text) and type = 'ALERT_EVENT'", nativeQuery = true)
+    int deleteByDisclosureId(UUID disclosureId);
 }

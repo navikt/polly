@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
+import lombok.With;
 import lombok.experimental.FieldNameConstants;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.validator.FieldValidator;
@@ -24,6 +25,7 @@ import static no.nav.data.common.utils.DateUtil.ORIG_START;
 import static no.nav.data.common.utils.StringUtils.toUpperCaseAndTrim;
 
 @Slf4j
+@With
 @Data
 @Builder
 @AllArgsConstructor

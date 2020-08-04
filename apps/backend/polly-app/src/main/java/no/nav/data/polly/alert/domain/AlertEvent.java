@@ -17,6 +17,7 @@ public class AlertEvent implements GenericStorageIdData, Comparable<AlertEvent> 
     private UUID id;
     private UUID processId;
     private UUID informationTypeId;
+    private UUID disclosureId;
     private AlertEventType type;
     private AlertEventLevel level;
 
@@ -25,6 +26,11 @@ public class AlertEvent implements GenericStorageIdData, Comparable<AlertEvent> 
     public AlertEvent(UUID processId, UUID informationTypeId, AlertEventType type) {
         this.processId = processId;
         this.informationTypeId = informationTypeId;
+        setAlertEventType(type);
+    }
+
+    public AlertEvent(UUID disclosureId, AlertEventType type) {
+        this.disclosureId = disclosureId;
         setAlertEventType(type);
     }
 

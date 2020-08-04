@@ -60,7 +60,7 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
         if (!oldPurpose.equals(request.getPurposeCode())) {
             process.getPolicies().forEach(p -> p.setPurposeCode(request.getPurposeCode()));
         }
-        alertService.deleteEventsForProcess(process.getId());
+//        alertService.deleteEventsForProcess(process.getId());
         return save(process);
     }
 

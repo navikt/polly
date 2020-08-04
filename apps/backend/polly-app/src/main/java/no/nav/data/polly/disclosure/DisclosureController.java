@@ -137,7 +137,7 @@ public class DisclosureController {
             log.info("Cannot find Disclosure with id={}", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        repository.deleteById(id);
+        service.deleteById(id);
         log.info("Disclosure with id={} deleted", id);
         return new ResponseEntity<>(convertAndAddDocument(fromRepository.get()), HttpStatus.OK);
     }

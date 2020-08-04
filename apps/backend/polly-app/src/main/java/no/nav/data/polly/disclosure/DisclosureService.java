@@ -4,6 +4,7 @@ import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.common.validator.RequestElement;
 import no.nav.data.common.validator.RequestValidator;
 import no.nav.data.common.validator.ValidationError;
+import no.nav.data.polly.alert.AlertService;
 import no.nav.data.polly.disclosure.domain.Disclosure;
 import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.disclosure.dto.DisclosureRequest;
@@ -19,26 +20,38 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Service
 public class DisclosureService extends RequestValidator<DisclosureRequest> {
 
-    private DisclosureRepository repository;
-    private DocumentRepository documentRepository;
+    private final DisclosureRepository repository;
+    private final DocumentRepository documentRepository;
+    private final AlertService alertService;
 
-    public DisclosureService(DisclosureRepository repository, DocumentRepository documentRepository) {
+    public DisclosureService(DisclosureRepository repository, DocumentRepository documentRepository, AlertService alertService) {
         this.repository = repository;
         this.documentRepository = documentRepository;
+        this.alertService = alertService;
     }
 
     @Transactional
     public Disclosure save(DisclosureRequest request) {
         initialize(List.of(request), false);
         validateRequest(request);
-        return repository.save(new Disclosure().convertFromRequest(request));
+        Disclosure disclosure = repository.save(new Disclosure().convertFromRequest(request));
+        alertService.calculateEventsForDisclosure(disclosure);
+        return disclosure;
     }
 
     @Transactional
     public Disclosure update(DisclosureRequest request) {
         initialize(List.of(request), true);
         validateRequest(request);
-        return repository.findById(request.getIdAsUUID()).orElseThrow().convertFromRequest(request);
+        Disclosure disclosure = repository.findById(request.getIdAsUUID()).orElseThrow().convertFromRequest(request);
+        alertService.calculateEventsForDisclosure(disclosure);
+        return disclosure;
+    }
+
+    @Transactional
+    public void deleteById(UUID id) {
+        repository.deleteById(id);
+        alertService.deleteEventsForDisclosure(id);
     }
 
     private void validateRequest(DisclosureRequest request) {

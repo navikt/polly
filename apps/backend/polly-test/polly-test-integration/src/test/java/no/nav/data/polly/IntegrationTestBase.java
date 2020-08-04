@@ -253,7 +253,8 @@ public abstract class IntegrationTestBase {
                                         .profiling(true)
                                         .dataProcessing(DataProcessing.builder().dataProcessor(true).dataProcessorAgreements(List.of("X")).dataProcessorOutsideEU(false).build())
                                         .retention(Retention.builder().retentionPlan(true).retentionMonths(24).retentionStart("Birth").retentionDescription("ret desc").build())
-                                        .dpia(Dpia.builder().needForDpia(true).refToDpia("ref123").grounds("default").processImplemented(true).riskOwner("A123457").riskOwnerFunction("teamlead").build())
+                                        .dpia(Dpia.builder().needForDpia(true).refToDpia("ref123").grounds("default").processImplemented(true).riskOwner("A123457")
+                                                .riskOwnerFunction("teamlead").build())
                                         .status(ProcessStatus.IN_PROGRESS)
                                         .build())
                                 .build()));
@@ -287,7 +288,7 @@ public abstract class IntegrationTestBase {
     }
 
     protected LegalBasisRequest createLegalBasisRequest() {
-        return LegalBasisRequest.builder().gdpr("ART61A").nationalLaw("FTRL").description("§ 2-1")                .build();
+        return LegalBasisRequest.builder().gdpr("ART61A").nationalLaw("FTRL").description("§ 2-1").build();
     }
 
     protected LegalBasis createLegalBasis(String gdpr, String nationalLaw, String description) {
