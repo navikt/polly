@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import static no.nav.data.common.utils.StreamUtils.get;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DashboardIT extends IntegrationTestBase {
+class DashboardIT extends IntegrationTestBase {
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -19,7 +19,7 @@ public class DashboardIT extends IntegrationTestBase {
     @Test
     void getProcess() {
         createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
-        var p2 =  createAndSaveProcess(PURPOSE_CODE2);
+        var p2 = createAndSaveProcess(PURPOSE_CODE2);
         p2.getData().getDpia().setNeedForDpia(null);
         processRepository.save(p2);
 

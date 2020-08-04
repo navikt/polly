@@ -39,6 +39,9 @@ public class DashResponse {
         private Counter automation;
         private Counter retention;
         private long retentionDataIncomplete;
+        private Counter dataProcessor;
+        private long dataProcessorAgreementMissing;
+        private Counter dataProcessorOutsideEU;
     }
 
     @Data

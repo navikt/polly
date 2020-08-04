@@ -110,7 +110,8 @@ class ProcessControllerIT extends IntegrationTestBase {
             return field != ProcessField.MISSING_ARTICLE_9 &&
                     field != ProcessField.MISSING_LEGAL_BASIS &&
                     field != ProcessField.EXCESS_INFO &&
-                    field != ProcessField.RETENTION_DATA;
+                    field != ProcessField.RETENTION_DATA &&
+                    field != ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY_AS_UNKNOWN;
         }
 
         @ParameterizedTest

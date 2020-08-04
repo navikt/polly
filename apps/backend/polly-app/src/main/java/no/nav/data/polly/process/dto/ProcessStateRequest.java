@@ -23,6 +23,10 @@ public class ProcessStateRequest implements Validated {
 
     public enum ProcessField {
         DPIA, PROFILING, AUTOMATION, RETENTION, RETENTION_DATA,
+        DATA_PROCESSOR, DATA_PROCESSOR_OUTSIDE_EU,
+
+        // Not a real true/false/null field, see repository, use state UNKNOWN
+        DATA_PROCESSOR_AGREEMENT_EMPTY_AS_UNKNOWN,
 
         // Alert events
         EXCESS_INFO(true),

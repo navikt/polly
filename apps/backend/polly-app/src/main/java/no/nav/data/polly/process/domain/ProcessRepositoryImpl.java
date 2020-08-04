@@ -111,13 +111,18 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
             case AUTOMATION -> " data #> '{automaticProcessing}' %s ";
             case RETENTION -> " data #> '{retention,retentionPlan}' %s ";
             case RETENTION_DATA -> " data #> '{retention,retentionStart}' %1$s or data #> '{retention,retentionMonths}' %1$s ";
+            case DATA_PROCESSOR -> " data #> '{dataProcessing,dataProcessor}' %s ";
+            case DATA_PROCESSOR_OUTSIDE_EU -> " data #> '{dataProcessing,dataProcessor}' = 'true'::jsonb and data #> '{dataProcessing,dataProcessorOutsideEU}' %s ";
+
+            // UNKNOWN counts empty, YES/NO doesnt make sense and will always return false
+            case DATA_PROCESSOR_AGREEMENT_EMPTY_AS_UNKNOWN -> " data #> '{dataProcessing,dataProcessor}' = 'true'::jsonb and data #> '{dataProcessing,dataProcessorAgreements}' %s ";
             default -> throw new IllegalArgumentException("invalid field for stateQuery " + processField);
         };
 
         var equate = switch (processState) {
             case YES -> " = 'true'::jsonb";
             case NO -> " = 'false'::jsonb";
-            // force jsonb null to null
+            // '->> 0' forces jsonb null to sql null, also helps on array length lookups
             case UNKNOWN -> " ->> 0 is null ";
         };
         return "(" + loc.formatted(equate) + ")";
