@@ -145,6 +145,7 @@ export const AlertEventPage = () => {
           <>
             <HeadCell title={intl.process}/>
             <HeadCell title={intl.informationType}/>
+            <HeadCell title={intl.disclosure}/>
             <HeadCell title={intl.level + ' - ' + intl.type}/>
             <HeadCell title={intl.time}/>
             <HeadCell title={intl.user}/>
@@ -156,7 +157,7 @@ export const AlertEventPage = () => {
             <Cell>
               {event.process ?
                 <ObjectLink id={event.process.id} type={ObjectType.PROCESS}>
-                  {codelist.getShortnameForCode(event.process.purpose)}: {event.process?.name}
+                  {codelist.getShortnameForCode(event.process.purpose)}: {event.process.name}
                 </ObjectLink>
                 : ''}
             </Cell>
@@ -165,7 +166,15 @@ export const AlertEventPage = () => {
               {event.informationType ?
                 <ObjectLink id={event.informationType.id} type={ObjectType.INFORMATION_TYPE}>
                   <Sensitivity sensitivity={event.informationType.sensitivity}/>&nbsp;
-                  {event.informationType?.name}
+                  {event.informationType.name}
+                </ObjectLink>
+                : ''}
+            </Cell>
+
+            <Cell>
+              {event.disclosure ?
+                <ObjectLink id={event.disclosure.id} type={ObjectType.DISCLOSURE}>
+                  {event.disclosure.name}
                 </ObjectLink>
                 : ''}
             </Cell>

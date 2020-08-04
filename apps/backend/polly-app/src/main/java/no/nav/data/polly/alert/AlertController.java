@@ -97,7 +97,7 @@ public class AlertController {
                 .flatMap(domainCache::getInfoType)
                 .ifPresent(it -> builder.informationType(it.convertToShortResponse()));
 
-        Optional.ofNullable(event.getProcessId())
+        Optional.ofNullable(event.getDisclosureId())
                 .flatMap(domainCache::getDisclosure)
                 .ifPresent(it -> builder.disclosure(it.convertToResponse()));
 
