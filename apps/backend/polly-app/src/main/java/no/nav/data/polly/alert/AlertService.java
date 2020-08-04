@@ -232,9 +232,10 @@ public class AlertService {
         return safeStream(legalBases).anyMatch(lb -> lb.getGdpr().startsWith(articlePrefix));
     }
 
-    public Page<AlertEvent> getEvents(PageParameters parameters, UUID processId, UUID informationTypeId, AlertEventType type, AlertEventLevel level, AlertSort sort, SortDir dir) {
+    public Page<AlertEvent> getEvents(PageParameters parameters, UUID processId, UUID informationTypeId, UUID disclosureId, AlertEventType type, AlertEventLevel level,
+            AlertSort sort, SortDir dir) {
         parameters.validate();
-        return alertRepository.findAlerts(processId, informationTypeId, type, level,
+        return alertRepository.findAlerts(processId, informationTypeId, disclosureId, type, level,
                 parameters.getPageNumber(), parameters.getPageSize(),
                 sort, dir
         );

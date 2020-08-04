@@ -477,6 +477,7 @@ export interface AlertEvent {
   id: string;
   process?: ProcessShort;
   informationType?: InformationTypeShort;
+  disclosure?: Disclosure;
   type: AlertEventType;
   level: AlertEventLevel;
   changeStamp: ChangeStamp;

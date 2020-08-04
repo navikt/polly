@@ -71,12 +71,13 @@ public class AlertController {
     public ResponseEntity<RestResponsePage<AlertEventResponse>> alertsEvents(PageParameters parameters,
             @RequestParam(value = "processId", required = false) UUID processId,
             @RequestParam(value = "informationTypeId", required = false) UUID informationTypeId,
+            @RequestParam(value = "disclosureId", required = false) UUID disclosureId,
             @RequestParam(value = "type", required = false) AlertEventType type,
             @RequestParam(value = "level", required = false) AlertEventLevel level,
             @RequestParam(value = "sort", required = false) AlertSort sort,
             @RequestParam(value = "dir", required = false) SortDir dir
     ) {
-        var events = alertService.getEvents(parameters, processId, informationTypeId, type, level,sort,dir).map(this::convertEventResponse);
+        var events = alertService.getEvents(parameters, processId, informationTypeId, disclosureId, type, level, sort, dir).map(this::convertEventResponse);
         return ResponseEntity.ok(new RestResponsePage<>(events));
     }
 
@@ -96,13 +97,17 @@ public class AlertController {
                 .flatMap(domainCache::getInfoType)
                 .ifPresent(it -> builder.informationType(it.convertToShortResponse()));
 
+        Optional.ofNullable(event.getProcessId())
+                .flatMap(domainCache::getDisclosure)
+                .ifPresent(it -> builder.disclosure(it.convertToResponse()));
+
         return builder.build();
     }
 
     public static class EventPage extends RestResponsePage<AlertEventResponse> {
 
         public enum AlertSort {
-            PROCESS, INFORMATION_TYPE, TYPE, LEVEL, TIME, USER
+            PROCESS, INFORMATION_TYPE, DISCLOSURE, TYPE, LEVEL, TIME, USER
         }
 
         public enum SortDir {
