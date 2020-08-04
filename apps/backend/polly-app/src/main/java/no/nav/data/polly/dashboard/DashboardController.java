@@ -88,7 +88,7 @@ public class DashboardController {
                         .retentionDataIncomplete(processRepository.countForState(ProcessField.RETENTION_DATA, ProcessState.UNKNOWN, e.getKey()))
 
                         .dataProcessor(getCount(ProcessField.DATA_PROCESSOR, e.getValue(), e.getKey()))
-                        .dataProcessorOutsideEU(getCount(ProcessField.DATA_PROCESSOR_OUTSIDE_EU, e.getValue(), e.getKey()))
+                        .dataProcessorOutsideEU(getCount(ProcessField.DATA_PROCESSOR_OUTSIDE_EU, null, e.getKey()))
                         .dataProcessorAgreementMissing(processRepository.countForState(ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY_AS_UNKNOWN, ProcessState.UNKNOWN, e.getKey()))
 
                         .build())
@@ -113,7 +113,7 @@ public class DashboardController {
                         .retentionDataIncomplete(processRepository.countForState(ProcessField.RETENTION_DATA, ProcessState.UNKNOWN, null))
 
                         .dataProcessor(getCount(ProcessField.DATA_PROCESSOR, processes, null))
-                        .dataProcessorOutsideEU(getCount(ProcessField.DATA_PROCESSOR_OUTSIDE_EU, processes, null))
+                        .dataProcessorOutsideEU(getCount(ProcessField.DATA_PROCESSOR_OUTSIDE_EU, null, null))
                         .dataProcessorAgreementMissing(processRepository.countForState(ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY_AS_UNKNOWN, ProcessState.UNKNOWN, null))
 
                         .build())
@@ -121,10 +121,11 @@ public class DashboardController {
         return dash.build();
     }
 
-    private Counter getCount(ProcessField field, long processes, String department) {
+    private Counter getCount(ProcessField field, Long processes, String department) {
         long yes = processRepository.countForState(field, ProcessState.YES, department);
         long no = processRepository.countForState(field, ProcessState.NO, department);
-        return new Counter(yes, no, processes - yes - no);
+        long unknown = processes != null ? processes - yes - no : processRepository.countForState(field, ProcessState.UNKNOWN, department);
+        return new Counter(yes, no, unknown);
     }
 
 }
