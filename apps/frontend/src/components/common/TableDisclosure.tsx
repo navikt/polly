@@ -29,12 +29,25 @@ type TableDisclosureProps = {
   onCloseModal?: () => void;
 };
 
+type Alerts = {[k: string]: DisclosureAlert}
 const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal}: TableDisclosureProps) => {
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false)
   const [showEditModal, setShowEditModal] = React.useState<boolean>()
   const [selectedDisclosure, setSelectedDisclosure] = React.useState<Disclosure>()
+  const [alerts, setAlerts] = useState<Alerts>({})
 
   const [table, sortColumn] = useTable<Disclosure, keyof Disclosure>(list, {sorting: disclosureSort, initialSortColumn: showRecipient ? 'recipient' : 'name'})
+
+  useEffect(() => {
+    (async () => {
+      const alertMap = (await Promise.all(list.map(d => getAlertForDisclosure(d.id))))
+      .reduce((acc: Alerts, alert) => {
+        acc[alert.disclosureId] = alert
+        return acc
+      }, {} as Alerts)
+      setAlerts(alertMap)
+    })()
+  }, [list])
 
   return (
     <React.Fragment>
@@ -51,13 +64,12 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
             <HeadCell title={intl.disclosurePurpose} column={'recipientPurpose'} tableState={[table, sortColumn]}/>
             <HeadCell title={intl.additionalDescription} column={'description'} tableState={[table, sortColumn]}/>
             <HeadCell title={intl.legalBasisShort} column={'legalBases'} tableState={[table, sortColumn]}/>
-
-            {(editable || canViewAlerts()) && <HeadCell small/>}
+            <HeadCell small/>
           </>
         }
       >
         {table.data.map((row, index) =>
-          <DisclosureRow key={index} disclosure={row} editable={editable} showRecipient={showRecipient}
+          <DisclosureRow key={index} disclosure={row} editable={editable} showRecipient={showRecipient} alert={alerts[row.id]}
                          setSelectedDisclosure={setSelectedDisclosure} showEditModal={() => setShowEditModal(true)} showDeleteModal={() => setShowDeleteModal(true)}/>
         )}
       </Table>
@@ -114,18 +126,12 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
 }
 
 const DisclosureRow = (props: {
-  disclosure: Disclosure, editable: boolean, showRecipient: boolean,
+  disclosure: Disclosure, editable: boolean, showRecipient: boolean, alert: DisclosureAlert,
   setSelectedDisclosure: (d: Disclosure) => void, showEditModal: () => void, showDeleteModal: () => void
 }) => {
   const history = useHistory()
-  const {disclosure, editable, showRecipient, setSelectedDisclosure, showEditModal, showDeleteModal} = props
-  const [alert, setAlert] = useState<DisclosureAlert>()
-
-  useEffect(() => {
-    (async () => {
-      setAlert(await getAlertForDisclosure(disclosure.id))
-    })()
-  }, [disclosure])
+  const {disclosure, editable, alert, showRecipient, setSelectedDisclosure, showEditModal, showDeleteModal} = props
+  const hasAlert = alert?.missingArt6
 
   return (
     <Row>
@@ -143,42 +149,40 @@ const DisclosureRow = (props: {
           <ListLegalBasesInTable legalBases={disclosure.legalBases}/>
         )}
       </Cell>
-      {(editable || canViewAlerts()) && (
-        <Cell small>
-          {canViewAlerts() &&
-          <Button type='button' kind='tertiary' size='compact'
-                  icon={faExclamationCircle} tooltip={intl.alerts + alert?.missingArt6 ? `: ${intl.MISSING_ARTICLE_6}` : ''}
-                  $style={{color: alert ? theme.colors.warning500 : undefined}}
-                  onClick={() => history.push(`/alert/events/disclosure/${disclosure.id}`)}
-          />}
+      <Cell small>
+        <Button type='button' kind='tertiary' size='compact'
+                disabled={!canViewAlerts()}
+                icon={faExclamationCircle} tooltip={hasAlert ? `${intl.alerts}: ${intl.MISSING_ARTICLE_6}` : `${intl.alerts}: ${intl.no}`}
+                $style={{color: hasAlert ? theme.colors.warning500 : undefined}}
+                onClick={() => history.push(`/alert/events/disclosure/${disclosure.id}`)}
+        />
 
-          {editable &&
-          <Block width="100%" display="flex" justifyContent="flex-end">
-            <Button
-              tooltip={intl.edit}
-              size={SIZE.compact}
-              kind={KIND.tertiary}
-              onClick={() => {
-                setSelectedDisclosure(disclosure)
-                showEditModal()
-              }}
-              icon={faEdit}
-            />
+        {editable &&
+        <Block width="100%" display="flex" justifyContent="flex-end">
+          <Button
+            tooltip={intl.edit}
+            size={SIZE.compact}
+            kind={KIND.tertiary}
+            onClick={() => {
+              setSelectedDisclosure(disclosure)
+              showEditModal()
+            }}
+            icon={faEdit}
+          />
 
-            <Button
-              tooltip={intl.delete}
-              size={SIZE.compact}
-              kind={KIND.tertiary}
-              onClick={() => {
-                setSelectedDisclosure(disclosure)
-                showDeleteModal()
-              }}
-              icon={faTrash}
-            />
-          </Block>}
+          <Button
+            tooltip={intl.delete}
+            size={SIZE.compact}
+            kind={KIND.tertiary}
+            onClick={() => {
+              setSelectedDisclosure(disclosure)
+              showDeleteModal()
+            }}
+            icon={faTrash}
+          />
+        </Block>}
 
-        </Cell>
-      )}
+      </Cell>
     </Row>
   )
 }
