@@ -459,6 +459,11 @@ export interface PolicyAlert {
   missingArt9: boolean;
 }
 
+export interface DisclosureAlert {
+  disclosureId: string;
+  missingArt6: boolean;
+}
+
 export enum AlertEventType {
   MISSING_LEGAL_BASIS = 'MISSING_LEGAL_BASIS',
   EXCESS_INFO = 'EXCESS_INFO',

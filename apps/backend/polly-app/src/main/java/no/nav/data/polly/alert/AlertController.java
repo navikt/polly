@@ -14,6 +14,7 @@ import no.nav.data.polly.alert.domain.AlertEventLevel;
 import no.nav.data.polly.alert.domain.AlertEventType;
 import no.nav.data.polly.alert.dto.AlertEventResponse;
 import no.nav.data.polly.alert.dto.AlertEventResponse.AlertEventResponseBuilder;
+import no.nav.data.polly.alert.dto.DisclosureAlert;
 import no.nav.data.polly.alert.dto.InformationTypeAlert;
 import no.nav.data.polly.alert.dto.ProcessAlert;
 import no.nav.data.polly.process.DomainCache;
@@ -60,6 +61,16 @@ public class AlertController {
     @GetMapping("/informationtype/{informationTypeId}")
     public ResponseEntity<InformationTypeAlert> alertsForInformationType(@PathVariable UUID informationTypeId) {
         var alerts = alertService.checkAlertsForInformationType(informationTypeId);
+        return ResponseEntity.ok(alerts);
+    }
+
+    @ApiOperation(value = "Get Alerts for disclosure")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Alerts fetched", response = DisclosureAlert.class),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @GetMapping("/disclosure/{disclosureId}")
+    public ResponseEntity<DisclosureAlert> alertsForDisclosure(@PathVariable UUID disclosureId) {
+        var alerts = alertService.checkAlertsForDisclosure(disclosureId);
         return ResponseEntity.ok(alerts);
     }
 

@@ -15,7 +15,7 @@ import no.nav.data.polly.alert.dto.DisclosureAlert;
 import no.nav.data.polly.alert.dto.InformationTypeAlert;
 import no.nav.data.polly.alert.dto.PolicyAlert;
 import no.nav.data.polly.alert.dto.ProcessAlert;
-import no.nav.data.polly.disclosure.domain.Disclosure;
+import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
@@ -51,13 +51,15 @@ public class AlertService {
     private final ProcessRepository processRepository;
     private final PolicyRepository policyRepository;
     private final InformationTypeRepository informationTypeRepository;
+    private final DisclosureRepository disclosureRepository;
 
     public AlertService(AlertRepository alertRepository, ProcessRepository processRepository, PolicyRepository policyRepository,
-            InformationTypeRepository informationTypeRepository) {
+            InformationTypeRepository informationTypeRepository, DisclosureRepository disclosureRepository) {
         this.alertRepository = alertRepository;
         this.processRepository = processRepository;
         this.policyRepository = policyRepository;
         this.informationTypeRepository = informationTypeRepository;
+        this.disclosureRepository = disclosureRepository;
     }
 
     // CALCULATE AND SAVE EVENTS
@@ -85,10 +87,10 @@ public class AlertService {
         updateEvents(existingEvents, currentEvents);
     }
 
-    public void calculateEventsForDisclosure(Disclosure disclosure) {
-        var alerts = checkAlertsForDisclosure(disclosure);
+    public void calculateEventsForDisclosure(UUID disclosureId) {
+        var alerts = checkAlertsForDisclosure(disclosureId);
         var currentEvents = convertAlertsToEvents(alerts);
-        var existingEvents = convert(alertRepository.findByDisclosureId(disclosure.getId()), GenericStorage::toAlertEvent);
+        var existingEvents = convert(alertRepository.findByDisclosureId(disclosureId), GenericStorage::toAlertEvent);
         updateEvents(existingEvents, currentEvents);
     }
 
@@ -189,7 +191,9 @@ public class AlertService {
     }
 
     @Transactional(readOnly = true)
-    public DisclosureAlert checkAlertsForDisclosure(Disclosure disclosure) {
+    public DisclosureAlert checkAlertsForDisclosure(UUID disclosureId) {
+        var disclosure = disclosureRepository.findById(disclosureId)
+                .orElseThrow(() -> new PollyNotFoundException("No disclosure for id " + disclosureId + " found"));
         var art6 = containsArticle(disclosure.getData().getLegalBases(), ART_6_PREFIX);
         return new DisclosureAlert(disclosure.getId(), !art6);
     }

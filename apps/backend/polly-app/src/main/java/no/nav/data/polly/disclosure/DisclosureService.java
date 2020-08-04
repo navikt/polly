@@ -35,7 +35,7 @@ public class DisclosureService extends RequestValidator<DisclosureRequest> {
         initialize(List.of(request), false);
         validateRequest(request);
         Disclosure disclosure = repository.save(new Disclosure().convertFromRequest(request));
-        alertService.calculateEventsForDisclosure(disclosure);
+        alertService.calculateEventsForDisclosure(disclosure.getId());
         return disclosure;
     }
 
@@ -44,7 +44,7 @@ public class DisclosureService extends RequestValidator<DisclosureRequest> {
         initialize(List.of(request), true);
         validateRequest(request);
         Disclosure disclosure = repository.findById(request.getIdAsUUID()).orElseThrow().convertFromRequest(request);
-        alertService.calculateEventsForDisclosure(disclosure);
+        alertService.calculateEventsForDisclosure(disclosure.getId());
         return disclosure;
     }
 

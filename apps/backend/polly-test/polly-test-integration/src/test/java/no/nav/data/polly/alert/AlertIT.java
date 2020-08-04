@@ -129,7 +129,7 @@ public class AlertIT extends IntegrationTestBase {
                 var discReq = createDiscReq().withLegalBases(List.of(createLegalBasisRequest()));
                 var disc = disclosureService.save(discReq);
 
-                DisclosureAlert alert = alertService.checkAlertsForDisclosure(disc);
+                DisclosureAlert alert = alertService.checkAlertsForDisclosure(disc.getId());
                 assertThat(alert.getDisclosureId()).isEqualTo(disc.getId());
                 assertThat(alert.isMissingArt6()).isFalse();
             }
@@ -138,7 +138,7 @@ public class AlertIT extends IntegrationTestBase {
             void hasArt6() {
                 var disc = disclosureService.save(createDiscReq());
 
-                DisclosureAlert alert = alertService.checkAlertsForDisclosure(disc);
+                DisclosureAlert alert = alertService.checkAlertsForDisclosure(disc.getId());
                 assertThat(alert.getDisclosureId()).isEqualTo(disc.getId());
                 assertThat(alert.isMissingArt6()).isTrue();
             }
