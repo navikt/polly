@@ -18,8 +18,8 @@ import {
   ProcessStatus,
   Retention,
 } from "../../constants";
-import { intl } from "../../util";
-import { Code, codelist, ListName } from "../../service/Codelist";
+import {intl} from "../../util";
+import {Code, codelist, ListName} from "../../service/Codelist";
 
 const DATE_REGEX = /\d{4}-\d{2}-\d{2}/;
 const max = 150;
@@ -31,10 +31,10 @@ export const infoTypeSchema = () =>
     name: yup.string().required(intl.required).max(max, maxError()),
     term: yup.string(),
     sensitivity: yup.string().required(intl.required),
-    categories: yup.array(yup.string()).required(intl.required),
-    sources: yup.array(yup.string()),
-    productTeams: yup.array(yup.string()),
-    keywords: yup.array(yup.string()),
+    categories: yup.array().of(yup.string()).required(intl.required),
+    sources: yup.array().of(yup.string()),
+    productTeams: yup.array().of(yup.string()),
+    keywords: yup.array().of(yup.string()),
     orgMaster: yup.string(),
     description: yup.string(),
   });
@@ -52,10 +52,10 @@ export const processSchema = () =>
     description: yup.string(),
     department: yup.string(),
     commonExternalProcessResponsible: yup.string(),
-    subDepartments: yup.array(yup.string()),
-    productTeams: yup.array(yup.string()),
-    products: yup.array(yup.string()),
-    legalBases: yup.array(legalBasisSchema()),
+    subDepartments: yup.array().of(yup.string()),
+    productTeams: yup.array().of(yup.string()),
+    products: yup.array().of(yup.string()),
+    legalBases: yup.array().of(legalBasisSchema()),
     legalBasesOpen: yup.boolean(),
     start: yup.string().matches(DATE_REGEX, { message: intl.dateFormat }),
     end: yup.string().matches(DATE_REGEX, { message: intl.dateFormat }),
@@ -63,7 +63,7 @@ export const processSchema = () =>
     profiling: yup.boolean(),
     dataProcessing: yup.object<DataProcessing>({
       dataProcessor: yup.boolean(),
-      dataProcessorAgreements: yup.array(yup.string()),
+      dataProcessorAgreements: yup.array().of(yup.string()),
       dataProcessorOutsideEU: yup.boolean(),
     }),
     retention: yup.object<Retention>({
@@ -90,7 +90,7 @@ export const createDocumentValidation = () =>
     informationTypes: yup
       .array(
         yup.object().shape<DocumentInformationTypes>({
-          subjectCategories: yup.array(yup.string()).min(1, intl.required),
+          subjectCategories: yup.array().of(yup.string()).min(1, intl.required),
           informationTypeId: yup.string().required(intl.required),
         })
       )
@@ -150,12 +150,12 @@ export const policySchema = () =>
           return !missingLegalBasisForDedicated(parent);
         },
       }),
-    legalBases: yup.array(legalBasisSchema()),
+    legalBases: yup.array().of(legalBasisSchema()),
     legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
     process: yup.object(),
     purposeCode: yup.string(),
     id: yup.string(),
-    documentIds: yup.array(yup.string()),
+    documentIds: yup.array().of(yup.string()),
   });
 
 export const legalBasisSchema = () =>
@@ -189,7 +189,7 @@ export const disclosureSchema = () =>
     recipientPurpose: yup.string().required(intl.required),
     description: yup.string().required(intl.required),
     document: yup.mixed(),
-    legalBases: yup.array(legalBasisSchema()),
+    legalBases: yup.array().of(legalBasisSchema()),
     legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
     start: yup.string().matches(DATE_REGEX, { message: intl.dateFormat }),
     end: yup.string().matches(DATE_REGEX, { message: intl.dateFormat }),
@@ -198,7 +198,7 @@ export const disclosureSchema = () =>
 export const addDocumentToProcessSchema = () =>
   yup.object<AddDocumentToProcessFormValues>({
     document: yup.object<Document>().required(intl.required),
-    informationTypes: yup.array(yup.object<DocumentInfoTypeUse>()).required(intl.required),
+    informationTypes: yup.array().of(yup.object<DocumentInfoTypeUse>()).required(intl.required),
     process: yup.object<Process>().required(intl.required),
     defaultDocument: yup.boolean(),
   });
