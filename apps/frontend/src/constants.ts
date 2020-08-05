@@ -368,6 +368,9 @@ export enum ProcessField {
   AUTOMATION = 'AUTOMATION',
   RETENTION = 'RETENTION',
   RETENTION_DATA = 'RETENTION_DATA',
+  DATA_PROCESSOR = 'DATA_PROCESSOR',
+  DATA_PROCESSOR_OUTSIDE_EU = 'DATA_PROCESSOR_OUTSIDE_EU',
+  DATA_PROCESSOR_AGREEMENT_EMPTY = 'DATA_PROCESSOR_AGREEMENT_EMPTY',
   EXCESS_INFO = 'EXCESS_INFO',
   USES_ALL_INFO_TYPE = 'USES_ALL_INFO_TYPE',
   MISSING_LEGAL_BASIS = 'MISSING_LEGAL_BASIS',
@@ -493,31 +496,30 @@ export type RecursivePartial<T> = {
 };
 
 export interface DashboardData {
-  allProcesses: AllProcesses;
-  departmentProcesses: DepartmentProcess[];
+  allProcesses: ProcessesDashCount;
+  departmentProcesses: DepartmentProcessDashCount[];
 }
 
-export interface AllProcesses {
-  processes: number;
-  processesCompleted: number;
-  processesInProgress: number;
-  processesMissingLegalBases: number;
-  processesUsingAllInfoTypes: number;
-  processesMissingArt6: number;
-  processesMissingArt9: number;
-  dpia: Counter;
-  profiling: Counter | null;
-  automation: Counter | null;
-  retention: Counter | null;
-  retentionDataIncomplete: number;
+export interface ProcessesDashCount {
+  processes: number
+  processesCompleted: number
+  processesInProgress: number
+  processesMissingLegalBases: number
+  processesUsingAllInfoTypes: number
+  processesMissingArt6: number
+  processesMissingArt9: number
+  dpia: Counter
+  profiling: Counter
+  automation: Counter
+  retention: Counter
+  retentionDataIncomplete: number
+  dataProcessor: Counter
+  dataProcessorAgreementMissing: number
+  dataProcessorOutsideEU: Counter
 }
 
-export interface DepartmentProcess {
+export interface DepartmentProcessDashCount extends ProcessesDashCount{
   department: string;
-  processes: number;
-  processesCompleted: number;
-  processesInProgress: number;
-  processesMissingLegalBases: number;
 }
 
 export interface Counter {

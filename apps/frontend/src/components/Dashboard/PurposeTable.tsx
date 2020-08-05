@@ -10,6 +10,7 @@ import {StyleObject} from 'styletron-standard'
 import {codelist, ListName} from '../../service/Codelist'
 import RouteLink from '../common/RouteLink'
 import {intl} from '../../util'
+import {lowerFirst} from 'lodash'
 
 interface PathProps {
   filterName: ProcessField,
@@ -44,10 +45,18 @@ const PurposeTable = () => {
       setTitle(intl.processesWithoutArticle6LegalBasis)
     } else if (filterName === ProcessField.MISSING_ARTICLE_9) {
       setTitle(intl.processesWithoutArticle9LegalBasis)
+    } else if (filterName === ProcessField.RETENTION_DATA) {
+      setTitle(`${intl.retention}: ${intl.unknown}`)
     } else if (filterName === ProcessField.PROFILING) {
       setTitle(`${intl.profiling}: ${intl.getString(filterValue.toLowerCase() || '')} `)
     } else if (filterName === ProcessField.AUTOMATION) {
       setTitle(`${intl.automaticProcessing}: ${intl.getString(filterValue.toLowerCase() || '')} `)
+    } else if (filterName === ProcessField.DATA_PROCESSOR) {
+      setTitle(`${intl.dataProcessor}: ${intl.getString(filterValue.toLowerCase() || '')} `)
+    } else if (filterName === ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY) {
+      setTitle(`${intl.dataProcessorAgreement} ${lowerFirst(intl.emptyMessage)} `)
+    } else if (filterName === ProcessField.DATA_PROCESSOR_OUTSIDE_EU) {
+      setTitle(`${intl.dataProcessor} ${lowerFirst(intl.dataProcessorOutsideEU)}: ${intl.getString(filterValue.toLowerCase() || '')} `)
     }
   }
 
