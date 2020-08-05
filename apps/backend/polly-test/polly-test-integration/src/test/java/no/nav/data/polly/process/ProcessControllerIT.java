@@ -111,7 +111,7 @@ class ProcessControllerIT extends IntegrationTestBase {
                     field != ProcessField.MISSING_LEGAL_BASIS &&
                     field != ProcessField.EXCESS_INFO &&
                     field != ProcessField.RETENTION_DATA &&
-                    field != ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY_AS_UNKNOWN;
+                    field != ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY;
         }
 
         @ParameterizedTest

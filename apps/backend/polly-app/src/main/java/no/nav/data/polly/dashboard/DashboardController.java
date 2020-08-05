@@ -89,7 +89,7 @@ public class DashboardController {
 
                         .dataProcessor(getCount(ProcessField.DATA_PROCESSOR, e.getValue(), e.getKey()))
                         .dataProcessorOutsideEU(getCount(ProcessField.DATA_PROCESSOR_OUTSIDE_EU, null, e.getKey()))
-                        .dataProcessorAgreementMissing(processRepository.countForState(ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY_AS_UNKNOWN, ProcessState.UNKNOWN, e.getKey()))
+                        .dataProcessorAgreementMissing(processRepository.countForState(ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY, ProcessState.UNKNOWN, e.getKey()))
 
                         .build())
                 .collect(Collectors.toList());
@@ -114,7 +114,7 @@ public class DashboardController {
 
                         .dataProcessor(getCount(ProcessField.DATA_PROCESSOR, processes, null))
                         .dataProcessorOutsideEU(getCount(ProcessField.DATA_PROCESSOR_OUTSIDE_EU, null, null))
-                        .dataProcessorAgreementMissing(processRepository.countForState(ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY_AS_UNKNOWN, ProcessState.UNKNOWN, null))
+                        .dataProcessorAgreementMissing(processRepository.countForState(ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY, ProcessState.UNKNOWN, null))
 
                         .build())
                 .departmentProcesses(byDepartment);

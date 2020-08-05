@@ -115,7 +115,10 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
             case DATA_PROCESSOR_OUTSIDE_EU -> " data #> '{dataProcessing,dataProcessor}' = 'true'::jsonb and data #> '{dataProcessing,dataProcessorOutsideEU}' %s ";
 
             // UNKNOWN counts empty, YES/NO doesnt make sense and will always return false
-            case DATA_PROCESSOR_AGREEMENT_EMPTY_AS_UNKNOWN -> " data #> '{dataProcessing,dataProcessor}' = 'true'::jsonb and data #> '{dataProcessing,dataProcessorAgreements}' %s ";
+            case DATA_PROCESSOR_AGREEMENT_EMPTY -> {
+                processState = ProcessState.UNKNOWN;
+                yield " data #> '{dataProcessing,dataProcessor}' = 'true'::jsonb and data #> '{dataProcessing,dataProcessorAgreements}' %s ";
+            }
             default -> throw new IllegalArgumentException("invalid field for stateQuery " + processField);
         };
 
