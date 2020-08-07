@@ -48,6 +48,7 @@ export const LastEvents = () => {
           <StatefulSelect
             size="compact"
             clearable={false}
+            searchable={false}
             options={Object.keys(AuditAction).map(auditAction => ({id: auditAction, label: intl[auditAction as AuditAction]}))}
             initialState={{value: action}} onChange={params => setAction(params.value)}
           />
