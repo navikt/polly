@@ -51,6 +51,13 @@ export const LastEvents = () => {
             searchable={false}
             options={Object.keys(AuditAction).map(auditAction => ({id: auditAction, label: intl[auditAction as AuditAction]}))}
             initialState={{value: action}} onChange={params => setAction(params.value)}
+            overrides={{
+              Root:{
+                style:{
+                  width:"120px"
+                }
+              }
+            }}
           />
         </Block>
       </Block>
