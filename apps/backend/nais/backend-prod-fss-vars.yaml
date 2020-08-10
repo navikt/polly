@@ -1,3 +1,4 @@
 ingresses:
   - https://polly.nais.adeo.no
-replies: []
+replies:
+  - https://behandlingskatalog.nais.adeo.no/oauth2/callback
