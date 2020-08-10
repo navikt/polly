@@ -9,11 +9,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SecurityConfig {
 
     @Bean
-    public AppIdMapping appIdMapping(SecurityProperties securityProperties) {
-        return new AppIdMapping(securityProperties.getAllowedAppIdMappings());
-    }
-
-    @Bean
     public Encryptor encryptor(SecurityProperties securityProperties) {
         return new Encryptor(securityProperties.getEncKey());
     }
@@ -26,7 +21,7 @@ public class SecurityConfig {
                 registry.addMapping("/login/**")
                         .allowedOrigins("*");
                 registry.addMapping("/**")
-                        .allowedOrigins(securityProperties.getCorsOrigins().toArray(new String[]{}))
+                        .allowedOrigins(securityProperties.getRedirectUris().toArray(new String[]{}))
                         .allowCredentials(true);
 
             }

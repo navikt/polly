@@ -11,12 +11,9 @@ import org.springframework.validation.annotation.Validated;
 @Slf4j
 public class AADAuthenticationProperties {
 
-    private String tenantId;
     private String clientId;
     private String clientSecret;
-    private String appIdUri;
-
-    private String aadSigninUri;
-    private String aadKeyDiscoveryUri;
+    private String wellKnown;
+    private String allowedAppIdMappings = "";
 
 }

@@ -8,7 +8,6 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AzureConstants {
 
-    public static final String REGISTRATION_ID = "azure";
     public static final String APPID_CLAIM = "appid";
     public static final String APPID_CLAIM_V2 = "azp";
     public static final String VER_CLAIM = "ver";

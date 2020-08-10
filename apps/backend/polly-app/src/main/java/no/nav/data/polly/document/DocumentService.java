@@ -1,7 +1,7 @@
 package no.nav.data.polly.document;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.common.exceptions.PollyNotFoundException;
+import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.common.validator.RequestElement;
@@ -49,7 +49,7 @@ public class DocumentService extends RequestValidator<DocumentRequest> {
     }
 
     public DocumentResponse getDocumentAsResponse(UUID uuid) {
-        var document = repository.findById(uuid).orElseThrow(() -> new PollyNotFoundException("Document " + uuid + " not found"));
+        var document = repository.findById(uuid).orElseThrow(() -> new NotFoundException("Document " + uuid + " not found"));
         DocumentResponse response = document.convertToResponse();
         Map<UUID, InformationTypeShortResponse> informationTypes = getInformationTypes(document);
         response.getInformationTypes().forEach(it -> it.setInformationType(informationTypes.get(it.getInformationTypeId())));
@@ -78,7 +78,7 @@ public class DocumentService extends RequestValidator<DocumentRequest> {
     }
 
     public Document delete(UUID uuid) {
-        var doc = repository.findById(uuid).orElseThrow(() -> new PollyNotFoundException("Couldn't find document " + uuid));
+        var doc = repository.findById(uuid).orElseThrow(() -> new NotFoundException("Couldn't find document " + uuid));
         var disclosures = disclosureRepository.findByDocumentId(uuid.toString());
         if (!disclosures.isEmpty()) {
             throw new ValidationException(String.format("Document %s is used by %d disclosure(s)", uuid, disclosures.size()));

@@ -7,7 +7,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import no.nav.data.common.exceptions.PollyTechnicalException;
+import lombok.SneakyThrows;
+import no.nav.data.common.exceptions.TechnicalException;
 import org.springframework.core.ParameterizedTypeReference;
 
 import java.io.IOException;
@@ -68,7 +69,8 @@ public final class JsonUtils {
         }
     }
 
-    public static <T> T readValue(String jsonString, TypeReference<T> type) throws IOException {
+    @SneakyThrows
+    public static <T> T readValue(String jsonString, TypeReference<T> type) {
         return objectMapper.readValue(jsonString, type);
     }
 
@@ -76,7 +78,7 @@ public final class JsonUtils {
         try {
             return objectMapper.treeToValue(jsonNode, clazz);
         } catch (JsonProcessingException e) {
-            throw new PollyTechnicalException("cannot create object from json", e);
+            throw new TechnicalException("cannot create object from json", e);
         }
     }
 

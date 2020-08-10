@@ -262,9 +262,9 @@ export interface IStrings {
   excessInfoHelpText: string;
 
   // groups
-  POLLY_READ: string;
-  POLLY_WRITE: string;
-  POLLY_ADMIN: string;
+  READ: string;
+  WRITE: string;
+  ADMIN: string;
 
   CREATE: string;
   DELETE: string;

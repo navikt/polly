@@ -27,7 +27,7 @@ import static no.nav.data.common.utils.StreamUtils.safeStream;
 
 @Slf4j
 @Component
-@ConditionalOnProperty("polly.client.term-catalog.enabled")
+@ConditionalOnProperty("client.term-catalog.enabled")
 public class TermCatalogClient implements TermService {
 
     private final RestTemplate restTemplate;

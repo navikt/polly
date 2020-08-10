@@ -1,12 +1,12 @@
-import { AxiosResponse } from "axios";
-import { UserInfo } from "../constants"
-import { intl } from "../util"
-import { getUserInfo } from "../api"
+import {AxiosResponse} from "axios";
+import {UserInfo} from "../constants"
+import {intl} from "../util"
+import {getUserInfo} from "../api"
 
 export enum Group {
-  POLLY_READ = "POLLY_READ",
-  POLLY_WRITE = "POLLY_WRITE",
-  POLLY_ADMIN = "POLLY_ADMIN"
+  READ = "READ",
+  WRITE = "WRITE",
+  ADMIN = "ADMIN"
 }
 
 class UserService {
@@ -74,15 +74,15 @@ class UserService {
   }
 
   public canRead(): boolean {
-    return this.hasGroup(Group.POLLY_READ)
+    return this.hasGroup(Group.READ)
   }
 
   public canWrite(): boolean {
-    return this.hasGroup(Group.POLLY_WRITE)
+    return this.hasGroup(Group.WRITE)
   }
 
   public isAdmin(): boolean {
-    return this.hasGroup(Group.POLLY_ADMIN)
+    return this.hasGroup(Group.ADMIN)
   }
 
   async wait() {

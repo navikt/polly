@@ -25,7 +25,7 @@ import static no.nav.data.common.utils.StreamUtils.filter;
 import static no.nav.data.common.utils.StreamUtils.safeStream;
 
 @Service
-@ConditionalOnProperty("polly.client.teamcat-team.enabled")
+@ConditionalOnProperty("client.teamcat-team.enabled")
 public class TeamcatTeamClient implements TeamService {
 
     private final RestTemplate restTemplate;

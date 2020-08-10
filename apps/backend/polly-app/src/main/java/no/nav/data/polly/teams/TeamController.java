@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.common.exceptions.PollyNotFoundException;
+import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.RestResponsePage;
 import no.nav.data.common.utils.StreamUtils;
@@ -65,7 +65,7 @@ public class TeamController {
         log.info("Received request for Team with id {}", teamId);
         Optional<Team> team = teamsService.getTeam(teamId);
         if (team.isEmpty()) {
-            throw new PollyNotFoundException("Couldn't find team " + teamId);
+            throw new NotFoundException("Couldn't find team " + teamId);
         }
         return new ResponseEntity<>(team.get().convertToResponseWithMembers(), HttpStatus.OK);
     }
@@ -107,7 +107,7 @@ public class TeamController {
         log.info("Received request for Product area with id {}", paId);
         var pa = teamsService.getProductArea(paId);
         if (pa.isEmpty()) {
-            throw new PollyNotFoundException("Couldn't find product area " + paId);
+            throw new NotFoundException("Couldn't find product area " + paId);
         }
         return new ResponseEntity<>(pa.get().convertToResponseWithMembers(), HttpStatus.OK);
     }

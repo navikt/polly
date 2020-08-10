@@ -15,7 +15,7 @@ import static no.nav.data.common.security.azure.AzureConstants.APPID_CLAIM;
 import static no.nav.data.common.security.azure.AzureConstants.APPID_CLAIM_V2;
 import static no.nav.data.common.security.azure.AzureConstants.USER_ID_CLAIM;
 import static no.nav.data.common.security.azure.AzureConstants.VER_CLAIM;
-import static no.nav.data.common.security.dto.PollyRole.ROLE_PREFIX;
+import static no.nav.data.common.security.dto.AppRole.ROLE_PREFIX;
 import static no.nav.data.common.utils.StreamUtils.convert;
 import static no.nav.data.common.utils.StreamUtils.copyOf;
 import static org.apache.commons.lang3.StringUtils.substringAfter;

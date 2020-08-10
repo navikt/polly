@@ -1,8 +1,7 @@
 package no.nav.data.common.security;
 
 import no.nav.data.common.security.azure.AADStatelessAuthenticationFilter;
-import no.nav.data.common.security.dto.PollyRole;
-import no.nav.data.common.web.CorrelationFilter;
+import no.nav.data.common.security.dto.AppRole;
 import no.nav.data.common.web.UserFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -11,12 +10,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
 @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final CorrelationFilter correlationFilter = new CorrelationFilter();
     private final UserFilter userFilter = new UserFilter();
 
     @Autowired(required = false)
@@ -36,7 +33,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         }
 
         allowAll(http,
-                "/login/**",
+                "/login",
+                "/oauth2/callback",
                 "/userinfo",
                 "/internal/**",
                 "/swagger*/**",
@@ -65,13 +63,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/settings/**"
         );
 
-        http.authorizeRequests().antMatchers("/logout/**").authenticated();
-        http.authorizeRequests().anyRequest().hasRole(PollyRole.POLLY_WRITE.name());
+        http.authorizeRequests().antMatchers("/logout").authenticated();
+        http.authorizeRequests().anyRequest().hasRole(AppRole.WRITE.name());
     }
 
     private void adminOnly(HttpSecurity http, String... paths) throws Exception {
         for (String path : paths) {
-            http.authorizeRequests().antMatchers(path).hasRole(PollyRole.POLLY_ADMIN.name());
+            http.authorizeRequests().antMatchers(path).hasRole(AppRole.ADMIN.name());
         }
     }
 
@@ -89,7 +87,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private void addFilters(HttpSecurity http) {
-        http.addFilterBefore(correlationFilter, SecurityContextPersistenceFilter.class);
         // In lightweight mvc tests where authfilter isnt initialized
         if (aadAuthFilter != null) {
             http.addFilterBefore(aadAuthFilter, UsernamePasswordAuthenticationFilter.class);

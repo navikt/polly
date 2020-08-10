@@ -1,7 +1,7 @@
 package no.nav.data.polly.alert;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.common.exceptions.PollyNotFoundException;
+import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.rest.PageParameters;
 import no.nav.data.common.storage.domain.GenericStorage;
 import no.nav.data.common.utils.StreamUtils;
@@ -168,7 +168,7 @@ public class AlertService {
     @Transactional(readOnly = true)
     public InformationTypeAlert checkAlertsForInformationType(UUID informationTypeId) {
         var informationType = informationTypeRepository.findById(informationTypeId)
-                .orElseThrow(() -> new PollyNotFoundException("No information type for id " + informationTypeId + " found"));
+                .orElseThrow(() -> new NotFoundException("No information type for id " + informationTypeId + " found"));
         var alert = new InformationTypeAlert(informationTypeId, new ArrayList<>());
 
         List<Process> processes = policyRepository.findByInformationTypeId(informationTypeId).stream()
@@ -186,14 +186,14 @@ public class AlertService {
     @Transactional(readOnly = true)
     public ProcessAlert checkAlertsForProcess(UUID processId) {
         var process = processRepository.findById(processId)
-                .orElseThrow(() -> new PollyNotFoundException("No process for id " + processId + " found"));
+                .orElseThrow(() -> new NotFoundException("No process for id " + processId + " found"));
         return checkProcess(process, null);
     }
 
     @Transactional(readOnly = true)
     public DisclosureAlert checkAlertsForDisclosure(UUID disclosureId) {
         var disclosure = disclosureRepository.findById(disclosureId)
-                .orElseThrow(() -> new PollyNotFoundException("No disclosure for id " + disclosureId + " found"));
+                .orElseThrow(() -> new NotFoundException("No disclosure for id " + disclosureId + " found"));
         var art6 = containsArticle(disclosure.getData().getLegalBases(), ART_6_PREFIX);
         return new DisclosureAlert(disclosure.getId(), !art6);
     }

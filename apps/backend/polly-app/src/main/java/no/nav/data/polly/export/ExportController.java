@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.common.exceptions.PollyNotFoundException;
+import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
@@ -62,7 +62,7 @@ public class ExportController {
         if (processId != null) {
             Optional<Process> process = processRepository.findById(processId);
             if (process.isEmpty()) {
-                throw new PollyNotFoundException("Couldn't find process " + processId);
+                throw new NotFoundException("Couldn't find process " + processId);
             }
             Process p = process.get();
             doc = processToDocx.generateDocForProcess(p);

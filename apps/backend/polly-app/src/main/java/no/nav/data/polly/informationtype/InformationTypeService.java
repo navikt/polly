@@ -1,7 +1,7 @@
 package no.nav.data.polly.informationtype;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.common.exceptions.PollyNotFoundException;
+import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.common.validator.RequestElement;
@@ -77,7 +77,7 @@ public class InformationTypeService extends RequestValidator<InformationTypeRequ
     }
 
     public InformationType delete(UUID id) {
-        InformationType infoType = repository.findById(id).orElseThrow(() -> new PollyNotFoundException("Fant ikke id=" + id));
+        InformationType infoType = repository.findById(id).orElseThrow(() -> new NotFoundException("Fant ikke id=" + id));
         if (!infoType.getPolicies().isEmpty()) {
             throw new ValidationException(String.format("InformationType %s is used by %d policie(s)", id, infoType.getPolicies().size()));
         }

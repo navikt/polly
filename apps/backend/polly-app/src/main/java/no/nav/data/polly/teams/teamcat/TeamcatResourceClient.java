@@ -17,7 +17,7 @@ import java.time.Duration;
 import java.util.Optional;
 
 @Service
-@ConditionalOnProperty("polly.client.teamcat-resource.enabled")
+@ConditionalOnProperty("client.teamcat-resource.enabled")
 public class TeamcatResourceClient implements ResourceService {
 
     private final RestTemplate restTemplate;

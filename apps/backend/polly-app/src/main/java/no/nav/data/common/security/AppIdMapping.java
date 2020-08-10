@@ -1,20 +1,26 @@
 package no.nav.data.common.security;
 
-import org.apache.commons.lang3.StringUtils;
+import com.fasterxml.jackson.core.type.TypeReference;
+import lombok.Data;
+import no.nav.data.common.utils.Constants;
+import no.nav.data.common.utils.JsonUtils;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 public class AppIdMapping {
 
+    public static final TypeReference<List<AuthApps>> AUTH_APP_LIST = new TypeReference<>() {
+    };
+
     private static final Map<String, String> appIdAppNameMap = new HashMap<>();
 
-    public AppIdMapping(String mappings) {
-        Stream.of(StringUtils.split(mappings, ','))
-                .map(appId -> appId.split(":"))
-                .forEach(appIdAppName -> appIdAppNameMap.put(appIdAppName[0], appIdAppName[1]));
+    public AppIdMapping(String mappings, String appId) {
+        appIdAppNameMap.put(appId, Constants.APP_ID);
+        List<AuthApps> authApps = JsonUtils.readValue(mappings, AUTH_APP_LIST);
+        authApps.forEach(app -> appIdAppNameMap.put(app.clientId, app.name));
     }
 
     public static String getAppNameForAppId(String appId) {
@@ -23,5 +29,12 @@ public class AppIdMapping {
 
     public Collection<String> getIds() {
         return appIdAppNameMap.keySet();
+    }
+
+    @Data
+    static class AuthApps {
+
+        private String name;
+        private String clientId;
     }
 }

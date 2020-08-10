@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.common.exceptions.PollyNotFoundException;
+import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.PageParameters;
 import no.nav.data.common.rest.RestResponsePage;
@@ -190,7 +190,7 @@ public class PolicyRestController {
     private RuntimeException notFoundError(UUID id) {
         String message = String.format("Cannot find Policy with id: %s", id);
         log.warn(message);
-        throw new PollyNotFoundException(message);
+        throw new NotFoundException(message);
     }
 
     public static final class PolicyPage extends RestResponsePage<PolicyResponse> {

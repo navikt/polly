@@ -205,9 +205,9 @@ export const no: IStrings = {
   informationtypesUsedInDocument: 'Opplysningstyper i dokumentet',
   editDocument: 'Rediger dokument',
 
-  POLLY_READ: 'Les',
-  POLLY_WRITE: 'Skriv',
-  POLLY_ADMIN: 'Admin',
+  READ: 'Les',
+  WRITE: 'Skriv',
+  ADMIN: 'Admin',
 
   CREATE: 'Opprett',
   UPDATE: 'Oppdater',
@@ -603,9 +603,9 @@ export const en: IStrings = {
   dpiaHelpText: 'It is necessary for DPIA assessment if there is probable that the process will entail a high risk of the data\'s rights and freedoms.',
   lastModified: 'Last modified by {0}, {1}',
 
-  POLLY_READ: 'Read',
-  POLLY_WRITE: 'Write',
-  POLLY_ADMIN: 'Admin',
+  READ: 'Read',
+  WRITE: 'Write',
+  ADMIN: 'Admin',
 
   CREATE: 'Create',
   UPDATE: 'Update',
@@ -771,9 +771,9 @@ export const en: IStrings = {
 }
 
 export const ta = {
-  POLLY_ADMIN: 'நிர்வாகம்',
-  POLLY_READ: 'படிக்க',
-  POLLY_WRITE: 'எழுது',
+  ADMIN: 'நிர்வாகம்',
+  READ: 'படிக்க',
+  WRITE: 'எழுது',
   all: 'அனைத்து',
   appName: 'செயல்முறை பட்டியல்',
   beta: 'பீட்டா',

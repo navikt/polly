@@ -21,5 +21,4 @@ public interface UserInfo {
     List<String> getGroups();
 
     UserInfoResponse convertToResponse();
-
 }
