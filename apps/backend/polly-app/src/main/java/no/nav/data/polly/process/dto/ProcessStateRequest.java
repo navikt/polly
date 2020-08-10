@@ -9,6 +9,7 @@ import no.nav.data.common.validator.FieldValidator;
 import no.nav.data.common.validator.Validated;
 import no.nav.data.polly.alert.domain.AlertEventType;
 import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.process.domain.ProcessStatus;
 
 @Data
 @Builder
@@ -49,8 +50,25 @@ public class ProcessStateRequest implements Validated {
         }
     }
 
+    public enum ProcessStatusFilter {
+        COMPLETED(ProcessStatus.COMPLETED),
+        IN_PROGRESS(ProcessStatus.IN_PROGRESS),
+        ALL;
+
+        public final ProcessStatus processStatus;
+
+        ProcessStatusFilter(ProcessStatus processStatus) {
+            this.processStatus = processStatus;
+        }
+
+        ProcessStatusFilter() {
+            processStatus = null;
+        }
+    }
+
     private ProcessField processField;
     private ProcessState processState;
+    private ProcessStatusFilter processStatus;
     private String department;
 
     @Override
@@ -58,6 +76,11 @@ public class ProcessStateRequest implements Validated {
         validator.checkRequiredEnum(Fields.processField, processField);
         validator.checkRequiredEnum(Fields.processState, processState);
         validator.checkCodelist(Fields.department, department, ListName.DEPARTMENT);
+    }
+
+    @Override
+    public void format() {
+        processStatus = processStatus != null ? processStatus : ProcessStatusFilter.ALL;
     }
 
 }

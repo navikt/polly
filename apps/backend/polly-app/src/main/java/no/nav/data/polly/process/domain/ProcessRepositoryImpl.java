@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -66,17 +67,17 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
     }
 
     @Override
-    public List<Process> findForState(ProcessField processField, ProcessState processState, String department) {
-        List<Map<String, Object>> resp = queryForState(processField, processState, department);
+    public List<Process> findForState(ProcessField processField, ProcessState processState, String department, ProcessStatus status) {
+        List<Map<String, Object>> resp = queryForState(processField, processState, department, status);
         return getProcesses(resp);
     }
 
     @Override
-    public long countForState(ProcessField processField, ProcessState processState, String department) {
-        return queryForState(processField, processState, department).size();
+    public long countForState(ProcessField processField, ProcessState processState, String department, ProcessStatus status) {
+        return queryForState(processField, processState, department, status).size();
     }
 
-    private List<Map<String, Object>> queryForState(ProcessField processField, ProcessState processState, String department) {
+    private List<Map<String, Object>> queryForState(ProcessField processField, ProcessState processState, String department, ProcessStatus status) {
         var alertQuery = """
                      process_id in ( 
                      select cast(data ->> 'processId' as uuid) 
@@ -94,12 +95,14 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
 
         var sql = "select distinct(process_id) from process where " + query;
 
-        Map<String, Object> params;
+        Map<String, Object> params = new HashMap<>();
         if (department != null) {
             sql += " and data->>'department' = :department";
-            params = Map.of("department", department);
-        } else {
-            params = Map.of();
+            params.put("department", department);
+        }
+        if (status != null) {
+            sql += " and data->>'status' = :status";
+            params.put("status", status);
         }
         return jdbcTemplate.queryForList(sql, params);
     }
