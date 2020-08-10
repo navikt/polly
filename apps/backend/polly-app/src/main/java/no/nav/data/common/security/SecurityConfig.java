@@ -18,7 +18,7 @@ public class SecurityConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/login/**")
+                registry.addMapping("/oauth2/callback")
                         .allowedOrigins("*");
                 registry.addMapping("/**")
                         .allowedOrigins(securityProperties.getRedirectUris().toArray(new String[]{}))

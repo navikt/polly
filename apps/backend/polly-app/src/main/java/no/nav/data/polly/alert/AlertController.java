@@ -19,7 +19,6 @@ import no.nav.data.polly.alert.dto.InformationTypeAlert;
 import no.nav.data.polly.alert.dto.ProcessAlert;
 import no.nav.data.polly.process.DomainCache;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +30,6 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@CrossOrigin
 @RequestMapping("/alert")
 @Api(value = "Alerts", tags = {"Alert"})
 public class AlertController {
