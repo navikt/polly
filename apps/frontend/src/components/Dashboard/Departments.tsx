@@ -13,7 +13,7 @@ import {genProcessPath, Section} from '../../pages/ProcessPage'
 import CustomizedStatefulTooltip from "../common/CustomizedStatefulTooltip";
 
 const TextWithNumber = (props: {label: string; number: number}) => (
-  <Block display="flex" width="100%" marginBottom="0" justifyContent="center">
+  <Block display="flex" width="max-content" marginBottom="0" justifyContent="center">
     <Paragraph2 margin="0">{props.label} <b>{props.number}</b></Paragraph2>
   </Block>
 )
@@ -39,8 +39,8 @@ const DepartmentCard = (props: DepartmentCardProps) => {
             flexDirection='column'
             alignItems='center'
             justifyContent='space-around'
-            width="130px"
-            height="130px"
+            width="93px"
+            height="93px"
           >
             <Label1 color={theme.colors.accent300} $style={{textAlign: 'center'}}>{parsedDepartmentName(department.department)}</Label1>
             <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.COMPLETED)}>
@@ -73,7 +73,7 @@ const Departments = (props: DepartmentsProps) => {
   return (
     <Block width="100%" display="flex" flexWrap>
       {sortedData().map((department: DepartmentProcess, i: number) => (
-        <Block key={i} marginTop={theme.sizing.scale600} marginRight={theme.sizing.scale600}>
+        <Block key={i} marginTop={theme.sizing.scale600} marginRight={theme.sizing.scale500}>
           <DepartmentCard department={department}/>
         </Block>
       ))}
