@@ -12,7 +12,7 @@ import InformationtypeEditPage from './pages/InformationtypeEditPage'
 import InformationtypePage from './pages/InformationtypePage'
 import {SystemSearchPage, ThirdPartySearchPage} from './pages/ListSearchPage'
 import ThirdPartyMetadataPage from './pages/ThirdPartyPage'
-import {Main} from './pages/MainPage'
+import {MainPage} from './pages/MainPage'
 import CodelistPage from './pages/admin/CodelistPage'
 import {AuditPage} from './pages/admin/AuditPage'
 import {intl, theme} from './util'
@@ -63,7 +63,7 @@ const Routes = (): JSX.Element => (
 
       <Route exact path="/alert/events/:objectType?/:id?" component={AlertEventPage} />
 
-      <Route exact path="/" component={Main} />
+      <Route exact path="/" component={MainPage} />
       <Route component={NotFound} />
     </Switch>
   </Root>

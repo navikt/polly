@@ -2,7 +2,7 @@ import {intl, theme} from '../util'
 import * as React from 'react'
 import {useEffect, useState} from 'react'
 import {Block, BlockProps} from 'baseui/block'
-import {Counter, DashboardData, ProcessStatus, ProcessField, ProcessState, Settings} from '../constants'
+import {Counter, DashboardData, ProcessField, ProcessState, ProcessStatus, Settings} from '../constants'
 import {getSettings} from '../api/SettingsApi'
 import {Card} from 'baseui/card'
 import {cardShadow} from '../components/common/Style'
@@ -17,7 +17,7 @@ import RouteLink from "../components/common/RouteLink";
 import {chartColor} from "../util/theme";
 import * as H from 'history'
 import {lowerFirst} from 'lodash'
-import {StatefulSelect} from "baseui/select/index";
+import {FilterDashboardStatus} from "../components/Dashboard/FilterDashboardStatus";
 
 const boxProps: BlockProps = {
   marginTop: theme.sizing.scale600,
@@ -28,7 +28,7 @@ const boxProps: BlockProps = {
 const chartSize = 80
 const clickOnPieChartSlice = (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatus, history: H.History) => () => history.push(`/dashboard/${processField}/${processState}/${processStatus}`)
 
-export const Main = () => {
+export const MainPage = () => {
   const [settings, setSettings] = useState<Settings>()
   const [isLoading, setLoading] = useState(true)
   const [dashData, setDashData] = useState<DashboardData>()
@@ -52,25 +52,8 @@ export const Main = () => {
       {
         !isLoading && dashData && (
           <>
-            <Block width='100%' display="flex" flexDirection='row-reverse'>
-              <Block width={"240px"}>
-                <StatefulSelect
-                  backspaceRemoves={false}
-                  clearable={false}
-                  deleteRemoves={false}
-                  escapeClearsValue={false}
-                  options={[
-                    {label: intl.all, id: ProcessStatus.All},
-                    {label: intl.inProgress, id: ProcessStatus.IN_PROGRESS},
-                    {label: intl.completed, id: ProcessStatus.COMPLETED},
-                  ]}
-                  initialState={{value: [{id: ProcessStatus.All}]}}
-                  filterOutSelected={false}
-                  searchable={false}
-                  onChange={(params: any) => setDashboardStatus(params.value[0].id)}
-                />
-              </Block>
-            </Block>
+            <FilterDashboardStatus setFilter={setDashboardStatus}/>
+
             <Departments data={dashData}/>
 
             <Charts dashData={dashData} processStatus={dashboardStatus}/>
