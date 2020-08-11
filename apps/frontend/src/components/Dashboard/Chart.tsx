@@ -139,7 +139,7 @@ const Visualization = (props: VisualizationProps) => {
         Body: {style: {marginBottom: 0}}
       }}>
         <div onMouseLeave={() => setHover(-1)}>
-          <Block display='flex' alignItems='center' flexDirection={leftLegend ? 'row-reverse' : 'row'} maxWidth={"fit-content"}>
+          <Block display='flex' alignItems='center' flexDirection={leftLegend ? 'row-reverse' : 'row'} maxWidth={"fit-content"} flexWrap>
             {!!data.length && <Block>
               {type === 'pie' && <PieChart data={data} radius={size} hover={hover} setHover={setHover}/>}
               {type === 'bar' && <BarChart data={data} size={size} hover={hover} setHover={setHover}/>}

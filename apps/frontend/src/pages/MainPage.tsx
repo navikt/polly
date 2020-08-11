@@ -21,7 +21,7 @@ import {FilterDashboardStatus} from "../components/Dashboard/FilterDashboardStat
 
 const boxProps: BlockProps = {
   marginTop: theme.sizing.scale600,
-  minWidth: '520px',
+  width:'30%',
   $style: {boxShadow: '0px 0px 6px 3px rgba(0,0,0,0.08)', padding: '15px'}
 }
 const chartSize = 80
