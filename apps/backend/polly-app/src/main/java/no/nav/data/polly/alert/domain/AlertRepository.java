@@ -6,6 +6,7 @@ import no.nav.data.polly.process.domain.ProcessStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,9 +49,9 @@ public interface AlertRepository extends JpaRepository<GenericStorage, UUID>, Al
             + "    where type = 'ALERT_EVENT' "
             + "      and data ->> 'type' = ?1 "
             + ") "
-            + "and data ->> 'status' = ?2 "
+            + "and data ->> 'status' = :#{#status.name()} "
             + "group by data ->> 'department'", nativeQuery = true)
-    List<ProcessCount> countDepartmentAlertEvents(String type, ProcessStatus status);
+    List<ProcessCount> countDepartmentAlertEvents(String type, @Param("status") ProcessStatus status);
 
     // Deletes
     @Modifying
