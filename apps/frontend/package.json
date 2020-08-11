@@ -1,5 +1,5 @@
 {
-  "name": "data-catalog-editor",
+  "name": "polly-frontend",
   "version": "1.0.0",
   "private": true,
   "dependencies": {
@@ -26,7 +26,7 @@
     "react-markdown": "^4.3.1",
     "react-process-string": "^1.2.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.1",
+    "react-scripts": "3.4.2",
     "shortid": "^2.2.15",
     "styletron-engine-atomic": "^1.4.6",
     "styletron-react": "^5.2.7",
