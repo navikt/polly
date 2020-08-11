@@ -133,7 +133,7 @@ const Charts = (props: { dashData: DashboardData, processStatus: ProcessStatus; 
                   field={ProcessField.RETENTION}/>
         <Paragraph1>
           {intl.processWithIncompleteRetention} <RouteLink
-          href={`/dashboard/${ProcessField.RETENTION_DATA}/${ProcessState.UNKNOWN}`}>{dashData.allProcesses.retentionDataIncomplete}</RouteLink>
+          href={`/dashboard/${ProcessField.RETENTION_DATA}/${ProcessState.UNKNOWN}/${processStatus}`}>{dashData.allProcesses.retentionDataIncomplete}</RouteLink>
         </Paragraph1>
       </Block>
 
