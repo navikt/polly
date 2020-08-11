@@ -97,7 +97,7 @@ export const Chart = (props: ChartProps) => {
       ...d,
       color: d.color || colors[colorIndex % colors.length],
       start: s,
-      sizeFraction: totSize == 0 ? 0 : d.size / totSize,
+      sizeFraction: totSize === 0 ? 0 : d.size / totSize,
       fraction: totalFraction === 0 ? 0 : d.size / totalFraction
     }
     s += pieData.sizeFraction
