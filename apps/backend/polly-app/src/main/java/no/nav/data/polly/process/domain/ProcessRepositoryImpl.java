@@ -102,7 +102,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
         }
         if (status != null) {
             sql += " and data->>'status' = :status";
-            params.put("status", status);
+            params.put("status", status.name());
         }
         return jdbcTemplate.queryForList(sql, params);
     }
