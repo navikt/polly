@@ -69,10 +69,6 @@ const ProcessData = (props: {process: Process}) => {
         )}
       </DataText>
 
-      <DataText label={intl.status}>
-        {(process.status) === ProcessStatus.IN_PROGRESS ? intl.inProgress : intl.completedProcesses}
-      </DataText>
-
       <DataText label={intl.isProcessImplemented}>
         {(process.dpia?.processImplemented) ? intl.yes : intl.no}
       </DataText>
@@ -189,6 +185,10 @@ const ProcessData = (props: {process: Process}) => {
 
       <Completeness process={process}/>
 
+      <DataText label={intl.status}>
+        {(process.status) === ProcessStatus.IN_PROGRESS ? intl.inProgress : intl.completedProcesses}
+      </DataText>
+
     </Block>
   )
 }
@@ -202,6 +202,7 @@ const Completeness = (props: {process: Process}) => {
     retention: !isNil(process.retention?.retentionPlan),
     dataProcessor: !isNil(process.dataProcessing?.dataProcessor),
     dataProcessorOutsideEU: !process.dataProcessing?.dataProcessor || !isNil(process.dataProcessing?.dataProcessorOutsideEU),
+    policies: process.usesAllInformationTypes || !!process.policies.length,
     completed: process.status === ProcessStatus.COMPLETED
   }
   const completed = sum(Object.keys(completeness).map(k => (completeness as any)[k] ? 1 : 0))
@@ -210,7 +211,7 @@ const Completeness = (props: {process: Process}) => {
     const perc = completed / completables
     if (perc < .3) return theme.colors.negative400
     if (perc === 1) return theme.colors.positive400
-    return theme.colors.primary400
+    return theme.colors.warning400
   }
 
   return (
@@ -223,6 +224,7 @@ const Completeness = (props: {process: Process}) => {
         <p>{!completeness.retention && intl.retention}</p>
         <p>{!completeness.dataProcessor && intl.dataProcessor}</p>
         <p>{!completeness.dataProcessorOutsideEU && intl.dataProcessorOutsideEU}</p>
+        <p>{!completeness.policies && intl.informationTypes}</p>
         <p>{!completeness.completed && intl.processStatus}</p>
       </Block>}>
         <Block $style={{cursor: 'pointer'}} height={theme.sizing.scale800} display='flex' alignItems='center'>
