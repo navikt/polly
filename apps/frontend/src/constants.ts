@@ -2,6 +2,82 @@ import {Code, codelist, ListName} from './service/Codelist'
 import {ColumnCompares} from './util/hooks'
 import {intl} from './util'
 
+export enum LegalBasesUse {
+  INHERITED_FROM_PROCESS = 'INHERITED_FROM_PROCESS',
+  EXCESS_INFO = 'EXCESS_INFO',
+  UNRESOLVED = 'UNRESOLVED',
+  DEDICATED_LEGAL_BASES = 'DEDICATED_LEGAL_BASES',
+}
+
+export enum AlertEventType {
+  MISSING_LEGAL_BASIS = 'MISSING_LEGAL_BASIS',
+  EXCESS_INFO = 'EXCESS_INFO',
+  MISSING_ARTICLE_6 = 'MISSING_ARTICLE_6',
+  MISSING_ARTICLE_9 = 'MISSING_ARTICLE_9',
+  USES_ALL_INFO_TYPE = 'USES_ALL_INFO_TYPE',
+}
+
+export enum AlertEventLevel {
+  INFO = 'INFO',
+  WARNING = 'WARNING',
+  ERROR = 'ERROR',
+}
+
+export enum AuditAction {
+  CREATE = 'CREATE',
+  UPDATE = 'UPDATE',
+  DELETE = 'DELETE',
+}
+
+export enum ObjectType {
+  INFORMATION_TYPE = 'INFORMATION_TYPE',
+  POLICY = 'POLICY',
+  PROCESS = 'PROCESS',
+  DISCLOSURE = 'DISCLOSURE',
+  DOCUMENT = 'DOCUMENT',
+  CODELIST = 'CODELIST',
+  GENERIC_STORAGE = 'GENERIC_STORAGE',
+}
+
+export enum ProcessField {
+  DPIA = 'DPIA',
+  PROFILING = 'PROFILING',
+  AUTOMATION = 'AUTOMATION',
+  RETENTION = 'RETENTION',
+  RETENTION_DATA = 'RETENTION_DATA',
+  DATA_PROCESSOR = 'DATA_PROCESSOR',
+  DATA_PROCESSOR_OUTSIDE_EU = 'DATA_PROCESSOR_OUTSIDE_EU',
+  DATA_PROCESSOR_AGREEMENT_EMPTY = 'DATA_PROCESSOR_AGREEMENT_EMPTY',
+  EXCESS_INFO = 'EXCESS_INFO',
+  USES_ALL_INFO_TYPE = 'USES_ALL_INFO_TYPE',
+  MISSING_LEGAL_BASIS = 'MISSING_LEGAL_BASIS',
+  MISSING_ARTICLE_6 = 'MISSING_ARTICLE_6',
+  MISSING_ARTICLE_9 = 'MISSING_ARTICLE_9',
+}
+
+export enum ProcessState {
+  YES = 'YES',
+  NO = 'NO',
+  UNKNOWN = 'UNKNOWN'
+}
+
+export type NavigableItem =
+  ObjectType
+  | ListName.CATEGORY
+  | ListName.PURPOSE
+  | ListName.DEPARTMENT
+  | ListName.SUB_DEPARTMENT
+  | ListName.THIRD_PARTY
+  | ListName.SYSTEM
+  | 'team'
+  | 'productarea';
+
+export enum ProcessStatus {
+  All = 'ALL',
+  COMPLETED = 'COMPLETED',
+  IN_PROGRESS = 'IN_PROGRESS'
+}
+
 export interface InformationtypeFormValues {
   id?: string;
   term?: string;
@@ -19,24 +95,12 @@ export interface PolicyFormValues {
   id?: string;
   purposeCode: string;
   informationType?: InformationTypeShort;
-  process: {id: string; name: string; legalBases: LegalBasis[]};
+  process: { id: string; name: string; legalBases: LegalBasis[] };
   subjectCategories: string[];
   legalBasesUse: LegalBasesUse;
   legalBases: Array<LegalBasisFormValues>;
   legalBasesOpen: boolean;
   documentIds: string[];
-}
-
-export enum LegalBasesUse {
-  INHERITED_FROM_PROCESS = 'INHERITED_FROM_PROCESS',
-  EXCESS_INFO = 'EXCESS_INFO',
-  UNRESOLVED = 'UNRESOLVED',
-  DEDICATED_LEGAL_BASES = 'DEDICATED_LEGAL_BASES',
-}
-
-export enum ProcessStatus {
-  IN_PROGRESS = 'IN_PROGRESS',
-  COMPLETED = 'COMPLETED',
 }
 
 export interface ProcessFormValues {
@@ -216,7 +280,7 @@ export interface TeamResource {
 }
 
 export interface ProcessCount {
-  counts: {[code: string]: number};
+  counts: { [code: string]: number };
 }
 
 export interface UserInfo {
@@ -331,7 +395,7 @@ export interface AddDocumentToProcessFormValues {
   document?: Document;
   informationTypes: DocumentInfoTypeUse[];
   defaultDocument: boolean;
-  process: {id: string; name: string; purpose: Code};
+  process: { id: string; name: string; purpose: Code };
 }
 
 export interface CreateDocumentFormValues {
@@ -346,55 +410,6 @@ export interface DocumentInformationTypes {
   subjectCategories: string[];
 }
 
-export enum AuditAction {
-  CREATE = 'CREATE',
-  UPDATE = 'UPDATE',
-  DELETE = 'DELETE',
-}
-
-export enum ObjectType {
-  INFORMATION_TYPE = 'INFORMATION_TYPE',
-  POLICY = 'POLICY',
-  PROCESS = 'PROCESS',
-  DISCLOSURE = 'DISCLOSURE',
-  DOCUMENT = 'DOCUMENT',
-  CODELIST = 'CODELIST',
-  GENERIC_STORAGE = 'GENERIC_STORAGE',
-}
-
-export enum ProcessField {
-  DPIA = 'DPIA',
-  PROFILING = 'PROFILING',
-  AUTOMATION = 'AUTOMATION',
-  RETENTION = 'RETENTION',
-  RETENTION_DATA = 'RETENTION_DATA',
-  DATA_PROCESSOR = 'DATA_PROCESSOR',
-  DATA_PROCESSOR_OUTSIDE_EU = 'DATA_PROCESSOR_OUTSIDE_EU',
-  DATA_PROCESSOR_AGREEMENT_EMPTY = 'DATA_PROCESSOR_AGREEMENT_EMPTY',
-  EXCESS_INFO = 'EXCESS_INFO',
-  USES_ALL_INFO_TYPE = 'USES_ALL_INFO_TYPE',
-  MISSING_LEGAL_BASIS = 'MISSING_LEGAL_BASIS',
-  MISSING_ARTICLE_6 = 'MISSING_ARTICLE_6',
-  MISSING_ARTICLE_9 = 'MISSING_ARTICLE_9',
-}
-
-export enum ProcessState {
-  YES = 'YES',
-  NO = 'NO',
-  UNKNOWN = 'UNKNOWN'
-}
-
-export type NavigableItem =
-  ObjectType
-  | ListName.CATEGORY
-  | ListName.PURPOSE
-  | ListName.DEPARTMENT
-  | ListName.SUB_DEPARTMENT
-  | ListName.THIRD_PARTY
-  | ListName.SYSTEM
-  | 'team'
-  | 'productarea';
-
 export interface AuditItem {
   action: AuditAction;
   id: string;
@@ -405,7 +420,7 @@ export interface AuditItem {
   data: object;
 }
 
-export type Event = Omit<AuditItem, 'user' | 'data'> & {name: string};
+export type Event = Omit<AuditItem, 'user' | 'data'> & { name: string };
 
 export interface AuditLog {
   id: string;
@@ -467,20 +482,6 @@ export interface DisclosureAlert {
   missingArt6: boolean;
 }
 
-export enum AlertEventType {
-  MISSING_LEGAL_BASIS = 'MISSING_LEGAL_BASIS',
-  EXCESS_INFO = 'EXCESS_INFO',
-  MISSING_ARTICLE_6 = 'MISSING_ARTICLE_6',
-  MISSING_ARTICLE_9 = 'MISSING_ARTICLE_9',
-  USES_ALL_INFO_TYPE = 'USES_ALL_INFO_TYPE',
-}
-
-export enum AlertEventLevel {
-  INFO = 'INFO',
-  WARNING = 'WARNING',
-  ERROR = 'ERROR',
-}
-
 export interface AlertEvent {
   id: string;
   process?: ProcessShort;
@@ -518,7 +519,7 @@ export interface ProcessesDashCount {
   dataProcessorOutsideEU: Counter
 }
 
-export interface DepartmentProcessDashCount extends ProcessesDashCount{
+export interface DepartmentProcessDashCount extends ProcessesDashCount {
   department: string;
 }
 
