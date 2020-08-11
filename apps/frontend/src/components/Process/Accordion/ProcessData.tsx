@@ -206,9 +206,14 @@ const Completeness = (props: {process: Process}) => {
   }
   const completed = sum(Object.keys(completeness).map(k => (completeness as any)[k] ? 1 : 0))
   const completables = Object.keys(completeness).length
+  const color = () => {
+    const perc = completed / completables
+    if (perc < .3) return theme.colors.negative400
+    if (perc === 1) return theme.colors.positive400
+    return theme.colors.primary400
+  }
 
   return (
-
     <DataText label={intl.completeness}>
       <CustomizedStatefulTooltip content={<Block>
         <p>{completed === completables ? intl.completed : `${intl.notFilled}:`}</p>
@@ -221,7 +226,7 @@ const Completeness = (props: {process: Process}) => {
         <p>{!completeness.completed && intl.processStatus}</p>
       </Block>}>
         <Block $style={{cursor: 'pointer'}} height={theme.sizing.scale800} display='flex' alignItems='center'>
-          <ProgressBar value={completed} successValue={completables}/>
+          <ProgressBar value={completed} successValue={completables} overrides={{BarProgress: {style: {backgroundColor: color()}}}}/>
         </Block>
       </CustomizedStatefulTooltip>
     </DataText>
