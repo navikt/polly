@@ -202,7 +202,7 @@ const Completeness = (props: {process: Process}) => {
     retention: !isNil(process.retention?.retentionPlan),
     dataProcessor: !isNil(process.dataProcessing?.dataProcessor),
     dataProcessorOutsideEU: !process.dataProcessing?.dataProcessor || !isNil(process.dataProcessing?.dataProcessorOutsideEU),
-    completed: process.status !== ProcessStatus.COMPLETED
+    completed: process.status === ProcessStatus.COMPLETED
   }
   const completed = sum(Object.keys(completeness).map(k => (completeness as any)[k] ? 1 : 0))
   const completables = Object.keys(completeness).length
