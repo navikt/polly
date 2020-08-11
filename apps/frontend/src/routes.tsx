@@ -43,7 +43,7 @@ const Routes = (): JSX.Element => (
       <Route exact path="/process" component={PurposeListPage} />
       <Route exact path={processPath} component={ProcessPage} />
 
-      <Route exact path="/dashboard/:filterName/:filterValue" component={PurposeTable} />
+      <Route exact path="/dashboard/:filterName/:filterValue/:filterStatus" component={PurposeTable} />
 
       <Route exact path="/process/:id" component={redirect(processUrl)} />
       <Route exact path="/policy/:id" component={redirect(policyUrl)} />
