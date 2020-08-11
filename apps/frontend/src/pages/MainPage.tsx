@@ -2,7 +2,7 @@ import {intl, theme} from '../util'
 import * as React from 'react'
 import {useEffect, useState} from 'react'
 import {Block, BlockProps} from 'baseui/block'
-import {Counter, DashboardData, ProcessField, ProcessState, Settings} from '../constants'
+import {Counter, DashboardData, ProcessStatus, ProcessField, ProcessState, Settings} from '../constants'
 import {getSettings} from '../api/SettingsApi'
 import {Card} from 'baseui/card'
 import {cardShadow} from '../components/common/Style'
@@ -17,6 +17,7 @@ import RouteLink from "../components/common/RouteLink";
 import {chartColor} from "../util/theme";
 import * as H from 'history'
 import {lowerFirst} from 'lodash'
+import {StatefulSelect} from "baseui/select/index";
 
 const boxProps: BlockProps = {
   marginTop: theme.sizing.scale600,
@@ -25,29 +26,54 @@ const boxProps: BlockProps = {
   $style: {boxShadow: '0px 0px 6px 3px rgba(0,0,0,0.08)', padding: '15px'}
 }
 const chartSize = 80
-const clickOnPieChartSlice = (processField: ProcessField, processState: ProcessState, history: H.History) => () => history.push(`/dashboard/${processField}/${processState}`)
+const clickOnPieChartSlice = (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatus, history: H.History) => () => history.push(`/dashboard/${processField}/${processState}/${processStatus}`)
 
 export const Main = () => {
   const [settings, setSettings] = useState<Settings>()
   const [isLoading, setLoading] = useState(true)
   const [dashData, setDashData] = useState<DashboardData>()
+  const [dashboardStatus, setDashboardStatus] = useState<ProcessStatus>(ProcessStatus.All)
 
   useEffect(() => {
     (async () => {
       setSettings(await getSettings())
-      setDashData(await getDashboard())
       setLoading(false)
     })()
   }, [])
+
+  useEffect(() => {
+    (async () => {
+      setDashData(await getDashboard(dashboardStatus))
+    })()
+  }, [dashboardStatus])
 
   return (
     <Block marginTop={theme.sizing.scale400} display="flex" flexWrap>
       {
         !isLoading && dashData && (
           <>
+            <Block width='100%' display="flex" flexDirection='row-reverse'>
+              <Block width={"240px"}>
+                <StatefulSelect
+                  backspaceRemoves={false}
+                  clearable={false}
+                  deleteRemoves={false}
+                  escapeClearsValue={false}
+                  options={[
+                    {label: intl.all, id: ProcessStatus.All},
+                    {label: intl.inProgress, id: ProcessStatus.IN_PROGRESS},
+                    {label: intl.completed, id: ProcessStatus.COMPLETED},
+                  ]}
+                  initialState={{value: [{id: ProcessStatus.All}]}}
+                  filterOutSelected={false}
+                  searchable={false}
+                  onChange={(params: any) => setDashboardStatus(params.value[0].id)}
+                />
+              </Block>
+            </Block>
             <Departments data={dashData}/>
 
-            <Charts dashData={dashData}/>
+            <Charts dashData={dashData} processStatus={dashboardStatus}/>
 
             <Block marginTop="2.5rem">
               <Card overrides={cardShadow}>
@@ -65,26 +91,29 @@ export const Main = () => {
   )
 }
 
-const Charts = (props: {dashData: DashboardData}) => {
-  const {dashData} = props
+const Charts = (props: { dashData: DashboardData, processStatus: ProcessStatus; }) => {
+  const {dashData, processStatus} = props
   const history = useHistory()
   return (
     <Block display='flex' flexWrap={true} width={'100%'}>
       <Block {...boxProps}>
         <TriChart counter={dashData.allProcesses.dpia}
                   title={intl.dpiaNeeded}
+                  processStatus={processStatus}
                   field={ProcessField.DPIA}/>
       </Block>
 
       <Block {...boxProps}>
         <TriChart counter={dashData.allProcesses.profiling}
                   title={intl.profiling}
+                  processStatus={processStatus}
                   field={ProcessField.PROFILING}/>
       </Block>
 
       <Block {...boxProps}>
         <TriChart counter={dashData.allProcesses.automation}
                   title={intl.automaticProcessing}
+                  processStatus={processStatus}
                   field={ProcessField.AUTOMATION}/>
       </Block>
 
@@ -96,19 +125,19 @@ const Charts = (props: {dashData: DashboardData}) => {
                      label: intl.numberOfProcessesWithUnknownLegalBasis,
                      size: dashData.allProcesses.processesMissingLegalBases,
                      color: chartColor.generalRed,
-                     onClick: clickOnPieChartSlice(ProcessField.MISSING_LEGAL_BASIS, ProcessState.YES, history)
+                     onClick: clickOnPieChartSlice(ProcessField.MISSING_LEGAL_BASIS, ProcessState.YES, processStatus, history)
                    },
                    {
                      label: intl.numberOfProcessesWithoutArticle6LegalBasis,
                      size: dashData.allProcesses.processesMissingArt6,
                      color: chartColor.generalMustard,
-                     onClick: clickOnPieChartSlice(ProcessField.MISSING_ARTICLE_6, ProcessState.YES, history)
+                     onClick: clickOnPieChartSlice(ProcessField.MISSING_ARTICLE_6, ProcessState.YES, processStatus, history)
                    },
                    {
                      label: intl.numberOfProcessesWithoutArticle9LegalBasis,
                      size: dashData.allProcesses.processesMissingArt9,
                      color: chartColor.generalBlue,
-                     onClick: clickOnPieChartSlice(ProcessField.MISSING_ARTICLE_9, ProcessState.YES, history)
+                     onClick: clickOnPieChartSlice(ProcessField.MISSING_ARTICLE_9, ProcessState.YES, processStatus, history)
                    },
                  ]
                }/>
@@ -116,6 +145,7 @@ const Charts = (props: {dashData: DashboardData}) => {
 
       <Block {...boxProps}>
         <TriChart counter={dashData.allProcesses.retention}
+                  processStatus={processStatus}
                   header={intl.retention} title={intl.retentionPieChartTitle}
                   field={ProcessField.RETENTION}/>
         <Paragraph1>
@@ -126,13 +156,16 @@ const Charts = (props: {dashData: DashboardData}) => {
 
       <Block {...boxProps}>
         <TriChart counter={dashData.allProcesses.dataProcessor}
+                  processStatus={processStatus}
                   header={intl.dataProcessor} title={intl.isDataProcessorUsed}
                   field={ProcessField.DATA_PROCESSOR}/>
         <Paragraph1>
           {`${intl.dataProcessorAgreement} ${lowerFirst(intl.emptyMessage)}`} <RouteLink
           href={`/dashboard/${ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY}/${ProcessState.YES}`}>{dashData.allProcesses.dataProcessorAgreementMissing}</RouteLink>
         </Paragraph1>
-        <TriChart counter={dashData.allProcesses.dataProcessorOutsideEU} title={`${intl.dataProcessor} ${lowerFirst(intl.dataProcessorOutsideEU)}`}
+        <TriChart counter={dashData.allProcesses.dataProcessorOutsideEU}
+                  processStatus={processStatus}
+                  title={`${intl.dataProcessor} ${lowerFirst(intl.dataProcessorOutsideEU)}`}
                   field={ProcessField.DATA_PROCESSOR_OUTSIDE_EU}/>
       </Block>
     </Block>
@@ -141,10 +174,10 @@ const Charts = (props: {dashData: DashboardData}) => {
 
 
 const TriChart = (props: {
-  counter: Counter, title: string, header?: string, field: ProcessField
+  counter: Counter, title: string, header?: string, field: ProcessField, processStatus: ProcessStatus
 }) => {
   const history = useHistory()
-  const {counter, title, header, field} = props
+  const {counter, title, header, field, processStatus} = props
   return (
     <Chart chartTitle={title} headerTitle={header} size={chartSize}
            data={
@@ -153,19 +186,19 @@ const TriChart = (props: {
                  label: intl.yes,
                  size: counter.yes,
                  color: chartColor.generalBlue,
-                 onClick: clickOnPieChartSlice(field, ProcessState.YES, history)
+                 onClick: clickOnPieChartSlice(field, ProcessState.YES, processStatus, history)
                },
                {
                  label: intl.no,
                  size: counter.no,
                  color: chartColor.generalMustard,
-                 onClick: clickOnPieChartSlice(field, ProcessState.NO, history)
+                 onClick: clickOnPieChartSlice(field, ProcessState.NO, processStatus, history)
                },
                {
                  label: intl.unclarified,
                  size: counter.unknown,
                  color: chartColor.generalRed,
-                 onClick: clickOnPieChartSlice(field, ProcessState.UNKNOWN, history)
+                 onClick: clickOnPieChartSlice(field, ProcessState.UNKNOWN, processStatus, history)
                },
              ]
            }/>

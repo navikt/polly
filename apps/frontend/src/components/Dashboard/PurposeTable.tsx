@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import {getProcessByState} from '../../api'
+import {getProcessByStateAndStatus} from '../../api'
 import {ProcessField, ProcessShort, ProcessState, ProcessStatus} from '../../constants'
 import {useParams} from 'react-router-dom'
 import {HeadingLarge} from 'baseui/typography'
@@ -14,7 +14,8 @@ import {lowerFirst} from 'lodash'
 
 interface PathProps {
   filterName: ProcessField,
-  filterValue: ProcessState
+  filterValue: ProcessState,
+  filterStatus: ProcessStatus
 }
 
 const cellStyle: StyleObject = {
@@ -25,16 +26,16 @@ const PurposeTable = () => {
   const [loading, setLoading] = React.useState<boolean>(false)
   const [filtered, setFiltered] = React.useState<ProcessShort[]>([])
   const [title, setTitle] = React.useState('')
-  const {filterName, filterValue} = useParams<PathProps>()
+  const {filterName, filterValue, filterStatus} = useParams<PathProps>()
 
   useEffect(() => {
     (async () => {
       setLoading(true)
       changeTitle()
-      setFiltered(await getProcessByState(filterName, filterValue))
+      setFiltered(await getProcessByStateAndStatus(filterName, filterValue, filterStatus))
       setLoading(false)
     })()
-  }, [filterName, filterValue])
+  }, [filterName, filterValue, filterStatus])
 
   const changeTitle = () => {
     if (filterName === ProcessField.DPIA) {
