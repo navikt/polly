@@ -144,7 +144,7 @@ const Charts = (props: { dashData: DashboardData, processStatus: ProcessStatus; 
                   field={ProcessField.DATA_PROCESSOR}/>
         <Paragraph1>
           {`${intl.dataProcessorAgreement} ${lowerFirst(intl.emptyMessage)}`} <RouteLink
-          href={`/dashboard/${ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY}/${ProcessState.YES}`}>{dashData.allProcesses.dataProcessorAgreementMissing}</RouteLink>
+          href={`/dashboard/${ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY}/${ProcessState.YES}/${processStatus}`}>{dashData.allProcesses.dataProcessorAgreementMissing}</RouteLink>
         </Paragraph1>
         <TriChart counter={dashData.allProcesses.dataProcessorOutsideEU}
                   processStatus={processStatus}
