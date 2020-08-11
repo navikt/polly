@@ -260,6 +260,7 @@ export interface IStrings {
   editDocument: string;
   lastModified: string;
   excessInfoHelpText: string;
+  completeness: string,
 
   // groups
   READ: string;
@@ -408,7 +409,7 @@ const defaultLang = langs.nb
 type IIntl = LocalizedStringsMethods & IStrings;
 
 interface LocalizedStringsFactory {
-  new<T>(props: GlobalStrings<T>, options?: { customLanguageInterface: () => string }): IIntl
+  new<T>(props: GlobalStrings<T>, options?: {customLanguageInterface: () => string}): IIntl
 }
 
 const strings: IntlLangs = {}

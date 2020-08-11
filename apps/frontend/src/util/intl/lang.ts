@@ -204,6 +204,7 @@ export const no: IStrings = {
   teamSelect: 'Velg produktteam (IT)',
   informationtypesUsedInDocument: 'Opplysningstyper i dokumentet',
   editDocument: 'Rediger dokument',
+  completeness: 'Kompletthet',
 
   READ: 'Les',
   WRITE: 'Skriv',
@@ -602,6 +603,7 @@ export const en: IStrings = {
   dpiaNeeded: 'Need for DPIA',
   dpiaHelpText: 'It is necessary for DPIA assessment if there is probable that the process will entail a high risk of the data\'s rights and freedoms.',
   lastModified: 'Last modified by {0}, {1}',
+  completeness: 'Completeness',
 
   READ: 'Read',
   WRITE: 'Write',
