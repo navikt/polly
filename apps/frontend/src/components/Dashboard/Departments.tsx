@@ -39,8 +39,8 @@ const DepartmentCard = (props: DepartmentCardProps) => {
             flexDirection='column'
             alignItems='center'
             justifyContent='space-around'
-            width="93px"
-            height="93px"
+            width="95px"
+            height="95px"
           >
             <Label1 color={theme.colors.accent300} $style={{textAlign: 'center'}}>{parsedDepartmentName(department.department)}</Label1>
             <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.COMPLETED)}>
@@ -71,9 +71,9 @@ const Departments = (props: DepartmentsProps) => {
   const sortedData = () => data.departmentProcesses.sort((a, b) => parsedDepartmentName(a.department).localeCompare(parsedDepartmentName(b.department)))
 
   return (
-    <Block width="100%" display="flex" flexWrap>
+    <Block width="100%" display="flex" flexWrap justifyContent="space-between">
       {sortedData().map((department: DepartmentProcess, i: number) => (
-        <Block key={i} marginTop={theme.sizing.scale600} marginRight={theme.sizing.scale500}>
+        <Block key={i} marginTop={theme.sizing.scale600}>
           <DepartmentCard department={department}/>
         </Block>
       ))}

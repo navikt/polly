@@ -21,7 +21,6 @@ import {FilterDashboardStatus} from "../components/Dashboard/FilterDashboardStat
 
 const boxProps: BlockProps = {
   marginTop: theme.sizing.scale600,
-  marginRight: theme.sizing.scale600,
   minWidth: '520px',
   $style: {boxShadow: '0px 0px 6px 3px rgba(0,0,0,0.08)', padding: '15px'}
 }
@@ -78,7 +77,7 @@ const Charts = (props: { dashData: DashboardData, processStatus: ProcessStatus; 
   const {dashData, processStatus} = props
   const history = useHistory()
   return (
-    <Block display='flex' flexWrap={true} width={'100%'}>
+    <Block display='flex' flexWrap={true} width={'100%'} justifyContent={"space-between"}>
       <Block {...boxProps}>
         <TriChart counter={dashData.allProcesses.dpia}
                   title={intl.dpiaNeeded}
