@@ -214,6 +214,8 @@ const Completeness = (props: {process: Process}) => {
     return theme.colors.warning400
   }
 
+  const barOverrides = {BarProgress: {style: {backgroundColor: color()}}, Bar: {style: {marginLeft: 0, marginRight: 0}}}
+
   return (
     <DataText label={intl.completeness}>
       <CustomizedStatefulTooltip content={<Block>
@@ -228,7 +230,7 @@ const Completeness = (props: {process: Process}) => {
         <p>{!completeness.completed && intl.processStatus}</p>
       </Block>}>
         <Block $style={{cursor: 'pointer'}} height={theme.sizing.scale800} display='flex' alignItems='center'>
-          <ProgressBar value={completed} successValue={completables} overrides={{BarProgress: {style: {backgroundColor: color()}}}}/>
+          <ProgressBar value={completed} successValue={completables} overrides={barOverrides}/>
         </Block>
       </CustomizedStatefulTooltip>
     </DataText>
