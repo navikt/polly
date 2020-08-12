@@ -63,7 +63,7 @@ const Routes = (): JSX.Element => (
 
       <Route exact path="/alert/events/:objectType?/:id?" component={AlertEventPage} />
 
-      <Route exact path="/" component={MainPage} />
+      <Route exact path="/:processStatus?" component={MainPage} />
       <Route component={NotFound} />
     </Switch>
   </Root>
