@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {ProcessStatus} from '../../constants'
 import {StatefulSelect} from 'baseui/select'
-import {intl} from '../../util'
+import {intl, theme} from '../../util'
 import {Block} from 'baseui/block'
 import {useHistory, useParams} from 'react-router-dom'
 
@@ -9,7 +9,7 @@ export const FilterDashboardStatus = (props: { setFilter: Function }) => {
   const history = useHistory()
   const {processStatus} = useParams()
   return (
-    <Block width='100%' display="flex" flexDirection='row-reverse'>
+    <Block width='100%' display="flex" flexDirection='row-reverse' marginTop={theme.sizing.scale600}>
       <Block width={"240px"}>
         <StatefulSelect
           backspaceRemoves={false}
@@ -19,7 +19,7 @@ export const FilterDashboardStatus = (props: { setFilter: Function }) => {
           options={[
             {label: intl.all, id: ProcessStatus.All},
             {label: intl.inProgress, id: ProcessStatus.IN_PROGRESS},
-            {label: intl.completed, id: ProcessStatus.COMPLETED},
+            {label: intl.done, id: ProcessStatus.COMPLETED},
           ]}
           initialState={{value: [{id: processStatus ? processStatus as ProcessStatus : ProcessStatus.All}]}}
           filterOutSelected={false}

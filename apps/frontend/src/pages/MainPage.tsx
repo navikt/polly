@@ -53,9 +53,10 @@ export const MainPage = () => {
       {
         !isLoading && dashData && (
           <>
-            <FilterDashboardStatus setFilter={setDashboardStatus}/>
 
             <Departments data={dashData}/>
+
+            <FilterDashboardStatus setFilter={setDashboardStatus}/>
 
             <Charts dashData={dashData} processStatus={dashboardStatus}/>
 

@@ -83,6 +83,7 @@ export interface IStrings {
   completed: string;
   automaticProcessing: string;
   automaticProcessingExtra: string;
+  done: string;
   profiling: string;
   isProfilingUsed: string;
   profilingExtra: string;
