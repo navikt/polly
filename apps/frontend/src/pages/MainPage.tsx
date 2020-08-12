@@ -21,27 +21,24 @@ import {FilterDashboardStatus} from "../components/Dashboard/FilterDashboardStat
 
 const boxProps: BlockProps = {
   marginTop: theme.sizing.scale600,
-  width:'30%',
+  width: '30%',
   $style: {boxShadow: '0px 0px 6px 3px rgba(0,0,0,0.08)', padding: '15px'}
 }
 const chartSize = 80
 const clickOnPieChartSlice = (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatus, history: H.History) => () => history.push(`/dashboard/${processField}/${processState}/${processStatus}`)
 
 export const MainPage = () => {
+
+  const {processStatus} = useParams()
   const [settings, setSettings] = useState<Settings>()
   const [isLoading, setLoading] = useState(true)
   const [dashData, setDashData] = useState<DashboardData>()
-  const [dashboardStatus, setDashboardStatus] = useState<ProcessStatus>(ProcessStatus.All)
-
-  const {processStatus} = useParams()
+  const [dashboardStatus, setDashboardStatus] = useState<ProcessStatus>(processStatus ? processStatus as ProcessStatus : ProcessStatus.All)
 
   useEffect(() => {
     (async () => {
       setSettings(await getSettings())
       setLoading(false)
-      if(processStatus!==undefined){
-        setDashboardStatus(processStatus as ProcessStatus)
-      }
     })()
   }, [])
 

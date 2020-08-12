@@ -3,10 +3,11 @@ import {ProcessStatus} from '../../constants'
 import {StatefulSelect} from 'baseui/select'
 import {intl} from '../../util'
 import {Block} from 'baseui/block'
-import {useHistory} from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 
 export const FilterDashboardStatus = (props: { setFilter: Function }) => {
   const history = useHistory()
+  const {processStatus} = useParams()
   return (
     <Block width='100%' display="flex" flexDirection='row-reverse'>
       <Block width={"240px"}>
@@ -20,7 +21,7 @@ export const FilterDashboardStatus = (props: { setFilter: Function }) => {
             {label: intl.inProgress, id: ProcessStatus.IN_PROGRESS},
             {label: intl.completed, id: ProcessStatus.COMPLETED},
           ]}
-          initialState={{value: [{id: ProcessStatus.All}]}}
+          initialState={{value: [{id: processStatus ? processStatus as ProcessStatus : ProcessStatus.All}]}}
           filterOutSelected={false}
           searchable={false}
           onChange={(params: any) => {
