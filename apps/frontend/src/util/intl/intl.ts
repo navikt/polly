@@ -84,6 +84,7 @@ export interface IStrings {
   automaticProcessing: string;
   automaticProcessingExtra: string;
   done: string;
+  filterPieChartsByStatus: string;
   profiling: string;
   isProfilingUsed: string;
   profilingExtra: string;

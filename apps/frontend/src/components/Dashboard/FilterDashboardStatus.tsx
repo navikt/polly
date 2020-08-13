@@ -4,6 +4,7 @@ import {StatefulSelect} from 'baseui/select'
 import {intl, theme} from '../../util'
 import {Block} from 'baseui/block'
 import {useHistory, useParams} from 'react-router-dom'
+import {Label2} from "baseui/typography/index";
 
 export const FilterDashboardStatus = (props: { setFilter: Function }) => {
   const history = useHistory()
@@ -29,6 +30,11 @@ export const FilterDashboardStatus = (props: { setFilter: Function }) => {
             props.setFilter(params.value[0].id)
           }}
         />
+      </Block>
+      <Block alignSelf='center'>
+        <Label2 color={theme.colors.primary} marginRight={'1rem'}>
+          {intl.filterPieChartsByStatus}
+        </Label2>
       </Block>
     </Block>)
 }
