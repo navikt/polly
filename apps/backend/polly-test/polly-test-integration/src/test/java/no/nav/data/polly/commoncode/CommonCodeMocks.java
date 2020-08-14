@@ -2,7 +2,7 @@ package no.nav.data.polly.commoncode;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 
-public class Mocks {
+public class CommonCodeMocks {
 
     public static void mock() {
         WireMock.stubFor(WireMock.get("/commoncode/v1/kodeverk/Landkoder/koder/betydninger?spraak=nb").willReturn(WireMock.okJson(commonCodeCountryResponse)));
