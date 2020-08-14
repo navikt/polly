@@ -12,7 +12,7 @@ import {intl, theme} from '../../util'
 import {StyledLink} from 'baseui/link'
 import {env} from '../../util/env'
 import {Paragraph2} from 'baseui/typography'
-import {PLACEMENT, StatefulTooltip} from "baseui/tooltip";
+import CustomizedStatefulTooltip from "./CustomizedStatefulTooltip";
 
 export const LegalBasisView = (props: { legalBasis?: LegalBasis, legalBasisForm?: LegalBasisFormValues }) => {
   const input = props.legalBasis ? props.legalBasis : props.legalBasisForm
@@ -64,25 +64,27 @@ export const LegalBasesNotClarified = (props: { alert?: PolicyAlert }) => {
     <Block color={color}>
       <Block>
         {props.alert?.missingLegalBasis &&
-        <StatefulTooltip content={intl.unknownLegalBasisHelpText} placement={PLACEMENT.top}><span>{warningIcon} {intl.MISSING_LEGAL_BASIS}</span></StatefulTooltip>}
+        <CustomizedStatefulTooltip content={intl.unknownLegalBasisHelpText}><span>{warningIcon} {intl.MISSING_LEGAL_BASIS}</span></CustomizedStatefulTooltip>}
       </Block>
       <Block>
-        {props.alert?.excessInfo && <StatefulTooltip content={intl.excessInfoHelpText} placement={PLACEMENT.top}><span>{warningIcon} {intl.EXCESS_INFO}</span></StatefulTooltip>}
+        {props.alert?.excessInfo && <CustomizedStatefulTooltip content={intl.excessInfoHelpText}><span>{warningIcon} {intl.EXCESS_INFO}</span></CustomizedStatefulTooltip>}
       </Block>
       <Block>
         {props.alert?.missingArt6 &&
-        <StatefulTooltip content={intl.withoutArticle6LegalBasisHelpText} placement={PLACEMENT.top}><span>{warningIcon} {intl.MISSING_ARTICLE_6}</span></StatefulTooltip>}
+        <CustomizedStatefulTooltip content={intl.withoutArticle6LegalBasisHelpText}><span>{warningIcon} {intl.MISSING_ARTICLE_6}</span></CustomizedStatefulTooltip>}
       </Block>
       <Block>
         {props.alert?.missingArt9 &&
-        <StatefulTooltip content={intl.withoutArticle9LegalBasisHelpText} placement={PLACEMENT.top}><span>{warningIcon} {intl.MISSING_ARTICLE_9}</span></StatefulTooltip>}
+        <CustomizedStatefulTooltip content={intl.withoutArticle9LegalBasisHelpText}><span>{warningIcon} {intl.MISSING_ARTICLE_9}</span></CustomizedStatefulTooltip>}
       </Block>
     </Block>
   )
 }
 
 const isLegalBasisFilteredBySensitivity = (legalBasis: LegalBasisFormValues, sensitivityLevel?: SensitivityLevel) => {
-  return (sensitivityLevel === SensitivityLevel.ART6 && codelist.isArt6(legalBasis.gdpr)) || (sensitivityLevel === SensitivityLevel.ART9 && codelist.isArt9(legalBasis.gdpr))
+  return (sensitivityLevel === SensitivityLevel.ART6 && codelist.isArt6(legalBasis.gdpr)) ||
+    (sensitivityLevel === SensitivityLevel.ART9 && codelist.isArt9(legalBasis.gdpr)) ||
+    !sensitivityLevel
 }
 
 export const ListLegalBases = (

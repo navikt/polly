@@ -8,6 +8,13 @@ metadata:
 spec:
   image: {{image}}
   port: 8080
+  azure:
+    application:
+      enabled: true
+      replyURLs:
+      {{#each replies as |url|}}
+         - {{url}}
+      {{/each}}
   ingresses:
   {{#each ingresses as |url|}}
     - {{url}}
@@ -39,3 +46,18 @@ spec:
     path: internal/metrics
   leaderElection: true
   webproxy: true
+  envFrom:
+    - secret: kafka-broker
+    - secret: kafka-schreg
+    - secret: env
+    - secret: polly-db
+    - secret: polly-redirect
+    - secret: polly-enckey
+    - secret: polly-users
+    - secret: polly-admins
+    - secret: polly-distr-rate
+    - secret: polly-kafka-user
+    - secret: polly-kafka-pwd
+    - secret: teamcat-url
+    - secret: termcat-url
+    - secret: commoncode-url

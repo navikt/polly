@@ -2,7 +2,6 @@ package no.nav.data.polly.alert;
 
 
 import no.nav.data.common.storage.domain.GenericStorage;
-import no.nav.data.common.storage.domain.GenericStorageRepository;
 import no.nav.data.common.storage.domain.StorageType;
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.alert.AlertController.EventPage;
@@ -10,6 +9,9 @@ import no.nav.data.polly.alert.AlertController.EventPage.AlertSort;
 import no.nav.data.polly.alert.domain.AlertEvent;
 import no.nav.data.polly.alert.domain.AlertEventType;
 import no.nav.data.polly.alert.domain.AlertRepository;
+import no.nav.data.polly.alert.dto.DisclosureAlert;
+import no.nav.data.polly.disclosure.DisclosureService;
+import no.nav.data.polly.disclosure.dto.DisclosureRequest;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
 import no.nav.data.polly.policy.domain.LegalBasesUse;
@@ -43,7 +45,7 @@ public class AlertIT extends IntegrationTestBase {
     @Autowired
     private AlertRepository alertRepository;
     @Autowired
-    private GenericStorageRepository genericStorageRepository;
+    private DisclosureService disclosureService;
 
     @BeforeEach
     void setUp() {
@@ -118,6 +120,33 @@ public class AlertIT extends IntegrationTestBase {
             alerts = alertService.checkAlertsForProcess(policy.getProcess().getId());
             assertThat(alerts.getPolicies()).hasSize(0);
         }
+
+        @Nested
+        class Disclosure {
+
+            @Test
+            void noAlerts() {
+                var discReq = createDiscReq().withLegalBases(List.of(createLegalBasisRequest()));
+                var disc = disclosureService.save(discReq);
+
+                DisclosureAlert alert = alertService.checkAlertsForDisclosure(disc.getId());
+                assertThat(alert.getDisclosureId()).isEqualTo(disc.getId());
+                assertThat(alert.isMissingArt6()).isFalse();
+            }
+
+            @Test
+            void hasArt6() {
+                var disc = disclosureService.save(createDiscReq());
+
+                DisclosureAlert alert = alertService.checkAlertsForDisclosure(disc.getId());
+                assertThat(alert.getDisclosureId()).isEqualTo(disc.getId());
+                assertThat(alert.isMissingArt6()).isTrue();
+            }
+        }
+    }
+
+    private DisclosureRequest createDiscReq() {
+        return DisclosureRequest.builder().name("disc1").description("newdisclosure").recipient("SKATT").recipientPurpose("AAP").build();
     }
 
     @Nested
@@ -143,7 +172,7 @@ public class AlertIT extends IntegrationTestBase {
             var policy = createProcessWithOnePolicy();
             alertService.calculateEventsForProcess(policy.getProcess().getId());
             var events = alertRepository.findByProcessId(policy.getProcess().getId());
-            assertThat(events).hasSize(0);
+            assertThat(events).isEmpty();
         }
 
         @Test
@@ -155,7 +184,7 @@ public class AlertIT extends IntegrationTestBase {
 
             alertService.calculateEventsForProcess(policy.getProcess().getId());
             var events = alertRepository.findByProcessId(policy.getProcess().getId());
-            assertThat(events).hasSize(0);
+            assertThat(events).isEmpty();
         }
 
         @Test
@@ -178,6 +207,26 @@ public class AlertIT extends IntegrationTestBase {
 
             var events = alertRepository.findByProcessId(process.getId());
             assertThat(events).hasSize(1);
+        }
+
+        @Nested
+        class Disclosure {
+
+            @Test
+            void noDiscEvents() {
+                var discReq = createDiscReq().withLegalBases(List.of(createLegalBasisRequest()));
+                var disc = disclosureService.save(discReq);
+
+                var events = alertRepository.findByDisclosureId(disc.getId());
+                assertThat(events).isEmpty();
+            }
+
+            @Test
+            void noArt6() {
+                var disc = disclosureService.save(createDiscReq());
+                var events = alertRepository.findByDisclosureId(disc.getId());
+                assertThat(events).hasSize(1);
+            }
         }
 
         @Nested

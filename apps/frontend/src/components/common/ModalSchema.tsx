@@ -3,11 +3,11 @@ import {Block} from 'baseui/block'
 import {KIND as NKIND, Notification} from 'baseui/notification'
 import {Label2} from 'baseui/typography'
 import * as React from 'react'
-import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
 import {theme} from '../../util'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faExclamationCircle} from '@fortawesome/free-solid-svg-icons'
 import {paddingZero} from './Style'
+import CustomizedStatefulTooltip from "./CustomizedStatefulTooltip";
 
 export const Error = (props: { fieldName: string, fullWidth?: boolean }) => (
     <ErrorMessage name={props.fieldName}>
@@ -28,13 +28,7 @@ export const ModalLabel = (props: { label?: any, tooltip?: string | React.ReactE
     return (
         <Block {...width} alignSelf="center" paddingRight="1rem">
             {props.tooltip ?
-                <StatefulTooltip content={props.tooltip} placement={PLACEMENT.top} focusLock={false} overrides={{
-                    Body: {
-                        style: {
-                            width: '25%'
-                        }
-                    }
-                }}>
+                <CustomizedStatefulTooltip content={props.tooltip}>
                     <Label2 font="font300" display="flex" width="100%" justifyContent='flex-start'>
                         <Block display='flex'>
                             <Block>{props.label}</Block>
@@ -45,7 +39,7 @@ export const ModalLabel = (props: { label?: any, tooltip?: string | React.ReactE
                             </Block>
                         </Block>
                     </Label2>
-                </StatefulTooltip>
+                </CustomizedStatefulTooltip>
                 : <Label2 font="font300">{props.label}</Label2>
             }
         </Block>

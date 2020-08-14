@@ -1,17 +1,16 @@
 import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { AuditAction, Event, ObjectType, PageResponse } from '../../constants'
-import { Option, StatefulSelect, Value } from 'baseui/select'
-import { intl } from '../../util'
-import { getEvents } from '../../api/AuditApi'
-import { Block } from 'baseui/block'
-import { ObjectLink } from '../common/RouteLink'
-import { AuditActionIcon } from './AuditComponents'
-import { StatefulTooltip } from 'baseui/tooltip'
+import {useEffect, useState} from 'react'
+import {AuditAction, Event, ObjectType, PageResponse} from '../../constants'
+import {Option, StatefulSelect, Value} from 'baseui/select'
+import {intl} from '../../util'
+import {getEvents} from '../../api/AuditApi'
+import {Block} from 'baseui/block'
+import {ObjectLink} from '../common/RouteLink'
+import {AuditActionIcon} from './AuditComponents'
 import moment from 'moment'
-import { PLACEMENT } from 'baseui/popover'
-import { HeadingMedium, Label2 } from 'baseui/typography'
-import { StatefulTabs, Tab } from 'baseui/tabs'
+import {HeadingMedium, Label2} from 'baseui/typography'
+import {StatefulTabs, Tab} from 'baseui/tabs'
+import CustomizedStatefulTooltip from "../common/CustomizedStatefulTooltip";
 
 export const LastEvents = () => {
   const [events, setEvents] = useState<PageResponse<Event>>()
@@ -32,9 +31,9 @@ export const LastEvents = () => {
             <AuditActionIcon action={event.action}/>
             {event.name}
           </Block>
-          <StatefulTooltip content={moment(event.time).format('lll')} placement={PLACEMENT.top}>
+          <CustomizedStatefulTooltip content={moment(event.time).format('lll')}>
             {moment(event.time).fromNow()}
-          </StatefulTooltip>
+          </CustomizedStatefulTooltip>
         </Block>
       </ObjectLink>
     </Block>
@@ -49,8 +48,16 @@ export const LastEvents = () => {
           <StatefulSelect
             size="compact"
             clearable={false}
+            searchable={false}
             options={Object.keys(AuditAction).map(auditAction => ({id: auditAction, label: intl[auditAction as AuditAction]}))}
             initialState={{value: action}} onChange={params => setAction(params.value)}
+            overrides={{
+              Root:{
+                style:{
+                  width:"120px"
+                }
+              }
+            }}
           />
         </Block>
       </Block>

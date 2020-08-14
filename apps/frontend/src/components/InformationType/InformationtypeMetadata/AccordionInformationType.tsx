@@ -10,8 +10,11 @@ import {intl} from '../../../util'
 import {PurposeMap} from '../../../pages/InformationtypePage'
 import {Policy} from '../../../constants'
 import {paddingZero} from '../../common/Style'
+import {useQueryParam} from '../../../util/hooks'
+import {useHistory} from 'react-router-dom'
+import * as queryString from 'query-string'
 
-const reducePolicylist = (list: Policy[]) => {
+const reducePolicyList = (list: Policy[]) => {
   return list.reduce((acc: PurposeMap, curr) => {
     if (!acc[curr.purposeCode.code]) {
       acc[curr.purposeCode.code] = [curr]
@@ -24,20 +27,26 @@ const reducePolicylist = (list: Policy[]) => {
 }
 
 export interface AccordionInformationtypeProps {
-  policies: Policy[];
-  onChange?: (args: {expanded: React.Key[]}) => void;
+  policies: Policy[]
 }
 
-const AccordionInformationtype = (props: AccordionInformationtypeProps) => {
-  const {policies, onChange} = props
+const AccordionInformationType = (props: AccordionInformationtypeProps) => {
+  const {policies} = props
+  const selectedPurpose = useQueryParam('purpose')
+  const history = useHistory()
   if (!policies) return <Paragraph2>{intl.purposeNotFound}</Paragraph2>
   if (!codelist.isLoaded()) return <Paragraph2>{intl.couldntLoad}</Paragraph2>
 
-  const purposeMap = reducePolicylist(policies)
+  const purposeMap = reducePolicyList(policies)
   const getPolicylistForPurpose = (purpose: string) => !purposeMap[purpose] ? [] : purposeMap[purpose]
 
   return (
-    <Accordion onChange={onChange}>
+    <Accordion initialState={{expanded: selectedPurpose ? [selectedPurpose] : []}}
+               onChange={key => {
+                 let pathname = history.location.pathname
+                 let purpose = key.expanded[0]
+                 history.push(pathname + '?' + queryString.stringify({purpose}, {skipNull: true}))
+               }}>
       {Object.keys(purposeMap).map((key) => (
         <Panel title={<span><FontAwesomeIcon icon={faUsersCog}/> {codelist.getShortname(ListName.PURPOSE, key)}</span>} key={key}
                overrides={{
@@ -53,4 +62,4 @@ const AccordionInformationtype = (props: AccordionInformationtypeProps) => {
   )
 }
 
-export default AccordionInformationtype
+export default AccordionInformationType

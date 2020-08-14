@@ -1,23 +1,23 @@
 import * as React from 'react'
-import { DisclosureFormValues, Document, LegalBasisFormValues } from '../../constants';
-import { Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE } from 'baseui/modal';
-import { Field, FieldArray, FieldProps, Form, Formik, FormikProps } from 'formik';
-import { Block, BlockProps } from 'baseui/block';
-import { Error, ModalLabel } from '../common/ModalSchema';
-import { intl } from '../../util';
-import { Button } from 'baseui/button';
-import { Select, Value } from 'baseui/select';
-import { codelist, ListName } from '../../service/Codelist';
-import { Textarea } from 'baseui/textarea';
-import { ListLegalBases } from '../common/LegalBasis';
-import CardLegalBasis from '../Process/Accordion/CardLegalBasis';
-import { Plus } from 'baseui/icon';
-import { disclosureSchema } from "../common/schema"
-import { Input } from "baseui/input"
+import {DisclosureFormValues, Document} from '../../constants';
+import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal';
+import {Field, FieldProps, Form, Formik, FormikProps} from 'formik';
+import {Block, BlockProps} from 'baseui/block';
+import {Error, ModalLabel} from '../common/ModalSchema';
+import {intl, theme} from '../../util';
+import {Button} from 'baseui/button';
+import {Select, Value} from 'baseui/select';
+import {codelist, ListName} from '../../service/Codelist';
+import {Textarea} from 'baseui/textarea';
+import {disclosureSchema} from "../common/schema"
+import {Input} from "baseui/input"
 import SelectDocument from '../common/SelectDocument';
+import FieldLegalBasis from "../Process/common/FieldLegalBasis";
+import {Accordion, Panel} from "baseui/accordion";
+import PanelTitle from "../Process/common/PanelTitle";
 
 const modalBlockProps: BlockProps = {
-  width: '750px',
+  width: '960px',
   paddingRight: '2rem',
   paddingLeft: '2rem'
 };
@@ -34,17 +34,33 @@ const rowBlockProps: BlockProps = {
   marginTop: '1rem'
 };
 
+const panelOverrides = {
+  Header: {
+    style: {
+      paddingLeft: 0
+    }
+  },
+  Content: {
+    style: {
+      backgroundColor: theme.colors.white,
+    }
+  },
+  ToggleIcon: {
+    component: () => null
+  }
+}
+
 const FieldRecipient = (props: { value?: string, disabled: boolean | undefined }) => {
-  const [recipientValue, setRecipientValue] = React.useState<Value>(props.value ? [{ id: props.value, label: codelist.getShortname(ListName.THIRD_PARTY, props.value) }] : []);
+  const [recipientValue, setRecipientValue] = React.useState<Value>(props.value ? [{id: props.value, label: codelist.getShortname(ListName.THIRD_PARTY, props.value)}] : []);
 
   return (
     <Field
       name="recipient"
-      render={({ form }: FieldProps<DisclosureFormValues>) => (
+      render={({form}: FieldProps<DisclosureFormValues>) => (
         <Select
           autoFocus
           options={codelist.getParsedOptions(ListName.THIRD_PARTY)}
-          onChange={({ value }) => {
+          onChange={({value}) => {
             setRecipientValue(value)
             form.setFieldValue('recipient', value.length > 0 ? value[0].id : undefined)
           }}
@@ -60,7 +76,7 @@ const FieldTextarea = (props: { fieldName: string, fieldValue?: string, placehol
   return (
     <Field
       name={props.fieldName}
-      render={({ field, form }: FieldProps<string, DisclosureFormValues>) => (
+      render={({field, form}: FieldProps<string, DisclosureFormValues>) => (
         <Textarea
           {...field}
           placeholder={props.placeholder}
@@ -74,12 +90,12 @@ const FieldTextarea = (props: { fieldName: string, fieldValue?: string, placehol
   )
 }
 
-const FieldInput = (props: { fieldName: string, fieldValue?: string }) => {
+const FieldInput = (props: { fieldName: string, fieldValue?: string, }) => {
   return (
     <Field
       name={props.fieldName}
-      render={({ field, form }: FieldProps<string, DisclosureFormValues>) => (
-        <Input {...field} />
+      render={({field, form}: FieldProps<string, DisclosureFormValues>) => (
+        <Input {...field}/>
       )}
     />
   )
@@ -96,10 +112,9 @@ type ModalThirdPartyProps = {
 };
 
 const ModalThirdParty = (props: ModalThirdPartyProps) => {
-  const [selectedLegalBasis, setSelectedLegalBasis] = React.useState<LegalBasisFormValues>();
-  const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState<number>();
 
-  const { submit, errorOnCreate, onClose, isOpen, disableRecipientField, initialValues, title } = props
+  const [isPanelExpanded, togglePanel] = React.useReducer(prevState => !prevState, false)
+  const {submit, errorOnCreate, onClose, isOpen, disableRecipientField, initialValues, title} = props
 
   return (
     <Modal
@@ -128,33 +143,33 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
 
               <ModalBody>
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.recipient} />
-                  <FieldRecipient value={formikBag.values.recipient} disabled={disableRecipientField} />
+                  <ModalLabel label={intl.recipient}/>
+                  <FieldRecipient value={formikBag.values.recipient} disabled={disableRecipientField}/>
                 </Block>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.disclosureName} />
-                  <FieldInput fieldName="name" fieldValue={formikBag.values.name} />
+                  <ModalLabel label={intl.disclosureName}/>
+                  <FieldInput fieldName="name" fieldValue={formikBag.values.name}/>
                 </Block>
-                <Error fieldName="name" />
+                <Error fieldName="name"/>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.disclosurePurpose} />
-                  <FieldTextarea fieldName="recipientPurpose" fieldValue={formikBag.values.recipientPurpose} />
+                  <ModalLabel label={intl.disclosurePurpose}/>
+                  <FieldTextarea fieldName="recipientPurpose" fieldValue={formikBag.values.recipientPurpose}/>
                 </Block>
-                <Error fieldName="recipientPurpose" />
+                <Error fieldName="recipientPurpose"/>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.additionalDescription} />
-                  <FieldTextarea fieldName="description" fieldValue={formikBag.values.description} />
+                  <ModalLabel label={intl.additionalDescription}/>
+                  <FieldTextarea fieldName="description" fieldValue={formikBag.values.description}/>
                 </Block>
-                <Error fieldName="description" />
+                <Error fieldName="description"/>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.document} />
+                  <ModalLabel label={intl.document}/>
                   <Field
                     name="document"
-                    render={({ form }: FieldProps<DisclosureFormValues>) => (
+                    render={({form}: FieldProps<DisclosureFormValues>) => (
                       <SelectDocument
                         document={form.values.document}
                         handleChange={(document: Document | undefined) => {
@@ -164,73 +179,29 @@ const ModalThirdParty = (props: ModalThirdPartyProps) => {
                     )}
                   />
                 </Block>
-                <Error fieldName="document" />
+                <Error fieldName="document"/>
 
-                <Block {...rowBlockProps}>
-                  <ModalLabel />
-                  {!formikBag.values.legalBasesOpen && (
-                    <Block width="100%" marginBottom="1rem">
-                      <Button
-                        size="compact"
-                        kind="minimal"
-                        onClick={() => formikBag.setFieldValue('legalBasesOpen', true)}
-                        startEnhancer={() => <Block display="flex" justifyContent="center"><Plus size={22} /></Block>}
-                      >
-                        {intl.legalBasisAdd}
-                      </Button>
+                <Accordion overrides={{
+                  Root: {
+                    style: {
+                      marginTop: '25px'
+                    }
+                  }
+                }}>
+                  <Panel
+                    title={<PanelTitle title={intl.legalBasisShort} expanded={isPanelExpanded}/>}
+                    onChange={togglePanel}
+                    overrides={{...panelOverrides}}
+                  >
+                    <Block marginTop={"1rem"}>
+                      <FieldLegalBasis formikBag={formikBag}/>
                     </Block>
-                  )}
-                </Block>
-
-                <FieldArray
-                  name="legalBases"
-                  render={arrayHelpers => (
-                    <React.Fragment>
-                      {formikBag.values.legalBasesOpen && (
-                        <Block width="100%" marginTop="2rem">
-                          <CardLegalBasis
-                            titleSubmitButton={selectedLegalBasis ? intl.update : intl.add}
-                            initValue={selectedLegalBasis || {}}
-                            hideCard={() => {
-                              formikBag.setFieldValue('legalBasesOpen', false)
-                              setSelectedLegalBasis(undefined)
-                            }}
-                            submit={values => {
-                              if (!values) return;
-                              if (selectedLegalBasis) {
-                                arrayHelpers.replace(selectedLegalBasisIndex!, values);
-                                setSelectedLegalBasis(undefined)
-                              } else {
-                                arrayHelpers.push(values);
-                              }
-                              formikBag.setFieldValue('legalBasesOpen', false);
-                            }} />
-                        </Block>
-                      )}
-                      {!formikBag.values.legalBasesOpen && (
-                        <Block display="flex">
-                          <ModalLabel />
-                          <Block width="100%">
-                            <ListLegalBases
-                              legalBases={formikBag.values.legalBases}
-                              onRemove={(index) => arrayHelpers.remove(index)}
-                              onEdit={(index) => {
-                                setSelectedLegalBasis(formikBag.values.legalBases[index]);
-                                setSelectedLegalBasisIndex(index);
-                                formikBag.setFieldValue('legalBasesOpen', true)
-                              }}
-                            />
-                          </Block>
-                        </Block>
-                      )}
-                    </React.Fragment>
-                  )}
-                />
-                <Error fieldName="legalBasesOpen" fullWidth={true} />
-
+                    <Error fieldName="legalBasesOpen" fullWidth={true}/>
+                  </Panel>
+                </Accordion>
               </ModalBody>
 
-              <ModalFooter>
+              <ModalFooter style={{borderTop: 0}}>
                 <Block display="flex" justifyContent="flex-end">
                   <Block alignSelf="flex-end">{errorOnCreate && <p>{errorOnCreate}</p>}</Block>
                   <Button type="button" kind="minimal" onClick={() => onClose()}>{intl.abort}</Button>

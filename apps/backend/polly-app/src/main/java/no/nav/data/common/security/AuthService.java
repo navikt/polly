@@ -2,7 +2,7 @@ package no.nav.data.common.security;
 
 import io.prometheus.client.Gauge;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.common.exceptions.PollyNotFoundException;
+import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.exceptions.UnauthorizedException;
 import no.nav.data.common.security.domain.Auth;
 import no.nav.data.common.security.domain.AuthRepository;
@@ -42,7 +42,7 @@ public class AuthService {
     public Auth getAuth(String sessionId, String sessionKey) {
         var sessUuid = StringUtils.toUUID(sessionId);
         Auth auth = authRepository.findById(sessUuid)
-                .orElseThrow(() -> new PollyNotFoundException("couldn't find session"))
+                .orElseThrow(() -> new NotFoundException("couldn't find session"))
                 .addSecret(encryptor, sessionKey);
         if (isBlank(auth.getEncryptedRefreshToken())) {
             throw new UnauthorizedException("session is terminated");

@@ -39,7 +39,7 @@ public class ProcessStateController {
         if (request.getProcessField().alertEvent && request.getProcessState() != ProcessState.YES) {
             return new RestResponsePage<>(List.of());
         }
-        List<Process> processes = processRepository.findForState(request.getProcessField(), request.getProcessState(), request.getDepartment());
+        List<Process> processes = processRepository.findForState(request.getProcessField(), request.getProcessState(), request.getDepartment(), request.getProcessStatus().processStatus);
         return new RestResponsePage<>(convert(processes, Process::convertToShortResponse));
     }
 

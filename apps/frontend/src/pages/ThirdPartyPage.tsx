@@ -97,11 +97,11 @@ const ThirdPartyPage = () => {
 
 
   return (
-    <React.Fragment>
+    <>
       {isLoading && <StyledSpinnerNext/>}
 
       {!isLoading && codelist && (
-        <React.Fragment>
+        <>
           <Block marginBottom="3rem">
             <H5>{codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)}</H5>
             <Paragraph2>{codelist.getDescription(ListName.THIRD_PARTY, params.thirdPartyCode)}</Paragraph2>
@@ -134,25 +134,23 @@ const ThirdPartyPage = () => {
             </Block>
             }
           </Block>
-          <React.Fragment>
-            <Block marginBottom="3rem">
-              <TableDisclosure
-                list={disclosureList}
-                showRecipient={false}
-                errorModal={error}
-                editable
-                submitDeleteDisclosure={handleDeleteDisclosure}
-                submitEditDisclosure={handleEditDisclosure}
-                onCloseModal={() => setError(undefined)}
-              />
-            </Block>
-          </React.Fragment>
+          <Block marginBottom="3rem">
+            <TableDisclosure
+              list={disclosureList}
+              showRecipient={false}
+              errorModal={error}
+              editable
+              submitDeleteDisclosure={handleDeleteDisclosure}
+              submitEditDisclosure={handleEditDisclosure}
+              onCloseModal={() => setError(undefined)}
+            />
+          </Block>
           <Block>
             <ThirdPartiesTable informationTypes={informationTypeList || []} sortName={true}/>
           </Block>
-        </React.Fragment>
+        </>
       )}
-    </React.Fragment>
+    </>
   )
 }
 

@@ -20,8 +20,8 @@ public interface ProcessRepositoryCustom {
 
     List<Process> findByDocumentId(String documentId);
 
-    List<Process> findForState(ProcessField processField, ProcessState processState, @Nullable String department);
+    List<Process> findForState(ProcessField processField, ProcessState processState, @Nullable String department, @Nullable ProcessStatus status);
 
-    long countForState(ProcessField processField, ProcessState processState, @Nullable String department);
+    long countForState(ProcessField processField, ProcessState processState, @Nullable String department, @Nullable ProcessStatus status);
 
 }

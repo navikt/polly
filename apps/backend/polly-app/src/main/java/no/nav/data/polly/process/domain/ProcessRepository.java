@@ -36,8 +36,14 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
     @Query(value = "select data->>'department' as code, count(1) as count from process where cast(data ->> 'usesAllInformationTypes' as boolean) = true group by code", nativeQuery = true)
     List<ProcessCount> countUsingAllInfoTypes();
 
+    @Query(value = "select data->>'department' as code, count(1) as count from process where cast(data ->> 'usesAllInformationTypes' as boolean) = true and data->>'status' = :#{#status.name()}  group by code", nativeQuery = true)
+    List<ProcessCount> countUsingAllInfoTypes(@Param("status") ProcessStatus status);
+
     @Query(value = "select data->>'department' as code, count(1) as count from process group by code", nativeQuery = true)
     List<ProcessCount> countDepartmentCode();
+
+    @Query(value = "select data->>'department' as code, count(1) as count from process where data->>'status' = :#{#status.name()} group by code", nativeQuery = true)
+    List<ProcessCount> countDepartmentCode(@Param("status") ProcessStatus status);
 
     @Query(value = "select jsonb_array_elements(data -> 'subDepartments') ->> 0 as code, count(1) as count from process group by code", nativeQuery = true)
     List<ProcessCount> countSubDepartmentCode();

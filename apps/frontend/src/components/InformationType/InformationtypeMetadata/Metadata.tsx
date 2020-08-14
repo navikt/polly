@@ -11,13 +11,13 @@ import {faExternalLinkAlt, faTimesCircle, faUserShield} from '@fortawesome/free-
 import {Code, ListName} from '../../../service/Codelist'
 import {sensitivityColor} from '../Sensitivity'
 import {getTerm, mapTermToOption} from '../../../api'
-import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
 import {StyledLink} from 'baseui/link'
 import {marginZero} from '../../common/Style'
 import {DotTags} from '../../common/DotTag'
 import {termUrl} from '../../../util/config'
 import {TeamList} from '../../common/Team'
 import {Markdown} from '../../common/Markdown'
+import CustomizedStatefulTooltip from "../../common/CustomizedStatefulTooltip";
 
 const TextWithLabel = (props: {label: string, text?: ReactNode, icon?: IconDefinition, iconColor?: string, error?: string, children?: ReactNode}) => {
   const errorIcon = <FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500}/>
@@ -34,7 +34,7 @@ const TextWithLabel = (props: {label: string, text?: ReactNode, icon?: IconDefin
         {props.icon && <FontAwesomeIcon icon={props.icon} color={props.iconColor}/>} {props.label}
       </Label2>
       {!props.error && value}
-      {props.error && <StatefulTooltip content={props.error} placement={PLACEMENT.top}>{value}</StatefulTooltip>}
+      {props.error && <CustomizedStatefulTooltip content={props.error}>{value}</CustomizedStatefulTooltip>}
       {props.children}
     </>
   )

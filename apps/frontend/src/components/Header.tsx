@@ -4,7 +4,6 @@ import {ALIGN, HeaderNavigation, StyledNavigationItem as NavigationItem, StyledN
 import {Button} from 'baseui/button'
 import {Block, BlockProps} from 'baseui/block'
 import {useHistory, useLocation} from 'react-router-dom'
-import {env} from '../util/env'
 import {intl, theme} from '../util'
 import {user} from '../service/User'
 import {StyledLink} from 'baseui/link'
@@ -33,7 +32,7 @@ const LoggedInHeader = (props: { location: string }) => {
           <Label2 {...blockStyle}>{intl.name}: {user.getName()}</Label2>
           <Label2 {...blockStyle}>{intl.groups}: {user.getGroupsHumanReadable().join(', ')}</Label2>
           <Block {...blockStyle}>
-            <StyledLink href={`${env.pollyBaseUrl}/logout?redirect_uri=${props.location}`}>
+            <StyledLink href={`/logout?redirect_uri=${props.location}`}>
               {intl.logout}
             </StyledLink>
           </Block>
@@ -47,7 +46,7 @@ const LoggedInHeader = (props: { location: string }) => {
 
 const LoginButton = (props: { location: string }) => {
   return (
-    <StyledLink href={`${env.pollyBaseUrl}/login?redirect_uri=${props.location}`}>
+    <StyledLink href={`/login?redirect_uri=${props.location}`}>
       <Button $style={{borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0}}>
         {intl.login}
       </Button>

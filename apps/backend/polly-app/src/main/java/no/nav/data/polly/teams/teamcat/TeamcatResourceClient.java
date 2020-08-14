@@ -17,7 +17,7 @@ import java.time.Duration;
 import java.util.Optional;
 
 @Service
-@ConditionalOnProperty("polly.client.teamcat-resource.enabled")
+@ConditionalOnProperty("client.teamcat-resource.enabled")
 public class TeamcatResourceClient implements ResourceService {
 
     private final RestTemplate restTemplate;
@@ -32,10 +32,10 @@ public class TeamcatResourceClient implements ResourceService {
         this.properties = properties;
 
         this.searchCache = Caffeine.newBuilder().recordStats()
-                .expireAfterAccess(Duration.ofMinutes(1))
+                .expireAfterWrite(Duration.ofMinutes(10))
                 .maximumSize(1000).build(this::doSearch);
         this.cache = Caffeine.newBuilder().recordStats()
-                .expireAfterAccess(Duration.ofMinutes(1))
+                .expireAfterWrite(Duration.ofMinutes(10))
                 .maximumSize(1000).build(this::fetchResource);
         MetricUtils.register("teamcatResourcesSearchCache", searchCache);
         MetricUtils.register("teamcatResourcesCache", cache);

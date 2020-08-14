@@ -43,7 +43,7 @@ const AlphabeticList = (props: { listName: ListName, baseUrl: string }) => {
             <FlexGrid flexGridRowGap={theme.sizing.scale600} flexGridColumnGap={theme.sizing.scale600} flexGridColumnCount={4}>
               {codes[letter].map(code =>
                 <FlexGridItem key={code.code}>
-                  <RouteLink href={props.listName === ListName.PURPOSE ? `${props.baseUrl}${code.code}` : `${props.baseUrl}${code.code}`}>
+                  <RouteLink href={`${props.baseUrl}${code.code}`}>
                     {code.shortName}
                   </RouteLink>
                 </FlexGridItem>

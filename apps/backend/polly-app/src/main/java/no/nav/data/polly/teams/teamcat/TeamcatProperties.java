@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "polly.client.teamcat")
+@ConfigurationProperties(prefix = "client.teamcat")
 public class TeamcatProperties {
 
     private String url;

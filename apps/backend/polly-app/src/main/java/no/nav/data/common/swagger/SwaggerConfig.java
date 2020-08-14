@@ -1,12 +1,12 @@
 package no.nav.data.common.swagger;
 
-import com.google.common.base.Predicates;
 import io.swagger.models.auth.In;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import springfox.documentation.builders.AuthorizationScopeBuilder;
 import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.AuthorizationScope;
@@ -15,15 +15,13 @@ import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 import java.util.Collections;
 import java.util.List;
 
-import static springfox.documentation.builders.RequestHandlerSelectors.basePackage;
-
 @Configuration
-@EnableSwagger2
+@EnableSwagger2WebMvc
 public class SwaggerConfig {
 
     public static final String JSON = "java.lang.String";
@@ -34,23 +32,7 @@ public class SwaggerConfig {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(Predicates.or(basePackage("no.nav.data.polly.codelist"),
-                        basePackage("no.nav.data.polly.github"),
-                        basePackage("no.nav.data.polly.policy"),
-                        basePackage("no.nav.data.polly.informationtype"),
-                        basePackage("no.nav.data.polly.purpose"),
-                        basePackage("no.nav.data.polly.process"),
-                        basePackage("no.nav.data.polly.term"),
-                        basePackage("no.nav.data.polly.teams"),
-                        basePackage("no.nav.data.polly.disclosure"),
-                        basePackage("no.nav.data.polly.document"),
-                        basePackage("no.nav.data.polly.settings"),
-                        basePackage("no.nav.data.polly.alert"),
-                        basePackage("no.nav.data.common.security"),
-                        basePackage("no.nav.data.polly.export"),
-                        basePackage("no.nav.data.polly.dashboard"),
-                        basePackage("no.nav.data.common.audit")
-                ))
+                .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
                 .build()
                 .securitySchemes(Collections.singletonList(new ApiKey("Token Access", HttpHeaders.AUTHORIZATION, In.HEADER.name())))

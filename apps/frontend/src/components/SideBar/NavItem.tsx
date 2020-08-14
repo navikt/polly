@@ -5,7 +5,7 @@ import {Paragraph2} from 'baseui/typography'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faChevronDown, faChevronRight} from '@fortawesome/free-solid-svg-icons'
 import {useLocation} from 'react-router-dom'
-import {StatefulTooltip} from "baseui/tooltip";
+import CustomizedStatefulTooltip from "../common/CustomizedStatefulTooltip";
 
 interface NavItemProps {
   text: string;
@@ -23,9 +23,9 @@ const NavItem = (props: NavItemProps) => (
           color="white"
           size="lg"/>
       </Block>
-      {!!props.tooltip ? (<StatefulTooltip content={props.tooltip}>
+      {!!props.tooltip ? (<CustomizedStatefulTooltip content={props.tooltip} ignoreBoundary={false}>
           <Paragraph2 color="white">{props.text}</Paragraph2>
-        </StatefulTooltip>) :
+        </CustomizedStatefulTooltip>) :
         <Paragraph2 color="white">{props.text}</Paragraph2>
       }
     </Block>

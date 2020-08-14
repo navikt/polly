@@ -21,7 +21,7 @@ import moment from 'moment'
 import {SORT_DIRECTION} from 'baseui/table'
 
 
-type SortCol = 'PROCESS' | 'INFORMATION_TYPE' | 'TYPE' | 'LEVEL' | 'TIME' | 'USER'
+type SortCol = 'PROCESS' | 'INFORMATION_TYPE' | 'DISCLOSURE' | 'TYPE' | 'LEVEL' | 'TIME' | 'USER'
 
 type State = {
   events: PageResponse<AlertEvent>,
@@ -31,8 +31,11 @@ type State = {
   type?: AlertEventType,
   processId?: string,
   informationTypeId?: string,
+  disclosureId?: string,
   sort: {column: SortCol, dir: SORT_DIRECTION}
 }
+
+type AlertObjectType = 'informationtype' | 'process' | 'disclosure'
 
 type Action =
   {type: 'EVENTS', value: PageResponse<AlertEvent>} |
@@ -40,7 +43,7 @@ type Action =
   {type: 'LIMIT', value: number} |
   {type: 'EVENT_TYPE', value?: AlertEventType} |
   {type: 'EVENT_LEVEL', value?: AlertEventLevel} |
-  {type: 'OBJECT_FILTER', objectType?: 'informationtype' | 'process', id?: string} |
+  {type: 'OBJECT_FILTER', objectType?: AlertObjectType, id?: string} |
   {type: 'SORT', column: SortCol, dir: SORT_DIRECTION}
 
 const clampPage = (state: State, page: number, limit: number): number => {
@@ -57,7 +60,8 @@ const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         processId: action.objectType === 'process' ? action.id : undefined,
-        informationTypeId: action.objectType === 'informationtype' ? action.id : undefined
+        informationTypeId: action.objectType === 'informationtype' ? action.id : undefined,
+        disclosureId: action.objectType === 'disclosure' ? action.id : undefined
       }
     case 'EVENTS':
       return {...state, events: action.value, page: clampPage({...state, events: action.value}, state.page, state.limit)}
@@ -75,7 +79,7 @@ const reducer = (state: State, action: Action): State => {
 }
 
 export const AlertEventPage = () => {
-  const {objectType, id} = useParams<{objectType?: 'informationtype' | 'process', id?: string}>()
+  const {objectType, id} = useParams<{objectType?: AlertObjectType, id?: string}>()
   const [state, dispatch] = useReducer(reducer, {
     events: {content: [], numberOfElements: 0, pageNumber: 0, pages: 0, pageSize: 1, totalElements: 0},
     page: 1,
@@ -84,6 +88,7 @@ export const AlertEventPage = () => {
     type: undefined,
     processId: objectType === 'process' ? id : undefined,
     informationTypeId: objectType === 'informationtype' ? id : undefined,
+    disclosureId: objectType === 'disclosure' ? id : undefined,
     sort: {column: 'TIME', dir: SORT_DIRECTION.DESC}
   })
   const setPage = (p: number) => dispatch({type: 'PAGE', value: p})
@@ -96,9 +101,9 @@ export const AlertEventPage = () => {
   })
 
   useEffect(() => {
-    getAlertEvents(state.page - 1, state.limit, state.type, state.level, state.processId, state.informationTypeId)
+    getAlertEvents(state.page - 1, state.limit, state.type, state.level, state.processId, state.informationTypeId, state.disclosureId)
     .then(a => dispatch({type: 'EVENTS', value: a}))
-  }, [state.page, state.limit, state.type, state.level, state.processId, state.informationTypeId])
+  }, [state.page, state.limit, state.type, state.level, state.processId, state.informationTypeId, state.disclosureId])
 
   useEffect(() => {
     dispatch({type: 'OBJECT_FILTER', objectType, id})
@@ -112,12 +117,12 @@ export const AlertEventPage = () => {
     <>
       <Block display='flex' width='100%' justifyContent='space-between' alignItems='center'>
         <HeadingLarge>{intl.alerts}</HeadingLarge>
-        {(state.informationTypeId || state.processId) && <Block display='flex' alignItems='center'>
+        {(state.informationTypeId || state.processId || state.disclosureId) && <Block display='flex' alignItems='center'>
           <Label2>{intl.filter}: </Label2>
           <Button kind='secondary'
                   size='compact' marginLeft marginRight
                   iconEnd={faTimes} onClick={() => dispatch({type: 'OBJECT_FILTER'})}
-          >{state.processId && intl.process}{state.informationTypeId && intl.informationType}</Button>
+          >{state.processId && intl.process}{state.informationTypeId && intl.informationType}{state.disclosureId && intl.disclosure}</Button>
         </Block>}
       </Block>
       <Block width='100%' display='flex' marginBottom={theme.sizing.scale200}>
@@ -145,6 +150,7 @@ export const AlertEventPage = () => {
           <>
             <HeadCell title={intl.process}/>
             <HeadCell title={intl.informationType}/>
+            <HeadCell title={intl.disclosure}/>
             <HeadCell title={intl.level + ' - ' + intl.type}/>
             <HeadCell title={intl.time}/>
             <HeadCell title={intl.user}/>
@@ -156,7 +162,7 @@ export const AlertEventPage = () => {
             <Cell>
               {event.process ?
                 <ObjectLink id={event.process.id} type={ObjectType.PROCESS}>
-                  {codelist.getShortnameForCode(event.process.purpose)}: {event.process?.name}
+                  {codelist.getShortnameForCode(event.process.purpose)}: {event.process.name}
                 </ObjectLink>
                 : ''}
             </Cell>
@@ -165,7 +171,15 @@ export const AlertEventPage = () => {
               {event.informationType ?
                 <ObjectLink id={event.informationType.id} type={ObjectType.INFORMATION_TYPE}>
                   <Sensitivity sensitivity={event.informationType.sensitivity}/>&nbsp;
-                  {event.informationType?.name}
+                  {event.informationType.name}
+                </ObjectLink>
+                : ''}
+            </Cell>
+
+            <Cell>
+              {event.disclosure ?
+                <ObjectLink id={event.disclosure.id} type={ObjectType.DISCLOSURE}>
+                  {event.disclosure.name}
                 </ObjectLink>
                 : ''}
             </Cell>

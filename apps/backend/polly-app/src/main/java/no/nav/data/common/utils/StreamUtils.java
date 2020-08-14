@@ -1,6 +1,6 @@
 package no.nav.data.common.utils;
 
-import no.nav.data.common.exceptions.PollyNotFoundException;
+import no.nav.data.common.exceptions.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -101,7 +101,7 @@ public final class StreamUtils {
     }
 
     public static <T> T get(Iterable<T> objects, Predicate<T> filter) {
-        return find(objects, filter).orElseThrow(() -> new PollyNotFoundException("could not find item"));
+        return find(objects, filter).orElseThrow(() -> new NotFoundException("could not find item"));
     }
 
     public static <T> Optional<T> find(Iterable<T> objects, Predicate<T> filter) {

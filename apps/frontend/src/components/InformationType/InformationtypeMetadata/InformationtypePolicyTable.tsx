@@ -1,16 +1,16 @@
 import * as React from 'react'
-import { useEffect, useState } from 'react'
+import {useEffect, useState} from 'react'
 
-import { LegalBasesNotClarified, ListLegalBasesInTable } from '../../common/LegalBasis'
-import { codelist, ListName } from '../../../service/Codelist'
-import { intl } from '../../../util'
-import { LegalBasesUse, Policy, PolicyAlert, policySort } from '../../../constants'
-import { useTable } from '../../../util/hooks'
+import {LegalBasesNotClarified, ListLegalBasesInTable} from '../../common/LegalBasis'
+import {codelist, ListName} from '../../../service/Codelist'
+import {intl} from '../../../util'
+import {LegalBasesUse, Policy, PolicyAlert, policySort} from '../../../constants'
+import {useTable} from '../../../util/hooks'
 import RouteLink from '../../common/RouteLink'
-import { RetentionView } from '../../Process/Retention'
-import { getAlertForInformationType } from '../../../api/AlertApi'
-import { Block } from 'baseui/block'
-import { Cell, HeadCell, Row, Table } from '../../common/Table'
+import {RetentionView} from '../../Process/Retention'
+import {getAlertForInformationType} from '../../../api/AlertApi'
+import {Block} from 'baseui/block'
+import {Cell, HeadCell, Row, Table} from '../../common/Table'
 
 type TableInformationtypeProps = {
   policies: Array<Policy>;
@@ -44,7 +44,7 @@ const InformationtypePolicyTable = ({ policies, showPurpose }: TableInformationt
       emptyText={intl.processes}
       headers={
         <>
-          <HeadCell title={intl.purpose} column={'purposeCode'} tableState={[table, sortColumn]} />
+          <HeadCell title={intl.overallPurposeActivity} column={'purposeCode'} tableState={[table, sortColumn]} />
           <HeadCell title={intl.process} column={'process'} tableState={[table, sortColumn]} />
           <HeadCell title={intl.subjectCategories} column={'subjectCategories'} tableState={[table, sortColumn]} />
           <HeadCell title={intl.legalBasesShort} column={'legalBases'} tableState={[table, sortColumn]} />

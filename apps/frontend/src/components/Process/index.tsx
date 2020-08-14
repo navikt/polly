@@ -87,7 +87,7 @@ const ProcessList = ({code, listName, filter, processId, section}: ProcessListPr
     'SUB_DEPARTMENT': 'subDepartment',
     'PURPOSE': 'purpose',
     'SYSTEM': 'system'
-  } as {[l: string]: string})[listName]
+  } as { [l: string]: string })[listName]
 
   const getProcessList = async () => {
     try {
@@ -126,7 +126,7 @@ const ProcessList = ({code, listName, filter, processId, section}: ProcessListPr
       setErrorProcessModal('')
       setShowCreateProcessModal(false)
       setCurrentProcess(newProcess)
-      history.push(genProcessPath(Section.purpose, newProcess.purpose.code,newProcess,undefined,true))
+      history.push(genProcessPath(Section.purpose, newProcess.purpose.code, newProcess, undefined, true))
     } catch (err) {
       if (err.response.data.message.includes('already exists')) {
         setErrorProcessModal('Behandlingen eksisterer allerede.')
@@ -229,14 +229,6 @@ const ProcessList = ({code, listName, filter, processId, section}: ProcessListPr
 
   return (
     <>
-      <Block {...rowBlockProps}>
-        <Block>
-          <HeadingSmall>
-            {intl.processes}
-          </HeadingSmall>
-        </Block>
-      </Block>
-
       <Block display={'flex'} flexDirection={'row-reverse'} alignItems={'center'}>
         <Block>
           <StyledLink
@@ -283,6 +275,11 @@ const ProcessList = ({code, listName, filter, processId, section}: ProcessListPr
           <Label2 color={theme.colors.primary} marginRight={'1rem'}>
             {intl.filter}
           </Label2>
+        </Block>
+        <Block marginRight='auto'>
+          <HeadingSmall>
+            {intl.processes}
+          </HeadingSmall>
         </Block>
       </Block>
 

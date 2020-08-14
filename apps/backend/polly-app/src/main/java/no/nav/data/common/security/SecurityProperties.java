@@ -15,14 +15,12 @@ import static no.nav.data.common.utils.StreamUtils.safeStream;
 public class SecurityProperties {
 
     private boolean enabled = true;
-    private boolean clientEnabled = true;
-    private String allowedAppIdMappings = "";
     private String encKey = "";
     private List<String> writeGroups;
     private List<String> adminGroups;
-    private List<String> corsOrigins;
+    private List<String> redirectUris;
 
     public boolean isValidRedirectUri(String uri) {
-        return uri == null || safeStream(corsOrigins).anyMatch(origin -> StringUtils.startsWithIgnoreCase(uri, origin));
+        return uri == null || safeStream(redirectUris).anyMatch(origin -> StringUtils.startsWithIgnoreCase(uri, origin));
     }
 }

@@ -1,7 +1,7 @@
 package no.nav.data.polly.alert;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.data.common.exceptions.PollyNotFoundException;
+import no.nav.data.common.exceptions.NotFoundException;
 import no.nav.data.common.rest.PageParameters;
 import no.nav.data.common.storage.domain.GenericStorage;
 import no.nav.data.common.utils.StreamUtils;
@@ -11,9 +11,11 @@ import no.nav.data.polly.alert.domain.AlertEvent;
 import no.nav.data.polly.alert.domain.AlertEventLevel;
 import no.nav.data.polly.alert.domain.AlertEventType;
 import no.nav.data.polly.alert.domain.AlertRepository;
+import no.nav.data.polly.alert.dto.DisclosureAlert;
 import no.nav.data.polly.alert.dto.InformationTypeAlert;
 import no.nav.data.polly.alert.dto.PolicyAlert;
 import no.nav.data.polly.alert.dto.ProcessAlert;
+import no.nav.data.polly.disclosure.domain.DisclosureRepository;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
@@ -49,14 +51,18 @@ public class AlertService {
     private final ProcessRepository processRepository;
     private final PolicyRepository policyRepository;
     private final InformationTypeRepository informationTypeRepository;
+    private final DisclosureRepository disclosureRepository;
 
     public AlertService(AlertRepository alertRepository, ProcessRepository processRepository, PolicyRepository policyRepository,
-            InformationTypeRepository informationTypeRepository) {
+            InformationTypeRepository informationTypeRepository, DisclosureRepository disclosureRepository) {
         this.alertRepository = alertRepository;
         this.processRepository = processRepository;
         this.policyRepository = policyRepository;
         this.informationTypeRepository = informationTypeRepository;
+        this.disclosureRepository = disclosureRepository;
     }
+
+    // CALCULATE AND SAVE EVENTS
 
     public void calculateEventsForInforamtionType(UUID informationTypeId) {
         var alerts = checkAlertsForInformationType(informationTypeId);
@@ -81,6 +87,23 @@ public class AlertService {
         updateEvents(existingEvents, currentEvents);
     }
 
+    public void calculateEventsForDisclosure(UUID disclosureId) {
+        var alerts = checkAlertsForDisclosure(disclosureId);
+        var currentEvents = convertAlertsToEvents(alerts);
+        var existingEvents = convert(alertRepository.findByDisclosureId(disclosureId), GenericStorage::toAlertEvent);
+        updateEvents(existingEvents, currentEvents);
+    }
+
+    private void updateEvents(List<AlertEvent> existingEvents, List<AlertEvent> currentEvents) {
+        var diff = StreamUtils.difference(existingEvents, currentEvents);
+
+        diff.getRemoved().forEach(e -> alertRepository.deleteById(e.getId()));
+        var newEvents = convert(diff.getAdded(), GenericStorage::new);
+        alertRepository.saveAll(newEvents);
+    }
+
+    // DELETE
+
     public void deleteEventsForInformationType(UUID informationTypeId) {
         int deleted = alertRepository.deleteByInformationTypeId(informationTypeId);
         log.info("deleted {} events for informationType {}", deleted, informationTypeId);
@@ -96,13 +119,12 @@ public class AlertService {
         log.info("deleted {} events for process {} informationType {}", deleted, policy.getProcess().getId(), policy.getInformationTypeId());
     }
 
-    private void updateEvents(List<AlertEvent> existingEvents, List<AlertEvent> currentEvents) {
-        var diff = StreamUtils.difference(existingEvents, currentEvents);
-
-        diff.getRemoved().forEach(e -> alertRepository.deleteById(e.getId()));
-        var newEvents = convert(diff.getAdded(), GenericStorage::new);
-        alertRepository.saveAll(newEvents);
+    public void deleteEventsForDisclosure(UUID disclosureId) {
+        int deleted = alertRepository.deleteByDisclosureId(disclosureId);
+        log.info("deleted {} events for disclosure {}", deleted, disclosureId);
     }
+
+    // CONVERT TO EVENTS
 
     private List<AlertEvent> convertAlertsToEvents(ProcessAlert processAlert) {
         var alertEvents = new ArrayList<AlertEvent>();
@@ -133,10 +155,20 @@ public class AlertService {
         return alertEvents;
     }
 
+    private List<AlertEvent> convertAlertsToEvents(DisclosureAlert disclosureAlert) {
+        var events = new ArrayList<AlertEvent>();
+        if (disclosureAlert.isMissingArt6()) {
+            events.add(new AlertEvent(disclosureAlert.getDisclosureId(), AlertEventType.MISSING_ARTICLE_6));
+        }
+        return events;
+    }
+
+    // CHECK ALERTS FOR OBJECTS
+
     @Transactional(readOnly = true)
     public InformationTypeAlert checkAlertsForInformationType(UUID informationTypeId) {
         var informationType = informationTypeRepository.findById(informationTypeId)
-                .orElseThrow(() -> new PollyNotFoundException("No information type for id " + informationTypeId + " found"));
+                .orElseThrow(() -> new NotFoundException("No information type for id " + informationTypeId + " found"));
         var alert = new InformationTypeAlert(informationTypeId, new ArrayList<>());
 
         List<Process> processes = policyRepository.findByInformationTypeId(informationTypeId).stream()
@@ -154,8 +186,16 @@ public class AlertService {
     @Transactional(readOnly = true)
     public ProcessAlert checkAlertsForProcess(UUID processId) {
         var process = processRepository.findById(processId)
-                .orElseThrow(() -> new PollyNotFoundException("No process for id " + processId + " found"));
+                .orElseThrow(() -> new NotFoundException("No process for id " + processId + " found"));
         return checkProcess(process, null);
+    }
+
+    @Transactional(readOnly = true)
+    public DisclosureAlert checkAlertsForDisclosure(UUID disclosureId) {
+        var disclosure = disclosureRepository.findById(disclosureId)
+                .orElseThrow(() -> new NotFoundException("No disclosure for id " + disclosureId + " found"));
+        var art6 = containsArticle(disclosure.getData().getLegalBases(), ART_6_PREFIX);
+        return new DisclosureAlert(disclosure.getId(), !art6);
     }
 
     private ProcessAlert checkProcess(Process process, InformationType informationType) {
@@ -196,11 +236,12 @@ public class AlertService {
         return safeStream(legalBases).anyMatch(lb -> lb.getGdpr().startsWith(articlePrefix));
     }
 
-    public Page<AlertEvent> getEvents(PageParameters parameters, UUID processId, UUID informationTypeId, AlertEventType type, AlertEventLevel level, AlertSort sort, SortDir dir) {
+    public Page<AlertEvent> getEvents(PageParameters parameters, UUID processId, UUID informationTypeId, UUID disclosureId, AlertEventType type, AlertEventLevel level,
+            AlertSort sort, SortDir dir) {
         parameters.validate();
-        return alertRepository.findAlerts(processId, informationTypeId, type, level,
+        return alertRepository.findAlerts(processId, informationTypeId, disclosureId, type, level,
                 parameters.getPageNumber(), parameters.getPageSize(),
-                sort,dir
+                sort, dir
         );
     }
 

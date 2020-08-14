@@ -51,6 +51,7 @@ export interface IStrings {
   systems: string;
   disclosure: string;
   disclosures: string;
+  editDisclosure: string;
   documents: string;
   thirdParty: string;
   policy: string;
@@ -82,6 +83,8 @@ export interface IStrings {
   completed: string;
   automaticProcessing: string;
   automaticProcessingExtra: string;
+  done: string;
+  filterPieChartsByStatus: string;
   profiling: string;
   isProfilingUsed: string;
   profilingExtra: string;
@@ -116,7 +119,9 @@ export interface IStrings {
   retentionStart: string;
   retentionDescription: string;
   retentionDescriptionPlaceHolder: string;
+  retentionPieChartTitle: string;
   retentionReference: string;
+  processWithIncompleteRetention: string;
   years: string;
   months: string;
   lastEvents: string;
@@ -145,7 +150,7 @@ export interface IStrings {
   orgMasterSelect: string;
   purposeSelect: string;
   purposeNotFound: string;
-  purposeUse: string;
+  processingActivityUse: string;
   informationTypeExternalUse: string;
   thirdParties: string;
   alerts: string;
@@ -192,6 +197,8 @@ export interface IStrings {
   legalBasisAdd: string;
   addArticle6: string;
   addArticle9: string;
+  article6HelpText: string;
+  article9HelpText: string;
   cardHeaderArticle6: string;
   cardHeaderArticle9: string;
   placeHolderArticle6: string;
@@ -222,7 +229,7 @@ export interface IStrings {
   treasureIllustration: string;
   legalbasisGDPRArt9Info: string;
   legalBasisInfo: string;
-  groupByPurpose: string;
+  groupByProcessingActivities: string;
   showAll: string;
   createThirdPartyModalTitle: string;
   disclosuresToThirdParty: string;
@@ -255,11 +262,12 @@ export interface IStrings {
   editDocument: string;
   lastModified: string;
   excessInfoHelpText: string;
+  completeness: string,
 
   // groups
-  POLLY_READ: string;
-  POLLY_WRITE: string;
-  POLLY_ADMIN: string;
+  READ: string;
+  WRITE: string;
+  ADMIN: string;
 
   CREATE: string;
   DELETE: string;

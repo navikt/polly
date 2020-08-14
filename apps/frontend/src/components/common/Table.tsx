@@ -56,7 +56,7 @@ const StyledHeader = withStyle(StyledHead, {
 })
 
 const tableStyle = {
-  backgroundColor: theme.colors.primary100,
+  backgroundColor: 'white',
   overflow: 'hidden !important',
   ...noBorder,
   borderTopLeftRadius: '0',

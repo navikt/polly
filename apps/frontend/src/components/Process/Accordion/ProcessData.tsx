@@ -5,7 +5,7 @@ import {getResourceById} from '../../../api'
 import {codelist, ListName} from '../../../service/Codelist'
 import {Block} from 'baseui/block'
 import DataText from '../common/DataText'
-import {intl} from '../../../util'
+import {intl, theme} from '../../../util'
 import {LegalBasisView} from '../../common/LegalBasis'
 import {ActiveIndicator} from '../../common/Durations'
 import {DotTags} from '../../common/DotTag'
@@ -13,8 +13,10 @@ import {TeamList} from '../../common/Team'
 import {boolToText} from '../../common/Radio'
 import {RetentionView} from '../Retention'
 import {env} from '../../../util/env'
-import {uniqBy} from 'lodash'
+import {isNil, sum, uniqBy} from 'lodash'
 import {Markdown} from '../../common/Markdown'
+import {ProgressBar} from 'baseui/progress-bar/index'
+import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 
 const showDpiaRequiredField = (dpia?: Dpia) => {
   if (dpia?.needForDpia === true) {
@@ -67,10 +69,6 @@ const ProcessData = (props: {process: Process}) => {
         )}
       </DataText>
 
-      <DataText label={intl.status}>
-        {(process.status) === ProcessStatus.IN_PROGRESS ? intl.inProgress : intl.completedProcesses}
-      </DataText>
-
       <DataText label={intl.isProcessImplemented}>
         {(process.dpia?.processImplemented) ? intl.yes : intl.no}
       </DataText>
@@ -118,7 +116,7 @@ const ProcessData = (props: {process: Process}) => {
         <DotTags list={ListName.SYSTEM} codes={process.products} linkCodelist/>
       </DataText>
 
-      <DataText label={intl.USES_ALL_INFO_TYPE} text={boolToText(process.usesAllInformationTypes)}/>
+      {process.usesAllInformationTypes && <DataText label={intl.USES_ALL_INFO_TYPE} text={intl.yes}/>}
 
       <DataText label={intl.automation}>
         <Block>
@@ -184,7 +182,58 @@ const ProcessData = (props: {process: Process}) => {
           <span>{showDpiaRequiredField(process.dpia)}</span>
         </Block>
       </DataText>
+
+      <Completeness process={process}/>
+
+      <DataText label={intl.status}>
+        {(process.status) === ProcessStatus.IN_PROGRESS ? intl.inProgress : intl.completedProcesses}
+      </DataText>
+
     </Block>
+  )
+}
+
+const Completeness = (props: {process: Process}) => {
+  const {process} = props
+  const completeness = {
+    dpia: !isNil(process.dpia?.needForDpia),
+    profiling: !isNil(process.profiling),
+    automation: !isNil(process.automaticProcessing),
+    retention: !isNil(process.retention?.retentionPlan),
+    dataProcessor: !isNil(process.dataProcessing?.dataProcessor),
+    dataProcessorOutsideEU: !process.dataProcessing?.dataProcessor || !isNil(process.dataProcessing?.dataProcessorOutsideEU),
+    policies: process.usesAllInformationTypes || !!process.policies.length,
+    completed: process.status === ProcessStatus.COMPLETED
+  }
+  const completed = sum(Object.keys(completeness).map(k => (completeness as any)[k] ? 1 : 0))
+  const completables = Object.keys(completeness).length
+  const color = () => {
+    const perc = completed / completables
+    if (perc < .3) return theme.colors.negative400
+    if (perc === 1) return theme.colors.positive400
+    return theme.colors.warning400
+  }
+
+  const barOverrides = {BarProgress: {style: {backgroundColor: color()}}, Bar: {style: {marginLeft: 0, marginRight: 0}}}
+
+  return (
+    <DataText label={intl.completeness}>
+      <CustomizedStatefulTooltip content={<Block>
+        <p>{completed === completables ? intl.completed : `${intl.notFilled}:`}</p>
+        <p>{!completeness.dpia && intl.dpiaNeeded}</p>
+        <p>{!completeness.profiling && intl.profiling}</p>
+        <p>{!completeness.automation && intl.automation}</p>
+        <p>{!completeness.retention && intl.retention}</p>
+        <p>{!completeness.dataProcessor && intl.dataProcessor}</p>
+        <p>{!completeness.dataProcessorOutsideEU && intl.dataProcessorOutsideEU}</p>
+        <p>{!completeness.policies && intl.informationTypes}</p>
+        <p>{!completeness.completed && intl.processStatus}</p>
+      </Block>}>
+        <Block $style={{cursor: 'pointer'}} height={theme.sizing.scale800} display='flex' alignItems='center'>
+          <ProgressBar value={completed} successValue={completables} overrides={barOverrides}/>
+        </Block>
+      </CustomizedStatefulTooltip>
+    </DataText>
   )
 }
 

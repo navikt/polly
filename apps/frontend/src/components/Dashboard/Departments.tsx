@@ -5,15 +5,15 @@ import {cardShadow} from '../common/Style'
 import {Block} from 'baseui/block'
 import {Label1, Paragraph2} from 'baseui/typography'
 import {theme, useAwait} from '../../util'
-import {DashboardData, DepartmentProcess, ProcessStatus} from '../../constants'
+import {DashboardData, DepartmentProcessDashCount as DepartmentProcess, ProcessStatus} from '../../constants'
 import {codelist, ListName} from '../../service/Codelist'
-import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
 import RouteLink from '../common/RouteLink'
 import {Spinner} from 'baseui/spinner'
 import {genProcessPath, Section} from '../../pages/ProcessPage'
+import CustomizedStatefulTooltip from "../common/CustomizedStatefulTooltip";
 
-const TextWithNumber = (props: {label: string; number: number}) => (
-  <Block display="flex" width="100%" marginBottom="0" justifyContent="center">
+const TextWithNumber = (props: { label: string; number: number }) => (
+  <Block display="flex" width="max-content" marginBottom="0" justifyContent="center">
     <Paragraph2 margin="0">{props.label} <b>{props.number}</b></Paragraph2>
   </Block>
 )
@@ -31,7 +31,7 @@ const DepartmentCard = (props: DepartmentCardProps) => {
   const {department} = props
 
   return (
-    <StatefulTooltip content={codelist.getCode(ListName.DEPARTMENT, department.department)?.shortName} placement={PLACEMENT.topLeft}>
+    <CustomizedStatefulTooltip content={codelist.getCode(ListName.DEPARTMENT, department.department)?.shortName}>
       <Block>
         <Card overrides={cardShadow}>
           <Block
@@ -39,10 +39,14 @@ const DepartmentCard = (props: DepartmentCardProps) => {
             flexDirection='column'
             alignItems='center'
             justifyContent='space-around'
-            width="130px"
-            height="130px"
+            width="95px"
+            height="95px"
           >
-            <Label1 color={theme.colors.accent300} $style={{textAlign: 'center'}}>{parsedDepartmentName(department.department)}</Label1>
+
+            <RouteLink href={genProcessPath(Section.department, department.department, undefined)} style={{textDecoration: 'none'}}>
+              <Label1 color={theme.colors.accent300} $style={{textAlign: 'center'}}>{parsedDepartmentName(department.department)}</Label1>
+            </RouteLink>
+
             <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.COMPLETED)}>
               <TextWithNumber label="Fullført" number={department.processesCompleted}/>
             </RouteLink>
@@ -52,7 +56,7 @@ const DepartmentCard = (props: DepartmentCardProps) => {
           </Block>
         </Card>
       </Block>
-    </StatefulTooltip>
+    </CustomizedStatefulTooltip>
   )
 }
 
@@ -71,9 +75,9 @@ const Departments = (props: DepartmentsProps) => {
   const sortedData = () => data.departmentProcesses.sort((a, b) => parsedDepartmentName(a.department).localeCompare(parsedDepartmentName(b.department)))
 
   return (
-    <Block width="100%" display="flex" flexWrap>
+    <Block width="100%" display="flex" flexWrap justifyContent="space-between">
       {sortedData().map((department: DepartmentProcess, i: number) => (
-        <Block key={i} marginTop={theme.sizing.scale600} marginRight={theme.sizing.scale600}>
+        <Block key={i} marginTop={theme.sizing.scale600}>
           <DepartmentCard department={department}/>
         </Block>
       ))}

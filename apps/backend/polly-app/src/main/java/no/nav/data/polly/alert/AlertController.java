@@ -14,11 +14,11 @@ import no.nav.data.polly.alert.domain.AlertEventLevel;
 import no.nav.data.polly.alert.domain.AlertEventType;
 import no.nav.data.polly.alert.dto.AlertEventResponse;
 import no.nav.data.polly.alert.dto.AlertEventResponse.AlertEventResponseBuilder;
+import no.nav.data.polly.alert.dto.DisclosureAlert;
 import no.nav.data.polly.alert.dto.InformationTypeAlert;
 import no.nav.data.polly.alert.dto.ProcessAlert;
 import no.nav.data.polly.process.DomainCache;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +30,6 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@CrossOrigin
 @RequestMapping("/alert")
 @Api(value = "Alerts", tags = {"Alert"})
 public class AlertController {
@@ -63,6 +62,16 @@ public class AlertController {
         return ResponseEntity.ok(alerts);
     }
 
+    @ApiOperation(value = "Get Alerts for disclosure")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Alerts fetched", response = DisclosureAlert.class),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @GetMapping("/disclosure/{disclosureId}")
+    public ResponseEntity<DisclosureAlert> alertsForDisclosure(@PathVariable UUID disclosureId) {
+        var alerts = alertService.checkAlertsForDisclosure(disclosureId);
+        return ResponseEntity.ok(alerts);
+    }
+
     @ApiOperation(value = "Get Alerts events")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Alert events fetched", response = EventPage.class),
@@ -71,12 +80,13 @@ public class AlertController {
     public ResponseEntity<RestResponsePage<AlertEventResponse>> alertsEvents(PageParameters parameters,
             @RequestParam(value = "processId", required = false) UUID processId,
             @RequestParam(value = "informationTypeId", required = false) UUID informationTypeId,
+            @RequestParam(value = "disclosureId", required = false) UUID disclosureId,
             @RequestParam(value = "type", required = false) AlertEventType type,
             @RequestParam(value = "level", required = false) AlertEventLevel level,
             @RequestParam(value = "sort", required = false) AlertSort sort,
             @RequestParam(value = "dir", required = false) SortDir dir
     ) {
-        var events = alertService.getEvents(parameters, processId, informationTypeId, type, level,sort,dir).map(this::convertEventResponse);
+        var events = alertService.getEvents(parameters, processId, informationTypeId, disclosureId, type, level, sort, dir).map(this::convertEventResponse);
         return ResponseEntity.ok(new RestResponsePage<>(events));
     }
 
@@ -96,13 +106,17 @@ public class AlertController {
                 .flatMap(domainCache::getInfoType)
                 .ifPresent(it -> builder.informationType(it.convertToShortResponse()));
 
+        Optional.ofNullable(event.getDisclosureId())
+                .flatMap(domainCache::getDisclosure)
+                .ifPresent(it -> builder.disclosure(it.convertToResponse()));
+
         return builder.build();
     }
 
     public static class EventPage extends RestResponsePage<AlertEventResponse> {
 
         public enum AlertSort {
-            PROCESS, INFORMATION_TYPE, TYPE, LEVEL, TIME, USER
+            PROCESS, INFORMATION_TYPE, DISCLOSURE, TYPE, LEVEL, TIME, USER
         }
 
         public enum SortDir {

@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "polly.client.term-catalog")
+@ConfigurationProperties(prefix = "client.term-catalog")
 public class TermCatalogProperties {
 
     private String url;

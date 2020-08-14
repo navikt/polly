@@ -12,12 +12,12 @@ import {KIND as NKIND, Notification} from 'baseui/notification'
 import {LegalBasisFormValues} from '../../../constants'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faExclamationCircle, faPen} from '@fortawesome/free-solid-svg-icons'
-import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
 import {legalBasisSchema} from '../../common/schema'
 import {LegalBasisView} from '../../common/LegalBasis'
 import {customizeNationalLawPlaceholder} from './PlaceholderCustomizer'
 import {paddingZero} from '../../common/Style'
 import shortid from "shortid";
+import CustomizedStatefulTooltip from "../../common/CustomizedStatefulTooltip";
 
 const rowBlockProps: BlockProps = {
   display: 'flex',
@@ -35,26 +35,15 @@ const Error = (props: { fieldName: string }) => (
   </ErrorMessage>
 )
 
-const TooltipContent = () => (
-  <Block>
-    <p>{intl.legalBasisInfo}</p>
-    <p>{intl.legalbasisGDPRArt9Info}</p>
-  </Block>
-)
-
-const renderCardHeader = (text: string) => {
+const renderCardHeader = (text: string, sensitivityLevel: SensitivityLevel) => {
   return (
     <Block display="flex">
-      <StatefulTooltip
-        content={() => <TooltipContent/>}
-        placement={PLACEMENT.top}
-        focusLock={false}
-      >
+      <CustomizedStatefulTooltip content={sensitivityLevel === SensitivityLevel.ART6 ? intl.article6HelpText : intl.article9HelpText}>
         <Block display="flex">
           <Label2>{text}</Label2>
           <FontAwesomeIcon style={{marginLeft: '.25rem'}} icon={faExclamationCircle} color={theme.colors.primary300} size="sm"/>
         </Block>
-      </StatefulTooltip>
+      </CustomizedStatefulTooltip>
     </Block>
   )
 }
@@ -98,7 +87,10 @@ const CardLegalBasis = ({submit, hideCard, initValue, titleSubmitButton, sensiti
       render={(form: FormikProps<LegalBasisFormValues>) => {
         return (
           <Card>
-            {renderCardHeader(sensitivityLevel === SensitivityLevel.ART9 ? intl.cardHeaderArticle9 : intl.cardHeaderArticle6)}
+            {renderCardHeader(
+              sensitivityLevel === SensitivityLevel.ART9 ? intl.cardHeaderArticle9 : intl.cardHeaderArticle6,
+              sensitivityLevel === SensitivityLevel.ART9 ? SensitivityLevel.ART9 : SensitivityLevel.ART6,
+            )}
             <Block {...rowBlockProps}>
               <Field name="gdpr"
                      render={() => (

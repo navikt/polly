@@ -27,7 +27,7 @@ import static no.nav.data.common.utils.StreamUtils.safeStream;
 
 @Slf4j
 @Component
-@ConditionalOnProperty("polly.client.term-catalog.enabled")
+@ConditionalOnProperty("client.term-catalog.enabled")
 public class TermCatalogClient implements TermService {
 
     private final RestTemplate restTemplate;
@@ -40,10 +40,10 @@ public class TermCatalogClient implements TermService {
         this.properties = properties;
 
         this.termSearchCache = Caffeine.newBuilder().recordStats()
-                .expireAfterAccess(Duration.ofMinutes(10))
+                .expireAfterWrite(Duration.ofMinutes(10))
                 .maximumSize(1000).build(this::searchCatalog);
         this.termCache = Caffeine.newBuilder().recordStats()
-                .expireAfterAccess(Duration.ofMinutes(10))
+                .expireAfterWrite(Duration.ofMinutes(10))
                 .maximumSize(1000).build(this::getFromCatalog);
         MetricUtils.register("termSearchCache", termSearchCache);
         MetricUtils.register("termCache", termCache);

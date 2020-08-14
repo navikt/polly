@@ -16,6 +16,7 @@ import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import com.nimbusds.jwt.proc.JWTClaimsSetVerifier;
+import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import io.prometheus.client.Counter;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.security.AppIdMapping;
@@ -31,7 +32,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.ParseException;
 import java.util.HashSet;
 import java.util.List;
@@ -55,18 +55,19 @@ public class AADStatelessAuthenticationFilter extends OncePerRequestFilter {
 
     private final AzureTokenProvider azureTokenProvider;
     private final List<String> allowedAppIds;
+    private final OIDCProviderMetadata oidcProviderMetadata;
     private final JWKSource<SecurityContext> keySource;
 
     public AADStatelessAuthenticationFilter(AzureTokenProvider azureTokenProvider, AppIdMapping appIdMapping,
-            AADAuthenticationProperties aadAuthProps, ResourceRetriever resourceRetriever) {
+            AADAuthenticationProperties aadAuthProps, ResourceRetriever resourceRetriever, OIDCProviderMetadata oidcProviderMetadata) {
         this.azureTokenProvider = azureTokenProvider;
         this.allowedAppIds = List.copyOf(appIdMapping.getIds());
+        this.oidcProviderMetadata = oidcProviderMetadata;
 
         // azure spring
         this.validAudiences.add(aadAuthProps.getClientId());
-        this.validAudiences.add(aadAuthProps.getAppIdUri());
         try {
-            keySource = new RemoteJWKSet<>(new URL(aadAuthProps.getAadKeyDiscoveryUri()), resourceRetriever);
+            keySource = new RemoteJWKSet<>(oidcProviderMetadata.getJWKSetURI().toURL(), resourceRetriever);
         } catch (MalformedURLException e) {
             log.error("Failed to parse active directory key discovery uri.", e);
             throw new IllegalStateException("Failed to parse active directory key discovery uri.", e);
@@ -167,9 +168,6 @@ public class AADStatelessAuthenticationFilter extends OncePerRequestFilter {
     }
 
     // From spring azure start
-
-    private static final String LOGIN_MICROSOFT_ONLINE_ISSUER = "https://login.microsoftonline.com/";
-    private static final String STS_WINDOWS_ISSUER = "https://sts.windows.net/";
     private final Set<String> validAudiences = new HashSet<>();
 
     public JWTClaimsSet buildAndValidateClaims(String idToken) throws ParseException, BadJOSEException, JOSEException {
@@ -195,8 +193,8 @@ public class AADStatelessAuthenticationFilter extends OncePerRequestFilter {
             public void verify(JWTClaimsSet claimsSet, SecurityContext ctx) throws BadJWTException {
                 super.verify(claimsSet, ctx);
                 final String issuer = claimsSet.getIssuer();
-                if (issuer == null || !(issuer.startsWith(LOGIN_MICROSOFT_ONLINE_ISSUER) || issuer.startsWith(STS_WINDOWS_ISSUER))) {
-                    throw new BadJWTException("Invalid token issuer");
+                if (issuer == null || !issuer.equals(oidcProviderMetadata.getIssuer().getValue())) {
+                    throw new BadJWTException("Invalid token issuer " + issuer);
                 }
                 final Optional<String> matchedAudience = claimsSet.getAudience().stream().filter(validAudiences::contains).findFirst();
                 if (matchedAudience.isPresent()) {

@@ -1,3 +1,10 @@
 ingresses:
   - https://polly.nais.preprod.local
-  - https://polly.dev-fss.nais.io
+  - https://polly.dev.adeo.no
+replies:
+  - https://behandlingskatalog.nais.preprod.local/oauth2/callback
+  - https://behandlingskatalog.dev.adeo.no/oauth2/callback
+  - https://polly.nais.preprod.local/oauth2/callback
+  - https://polly.dev.adeo.no/oauth2/callback
+  - http://localhost:8080/oauth2/callback
+  - http://localhost:3000/oauth2/callback

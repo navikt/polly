@@ -5,9 +5,9 @@ import {Label1} from 'baseui/typography'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faChartBar, faChartPie, faCircle} from '@fortawesome/free-solid-svg-icons'
 import {Card} from 'baseui/card'
-import {cardShadow, marginAll} from '../common/Style'
+import {hideBorder, marginAll} from '../common/Style'
 import * as _ from 'lodash'
-import {StatefulTooltip} from 'baseui/tooltip'
+import CustomizedStatefulTooltip from "../common/CustomizedStatefulTooltip";
 
 const cursor = {cursor: 'pointer'}
 
@@ -28,7 +28,8 @@ interface ChartDataExpanded extends ChartData {
 type ChartType = 'pie' | 'bar'
 
 interface ChartProps {
-  title: string
+  headerTitle?: string;
+  chartTitle: string
   leftLegend?: boolean
   total?: number
   data: ChartData[]
@@ -37,7 +38,7 @@ interface ChartProps {
 }
 
 export const Chart = (props: ChartProps) => {
-  const {size, total, data, title, leftLegend} = props
+  const {headerTitle, size, total, data, chartTitle, leftLegend} = props
   const totSize = data.map(d => d.size).reduce((a, b) => a + b, 0)
   const totalFraction = total !== undefined ? total : totSize
 
@@ -96,26 +97,33 @@ export const Chart = (props: ChartProps) => {
       ...d,
       color: d.color || colors[colorIndex % colors.length],
       start: s,
-      sizeFraction: totSize == 0 ? 0 : d.size / totSize,
+      sizeFraction: totSize === 0 ? 0 : d.size / totSize,
       fraction: totalFraction === 0 ? 0 : d.size / totalFraction
     }
     s += pieData.sizeFraction
     return pieData
   })
 
-  return <Visualization data={expData} size={size} title={title} leftLegend={!!leftLegend} type={props.type || 'pie'}/>
+  return <>
+    {headerTitle && (<Block marginLeft={(size - 1) * 2 + "px"}>
+      <Label1 marginLeft={theme.sizing.scale700}>{headerTitle}</Label1>
+    </Block>)}
+    <Block>
+      <Visualization data={expData} size={size} chartTitle={chartTitle} leftLegend={!!leftLegend} type={props.type || 'pie'}/>
+    </Block>
+  </>
 }
 
 type VisualizationProps = {
   data: ChartDataExpanded[],
   size: number,
-  title: string,
-  leftLegend: boolean
+  chartTitle: string,
+  leftLegend: boolean,
   type: ChartType
 }
 
 const Visualization = (props: VisualizationProps) => {
-  const {size, data, title, leftLegend} = props
+  const {size, data, chartTitle, leftLegend} = props
   const [hover, setHover] = useState<number>(-1)
   const [type, toggle] = useReducer(old => old === 'bar' ? 'pie' : 'bar', props.type)
 
@@ -123,7 +131,7 @@ const Visualization = (props: VisualizationProps) => {
     <Block position='relative'>
       <Card overrides={{
         Root: {
-          style: cardShadow.Root.style
+          style: hideBorder
         },
         Contents: {
           style: {...marginAll(theme.sizing.scale400)}
@@ -131,7 +139,7 @@ const Visualization = (props: VisualizationProps) => {
         Body: {style: {marginBottom: 0}}
       }}>
         <div onMouseLeave={() => setHover(-1)}>
-          <Block display='flex' alignItems='center' flexDirection={leftLegend ? 'row-reverse' : 'row'}>
+          <Block display='flex' alignItems='center' flexDirection={leftLegend ? 'row-reverse' : 'row'} maxWidth={"fit-content"} flexWrap>
             {!!data.length && <Block>
               {type === 'pie' && <PieChart data={data} radius={size} hover={hover} setHover={setHover}/>}
               {type === 'bar' && <BarChart data={data} size={size} hover={hover} setHover={setHover}/>}
@@ -139,7 +147,7 @@ const Visualization = (props: VisualizationProps) => {
             {!data.length && <Block width={size * 2 + "px"} height={size * 2 + "px"}/>}
             <Block marginLeft={theme.sizing.scale200} marginRight={theme.sizing.scale200}>
               <Label1 marginBottom={theme.sizing.scale300}>
-                {title}
+                {chartTitle}
               </Label1>
               {data.map((d, idx) =>
                 <div key={idx} onMouseOver={() => setHover(idx)} onClick={d.onClick}>
@@ -158,17 +166,17 @@ const Visualization = (props: VisualizationProps) => {
       </Card>
 
       <div onClick={toggle} style={{position: 'absolute', top: '5px', left: '5px'}}>
-        <StatefulTooltip content={type === 'bar' ? 'Kakediagram' : 'Søyledriagram'}>
+        <CustomizedStatefulTooltip content={type === 'bar' ? 'Kakediagram' : 'Søyledriagram'}>
           <Block $style={{cursor: 'pointer'}}>
             <FontAwesomeIcon icon={type === 'bar' ? faChartPie : faChartBar}/>
           </Block>
-        </StatefulTooltip>
+        </CustomizedStatefulTooltip>
       </div>
     </Block>
   )
 }
 
-const BarChart = (props: {data: ChartDataExpanded[], size: number, hover: number, setHover: (i: number) => void}) => {
+const BarChart = (props: { data: ChartDataExpanded[], size: number, hover: number, setHover: (i: number) => void }) => {
   const {data, size, hover, setHover} = props
   const max = _.max(data.map(d => d.sizeFraction))!
   const maxVal = _.max(data.map(d => d.size))!
@@ -225,7 +233,7 @@ const Bar = (props: PartProps) => {
   )
 }
 
-const PieChart = (props: {data: ChartDataExpanded[], radius: number, hover: number, setHover: (i: number) => void}) => {
+const PieChart = (props: { data: ChartDataExpanded[], radius: number, hover: number, setHover: (i: number) => void }) => {
   const {data, radius, hover, setHover} = props
   return (
     <svg height={radius * 2} width={radius * 2} viewBox='-1.1 -1.1 2.2 2.2' style={{transform: 'rotate(-90deg)'}}>

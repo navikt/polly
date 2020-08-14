@@ -4,7 +4,6 @@ import {Team} from '../../constants'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faEnvelope, faTimesCircle, faUser} from '@fortawesome/free-solid-svg-icons'
 import {copyToClipboard, intl, theme} from '../../util'
-import {PLACEMENT, StatefulTooltip} from 'baseui/tooltip'
 import {Card, StyledBody} from 'baseui/card'
 import {ListItem, ListItemLabel, OverridesT} from 'baseui/list'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
@@ -17,6 +16,7 @@ import {Markdown} from './Markdown'
 import {ObjectLink} from './RouteLink'
 import {Block} from 'baseui/block'
 import {DotTag} from './DotTag'
+import CustomizedStatefulTooltip from "./CustomizedStatefulTooltip";
 
 
 const defaultTeam = (teamId: string) => ({id: teamId, name: teamId, description: ' ', productarea: undefined, tags: [], members: []})
@@ -51,14 +51,13 @@ const TeamContent = (props: {team: Team}) => (
 
       {props.team.members.map((member, index) =>
         <ListItem key={index} overrides={listOverrides} endEnhancer={() =>
-          <StatefulTooltip content={`${intl.email} ${member.email} ${intl.copied}!`} triggerType="click" onOpen={() => copyToClipboard(member.email || intl.emptyMessage)}
-                           placement={PLACEMENT.top}>
+          <CustomizedStatefulTooltip content={`${intl.email} ${member.email} ${intl.copied}!`} triggerType="click" onOpen={() => copyToClipboard(member.email || intl.emptyMessage)}>
                         <span>
                           <Button size="compact" shape="pill" kind="secondary">
                             <SmallIcon icon={faEnvelope}/> {intl.email}
                         </Button>
                         </span>
-          </StatefulTooltip>
+          </CustomizedStatefulTooltip>
         }>
           <ListItemLabel><SmallIcon icon={faUser}/> {member.name || intl.unknown}</ListItemLabel>
         </ListItem>
@@ -91,9 +90,9 @@ const TeamView = (props: {teamId: string}) => {
         {team.name}
       </ObjectLink>
       }
-      {error && <StatefulTooltip content={intl.couldntLoadTeam} placement={PLACEMENT.top}>
+      {error && <CustomizedStatefulTooltip content={intl.couldntLoadTeam}>
         <span><FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500}/> {team.name}</span>
-      </StatefulTooltip>}
+      </CustomizedStatefulTooltip>}
     </>
   )
 }

@@ -29,7 +29,7 @@ public class AlertRepositoryImpl implements AlertRepositoryCustom {
     }
 
     @Override
-    public Page<AlertEvent> findAlerts(UUID processId, UUID informationTypeId, AlertEventType type, AlertEventLevel level,
+    public Page<AlertEvent> findAlerts(UUID processId, UUID informationTypeId, UUID disclosureId, AlertEventType type, AlertEventLevel level,
             int page, int pageSize, AlertSort sort, SortDir dir) {
         var query = "select id , count(*) over () as count "
                 + "from generic_storage gs "
@@ -45,6 +45,10 @@ public class AlertRepositoryImpl implements AlertRepositoryCustom {
         if (informationTypeId != null) {
             query += "and data ->> 'informationTypeId' = :informationTypeId ";
             params.addValue("informationTypeId", informationTypeId.toString());
+        }
+        if (disclosureId != null) {
+            query += "and data ->> 'disclosureId' = :disclosureId ";
+            params.addValue("disclosureId", disclosureId.toString());
         }
         if (type != null) {
             query += "and data ->> 'type' = :type ";
@@ -74,6 +78,7 @@ public class AlertRepositoryImpl implements AlertRepositoryCustom {
         return switch (sort) {
             case PROCESS -> "(select name from process p where p.process_id = cast(gs.data ->>'processId' as uuid))";
             case INFORMATION_TYPE -> "(select it.data ->> 'name' from information_type it where it.information_type_id = cast(gs.data ->>'informationTypeId' as uuid))";
+            case DISCLOSURE -> "(select d.data ->> 'name' from disclosure d where d.disclosure_id = cast(gs.data ->>'disclosureId' as uuid))";
             case TYPE -> "data ->> 'type'";
             case LEVEL -> "data ->> 'level'";
             case TIME -> "created_date";

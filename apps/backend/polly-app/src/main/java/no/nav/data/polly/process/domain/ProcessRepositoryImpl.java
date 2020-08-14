@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -66,17 +67,17 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
     }
 
     @Override
-    public List<Process> findForState(ProcessField processField, ProcessState processState, String department) {
-        List<Map<String, Object>> resp = queryForState(processField, processState, department);
+    public List<Process> findForState(ProcessField processField, ProcessState processState, String department, ProcessStatus status) {
+        List<Map<String, Object>> resp = queryForState(processField, processState, department, status);
         return getProcesses(resp);
     }
 
     @Override
-    public long countForState(ProcessField processField, ProcessState processState, String department) {
-        return queryForState(processField, processState, department).size();
+    public long countForState(ProcessField processField, ProcessState processState, String department, ProcessStatus status) {
+        return queryForState(processField, processState, department, status).size();
     }
 
-    private List<Map<String, Object>> queryForState(ProcessField processField, ProcessState processState, String department) {
+    private List<Map<String, Object>> queryForState(ProcessField processField, ProcessState processState, String department, ProcessStatus status) {
         var alertQuery = """
                      process_id in ( 
                      select cast(data ->> 'processId' as uuid) 
@@ -94,12 +95,14 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
 
         var sql = "select distinct(process_id) from process where " + query;
 
-        Map<String, Object> params;
+        Map<String, Object> params = new HashMap<>();
         if (department != null) {
             sql += " and data->>'department' = :department";
-            params = Map.of("department", department);
-        } else {
-            params = Map.of();
+            params.put("department", department);
+        }
+        if (status != null) {
+            sql += " and data->>'status' = :status";
+            params.put("status", status.name());
         }
         return jdbcTemplate.queryForList(sql, params);
     }
@@ -111,16 +114,24 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
             case AUTOMATION -> " data #> '{automaticProcessing}' %s ";
             case RETENTION -> " data #> '{retention,retentionPlan}' %s ";
             case RETENTION_DATA -> " data #> '{retention,retentionStart}' %1$s or data #> '{retention,retentionMonths}' %1$s ";
+            case DATA_PROCESSOR -> " data #> '{dataProcessing,dataProcessor}' %s ";
+            case DATA_PROCESSOR_OUTSIDE_EU -> " data #> '{dataProcessing,dataProcessor}' = 'true'::jsonb and data #> '{dataProcessing,dataProcessorOutsideEU}' %s ";
+
+            // UNKNOWN counts empty, YES/NO doesnt make sense and will always return false
+            case DATA_PROCESSOR_AGREEMENT_EMPTY -> {
+                processState = ProcessState.UNKNOWN;
+                yield " data #> '{dataProcessing,dataProcessor}' = 'true'::jsonb and data #> '{dataProcessing,dataProcessorAgreements}' %s ";
+            }
             default -> throw new IllegalArgumentException("invalid field for stateQuery " + processField);
         };
 
         var equate = switch (processState) {
             case YES -> " = 'true'::jsonb";
             case NO -> " = 'false'::jsonb";
-            // force jsonb null to null
+            // '->> 0' forces jsonb null to sql null, also helps on array length lookups
             case UNKNOWN -> " ->> 0 is null ";
         };
-        return loc.formatted(equate);
+        return "(" + loc.formatted(equate) + ")";
     }
 
     private List<Process> getProcesses(List<Map<String, Object>> resp) {

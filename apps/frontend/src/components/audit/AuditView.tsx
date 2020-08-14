@@ -1,21 +1,22 @@
 import moment from 'moment'
-import { Block } from 'baseui/block'
-import { intl, theme } from '../../util'
+import {Block} from 'baseui/block'
+import {intl, theme} from '../../util'
 import ReactJson from 'react-json-view'
-import React, { useEffect, useState } from 'react'
-import { AuditAction, AuditLog } from '../../constants'
-import { Label1 } from 'baseui/typography'
-import { AuditActionIcon, AuditLabel as Label } from './AuditComponents'
-import { Card } from 'baseui/card'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBinoculars, faExchangeAlt, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { PLACEMENT, StatefulTooltip } from 'baseui/tooltip'
-import { ObjectLink } from '../common/RouteLink'
-import { StatefulPopover } from 'baseui/popover'
+import React, {useEffect, useState} from 'react'
+import {AuditAction, AuditLog} from '../../constants'
+import {Label1} from 'baseui/typography'
+import {AuditActionIcon, AuditLabel as Label} from './AuditComponents'
+import {Card} from 'baseui/card'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faBinoculars, faExchangeAlt, faTimes} from '@fortawesome/free-solid-svg-icons'
+import {PLACEMENT} from 'baseui/tooltip'
+import {ObjectLink} from '../common/RouteLink'
+import {StatefulPopover} from 'baseui/popover'
 import DiffViewer from 'react-diff-viewer'
-import { useRefs } from '../../util/hooks'
-import { StyledSpinnerNext } from 'baseui/spinner'
+import {useRefs} from '../../util/hooks'
+import {StyledSpinnerNext} from 'baseui/spinner'
 import Button from '../common/Button'
+import CustomizedStatefulTooltip from "../common/CustomizedStatefulTooltip";
 
 type AuditViewProps = {
   auditLog?: AuditLog,
@@ -59,19 +60,19 @@ export const AuditView = (props: AuditViewProps) => {
         <Block display="flex">
           <Button size='compact' kind='tertiary' marginRight onClick={() => setOpen(auditLog!.audits.map(() => true))}>Åpne alle</Button>
           {newestAudit?.action !== AuditAction.DELETE &&
-          <StatefulTooltip content={() => intl.view} placement={PLACEMENT.top}>
+          <CustomizedStatefulTooltip content={() => intl.view}>
             <Block>
               <ObjectLink id={newestAudit!.tableId} type={newestAudit!.table} audit={newestAudit}>
                 <Button size="compact" shape="round" kind="tertiary"><FontAwesomeIcon icon={faBinoculars}/></Button>
               </ObjectLink>
             </Block>
-          </StatefulTooltip>
+          </CustomizedStatefulTooltip>
           }
-          <StatefulTooltip content={() => intl.close} placement={PLACEMENT.top}>
+          <CustomizedStatefulTooltip content={() => intl.close}>
             <Block>
               <Button size="compact" shape="round" kind="tertiary" onClick={() => viewId('')}><FontAwesomeIcon icon={faTimes}/></Button>
             </Block>
-          </StatefulTooltip>
+          </CustomizedStatefulTooltip>
         </Block>
       </Block>
 
