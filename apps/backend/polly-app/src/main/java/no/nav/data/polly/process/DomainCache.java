@@ -23,13 +23,13 @@ public class DomainCache {
 
     public DomainCache(ProcessRepository processRepository, InformationTypeRepository informationTypeRepository, DisclosureRepository disclosureRepository) {
         this.infoTypeCache = Caffeine.newBuilder().recordStats()
-                .expireAfterAccess(Duration.ofMinutes(1))
+                .expireAfterWrite(Duration.ofMinutes(1))
                 .maximumSize(1000).build(informationTypeRepository::findById);
         this.processCache = Caffeine.newBuilder().recordStats()
-                .expireAfterAccess(Duration.ofMinutes(1))
+                .expireAfterWrite(Duration.ofMinutes(1))
                 .maximumSize(1000).build(processRepository::findById);
         this.disclosureCache = Caffeine.newBuilder().recordStats()
-                .expireAfterAccess(Duration.ofMinutes(1))
+                .expireAfterWrite(Duration.ofMinutes(1))
                 .maximumSize(1000).build(disclosureRepository::findById);
     }
 

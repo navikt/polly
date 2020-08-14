@@ -60,3 +60,4 @@ spec:
     - secret: polly-kafka-pwd
     - secret: teamcat-url
     - secret: termcat-url
+    - secret: commoncode-url

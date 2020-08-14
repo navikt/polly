@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import no.nav.data.common.nais.LeaderElectionService;
 import no.nav.data.common.rest.RestResponsePage;
+import no.nav.data.polly.commoncode.Mocks;
 import no.nav.data.polly.teams.dto.Resource;
 import no.nav.data.polly.teams.dto.ResourceType;
 import no.nav.data.polly.teams.teamcat.TeamKatMember;
@@ -56,6 +57,7 @@ public class WiremockExtension implements Extension, BeforeAllCallback, BeforeEa
         getWiremock().stubFor(get("/teamcat/resource/A123456").willReturn(okJson(toJson(resource("A123456")))));
         getWiremock().stubFor(get("/teamcat/resource/A123457").willReturn(okJson(toJson(resource("A123457")))));
         getWiremock().stubFor(get("/teamcat/resource/A999999").willReturn(notFound().withBody(notFoundJson())));
+        Mocks.mock();
     }
 
     static WireMockServer getWiremock() {

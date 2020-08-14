@@ -40,12 +40,12 @@ public class TeamcatTeamClient implements TeamService {
         this.properties = properties;
 
         this.allTeamsCache = Caffeine.newBuilder().recordStats()
-                .expireAfterAccess(Duration.ofMinutes(10))
+                .expireAfterWrite(Duration.ofMinutes(10))
                 .maximumSize(1).build(k -> getTeamsResponse());
         MetricUtils.register("teamsCache", allTeamsCache);
 
         this.allPaCache = Caffeine.newBuilder().recordStats()
-                .expireAfterAccess(Duration.ofMinutes(10))
+                .expireAfterWrite(Duration.ofMinutes(10))
                 .maximumSize(1).build(k -> getProductAreasResponse());
         MetricUtils.register("productAreaCache", allPaCache);
     }
