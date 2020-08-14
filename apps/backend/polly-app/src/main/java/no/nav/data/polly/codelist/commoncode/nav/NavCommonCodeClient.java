@@ -32,7 +32,7 @@ public class NavCommonCodeClient {
         this.props = props;
         this.cache = Caffeine.newBuilder().recordStats()
                 .expireAfterWrite(Duration.ofMinutes(10))
-                .maximumSize(1).build(this::getCodeList);
+                .maximumSize(100).build(this::getCodeList);
         MetricUtils.register("commonCodeCache", cache);
     }
 
