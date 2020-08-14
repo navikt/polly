@@ -39,6 +39,10 @@ public class WiremockExtension implements Extension, BeforeAllCallback, BeforeEa
         WIREMOCK.resetMappings();
     }
 
+    public static int port() {
+        return WIREMOCK.port();
+    }
+
     private void stubCommon() {
         WireMock.stubFor(get("/elector").willReturn(okJson(toJson(LeaderElectionService.getHostInfo()))));
         TeamcatMocks.mock();

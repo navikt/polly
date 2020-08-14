@@ -360,7 +360,7 @@ public abstract class IntegrationTestBase {
                     "spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
                     "spring.datasource.username=" + postgreSQLContainer.getUsername(),
                     "spring.datasource.password=" + postgreSQLContainer.getPassword(),
-                    "wiremock.server.port=" + WiremockExtension.getWiremock().port(),
+                    "wiremock.server.port=" + WiremockExtension.port(),
                     "KAFKA_BOOTSTRAP_SERVERS=" + KafkaContainer.getAddress(),
                     "KAFKA_SCHEMA_REGISTRY_URL=" + SchemaRegistryContainer.getAddress()
             ).applyTo(configurableApplicationContext.getEnvironment());
