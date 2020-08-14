@@ -29,7 +29,7 @@ type TableDisclosureProps = {
   onCloseModal?: () => void;
 };
 
-type Alerts = {[k: string]: DisclosureAlert}
+type Alerts = { [k: string]: DisclosureAlert }
 const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEditDisclosure, errorModal, editable, onCloseModal}: TableDisclosureProps) => {
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false)
   const [showEditModal, setShowEditModal] = React.useState<boolean>()
@@ -41,10 +41,10 @@ const TableDisclosure = ({list, showRecipient, submitDeleteDisclosure, submitEdi
   useEffect(() => {
     (async () => {
       const alertMap = (await Promise.all(list.map(d => getAlertForDisclosure(d.id))))
-      .reduce((acc: Alerts, alert) => {
-        acc[alert.disclosureId] = alert
-        return acc
-      }, {} as Alerts)
+        .reduce((acc: Alerts, alert) => {
+          acc[alert.disclosureId] = alert
+          return acc
+        }, {} as Alerts)
       setAlerts(alertMap)
     })()
   }, [list])
@@ -150,12 +150,14 @@ const DisclosureRow = (props: {
         )}
       </Cell>
       <Cell small>
+        {hasAlert &&
         <Button type='button' kind='tertiary' size='compact'
                 disabled={!canViewAlerts()}
                 icon={faExclamationCircle} tooltip={hasAlert ? `${intl.alerts}: ${intl.MISSING_ARTICLE_6}` : `${intl.alerts}: ${intl.no}`}
                 $style={{color: hasAlert ? theme.colors.warning500 : undefined}}
                 onClick={() => history.push(`/alert/events/disclosure/${disclosure.id}`)}
         />
+        }
 
         {editable &&
         <Block width="100%" display="flex" justifyContent="flex-end">
