@@ -115,6 +115,8 @@ public class Process extends Auditable {
                         .dataProcessor(data.getDataProcessing().getDataProcessor())
                         .dataProcessorAgreements(nullToEmptyList(data.getDataProcessing().getDataProcessorAgreements()))
                         .dataProcessorOutsideEU(data.getDataProcessing().getDataProcessorOutsideEU())
+                        .transferGroundsOutsideEU(data.getDataProcessing().getTransferGroundsOutsideEU())
+                        .transferGroundsOutsideEUOther(data.getDataProcessing().getTransferGroundsOutsideEUOther())
                         .build())
                 .retention(data.getRetention() == null ? null : RetentionResponse.builder()
                         .retentionPlan(data.getRetention().getRetentionPlan())
@@ -176,6 +178,8 @@ public class Process extends Auditable {
                 .dataProcessor(dataProcessing.getDataProcessor())
                 .dataProcessorAgreements(nullToEmptyList(dataProcessing.getDataProcessorAgreements()))
                 .dataProcessorOutsideEU(dataProcessing.getDataProcessorOutsideEU())
+                .transferGroundsOutsideEU(dataProcessing.getTransferGroundsOutsideEU())
+                .transferGroundsOutsideEUOther(dataProcessing.getTransferGroundsOutsideEUOther())
                 .build();
     }
 

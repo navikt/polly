@@ -8,6 +8,9 @@ import { useQueryParam } from '../util/hooks'
 import { processPath } from '../routes'
 import * as queryString from 'query-string'
 import { PageHeader } from '../components/common/PageHeader'
+import DepartmentCharts from '../components/Process/DepartmentCharts'
+import { HeadingSmall } from 'baseui/typography'
+import { intl } from '../util'
 
 export enum Section {
   purpose = 'purpose',
@@ -41,6 +44,12 @@ const ProcessPage = () => {
     <>
       <PageHeader section={section} code={code} />
       <ProcessList code={code} listName={listNameForSection(section)} processId={processId} filter={filter} section={section} />
+      {section === Section.department ? (
+        <>
+          <HeadingSmall>{intl.overview}</HeadingSmall>
+          <DepartmentCharts departmentCode={code} />
+        </>
+      ) : null}
     </>
   )
 }

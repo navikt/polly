@@ -19,6 +19,9 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
     @Query(value = "select * from process where data->>'department' = ?1", nativeQuery = true)
     List<Process> findByDepartment(String department);
 
+    @Query(value = "select * from process where data #> '{dataProcessing}' ->> 'transferGroundsOutsideEU' = ?1", nativeQuery = true)
+    List<Process> findByTransferGroundsOutsideEU(String transferGrounds);
+
     @Query(value = "select * from process where data->>'commonExternalProcessResponsible' = ?1", nativeQuery = true)
     List<Process> findByCommonExternalProcessResponsible(String thirdParty);
 
