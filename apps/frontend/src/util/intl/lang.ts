@@ -1,4 +1,4 @@
-import { IStrings } from "./intl";
+import {IStrings} from "./intl";
 
 export const no: IStrings = {
   informationType: "Opplysningstype",
@@ -70,6 +70,8 @@ export const no: IStrings = {
   dataProcessorOutsideEU: "Utenfor EU / EØS",
   isDataProcessedOutsideEUEEA: "Behandler databehandler personopplysninger utenfor EU/EØS?",
   isDataProcessedOutsideEUEEAHelpText: "En databehandler er en virksomhet som behandler personopplysninger på NAVs vegne.",
+  transferGroundsOutsideEUEEA: 'Overføringsgrunnlag for behandling utenfor EU/EØS',
+  transferGroundsOutsideEUEEAOther: 'Andre overføringsgrunnlag',
   includeDefaultDocument: "Standard opplysningstyper",
   from: "fra",
   retained: "Lagres i",
@@ -461,6 +463,8 @@ export const en: IStrings = {
   dataProcessorOutsideEU: "Outside EU / EEA",
   isDataProcessedOutsideEUEEA: "Does personal data processed outside of EU/EEA?",
   isDataProcessedOutsideEUEEAHelpText: "Personal data processed outside EU/EEA",
+  transferGroundsOutsideEUEEA: 'Transfer grounds for processing outside of EU/EEA',
+  transferGroundsOutsideEUEEAOther: 'Other grounds',
   includeDefaultDocument: "Default information types",
   riskOwner: "Risk owner",
   riskOwnerFunction: "Risk owner function",

@@ -144,14 +144,20 @@ const ProcessData = (props: {process: Process}) => {
                 <Block $style={{whiteSpace: 'nowrap', margin: '1rem 0'}}>
                   {`${intl.dataProcessorAgreement}: `}
                 </Block>
-                <DotTags items={process.dataProcessing?.dataProcessorAgreements} markdown/>
+                <DotTags items={process.dataProcessing.dataProcessorAgreements} markdown/>
               </Block>
               }
             </Block>
             <Block>
-              <span>{intl.isDataProcessedOutsideEUEEA}  </span>
-              <span>{boolToText(process.dataProcessing?.dataProcessorOutsideEU)}</span>
+              <span>{intl.isDataProcessedOutsideEUEEA} </span>
+              <span>{boolToText(process.dataProcessing.dataProcessorOutsideEU)}</span>
             </Block>
+            {process.dataProcessing.dataProcessorOutsideEU &&
+            <Block>
+              <span>{intl.transferGroundsOutsideEUEEA}: </span>
+              {process.dataProcessing.transferGroundsOutsideEU && <span>{codelist.getShortnameForCode(process.dataProcessing.transferGroundsOutsideEU)} </span>}
+              {process.dataProcessing.transferGroundsOutsideEUOther && <span>: {process.dataProcessing.transferGroundsOutsideEUOther}</span>}
+            </Block>}
           </Block>}
         </>
       </DataText>

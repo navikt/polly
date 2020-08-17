@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {ProcessStatus, PageResponse, Process, ProcessCount, ProcessField, ProcessFormValues, ProcessShort, ProcessState} from '../constants'
+import {PageResponse, Process, ProcessCount, ProcessField, ProcessFormValues, ProcessShort, ProcessState, ProcessStatus, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from '../constants'
 import {env} from '../util/env'
 import {convertLegalBasesToFormValues} from './PolicyApi'
 
@@ -80,7 +80,7 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     name: name || '',
     description: description || '',
     purposeCode: purpose?.code || '',
-    department: (department && department.code) || undefined,
+    department: department?.code || undefined,
     subDepartments: (subDepartments && subDepartments.map(sd => sd.code)) || [],
     commonExternalProcessResponsible: (commonExternalProcessResponsible && commonExternalProcessResponsible.code) || undefined,
     productTeams: productTeams || [],
@@ -94,7 +94,9 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     dataProcessing: {
       dataProcessor: mapBool(dataProcessing?.dataProcessor),
       dataProcessorAgreements: dataProcessing?.dataProcessorAgreements || [],
-      dataProcessorOutsideEU: mapBool(dataProcessing?.dataProcessorOutsideEU)
+      dataProcessorOutsideEU: mapBool(dataProcessing?.dataProcessorOutsideEU),
+      transferGroundsOutsideEU: dataProcessing?.transferGroundsOutsideEU?.code || undefined,
+      transferGroundsOutsideEUOther: dataProcessing?.transferGroundsOutsideEUOther || ''
     },
     retention: {
       retentionPlan: mapBool(retention?.retentionPlan),
@@ -131,7 +133,10 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
     usesAllInformationTypes: values.usesAllInformationTypes,
     automaticProcessing: values.automaticProcessing,
     profiling: values.profiling,
-    dataProcessing: values.dataProcessing,
+    dataProcessing: {
+      ...values.dataProcessing,
+      transferGroundsOutsideEUOther: values.dataProcessing.transferGroundsOutsideEU !== TRANSFER_GROUNDS_OUTSIDE_EU_OTHER ? undefined : values.dataProcessing.transferGroundsOutsideEUOther
+    },
     retention: values.retention,
     status: values.status,
     dpia: {

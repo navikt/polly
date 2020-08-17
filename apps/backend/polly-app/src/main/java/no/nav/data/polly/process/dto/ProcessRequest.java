@@ -144,9 +144,12 @@ public class ProcessRequest implements RequestElement {
             dp.setDataProcessorAgreements(List.of());
             dp.setDataProcessorOutsideEU(null);
         }
-        if (Boolean.FALSE.equals(dp.getDataProcessorOutsideEU())) {
+        if (!Boolean.TRUE.equals(dp.getDataProcessorOutsideEU())) {
             dp.setTransferGroundsOutsideEU(null);
             dp.setTransferGroundsOutsideEUOther(null);
+        } else {
+            dp.setTransferGroundsOutsideEU(toUpperCaseAndTrim(dp.getTransferGroundsOutsideEU()));
+            dp.setTransferGroundsOutsideEUOther(trimToNull(dp.getTransferGroundsOutsideEUOther()));
         }
     }
 
@@ -185,7 +188,7 @@ public class ProcessRequest implements RequestElement {
         validator.validateType(Fields.legalBases, legalBases);
         validator.checkRequiredEnum(Fields.status, status, ProcessStatus.class);
         validator.checkPattern(Fields.dpia + "." + DpiaRequest.Fields.riskOwner, dpia.riskOwner, NAV_IDENT_PATTERN);
-        if (Boolean.TRUE.equals(dataProcessing.getDataProcessorOutsideEU())){
+        if (Boolean.TRUE.equals(dataProcessing.getDataProcessorOutsideEU())) {
             validator.checkRequiredCodelist(DataProcessingRequest.Fields.transferGroundsOutsideEU, dataProcessing.transferGroundsOutsideEU, ListName.TRANSFER_GROUNDS_OUTSIDE_EU);
         }
     }

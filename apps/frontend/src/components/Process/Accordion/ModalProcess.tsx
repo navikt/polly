@@ -5,7 +5,7 @@ import {Field, FieldProps, Form, Formik, FormikProps,} from 'formik'
 import {Block, BlockProps} from 'baseui/block'
 import {Button, KIND} from 'baseui/button'
 import {Error, ModalLabel} from '../../common/ModalSchema'
-import {ProcessFormValues, ProcessStatus} from '../../../constants'
+import {ProcessFormValues, ProcessStatus, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from '../../../constants'
 import {codelist} from '../../../service/Codelist'
 import {intl, theme} from '../../../util'
 import {processSchema} from '../../common/schema'
@@ -32,6 +32,8 @@ import {env} from '../../../util/env'
 import {writeLog} from '../../../api/LogApi'
 import FieldLegalBasis from "../common/FieldLegalBasis";
 import PanelTitle from "../common/PanelTitle";
+import FieldTransferGroundsOutsideEU from '../common/FieldTransferGroundsOutsideEU'
+import FieldTransferGroundsOutsideEUOther from '../common/FieldTransferGroundsOutsideEUOther'
 
 const modalHeaderProps: BlockProps = {
   display: 'flex',
@@ -61,7 +63,7 @@ type ModalProcessProps = {
   onClose: () => void
 }
 
-const panelOverrides:PanelOverrides<any> = {
+const panelOverrides: PanelOverrides<any> = {
   Header: {
     style: {
       paddingLeft: '0'
@@ -292,6 +294,22 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                           <BoolField fieldName='dataProcessing.dataProcessorOutsideEU'
                                      value={formikBag.values.dataProcessing.dataProcessorOutsideEU}/>
                         </Block>
+                        {formikBag.values.dataProcessing.dataProcessorOutsideEU &&
+                        <>
+                          <Block {...rowBlockProps}>
+                            <ModalLabel label={intl.transferGroundsOutsideEUEEA}/>
+                            <FieldTransferGroundsOutsideEU
+                              code={formikBag.values.dataProcessing.transferGroundsOutsideEU}/>
+                          </Block>
+                          <Error fieldName='dataProcessing.transferGroundsOutsideEU'/>
+
+                          {formikBag.values.dataProcessing.transferGroundsOutsideEU === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER &&
+                          <Block {...rowBlockProps}>
+                            <ModalLabel label={intl.transferGroundsOutsideEUEEAOther}/>
+                            <FieldTransferGroundsOutsideEUOther/>
+                          </Block>}
+                          <Error fieldName='dataProcessing.transferGroundsOutsideEUOther'/>
+                        </>}
                       </>}
                     </Panel>
                     <Panel
@@ -325,11 +343,11 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
               </Form>
             )
           }}
-        />
+      />
 
-      </Block>
-    </Modal>
-  )
+    </Block>
+</Modal>
+)
 }
 
 export default ModalProcess
