@@ -1,23 +1,23 @@
-import { intl, theme } from '../util'
+import {intl, theme} from '../util'
 import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { Block, BlockProps } from 'baseui/block'
-import { Counter, DashboardData, ProcessField, ProcessState, ProcessStatus, Settings } from '../constants'
-import { getSettings } from '../api/SettingsApi'
-import { Card } from 'baseui/card'
-import { cardShadow, chartCardProps } from '../components/common/Style'
+import {useEffect, useState} from 'react'
+import {Block} from 'baseui/block'
+import {Counter, DashboardData, ProcessField, ProcessState, ProcessStatus, Settings} from '../constants'
+import {getSettings} from '../api/SettingsApi'
+import {Card} from 'baseui/card'
+import {cardShadow, chartCardProps} from '../components/common/Style'
 import Departments from '../components/Dashboard/Departments'
-import { getDashboard } from '../api'
-import { Chart } from '../components/Dashboard/Chart'
-import { useHistory, useParams } from 'react-router-dom'
-import { LastEvents } from '../components/audit/LastEvents'
-import { Markdown } from '../components/common/Markdown'
-import { Paragraph1 } from "baseui/typography";
+import {getDashboard} from '../api'
+import {Chart} from '../components/Dashboard/Chart'
+import {useHistory, useParams} from 'react-router-dom'
+import {LastEvents} from '../components/audit/LastEvents'
+import {Markdown} from '../components/common/Markdown'
+import {Paragraph1} from "baseui/typography";
 import RouteLink from "../components/common/RouteLink";
-import { chartColor } from "../util/theme";
+import {chartColor} from "../util/theme";
 import * as H from 'history'
-import { lowerFirst } from 'lodash'
-import { FilterDashboardStatus } from "../components/Dashboard/FilterDashboardStatus";
+import {lowerFirst} from 'lodash'
+import {FilterDashboardStatus} from "../components/Dashboard/FilterDashboardStatus";
 
 const chartSize = 80
 const clickOnPieChartSlice = (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatus, history: H.History) => () => history.push(`/dashboard/${processField}/${processState}/${processStatus}`)
@@ -126,7 +126,7 @@ const Charts = (props: { dashData: DashboardData, processStatus: ProcessStatus; 
       <Block {...chartCardProps}>
         <TriChart counter={dashData.allProcesses.retention}
           processStatus={processStatus}
-          header={intl.retention} title={intl.retentionPieChartTitle}
+          title={intl.retentionPieChartTitle}
           field={ProcessField.RETENTION} />
         <Paragraph1>
           {intl.processWithIncompleteRetention} <RouteLink
@@ -137,7 +137,7 @@ const Charts = (props: { dashData: DashboardData, processStatus: ProcessStatus; 
       <Block {...chartCardProps}>
         <TriChart counter={dashData.allProcesses.dataProcessor}
           processStatus={processStatus}
-          header={intl.dataProcessor} title={intl.isDataProcessorUsed}
+          title={intl.isDataProcessorUsed}
           field={ProcessField.DATA_PROCESSOR} />
         <Paragraph1>
           {`${intl.dataProcessorAgreement} ${lowerFirst(intl.emptyMessage)}`} <RouteLink
