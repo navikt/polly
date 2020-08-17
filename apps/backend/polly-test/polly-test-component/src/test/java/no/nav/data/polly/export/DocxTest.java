@@ -135,6 +135,8 @@ public class DocxTest {
                                 .dataProcessor(true)
                                 .dataProcessorOutsideEU(true)
                                 .dataProcessorAgreements(List.of("2019-02-44.21"))
+                                .transferGroundsOutsideEU("OTHER")
+                                .transferGroundsOutsideEUOther("Usikker")
                                 .build())
                         .status(ProcessStatus.COMPLETED)
                         .dpia(Dpia.builder()

@@ -360,11 +360,18 @@ public class ProcessToDocx {
             if (data == null) {
                 return;
             }
+            var transferGrounds = Boolean.TRUE.equals(data.getDataProcessorOutsideEU()) ?
+                    text("Overføringsgrunnlag for behandling utenfor EU/EØS: ",
+                            shortName(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, data.getTransferGroundsOutsideEU()),
+                            Optional.ofNullable(data.getTransferGroundsOutsideEUOther()).map(s -> ": " + s).orElse(""))
+                    : text("");
+
             addHeading4("Databehandler");
             addTexts(
                     text("Databehandler benyttes: ", boolToText(data.getDataProcessor())),
                     text("Ref. til databehandleravtale: ", data.getDataProcessorAgreements() == null ? "" : String.join(", ", data.getDataProcessorAgreements())),
-                    text("Personopplysningene behandles utenfor EU/EØS: ", boolToText(data.getDataProcessorOutsideEU()))
+                    text("Personopplysningene behandles utenfor EU/EØS: ", boolToText(data.getDataProcessorOutsideEU())),
+                    transferGrounds
             );
         }
 
