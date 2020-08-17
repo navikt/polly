@@ -9,7 +9,7 @@ import { cardShadow, chartCardProps } from '../components/common/Style'
 import Departments from '../components/Dashboard/Departments'
 import { getDashboard } from '../api'
 import { Chart } from '../components/Dashboard/Chart'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import { LastEvents } from '../components/audit/LastEvents'
 import { Markdown } from '../components/common/Markdown'
 import { Paragraph1 } from "baseui/typography";
@@ -23,10 +23,12 @@ const chartSize = 80
 const clickOnPieChartSlice = (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatus, history: H.History) => () => history.push(`/dashboard/${processField}/${processState}/${processStatus}`)
 
 export const MainPage = () => {
+
+  const { processStatus } = useParams()
   const [settings, setSettings] = useState<Settings>()
   const [isLoading, setLoading] = useState(true)
   const [dashData, setDashData] = useState<DashboardData>()
-  const [dashboardStatus, setDashboardStatus] = useState<ProcessStatus>(ProcessStatus.All)
+  const [dashboardStatus, setDashboardStatus] = useState<ProcessStatus>(processStatus ? processStatus as ProcessStatus : ProcessStatus.All)
 
   useEffect(() => {
     (async () => {
@@ -46,9 +48,10 @@ export const MainPage = () => {
       {
         !isLoading && dashData && (
           <>
-            <FilterDashboardStatus setFilter={setDashboardStatus} />
 
             <Departments data={dashData} />
+
+            <FilterDashboardStatus setFilter={setDashboardStatus} />
 
             <Charts dashData={dashData} processStatus={dashboardStatus} />
 

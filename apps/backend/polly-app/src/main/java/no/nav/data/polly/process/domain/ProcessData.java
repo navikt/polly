@@ -54,6 +54,8 @@ public class ProcessData {
         private Boolean dataProcessor;
         private List<String> dataProcessorAgreements;
         private Boolean dataProcessorOutsideEU;
+        private String transferGroundsOutsideEU;
+        private String transferGroundsOutsideEUOther;
     }
 
     @Data

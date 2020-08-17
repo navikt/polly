@@ -12,7 +12,7 @@ import {Spinner} from 'baseui/spinner'
 import {genProcessPath, Section} from '../../pages/ProcessPage'
 import CustomizedStatefulTooltip from "../common/CustomizedStatefulTooltip";
 
-const TextWithNumber = (props: {label: string; number: number}) => (
+const TextWithNumber = (props: { label: string; number: number }) => (
   <Block display="flex" width="max-content" marginBottom="0" justifyContent="center">
     <Paragraph2 margin="0">{props.label} <b>{props.number}</b></Paragraph2>
   </Block>
@@ -42,7 +42,11 @@ const DepartmentCard = (props: DepartmentCardProps) => {
             width="95px"
             height="95px"
           >
-            <Label1 color={theme.colors.accent300} $style={{textAlign: 'center'}}>{parsedDepartmentName(department.department)}</Label1>
+
+            <RouteLink href={genProcessPath(Section.department, department.department, undefined)} style={{textDecoration: 'none'}}>
+              <Label1 color={theme.colors.accent300} $style={{textAlign: 'center'}}>{parsedDepartmentName(department.department)}</Label1>
+            </RouteLink>
+
             <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.COMPLETED)}>
               <TextWithNumber label="Fullført" number={department.processesCompleted}/>
             </RouteLink>

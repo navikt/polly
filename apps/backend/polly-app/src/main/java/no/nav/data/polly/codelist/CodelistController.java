@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.utils.StreamUtils;
+import no.nav.data.polly.codelist.commoncode.CommonCodeService;
+import no.nav.data.polly.codelist.commoncode.dto.CommonCodeResponse;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.AllCodelistResponse;
@@ -37,9 +39,11 @@ import static no.nav.data.common.utils.StringUtils.toUpperCaseAndTrim;
 public class CodelistController {
 
     private final CodelistService service;
+    private final CommonCodeService commonCodeService;
 
-    public CodelistController(CodelistService service) {
+    public CodelistController(CodelistService service, CommonCodeService commonCodeService) {
         this.service = service;
+        this.commonCodeService = commonCodeService;
     }
 
     @ApiOperation(value = "Get the entire Codelist")
@@ -135,4 +139,15 @@ public class CodelistController {
         log.info("Refreshed the codelists");
         service.refreshCache();
     }
+
+    @ApiOperation(value = "Get ThirdPartyCountriesOutsideEEA")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Codes fetched", response = CommonCodeResponse.class, responseContainer = "List"),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @GetMapping("/countriesoutsideeea")
+    public List<CommonCodeResponse> getThirdPartyCountriesOutsideEEA() {
+        log.info("Received a request for and returned ThirdPartyCountriesOutsideEEA");
+        return commonCodeService.getThirdPartyCountriesOutsideEEA();
+    }
+
 }

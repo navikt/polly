@@ -1,5 +1,5 @@
-import { AxiosResponse } from 'axios'
-import { getAllCodelists } from '../api'
+import {AxiosResponse} from 'axios'
+import {getAllCodelists} from '../api'
 
 export enum ListName {
   PURPOSE = 'PURPOSE',
@@ -11,7 +11,8 @@ export enum ListName {
   GDPR_ARTICLE = 'GDPR_ARTICLE',
   DEPARTMENT = 'DEPARTMENT',
   SUB_DEPARTMENT = 'SUB_DEPARTMENT',
-  SYSTEM = 'SYSTEM'
+  SYSTEM = 'SYSTEM',
+  TRANSFER_GROUNDS_OUTSIDE_EU = 'TRANSFER_GROUNDS_OUTSIDE_EU'
 }
 
 // Refers to SENSITIVITY codelist
@@ -97,13 +98,13 @@ class CodelistService {
     return code ? code.description : codeName
   }
 
-  getParsedOptions(listName: ListName): { id: string, label: string }[] {
+  getParsedOptions(listName: ListName): {id: string, label: string}[] {
     return this.getCodes(listName).map((code: Code) => {
       return {id: code.code, label: code.shortName}
     })
   }
 
-  getParsedOptionsFilterOutSelected(listName: ListName, currentSelected: string[]): { id: string, label: string }[] {
+  getParsedOptionsFilterOutSelected(listName: ListName, currentSelected: string[]): {id: string, label: string}[] {
     let parsedOptions = this.getParsedOptions(listName)
     return !currentSelected ? parsedOptions : parsedOptions.filter(option =>
       currentSelected.includes(option.id) ? null : option.id

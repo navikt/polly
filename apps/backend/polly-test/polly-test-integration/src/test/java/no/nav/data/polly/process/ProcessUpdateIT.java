@@ -42,7 +42,7 @@ class ProcessUpdateIT extends KafkaIntegrationTestBase {
             policy.setInformationTypeName(INFORMATION_TYPE_NAME + index);
             policy.getProcess().setName(PROCESS_NAME_1);
             if (index == 0) {
-                var process = createProcess("ignored process", PURPOSE_CODE1, "", "", List.of(), "", "");
+                var process = createProcess("ignored process", PURPOSE_CODE1, "", "", List.of(), "", "", "");
                 policy.setProcess(process);
             }
         });

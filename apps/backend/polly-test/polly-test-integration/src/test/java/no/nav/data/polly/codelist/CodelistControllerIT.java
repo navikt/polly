@@ -1,6 +1,7 @@
 package no.nav.data.polly.codelist;
 
 import no.nav.data.polly.IntegrationTestBase;
+import no.nav.data.polly.codelist.commoncode.dto.CommonCodeResponse;
 import no.nav.data.polly.codelist.domain.Codelist;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.AllCodelistResponse;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +35,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CodelistControllerIT extends IntegrationTestBase {
 
-    private static final ParameterizedTypeReference<List<CodelistResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    private static final ParameterizedTypeReference<List<CodelistResponse>> CODELIST_LIST_RESP = new ParameterizedTypeReference<>() {
+    };
+    private static final ParameterizedTypeReference<List<CommonCodeResponse>> COMMON_CODE_LIST_RESP = new ParameterizedTypeReference<>() {
     };
     private static final String ERROR_IMMUTABLE_CODELIST = "%s is an immutable type of codelist. For amendments, please contact team #dataplatform";
 
@@ -79,7 +83,7 @@ class CodelistControllerIT extends IntegrationTestBase {
             CodelistStub.initializeCodelist();
 
             ResponseEntity<List<CodelistResponse>> responseEntity = restTemplate.exchange(
-                    "/codelist/THIRD_PARTY", HttpMethod.GET, HttpEntity.EMPTY, RESPONSE_TYPE);
+                    "/codelist/THIRD_PARTY", HttpMethod.GET, HttpEntity.EMPTY, CODELIST_LIST_RESP);
 
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(responseEntity.getBody()).isNotNull();
@@ -97,6 +101,20 @@ class CodelistControllerIT extends IntegrationTestBase {
             assertThat(responseEntity.getBody()).isNotNull();
             assertThat(responseEntity.getBody().getDescription()).isEqualTo(CodelistService.getCodelist(ListName.THIRD_PARTY, "TEST_CODE").getDescription());
         }
+
+        @Test
+        void getCountriesOutsideEEA() {
+            var res = restTemplate.exchange("/codelist/countriesoutsideeea", HttpMethod.GET, HttpEntity.EMPTY, COMMON_CODE_LIST_RESP);
+
+            assertThat(res.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(res.getBody()).isNotNull();
+            assertThat(res.getBody()).containsExactly(CommonCodeResponse.builder()
+                    .code("FJI")
+                    .description("FIJI")
+                    .validFrom(LocalDate.of(1900, 1, 1))
+                    .validTo(LocalDate.of(9999, 12, 31))
+                    .build());
+        }
     }
 
     @Nested
@@ -108,7 +126,7 @@ class CodelistControllerIT extends IntegrationTestBase {
             assertFalse(CodelistCache.contains(ListName.THIRD_PARTY, "SaveCode"));
 
             ResponseEntity<List<CodelistResponse>> responseEntity = restTemplate.exchange(
-                    "/codelist", HttpMethod.POST, new HttpEntity<>(requests), RESPONSE_TYPE);
+                    "/codelist", HttpMethod.POST, new HttpEntity<>(requests), CODELIST_LIST_RESP);
 
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
             CodelistResponse codelist = responseEntity.getBody().get(0);
@@ -139,7 +157,7 @@ class CodelistControllerIT extends IntegrationTestBase {
             List<CodelistRequest> requests = createNrOfCodelistRequests(20);
 
             ResponseEntity<List<CodelistResponse>> responseEntity = restTemplate.exchange(
-                    "/codelist", HttpMethod.POST, new HttpEntity<>(requests), RESPONSE_TYPE);
+                    "/codelist", HttpMethod.POST, new HttpEntity<>(requests), CODELIST_LIST_RESP);
 
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
             assertThat(CodelistService.getCodelist(ListName.THIRD_PARTY).size()).isEqualTo(20);
