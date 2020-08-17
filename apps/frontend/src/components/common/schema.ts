@@ -65,7 +65,7 @@ export const processSchema = () =>
     productTeams: yup.array().of(yup.string()),
     products: yup.array().of(yup.string()),
     legalBases: yup.array().of(legalBasisSchema()),
-    legalBasesOpen: yup.boolean(),
+    legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
     start: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
     end: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
     automaticProcessing: yup.boolean(),

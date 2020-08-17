@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {KeyboardEvent} from 'react'
+import {KeyboardEvent, useState} from 'react'
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal'
 import {Field, FieldProps, Form, Formik, FormikProps,} from 'formik'
 import {Block, BlockProps} from 'baseui/block'
@@ -9,7 +9,7 @@ import {ProcessFormValues, ProcessStatus, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} fro
 import {codelist} from '../../../service/Codelist'
 import {intl, theme} from '../../../util'
 import {processSchema} from '../../common/schema'
-import {Accordion, Panel, PanelOverrides} from 'baseui/accordion'
+import {Panel, PanelOverrides} from 'baseui/accordion'
 import CustomizedModalBlock from '../../common/CustomizedModalBlock'
 import {DateFieldsProcessModal} from '../DateFieldsProcessModal'
 import FieldName from '../common/FieldName'
@@ -34,6 +34,7 @@ import FieldLegalBasis from "../common/FieldLegalBasis";
 import PanelTitle from "../common/PanelTitle";
 import FieldTransferGroundsOutsideEU from '../common/FieldTransferGroundsOutsideEU'
 import FieldTransferGroundsOutsideEUOther from '../common/FieldTransferGroundsOutsideEUOther'
+import {StatelessAccordion} from 'baseui/accordion/index'
 
 const modalHeaderProps: BlockProps = {
   display: 'flex',
@@ -81,8 +82,14 @@ const panelOverrides: PanelOverrides<any> = {
 
 const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, title}: ModalProcessProps) => {
 
-  const [isPanelExpanded, togglePanel] = React.useReducer(prevState => !prevState, false)
+  const [expanded, setExpanded] = useState<React.Key[]>([])
   const [showResponsibleSelect, setShowResponsibleSelect] = React.useState<boolean>(!!initialValues.commonExternalProcessResponsible)
+
+  const expand = (panelKey: string) => {
+    if (expanded.indexOf(panelKey) < 0) {
+      setExpanded([panelKey])
+    }
+  }
 
   const disableEnter = (e: KeyboardEvent) => {
     if (e.key === 'Enter') e.preventDefault()
@@ -102,7 +109,6 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
         <Formik
           initialValues={initialValues}
           onSubmit={(values) => {
-            values.legalBasesOpen = false
             submit(values)
           }}
           validationSchema={processSchema()}
@@ -110,6 +116,8 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
             if (formikBag.isValidating && formikBag.isSubmitting && !formikBag.isValid) {
               console.log(formikBag.errors)
               writeLog('warn', 'submit process', JSON.stringify(formikBag.errors))
+              if (formikBag.errors.legalBasesOpen) expand('legalBasis')
+              else if (formikBag.errors.dataProcessing?.transferGroundsOutsideEU || formikBag.errors.dataProcessing?.transferGroundsOutsideEUOther) expand('dataProcessor')
             }
             return (
               <Form onKeyDown={disableEnter}>
@@ -194,17 +202,16 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                     </Block>
                   </CustomizedModalBlock>
 
-                  <Accordion overrides={{
+                  <StatelessAccordion overrides={{
                     Root: {
                       style: {
                         marginTop: '25px'
                       }
                     }
-                  }}>
-                    <Panel
-                      title={<ModalLabel label={<PanelTitle title={intl.organizing} expanded={isPanelExpanded}/>}/>}
-                      onChange={togglePanel}
-                      overrides={{...panelOverrides}}
+                  }} expanded={expanded} onChange={e => setExpanded(e.expanded)}>
+                    <Panel key='organizing'
+                           title={<ModalLabel label={<PanelTitle title={intl.organizing} expanded={expanded.indexOf('organizing') >= 0}/>}/>}
+                           overrides={{...panelOverrides}}
                     >
                       <Block display='flex' width='100%' justifyContent='space-between'>
                         <Block width='48%'><ModalLabel label={intl.department} tooltip={intl.departmentHelpText}/></Block>
@@ -247,19 +254,17 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                       </Block>
                     </Panel>
 
-                    <Panel
-                      title={<PanelTitle title={intl.legalBasis} expanded={isPanelExpanded}/>}
-                      onChange={togglePanel}
-                      overrides={{...panelOverrides}}
+                    <Panel key='legalBasis'
+                           title={<PanelTitle title={intl.legalBasis} expanded={expanded.indexOf('legalBasis') >= 0}/>}
+                           overrides={{...panelOverrides}}
                     >
                       <FieldLegalBasis formikBag={formikBag}/>
                       <Error fieldName='legalBasesOpen' fullWidth={true}/>
                     </Panel>
 
-                    <Panel
-                      title={<PanelTitle title={intl.automation} expanded={isPanelExpanded}/>}
-                      onChange={togglePanel}
-                      overrides={{...panelOverrides}}
+                    <Panel key='automation'
+                           title={<PanelTitle title={intl.automation} expanded={expanded.indexOf('automation') >= 0}/>}
+                           overrides={{...panelOverrides}}
                     >
                       <Block {...rowBlockProps}>
                         <ModalLabel label={intl.isAutomationNeeded} tooltip={intl.processAutomationHelpText} fullwidth={true}/>
@@ -271,10 +276,9 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                       </Block>
                     </Panel>
 
-                    <Panel
-                      title={<PanelTitle title={intl.dataProcessor} expanded={isPanelExpanded}/>}
-                      onChange={togglePanel}
-                      overrides={{...panelOverrides}}
+                    <Panel key='dataProcessor'
+                           title={<PanelTitle title={intl.dataProcessor} expanded={expanded.indexOf('dataProcessor') >= 0}/>}
+                           overrides={{...panelOverrides}}
                     >
                       <Block {...rowBlockProps} marginTop={0}>
                         <ModalLabel label={intl.isDataProcessorUsed} tooltip={intl.dataProcessorHelpText}/>
@@ -312,23 +316,21 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                         </>}
                       </>}
                     </Panel>
-                    <Panel
-                      title={<PanelTitle title={intl.retention} expanded={isPanelExpanded}/>}
-                      onChange={togglePanel}
-                      overrides={{...panelOverrides}}
+                    <Panel key='retention'
+                           title={<PanelTitle title={intl.retention} expanded={expanded.indexOf('retention') >= 0}/>}
+                           overrides={{...panelOverrides}}
                     >
                       <RetentionItems formikBag={formikBag}/>
                     </Panel>
 
-                    <Panel
-                      title={<PanelTitle title={intl.pvkRequired} expanded={isPanelExpanded}/>}
-                      onChange={togglePanel}
-                      overrides={{...panelOverrides}}
+                    <Panel key='dpia'
+                           title={<PanelTitle title={intl.pvkRequired} expanded={expanded.indexOf('dpia') >= 0}/>}
+                           overrides={{...panelOverrides}}
                     >
                       <DpiaItems formikBag={formikBag}/>
                     </Panel>
 
-                  </Accordion>
+                  </StatelessAccordion>
                 </ModalBody>
 
                 <ModalFooter style={{
@@ -343,11 +345,11 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
               </Form>
             )
           }}
-      />
+        />
 
-    </Block>
-</Modal>
-)
+      </Block>
+    </Modal>
+  )
 }
 
 export default ModalProcess
