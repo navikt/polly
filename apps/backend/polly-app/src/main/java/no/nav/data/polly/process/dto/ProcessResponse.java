@@ -74,7 +74,7 @@ public class ProcessResponse {
         @Singular
         private List<String> dataProcessorAgreements;
         private Boolean dataProcessorOutsideEU;
-        private String transferGroundsOutsideEU;
+        private CodelistResponse transferGroundsOutsideEU;
         private String transferGroundsOutsideEUOther;
     }
 

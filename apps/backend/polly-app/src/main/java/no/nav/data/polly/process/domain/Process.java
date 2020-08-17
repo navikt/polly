@@ -115,7 +115,7 @@ public class Process extends Auditable {
                         .dataProcessor(data.getDataProcessing().getDataProcessor())
                         .dataProcessorAgreements(nullToEmptyList(data.getDataProcessing().getDataProcessorAgreements()))
                         .dataProcessorOutsideEU(data.getDataProcessing().getDataProcessorOutsideEU())
-                        .transferGroundsOutsideEU(data.getDataProcessing().getTransferGroundsOutsideEU())
+                        .transferGroundsOutsideEU(gettransferGroundsOutsideEUCodeResponse())
                         .transferGroundsOutsideEUOther(data.getDataProcessing().getTransferGroundsOutsideEUOther())
                         .build())
                 .retention(data.getRetention() == null ? null : RetentionResponse.builder()
@@ -233,6 +233,10 @@ public class Process extends Auditable {
 
     private CodelistResponse getCommonExternalProcessResponsibleCodeResponse() {
         return CodelistService.getCodelistResponse(ListName.THIRD_PARTY, data.getCommonExternalProcessResponsible());
+    }
+
+    private CodelistResponse gettransferGroundsOutsideEUCodeResponse() {
+        return CodelistService.getCodelistResponse(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, data.getDataProcessing().getTransferGroundsOutsideEU());
     }
 
     private List<CodelistResponse> getProductCodeResponses() {
