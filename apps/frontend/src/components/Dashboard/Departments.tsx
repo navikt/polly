@@ -14,7 +14,9 @@ import CustomizedStatefulTooltip from "../common/CustomizedStatefulTooltip";
 
 const TextWithNumber = (props: { label: string; number: number }) => (
   <Block display="flex" width="max-content" marginBottom="0" justifyContent="center">
-    <Paragraph2 margin="0">{props.label} <b>{props.number}</b></Paragraph2>
+    <Paragraph2 margin="0">{props.label} <b style={{
+      textDecoration:'underline'
+    }}>{props.number}</b></Paragraph2>
   </Block>
 )
 
@@ -47,10 +49,10 @@ const DepartmentCard = (props: DepartmentCardProps) => {
               <Label1 color={theme.colors.accent300} $style={{textAlign: 'center'}}>{parsedDepartmentName(department.department)}</Label1>
             </RouteLink>
 
-            <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.COMPLETED)}>
+            <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.COMPLETED)} style={{textDecoration: 'none'}}>
               <TextWithNumber label="Fullført" number={department.processesCompleted}/>
             </RouteLink>
-            <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.IN_PROGRESS)}>
+            <RouteLink href={genProcessPath(Section.department, department.department, undefined, ProcessStatus.IN_PROGRESS)} style={{textDecoration: 'none'}}>
               <TextWithNumber label="Under arbeid" number={department.processesInProgress}/>
             </RouteLink>
           </Block>
