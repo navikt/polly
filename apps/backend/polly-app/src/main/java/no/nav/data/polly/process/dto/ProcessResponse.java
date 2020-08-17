@@ -67,13 +67,15 @@ public class ProcessResponse {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    @JsonPropertyOrder({"dataProcessor", "dataProcessorAgreements", "dataProcessorOutsideEU"})
+    @JsonPropertyOrder({"dataProcessor", "dataProcessorAgreements", "dataProcessorOutsideEU", "transferGroundsOutsideEU", "transferGroundsOutsideEUOther"})
     public static class DataProcessingResponse {
 
         private Boolean dataProcessor;
         @Singular
         private List<String> dataProcessorAgreements;
         private Boolean dataProcessorOutsideEU;
+        private String transferGroundsOutsideEU;
+        private String transferGroundsOutsideEUOther;
     }
 
     @Data

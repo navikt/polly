@@ -70,11 +70,15 @@ public class ProcessRequest implements RequestElement {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
+    @FieldNameConstants
     public static class DataProcessingRequest {
 
         private Boolean dataProcessor;
         private List<String> dataProcessorAgreements;
         private Boolean dataProcessorOutsideEU;
+        @ApiModelProperty(value = "Codelist TRANSFER_GROUNDS_OUTSIDE_EU")
+        private String transferGroundsOutsideEU;
+        private String transferGroundsOutsideEUOther;
     }
 
     @Data
@@ -140,6 +144,10 @@ public class ProcessRequest implements RequestElement {
             dp.setDataProcessorAgreements(List.of());
             dp.setDataProcessorOutsideEU(null);
         }
+        if (Boolean.FALSE.equals(dp.getDataProcessorOutsideEU())) {
+            dp.setTransferGroundsOutsideEU(null);
+            dp.setTransferGroundsOutsideEUOther(null);
+        }
     }
 
     private void formatRetention() {
@@ -177,6 +185,9 @@ public class ProcessRequest implements RequestElement {
         validator.validateType(Fields.legalBases, legalBases);
         validator.checkRequiredEnum(Fields.status, status, ProcessStatus.class);
         validator.checkPattern(Fields.dpia + "." + DpiaRequest.Fields.riskOwner, dpia.riskOwner, NAV_IDENT_PATTERN);
+        if (Boolean.TRUE.equals(dataProcessing.getDataProcessorOutsideEU())){
+            validator.checkRequiredCodelist(DataProcessingRequest.Fields.transferGroundsOutsideEU, dataProcessing.transferGroundsOutsideEU, ListName.TRANSFER_GROUNDS_OUTSIDE_EU);
+        }
     }
 
 }

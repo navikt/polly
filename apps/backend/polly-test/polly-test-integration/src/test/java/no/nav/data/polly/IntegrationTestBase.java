@@ -219,7 +219,7 @@ public abstract class IntegrationTestBase {
     }
 
     protected Process createProcess(String name, String purpose, String department, String subDepartment, List<LegalBasis> legalBases, String product,
-            String commonExternalProcessResponsible) {
+            String commonExternalProcessResponsible, String transferGroundsOutsideEU) {
         return processRepository.save(Process.builder()
                 .generateId()
                 .name(name)
@@ -232,6 +232,7 @@ public abstract class IntegrationTestBase {
                         .productTeams(List.of("ProductTeam"))
                         .products(List.of(product))
                         .legalBases(legalBases)
+                        .dataProcessing(DataProcessing.builder().dataProcessor(true).dataProcessorOutsideEU(true).transferGroundsOutsideEU(transferGroundsOutsideEU).build())
                         .build())
                 .build());
     }
@@ -251,7 +252,8 @@ public abstract class IntegrationTestBase {
                                         .usesAllInformationTypes(true)
                                         .automaticProcessing(true)
                                         .profiling(true)
-                                        .dataProcessing(DataProcessing.builder().dataProcessor(true).dataProcessorAgreements(List.of("X")).dataProcessorOutsideEU(true).build())
+                                        .dataProcessing(DataProcessing.builder().dataProcessor(true).dataProcessorAgreements(List.of("X")).dataProcessorOutsideEU(true)
+                                                .transferGroundsOutsideEU("OTHER").transferGroundsOutsideEU("pretend its ok").build())
                                         .retention(Retention.builder().retentionPlan(true).retentionMonths(24).retentionStart("Birth").retentionDescription("ret desc").build())
                                         .dpia(Dpia.builder().needForDpia(true).refToDpia("ref123").grounds("default").processImplemented(true).riskOwner("A123457")
                                                 .riskOwnerFunction("teamlead").build())
@@ -325,6 +327,8 @@ public abstract class IntegrationTestBase {
                         .dataProcessor(true)
                         .dataProcessorAgreements(List.of("X"))
                         .dataProcessorOutsideEU(true)
+                        .transferGroundsOutsideEU("OTHER")
+                        .transferGroundsOutsideEU("pretend its ok")
                         .build())
                 .retention(RetentionResponse.builder()
                         .retentionPlan(true)

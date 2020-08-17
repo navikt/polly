@@ -35,6 +35,8 @@ public class CodelistStub {
         add(ListName.SYSTEM, "TPS", "TPS", "Tjenestebasert PersondataSystem");
         add(ListName.SYSTEM, "PESYS", "Pesys", "Pensjonssystem");
         add(ListName.SYSTEM, "AA_REG", "AA-REG", "Arbeidsgiver / Arbeidstaker register");
+        add(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, "APPROVED_THIRD_COUNTRY", "Godkjent tredjeland", "Godkjent tredjeland");
+        add(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, "OTHER", "Other", "Other");
     }
 
     private static void add(ListName source, String code, String name, String desc) {
