@@ -79,6 +79,7 @@ public class ProcessRequest implements RequestElement {
         @ApiModelProperty(value = "Codelist TRANSFER_GROUNDS_OUTSIDE_EU")
         private String transferGroundsOutsideEU;
         private String transferGroundsOutsideEUOther;
+        private List<String> transferCountries;
     }
 
     @Data
@@ -147,9 +148,11 @@ public class ProcessRequest implements RequestElement {
         if (!Boolean.TRUE.equals(dp.getDataProcessorOutsideEU())) {
             dp.setTransferGroundsOutsideEU(null);
             dp.setTransferGroundsOutsideEUOther(null);
+            dp.setTransferCountries(List.of());
         } else {
             dp.setTransferGroundsOutsideEU(toUpperCaseAndTrim(dp.getTransferGroundsOutsideEU()));
             dp.setTransferGroundsOutsideEUOther(trimToNull(dp.getTransferGroundsOutsideEUOther()));
+            dp.setTransferCountries(formatList(dp.getTransferCountries()));
         }
     }
 

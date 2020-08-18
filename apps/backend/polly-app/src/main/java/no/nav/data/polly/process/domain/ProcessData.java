@@ -56,6 +56,7 @@ public class ProcessData {
         private Boolean dataProcessorOutsideEU;
         private String transferGroundsOutsideEU;
         private String transferGroundsOutsideEUOther;
+        private List<String> transferCountries;
     }
 
     @Data
