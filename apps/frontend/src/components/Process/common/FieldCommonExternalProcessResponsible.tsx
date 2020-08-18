@@ -1,9 +1,9 @@
 import * as React from 'react'
-import { Select, Value } from 'baseui/select'
-import { codelist, ListName } from '../../../service/Codelist'
-import { Field, FieldProps } from 'formik'
-import { ProcessFormValues } from '../../../constants'
-import { Block } from 'baseui/block'
+import {Select, Value} from 'baseui/select'
+import {codelist, ListName} from '../../../service/Codelist'
+import {Field, FieldProps} from 'formik'
+import {ProcessFormValues} from '../../../constants'
+import {Block} from 'baseui/block'
 
 const FieldCommonExternalProcessResponsible = (props: { thirdParty?: string, hideSelect: () => void }) => {
   const {thirdParty} = props
@@ -16,7 +16,7 @@ const FieldCommonExternalProcessResponsible = (props: { thirdParty?: string, hid
     <Field
       name='commonExternalProcessResponsible'
       render={({form}: FieldProps<ProcessFormValues>) => (
-        <Block marginRight='10px' width={'100%'}>
+        <Block width={'100%'}>
           <Select
             options={codelist.getParsedOptions(ListName.THIRD_PARTY)}
             onChange={({value}) => {

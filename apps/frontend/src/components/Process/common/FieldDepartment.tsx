@@ -16,7 +16,7 @@ const FieldDepartment = (props: { department?: string }) => {
     <Field
       name='department'
       render={({form}: FieldProps<ProcessFormValues>) => (
-        <Block marginRight='10px' width={'100%'}>
+        <Block width={'100%'}>
           <Select
             options={codelist.getParsedOptions(ListName.DEPARTMENT)}
             onChange={({value}) => {
