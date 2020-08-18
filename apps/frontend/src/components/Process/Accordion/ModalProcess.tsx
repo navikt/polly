@@ -35,6 +35,7 @@ import PanelTitle from "../common/PanelTitle";
 import FieldTransferGroundsOutsideEU from '../common/FieldTransferGroundsOutsideEU'
 import FieldTransferGroundsOutsideEUOther from '../common/FieldTransferGroundsOutsideEUOther'
 import {StatelessAccordion} from 'baseui/accordion/index'
+import FieldTransferCountries from '../common/FieldTransferCountries'
 
 const modalHeaderProps: BlockProps = {
   display: 'flex',
@@ -117,7 +118,11 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
               console.log(formikBag.errors)
               writeLog('warn', 'submit process', JSON.stringify(formikBag.errors))
               if (formikBag.errors.legalBasesOpen) expand('legalBasis')
-              else if (formikBag.errors.dataProcessing?.transferGroundsOutsideEU || formikBag.errors.dataProcessing?.transferGroundsOutsideEUOther) expand('dataProcessor')
+              else if (
+                formikBag.errors.dataProcessing?.transferGroundsOutsideEU ||
+                formikBag.errors.dataProcessing?.transferGroundsOutsideEUOther ||
+                formikBag.errors.dataProcessing?.transferCountries
+              ) expand('dataProcessor')
             }
             return (
               <Form onKeyDown={disableEnter}>
@@ -313,6 +318,12 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                             <FieldTransferGroundsOutsideEUOther/>
                           </Block>}
                           <Error fieldName='dataProcessing.transferGroundsOutsideEUOther'/>
+
+                          <Block {...rowBlockProps}>
+                            <ModalLabel label={intl.countries}/>
+                            <FieldTransferCountries formikBag={formikBag}/>
+                          </Block>
+                          <Error fieldName='dataProcessing.transferCountries'/>
                         </>}
                       </>}
                     </Panel>

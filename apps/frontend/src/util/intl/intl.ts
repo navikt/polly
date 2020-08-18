@@ -99,6 +99,7 @@ export interface IStrings {
   isDataProcessedOutsideEUEEA: string;
   transferGroundsOutsideEUEEA: string;
   transferGroundsOutsideEUEEAOther: string;
+  countries: string;
   includeDefaultDocument: string;
   inProduction: string;
   notInProduction: string;

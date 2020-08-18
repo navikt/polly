@@ -1,5 +1,5 @@
 import {AxiosResponse} from 'axios'
-import {getAllCodelists} from '../api'
+import {getAllCodelists, getCountriesOutsideEUEEA} from '../api'
 
 export enum ListName {
   PURPOSE = 'PURPOSE',
@@ -36,15 +36,20 @@ class CodelistService {
   lists?: AllCodelists;
   error?: string;
   promise: Promise<any>;
+  countries?: CountryCode[];
 
   constructor() {
     this.promise = this.fetchData()
   }
 
   private fetchData = async (refresh?: boolean) => {
-    return getAllCodelists(refresh)
+    const codeListPromise = getAllCodelists(refresh)
     .then(this.handleGetCodelistResponse)
     .catch(err => (this.error = err.message))
+    const countriesPromise = getCountriesOutsideEUEEA()
+    .then(codes => this.countries = codes)
+    .catch(err => (this.error = err.message))
+    return Promise.all([codeListPromise, countriesPromise])
   }
 
   handleGetCodelistResponse = (response: AxiosResponse<AllCodelists>) => {
@@ -66,6 +71,14 @@ class CodelistService {
 
   isLoaded() {
     return this.lists || this.error
+  }
+
+  getCountryCodesOutsideEu() {
+    return this.countries || []
+  }
+
+  countryName(code: string): string {
+    return this.getCountryCodesOutsideEu().find(c => c.code === code)?.description || code
   }
 
   getCodes(list: ListName): Code[] {
@@ -161,4 +174,11 @@ export interface Code {
   shortName: string;
   description: string;
   invalidCode?: boolean;
+}
+
+export interface CountryCode {
+  code: string
+  description: string
+  validFrom: string
+  validTo: string
 }

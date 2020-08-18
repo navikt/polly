@@ -144,6 +144,7 @@ export interface DataProcessingFormValues {
   dataProcessorOutsideEU?: boolean;
   transferGroundsOutsideEU?: string;
   transferGroundsOutsideEUOther?: string;
+  transferCountries: string[];
 }
 
 export interface DataProcessing {
@@ -152,6 +153,7 @@ export interface DataProcessing {
   dataProcessorOutsideEU?: boolean;
   transferGroundsOutsideEU?: Code;
   transferGroundsOutsideEUOther?: string;
+  transferCountries: string[];
 }
 
 export interface Retention {

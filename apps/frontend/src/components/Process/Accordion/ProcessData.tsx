@@ -41,7 +41,6 @@ const ProcessData = (props: {process: Process}) => {
   const dataProcessorAgreements = !!process.dataProcessing?.dataProcessorAgreements.length
   const [riskOwnerFullName, setRiskOwnerFullName] = React.useState<string>()
 
-
   useEffect(() => {
     (async () => {
       if (!env.disableRiskOwner && process.dpia?.riskOwner) {
@@ -51,7 +50,6 @@ const ProcessData = (props: {process: Process}) => {
       }
     })()
   }, [process])
-
 
   const subjectCategoriesSummarised = uniqBy(process.policies.flatMap(p => p.subjectCategories), 'code')
 
@@ -153,11 +151,18 @@ const ProcessData = (props: {process: Process}) => {
               <span>{boolToText(process.dataProcessing.dataProcessorOutsideEU)}</span>
             </Block>
             {process.dataProcessing.dataProcessorOutsideEU &&
-            <Block>
-              <span>{intl.transferGroundsOutsideEUEEA}: </span>
-              {process.dataProcessing.transferGroundsOutsideEU && <span>{codelist.getShortnameForCode(process.dataProcessing.transferGroundsOutsideEU)} </span>}
-              {process.dataProcessing.transferGroundsOutsideEUOther && <span>: {process.dataProcessing.transferGroundsOutsideEUOther}</span>}
-            </Block>}
+            <>
+              <Block>
+                <span>{intl.transferGroundsOutsideEUEEA}: </span>
+                {process.dataProcessing.transferGroundsOutsideEU && <span>{codelist.getShortnameForCode(process.dataProcessing.transferGroundsOutsideEU)} </span>}
+                {process.dataProcessing.transferGroundsOutsideEUOther && <span>: {process.dataProcessing.transferGroundsOutsideEUOther}</span>}
+              </Block>
+              {process.dataProcessing?.transferCountries.length && <Block>
+                <span>{intl.countries}: </span>
+                <span>{process.dataProcessing.transferCountries.map(c => codelist.countryName(c)).join(', ')}</span>
+              </Block>}
+            </>
+            }
           </Block>}
         </>
       </DataText>

@@ -1,7 +1,7 @@
 import axios from "axios"
-import { AllCodelists, Code, ListName } from "../service/Codelist"
-import { CategoryUsage, CodeUsage } from "../constants"
-import { env } from "../util/env"
+import {AllCodelists, Code, CountryCode, ListName} from "../service/Codelist"
+import {CategoryUsage, CodeUsage} from "../constants"
+import {env} from "../util/env"
 
 // refresh will force backend to re-read codelists from db, due to caching and multibackend
 export const getAllCodelists = async (refresh?: boolean) => await axios.get<AllCodelists>(`${env.pollyBaseUrl}/codelist?refresh=${refresh ? 'true' : 'false'}`)
@@ -29,3 +29,5 @@ export const updateCodelist = async (code: Code) => {
 export const deleteCodelist = async (list: string, code: string) => {
   return axios.delete(`${env.pollyBaseUrl}/codelist/${list}/${code}`)
 }
+
+export const getCountriesOutsideEUEEA = async () => (await axios.get<CountryCode[]>(`${env.pollyBaseUrl}/codelist/countriesoutsideeea`)).data
