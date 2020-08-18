@@ -23,7 +23,7 @@ const FieldSubDepartments = (props: { formikBag: FormikProps<ProcessFormValues> 
             />
           </Block>
           <Block>
-            <Block>{renderTagList(props.formikBag.values.subDepartments, arrayHelpers)}</Block>
+            <Block>{renderTagList(props.formikBag.values.subDepartments.map(p => codelist.getShortname(ListName.SUB_DEPARTMENT, p)), arrayHelpers)}</Block>
           </Block>
         </Block>
       )}
