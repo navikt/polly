@@ -205,10 +205,10 @@ const SelectType = (props: {type: SearchType, setType: (type: SearchType) => voi
     position='absolute'
     marginTop='-4px'
     backgroundColor={theme.colors.primary50}
-    width='600px'
+    width='40vw'
     $style={{
       borderBottomLeftRadius: '8px',
-      borderBottomRightRadius: '8px'
+      borderBottomRightRadius: '8px',
     }}>
     <Block
       marginLeft='3px'
@@ -246,7 +246,6 @@ export const MainSearch = () => {
   return (
     <Block>
       <Block display='flex'
-             position='relative'
              alignItems='center'>
         <Select
           noResultsMsg={intl.emptyTable}
@@ -290,7 +289,7 @@ export const MainSearch = () => {
             },
             Root: {
               style: {
-                width: '600px',
+                width: '40vw',
               }
             }
           }
