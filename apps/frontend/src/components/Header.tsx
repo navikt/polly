@@ -1,5 +1,4 @@
 import * as React from 'react'
-import {useEffect, useState} from 'react'
 import {ALIGN, HeaderNavigation, StyledNavigationItem as NavigationItem, StyledNavigationList as NavigationList,} from 'baseui/header-navigation'
 import {Button} from 'baseui/button'
 import {Block, BlockProps} from 'baseui/block'
@@ -19,7 +18,12 @@ import {paddingAll} from './common/Style'
 import MainSearch from './MainSearch'
 
 
-const LoggedInHeader = (props: { location: string }) => {
+function useCurrentUrl() {
+  const location = useLocation()
+  return window.location.protocol + "//" + window.location.host + location.pathname
+}
+
+const LoggedInHeader = () => {
   const blockStyle: BlockProps = {
     display: 'flex',
     width: '100%',
@@ -32,7 +36,7 @@ const LoggedInHeader = (props: { location: string }) => {
           <Label2 {...blockStyle}>{intl.name}: {user.getName()}</Label2>
           <Label2 {...blockStyle}>{intl.groups}: {user.getGroupsHumanReadable().join(', ')}</Label2>
           <Block {...blockStyle}>
-            <StyledLink href={`/logout?redirect_uri=${props.location}`}>
+            <StyledLink href={`/logout?redirect_uri=${useCurrentUrl()}`}>
               {intl.logout}
             </StyledLink>
           </Block>
@@ -44,9 +48,9 @@ const LoggedInHeader = (props: { location: string }) => {
   )
 }
 
-const LoginButton = (props: { location: string }) => {
+const LoginButton = () => {
   return (
-    <StyledLink href={`/login?redirect_uri=${props.location}`}>
+    <StyledLink href={`/login?redirect_uri=${useCurrentUrl()}`}>
       <Button $style={{borderTopLeftRadius: 0, borderTopRightRadius: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0}}>
         {intl.login}
       </Button>
@@ -54,15 +58,15 @@ const LoginButton = (props: { location: string }) => {
   )
 }
 
-const Flag = (props: { langCode: string }) => (
+const Flag = (props: {langCode: string}) => (
   <span role="img" aria-label={langs[props.langCode].name}><FlagIcon country={langs[props.langCode].flag}/></span>
 )
 
-const FlagWithName = (props: { langCode: string }) => (
+const FlagWithName = (props: {langCode: string}) => (
   <span><Flag langCode={props.langCode}/> {langs[props.langCode].name}</span>
 )
 
-const LangDropdown = (props: { setLang: (lang: string) => void }) => {
+const LangDropdown = (props: {setLang: (lang: string) => void}) => {
   return (
     <StatefulPopover
       content={({close}) =>
@@ -145,10 +149,6 @@ interface HeaderProps {
 }
 
 const Header = (props: HeaderProps) => {
-  const [url, setUrl] = useState(window.location.href)
-  const location = useLocation()
-  useEffect(() => setUrl(window.location.href), [location.pathname])
-
   return (
     <Block paddingRight={"30px"} paddingLeft={"30px"}>
       <HeaderNavigation overrides={{Root: {style: {paddingBottom: 0, borderBottomStyle: 'none'}}}}>
@@ -174,12 +174,12 @@ const Header = (props: HeaderProps) => {
 
             {!user.isLoggedIn() && (
               <NavigationItem $style={{paddingLeft: 0}}>
-                <LoginButton location={url}/>
+                <LoginButton/>
               </NavigationItem>
             )}
             {user.isLoggedIn() && (
               <NavigationItem $style={{paddingLeft: 0}}>
-                <LoggedInHeader location={url}/>
+                <LoggedInHeader/>
               </NavigationItem>
             )}
           </NavigationList>
