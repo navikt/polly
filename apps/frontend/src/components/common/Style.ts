@@ -1,6 +1,6 @@
-import { colors } from "baseui/tokens";
-import { BlockProps } from "baseui/block";
-import { theme } from "../../util";
+import {colors} from "baseui/tokens";
+import {BlockProps} from "baseui/block";
+import {theme} from "../../util";
 
 export const marginZero = { marginLeft: 0, marginRight: 0, marginTop: 0, marginBottom: 0 };
 export const paddingZero = { paddingLeft: 0, paddingRight: 0, paddingTop: 0, paddingBottom: 0 };
@@ -40,6 +40,6 @@ export const cardShadow = {
 
 export const chartCardProps: BlockProps = {
   marginTop: theme.sizing.scale600,
-  width: "30%",
+  width: ['95%','45%','30%','30%'],
   $style: { boxShadow: "0px 0px 6px 3px rgba(0,0,0,0.08)", padding: "15px" },
 };
