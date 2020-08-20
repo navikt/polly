@@ -75,7 +75,7 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
   } = (process || {})
 
   return {
-    legalBasesOpen: !legalBases ? true : legalBases.length <= 0,
+    legalBasesOpen: false,
     id: id,
     name: name || '',
     description: description || '',
