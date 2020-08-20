@@ -125,9 +125,13 @@ public class AzureTokenProvider implements TokenProvider {
         var sessionId = session.substring(0, SESS_ID_LEN);
         var sessionKey = session.substring(SESS_ID_LEN);
         var auth = authService.getAuth(sessionId, sessionKey);
-        String accessToken = getAccessTokenForResource(auth.decryptRefreshToken(), resourceForAppId());
-        auth.addAccessToken(accessToken);
-        return auth;
+        try {
+            String accessToken = getAccessTokenForResource(auth.decryptRefreshToken(), resourceForAppId());
+            auth.addAccessToken(accessToken);
+            return auth;
+        } catch (RuntimeException e) {
+            throw new TechnicalException("Failed to get access token for userId=%s initiated=%s".formatted(auth.getUserId(), auth.getInitiated()));
+        }
     }
 
     @Override
