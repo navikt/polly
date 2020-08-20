@@ -25,7 +25,7 @@ const items: BlockProps = {
 
 const Brand = () => (
 
-  <Block display="flex" flexDirection='column' padding="1rem">
+  <Block display="flex" flexDirection='column' padding="1rem" position={'fixed'}>
     <StyledLink style={{ textDecoration: 'none', textAlign: 'center' }} href="/">
       <img alt='logo' src={BKLogo} />
       <H6 color="white" marginTop="1rem" marginLeft="5px" marginBottom="2rem">Behandlingskatalog</H6>
@@ -37,7 +37,7 @@ const SideBar = () => {
   return (
     <Block {...sideBarProps}>
       <Brand />
-      <Block {...items}>
+      <Block {...items} position={'fixed'} top={'150px'}>
         <NavItem to="/process" text={intl.processes} tooltip={intl.processSideMenuHelpText}/>
         <NavItem to="/informationtype" text={intl.informationTypes}  tooltip={intl.informationTypeSideMenuHelpText}/>
         <NavItem to="/document" text={intl.documents}  tooltip={intl.documentSideMenuHelpText}/>
