@@ -11,10 +11,11 @@ import {canViewAlerts} from '../../pages/AlertEventPage'
 import {datajegerSlackLink, documentationLink} from '../../util/config'
 
 const sideBarProps: BlockProps = {
-  position: 'fixed',
   height: '100%',
   width: '240px',
   backgroundColor: theme.colors.primaryA,
+  display: "flex",
+  flexDirection: "column"
 }
 
 const items: BlockProps = {
@@ -24,7 +25,7 @@ const items: BlockProps = {
 
 const Brand = () => (
 
-  <Block display="flex" flexDirection='column' padding="1rem" marginTop="1rem">
+  <Block display="flex" flexDirection='column' padding="1rem" position={'fixed'}>
     <StyledLink style={{ textDecoration: 'none', textAlign: 'center' }} href="/">
       <img alt='logo' src={BKLogo} />
       <H6 color="white" marginTop="1rem" marginLeft="5px" marginBottom="2rem">Behandlingskatalog</H6>
@@ -36,7 +37,7 @@ const SideBar = () => {
   return (
     <Block {...sideBarProps}>
       <Brand />
-      <Block {...items}>
+      <Block {...items} position={'fixed'} top={'150px'}>
         <NavItem to="/process" text={intl.processes} tooltip={intl.processSideMenuHelpText}/>
         <NavItem to="/informationtype" text={intl.informationTypes}  tooltip={intl.informationTypeSideMenuHelpText}/>
         <NavItem to="/document" text={intl.documents}  tooltip={intl.documentSideMenuHelpText}/>
@@ -45,7 +46,7 @@ const SideBar = () => {
         {canViewAlerts() && <NavItem to="/alert/events" text={intl.alerts} />}
       </Block>
 
-      <Block position="absolute" bottom="0" width="100%">
+      <Block bottom={0} marginTop={"auto"} position={'fixed'}>
         <Block display="flex" justifyContent="center">
           <Block paddingBottom={theme.sizing.scale600} width="40%">
             <img src={NavLogo} alt='NAV logo' width="100%" />
@@ -62,7 +63,7 @@ const SideBar = () => {
             <Paragraph4 color={theme.colors.white}>{intl.aboutUs}</Paragraph4>
           </Block>
         </a>
-      </Block>
+      </Block>'
     </Block>
   )
 }

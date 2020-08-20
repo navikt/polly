@@ -127,6 +127,7 @@ const Visualization = (props: VisualizationProps) => {
   const [hover, setHover] = useState<number>(-1)
   const [type, toggle] = useReducer(old => old === 'bar' ? 'pie' : 'bar', props.type)
 
+  let noChartData = !data.length || !data.reduce((p, c) => p + c.size, 0)
   return (
     <Block position='relative'>
       <Card overrides={{
@@ -140,16 +141,15 @@ const Visualization = (props: VisualizationProps) => {
       }}>
         <div onMouseLeave={() => setHover(-1)}>
           <Block display='flex' alignItems='center' flexDirection={leftLegend ? 'row-reverse' : 'row'} maxWidth={"fit-content"} flexWrap>
-            {!!data.length && <Block>
+            {!noChartData && <Block>
               {type === 'pie' && <PieChart data={data} radius={size} hover={hover} setHover={setHover}/>}
               {type === 'bar' && <BarChart data={data} size={size} hover={hover} setHover={setHover}/>}
             </Block>}
-            {!data.length && <Block marginTop={theme.sizing.scale400}/>}
-            <Block marginLeft={theme.sizing.scale200} marginRight={theme.sizing.scale200}>
+            <Block marginLeft={theme.sizing.scale200} marginRight={theme.sizing.scale200} marginTop={noChartData ? theme.sizing.scale400 : undefined}>
               <Label1 marginBottom={theme.sizing.scale300}>
                 {chartTitle}
               </Label1>
-              {data.map((d, idx) =>
+              {!noChartData && data.map((d, idx) =>
                 <div key={idx} onMouseOver={() => setHover(idx)} onClick={d.onClick}>
                   <Block backgroundColor={idx === hover ? theme.colors.accent50 : theme.colors.white}
                          $style={cursor} display='flex' alignItems='center'>
@@ -160,7 +160,7 @@ const Visualization = (props: VisualizationProps) => {
                   </Block>
                 </div>
               )}
-              {!data.length && <Block $style={{...marginAll(theme.sizing.scale100)}}>{intl.emptyTable}</Block>}
+              {noChartData && <Block $style={{...marginAll(theme.sizing.scale100)}}>{intl.emptyTable}</Block>}
             </Block>
           </Block>
         </div>
