@@ -76,4 +76,23 @@ const overrides: ThemeOverride = {
   }
 }
 
-export const theme = createTheme(primitives, overrides)
+const breakpoints: any = {
+  small: 980,
+  medium: 1240,
+  large: 1449,
+  extra_large: 1450,
+};
+
+const ResponsiveTheme = Object.keys(breakpoints).reduce(
+  (acc: any, key: any) => {
+    acc.mediaQuery[key] = `@media screen and (min-width: ${breakpoints[key]}px)`;
+    return acc;
+  },
+  {
+    breakpoints,
+    mediaQuery: {},
+  }
+);
+
+export const theme = createTheme(primitives, {...overrides, ...ResponsiveTheme})
+
