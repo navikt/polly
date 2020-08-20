@@ -155,9 +155,10 @@ const ProcessData = (props: {process: Process}) => {
               <Block>
                 <span>{intl.transferGroundsOutsideEUEEA}: </span>
                 {process.dataProcessing.transferGroundsOutsideEU && <span>{codelist.getShortnameForCode(process.dataProcessing.transferGroundsOutsideEU)} </span>}
+                {!process.dataProcessing.transferGroundsOutsideEU && <span>{intl.emptyMessage} </span>}
                 {process.dataProcessing.transferGroundsOutsideEUOther && <span>: {process.dataProcessing.transferGroundsOutsideEUOther}</span>}
               </Block>
-              {process.dataProcessing?.transferCountries.length && <Block>
+              {!!process.dataProcessing?.transferCountries.length && <Block>
                 <span>{intl.countries}: </span>
                 <span>{process.dataProcessing.transferCountries.map(c => codelist.countryName(c)).join(', ')}</span>
               </Block>}
@@ -211,7 +212,9 @@ const Completeness = (props: {process: Process}) => {
     profiling: !isNil(process.profiling),
     automation: !isNil(process.automaticProcessing),
     retention: !isNil(process.retention?.retentionPlan),
+    retentionTime: !process.retention?.retentionPlan || (!!process.retention.retentionStart && !!process.retention.retentionMonths),
     dataProcessor: !isNil(process.dataProcessing?.dataProcessor),
+    dataProcessorAgreementMissing: !process.dataProcessing?.dataProcessor || !!process.dataProcessing?.dataProcessorAgreements.length,
     dataProcessorOutsideEU: !process.dataProcessing?.dataProcessor || !isNil(process.dataProcessing?.dataProcessorOutsideEU),
     policies: process.usesAllInformationTypes || !!process.policies.length,
     completed: process.status === ProcessStatus.COMPLETED
@@ -235,12 +238,14 @@ const Completeness = (props: {process: Process}) => {
         <p>{!completeness.profiling && intl.profiling}</p>
         <p>{!completeness.automation && intl.automation}</p>
         <p>{!completeness.retention && intl.retention}</p>
+        <p>{!completeness.retentionTime && intl.retentionMonths}</p>
         <p>{!completeness.dataProcessor && intl.dataProcessor}</p>
+        <p>{!completeness.dataProcessorAgreementMissing && intl.dataProcessorAgreement}</p>
         <p>{!completeness.dataProcessorOutsideEU && intl.dataProcessorOutsideEU}</p>
         <p>{!completeness.policies && intl.informationTypes}</p>
         <p>{!completeness.completed && intl.processStatus}</p>
       </Block>}>
-        <Block $style={{cursor: 'pointer'}} height={theme.sizing.scale800} display='flex' alignItems='center'>
+        <Block $style={{cursor: 'help'}} height={theme.sizing.scale800} display='flex' alignItems='center'>
           <ProgressBar value={completed} successValue={completables} overrides={barOverrides}/>
         </Block>
       </CustomizedStatefulTooltip>
