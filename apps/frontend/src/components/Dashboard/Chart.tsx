@@ -1,6 +1,6 @@
 import React, {useReducer, useState} from 'react'
 import {Block} from 'baseui/block'
-import {theme} from '../../util'
+import {intl, theme} from '../../util'
 import {Label1} from 'baseui/typography'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faChartBar, faChartPie, faCircle} from '@fortawesome/free-solid-svg-icons'
@@ -144,7 +144,7 @@ const Visualization = (props: VisualizationProps) => {
               {type === 'pie' && <PieChart data={data} radius={size} hover={hover} setHover={setHover}/>}
               {type === 'bar' && <BarChart data={data} size={size} hover={hover} setHover={setHover}/>}
             </Block>}
-            {!data.length && <Block width={size * 2 + "px"} height={size * 2 + "px"}/>}
+            {!data.length && <Block marginTop={theme.sizing.scale400}/>}
             <Block marginLeft={theme.sizing.scale200} marginRight={theme.sizing.scale200}>
               <Label1 marginBottom={theme.sizing.scale300}>
                 {chartTitle}
@@ -160,6 +160,7 @@ const Visualization = (props: VisualizationProps) => {
                   </Block>
                 </div>
               )}
+              {!data.length && <Block $style={{...marginAll(theme.sizing.scale100)}}>{intl.emptyTable}</Block>}
             </Block>
           </Block>
         </div>
@@ -176,7 +177,7 @@ const Visualization = (props: VisualizationProps) => {
   )
 }
 
-const BarChart = (props: { data: ChartDataExpanded[], size: number, hover: number, setHover: (i: number) => void }) => {
+const BarChart = (props: {data: ChartDataExpanded[], size: number, hover: number, setHover: (i: number) => void}) => {
   const {data, size, hover, setHover} = props
   const max = _.max(data.map(d => d.sizeFraction))!
   const maxVal = _.max(data.map(d => d.size))!
@@ -233,7 +234,7 @@ const Bar = (props: PartProps) => {
   )
 }
 
-const PieChart = (props: { data: ChartDataExpanded[], radius: number, hover: number, setHover: (i: number) => void }) => {
+const PieChart = (props: {data: ChartDataExpanded[], radius: number, hover: number, setHover: (i: number) => void}) => {
   const {data, radius, hover, setHover} = props
   return (
     <svg height={radius * 2} width={radius * 2} viewBox='-1.1 -1.1 2.2 2.2' style={{transform: 'rotate(-90deg)'}}>
