@@ -44,6 +44,10 @@ const transferGroundsOutsideEUMissing = (values: DataProcessingFormValues) => {
   return !!values.dataProcessorOutsideEU && !values.transferGroundsOutsideEU
 }
 
+const transferCountriesMissing = (values: DataProcessingFormValues) => {
+  return !!values.dataProcessorOutsideEU && !values.transferCountries.length
+}
+
 const transferGroundsOutsideEUOtherMissing = (values: DataProcessingFormValues) => {
   return values.transferGroundsOutsideEU === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER && !values.transferGroundsOutsideEUOther
 }
@@ -89,6 +93,15 @@ export const processSchema = () =>
           test: function () {
             const {parent} = this;
             return !transferGroundsOutsideEUOtherMissing(parent)
+          }
+        }
+      ),
+      transferCountries: yup.array().of(yup.string()).test({
+          name: 'dataProcessOutsideEU_transferCountries',
+          message: intl.required,
+          test: function () {
+            const {parent} = this;
+            return !transferCountriesMissing(parent)
           }
         }
       )

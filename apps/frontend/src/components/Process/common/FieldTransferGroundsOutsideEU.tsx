@@ -16,7 +16,7 @@ const FieldTransferGroundsOutsideEU = (props: {code?: string}) => {
     <Field
       name='dataProcessing.transferGroundsOutsideEU'
       render={({form}: FieldProps<string, ProcessFormValues>) => (
-        <Block marginRight='10px' width={'100%'}>
+        <Block width={'100%'}>
           <Select
             options={codelist.getParsedOptions(ListName.TRANSFER_GROUNDS_OUTSIDE_EU)}
             onChange={({value}) => {

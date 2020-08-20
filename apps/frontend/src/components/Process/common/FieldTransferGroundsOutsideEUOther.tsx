@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Field, FieldProps} from "formik";
 import {ProcessFormValues} from "../../../constants";
-import {Input, SIZE} from 'baseui/input/index'
+import {Input, SIZE} from 'baseui/input'
 
 const FieldTransferGroundsOutsideEUOther = () => {
 

@@ -96,7 +96,8 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
       dataProcessorAgreements: dataProcessing?.dataProcessorAgreements || [],
       dataProcessorOutsideEU: mapBool(dataProcessing?.dataProcessorOutsideEU),
       transferGroundsOutsideEU: dataProcessing?.transferGroundsOutsideEU?.code || undefined,
-      transferGroundsOutsideEUOther: dataProcessing?.transferGroundsOutsideEUOther || ''
+      transferGroundsOutsideEUOther: dataProcessing?.transferGroundsOutsideEUOther || '',
+      transferCountries: dataProcessing?.transferCountries || []
     },
     retention: {
       retentionPlan: mapBool(retention?.retentionPlan),
