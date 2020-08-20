@@ -150,7 +150,7 @@ const Header = (props: HeaderProps) => {
   useEffect(() => setUrl(window.location.href), [location.pathname])
 
   return (
-    <Block>
+    <Block paddingRight={"30px"} paddingLeft={"30px"}>
       <HeaderNavigation overrides={{Root: {style: {paddingBottom: 0, borderBottomStyle: 'none'}}}}>
         <NavigationList $align={ALIGN.left}>
           <NavigationItem $style={{paddingLeft: 0}}>
@@ -158,31 +158,32 @@ const Header = (props: HeaderProps) => {
           </NavigationItem>
         </NavigationList>
 
-        <NavigationList $align={ALIGN.center}/>
+        <Block
+          marginLeft={'auto'}
+        >
+          <NavigationList $align={ALIGN.right}>
+            {user.isAdmin() && (
+              <NavigationItem $style={{paddingLeft: 0}}>
+                <AdminOptions/>
+              </NavigationItem>
+            )}
 
-        <NavigationList $align={ALIGN.right}>
-          {user.isAdmin() && (
             <NavigationItem $style={{paddingLeft: 0}}>
-              <AdminOptions/>
+              <LangDropdown setLang={props.setLang}/>
             </NavigationItem>
-          )}
 
-          <NavigationItem $style={{paddingLeft: 0}}>
-            <LangDropdown setLang={props.setLang}/>
-          </NavigationItem>
-
-          {!user.isLoggedIn() && (
-            <NavigationItem $style={{paddingLeft: 0}}>
-              <LoginButton location={url}/>
-            </NavigationItem>
-          )}
-          {user.isLoggedIn() && (
-            <NavigationItem $style={{paddingLeft: 0}}>
-              <LoggedInHeader location={url}/>
-            </NavigationItem>
-          )}
-        </NavigationList>
-
+            {!user.isLoggedIn() && (
+              <NavigationItem $style={{paddingLeft: 0}}>
+                <LoginButton location={url}/>
+              </NavigationItem>
+            )}
+            {user.isLoggedIn() && (
+              <NavigationItem $style={{paddingLeft: 0}}>
+                <LoggedInHeader location={url}/>
+              </NavigationItem>
+            )}
+          </NavigationList>
+        </Block>
       </HeaderNavigation>
     </Block>
   )
