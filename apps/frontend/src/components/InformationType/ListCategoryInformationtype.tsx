@@ -32,7 +32,7 @@ const ListCategoryInformationtype = ({categoryUsages}: InformationTypeAccordionP
         <Panel
           title={
             <Block display="flex" width="100%">
-              <Block marginRight="auto" minWidth="80%">{codelist.getShortname(ListName.CATEGORY, categoryUsage.code)}</Block>
+              <Block minWidth="80%">{codelist.getShortname(ListName.CATEGORY, categoryUsage.code)}</Block>
               <Block
                 marginRight="50px"
                 minWidth="20%"
@@ -103,7 +103,7 @@ const ListCategoryInformationtype = ({categoryUsages}: InformationTypeAccordionP
         {intl.formatString(intl.categoryNotInUse, codelist.getShortname(ListName.CATEGORY, category!))}
       </Paragraph1>}
 
-      <Block width="800px">
+      <Block>
         <HeadingLevel>
           <Heading styleLevel={5} paddingLeft="20px">{intl.categories}</Heading>
         </HeadingLevel>
