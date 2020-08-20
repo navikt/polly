@@ -42,7 +42,7 @@ const DocumentList = (props: { documents: Array<Document>, baseUrl: string }) =>
 
             <FlexGrid flexGridRowGap={theme.sizing.scale600} flexGridColumnGap={theme.sizing.scale600} flexGridColumnCount={4}>
               {documents[letter].map(document =>
-                <FlexGridItem key={document.id}>
+                <FlexGridItem key={document.id} minWidth={'fit-content'} margin={'10px 0'}>
                   <RouteLink href={`${props.baseUrl}${document.id}`}>
                     {document.name}
                   </RouteLink>
