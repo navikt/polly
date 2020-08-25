@@ -10,5 +10,6 @@ public enum ListName {
     GDPR_ARTICLE,
     DEPARTMENT,
     SUB_DEPARTMENT,
-    SYSTEM
+    SYSTEM,
+    TRANSFER_GROUNDS_OUTSIDE_EU
 }

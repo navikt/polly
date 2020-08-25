@@ -1,5 +1,5 @@
-import { AxiosResponse } from 'axios'
-import { getAllCodelists } from '../api'
+import {AxiosResponse} from 'axios'
+import {getAllCodelists, getCountriesOutsideEUEEA} from '../api'
 
 export enum ListName {
   PURPOSE = 'PURPOSE',
@@ -11,7 +11,8 @@ export enum ListName {
   GDPR_ARTICLE = 'GDPR_ARTICLE',
   DEPARTMENT = 'DEPARTMENT',
   SUB_DEPARTMENT = 'SUB_DEPARTMENT',
-  SYSTEM = 'SYSTEM'
+  SYSTEM = 'SYSTEM',
+  TRANSFER_GROUNDS_OUTSIDE_EU = 'TRANSFER_GROUNDS_OUTSIDE_EU'
 }
 
 // Refers to SENSITIVITY codelist
@@ -35,15 +36,20 @@ class CodelistService {
   lists?: AllCodelists;
   error?: string;
   promise: Promise<any>;
+  countries?: CountryCode[];
 
   constructor() {
     this.promise = this.fetchData()
   }
 
   private fetchData = async (refresh?: boolean) => {
-    return getAllCodelists(refresh)
+    const codeListPromise = getAllCodelists(refresh)
     .then(this.handleGetCodelistResponse)
     .catch(err => (this.error = err.message))
+    const countriesPromise = getCountriesOutsideEUEEA()
+    .then(codes => this.countries = codes)
+    .catch(err => (this.error = err.message))
+    return Promise.all([codeListPromise, countriesPromise])
   }
 
   handleGetCodelistResponse = (response: AxiosResponse<AllCodelists>) => {
@@ -65,6 +71,14 @@ class CodelistService {
 
   isLoaded() {
     return this.lists || this.error
+  }
+
+  getCountryCodesOutsideEu() {
+    return this.countries || []
+  }
+
+  countryName(code: string): string {
+    return this.getCountryCodesOutsideEu().find(c => c.code === code)?.description || code
   }
 
   getCodes(list: ListName): Code[] {
@@ -97,13 +111,13 @@ class CodelistService {
     return code ? code.description : codeName
   }
 
-  getParsedOptions(listName: ListName): { id: string, label: string }[] {
+  getParsedOptions(listName: ListName): {id: string, label: string}[] {
     return this.getCodes(listName).map((code: Code) => {
       return {id: code.code, label: code.shortName}
     })
   }
 
-  getParsedOptionsFilterOutSelected(listName: ListName, currentSelected: string[]): { id: string, label: string }[] {
+  getParsedOptionsFilterOutSelected(listName: ListName, currentSelected: string[]): {id: string, label: string}[] {
     let parsedOptions = this.getParsedOptions(listName)
     return !currentSelected ? parsedOptions : parsedOptions.filter(option =>
       currentSelected.includes(option.id) ? null : option.id
@@ -160,4 +174,11 @@ export interface Code {
   shortName: string;
   description: string;
   invalidCode?: boolean;
+}
+
+export interface CountryCode {
+  code: string
+  description: string
+  validFrom: string
+  validTo: string
 }

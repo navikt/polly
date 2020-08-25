@@ -115,6 +115,9 @@ public class Process extends Auditable {
                         .dataProcessor(data.getDataProcessing().getDataProcessor())
                         .dataProcessorAgreements(nullToEmptyList(data.getDataProcessing().getDataProcessorAgreements()))
                         .dataProcessorOutsideEU(data.getDataProcessing().getDataProcessorOutsideEU())
+                        .transferGroundsOutsideEU(gettransferGroundsOutsideEUCodeResponse())
+                        .transferGroundsOutsideEUOther(data.getDataProcessing().getTransferGroundsOutsideEUOther())
+                        .transferCountries(nullToEmptyList(data.getDataProcessing().getTransferCountries()))
                         .build())
                 .retention(data.getRetention() == null ? null : RetentionResponse.builder()
                         .retentionPlan(data.getRetention().getRetentionPlan())
@@ -176,6 +179,9 @@ public class Process extends Auditable {
                 .dataProcessor(dataProcessing.getDataProcessor())
                 .dataProcessorAgreements(nullToEmptyList(dataProcessing.getDataProcessorAgreements()))
                 .dataProcessorOutsideEU(dataProcessing.getDataProcessorOutsideEU())
+                .transferGroundsOutsideEU(dataProcessing.getTransferGroundsOutsideEU())
+                .transferGroundsOutsideEUOther(dataProcessing.getTransferGroundsOutsideEUOther())
+                .transferCountries(nullToEmptyList(dataProcessing.getTransferCountries()))
                 .build();
     }
 
@@ -229,6 +235,10 @@ public class Process extends Auditable {
 
     private CodelistResponse getCommonExternalProcessResponsibleCodeResponse() {
         return CodelistService.getCodelistResponse(ListName.THIRD_PARTY, data.getCommonExternalProcessResponsible());
+    }
+
+    private CodelistResponse gettransferGroundsOutsideEUCodeResponse() {
+        return CodelistService.getCodelistResponse(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, data.getDataProcessing().getTransferGroundsOutsideEU());
     }
 
     private List<CodelistResponse> getProductCodeResponses() {

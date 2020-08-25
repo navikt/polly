@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import static no.nav.data.common.utils.StreamUtils.convert;
 import static no.nav.data.common.utils.StreamUtils.filter;
@@ -19,7 +20,8 @@ public class NavCommonCodeService implements CommonCodeService {
     private final NavCommonCodeProps props;
 
     // unknown and stateless
-    private static final Set<String> ignore = Set.of("XXX", "???", "9999");
+    private static final Set<String> ignore = Set.of("XXX");
+    private static final Pattern VALID_PATTERN = Pattern.compile("[A-Z]{3}");
 
     public NavCommonCodeService(NavCommonCodeClient client, NavCommonCodeProps props) {
         this.client = client;
@@ -30,6 +32,6 @@ public class NavCommonCodeService implements CommonCodeService {
     public List<CommonCodeResponse> getThirdPartyCountriesOutsideEEA() {
         var allCountries = client.getCodesWithDescription(props.getCountriesCode());
         var eeaCountries = convert(client.getCodesWithDescription(props.getEeaCountriesCode()), CommonCodeResponse::getCode);
-        return filter(allCountries, c -> !eeaCountries.contains(c.getCode()) && !ignore.contains(c.getCode()));
+        return filter(allCountries, c -> !eeaCountries.contains(c.getCode()) && !ignore.contains(c.getCode()) && VALID_PATTERN.matcher(c.getCode()).matches());
     }
 }

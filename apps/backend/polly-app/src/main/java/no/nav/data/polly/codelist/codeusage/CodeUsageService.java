@@ -130,6 +130,7 @@ public class CodeUsageService {
                     getInformationTypes(usage).forEach(it -> it.getData().setOrgMaster(newCode));
                     getProcesses(usage).forEach(p -> replaceAll(p.getData().getProducts(), oldCode, newCode));
                 }
+                case TRANSFER_GROUNDS_OUTSIDE_EU -> getProcesses(usage).forEach(p -> p.getData().getDataProcessing().setTransferGroundsOutsideEU(newCode));
             }
         }
         return usage;
@@ -160,6 +161,7 @@ public class CodeUsageService {
             case NATIONAL_LAW -> processRepository.findByNationalLaw(code);
             case SYSTEM -> processRepository.findByProduct(code);
             case THIRD_PARTY -> processRepository.findByCommonExternalProcessResponsible(code);
+            case TRANSFER_GROUNDS_OUTSIDE_EU -> processRepository.findByTransferGroundsOutsideEU(code);
             default -> List.<Process>of();
         }, Process::convertToShortResponse);
     }

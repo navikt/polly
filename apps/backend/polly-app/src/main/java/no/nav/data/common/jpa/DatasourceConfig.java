@@ -11,6 +11,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static java.util.concurrent.TimeUnit.MINUTES;
+
 @Slf4j
 @Configuration
 public class DatasourceConfig {
@@ -42,6 +44,7 @@ public class DatasourceConfig {
         config.setJdbcUrl(properties.getUrl());
         config.setMinimumIdle(1);
         config.setMaximumPoolSize(2);
+        config.setMaxLifetime(MINUTES.toMillis(15));
         return config;
     }
 

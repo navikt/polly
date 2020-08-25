@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import CardLegalBasis from "../Accordion/CardLegalBasis";
 import {intl} from "../../../util";
 import {Block} from "baseui/block";
@@ -21,11 +21,18 @@ const FieldLegalBasis = (props: fieldLegalBasisProps) => {
   const [selectedLegalBasisIndex, setSelectedLegalBasisIndex] = React.useState<number>()
   const [sensitivityLevel, setSensitivityLevel] = React.useState<SensitivityLevel>(SensitivityLevel.ART6)
 
+  // Open legalBases if this field is rendered and no legalBases exist.
+  useEffect(() => {
+    if (formikBag.values.legalBases.length == 0) {
+      formikBag.setFieldValue('legalBasesOpen', true)
+    }
+  }, [])
+
   return (<FieldArray
     name='legalBases'
     render={arrayHelpers => (
       <>
-        {formikBag.values.legalBasesOpen || formikBag.values.legalBases.length < 1 ? (
+        {formikBag.values.legalBasesOpen ? (
           <CardLegalBasis
             titleSubmitButton={selectedLegalBasis ? intl.update : intl.add}
             initValue={selectedLegalBasis || {}}
