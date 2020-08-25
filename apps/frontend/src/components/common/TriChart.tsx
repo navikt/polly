@@ -4,22 +4,22 @@ import { useHistory } from 'react-router-dom'
 import { Chart } from '../Dashboard/Chart'
 import { intl } from '../../util'
 import { chartColor } from '../../util/theme'
-//import * as H from 'history'
+import { clickOnPieChartSlice } from '../../util/dashboard'
 
 const chartSize = 80
-//const clickOnPieChartSlice = (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatus, history: H.History) => () => history.push(`/dashboard/${processField}/${processState}/${processStatus}`)
 
 type TriChartProps = {
     title: string,
     header?: string
     counter: Counter,
-    field: ProcessField,
-    processStatus: ProcessStatus
+    processField: ProcessField,
+    processStatus: ProcessStatus,
+    departmentCode?: string
 }
 
 const TriChart = (props: TriChartProps) => {
     const history = useHistory()
-    const { counter, title, header, field, processStatus } = props
+    const { counter, title, header, processField, processStatus, departmentCode } = props
     return (
         <Chart
             chartTitle={title}
@@ -31,16 +31,19 @@ const TriChart = (props: TriChartProps) => {
                         label: intl.yes,
                         size: counter.yes,
                         color: chartColor.generalBlue,
+                        onClick: clickOnPieChartSlice(processField, ProcessState.YES, processStatus, history, departmentCode)
                     },
                     {
                         label: intl.no,
                         size: counter.no,
                         color: chartColor.generalMustard,
+                        onClick: clickOnPieChartSlice(processField, ProcessState.NO, processStatus, history, departmentCode)
                     },
                     {
                         label: intl.unclarified,
                         size: counter.unknown,
                         color: chartColor.generalRed,
+                        onClick: clickOnPieChartSlice(processField, ProcessState.UNKNOWN, processStatus, history, departmentCode)
                     },
                 ]
             } />
