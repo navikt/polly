@@ -1,18 +1,18 @@
 import * as React from 'react'
-import { useEffect } from 'react'
-import { getDashboard } from '../../api'
-import { ProcessStatus, DepartmentProcessDashCount, ProcessField, ProcessState } from '../../constants'
-import { Block } from 'baseui/block'
-import { chartCardProps } from '../common/Style'
+import {useEffect} from 'react'
+import {getDashboard} from '../../api'
+import {DepartmentProcessDashCount, ProcessField, ProcessState, ProcessStatus} from '../../constants'
+import {Block} from 'baseui/block'
+import {chartCardProps} from '../common/Style'
 import TriChart from '../common/TriChart'
-import { intl } from '../../util'
-import { Chart } from '../Dashboard/Chart'
-import { chartColor } from '../../util/theme'
-import { useHistory } from 'react-router-dom'
-import { Paragraph1 } from 'baseui/typography'
+import {intl} from '../../util'
+import {Chart} from '../Dashboard/Chart'
+import {chartColor} from '../../util/theme'
+import {useHistory} from 'react-router-dom'
+import {Paragraph1} from 'baseui/typography'
 import RouteLink from '../common/RouteLink'
-import { lowerFirst } from 'lodash'
-import { clickOnPieChartSlice } from '../../util/dashboard'
+import {lowerFirst} from 'lodash'
+import {clickOnPieChartSlice} from '../../util/dashboard'
 
 const chartSize = 80
 
@@ -39,7 +39,7 @@ const DepartmentCharts = (props: DepartmentChartsProps) => {
     return (
         <>
             {!isLoading && chartData && (
-                <Block display='flex' flexWrap width='100%' justifyContent="space-between">
+                <Block display='flex' flexWrap width='100%' justifyContent='space-between' marginBottom={'240px'}>
                     <Block {...chartCardProps}>
                         <TriChart
                             counter={chartData.dpia}
