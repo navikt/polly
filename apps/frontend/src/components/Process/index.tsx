@@ -278,7 +278,7 @@ const ProcessList = ({code, listName, filter, processId, section}: ProcessListPr
         </Block>
         <Block marginRight='auto'>
           <HeadingSmall>
-            {intl.processes}
+            {intl.processes} ({processList.length})
           </HeadingSmall>
         </Block>
       </Block>
