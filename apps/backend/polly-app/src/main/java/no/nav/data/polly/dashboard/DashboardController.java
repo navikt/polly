@@ -7,6 +7,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.common.storage.domain.GenericStorage;
+import no.nav.data.common.utils.StreamUtils;
+import no.nav.data.polly.alert.domain.AlertEvent;
 import no.nav.data.polly.alert.domain.AlertEventType;
 import no.nav.data.polly.alert.domain.AlertRepository;
 import no.nav.data.polly.codelist.CodelistService;
@@ -47,6 +50,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
+import static no.nav.data.common.utils.StreamUtils.convert;
 import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
 import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_ARTICLE_6;
 import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_ARTICLE_9;
@@ -109,12 +113,13 @@ public class DashboardController {
                             .map(Page::nextPageable)
                             .orElse(pageable)
             );
-            page.get().forEach(p -> calcDashNoSql(filter, dash, p));
+            var alerts = convert(alertRepository.findByProcessIds(convert(page.getContent(), Process::getId)), GenericStorage::toAlertEvent);
+            page.get().forEach(p -> calcDashNoSql(filter, dash, p, StreamUtils.filter(alerts, a -> p.getId().equals(a.getProcessId()))));
         } while (page.hasNext());
         return dash;
     }
 
-    private void calcDashNoSql(ProcessStatusFilter filter, DashResponse dash, Process process) {
+    private void calcDashNoSql(ProcessStatusFilter filter, DashResponse dash, Process process, List<AlertEvent> alerts) {
         var processStatusFilter = filter.processStatus;
         if (processStatusFilter != null && process.getData().getStatus() != processStatusFilter) {
             return;
@@ -135,7 +140,16 @@ public class DashboardController {
         if (process.getData().isUsesAllInformationTypes()) {
             dashes.forEach(ProcessDashCount::processesUsingAllInfoTypes);
         }
-        // TODO miss legal art6 art9
+
+        if (alerts.stream().anyMatch(a -> a.getType() == MISSING_LEGAL_BASIS)) {
+            dashes.forEach(ProcessDashCount::processesMissingLegalBases);
+        }
+        if (alerts.stream().anyMatch(a -> a.getType() == MISSING_ARTICLE_6)) {
+            dashes.forEach(ProcessDashCount::processesMissingArt6);
+        }
+        if (alerts.stream().anyMatch(a -> a.getType() == MISSING_ARTICLE_9)) {
+            dashes.forEach(ProcessDashCount::processesMissingArt9);
+        }
 
         var pd = Optional.of(process.getData());
 

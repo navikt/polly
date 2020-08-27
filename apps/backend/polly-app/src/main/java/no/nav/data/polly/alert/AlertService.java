@@ -191,6 +191,11 @@ public class AlertService {
     }
 
     @Transactional(readOnly = true)
+    public ProcessAlert checkAlertsForProcess(Process process) {
+        return checkProcess(process, null);
+    }
+
+    @Transactional(readOnly = true)
     public DisclosureAlert checkAlertsForDisclosure(UUID disclosureId) {
         var disclosure = disclosureRepository.findById(disclosureId)
                 .orElseThrow(() -> new NotFoundException("No disclosure for id " + disclosureId + " found"));
@@ -204,8 +209,7 @@ public class AlertService {
         var processArt6 = containsArticle(process.getData().getLegalBases(), ART_6_PREFIX);
         var processArt9 = containsArticle(process.getData().getLegalBases(), ART_9_PREFIX);
 
-        List<Policy> policies = StreamUtils.filter(process.getPolicies(), policy -> (informationType == null || policy.getInformationType().equals(informationType))
-        );
+        List<Policy> policies = StreamUtils.filter(process.getPolicies(), policy -> (informationType == null || policy.getInformationType().equals(informationType)));
         for (Policy policy : policies) {
             checkPolicy(processArt6, processArt9, policy).resolve().ifPresent(alert.getPolicies()::add);
         }

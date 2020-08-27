@@ -106,7 +106,7 @@ public class DocxTest {
 
     private void mockAlert(Process mockProcess) {
         Policy policy = mockProcess.getPolicies().iterator().next();
-        when(alertService.checkAlertsForProcess(mockProcess.getId()))
+        when(alertService.checkAlertsForProcess(mockProcess))
                 .thenReturn(new ProcessAlert(mockProcess.getId(), false,
                         List.of(new PolicyAlert(policy.getId(), null, false, false, false, true))));
     }

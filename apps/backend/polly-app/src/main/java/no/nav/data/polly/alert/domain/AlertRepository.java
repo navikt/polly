@@ -23,6 +23,9 @@ public interface AlertRepository extends JpaRepository<GenericStorage, UUID>, Al
     @Query(value = "select * from generic_storage where data ->> 'processId' = cast(?1 as text) and type = 'ALERT_EVENT'", nativeQuery = true)
     List<GenericStorage> findByProcessId(UUID processId);
 
+    @Query(value = "select * from generic_storage where cast(data ->> 'processId' as uuid) in ?1 and type = 'ALERT_EVENT'", nativeQuery = true)
+    List<GenericStorage> findByProcessIds(List<UUID> processIds);
+
     @Query(value = "select * from generic_storage where data ->> 'disclosureId' = cast(?1 as text) and type = 'ALERT_EVENT'", nativeQuery = true)
     List<GenericStorage> findByDisclosureId(UUID disclosureId);
 

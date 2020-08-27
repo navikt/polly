@@ -273,7 +273,7 @@ public class ProcessToDocx {
             var rows = table.getContent();
             createPolicyHeader(rows);
 
-            var alerts = alertService.checkAlertsForProcess(process.getId());
+            var alerts = alertService.checkAlertsForProcess(process);
             var policies = new ArrayList<>(process.getPolicies());
             policies.sort(comparing(Policy::getInformationTypeName));
             for (int i = 0; i < policies.size(); i++) {
