@@ -61,6 +61,9 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
 
     @Override
     public List<Process> findByProductTeams(List<String> productTeams) {
+        if (productTeams.isEmpty()) {
+            return List.of();
+        }
         var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{productTeams}' ?? any (array[ :productTeams ])",
                 new MapSqlParameterSource().addValue("productTeams", productTeams));
         return getProcesses(resp);
