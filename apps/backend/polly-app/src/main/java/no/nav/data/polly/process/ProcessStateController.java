@@ -12,6 +12,8 @@ import no.nav.data.polly.process.domain.StateDbRequest;
 import no.nav.data.polly.process.dto.ProcessShortResponse;
 import no.nav.data.polly.process.dto.ProcessStateRequest;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessState;
+import no.nav.data.polly.teams.TeamService;
+import no.nav.data.polly.teams.domain.Team;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,9 +29,11 @@ import static no.nav.data.common.utils.StreamUtils.convert;
 public class ProcessStateController {
 
     private final ProcessRepository processRepository;
+    private final TeamService teamService;
 
-    public ProcessStateController(ProcessRepository processRepository) {
+    public ProcessStateController(ProcessRepository processRepository, TeamService teamService) {
         this.processRepository = processRepository;
+        this.teamService = teamService;
     }
 
     @ApiOperation(value = "Get Process for state")
@@ -40,8 +44,12 @@ public class ProcessStateController {
         if (request.getProcessField().alertEvent && request.getProcessState() != ProcessState.YES) {
             return new RestResponsePage<>(List.of());
         }
+        List<String> teamIds = null;
+        if (request.getProductAreaId() != null) {
+            teamIds = convert(teamService.getTeamsForProductArea(request.getProductAreaId()), Team::getId);
+        }
         List<Process> processes = processRepository.findForState(
-                new StateDbRequest(request.getProcessField(), request.getProcessState(), request.getDepartment(), null, request.getProcessStatus().processStatus));
+                new StateDbRequest(request.getProcessField(), request.getProcessState(), request.getDepartment(), teamIds, request.getProcessStatus().processStatus));
         return new RestResponsePage<>(convert(processes, Process::convertToShortResponse));
     }
 

@@ -70,12 +70,14 @@ public class ProcessStateRequest implements Validated {
     private ProcessState processState;
     private ProcessStatusFilter processStatus;
     private String department;
+    private String productAreaId;
 
     @Override
     public void validate(FieldValidator validator) {
         validator.checkRequiredEnum(Fields.processField, processField);
         validator.checkRequiredEnum(Fields.processState, processState);
         validator.checkCodelist(Fields.department, department, ListName.DEPARTMENT);
+        validator.checkUUID(Fields.productAreaId, productAreaId);
     }
 
     @Override
