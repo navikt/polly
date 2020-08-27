@@ -37,17 +37,6 @@ class DashboardIT extends IntegrationTestBase {
     }
 
     @Test
-    void getDashNoSql() {
-        ResponseEntity<DashResponse> resp = restTemplate.getForEntity("/dash/nosql", DashResponse.class);
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        DashResponse response = resp.getBody();
-        assertThat(response).isNotNull();
-        assertThat(get(response.getDepartmentProcesses(), d -> d.getDepartment().equals("DEP")).getProcessesInProgress()).isEqualTo(2L);
-        assertThat(response.getAllProcesses().getProcessesInProgress()).isEqualTo(2L);
-    }
-
-    @Test
     void getDashForProcessInProgress() {
         ResponseEntity<DashResponse> resp = restTemplate.getForEntity("/dash?filter=IN_PROGRESS", DashResponse.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
