@@ -103,7 +103,7 @@ public class TeamController {
             @ApiResponse(code = 200, message = "Product area fetched", response = ProductAreaResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/productarea/{paId}")
-    public ResponseEntity<ProductAreaResponse> getProductAreaByName(@PathVariable String paId) {
+    public ResponseEntity<ProductAreaResponse> getProductAreaById(@PathVariable String paId) {
         log.info("Received request for Product area with id {}", paId);
         var pa = teamsService.getProductArea(paId);
         if (pa.isEmpty()) {

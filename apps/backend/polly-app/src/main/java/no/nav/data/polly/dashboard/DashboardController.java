@@ -17,16 +17,19 @@ import no.nav.data.polly.dashboard.dto.DashResponse.ProcessDashCount;
 import no.nav.data.polly.process.domain.ProcessCount;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.process.domain.ProcessStatus;
+import no.nav.data.polly.process.domain.StateDbRequest;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessField;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessState;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessStatusFilter;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,7 +53,7 @@ public class DashboardController {
         this.processRepository = processRepository;
         this.alertRepository = alertRepository;
         this.dashData = Caffeine.newBuilder()
-                .expireAfterWrite(Duration.ofMinutes(5))
+                .expireAfterWrite(Duration.ofMinutes(3))
                 .maximumSize(3).build(this::calcDash);
     }
 
@@ -59,7 +62,7 @@ public class DashboardController {
             @ApiResponse(code = 200, message = "Data fetched", response = DashResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping
-    public ResponseEntity<DashResponse> getDashoboardData(@RequestParam(value = "filter", defaultValue = "ALL") ProcessStatusFilter filter) {
+    public ResponseEntity<DashResponse> getDashboardData(@RequestParam(value = "filter", defaultValue = "ALL") ProcessStatusFilter filter) {
         return ResponseEntity.ok(requireNonNull(dashData.get(filter)));
     }
 
@@ -91,11 +94,12 @@ public class DashboardController {
                         .profiling(getCount(ProcessField.PROFILING, e.getValue(), e.getKey(), status))
                         .automation(getCount(ProcessField.AUTOMATION, e.getValue(), e.getKey(), status))
                         .retention(getCount(ProcessField.RETENTION, e.getValue(), e.getKey(), status))
-                        .retentionDataIncomplete(processRepository.countForState(ProcessField.RETENTION_DATA, ProcessState.UNKNOWN, e.getKey(), status))
+                        .retentionDataIncomplete(processRepository.countForState(getStateDbRequest(status, ProcessField.RETENTION_DATA, ProcessState.UNKNOWN, e.getKey())))
 
                         .dataProcessor(getCount(ProcessField.DATA_PROCESSOR, e.getValue(), e.getKey(), status))
                         .dataProcessorOutsideEU(getCount(ProcessField.DATA_PROCESSOR_OUTSIDE_EU, null, e.getKey(), status))
-                        .dataProcessorAgreementMissing(processRepository.countForState(ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY, ProcessState.UNKNOWN, e.getKey(), status))
+                        .dataProcessorAgreementMissing(
+                                processRepository.countForState(getStateDbRequest(status, ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY, ProcessState.UNKNOWN, e.getKey())))
 
                         .build())
                 .collect(Collectors.toList());
@@ -116,15 +120,24 @@ public class DashboardController {
                         .profiling(getCount(ProcessField.PROFILING, processes, null, status))
                         .automation(getCount(ProcessField.AUTOMATION, processes, null, status))
                         .retention(getCount(ProcessField.RETENTION, processes, null, status))
-                        .retentionDataIncomplete(processRepository.countForState(ProcessField.RETENTION_DATA, ProcessState.UNKNOWN, null, status))
+                        .retentionDataIncomplete(processRepository.countForState(getStateDbRequest(status, ProcessField.RETENTION_DATA, ProcessState.UNKNOWN)))
 
                         .dataProcessor(getCount(ProcessField.DATA_PROCESSOR, processes, null, status))
                         .dataProcessorOutsideEU(getCount(ProcessField.DATA_PROCESSOR_OUTSIDE_EU, null, null, status))
-                        .dataProcessorAgreementMissing(processRepository.countForState(ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY, ProcessState.UNKNOWN, null, status))
+                        .dataProcessorAgreementMissing(
+                                processRepository.countForState(getStateDbRequest(status, ProcessField.DATA_PROCESSOR_AGREEMENT_EMPTY, ProcessState.UNKNOWN)))
 
                         .build())
                 .departmentProcesses(byDepartment);
         return dash.build();
+    }
+
+    private StateDbRequest getStateDbRequest(ProcessStatus status, ProcessField field, ProcessState state, String department) {
+        return new StateDbRequest(field, state, department, null, status);
+    }
+
+    private StateDbRequest getStateDbRequest(ProcessStatus status, ProcessField field, ProcessState state) {
+        return new StateDbRequest(field, state, null, null, status);
     }
 
     private List<ProcessCount> countDepartmentAlertEvents(AlertEventType eventType, ProcessStatus status) {
@@ -140,10 +153,15 @@ public class DashboardController {
     }
 
     private Counter getCount(ProcessField field, Long processes, String department, ProcessStatus status) {
-        long yes = processRepository.countForState(field, ProcessState.YES, department, status);
-        long no = processRepository.countForState(field, ProcessState.NO, department, status);
-        long unknown = processes != null ? processes - yes - no : processRepository.countForState(field, ProcessState.UNKNOWN, department, status);
+        long yes = processRepository.countForState(getStateDbRequest(status, field, ProcessState.YES, department));
+        long no = processRepository.countForState(getStateDbRequest(status, field, ProcessState.NO, department));
+        long unknown = processes != null ? processes - yes - no : processRepository.countForState(getStateDbRequest(status, field, ProcessState.UNKNOWN, department));
         return new Counter(yes, no, unknown);
+    }
+
+    @Scheduled(initialDelayString = "PT30S", fixedRateString = "PT30S")
+    public void warmup() {
+        Arrays.stream(ProcessStatusFilter.values()).forEach(this::getDashboardData);
     }
 
 }

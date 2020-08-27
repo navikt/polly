@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.rest.RestResponsePage;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessRepository;
+import no.nav.data.polly.process.domain.StateDbRequest;
 import no.nav.data.polly.process.dto.ProcessShortResponse;
 import no.nav.data.polly.process.dto.ProcessStateRequest;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessState;
@@ -39,7 +40,8 @@ public class ProcessStateController {
         if (request.getProcessField().alertEvent && request.getProcessState() != ProcessState.YES) {
             return new RestResponsePage<>(List.of());
         }
-        List<Process> processes = processRepository.findForState(request.getProcessField(), request.getProcessState(), request.getDepartment(), request.getProcessStatus().processStatus);
+        List<Process> processes = processRepository.findForState(
+                new StateDbRequest(request.getProcessField(), request.getProcessState(), request.getDepartment(), null, request.getProcessStatus().processStatus));
         return new RestResponsePage<>(convert(processes, Process::convertToShortResponse));
     }
 

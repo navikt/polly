@@ -17,6 +17,7 @@ import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessCountResponse;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.teams.TeamService;
+import no.nav.data.polly.teams.domain.Team;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -34,12 +35,11 @@ import java.util.Optional;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
-import static java.util.stream.Collectors.toList;
 import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Slf4j
 @RestController
-@Api(value = "Data Catalog Process", description = "REST API for Process", tags = {"Process"})
+@Api(value = "Data Catalog Process", tags = {"Process"})
 @RequestMapping("/process")
 public class ProcessReadController {
 
@@ -86,7 +86,7 @@ public class ProcessReadController {
         if (productArea != null) {
             log.info("Received request for Processeses for productArea {}", productArea);
             var teams = teamService.getTeamsForProductArea(productArea);
-            var processes = teams.stream().flatMap(t -> repository.findByProductTeam(t.getId()).stream()).collect(toList());
+            var processes = repository.findByProductTeams(convert(teams, Team::getId));
             return ResponseEntity.ok(new RestResponsePage<>(convert(processes, Process::convertToResponse)));
         }
         if (documentId != null) {
