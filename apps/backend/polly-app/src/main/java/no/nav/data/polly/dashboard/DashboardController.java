@@ -135,9 +135,6 @@ public class DashboardController {
         if (process.getData().isUsesAllInformationTypes()) {
             dashes.forEach(ProcessDashCount::processesUsingAllInfoTypes);
         }
-        if (process.getData().isUsesAllInformationTypes()) {
-            dashes.forEach(ProcessDashCount::processesUsingAllInfoTypes);
-        }
         // TODO miss legal art6 art9
 
         var pd = Optional.of(process.getData());
