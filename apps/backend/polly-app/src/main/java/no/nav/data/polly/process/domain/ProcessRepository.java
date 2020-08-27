@@ -2,7 +2,6 @@ package no.nav.data.polly.process.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -30,23 +29,11 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
 
     // Count
 
-    @Query(value = "select count(1) from process where data->>'status' = :#{#status.name()}", nativeQuery = true)
-    long countStatus(@Param("status") ProcessStatus status);
-
     @Query(value = "select p.purposeCode as code, count(p) as count from Process p group by p.purposeCode")
     List<ProcessCount> countPurposeCode();
 
-    @Query(value = "select data->>'department' as code, count(1) as count from process where cast(data ->> 'usesAllInformationTypes' as boolean) = true group by code", nativeQuery = true)
-    List<ProcessCount> countUsingAllInfoTypes();
-
-    @Query(value = "select data->>'department' as code, count(1) as count from process where cast(data ->> 'usesAllInformationTypes' as boolean) = true and data->>'status' = :#{#status.name()}  group by code", nativeQuery = true)
-    List<ProcessCount> countUsingAllInfoTypes(@Param("status") ProcessStatus status);
-
     @Query(value = "select data->>'department' as code, count(1) as count from process group by code", nativeQuery = true)
     List<ProcessCount> countDepartmentCode();
-
-    @Query(value = "select data->>'department' as code, count(1) as count from process where data->>'status' = :#{#status.name()} group by code", nativeQuery = true)
-    List<ProcessCount> countDepartmentCode(@Param("status") ProcessStatus status);
 
     @Query(value = "select jsonb_array_elements(data -> 'subDepartments') ->> 0 as code, count(1) as count from process group by code", nativeQuery = true)
     List<ProcessCount> countSubDepartmentCode();
@@ -54,6 +41,4 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
     @Query(value = "select jsonb_array_elements(data -> 'productTeams') ->> 0  as code, count(1) as count from process group by code", nativeQuery = true)
     List<ProcessCount> countTeam();
 
-    @Query(value = "select data->>'department' as code, count(1) as count from process where data->>'status' = :#{#status.name()} group by code", nativeQuery = true)
-    List<ProcessCount> countDepartmentCodeStatus(@Param("status") ProcessStatus status);
 }

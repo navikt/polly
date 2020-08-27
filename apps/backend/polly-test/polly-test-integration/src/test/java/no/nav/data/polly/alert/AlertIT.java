@@ -251,7 +251,7 @@ public class AlertIT extends IntegrationTestBase {
                 Thread.sleep(1000);
                 saveProcesses(alertEvent1.getProcessId(), alertEvent4.getProcessId(), alertEvent5.getProcessId());
                 saveInfoTypes(alertEvent1.getInformationTypeId(), alertEvent4.getInformationTypeId(), alertEvent5.getInformationTypeId());
-                var gs = alertRepository.save(alert);
+                alertRepository.save(alert);
 
                 ResponseEntity<EventPage> eventsResponse = restTemplate
                         .getForEntity("/alert/events"

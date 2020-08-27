@@ -20,6 +20,4 @@ public interface ProcessRepositoryCustom {
 
     List<Process> findForState(StateDbRequest stateDbRequest);
 
-    long countForState(StateDbRequest stateDbRequest);
-
 }

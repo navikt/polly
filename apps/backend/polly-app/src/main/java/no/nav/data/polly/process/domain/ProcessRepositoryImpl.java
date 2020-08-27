@@ -82,11 +82,6 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
         return getProcesses(resp);
     }
 
-    @Override
-    public long countForState(StateDbRequest stateDbRequest) {
-        return queryForState(stateDbRequest).size();
-    }
-
     private List<Map<String, Object>> queryForState(StateDbRequest stateDbRequest) {
         var alertQuery = """
                      process_id in ( 
