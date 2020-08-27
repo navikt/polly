@@ -58,27 +58,27 @@ public class DashboardController {
     private final ProcessRepository processRepository;
     private final AlertRepository alertRepository;
     private final TeamService teamService;
-    private final LoadingCache<ProcessStatusFilter, DashResponse> dashDataNoSql;
+    private final LoadingCache<ProcessStatusFilter, DashResponse> dashDataCache;
 
     public DashboardController(ProcessRepository processRepository, AlertRepository alertRepository, TeamService teamService) {
         this.processRepository = processRepository;
         this.alertRepository = alertRepository;
         this.teamService = teamService;
-        this.dashDataNoSql = Caffeine.newBuilder()
+        this.dashDataCache = Caffeine.newBuilder()
                 .expireAfterWrite(Duration.ofMinutes(3))
-                .maximumSize(3).build(this::calcDashNoSql);
+                .maximumSize(3).build(this::calcDash);
     }
 
-    @ApiOperation(value = "Get Dashboard data nsql")
+    @ApiOperation(value = "Get Dashboard data")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Data fetched", response = DashResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping
-    public ResponseEntity<DashResponse> getDashboardDataNoSql(@RequestParam(value = "filter", defaultValue = "ALL") ProcessStatusFilter filter) {
-        return ResponseEntity.ok(requireNonNull(dashDataNoSql.get(filter)));
+    public ResponseEntity<DashResponse> getDashboardData(@RequestParam(value = "filter", defaultValue = "ALL") ProcessStatusFilter filter) {
+        return ResponseEntity.ok(requireNonNull(dashDataCache.get(filter)));
     }
 
-    private DashResponse calcDashNoSql(ProcessStatusFilter filter) {
+    private DashResponse calcDash(ProcessStatusFilter filter) {
         var dash = new DashResponse();
         // init all departments and load teamId -> productArea mapping
         CodelistService.getCodelist(ListName.DEPARTMENT).forEach(d -> dash.department(d.getCode()));
@@ -93,12 +93,12 @@ public class DashboardController {
                             .orElse(pageable)
             );
             var alerts = convert(alertRepository.findByProcessIds(convert(page.getContent(), Process::getId)), GenericStorage::toAlertEvent);
-            page.get().forEach(p -> calcDashNoSql(filter, dash, p, StreamUtils.filter(alerts, a -> p.getId().equals(a.getProcessId()))));
+            page.get().forEach(p -> calcDashForProcess(filter, dash, p, StreamUtils.filter(alerts, a -> p.getId().equals(a.getProcessId()))));
         } while (page.hasNext());
         return dash;
     }
 
-    private void calcDashNoSql(ProcessStatusFilter filter, DashResponse dash, Process process, List<AlertEvent> alerts) {
+    private void calcDashForProcess(ProcessStatusFilter filter, DashResponse dash, Process process, List<AlertEvent> alerts) {
         var processStatusFilter = filter.processStatus;
         if (processStatusFilter != null && process.getData().getStatus() != processStatusFilter) {
             return;
@@ -166,7 +166,7 @@ public class DashboardController {
 
     @Scheduled(initialDelayString = "PT30S", fixedRateString = "PT30S")
     public void warmup() {
-        Arrays.stream(ProcessStatusFilter.values()).forEach(this::getDashboardDataNoSql);
+        Arrays.stream(ProcessStatusFilter.values()).forEach(this::getDashboardData);
     }
 
 }
