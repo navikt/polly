@@ -13,6 +13,7 @@ import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
 import no.nav.data.polly.teams.TeamService;
+import no.nav.data.polly.teams.domain.Team;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
 import static no.nav.data.common.utils.StartsWithComparator.startsWith;
 import static no.nav.data.common.utils.StreamUtils.convert;
 
@@ -112,7 +112,7 @@ public class InformationTypeController {
             infoTypes = repository.findByProductTeam(productTeam);
         } else if (productArea != null) {
             var teams = teamService.getTeamsForProductArea(productArea);
-            infoTypes = teams.stream().flatMap(t -> repository.findByProductTeam(t.getId()).stream()).collect(toList());
+            infoTypes = repository.findByProductTeams((convert(teams, Team::getId)));
         }
         if (infoTypes != null) {
             infoTypes.sort(comparing(it -> it.getData().getName(), String.CASE_INSENSITIVE_ORDER));
