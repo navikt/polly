@@ -1,7 +1,6 @@
 package no.nav.data.polly.codelist.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.polly.codelist.domain.ListName;
@@ -12,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonPropertyOrder({"code", "informationTypes", "policies", "processes", "disclosures", "documents"})
@@ -20,20 +18,15 @@ public class CodeUsageResponse {
 
     private ListName listName;
     private String code;
-    private List<UsedInInstance> informationTypes;
-    private List<UsedInInstancePurpose> policies;
-    private List<ProcessShortResponse> processes;
-    private List<UsedInInstance> disclosures;
-    private List<UsedInInstance> documents;
+    private List<UsedInInstance> informationTypes = new ArrayList<>();
+    private List<UsedInInstancePurpose> policies = new ArrayList<>();
+    private List<ProcessShortResponse> processes = new ArrayList<>();
+    private List<UsedInInstance> disclosures = new ArrayList<>();
+    private List<UsedInInstance> documents = new ArrayList<>();
 
     public CodeUsageResponse(ListName listName, String code) {
         this.listName = listName;
         this.code = code;
-        this.informationTypes = new ArrayList<>();
-        this.policies = new ArrayList<>();
-        this.processes = new ArrayList<>();
-        this.disclosures = new ArrayList<>();
-        this.documents = new ArrayList<>();
     }
 
     public boolean isInUse() {

@@ -118,7 +118,7 @@ public class Policy extends Auditable {
     }
 
     public UsedInInstancePurpose getInstanceIdentification() {
-        return UsedInInstancePurpose.builder().id(id.toString()).name(informationTypeName).purposeCode(purposeCode).build();
+        return UsedInInstancePurpose.builder().id(id.toString()).processId(process.getId().toString()).name(informationTypeName).purposeCode(purposeCode).build();
     }
 
     private InformationTypeShortResponse convertInformationTypeShortResponse() {
