@@ -8,7 +8,6 @@ import no.nav.data.polly.codelist.dto.AllCodelistResponse;
 import no.nav.data.polly.codelist.dto.CodelistRequest;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -50,11 +49,6 @@ class CodelistControllerIT extends IntegrationTestBase {
     @Autowired
     private CodelistService service;
 
-    @BeforeEach
-    void setUp() {
-        service.refreshCache();
-    }
-
     @AfterEach
     void cleanUp() {
         repository.deleteAll();
@@ -65,23 +59,20 @@ class CodelistControllerIT extends IntegrationTestBase {
 
         @Test
         void findAll_shouldReturnAllCodelists() {
-            CodelistStub.initializeCodelist();
             ResponseEntity<AllCodelistResponse> responseEntity = restTemplate.exchange(
                     "/codelist", HttpMethod.GET, HttpEntity.EMPTY, AllCodelistResponse.class);
 
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(responseEntity.getBody()).isNotNull();
-            assertThat(responseEntity.getBody().getCodelist().size()).isEqualTo(ListName.values().length);
+            assertThat(responseEntity.getBody().getCodelist()).hasSize(ListName.values().length);
 
             Arrays.stream(ListName.values())
                     .forEach(listName -> assertThat(responseEntity.getBody().getCodelist()
-                            .get(listName)).isEqualTo(CodelistService.getCodelistResponseList(listName)));
+                            .get(listName)).containsAll(CodelistService.getCodelistResponseList(listName)));
         }
 
         @Test
         void getCodelistByListName() {
-            CodelistStub.initializeCodelist();
-
             ResponseEntity<List<CodelistResponse>> responseEntity = restTemplate.exchange(
                     "/codelist/THIRD_PARTY", HttpMethod.GET, HttpEntity.EMPTY, CODELIST_LIST_RESP);
 
@@ -154,6 +145,7 @@ class CodelistControllerIT extends IntegrationTestBase {
 
         @Test
         void shouldSave20Codelist() {
+            service.refreshCache();
             List<CodelistRequest> requests = createNrOfCodelistRequests(20);
 
             ResponseEntity<List<CodelistResponse>> responseEntity = restTemplate.exchange(
@@ -208,6 +200,7 @@ class CodelistControllerIT extends IntegrationTestBase {
 
         @Test
         void shouldUpdate20Codelists() {
+            service.refreshCache();
             List<CodelistRequest> requests = createNrOfCodelistRequests(20);
             restTemplate.exchange(
                     "/codelist", HttpMethod.POST, new HttpEntity<>(requests), new ParameterizedTypeReference<List<Codelist>>() {
