@@ -49,11 +49,13 @@ const PurposeTable = () => {
       setTitle(intl.processesWithoutArticle6LegalBasis)
     } else if (filterName === ProcessField.MISSING_ARTICLE_9) {
       setTitle(intl.processesWithoutArticle9LegalBasis)
+    } else if (filterName === ProcessField.RETENTION_DATA) {
+      setTitle(`${intl.retention}: ${intl.unknown}`)
     } else if (filterName === ProcessField.RETENTION) {
       switch (filterValue){
-        case ProcessState.YES: setTitle(intl.retentionPlanYes)
-        case ProcessState.NO: setTitle(intl.retentionPlanNo)
-        case ProcessState.UNKNOWN: setTitle(intl.retentionPlanUnclarified)
+        case ProcessState.YES: return setTitle(intl.retentionPlanYes)
+        case ProcessState.NO: return setTitle(intl.retentionPlanNo)
+        case ProcessState.UNKNOWN: return setTitle(intl.retentionPlanUnclarified)
       }
     } else if (filterName === ProcessField.PROFILING) {
       setTitle(`${intl.profiling}: ${intl.getString(filterValue.toLowerCase() || '')} `)
@@ -66,7 +68,6 @@ const PurposeTable = () => {
     } else if (filterName === ProcessField.DATA_PROCESSOR_OUTSIDE_EU) {
       setTitle(`${intl.dataProcessor} ${lowerFirst(intl.dataProcessorOutsideEU)}: ${intl.getString(filterValue.toLowerCase() || '')} `)
     }
-    console.log(filterName)
   }
 
   const [table, sortColumn] = useTable<ProcessShort, keyof ProcessShort>(filtered, {

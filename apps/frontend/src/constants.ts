@@ -459,6 +459,7 @@ export interface Use {
 
 export interface UseWithPurpose {
   id: string;
+  processId: string;
   name: string;
   purposeCode: string;
 }
