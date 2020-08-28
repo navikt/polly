@@ -23,6 +23,7 @@ const FieldTransferCountries = (props: {formikBag: FormikProps<ProcessFormValues
               onChange={({value}) => {
                 arrayHelpers.form.setFieldValue('dataProcessing.transferCountries', [...countries, ...value.map(v => v.id)])
               }}
+              maxDropdownHeight={'400px'}
             />
           </Block>
           <Block>
