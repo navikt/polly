@@ -3,10 +3,12 @@ import {useQueryParam} from '../util/hooks'
 import {Process} from '../constants'
 import {getProcessesFor} from '../api'
 import {Block} from 'baseui/block'
-import {HeadingMedium, HeadingSmall, LabelMedium} from 'baseui/typography'
+import {HeadingLarge, HeadingMedium, HeadingSmall} from 'baseui/typography'
 import {StatefulSelect, Value} from 'baseui/select'
 import {codelist, ListName} from '../service/Codelist'
 import {intl, theme} from '../util'
+import {lowerFirst} from 'lodash'
+import {SimpleProcessTable} from '../components/Process/SimpleProcessTable'
 
 const val = (v: Value) => v.length ? v[0].id as string : undefined
 
@@ -15,8 +17,8 @@ export const LegalPage = () => {
   const nationalLaw = useQueryParam('law')
 
   const [processes, setProcesses] = useState<Process[]>([])
-  const [gdprFilter, setGdprFilter] = useState<Value>([{id: gdprArticle}])
-  const [lawFilter, setLawFilter] = useState<Value>([{id: nationalLaw}])
+  const [gdprFilter, setGdprFilter] = useState<Value>(gdprArticle ? [{id: gdprArticle}] : [])
+  const [lawFilter, setLawFilter] = useState<Value>(nationalLaw ? [{id: nationalLaw}] : [])
 
   useEffect(() => {
     getProcessesFor(({gdprArticle: val(gdprFilter), nationalLaw: val(lawFilter)})).then(r => setProcesses(r.content))
@@ -24,6 +26,7 @@ export const LegalPage = () => {
 
   return (
     <Block>
+      <HeadingLarge>{intl.search} {lowerFirst(intl.processes)}</HeadingLarge>
       <Block display={'flex'}>
         <Block width='40%'>
           <HeadingSmall>{intl.gdprSelect}</HeadingSmall>
@@ -35,7 +38,7 @@ export const LegalPage = () => {
           />
         </Block>
         <Block width='40%' marginLeft={theme.sizing.scale400}>
-          <HeadingSmall>{intl.nationalLaw}</HeadingSmall>
+          <HeadingSmall>{intl.and}/{intl.or} {lowerFirst(intl.nationalLaw)}</HeadingSmall>
           <StatefulSelect
             maxDropdownHeight='400px'
             initialState={{value: lawFilter}}
@@ -52,11 +55,7 @@ export const LegalPage = () => {
 const ProcessTable = (props: {processes: Process[]}) => (
   <Block display={'flex'} flexDirection={'column'}>
     <HeadingMedium>{intl.processes} ({props.processes.length})</HeadingMedium>
-    {props.processes.map(p =>
-      <Block key={p.id}>
-        <LabelMedium>{codelist.getShortnameForCode(p.purpose)}: {p.name}</LabelMedium>
-      </Block>
-    )}
+    <SimpleProcessTable processes={props.processes}/>
   </Block>
 )
 

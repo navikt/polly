@@ -57,6 +57,7 @@ export interface IStrings {
   policy: string;
   usage: string;
   and: string;
+  or: string;
   remove: string;
   yes: string;
   no: string;
