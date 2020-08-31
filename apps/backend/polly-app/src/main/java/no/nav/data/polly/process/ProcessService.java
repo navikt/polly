@@ -5,11 +5,15 @@ import no.nav.data.common.validator.RequestElement;
 import no.nav.data.common.validator.RequestValidator;
 import no.nav.data.common.validator.ValidationError;
 import no.nav.data.polly.alert.AlertService;
+import no.nav.data.polly.codelist.codeusage.CodeUsageService;
+import no.nav.data.polly.codelist.domain.ListName;
+import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessDistribution;
 import no.nav.data.polly.process.domain.ProcessDistributionRepository;
 import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessRequest;
+import no.nav.data.polly.process.dto.ProcessShortResponse;
 import no.nav.data.polly.teams.ResourceService;
 import no.nav.data.polly.teams.TeamService;
 import org.springframework.stereotype.Service;
@@ -20,8 +24,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
+import static no.nav.data.common.utils.StreamUtils.convert;
+import static no.nav.data.common.utils.StreamUtils.filter;
+import static no.nav.data.common.utils.StreamUtils.union;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
@@ -32,17 +40,19 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
     private final TeamService teamService;
     private final ResourceService resourceService;
     private final AlertService alertService;
+    private final CodeUsageService codeUsageService;
 
     public ProcessService(ProcessDistributionRepository distributionRepository,
             ProcessRepository processRepository,
             TeamService teamService,
             ResourceService resourceService,
-            AlertService alertService) {
+            AlertService alertService, CodeUsageService codeUsageService) {
         this.distributionRepository = distributionRepository;
         this.processRepository = processRepository;
         this.teamService = teamService;
         this.resourceService = resourceService;
         this.alertService = alertService;
+        this.codeUsageService = codeUsageService;
     }
 
     @Transactional
@@ -60,7 +70,6 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
         if (!oldPurpose.equals(request.getPurposeCode())) {
             process.getPolicies().forEach(p -> p.setPurposeCode(request.getPurposeCode()));
         }
-//        alertService.deleteEventsForProcess(process.getId());
         return save(process);
     }
 
@@ -68,6 +77,33 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
     public void deleteById(UUID id) {
         processRepository.deleteById(id);
         alertService.deleteEventsForProcess(id);
+    }
+
+    public List<Process> getAllProcessesForGdprAndLaw(String gdprArticle, String nationalLaw) {
+        var gdpr = Optional.ofNullable(gdprArticle).map(a -> codeUsageService.findCodeUsage(ListName.GDPR_ARTICLE, a)).orElse(new CodeUsageResponse());
+        var law = Optional.ofNullable(nationalLaw).map(a -> codeUsageService.findCodeUsage(ListName.NATIONAL_LAW, a)).orElse(new CodeUsageResponse());
+        return fetchAllProcessesAndFilter(gdpr, law);
+    }
+
+    private List<Process> fetchAllProcessesAndFilter(CodeUsageResponse gdpr, CodeUsageResponse law) {
+        var gdprIds = getAllProcessIds(gdpr);
+        var lawIds = getAllProcessIds(law);
+
+        var all = union(gdprIds, lawIds);
+        if (gdpr.getCode() != null) {
+            all = filter(all, gdprIds::contains);
+        }
+        if (law.getCode() != null) {
+            all = filter(all, lawIds::contains);
+        }
+        return processRepository.findAllById(all);
+    }
+
+    private List<UUID> getAllProcessIds(CodeUsageResponse usage) {
+        return union(
+                convert(usage.getProcesses(), ProcessShortResponse::getId),
+                convert(usage.getPolicies(), p -> UUID.fromString(p.getProcessId()))
+        ).stream().distinct().collect(Collectors.toList());
     }
 
     public void scheduleDistributeForProcess(Process process) {

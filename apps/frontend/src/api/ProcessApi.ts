@@ -2,6 +2,7 @@ import axios from 'axios'
 import {PageResponse, Process, ProcessCount, ProcessField, ProcessFormValues, ProcessShort, ProcessState, ProcessStatus, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from '../constants'
 import {env} from '../util/env'
 import {convertLegalBasesToFormValues} from './PolicyApi'
+import * as queryString from 'query-string'
 
 export const getProcess = async (processId: string) => {
   const data = (await axios.get<Process>(`${env.pollyBaseUrl}/process/${processId}`)).data
@@ -17,12 +18,8 @@ export const searchProcess = async (text: string) => {
   return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process/search/${text}`)).data
 }
 
-export const getProcessesForTeam = async (teamId: string) => {
-  return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process?productTeam=${teamId}&pageSize=250`)).data
-}
-
-export const getProcessesForProductArea = async (productAreaId: string) => {
-  return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process?productArea=${productAreaId}&pageSize=250`)).data
+export const getProcessesFor = async (params: {productTeam?: string, productArea?: string, documentId?: string, gdprArticle?: string, nationalLaw?: string}) => {
+  return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process?${queryString.stringify(params, {skipNull: true})}&pageSize=250`)).data
 }
 
 export const getProcessPurposeCount = async (query: 'purpose' | 'department' | 'subDepartment' | 'team') => {
@@ -43,10 +40,6 @@ export const updateProcess = async (process: ProcessFormValues) => {
   const data = (await axios.put<Process>(`${env.pollyBaseUrl}/process/${process.id}`, body)).data
   data.policies.forEach(p => p.process = {...data, policies: []})
   return data
-}
-
-export const getProcessesByDocument = async (documentId: string) => {
-  return (await axios.get(`${env.pollyBaseUrl}/process/?documentId=${documentId}`)).data
 }
 
 const mapBool = (b?: boolean) => b === true ? true : b === false ? false : undefined

@@ -60,6 +60,16 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
     }
 
     @Override
+    public List<Process> findByProductTeams(List<String> productTeams) {
+        if (productTeams.isEmpty()) {
+            return List.of();
+        }
+        var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{productTeams}' ?? any (array[ :productTeams ])",
+                new MapSqlParameterSource().addValue("productTeams", productTeams));
+        return getProcesses(resp);
+    }
+
+    @Override
     public List<Process> findByDocumentId(String documentId) {
         var resp = jdbcTemplate.queryForList("select distinct(process_id) from policy where data #>'{documentIds}' ?? :documentId",
                 new MapSqlParameterSource().addValue("documentId", documentId));
@@ -67,17 +77,12 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
     }
 
     @Override
-    public List<Process> findForState(ProcessField processField, ProcessState processState, String department, ProcessStatus status) {
-        List<Map<String, Object>> resp = queryForState(processField, processState, department, status);
+    public List<Process> findForState(StateDbRequest stateDbRequest) {
+        List<Map<String, Object>> resp = queryForState(stateDbRequest);
         return getProcesses(resp);
     }
 
-    @Override
-    public long countForState(ProcessField processField, ProcessState processState, String department, ProcessStatus status) {
-        return queryForState(processField, processState, department, status).size();
-    }
-
-    private List<Map<String, Object>> queryForState(ProcessField processField, ProcessState processState, String department, ProcessStatus status) {
+    private List<Map<String, Object>> queryForState(StateDbRequest stateDbRequest) {
         var alertQuery = """
                      process_id in ( 
                      select cast(data ->> 'processId' as uuid) 
@@ -87,22 +92,26 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
                  )
                 """;
         String query;
-        if (processField.alertEvent) {
-            query = alertQuery.formatted(processField);
+        if (stateDbRequest.getProcessField().alertEvent) {
+            query = alertQuery.formatted(stateDbRequest.getProcessField());
         } else {
-            query = stateQuery(processField, processState);
+            query = stateQuery(stateDbRequest.getProcessField(), stateDbRequest.getProcessState());
         }
 
         var sql = "select distinct(process_id) from process where " + query;
 
         Map<String, Object> params = new HashMap<>();
-        if (department != null) {
+        if (stateDbRequest.getDepartment() != null) {
             sql += " and data->>'department' = :department";
-            params.put("department", department);
+            params.put("department", stateDbRequest.getDepartment());
         }
-        if (status != null) {
+        if (stateDbRequest.getTeamIds() != null) {
+            sql += " and data #>'{productTeams}' ?? :productTeam";
+            params.put("productTeams", stateDbRequest.getDepartment());
+        }
+        if (stateDbRequest.getStatus() != null) {
             sql += " and data->>'status' = :status";
-            params.put("status", status.name());
+            params.put("status", stateDbRequest.getStatus().name());
         }
         return jdbcTemplate.queryForList(sql, params);
     }

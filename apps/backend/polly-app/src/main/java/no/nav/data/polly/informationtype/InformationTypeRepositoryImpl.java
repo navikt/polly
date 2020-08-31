@@ -43,6 +43,17 @@ public class InformationTypeRepositoryImpl implements InformationTypeRepositoryC
         return fetch(resp);
     }
 
+
+    @Override
+    public List<InformationType> findByProductTeams(List<String> productTeams) {
+        if (productTeams.isEmpty()) {
+            return List.of();
+        }
+        var resp = jdbcTemplate.queryForList("select information_type_id from information_type where data #>'{productTeams}' ?? any (array[ :productTeams ])",
+                new MapSqlParameterSource().addValue("productTeams", productTeams));
+        return fetch(resp);
+    }
+
     private List<InformationType> fetch(List<Map<String, Object>> resp) {
         List<UUID> ids = resp.stream().map(i -> ((UUID) i.values().iterator().next())).collect(Collectors.toList());
         return informationTypeRepository.findAllById(ids);

@@ -26,7 +26,7 @@ class DashboardIT extends IntegrationTestBase {
     }
 
     @Test
-    void getProcess() {
+    void getDash() {
         ResponseEntity<DashResponse> resp = restTemplate.getForEntity("/dash", DashResponse.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -37,7 +37,7 @@ class DashboardIT extends IntegrationTestBase {
     }
 
     @Test
-    void getProcessInPorgress() {
+    void getDashForProcessInProgress() {
         ResponseEntity<DashResponse> resp = restTemplate.getForEntity("/dash?filter=IN_PROGRESS", DashResponse.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
 

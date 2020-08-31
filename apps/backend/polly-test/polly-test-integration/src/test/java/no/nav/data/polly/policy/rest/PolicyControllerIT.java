@@ -128,8 +128,7 @@ class PolicyControllerIT extends IntegrationTestBase {
     @Test
     void updateOnePolicy() {
         List<PolicyRequest> requestList = List.of(createPolicyRequest(createAndSaveInformationType()));
-        ResponseEntity<PolicyPage> createEntity = restTemplate.exchange(
-                POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), PolicyPage.class);
+        ResponseEntity<PolicyPage> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), PolicyPage.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
         assertThat(createEntity.getBody(), notNullValue());
         assertBehandlingsgrunnlagDistribusjon(1);

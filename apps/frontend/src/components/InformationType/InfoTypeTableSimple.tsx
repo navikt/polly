@@ -12,11 +12,10 @@ import React, {useEffect, useState} from 'react'
 import {Spinner} from '../common/Spinner'
 
 
-type GetInfoTypes = () => Promise<InformationType[]>
 type TableProps = {
   title: string
   informationTypes?: InformationType[]
-  getInfoTypes?: GetInfoTypes
+  getInfoTypes?: () => Promise<InformationType[]>
 }
 export const InfoTypeTable = ({informationTypes, getInfoTypes, title}: TableProps) => {
   const [informationTypeList, setInformationTypeList] = useState<InformationType[]>(informationTypes || [])

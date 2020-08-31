@@ -1,12 +1,10 @@
 package no.nav.data.polly.informationtype;
 
 import no.nav.data.polly.IntegrationTestBase;
-import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.informationtype.InformationTypeController.InformationTypePage;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +28,6 @@ class InformationTypeControllerIT extends IntegrationTestBase {
 
     @Autowired
     protected TestRestTemplate restTemplate;
-
-    @BeforeEach
-    void setUp() {
-        CodelistStub.initializeCodelist();
-    }
 
     @Test
     void findForId() {

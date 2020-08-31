@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {useEffect} from 'react'
 
-import {Block, BlockProps} from 'baseui/block'
+import {Block} from 'baseui/block'
 import {HeadingSmall, Label2} from 'baseui/typography'
 import {KIND, SIZE as ButtonSize} from 'baseui/button'
 import {AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort, ProcessStatus} from '../../constants'
@@ -18,8 +18,7 @@ import {
   deleteProcess,
   getCodelistUsage,
   getProcess,
-  getProcessesForProductArea,
-  getProcessesForTeam,
+  getProcessesFor,
   updatePolicy,
   updateProcess
 } from '../../api'
@@ -33,12 +32,6 @@ import Button from '../common/Button'
 import {StatefulSelect} from 'baseui/select'
 import {genProcessPath, Section} from '../../pages/ProcessPage'
 import {useHistory} from 'react-router-dom'
-
-const rowBlockProps: BlockProps = {
-  marginBottom: 'scale800',
-  display: 'flex',
-  justifyContent: 'space-between'
-}
 
 type ProcessListProps = {
   section: Section;
@@ -89,17 +82,17 @@ const ProcessList = ({code, listName, filter, processId, section,moveScroll}: Pr
     'SUB_DEPARTMENT': 'subDepartment',
     'PURPOSE': 'purpose',
     'SYSTEM': 'system'
-  } as { [l: string]: string })[listName]
+  } as {[l: string]: string})[listName]
 
   const getProcessList = async () => {
     try {
       let list: ProcessShort[]
 
       if (current_location.pathname.includes('team')) {
-        let res = await getProcessesForTeam(code)
+        let res = await getProcessesFor(({productTeam: code}))
         res.content ? list = res.content as ProcessShort[] : list = []
       } else if (current_location.pathname.includes('productarea')) {
-        let res = await getProcessesForProductArea(code)
+        let res = await getProcessesFor(({productArea: code}))
         res.content ? list = res.content as ProcessShort[] : list = []
       } else {
         list = (await getCodelistUsage(listName as ListName, code)).processes

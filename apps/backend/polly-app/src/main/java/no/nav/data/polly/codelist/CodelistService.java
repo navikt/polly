@@ -28,6 +28,7 @@ import javax.annotation.PostConstruct;
 import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Slf4j
+@Lazy(false)
 @Service
 public class CodelistService extends RequestValidator<CodelistRequest> {
 

@@ -146,71 +146,82 @@ class ProcessControllerIT extends IntegrationTestBase {
 
     }
 
-    @Test
-    void getAllProcess() {
-        Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
-        Policy policy2 = createAndSavePolicy(PURPOSE_CODE1 + 2, createAndSaveInformationType());
+    @Nested
+    class GetAll {
 
-        ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process", ProcessPage.class);
+        @Test
+        void getAllProcess() {
+            Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
+            Policy policy2 = createAndSavePolicy(PURPOSE_CODE1 + 2, createAndSaveInformationType());
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        ProcessPage processPage = resp.getBody();
-        assertThat(processPage).isNotNull();
+            ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process", ProcessPage.class);
 
-        assertThat(processPage.getContent()).hasSize(2);
-        processPage.getContent().forEach(p -> p.setChangeStamp(null));
-        assertThat(processPage.getContent()).contains(
-                processResponseBuilder(policy.getProcess().getId())
-                        .name("Auto_" + PURPOSE_CODE1)
-                        .purpose(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1))
-                        .purposeCode(PURPOSE_CODE1)
-                        .build(),
-                processResponseBuilder(policy2.getProcess().getId())
-                        .name("Auto_" + PURPOSE_CODE1 + 2)
-                        .purpose(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1 + 2))
-                        .purposeCode(PURPOSE_CODE1 + 2)
-                        .build()
-        );
-    }
+            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+            ProcessPage processPage = resp.getBody();
+            assertThat(processPage).isNotNull();
 
-    @Test
-    void getForProductTeam() {
-        createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
+            assertThat(processPage.getContent()).hasSize(2);
+            processPage.getContent().forEach(p -> p.setChangeStamp(null));
+            assertThat(processPage.getContent()).contains(
+                    processResponseBuilder(policy.getProcess().getId())
+                            .name("Auto_" + PURPOSE_CODE1)
+                            .purpose(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1))
+                            .purposeCode(PURPOSE_CODE1)
+                            .build(),
+                    processResponseBuilder(policy2.getProcess().getId())
+                            .name("Auto_" + PURPOSE_CODE1 + 2)
+                            .purpose(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1 + 2))
+                            .purposeCode(PURPOSE_CODE1 + 2)
+                            .build()
+            );
+        }
 
-        ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process?productTeam={productTeam}", ProcessPage.class, "teamid1");
+        @Test
+        void getForProductTeam() {
+            createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        ProcessPage processPage = resp.getBody();
-        assertThat(processPage).isNotNull();
+            ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process?productTeam={productTeam}", ProcessPage.class, "teamid1");
 
-        assertThat(processPage.getContent()).hasSize(1);
-    }
+            assertSize(resp, 1);
+        }
 
-    @Test
-    void getForProductArea() {
-        createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
+        @Test
+        void getForProductArea() {
+            createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
 
-        ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process?productArea={productArea}", ProcessPage.class, "productarea1");
+            ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process?productArea={productArea}", ProcessPage.class, "productarea1");
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        ProcessPage processPage = resp.getBody();
-        assertThat(processPage).isNotNull();
+            assertSize(resp, 1);
+        }
 
-        assertThat(processPage.getContent()).hasSize(1);
-    }
+        @Test
+        void getByDocumentId() {
+            Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
 
-    @Test
-    void getByDocumentId() {
-        Policy policy = createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
+            ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process?documentId={documentId}", ProcessPage.class,
+                    policy.getData().getDocumentIds().get(0));
 
-        ResponseEntity<ProcessPage> resp = restTemplate.getForEntity("/process?documentId={documentId}", ProcessPage.class,
-                policy.getData().getDocumentIds().get(0));
+            assertSize(resp, 1);
+        }
 
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        ProcessPage processPage = resp.getBody();
-        assertThat(processPage).isNotNull();
+        @Test
+        void getByGdprAndLaw() {
+            createAndSavePolicy(PURPOSE_CODE1, createAndSaveInformationType());
 
-        assertThat(processPage.getContent()).hasSize(1);
+            assertSize(restTemplate.getForEntity("/process?gdprArticle={gdpr}&nationalLaw={law}", ProcessPage.class, "ART61A", "FTRL"), 1);
+            assertSize(restTemplate.getForEntity("/process?gdprArticle={gdpr}", ProcessPage.class, "ART61A"), 1);
+            assertSize(restTemplate.getForEntity("/process?nationalLaw={law}", ProcessPage.class, "FTRL"), 1);
+            assertSize(restTemplate.getForEntity("/process?gdprArticle={gdpr}&nationalLaw={law}", ProcessPage.class, "ART61A", "FTRL2"), 0);
+            assertSize(restTemplate.getForEntity("/process?gdprArticle={gdpr}&nationalLaw={law}", ProcessPage.class, "ART61B", "FTRL"), 0);
+        }
+
+        private void assertSize(ResponseEntity<ProcessPage> resp, int expected) {
+            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+            ProcessPage processPage = resp.getBody();
+            assertThat(processPage).isNotNull();
+
+            assertThat(processPage.getContent()).hasSize(expected);
+        }
     }
 
     @Test
