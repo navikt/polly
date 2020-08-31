@@ -60,7 +60,7 @@ const ProcessPage = () => {
       <PageHeader section={section} code={code}/>
       <ProcessList code={code} listName={listNameForSection(section)} processId={processId} filter={filter} section={section} moveScroll={moveScroll}/>
       {section === Section.department ? (
-        <Block className={"charts-section"}>
+        <Block>
           <HeadingSmall>{intl.overview}</HeadingSmall>
           <DepartmentCharts departmentCode={code}/>
         </Block>
