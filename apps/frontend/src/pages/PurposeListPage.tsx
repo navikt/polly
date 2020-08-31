@@ -1,17 +1,19 @@
-import { intl, theme } from '../util'
-import { ListName } from '../service/Codelist'
-import { H4, Label1 } from 'baseui/typography'
+import {intl, theme} from '../util'
+import {ListName} from '../service/Codelist'
+import {H4, Label1} from 'baseui/typography'
 import React from 'react'
-import { Block } from 'baseui/block'
-import { Button, KIND, SIZE as ButtonSize } from 'baseui/button'
-import { Plus } from 'baseui/icon'
-import { user } from '../service/User'
+import {Block} from 'baseui/block'
+import {Button, KIND, SIZE as ButtonSize} from 'baseui/button'
+import {Plus} from 'baseui/icon'
+import {user} from '../service/User'
 import ModalProcess from '../components/Process/Accordion/ModalProcess'
-import { ProcessFormValues } from '../constants'
-import { convertProcessToFormValues, createProcess } from '../api'
+import {ProcessFormValues} from '../constants'
+import {convertProcessToFormValues, createProcess} from '../api'
 import AlphabeticList from '../components/common/AlphabeticList'
-import { useHistory } from 'react-router-dom'
-import { genProcessPath, Section } from './ProcessPage'
+import {useHistory} from 'react-router-dom'
+import {genProcessPath, Section} from './ProcessPage'
+import RouteLink from '../components/common/RouteLink'
+import {lowerFirst} from 'lodash'
 
 export const PurposeListPage = () => {
   const history = useHistory()
@@ -40,13 +42,16 @@ export const PurposeListPage = () => {
         <Block>
           <Label1>{intl.purposeSelect}</Label1>
         </Block>
+        <Block>
+          <RouteLink href='/process/legal'>{intl.search} {lowerFirst(intl.legalBasisShort)}</RouteLink>
+        </Block>
         <Block marginTop={'auto'}>
           {hasAccess() && (
             <Button
               size={ButtonSize.compact}
               kind={KIND.minimal}
               onClick={() => setShowCreateProcessModal(true)}
-              startEnhancer={() => <Block display='flex' justifyContent='center'><Plus size={22} /></Block>}
+              startEnhancer={() => <Block display='flex' justifyContent='center'><Plus size={22}/></Block>}
             >
               {intl.processingActivitiesNew}
             </Button>
@@ -54,7 +59,7 @@ export const PurposeListPage = () => {
         </Block>
       </Block>
 
-      <Block marginBottom={theme.sizing.scale800} />
+      <Block marginBottom={theme.sizing.scale800}/>
 
       <ModalProcess
         title={intl.processingActivitiesNew}
@@ -65,7 +70,7 @@ export const PurposeListPage = () => {
         isEdit={false}
         initialValues={convertProcessToFormValues()}
       />
-      <AlphabeticList listName={ListName.PURPOSE} baseUrl={'/process/purpose/'} />
+      <AlphabeticList listName={ListName.PURPOSE} baseUrl={'/process/purpose/'}/>
     </>
   )
 }

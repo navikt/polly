@@ -4,46 +4,50 @@ import {Process} from '../constants'
 import {getProcessesFor} from '../api'
 import {Block} from 'baseui/block'
 import {HeadingLarge, HeadingMedium, HeadingSmall} from 'baseui/typography'
-import {StatefulSelect, Value} from 'baseui/select'
+import {Select, Value} from 'baseui/select'
 import {codelist, ListName} from '../service/Codelist'
 import {intl, theme} from '../util'
 import {lowerFirst} from 'lodash'
 import {SimpleProcessTable} from '../components/Process/SimpleProcessTable'
+import {useHistory} from 'react-router-dom'
+import * as queryString from 'query-string'
 
 const val = (v: Value) => v.length ? v[0].id as string : undefined
 
 export const LegalPage = () => {
-  const gdprArticle = useQueryParam('gdpr')
-  const nationalLaw = useQueryParam('law')
-
   const [processes, setProcesses] = useState<Process[]>([])
-  const [gdprFilter, setGdprFilter] = useState<Value>(gdprArticle ? [{id: gdprArticle}] : [])
-  const [lawFilter, setLawFilter] = useState<Value>(nationalLaw ? [{id: nationalLaw}] : [])
+  const gdprArticle = useQueryParam('gdprArticle')
+  const nationalLaw = useQueryParam('nationalLaw')
+  const history = useHistory()
 
   useEffect(() => {
-    getProcessesFor(({gdprArticle: val(gdprFilter), nationalLaw: val(lawFilter)})).then(r => setProcesses(r.content))
-  }, [val(gdprFilter), val(lawFilter)])
+    if (!gdprArticle && !nationalLaw) {
+      return setProcesses([])
+    }
+    getProcessesFor(({gdprArticle, nationalLaw})).then(r => setProcesses(r.content))
+  }, [gdprArticle, nationalLaw])
 
   return (
     <Block>
-      <HeadingLarge>{intl.search} {lowerFirst(intl.processes)}</HeadingLarge>
+      <HeadingLarge>{intl.search} {lowerFirst(intl.legalBasisShort)}</HeadingLarge>
       <Block display={'flex'}>
         <Block width='40%'>
           <HeadingSmall>{intl.gdprSelect}</HeadingSmall>
-          <StatefulSelect
+          <Select
             maxDropdownHeight='400px'
-            initialState={{value: gdprFilter}}
+            value={gdprArticle ? [{id: gdprArticle}] : []}
             options={codelist.getParsedOptions(ListName.GDPR_ARTICLE)}
-            onChange={p => setGdprFilter(p.value)}
+            onChange={p => history.push(history.location.pathname + '?' + queryString.stringify({gdprArticle: val(p.value), nationalLaw}, {skipNull: true}))
+            }
           />
         </Block>
         <Block width='40%' marginLeft={theme.sizing.scale400}>
           <HeadingSmall>{intl.and}/{intl.or} {lowerFirst(intl.nationalLaw)}</HeadingSmall>
-          <StatefulSelect
+          <Select
             maxDropdownHeight='400px'
-            initialState={{value: lawFilter}}
+            value={nationalLaw ? [{id: nationalLaw}] : []}
             options={codelist.getParsedOptions(ListName.NATIONAL_LAW)}
-            onChange={p => setLawFilter(p.value)}
+            onChange={p => history.push(history.location.pathname + '?' + queryString.stringify({gdprArticle, nationalLaw: val(p.value)}, {skipNull: true}))}
           />
         </Block>
       </Block>

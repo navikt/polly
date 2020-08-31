@@ -33,6 +33,7 @@ export interface IStrings {
   legalBasesShort: string;
   subjectCategories: string;
   nationalLaw: string;
+  gdprArticle: string;
   orgMaster: string;
   orgMasterInfTypeHeader: string;
   productTeam: string;

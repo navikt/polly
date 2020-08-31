@@ -69,6 +69,8 @@ export type NavigableItem =
   | ListName.SUB_DEPARTMENT
   | ListName.THIRD_PARTY
   | ListName.SYSTEM
+  | ListName.GDPR_ARTICLE
+  | ListName.NATIONAL_LAW
   | 'team'
   | 'productarea';
 

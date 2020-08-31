@@ -15,7 +15,7 @@ import {faFilter} from '@fortawesome/free-solid-svg-icons'
 import Button from './common/Button'
 
 type SearchItem = {id: string, sortKey: string, label: ReactElement, type: NavigableItem}
-type SearchType = 'all' | 'purpose' | 'process' | 'team' | 'productarea' | 'department' | 'subDepartment' | 'informationType' | 'thirdParty' | 'system' | 'document'
+type SearchType = 'all' | 'purpose' | 'process' | 'team' | 'productarea' | 'department' | 'subDepartment' | 'nationalLaw' | 'gdprArticle' | 'informationType' | 'thirdParty' | 'system' | 'document'
 
 const SearchLabel = (props: {name: string, type: string}) =>
   <Block display="flex" justifyContent="space-between" width="100%">
@@ -65,6 +65,10 @@ const useMainSearch = () => {
       setSearchResult(getCodelistByListnameAndType(search, ListName.THIRD_PARTY, intl.thirdParty))
     } else if (type === 'system') {
       setSearchResult(getCodelistByListnameAndType(search, ListName.SYSTEM, intl.system))
+    } else if (type === 'nationalLaw') {
+      setSearchResult(getCodelistByListnameAndType(search, ListName.NATIONAL_LAW, intl.nationalLaw))
+    } else if (type === 'gdprArticle') {
+      setSearchResult(getCodelistByListnameAndType(search, ListName.GDPR_ARTICLE, intl.gdprArticle))
     } else {
       (async () => {
         if (search && search.replace(/ /g, '').length > 2) {
@@ -83,6 +87,8 @@ const useMainSearch = () => {
             add(searchCodelist(search, ListName.SUB_DEPARTMENT, intl.subDepartment))
             add(searchCodelist(search, ListName.THIRD_PARTY, intl.thirdParty))
             add(searchCodelist(search, ListName.SYSTEM, intl.system))
+            add(searchCodelist(search, ListName.NATIONAL_LAW, intl.nationalLaw))
+            add(searchCodelist(search, ListName.GDPR_ARTICLE, intl.gdprArticle))
           }
 
           if (type === 'all' || type === 'informationType') {

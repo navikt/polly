@@ -27,7 +27,7 @@ export const SimpleProcessTable = (props: {processes: ProcessShort[]}) => {
   )
 
   return (
-    <Table emptyText={'teams'} headers={
+    <Table emptyText={intl.processes} headers={
       <>
         <HeadCell title={intl.process} column='name' tableState={[table, sortColumn]} $style={cellStyle}/>
         <HeadCell title={intl.department} column='department' tableState={[table, sortColumn]} $style={cellStyle}/>
