@@ -1,24 +1,24 @@
-import { intl, theme } from '../util'
+import {intl, theme} from '../util'
 import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { Block } from 'baseui/block'
-import { Counter, DashboardData, ProcessField, ProcessState, ProcessStatus, Settings } from '../constants'
-import { getSettings } from '../api/SettingsApi'
-import { Card } from 'baseui/card'
-import { cardShadow, chartCardProps } from '../components/common/Style'
+import {useEffect, useState} from 'react'
+import {Block} from 'baseui/block'
+import {DashboardData, ProcessField, ProcessState, ProcessStatus, Settings} from '../constants'
+import {getSettings} from '../api/SettingsApi'
+import {Card} from 'baseui/card'
+import {cardShadow, chartCardProps} from '../components/common/Style'
 import Departments from '../components/Dashboard/Departments'
-import { getDashboard } from '../api'
-import { Chart } from '../components/Dashboard/Chart'
-import { useHistory, useParams } from 'react-router-dom'
-import { LastEvents } from '../components/audit/LastEvents'
-import { Markdown } from '../components/common/Markdown'
-import { Paragraph1 } from "baseui/typography";
+import {getDashboard} from '../api'
+import {Chart} from '../components/Dashboard/Chart'
+import {useHistory, useParams} from 'react-router-dom'
+import {LastEvents} from '../components/audit/LastEvents'
+import {Markdown} from '../components/common/Markdown'
+import {Paragraph1} from "baseui/typography";
 import RouteLink from "../components/common/RouteLink";
-import { chartColor } from "../util/theme";
-import { lowerFirst } from 'lodash'
-import { FilterDashboardStatus } from "../components/Dashboard/FilterDashboardStatus";
+import {chartColor} from "../util/theme";
+import {lowerFirst} from 'lodash'
+import {FilterDashboardStatus} from "../components/Dashboard/FilterDashboardStatus";
 import TriChart from '../components/common/TriChart'
-import { clickOnPieChartSlice } from '../util/dashboard'
+import {clickOnPieChartSlice} from '../util/dashboard'
 
 const chartSize = 80
 
@@ -34,6 +34,11 @@ export const MainPage = () => {
     (async () => {
       setSettings(await getSettings())
       setLoading(false)
+      for (let key in localStorage){
+        if(key.indexOf("Yposition")===0){
+          localStorage.removeItem(key)
+        }
+      }
     })()
   }, [])
 

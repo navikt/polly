@@ -46,11 +46,12 @@ type ProcessListProps = {
   processId?: string;
   code: string;
   listName?: ListName;
+  moveScroll?: Function;
 }
 
 const sortProcess = (list: ProcessShort[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, intl.getLanguage()))
 
-const ProcessList = ({code, listName, filter, processId, section}: ProcessListProps) => {
+const ProcessList = ({code, listName, filter, processId, section,moveScroll}: ProcessListProps) => {
   const [processList, setProcessList] = React.useState<ProcessShort[]>([])
   const [currentProcess, setCurrentProcess] = React.useState<Process | undefined>()
   const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
@@ -73,6 +74,7 @@ const ProcessList = ({code, listName, filter, processId, section}: ProcessListPr
       setIsLoadingProcessList(true)
       await getProcessList()
       setIsLoadingProcessList(false)
+      if(moveScroll) moveScroll()
     })()
   }, [code, filter])
 

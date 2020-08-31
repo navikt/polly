@@ -1,16 +1,17 @@
 import * as React from 'react'
 
 import ProcessList from '../components/Process'
-import { ListName } from '../service/Codelist'
-import { generatePath, useParams } from 'react-router-dom'
-import { Process, ProcessStatus } from '../constants'
-import { useQueryParam } from '../util/hooks'
-import { processPath } from '../routes'
+import {ListName} from '../service/Codelist'
+import {generatePath, useHistory, useParams} from 'react-router-dom'
+import {Process, ProcessStatus} from '../constants'
+import {useQueryParam} from '../util/hooks'
+import {processPath} from '../routes'
 import * as queryString from 'query-string'
-import { PageHeader } from '../components/common/PageHeader'
+import {PageHeader} from '../components/common/PageHeader'
 import DepartmentCharts from '../components/Process/DepartmentCharts'
-import { HeadingSmall } from 'baseui/typography'
-import { intl } from '../util'
+import {HeadingSmall} from 'baseui/typography'
+import {intl} from '../util'
+import {Block} from "baseui/block/index"
 
 export enum Section {
   purpose = 'purpose',
@@ -38,17 +39,31 @@ export type PathParams = {
 const ProcessPage = () => {
   const filter = useQueryParam<ProcessStatus>('filter')
   const params = useParams<PathParams>()
-  const { section, code, processId } = params
+  const {section, code, processId} = params
+  const history = useHistory()
+
+  const moveScroll = () => {
+    window.scrollTo(0, localStorage.getItem("Yposition" + history.location.pathname) != null ? Number(localStorage.getItem("Yposition" + history.location.pathname)) + 200 : 0)
+    localStorage.removeItem("Yposition" + history.location.pathname)
+  }
+
+  const saveScroll = () => {
+    if (window.pageYOffset !== 0) {
+      localStorage.setItem("Yposition" + history.location.pathname, window.pageYOffset.toString())
+    }
+  }
+
+  window.addEventListener("scroll", saveScroll)
 
   return (
     <>
-      <PageHeader section={section} code={code} />
-      <ProcessList code={code} listName={listNameForSection(section)} processId={processId} filter={filter} section={section} />
+      <PageHeader section={section} code={code}/>
+      <ProcessList code={code} listName={listNameForSection(section)} processId={processId} filter={filter} section={section} moveScroll={moveScroll}/>
       {section === Section.department ? (
-        <>
+        <Block className={"charts-section"}>
           <HeadingSmall>{intl.overview}</HeadingSmall>
-          <DepartmentCharts departmentCode={code} />
-        </>
+          <DepartmentCharts departmentCode={code}/>
+        </Block>
       ) : null}
     </>
   )
@@ -61,4 +76,4 @@ export const genProcessPath = (section: Section, code: string, process?: Partial
     section,
     code: section === Section.purpose && !!process?.purpose ? process.purpose.code : code,
     processId: process?.id
-  }) + '?' + queryString.stringify({ filter, create }, { skipNull: true })
+  }) + '?' + queryString.stringify({filter, create}, {skipNull: true})
