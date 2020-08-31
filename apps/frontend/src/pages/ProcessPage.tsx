@@ -6,19 +6,12 @@ import {generatePath, useHistory, useParams} from 'react-router-dom'
 import {Process, ProcessStatus} from '../constants'
 import {useQueryParam} from '../util/hooks'
 import {processPath} from '../routes'
-import {ListName} from '../service/Codelist'
-import {generatePath, useParams} from 'react-router-dom'
-import {Process, ProcessStatus} from '../constants'
-import {useQueryParam} from '../util/hooks'
-import {processPath} from '../routes'
 import * as queryString from 'query-string'
 import {PageHeader} from '../components/common/PageHeader'
 import DepartmentCharts from '../components/Process/DepartmentCharts'
 import {HeadingSmall} from 'baseui/typography'
 import {intl} from '../util'
 import {Block} from "baseui/block/index"
-import {HeadingSmall} from 'baseui/typography'
-import {intl} from '../util'
 
 export enum Section {
   purpose = 'purpose',
@@ -66,8 +59,6 @@ const ProcessPage = () => {
     <>
       <PageHeader section={section} code={code}/>
       <ProcessList code={code} listName={listNameForSection(section)} processId={processId} filter={filter} section={section} moveScroll={moveScroll}/>
-      <PageHeader section={section} code={code}/>
-      <ProcessList section={section} code={code} listName={listNameForSection(section)} processId={processId} filter={filter}/>
       {section === Section.department ? (
         <Block className={"charts-section"}>
           <HeadingSmall>{intl.overview}</HeadingSmall>
