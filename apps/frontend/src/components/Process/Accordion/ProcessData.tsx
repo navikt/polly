@@ -14,14 +14,16 @@ import {boolToText} from '../../common/Radio'
 import {RetentionView} from '../Retention'
 import {env} from '../../../util/env'
 import {isNil, sum, uniqBy} from 'lodash'
-import {Markdown} from '../../common/Markdown'
 import {ProgressBar} from 'baseui/progress-bar/index'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
+import RouteLink from "../../common/RouteLink";
 
 const showDpiaRequiredField = (dpia?: Dpia) => {
   if (dpia?.needForDpia === true) {
     if (dpia.refToDpia) {
-      return <Markdown source={`${intl.yes}. ${intl.reference}${dpia.refToDpia}`} singleWord/>
+      return <>
+        {`${intl.yes}. ${intl.reference}`} <RouteLink href={`${dpia.refToDpia}`}>Se ekstern lenke her</RouteLink>
+        </>
     } else {
       return intl.yes
     }
@@ -184,7 +186,7 @@ const ProcessData = (props: {process: Process}) => {
           </Block>
           <Block>
             <span>{process.retention?.retentionDescription && `${intl.retentionDescription}: `}</span>
-            <span><Markdown source={process.retention?.retentionDescription} singleWord/></span>
+            {process.retention?.retentionDescription && <RouteLink href={`${process.retention?.retentionDescription}`}>Se ekstern lenke her</RouteLink>}
           </Block>
         </>
       </DataText>
