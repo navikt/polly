@@ -2,7 +2,7 @@ import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} fro
 import {Button, KIND} from 'baseui/button'
 import * as React from 'react'
 import {KeyboardEvent, useEffect, useState} from 'react'
-import {AddDocumentToProcessFormValues, Document, DocumentInfoTypeUse, Process} from '../../../constants'
+import {AddDocumentToProcessFormValues, Document, DocumentInfoTypeUse, Policy, Process} from '../../../constants'
 import {Block, BlockProps} from 'baseui/block'
 import {ArrayHelpers, Field, FieldArray, FieldProps, Form, Formik, FormikProps} from 'formik'
 import {intl, useDebouncedState} from '../../../util'
@@ -42,7 +42,7 @@ type AddDocumentProps = {
   error: string | null
 }
 
-const ListInformationTypes = (props: { informationTypes: DocumentInfoTypeUse[], formik: FormikProps<AddDocumentToProcessFormValues>, arrayHelpers: ArrayHelpers }) => {
+const ListInformationTypes = (props: {informationTypes: DocumentInfoTypeUse[], formik: FormikProps<AddDocumentToProcessFormValues>, arrayHelpers: ArrayHelpers}) => {
   const {informationTypes, formik, arrayHelpers} = props
   const [css] = useStyletron()
 
@@ -60,7 +60,7 @@ const ListInformationTypes = (props: { informationTypes: DocumentInfoTypeUse[], 
               {informationType.subjectCategories.map(s => codelist.getShortname(ListName.SUBJECT_CATEGORY, s.code)).join(', ')}
             </Block>
           </Block>
-          <CustomizedStatefulTooltip content={intl.remove} >
+          <CustomizedStatefulTooltip content={intl.remove}>
             <Button size="compact" kind="tertiary" shape="round" onClick={() => {
               const length = formik.values.informationTypes.length
               arrayHelpers.remove(index)
@@ -110,8 +110,15 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
     if (e.key === 'Enter') e.preventDefault()
   }
 
-  function extractInfoTypes(document: Document) {
-    const infoTypeUses = document.informationTypes.filter(infoType => !!infoType.subjectCategories.length)
+  function extractInfoTypes(document: Document, existingPolicies: Policy[]) {
+    const infoTypeUses = document.informationTypes
+    .filter(infoType => !!infoType.subjectCategories.length) // remove infoTypes with no set subjectCategories
+    .map(infoType => { // remove subject categories already in use for this process
+      const alreadyUsedSubjectCategoriies = existingPolicies.filter(p => p.informationType.id === infoType.id).flatMap(p => p.subjectCategories).map(c => c.code)
+      const remainingSubjectCategories = infoType.subjectCategories.filter(c => alreadyUsedSubjectCategoriies.indexOf(c.code) >= 0)
+      return {...infoType, subjectCategories: remainingSubjectCategories}
+    })
+    .filter(infoType => !!infoType.subjectCategories.length)
     infoTypeUses.sort((a, b) => a.informationType.name.localeCompare(b.informationType.name, intl.getLanguage()))
     return infoTypeUses
   }
@@ -130,7 +137,7 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
         onSubmit={props.submit}
         initialValues={{
           document: props.addDefaultDocument ? defaultDoc : undefined,
-          informationTypes: props.addDefaultDocument ? extractInfoTypes(defaultDoc!) : [],
+          informationTypes: props.addDefaultDocument ? extractInfoTypes(defaultDoc!, props.process.policies) : [],
           process: props.process,
           defaultDocument: props.addDefaultDocument
         } as AddDocumentToProcessFormValues}
@@ -140,7 +147,7 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
           const selectDocument = (document: Document, isDefault: boolean) => {
             formik.setFieldValue('defaultDocument', isDefault)
             formik.setFieldValue('document', document)
-            formik.setFieldValue('informationTypes', extractInfoTypes(document))
+            formik.setFieldValue('informationTypes', extractInfoTypes(document, props.process.policies))
           }
 
           return (

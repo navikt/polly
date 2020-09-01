@@ -203,6 +203,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
             subjectCategories: [],
             legalBases: [],
             documentIds: [],
+            otherPolicies: currentProcess.policies
           }}
           isEdit={false}
           onClose={() => setShowCreatePolicyModal(false)}

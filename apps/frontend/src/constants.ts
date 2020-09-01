@@ -105,6 +105,7 @@ export interface PolicyFormValues {
   legalBases: Array<LegalBasisFormValues>;
   legalBasesOpen: boolean;
   documentIds: string[];
+  otherPolicies: Policy[]
 }
 
 export interface ProcessFormValues {

@@ -156,6 +156,15 @@ const missingLegalBasisForDedicated = (policy: PolicyFormValues) => {
   return policy.legalBasesUse === LegalBasesUse.DEDICATED_LEGAL_BASES && !policy.legalBases.length;
 };
 
+const subjectCategoryExists = (policy: PolicyFormValues) => {
+  const existingPolicyIdents = policy.otherPolicies.flatMap(p => p.subjectCategories.map(c => p.informationType.id + '.' + c.code))
+  const matchingIdents = policy.subjectCategories.map(c => policy.informationType?.id + '.' + c).filter(policyIdent => existingPolicyIdents.indexOf(policyIdent) >= 0)
+  const errors = matchingIdents
+  .map(ident => codelist.getShortname(ListName.SUBJECT_CATEGORY, ident.substring(ident.indexOf('.') + 1)))
+  .map(category => intl.formatString(intl.processContainsSubjectCategory, category, policy.informationType!.name) as string)
+  return errors.length ? new yup.ValidationError(errors, undefined, 'subjectCategories') : true
+}
+
 export const policySchema = () =>
   yup.object<PolicyFormValues>({
     informationType: yup
@@ -177,7 +186,15 @@ export const policySchema = () =>
         return !missingArt6LegalBasisForInfoType(parent);
       },
     }),
-    subjectCategories: yup.array().of(yup.string()).min(1, intl.required),
+    subjectCategories: yup.array().of(yup.string()).min(1, intl.required)
+    .test({
+      name: 'duplicateSubjectCategory',
+      message: 'placeholder',
+      test: function () {
+        const {parent} = this
+        return subjectCategoryExists(parent);
+      }
+    }),
     legalBasesUse: yup
     .mixed()
     .oneOf(Object.values(LegalBasesUse))
@@ -196,6 +213,7 @@ export const policySchema = () =>
     purposeCode: yup.string(),
     id: yup.string(),
     documentIds: yup.array().of(yup.string()),
+    otherPolicies: yup.array() // only used for validations
   });
 
 export const legalBasisSchema = () =>
