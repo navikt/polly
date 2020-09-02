@@ -1,4 +1,4 @@
-package no.nav.data.polly.process.domain;
+package no.nav.data.polly.process.domain.repo;
 
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
