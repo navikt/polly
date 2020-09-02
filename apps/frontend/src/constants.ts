@@ -402,7 +402,6 @@ export interface Document {
 }
 
 export interface DocumentInfoTypeUse {
-  id?: string;
   informationTypeId: string;
   informationType: InformationTypeShort;
   subjectCategories: Code[];
