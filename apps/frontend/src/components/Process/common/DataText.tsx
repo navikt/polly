@@ -1,19 +1,18 @@
-import { default as React, ReactNode } from 'react'
-import { Block } from 'baseui/block'
-import { theme } from '../../../util'
-import { Label2, Paragraph2 } from 'baseui/typography'
+import {default as React, ReactNode} from 'react'
+import {Block} from 'baseui/block'
+import {intl, theme} from '../../../util'
+import {Label2, Paragraph2} from 'baseui/typography'
 
 type DataTextProps = {
   label?: string
   text?: false | string | string[]
   children?: ReactNode
-  hide?: boolean
+  hideComponent?: boolean
 }
 
 const DataText = (props: DataTextProps) => {
-  if (props.hide) return null
-  const texts = typeof props.text === 'string' ? [props.text] : props.text
-
+  if (props.hideComponent) return null
+  const texts = typeof props.text === 'string' ? [props.text] : !!props.text ? props.text : [intl.notFilled]
   return (
     <Block display='flex' alignContent='flex-start' marginBottom='1rem' width='100%'>
       <Block width='40%' paddingRight={theme.sizing.scale400} maxWidth='300px'>
