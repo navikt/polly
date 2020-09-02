@@ -112,13 +112,12 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
 
   function extractInfoTypes(document: Document, existingPolicies: Policy[]) {
     const infoTypeUses = document.informationTypes
-    .filter(infoType => !!infoType.subjectCategories.length) // remove infoTypes with no set subjectCategories
     .map(infoType => { // remove subject categories already in use for this process
       const alreadyUsedSubjectCategoriies = existingPolicies.filter(p => p.informationType.id === infoType.id).flatMap(p => p.subjectCategories).map(c => c.code)
       const remainingSubjectCategories = infoType.subjectCategories.filter(c => alreadyUsedSubjectCategoriies.indexOf(c.code) >= 0)
       return {...infoType, subjectCategories: remainingSubjectCategories}
     })
-    .filter(infoType => !!infoType.subjectCategories.length)
+    .filter(infoType => !!infoType.subjectCategories.length) // remove infoTypes with no set subjectCategories
     infoTypeUses.sort((a, b) => a.informationType.name.localeCompare(b.informationType.name, intl.getLanguage()))
     return infoTypeUses
   }
