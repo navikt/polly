@@ -49,7 +49,7 @@ public class OAuthState {
 
     public String toJson(Encryptor encryptor) {
         String json = JsonUtils.toJson(this);
-        return encryptor.encrypt(json);
+        return encryptor.encrypt(json).saltedCipher();
     }
 
     private void validate() {

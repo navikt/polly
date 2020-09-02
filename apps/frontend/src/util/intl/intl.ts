@@ -356,6 +356,7 @@ export interface IStrings {
   slack: string;
   add: string;
   summarySubjectCategories: string;
+  processContainsSubjectCategory: string;
   maxChars: string;
   required: string;
   dateFormat: string;

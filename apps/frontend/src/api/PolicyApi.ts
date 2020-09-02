@@ -52,7 +52,7 @@ export const convertLegalBasesToFormValues = (legalBases?: LegalBasis[]) => (leg
   key: shortid.generate()
 }))
 
-export const convertPolicyToFormValues = (policy: Policy): PolicyFormValues => ({
+export const convertPolicyToFormValues = (policy: Policy, otherPolicies: Policy[]): PolicyFormValues => ({
   legalBasesOpen: false,
   id: policy.id,
   process: policy.process,
@@ -61,5 +61,6 @@ export const convertPolicyToFormValues = (policy: Policy): PolicyFormValues => (
   subjectCategories: policy.subjectCategories.map((code: Code) => code.code),
   legalBasesUse: policy.legalBasesUse,
   legalBases: convertLegalBasesToFormValues(policy.legalBases),
-  documentIds: policy.documentIds || []
+  documentIds: policy.documentIds || [],
+  otherPolicies
 })

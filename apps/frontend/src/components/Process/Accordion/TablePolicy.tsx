@@ -150,7 +150,7 @@ const TablePolicy = ({process, hasAccess, errorPolicyModal, errorDeleteModal, su
       {showEditModal && currentPolicy && (
         <ModalPolicy
           title={intl.policyEdit}
-          initialValues={convertPolicyToFormValues(currentPolicy)}
+          initialValues={convertPolicyToFormValues(currentPolicy, process.policies.filter(p => p.id !== currentPolicy.id))}
           docs={docs}
           onClose={() => {
             setShowEditModal(false)

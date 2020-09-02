@@ -23,7 +23,7 @@ public class AzureConfig {
 
     @Bean
     public ResourceRetriever getJWTResourceRetriever() {
-        return new DefaultResourceRetriever(RemoteJWKSet.DEFAULT_HTTP_CONNECT_TIMEOUT, RemoteJWKSet.DEFAULT_HTTP_READ_TIMEOUT, RemoteJWKSet.DEFAULT_HTTP_SIZE_LIMIT);
+        return new DefaultResourceRetriever(RemoteJWKSet.DEFAULT_HTTP_CONNECT_TIMEOUT * 2, RemoteJWKSet.DEFAULT_HTTP_READ_TIMEOUT * 2, RemoteJWKSet.DEFAULT_HTTP_SIZE_LIMIT);
     }
 
     @Bean

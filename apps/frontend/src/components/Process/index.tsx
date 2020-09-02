@@ -44,7 +44,7 @@ type ProcessListProps = {
 
 const sortProcess = (list: ProcessShort[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, intl.getLanguage()))
 
-const ProcessList = ({code, listName, filter, processId, section,moveScroll}: ProcessListProps) => {
+const ProcessList = ({code, listName, filter, processId, section, moveScroll}: ProcessListProps) => {
   const [processList, setProcessList] = React.useState<ProcessShort[]>([])
   const [currentProcess, setCurrentProcess] = React.useState<Process | undefined>()
   const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
@@ -67,7 +67,7 @@ const ProcessList = ({code, listName, filter, processId, section,moveScroll}: Pr
       setIsLoadingProcessList(true)
       await getProcessList()
       setIsLoadingProcessList(false)
-      if(moveScroll) moveScroll()
+      if (moveScroll) moveScroll()
     })()
   }, [code, filter])
 
@@ -210,7 +210,8 @@ const ProcessList = ({code, listName, filter, processId, section,moveScroll}: Pr
         legalBases: [],
         legalBasesOpen: false,
         legalBasesUse: LegalBasesUse.INHERITED_FROM_PROCESS,
-        documentIds: formValues.defaultDocument ? [] : [formValues.document!.id]
+        documentIds: formValues.defaultDocument ? [] : [formValues.document!.id],
+        otherPolicies: []
       }))
       await createPolicies(policies)
       await getProcessById(formValues.process.id)

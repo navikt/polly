@@ -2,15 +2,12 @@ package no.nav.data.polly.alert;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.NotFoundException;
-import no.nav.data.common.rest.PageParameters;
 import no.nav.data.common.storage.domain.GenericStorage;
 import no.nav.data.common.utils.StreamUtils;
-import no.nav.data.polly.alert.AlertController.EventPage.AlertSort;
-import no.nav.data.polly.alert.AlertController.EventPage.SortDir;
 import no.nav.data.polly.alert.domain.AlertEvent;
-import no.nav.data.polly.alert.domain.AlertEventLevel;
 import no.nav.data.polly.alert.domain.AlertEventType;
 import no.nav.data.polly.alert.domain.AlertRepository;
+import no.nav.data.polly.alert.domain.AlertRepositoryImpl.AlertEventRequest;
 import no.nav.data.polly.alert.dto.DisclosureAlert;
 import no.nav.data.polly.alert.dto.InformationTypeAlert;
 import no.nav.data.polly.alert.dto.PolicyAlert;
@@ -240,13 +237,8 @@ public class AlertService {
         return safeStream(legalBases).anyMatch(lb -> lb.getGdpr().startsWith(articlePrefix));
     }
 
-    public Page<AlertEvent> getEvents(PageParameters parameters, UUID processId, UUID informationTypeId, UUID disclosureId, AlertEventType type, AlertEventLevel level,
-            AlertSort sort, SortDir dir) {
-        parameters.validate();
-        return alertRepository.findAlerts(processId, informationTypeId, disclosureId, type, level,
-                parameters.getPageNumber(), parameters.getPageSize(),
-                sort, dir
-        );
+    public Page<AlertEvent> getEvents(AlertEventRequest request) {
+        return alertRepository.findAlerts(request);
     }
 
 }

@@ -22,7 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.UUID;
+
+import static java.util.stream.Collectors.toMap;
+import static no.nav.data.common.utils.StreamUtils.convert;
+import static no.nav.data.common.utils.StreamUtils.filter;
+import static no.nav.data.common.utils.StreamUtils.safeStream;
 
 @Slf4j
 @Service
@@ -68,28 +73,45 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
     public void validateRequests(List<PolicyRequest> requests, boolean isUpdate) {
         initialize(requests, isUpdate);
         List<ValidationError> validations = new ArrayList<>();
-        Map<String, Integer> titlesUsedInRequest = new HashMap<>();
-        final AtomicInteger i = new AtomicInteger(1);
+        Map<PolicyIdent, Integer> requestIdents = new HashMap<>();
+        requests.forEach(PolicyRequest::format); // format all first to ensure duplicate logic is correct
+        requests.forEach(r -> PolicyIdent.from(r).forEach(ident -> requestIdents.put(ident, r.getRequestIndex())));
         requests.forEach(request -> {
-            List<ValidationError> requestValidations = new ArrayList<>(request.validateFields());
-            requestValidations.addAll(validateRepositoryForPolicyRequest(request));
-            if (titlesUsedInRequest.containsKey(request.getIdentifyingFields())) {
-                requestValidations.add(new ValidationError(request.getReference(), "combinationNotUniqueInThisRequest", String.format(
-                        "A request combining %s is not unique because it is already used in this request (see request nr:%s)",
-                        identifiers(request), titlesUsedInRequest.get(request.getIdentifyingFields()))));
-            } else {
-                titlesUsedInRequest.put(request.getIdentifyingFields(), i.intValue());
-            }
+            validations.addAll(request.validateFields());
+            validations.addAll(validateRepositoryForPolicyRequest(request));
+            validateDuplicates(validations, requestIdents, request);
             if (request.isUpdate()) {
                 validateUpdate(request, validations);
             }
-            validations.addAll(requestValidations);
-            i.getAndIncrement();
         });
         if (!validations.isEmpty()) {
             log.warn("Validation errors occurred when validating PolicyRequest: {}", validations);
             throw new ValidationException(validations, "Validation errors occurred when validating PolicyRequest.");
         }
+    }
+
+    private void validateDuplicates(List<ValidationError> validations, Map<PolicyIdent, Integer> allRequestIdents, PolicyRequest request) {
+        Map<UUID, List<PolicyIdent>> processPolicyIdents = request.getProcess() == null ? Map.of() :
+                safeStream(request.getProcess().getPolicies()).collect(toMap(Policy::getId, PolicyIdent::from));
+        var requestIdents = PolicyIdent.from(request);
+
+        var requestCollisions = filter(allRequestIdents.entrySet(), ident -> requestIdents.contains(ident.getKey()) && ident.getValue() != request.getRequestIndex());
+        var processCollisions = filter(processPolicyIdents.entrySet(),
+                process -> !process.getKey().toString().equals(request.getId()) && requestIdents.stream().anyMatch(reqIdent -> process.getValue().contains(reqIdent)));
+        requestCollisions.forEach(rc -> validations.add(duplicateRequestError(request, rc.getValue())));
+        processCollisions.forEach(pc -> validations.add(duplicateInProcessError(request)));
+    }
+
+    private ValidationError duplicateRequestError(PolicyRequest request, int duplicateIndex) {
+        return new ValidationError(request.getReference(), "combinationNotUniqueInThisRequest", String.format(
+                "A request combining %s is not unique because it is already used in this request (see request nr: %d and %d)",
+                PolicyIdent.from(request), request.getRequestIndex(), duplicateIndex));
+    }
+
+    private ValidationError duplicateInProcessError(PolicyRequest request) {
+        return new ValidationError(request.getReference(), "combinationNotUniqueInThisProcess", String.format(
+                "A request combining %s is not unique because it is already used in this process (see request nr: %d)",
+                PolicyIdent.from(request), request.getRequestIndex()));
     }
 
     private void validateUpdate(PolicyRequest request, List<ValidationError> validations) {
@@ -131,8 +153,20 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
         return validations;
     }
 
-    private String identifiers(PolicyRequest request) {
-        return String.format("InformationType: %s and Process: %s Purpose: %s SubjectCategories: %s",
-                request.getInformationTypeId(), request.getProcessId(), request.getPurposeCode(), request.getSubjectCategories());
+    record PolicyIdent(UUID informationTypeId, UUID processId, String subjectCategory) {
+
+        static List<PolicyIdent> from(PolicyRequest request) {
+            return convert(request.getSubjectCategories(), subjectCategory -> new PolicyIdent(request.getInformationTypeIdAsUUID(), request.getProcessIdAsUUID(), subjectCategory));
+        }
+
+        static List<PolicyIdent> from(Policy policy) {
+            return convert(policy.getData().getSubjectCategories(),
+                    subjectCategory -> new PolicyIdent(policy.getInformationTypeId(), policy.getProcess().getId(), subjectCategory));
+        }
+
+        @Override
+        public String toString() {
+            return String.format("InformationType: %s Process: %s SubjectCategory: %s", informationTypeId, processId, subjectCategory);
+        }
     }
 }

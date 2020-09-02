@@ -34,7 +34,7 @@ const DepartmentCharts = (props: DepartmentChartsProps) => {
 
             setIsLoading(false)
         })()
-    }, [])
+    }, [departmentCode])
 
     return (
         <>

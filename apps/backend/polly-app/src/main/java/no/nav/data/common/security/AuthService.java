@@ -54,15 +54,15 @@ public class AuthService {
     }
 
     public String createAuth(String userId, String refreshToken) {
-        String saltedCipher = encryptor.encrypt(refreshToken);
+        var enc = encryptor.encrypt(refreshToken);
         var auth = authRepository.save(Auth.builder()
                 .generateId()
                 .userId(userId)
-                .encryptedRefreshToken(encryptor.getCipher(saltedCipher))
+                .encryptedRefreshToken(enc.cipher())
                 .initiated(LocalDateTime.now())
                 .lastActive(LocalDateTime.now())
                 .build())
-                .addSecret(encryptor, encryptor.getSalt(saltedCipher));
+                .addSecret(encryptor, enc.salt());
         return auth.session();
     }
 

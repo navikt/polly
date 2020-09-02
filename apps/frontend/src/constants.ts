@@ -105,6 +105,7 @@ export interface PolicyFormValues {
   legalBases: Array<LegalBasisFormValues>;
   legalBasesOpen: boolean;
   documentIds: string[];
+  otherPolicies: Policy[]
 }
 
 export interface ProcessFormValues {
@@ -401,7 +402,6 @@ export interface Document {
 }
 
 export interface DocumentInfoTypeUse {
-  id?: string;
   informationTypeId: string;
   informationType: InformationTypeShort;
   subjectCategories: Code[];
