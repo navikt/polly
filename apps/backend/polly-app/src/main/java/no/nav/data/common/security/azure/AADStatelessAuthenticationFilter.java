@@ -3,6 +3,7 @@ package no.nav.data.common.security.azure;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSObject;
+import com.nimbusds.jose.jwk.source.DefaultJWKSetCache;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.jwk.source.RemoteJWKSet;
 import com.nimbusds.jose.proc.BadJOSEException;
@@ -37,6 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -67,7 +69,7 @@ public class AADStatelessAuthenticationFilter extends OncePerRequestFilter {
         // azure spring
         this.validAudiences.add(aadAuthProps.getClientId());
         try {
-            keySource = new RemoteJWKSet<>(oidcProviderMetadata.getJWKSetURI().toURL(), resourceRetriever);
+            keySource = new RemoteJWKSet<>(oidcProviderMetadata.getJWKSetURI().toURL(), resourceRetriever, new DefaultJWKSetCache(60, TimeUnit.MINUTES));
         } catch (MalformedURLException e) {
             log.error("Failed to parse active directory key discovery uri.", e);
             throw new IllegalStateException("Failed to parse active directory key discovery uri.", e);
