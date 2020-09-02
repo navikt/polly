@@ -238,8 +238,8 @@ const SelectType = (props: {type: SearchType, setType: (type: SearchType) => voi
         {smallRadio('thirdParty', intl.thirdParty)}
         {smallRadio('system', intl.system)}
         {smallRadio('document', intl.document)}
-        {smallRadio('gdprArticle', intl.nationalLaw)}
-        {smallRadio('nationalLaw', intl.gdprArticle)}
+        {smallRadio('nationalLaw', intl.nationalLaw)}
+        {smallRadio('gdprArticle', intl.gdprArticle)}
       </RadioGroup>
     </Block>
   </Block>
