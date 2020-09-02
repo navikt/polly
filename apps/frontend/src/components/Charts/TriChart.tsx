@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Counter, ProcessField, ProcessStatus, ProcessState } from '../../constants'
 import { useHistory } from 'react-router-dom'
-import { Chart } from '../Dashboard/Chart'
+import { Chart } from './Chart'
 import { intl } from '../../util'
 import { chartColor } from '../../util/theme'
 import { clickOnPieChartSlice } from '../../util/dashboard'
@@ -20,6 +20,7 @@ type TriChartProps = {
 const TriChart = (props: TriChartProps) => {
     const history = useHistory()
     const { counter, title, header, processField, processStatus, departmentCode } = props
+    console.log(departmentCode)
     return (
         <Chart
             chartTitle={title}
