@@ -146,7 +146,8 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
         return validations;
     }
 
-    private void validateTeams(ProcessRequest request, List<String> existingTeams, ArrayList<ValidationError> validations) {
+    private void validateTeams(ProcessRequest pRequest, List<String> existingTeams, ArrayList<ValidationError> validations) {
+        var request = pRequest.getAffiliation();
         if (!request.getProductTeams().isEmpty() && !existingTeams.equals(request.getProductTeams())) {
             request.getProductTeams().forEach(t -> {
                 if (!teamService.teamExists(t)) {

@@ -42,6 +42,7 @@ import no.nav.data.polly.process.domain.sub.Dpia;
 import no.nav.data.polly.process.domain.sub.Retention;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessResponse.ProcessResponseBuilder;
+import no.nav.data.polly.process.dto.sub.AffiliationResponse;
 import no.nav.data.polly.process.dto.sub.DataProcessingResponse;
 import no.nav.data.polly.process.dto.sub.DpiaResponse;
 import no.nav.data.polly.process.dto.sub.RetentionResponse;
@@ -314,10 +315,12 @@ public abstract class IntegrationTestBase {
                 .description("process description")
                 .purpose(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1))
                 .purposeCode(PURPOSE_CODE1)
-                .productTeam("teamid1")
-                .product(CodelistService.getCodelistResponse(ListName.SYSTEM, "PESYS"))
-                .department(CodelistService.getCodelistResponse(ListName.DEPARTMENT, "DEP"))
-                .subDepartment(CodelistService.getCodelistResponse(ListName.SUB_DEPARTMENT, "SUBDEP"))
+                .affiliation(AffiliationResponse.builder()
+                        .department(CodelistService.getCodelistResponse(ListName.DEPARTMENT, "DEP"))
+                        .subDepartment(CodelistService.getCodelistResponse(ListName.SUB_DEPARTMENT, "SUBDEP"))
+                        .productTeam("teamid1")
+                        .product(CodelistService.getCodelistResponse(ListName.SYSTEM, "PESYS"))
+                        .build())
                 .commonExternalProcessResponsible(CodelistService.getCodelistResponse(ListName.THIRD_PARTY, "SKATT"))
                 .start(LocalDate.now())
                 .end(LocalDate.now())

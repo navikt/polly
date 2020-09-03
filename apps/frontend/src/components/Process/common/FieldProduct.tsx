@@ -8,20 +8,20 @@ import {Block} from 'baseui/block'
 
 const FieldProduct = (props: {formikBag: FormikProps<ProcessFormValues>}) => {
   return <FieldArray
-    name='products'
+    name='affiliation.products'
     render={arrayHelpers => (
       <>
         <Block width='100%'>
           <Block width='100%'>
             <Select
               clearable
-              options={codelist.getParsedOptions(ListName.SYSTEM).filter(o => !props.formikBag.values.products.includes(o.id))}
+              options={codelist.getParsedOptions(ListName.SYSTEM).filter(o => !props.formikBag.values.affiliation.products.includes(o.id))}
               onChange={({value}) => {
-                arrayHelpers.form.setFieldValue('products', [...props.formikBag.values.products, ...value.map(v => v.id)])
+                arrayHelpers.form.setFieldValue('affiliation.products', [...props.formikBag.values.affiliation.products, ...value.map(v => v.id)])
               }}
             />
           </Block>
-          <Block>{renderTagList(props.formikBag.values.products.map(p => codelist.getShortname(ListName.SYSTEM, p)), arrayHelpers)}</Block>
+          <Block>{renderTagList(props.formikBag.values.affiliation.products.map(p => codelist.getShortname(ListName.SYSTEM, p)), arrayHelpers)}</Block>
         </Block>
       </>
     )}

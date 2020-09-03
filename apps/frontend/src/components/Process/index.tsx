@@ -309,10 +309,12 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll}: P
         isEdit={false}
         initialValues={convertProcessToFormValues({
           purpose: section === Section.purpose ? codelist.getCode(ListName.PURPOSE, code) : undefined,
-          department: section === Section.department ? codelist.getCode(ListName.DEPARTMENT, code) : undefined,
-          subDepartments: section === Section.subdepartment ? [codelist.getCode(ListName.SUB_DEPARTMENT, code)!] : [],
-          products: section === Section.system ? [codelist.getCode(ListName.SYSTEM, code)!] : [],
-          productTeams: section === Section.team ? [code] : []
+          affiliation: {
+            department: section === Section.department ? codelist.getCode(ListName.DEPARTMENT, code) : undefined,
+            subDepartments: section === Section.subdepartment ? [codelist.getCode(ListName.SUB_DEPARTMENT, code)!] : [],
+            products: section === Section.system ? [codelist.getCode(ListName.SYSTEM, code)!] : [],
+            productTeams: section === Section.team ? [code] : []
+          }
         })}
       />}
     </>

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.polly.Period;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
+import no.nav.data.polly.process.domain.sub.Affiliation;
 import no.nav.data.polly.process.domain.sub.DataProcessing;
 import no.nav.data.polly.process.domain.sub.Dpia;
 import no.nav.data.polly.process.domain.sub.Retention;
@@ -54,6 +55,28 @@ public class ProcessData {
 
     public Period toPeriod() {
         return new Period(start, end);
+    }
+
+
+    public DataProcessing dataProcessing() {
+        return getDataProcessing() == null ? new DataProcessing() : getDataProcessing();
+    }
+
+    public Retention retention() {
+        return getRetention() == null ? new Retention() : getRetention();
+    }
+
+    public Dpia dpia() {
+        return getDpia() == null ? new Dpia() : getDpia();
+    }
+
+    public Affiliation affiliation() {
+        return Affiliation.builder()
+                .department(getDepartment())
+                .subDepartments(getSubDepartments())
+                .products(getProducts())
+                .productTeams(getProductTeams())
+                .build();
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")

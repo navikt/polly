@@ -14,7 +14,7 @@ import {boolToText} from '../../common/Radio'
 import {RetentionView} from '../Retention'
 import {env} from '../../../util/env'
 import {isNil, sum, uniqBy} from 'lodash'
-import {ProgressBar} from 'baseui/progress-bar/index'
+import {ProgressBar} from 'baseui/progress-bar'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import {StyledLink} from "baseui/link";
 
@@ -95,14 +95,14 @@ const ProcessData = (props: { process: Process }) => {
       </DataText>
 
       <DataText label={intl.organizing} text={""}>
-        {process.department ? <Block>
+        {process.affiliation.department ? <Block>
           <span>{intl.department}: </span>
-          <span><DotTags list={ListName.DEPARTMENT} codes={[process.department]} commaSeparator linkCodelist/> </span>
+          <span><DotTags list={ListName.DEPARTMENT} codes={[process.affiliation.department]} commaSeparator linkCodelist/> </span>
         </Block> : <span>{intl.department}: {intl.notFilled}</span>}
-        {!!process?.subDepartments.length ? <Block>
+        {!!process.affiliation.subDepartments.length ? <Block>
           <Block display="flex">
             <span>{intl.subDepartment}: </span>
-            <DotTags list={ListName.SUB_DEPARTMENT} codes={process.subDepartments} linkCodelist/>
+            <DotTags list={ListName.SUB_DEPARTMENT} codes={process.affiliation.subDepartments} linkCodelist/>
           </Block>
         </Block>:
           <Block display="flex">
@@ -117,12 +117,12 @@ const ProcessData = (props: { process: Process }) => {
 
         <Block>
           <span>{intl.productTeam}: </span>
-          {!!process.productTeams?.length ? <TeamList teamIds={process.productTeams}/> : intl.notFilled}
+          {!!process.affiliation.productTeams?.length ? <TeamList teamIds={process.affiliation.productTeams}/> : intl.notFilled}
         </Block>
       </DataText>
 
       <DataText label={intl.system} text={""}>
-        <DotTags list={ListName.SYSTEM} codes={process.products} linkCodelist/>
+        <DotTags list={ListName.SYSTEM} codes={process.affiliation.products} linkCodelist/>
       </DataText>
 
       {process.usesAllInformationTypes ? <DataText label={intl.USES_ALL_INFO_TYPE} text={intl.yes}/> : <DataText label={intl.USES_ALL_INFO_TYPE} text={intl.no}/>}

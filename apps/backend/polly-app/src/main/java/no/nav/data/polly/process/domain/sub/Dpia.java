@@ -36,7 +36,7 @@ public class Dpia {
 
     public static Dpia convertDpia(DpiaRequest dpia) {
         if (dpia == null) {
-            return null;
+            return new Dpia();
         }
         return Dpia.builder()
                 .needForDpia(dpia.getNeedForDpia())

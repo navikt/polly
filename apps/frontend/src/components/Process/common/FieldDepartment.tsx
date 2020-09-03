@@ -14,14 +14,14 @@ const FieldDepartment = (props: { department?: string }) => {
 
   return (
     <Field
-      name='department'
+      name='affiliation.department'
       render={({form}: FieldProps<ProcessFormValues>) => (
         <Block width={'100%'}>
           <Select
             options={codelist.getParsedOptions(ListName.DEPARTMENT)}
             onChange={({value}) => {
               setValue(value)
-              form.setFieldValue('department', value.length > 0 ? value[0].id : '')
+              form.setFieldValue('affiliation.department', value.length > 0 ? value[0].id : '')
             }}
             value={value}
           />

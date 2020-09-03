@@ -1,6 +1,7 @@
 import * as yup from "yup";
 import {
   AddDocumentToProcessFormValues,
+  AffiliationFormValues,
   CreateDocumentFormValues,
   DataProcessingFormValues,
   DisclosureFormValues,
@@ -63,11 +64,13 @@ export const processSchema = () =>
     )
     .required(intl.required),
     description: yup.string(),
-    department: yup.string(),
+    affiliation: yup.object<AffiliationFormValues>({
+      department: yup.string(),
+      subDepartments: yup.array().of(yup.string()),
+      productTeams: yup.array().of(yup.string()),
+      products: yup.array().of(yup.string()),
+    }),
     commonExternalProcessResponsible: yup.string(),
-    subDepartments: yup.array().of(yup.string()),
-    productTeams: yup.array().of(yup.string()),
-    products: yup.array().of(yup.string()),
     legalBases: yup.array().of(legalBasisSchema()),
     legalBasesOpen: yup.boolean().oneOf([false], intl.legalBasisComplete),
     start: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),

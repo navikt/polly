@@ -15,13 +15,13 @@ import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.process.domain.sub.Affiliation;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessShortResponse;
 import org.hibernate.annotations.Type;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Column;
@@ -35,7 +35,6 @@ import javax.validation.constraints.NotNull;
 import static java.util.Comparator.comparing;
 import static no.nav.data.common.utils.StreamUtils.convert;
 import static no.nav.data.common.utils.StreamUtils.copyOf;
-import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
 import static no.nav.data.common.utils.StreamUtils.safeStream;
 import static no.nav.data.polly.process.domain.sub.DataProcessing.convertDataProcessing;
 import static no.nav.data.polly.process.domain.sub.Dpia.convertDpia;
@@ -94,26 +93,22 @@ public class Process extends Auditable {
                 .description(data.getDescription())
                 .purpose(getPurposeCodeResponse())
                 .purposeCode(purposeCode)
-                .department(getDepartmentCodeResponse())
-                .subDepartments(getSubDepartmentCodeResponses())
+                .affiliation(data.affiliation().convertToResponse())
                 .commonExternalProcessResponsible(getCommonExternalProcessResponsibleCodeResponse())
-                .productTeams(nullToEmptyList(data.getProductTeams()))
-                .products(getProductCodeResponses())
                 .start(data.getStart())
                 .end(data.getEnd())
                 .legalBases(convert(data.getLegalBases(), LegalBasis::convertToResponse))
                 .usesAllInformationTypes(data.isUsesAllInformationTypes())
                 .automaticProcessing(data.getAutomaticProcessing())
                 .profiling(data.getProfiling())
-                .dataProcessing(data.getDataProcessing() == null ? null : data.getDataProcessing().convertToResponse())
-                .retention(data.getRetention() == null ? null : data.getRetention().convertToResponse())
-                .dpia(data.getDpia() == null ? null : data.getDpia().convertToResponse())
+                .dataProcessing(data.dataProcessing().convertToResponse())
+                .retention(data.retention().convertToResponse())
+                .dpia(data.dpia().convertToResponse())
                 // If we dont include policies avoid loading them all from DB
                 .changeStamp(super.convertChangeStampResponse())
                 .status(data.getStatus())
                 .build();
     }
-
     public ProcessResponse convertToResponseWithPolicies() {
         var response = convertToResponse();
         response.setPolicies(convert(policies, policy -> policy.convertToResponse(false)));
@@ -125,14 +120,17 @@ public class Process extends Auditable {
         if (!request.isUpdate()) {
             id = UUID.randomUUID();
         }
+
+        var aff = Affiliation.convertFromRequest(request.getAffiliation());
+        data.setDepartment(aff.getDepartment());
+        data.setSubDepartments(copyOf(aff.getSubDepartments()));
+        data.setProductTeams(copyOf(aff.getProductTeams()));
+        data.setProducts(copyOf(aff.getProducts()));
+
         setName(request.getName());
         setPurposeCode(request.getPurposeCode());
         data.setDescription(request.getDescription());
-        data.setDepartment(request.getDepartment());
-        data.setSubDepartments(copyOf(request.getSubDepartments()));
         data.setCommonExternalProcessResponsible(request.getCommonExternalProcessResponsible());
-        data.setProductTeams(copyOf(request.getProductTeams()));
-        data.setProducts(copyOf(request.getProducts()));
         data.setStart(DateUtil.parseStart(request.getStart()));
         data.setEnd(DateUtil.parseEnd(request.getEnd()));
         data.setLegalBases(convert(request.getLegalBases(), LegalBasisRequest::convertToDomain));
@@ -150,7 +148,7 @@ public class Process extends Auditable {
         return ProcessShortResponse.builder()
                 .id(getId())
                 .name(getName())
-                .department(getDepartmentCodeResponse())
+                .affiliation(data.affiliation().convertToResponse())
                 .purpose(getPurposeCodeResponse())
                 .status(getData().getStatus())
                 .build();
@@ -160,20 +158,8 @@ public class Process extends Auditable {
         return CodelistService.getCodelistResponse(ListName.PURPOSE, purposeCode);
     }
 
-    private CodelistResponse getDepartmentCodeResponse() {
-        return CodelistService.getCodelistResponse(ListName.DEPARTMENT, data.getDepartment());
-    }
-
-    private List<CodelistResponse> getSubDepartmentCodeResponses() {
-        return CodelistService.getCodelistResponseList(ListName.SUB_DEPARTMENT, data.getSubDepartments());
-    }
-
     private CodelistResponse getCommonExternalProcessResponsibleCodeResponse() {
         return CodelistService.getCodelistResponse(ListName.THIRD_PARTY, data.getCommonExternalProcessResponsible());
-    }
-
-    private List<CodelistResponse> getProductCodeResponses() {
-        return CodelistService.getCodelistResponseList(ListName.SYSTEM, data.getProducts());
     }
 
     @Override

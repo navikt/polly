@@ -113,11 +113,8 @@ export interface ProcessFormValues {
   purposeCode?: string;
   name?: string;
   description?: string;
-  department?: string;
+  affiliation: AffiliationFormValues
   commonExternalProcessResponsible?: string;
-  subDepartments: string[];
-  productTeams: string[];
-  products: string[];
   legalBases: Array<LegalBasisFormValues>;
   legalBasesOpen: boolean;
   end?: string;
@@ -130,6 +127,20 @@ export interface ProcessFormValues {
   profiling?: boolean;
   dataProcessing: DataProcessingFormValues;
   retention: Retention;
+}
+
+export interface AffiliationFormValues {
+  department?: string;
+  subDepartments: string[];
+  productTeams: string[];
+  products: string[];
+}
+
+export interface Affiliation {
+  department?: Code;
+  subDepartments: Code[];
+  productTeams: string[];
+  products: Code[];
 }
 
 export interface Dpia {
@@ -239,13 +250,6 @@ export const documentSort: ColumnCompares<DocumentInfoTypeUse> = {
   subjectCategories: (a, b) => a.subjectCategories.length - b.subjectCategories.length,
 }
 
-export const processSort: ColumnCompares<Process> = {
-  name: (a, b) => a.name.localeCompare(b.name),
-  purpose: (a, b) => (codelist.getShortnameForCode(a.purpose) || '').localeCompare(codelist.getShortnameForCode(b.purpose) || ''),
-  department: (a, b) => (a.department?.shortName || '').localeCompare(b.department?.shortName || ''),
-  products: (a, b) => a.products.length - b.products.length,
-}
-
 export interface InformationTypeShort {
   id: string;
   name: string;
@@ -256,7 +260,7 @@ export interface ProcessShort {
   id: string;
   name: string;
   purpose: Code;
-  department: Code;
+  affiliation: Affiliation;
   status?: ProcessStatus;
 }
 
@@ -265,21 +269,18 @@ export interface Process extends IDurationed {
   name: string;
   description?: string;
   legalBases: LegalBasis[];
-  department: Code;
+  affiliation: Affiliation;
   commonExternalProcessResponsible: Code;
-  subDepartments: Code[];
-  productTeams: string[];
-  products: Code[];
   policies: Policy[];
   purpose: Code;
   changeStamp: ChangeStamp;
-  dpia?: Dpia;
+  dpia: Dpia;
   status?: ProcessStatus;
   usesAllInformationTypes: boolean;
   automaticProcessing?: boolean;
   profiling?: boolean;
-  dataProcessing?: DataProcessing;
-  retention?: Retention;
+  dataProcessing: DataProcessing;
+  retention: Retention;
 }
 
 export interface ChangeStamp {

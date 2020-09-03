@@ -9,7 +9,7 @@ import {ProcessFormValues, ProcessStatus, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} fro
 import {codelist} from '../../../service/Codelist'
 import {intl, theme} from '../../../util'
 import {processSchema} from '../../common/schema'
-import {Panel, PanelOverrides} from 'baseui/accordion'
+import {Panel, PanelOverrides, StatelessAccordion} from 'baseui/accordion'
 import CustomizedModalBlock from '../../common/CustomizedModalBlock'
 import {DateFieldsProcessModal} from '../DateFieldsProcessModal'
 import FieldName from '../common/FieldName'
@@ -34,7 +34,6 @@ import FieldLegalBasis from "../common/FieldLegalBasis";
 import PanelTitle from "../common/PanelTitle";
 import FieldTransferGroundsOutsideEU from '../common/FieldTransferGroundsOutsideEU'
 import FieldTransferGroundsOutsideEUOther from '../common/FieldTransferGroundsOutsideEUOther'
-import {StatelessAccordion} from 'baseui/accordion/index'
 import FieldTransferCountries from '../common/FieldTransferCountries'
 
 const modalHeaderProps: BlockProps = {
@@ -220,16 +219,16 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                     >
                       <Block display='flex' width='100%' justifyContent='space-between'>
                         <Block width='48%'><ModalLabel label={intl.department} tooltip={intl.departmentHelpText}/></Block>
-                        {codelist.showSubDepartment(formikBag.values.department) && (
+                        {codelist.showSubDepartment(formikBag.values.affiliation.department) && (
                           <Block width='48%'><ModalLabel label={intl.subDepartment} tooltip={intl.subDepartmentHelpText}/></Block>
                         )}
                       </Block>
 
                       <Block display='flex' width='100%' justifyContent='space-between'>
                         <Block width='48%'>
-                          <FieldDepartment department={formikBag.values.department}/>
+                          <FieldDepartment department={formikBag.values.affiliation.department}/>
                         </Block>
-                        {codelist.showSubDepartment(formikBag.values.department) && (
+                        {codelist.showSubDepartment(formikBag.values.affiliation.department) && (
                           <Block width='48%'>
                             <FieldSubDepartments formikBag={formikBag}/>
                           </Block>
@@ -245,7 +244,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
                       <Block display='flex' width='100%' justifyContent='space-between'>
                         <Block width='48%'>
-                          <FieldProductTeam productTeams={formikBag.values.productTeams}/>
+                          <FieldProductTeam productTeams={formikBag.values.affiliation.productTeams} fieldName='affiliation.productTeams'/>
                         </Block>
                         <Block width='48%'>
                           {showResponsibleSelect && <FieldCommonExternalProcessResponsible thirdParty={formikBag.values.commonExternalProcessResponsible}

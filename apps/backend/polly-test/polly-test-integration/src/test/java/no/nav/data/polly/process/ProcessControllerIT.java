@@ -17,6 +17,7 @@ import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessField;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessState;
+import no.nav.data.polly.process.dto.sub.AffiliationRequest;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -262,11 +263,13 @@ class ProcessControllerIT extends IntegrationTestBase {
         assertThat(resp.getBody()).isNotNull();
 
         String id = resp.getBody().getId().toString();
-        ProcessRequest update = ProcessRequest.builder().id(id).name("newprocess").purposeCode("AAP").department("dep").build();
+        ProcessRequest update = ProcessRequest.builder().id(id).name("newprocess").purposeCode("AAP")
+                .affiliation(AffiliationRequest.builder().department("dep").build())
+                .build();
         resp = restTemplate.exchange("/process/{id}", HttpMethod.PUT, new HttpEntity<>(update), ProcessResponse.class, id);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody().getDepartment().getCode()).isEqualTo("DEP");
+        assertThat(resp.getBody().getAffiliation().getDepartment().getCode()).isEqualTo("DEP");
     }
 
     @Test
@@ -285,7 +288,9 @@ class ProcessControllerIT extends IntegrationTestBase {
         assertThat(polResp.getBody().getNumberOfElements()).isEqualTo(1);
 
         String id = resp.getBody().getId().toString();
-        ProcessRequest update = ProcessRequest.builder().id(id).name("newprocess").purposeCode("KONTROLL").department("dep").build();
+        ProcessRequest update = ProcessRequest.builder().id(id).name("newprocess").purposeCode("KONTROLL")
+                .affiliation(AffiliationRequest.builder().department("dep").build())
+                .build();
         var errorResp = restTemplate.exchange("/process/{id}", HttpMethod.PUT, new HttpEntity<>(update), String.class, id);
         assertThat(errorResp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(errorResp.getBody()).isNotNull();

@@ -44,7 +44,7 @@ public class DataProcessing {
 
     public static DataProcessing convertDataProcessing(DataProcessingRequest dataProcessing) {
         if (dataProcessing == null) {
-            return null;
+            return new DataProcessing();
         }
         return DataProcessing.builder()
                 .dataProcessor(dataProcessing.getDataProcessor())

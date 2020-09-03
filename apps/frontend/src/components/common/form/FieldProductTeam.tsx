@@ -8,8 +8,8 @@ import {renderTagList} from '../TagList'
 import {Error} from '../ModalSchema'
 
 
-const FieldProductTeam = (props: {productTeams: string[]}) => {
-  const {productTeams} = props
+const FieldProductTeam = (props: {productTeams: string[], fieldName: string}) => {
+  const {productTeams, fieldName} = props
   const [values, setValues] = React.useState<Value>(productTeams.map(t => ({id: t, label: t})))
   const [teamSearchResult, setTeamSearch, teamSearchLoading] = useTeamSearch()
 
@@ -31,7 +31,7 @@ const FieldProductTeam = (props: {productTeams: string[]}) => {
   return (
     <>
       <FieldArray
-        name='productTeams'
+        name={fieldName}
         render={arrayHelpers => (
           <Block width={'100%'}>
             <Block width={'100%'}>
@@ -39,7 +39,7 @@ const FieldProductTeam = (props: {productTeams: string[]}) => {
                 clearable
                 options={teamSearchResult}
                 onChange={({value}) => {
-                  arrayHelpers.form.setFieldValue('productTeams', [...productTeams, ...value.map(v => v.id)])
+                  arrayHelpers.form.setFieldValue(fieldName, [...productTeams, ...value.map(v => v.id)])
                 }}
                 onInputChange={event => setTeamSearch(event.currentTarget.value)}
                 isLoading={teamSearchLoading}
@@ -51,7 +51,7 @@ const FieldProductTeam = (props: {productTeams: string[]}) => {
           </Block>
         )}
       />
-      <Error fieldName="productTeams" fullWidth/>
+      <Error fieldName={fieldName} fullWidth/>
     </>
   )
 }

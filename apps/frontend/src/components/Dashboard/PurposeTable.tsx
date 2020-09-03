@@ -26,7 +26,7 @@ const PurposeTable = () => {
       setLoading(true)
       changeTitle()
       let res = await getProcessByStateAndStatus(filterName, filterValue, filterStatus)
-      if (res && department) setFiltered(res.filter((r: ProcessShort) => r.department && r.department.code === department))
+      if (res && department) setFiltered(res.filter((r: ProcessShort) => r.affiliation?.department?.code === department))
       else setFiltered(res)
       setLoading(false)
     })()

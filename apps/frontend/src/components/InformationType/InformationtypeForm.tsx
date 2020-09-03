@@ -274,7 +274,7 @@ const InformationtypeForm = ({
                   <Block {...labelProps}>
                     <Label2>{intl.productTeam}</Label2>
                   </Block>
-                  <FieldProductTeam productTeams={formikBag.values.productTeams}/>
+                  <FieldProductTeam productTeams={formikBag.values.productTeams} fieldName='productTeams'/>
                 </Block>
               </FlexGridItem>
 

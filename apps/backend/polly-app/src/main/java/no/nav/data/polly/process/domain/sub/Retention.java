@@ -29,7 +29,7 @@ public class Retention {
 
     public static Retention convertRetention(RetentionRequest retention) {
         if (retention == null) {
-            return null;
+            return new Retention();
         }
         return Retention.builder()
                 .retentionPlan(retention.getRetentionPlan())

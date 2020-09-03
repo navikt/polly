@@ -13,6 +13,7 @@ import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.domain.ProcessStatus;
+import no.nav.data.polly.process.dto.sub.AffiliationResponse;
 import no.nav.data.polly.process.dto.sub.DataProcessingResponse;
 import no.nav.data.polly.process.dto.sub.DpiaResponse;
 import no.nav.data.polly.process.dto.sub.RetentionResponse;
@@ -25,8 +26,8 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "name", "description", "purpose", "purposeCode", "department", "subDepartments", "commonExternalProcessResponsible",
-        "productTeams", "products", "start", "end", "active",
+@JsonPropertyOrder({"id", "name", "description", "purpose", "purposeCode", "affiliation",
+        "commonExternalProcessResponsible", "start", "end", "active",
         "usesAllInformationTypes", "automaticProcessing", "profiling", "dataProcessing", "retention", "dpia", "status", "changeStamp",
         "legalBases", "policies"})
 public class ProcessResponse {
@@ -36,14 +37,9 @@ public class ProcessResponse {
     private String description;
     private CodelistResponse purpose;
     private String purposeCode;
-    private CodelistResponse department;
-    @Singular
-    private List<CodelistResponse> subDepartments;
+    private AffiliationResponse affiliation;
+
     private CodelistResponse commonExternalProcessResponsible;
-    @Singular
-    private List<String> productTeams;
-    @Singular
-    private List<CodelistResponse> products;
     private LocalDate start;
     private LocalDate end;
 
