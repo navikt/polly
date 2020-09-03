@@ -28,8 +28,6 @@ const Charts = (props: ChartsProps ) => {
                departmentCode ? `/dashboard/${processField}/${ProcessState.UNKNOWN}/${processStatus}/${departmentCode}`
                               : `/dashboard/${processField}/${ProcessState.UNKNOWN}/${processStatus}`
 
-
-
     return (
       <Block display='flex' flexWrap={true} width={'100%'} justifyContent={"space-between"}>
         <Block {...chartCardProps}>
