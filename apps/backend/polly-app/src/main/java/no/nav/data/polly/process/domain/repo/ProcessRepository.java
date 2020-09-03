@@ -1,5 +1,6 @@
-package no.nav.data.polly.process.domain;
+package no.nav.data.polly.process.domain.repo;
 
+import no.nav.data.polly.process.domain.Process;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

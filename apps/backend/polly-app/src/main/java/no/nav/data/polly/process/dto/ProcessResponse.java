@@ -13,6 +13,9 @@ import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.domain.ProcessStatus;
+import no.nav.data.polly.process.dto.sub.DataProcessingResponse;
+import no.nav.data.polly.process.dto.sub.DpiaResponse;
+import no.nav.data.polly.process.dto.sub.RetentionResponse;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -61,50 +64,6 @@ public class ProcessResponse {
 
     public boolean isActive() {
         return DateUtil.isNow(start, end);
-    }
-
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @JsonPropertyOrder({"dataProcessor", "dataProcessorAgreements", "dataProcessorOutsideEU", "transferGroundsOutsideEU", "transferGroundsOutsideEUOther", "transferCountries"})
-    public static class DataProcessingResponse {
-
-        private Boolean dataProcessor;
-        @Singular
-        private List<String> dataProcessorAgreements;
-        private Boolean dataProcessorOutsideEU;
-        private CodelistResponse transferGroundsOutsideEU;
-        private String transferGroundsOutsideEUOther;
-        private List<String> transferCountries;
-    }
-
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @JsonPropertyOrder({"retentionPlan", "retentionMonths", "retentionStart", "retentionDescription"})
-    public static class RetentionResponse {
-
-        private Boolean retentionPlan;
-        private Integer retentionMonths;
-        private String retentionStart;
-        private String retentionDescription;
-    }
-
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @JsonPropertyOrder({"needForDpia", "refToDpia", "grounds", "processImplemented", "riskOwner", "riskOwnerFunction"})
-    public static class DpiaResponse {
-
-        private Boolean needForDpia;
-        private String refToDpia;
-        private String grounds;
-        private boolean processImplemented;
-        private String riskOwner;
-        private String riskOwnerFunction;
     }
 
 }

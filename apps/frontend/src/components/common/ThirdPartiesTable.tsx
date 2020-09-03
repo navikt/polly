@@ -41,7 +41,7 @@ const ThirdPartiesTable = ({informationTypes, sortName}: TableInformationTypes) 
               {<RouteLink href={`/informationtype/${row.id}`}>{row.name}</RouteLink>}
             </Cell>
             <Cell>
-              {row.orgMaster?.shortName}
+              {row.orgMaster?.shortName && <RouteLink href={`/system/${row.orgMaster.code}`}>{row.orgMaster?.shortName}</RouteLink>}
             </Cell>
           </Row>
         ))}

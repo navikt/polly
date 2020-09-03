@@ -29,42 +29,40 @@ public class AlertRepositoryImpl implements AlertRepositoryCustom {
     }
 
     @Override
-    public Page<AlertEvent> findAlerts(UUID processId, UUID informationTypeId, UUID disclosureId, AlertEventType type, AlertEventLevel level,
-            int page, int pageSize, AlertSort sort, SortDir dir) {
+    public Page<AlertEvent> findAlerts(AlertEventRequest request) {
         var query = "select id , count(*) over () as count "
                 + "from generic_storage gs "
                 + "where type = 'ALERT_EVENT' ";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
-                .addValue("page", page)
-                .addValue("pageSize", pageSize);
-        if (processId != null) {
+                .addValue("page", request.page())
+                .addValue("pageSize", request.pageSize());
+        if (request.processId() != null) {
             query += "and data ->> 'processId' = :processId ";
-            params.addValue("processId", processId.toString());
+            params.addValue("processId", request.processId().toString());
         }
-        if (informationTypeId != null) {
+        if (request.informationTypeId() != null) {
             query += "and data ->> 'informationTypeId' = :informationTypeId ";
-            params.addValue("informationTypeId", informationTypeId.toString());
+            params.addValue("informationTypeId", request.informationTypeId().toString());
         }
-        if (disclosureId != null) {
+        if (request.disclosureId() != null) {
             query += "and data ->> 'disclosureId' = :disclosureId ";
-            params.addValue("disclosureId", disclosureId.toString());
+            params.addValue("disclosureId", request.disclosureId().toString());
         }
-        if (type != null) {
+        if (request.type() != null) {
             query += "and data ->> 'type' = :type ";
-            params.addValue("type", type.toString());
+            params.addValue("type", request.type().toString());
         }
-        if (level != null) {
+        if (request.level() != null) {
             query += "and data ->> 'level' = :level ";
-            params.addValue("level", level.toString());
+            params.addValue("level", request.level().toString());
         }
-        query += "order by " + order(sort, dir) + " "
-                + "limit :pageSize offset (:page * :pageSize)";
+        query += "order by " + order(request.sort(), request.dir()) + " limit :pageSize offset (:page * :pageSize)";
 
         List<Map<String, Object>> resp = jdbcTemplate.queryForList(query, params);
         long total = resp.isEmpty() ? 0 : (long) resp.get(0).get("count");
         List<AlertEvent> alertEvents = total > 0 ? get(resp) : List.of();
-        return new PageImpl<>(alertEvents, PageRequest.of(page, pageSize), total);
+        return new PageImpl<>(alertEvents, PageRequest.of(request.page(), request.pageSize()), total);
     }
 
     private String order(AlertSort sort, SortDir dir) {
@@ -93,4 +91,13 @@ public class AlertRepositoryImpl implements AlertRepositoryCustom {
                 .map(GenericStorage::toAlertEvent)
                 .collect(Collectors.toList());
     }
+
+    public record AlertEventRequest(
+            UUID processId, UUID informationTypeId, UUID disclosureId,
+            AlertEventType type, AlertEventLevel level,
+            int page, int pageSize, AlertSort sort, SortDir dir
+    ) {
+
+    }
+
 }

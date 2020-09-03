@@ -1,7 +1,9 @@
-package no.nav.data.polly.process.domain;
+package no.nav.data.polly.process.domain.repo;
 
+import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessField;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessState;
+import no.nav.data.polly.process.dto.StateDbRequest;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;

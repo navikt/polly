@@ -3,7 +3,7 @@ package no.nav.data.polly.alert;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.storage.StorageService;
 import no.nav.data.polly.process.domain.Process;
-import no.nav.data.polly.process.domain.ProcessRepository;
+import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

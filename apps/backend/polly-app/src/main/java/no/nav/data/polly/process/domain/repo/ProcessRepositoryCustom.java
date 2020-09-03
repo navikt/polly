@@ -1,4 +1,7 @@
-package no.nav.data.polly.process.domain;
+package no.nav.data.polly.process.domain.repo;
+
+import no.nav.data.polly.process.domain.Process;
+import no.nav.data.polly.process.dto.StateDbRequest;
 
 import java.util.List;
 
