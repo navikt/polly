@@ -15,18 +15,15 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-/**
- * Great name..... pls
- */
-public class ExecutingDataProcessorData {
+public class DpProcess {
 
     private String name;
     @Default
     private Affiliation affiliation = new Affiliation();
     private String externalProcessResponsible;
 
-    private Boolean hasAgreement;
-    private List<String> agreements;
+    private Boolean dataProcessingAgreement;
+    private List<String> dataProcessingAgreements;
     @Default
     private DataProcessing subDataProcessing = new DataProcessing();
 
