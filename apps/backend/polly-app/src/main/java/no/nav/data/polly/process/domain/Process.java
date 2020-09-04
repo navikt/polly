@@ -15,7 +15,6 @@ import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
-import no.nav.data.polly.process.domain.sub.Affiliation;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessShortResponse;
@@ -36,6 +35,7 @@ import static java.util.Comparator.comparing;
 import static no.nav.data.common.utils.StreamUtils.convert;
 import static no.nav.data.common.utils.StreamUtils.copyOf;
 import static no.nav.data.common.utils.StreamUtils.safeStream;
+import static no.nav.data.polly.process.domain.sub.Affiliation.convertAffiliation;
 import static no.nav.data.polly.process.domain.sub.DataProcessing.convertDataProcessing;
 import static no.nav.data.polly.process.domain.sub.Dpia.convertDpia;
 import static no.nav.data.polly.process.domain.sub.Retention.convertRetention;
@@ -109,6 +109,7 @@ public class Process extends Auditable {
                 .status(data.getStatus())
                 .build();
     }
+
     public ProcessResponse convertToResponseWithPolicies() {
         var response = convertToResponse();
         response.setPolicies(convert(policies, policy -> policy.convertToResponse(false)));
@@ -121,7 +122,7 @@ public class Process extends Auditable {
             id = UUID.randomUUID();
         }
 
-        var aff = Affiliation.convertFromRequest(request.getAffiliation());
+        var aff = convertAffiliation(request.getAffiliation());
         data.setDepartment(aff.getDepartment());
         data.setSubDepartments(copyOf(aff.getSubDepartments()));
         data.setProductTeams(copyOf(aff.getProductTeams()));
