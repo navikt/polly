@@ -46,6 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/informationtype/**",
                 "/policy/**",
                 "/process/**",
+                "/dpprocess/**",
                 "/term/**",
                 "/team/**",
                 "/disclosure/**",
