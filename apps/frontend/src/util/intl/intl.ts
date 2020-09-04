@@ -96,6 +96,7 @@ export interface IStrings {
   dataProcessorUnclarified: string;
   dataProcessorExtra: string;
   dataProcessorAgreement: string;
+  dataProcessorAgreementPlaceholder: string;
   dataProcessorOutsideEU: string;
   isDataProcessedOutsideEUEEAHelpText: string;
   isDataProcessedOutsideEUEEA: string;
@@ -107,6 +108,7 @@ export interface IStrings {
   notInProduction: string;
   isDpiaRequired: string;
   dpiaReference: string;
+  dpiaReferencePlaceholder: string;
   dpiaNeeded: string;
   dpiaHelpText: string;
   grounds: string;
