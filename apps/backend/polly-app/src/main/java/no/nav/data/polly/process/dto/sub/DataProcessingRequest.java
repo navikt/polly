@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Singular;
 import lombok.experimental.FieldNameConstants;
 import no.nav.data.common.validator.FieldValidator;
 import no.nav.data.common.validator.Validated;
@@ -24,11 +25,13 @@ import static org.apache.commons.lang3.StringUtils.trimToNull;
 public class DataProcessingRequest implements Validated {
 
     private Boolean dataProcessor;
+    @Singular
     private List<String> dataProcessorAgreements;
     private Boolean dataProcessorOutsideEU;
     @ApiModelProperty(value = "Codelist TRANSFER_GROUNDS_OUTSIDE_EU")
     private String transferGroundsOutsideEU;
     private String transferGroundsOutsideEUOther;
+    @Singular
     private List<String> transferCountries;
 
     @Override
