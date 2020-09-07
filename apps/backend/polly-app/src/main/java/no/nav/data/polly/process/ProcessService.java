@@ -128,7 +128,7 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
 
             if (repoValue.isPresent()) {
                 Process process = repoValue.get();
-                validateTeams(request, process.getData().getProductTeams(), validations);
+                validateTeams(request, process.getData().getAffiliation().getProductTeams(), validations);
                 String existingRiskOwner = process.getData().getDpia() == null ? null : process.getData().getDpia().getRiskOwner();
                 validateRiskOwner(request, existingRiskOwner, validations);
             }

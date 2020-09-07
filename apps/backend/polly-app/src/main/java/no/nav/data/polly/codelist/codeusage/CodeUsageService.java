@@ -124,11 +124,11 @@ public class CodeUsageService {
                         convert(getPolicies(usage), p -> p.getData().getLegalBases()),
                         convert(getDisclosures(usage), p -> p.getData().getLegalBases())
                 );
-                case DEPARTMENT -> getProcesses(usage).forEach(p -> p.getData().setDepartment(newCode));
-                case SUB_DEPARTMENT -> getProcesses(usage).forEach(p -> replaceAll(p.getData().getSubDepartments(), oldCode, newCode));
+                case DEPARTMENT -> getProcesses(usage).forEach(p -> p.getData().getAffiliation().setDepartment(newCode));
+                case SUB_DEPARTMENT -> getProcesses(usage).forEach(p -> replaceAll(p.getData().getAffiliation().getSubDepartments(), oldCode, newCode));
                 case SYSTEM -> {
                     getInformationTypes(usage).forEach(it -> it.getData().setOrgMaster(newCode));
-                    getProcesses(usage).forEach(p -> replaceAll(p.getData().getProducts(), oldCode, newCode));
+                    getProcesses(usage).forEach(p -> replaceAll(p.getData().getAffiliation().getProducts(), oldCode, newCode));
                 }
                 case TRANSFER_GROUNDS_OUTSIDE_EU -> getProcesses(usage).forEach(p -> p.getData().getDataProcessing().setTransferGroundsOutsideEU(newCode));
             }

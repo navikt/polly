@@ -42,21 +42,21 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
 
     @Override
     public List<Process> findByProduct(String product) {
-        var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{products}' ?? :product",
+        var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{affiliation,products}' ?? :product",
                 new MapSqlParameterSource().addValue("product", product));
         return getProcesses(resp);
     }
 
     @Override
     public List<Process> findBySubDepartment(String subDepartment) {
-        var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{subDepartments}' ?? :subDepartment",
+        var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{affiliation,subDepartments}' ?? :subDepartment",
                 new MapSqlParameterSource().addValue("subDepartment", subDepartment));
         return getProcesses(resp);
     }
 
     @Override
     public List<Process> findByProductTeam(String productTeam) {
-        var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{productTeams}' ?? :productTeam",
+        var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{affiliation,productTeams}' ?? :productTeam",
                 new MapSqlParameterSource().addValue("productTeam", productTeam));
         return getProcesses(resp);
     }
@@ -66,7 +66,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
         if (productTeams.isEmpty()) {
             return List.of();
         }
-        var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{productTeams}' ?? any (array[ :productTeams ])",
+        var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{affiliation,productTeams}' ?? any (array[ :productTeams ])",
                 new MapSqlParameterSource().addValue("productTeams", productTeams));
         return getProcesses(resp);
     }
@@ -104,15 +104,15 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
 
         Map<String, Object> params = new HashMap<>();
         if (stateDbRequest.getDepartment() != null) {
-            sql += " and data->>'department' = :department";
+            sql += " and data #>> '{affiliation,department}' = :department";
             params.put("department", stateDbRequest.getDepartment());
         }
         if (stateDbRequest.getTeamIds() != null) {
-            sql += " and data #>'{productTeams}' ?? any (array[ :productTeams ])";
+            sql += " and data #> '{affiliation,productTeams}' ?? any (array[ :productTeams ])";
             params.put("productTeams", stateDbRequest.getTeamIds());
         }
         if (stateDbRequest.getStatus() != null) {
-            sql += " and data->>'status' = :status";
+            sql += " and data ->> 'status' = :status";
             params.put("status", stateDbRequest.getStatus().name());
         }
         return jdbcTemplate.queryForList(sql, params);

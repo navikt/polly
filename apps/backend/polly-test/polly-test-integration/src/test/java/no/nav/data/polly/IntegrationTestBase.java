@@ -38,6 +38,7 @@ import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.repo.DpProcessRepository;
 import no.nav.data.polly.process.domain.repo.ProcessDistributionRepository;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
+import no.nav.data.polly.process.domain.sub.Affiliation;
 import no.nav.data.polly.process.domain.sub.DataProcessing;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessResponse.ProcessResponseBuilder;
@@ -236,11 +237,13 @@ public abstract class IntegrationTestBase {
                 .purposeCode(purpose)
                 .data(ProcessData.builder()
                         .start(LocalDate.now()).end(LocalDate.now())
-                        .department(department)
-                        .subDepartment(subDepartment)
+                        .affiliation(Affiliation.builder()
+                                .department(department)
+                                .subDepartments(List.of(subDepartment))
+                                .productTeams(List.of("ProductTeam"))
+                                .products(List.of(product))
+                                .build())
                         .commonExternalProcessResponsible(commonExternalProcessResponsible)
-                        .productTeams(List.of("ProductTeam"))
-                        .products(List.of(product))
                         .legalBases(legalBases)
                         .dataProcessing(DataProcessing.builder().dataProcessor(true).dataProcessorOutsideEU(true).transferGroundsOutsideEU(transferGroundsOutsideEU).build())
                         .build())
@@ -248,16 +251,12 @@ public abstract class IntegrationTestBase {
     }
 
     protected Process createAndSaveProcess(String purpose) {
-        var aff = affiliationRequest();
         return process.computeIfAbsent(purpose,
                 (p) -> processRepository
                         .save(Process.builder().generateId().name("Auto_" + purpose).purposeCode(purpose)
                                 .data(ProcessData.builder()
                                         .description("process description")
-                                        .productTeams(aff.getProductTeams())
-                                        .products(aff.getProducts())
-                                        .department(aff.getDepartment())
-                                        .subDepartments(aff.getSubDepartments())
+                                        .affiliation(Affiliation.convertAffiliation(affiliationRequest()))
                                         .commonExternalProcessResponsible("SKATT")
                                         .start(LocalDate.now()).end(LocalDate.now()).legalBasis(createLegalBasis())
                                         .usesAllInformationTypes(true)
