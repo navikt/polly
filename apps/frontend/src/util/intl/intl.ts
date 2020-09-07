@@ -271,6 +271,7 @@ export interface IStrings {
   excessInfoHelpText: string;
   completeness: string;
   overview: string;
+  seeExternalLink: string;
 
   // groups
   READ: string;
