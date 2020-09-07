@@ -283,6 +283,21 @@ export interface Process extends IDurationed {
   retention: Retention;
 }
 
+export interface DpProcess extends IDurationed {
+  id: string;
+  name: string;
+  description?: string;
+  purposeDescription?: string;
+  affiliation: Affiliation;
+  externalProcessResponsible?: Code;
+  dataProcessingAgreement?: boolean;
+  dataProcessingAgreements: string[];
+  subDataProcessing: DataProcessing;
+  art9?: boolean;
+  art10?: boolean;
+  retention: Retention
+}
+
 export interface ChangeStamp {
   lastModifiedBy: string;
   lastModifiedDate: string;
