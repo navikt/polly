@@ -26,7 +26,7 @@ public class Affiliation {
     private List<String> productTeams;
     private List<String> products;
 
-    public static Affiliation convertFromRequest(AffiliationRequest request) {
+    public static Affiliation convertAffiliation(AffiliationRequest request) {
         if (request == null) {
             return new Affiliation();
         }

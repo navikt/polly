@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -115,8 +116,9 @@ public class InformationTypeController {
             infoTypes = repository.findByProductTeams((convert(teams, Team::getId)));
         }
         if (infoTypes != null) {
-            infoTypes.sort(comparing(it -> it.getData().getName(), String.CASE_INSENSITIVE_ORDER));
-            return ResponseEntity.ok(new RestResponsePage<>(convert(infoTypes, InformationType::convertToResponse)));
+            var sorted = new ArrayList<>(infoTypes);
+            sorted.sort(comparing(it -> it.getData().getName(), String.CASE_INSENSITIVE_ORDER));
+            return ResponseEntity.ok(new RestResponsePage<>(convert(sorted, InformationType::convertToResponse)));
         }
 
         Page<InformationTypeResponse> informationTypes = repository.findAll(page.createIdSortedPage()).map(InformationType::convertToResponse);

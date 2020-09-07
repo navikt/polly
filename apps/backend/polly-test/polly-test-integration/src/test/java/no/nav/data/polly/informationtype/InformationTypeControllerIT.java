@@ -100,16 +100,24 @@ class InformationTypeControllerIT extends IntegrationTestBase {
             assertGetOne("/informationtype?productArea={productArea}", "productarea1");
         }
 
+        @Test
+        void getForProductAreaNoResults() {
+            assertGet("/informationtype?productArea={productArea}", "productarea1", 0);
+        }
+
         private void assertGetOne(String url, String arg) {
+            assertGet(url, arg, 1);
+        }
+
+        private void assertGet(String url, String arg, int num) {
             ResponseEntity<InformationTypePage> resp = restTemplate.getForEntity(url, InformationTypePage.class, arg);
 
             assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
             InformationTypePage page = resp.getBody();
             assertThat(page).isNotNull();
-            assertThat(page.getContent()).hasSize(1);
+            assertThat(page.getContent()).hasSize(num);
         }
     }
-
 
     @Test
     void countAllInformationTypes() {

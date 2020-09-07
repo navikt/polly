@@ -9,24 +9,28 @@ import no.nav.data.polly.process.domain.sub.Affiliation;
 import no.nav.data.polly.process.domain.sub.DataProcessing;
 import no.nav.data.polly.process.domain.sub.Retention;
 
+import java.time.LocalDate;
 import java.util.List;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-/**
- * Great name..... pls
- */
-public class ExecutingDataProcessorData {
+public class DpProcessData {
 
     private String name;
     @Default
     private Affiliation affiliation = new Affiliation();
     private String externalProcessResponsible;
 
-    private Boolean hasAgreement;
-    private List<String> agreements;
+    @NotNull
+    private LocalDate start;
+    @NotNull
+    private LocalDate end;
+
+    private Boolean dataProcessingAgreement;
+    private List<String> dataProcessingAgreements;
     @Default
     private DataProcessing subDataProcessing = new DataProcessing();
 
@@ -35,7 +39,6 @@ public class ExecutingDataProcessorData {
     private Boolean art9;
     private Boolean art10;
 
-    // TODO indefinite ?
     @Default
     private Retention retention = new Retention();
 

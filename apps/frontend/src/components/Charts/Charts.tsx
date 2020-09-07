@@ -1,16 +1,16 @@
 import * as React from 'react'
-import { DashboardData, ProcessStatus, ProcessField, ProcessState, ProcessesDashCount, DepartmentProcessDashCount } from '../../constants'
-import { useHistory } from 'react-router-dom'
-import { Block } from 'baseui/block'
-import { chartCardProps } from '../common/Style'
+import {DepartmentProcessDashCount, ProcessesDashCount, ProcessField, ProcessState, ProcessStatus} from '../../constants'
+import {useHistory} from 'react-router-dom'
+import {Block} from 'baseui/block'
+import {chartCardProps} from '../common/Style'
 import TriChart from './TriChart'
-import { intl } from '../../util'
-import { Chart } from './Chart'
-import { clickOnPieChartSlice } from '../../util/dashboard'
-import { chartColor } from '../../util/theme'
-import { Paragraph1 } from 'baseui/typography'
+import {intl} from '../../util'
+import {Chart} from './Chart'
+import {clickOnPieChartSlice} from '../../util/dashboard'
+import {chartColor} from '../../util/theme'
+import {Paragraph1} from 'baseui/typography'
 import RouteLink from '../common/RouteLink'
-import { lowerFirst } from 'lodash'
+import {lowerFirst} from 'lodash'
 
 const chartSize = 80
 
@@ -24,7 +24,7 @@ const Charts = (props: ChartsProps ) => {
     const { chartData, processStatus, departmentCode } = props
     const history = useHistory()
 
-    const link = (processField: ProcessField) => 
+    const link = (processField: ProcessField) =>
                departmentCode ? `/dashboard/${processField}/${ProcessState.UNKNOWN}/${processStatus}/${departmentCode}`
                               : `/dashboard/${processField}/${ProcessState.UNKNOWN}/${processStatus}`
 
@@ -34,31 +34,32 @@ const Charts = (props: ChartsProps ) => {
           <TriChart counter={chartData.dpia}
             title={intl.dpiaNeeded}
             processStatus={processStatus}
-            processField={ProcessField.DPIA} 
+            processField={ProcessField.DPIA}
             departmentCode={departmentCode && departmentCode}
           />
         </Block>
-  
+
         <Block {...chartCardProps}>
           <TriChart counter={chartData.profiling}
             title={intl.profiling}
             processStatus={processStatus}
-            processField={ProcessField.PROFILING} 
+            processField={ProcessField.PROFILING}
             departmentCode={departmentCode && departmentCode}
           />
         </Block>
-  
+
         <Block {...chartCardProps}>
           <TriChart counter={chartData.automation}
             title={intl.automaticProcessing}
             processStatus={processStatus}
-            processField={ProcessField.AUTOMATION} 
+            processField={ProcessField.AUTOMATION}
             departmentCode={departmentCode && departmentCode}
           />
         </Block>
-  
+
         <Block {...chartCardProps}>
           <Chart chartTitle={intl.incompleteLegalBasis} size={chartSize}
+            hidePercent type='bar'
             data={
               [
                 {
@@ -82,24 +83,24 @@ const Charts = (props: ChartsProps ) => {
               ]
             } />
         </Block>
-  
+
         <Block {...chartCardProps}>
           <TriChart counter={chartData.retention}
             processStatus={processStatus}
             title={intl.retentionPieChartTitle}
-            processField={ProcessField.RETENTION} 
-            departmentCode={departmentCode && departmentCode}  
+            processField={ProcessField.RETENTION}
+            departmentCode={departmentCode && departmentCode}
           />
           <Paragraph1>
             {intl.processWithIncompleteRetention} <RouteLink href={link(ProcessField.RETENTION_DATA)}>{chartData.retentionDataIncomplete}</RouteLink>
           </Paragraph1>
         </Block>
-  
+
         <Block {...chartCardProps}>
           <TriChart counter={chartData.dataProcessor}
             processStatus={processStatus}
             title={intl.isDataProcessorUsed}
-            processField={ProcessField.DATA_PROCESSOR} 
+            processField={ProcessField.DATA_PROCESSOR}
             departmentCode={departmentCode && departmentCode}
           />
           <Paragraph1>
@@ -109,7 +110,7 @@ const Charts = (props: ChartsProps ) => {
           <TriChart counter={chartData.dataProcessorOutsideEU}
             processStatus={processStatus}
             title={`${intl.dataProcessor} ${lowerFirst(intl.dataProcessorOutsideEU)}`}
-            processField={ProcessField.DATA_PROCESSOR_OUTSIDE_EU} 
+            processField={ProcessField.DATA_PROCESSOR_OUTSIDE_EU}
             departmentCode={departmentCode && departmentCode}
           />
         </Block>

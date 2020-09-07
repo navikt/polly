@@ -35,10 +35,11 @@ interface ChartProps {
   data: ChartData[]
   size: number
   type?: ChartType
+  hidePercent?: boolean
 }
 
 export const Chart = (props: ChartProps) => {
-  const {headerTitle, size, total, data, chartTitle, leftLegend} = props
+  const {headerTitle, size, total, data, chartTitle, leftLegend, hidePercent} = props
   const totSize = data.map(d => d.size).reduce((a, b) => a + b, 0)
   const totalFraction = total !== undefined ? total : totSize
 
@@ -109,7 +110,7 @@ export const Chart = (props: ChartProps) => {
       <Label1 marginLeft={theme.sizing.scale700}>{headerTitle}</Label1>
     </Block>)}
     <Block>
-      <Visualization data={expData} size={size} chartTitle={chartTitle} leftLegend={!!leftLegend} type={props.type || 'pie'}/>
+      <Visualization data={expData} size={size} chartTitle={chartTitle} leftLegend={!!leftLegend} hidePercent={!!hidePercent} type={props.type || 'pie'}/>
     </Block>
   </>
 }
@@ -120,10 +121,11 @@ type VisualizationProps = {
   chartTitle: string,
   leftLegend: boolean,
   type: ChartType
+  hidePercent: boolean
 }
 
 const Visualization = (props: VisualizationProps) => {
-  const {size, data, chartTitle, leftLegend} = props
+  const {size, data, chartTitle, leftLegend, hidePercent} = props
   const [hover, setHover] = useState<number>(-1)
   const [type, toggle] = useReducer(old => old === 'bar' ? 'pie' : 'bar', props.type)
 
@@ -155,7 +157,7 @@ const Visualization = (props: VisualizationProps) => {
                          $style={cursor} display='flex' alignItems='center'>
                     <FontAwesomeIcon icon={faCircle} color={d.color}/>
                     <Block width={theme.sizing.scale1200} display='flex' justifyContent='flex-end'>{d.size}</Block>
-                    <Block width={theme.sizing.scale1200} display='flex' justifyContent='flex-end'>{(d.fraction * 100).toFixed(0)}%</Block>
+                    {!hidePercent && <Block width={theme.sizing.scale1200} display='flex' justifyContent='flex-end'>{(d.fraction * 100).toFixed(0)}%</Block>}
                     <Block marginLeft={theme.sizing.scale400}>{d.label}</Block>
                   </Block>
                 </div>

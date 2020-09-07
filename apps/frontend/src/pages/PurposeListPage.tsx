@@ -42,9 +42,7 @@ export const PurposeListPage = () => {
         <Block>
           <Label1>{intl.purposeSelect}</Label1>
         </Block>
-        <Block>
-          <RouteLink href='/process/legal'>{intl.search} {lowerFirst(intl.legalBasisShort)}</RouteLink>
-        </Block>
+        
         <Block marginTop={'auto'}>
           {hasAccess() && (
             <Button
