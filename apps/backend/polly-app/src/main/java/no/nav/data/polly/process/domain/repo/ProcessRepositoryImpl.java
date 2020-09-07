@@ -108,7 +108,7 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
             params.put("department", stateDbRequest.getDepartment());
         }
         if (stateDbRequest.getTeamIds() != null) {
-            sql += " and data #>'{productTeams}' ?? :productTeam";
+            sql += " and data #>'{productTeams}' ?? :productTeams";
             params.put("productTeams", stateDbRequest.getDepartment());
         }
         if (stateDbRequest.getStatus() != null) {
