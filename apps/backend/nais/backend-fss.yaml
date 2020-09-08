@@ -47,17 +47,7 @@ spec:
   leaderElection: true
   webproxy: true
   envFrom:
-    - secret: kafka-broker
-    - secret: kafka-schreg
-    - secret: env
-    - secret: polly-db
-    - secret: polly-redirect
     - secret: polly-enckey
-    - secret: polly-users
-    - secret: polly-admins
-    - secret: polly-distr-rate
-    - secret: polly-kafka-user
     - secret: polly-kafka-pwd
-    - secret: teamcat-url
-    - secret: termcat-url
-    - secret: commoncode-url
+    - configMapRef:
+        name: polly-cfg
