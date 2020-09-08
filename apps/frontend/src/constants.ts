@@ -284,18 +284,27 @@ export interface Process extends IDurationed {
 }
 
 export interface DpProcess extends IDurationed {
-  id: string;
-  name: string;
-  description?: string;
-  purposeDescription?: string;
+  active: boolean;
   affiliation: Affiliation;
-  externalProcessResponsible?: Code;
+
+  art10?: boolean;
+  art9?: boolean;
+  changeStamp: ChangeStamp;
+
   dataProcessingAgreement?: boolean;
   dataProcessingAgreements: string[];
-  subDataProcessing: DataProcessing;
-  art9?: boolean;
-  art10?: boolean;
+
+  description?: string;
+  end: string;
+  externalProcessResponsible?: Code;
+
+  id: string;
+  name: string;
+  purposeDescription?: string;
   retention: Retention
+
+  start: string;
+  subDataProcessing: DataProcessing;
 }
 
 export interface ChangeStamp {
