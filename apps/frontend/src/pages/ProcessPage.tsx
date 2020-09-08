@@ -1,4 +1,5 @@
 import * as React from 'react'
+import {useEffect} from 'react'
 
 import ProcessList from '../components/Process'
 import {ListName} from '../service/Codelist'
@@ -53,7 +54,10 @@ const ProcessPage = () => {
     }
   }
 
-  window.addEventListener("scroll", saveScroll)
+  useEffect(() => {
+    window.addEventListener("scroll", saveScroll)
+    return () => window.removeEventListener("scroll", saveScroll)
+  }, [])
 
   return (
     <>
