@@ -105,9 +105,9 @@ public class DashboardController {
         }
         var dashes = new ArrayList<ProcessDashCount>();
         dashes.add(dash.getAllProcesses());
-        Optional.ofNullable(process.getData().getDepartment()).ifPresent(dep -> dashes.add(dash.department(dep)));
+        Optional.ofNullable(process.getData().getAffiliation().getDepartment()).ifPresent(dep -> dashes.add(dash.department(dep)));
         // A team might be stored that doesnt exist, producing nulls here
-        nullToEmptyList(process.getData().getProductTeams()).stream().map(dash::team).filter(Objects::nonNull).forEach(dashes::add);
+        nullToEmptyList(process.getData().getAffiliation().getProductTeams()).stream().map(dash::team).filter(Objects::nonNull).forEach(dashes::add);
 
         dashes.forEach(ProcessDashCount::processes);
         if (process.getData().getStatus() == ProcessStatus.COMPLETED) {

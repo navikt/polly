@@ -201,7 +201,7 @@ public class ProcessToDocx {
             organising(process.getData());
 
             addHeading4("System");
-            addText(convert(data.getProducts(), p -> shortName(ListName.SYSTEM, p)));
+            addText(convert(data.getAffiliation().getProducts(), p -> shortName(ListName.SYSTEM, p)));
 
             addHeading4("Automatisering");
             addTexts(
@@ -225,14 +225,14 @@ public class ProcessToDocx {
 
         private void organising(ProcessData data) {
             addHeading4("Organisering");
-            var teamNames = data.getProductTeams().stream()
+            var teamNames = data.getAffiliation().getProductTeams().stream()
                     .map(teamId -> Map.entry(teamId, teamService.getTeam(teamId)))
                     .map(t -> t.getValue().map(Team::getName).orElse(t.getKey()))
                     .collect(toList());
 
             addTexts(
-                    text("Avdeling: ", shortName(ListName.DEPARTMENT, data.getDepartment())),
-                    text("Linja (Ytre etat): ", String.join(", ", convert(data.getSubDepartments(), sd -> shortName(ListName.SUB_DEPARTMENT, sd)))),
+                    text("Avdeling: ", shortName(ListName.DEPARTMENT, data.getAffiliation().getDepartment())),
+                    text("Linja (Ytre etat): ", String.join(", ", convert(data.getAffiliation().getSubDepartments(), sd -> shortName(ListName.SUB_DEPARTMENT, sd)))),
                     text("Produktteam (IT): ", String.join(", ", teamNames)),
                     text("Felles behandlingsansvarlig: ", shortName(ListName.THIRD_PARTY, data.getCommonExternalProcessResponsible()))
             );

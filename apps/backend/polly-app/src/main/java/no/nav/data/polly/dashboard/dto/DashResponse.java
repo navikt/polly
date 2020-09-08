@@ -38,6 +38,9 @@ public class DashResponse {
     }
 
     public ProcessDashCount registerTeam(String teamId, String productAreaId) {
+        if (productAreaId == null) {
+            return null;
+        }
         return dashTeamMap.computeIfAbsent(teamId, t -> dashProductAreaMap.computeIfAbsent(productAreaId, p -> {
             var dash = new ProcessDashCount();
             dash.setProductAreaId(productAreaId);

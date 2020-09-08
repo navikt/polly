@@ -27,6 +27,7 @@ export interface IStrings {
   sensitivity: string;
   processingActivities: string;
   process: string;
+  dpProcess: string;
   processes: string;
   legalBasis: string;
   legalBasisShort: string;
@@ -271,6 +272,7 @@ export interface IStrings {
   excessInfoHelpText: string;
   completeness: string;
   overview: string;
+  seeExternalLink: string;
 
   // groups
   READ: string;

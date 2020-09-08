@@ -31,10 +31,7 @@ public class ProcessData {
     @NotNull
     private LocalDate end;
 
-    private String department;
-    private List<String> subDepartments;
-    private List<String> productTeams;
-    private List<String> products;
+    private Affiliation affiliation;
 
     private String commonExternalProcessResponsible;
 
@@ -58,46 +55,41 @@ public class ProcessData {
     }
 
 
-    public DataProcessing dataProcessing() {
-        return getDataProcessing() == null ? new DataProcessing() : getDataProcessing();
+    public DataProcessing getDataProcessing() {
+        if (dataProcessing == null) {
+            dataProcessing = new DataProcessing();
+        }
+        return dataProcessing;
     }
 
-    public Retention retention() {
-        return getRetention() == null ? new Retention() : getRetention();
+    public Retention getRetention() {
+        if (retention == null) {
+            retention = new Retention();
+        }
+        return retention;
     }
 
-    public Dpia dpia() {
-        return getDpia() == null ? new Dpia() : getDpia();
+    public Dpia getDpia() {
+        if (dpia == null) {
+            dpia = new Dpia();
+        }
+        return dpia;
     }
 
-    public Affiliation affiliation() {
-        return Affiliation.builder()
-                .department(getDepartment())
-                .subDepartments(getSubDepartments())
-                .products(getProducts())
-                .productTeams(getProductTeams())
-                .build();
+    public Affiliation getAffiliation() {
+        if (affiliation == null) {
+            affiliation = new Affiliation();
+        }
+        return affiliation;
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static class ProcessDataBuilder {
 
-        private List<String> subDepartments = new ArrayList<>();
         private List<LegalBasis> legalBases = new ArrayList<>();
-        private List<String> dataProcessorAgreements = new ArrayList<>();
-
-        public ProcessDataBuilder subDepartment(String subDepartment) {
-            subDepartments.add(subDepartment);
-            return this;
-        }
 
         public ProcessDataBuilder legalBasis(LegalBasis legalBasis) {
             legalBases.add(legalBasis);
-            return this;
-        }
-
-        public ProcessDataBuilder dataProcessorAgreements(String agreement) {
-            dataProcessorAgreements.add(agreement);
             return this;
         }
     }

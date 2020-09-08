@@ -12,6 +12,7 @@ import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.process.dto.DpProcessRequest;
 import no.nav.data.polly.process.dto.DpProcessResponse;
+import no.nav.data.polly.process.dto.sub.DpProcessShortResponse;
 import org.hibernate.annotations.Type;
 
 import java.util.UUID;
@@ -94,6 +95,10 @@ public class DpProcess extends Auditable {
 
     private CodelistResponse getExternalProcessResponsibleCodeResponse() {
         return CodelistService.getCodelistResponse(ListName.THIRD_PARTY, data.getExternalProcessResponsible());
+    }
+
+    public DpProcessShortResponse convertToShortResponse() {
+        return new DpProcessShortResponse(id, data.getName(), data.getAffiliation().convertToResponse());
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")

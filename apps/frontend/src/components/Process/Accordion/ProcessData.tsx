@@ -17,12 +17,25 @@ import {isNil, sum, uniqBy} from 'lodash'
 import {ProgressBar} from 'baseui/progress-bar'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import {StyledLink} from "baseui/link";
+import {Markdown} from "../../common/Markdown";
+
+const isLink = (text: string) => {
+  try {
+    new URL(text);
+  } catch (_) {
+    return false;
+  }
+
+  return true;
+}
 
 const showDpiaRequiredField = (dpia?: Dpia) => {
   if (dpia?.needForDpia === true) {
     if (dpia.refToDpia) {
       return <>
-        {`${intl.yes}. ${intl.reference}`} <StyledLink href={`${dpia.refToDpia}`}>Se ekstern lenke her</StyledLink>
+        {`${intl.yes}. ${intl.reference}`}
+        {isLink(dpia.refToDpia) ? <StyledLink href={`${dpia.refToDpia}`}>{intl.seeExternalLink}</StyledLink> :
+          <Markdown source={`${dpia.refToDpia}`} singleWord/>}
       </>
     } else {
       return intl.yes
@@ -100,11 +113,11 @@ const ProcessData = (props: { process: Process }) => {
           <span><DotTags list={ListName.DEPARTMENT} codes={[process.affiliation.department]} commaSeparator linkCodelist/> </span>
         </Block> : <span>{intl.department}: {intl.notFilled}</span>}
         {!!process.affiliation.subDepartments.length ? <Block>
-          <Block display="flex">
-            <span>{intl.subDepartment}: </span>
-            <DotTags list={ListName.SUB_DEPARTMENT} codes={process.affiliation.subDepartments} linkCodelist/>
-          </Block>
-        </Block>:
+            <Block display="flex">
+              <span>{intl.subDepartment}: </span>
+              <DotTags list={ListName.SUB_DEPARTMENT} codes={process.affiliation.subDepartments} linkCodelist/>
+            </Block>
+          </Block> :
           <Block display="flex">
             <span>{intl.subDepartment}: {intl.notFilled}</span>
           </Block>
@@ -112,7 +125,7 @@ const ProcessData = (props: { process: Process }) => {
 
         <Block>
           <span>{intl.commonExternalProcessResponsible}: </span>
-          <span>{!!process.commonExternalProcessResponsible ? codelist.getShortnameForCode(process.commonExternalProcessResponsible): intl.no}</span>
+          <span>{!!process.commonExternalProcessResponsible ? codelist.getShortnameForCode(process.commonExternalProcessResponsible) : intl.no}</span>
         </Block>
 
         <Block>
@@ -195,7 +208,10 @@ const ProcessData = (props: { process: Process }) => {
           </Block>
           <Block>
             <span>{process.retention?.retentionDescription && `${intl.retentionDescription}: `}</span>
-            {process.retention?.retentionDescription && <StyledLink href={`${process.retention?.retentionDescription}`}>Se ekstern lenke her</StyledLink>}
+            {process.retention?.retentionDescription && isLink(process.retention?.retentionDescription) ?
+              <StyledLink href={`${process.retention?.retentionDescription}`}>{intl.seeExternalLink}</StyledLink> :
+              <span><Markdown source={process.retention?.retentionDescription} singleWord/></span>
+            }
           </Block>
         </>
       </DataText>
