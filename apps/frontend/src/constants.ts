@@ -33,6 +33,7 @@ export enum ObjectType {
   INFORMATION_TYPE = 'INFORMATION_TYPE',
   POLICY = 'POLICY',
   PROCESS = 'PROCESS',
+  DP_PROCESS = 'DP_PROCESS',
   DISCLOSURE = 'DISCLOSURE',
   DOCUMENT = 'DOCUMENT',
   CODELIST = 'CODELIST',
@@ -264,6 +265,12 @@ export interface ProcessShort {
   status?: ProcessStatus;
 }
 
+export interface DpProcessShort {
+  id: string;
+  name: string;
+  affiliation: Affiliation;
+}
+
 export interface Process extends IDurationed {
   id: string;
   name: string;
@@ -468,6 +475,7 @@ export interface CodeUsage {
   informationTypes: [Use];
   policies: [UseWithPurpose];
   processes: [ProcessShort];
+  dpProcesses: [DpProcessShort];
 }
 
 export interface Use {

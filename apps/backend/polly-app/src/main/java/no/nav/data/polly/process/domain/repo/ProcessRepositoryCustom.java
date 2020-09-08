@@ -17,7 +17,7 @@ public interface ProcessRepositoryCustom {
 
     List<Process> findByProductTeam(String productTeam);
 
-    List<Process> findByProductTeams(List<String> productTeam);
+    List<Process> findByProductTeams(List<String> productTeams);
 
     List<Process> findByDocumentId(String documentId);
 

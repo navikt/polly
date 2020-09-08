@@ -27,6 +27,7 @@ export interface IStrings {
   sensitivity: string;
   processingActivities: string;
   process: string;
+  dpProcess: string;
   processes: string;
   legalBasis: string;
   legalBasisShort: string;

@@ -32,6 +32,8 @@ import no.nav.data.polly.policy.domain.LegalBasesUse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.policy.domain.PolicyRepository;
+import no.nav.data.polly.process.domain.DpProcess;
+import no.nav.data.polly.process.domain.DpProcessData;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
 import no.nav.data.polly.process.domain.ProcessStatus;
@@ -246,6 +248,25 @@ public abstract class IntegrationTestBase {
                         .commonExternalProcessResponsible(commonExternalProcessResponsible)
                         .legalBases(legalBases)
                         .dataProcessing(DataProcessing.builder().dataProcessor(true).dataProcessorOutsideEU(true).transferGroundsOutsideEU(transferGroundsOutsideEU).build())
+                        .build())
+                .build());
+    }
+
+    protected DpProcess createDpProcess(String department, String subDepartment, String product,
+            String externalProcessResponsible, String transferGroundsOutsideEU) {
+        return dpProcessRepository.save(DpProcess.builder()
+                .generateId()
+                .data(DpProcessData.builder()
+                        .name("dpnavn")
+                        .start(LocalDate.now()).end(LocalDate.now())
+                        .affiliation(Affiliation.builder()
+                                .department(department)
+                                .subDepartments(List.of(subDepartment))
+                                .productTeams(List.of("ProductTeam"))
+                                .products(List.of(product))
+                                .build())
+                        .externalProcessResponsible(externalProcessResponsible)
+                        .subDataProcessing(DataProcessing.builder().dataProcessor(true).dataProcessorOutsideEU(true).transferGroundsOutsideEU(transferGroundsOutsideEU).build())
                         .build())
                 .build());
     }
