@@ -50,4 +50,4 @@ spec:
     - secret: polly-enckey
     - secret: polly-kafka-pwd
     - configMapRef:
-        name: pollycfg
+        name: polly-cfg
