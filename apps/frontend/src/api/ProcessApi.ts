@@ -14,6 +14,14 @@ export const getProcessByStateAndStatus = async (processField: ProcessField, pro
   return (await axios.get<PageResponse<ProcessShort>>(`${env.pollyBaseUrl}/process/state?processField=${processField}&processState=${processState}&processStatus=${processStatus}`)).data.content
 }
 
+export const getProcessByStateAndStatusForProductArea = async (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatus = ProcessStatus.All, productreaId: string) => {
+  return (await axios.get<PageResponse<ProcessShort>>(`${env.pollyBaseUrl}/process/state?processField=${processField}&processState=${processState}&processStatus=${processStatus}&productAreaId=${productreaId}`)).data.content
+}
+
+export const getProcessByStateAndStatusForDepartment = async (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatus = ProcessStatus.All, departmentCode: string) => {
+  return (await axios.get<PageResponse<ProcessShort>>(`${env.pollyBaseUrl}/process/state?processField=${processField}&processState=${processState}&processStatus=${processStatus}&department=${departmentCode}`)).data.content
+}
+
 export const searchProcess = async (text: string) => {
   return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process/search/${text}`)).data
 }

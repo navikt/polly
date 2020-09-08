@@ -4,6 +4,7 @@ import {getDashboard} from '../../api'
 import {DepartmentProcessDashCount, ProcessField, ProcessState, ProcessStatus} from '../../constants'
 import {Block} from 'baseui/block'
 import Charts from '../Charts/Charts'
+import { ListName } from '../../service/Codelist'
 
 type DepartmentChartsProps = {
     departmentCode: string
@@ -28,7 +29,7 @@ const DepartmentCharts = (props: DepartmentChartsProps) => {
         <>
             {!isLoading && chartData && (
                 <Block marginBottom={'240px'}>
-                    <Charts chartData={chartData} processStatus={ProcessStatus.All} departmentCode={departmentCode}/>
+                    <Charts chartData={chartData} processStatus={ProcessStatus.All} departmentCode={departmentCode} type={ListName.DEPARTMENT}/>
                 </Block>
             )}
         </>

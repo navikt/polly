@@ -1,8 +1,8 @@
 import * as React from 'react'
-import {DepartmentProcessDashCount, ProcessesDashCount, ProcessField, ProcessState, ProcessStatus} from '../../constants'
 import {useHistory} from 'react-router-dom'
 import {Block} from 'baseui/block'
 import {chartCardProps} from '../common/Style'
+import { ProcessStatus, ProcessField, ProcessState, ProcessesDashCount, DepartmentProcessDashCount, NavigableItem } from '../../constants'
 import TriChart from './TriChart'
 import {intl} from '../../util'
 import {Chart} from './Chart'
@@ -10,23 +10,40 @@ import {clickOnPieChartSlice} from '../../util/dashboard'
 import {chartColor} from '../../util/theme'
 import {Paragraph1} from 'baseui/typography'
 import RouteLink from '../common/RouteLink'
-import {lowerFirst} from 'lodash'
+import { lowerFirst } from 'lodash'
+import { ListName } from '../../service/Codelist'
 
 const chartSize = 80
 
 type ChartsProps = {
     chartData: ProcessesDashCount | DepartmentProcessDashCount,
     processStatus: ProcessStatus,
-    departmentCode?: string
+    type?: NavigableItem,
+    departmentCode?: string,
+    productareaId?: string
 }
 
 const Charts = (props: ChartsProps ) => {
-    const { chartData, processStatus, departmentCode } = props
+    const { chartData, processStatus, type, departmentCode, productareaId } = props
     const history = useHistory()
 
-    const link = (processField: ProcessField) =>
-               departmentCode ? `/dashboard/${processField}/${ProcessState.UNKNOWN}/${processStatus}/${departmentCode}`
-                              : `/dashboard/${processField}/${ProcessState.UNKNOWN}/${processStatus}`
+    const link = (processField: ProcessField) => {
+      if (!type) 
+        return `/dashboard/${processField}/${ProcessState.UNKNOWN}/${processStatus}`
+      else if (type === ListName.DEPARTMENT)
+        return `/dashboard/${processField}/${ProcessState.UNKNOWN}/${processStatus}?department=${departmentCode}`
+      else 
+        return `/dashboard/${processField}/${ProcessState.UNKNOWN}/${processStatus}?productarea=${productareaId}`
+    }
+
+    const handleClickPieChartSlice = (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatus) => {
+      if (!type) 
+        return clickOnPieChartSlice(processField, processState, processStatus, history)
+      else if (type === ListName.DEPARTMENT)
+         return clickOnPieChartSlice(processField, processState, processStatus, history, type, departmentCode)
+      else 
+         return clickOnPieChartSlice(processField, processState, processStatus, history, type, productareaId)
+    }
 
     return (
       <Block display='flex' flexWrap={true} width={'100%'} justifyContent={"space-between"}>
@@ -35,7 +52,7 @@ const Charts = (props: ChartsProps ) => {
             title={intl.dpiaNeeded}
             processStatus={processStatus}
             processField={ProcessField.DPIA}
-            departmentCode={departmentCode && departmentCode}
+            onClickPieChartSlice={handleClickPieChartSlice}
           />
         </Block>
 
@@ -44,7 +61,7 @@ const Charts = (props: ChartsProps ) => {
             title={intl.profiling}
             processStatus={processStatus}
             processField={ProcessField.PROFILING}
-            departmentCode={departmentCode && departmentCode}
+            onClickPieChartSlice={handleClickPieChartSlice}
           />
         </Block>
 
@@ -53,7 +70,7 @@ const Charts = (props: ChartsProps ) => {
             title={intl.automaticProcessing}
             processStatus={processStatus}
             processField={ProcessField.AUTOMATION}
-            departmentCode={departmentCode && departmentCode}
+            onClickPieChartSlice={handleClickPieChartSlice}
           />
         </Block>
 
@@ -66,19 +83,19 @@ const Charts = (props: ChartsProps ) => {
                   label: intl.numberOfProcessesWithUnknownLegalBasis,
                   size: chartData.processesMissingLegalBases,
                   color: chartColor.generalRed,
-                  onClick: clickOnPieChartSlice(ProcessField.MISSING_LEGAL_BASIS, ProcessState.YES, processStatus, history, departmentCode)
+                  onClick: handleClickPieChartSlice(ProcessField.MISSING_LEGAL_BASIS, ProcessState.YES, processStatus)
                 },
                 {
                   label: intl.numberOfProcessesWithoutArticle6LegalBasis,
                   size: chartData.processesMissingArt6,
                   color: chartColor.generalMustard,
-                  onClick: clickOnPieChartSlice(ProcessField.MISSING_ARTICLE_6, ProcessState.YES, processStatus, history, departmentCode)
+                  onClick:  handleClickPieChartSlice(ProcessField.MISSING_ARTICLE_6, ProcessState.YES, processStatus)
                 },
                 {
                   label: intl.numberOfProcessesWithoutArticle9LegalBasis,
                   size: chartData.processesMissingArt9,
                   color: chartColor.generalBlue,
-                  onClick: clickOnPieChartSlice(ProcessField.MISSING_ARTICLE_9, ProcessState.YES, processStatus, history, departmentCode)
+                  onClick: handleClickPieChartSlice(ProcessField.MISSING_ARTICLE_9, ProcessState.YES, processStatus)
                 },
               ]
             } />
@@ -89,7 +106,7 @@ const Charts = (props: ChartsProps ) => {
             processStatus={processStatus}
             title={intl.retentionPieChartTitle}
             processField={ProcessField.RETENTION}
-            departmentCode={departmentCode && departmentCode}
+            onClickPieChartSlice={handleClickPieChartSlice}
           />
           <Paragraph1>
             {intl.processWithIncompleteRetention} <RouteLink href={link(ProcessField.RETENTION_DATA)}>{chartData.retentionDataIncomplete}</RouteLink>
@@ -101,7 +118,7 @@ const Charts = (props: ChartsProps ) => {
             processStatus={processStatus}
             title={intl.isDataProcessorUsed}
             processField={ProcessField.DATA_PROCESSOR}
-            departmentCode={departmentCode && departmentCode}
+            onClickPieChartSlice={handleClickPieChartSlice}
           />
           <Paragraph1>
             {`${intl.dataProcessorAgreement} ${lowerFirst(intl.emptyMessage)}`} <RouteLink
@@ -111,7 +128,7 @@ const Charts = (props: ChartsProps ) => {
             processStatus={processStatus}
             title={`${intl.dataProcessor} ${lowerFirst(intl.dataProcessorOutsideEU)}`}
             processField={ProcessField.DATA_PROCESSOR_OUTSIDE_EU}
-            departmentCode={departmentCode && departmentCode}
+            onClickPieChartSlice={handleClickPieChartSlice}
           />
         </Block>
       </Block>

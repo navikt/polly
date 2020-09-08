@@ -1,10 +1,8 @@
 import * as React from 'react'
 import { Counter, ProcessField, ProcessStatus, ProcessState } from '../../constants'
-import { useHistory } from 'react-router-dom'
 import { Chart } from './Chart'
 import { intl } from '../../util'
 import { chartColor } from '../../util/theme'
-import { clickOnPieChartSlice } from '../../util/dashboard'
 
 const chartSize = 80
 
@@ -14,13 +12,12 @@ type TriChartProps = {
     counter: Counter,
     processField: ProcessField,
     processStatus: ProcessStatus,
-    departmentCode?: string
+    onClickPieChartSlice: Function
 }
 
 const TriChart = (props: TriChartProps) => {
-    const history = useHistory()
-    const { counter, title, header, processField, processStatus, departmentCode } = props
-    console.log(departmentCode)
+    const { counter, title, header, processField, processStatus, onClickPieChartSlice} = props
+
     return (
         <Chart
             chartTitle={title}
@@ -32,19 +29,19 @@ const TriChart = (props: TriChartProps) => {
                         label: intl.yes,
                         size: counter.yes,
                         color: chartColor.generalBlue,
-                        onClick: clickOnPieChartSlice(processField, ProcessState.YES, processStatus, history, departmentCode)
+                        onClick:  onClickPieChartSlice(processField, ProcessState.YES, processStatus)
                     },
                     {
                         label: intl.no,
                         size: counter.no,
                         color: chartColor.generalMustard,
-                        onClick: clickOnPieChartSlice(processField, ProcessState.NO, processStatus, history, departmentCode)
+                        onClick: onClickPieChartSlice(processField, ProcessState.NO, processStatus)
                     },
                     {
                         label: intl.unclarified,
                         size: counter.unknown,
                         color: chartColor.generalRed,
-                        onClick: clickOnPieChartSlice(processField, ProcessState.UNKNOWN, processStatus, history, departmentCode)
+                        onClick:  onClickPieChartSlice(processField, ProcessState.UNKNOWN, processStatus)
                     },
                 ]
             } />

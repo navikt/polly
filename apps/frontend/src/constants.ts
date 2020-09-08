@@ -80,6 +80,8 @@ export enum ProcessStatus {
   IN_PROGRESS = 'IN_PROGRESS'
 }
 
+
+
 export const TRANSFER_GROUNDS_OUTSIDE_EU_OTHER = 'OTHER'
 
 export interface InformationtypeFormValues {
@@ -530,8 +532,9 @@ export type RecursivePartial<T> = {
 };
 
 export interface DashboardData {
-  allProcesses: ProcessesDashCount;
-  departmentProcesses: DepartmentProcessDashCount[];
+  allProcesses: ProcessesDashCount
+  departmentProcesses: DepartmentProcessDashCount[]
+  productAreaProcesses: ProductAreaProcessDashCount[]
 }
 
 export interface ProcessesDashCount {
@@ -554,6 +557,10 @@ export interface ProcessesDashCount {
 
 export interface DepartmentProcessDashCount extends ProcessesDashCount {
   department: string;
+}
+
+export interface ProductAreaProcessDashCount extends DepartmentProcessDashCount {
+  productAreaId: string;
 }
 
 export interface Counter {
