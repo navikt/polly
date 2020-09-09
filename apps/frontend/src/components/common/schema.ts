@@ -9,7 +9,7 @@ import {
   DocumentInformationTypes,
   DocumentInfoTypeUse,
   Dpia,
-  DpProcess,
+  DpProcessFormValues,
   InformationtypeFormValues,
   InformationTypeShort,
   LegalBasesUse,
@@ -41,6 +41,40 @@ export const infoTypeSchema = () =>
     orgMaster: yup.string(),
     description: yup.string(),
   });
+
+const dataProcessingSchema = () =>
+  yup.object<DataProcessingFormValues>({
+    dataProcessor: yup.boolean(),
+    dataProcessorAgreements: yup.array().of(yup.string()),
+    dataProcessorOutsideEU: yup.boolean(),
+    transferGroundsOutsideEU: yup.string().test({
+        name: 'dataProcessOutsideEU_transferGrounds',
+        message: intl.required,
+        test: function () {
+          const {parent} = this;
+          return !transferGroundsOutsideEUMissing(parent)
+        }
+      }
+    ),
+    transferGroundsOutsideEUOther: yup.string().test({
+        name: 'dataProcessOutsideEU_transferGroundsOther',
+        message: intl.required,
+        test: function () {
+          const {parent} = this;
+          return !transferGroundsOutsideEUOtherMissing(parent)
+        }
+      }
+    ),
+    transferCountries: yup.array().of(yup.string()).test({
+        name: 'dataProcessOutsideEU_transferCountries',
+        message: intl.required,
+        test: function () {
+          const {parent} = this;
+          return !transferCountriesMissing(parent)
+        }
+      }
+    )
+  })
 
 const transferGroundsOutsideEUMissing = (values: DataProcessingFormValues) => {
   return !!values.dataProcessorOutsideEU && !values.transferGroundsOutsideEU
@@ -78,38 +112,7 @@ export const processSchema = () =>
     end: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
     automaticProcessing: yup.boolean(),
     profiling: yup.boolean(),
-    dataProcessing: yup.object<DataProcessingFormValues>({
-      dataProcessor: yup.boolean(),
-      dataProcessorAgreements: yup.array().of(yup.string()),
-      dataProcessorOutsideEU: yup.boolean(),
-      transferGroundsOutsideEU: yup.string().test({
-          name: 'dataProcessOutsideEU_transferGrounds',
-          message: intl.required,
-          test: function () {
-            const {parent} = this;
-            return !transferGroundsOutsideEUMissing(parent)
-          }
-        }
-      ),
-      transferGroundsOutsideEUOther: yup.string().test({
-          name: 'dataProcessOutsideEU_transferGroundsOther',
-          message: intl.required,
-          test: function () {
-            const {parent} = this;
-            return !transferGroundsOutsideEUOtherMissing(parent)
-          }
-        }
-      ),
-      transferCountries: yup.array().of(yup.string()).test({
-          name: 'dataProcessOutsideEU_transferCountries',
-          message: intl.required,
-          test: function () {
-            const {parent} = this;
-            return !transferCountriesMissing(parent)
-          }
-        }
-      )
-    }),
+    dataProcessing: dataProcessingSchema(),
     retention: yup.object<Retention>({
       retentionPlan: yup.boolean(),
       retentionMonths: yup.number(),
@@ -128,7 +131,7 @@ export const processSchema = () =>
   });
 
 export const dpProcessSchema = () => {
-  yup.object<DpProcess>({
+  yup.object<DpProcessFormValues>({
     active: yup.boolean(),
     affiliation: yup.object<AffiliationFormValues>({
       department: yup.string(),
@@ -136,16 +139,19 @@ export const dpProcessSchema = () => {
       productTeams: yup.array().of(yup.string()),
       products: yup.array().of(yup.string()),
     }),
+
     art10: yup.boolean().optional(),
     art9: yup.boolean().optional(),
+
     dataProcessingAgreement: yup.boolean().optional(),
     dataProcessingAgreements: yup.array().of(yup.string()),
-    name: yup.string().max(max, maxError()).required(intl.required),
+
     description: yup.string(),
-    start: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
     end: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
-    externalProcessResponsible: codeListSchema().optional(),
+    externalProcessResponsible: yup.string(),
+
     id: yup.string(),
+    name: yup.string().max(max, maxError()).required(intl.required),
     purposeDescription: yup.string().optional(),
     retention: yup.object<Retention>({
       retentionPlan: yup.boolean(),
@@ -153,38 +159,9 @@ export const dpProcessSchema = () => {
       retentionStart: yup.string(),
       retentionDescription: yup.string(),
     }),
-    dataProcessing: yup.object<DataProcessing>({
-      dataProcessor: yup.boolean(),
-      dataProcessorAgreements: yup.array().of(yup.string()),
-      dataProcessorOutsideEU: yup.boolean(),
-      transferGroundsOutsideEU: yup.string().test({
-          name: 'dataProcessOutsideEU_transferGrounds',
-          message: intl.required,
-          test: function () {
-            const {parent} = this;
-            return !transferGroundsOutsideEUMissing(parent)
-          }
-        }
-      ),
-      transferGroundsOutsideEUOther: yup.string().test({
-          name: 'dataProcessOutsideEU_transferGroundsOther',
-          message: intl.required,
-          test: function () {
-            const {parent} = this;
-            return !transferGroundsOutsideEUOtherMissing(parent)
-          }
-        }
-      ),
-      transferCountries: yup.array().of(yup.string()).test({
-          name: 'dataProcessOutsideEU_transferCountries',
-          message: intl.required,
-          test: function () {
-            const {parent} = this;
-            return !transferCountriesMissing(parent)
-          }
-        }
-      )
-    }),
+
+    start: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
+    subDataProcessing: dataProcessingSchema()
   })
 }
 
