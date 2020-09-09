@@ -307,6 +307,29 @@ export interface DpProcess extends IDurationed {
   subDataProcessing: DataProcessing;
 }
 
+export interface DpProcessFormValues {
+  active: boolean;
+  affiliation: AffiliationFormValues
+
+  art10?: boolean;
+  art9?: boolean;
+
+  dataProcessingAgreement?: boolean;
+  dataProcessingAgreements: string[];
+
+  description?: string;
+  end: string;
+  externalProcessResponsible?: string;
+
+  id?: string;
+  name?: string;
+  purposeDescription?: string;
+  retention: Retention
+
+  start: string;
+  subDataProcessing: DataProcessingFormValues;
+}
+
 export interface ChangeStamp {
   lastModifiedBy: string;
   lastModifiedDate: string;
