@@ -48,7 +48,7 @@ public class DpProcessRepositoryImpl implements DpProcessRepositoryCustom {
         if (productTeams.isEmpty()) {
             return List.of();
         }
-        var resp = jdbcTemplate.queryForList("select dp_process_id from dp_process where data #>'{affiliation,productTeams}' ?? any (array[ :productTeams ])",
+        var resp = jdbcTemplate.queryForList("select dp_process_id from dp_process where data #>'{affiliation,productTeams}' ??| array[ :productTeams ]",
                 new MapSqlParameterSource().addValue("productTeams", productTeams));
         return getDpProcesses(resp);
     }
