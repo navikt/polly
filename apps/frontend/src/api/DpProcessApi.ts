@@ -40,7 +40,6 @@ export const deleteDpProcess = async (id: string) => {
 
 export const dpProcessToFormValuesConverter = (dpProcess: Partial<DpProcess>): DpProcessFormValues => {
   const {
-    active,
     affiliation,
     art10,
     art9,
@@ -59,7 +58,6 @@ export const dpProcessToFormValuesConverter = (dpProcess: Partial<DpProcess>): D
   } = (dpProcess || {})
 
   return {
-    active: active || false,
     affiliation: {
       department: affiliation?.department?.code || '',
       subDepartments: affiliation?.subDepartments.map(sd => sd.code) || [],
