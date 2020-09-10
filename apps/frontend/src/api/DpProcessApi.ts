@@ -1,6 +1,8 @@
 import axios from "axios";
-import {DpProcess, PageResponse} from "../constants";
+import {DpProcess, DpProcessFormValues, PageResponse} from "../constants";
 import {env} from "../util/env";
+
+const mapBool = (b?: boolean) => b === true ? true : b === false ? false : undefined
 
 export const getAllDpProcesses = async () => {
   const PAGE_SIZE = 20
@@ -34,4 +36,60 @@ export const updateDpProcess = async (id: string, dpProcess: DpProcess) => {
 
 export const deleteDpProcess = async (id: string) => {
   return (await axios.delete<DpProcess>(`${env.pollyBaseUrl}/dpprocess/${id}`)).data
+}
+
+export const dpProcessToFormValuesConverter = (dpProcess: Partial<DpProcess>): DpProcessFormValues => {
+  const {
+    active,
+    affiliation,
+    art10,
+    art9,
+    changeStamp,
+    dataProcessingAgreement,
+    dataProcessingAgreements,
+    description,
+    end,
+    externalProcessResponsible,
+    id,
+    name,
+    purposeDescription,
+    retention,
+    start,
+    subDataProcessing
+  } = (dpProcess || {})
+
+  return {
+    active: active || false,
+    affiliation: {
+      department: affiliation?.department?.code || '',
+      subDepartments: affiliation?.subDepartments.map(sd => sd.code) || [],
+      productTeams: affiliation?.productTeams || [],
+      products: affiliation?.products.map(p => p.code) || [],
+    },
+    art10: art10 || undefined,
+    art9: art9 || undefined,
+    dataProcessingAgreement: dataProcessingAgreement || undefined,
+    dataProcessingAgreements: dataProcessingAgreements || [],
+    description: description || '',
+    end: end || '',
+    externalProcessResponsible: (externalProcessResponsible && externalProcessResponsible.code) || undefined,
+    subDataProcessing: {
+      dataProcessor: mapBool(subDataProcessing?.dataProcessor),
+      dataProcessorAgreements: subDataProcessing?.dataProcessorAgreements || [],
+      dataProcessorOutsideEU: mapBool(subDataProcessing?.dataProcessorOutsideEU),
+      transferGroundsOutsideEU: subDataProcessing?.transferGroundsOutsideEU?.code || undefined,
+      transferGroundsOutsideEUOther: subDataProcessing?.transferGroundsOutsideEUOther || '',
+      transferCountries: subDataProcessing?.transferCountries || []
+    },
+    id: id,
+    name: name || '',
+    purposeDescription: purposeDescription || '',
+    retention: {
+      retentionPlan: mapBool(retention?.retentionPlan),
+      retentionMonths: retention?.retentionMonths || 0,
+      retentionStart: retention?.retentionStart || '',
+      retentionDescription: retention?.retentionDescription || ''
+    },
+    start: start || ''
+  }
 }
