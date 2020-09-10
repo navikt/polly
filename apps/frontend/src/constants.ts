@@ -294,7 +294,6 @@ export interface DpProcess extends IDurationed {
   dataProcessingAgreements: string[];
 
   description?: string;
-  end: string;
   externalProcessResponsible?: Code;
 
   id: string;
@@ -302,7 +301,6 @@ export interface DpProcess extends IDurationed {
   purposeDescription?: string;
   retention: Retention
 
-  start: string;
   subDataProcessing: DataProcessing;
 }
 
