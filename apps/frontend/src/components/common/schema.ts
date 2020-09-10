@@ -132,7 +132,6 @@ export const processSchema = () =>
 
 export const dpProcessSchema = () => {
   yup.object<DpProcessFormValues>({
-    active: yup.boolean(),
     affiliation: yup.object<AffiliationFormValues>({
       department: yup.string(),
       subDepartments: yup.array().of(yup.string()),
