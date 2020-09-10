@@ -284,7 +284,6 @@ export interface Process extends IDurationed {
 }
 
 export interface DpProcess extends IDurationed {
-  active: boolean;
   affiliation: Affiliation;
 
   art10?: boolean;
@@ -308,7 +307,6 @@ export interface DpProcess extends IDurationed {
 }
 
 export interface DpProcessFormValues {
-  active: boolean;
   affiliation: AffiliationFormValues
 
   art10?: boolean;
