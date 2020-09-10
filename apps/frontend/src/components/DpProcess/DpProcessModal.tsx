@@ -15,6 +15,7 @@ import FieldProductTeam from "../common/form/FieldProductTeam";
 import {RadioBoolButton} from "../common/Radio";
 import FieldDpProcessDepartment from "./common/FieldDpProcessDepartment";
 import FieldDpProcessExternalProcessResponsible from "./common/FieldDpProcessExternalProcessResponsible";
+import FieldDpProcessSubDepartment from "./common/FieldDpProcessSubDepartment";
 
 type ModalDpProcessProps = {
   initialValues: DpProcessFormValues
@@ -126,7 +127,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                         </Block>
                         {codelist.showSubDepartment(formikBag.values.affiliation.department) && (
                           <Block width='48%'>
-                            <Field formikBag={formikBag}/>
+                            <FieldDpProcessSubDepartment formikBag={formikBag}/>
                           </Block>
                         )}
                       </Block>
