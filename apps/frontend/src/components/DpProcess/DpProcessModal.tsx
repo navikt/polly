@@ -22,6 +22,8 @@ import FieldDpProcessSubDataProcessorTransferCountries from "./common/FieldDpPro
 import FieldDpProcessSubDataProcessorTransferGroundsOutsideEUOther from "./common/FieldDpProcessSubDataProcessorTransferGroundsOutsideEUOther";
 import FieldDpProcessSubDataProcessorTransferGroundsOutsideEU from "./common/FieldDpProcessSubDataProcessorTransferGroundsOutsideEU";
 import FieldDpProcessDataProcessingAgreements from "./common/FieldDpProcessDataProcessingAgreements";
+import FieldDescription from "./common/FieldDescription";
+import RetentionItems from "./common/RetentionItems";
 
 type ModalDpProcessProps = {
   initialValues: DpProcessFormValues
@@ -109,6 +111,12 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                     />
                   </CustomizedModalBlock>
                   <Error fieldName='name'/>
+
+                  <CustomizedModalBlock>
+                    <ModalLabel label={intl.purposeOfTheProcess} tooltip={intl.processPurposeHelpText}/>
+                    <FieldDescription/>
+                  </CustomizedModalBlock>
+                  <Error fieldName='description'/>
 
                   <Block {...rowBlockProps}>
                     <ModalLabel label={"Article 9"}/>
@@ -233,6 +241,13 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                           <Error fieldName='subDataProcessing.transferCountries'/>
                         </>}
                       </>}
+                    </Panel>
+
+                    <Panel key='retention'
+                           title={<PanelTitle title={intl.retention} expanded={expanded.indexOf('retention') >= 0}/>}
+                           overrides={{...panelOverrides}}
+                    >
+                      <RetentionItems formikBag={formikBag}/>
                     </Panel>
 
                   </StatelessAccordion>
