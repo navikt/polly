@@ -21,6 +21,7 @@ import FieldDpProcessSubDataProcessorAgreements from "./common/FieldDpProcessSub
 import FieldDpProcessSubDataProcessorTransferCountries from "./common/FieldDpProcessSubDataProcessorTransferCountries";
 import FieldDpProcessSubDataProcessorTransferGroundsOutsideEUOther from "./common/FieldDpProcessSubDataProcessorTransferGroundsOutsideEUOther";
 import FieldDpProcessSubDataProcessorTransferGroundsOutsideEU from "./common/FieldDpProcessSubDataProcessorTransferGroundsOutsideEU";
+import FieldDpProcessDataProcessingAgreements from "./common/FieldDpProcessDataProcessingAgreements";
 
 type ModalDpProcessProps = {
   initialValues: DpProcessFormValues
@@ -83,7 +84,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
         <Formik
           onSubmit={values =>
             //TODO :-)
-            console.log(values.subDataProcessing)
+            console.log(values)
           }
           initialValues={dpProcessToFormValuesConverter({})}
           //TODO validationSchema
@@ -118,6 +119,21 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                     <ModalLabel label={"Article 10"}/>
                     <BoolField fieldName='art10' value={formikBag.values.art10} justifyContent={"flex-end"}/>
                   </Block>
+
+                  <Block {...rowBlockProps} marginTop={0}>
+                    <ModalLabel label={intl.isDataProcessorUsed} tooltip={intl.dataProcessorHelpText}/>
+                    <BoolField fieldName='dataProcessingAgreement'
+                               value={formikBag.values.dataProcessingAgreement}/>
+                  </Block>
+
+                  {formikBag.values.dataProcessingAgreement && <>
+                    <Block {...rowBlockProps}>
+                      <ModalLabel label={intl.dataProcessorAgreement}/>
+                      <FieldDpProcessDataProcessingAgreements formikBag={formikBag}/>
+                    </Block>
+                    <Error fieldName='dataProcessingAgreements'/>
+                  </>
+                  }
 
                   <StatelessAccordion overrides={{
                     Root: {
