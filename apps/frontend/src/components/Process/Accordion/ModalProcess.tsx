@@ -116,12 +116,15 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
             if (formikBag.isValidating && formikBag.isSubmitting && !formikBag.isValid) {
               console.log(formikBag.errors)
               writeLog('warn', 'submit process', JSON.stringify(formikBag.errors))
-              if (formikBag.errors.legalBasesOpen) expand('legalBasis')
-              else if (
+              if (formikBag.errors.legalBasesOpen) {
+                expand('legalBasis')
+              } else if (
                 formikBag.errors.dataProcessing?.transferGroundsOutsideEU ||
                 formikBag.errors.dataProcessing?.transferGroundsOutsideEUOther ||
                 formikBag.errors.dataProcessing?.transferCountries
-              ) expand('dataProcessor')
+              ) {
+                expand('dataProcessor')
+              }
             }
             return (
               <Form onKeyDown={disableEnter}>
