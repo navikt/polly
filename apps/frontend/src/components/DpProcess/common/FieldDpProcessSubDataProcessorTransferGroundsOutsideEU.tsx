@@ -5,7 +5,7 @@ import {Field, FieldProps} from "formik";
 import {DpProcessFormValues} from "../../../constants";
 import {Block} from "baseui/block";
 
-const FieldDpProcessTransferGroundsOutsideEU = (props: {code?: string}) => {
+const FieldDpProcessSubDataProcessorTransferGroundsOutsideEU = (props: {code?: string}) => {
   const {code} = props
   const [value, setValue] = React.useState<Value>(code ? [{
     id: code,
@@ -32,4 +32,4 @@ const FieldDpProcessTransferGroundsOutsideEU = (props: {code?: string}) => {
   )
 }
 
-export default FieldDpProcessTransferGroundsOutsideEU
+export default FieldDpProcessSubDataProcessorTransferGroundsOutsideEU

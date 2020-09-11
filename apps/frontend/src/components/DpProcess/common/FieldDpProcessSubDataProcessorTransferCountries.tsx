@@ -6,7 +6,7 @@ import {DpProcessFormValues} from '../../../constants'
 import {Block} from 'baseui/block'
 import {renderTagList} from "../../common/TagList"
 
-const FieldDpProcessTransferCountries = (props: {formikBag: FormikProps<DpProcessFormValues>}) => {
+const FieldDpProcessSubDataProcessorTransferCountries = (props: {formikBag: FormikProps<DpProcessFormValues>}) => {
   const countries = props.formikBag.values.subDataProcessing.transferCountries
 
   return (
@@ -36,4 +36,4 @@ const FieldDpProcessTransferCountries = (props: {formikBag: FormikProps<DpProces
 
 }
 
-export default FieldDpProcessTransferCountries
+export default FieldDpProcessSubDataProcessorTransferCountries

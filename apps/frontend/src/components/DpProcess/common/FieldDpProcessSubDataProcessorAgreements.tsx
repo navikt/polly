@@ -8,7 +8,7 @@ import {Button, SHAPE} from "baseui/button";
 import {Plus} from "baseui/icon";
 import {renderTagList} from "../../common/TagList";
 
-const FieldDpProcessDataProcessorAgreements = (props: { formikBag: FormikProps<DpProcessFormValues> }) => {
+const FieldDpProcessSubDataProcessorAgreements = (props: { formikBag: FormikProps<DpProcessFormValues> }) => {
   const [currentKeywordValue, setCurrentKeywordValue] = React.useState('')
   const agreementRef = React.useRef<HTMLInputElement>(null)
 
@@ -56,4 +56,4 @@ const FieldDpProcessDataProcessorAgreements = (props: { formikBag: FormikProps<D
   )
 }
 
-export default FieldDpProcessDataProcessorAgreements
+export default FieldDpProcessSubDataProcessorAgreements

@@ -3,7 +3,7 @@ import {Field, FieldProps} from "formik";
 import {DpProcessFormValues} from "../../../constants";
 import {Input, SIZE} from 'baseui/input'
 
-const FieldDpProcessTransferGroundsOutsideEUOther = () => {
+const FieldDpProcessSubDataProcessorTransferGroundsOutsideEUOther = () => {
 
   return (
     <Field
@@ -16,4 +16,4 @@ const FieldDpProcessTransferGroundsOutsideEUOther = () => {
   )
 }
 
-export default FieldDpProcessTransferGroundsOutsideEUOther
+export default FieldDpProcessSubDataProcessorTransferGroundsOutsideEUOther

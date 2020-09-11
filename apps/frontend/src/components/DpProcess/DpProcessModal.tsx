@@ -17,10 +17,10 @@ import FieldDpProcessDepartment from "./common/FieldDpProcessDepartment";
 import FieldDpProcessExternalProcessResponsible from "./common/FieldDpProcessExternalProcessResponsible";
 import FieldDpProcessSubDepartment from "./common/FieldDpProcessSubDepartment";
 import BoolField from "../Process/common/BoolField";
-import FieldDpProcessDataProcessorAgreements from "./common/FieldDpProcessDataProcessorAgreements";
-import FieldDpProcessTransferCountries from "./common/FieldDpProcessTransferCountries";
-import FieldDpProcessTransferGroundsOutsideEUOther from "./common/FieldDpProcessTransferGroundsOutsideEUOther";
-import FieldDpProcessTransferGroundsOutsideEU from "./common/FieldDpProcessTransferGroundsOutsideEU";
+import FieldDpProcessSubDataProcessorAgreements from "./common/FieldDpProcessSubDataProcessorAgreements";
+import FieldDpProcessSubDataProcessorTransferCountries from "./common/FieldDpProcessSubDataProcessorTransferCountries";
+import FieldDpProcessSubDataProcessorTransferGroundsOutsideEUOther from "./common/FieldDpProcessSubDataProcessorTransferGroundsOutsideEUOther";
+import FieldDpProcessSubDataProcessorTransferGroundsOutsideEU from "./common/FieldDpProcessSubDataProcessorTransferGroundsOutsideEU";
 
 type ModalDpProcessProps = {
   initialValues: DpProcessFormValues
@@ -172,8 +172,8 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                       </Block>
                     </Panel>
 
-                    <Panel key='dataProcessor'
-                           title={<PanelTitle title={intl.dataProcessor} expanded={expanded.indexOf('dataProcessor') >= 0}/>}
+                    <Panel key='subDataProcessor'
+                           title={<PanelTitle title={intl.dataProcessor} expanded={expanded.indexOf('subDataProcessor') >= 0}/>}
                            overrides={{...panelOverrides}}
                     >
                       <Block {...rowBlockProps} marginTop={0}>
@@ -185,7 +185,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                       {formikBag.values.subDataProcessing.dataProcessor && <>
                         <Block {...rowBlockProps}>
                           <ModalLabel label={intl.dataProcessorAgreement}/>
-                          <FieldDpProcessDataProcessorAgreements formikBag={formikBag}/>
+                          <FieldDpProcessSubDataProcessorAgreements formikBag={formikBag}/>
                         </Block>
                         <Error fieldName='subDataProcessing.dataProcessorAgreement'/>
 
@@ -198,7 +198,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                         <>
                           <Block {...rowBlockProps}>
                             <ModalLabel label={intl.transferGroundsOutsideEUEEA}/>
-                            <FieldDpProcessTransferGroundsOutsideEU
+                            <FieldDpProcessSubDataProcessorTransferGroundsOutsideEU
                               code={formikBag.values.subDataProcessing.transferGroundsOutsideEU}/>
                           </Block>
                           <Error fieldName='subDataProcessing.transferGroundsOutsideEU'/>
@@ -206,13 +206,13 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                           {formikBag.values.subDataProcessing.transferGroundsOutsideEU === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER &&
                           <Block {...rowBlockProps}>
                             <ModalLabel label={intl.transferGroundsOutsideEUEEAOther}/>
-                            <FieldDpProcessTransferGroundsOutsideEUOther/>
+                            <FieldDpProcessSubDataProcessorTransferGroundsOutsideEUOther/>
                           </Block>}
                           <Error fieldName='subDataProcessing.transferGroundsOutsideEUOther'/>
 
                           <Block {...rowBlockProps}>
                             <ModalLabel label={intl.countries}/>
-                            <FieldDpProcessTransferCountries formikBag={formikBag}/>
+                            <FieldDpProcessSubDataProcessorTransferCountries formikBag={formikBag}/>
                           </Block>
                           <Error fieldName='subDataProcessing.transferCountries'/>
                         </>}
