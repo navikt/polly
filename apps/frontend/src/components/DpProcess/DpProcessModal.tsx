@@ -6,7 +6,7 @@ import {dpProcessToFormValuesConverter} from "../../api/DpProcessApi";
 import CustomizedModalBlock from "../common/CustomizedModalBlock";
 import {Error, ModalLabel} from "../common/ModalSchema";
 import {intl, theme} from "../../util";
-import {DpProcessFormValues} from "../../constants";
+import {DpProcessFormValues, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from "../../constants";
 import {Input, SIZE as InputSIZE} from "baseui/input";
 import {Panel, PanelOverrides, StatelessAccordion} from "baseui/accordion";
 import PanelTitle from "../Process/common/PanelTitle";
@@ -17,6 +17,10 @@ import FieldDpProcessDepartment from "./common/FieldDpProcessDepartment";
 import FieldDpProcessExternalProcessResponsible from "./common/FieldDpProcessExternalProcessResponsible";
 import FieldDpProcessSubDepartment from "./common/FieldDpProcessSubDepartment";
 import BoolField from "../Process/common/BoolField";
+import FieldDpProcessDataProcessorAgreements from "./common/FieldDpProcessDataProcessorAgreements";
+import FieldDpProcessTransferCountries from "./common/FieldDpProcessTransferCountries";
+import FieldDpProcessTransferGroundsOutsideEUOther from "./common/FieldDpProcessTransferGroundsOutsideEUOther";
+import FieldDpProcessTransferGroundsOutsideEU from "./common/FieldDpProcessTransferGroundsOutsideEU";
 
 type ModalDpProcessProps = {
   initialValues: DpProcessFormValues
@@ -77,7 +81,10 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
     >
       <Block {...modalBlockProps}>
         <Formik
-          onSubmit={values => console.log(values)}
+          onSubmit={values =>
+            //TODO :-)
+            console.log(values.subDataProcessing)
+          }
           initialValues={dpProcessToFormValuesConverter({})}
           //TODO validationSchema
         >
@@ -111,12 +118,6 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                     <ModalLabel label={"Article 10"}/>
                     <BoolField fieldName='art10' value={formikBag.values.art10} justifyContent={"flex-end"}/>
                   </Block>
-
-                  <Block {...rowBlockProps}>
-                    <ModalLabel label={"DataProcess Agreement"}/>
-                    <BoolField fieldName='dataProcessingAgreement' value={formikBag.values.dataProcessingAgreement} justifyContent={"flex-end"}/>
-                  </Block>
-
 
                   <StatelessAccordion overrides={{
                     Root: {
@@ -170,6 +171,54 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                         </Block>
                       </Block>
                     </Panel>
+
+                    <Panel key='dataProcessor'
+                           title={<PanelTitle title={intl.dataProcessor} expanded={expanded.indexOf('dataProcessor') >= 0}/>}
+                           overrides={{...panelOverrides}}
+                    >
+                      <Block {...rowBlockProps} marginTop={0}>
+                        <ModalLabel label={intl.isDataProcessorUsed} tooltip={intl.dataProcessorHelpText}/>
+                        <BoolField fieldName='subDataProcessing.dataProcessor'
+                                   value={formikBag.values.subDataProcessing.dataProcessor}/>
+                      </Block>
+
+                      {formikBag.values.subDataProcessing.dataProcessor && <>
+                        <Block {...rowBlockProps}>
+                          <ModalLabel label={intl.dataProcessorAgreement}/>
+                          <FieldDpProcessDataProcessorAgreements formikBag={formikBag}/>
+                        </Block>
+                        <Error fieldName='subDataProcessing.dataProcessorAgreement'/>
+
+                        <Block {...rowBlockProps}>
+                          <ModalLabel label={intl.isDataProcessedOutsideEUEEA}/>
+                          <BoolField fieldName='subDataProcessing.dataProcessorOutsideEU'
+                                     value={formikBag.values.subDataProcessing.dataProcessorOutsideEU}/>
+                        </Block>
+                        {formikBag.values.subDataProcessing.dataProcessorOutsideEU &&
+                        <>
+                          <Block {...rowBlockProps}>
+                            <ModalLabel label={intl.transferGroundsOutsideEUEEA}/>
+                            <FieldDpProcessTransferGroundsOutsideEU
+                              code={formikBag.values.subDataProcessing.transferGroundsOutsideEU}/>
+                          </Block>
+                          <Error fieldName='subDataProcessing.transferGroundsOutsideEU'/>
+
+                          {formikBag.values.subDataProcessing.transferGroundsOutsideEU === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER &&
+                          <Block {...rowBlockProps}>
+                            <ModalLabel label={intl.transferGroundsOutsideEUEEAOther}/>
+                            <FieldDpProcessTransferGroundsOutsideEUOther/>
+                          </Block>}
+                          <Error fieldName='subDataProcessing.transferGroundsOutsideEUOther'/>
+
+                          <Block {...rowBlockProps}>
+                            <ModalLabel label={intl.countries}/>
+                            <FieldDpProcessTransferCountries formikBag={formikBag}/>
+                          </Block>
+                          <Error fieldName='subDataProcessing.transferCountries'/>
+                        </>}
+                      </>}
+                    </Panel>
+
                   </StatelessAccordion>
 
 
