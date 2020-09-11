@@ -16,6 +16,7 @@ import {RadioBoolButton} from "../common/Radio";
 import FieldDpProcessDepartment from "./common/FieldDpProcessDepartment";
 import FieldDpProcessExternalProcessResponsible from "./common/FieldDpProcessExternalProcessResponsible";
 import FieldDpProcessSubDepartment from "./common/FieldDpProcessSubDepartment";
+import BoolField from "../Process/common/BoolField";
 
 type ModalDpProcessProps = {
   initialValues: DpProcessFormValues
@@ -100,6 +101,21 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                     />
                   </CustomizedModalBlock>
                   <Error fieldName='name'/>
+
+                  <Block {...rowBlockProps}>
+                    <ModalLabel label={"Article 9"}/>
+                    <BoolField fieldName='art9' value={formikBag.values.art9} justifyContent={"flex-end"}/>
+                  </Block>
+
+                  <Block {...rowBlockProps}>
+                    <ModalLabel label={"Article 10"}/>
+                    <BoolField fieldName='art10' value={formikBag.values.art10} justifyContent={"flex-end"}/>
+                  </Block>
+
+                  <Block {...rowBlockProps}>
+                    <ModalLabel label={"DataProcess Agreement"}/>
+                    <BoolField fieldName='dataProcessingAgreement' value={formikBag.values.dataProcessingAgreement} justifyContent={"flex-end"}/>
+                  </Block>
 
 
                   <StatelessAccordion overrides={{

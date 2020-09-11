@@ -47,6 +47,7 @@ const Routes = (): JSX.Element => (
       <Route exact path={processPath} component={ProcessPage} />
       <Route exact path="/process/legal" component={LegalPage} />
 
+      //TODO one this should be removed!
       <Route exact path="/dpprocess" component={DpProcessPage} />
       <Route exact path="/dpprocess/create" component={CreateDpProcess} />
 
