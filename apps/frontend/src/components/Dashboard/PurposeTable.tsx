@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import {getProcessByStateAndStatus} from '../../api'
+import {getProcessByStateAndStatus, getProcessByStateAndStatusForProductArea, getProcessByStateAndStatusForDepartment} from '../../api'
 import {ProcessField, ProcessShort, ProcessState, ProcessStatus} from '../../constants'
 import {useParams} from 'react-router-dom'
 import {HeadingLarge} from 'baseui/typography'
@@ -7,27 +7,38 @@ import {Spinner} from 'baseui/spinner'
 import {intl} from '../../util'
 import {lowerFirst} from 'lodash'
 import {SimpleProcessTable} from '../Process/SimpleProcessTable'
+import { useQueryParam } from '../../util/hooks'
 
 interface PathProps {
   filterName: ProcessField,
   filterValue: ProcessState,
   filterStatus: ProcessStatus,
-  department?: string
 }
 
 const PurposeTable = () => {
   const [loading, setLoading] = React.useState<boolean>(false)
   const [filtered, setFiltered] = React.useState<ProcessShort[]>([])
   const [title, setTitle] = React.useState('')
-  const {filterName, filterValue, filterStatus, department} = useParams<PathProps>()
+  const {filterName, filterValue, filterStatus} = useParams<PathProps>()
+  const department = useQueryParam('department')
+  const productareaId = useQueryParam('productarea')
 
   useEffect(() => {
     (async () => {
       setLoading(true)
       changeTitle()
-      let res = await getProcessByStateAndStatus(filterName, filterValue, filterStatus)
-      if (res && department) setFiltered(res.filter((r: ProcessShort) => r.affiliation?.department?.code === department))
-      else setFiltered(res)
+      if (department) {
+          let res = await getProcessByStateAndStatusForDepartment(filterName, filterValue, filterStatus, department)
+          setFiltered(res)
+      }
+      else if (productareaId){
+        let res = await getProcessByStateAndStatusForProductArea(filterName, filterValue, filterStatus, productareaId)
+        setFiltered(res)
+      }
+      else {
+         let res = await getProcessByStateAndStatus(filterName, filterValue, filterStatus)
+         setFiltered(res)
+      }
       setLoading(false)
     })()
   }, [filterName, filterValue, filterStatus, department])

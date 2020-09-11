@@ -7,6 +7,7 @@ import no.nav.data.common.validator.ValidationError;
 import no.nav.data.polly.process.domain.DpProcess;
 import no.nav.data.polly.process.domain.repo.DpProcessRepository;
 import no.nav.data.polly.process.dto.DpProcessRequest;
+import no.nav.data.polly.teams.TeamService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,9 +22,11 @@ import static java.lang.String.format;
 public class DpProcessService extends RequestValidator<DpProcessRequest> {
 
     private final DpProcessRepository repository;
+    private final TeamService teamService;
 
-    public DpProcessService(DpProcessRepository repository) {
+    public DpProcessService(DpProcessRepository repository, TeamService teamService) {
         this.repository = repository;
+        this.teamService = teamService;
     }
 
     @Transactional
@@ -59,8 +62,10 @@ public class DpProcessService extends RequestValidator<DpProcessRequest> {
         if (request.isUpdate()) {
             var repoValue = Optional.ofNullable(request.getIdAsUUID()).flatMap(repository::findById);
             validations.addAll(validateRepositoryValues(request, repoValue.isPresent()));
+            repoValue.ifPresent(existing -> validateTeams(request, existing.getData().getAffiliation().getProductTeams(), validations));
         } else {
             validations.addAll(validateRepositoryValues(request, false));
+            validateTeams(request, List.of(), validations);
         }
         Optional<DpProcess> byName = repository.findByName(request.getName()).filter(p -> !p.getId().equals(request.getIdAsUUID()));
         if (byName.isPresent()) {
@@ -68,5 +73,16 @@ public class DpProcessService extends RequestValidator<DpProcessRequest> {
                     format("DpProcess with name %s already exists", request.getName())));
         }
         return validations;
+    }
+
+    private void validateTeams(DpProcessRequest dpRequest, List<String> existingTeams, ArrayList<ValidationError> validations) {
+        var request = dpRequest.getAffiliation();
+        if (!request.getProductTeams().isEmpty() && !existingTeams.equals(request.getProductTeams())) {
+            request.getProductTeams().forEach(t -> {
+                if (!teamService.teamExists(t)) {
+                    validations.add(new ValidationError(request.getReference(), "invalidProductTeam", "Product team " + t + " does not exist"));
+                }
+            });
+        }
     }
 }

@@ -7,6 +7,7 @@ import no.nav.data.polly.codelist.dto.CodelistUsageResponse;
 import no.nav.data.polly.codelist.dto.ReplaceCodelistRequest;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.policy.domain.Policy;
+import no.nav.data.polly.process.domain.DpProcess;
 import no.nav.data.polly.process.domain.Process;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -73,6 +74,15 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
         }
 
         @ParameterizedTest
+        @CsvSource({"DEPARTMENT,YTA,1", "SUB_DEPARTMENT,NAY,2",
+                "THIRD_PARTY,SKATTEETATEN,1", "TRANSFER_GROUNDS_OUTSIDE_EU,APPROVED_THIRD_COUNTRY,1"})
+        void findDpProcesses(String list, String code, int expectedCountDpProcess) {
+            var response = getForListAndCode(list, code);
+
+            assertThat(expectedCountDpProcess).isEqualTo(countDpProcesses(response));
+        }
+
+        @ParameterizedTest
         @CsvSource({"PURPOSE,DAGPENGER,1,1", "GDPR_ARTICLE,ART92A,1,0", "NATIONAL_LAW,FTRL,2,2"})
         void findProcessesAndPolicy(String list, String code, int expectedCountProcess, int expectedCountPolicy) {
             var response = getForListAndCode(list, code);
@@ -134,14 +144,14 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
     class replaceCodelist {
 
         @ParameterizedTest
-        @CsvSource({"PURPOSE,DAGPENGER,0,1,1,0,0", "CATEGORY,PERSONALIA,1,0,0,0,0",
-                "DEPARTMENT,YTA,0,0,2,0,0", "SUB_DEPARTMENT,NAY,0,0,2,0,0",
-                "SENSITIVITY,POL,2,0,0,0,0", "THIRD_PARTY,SKATTEETATEN,1,0,1,1,0",
-                "SUBJECT_CATEGORY,BRUKER,0,2,0,0,1", "SYSTEM,TPS,1,0,1,0,0",
-                "NATIONAL_LAW,FTRL,0,2,2,1,0", "GDPR_ARTICLE,ART61E,0,2,2,1,0",
-                "TRANSFER_GROUNDS_OUTSIDE_EU,APPROVED_THIRD_COUNTRY,0,0,1,0,0"
+        @CsvSource({"PURPOSE,DAGPENGER,0,1,1,0,0,0", "CATEGORY,PERSONALIA,1,0,0,0,0,0",
+                "DEPARTMENT,YTA,0,0,2,1,0,0", "SUB_DEPARTMENT,NAY,0,0,2,2,0,0",
+                "SENSITIVITY,POL,2,0,0,0,0,0", "THIRD_PARTY,SKATTEETATEN,1,0,1,1,1,0",
+                "SUBJECT_CATEGORY,BRUKER,0,2,0,0,0,1", "SYSTEM,TPS,1,0,1,1,0,0",
+                "NATIONAL_LAW,FTRL,0,2,2,0,1,0", "GDPR_ARTICLE,ART61E,0,2,2,0,1,0",
+                "TRANSFER_GROUNDS_OUTSIDE_EU,APPROVED_THIRD_COUNTRY,0,0,1,1,0,0"
         })
-        void replaceCodelistUsage(String list, String code, int informationTypes, int policies, int processes, int disclosures, int documents) {
+        void replaceCodelistUsage(String list, String code, int informationTypes, int policies, int processes, int dpProcesses, int disclosures, int documents) {
             String newCode = "REPLACECODE";
             codelistService.save(List.of(createCodelistRequest(list, newCode)));
 
@@ -153,6 +163,7 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
             assertThat(replace.getInformationTypes()).hasSize(informationTypes);
             assertThat(replace.getPolicies()).hasSize(policies);
             assertThat(replace.getProcesses()).hasSize(processes);
+            assertThat(replace.getDpProcesses()).hasSize(dpProcesses);
             assertThat(replace.getDisclosures()).hasSize(disclosures);
             assertThat(replace.getDocuments()).hasSize(documents);
 
@@ -193,6 +204,11 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
         dagpengerAnalyse.addPolicy(barnetrygdBruker);
 
         policyRepository.saveAll(List.of(dagpengerBruker, barnetrygdBruker));
+
+        DpProcess skattDpProcess = createDpProcess("YTA", "NAY", "TPS", "SKATTEETATEN", "OTHER");
+        DpProcess arbeidsgiverDpProcess = createDpProcess("OTHER_DEP", "NAY", "AA_REG", "ARBEIDSGIVER", "APPROVED_THIRD_COUNTRY");
+
+        dpProcessRepository.saveAll(List.of(skattDpProcess, arbeidsgiverDpProcess));
 
         var disclosure = createDisclosure("SKATTEETATEN", "ART61E", "FTRL");
         var document = createDocument("BRUKER", sivilstand.getId());
@@ -248,6 +264,10 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
 
     private int countProcesses(ResponseEntity<CodeUsageResponse> response) {
         return Objects.requireNonNull(response.getBody()).getProcesses().size();
+    }
+
+    private int countDpProcesses(ResponseEntity<CodeUsageResponse> response) {
+        return Objects.requireNonNull(response.getBody()).getDpProcesses().size();
     }
 
     private int countDisclosures(ResponseEntity<CodeUsageResponse> response) {

@@ -33,6 +33,7 @@ export enum ObjectType {
   INFORMATION_TYPE = 'INFORMATION_TYPE',
   POLICY = 'POLICY',
   PROCESS = 'PROCESS',
+  DP_PROCESS = 'DP_PROCESS',
   DISCLOSURE = 'DISCLOSURE',
   DOCUMENT = 'DOCUMENT',
   CODELIST = 'CODELIST',
@@ -79,6 +80,8 @@ export enum ProcessStatus {
   COMPLETED = 'COMPLETED',
   IN_PROGRESS = 'IN_PROGRESS'
 }
+
+
 
 export const TRANSFER_GROUNDS_OUTSIDE_EU_OTHER = 'OTHER'
 
@@ -262,6 +265,12 @@ export interface ProcessShort {
   purpose: Code;
   affiliation: Affiliation;
   status?: ProcessStatus;
+}
+
+export interface DpProcessShort {
+  id: string;
+  name: string;
+  affiliation: Affiliation;
 }
 
 export interface Process extends IDurationed {
@@ -496,6 +505,7 @@ export interface CodeUsage {
   informationTypes: [Use];
   policies: [UseWithPurpose];
   processes: [ProcessShort];
+  dpProcesses: [DpProcessShort];
 }
 
 export interface Use {
@@ -558,8 +568,9 @@ export type RecursivePartial<T> = {
 };
 
 export interface DashboardData {
-  allProcesses: ProcessesDashCount;
-  departmentProcesses: DepartmentProcessDashCount[];
+  allProcesses: ProcessesDashCount
+  departmentProcesses: DepartmentProcessDashCount[]
+  productAreaProcesses: ProductAreaProcessDashCount[]
 }
 
 export interface ProcessesDashCount {
@@ -582,6 +593,10 @@ export interface ProcessesDashCount {
 
 export interface DepartmentProcessDashCount extends ProcessesDashCount {
   department: string;
+}
+
+export interface ProductAreaProcessDashCount extends DepartmentProcessDashCount {
+  productAreaId: string;
 }
 
 export interface Counter {

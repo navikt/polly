@@ -49,7 +49,7 @@ public class InformationTypeRepositoryImpl implements InformationTypeRepositoryC
         if (productTeams.isEmpty()) {
             return List.of();
         }
-        var resp = jdbcTemplate.queryForList("select information_type_id from information_type where data #>'{productTeams}' ?? any (array[ :productTeams ])",
+        var resp = jdbcTemplate.queryForList("select information_type_id from information_type where data #>'{productTeams}' ??| array[ :productTeams ]",
                 new MapSqlParameterSource().addValue("productTeams", productTeams));
         return fetch(resp);
     }

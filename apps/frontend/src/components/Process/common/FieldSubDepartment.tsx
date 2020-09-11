@@ -7,7 +7,6 @@ import {Block} from 'baseui/block'
 import {renderTagList} from "../../common/TagList"
 
 const FieldSubDepartments = (props: { formikBag: FormikProps<ProcessFormValues> }) => {
-
   return (
     <FieldArray
       name='affiliation.subDepartments'
@@ -18,7 +17,7 @@ const FieldSubDepartments = (props: { formikBag: FormikProps<ProcessFormValues> 
               clearable
               options={codelist.getParsedOptions(ListName.SUB_DEPARTMENT).filter(o => !props.formikBag.values.affiliation.subDepartments.includes(o.id))}
               onChange={({value}) => {
-                arrayHelpers.form.setFieldValue('subDepartments', [...props.formikBag.values.affiliation.subDepartments, ...value.map(v => v.id)])
+                arrayHelpers.form.setFieldValue('affiliation.subDepartments', [...props.formikBag.values.affiliation.subDepartments, ...value.map(v => v.id)])
               }}
             />
           </Block>

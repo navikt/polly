@@ -48,6 +48,5 @@ public class AffiliationRequest implements Validated {
         validator.checkCodelist(Fields.department, department, ListName.DEPARTMENT);
         subDepartments.forEach(sd -> validator.checkCodelist(Fields.subDepartments, sd, ListName.SUB_DEPARTMENT));
         products.forEach(product -> validator.checkCodelist(Fields.products, product, ListName.SYSTEM));
-
     }
 }

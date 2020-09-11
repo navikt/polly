@@ -1,22 +1,23 @@
 import * as React from 'react'
-import { useEffect, useRef, useState } from 'react'
-import { Block } from 'baseui/block'
-import { Label2, Label4 } from 'baseui/typography'
-import { Select, Value } from 'baseui/select'
-import { Button } from 'baseui/button'
+import {useEffect, useRef, useState} from 'react'
+import {Block} from 'baseui/block'
+import {Label2, Label4} from 'baseui/typography'
+import {Select, Value} from 'baseui/select'
+import {Button} from 'baseui/button'
 
-import { intl, theme } from '../../util'
-import { CodeUsage, ObjectType } from '../../constants'
-import { ObjectLink } from '../common/RouteLink'
-import { codelist, ListName } from '../../service/Codelist'
-import { replaceCodelistUsage } from '../../api'
-import { StyledSpinnerNext } from 'baseui/spinner'
-import { Cell, HeadCell, Row, Table } from '../common/Table'
+import {intl, theme} from '../../util'
+import {CodeUsage, ObjectType} from '../../constants'
+import {ObjectLink} from '../common/RouteLink'
+import {codelist, ListName} from '../../service/Codelist'
+import {replaceCodelistUsage} from '../../api'
+import {StyledSpinnerNext} from 'baseui/spinner'
+import {Cell, HeadCell, Row, Table} from '../common/Table'
 
 const UsageTable = (props: { usage: CodeUsage, rows: number }) => {
   const {usage, rows} = props
   const informationTypes = !!usage.informationTypes.length
   const processes = !!usage.processes.length
+  const dpProcesses = !!usage.dpProcesses.length
   const policies = !!usage.policies.length
   const disclosures = !!usage.disclosures.length
   const documents = !!usage.documents.length
@@ -28,6 +29,7 @@ const UsageTable = (props: { usage: CodeUsage, rows: number }) => {
         <>
           {informationTypes && <HeadCell title={intl.informationType}/>}
           {processes && <HeadCell title={intl.process}/>}
+          {dpProcesses && <HeadCell title={intl.dpProcess}/>}
           {policies && <HeadCell title={intl.policy}/>}
           {disclosures && <HeadCell title={intl.disclosure}/>}
           {documents && <HeadCell title={intl.documents}/>}
@@ -38,6 +40,7 @@ const UsageTable = (props: { usage: CodeUsage, rows: number }) => {
         const it = usage.informationTypes[index]
         const po = usage.policies[index]
         const pr = usage.processes[index]
+        const dpr = usage.dpProcesses[index]
         const di = usage.disclosures[index]
         const doc = usage.documents[index]
         return (
@@ -47,6 +50,9 @@ const UsageTable = (props: { usage: CodeUsage, rows: number }) => {
             </Cell>}
             {processes && <Cell>
               {pr && <ObjectLink id={pr.id} type={ObjectType.PROCESS} withHistory={true}>{codelist.getShortname(ListName.PURPOSE, pr.purpose.code)} {pr.name}</ObjectLink>}
+            </Cell>}
+            {dpProcesses && <Cell>
+              {dpr && <ObjectLink id={dpr.id} type={ObjectType.DP_PROCESS} withHistory={true}>{dpr.name}</ObjectLink>}
             </Cell>}
             {policies && <Cell>
               {po && <ObjectLink id={po.id} type={ObjectType.POLICY} withHistory={true}>{codelist.getShortname(ListName.PURPOSE, po.purposeCode)} {po.name}</ObjectLink>}
@@ -70,7 +76,7 @@ export const Usage = (props: { usage?: CodeUsage, refresh: () => void }) => {
   const ref = useRef<HTMLElement>()
 
   const {usage, refresh} = props
-  const maxRows = usage ? Math.max(usage.disclosures.length, usage.informationTypes.length, usage.processes.length, usage.policies.length) : -1
+  const maxRows = usage ? Math.max(usage.disclosures.length, usage.informationTypes.length, usage.processes.length, usage.dpProcesses.length, usage.policies.length) : -1
   const noUsage = maxRows === 0
 
   useEffect(() => {
@@ -79,7 +85,7 @@ export const Usage = (props: { usage?: CodeUsage, refresh: () => void }) => {
   }, [usage])
 
   const replace = async () => {
-    await replaceCodelistUsage(usage!.listName, usage!.code, newValue![0].id as string)
+    await replaceCodelistUsage(usage!.listName, usage!.code, newValue[0].id as string)
     refresh()
   }
 
