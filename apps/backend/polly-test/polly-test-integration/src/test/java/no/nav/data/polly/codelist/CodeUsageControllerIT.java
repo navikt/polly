@@ -49,7 +49,7 @@ public class CodeUsageControllerIT extends IntegrationTestBase {
     class findAllCodeUsageOfListname {
 
         @ParameterizedTest
-        @CsvSource({"PURPOSE, 2", "DEPARTMENT,1", "SUB_DEPARTMENT,1", "GDPR_ARTICLE,2", "NATIONAL_LAW,1", "SUBJECT_CATEGORY,1", "SENSITIVITY,1", "SYSTEM,2", "CATEGORY,2",
+        @CsvSource({"PURPOSE, 2", "DEPARTMENT,2", "SUB_DEPARTMENT,1", "GDPR_ARTICLE,2", "NATIONAL_LAW,1", "SUBJECT_CATEGORY,1", "SENSITIVITY,1", "SYSTEM,2", "CATEGORY,2",
                 "THIRD_PARTY,2", "TRANSFER_GROUNDS_OUTSIDE_EU,2"})
         void shouldFindCodeUsage(String list, int expectedCodesInUse) {
             ResponseEntity<CodelistUsageResponse> response = restTemplate

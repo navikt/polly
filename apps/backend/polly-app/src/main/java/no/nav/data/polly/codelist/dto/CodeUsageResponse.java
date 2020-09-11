@@ -32,6 +32,6 @@ public class CodeUsageResponse {
     }
 
     public boolean isInUse() {
-        return !informationTypes.isEmpty() || !policies.isEmpty() || !processes.isEmpty() || !disclosures.isEmpty() || !documents.isEmpty();
+        return !informationTypes.isEmpty() || !policies.isEmpty() || !processes.isEmpty() || !dpProcesses.isEmpty() || !disclosures.isEmpty() || !documents.isEmpty();
     }
 }
