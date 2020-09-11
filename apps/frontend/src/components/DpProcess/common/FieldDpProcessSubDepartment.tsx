@@ -18,7 +18,7 @@ const FieldDpProcessSubDepartment = (props: { formikBag: FormikProps<DpProcessFo
               clearable
               options={codelist.getParsedOptions(ListName.SUB_DEPARTMENT).filter(o => !props.formikBag.values.affiliation.subDepartments.includes(o.id))}
               onChange={({value}) => {
-                arrayHelpers.form.setFieldValue('subDepartments', [...props.formikBag.values.affiliation.subDepartments, ...value.map(v => v.id)])
+                arrayHelpers.form.setFieldValue('affiliation.subDepartments', [...props.formikBag.values.affiliation.subDepartments, ...value.map(v => v.id)])
               }}
             />
           </Block>
