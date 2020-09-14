@@ -139,10 +139,10 @@ export const dpProcessSchema = () => {
       products: yup.array().of(yup.string()),
     }),
 
-    art10: yup.boolean().optional(),
-    art9: yup.boolean().optional(),
+    art10: yup.boolean(),
+    art9: yup.boolean(),
 
-    dataProcessingAgreement: yup.boolean().optional(),
+    dataProcessingAgreement: yup.boolean(),
     dataProcessingAgreements: yup.array().of(yup.string()),
 
     description: yup.string(),
@@ -151,7 +151,7 @@ export const dpProcessSchema = () => {
 
     id: yup.string(),
     name: yup.string().max(max, maxError()).required(intl.required),
-    purposeDescription: yup.string().optional(),
+    purposeDescription: yup.string(),
     retention: yup.object<Retention>({
       retentionPlan: yup.boolean(),
       retentionMonths: yup.number(),
