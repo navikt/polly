@@ -130,7 +130,7 @@ export const processSchema = () =>
     }),
   });
 
-export const dpProcessSchema = () => {
+export const dpProcessSchema =
   yup.object<DpProcessFormValues>({
     affiliation: yup.object<AffiliationFormValues>({
       department: yup.string(),
@@ -150,7 +150,7 @@ export const dpProcessSchema = () => {
     externalProcessResponsible: yup.string(),
 
     id: yup.string(),
-    name: yup.string().max(max, maxError()).required(intl.required),
+    name: yup.string().required(intl.required),
     purposeDescription: yup.string(),
     retention: yup.object<Retention>({
       retentionPlan: yup.boolean(),
@@ -162,7 +162,6 @@ export const dpProcessSchema = () => {
     start: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),
     subDataProcessing: dataProcessingSchema()
   })
-}
 
 export const createDocumentValidation = () =>
   yup.object<CreateDocumentFormValues>({
