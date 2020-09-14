@@ -1,5 +1,5 @@
 import axios from "axios";
-import {DpProcess, DpProcessFormValues, PageResponse} from "../constants";
+import {DpProcess, DpProcessFormValues, PageResponse, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from "../constants";
 import {env} from "../util/env";
 
 const mapBool = (b?: boolean) => b === true ? true : b === false ? false : undefined
@@ -26,8 +26,12 @@ export const getDpProcess = async (id: string) => {
   return (await axios.get<DpProcess>(`${env.pollyBaseUrl}/dpprocess/${id}`)).data
 }
 
-export const createDpProcess = async (dpProcess: DpProcess) => {
-  return (await axios.post<DpProcess>(`${env.pollyBaseUrl}/dpprocess`, dpProcess)).data
+export const createDpProcess = async (dpProcessFormValues: DpProcessFormValues) => {
+  let body = fromValuesToDpProcess(dpProcessFormValues)
+  //TODO
+  console.log(body)
+  return
+  return (await axios.post<DpProcess>(`${env.pollyBaseUrl}/dpprocess`, body)).data
 }
 
 export const updateDpProcess = async (id: string, dpProcess: DpProcess) => {
@@ -38,7 +42,7 @@ export const deleteDpProcess = async (id: string) => {
   return (await axios.delete<DpProcess>(`${env.pollyBaseUrl}/dpprocess/${id}`)).data
 }
 
-export const dpProcessToFormValuesConverter = (dpProcess: Partial<DpProcess>): DpProcessFormValues => {
+export const dpProcessToFormValues = (dpProcess: Partial<DpProcess>): DpProcessFormValues => {
   const {
     affiliation,
     art10,
@@ -89,5 +93,28 @@ export const dpProcessToFormValuesConverter = (dpProcess: Partial<DpProcess>): D
       retentionDescription: retention?.retentionDescription || ''
     },
     start: start || ''
+  }
+}
+
+export const fromValuesToDpProcess = (values: DpProcessFormValues) => {
+
+  return {
+    affiliation: values.affiliation,
+    art10: values.art10,
+    art9: values.art9,
+    dataProcessingAgreement: values.dataProcessingAgreement,
+    dataProcessingAgreements: values.dataProcessingAgreements,
+    description: values.description,
+    end: values.end,
+    externalProcessResponsible: values.externalProcessResponsible ? values.externalProcessResponsible : undefined,
+    subDataProcessing: {
+      ...values.subDataProcessing,
+      transferGroundsOutsideEUOther: values.subDataProcessing.transferGroundsOutsideEU !== TRANSFER_GROUNDS_OUTSIDE_EU_OTHER ? undefined : values.subDataProcessing.transferGroundsOutsideEUOther
+    },
+    id: values.id,
+    name: values.name || '',
+    purposeDescription: values.purposeDescription,
+    retention: values.retention,
+    start: values.start
   }
 }
