@@ -14,7 +14,7 @@ const FieldDpProcessExternalProcessResponsible = (props: { thirdParty?: string, 
 
   return (
     <Field
-      name='commonExternalProcessResponsible'
+      name='externalProcessResponsible'
       render={({form}: FieldProps<DpProcessFormValues>) => (
         <Block width={'100%'}>
           <Select
@@ -22,7 +22,7 @@ const FieldDpProcessExternalProcessResponsible = (props: { thirdParty?: string, 
             onChange={({value}) => {
               if (!value.length) props.hideSelect()
               setValue(value)
-              form.setFieldValue('commonExternalProcessResponsible', value.length > 0 ? value[0].id : '')
+              form.setFieldValue('externalProcessResponsible', value.length > 0 ? value[0].id : '')
             }}
             value={value}
           />
