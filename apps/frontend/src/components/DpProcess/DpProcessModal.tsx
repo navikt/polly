@@ -6,24 +6,17 @@ import {dpProcessToFormValuesConverter} from "../../api/DpProcessApi";
 import CustomizedModalBlock from "../common/CustomizedModalBlock";
 import {Error, ModalLabel} from "../common/ModalSchema";
 import {intl, theme} from "../../util";
-import {DpProcessFormValues, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from "../../constants";
+import {DpProcessFormValues} from "../../constants";
 import {Input, SIZE as InputSIZE} from "baseui/input";
 import {Panel, PanelOverrides, StatelessAccordion} from "baseui/accordion";
 import PanelTitle from "../Process/common/PanelTitle";
-import {codelist} from "../../service/Codelist";
-import FieldProductTeam from "../common/form/FieldProductTeam";
-import {RadioBoolButton} from "../common/Radio";
-import FieldDpProcessDepartment from "./common/FieldDpProcessDepartment";
-import FieldDpProcessExternalProcessResponsible from "./common/FieldDpProcessExternalProcessResponsible";
-import FieldDpProcessSubDepartment from "./common/FieldDpProcessSubDepartment";
 import BoolField from "../Process/common/BoolField";
-import FieldDpProcessSubDataProcessorAgreements from "./common/FieldDpProcessSubDataProcessorAgreements";
-import FieldDpProcessSubDataProcessorTransferCountries from "./common/FieldDpProcessSubDataProcessorTransferCountries";
-import FieldDpProcessSubDataProcessorTransferGroundsOutsideEUOther from "./common/FieldDpProcessSubDataProcessorTransferGroundsOutsideEUOther";
-import FieldDpProcessSubDataProcessorTransferGroundsOutsideEU from "./common/FieldDpProcessSubDataProcessorTransferGroundsOutsideEU";
 import FieldDpProcessDataProcessingAgreements from "./common/FieldDpProcessDataProcessingAgreements";
 import FieldDescription from "./common/FieldDescription";
 import RetentionItems from "./common/RetentionItems";
+import FieldPurposeDescription from "./common/FieldPurposeDescription";
+import FieldDpProcessSubDataProcessor from "./common/FieldDpProcessSubDataProcessor";
+import FieldDpProcessAffiliation from "./common/FieldDpProcessAffiliation";
 
 type ModalDpProcessProps = {
   initialValues: DpProcessFormValues
@@ -113,10 +106,16 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                   <Error fieldName='name'/>
 
                   <CustomizedModalBlock>
-                    <ModalLabel label={intl.purposeOfTheProcess} tooltip={intl.processPurposeHelpText}/>
+                    <ModalLabel label={"Description"}/>
                     <FieldDescription/>
                   </CustomizedModalBlock>
                   <Error fieldName='description'/>
+
+                  <CustomizedModalBlock>
+                    <ModalLabel label={"Purpose Description"}/>
+                    <FieldPurposeDescription/>
+                  </CustomizedModalBlock>
+                  <Error fieldName='purposeDescription'/>
 
                   <Block {...rowBlockProps}>
                     <ModalLabel label={"Article 9"}/>
@@ -154,93 +153,19 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                            title={<ModalLabel label={<PanelTitle title={intl.organizing} expanded={expanded.indexOf('organizing') >= 0}/>}/>}
                            overrides={{...panelOverrides}}
                     >
-                      <Block display='flex' width='100%' justifyContent='space-between'>
-                        <Block width='48%'>
-                          <ModalLabel label={intl.department} tooltip={intl.departmentHelpText}/></Block>
-                        {codelist.showSubDepartment(formikBag.values.affiliation.department) && (
-                          <Block width='48%'><ModalLabel label={intl.subDepartment} tooltip={intl.subDepartmentHelpText}/></Block>
-                        )}
-                      </Block>
-
-                      <Block display='flex' width='100%' justifyContent='space-between'>
-                        <Block width='48%'>
-                          <FieldDpProcessDepartment department={formikBag.values.affiliation.department}/>
-                        </Block>
-                        {codelist.showSubDepartment(formikBag.values.affiliation.department) && (
-                          <Block width='48%'>
-                            <FieldDpProcessSubDepartment formikBag={formikBag}/>
-                          </Block>
-                        )}
-                      </Block>
-
-                      <Block display='flex' width='100%' justifyContent='space-between' marginTop={theme.sizing.scale400}>
-                        <Block width='48%'><ModalLabel label={intl.productTeamFromTK} tooltip={intl.productTeamFromTKHelpText}/></Block>
-                        <Block width='48%'>
-                          <ModalLabel fullwidth label={intl.commonExternalProcessResponsible} tooltip={intl.commonExternalProcessResponsibleHelpText}/>
-                        </Block>
-                      </Block>
-
-                      <Block display='flex' width='100%' justifyContent='space-between'>
-                        <Block width='48%'>
-                          <FieldProductTeam productTeams={formikBag.values.affiliation.productTeams} fieldName='affiliation.productTeams'/>
-                        </Block>
-                        <Block width='48%'>
-                          {showResponsibleSelect && <FieldDpProcessExternalProcessResponsible thirdParty={formikBag.values.externalProcessResponsible}
-                                                                                              hideSelect={() => setShowResponsibleSelect(false)}/>}
-                          {!showResponsibleSelect && <RadioBoolButton
-                            value={showResponsibleSelect}
-                            setValue={(b) => setShowResponsibleSelect(b!)}
-                            omitUndefined
-                          />}
-                        </Block>
-                      </Block>
+                      <FieldDpProcessAffiliation
+                        rowBlockProps={rowBlockProps}
+                        formikBag={formikBag}
+                        showResponsibleSelect={showResponsibleSelect}
+                        setShowResponsibleSelect={setShowResponsibleSelect}
+                      />
                     </Panel>
 
                     <Panel key='subDataProcessor'
                            title={<PanelTitle title={intl.dataProcessor} expanded={expanded.indexOf('subDataProcessor') >= 0}/>}
                            overrides={{...panelOverrides}}
                     >
-                      <Block {...rowBlockProps} marginTop={0}>
-                        <ModalLabel label={intl.isDataProcessorUsed} tooltip={intl.dataProcessorHelpText}/>
-                        <BoolField fieldName='subDataProcessing.dataProcessor'
-                                   value={formikBag.values.subDataProcessing.dataProcessor}/>
-                      </Block>
-
-                      {formikBag.values.subDataProcessing.dataProcessor && <>
-                        <Block {...rowBlockProps}>
-                          <ModalLabel label={intl.dataProcessorAgreement}/>
-                          <FieldDpProcessSubDataProcessorAgreements formikBag={formikBag}/>
-                        </Block>
-                        <Error fieldName='subDataProcessing.dataProcessorAgreement'/>
-
-                        <Block {...rowBlockProps}>
-                          <ModalLabel label={intl.isDataProcessedOutsideEUEEA}/>
-                          <BoolField fieldName='subDataProcessing.dataProcessorOutsideEU'
-                                     value={formikBag.values.subDataProcessing.dataProcessorOutsideEU}/>
-                        </Block>
-                        {formikBag.values.subDataProcessing.dataProcessorOutsideEU &&
-                        <>
-                          <Block {...rowBlockProps}>
-                            <ModalLabel label={intl.transferGroundsOutsideEUEEA}/>
-                            <FieldDpProcessSubDataProcessorTransferGroundsOutsideEU
-                              code={formikBag.values.subDataProcessing.transferGroundsOutsideEU}/>
-                          </Block>
-                          <Error fieldName='subDataProcessing.transferGroundsOutsideEU'/>
-
-                          {formikBag.values.subDataProcessing.transferGroundsOutsideEU === TRANSFER_GROUNDS_OUTSIDE_EU_OTHER &&
-                          <Block {...rowBlockProps}>
-                            <ModalLabel label={intl.transferGroundsOutsideEUEEAOther}/>
-                            <FieldDpProcessSubDataProcessorTransferGroundsOutsideEUOther/>
-                          </Block>}
-                          <Error fieldName='subDataProcessing.transferGroundsOutsideEUOther'/>
-
-                          <Block {...rowBlockProps}>
-                            <ModalLabel label={intl.countries}/>
-                            <FieldDpProcessSubDataProcessorTransferCountries formikBag={formikBag}/>
-                          </Block>
-                          <Error fieldName='subDataProcessing.transferCountries'/>
-                        </>}
-                      </>}
+                      <FieldDpProcessSubDataProcessor rowBlockProps={rowBlockProps} formikBag={formikBag}/>
                     </Panel>
 
                     <Panel key='retention'
