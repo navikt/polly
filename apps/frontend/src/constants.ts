@@ -305,7 +305,7 @@ export interface DpProcess extends IDurationed {
   description?: string;
   externalProcessResponsible?: Code;
 
-  id: string;
+  id?: string;
   name: string;
   purposeDescription?: string;
   retention: Retention
@@ -327,7 +327,7 @@ export interface DpProcessFormValues {
   externalProcessResponsible?: string;
 
   id?: string;
-  name?: string;
+  name: string;
   purposeDescription?: string;
   retention: Retention
 
