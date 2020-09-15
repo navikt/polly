@@ -12,8 +12,6 @@ import {convertProcessToFormValues, createProcess} from '../api'
 import AlphabeticList from '../components/common/AlphabeticList'
 import {useHistory} from 'react-router-dom'
 import {genProcessPath, Section} from './ProcessPage'
-import RouteLink from '../components/common/RouteLink'
-import {lowerFirst} from 'lodash'
 
 export const PurposeListPage = () => {
   const history = useHistory()
@@ -42,7 +40,7 @@ export const PurposeListPage = () => {
         <Block>
           <Label1>{intl.purposeSelect}</Label1>
         </Block>
-        
+
         <Block marginTop={'auto'}>
           {hasAccess() && (
             <Button

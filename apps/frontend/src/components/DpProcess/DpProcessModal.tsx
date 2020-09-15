@@ -2,7 +2,7 @@ import React, {KeyboardEvent, useState} from "react";
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
 import {Block, BlockProps} from "baseui/block";
 import {Field, FieldProps, Form, Formik} from "formik";
-import {dpProcessToFormValuesConverter} from "../../api/DpProcessApi";
+import {dpProcessToFormValues} from "../../api/DpProcessApi";
 import CustomizedModalBlock from "../common/CustomizedModalBlock";
 import {Error, ModalLabel} from "../common/ModalSchema";
 import {intl, theme} from "../../util";
@@ -17,10 +17,13 @@ import RetentionItems from "./common/RetentionItems";
 import FieldPurposeDescription from "./common/FieldPurposeDescription";
 import FieldDpProcessSubDataProcessor from "./common/FieldDpProcessSubDataProcessor";
 import FieldDpProcessAffiliation from "./common/FieldDpProcessAffiliation";
+import {dpProcessSchema} from "../common/schema";
+import {FieldDpProcessDates} from "./common/FieldDpProcessDates";
 
 type ModalDpProcessProps = {
   initialValues: DpProcessFormValues
   isOpen: boolean
+  submit: Function
   onClose: () => void
 }
 
@@ -77,12 +80,12 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
     >
       <Block {...modalBlockProps}>
         <Formik
-          onSubmit={values =>
-            //TODO :-)
+          onSubmit={values =>{
             console.log(values)
-          }
-          initialValues={dpProcessToFormValuesConverter({})}
-          //TODO validationSchema
+            props.submit(values)
+          }}
+          initialValues={dpProcessToFormValues({})}
+          validationSchema={dpProcessSchema}
         >
           {
             formikBag => (
@@ -103,7 +106,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                       )}
                     />
                   </CustomizedModalBlock>
-                  <Error fieldName='name'/>
+                  <Error fieldName={'name'}/>
 
                   <CustomizedModalBlock>
                     <ModalLabel label={"Description"}/>
@@ -116,6 +119,11 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                     <FieldPurposeDescription/>
                   </CustomizedModalBlock>
                   <Error fieldName='purposeDescription'/>
+
+                  <CustomizedModalBlock>
+                    <ModalLabel label={intl.validityOfProcess}/>
+                    <FieldDpProcessDates showDates={true} showLabels={true} rowBlockProps={rowBlockProps}/>
+                  </CustomizedModalBlock>
 
                   <Block {...rowBlockProps}>
                     <ModalLabel label={"Article 9"}/>
@@ -183,8 +191,8 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                   borderTop: 0
                 }}>
                   <Block display='flex' justifyContent='flex-end'>
-                    {/*<Block alignSelf='flex-end'>{errorOnCreate && <p>{errorOnCreate}</p>}</Block>*/}
-                    {/*<Button type='button' kind={KIND.minimal} onClick={onClose}>{intl.abort}</Button>*/}
+                    {/*<Block alignSelf='flex-end'>{props.errorOnCreate && <p>{props.errorOnCreate}</p>}</Block>*/}
+                    {/*<Button type='button' kind={KIND.minimal} onClick={props.onClose}>{intl.abort}</Button>*/}
                     <ModalButton type='submit'>{intl.save}</ModalButton>
                   </Block>
                 </ModalFooter>
