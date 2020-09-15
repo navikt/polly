@@ -19,9 +19,11 @@ import FieldDpProcessSubDataProcessor from "./common/FieldDpProcessSubDataProces
 import FieldDpProcessAffiliation from "./common/FieldDpProcessAffiliation";
 import {dpProcessSchema} from "../common/schema";
 import {FieldDpProcessDates} from "./common/FieldDpProcessDates";
+import {Button, KIND} from "baseui/button";
 
 type ModalDpProcessProps = {
   initialValues: DpProcessFormValues
+  errorOnCreate?: string
   isOpen: boolean
   submit: Function
   onClose: () => void
@@ -191,8 +193,10 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                   borderTop: 0
                 }}>
                   <Block display='flex' justifyContent='flex-end'>
-                    {/*<Block alignSelf='flex-end'>{props.errorOnCreate && <p>{props.errorOnCreate}</p>}</Block>*/}
-                    {/*<Button type='button' kind={KIND.minimal} onClick={props.onClose}>{intl.abort}</Button>*/}
+                    <Block alignSelf='flex-end'>
+                      {props.errorOnCreate && <p>{props.errorOnCreate}</p>}
+                    </Block>
+                    <Button type='button' kind={KIND.minimal} onClick={props.onClose}>{intl.abort}</Button>
                     <ModalButton type='submit'>{intl.save}</ModalButton>
                   </Block>
                 </ModalFooter>
