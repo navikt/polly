@@ -323,7 +323,7 @@ export interface DpProcessFormValues {
   dataProcessingAgreements: string[];
 
   description?: string;
-  end: string;
+  end?: string;
   externalProcessResponsible?: string;
 
   id?: string;
@@ -331,7 +331,7 @@ export interface DpProcessFormValues {
   purposeDescription?: string;
   retention: Retention
 
-  start: string;
+  start?: string;
   subDataProcessing: DataProcessingFormValues;
 }
 
