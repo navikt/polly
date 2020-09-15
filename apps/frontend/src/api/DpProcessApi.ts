@@ -28,9 +28,6 @@ export const getDpProcess = async (id: string) => {
 
 export const createDpProcess = async (dpProcessFormValues: DpProcessFormValues) => {
   let body = fromValuesToDpProcess(dpProcessFormValues)
-  //TODO
-  console.log(body)
-  return
   return (await axios.post<DpProcess>(`${env.pollyBaseUrl}/dpprocess`, body)).data
 }
 
@@ -73,7 +70,7 @@ export const dpProcessToFormValues = (dpProcess: Partial<DpProcess>): DpProcessF
     dataProcessingAgreement: dataProcessingAgreement || undefined,
     dataProcessingAgreements: dataProcessingAgreements || [],
     description: description || '',
-    end: end || '',
+    end: end || undefined,
     externalProcessResponsible: (externalProcessResponsible && externalProcessResponsible.code) || undefined,
     subDataProcessing: {
       dataProcessor: mapBool(subDataProcessing?.dataProcessor),
@@ -92,7 +89,7 @@ export const dpProcessToFormValues = (dpProcess: Partial<DpProcess>): DpProcessF
       retentionStart: retention?.retentionStart || '',
       retentionDescription: retention?.retentionDescription || ''
     },
-    start: start || ''
+    start: start || env.defaultStartDate
   }
 }
 
