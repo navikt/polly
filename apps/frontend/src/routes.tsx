@@ -30,7 +30,6 @@ import {TeamPage} from './pages/TeamPage'
 import {ProductAreaPage} from './pages/ProductAreaPage'
 import {LegalPage} from './pages/LegalPage'
 import DpProcessPage from "./pages/DpProcessPage";
-import CreateDpProcess from "./components/DpProcess/CreateDpProcess";
 
 export const processPath = '/process/:section/:code/:processId?'
 
@@ -47,9 +46,7 @@ const Routes = (): JSX.Element => (
       <Route exact path={processPath} component={ProcessPage} />
       <Route exact path="/process/legal" component={LegalPage} />
 
-      //TODO one this should be removed!
       <Route exact path="/dpprocess" component={DpProcessPage} />
-      <Route exact path="/dpprocess/create" component={CreateDpProcess} />
 
       <Route exact path="/dashboard/:filterName/:filterValue/:filterStatus" component={PurposeTable} />
 
