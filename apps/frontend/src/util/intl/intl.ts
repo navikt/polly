@@ -273,7 +273,11 @@ export interface IStrings {
   completeness: string;
   overview: string;
   seeExternalLink: string;
-
+  dpProcessTitle: string;
+  article9: string;
+  article10: string;
+  createDpProcess: string;
+  dpProcessDuplicatedError: string;
   // groups
   READ: string;
   WRITE: string;

@@ -94,7 +94,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
               <Form onKeyDown={disableEnter}>
                 <ModalHeader>
                   <Block {...modalHeaderProps}>
-                    DpProcess Header
+                    {intl.dpProcessTitle}
                   </Block>
                 </ModalHeader>
                 <ModalBody>
@@ -111,13 +111,13 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                   <Error fieldName={'name'}/>
 
                   <CustomizedModalBlock>
-                    <ModalLabel label={"Description"}/>
+                    <ModalLabel label={intl.description}/>
                     <FieldDescription/>
                   </CustomizedModalBlock>
                   <Error fieldName='description'/>
 
                   <CustomizedModalBlock>
-                    <ModalLabel label={"Purpose Description"}/>
+                    <ModalLabel label={intl.purposeDescription}/>
                     <FieldPurposeDescription/>
                   </CustomizedModalBlock>
                   <Error fieldName='purposeDescription'/>
@@ -128,16 +128,16 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                   </CustomizedModalBlock>
 
                   <Block {...rowBlockProps}>
-                    <ModalLabel label={"Article 9"}/>
-                    <BoolField fieldName='art9' value={formikBag.values.art9} justifyContent={"flex-end"}/>
+                    <ModalLabel label={intl.article9}/>
+                    <BoolField fieldName='art9' value={formikBag.values.art9}/>
                   </Block>
 
                   <Block {...rowBlockProps}>
-                    <ModalLabel label={"Article 10"}/>
-                    <BoolField fieldName='art10' value={formikBag.values.art10} justifyContent={"flex-end"}/>
+                    <ModalLabel label={intl.article10}/>
+                    <BoolField fieldName='art10' value={formikBag.values.art10}/>
                   </Block>
 
-                  <Block {...rowBlockProps} marginTop={0}>
+                  <Block {...rowBlockProps}>
                     <ModalLabel label={intl.isDataProcessorUsed} tooltip={intl.dataProcessorHelpText}/>
                     <BoolField fieldName='dataProcessingAgreement'
                                value={formikBag.values.dataProcessingAgreement}/>

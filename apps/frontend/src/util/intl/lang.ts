@@ -217,6 +217,12 @@ export const no: IStrings = {
   completeness: "Kompletthet",
   overview: "Oversikt",
 
+  dpProcessTitle: "Databehandlingen",
+  article9: "Artikkel 9",
+  article10: "Artikkel 10",
+  createDpProcess:"Opprett ny databehandling",
+  dpProcessDuplicatedError: "Databehandlingen eksisterer allerede.",
+
   READ: "Les",
   WRITE: "Skriv",
   ADMIN: "Admin",
@@ -629,6 +635,11 @@ export const en: IStrings = {
   lastModified: "Last modified by {0}, {1}",
   completeness: "Completeness",
   overview: "Overview",
+  dpProcessTitle: "Data process",
+  article9: "Article 9",
+  article10: "Article 10",
+  createDpProcess:"Create new data process",
+  dpProcessDuplicatedError: "Data process has already exist.",
 
   READ: "Read",
   WRITE: "Write",

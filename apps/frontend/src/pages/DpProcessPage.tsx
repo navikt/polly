@@ -1,10 +1,10 @@
 import * as React from "react";
 import {useReducer} from "react";
-import {Label1} from "baseui/typography";
 import Button from "../components/common/Button";
 import DpProcessModal from "../components/DpProcess/DpProcessModal";
 import {createDpProcess, dpProcessToFormValues} from "../api/DpProcessApi";
 import {DpProcessFormValues} from "../constants";
+import {intl} from "../util";
 
 const DpProcessPage = () => {
   const [showModal, toggleModal] = useReducer(prevState => !prevState, false)
@@ -19,7 +19,7 @@ const DpProcessPage = () => {
     } catch (err) {
       console.log(err.response)
       if (err.response.data.message.includes('already exists')) {
-        setErrorDpProcessModal('Databehandlingen eksisterer allerede.')
+        setErrorDpProcessModal(intl.dpProcessDuplicatedError)
         return
       }
       setErrorDpProcessModal(err.response.data.message)
@@ -28,8 +28,7 @@ const DpProcessPage = () => {
 
   return (
     <>
-      <Label1>DpProcess!</Label1>
-      <Button onClick={() => toggleModal()}>Create DpProcess</Button>
+      <Button onClick={() => toggleModal()}>{intl.createDpProcess}</Button>
       <DpProcessModal
         isOpen={showModal}
         onClose={toggleModal}
