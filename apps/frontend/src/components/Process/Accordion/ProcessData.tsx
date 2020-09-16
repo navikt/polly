@@ -18,6 +18,7 @@ import {ProgressBar} from 'baseui/progress-bar'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import {StyledLink} from "baseui/link";
 import {Markdown} from "../../common/Markdown";
+import RouteLink from "../../common/RouteLink";
 
 const isLink = (text: string) => {
   try {
@@ -125,7 +126,11 @@ const ProcessData = (props: { process: Process }) => {
 
         <Block>
           <span>{intl.commonExternalProcessResponsible}: </span>
-          <span>{!!process.commonExternalProcessResponsible ? codelist.getShortnameForCode(process.commonExternalProcessResponsible) : intl.no}</span>
+          <span>{!!process.commonExternalProcessResponsible ?
+            <RouteLink href={`/thirdparty/${process.commonExternalProcessResponsible.code}`}>
+            {codelist.getShortnameForCode(process.commonExternalProcessResponsible)}
+          </RouteLink>
+            : intl.no}</span>
         </Block>
 
         <Block>
