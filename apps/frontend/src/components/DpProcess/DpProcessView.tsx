@@ -16,6 +16,7 @@ import {RetentionView} from "../Process/Retention";
 import {isLink} from "../../util/helper-functions";
 import {ActiveIndicator} from "../common/Durations";
 import {boolToText} from "../common/Radio";
+import RouteLink from "../common/RouteLink";
 
 const DpProcessView = () => {
   const params = useParams<{ id?: string }>()
@@ -63,10 +64,13 @@ const DpProcessView = () => {
                 <span>{intl.subDepartment}: {intl.notFilled}</span>
               </Block>
             }
-
             <Block>
               <span>{intl.commonExternalProcessResponsible}: </span>
-              <span>{!!dpProcess?.externalProcessResponsible ? codelist.getShortnameForCode(dpProcess?.externalProcessResponsible) : intl.no}</span>
+              <span>{!!dpProcess?.externalProcessResponsible ?
+                <RouteLink href={`/thirdparty/${dpProcess.externalProcessResponsible.code}`}>
+                  {codelist.getShortnameForCode(dpProcess.externalProcessResponsible)}
+                </RouteLink>
+                : intl.no}</span>
             </Block>
 
             <Block>
