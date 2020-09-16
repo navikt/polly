@@ -17,8 +17,17 @@ import {ProgressBar} from 'baseui/progress-bar'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import {StyledLink} from "baseui/link";
 import {Markdown} from "../../common/Markdown";
-import DataText from "../../common/DataText";
-import {isLink} from "../../../util/helper-functions";
+import RouteLink from "../../common/RouteLink";
+
+const isLink = (text: string) => {
+  try {
+    new URL(text);
+  } catch (_) {
+    return false;
+  }
+
+  return true;
+}
 
 const showDpiaRequiredField = (dpia?: Dpia) => {
   if (dpia?.needForDpia === true) {
@@ -116,7 +125,11 @@ const ProcessData = (props: { process: Process }) => {
 
         <Block>
           <span>{intl.commonExternalProcessResponsible}: </span>
-          <span>{!!process.commonExternalProcessResponsible ? codelist.getShortnameForCode(process.commonExternalProcessResponsible) : intl.no}</span>
+          <span>{!!process.commonExternalProcessResponsible ?
+            <RouteLink href={`/thirdparty/${process.commonExternalProcessResponsible.code}`}>
+            {codelist.getShortnameForCode(process.commonExternalProcessResponsible)}
+          </RouteLink>
+            : intl.no}</span>
         </Block>
 
         <Block>
