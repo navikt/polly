@@ -18,16 +18,7 @@ import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import {StyledLink} from "baseui/link";
 import {Markdown} from "../../common/Markdown";
 import DataText from "../../common/DataText";
-
-const isLink = (text: string) => {
-  try {
-    new URL(text);
-  } catch (_) {
-    return false;
-  }
-
-  return true;
-}
+import {isLink} from "../../../util/helper-functions";
 
 const showDpiaRequiredField = (dpia?: Dpia) => {
   if (dpia?.needForDpia === true) {
