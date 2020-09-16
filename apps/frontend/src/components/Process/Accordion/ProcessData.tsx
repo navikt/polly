@@ -18,6 +18,7 @@ import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
 import {StyledLink} from "baseui/link";
 import {Markdown} from "../../common/Markdown";
 import RouteLink from "../../common/RouteLink";
+import DataText from "../../common/DataText";
 
 const isLink = (text: string) => {
   try {
@@ -127,8 +128,8 @@ const ProcessData = (props: { process: Process }) => {
           <span>{intl.commonExternalProcessResponsible}: </span>
           <span>{!!process.commonExternalProcessResponsible ?
             <RouteLink href={`/thirdparty/${process.commonExternalProcessResponsible.code}`}>
-            {codelist.getShortnameForCode(process.commonExternalProcessResponsible)}
-          </RouteLink>
+              {codelist.getShortnameForCode(process.commonExternalProcessResponsible)}
+            </RouteLink>
             : intl.no}</span>
         </Block>
 
