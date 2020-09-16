@@ -20,7 +20,7 @@ export const ProductAreaPage = () => {
     (async () => {
         setIsLoading(true)
         const response = await getDashboard(ProcessStatus.All)
-        
+
         if (response) setChartData(response.productAreaProcesses.find(p => p.productAreaId === productAreaId))
 
         setIsLoading(false)
@@ -38,7 +38,7 @@ export const ProductAreaPage = () => {
       {!isLoading && chartData && (
         <Block marginBottom="240px">
           <HeadingSmall>{intl.overview}</HeadingSmall>
-          <Charts chartData={chartData} processStatus={ProcessStatus.All} type="productarea" productareaId={productAreaId} />
+          <Charts chartData={chartData} processStatus={ProcessStatus.All} type={Section.productarea} productareaId={productAreaId} />
         </Block>
       )}
     </>
