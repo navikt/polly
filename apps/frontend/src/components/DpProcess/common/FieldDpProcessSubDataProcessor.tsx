@@ -33,7 +33,7 @@ const FieldDpProcessSubDataProcessor = (props: FieldDpProcessSubDataProcessorPro
         <Error fieldName='subDataProcessing.dataProcessorAgreement'/>
 
         <Block {...rowBlockProps}>
-          <ModalLabel label={intl.isDataProcessedOutsideEUEEA}/>
+          <ModalLabel label={intl.isSubDataProcessedOutsideEUEEA}/>
           <BoolField fieldName='subDataProcessing.dataProcessorOutsideEU'
                      value={formikBag.values.subDataProcessing.dataProcessorOutsideEU}/>
         </Block>
