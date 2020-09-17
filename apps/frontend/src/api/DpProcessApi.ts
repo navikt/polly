@@ -31,7 +31,7 @@ export const createDpProcess = async (dpProcessFormValues: DpProcessFormValues) 
   return (await axios.post<DpProcess>(`${env.pollyBaseUrl}/dpprocess`, body)).data
 }
 
-export const updateDpProcess = async (id: string, dpProcess: DpProcess) => {
+export const updateDpProcess = async (id: string, dpProcess: DpProcessFormValues) => {
   return (await axios.put<DpProcess>(`${env.pollyBaseUrl}/dpprocess/${id}`, dpProcess)).data
 }
 
@@ -65,8 +65,8 @@ export const dpProcessToFormValues = (dpProcess: Partial<DpProcess>): DpProcessF
       productTeams: affiliation?.productTeams || [],
       products: affiliation?.products.map(p => p.code) || [],
     },
-    art10: art10 || undefined,
-    art9: art9 || undefined,
+    art10: mapBool(art10),
+    art9: mapBool(art9),
     dataProcessingAgreement: dataProcessingAgreement || undefined,
     dataProcessingAgreements: dataProcessingAgreements || [],
     description: description || '',
