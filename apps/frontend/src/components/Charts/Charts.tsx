@@ -2,7 +2,7 @@ import * as React from 'react'
 import {useHistory} from 'react-router-dom'
 import {Block} from 'baseui/block'
 import {chartCardProps} from '../common/Style'
-import { ProcessStatus, ProcessField, ProcessState, ProcessesDashCount, DepartmentProcessDashCount, NavigableItem, ProductAreaProcessDashCount } from '../../constants'
+import { ProcessStatus, ProcessField, ProcessState, DepartmentProcessDashCount, ProductAreaProcessDashCount, ProcessesDashCount } from '../../constants'
 import TriChart from './TriChart'
 import {intl} from '../../util'
 import {Chart} from './Chart'
@@ -11,13 +11,12 @@ import {chartColor} from '../../util/theme'
 import {Paragraph1} from 'baseui/typography'
 import RouteLink from '../common/RouteLink'
 import { lowerFirst } from 'lodash'
-import { ListName } from '../../service/Codelist'
 import { Section } from '../../pages/ProcessPage'
 
 const chartSize = 80
 
 type ChartsProps = {
-    chartData: ProductAreaProcessDashCount | DepartmentProcessDashCount,
+    chartData: ProductAreaProcessDashCount | DepartmentProcessDashCount | ProcessesDashCount,
     processStatus: ProcessStatus,
     type?: Section,
     departmentCode?: string,
