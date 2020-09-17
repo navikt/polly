@@ -20,7 +20,7 @@ const FieldDpProcessSubDataProcessor = (props: FieldDpProcessSubDataProcessorPro
   return (
     <>
       <Block {...rowBlockProps} marginTop={0}>
-        <ModalLabel label={intl.isDataProcessorUsed} tooltip={intl.dataProcessorHelpText}/>
+        <ModalLabel label={intl.isSubDataProcessorUsed}/>
         <BoolField fieldName='subDataProcessing.dataProcessor'
                    value={formikBag.values.subDataProcessing.dataProcessor}/>
       </Block>

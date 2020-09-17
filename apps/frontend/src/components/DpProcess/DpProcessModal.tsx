@@ -117,7 +117,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                   <Error fieldName='description'/>
 
                   <CustomizedModalBlock>
-                    <ModalLabel label={intl.purposeDescription}/>
+                    <ModalLabel label={intl.purpose}/>
                     <FieldPurposeDescription/>
                   </CustomizedModalBlock>
                   <Error fieldName='purposeDescription'/>
@@ -138,7 +138,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                   </Block>
 
                   <Block {...rowBlockProps}>
-                    <ModalLabel label={intl.isDataProcessorUsed} tooltip={intl.dataProcessorHelpText}/>
+                    <ModalLabel label={intl.isDataProcessorUsed}/>
                     <BoolField fieldName='dataProcessingAgreement'
                                value={formikBag.values.dataProcessingAgreement}/>
                   </Block>
@@ -172,7 +172,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                     </Panel>
 
                     <Panel key='subDataProcessor'
-                           title={<PanelTitle title={intl.dataProcessor} expanded={expanded.indexOf('subDataProcessor') >= 0}/>}
+                           title={<PanelTitle title={intl.subDataProcessor} expanded={expanded.indexOf('subDataProcessor') >= 0}/>}
                            overrides={{...panelOverrides}}
                     >
                       <FieldDpProcessSubDataProcessor rowBlockProps={rowBlockProps} formikBag={formikBag}/>

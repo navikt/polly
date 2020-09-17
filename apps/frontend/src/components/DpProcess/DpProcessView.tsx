@@ -41,13 +41,21 @@ const DpProcessView = () => {
         <>
           <H4>{dpProcess?.name}</H4>
           <DataText label={intl.description} text={dpProcess?.description}/>
-          <DataText label={intl.purposeDescription} text={dpProcess?.purposeDescription}/>
+          <DataText label={intl.purpose} text={dpProcess?.purposeDescription}/>
           <DataText label={intl.validityOfProcess} text={""}>
             <ActiveIndicator alwaysShow={true} showDates={true} {...dpProcess} />
           </DataText>
 
           <DataText label={intl.article9} text={boolToText(dpProcess?.art9)}/>
           <DataText label={intl.article10} text={boolToText(dpProcess?.art10)}/>
+
+          <DataText label={intl.externalProcessResponsible} text={""}>
+            <span>{!!dpProcess?.externalProcessResponsible ?
+              <RouteLink href={`/thirdparty/${dpProcess.externalProcessResponsible.code}`}>
+                {codelist.getShortnameForCode(dpProcess.externalProcessResponsible)}
+              </RouteLink>
+              : intl.no}</span>
+          </DataText>
 
           <DataText label={intl.organizing} text={""}>
             {dpProcess?.affiliation.department ? <Block>
@@ -64,14 +72,6 @@ const DpProcessView = () => {
                 <span>{intl.subDepartment}: {intl.notFilled}</span>
               </Block>
             }
-            <Block>
-              <span>{intl.commonExternalProcessResponsible}: </span>
-              <span>{!!dpProcess?.externalProcessResponsible ?
-                <RouteLink href={`/thirdparty/${dpProcess.externalProcessResponsible.code}`}>
-                  {codelist.getShortnameForCode(dpProcess.externalProcessResponsible)}
-                </RouteLink>
-                : intl.no}</span>
-            </Block>
 
             <Block>
               <span>{intl.productTeam}: </span>
@@ -101,15 +101,15 @@ const DpProcessView = () => {
               </Block>
             </>
           </DataText>
-          <DataText label={intl.dataProcessor} text={""}>
+          <DataText label={intl.dpProcessDataProcessor} text={""}>
             <>
-              {dpProcess?.dataProcessingAgreement === null && intl.dataProcessorUnclarified}
-              {dpProcess?.dataProcessingAgreement === false && intl.dataProcessorNo}
+              {dpProcess?.dataProcessingAgreement === null && intl.dpProcessDataProcessorUnclarified}
+              {dpProcess?.dataProcessingAgreement === false && intl.dpProcessDataProcessorNo}
             </>
             <>
               {dpProcess?.dataProcessingAgreement &&
               <Block>
-                <Block>{intl.dataProcessorYes}</Block>
+                <Block>{intl.dpProcessDataProcessorYes}</Block>
                 <Block>
                   {isDataProcessingAgreementsAvailable &&
                   <Block display='flex' alignItems="center">
@@ -126,7 +126,7 @@ const DpProcessView = () => {
           </DataText>
 
 
-          <DataText label={intl.dataProcessor} text={""}>
+          <DataText label={intl.subDataProcessor} text={""}>
             <>
               {dpProcess?.subDataProcessing?.dataProcessor === null && intl.dataProcessorUnclarified}
               {dpProcess?.subDataProcessing?.dataProcessor === false && intl.dataProcessorNo}

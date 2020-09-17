@@ -46,7 +46,7 @@ const FieldDpProcessAffiliation = (props: FieldDpProcessAffiliationProps) => {
       <Block display='flex' width='100%' justifyContent='space-between' marginTop={theme.sizing.scale400}>
         <Block width='48%'><ModalLabel label={intl.productTeamFromTK} tooltip={intl.productTeamFromTKHelpText}/></Block>
         <Block width='48%'>
-          <ModalLabel fullwidth label={intl.commonExternalProcessResponsible} tooltip={intl.commonExternalProcessResponsibleHelpText}/>
+          <ModalLabel fullwidth label={intl.externalProcessResponsible}/>
         </Block>
       </Block>
 
