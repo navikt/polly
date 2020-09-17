@@ -5,11 +5,12 @@ import {env} from "../util/env";
 const mapBool = (b?: boolean) => b === true ? true : b === false ? false : undefined
 
 export const getAllDpProcesses = async () => {
-  const PAGE_SIZE = 20
+  const PAGE_SIZE = 100
   const firstPage = await getDpProcessByPageAndSize(0, PAGE_SIZE)
-  if (firstPage.pages === 0) {
-    return [...firstPage.content]
-  } else {
+  if (firstPage.pages === 1) {
+    return firstPage.content.length > 0 ? [...firstPage.content] : []
+  }
+  else {
     let AllDpProcesses: DpProcess[] = [...firstPage.content]
     for (let currentPage = 1; currentPage < firstPage.pages; currentPage++) {
       AllDpProcesses = [...AllDpProcesses, ...(await getDpProcessByPageAndSize(currentPage, PAGE_SIZE)).content]
