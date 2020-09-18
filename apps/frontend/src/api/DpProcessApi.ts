@@ -1,8 +1,7 @@
 import axios from "axios";
 import {DpProcess, DpProcessFormValues, PageResponse, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from "../constants";
 import {env} from "../util/env";
-
-const mapBool = (b?: boolean) => b === true ? true : b === false ? false : undefined
+import {mapBool} from "../util/helper-functions";
 
 export const getAllDpProcesses = async () => {
   const PAGE_SIZE = 100

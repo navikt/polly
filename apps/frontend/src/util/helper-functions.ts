@@ -7,3 +7,5 @@ export const isLink = (text: string) => {
 
   return true;
 }
+
+export const mapBool = (b?: boolean) => b === true ? true : b === false ? false : undefined
