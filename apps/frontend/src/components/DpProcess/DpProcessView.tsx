@@ -27,7 +27,7 @@ import {env} from "../../util/env";
 
 const DpProcessView = () => {
   const history = useHistory()
-  const params = useParams<{ id?: string }>()
+  const params = useParams<{id?: string}>()
   const [dpProcess, setDpProcess] = useState<DpProcess>()
   const [isLoading, setLoading] = useState<boolean>(true)
   const [showModal, toggleModal] = useReducer(prevState => !prevState, false)
@@ -90,8 +90,8 @@ const DpProcessView = () => {
       {!isLoading ? (
         <>
           <Block display="flex" justifyContent={"space-between"} alignItems={"center"}>
-          <H4>{dpProcess?.name}</H4>
-            {user.canWrite() && env.disableDpProcess==='false' &&
+            <H4>{dpProcess?.name}</H4>
+            {user.canWrite() && !env.disableDpProcess &&
             <Block>
               <Button size="compact" kind="outline" tooltip={intl.edit} icon={faEdit} marginRight onClick={toggleModal}>
                 {intl.edit}
