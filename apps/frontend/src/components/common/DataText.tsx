@@ -1,6 +1,6 @@
 import {default as React, ReactNode} from 'react'
 import {Block} from 'baseui/block'
-import {intl, theme} from '../../../util'
+import {intl, theme} from '../../util'
 import {Label2, Paragraph2} from 'baseui/typography'
 
 type DataTextProps = {

@@ -11,9 +11,9 @@ export const getDocument = async (documentId: string) => {
 
 
 export const getAllDocument = async () => {
-  const PAGE_SIZE = 20
+  const PAGE_SIZE = 100
   const firstPage = await getDocumentByPageAndPageSize(0, PAGE_SIZE)
-  if (firstPage.pages === 0) {
+  if (firstPage.pages === 1) {
     return [...firstPage.content]
   } else {
     let allDocuments: Document[] = [...firstPage.content]

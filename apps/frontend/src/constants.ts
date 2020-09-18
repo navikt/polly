@@ -82,7 +82,6 @@ export enum ProcessStatus {
 }
 
 
-
 export const TRANSFER_GROUNDS_OUTSIDE_EU_OTHER = 'OTHER'
 
 export interface InformationtypeFormValues {
@@ -102,7 +101,7 @@ export interface PolicyFormValues {
   id?: string;
   purposeCode: string;
   informationType?: InformationTypeShort;
-  process: {id: string; name: string; legalBases: LegalBasis[]};
+  process: { id: string; name: string; legalBases: LegalBasis[] };
   subjectCategories: string[];
   legalBasesUse: LegalBasesUse;
   legalBases: Array<LegalBasisFormValues>;
@@ -293,7 +292,7 @@ export interface Process extends IDurationed {
 }
 
 export interface DpProcess extends IDurationed {
-  id: string;
+  id?: string;
   name: string;
   description?: string;
   purposeDescription?: string;
@@ -302,9 +301,27 @@ export interface DpProcess extends IDurationed {
   dataProcessingAgreement?: boolean;
   dataProcessingAgreements: string[];
   subDataProcessing: DataProcessing;
+  changeStamp: ChangeStamp;
   art9?: boolean;
   art10?: boolean;
   retention: Retention
+}
+
+export interface DpProcessFormValues {
+  id?: string;
+  name: string;
+  description?: string;
+  purposeDescription?: string;
+  affiliation: AffiliationFormValues
+  externalProcessResponsible?: string;
+  dataProcessingAgreement?: boolean;
+  dataProcessingAgreements: string[];
+  subDataProcessing: DataProcessingFormValues;
+  art9?: boolean;
+  art10?: boolean;
+  retention: Retention
+  start?: string;
+  end?: string;
 }
 
 export interface ChangeStamp {
@@ -322,7 +339,7 @@ export interface TeamResource {
 }
 
 export interface ProcessCount {
-  counts: {[code: string]: number};
+  counts: { [code: string]: number };
 }
 
 export interface UserInfo {
@@ -436,7 +453,7 @@ export interface AddDocumentToProcessFormValues {
   document?: Document;
   informationTypes: DocumentInfoTypeUse[];
   defaultDocument: boolean;
-  process: {id: string; name: string; purpose: Code};
+  process: { id: string; name: string; purpose: Code };
 }
 
 export interface CreateDocumentFormValues {
@@ -461,7 +478,7 @@ export interface AuditItem {
   data: object;
 }
 
-export type Event = Omit<AuditItem, 'user' | 'data'> & {name: string};
+export type Event = Omit<AuditItem, 'user' | 'data'> & { name: string };
 
 export interface AuditLog {
   id: string;
