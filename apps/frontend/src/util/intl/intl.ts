@@ -60,6 +60,8 @@ export interface IStrings {
   policy: string;
   usage: string;
   and: string;
+  with: string;
+  pollyOrg: string;
   or: string;
   remove: string;
   yes: string;

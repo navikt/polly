@@ -12,7 +12,7 @@ import {PageHeader} from '../components/common/PageHeader'
 import {HeadingSmall} from 'baseui/typography'
 import {intl} from '../util'
 import {Block} from "baseui/block/index"
-import { getDashboard } from '../api'
+import {getDashboard} from '../api'
 import Charts from '../components/Charts/Charts'
 
 export enum Section {
@@ -21,7 +21,8 @@ export enum Section {
   department = 'department',
   subdepartment = 'subdepartment',
   team = 'team',
-  productarea = 'productarea'
+  productarea = 'productarea',
+  thirdparty = 'thirdparty'
 }
 
 export const listNameForSection = (section: Section) => {
@@ -29,6 +30,7 @@ export const listNameForSection = (section: Section) => {
   else if (section === Section.department) return ListName.DEPARTMENT
   else if (section === Section.purpose) return ListName.PURPOSE
   else if (section === Section.system) return ListName.SYSTEM
+  else if (section === Section.thirdparty) return ListName.THIRD_PARTY
   return undefined
 }
 
@@ -78,9 +80,9 @@ const ProcessPage = () => {
       {!isLoading && section === Section.department &&(
         <Block>
           <HeadingSmall>{intl.overview}</HeadingSmall>
-            <Charts 
+            <Charts
                 chartData={chartData!}
-                processStatus={ProcessStatus.All} 
+                processStatus={ProcessStatus.All}
                 departmentCode={code}
                 type={section === Section.department ? Section.department : Section.productarea}
              />

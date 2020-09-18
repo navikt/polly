@@ -13,8 +13,8 @@ import {productAreaLink, teamLink} from '../../util/config'
 import {StyledLink} from 'baseui/link'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons'
-import CustomizedStatefulTooltip from "./CustomizedStatefulTooltip";
-
+import CustomizedStatefulTooltip from "./CustomizedStatefulTooltip"
+import {lowerFirst} from 'lodash'
 
 export const PageHeader = (props: {section: Section, code: string}) => {
   const [isLoading, setLoading] = React.useState(false)
@@ -55,6 +55,7 @@ export const PageHeader = (props: {section: Section, code: string}) => {
     else if (section === Section.team) return intl.team
     else if (section === Section.productarea) return intl.productArea
     else if (section === Section.system) return intl.system
+    else if (section === Section.thirdparty) return `${intl.commonExternalProcessResponsible} ${intl.with} ${lowerFirst(intl.thirdParty)}`
     return intl.overallPurposeActivity
   }
 

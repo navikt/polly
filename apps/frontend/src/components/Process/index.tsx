@@ -37,6 +37,7 @@ type ProcessListProps = {
   section: Section;
   filter?: ProcessStatus;
   processId?: string;
+  titleOverride?: string;
   code: string;
   listName?: ListName;
   moveScroll?: Function;
@@ -44,7 +45,7 @@ type ProcessListProps = {
 
 const sortProcess = (list: ProcessShort[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, intl.getLanguage()))
 
-const ProcessList = ({code, listName, filter, processId, section, moveScroll}: ProcessListProps) => {
+const ProcessList = ({code, listName, filter, processId, section, moveScroll, titleOverride}: ProcessListProps) => {
   const [processList, setProcessList] = React.useState<ProcessShort[]>([])
   const [currentProcess, setCurrentProcess] = React.useState<Process | undefined>()
   const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
@@ -81,7 +82,8 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll}: P
     'DEPARTMENT': 'department',
     'SUB_DEPARTMENT': 'subDepartment',
     'PURPOSE': 'purpose',
-    'SYSTEM': 'system'
+    'SYSTEM': 'system',
+    'THIRD_PARTY': 'thirdparty'
   } as {[l: string]: string})[listName]
 
   const getProcessList = async () => {
@@ -274,7 +276,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll}: P
         </Block>
         <Block marginRight='auto'>
           <HeadingSmall>
-            {intl.processes} ({processList.length})
+            {titleOverride ||intl.processes} ({processList.length})
           </HeadingSmall>
         </Block>
       </Block>
