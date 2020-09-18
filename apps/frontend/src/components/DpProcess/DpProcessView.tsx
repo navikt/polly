@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom';
-import {DpProcess} from '../../constants';
-import {getDpProcess} from '../../api/DpProcessApi';
+import React, {useEffect, useReducer, useState} from 'react';
+import {useHistory, useParams} from 'react-router-dom';
+import {DpProcess, DpProcessFormValues} from '../../constants';
+import {deleteDpProcess, dpProcessToFormValues, getDpProcess, updateDpProcess} from '../../api/DpProcessApi';
 import {StyledSpinnerNext} from 'baseui/spinner';
 import {Block} from 'baseui/block';
 import {H4} from "baseui/typography";
-import {intl, theme} from "../../util";
+import {intl} from "../../util";
 import {StyledLink} from "baseui/link";
 import {DotTags} from "../common/DotTag";
 import {Markdown} from "../common/Markdown";
@@ -17,14 +17,62 @@ import {isLink} from "../../util/helper-functions";
 import {ActiveIndicator} from "../common/Durations";
 import {boolToText} from "../common/Radio";
 import RouteLink from "../common/RouteLink";
+import Button from "../common/Button";
+import DpProcessModal from "./DpProcessModal";
+import {DpProcessDeleteModal} from "./DpProcessDeleteModal";
+import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {SIZE as ButtonSize} from "baseui/button";
 
 const DpProcessView = () => {
+  const history = useHistory()
   const params = useParams<{ id?: string }>()
   const [dpProcess, setDpProcess] = useState<DpProcess>()
   const [isLoading, setLoading] = useState<boolean>(true)
-  const dividerDistance = theme.sizing.scale2400
+  const [showModal, toggleModal] = useReducer(prevState => !prevState, false)
+  const [showDeleteModal, toggleDeleteModal] = useReducer(prevState => !prevState, false)
+
+  const [errorDpProcessModal, setErrorDpProcessModal] = React.useState<string>('')
+
   const isSubDataProcessorAgreementsAvailable = !!dpProcess?.subDataProcessing?.dataProcessorAgreements.length
   const isDataProcessingAgreementsAvailable = !!dpProcess?.dataProcessingAgreements.length
+
+  const handleEditDpProcess = async (dpProcess: DpProcessFormValues) => {
+    if (!dpProcess) return
+    try {
+      if (dpProcess.id) {
+        const updatedDpProcess = await updateDpProcess(dpProcess.id, dpProcess)
+        setDpProcess(updatedDpProcess)
+      }
+      setErrorDpProcessModal('')
+      toggleModal()
+    } catch (err) {
+      console.log(err.response)
+      if (err.response.data.message.includes('already exists')) {
+        setErrorDpProcessModal(intl.dpProcessDuplicatedError)
+        return
+      }
+      setErrorDpProcessModal(err.response.data.message)
+    }
+  }
+
+  const handleDeleteDpProcess = async (id?: string) => {
+    try {
+      if (id) {
+        await deleteDpProcess(id)
+        setErrorDpProcessModal('')
+        toggleModal()
+        history.push(`/dpprocess`)
+      }
+    } catch (err) {
+      console.log(err.response)
+      if (err.response.data.message.includes('already exists')) {
+        setErrorDpProcessModal(intl.dpProcessDuplicatedError)
+        return
+      }
+      setErrorDpProcessModal(err.response.data.message)
+    }
+  }
+
   useEffect(() => {
     (async () => {
       if (params.id) {
@@ -39,7 +87,20 @@ const DpProcessView = () => {
     <>
       {!isLoading ? (
         <>
+          <Block display="flex" justifyContent={"space-between"} alignItems={"center"}>
+
           <H4>{dpProcess?.name}</H4>
+
+            <Block>
+              <Button size="compact" kind="outline" tooltip={intl.edit} icon={faEdit} marginRight onClick={toggleModal}>
+                {intl.edit}
+              </Button>
+              <Button size={ButtonSize.compact} kind='outline' onClick={toggleDeleteModal} tooltip={intl.delete} icon={faTrash}>
+                {intl.delete}
+              </Button>
+            </Block>
+          </Block>
+
           <DataText label={intl.description} text={dpProcess?.description}/>
           <DataText label={intl.purpose} text={dpProcess?.purposeDescription}/>
           <DataText label={intl.validityOfProcess} text={""}>
@@ -166,6 +227,20 @@ const DpProcessView = () => {
               </Block>}
             </>
           </DataText>
+          <DpProcessModal
+            isOpen={showModal}
+            onClose={toggleModal}
+            initialValues={dpProcessToFormValues(dpProcess ? dpProcess : {})}
+            submit={handleEditDpProcess}
+            errorOnCreate={errorDpProcessModal}
+          />
+          <DpProcessDeleteModal
+            title={intl.confirmDeleteHeader}
+            isOpen={showDeleteModal}
+            onClose={toggleDeleteModal}
+            onSubmit={() => handleDeleteDpProcess(dpProcess?.id)}
+            errorOnDeletion={errorDpProcessModal}
+          />
         </>
       ) : (
         <StyledSpinnerNext/>
