@@ -24,7 +24,6 @@ export const RadioBoolButton = (props: radioBoolProps) =>
               onChange={
                 (e) => {
                   props.setValue(radioToBool((e.target as HTMLInputElement).value))
-                  console.log(e.target.value)
                 }
               }
   >
