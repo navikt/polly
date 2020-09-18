@@ -11,7 +11,7 @@ import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.process.domain.Process;
-import no.nav.data.polly.process.domain.ProcessRepository;
+import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;

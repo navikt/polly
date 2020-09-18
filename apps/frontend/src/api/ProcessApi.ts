@@ -2,6 +2,8 @@ import axios from 'axios'
 import {PageResponse, Process, ProcessCount, ProcessField, ProcessFormValues, ProcessShort, ProcessState, ProcessStatus, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from '../constants'
 import {env} from '../util/env'
 import {convertLegalBasesToFormValues} from './PolicyApi'
+import * as queryString from 'query-string'
+import {mapBool} from "../util/helper-functions";
 
 export const getProcess = async (processId: string) => {
   const data = (await axios.get<Process>(`${env.pollyBaseUrl}/process/${processId}`)).data
@@ -13,16 +15,20 @@ export const getProcessByStateAndStatus = async (processField: ProcessField, pro
   return (await axios.get<PageResponse<ProcessShort>>(`${env.pollyBaseUrl}/process/state?processField=${processField}&processState=${processState}&processStatus=${processStatus}`)).data.content
 }
 
+export const getProcessByStateAndStatusForProductArea = async (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatus = ProcessStatus.All, productreaId: string) => {
+  return (await axios.get<PageResponse<ProcessShort>>(`${env.pollyBaseUrl}/process/state?processField=${processField}&processState=${processState}&processStatus=${processStatus}&productAreaId=${productreaId}`)).data.content
+}
+
+export const getProcessByStateAndStatusForDepartment = async (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatus = ProcessStatus.All, departmentCode: string) => {
+  return (await axios.get<PageResponse<ProcessShort>>(`${env.pollyBaseUrl}/process/state?processField=${processField}&processState=${processState}&processStatus=${processStatus}&department=${departmentCode}`)).data.content
+}
+
 export const searchProcess = async (text: string) => {
   return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process/search/${text}`)).data
 }
 
-export const getProcessesForTeam = async (teamId: string) => {
-  return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process?productTeam=${teamId}&pageSize=250`)).data
-}
-
-export const getProcessesForProductArea = async (productAreaId: string) => {
-  return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process?productArea=${productAreaId}&pageSize=250`)).data
+export const getProcessesFor = async (params: {productTeam?: string, productArea?: string, documentId?: string, gdprArticle?: string, nationalLaw?: string}) => {
+  return (await axios.get<PageResponse<Process>>(`${env.pollyBaseUrl}/process?${queryString.stringify(params, {skipNull: true})}&pageSize=250`)).data
 }
 
 export const getProcessPurposeCount = async (query: 'purpose' | 'department' | 'subDepartment' | 'team') => {
@@ -45,23 +51,14 @@ export const updateProcess = async (process: ProcessFormValues) => {
   return data
 }
 
-export const getProcessesByDocument = async (documentId: string) => {
-  return (await axios.get(`${env.pollyBaseUrl}/process/?documentId=${documentId}`)).data
-}
-
-const mapBool = (b?: boolean) => b === true ? true : b === false ? false : undefined
-
 export const convertProcessToFormValues: (process?: Partial<Process>) => ProcessFormValues = process => {
   const {
     id,
     purpose,
     name,
     description,
-    department,
-    subDepartments,
+    affiliation,
     commonExternalProcessResponsible,
-    productTeams,
-    products,
     legalBases,
     start,
     end,
@@ -80,11 +77,13 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     name: name || '',
     description: description || '',
     purposeCode: purpose?.code || '',
-    department: department?.code || undefined,
-    subDepartments: (subDepartments && subDepartments.map(sd => sd.code)) || [],
+    affiliation: {
+      department: affiliation?.department?.code || '',
+      subDepartments: affiliation?.subDepartments.map(sd => sd.code) || [],
+      productTeams: affiliation?.productTeams || [],
+      products: affiliation?.products.map(p => p.code) || [],
+    },
     commonExternalProcessResponsible: (commonExternalProcessResponsible && commonExternalProcessResponsible.code) || undefined,
-    productTeams: productTeams || [],
-    products: (products && products.map(p => p.code)) || [],
     legalBases: convertLegalBasesToFormValues(legalBases),
     start: start || env.defaultStartDate,
     end: end || undefined,
@@ -123,11 +122,8 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
     name: values.name,
     description: values.description,
     purposeCode: values.purposeCode,
-    department: values.department ? values.department : undefined,
-    subDepartments: values.subDepartments ? values.subDepartments : [],
+    affiliation: values.affiliation,
     commonExternalProcessResponsible: values.commonExternalProcessResponsible ? values.commonExternalProcessResponsible : undefined,
-    productTeams: values.productTeams,
-    products: values.products,
     legalBases: values.legalBases ? values.legalBases : [],
     start: values.start,
     end: values.end,

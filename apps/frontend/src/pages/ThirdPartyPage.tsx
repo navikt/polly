@@ -14,6 +14,8 @@ import {Disclosure, DisclosureFormValues, InformationType} from '../constants'
 import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
 import {StyledSpinnerNext} from 'baseui/spinner'
 import ThirdPartiesTable from '../components/common/ThirdPartiesTable'
+import ProcessList from '../components/Process'
+import {Section} from './ProcessPage'
 
 const labelBlockProps: BlockProps = {
   marginBottom: '1rem',
@@ -148,6 +150,10 @@ const ThirdPartyPage = () => {
           <Block>
             <ThirdPartiesTable informationTypes={informationTypeList || []} sortName={true}/>
           </Block>
+
+          <ProcessList section={Section.thirdparty} code={params.thirdPartyCode} listName={ListName.THIRD_PARTY}
+                       titleOverride={`${intl.commonExternalProcessResponsible} ${intl.with} ${intl.pollyOrg}`}/>
+
         </>
       )}
     </>

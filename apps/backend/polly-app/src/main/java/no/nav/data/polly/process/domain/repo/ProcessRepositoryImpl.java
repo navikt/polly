@@ -1,7 +1,9 @@
-package no.nav.data.polly.process.domain;
+package no.nav.data.polly.process.domain.repo;
 
+import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessField;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessState;
+import no.nav.data.polly.process.dto.StateDbRequest;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -40,22 +42,32 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
 
     @Override
     public List<Process> findByProduct(String product) {
-        var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{products}' ?? :product",
+        var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{affiliation,products}' ?? :product",
                 new MapSqlParameterSource().addValue("product", product));
         return getProcesses(resp);
     }
 
     @Override
     public List<Process> findBySubDepartment(String subDepartment) {
-        var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{subDepartments}' ?? :subDepartment",
+        var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{affiliation,subDepartments}' ?? :subDepartment",
                 new MapSqlParameterSource().addValue("subDepartment", subDepartment));
         return getProcesses(resp);
     }
 
     @Override
     public List<Process> findByProductTeam(String productTeam) {
-        var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{productTeams}' ?? :productTeam",
+        var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{affiliation,productTeams}' ?? :productTeam",
                 new MapSqlParameterSource().addValue("productTeam", productTeam));
+        return getProcesses(resp);
+    }
+
+    @Override
+    public List<Process> findByProductTeams(List<String> productTeams) {
+        if (productTeams.isEmpty()) {
+            return List.of();
+        }
+        var resp = jdbcTemplate.queryForList("select process_id from process where data #>'{affiliation,productTeams}' ??| array[ :productTeams ]",
+                new MapSqlParameterSource().addValue("productTeams", productTeams));
         return getProcesses(resp);
     }
 
@@ -67,17 +79,12 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
     }
 
     @Override
-    public List<Process> findForState(ProcessField processField, ProcessState processState, String department, ProcessStatus status) {
-        List<Map<String, Object>> resp = queryForState(processField, processState, department, status);
+    public List<Process> findForState(StateDbRequest stateDbRequest) {
+        List<Map<String, Object>> resp = queryForState(stateDbRequest);
         return getProcesses(resp);
     }
 
-    @Override
-    public long countForState(ProcessField processField, ProcessState processState, String department, ProcessStatus status) {
-        return queryForState(processField, processState, department, status).size();
-    }
-
-    private List<Map<String, Object>> queryForState(ProcessField processField, ProcessState processState, String department, ProcessStatus status) {
+    private List<Map<String, Object>> queryForState(StateDbRequest stateDbRequest) {
         var alertQuery = """
                      process_id in ( 
                      select cast(data ->> 'processId' as uuid) 
@@ -87,22 +94,26 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
                  )
                 """;
         String query;
-        if (processField.alertEvent) {
-            query = alertQuery.formatted(processField);
+        if (stateDbRequest.getProcessField().alertEvent) {
+            query = alertQuery.formatted(stateDbRequest.getProcessField());
         } else {
-            query = stateQuery(processField, processState);
+            query = stateQuery(stateDbRequest.getProcessField(), stateDbRequest.getProcessState());
         }
 
         var sql = "select distinct(process_id) from process where " + query;
 
         Map<String, Object> params = new HashMap<>();
-        if (department != null) {
-            sql += " and data->>'department' = :department";
-            params.put("department", department);
+        if (stateDbRequest.getDepartment() != null) {
+            sql += " and data #>> '{affiliation,department}' = :department";
+            params.put("department", stateDbRequest.getDepartment());
         }
-        if (status != null) {
-            sql += " and data->>'status' = :status";
-            params.put("status", status.name());
+        if (stateDbRequest.getTeamIds() != null) {
+            sql += " and data #> '{affiliation,productTeams}' ??| array[ :productTeams ]";
+            params.put("productTeams", stateDbRequest.getTeamIds());
+        }
+        if (stateDbRequest.getStatus() != null) {
+            sql += " and data ->> 'status' = :status";
+            params.put("status", stateDbRequest.getStatus().name());
         }
         return jdbcTemplate.queryForList(sql, params);
     }

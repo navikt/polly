@@ -4,7 +4,6 @@ import {useEffect} from 'react'
 import {getResourceById} from '../../../api'
 import {codelist, ListName} from '../../../service/Codelist'
 import {Block} from 'baseui/block'
-import DataText from '../common/DataText'
 import {intl, theme} from '../../../util'
 import {LegalBasisView} from '../../common/LegalBasis'
 import {ActiveIndicator} from '../../common/Durations'
@@ -14,14 +13,31 @@ import {boolToText} from '../../common/Radio'
 import {RetentionView} from '../Retention'
 import {env} from '../../../util/env'
 import {isNil, sum, uniqBy} from 'lodash'
-import {Markdown} from '../../common/Markdown'
-import {ProgressBar} from 'baseui/progress-bar/index'
+import {ProgressBar} from 'baseui/progress-bar'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
+import {StyledLink} from "baseui/link";
+import {Markdown} from "../../common/Markdown";
+import RouteLink from "../../common/RouteLink";
+import DataText from "../../common/DataText";
+
+const isLink = (text: string) => {
+  try {
+    new URL(text);
+  } catch (_) {
+    return false;
+  }
+
+  return true;
+}
 
 const showDpiaRequiredField = (dpia?: Dpia) => {
   if (dpia?.needForDpia === true) {
     if (dpia.refToDpia) {
-      return <Markdown source={`${intl.yes}. ${intl.reference}${dpia.refToDpia}`} singleWord/>
+      return <>
+        {`${intl.yes}. ${intl.reference}`}
+        {isLink(dpia.refToDpia) ? <StyledLink href={`${dpia.refToDpia}`}>{intl.seeExternalLink}</StyledLink> :
+          <Markdown source={`${dpia.refToDpia}`} singleWord/>}
+      </>
     } else {
       return intl.yes
     }
@@ -36,7 +52,7 @@ const showDpiaRequiredField = (dpia?: Dpia) => {
   }
 }
 
-const ProcessData = (props: {process: Process}) => {
+const ProcessData = (props: { process: Process }) => {
   const {process} = props
   const dataProcessorAgreements = !!process.dataProcessing?.dataProcessorAgreements.length
   const [riskOwnerFullName, setRiskOwnerFullName] = React.useState<string>()
@@ -56,18 +72,23 @@ const ProcessData = (props: {process: Process}) => {
   return (
     <Block>
 
-      <DataText label={intl.purposeOfTheProcess} text={process.description} hide={!process.description}/>
+      <DataText label={intl.purposeOfTheProcess} text={process.description}/>
 
-      <DataText label={intl.legalBasis} text={process.legalBases.length ? undefined : intl.legalBasisNotFound}>
-        {process
-        .legalBases
-        .sort((a, b) => (codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code)).localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
-        .map((legalBasis, index) =>
-          <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
-        )}
-      </DataText>
+      {process.legalBases.length ?
+        <DataText label={intl.legalBasis} text={""}>
+          {process
+            .legalBases
+            .sort((a, b) => (codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code)).localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
+            .map((legalBasis, index) =>
+              <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
+            )}
+        </DataText> :
+        <>
+          <DataText label={intl.legalBasis}/>
+        </>
+      }
 
-      <DataText label={intl.isProcessImplemented}>
+      <DataText label={intl.isProcessImplemented} text={""}>
         {(process.dpia?.processImplemented) ? intl.yes : intl.no}
       </DataText>
 
@@ -79,7 +100,7 @@ const ProcessData = (props: {process: Process}) => {
         </>
       </DataText>}
 
-      <DataText label={intl.validityOfProcess}>
+      <DataText label={intl.validityOfProcess} text={""}>
         <ActiveIndicator alwaysShow={true} showDates={true} {...process} />
       </DataText>
 
@@ -87,36 +108,44 @@ const ProcessData = (props: {process: Process}) => {
         {!!subjectCategoriesSummarised.length && <DotTags list={ListName.SUBJECT_CATEGORY} codes={subjectCategoriesSummarised}/>}
       </DataText>
 
-      <DataText label={intl.organizing}>
-        {process.department && <Block>
+      <DataText label={intl.organizing} text={""}>
+        {process.affiliation.department ? <Block>
           <span>{intl.department}: </span>
-          <span><DotTags list={ListName.DEPARTMENT} codes={[process.department]} commaSeparator linkCodelist/> </span>
-        </Block>}
-        {!!process?.subDepartments.length && <Block>
+          <span><DotTags list={ListName.DEPARTMENT} codes={[process.affiliation.department]} commaSeparator linkCodelist/> </span>
+        </Block> : <span>{intl.department}: {intl.notFilled}</span>}
+        {!!process.affiliation.subDepartments.length ? <Block>
+            <Block display="flex">
+              <span>{intl.subDepartment}: </span>
+              <DotTags list={ListName.SUB_DEPARTMENT} codes={process.affiliation.subDepartments} linkCodelist/>
+            </Block>
+          </Block> :
           <Block display="flex">
-            <span>{intl.subDepartment}: </span>
-            <DotTags list={ListName.SUB_DEPARTMENT} codes={process.subDepartments} linkCodelist/>
+            <span>{intl.subDepartment}: {intl.notFilled}</span>
           </Block>
-        </Block>}
+        }
 
-        {process.commonExternalProcessResponsible && <Block>
+        <Block>
           <span>{intl.commonExternalProcessResponsible}: </span>
-          <span>{codelist.getShortnameForCode(process.commonExternalProcessResponsible)}</span>
-        </Block>}
+          <span>{!!process.commonExternalProcessResponsible ?
+            <RouteLink href={`/thirdparty/${process.commonExternalProcessResponsible.code}`}>
+              {codelist.getShortnameForCode(process.commonExternalProcessResponsible)}
+            </RouteLink>
+            : intl.no}</span>
+        </Block>
 
-        {!!process.productTeams?.length && <Block>
+        <Block>
           <span>{intl.productTeam}: </span>
-          <TeamList teamIds={process.productTeams}/>
-        </Block>}
+          {!!process.affiliation.productTeams?.length ? <TeamList teamIds={process.affiliation.productTeams}/> : intl.notFilled}
+        </Block>
       </DataText>
 
-      <DataText label={intl.system} hide={!process.products?.length}>
-        <DotTags list={ListName.SYSTEM} codes={process.products} linkCodelist/>
+      <DataText label={intl.system} text={""}>
+        <DotTags list={ListName.SYSTEM} codes={process.affiliation.products} linkCodelist/>
       </DataText>
 
-      {process.usesAllInformationTypes && <DataText label={intl.USES_ALL_INFO_TYPE} text={intl.yes}/>}
+      {process.usesAllInformationTypes ? <DataText label={intl.USES_ALL_INFO_TYPE} text={intl.yes}/> : <DataText label={intl.USES_ALL_INFO_TYPE} text={intl.no}/>}
 
-      <DataText label={intl.automation}>
+      <DataText label={intl.automation} text={""}>
         <Block>
           <span>{intl.automaticProcessing}: </span>
           <span>{boolToText(process.automaticProcessing)}</span>
@@ -127,7 +156,7 @@ const ProcessData = (props: {process: Process}) => {
         </Block>
       </DataText>
 
-      <DataText label={intl.dataProcessor}>
+      <DataText label={intl.dataProcessor} text={""}>
         <>
           {process.dataProcessing?.dataProcessor === null && intl.dataProcessorUnclarified}
           {process.dataProcessing?.dataProcessor === false && intl.dataProcessorNo}
@@ -168,7 +197,7 @@ const ProcessData = (props: {process: Process}) => {
         </>
       </DataText>
 
-      <DataText label={intl.retention}>
+      <DataText label={intl.retention} text={""}>
         <>
           {process.retention?.retentionPlan === null && intl.retentionPlanUnclarified}
           {process.retention?.retentionPlan === false && intl.retentionPlanNo}
@@ -184,12 +213,15 @@ const ProcessData = (props: {process: Process}) => {
           </Block>
           <Block>
             <span>{process.retention?.retentionDescription && `${intl.retentionDescription}: `}</span>
-            <span><Markdown source={process.retention?.retentionDescription} singleWord/></span>
+            {process.retention?.retentionDescription && isLink(process.retention?.retentionDescription) ?
+              <StyledLink href={`${process.retention?.retentionDescription}`}>{intl.seeExternalLink}</StyledLink> :
+              <span><Markdown source={process.retention?.retentionDescription} singleWord/></span>
+            }
           </Block>
         </>
       </DataText>
 
-      <DataText label={intl.isDpiaRequired}>
+      <DataText label={intl.isDpiaRequired} text={""}>
         <Block>
           <span>{showDpiaRequiredField(process.dpia)}</span>
         </Block>
@@ -197,7 +229,7 @@ const ProcessData = (props: {process: Process}) => {
 
       <Completeness process={process}/>
 
-      <DataText label={intl.status}>
+      <DataText label={intl.status} text={""}>
         {(process.status) === ProcessStatus.IN_PROGRESS ? intl.inProgress : intl.completedProcesses}
       </DataText>
 
@@ -205,7 +237,7 @@ const ProcessData = (props: {process: Process}) => {
   )
 }
 
-const Completeness = (props: {process: Process}) => {
+const Completeness = (props: { process: Process }) => {
   const {process} = props
   const completeness = {
     dpia: !isNil(process.dpia?.needForDpia),
@@ -231,7 +263,7 @@ const Completeness = (props: {process: Process}) => {
   const barOverrides = {BarProgress: {style: {backgroundColor: color()}}, Bar: {style: {marginLeft: 0, marginRight: 0}}}
 
   return (
-    <DataText label={intl.completeness}>
+    <DataText label={intl.completeness} text={""}>
       <CustomizedStatefulTooltip content={<Block>
         <p>{completed === completables ? intl.completed : `${intl.notFilled}:`}</p>
         <p>{!completeness.dpia && intl.dpiaNeeded}</p>

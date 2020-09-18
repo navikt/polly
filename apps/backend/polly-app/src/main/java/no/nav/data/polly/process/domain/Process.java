@@ -15,22 +15,12 @@ import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.policy.domain.Policy;
-import no.nav.data.polly.process.domain.ProcessData.DataProcessing;
-import no.nav.data.polly.process.domain.ProcessData.Dpia;
-import no.nav.data.polly.process.domain.ProcessData.Retention;
 import no.nav.data.polly.process.dto.ProcessRequest;
-import no.nav.data.polly.process.dto.ProcessRequest.DataProcessingRequest;
-import no.nav.data.polly.process.dto.ProcessRequest.DpiaRequest;
-import no.nav.data.polly.process.dto.ProcessRequest.RetentionRequest;
 import no.nav.data.polly.process.dto.ProcessResponse;
-import no.nav.data.polly.process.dto.ProcessResponse.DataProcessingResponse;
-import no.nav.data.polly.process.dto.ProcessResponse.DpiaResponse;
-import no.nav.data.polly.process.dto.ProcessResponse.RetentionResponse;
 import no.nav.data.polly.process.dto.ProcessShortResponse;
 import org.hibernate.annotations.Type;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Column;
@@ -43,9 +33,11 @@ import javax.validation.constraints.NotNull;
 
 import static java.util.Comparator.comparing;
 import static no.nav.data.common.utils.StreamUtils.convert;
-import static no.nav.data.common.utils.StreamUtils.copyOf;
-import static no.nav.data.common.utils.StreamUtils.nullToEmptyList;
 import static no.nav.data.common.utils.StreamUtils.safeStream;
+import static no.nav.data.polly.process.domain.sub.Affiliation.convertAffiliation;
+import static no.nav.data.polly.process.domain.sub.DataProcessing.convertDataProcessing;
+import static no.nav.data.polly.process.domain.sub.Dpia.convertDpia;
+import static no.nav.data.polly.process.domain.sub.Retention.convertRetention;
 
 @Data
 @Builder
@@ -100,39 +92,17 @@ public class Process extends Auditable {
                 .description(data.getDescription())
                 .purpose(getPurposeCodeResponse())
                 .purposeCode(purposeCode)
-                .department(getDepartmentCodeResponse())
-                .subDepartments(getSubDepartmentCodeResponses())
+                .affiliation(data.getAffiliation().convertToResponse())
                 .commonExternalProcessResponsible(getCommonExternalProcessResponsibleCodeResponse())
-                .productTeams(nullToEmptyList(data.getProductTeams()))
-                .products(getProductCodeResponses())
                 .start(data.getStart())
                 .end(data.getEnd())
                 .legalBases(convert(data.getLegalBases(), LegalBasis::convertToResponse))
                 .usesAllInformationTypes(data.isUsesAllInformationTypes())
                 .automaticProcessing(data.getAutomaticProcessing())
                 .profiling(data.getProfiling())
-                .dataProcessing(data.getDataProcessing() == null ? null : DataProcessingResponse.builder()
-                        .dataProcessor(data.getDataProcessing().getDataProcessor())
-                        .dataProcessorAgreements(nullToEmptyList(data.getDataProcessing().getDataProcessorAgreements()))
-                        .dataProcessorOutsideEU(data.getDataProcessing().getDataProcessorOutsideEU())
-                        .transferGroundsOutsideEU(gettransferGroundsOutsideEUCodeResponse())
-                        .transferGroundsOutsideEUOther(data.getDataProcessing().getTransferGroundsOutsideEUOther())
-                        .transferCountries(nullToEmptyList(data.getDataProcessing().getTransferCountries()))
-                        .build())
-                .retention(data.getRetention() == null ? null : RetentionResponse.builder()
-                        .retentionPlan(data.getRetention().getRetentionPlan())
-                        .retentionMonths(data.getRetention().getRetentionMonths())
-                        .retentionStart(data.getRetention().getRetentionStart())
-                        .retentionDescription(data.getRetention().getRetentionDescription())
-                        .build())
-                .dpia(data.getDpia() == null ? null : DpiaResponse.builder()
-                        .needForDpia(data.getDpia().getNeedForDpia())
-                        .refToDpia(data.getDpia().getRefToDpia())
-                        .grounds(data.getDpia().getGrounds())
-                        .processImplemented(data.getDpia().isProcessImplemented())
-                        .riskOwner(data.getDpia().getRiskOwner())
-                        .riskOwnerFunction(data.getDpia().getRiskOwnerFunction())
-                        .build())
+                .dataProcessing(data.getDataProcessing().convertToResponse())
+                .retention(data.getRetention().convertToResponse())
+                .dpia(data.getDpia().convertToResponse())
                 // If we dont include policies avoid loading them all from DB
                 .changeStamp(super.convertChangeStampResponse())
                 .status(data.getStatus())
@@ -150,14 +120,12 @@ public class Process extends Auditable {
         if (!request.isUpdate()) {
             id = UUID.randomUUID();
         }
+
         setName(request.getName());
         setPurposeCode(request.getPurposeCode());
         data.setDescription(request.getDescription());
-        data.setDepartment(request.getDepartment());
-        data.setSubDepartments(copyOf(request.getSubDepartments()));
+        data.setAffiliation(convertAffiliation(request.getAffiliation()));
         data.setCommonExternalProcessResponsible(request.getCommonExternalProcessResponsible());
-        data.setProductTeams(copyOf(request.getProductTeams()));
-        data.setProducts(copyOf(request.getProducts()));
         data.setStart(DateUtil.parseStart(request.getStart()));
         data.setEnd(DateUtil.parseEnd(request.getEnd()));
         data.setLegalBases(convert(request.getLegalBases(), LegalBasisRequest::convertToDomain));
@@ -171,51 +139,11 @@ public class Process extends Auditable {
         return this;
     }
 
-    private static DataProcessing convertDataProcessing(DataProcessingRequest dataProcessing) {
-        if (dataProcessing == null) {
-            return null;
-        }
-        return DataProcessing.builder()
-                .dataProcessor(dataProcessing.getDataProcessor())
-                .dataProcessorAgreements(nullToEmptyList(dataProcessing.getDataProcessorAgreements()))
-                .dataProcessorOutsideEU(dataProcessing.getDataProcessorOutsideEU())
-                .transferGroundsOutsideEU(dataProcessing.getTransferGroundsOutsideEU())
-                .transferGroundsOutsideEUOther(dataProcessing.getTransferGroundsOutsideEUOther())
-                .transferCountries(nullToEmptyList(dataProcessing.getTransferCountries()))
-                .build();
-    }
-
-    private static Retention convertRetention(RetentionRequest retention) {
-        if (retention == null) {
-            return null;
-        }
-        return Retention.builder()
-                .retentionPlan(retention.getRetentionPlan())
-                .retentionMonths(retention.getRetentionMonths())
-                .retentionStart(retention.getRetentionStart())
-                .retentionDescription(retention.getRetentionDescription())
-                .build();
-    }
-
-    private static Dpia convertDpia(DpiaRequest dpia) {
-        if (dpia == null) {
-            return null;
-        }
-        return Dpia.builder()
-                .needForDpia(dpia.getNeedForDpia())
-                .refToDpia(dpia.getRefToDpia())
-                .grounds(dpia.getGrounds())
-                .processImplemented(dpia.isProcessImplemented())
-                .riskOwner(dpia.getRiskOwner())
-                .riskOwnerFunction(dpia.getRiskOwnerFunction())
-                .build();
-    }
-
     public ProcessShortResponse convertToShortResponse() {
         return ProcessShortResponse.builder()
                 .id(getId())
                 .name(getName())
-                .department(getDepartmentCodeResponse())
+                .affiliation(data.getAffiliation().convertToResponse())
                 .purpose(getPurposeCodeResponse())
                 .status(getData().getStatus())
                 .build();
@@ -225,24 +153,8 @@ public class Process extends Auditable {
         return CodelistService.getCodelistResponse(ListName.PURPOSE, purposeCode);
     }
 
-    private CodelistResponse getDepartmentCodeResponse() {
-        return CodelistService.getCodelistResponse(ListName.DEPARTMENT, data.getDepartment());
-    }
-
-    private List<CodelistResponse> getSubDepartmentCodeResponses() {
-        return CodelistService.getCodelistResponseList(ListName.SUB_DEPARTMENT, data.getSubDepartments());
-    }
-
     private CodelistResponse getCommonExternalProcessResponsibleCodeResponse() {
         return CodelistService.getCodelistResponse(ListName.THIRD_PARTY, data.getCommonExternalProcessResponsible());
-    }
-
-    private CodelistResponse gettransferGroundsOutsideEUCodeResponse() {
-        return CodelistService.getCodelistResponse(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, data.getDataProcessing().getTransferGroundsOutsideEU());
-    }
-
-    private List<CodelistResponse> getProductCodeResponses() {
-        return CodelistService.getCodelistResponseList(ListName.SYSTEM, data.getProducts());
     }
 
     @Override

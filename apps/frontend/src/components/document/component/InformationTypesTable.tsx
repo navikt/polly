@@ -1,22 +1,23 @@
 import React from 'react'
-import { StyledCell, StyledHead, StyledHeadCell, StyledRow } from 'baseui/table'
-import { intl } from '../../../util'
-import { KIND, SIZE as ButtonSize } from 'baseui/button'
-import { DocumentInformationTypes, DocumentInfoTypeUse } from '../../../constants'
-import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { FieldArrayRenderProps } from 'formik'
+import {StyledCell, StyledHead, StyledHeadCell, StyledRow} from 'baseui/table'
+import {intl} from '../../../util'
+import {KIND, SIZE as ButtonSize} from 'baseui/button'
+import {DocumentInformationTypes, DocumentInfoTypeUse} from '../../../constants'
+import {faPlus, faTrash} from '@fortawesome/free-solid-svg-icons'
+import {FieldArrayRenderProps} from 'formik'
 import FieldInformationType from './FieldInformationType'
 import FieldSubjectCategory from './FieldSubjectCategory'
-import { Error } from '../../common/ModalSchema'
+import {Error} from '../../common/ModalSchema'
 import shortid from 'shortid'
 import Button from '../../common/Button'
 
 type InformationTypesTableProps = {
   arrayHelpers: FieldArrayRenderProps,
 }
+type DocumentInfoTypeUseWithId = DocumentInfoTypeUse & {id: string}
 
 const InformationTypesTable = (props: InformationTypesTableProps) => {
-  const [tableContent, setTableContent] = React.useState<DocumentInfoTypeUse[]>([])
+  const [tableContent, setTableContent] = React.useState<DocumentInfoTypeUseWithId[]>([])
   const {arrayHelpers} = props
 
   const newRow = () => ({
@@ -53,7 +54,7 @@ const InformationTypesTable = (props: InformationTypesTableProps) => {
         </StyledHeadCell>
       </StyledHead>
 
-      {tableContent.map((row: DocumentInfoTypeUse, index: number) => (
+      {tableContent.map((row: DocumentInfoTypeUseWithId, index: number) => (
         <React.Fragment key={row.id}>
           <StyledRow>
             <StyledCell style={{maxWidth: '45%'}}>

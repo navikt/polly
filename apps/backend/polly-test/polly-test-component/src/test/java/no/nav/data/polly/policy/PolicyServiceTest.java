@@ -10,7 +10,7 @@ import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.process.domain.Process;
-import no.nav.data.polly.process.domain.ProcessRepository;
+import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,7 +34,6 @@ class PolicyServiceTest {
 
     private static final String PROCESS_ID_1 = "fc9afeb8-4f2b-4c41-aa0f-414c9cd942f3";
     private static final String INFTYPE_ID_1 = "cd7f037e-374e-4e68-b705-55b61966b2fc";
-    private static final String INFTYPE_NAME = "Personalia";
     private static final String LEGALBASISDESCRIPTION = "LegalBasis";
     private static final String PURPOSECODE = "Kontroll";
 
@@ -50,6 +50,9 @@ class PolicyServiceTest {
     @BeforeEach
     void setUp() {
         CodelistStub.initializeCodelist();
+        lenient().when(processRepository.findById(UUID.fromString(PROCESS_ID_1))).thenReturn(Optional.of(Process.builder().id(UUID.fromString(PROCESS_ID_1)).build()));
+        lenient().when(informationTypeRepository.findById(UUID.fromString(INFTYPE_ID_1)))
+                .thenReturn(Optional.of(InformationType.builder().id(UUID.fromString(INFTYPE_ID_1)).build()));
     }
 
     @Test
@@ -61,8 +64,6 @@ class PolicyServiceTest {
                 .legalBases(List.of(LegalBasisRequest.builder().gdpr("6e").description(LEGALBASISDESCRIPTION).build()))
                 .purposeCode(PURPOSECODE)
                 .build();
-        when(processRepository.findById(UUID.fromString(PROCESS_ID_1))).thenReturn(Optional.of(Process.builder().id(UUID.fromString(PROCESS_ID_1)).build()));
-        when(informationTypeRepository.findById(UUID.fromString(INFTYPE_ID_1))).thenReturn(Optional.of(InformationType.builder().id(UUID.fromString(INFTYPE_ID_1)).build()));
         service.validateRequests(List.of(request), false);
     }
 
@@ -128,6 +129,7 @@ class PolicyServiceTest {
                 .purposeCode("WRONG")
                 .build();
         when(informationTypeRepository.findById(UUID.fromString(INFTYPE_ID_1))).thenReturn(Optional.empty());
+        when(processRepository.findById(UUID.fromString(PROCESS_ID_1))).thenReturn(Optional.empty());
         when(policyRepository.findById(UUID.fromString(request.getId()))).thenReturn(Optional.of(Policy.builder().purposeCode("WRONG").build()));
         try {
             service.validateRequests(List.of(request), true);

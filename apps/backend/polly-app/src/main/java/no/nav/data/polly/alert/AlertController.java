@@ -12,6 +12,7 @@ import no.nav.data.polly.alert.AlertController.EventPage.SortDir;
 import no.nav.data.polly.alert.domain.AlertEvent;
 import no.nav.data.polly.alert.domain.AlertEventLevel;
 import no.nav.data.polly.alert.domain.AlertEventType;
+import no.nav.data.polly.alert.domain.AlertRepositoryImpl.AlertEventRequest;
 import no.nav.data.polly.alert.dto.AlertEventResponse;
 import no.nav.data.polly.alert.dto.AlertEventResponse.AlertEventResponseBuilder;
 import no.nav.data.polly.alert.dto.DisclosureAlert;
@@ -86,7 +87,9 @@ public class AlertController {
             @RequestParam(value = "sort", required = false) AlertSort sort,
             @RequestParam(value = "dir", required = false) SortDir dir
     ) {
-        var events = alertService.getEvents(parameters, processId, informationTypeId, disclosureId, type, level, sort, dir).map(this::convertEventResponse);
+        parameters.validate();
+        var request = new AlertEventRequest(processId, informationTypeId, disclosureId, type, level, parameters.getPageNumber(), parameters.getPageSize(), sort, dir);
+        var events = alertService.getEvents(request).map(this::convertEventResponse);
         return ResponseEntity.ok(new RestResponsePage<>(events));
     }
 

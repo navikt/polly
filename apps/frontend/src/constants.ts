@@ -33,6 +33,7 @@ export enum ObjectType {
   INFORMATION_TYPE = 'INFORMATION_TYPE',
   POLICY = 'POLICY',
   PROCESS = 'PROCESS',
+  DP_PROCESS = 'DP_PROCESS',
   DISCLOSURE = 'DISCLOSURE',
   DOCUMENT = 'DOCUMENT',
   CODELIST = 'CODELIST',
@@ -69,6 +70,8 @@ export type NavigableItem =
   | ListName.SUB_DEPARTMENT
   | ListName.THIRD_PARTY
   | ListName.SYSTEM
+  | ListName.GDPR_ARTICLE
+  | ListName.NATIONAL_LAW
   | 'team'
   | 'productarea';
 
@@ -77,6 +80,7 @@ export enum ProcessStatus {
   COMPLETED = 'COMPLETED',
   IN_PROGRESS = 'IN_PROGRESS'
 }
+
 
 export const TRANSFER_GROUNDS_OUTSIDE_EU_OTHER = 'OTHER'
 
@@ -97,12 +101,13 @@ export interface PolicyFormValues {
   id?: string;
   purposeCode: string;
   informationType?: InformationTypeShort;
-  process: {id: string; name: string; legalBases: LegalBasis[]};
+  process: { id: string; name: string; legalBases: LegalBasis[] };
   subjectCategories: string[];
   legalBasesUse: LegalBasesUse;
   legalBases: Array<LegalBasisFormValues>;
   legalBasesOpen: boolean;
   documentIds: string[];
+  otherPolicies: Policy[]
 }
 
 export interface ProcessFormValues {
@@ -110,11 +115,8 @@ export interface ProcessFormValues {
   purposeCode?: string;
   name?: string;
   description?: string;
-  department?: string;
+  affiliation: AffiliationFormValues
   commonExternalProcessResponsible?: string;
-  subDepartments: string[];
-  productTeams: string[];
-  products: string[];
   legalBases: Array<LegalBasisFormValues>;
   legalBasesOpen: boolean;
   end?: string;
@@ -127,6 +129,20 @@ export interface ProcessFormValues {
   profiling?: boolean;
   dataProcessing: DataProcessingFormValues;
   retention: Retention;
+}
+
+export interface AffiliationFormValues {
+  department?: string;
+  subDepartments: string[];
+  productTeams: string[];
+  products: string[];
+}
+
+export interface Affiliation {
+  department?: Code;
+  subDepartments: Code[];
+  productTeams: string[];
+  products: Code[];
 }
 
 export interface Dpia {
@@ -236,13 +252,6 @@ export const documentSort: ColumnCompares<DocumentInfoTypeUse> = {
   subjectCategories: (a, b) => a.subjectCategories.length - b.subjectCategories.length,
 }
 
-export const processSort: ColumnCompares<Process> = {
-  name: (a, b) => a.name.localeCompare(b.name),
-  purpose: (a, b) => (codelist.getShortnameForCode(a.purpose) || '').localeCompare(codelist.getShortnameForCode(b.purpose) || ''),
-  department: (a, b) => (a.department?.shortName || '').localeCompare(b.department?.shortName || ''),
-  products: (a, b) => a.products.length - b.products.length,
-}
-
 export interface InformationTypeShort {
   id: string;
   name: string;
@@ -253,8 +262,14 @@ export interface ProcessShort {
   id: string;
   name: string;
   purpose: Code;
-  department: Code;
+  affiliation: Affiliation;
   status?: ProcessStatus;
+}
+
+export interface DpProcessShort {
+  id: string;
+  name: string;
+  affiliation: Affiliation;
 }
 
 export interface Process extends IDurationed {
@@ -262,21 +277,51 @@ export interface Process extends IDurationed {
   name: string;
   description?: string;
   legalBases: LegalBasis[];
-  department: Code;
+  affiliation: Affiliation;
   commonExternalProcessResponsible: Code;
-  subDepartments: Code[];
-  productTeams: string[];
-  products: Code[];
   policies: Policy[];
   purpose: Code;
   changeStamp: ChangeStamp;
-  dpia?: Dpia;
+  dpia: Dpia;
   status?: ProcessStatus;
   usesAllInformationTypes: boolean;
   automaticProcessing?: boolean;
   profiling?: boolean;
-  dataProcessing?: DataProcessing;
-  retention?: Retention;
+  dataProcessing: DataProcessing;
+  retention: Retention;
+}
+
+export interface DpProcess extends IDurationed {
+  id?: string;
+  name: string;
+  description?: string;
+  purposeDescription?: string;
+  affiliation: Affiliation;
+  externalProcessResponsible?: Code;
+  dataProcessingAgreement?: boolean;
+  dataProcessingAgreements: string[];
+  subDataProcessing: DataProcessing;
+  changeStamp: ChangeStamp;
+  art9?: boolean;
+  art10?: boolean;
+  retention: Retention
+}
+
+export interface DpProcessFormValues {
+  id?: string;
+  name: string;
+  description?: string;
+  purposeDescription?: string;
+  affiliation: AffiliationFormValues
+  externalProcessResponsible?: string;
+  dataProcessingAgreement?: boolean;
+  dataProcessingAgreements: string[];
+  subDataProcessing: DataProcessingFormValues;
+  art9?: boolean;
+  art10?: boolean;
+  retention: Retention
+  start?: string;
+  end?: string;
 }
 
 export interface ChangeStamp {
@@ -294,7 +339,7 @@ export interface TeamResource {
 }
 
 export interface ProcessCount {
-  counts: {[code: string]: number};
+  counts: { [code: string]: number };
 }
 
 export interface UserInfo {
@@ -399,7 +444,6 @@ export interface Document {
 }
 
 export interface DocumentInfoTypeUse {
-  id?: string;
   informationTypeId: string;
   informationType: InformationTypeShort;
   subjectCategories: Code[];
@@ -409,7 +453,7 @@ export interface AddDocumentToProcessFormValues {
   document?: Document;
   informationTypes: DocumentInfoTypeUse[];
   defaultDocument: boolean;
-  process: {id: string; name: string; purpose: Code};
+  process: { id: string; name: string; purpose: Code };
 }
 
 export interface CreateDocumentFormValues {
@@ -434,7 +478,7 @@ export interface AuditItem {
   data: object;
 }
 
-export type Event = Omit<AuditItem, 'user' | 'data'> & {name: string};
+export type Event = Omit<AuditItem, 'user' | 'data'> & { name: string };
 
 export interface AuditLog {
   id: string;
@@ -450,6 +494,7 @@ export interface CodeUsage {
   informationTypes: [Use];
   policies: [UseWithPurpose];
   processes: [ProcessShort];
+  dpProcesses: [DpProcessShort];
 }
 
 export interface Use {
@@ -459,6 +504,7 @@ export interface Use {
 
 export interface UseWithPurpose {
   id: string;
+  processId: string;
   name: string;
   purposeCode: string;
 }
@@ -511,8 +557,9 @@ export type RecursivePartial<T> = {
 };
 
 export interface DashboardData {
-  allProcesses: ProcessesDashCount;
-  departmentProcesses: DepartmentProcessDashCount[];
+  allProcesses: ProcessesDashCount
+  departmentProcesses: DepartmentProcessDashCount[]
+  productAreaProcesses: ProductAreaProcessDashCount[]
 }
 
 export interface ProcessesDashCount {
@@ -535,6 +582,10 @@ export interface ProcessesDashCount {
 
 export interface DepartmentProcessDashCount extends ProcessesDashCount {
   department: string;
+}
+
+export interface ProductAreaProcessDashCount extends DepartmentProcessDashCount {
+  productAreaId: string;
 }
 
 export interface Counter {

@@ -7,6 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.polly.Period;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
+import no.nav.data.polly.process.domain.sub.Affiliation;
+import no.nav.data.polly.process.domain.sub.DataProcessing;
+import no.nav.data.polly.process.domain.sub.Dpia;
+import no.nav.data.polly.process.domain.sub.Retention;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,15 +25,16 @@ import javax.validation.constraints.NotNull;
 public class ProcessData {
 
     private String description;
+
     @NotNull
     private LocalDate start;
     @NotNull
     private LocalDate end;
-    private String department;
-    private List<String> subDepartments;
+
+    private Affiliation affiliation;
+
     private String commonExternalProcessResponsible;
-    private List<String> productTeams;
-    private List<String> products;
+
     @Valid
     private List<LegalBasis> legalBases = new ArrayList<>();
 
@@ -45,72 +50,46 @@ public class ProcessData {
     @Default
     private ProcessStatus status = ProcessStatus.IN_PROGRESS;
 
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class DataProcessing {
-
-        private Boolean dataProcessor;
-        private List<String> dataProcessorAgreements;
-        private Boolean dataProcessorOutsideEU;
-        private String transferGroundsOutsideEU;
-        private String transferGroundsOutsideEUOther;
-        private List<String> transferCountries;
-    }
-
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class Retention {
-
-        private Boolean retentionPlan;
-        private Integer retentionMonths;
-        private String retentionStart;
-        private String retentionDescription;
-    }
-
-    /**
-     * Data protection impact assessment - PVK
-     */
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class Dpia {
-
-        private Boolean needForDpia;
-        private String refToDpia;
-        private String grounds;
-        private boolean processImplemented;
-        private String riskOwner;
-        private String riskOwnerFunction;
-    }
-
     public Period toPeriod() {
         return new Period(start, end);
+    }
+
+
+    public DataProcessing getDataProcessing() {
+        if (dataProcessing == null) {
+            dataProcessing = new DataProcessing();
+        }
+        return dataProcessing;
+    }
+
+    public Retention getRetention() {
+        if (retention == null) {
+            retention = new Retention();
+        }
+        return retention;
+    }
+
+    public Dpia getDpia() {
+        if (dpia == null) {
+            dpia = new Dpia();
+        }
+        return dpia;
+    }
+
+    public Affiliation getAffiliation() {
+        if (affiliation == null) {
+            affiliation = new Affiliation();
+        }
+        return affiliation;
     }
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static class ProcessDataBuilder {
 
-        private List<String> subDepartments = new ArrayList<>();
         private List<LegalBasis> legalBases = new ArrayList<>();
-        private List<String> dataProcessorAgreements = new ArrayList<>();
-
-        public ProcessDataBuilder subDepartment(String subDepartment) {
-            subDepartments.add(subDepartment);
-            return this;
-        }
 
         public ProcessDataBuilder legalBasis(LegalBasis legalBasis) {
             legalBases.add(legalBasis);
-            return this;
-        }
-
-        public ProcessDataBuilder dataProcessorAgreements(String agreement) {
-            dataProcessorAgreements.add(agreement);
             return this;
         }
     }

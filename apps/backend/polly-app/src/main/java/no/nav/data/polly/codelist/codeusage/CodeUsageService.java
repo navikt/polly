@@ -17,9 +17,12 @@ import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
+import no.nav.data.polly.process.domain.DpProcess;
 import no.nav.data.polly.process.domain.Process;
-import no.nav.data.polly.process.domain.ProcessRepository;
+import no.nav.data.polly.process.domain.repo.DpProcessRepository;
+import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessShortResponse;
+import no.nav.data.polly.process.dto.sub.DpProcessShortResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,16 +42,19 @@ public class CodeUsageService {
 
     private final CodelistService codelistService;
     private final ProcessRepository processRepository;
+    private final DpProcessRepository dpProcessRepository;
     private final PolicyRepository policyRepository;
     private final InformationTypeRepository informationTypeRepository;
     private final DisclosureRepository disclosureRepository;
     private final DocumentRepository documentRepository;
     private final Summary summary;
 
-    public CodeUsageService(CodelistService codelistService, ProcessRepository processRepository, PolicyRepository policyRepository,
+    public CodeUsageService(CodelistService codelistService, ProcessRepository processRepository, DpProcessRepository dpProcessRepository,
+            PolicyRepository policyRepository,
             InformationTypeRepository informationTypeRepository, DisclosureRepository disclosureRepository, DocumentRepository documentRepository) {
         this.codelistService = codelistService;
         this.processRepository = processRepository;
+        this.dpProcessRepository = dpProcessRepository;
         this.policyRepository = policyRepository;
         this.informationTypeRepository = informationTypeRepository;
         this.disclosureRepository = disclosureRepository;
@@ -83,6 +89,7 @@ public class CodeUsageService {
         return summary.labels(listName.name()).time(() -> {
             CodeUsageResponse codeUsage = new CodeUsageResponse(listName, code);
             codeUsage.setProcesses(findProcesses(listName, code));
+            codeUsage.setDpProcesses(findDpProcesses(listName, code));
             codeUsage.setPolicies(findPolicies(listName, code));
             codeUsage.setInformationTypes(findInformationTypes(listName, code));
             codeUsage.setDisclosures(findDisclosures(listName, code));
@@ -105,6 +112,7 @@ public class CodeUsageService {
                     getInformationTypes(usage).forEach(it -> replaceAll(it.getData().getSources(), oldCode, newCode));
                     getDisclosures(usage).forEach(d -> d.getData().setRecipient(newCode));
                     getProcesses(usage).forEach(d -> d.getData().setCommonExternalProcessResponsible(newCode));
+                    getDpProcesses(usage).forEach(d -> d.getData().setExternalProcessResponsible(newCode));
                 }
                 case SENSITIVITY -> getInformationTypes(usage).forEach(it -> it.getData().setSensitivity(newCode));
                 case SUBJECT_CATEGORY -> {
@@ -124,13 +132,23 @@ public class CodeUsageService {
                         convert(getPolicies(usage), p -> p.getData().getLegalBases()),
                         convert(getDisclosures(usage), p -> p.getData().getLegalBases())
                 );
-                case DEPARTMENT -> getProcesses(usage).forEach(p -> p.getData().setDepartment(newCode));
-                case SUB_DEPARTMENT -> getProcesses(usage).forEach(p -> replaceAll(p.getData().getSubDepartments(), oldCode, newCode));
+                case DEPARTMENT -> {
+                    getProcesses(usage).forEach(p -> p.getData().getAffiliation().setDepartment(newCode));
+                    getDpProcesses(usage).forEach(p -> p.getData().getAffiliation().setDepartment(newCode));
+                }
+                case SUB_DEPARTMENT -> {
+                    getProcesses(usage).forEach(p -> replaceAll(p.getData().getAffiliation().getSubDepartments(), oldCode, newCode));
+                    getDpProcesses(usage).forEach(p -> replaceAll(p.getData().getAffiliation().getSubDepartments(), oldCode, newCode));
+                }
                 case SYSTEM -> {
                     getInformationTypes(usage).forEach(it -> it.getData().setOrgMaster(newCode));
-                    getProcesses(usage).forEach(p -> replaceAll(p.getData().getProducts(), oldCode, newCode));
+                    getProcesses(usage).forEach(p -> replaceAll(p.getData().getAffiliation().getProducts(), oldCode, newCode));
+                    getDpProcesses(usage).forEach(p -> replaceAll(p.getData().getAffiliation().getProducts(), oldCode, newCode));
                 }
-                case TRANSFER_GROUNDS_OUTSIDE_EU -> getProcesses(usage).forEach(p -> p.getData().getDataProcessing().setTransferGroundsOutsideEU(newCode));
+                case TRANSFER_GROUNDS_OUTSIDE_EU -> {
+                    getProcesses(usage).forEach(p -> p.getData().getDataProcessing().setTransferGroundsOutsideEU(newCode));
+                    getDpProcesses(usage).forEach(p -> p.getData().getSubDataProcessing().setTransferGroundsOutsideEU(newCode));
+                }
             }
         }
         return usage;
@@ -164,6 +182,17 @@ public class CodeUsageService {
             case TRANSFER_GROUNDS_OUTSIDE_EU -> processRepository.findByTransferGroundsOutsideEU(code);
             default -> List.<Process>of();
         }, Process::convertToShortResponse);
+    }
+
+    private List<DpProcessShortResponse> findDpProcesses(ListName listName, String code) {
+        return convert(switch (listName) {
+            case DEPARTMENT -> dpProcessRepository.findByDepartment(code);
+            case SUB_DEPARTMENT -> dpProcessRepository.findBySubDepartment(code);
+            case SYSTEM -> dpProcessRepository.findByProduct(code);
+            case THIRD_PARTY -> dpProcessRepository.findByExternalProcessResponsible(code);
+            case TRANSFER_GROUNDS_OUTSIDE_EU -> dpProcessRepository.findByTransferGroundsOutsideEU(code);
+            default -> List.<DpProcess>of();
+        }, DpProcess::convertToShortResponse);
     }
 
     private List<UsedInInstancePurpose> findPolicies(ListName listName, String code) {
@@ -212,6 +241,10 @@ public class CodeUsageService {
 
     private List<Process> getProcesses(CodeUsageResponse usage) {
         return processRepository.findAllById(convert(usage.getProcesses(), ProcessShortResponse::getId));
+    }
+
+    private List<DpProcess> getDpProcesses(CodeUsageResponse usage) {
+        return dpProcessRepository.findAllById(convert(usage.getDpProcesses(), DpProcessShortResponse::getId));
     }
 
     private List<Disclosure> getDisclosures(CodeUsageResponse usage) {

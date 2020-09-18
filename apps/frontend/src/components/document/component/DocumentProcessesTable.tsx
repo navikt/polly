@@ -1,20 +1,43 @@
 import React from 'react'
 import {Cell, HeadCell, Row, Table} from '../../common/Table'
 import {intl} from '../../../util'
-import {codelist} from '../../../service/Codelist'
-import {Process, processSort} from '../../../constants'
-import {useTable} from '../../../util/hooks'
+import {Code, codelist} from '../../../service/Codelist'
+import {Process} from '../../../constants'
+import {ColumnCompares, useTable} from '../../../util/hooks'
 import RouteLink from '../../common/RouteLink'
 
 type DocumentProcessesProps = {
   documentUsages: Process[]
 }
 
+interface DataFormat {
+  id: string
+  name: string
+  purpose: Code
+  department?: Code
+  products: Code[]
+}
+
+const sorting: ColumnCompares<DataFormat> = {
+  name: (a, b) => a.name.localeCompare(b.name),
+  purpose: (a, b) => (codelist.getShortnameForCode(a.purpose) || '').localeCompare(codelist.getShortnameForCode(b.purpose) || ''),
+  department: (a, b) => (a.department?.shortName || '').localeCompare(b.department?.shortName || ''),
+  products: (a, b) => a.products.length - b.products.length,
+}
+
+
 const DocumentProcessesTable = (props: DocumentProcessesProps) => {
-  const [table, sortColumn] = useTable<Process, keyof Process>(props.documentUsages, {
-    sorting: processSort,
-    initialSortColumn: 'name'
-  })
+  const [table, sortColumn] = useTable<DataFormat, keyof DataFormat>(
+    props.documentUsages.map(p => ({
+      id: p.id,
+      name: p.name,
+      purpose: p.purpose,
+      department: p.affiliation.department,
+      products: p.affiliation.products
+    })), {
+      sorting: sorting,
+      initialSortColumn: 'name'
+    })
   return (
     <>
       <Table

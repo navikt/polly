@@ -1,12 +1,10 @@
 package no.nav.data.polly.informationtype;
 
 import no.nav.data.polly.IntegrationTestBase;
-import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.informationtype.InformationTypeController.InformationTypePage;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.dto.InformationTypeRequest;
 import no.nav.data.polly.informationtype.dto.InformationTypeResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +28,6 @@ class InformationTypeControllerIT extends IntegrationTestBase {
 
     @Autowired
     protected TestRestTemplate restTemplate;
-
-    @BeforeEach
-    void setUp() {
-        CodelistStub.initializeCodelist();
-    }
 
     @Test
     void findForId() {
@@ -107,16 +100,24 @@ class InformationTypeControllerIT extends IntegrationTestBase {
             assertGetOne("/informationtype?productArea={productArea}", "productarea1");
         }
 
+        @Test
+        void getForProductAreaNoResults() {
+            assertGet("/informationtype?productArea={productArea}", "productarea1", 0);
+        }
+
         private void assertGetOne(String url, String arg) {
+            assertGet(url, arg, 1);
+        }
+
+        private void assertGet(String url, String arg, int num) {
             ResponseEntity<InformationTypePage> resp = restTemplate.getForEntity(url, InformationTypePage.class, arg);
 
             assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
             InformationTypePage page = resp.getBody();
             assertThat(page).isNotNull();
-            assertThat(page.getContent()).hasSize(1);
+            assertThat(page.getContent()).hasSize(num);
         }
     }
-
 
     @Test
     void countAllInformationTypes() {

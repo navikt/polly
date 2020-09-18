@@ -32,19 +32,26 @@ import no.nav.data.polly.policy.domain.LegalBasesUse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.policy.domain.PolicyRepository;
+import no.nav.data.polly.process.domain.DpProcess;
+import no.nav.data.polly.process.domain.DpProcessData;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
-import no.nav.data.polly.process.domain.ProcessData.DataProcessing;
-import no.nav.data.polly.process.domain.ProcessData.Dpia;
-import no.nav.data.polly.process.domain.ProcessData.Retention;
-import no.nav.data.polly.process.domain.ProcessDistributionRepository;
-import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.process.domain.ProcessStatus;
+import no.nav.data.polly.process.domain.repo.DpProcessRepository;
+import no.nav.data.polly.process.domain.repo.ProcessDistributionRepository;
+import no.nav.data.polly.process.domain.repo.ProcessRepository;
+import no.nav.data.polly.process.domain.sub.Affiliation;
+import no.nav.data.polly.process.domain.sub.DataProcessing;
 import no.nav.data.polly.process.dto.ProcessResponse;
-import no.nav.data.polly.process.dto.ProcessResponse.DataProcessingResponse;
-import no.nav.data.polly.process.dto.ProcessResponse.DpiaResponse;
 import no.nav.data.polly.process.dto.ProcessResponse.ProcessResponseBuilder;
-import no.nav.data.polly.process.dto.ProcessResponse.RetentionResponse;
+import no.nav.data.polly.process.dto.sub.AffiliationRequest;
+import no.nav.data.polly.process.dto.sub.AffiliationResponse;
+import no.nav.data.polly.process.dto.sub.DataProcessingRequest;
+import no.nav.data.polly.process.dto.sub.DataProcessingResponse;
+import no.nav.data.polly.process.dto.sub.DpiaRequest;
+import no.nav.data.polly.process.dto.sub.DpiaResponse;
+import no.nav.data.polly.process.dto.sub.RetentionRequest;
+import no.nav.data.polly.process.dto.sub.RetentionResponse;
 import no.nav.data.polly.term.catalog.CatalogTerm;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,6 +77,9 @@ import java.util.stream.IntStream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
+import static no.nav.data.polly.process.domain.sub.DataProcessing.convertDataProcessing;
+import static no.nav.data.polly.process.domain.sub.Dpia.convertDpia;
+import static no.nav.data.polly.process.domain.sub.Retention.convertRetention;
 
 @Slf4j
 @ActiveProfiles("test")
@@ -93,6 +103,8 @@ public abstract class IntegrationTestBase {
     protected InformationTypeRepository informationTypeRepository;
     @Autowired
     protected ProcessRepository processRepository;
+    @Autowired
+    protected DpProcessRepository dpProcessRepository;
     @Autowired
     protected PolicyRepository policyRepository;
     @Autowired
@@ -136,6 +148,7 @@ public abstract class IntegrationTestBase {
         policyRepository.deleteAll();
         informationTypeRepository.deleteAll();
         processRepository.deleteAll();
+        dpProcessRepository.deleteAll();
     }
 
     protected List<Policy> createAndSavePolicy(int rows) {
@@ -226,13 +239,34 @@ public abstract class IntegrationTestBase {
                 .purposeCode(purpose)
                 .data(ProcessData.builder()
                         .start(LocalDate.now()).end(LocalDate.now())
-                        .department(department)
-                        .subDepartment(subDepartment)
+                        .affiliation(Affiliation.builder()
+                                .department(department)
+                                .subDepartments(List.of(subDepartment))
+                                .productTeams(List.of("ProductTeam"))
+                                .products(List.of(product))
+                                .build())
                         .commonExternalProcessResponsible(commonExternalProcessResponsible)
-                        .productTeams(List.of("ProductTeam"))
-                        .products(List.of(product))
                         .legalBases(legalBases)
                         .dataProcessing(DataProcessing.builder().dataProcessor(true).dataProcessorOutsideEU(true).transferGroundsOutsideEU(transferGroundsOutsideEU).build())
+                        .build())
+                .build());
+    }
+
+    protected DpProcess createDpProcess(String department, String subDepartment, String product,
+            String externalProcessResponsible, String transferGroundsOutsideEU) {
+        return dpProcessRepository.save(DpProcess.builder()
+                .generateId()
+                .data(DpProcessData.builder()
+                        .name("dpnavn")
+                        .start(LocalDate.now()).end(LocalDate.now())
+                        .affiliation(Affiliation.builder()
+                                .department(department)
+                                .subDepartments(List.of(subDepartment))
+                                .productTeams(List.of("ProductTeam"))
+                                .products(List.of(product))
+                                .build())
+                        .externalProcessResponsible(externalProcessResponsible)
+                        .subDataProcessing(DataProcessing.builder().dataProcessor(true).dataProcessorOutsideEU(true).transferGroundsOutsideEU(transferGroundsOutsideEU).build())
                         .build())
                 .build());
     }
@@ -243,25 +277,43 @@ public abstract class IntegrationTestBase {
                         .save(Process.builder().generateId().name("Auto_" + purpose).purposeCode(purpose)
                                 .data(ProcessData.builder()
                                         .description("process description")
-                                        .productTeams(List.of("teamid1"))
-                                        .products(List.of("PESYS"))
-                                        .department("DEP")
-                                        .subDepartment("SUBDEP")
+                                        .affiliation(Affiliation.convertAffiliation(affiliationRequest()))
                                         .commonExternalProcessResponsible("SKATT")
                                         .start(LocalDate.now()).end(LocalDate.now()).legalBasis(createLegalBasis())
                                         .usesAllInformationTypes(true)
                                         .automaticProcessing(true)
                                         .profiling(true)
-                                        .dataProcessing(DataProcessing.builder().dataProcessor(true).dataProcessorAgreements(List.of("X")).dataProcessorOutsideEU(true)
-                                                .transferGroundsOutsideEU("OTHER").transferGroundsOutsideEUOther("pretend its ok")
-                                                .transferCountries(List.of("FJI"))
-                                                .build())
-                                        .retention(Retention.builder().retentionPlan(true).retentionMonths(24).retentionStart("Birth").retentionDescription("ret desc").build())
-                                        .dpia(Dpia.builder().needForDpia(true).refToDpia("ref123").grounds("default").processImplemented(true).riskOwner("A123457")
-                                                .riskOwnerFunction("teamlead").build())
+                                        .dataProcessing(convertDataProcessing(dataProcessingRequest()))
+                                        .retention(convertRetention(retentionRequest()))
+                                        .dpia(convertDpia(dpiaRequest()))
                                         .status(ProcessStatus.IN_PROGRESS)
                                         .build())
                                 .build()));
+    }
+
+    protected AffiliationRequest affiliationRequest() {
+        return AffiliationRequest.builder()
+                .productTeams(List.of("teamid1"))
+                .products(List.of("PESYS"))
+                .department("DEP")
+                .subDepartment("SUBDEP")
+                .build();
+    }
+
+    protected DpiaRequest dpiaRequest() {
+        return DpiaRequest.builder().needForDpia(true).refToDpia("ref123").grounds("default").processImplemented(true).riskOwner("A123457")
+                .riskOwnerFunction("teamlead").build();
+    }
+
+    protected RetentionRequest retentionRequest() {
+        return RetentionRequest.builder().retentionPlan(true).retentionMonths(24).retentionStart("Birth").retentionDescription("ret desc").build();
+    }
+
+    protected DataProcessingRequest dataProcessingRequest() {
+        return DataProcessingRequest.builder().dataProcessor(true).dataProcessorAgreements(List.of("X")).dataProcessorOutsideEU(true)
+                .transferGroundsOutsideEU("OTHER").transferGroundsOutsideEUOther("pretend its ok")
+                .transferCountries(List.of("FJI"))
+                .build();
     }
 
     protected Disclosure createDisclosure(String recipientCode, String gdpr, String nationalLaw) {
@@ -314,10 +366,7 @@ public abstract class IntegrationTestBase {
                 .description("process description")
                 .purpose(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1))
                 .purposeCode(PURPOSE_CODE1)
-                .productTeam("teamid1")
-                .product(CodelistService.getCodelistResponse(ListName.SYSTEM, "PESYS"))
-                .department(CodelistService.getCodelistResponse(ListName.DEPARTMENT, "DEP"))
-                .subDepartment(CodelistService.getCodelistResponse(ListName.SUB_DEPARTMENT, "SUBDEP"))
+                .affiliation(affiliationResponse())
                 .commonExternalProcessResponsible(CodelistService.getCodelistResponse(ListName.THIRD_PARTY, "SKATT"))
                 .start(LocalDate.now())
                 .end(LocalDate.now())
@@ -325,30 +374,51 @@ public abstract class IntegrationTestBase {
                 .usesAllInformationTypes(true)
                 .automaticProcessing(true)
                 .profiling(true)
-                .dataProcessing(DataProcessingResponse.builder()
-                        .dataProcessor(true)
-                        .dataProcessorAgreements(List.of("X"))
-                        .dataProcessorOutsideEU(true)
-                        .transferGroundsOutsideEU(CodelistService.getCodelistResponse(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, "OTHER"))
-                        .transferGroundsOutsideEUOther("pretend its ok")
-                        .transferCountries(List.of("FJI"))
-                        .build())
-                .retention(RetentionResponse.builder()
-                        .retentionPlan(true)
-                        .retentionMonths(24)
-                        .retentionStart("Birth")
-                        .retentionDescription("ret desc")
-                        .build())
-                .dpia(DpiaResponse.builder()
-                        .needForDpia(true)
-                        .refToDpia("ref123")
-                        .grounds("default")
-                        .processImplemented(true)
-                        .riskOwner("A123457")
-                        .riskOwnerFunction("teamlead")
-                        .build())
+                .dataProcessing(dataProcessingResponse())
+                .retention(retentionResponse())
+                .dpia(dpiaResponse())
                 .status(ProcessStatus.IN_PROGRESS)
                 ;
+    }
+
+    protected AffiliationResponse affiliationResponse() {
+        return AffiliationResponse.builder()
+                .department(CodelistService.getCodelistResponse(ListName.DEPARTMENT, "DEP"))
+                .subDepartment(CodelistService.getCodelistResponse(ListName.SUB_DEPARTMENT, "SUBDEP"))
+                .productTeam("teamid1")
+                .product(CodelistService.getCodelistResponse(ListName.SYSTEM, "PESYS"))
+                .build();
+    }
+
+    protected DataProcessingResponse dataProcessingResponse() {
+        return DataProcessingResponse.builder()
+                .dataProcessor(true)
+                .dataProcessorAgreements(List.of("X"))
+                .dataProcessorOutsideEU(true)
+                .transferGroundsOutsideEU(CodelistService.getCodelistResponse(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, "OTHER"))
+                .transferGroundsOutsideEUOther("pretend its ok")
+                .transferCountries(List.of("FJI"))
+                .build();
+    }
+
+    protected RetentionResponse retentionResponse() {
+        return RetentionResponse.builder()
+                .retentionPlan(true)
+                .retentionMonths(24)
+                .retentionStart("Birth")
+                .retentionDescription("ret desc")
+                .build();
+    }
+
+    protected DpiaResponse dpiaResponse() {
+        return DpiaResponse.builder()
+                .needForDpia(true)
+                .refToDpia("ref123")
+                .grounds("default")
+                .processImplemented(true)
+                .riskOwner("A123457")
+                .riskOwnerFunction("teamlead")
+                .build();
     }
 
     private void mockTerms() {

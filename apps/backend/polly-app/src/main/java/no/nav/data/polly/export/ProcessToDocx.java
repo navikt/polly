@@ -15,11 +15,11 @@ import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
-import no.nav.data.polly.process.domain.ProcessData.DataProcessing;
-import no.nav.data.polly.process.domain.ProcessData.Dpia;
-import no.nav.data.polly.process.domain.ProcessData.Retention;
-import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.process.domain.ProcessStatus;
+import no.nav.data.polly.process.domain.repo.ProcessRepository;
+import no.nav.data.polly.process.domain.sub.DataProcessing;
+import no.nav.data.polly.process.domain.sub.Dpia;
+import no.nav.data.polly.process.domain.sub.Retention;
 import no.nav.data.polly.teams.ResourceService;
 import no.nav.data.polly.teams.TeamService;
 import no.nav.data.polly.teams.domain.Team;
@@ -201,7 +201,7 @@ public class ProcessToDocx {
             organising(process.getData());
 
             addHeading4("System");
-            addText(convert(data.getProducts(), p -> shortName(ListName.SYSTEM, p)));
+            addText(convert(data.getAffiliation().getProducts(), p -> shortName(ListName.SYSTEM, p)));
 
             addHeading4("Automatisering");
             addTexts(
@@ -225,14 +225,14 @@ public class ProcessToDocx {
 
         private void organising(ProcessData data) {
             addHeading4("Organisering");
-            var teamNames = data.getProductTeams().stream()
+            var teamNames = data.getAffiliation().getProductTeams().stream()
                     .map(teamId -> Map.entry(teamId, teamService.getTeam(teamId)))
                     .map(t -> t.getValue().map(Team::getName).orElse(t.getKey()))
                     .collect(toList());
 
             addTexts(
-                    text("Avdeling: ", shortName(ListName.DEPARTMENT, data.getDepartment())),
-                    text("Linja (Ytre etat): ", String.join(", ", convert(data.getSubDepartments(), sd -> shortName(ListName.SUB_DEPARTMENT, sd)))),
+                    text("Avdeling: ", shortName(ListName.DEPARTMENT, data.getAffiliation().getDepartment())),
+                    text("Linja (Ytre etat): ", String.join(", ", convert(data.getAffiliation().getSubDepartments(), sd -> shortName(ListName.SUB_DEPARTMENT, sd)))),
                     text("Produktteam (IT): ", String.join(", ", teamNames)),
                     text("Felles behandlingsansvarlig: ", shortName(ListName.THIRD_PARTY, data.getCommonExternalProcessResponsible()))
             );
@@ -273,7 +273,7 @@ public class ProcessToDocx {
             var rows = table.getContent();
             createPolicyHeader(rows);
 
-            var alerts = alertService.checkAlertsForProcess(process.getId());
+            var alerts = alertService.checkAlertsForProcess(process);
             var policies = new ArrayList<>(process.getPolicies());
             policies.sort(comparing(Policy::getInformationTypeName));
             for (int i = 0; i < policies.size(); i++) {

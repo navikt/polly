@@ -28,6 +28,9 @@ import PurposeTable from './components/Dashboard/PurposeTable'
 import {SystemPage} from './pages/SystemPage'
 import {TeamPage} from './pages/TeamPage'
 import {ProductAreaPage} from './pages/ProductAreaPage'
+import {LegalPage} from './pages/LegalPage'
+import DpProcessPage from "./pages/DpProcessPage";
+import DpProcessView from "./components/DpProcess/DpProcessView";
 
 export const processPath = '/process/:section/:code/:processId?'
 
@@ -42,6 +45,10 @@ const Routes = (): JSX.Element => (
       <Route exact path="/productarea/:productAreaId" component={ProductAreaPage} />
       <Route exact path="/process" component={PurposeListPage} />
       <Route exact path={processPath} component={ProcessPage} />
+      <Route exact path="/process/legal" component={LegalPage} />
+
+      <Route exact path="/dpprocess" component={DpProcessPage} />
+      <Route exact path="/dpprocess/:id" component={DpProcessView} />
 
       <Route exact path="/dashboard/:filterName/:filterValue/:filterStatus" component={PurposeTable} />
 

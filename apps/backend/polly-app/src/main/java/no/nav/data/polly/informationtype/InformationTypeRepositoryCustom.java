@@ -11,4 +11,6 @@ public interface InformationTypeRepositoryCustom {
     List<InformationType> findBySource(String source);
 
     List<InformationType> findByProductTeam(String productTeam);
+
+    List<InformationType> findByProductTeams(List<String> productTeams);
 }

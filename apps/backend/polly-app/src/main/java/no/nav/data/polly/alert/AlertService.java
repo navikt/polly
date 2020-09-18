@@ -2,15 +2,12 @@ package no.nav.data.polly.alert;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.NotFoundException;
-import no.nav.data.common.rest.PageParameters;
 import no.nav.data.common.storage.domain.GenericStorage;
 import no.nav.data.common.utils.StreamUtils;
-import no.nav.data.polly.alert.AlertController.EventPage.AlertSort;
-import no.nav.data.polly.alert.AlertController.EventPage.SortDir;
 import no.nav.data.polly.alert.domain.AlertEvent;
-import no.nav.data.polly.alert.domain.AlertEventLevel;
 import no.nav.data.polly.alert.domain.AlertEventType;
 import no.nav.data.polly.alert.domain.AlertRepository;
+import no.nav.data.polly.alert.domain.AlertRepositoryImpl.AlertEventRequest;
 import no.nav.data.polly.alert.dto.DisclosureAlert;
 import no.nav.data.polly.alert.dto.InformationTypeAlert;
 import no.nav.data.polly.alert.dto.PolicyAlert;
@@ -23,7 +20,7 @@ import no.nav.data.polly.policy.domain.LegalBasesUse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.process.domain.Process;
-import no.nav.data.polly.process.domain.ProcessRepository;
+import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -191,6 +188,11 @@ public class AlertService {
     }
 
     @Transactional(readOnly = true)
+    public ProcessAlert checkAlertsForProcess(Process process) {
+        return checkProcess(process, null);
+    }
+
+    @Transactional(readOnly = true)
     public DisclosureAlert checkAlertsForDisclosure(UUID disclosureId) {
         var disclosure = disclosureRepository.findById(disclosureId)
                 .orElseThrow(() -> new NotFoundException("No disclosure for id " + disclosureId + " found"));
@@ -204,8 +206,7 @@ public class AlertService {
         var processArt6 = containsArticle(process.getData().getLegalBases(), ART_6_PREFIX);
         var processArt9 = containsArticle(process.getData().getLegalBases(), ART_9_PREFIX);
 
-        List<Policy> policies = StreamUtils.filter(process.getPolicies(), policy -> (informationType == null || policy.getInformationType().equals(informationType))
-        );
+        List<Policy> policies = StreamUtils.filter(process.getPolicies(), policy -> (informationType == null || policy.getInformationType().equals(informationType)));
         for (Policy policy : policies) {
             checkPolicy(processArt6, processArt9, policy).resolve().ifPresent(alert.getPolicies()::add);
         }
@@ -236,13 +237,8 @@ public class AlertService {
         return safeStream(legalBases).anyMatch(lb -> lb.getGdpr().startsWith(articlePrefix));
     }
 
-    public Page<AlertEvent> getEvents(PageParameters parameters, UUID processId, UUID informationTypeId, UUID disclosureId, AlertEventType type, AlertEventLevel level,
-            AlertSort sort, SortDir dir) {
-        parameters.validate();
-        return alertRepository.findAlerts(processId, informationTypeId, disclosureId, type, level,
-                parameters.getPageNumber(), parameters.getPageSize(),
-                sort, dir
-        );
+    public Page<AlertEvent> getEvents(AlertEventRequest request) {
+        return alertRepository.findAlerts(request);
     }
 
 }

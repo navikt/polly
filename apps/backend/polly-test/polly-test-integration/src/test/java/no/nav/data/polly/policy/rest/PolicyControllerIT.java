@@ -75,7 +75,7 @@ class PolicyControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void createPolicyThrowDuplcateValidationException() {
+    void createPolicyThrowDuplicateValidationException() {
         InformationType informationType = createAndSaveInformationType();
         List<PolicyRequest> requestList = Arrays.asList(createPolicyRequest(informationType), createPolicyRequest(informationType));
         ResponseEntity<String> createEntity = restTemplate.exchange(
@@ -83,8 +83,18 @@ class PolicyControllerIT extends IntegrationTestBase {
         assertThat(createEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
         assertThat(createEntity.getBody(),
                 containsString(
-                        "A request combining InformationType: fe566351-da4d-43b0-a2e9-b09e41ff8aa7 and Process: 60db8589-f383-4405-82f1-148b0333899b Purpose: KONTROLL SubjectCategories: [BRUKER]"
-                                + " is not unique because it is already used in this request"));
+                        "[InformationType: fe566351-da4d-43b0-a2e9-b09e41ff8aa7 Process: 60db8589-f383-4405-82f1-148b0333899b SubjectCategory: BRUKER] is not unique because it is already used in this request (see request nr: 1 and 2)"));
+    }
+
+    @Test
+    void createPolicyThrowDuplicateOnProcessValidationException() {
+        InformationType informationType = createAndSaveInformationType();
+        ResponseEntity<String> createEntity = restTemplate
+                .exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(List.of(createPolicyRequest(informationType))), String.class);
+        assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
+        createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(List.of(createPolicyRequest(informationType))), String.class);
+        assertThat(createEntity.getBody(), containsString(
+                "[InformationType: fe566351-da4d-43b0-a2e9-b09e41ff8aa7 Process: 60db8589-f383-4405-82f1-148b0333899b SubjectCategory: BRUKER] is not unique because it is already used in this process (see request nr: 1)"));
     }
 
     @Test
@@ -128,8 +138,7 @@ class PolicyControllerIT extends IntegrationTestBase {
     @Test
     void updateOnePolicy() {
         List<PolicyRequest> requestList = List.of(createPolicyRequest(createAndSaveInformationType()));
-        ResponseEntity<PolicyPage> createEntity = restTemplate.exchange(
-                POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), PolicyPage.class);
+        ResponseEntity<PolicyPage> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), PolicyPage.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
         assertThat(createEntity.getBody(), notNullValue());
         assertBehandlingsgrunnlagDistribusjon(1);

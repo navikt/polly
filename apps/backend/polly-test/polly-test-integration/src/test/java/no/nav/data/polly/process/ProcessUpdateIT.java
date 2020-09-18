@@ -3,7 +3,7 @@ package no.nav.data.polly.process;
 import no.nav.data.polly.KafkaIntegrationTestBase;
 import no.nav.data.polly.avro.ProcessUpdate;
 import no.nav.data.polly.process.domain.Process;
-import no.nav.data.polly.process.domain.ProcessDistributionRepository;
+import no.nav.data.polly.process.domain.repo.ProcessDistributionRepository;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.BeforeEach;

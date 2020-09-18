@@ -13,6 +13,10 @@ import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.domain.ProcessStatus;
+import no.nav.data.polly.process.dto.sub.AffiliationResponse;
+import no.nav.data.polly.process.dto.sub.DataProcessingResponse;
+import no.nav.data.polly.process.dto.sub.DpiaResponse;
+import no.nav.data.polly.process.dto.sub.RetentionResponse;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,8 +26,8 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "name", "description", "purpose", "purposeCode", "department", "subDepartments", "commonExternalProcessResponsible",
-        "productTeams", "products", "start", "end", "active",
+@JsonPropertyOrder({"id", "name", "description", "purpose", "purposeCode", "affiliation",
+        "commonExternalProcessResponsible", "start", "end", "active",
         "usesAllInformationTypes", "automaticProcessing", "profiling", "dataProcessing", "retention", "dpia", "status", "changeStamp",
         "legalBases", "policies"})
 public class ProcessResponse {
@@ -33,14 +37,9 @@ public class ProcessResponse {
     private String description;
     private CodelistResponse purpose;
     private String purposeCode;
-    private CodelistResponse department;
-    @Singular
-    private List<CodelistResponse> subDepartments;
+    private AffiliationResponse affiliation;
+
     private CodelistResponse commonExternalProcessResponsible;
-    @Singular
-    private List<String> productTeams;
-    @Singular
-    private List<CodelistResponse> products;
     private LocalDate start;
     private LocalDate end;
 
@@ -61,50 +60,6 @@ public class ProcessResponse {
 
     public boolean isActive() {
         return DateUtil.isNow(start, end);
-    }
-
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @JsonPropertyOrder({"dataProcessor", "dataProcessorAgreements", "dataProcessorOutsideEU", "transferGroundsOutsideEU", "transferGroundsOutsideEUOther", "transferCountries"})
-    public static class DataProcessingResponse {
-
-        private Boolean dataProcessor;
-        @Singular
-        private List<String> dataProcessorAgreements;
-        private Boolean dataProcessorOutsideEU;
-        private CodelistResponse transferGroundsOutsideEU;
-        private String transferGroundsOutsideEUOther;
-        private List<String> transferCountries;
-    }
-
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @JsonPropertyOrder({"retentionPlan", "retentionMonths", "retentionStart", "retentionDescription"})
-    public static class RetentionResponse {
-
-        private Boolean retentionPlan;
-        private Integer retentionMonths;
-        private String retentionStart;
-        private String retentionDescription;
-    }
-
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @JsonPropertyOrder({"needForDpia", "refToDpia", "grounds", "processImplemented", "riskOwner", "riskOwnerFunction"})
-    public static class DpiaResponse {
-
-        private Boolean needForDpia;
-        private String refToDpia;
-        private String grounds;
-        private boolean processImplemented;
-        private String riskOwner;
-        private String riskOwnerFunction;
     }
 
 }

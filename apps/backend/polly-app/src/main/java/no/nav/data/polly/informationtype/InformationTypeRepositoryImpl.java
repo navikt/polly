@@ -24,22 +24,33 @@ public class InformationTypeRepositoryImpl implements InformationTypeRepositoryC
 
     @Override
     public List<InformationType> findByCategory(String category) {
-        var resp = jdbcTemplate.queryForList("select information_type_id from information_type where data #>'{categories}' ?? :category ",
+        var resp = jdbcTemplate.queryForList("select information_type_id from information_type where data #> '{categories}' ?? :category ",
                 new MapSqlParameterSource().addValue("category", category));
         return fetch(resp);
     }
 
     @Override
     public List<InformationType> findBySource(String source) {
-        var resp = jdbcTemplate.queryForList("select information_type_id from information_type where data #>'{sources}' ?? :source ",
+        var resp = jdbcTemplate.queryForList("select information_type_id from information_type where data #> '{sources}' ?? :source ",
                 new MapSqlParameterSource().addValue("source", source));
         return fetch(resp);
     }
 
     @Override
     public List<InformationType> findByProductTeam(String productTeam) {
-        var resp = jdbcTemplate.queryForList("select information_type_id from information_type where data #>'{productTeams}' ?? :productTeam",
+        var resp = jdbcTemplate.queryForList("select information_type_id from information_type where data #> '{productTeams}' ?? :productTeam",
                 new MapSqlParameterSource().addValue("productTeam", productTeam));
+        return fetch(resp);
+    }
+
+
+    @Override
+    public List<InformationType> findByProductTeams(List<String> productTeams) {
+        if (productTeams.isEmpty()) {
+            return List.of();
+        }
+        var resp = jdbcTemplate.queryForList("select information_type_id from information_type where data #>'{productTeams}' ??| array[ :productTeams ]",
+                new MapSqlParameterSource().addValue("productTeams", productTeams));
         return fetch(resp);
     }
 

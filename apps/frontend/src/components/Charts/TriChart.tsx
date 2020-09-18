@@ -1,25 +1,23 @@
 import * as React from 'react'
 import { Counter, ProcessField, ProcessStatus, ProcessState } from '../../constants'
-import { useHistory } from 'react-router-dom'
-import { Chart } from '../Dashboard/Chart'
+import { Chart } from './Chart'
 import { intl } from '../../util'
 import { chartColor } from '../../util/theme'
-//import * as H from 'history'
 
 const chartSize = 80
-//const clickOnPieChartSlice = (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatus, history: H.History) => () => history.push(`/dashboard/${processField}/${processState}/${processStatus}`)
 
 type TriChartProps = {
     title: string,
     header?: string
     counter: Counter,
-    field: ProcessField,
-    processStatus: ProcessStatus
+    processField: ProcessField,
+    processStatus: ProcessStatus,
+    onClickPieChartSlice: Function
 }
 
 const TriChart = (props: TriChartProps) => {
-    const history = useHistory()
-    const { counter, title, header, field, processStatus } = props
+    const { counter, title, header, processField, processStatus, onClickPieChartSlice} = props
+
     return (
         <Chart
             chartTitle={title}
@@ -31,16 +29,19 @@ const TriChart = (props: TriChartProps) => {
                         label: intl.yes,
                         size: counter.yes,
                         color: chartColor.generalBlue,
+                        onClick:  onClickPieChartSlice(processField, ProcessState.YES, processStatus)
                     },
                     {
                         label: intl.no,
                         size: counter.no,
                         color: chartColor.generalMustard,
+                        onClick: onClickPieChartSlice(processField, ProcessState.NO, processStatus)
                     },
                     {
                         label: intl.unclarified,
                         size: counter.unknown,
                         color: chartColor.generalRed,
+                        onClick:  onClickPieChartSlice(processField, ProcessState.UNKNOWN, processStatus)
                     },
                 ]
             } />

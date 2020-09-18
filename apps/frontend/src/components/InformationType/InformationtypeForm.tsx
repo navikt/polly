@@ -105,7 +105,7 @@ const InformationtypeForm = ({
     actions: FormikHelpers<InformationtypeFormValues>
   ) => {
     const searchResults = (await searchInformationType(values.name!))
-    .content.filter(it => it.name.toLowerCase() === values.name?.toLowerCase() && formInitialValues.id !== it.id)
+      .content.filter(it => it.name.toLowerCase() === values.name?.toLowerCase() && formInitialValues.id !== it.id)
     if (searchResults.length > 0) {
       actions.setFieldError('name', intl.informationTypeExists)
     } else {
@@ -158,7 +158,7 @@ const InformationtypeForm = ({
                       <Select
                         options={codelist.getParsedOptions(ListName.SYSTEM)}
                         value={masterValue as Value}
-                        placeholder={!form.values.orgMaster?intl.orgMasterSelect:''}
+                        placeholder={!form.values.orgMaster ? intl.orgMasterSelect : ''}
                         onChange={(params) => {
                           let master = params.value.length ? params.value[0] : undefined
                           setMasterValue(master as Option)
@@ -274,7 +274,7 @@ const InformationtypeForm = ({
                   <Block {...labelProps}>
                     <Label2>{intl.productTeam}</Label2>
                   </Block>
-                  <FieldProductTeam productTeams={formikBag.values.productTeams}/>
+                  <FieldProductTeam productTeams={formikBag.values.productTeams} fieldName='productTeams'/>
                 </Block>
               </FlexGridItem>
 
@@ -340,7 +340,7 @@ const InformationtypeForm = ({
                       <Select
                         options={codelist.getParsedOptions(ListName.SENSITIVITY)}
                         value={sensitivityValue as Value}
-                        placeholder={intl.sensitivitySelect}
+                        placeholder={formikBag.values.sensitivity ? "" : intl.sensitivitySelect}
                         onChange={(params) => {
                           let sensitivity = params.value.length ? params.value[0] : undefined
                           setSensitivityValue(sensitivity as Option)

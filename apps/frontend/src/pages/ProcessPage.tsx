@@ -1,16 +1,19 @@
 import * as React from 'react'
+import {useEffect} from 'react'
 
 import ProcessList from '../components/Process'
-import { ListName } from '../service/Codelist'
-import { generatePath, useParams } from 'react-router-dom'
-import { Process, ProcessStatus } from '../constants'
-import { useQueryParam } from '../util/hooks'
-import { processPath } from '../routes'
+import {ListName} from '../service/Codelist'
+import {generatePath, useHistory, useParams} from 'react-router-dom'
+import {DepartmentProcessDashCount, Process, ProcessStatus} from '../constants'
+import {useQueryParam} from '../util/hooks'
+import {processPath} from '../routes'
 import * as queryString from 'query-string'
-import { PageHeader } from '../components/common/PageHeader'
-import DepartmentCharts from '../components/Process/DepartmentCharts'
-import { HeadingSmall } from 'baseui/typography'
-import { intl } from '../util'
+import {PageHeader} from '../components/common/PageHeader'
+import {HeadingSmall} from 'baseui/typography'
+import {intl} from '../util'
+import {Block} from "baseui/block/index"
+import {getDashboard} from '../api'
+import Charts from '../components/Charts/Charts'
 
 export enum Section {
   purpose = 'purpose',
@@ -18,7 +21,8 @@ export enum Section {
   department = 'department',
   subdepartment = 'subdepartment',
   team = 'team',
-  productarea = 'productarea'
+  productarea = 'productarea',
+  thirdparty = 'thirdparty'
 }
 
 export const listNameForSection = (section: Section) => {
@@ -26,6 +30,7 @@ export const listNameForSection = (section: Section) => {
   else if (section === Section.department) return ListName.DEPARTMENT
   else if (section === Section.purpose) return ListName.PURPOSE
   else if (section === Section.system) return ListName.SYSTEM
+  else if (section === Section.thirdparty) return ListName.THIRD_PARTY
   return undefined
 }
 
@@ -36,20 +41,53 @@ export type PathParams = {
 }
 
 const ProcessPage = () => {
+  const [isLoading, setIsLoading] = React.useState(true)
+  const [chartData, setChartData] = React.useState<DepartmentProcessDashCount>()
   const filter = useQueryParam<ProcessStatus>('filter')
   const params = useParams<PathParams>()
-  const { section, code, processId } = params
+  const {section, code, processId} = params
+  const history = useHistory()
+
+  const moveScroll = () => {
+    window.scrollTo(0, localStorage.getItem("Yposition" + history.location.pathname) != null ? Number(localStorage.getItem("Yposition" + history.location.pathname)) + 200 : 0)
+    localStorage.removeItem("Yposition" + history.location.pathname)
+  }
+
+  const saveScroll = () => {
+    if (window.pageYOffset !== 0) {
+      localStorage.setItem("Yposition" + history.location.pathname, window.pageYOffset.toString())
+    }
+  }
+
+  useEffect(() => {
+    if (section === Section.department) {
+      (async () => {
+        setIsLoading(true)
+        let res = await getDashboard(ProcessStatus.All)
+        if (res) setChartData(res.departmentProcesses.find(d => d.department === code))
+        setIsLoading(false)
+      })()
+    }
+
+    window.addEventListener("scroll", saveScroll)
+    return () => window.removeEventListener("scroll", saveScroll)
+  }, [section, code])
 
   return (
     <>
-      <PageHeader section={section} code={code} />
-      <ProcessList code={code} listName={listNameForSection(section)} processId={processId} filter={filter} section={section} />
-      {section === Section.department ? (
-        <>
+      <PageHeader section={section} code={code}/>
+      <ProcessList code={code} listName={listNameForSection(section)} processId={processId} filter={filter} section={section} moveScroll={moveScroll}/>
+      {!isLoading && section === Section.department &&(
+        <Block>
           <HeadingSmall>{intl.overview}</HeadingSmall>
-          <DepartmentCharts departmentCode={code} />
-        </>
-      ) : null}
+            <Charts
+                chartData={chartData!}
+                processStatus={ProcessStatus.All}
+                departmentCode={code}
+                type={section === Section.department ? Section.department : Section.productarea}
+             />
+        </Block>
+      )}
     </>
   )
 }
@@ -61,4 +99,4 @@ export const genProcessPath = (section: Section, code: string, process?: Partial
     section,
     code: section === Section.purpose && !!process?.purpose ? process.purpose.code : code,
     processId: process?.id
-  }) + '?' + queryString.stringify({ filter, create }, { skipNull: true })
+  }) + '?' + queryString.stringify({filter, create}, {skipNull: true})

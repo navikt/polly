@@ -13,11 +13,12 @@ import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
-import no.nav.data.polly.process.domain.ProcessData.DataProcessing;
-import no.nav.data.polly.process.domain.ProcessData.Dpia;
-import no.nav.data.polly.process.domain.ProcessData.Retention;
-import no.nav.data.polly.process.domain.ProcessRepository;
 import no.nav.data.polly.process.domain.ProcessStatus;
+import no.nav.data.polly.process.domain.repo.ProcessRepository;
+import no.nav.data.polly.process.domain.sub.Affiliation;
+import no.nav.data.polly.process.domain.sub.DataProcessing;
+import no.nav.data.polly.process.domain.sub.Dpia;
+import no.nav.data.polly.process.domain.sub.Retention;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.teams.ResourceService;
 import no.nav.data.polly.teams.TeamService;
@@ -106,7 +107,7 @@ public class DocxTest {
 
     private void mockAlert(Process mockProcess) {
         Policy policy = mockProcess.getPolicies().iterator().next();
-        when(alertService.checkAlertsForProcess(mockProcess.getId()))
+        when(alertService.checkAlertsForProcess(mockProcess))
                 .thenReturn(new ProcessAlert(mockProcess.getId(), false,
                         List.of(new PolicyAlert(policy.getId(), null, false, false, false, true))));
     }
@@ -124,10 +125,12 @@ public class DocxTest {
                                 LegalBasis.builder().gdpr("ART61C").nationalLaw("FTRL").description("§ 1-1").build(),
                                 LegalBasis.builder().gdpr("ART61A").nationalLaw("SAMTYKKE").description("Kapittel 4, siste ledd").build()
                         ))
-                        .department("AOT")
-                        .subDepartment("PEN")
-                        .productTeams(List.of("teamdatajegerne"))
-                        .products(List.of("TPS", "PESYS"))
+                        .affiliation(Affiliation.builder()
+                                .department("AOT")
+                                .subDepartments(List.of("PEN"))
+                                .productTeams(List.of("teamdatajegerne"))
+                                .products(List.of("TPS", "PESYS"))
+                                .build())
                         .usesAllInformationTypes(false)
                         .automaticProcessing(true)
                         .profiling(true)

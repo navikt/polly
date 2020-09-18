@@ -26,7 +26,8 @@ const DpiaItems = (props: { formikBag: FormikProps<ProcessFormValues> }) => {
           <Block {...rowBlockProps}>
             <ModalLabel label={intl.dpiaReference}/>
             <FieldInput fieldName='dpia.refToDpia'
-                        fieldValue={formikBag.values.dpia?.refToDpia}/>
+                        fieldValue={formikBag.values.dpia?.refToDpia}
+                        placeHolder={intl.dpiaReferencePlaceholder}/>
           </Block>
         </> :
         <>

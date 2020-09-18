@@ -45,6 +45,8 @@ export const urlForObject = (type: NavigableItem, id: string, audit?: AuditItem)
       return `/policy/${id}`
     case ObjectType.PROCESS:
       return `/process/${id}`
+    case ObjectType.DP_PROCESS:
+      return `/dpprocess/${id}`
     case ObjectType.DISCLOSURE:
       return `/disclosure/${id}`
     case ObjectType.DOCUMENT:
@@ -70,6 +72,10 @@ export const urlForObject = (type: NavigableItem, id: string, audit?: AuditItem)
       return `/thirdparty/${id}`
     case ListName.SYSTEM:
       return `/system/${id}`
+    case ListName.GDPR_ARTICLE:
+      return `/process/legal?gdprArticle=${id}`
+    case ListName.NATIONAL_LAW:
+      return `/process/legal?nationalLaw=${id}`
   }
 }
 

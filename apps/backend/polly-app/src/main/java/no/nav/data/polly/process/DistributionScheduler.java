@@ -5,7 +5,7 @@ import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.process.domain.ProcessDistribution;
 import no.nav.data.polly.process.domain.ProcessDistribution.ProcessDistributionData;
-import no.nav.data.polly.process.domain.ProcessDistributionRepository;
+import no.nav.data.polly.process.domain.repo.ProcessDistributionRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;

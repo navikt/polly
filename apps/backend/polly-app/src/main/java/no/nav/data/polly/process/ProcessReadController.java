@@ -3,6 +3,7 @@ package no.nav.data.polly.process;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
@@ -12,11 +13,12 @@ import no.nav.data.common.rest.RestResponsePage;
 import no.nav.data.common.utils.JsonUtils;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.process.domain.Process;
-import no.nav.data.polly.process.domain.ProcessCount;
-import no.nav.data.polly.process.domain.ProcessRepository;
+import no.nav.data.polly.process.domain.repo.ProcessCount;
+import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessCountResponse;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.teams.TeamService;
+import no.nav.data.polly.teams.domain.Team;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -34,21 +36,22 @@ import java.util.Optional;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
-import static java.util.stream.Collectors.toList;
 import static no.nav.data.common.utils.StreamUtils.convert;
 
 @Slf4j
 @RestController
-@Api(value = "Data Catalog Process", description = "REST API for Process", tags = {"Process"})
+@Api(value = "Data Catalog Process", tags = {"Process"})
 @RequestMapping("/process")
 public class ProcessReadController {
 
     private final TeamService teamService;
     private final ProcessRepository repository;
+    private final ProcessService processService;
 
-    public ProcessReadController(TeamService teamService, ProcessRepository repository) {
+    public ProcessReadController(TeamService teamService, ProcessRepository repository, ProcessService processService) {
         this.teamService = teamService;
         this.repository = repository;
+        this.processService = processService;
     }
 
     @ApiOperation(value = "Get Process with InformationTypes")
@@ -68,7 +71,7 @@ public class ProcessReadController {
         return ResponseEntity.ok(process.get());
     }
 
-    @ApiOperation(value = "Get All Processes")
+    @ApiOperation(value = "Get All Processes, parameters filters are not combined unless stated otherwise")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "All Processes fetched", response = ProcessPage.class),
             @ApiResponse(code = 500, message = "Internal server error")})
@@ -76,7 +79,9 @@ public class ProcessReadController {
     public ResponseEntity<RestResponsePage<ProcessResponse>> getAllProcesses(PageParameters pageParameters,
             @RequestParam(required = false) String productTeam,
             @RequestParam(required = false) String productArea,
-            @RequestParam(required = false) String documentId
+            @RequestParam(required = false) String documentId,
+            @ApiParam("Can be combined with nationalLaw") @RequestParam(required = false) String gdprArticle,
+            @ApiParam("Can be combined with gdprArticle") @RequestParam(required = false) String nationalLaw
     ) {
         if (productTeam != null) {
             log.info("Received request for Processeses for productTeam {}", productTeam);
@@ -86,12 +91,17 @@ public class ProcessReadController {
         if (productArea != null) {
             log.info("Received request for Processeses for productArea {}", productArea);
             var teams = teamService.getTeamsForProductArea(productArea);
-            var processes = teams.stream().flatMap(t -> repository.findByProductTeam(t.getId()).stream()).collect(toList());
+            var processes = repository.findByProductTeams(convert(teams, Team::getId));
             return ResponseEntity.ok(new RestResponsePage<>(convert(processes, Process::convertToResponse)));
         }
         if (documentId != null) {
             log.info("Received request for Processeses for documentId {}", documentId);
             var processes = repository.findByDocumentId(documentId);
+            return ResponseEntity.ok(new RestResponsePage<>(convert(processes, Process::convertToResponse)));
+        }
+        if (gdprArticle != null || nationalLaw != null) {
+            log.info("Received request for Processeses for gdprArticle {} nationalLaw {}", gdprArticle, nationalLaw);
+            var processes = processService.getAllProcessesForGdprAndLaw(gdprArticle, nationalLaw);
             return ResponseEntity.ok(new RestResponsePage<>(convert(processes, Process::convertToResponse)));
         }
         log.info("Received request for all Processes");

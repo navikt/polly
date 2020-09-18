@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {useEffect} from 'react'
 
-import {Block, BlockProps} from 'baseui/block'
+import {Block} from 'baseui/block'
 import {HeadingSmall, Label2} from 'baseui/typography'
 import {KIND, SIZE as ButtonSize} from 'baseui/button'
 import {AddDocumentToProcessFormValues, LegalBasesUse, Policy, PolicyFormValues, Process, ProcessFormValues, ProcessShort, ProcessStatus} from '../../constants'
@@ -18,8 +18,7 @@ import {
   deleteProcess,
   getCodelistUsage,
   getProcess,
-  getProcessesForProductArea,
-  getProcessesForTeam,
+  getProcessesFor,
   updatePolicy,
   updateProcess
 } from '../../api'
@@ -34,23 +33,19 @@ import {StatefulSelect} from 'baseui/select'
 import {genProcessPath, Section} from '../../pages/ProcessPage'
 import {useHistory} from 'react-router-dom'
 
-const rowBlockProps: BlockProps = {
-  marginBottom: 'scale800',
-  display: 'flex',
-  justifyContent: 'space-between'
-}
-
 type ProcessListProps = {
   section: Section;
   filter?: ProcessStatus;
   processId?: string;
+  titleOverride?: string;
   code: string;
   listName?: ListName;
+  moveScroll?: Function;
 }
 
 const sortProcess = (list: ProcessShort[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, intl.getLanguage()))
 
-const ProcessList = ({code, listName, filter, processId, section}: ProcessListProps) => {
+const ProcessList = ({code, listName, filter, processId, section, moveScroll, titleOverride}: ProcessListProps) => {
   const [processList, setProcessList] = React.useState<ProcessShort[]>([])
   const [currentProcess, setCurrentProcess] = React.useState<Process | undefined>()
   const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
@@ -73,6 +68,7 @@ const ProcessList = ({code, listName, filter, processId, section}: ProcessListPr
       setIsLoadingProcessList(true)
       await getProcessList()
       setIsLoadingProcessList(false)
+      if (moveScroll) moveScroll()
     })()
   }, [code, filter])
 
@@ -86,18 +82,19 @@ const ProcessList = ({code, listName, filter, processId, section}: ProcessListPr
     'DEPARTMENT': 'department',
     'SUB_DEPARTMENT': 'subDepartment',
     'PURPOSE': 'purpose',
-    'SYSTEM': 'system'
-  } as { [l: string]: string })[listName]
+    'SYSTEM': 'system',
+    'THIRD_PARTY': 'thirdparty'
+  } as {[l: string]: string})[listName]
 
   const getProcessList = async () => {
     try {
       let list: ProcessShort[]
 
       if (current_location.pathname.includes('team')) {
-        let res = await getProcessesForTeam(code)
+        let res = await getProcessesFor(({productTeam: code}))
         res.content ? list = res.content as ProcessShort[] : list = []
       } else if (current_location.pathname.includes('productarea')) {
-        let res = await getProcessesForProductArea(code)
+        let res = await getProcessesFor(({productArea: code}))
         res.content ? list = res.content as ProcessShort[] : list = []
       } else {
         list = (await getCodelistUsage(listName as ListName, code)).processes
@@ -215,7 +212,8 @@ const ProcessList = ({code, listName, filter, processId, section}: ProcessListPr
         legalBases: [],
         legalBasesOpen: false,
         legalBasesUse: LegalBasesUse.INHERITED_FROM_PROCESS,
-        documentIds: formValues.defaultDocument ? [] : [formValues.document!.id]
+        documentIds: formValues.defaultDocument ? [] : [formValues.document!.id],
+        otherPolicies: []
       }))
       await createPolicies(policies)
       await getProcessById(formValues.process.id)
@@ -278,7 +276,7 @@ const ProcessList = ({code, listName, filter, processId, section}: ProcessListPr
         </Block>
         <Block marginRight='auto'>
           <HeadingSmall>
-            {intl.processes}
+            {titleOverride ||intl.processes} ({processList.length})
           </HeadingSmall>
         </Block>
       </Block>
@@ -313,10 +311,12 @@ const ProcessList = ({code, listName, filter, processId, section}: ProcessListPr
         isEdit={false}
         initialValues={convertProcessToFormValues({
           purpose: section === Section.purpose ? codelist.getCode(ListName.PURPOSE, code) : undefined,
-          department: section === Section.department ? codelist.getCode(ListName.DEPARTMENT, code) : undefined,
-          subDepartments: section === Section.subdepartment ? [codelist.getCode(ListName.SUB_DEPARTMENT, code)!] : [],
-          products: section === Section.system ? [codelist.getCode(ListName.SYSTEM, code)!] : [],
-          productTeams: section === Section.team ? [code] : []
+          affiliation: {
+            department: section === Section.department ? codelist.getCode(ListName.DEPARTMENT, code) : undefined,
+            subDepartments: section === Section.subdepartment ? [codelist.getCode(ListName.SUB_DEPARTMENT, code)!] : [],
+            products: section === Section.system ? [codelist.getCode(ListName.SYSTEM, code)!] : [],
+            productTeams: section === Section.team ? [code] : []
+          }
         })}
       />}
     </>

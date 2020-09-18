@@ -2,7 +2,7 @@ import React, {useEffect} from 'react'
 import {useHistory, useParams} from 'react-router-dom'
 import {intl} from '../util'
 import {Block} from 'baseui/block'
-import {deleteDocument, getAllDocument, getDocument, getProcessesByDocument} from '../api'
+import {deleteDocument, getAllDocument, getDocument, getProcessesFor} from '../api'
 import {Document, Process} from '../constants'
 import DocumentMetadata from '../components/document/DocumentMetadata'
 import {user} from '../service/User'
@@ -35,7 +35,7 @@ const DocumentPage = () => {
   const [currentDocument, setCurrentDocument] = React.useState<Document | undefined>()
   const [documentId, setDocumentId] = React.useState<string | undefined>(params.id)
   const [isDeleteModalVisible, setDeleteModalVisibility] = React.useState(false)
-  const [documentUsages, setDocumentUsages] = React.useState<[Process]>()
+  const [documentUsages, setDocumentUsages] = React.useState<Process[]>()
   const [errorMessage, setErrorMessage] = React.useState<string>()
   const [activeKey, setActiveKey] = React.useState<string | number>('containsInformationType')
   const [documents, setDocuments] = React.useState<Document[]>([])
@@ -67,7 +67,7 @@ const DocumentPage = () => {
       setErrorMessage('')
       if (documentId) {
         const res = await getDocument(documentId)
-        setDocumentUsages((await getProcessesByDocument(documentId)).content)
+        setDocumentUsages((await getProcessesFor({documentId})).content)
         setCurrentDocument(res)
         if (params.id !== documentId) history.push(`/document/${documentId}`)
       } else {

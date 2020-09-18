@@ -17,6 +17,7 @@ import java.util.UUID;
 public class UsedInInstancePurpose {
 
     private String id;
+    private String processId;
     private String purposeCode;
     private String name;
 

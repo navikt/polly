@@ -27,12 +27,15 @@ export interface IStrings {
   sensitivity: string;
   processingActivities: string;
   process: string;
+  dpProcess: string;
+  dpProcesses: string;
   processes: string;
   legalBasis: string;
   legalBasisShort: string;
   legalBasesShort: string;
   subjectCategories: string;
   nationalLaw: string;
+  gdprArticle: string;
   orgMaster: string;
   orgMasterInfTypeHeader: string;
   productTeam: string;
@@ -57,6 +60,9 @@ export interface IStrings {
   policy: string;
   usage: string;
   and: string;
+  with: string;
+  pollyOrg: string;
+  or: string;
   remove: string;
   yes: string;
   no: string;
@@ -89,14 +95,20 @@ export interface IStrings {
   isProfilingUsed: string;
   profilingExtra: string;
   dataProcessor: string;
+  dpProcessDataProcessor: string;
   dataProcessorYes: string;
+  dpProcessDataProcessorYes: string;
   dataProcessorNo: string;
+  dpProcessDataProcessorNo: string;
   dataProcessorUnclarified: string;
+  dpProcessDataProcessorUnclarified: string;
   dataProcessorExtra: string;
   dataProcessorAgreement: string;
+  dataProcessorAgreementPlaceholder: string;
   dataProcessorOutsideEU: string;
   isDataProcessedOutsideEUEEAHelpText: string;
   isDataProcessedOutsideEUEEA: string;
+  isSubDataProcessedOutsideEUEEA: string;
   transferGroundsOutsideEUEEA: string;
   transferGroundsOutsideEUEEAOther: string;
   countries: string;
@@ -105,6 +117,7 @@ export interface IStrings {
   notInProduction: string;
   isDpiaRequired: string;
   dpiaReference: string;
+  dpiaReferencePlaceholder: string;
   dpiaNeeded: string;
   dpiaHelpText: string;
   grounds: string;
@@ -184,6 +197,7 @@ export interface IStrings {
   processAutomationHelpText: string;
   profilingHelpText: string;
   isDataProcessorUsed: string;
+  isSubDataProcessorUsed: string;
   dataProcessorHelpText: string;
   dataProcessorAgreementHelpText: string;
   dataProcessorOutsideEUExtraHelpText: string;
@@ -223,6 +237,7 @@ export interface IStrings {
   deleteProcessText: string;
   confirmDeleteProcessText: string;
   confirmDeleteDocumentText: string;
+  confirmDeleteDpProcess: string;
   cannotDeleteProcess: string;
   confirmDeleteInformationTypeText: string;
   cannotDeleteInformationTypes: string;
@@ -267,7 +282,14 @@ export interface IStrings {
   excessInfoHelpText: string;
   completeness: string;
   overview: string;
-
+  seeExternalLink: string;
+  dpProcessTitle: string;
+  article9: string;
+  article10: string;
+  createDpProcess: string;
+  dpProcessDuplicatedError: string;
+  externalProcessResponsible: string;
+  subDataProcessor: string;
   // groups
   READ: string;
   WRITE: string;
@@ -354,6 +376,7 @@ export interface IStrings {
   slack: string;
   add: string;
   summarySubjectCategories: string;
+  processContainsSubjectCategory: string;
   maxChars: string;
   required: string;
   dateFormat: string;
