@@ -2,7 +2,7 @@ import * as React from 'react'
 import {useHistory} from 'react-router-dom'
 import {Block} from 'baseui/block'
 import {chartCardProps} from '../common/Style'
-import { ProcessStatus, ProcessField, ProcessState, ProcessesDashCount, DepartmentProcessDashCount, NavigableItem } from '../../constants'
+import { ProcessStatus, ProcessField, ProcessState, DepartmentProcessDashCount, ProductAreaProcessDashCount, ProcessesDashCount } from '../../constants'
 import TriChart from './TriChart'
 import {intl} from '../../util'
 import {Chart} from './Chart'
@@ -11,14 +11,14 @@ import {chartColor} from '../../util/theme'
 import {Paragraph1} from 'baseui/typography'
 import RouteLink from '../common/RouteLink'
 import { lowerFirst } from 'lodash'
-import { ListName } from '../../service/Codelist'
+import { Section } from '../../pages/ProcessPage'
 
 const chartSize = 80
 
 type ChartsProps = {
-    chartData: ProcessesDashCount | DepartmentProcessDashCount,
+    chartData: ProductAreaProcessDashCount | DepartmentProcessDashCount | ProcessesDashCount,
     processStatus: ProcessStatus,
-    type?: NavigableItem,
+    type?: Section,
     departmentCode?: string,
     productareaId?: string
 }
@@ -30,7 +30,7 @@ const Charts = (props: ChartsProps ) => {
     const link = (processField: ProcessField) => {
       if (!type) 
         return `/dashboard/${processField}/${ProcessState.UNKNOWN}/${processStatus}`
-      else if (type === ListName.DEPARTMENT)
+      else if (type === Section.department)
         return `/dashboard/${processField}/${ProcessState.UNKNOWN}/${processStatus}?department=${departmentCode}`
       else 
         return `/dashboard/${processField}/${ProcessState.UNKNOWN}/${processStatus}?productarea=${productareaId}`
@@ -39,7 +39,7 @@ const Charts = (props: ChartsProps ) => {
     const handleClickPieChartSlice = (processField: ProcessField, processState: ProcessState, processStatus: ProcessStatus) => {
       if (!type) 
         return clickOnPieChartSlice(processField, processState, processStatus, history)
-      else if (type === ListName.DEPARTMENT)
+      else if (type === Section.department)
          return clickOnPieChartSlice(processField, processState, processStatus, history, type, departmentCode)
       else 
          return clickOnPieChartSlice(processField, processState, processStatus, history, type, productareaId)

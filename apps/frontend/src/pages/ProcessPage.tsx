@@ -4,15 +4,16 @@ import {useEffect} from 'react'
 import ProcessList from '../components/Process'
 import {ListName} from '../service/Codelist'
 import {generatePath, useHistory, useParams} from 'react-router-dom'
-import {Process, ProcessStatus} from '../constants'
+import {DepartmentProcessDashCount, Process, ProcessStatus} from '../constants'
 import {useQueryParam} from '../util/hooks'
 import {processPath} from '../routes'
 import * as queryString from 'query-string'
 import {PageHeader} from '../components/common/PageHeader'
-import DepartmentCharts from '../components/Process/DepartmentCharts'
 import {HeadingSmall} from 'baseui/typography'
 import {intl} from '../util'
 import {Block} from "baseui/block/index"
+import { getDashboard } from '../api'
+import Charts from '../components/Charts/Charts'
 
 export enum Section {
   purpose = 'purpose',
@@ -38,6 +39,8 @@ export type PathParams = {
 }
 
 const ProcessPage = () => {
+  const [isLoading, setIsLoading] = React.useState(true)
+  const [chartData, setChartData] = React.useState<DepartmentProcessDashCount>()
   const filter = useQueryParam<ProcessStatus>('filter')
   const params = useParams<PathParams>()
   const {section, code, processId} = params
@@ -55,20 +58,34 @@ const ProcessPage = () => {
   }
 
   useEffect(() => {
+    if (section === Section.department) {
+      (async () => {
+        setIsLoading(true)
+        let res = await getDashboard(ProcessStatus.All)
+        if (res) setChartData(res.departmentProcesses.find(d => d.department === code))
+        setIsLoading(false)
+      })()
+    }
+
     window.addEventListener("scroll", saveScroll)
     return () => window.removeEventListener("scroll", saveScroll)
-  }, [])
+  }, [section, code])
 
   return (
     <>
       <PageHeader section={section} code={code}/>
       <ProcessList code={code} listName={listNameForSection(section)} processId={processId} filter={filter} section={section} moveScroll={moveScroll}/>
-      {section === Section.department ? (
+      {!isLoading && section === Section.department &&(
         <Block>
           <HeadingSmall>{intl.overview}</HeadingSmall>
-          <DepartmentCharts departmentCode={code}/>
+            <Charts 
+                chartData={chartData!}
+                processStatus={ProcessStatus.All} 
+                departmentCode={code}
+                type={section === Section.department ? Section.department : Section.productarea}
+             />
         </Block>
-      ) : null}
+      )}
     </>
   )
 }
