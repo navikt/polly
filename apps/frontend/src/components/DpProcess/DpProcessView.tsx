@@ -22,6 +22,8 @@ import DpProcessModal from "./DpProcessModal";
 import {DpProcessDeleteModal} from "./DpProcessDeleteModal";
 import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {SIZE as ButtonSize} from "baseui/button";
+import {user} from "../../service/User";
+import {env} from "../../util/env";
 
 const DpProcessView = () => {
   const history = useHistory()
@@ -88,9 +90,8 @@ const DpProcessView = () => {
       {!isLoading ? (
         <>
           <Block display="flex" justifyContent={"space-between"} alignItems={"center"}>
-
           <H4>{dpProcess?.name}</H4>
-
+            {user.canWrite() && env.disableDpProcess==='false' &&
             <Block>
               <Button size="compact" kind="outline" tooltip={intl.edit} icon={faEdit} marginRight onClick={toggleModal}>
                 {intl.edit}
@@ -99,6 +100,7 @@ const DpProcessView = () => {
                 {intl.delete}
               </Button>
             </Block>
+            }
           </Block>
 
           <DataText label={intl.description} text={dpProcess?.description}/>
