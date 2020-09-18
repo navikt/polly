@@ -2,7 +2,6 @@ import React, {KeyboardEvent, useState} from "react";
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
 import {Block, BlockProps} from "baseui/block";
 import {Field, FieldProps, Form, Formik} from "formik";
-import {dpProcessToFormValues} from "../../api/DpProcessApi";
 import CustomizedModalBlock from "../common/CustomizedModalBlock";
 import {Error, ModalLabel} from "../common/ModalSchema";
 import {intl, theme} from "../../util";
@@ -86,7 +85,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
             console.log(values)
             props.submit(values)
           }}
-          initialValues={dpProcessToFormValues({})}
+          initialValues={props.initialValues}
           validationSchema={dpProcessSchema}
         >
           {
