@@ -67,7 +67,7 @@ export const dpProcessToFormValues = (dpProcess: Partial<DpProcess>): DpProcessF
     },
     art10: mapBool(art10),
     art9: mapBool(art9),
-    dataProcessingAgreement: dataProcessingAgreement || undefined,
+    dataProcessingAgreement: mapBool(dataProcessingAgreement),
     dataProcessingAgreements: dataProcessingAgreements || [],
     description: description || '',
     end: end || undefined,
