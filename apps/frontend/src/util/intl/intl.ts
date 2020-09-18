@@ -28,6 +28,7 @@ export interface IStrings {
   processingActivities: string;
   process: string;
   dpProcess: string;
+  dpProcesses: string;
   processes: string;
   legalBasis: string;
   legalBasisShort: string;
@@ -234,6 +235,7 @@ export interface IStrings {
   deleteProcessText: string;
   confirmDeleteProcessText: string;
   confirmDeleteDocumentText: string;
+  confirmDeleteDpProcess: string;
   cannotDeleteProcess: string;
   confirmDeleteInformationTypeText: string;
   cannotDeleteInformationTypes: string;
