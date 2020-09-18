@@ -1,20 +1,39 @@
 import * as React from "react";
-import {useReducer} from "react";
+import {useEffect, useReducer, useState} from "react";
 import Button from "../components/common/Button";
 import DpProcessModal from "../components/DpProcess/DpProcessModal";
-import {createDpProcess, dpProcessToFormValues} from "../api/DpProcessApi";
-import {DpProcessFormValues} from "../constants";
+import {createDpProcess, dpProcessToFormValues, getAllDpProcesses} from "../api/DpProcessApi";
+import {DpProcess, DpProcessFormValues} from "../constants";
 import {intl} from "../util";
+import DpProcessTable from "../components/DpProcess/DpProcessTable";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faPlusCircle} from "@fortawesome/free-solid-svg-icons";
+import {Block} from "baseui/block";
+import {H4} from "baseui/typography";
+import {user} from "../service/User";
+import {useHistory} from "react-router-dom";
 
 const DpProcessPage = () => {
   const [showModal, toggleModal] = useReducer(prevState => !prevState, false)
   const [errorDpProcessModal, setErrorDpProcessModal] = React.useState<string>('')
+  const [dpProcesses, setDpProcesses] = useState<DpProcess[]>([])
+  const history = useHistory()
+
+  useEffect(() => {
+    (async () => {
+      let processes = await getAllDpProcesses();
+      if (processes) {
+        setDpProcesses(processes)
+      }
+    })()
+  }, [])
 
   const handleCreateDpProcess = async (dpProcess: DpProcessFormValues) => {
     if (!dpProcess) return
     try {
-      await createDpProcess(dpProcess)
+      const response = await createDpProcess(dpProcess)
       setErrorDpProcessModal('')
+      history.push(`/dpprocess/${response.id}`)
       toggleModal()
     } catch (err) {
       console.log(err.response)
@@ -28,7 +47,17 @@ const DpProcessPage = () => {
 
   return (
     <>
-      <Button onClick={() => toggleModal()}>{intl.createDpProcess}</Button>
+
+      <Block display="flex" justifyContent="space-between">
+        <H4 marginTop='0'>{intl.dpProcesses}</H4>
+        <Block>
+          {user.canWrite() &&
+          <Button kind="outline" onClick={() => toggleModal()}>
+            <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;{intl.createDpProcess}
+          </Button>
+          }
+        </Block>
+      </Block>
       <DpProcessModal
         isOpen={showModal}
         onClose={toggleModal}
@@ -36,6 +65,7 @@ const DpProcessPage = () => {
         submit={handleCreateDpProcess}
         errorOnCreate={errorDpProcessModal}
       />
+      <DpProcessTable dpProcesses={dpProcesses}/>
     </>
   )
 }
