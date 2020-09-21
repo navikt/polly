@@ -52,7 +52,7 @@ export const no: IStrings = {
   remove: "Fjern",
   yes: "Ja",
   no: "Nei",
-  seeExternalLink: "Se ektern lenke her",
+  seeExternalLink: "Se ekstern lenke her",
   processActivity: "Behandlingsaktivitet",
   aboutUs: "Om Behandlingskatalogen",
   includeConservationPlan: "Omfattes av NAVs bevarings- og kassasjonsplan?",
