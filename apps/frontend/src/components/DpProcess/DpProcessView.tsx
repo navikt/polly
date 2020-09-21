@@ -6,14 +6,12 @@ import {StyledSpinnerNext} from 'baseui/spinner';
 import {Block} from 'baseui/block';
 import {H4} from "baseui/typography";
 import {intl} from "../../util";
-import {StyledLink} from "baseui/link";
 import {DotTags} from "../common/DotTag";
-import {Markdown} from "../common/Markdown";
 import DataText from "../common/DataText";
 import {codelist, ListName} from "../../service/Codelist";
 import {TeamList} from "../common/Team";
 import {RetentionView} from "../Process/Retention";
-import {isLink} from "../../util/helper-functions";
+import {shortenLinksInText} from "../../util/helper-functions";
 import {ActiveIndicator} from "../common/Durations";
 import {boolToText} from "../common/Radio";
 import RouteLink from "../common/RouteLink";
@@ -157,10 +155,7 @@ const DpProcessView = () => {
               </Block>
               <Block>
                 <span>{dpProcess?.retention?.retentionDescription && `${intl.retentionDescription}: `}</span>
-                {dpProcess?.retention?.retentionDescription && isLink(dpProcess?.retention?.retentionDescription) ?
-                  <StyledLink href={`${dpProcess?.retention?.retentionDescription}`}>{intl.seeExternalLink}</StyledLink> :
-                  <span><Markdown source={dpProcess?.retention?.retentionDescription} singleWord/></span>
-                }
+                {dpProcess?.retention?.retentionDescription && shortenLinksInText(dpProcess?.retention?.retentionDescription)}
               </Block>
             </>
           </DataText>

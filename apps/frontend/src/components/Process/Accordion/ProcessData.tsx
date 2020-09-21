@@ -15,28 +15,16 @@ import {env} from '../../../util/env'
 import {isNil, sum, uniqBy} from 'lodash'
 import {ProgressBar} from 'baseui/progress-bar'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
-import {StyledLink} from "baseui/link";
-import {Markdown} from "../../common/Markdown";
 import RouteLink from "../../common/RouteLink";
 import DataText from "../../common/DataText";
-
-const isLink = (text: string) => {
-  try {
-    new URL(text);
-  } catch (_) {
-    return false;
-  }
-
-  return true;
-}
+import {shortenLinksInText} from "../../../util/helper-functions";
 
 const showDpiaRequiredField = (dpia?: Dpia) => {
   if (dpia?.needForDpia === true) {
     if (dpia.refToDpia) {
       return <>
         {`${intl.yes}. ${intl.reference}`}
-        {isLink(dpia.refToDpia) ? <StyledLink href={`${dpia.refToDpia}`}>{intl.seeExternalLink}</StyledLink> :
-          <Markdown source={`${dpia.refToDpia}`} singleWord/>}
+        {shortenLinksInText(dpia.refToDpia)}
       </>
     } else {
       return intl.yes
@@ -213,10 +201,7 @@ const ProcessData = (props: { process: Process }) => {
           </Block>
           <Block>
             <span>{process.retention?.retentionDescription && `${intl.retentionDescription}: `}</span>
-            {process.retention?.retentionDescription && isLink(process.retention?.retentionDescription) ?
-              <StyledLink href={`${process.retention?.retentionDescription}`}>{intl.seeExternalLink}</StyledLink> :
-              <span><Markdown source={process.retention?.retentionDescription} singleWord/></span>
-            }
+            {process.retention?.retentionDescription && shortenLinksInText(process.retention?.retentionDescription)}
           </Block>
         </>
       </DataText>
