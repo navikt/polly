@@ -12,7 +12,6 @@ import {Block} from "baseui/block";
 import {H4} from "baseui/typography";
 import {user} from "../service/User";
 import {useHistory} from "react-router-dom";
-import {env} from "../util/env";
 
 const DpProcessPage = () => {
   const [showModal, toggleModal] = useReducer(prevState => !prevState, false)
@@ -51,7 +50,7 @@ const DpProcessPage = () => {
       <Block display="flex" justifyContent="space-between">
         <H4 marginTop='0'>{intl.dpProcesses}</H4>
         <Block>
-          {user.canWrite() && !env.disableDpProcess &&
+          {user.canWrite() && /*!env.disableDpProcess &&*/
           <Button kind="outline" onClick={() => toggleModal()}>
             <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;{intl.createDpProcess}
           </Button>
