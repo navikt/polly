@@ -92,7 +92,7 @@ const ProcessData = (props: { process: Process }) => {
         <ActiveIndicator alwaysShow={true} showDates={true} {...process} />
       </DataText>
 
-      <DataText label={intl.summarySubjectCategories} text={!subjectCategoriesSummarised.length && intl.subjectCategoriesNotFound}>
+      <DataText label={intl.summarySubjectCategories} text={!subjectCategoriesSummarised.length ? intl.notFilled : ""}>
         {!!subjectCategoriesSummarised.length && <DotTags list={ListName.SUBJECT_CATEGORY} codes={subjectCategoriesSummarised}/>}
       </DataText>
 
