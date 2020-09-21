@@ -48,7 +48,7 @@ const DpProcessPage = () => {
   return (
     <>
       <Block display="flex" justifyContent="space-between">
-        <H4 marginTop='0'>{intl.dpProcesses}</H4>
+        <H4 marginTop='0'>{intl.dpProcessPageTitle}</H4>
         <Block>
           {user.canWrite() && /*!env.disableDpProcess &&*/
           <Button kind="outline" onClick={() => toggleModal()}>

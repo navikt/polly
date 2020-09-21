@@ -229,6 +229,7 @@ export const no: IStrings = {
   overview: "Oversikt",
 
   dpProcessTitle: "Databehandlingen",
+  dpProcessPageTitle: "Databehandlinger til Behandlinger hvor NAV er databehandler",
   article9: "Behandles det særlige kategorier av personopplysninger?",
   article10: "Behandles det personopplysninger om straffedommer og lovovertredelser?",
   createDpProcess: "Opprett ny databehandling",
@@ -659,6 +660,7 @@ export const en: IStrings = {
   completeness: "Completeness",
   overview: "Overview",
   dpProcessTitle: "Data process",
+  dpProcessPageTitle: "Processes which are being process by NAV",
   article9: "Are special categories of personal data processed?",
   article10: "Is personal data about criminal convictions and offenses processed?",
   createDpProcess: "Create new data process",
