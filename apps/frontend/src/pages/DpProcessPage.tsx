@@ -12,19 +12,23 @@ import {Block} from "baseui/block";
 import {H4} from "baseui/typography";
 import {user} from "../service/User";
 import {useHistory} from "react-router-dom";
+import {StyledSpinnerNext} from "baseui/spinner";
 
 const DpProcessPage = () => {
   const [showModal, toggleModal] = useReducer(prevState => !prevState, false)
   const [errorDpProcessModal, setErrorDpProcessModal] = React.useState<string>('')
   const [dpProcesses, setDpProcesses] = useState<DpProcess[]>([])
+  const [isLoading,setLoading] = useState<boolean>(true)
   const history = useHistory()
 
   useEffect(() => {
     (async () => {
+      setLoading(true)
       let processes = await getAllDpProcesses();
       if (processes) {
         setDpProcesses(processes)
       }
+      setLoading(false)
     })()
   }, [])
 
@@ -64,7 +68,7 @@ const DpProcessPage = () => {
         submit={handleCreateDpProcess}
         errorOnCreate={errorDpProcessModal}
       />
-      <DpProcessTable dpProcesses={dpProcesses}/>
+      {!isLoading ? <DpProcessTable dpProcesses={dpProcesses}/> : <StyledSpinnerNext size={30}/> }
     </>
   )
 }
