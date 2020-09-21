@@ -117,6 +117,11 @@ const DpProcessView = () => {
               : intl.no}</span>
           </DataText>
 
+
+          <DataText label={intl.system} text={""}>
+            {dpProcess && (<DotTags list={ListName.SYSTEM} codes={dpProcess.affiliation.products} linkCodelist/>)}
+          </DataText>
+
           <DataText label={intl.organizing} text={""}>
             {dpProcess?.affiliation.department ? <Block>
               <span>{intl.department}: </span>

@@ -19,6 +19,7 @@ import FieldDpProcessAffiliation from "./common/FieldDpProcessAffiliation";
 import {dpProcessSchema} from "../common/schema";
 import {FieldDpProcessDates} from "./common/FieldDpProcessDates";
 import {Button, KIND} from "baseui/button";
+import FieldProduct from "../common/FieldProduct";
 
 type ModalDpProcessProps = {
   initialValues: DpProcessFormValues
@@ -134,6 +135,11 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                     <ModalLabel label={intl.article10}/>
                     <BoolField fieldName='art10' value={formikBag.values.art10}/>
                   </Block>
+
+                  <CustomizedModalBlock>
+                    <ModalLabel label={intl.system} tooltip={intl.systemHelpText}/>
+                    <FieldProduct formikBag={formikBag}/>
+                  </CustomizedModalBlock>
 
                   <Block {...rowBlockProps}>
                     <ModalLabel label={intl.isDataProcessorUsed}/>
