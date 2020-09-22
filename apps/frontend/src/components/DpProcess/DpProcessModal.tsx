@@ -20,6 +20,8 @@ import {dpProcessSchema} from "../common/schema";
 import {FieldDpProcessDates} from "./common/FieldDpProcessDates";
 import {Button, KIND} from "baseui/button";
 import FieldProduct from "../common/FieldProduct";
+import FieldDpProcessExternalProcessResponsible from "./common/FieldDpProcessExternalProcessResponsible";
+import {RadioBoolButton} from "../common/Radio";
 
 type ModalDpProcessProps = {
   initialValues: DpProcessFormValues
@@ -82,7 +84,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
     >
       <Block {...modalBlockProps}>
         <Formik
-          onSubmit={values =>{
+          onSubmit={values => {
             props.submit(values)
           }}
           initialValues={props.initialValues}
@@ -108,6 +110,22 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                     />
                   </CustomizedModalBlock>
                   <Error fieldName={'name'}/>
+
+
+                  <CustomizedModalBlock>
+                    <ModalLabel label={intl.externalProcessResponsible}/>
+                    <Block width={'100%'}>
+                      {showResponsibleSelect &&
+                      <FieldDpProcessExternalProcessResponsible thirdParty={formikBag.values.externalProcessResponsible}
+                                                                hideSelect={() => setShowResponsibleSelect(false)}/>}
+                      {!showResponsibleSelect && <RadioBoolButton
+                        value={showResponsibleSelect}
+                        setValue={(b) => setShowResponsibleSelect(b!)}
+                        omitUndefined
+                      />}
+                    </Block>
+                  </CustomizedModalBlock>
+
 
                   <CustomizedModalBlock>
                     <ModalLabel label={intl.description}/>
