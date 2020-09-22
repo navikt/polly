@@ -229,7 +229,7 @@ export const no: IStrings = {
   overview: "Oversikt",
 
   dpProcessTitle: "Databehandlingen",
-  dpProcessPageTitle: "Databehandlinger til Behandlinger hvor NAV er databehandler",
+  dpProcessPageTitle: "Behandlinger hvor NAV er databehandler",
   article9: "Behandles det særlige kategorier av personopplysninger?",
   article10: "Behandles det personopplysninger om straffedommer og lovovertredelser?",
   createDpProcess: "Opprett ny databehandling",

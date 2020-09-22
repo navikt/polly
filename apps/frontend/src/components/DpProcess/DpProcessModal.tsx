@@ -95,7 +95,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
               <Form onKeyDown={disableEnter}>
                 <ModalHeader>
                   <Block {...modalHeaderProps}>
-                    {intl.dpProcessTitle}
+                    {intl.dpProcessPageTitle}
                   </Block>
                 </ModalHeader>
                 <ModalBody>
