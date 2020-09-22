@@ -31,7 +31,7 @@ const DpProcessTable = (props: DpProcessTableProps) => {
         headers={
           <>
             <HeadCell
-              title={intl.dpProcess}
+              title={intl.process}
               column="name"
               tableState={[table, sortColumn]}
             />

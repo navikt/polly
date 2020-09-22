@@ -69,7 +69,7 @@ export const no: IStrings = {
   profilingExtra:
     "Med profilering mener vi at personopplysninger behandles automatisk for å kunne analysere eller forutsi noe om preferanser, evner eller behov til en enkeltperson. analysering av personopplysninger for å kunne forutsi noe om en enkeltperson, f.eks. personens preferanser, evner eller behov.",
   dataProcessor: "Databehandler",
-  dpProcessDataProcessor: "Databehandleravtale",
+  dpProcessDataProcessor: "Databehandleravtale med behandlingsansvarlig",
   subDataProcessor: "Underdatabehandler",
   isDataProcessorUsed: "Benyttes databehandler(e)?",
   isSubDataProcessorUsed: "Benyttes underdatabehandler(e)?",
@@ -489,7 +489,7 @@ export const en: IStrings = {
   profilingExtra:
     "By profiling we mean that personal data is processed automatically in order to analyze or predict something about the preferences, abilities or needs of an individual. Analyzing personal data is done to predict something about an individual, e.g. the person's preferences, abilities or needs.",
   dataProcessor: "Data processor",
-  dpProcessDataProcessor: "Data processor agreement",
+  dpProcessDataProcessor: "Data processor agreement with data controller",
   subDataProcessor: "Sub data processor",
   isDataProcessorUsed: "Is data processor used?",
   isSubDataProcessorUsed: "Is sub data processor used?",

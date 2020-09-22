@@ -100,15 +100,6 @@ const DpProcessView = () => {
             }
           </Block>
 
-          <DataText label={intl.description} text={dpProcess?.description}/>
-          <DataText label={intl.purpose} text={dpProcess?.purposeDescription}/>
-          <DataText label={intl.validityOfProcess} text={""}>
-            <ActiveIndicator alwaysShow={true} showDates={true} {...dpProcess} />
-          </DataText>
-
-          <DataText label={intl.article9} text={boolToText(dpProcess?.art9)}/>
-          <DataText label={intl.article10} text={boolToText(dpProcess?.art10)}/>
-
           <DataText label={intl.externalProcessResponsible} text={""}>
             <span>{!!dpProcess?.externalProcessResponsible ?
               <RouteLink href={`/thirdparty/${dpProcess.externalProcessResponsible.code}`}>
@@ -117,6 +108,16 @@ const DpProcessView = () => {
               : intl.no}</span>
           </DataText>
 
+          <DataText label={intl.description} text={dpProcess?.description}/>
+
+          <DataText label={intl.purpose} text={dpProcess?.purposeDescription}/>
+
+          <DataText label={intl.validityOfProcess} text={""}>
+            <ActiveIndicator alwaysShow={true} showDates={true} {...dpProcess} />
+          </DataText>
+
+          <DataText label={intl.article9} text={boolToText(dpProcess?.art9)}/>
+          <DataText label={intl.article10} text={boolToText(dpProcess?.art10)}/>
 
           <DataText label={intl.system} text={""}>
             {dpProcess && (<DotTags list={ListName.SYSTEM} codes={dpProcess.affiliation.products} linkCodelist/>)}
