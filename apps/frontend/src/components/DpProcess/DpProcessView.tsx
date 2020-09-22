@@ -139,7 +139,7 @@ const DpProcessView = () => {
               </Block>
             }
 
-            <Block>
+            <Block display="flex">
               <span>{intl.productTeam}: </span>
               {!!dpProcess?.affiliation.productTeams?.length ? <TeamList teamIds={dpProcess?.affiliation.productTeams}/> : intl.notFilled}
             </Block>

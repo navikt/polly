@@ -151,7 +151,7 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
                   <CustomizedModalBlock>
                     <ModalLabel label={intl.purposeOfTheProcess} tooltip={intl.processPurposeHelpText}/>
-                    <FieldDescription/>
+                    <FieldDescription />
                   </CustomizedModalBlock>
                   <Error fieldName='description'/>
 

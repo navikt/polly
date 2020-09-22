@@ -121,7 +121,7 @@ const ProcessData = (props: { process: Process }) => {
             : intl.no}</span>
         </Block>
 
-        <Block>
+        <Block display="flex">
           <span>{intl.productTeam}: </span>
           {!!process.affiliation.productTeams?.length ? <TeamList teamIds={process.affiliation.productTeams}/> : intl.notFilled}
         </Block>
