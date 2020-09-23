@@ -252,6 +252,13 @@ export const documentSort: ColumnCompares<DocumentInfoTypeUse> = {
   subjectCategories: (a, b) => a.subjectCategories.length - b.subjectCategories.length,
 }
 
+export const dpProcessSort: ColumnCompares<DpProcess> = {
+  name: (a, b) => a.name.localeCompare(b.name),
+  externalProcessResponsible: (a, b) => (a.externalProcessResponsible?.shortName || '').localeCompare(b.externalProcessResponsible?.shortName||''),
+  affiliation: (a, b) => (a.affiliation.department?.shortName || '').localeCompare(a.affiliation.department?.shortName || ''),
+  description: (a, b) => (a.description || '').localeCompare(b.description || '')
+}
+
 export interface InformationTypeShort {
   id: string;
   name: string;
