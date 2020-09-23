@@ -30,6 +30,7 @@ export interface IStrings {
   dpProcess: string;
   dpProcesses: string;
   dpProcessPageTitle: string;
+  thirdPartyDpProcessTableTitle: string;
   processes: string;
   legalBasis: string;
   legalBasisShort: string;

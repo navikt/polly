@@ -230,6 +230,7 @@ export const no: IStrings = {
 
   dpProcessTitle: "Databehandlingen",
   dpProcessPageTitle: "Behandlinger hvor NAV er databehandler",
+  thirdPartyDpProcessTableTitle: "NAV er databehandler for {0} i følgende behandlinger",
   article9: "Behandles det særlige kategorier av personopplysninger?",
   article10: "Behandles det personopplysninger om straffedommer og lovovertredelser?",
   createDpProcess: "Opprett ny databehandling",
@@ -661,6 +662,7 @@ export const en: IStrings = {
   overview: "Overview",
   dpProcessTitle: "Data process",
   dpProcessPageTitle: "Processes which are being process by NAV",
+  thirdPartyDpProcessTableTitle: "Nav is data processor fot {0} in following processors",
   article9: "Are special categories of personal data processed?",
   article10: "Is personal data about criminal convictions and offenses processed?",
   createDpProcess: "Create new data process",
