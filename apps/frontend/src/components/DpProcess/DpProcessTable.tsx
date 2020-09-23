@@ -1,17 +1,12 @@
-import {ColumnCompares, useTable} from "../../util/hooks";
+import {useTable} from "../../util/hooks";
 import {Cell, HeadCell, Row, Table} from "../common/Table";
 import {intl} from "../../util";
 import React from "react";
-import {DpProcess} from "../../constants";
+import {DpProcess, dpProcessSort} from "../../constants";
 import RouteLink from "../common/RouteLink";
 
 type DpProcessTableProps = {
   dpProcesses: DpProcess[]
-}
-
-const sorting: ColumnCompares<DpProcess> = {
-  name: (a, b) => a.name.localeCompare(b.name),
-  externalProcessResponsible: (a, b) => (a.externalProcessResponsible?.shortName || '').localeCompare(b.externalProcessResponsible?.shortName||'')
 }
 
 const DpProcessTable = (props: DpProcessTableProps) => {
@@ -19,8 +14,8 @@ const DpProcessTable = (props: DpProcessTableProps) => {
   const [table, sortColumn] = useTable<DpProcess, keyof DpProcess>(
     props.dpProcesses,
     {
-      sorting,
-      initialSortColumn:'name'
+      sorting: dpProcessSort,
+      initialSortColumn: 'name'
     }
   )
 

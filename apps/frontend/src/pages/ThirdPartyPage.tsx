@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {useEffect} from 'react'
+import {useEffect, useState} from 'react'
 import {intl} from '../util'
 import {useParams} from 'react-router-dom'
 import {codelist, ListName} from '../service/Codelist'
@@ -10,19 +10,21 @@ import TableDisclosure from '../components/common/TableDisclosure'
 import {H5, Label2, Paragraph2} from 'baseui/typography'
 import {Button, KIND} from 'baseui/button'
 import {user} from '../service/User'
-import {Disclosure, DisclosureFormValues, InformationType} from '../constants'
+import {Disclosure, DisclosureFormValues, DpProcess, InformationType} from '../constants'
 import ModalThirdParty from '../components/ThirdParty/ModalThirdPartyForm'
 import {StyledSpinnerNext} from 'baseui/spinner'
 import ThirdPartiesTable from '../components/common/ThirdPartiesTable'
 import ProcessList from '../components/Process'
 import {Section} from './ProcessPage'
+import {getAllDpProcesses} from "../api/DpProcessApi";
+import ThirdPartiesDpProcessTable from "../components/common/ThirdPartiesDpProcessTable";
 
 const labelBlockProps: BlockProps = {
   marginBottom: '1rem',
   font: 'font400'
 }
 
-export type PathParams = {thirdPartyCode: string}
+export type PathParams = { thirdPartyCode: string }
 
 const ThirdPartyPage = () => {
   const params = useParams<PathParams>()
@@ -30,7 +32,18 @@ const ThirdPartyPage = () => {
   const [disclosureList, setDisclosureList] = React.useState<Disclosure[]>([])
   const [informationTypeList, setInformationTypeList] = React.useState<InformationType[]>()
   const [showCreateModal, setShowCreateModal] = React.useState(false)
+  const [dpProcesses, setDpProcesses] = useState<DpProcess[]>([])
   const [error, setError] = React.useState<string>()
+
+  useEffect(() => {
+    (async () => {
+      let dps: DpProcess[] = await getAllDpProcesses();
+      if (dps) {
+        setDpProcesses(dps.filter(dp => dp.externalProcessResponsible?.code === params.thirdPartyCode))
+      }
+    })()
+  }, [])
+
 
   const handleCreateDisclosure = async (disclosure: DisclosureFormValues) => {
     try {
@@ -147,8 +160,15 @@ const ThirdPartyPage = () => {
               onCloseModal={() => setError(undefined)}
             />
           </Block>
+
           <Block>
             <ThirdPartiesTable informationTypes={informationTypeList || []} sortName={true}/>
+          </Block>
+
+          <Block>
+            <ThirdPartiesDpProcessTable
+              dpProcesses={dpProcesses || []}
+              tableTitle={codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)}/>
           </Block>
 
           <ProcessList section={Section.thirdparty} code={params.thirdPartyCode} listName={ListName.THIRD_PARTY}
