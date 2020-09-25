@@ -4,19 +4,12 @@ import {InformationType, informationTypeSort} from '../../constants'
 import {useTable} from '../../util/hooks'
 import {Cell, HeadCell, Row, Table} from './Table'
 import RouteLink from "./RouteLink";
-import {Label2} from "baseui/typography";
-import {BlockProps} from "baseui/block";
+import {HeadingSmall} from "baseui/typography";
 
 type TableInformationTypes = {
   informationTypes: Array<InformationType>;
   sortName: Boolean
 };
-
-const labelBlockProps: BlockProps = {
-  marginBottom: '2rem',
-  font: 'font400',
-  marginTop: '2rem'
-}
 
 const ThirdPartiesTable = ({informationTypes, sortName}: TableInformationTypes) => {
 
@@ -24,7 +17,7 @@ const ThirdPartiesTable = ({informationTypes, sortName}: TableInformationTypes) 
 
   return (
     <React.Fragment>
-      <Label2 {...labelBlockProps}>{intl.retrievedFromThirdParty}</Label2>
+      <HeadingSmall>{intl.retrievedFromThirdParty}</HeadingSmall>
 
       <Table
         emptyText={intl.retrievedFromThirdParty.toLowerCase()}

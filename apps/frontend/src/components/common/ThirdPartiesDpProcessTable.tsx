@@ -5,20 +5,13 @@ import {DpProcess, dpProcessSort, Team} from '../../constants'
 import {useTable} from '../../util/hooks'
 import {Cell, HeadCell, Row, Table} from './Table'
 import RouteLink from "./RouteLink";
-import {Label2} from "baseui/typography";
-import {BlockProps} from "baseui/block";
+import {HeadingSmall} from "baseui/typography";
 import {getTeam} from "../../api";
 
 type TableDpProcessType = {
   dpProcesses: Array<DpProcess>;
   tableTitle: string;
 };
-
-const labelBlockProps: BlockProps = {
-  marginBottom: '2rem',
-  font: 'font400',
-  marginTop: '2rem'
-}
 
 const ThirdPartiesDpProcessTable = ({dpProcesses,tableTitle}: TableDpProcessType) => {
 
@@ -44,8 +37,7 @@ const ThirdPartiesDpProcessTable = ({dpProcesses,tableTitle}: TableDpProcessType
 
   return (
     <React.Fragment>
-      <Label2 {...labelBlockProps}>{intl.formatString(intl.thirdPartyDpProcessTableTitle,tableTitle)}</Label2>
-
+      <HeadingSmall>{intl.formatString(intl.thirdPartyDpProcessTableTitle,tableTitle)}</HeadingSmall>
       <Table
         emptyText={intl.retrievedFromThirdParty.toLowerCase()}
         headers={
