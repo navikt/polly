@@ -10,7 +10,7 @@ import {processPath} from '../routes'
 import * as queryString from 'query-string'
 import {PageHeader} from '../components/common/PageHeader'
 import {HeadingSmall} from 'baseui/typography'
-import {intl} from '../util'
+import {intl, theme} from '../util'
 import {Block} from "baseui/block/index"
 import {getDashboard} from '../api'
 import Charts from '../components/Charts/Charts'
@@ -78,7 +78,7 @@ const ProcessPage = () => {
       <PageHeader section={section} code={code}/>
       <ProcessList code={code} listName={listNameForSection(section)} processId={processId} filter={filter} section={section} moveScroll={moveScroll}/>
       {!isLoading && section === Section.department &&(
-        <Block>
+        <Block marginBottom={theme.sizing.scale1200}>
           <HeadingSmall>{intl.overview}</HeadingSmall>
             <Charts
                 chartData={chartData!}
