@@ -192,6 +192,18 @@ const useMainSearch = () => {
       })()
     }
 
+    if (searchResult.length > 0) {
+      let searchResultsThatIncludeKeyword = []
+      let searchResultsWithoutKeyword = []
+      for (let i = 0; i < searchResult.length; i++) {
+        if (searchResult[i].label.props.name.toLocaleLowerCase().includes(search)) {
+          searchResultsThatIncludeKeyword.push(searchResult[i])
+        } else {
+          searchResultsWithoutKeyword.push(searchResult[i])
+        }
+      }
+      setSearchResult(searchResultsThatIncludeKeyword.concat(searchResultsWithoutKeyword))
+    }
 
   }, [search, type])
 
@@ -280,7 +292,7 @@ const SelectType = (props: { type: SearchType, setType: (type: SearchType) => vo
 export const MainSearch = () => {
   const [setSearch, searchResult, loading, type, setType] = useMainSearch()
   const [filter, setFilter] = useState(false)
-  const [value, setValue] = useState<Value>()
+  const [value, setValue] = useState<Value>([])
   const history = useHistory()
   const location = useLocation()
 
