@@ -82,7 +82,6 @@ export const dpProcessToFormValues = (dpProcess: Partial<DpProcess>): DpProcessF
     name: name || '',
     purposeDescription: purposeDescription || '',
     retention: {
-      retentionPlan: mapBool(retention?.retentionPlan),
       retentionMonths: retention?.retentionMonths || 0,
       retentionStart: retention?.retentionStart || '',
       retentionDescription: retention?.retentionDescription || ''

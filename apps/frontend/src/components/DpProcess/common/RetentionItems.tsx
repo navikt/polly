@@ -5,7 +5,6 @@ import {Block, BlockProps} from "baseui/block";
 import {Error, ModalLabel} from "../../common/ModalSchema";
 import {intl, theme} from "../../../util";
 import {Slider} from "baseui/slider";
-import BoolField from "../../Process/common/BoolField";
 import FieldInput from "../../Process/common/FieldInput";
 
 function sliderOverride(suffix: string) {
@@ -41,12 +40,7 @@ const RetentionItems = (props: { formikBag: FormikProps<DpProcessFormValues> }) 
 
   return (
     <>
-      <Block {...rowBlockProps} marginTop={0}>
-        <ModalLabel label={intl.includeConservationPlan} tooltip={intl.retentionHelpText}/>
-        <BoolField fieldName='retention.retentionPlan' value={formikBag.values.retention.retentionPlan}/>
-      </Block>
-
-      {<>
+      <>
         <Block {...rowBlockProps}>
           <ModalLabel label={intl.retentionMonths}/>
           <Field
@@ -82,7 +76,7 @@ const RetentionItems = (props: { formikBag: FormikProps<DpProcessFormValues> }) 
           </Block>
         </Block>
         <Error fieldName='retention.retentionStart'/>
-      </>}
+      </>
       <Block {...rowBlockProps}>
         <ModalLabel label={intl.retentionReference}/>
         <FieldInput

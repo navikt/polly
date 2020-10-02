@@ -146,15 +146,6 @@ const DpProcessView = () => {
           </DataText>
           <DataText label={intl.retention} text={""}>
             <>
-              {dpProcess?.retention?.retentionPlan === null && intl.retentionPlanUnclarified}
-              {dpProcess?.retention?.retentionPlan === false && intl.retentionPlanNo}
-            </>
-            <>
-              {dpProcess?.retention?.retentionPlan &&
-              <Block>
-                <Block>{intl.retentionPlanYes}</Block>
-              </Block>
-              }
               <Block>
                 <RetentionView retention={dpProcess?.retention}/>
               </Block>
