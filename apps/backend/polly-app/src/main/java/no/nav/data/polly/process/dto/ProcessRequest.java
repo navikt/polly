@@ -1,5 +1,6 @@
 package no.nav.data.polly.process.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -58,6 +59,9 @@ public class ProcessRequest implements RequestElement {
 
     private boolean update;
     private int requestIndex;
+
+    @JsonIgnore
+    private int newProcessNumber;
 
     @Override
     public String getIdentifyingFields() {

@@ -24,6 +24,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class ProcessData {
 
+    private int number;
     private String description;
 
     @NotNull

@@ -88,6 +88,7 @@ public class Process extends Auditable {
     public ProcessResponse convertToResponse() {
         return ProcessResponse.builder()
                 .id(id)
+                .number(data.getNumber())
                 .name(name)
                 .description(data.getDescription())
                 .purpose(getPurposeCodeResponse())
@@ -119,6 +120,7 @@ public class Process extends Auditable {
     public Process convertFromRequest(ProcessRequest request) {
         if (!request.isUpdate()) {
             id = UUID.randomUUID();
+            data.setNumber(request.getNewProcessNumber());
         }
 
         setName(request.getName());
