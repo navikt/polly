@@ -42,7 +42,7 @@ public interface ProcessRepository extends JpaRepository<Process, UUID>, Process
     @Query(value = "select jsonb_array_elements(data #> '{affiliation,productTeams}') ->> 0  as code, count(1) as count from process group by code", nativeQuery = true)
     List<ProcessCount> countTeam();
 
-    @Query(value = "select nextval('process_number)", nativeQuery = true)
+    @Query(value = "select nextval('process_number')", nativeQuery = true)
     int nextProcessNumber();
 
 }
