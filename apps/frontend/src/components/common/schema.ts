@@ -153,7 +153,6 @@ export const dpProcessSchema =
     retention: yup.object<Retention>({
       retentionMonths: yup.number(),
       retentionStart: yup.string(),
-      retentionDescription: yup.string(),
     }),
 
     start: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),

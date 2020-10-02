@@ -77,15 +77,6 @@ const RetentionItems = (props: { formikBag: FormikProps<DpProcessFormValues> }) 
         </Block>
         <Error fieldName='retention.retentionStart'/>
       </>
-      <Block {...rowBlockProps}>
-        <ModalLabel label={intl.retentionReference}/>
-        <FieldInput
-          fieldName='retention.retentionDescription'
-          fieldValue={formikBag.values.retention.retentionDescription}
-          placeHolder={intl.retentionDescriptionPlaceHolder}
-        />
-      </Block>
-      < Error fieldName='retention.retentionDescription'/>
     </>
   )
 }

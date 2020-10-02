@@ -84,7 +84,6 @@ export const dpProcessToFormValues = (dpProcess: Partial<DpProcess>): DpProcessF
     retention: {
       retentionMonths: retention?.retentionMonths || 0,
       retentionStart: retention?.retentionStart || '',
-      retentionDescription: retention?.retentionDescription || ''
     },
     start: start || env.defaultStartDate
   }

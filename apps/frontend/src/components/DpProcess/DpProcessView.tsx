@@ -11,7 +11,6 @@ import DataText from "../common/DataText";
 import {codelist, ListName} from "../../service/Codelist";
 import {TeamList} from "../common/Team";
 import {RetentionView} from "../Process/Retention";
-import {shortenLinksInText} from "../../util/helper-functions";
 import {ActiveIndicator} from "../common/Durations";
 import {boolToText} from "../common/Radio";
 import RouteLink from "../common/RouteLink";
@@ -148,10 +147,6 @@ const DpProcessView = () => {
             <>
               <Block>
                 <RetentionView retention={dpProcess?.retention}/>
-              </Block>
-              <Block>
-                <span>{dpProcess?.retention?.retentionDescription && `${intl.retentionDescription}: `}</span>
-                {dpProcess?.retention?.retentionDescription && shortenLinksInText(dpProcess?.retention?.retentionDescription)}
               </Block>
             </>
           </DataText>
