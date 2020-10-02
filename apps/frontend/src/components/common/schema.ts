@@ -114,6 +114,7 @@ export const processSchema = () =>
     profiling: yup.boolean(),
     dataProcessing: dataProcessingSchema(),
     retention: yup.object<Retention>({
+      retentionPlan: yup.boolean(),
       retentionMonths: yup.number(),
       retentionStart: yup.string(),
       retentionDescription: yup.string(),
