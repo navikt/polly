@@ -160,19 +160,10 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                   </CustomizedModalBlock>
 
                   <Block {...rowBlockProps}>
-                    <ModalLabel label={intl.isDataProcessorUsed}/>
-                    <BoolField fieldName='dataProcessingAgreement'
-                               value={formikBag.values.dataProcessingAgreement}/>
+                    <ModalLabel label={intl.dataProcessorAgreement}/>
+                    <FieldDpProcessDataProcessingAgreements formikBag={formikBag}/>
                   </Block>
-
-                  {formikBag.values.dataProcessingAgreement && <>
-                    <Block {...rowBlockProps}>
-                      <ModalLabel label={intl.dataProcessorAgreement}/>
-                      <FieldDpProcessDataProcessingAgreements formikBag={formikBag}/>
-                    </Block>
-                    <Error fieldName='dataProcessingAgreements'/>
-                  </>
-                  }
+                  <Error fieldName='dataProcessingAgreements'/>
 
                   <StatelessAccordion overrides={{
                     Root: {

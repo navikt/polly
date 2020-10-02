@@ -10,6 +10,7 @@ import {
   DocumentInfoTypeUse,
   Dpia,
   DpProcessFormValues,
+  DpRetention,
   InformationtypeFormValues,
   InformationTypeShort,
   LegalBasesUse,
@@ -142,7 +143,6 @@ export const dpProcessSchema =
     art10: yup.boolean(),
     art9: yup.boolean(),
 
-    dataProcessingAgreement: yup.boolean(),
     dataProcessingAgreements: yup.array().of(yup.string()),
 
     description: yup.string(),
@@ -152,11 +152,9 @@ export const dpProcessSchema =
     id: yup.string(),
     name: yup.string().required(intl.required),
     purposeDescription: yup.string(),
-    retention: yup.object<Retention>({
-      retentionPlan: yup.boolean(),
+    retention: yup.object<DpRetention>({
       retentionMonths: yup.number(),
       retentionStart: yup.string(),
-      retentionDescription: yup.string(),
     }),
 
     start: yup.string().matches(DATE_REGEX, {message: intl.dateFormat}),

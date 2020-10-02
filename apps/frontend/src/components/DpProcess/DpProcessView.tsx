@@ -11,7 +11,6 @@ import DataText from "../common/DataText";
 import {codelist, ListName} from "../../service/Codelist";
 import {TeamList} from "../common/Team";
 import {RetentionView} from "../Process/Retention";
-import {shortenLinksInText} from "../../util/helper-functions";
 import {ActiveIndicator} from "../common/Durations";
 import {boolToText} from "../common/Radio";
 import RouteLink from "../common/RouteLink";
@@ -146,48 +145,27 @@ const DpProcessView = () => {
           </DataText>
           <DataText label={intl.retention} text={""}>
             <>
-              {dpProcess?.retention?.retentionPlan === null && intl.retentionPlanUnclarified}
-              {dpProcess?.retention?.retentionPlan === false && intl.retentionPlanNo}
-            </>
-            <>
-              {dpProcess?.retention?.retentionPlan &&
-              <Block>
-                <Block>{intl.retentionPlanYes}</Block>
-              </Block>
-              }
               <Block>
                 <RetentionView retention={dpProcess?.retention}/>
-              </Block>
-              <Block>
-                <span>{dpProcess?.retention?.retentionDescription && `${intl.retentionDescription}: `}</span>
-                {dpProcess?.retention?.retentionDescription && shortenLinksInText(dpProcess?.retention?.retentionDescription)}
               </Block>
             </>
           </DataText>
           <DataText label={intl.dpProcessDataProcessor} text={""}>
             <>
-              {dpProcess?.dataProcessingAgreement === null && intl.dpProcessDataProcessorUnclarified}
-              {dpProcess?.dataProcessingAgreement === false && intl.dpProcessDataProcessorNo}
-            </>
-            <>
-              {dpProcess?.dataProcessingAgreement &&
               <Block>
-                <Block>{intl.dpProcessDataProcessorYes}</Block>
                 <Block>
                   {isDataProcessingAgreementsAvailable &&
                   <Block display='flex' alignItems="center">
                     <Block $style={{whiteSpace: 'nowrap', margin: '1rem 0'}}>
                       {`${intl.dataProcessorAgreement}: `}
                     </Block>
-                    <DotTags items={dpProcess.dataProcessingAgreements} markdown/>
+                    <DotTags items={dpProcess?.dataProcessingAgreements} markdown/>
                   </Block>
                   }
                 </Block>
-              </Block>}
+              </Block>
             </>
-
           </DataText>
-
 
           <DataText label={intl.subDataProcessor} text={""}>
             <>
