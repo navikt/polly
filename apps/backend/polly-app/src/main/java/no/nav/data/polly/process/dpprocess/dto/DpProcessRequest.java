@@ -1,4 +1,4 @@
-package no.nav.data.polly.process.dto;
+package no.nav.data.polly.process.dpprocess.dto;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,6 @@ import no.nav.data.common.validator.RequestElement;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.process.dto.sub.AffiliationRequest;
 import no.nav.data.polly.process.dto.sub.DataProcessingRequest;
-import no.nav.data.polly.process.dto.sub.RetentionRequest;
 
 import java.util.List;
 
@@ -41,7 +40,6 @@ public class DpProcessRequest implements RequestElement {
     @ApiModelProperty(dataType = LOCAL_DATE, example = DEFAULT_END)
     private String end;
 
-    private Boolean dataProcessingAgreement;
     @Singular
     private List<String> dataProcessingAgreements;
     private DataProcessingRequest subDataProcessing;
@@ -51,7 +49,7 @@ public class DpProcessRequest implements RequestElement {
     private Boolean art9;
     private Boolean art10;
 
-    private RetentionRequest retention;
+    private DpRetentionRequest retention;
 
     private boolean update;
     private int requestIndex;
@@ -71,7 +69,7 @@ public class DpProcessRequest implements RequestElement {
 
         setAffiliation(getAffiliation() != null ? getAffiliation() : new AffiliationRequest());
         setSubDataProcessing(getSubDataProcessing() != null ? getSubDataProcessing() : new DataProcessingRequest());
-        setRetention(getRetention() != null ? getRetention() : new RetentionRequest());
+        setRetention(getRetention() != null ? getRetention() : new DpRetentionRequest());
     }
 
     @Override

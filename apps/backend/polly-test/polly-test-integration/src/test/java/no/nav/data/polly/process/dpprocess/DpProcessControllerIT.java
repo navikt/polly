@@ -1,11 +1,12 @@
-package no.nav.data.polly.process;
+package no.nav.data.polly.process.dpprocess;
 
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
-import no.nav.data.polly.process.DpProcessController.DpProcessPage;
-import no.nav.data.polly.process.dto.DpProcessRequest;
-import no.nav.data.polly.process.dto.DpProcessResponse;
+import no.nav.data.polly.process.dpprocess.DpProcessController.DpProcessPage;
+import no.nav.data.polly.process.dpprocess.dto.DpProcessRequest;
+import no.nav.data.polly.process.dpprocess.dto.DpProcessResponse;
+import no.nav.data.polly.process.dpprocess.dto.DpRetentionRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -107,14 +108,13 @@ class DpProcessControllerIT extends IntegrationTestBase {
                 .externalProcessResponsible(CodelistService.getCodelistResponse(ListName.THIRD_PARTY, "SKATT"))
                 .start(LocalDate.now())
                 .end(LocalDate.now().plusDays(1))
-                .dataProcessingAgreement(true)
                 .dataProcessingAgreement("Agreement 1")
                 .subDataProcessing(dataProcessingResponse())
                 .purposeDescription("purpose description")
                 .description("description")
                 .art9(true)
                 .art10(true)
-                .retention(retentionResponse())
+                .retention(dpRetentionResponse())
                 .build());
     }
 
@@ -125,14 +125,17 @@ class DpProcessControllerIT extends IntegrationTestBase {
                 .externalProcessResponsible("SKATT")
                 .start(LocalDate.now().toString())
                 .end(LocalDate.now().plusDays(1).toString())
-                .dataProcessingAgreement(true)
                 .dataProcessingAgreement("Agreement 1")
                 .subDataProcessing(dataProcessingRequest())
                 .purposeDescription("purpose description")
                 .description("description")
                 .art9(true)
                 .art10(true)
-                .retention(retentionRequest())
+                .retention(dpRetentionRequest())
                 .build();
+    }
+
+    protected DpRetentionRequest dpRetentionRequest() {
+        return DpRetentionRequest.builder().retentionMonths(24).retentionStart("Birth").build();
     }
 }

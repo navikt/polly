@@ -17,12 +17,12 @@ import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
-import no.nav.data.polly.process.domain.DpProcess;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.repo.DpProcessRepository;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
+import no.nav.data.polly.process.dpprocess.domain.DpProcess;
+import no.nav.data.polly.process.dpprocess.dto.DpProcessShortResponse;
 import no.nav.data.polly.process.dto.ProcessShortResponse;
-import no.nav.data.polly.process.dto.sub.DpProcessShortResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

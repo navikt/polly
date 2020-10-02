@@ -1,4 +1,4 @@
-package no.nav.data.polly.process;
+package no.nav.data.polly.process.dpprocess;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -8,10 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.PageParameters;
 import no.nav.data.common.rest.RestResponsePage;
-import no.nav.data.polly.process.domain.DpProcess;
 import no.nav.data.polly.process.domain.repo.DpProcessRepository;
-import no.nav.data.polly.process.dto.DpProcessRequest;
-import no.nav.data.polly.process.dto.DpProcessResponse;
+import no.nav.data.polly.process.dpprocess.domain.DpProcess;
+import no.nav.data.polly.process.dpprocess.dto.DpProcessRequest;
+import no.nav.data.polly.process.dpprocess.dto.DpProcessResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
