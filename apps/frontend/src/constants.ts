@@ -179,6 +179,11 @@ export interface Retention {
   retentionDescription?: string;
 }
 
+export interface DpRetention {
+  retentionMonths?: number;
+  retentionStart?: string;
+}
+
 export interface LegalBasisFormValues {
   gdpr?: string;
   nationalLaw?: string;
@@ -254,7 +259,7 @@ export const documentSort: ColumnCompares<DocumentInfoTypeUse> = {
 
 export const dpProcessSort: ColumnCompares<DpProcess> = {
   name: (a, b) => a.name.localeCompare(b.name),
-  externalProcessResponsible: (a, b) => (a.externalProcessResponsible?.shortName || '').localeCompare(b.externalProcessResponsible?.shortName||''),
+  externalProcessResponsible: (a, b) => (a.externalProcessResponsible?.shortName || '').localeCompare(b.externalProcessResponsible?.shortName || ''),
   affiliation: (a, b) => (a.affiliation.department?.shortName || '').localeCompare(a.affiliation.department?.shortName || ''),
   description: (a, b) => (a.description || '').localeCompare(b.description || '')
 }
@@ -310,7 +315,7 @@ export interface DpProcess extends IDurationed {
   changeStamp: ChangeStamp;
   art9?: boolean;
   art10?: boolean;
-  retention: Retention
+  retention: DpRetention
 }
 
 export interface DpProcessFormValues {
@@ -324,7 +329,7 @@ export interface DpProcessFormValues {
   subDataProcessing: DataProcessingFormValues;
   art9?: boolean;
   art10?: boolean;
-  retention: Retention
+  retention: DpRetention
   start?: string;
   end?: string;
 }

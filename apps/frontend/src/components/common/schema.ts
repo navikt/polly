@@ -10,6 +10,7 @@ import {
   DocumentInfoTypeUse,
   Dpia,
   DpProcessFormValues,
+  DpRetention,
   InformationtypeFormValues,
   InformationTypeShort,
   LegalBasesUse,
@@ -151,7 +152,7 @@ export const dpProcessSchema =
     id: yup.string(),
     name: yup.string().required(intl.required),
     purposeDescription: yup.string(),
-    retention: yup.object<Retention>({
+    retention: yup.object<DpRetention>({
       retentionMonths: yup.number(),
       retentionStart: yup.string(),
     }),
