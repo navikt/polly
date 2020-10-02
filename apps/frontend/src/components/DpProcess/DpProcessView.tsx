@@ -166,28 +166,20 @@ const DpProcessView = () => {
           </DataText>
           <DataText label={intl.dpProcessDataProcessor} text={""}>
             <>
-              {dpProcess?.dataProcessingAgreement === null && intl.dpProcessDataProcessorUnclarified}
-              {dpProcess?.dataProcessingAgreement === false && intl.dpProcessDataProcessorNo}
-            </>
-            <>
-              {dpProcess?.dataProcessingAgreement &&
               <Block>
-                <Block>{intl.dpProcessDataProcessorYes}</Block>
                 <Block>
                   {isDataProcessingAgreementsAvailable &&
                   <Block display='flex' alignItems="center">
                     <Block $style={{whiteSpace: 'nowrap', margin: '1rem 0'}}>
                       {`${intl.dataProcessorAgreement}: `}
                     </Block>
-                    <DotTags items={dpProcess.dataProcessingAgreements} markdown/>
+                    <DotTags items={dpProcess?.dataProcessingAgreements} markdown/>
                   </Block>
                   }
                 </Block>
-              </Block>}
+              </Block>
             </>
-
           </DataText>
-
 
           <DataText label={intl.subDataProcessor} text={""}>
             <>

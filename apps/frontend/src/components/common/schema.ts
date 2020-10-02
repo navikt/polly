@@ -142,7 +142,6 @@ export const dpProcessSchema =
     art10: yup.boolean(),
     art9: yup.boolean(),
 
-    dataProcessingAgreement: yup.boolean(),
     dataProcessingAgreements: yup.array().of(yup.string()),
 
     description: yup.string(),
