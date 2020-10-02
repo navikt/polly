@@ -32,7 +32,6 @@ import no.nav.data.polly.policy.domain.LegalBasesUse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.policy.domain.PolicyRepository;
-import no.nav.data.polly.process.domain.DpProcess;
 import no.nav.data.polly.process.domain.DpProcessData;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
@@ -42,6 +41,8 @@ import no.nav.data.polly.process.domain.repo.ProcessDistributionRepository;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.domain.sub.Affiliation;
 import no.nav.data.polly.process.domain.sub.DataProcessing;
+import no.nav.data.polly.process.dpprocess.domain.DpProcess;
+import no.nav.data.polly.process.dpprocess.dto.DpRetentionResponse;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessResponse.ProcessResponseBuilder;
 import no.nav.data.polly.process.dto.sub.AffiliationRequest;
@@ -407,6 +408,13 @@ public abstract class IntegrationTestBase {
                 .retentionMonths(24)
                 .retentionStart("Birth")
                 .retentionDescription("ret desc")
+                .build();
+    }
+
+    protected DpRetentionResponse dpRetentionResponse() {
+        return DpRetentionResponse.builder()
+                .retentionMonths(24)
+                .retentionStart("Birth")
                 .build();
     }
 
