@@ -36,6 +36,7 @@ public class ProcessRequest implements RequestElement {
     private String id;
     private String name;
     private String description;
+    private String additionalDescription;
     @ApiModelProperty(value = "Codelist PURPOSE")
     private String purposeCode;
     @ApiModelProperty(value = "Codelist THIRD_PARTY")
@@ -73,6 +74,7 @@ public class ProcessRequest implements RequestElement {
         setPurposeCode(toUpperCaseAndTrim(getPurposeCode()));
         setCommonExternalProcessResponsible(toUpperCaseAndTrim(getCommonExternalProcessResponsible()));
         setDescription(trimToNull(getDescription()));
+        setAdditionalDescription(trimToNull(getAdditionalDescription()));
 
         setAffiliation(getAffiliation() != null ? getAffiliation() : new AffiliationRequest());
         setDataProcessing(getDataProcessing() != null ? getDataProcessing() : new DataProcessingRequest());

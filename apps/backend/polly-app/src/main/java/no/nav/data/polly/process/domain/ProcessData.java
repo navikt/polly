@@ -26,6 +26,7 @@ public class ProcessData {
 
     private int number;
     private String description;
+    private String additionalDescription;
 
     @NotNull
     private LocalDate start;

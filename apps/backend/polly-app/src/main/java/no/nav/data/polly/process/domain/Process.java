@@ -91,6 +91,7 @@ public class Process extends Auditable {
                 .number(data.getNumber())
                 .name(name)
                 .description(data.getDescription())
+                .additionalDescription(data.getAdditionalDescription())
                 .purpose(getPurposeCodeResponse())
                 .purposeCode(purposeCode)
                 .affiliation(data.getAffiliation().convertToResponse())
@@ -126,6 +127,7 @@ public class Process extends Auditable {
         setName(request.getName());
         setPurposeCode(request.getPurposeCode());
         data.setDescription(request.getDescription());
+        data.setAdditionalDescription(request.getAdditionalDescription());
         data.setAffiliation(convertAffiliation(request.getAffiliation()));
         data.setCommonExternalProcessResponsible(request.getCommonExternalProcessResponsible());
         data.setStart(DateUtil.parseStart(request.getStart()));
