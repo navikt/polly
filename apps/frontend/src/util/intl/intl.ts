@@ -22,6 +22,7 @@ export interface IStrings {
   termEditHeader: string;
   purpose: string;
   processPurpose: string;
+  processNumber: string;
   purposeOfTheProcess: string;
   purposeDescription: string;
   sensitivity: string;

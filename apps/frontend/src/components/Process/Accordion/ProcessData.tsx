@@ -40,7 +40,7 @@ const showDpiaRequiredField = (dpia?: Dpia) => {
   }
 }
 
-const ProcessData = (props: { process: Process }) => {
+const ProcessData = (props: {process: Process}) => {
   const {process} = props
   const dataProcessorAgreements = !!process.dataProcessing?.dataProcessorAgreements.length
   const [riskOwnerFullName, setRiskOwnerFullName] = React.useState<string>()
@@ -60,16 +60,18 @@ const ProcessData = (props: { process: Process }) => {
   return (
     <Block>
 
+      <DataText label={intl.processNumber} text={'' + process.number}/>
+
       <DataText label={intl.purposeOfTheProcess} text={process.description}/>
 
       {process.legalBases.length ?
         <DataText label={intl.legalBasis} text={""}>
           {process
-            .legalBases
-            .sort((a, b) => (codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code)).localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
-            .map((legalBasis, index) =>
-              <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
-            )}
+          .legalBases
+          .sort((a, b) => (codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code)).localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
+          .map((legalBasis, index) =>
+            <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
+          )}
         </DataText> :
         <>
           <DataText label={intl.legalBasis}/>
@@ -222,7 +224,7 @@ const ProcessData = (props: { process: Process }) => {
   )
 }
 
-const Completeness = (props: { process: Process }) => {
+const Completeness = (props: {process: Process}) => {
   const {process} = props
   const completeness = {
     dpia: !isNil(process.dpia?.needForDpia),

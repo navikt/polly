@@ -287,6 +287,7 @@ export interface DpProcessShort {
 export interface Process extends IDurationed {
   id: string;
   name: string;
+  number: number;
   description?: string;
   legalBases: LegalBasis[];
   affiliation: Affiliation;
