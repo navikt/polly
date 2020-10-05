@@ -35,6 +35,7 @@ import PanelTitle from "../common/PanelTitle";
 import FieldTransferGroundsOutsideEU from '../common/FieldTransferGroundsOutsideEU'
 import FieldTransferGroundsOutsideEUOther from '../common/FieldTransferGroundsOutsideEUOther'
 import FieldTransferCountries from '../common/FieldTransferCountries'
+import FieldAdditionalDescription from '../common/FieldAdditionalDescription'
 
 const modalHeaderProps: BlockProps = {
   display: 'flex',
@@ -154,6 +155,12 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                     <FieldDescription />
                   </CustomizedModalBlock>
                   <Error fieldName='description'/>
+
+                  <CustomizedModalBlock>
+                    <ModalLabel label={intl.additionalDescription} tooltip={intl.additionalDescriptionHelpText}/>
+                    <FieldAdditionalDescription />
+                  </CustomizedModalBlock>
+                  <Error fieldName='additionalDescription'/>
 
                   <CustomizedModalBlock>
                     <ModalLabel label={intl.isProcessImplemented} tooltip={intl.dpiaHelpText}/>

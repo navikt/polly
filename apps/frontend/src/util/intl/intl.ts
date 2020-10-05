@@ -339,6 +339,7 @@ export interface IStrings {
   groups: string;
   description: string;
   additionalDescription: string;
+  additionalDescriptionHelpText: string;
   document: string;
   edit: string;
   update: string;

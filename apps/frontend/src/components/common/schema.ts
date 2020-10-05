@@ -100,6 +100,7 @@ export const processSchema = () =>
       )
       .required(intl.required),
     description: yup.string(),
+    additionalDescription: yup.string(),
     affiliation: yup.object<AffiliationFormValues>({
       department: yup.string(),
       subDepartments: yup.array().of(yup.string()),

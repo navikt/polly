@@ -115,6 +115,7 @@ export interface ProcessFormValues {
   purposeCode?: string;
   name?: string;
   description?: string;
+  additionalDescription?: string;
   affiliation: AffiliationFormValues
   commonExternalProcessResponsible?: string;
   legalBases: Array<LegalBasisFormValues>;
@@ -289,6 +290,7 @@ export interface Process extends IDurationed {
   name: string;
   number: number;
   description?: string;
+  additionalDescription?: string;
   legalBases: LegalBasis[];
   affiliation: Affiliation;
   commonExternalProcessResponsible: Code;
