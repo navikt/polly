@@ -166,8 +166,13 @@ const ThirdPartyPage = () => {
               tableTitle={codelist.getShortname(ListName.THIRD_PARTY, params.thirdPartyCode)}/>
           </Block>
 
-          <ProcessList section={Section.thirdparty} code={params.thirdPartyCode} listName={ListName.THIRD_PARTY}
-                       titleOverride={`${intl.commonExternalProcessResponsible} ${intl.with} ${intl.pollyOrg}`}/>
+          <ProcessList 
+            section={Section.thirdparty}
+            code={params.thirdPartyCode}
+            listName={ListName.THIRD_PARTY}
+            isEditable={false}
+            titleOverride={`${intl.commonExternalProcessResponsible} ${intl.with} ${intl.pollyOrg}`} 
+          />
 
         </>
       )}

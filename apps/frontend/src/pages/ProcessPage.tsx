@@ -76,7 +76,15 @@ const ProcessPage = () => {
   return (
     <>
       <PageHeader section={section} code={code}/>
-      <ProcessList code={code} listName={listNameForSection(section)} processId={processId} filter={filter} section={section} moveScroll={moveScroll}/>
+      <ProcessList 
+        code={code}
+        listName={listNameForSection(section)}
+        processId={processId}
+        filter={filter}
+        section={section}
+        moveScroll={moveScroll}
+        isEditable={true}
+      />
       {!isLoading && section === Section.department &&(
         <Block marginBottom={theme.sizing.scale1200}>
           <HeadingSmall>{intl.overview}</HeadingSmall>

@@ -41,11 +41,12 @@ type ProcessListProps = {
   code: string;
   listName?: ListName;
   moveScroll?: Function;
+  isEditable: boolean
 }
 
 const sortProcess = (list: ProcessShort[]) => list.sort((p1, p2) => p1.name.localeCompare(p2.name, intl.getLanguage()))
 
-const ProcessList = ({code, listName, filter, processId, section, moveScroll, titleOverride}: ProcessListProps) => {
+const ProcessList = ({code, listName, filter, processId, section, moveScroll, titleOverride, isEditable}: ProcessListProps) => {
   const [processList, setProcessList] = React.useState<ProcessShort[]>([])
   const [currentProcess, setCurrentProcess] = React.useState<Process | undefined>()
   const [showCreateProcessModal, setShowCreateProcessModal] = React.useState(false)
@@ -242,7 +243,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
               {intl.export}
             </Button>
           </StyledLink>
-          {hasAccess() && (
+          {isEditable && hasAccess() && (
             <Button
               size={ButtonSize.compact}
               kind={KIND.minimal}

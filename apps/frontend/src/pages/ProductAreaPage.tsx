@@ -30,7 +30,7 @@ export const ProductAreaPage = () => {
   return (
     <>
       <PageHeader section={Section.productarea} code={productAreaId}/>
-      <ProcessList section={Section.productarea} code={productAreaId}/>
+      <ProcessList section={Section.productarea} code={productAreaId} isEditable={false}/>
 
       <InfoTypeTable title={intl.informationTypes}
                      getInfoTypes={async () => (await getInformationTypesBy({productArea: productAreaId})).content}/>
