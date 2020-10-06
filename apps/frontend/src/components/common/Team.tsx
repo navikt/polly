@@ -5,7 +5,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faEnvelope, faTimesCircle, faUser} from '@fortawesome/free-solid-svg-icons'
 import {copyToClipboard, intl, theme} from '../../util'
 import {Card, StyledBody} from 'baseui/card'
-import {ListItem, ListItemLabel, OverridesT} from 'baseui/list'
+import {ListItem, ListItemLabel, ListOverrides} from 'baseui/list'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {Label3, Paragraph3} from 'baseui/typography'
 import Button from './Button'
@@ -21,13 +21,13 @@ import CustomizedStatefulTooltip from "./CustomizedStatefulTooltip";
 
 const defaultTeam = (teamId: string) => ({id: teamId, name: teamId, description: ' ', productarea: undefined, tags: [], members: []})
 
-const listOverrides: OverridesT = {
+const listOverrides: ListOverrides = {
   Content: {
     style: ({$theme}) => ({
       height: $theme.sizing.scale1000
     })
   }
-} as OverridesT
+} as ListOverrides
 
 
 const SmallIcon = (props: { icon: IconProp }) => <FontAwesomeIcon icon={props.icon} size="sm" style={{marginRight: '.5rem'}}/>
