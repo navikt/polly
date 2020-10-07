@@ -60,7 +60,7 @@ const FieldInformationType = () => {
   return (
     <Field
       name="informationType"
-      render={({ form }: FieldProps<PolicyFormValues>) => (
+      render={({form}: FieldProps<PolicyFormValues>) => (
         <StatefulSelect
           maxDropdownHeight="400px"
           searchable={true}
@@ -68,7 +68,7 @@ const FieldInformationType = () => {
           type={TYPE.search}
           options={infoTypeSearchResult}
           placeholder={form.values.informationType ? '' : intl.informationTypeSearch}
-          initialState={{ value: form.values.informationType }}
+          initialState={{value: form.values.informationType}}
           onInputChange={event => setInfoTypeSearch(event.currentTarget.value)}
           onChange={params => form.setFieldValue('informationType', params.value[0] as InformationTypeShort)}
           error={!!form.errors.informationType && !!form.submitCount}
@@ -80,12 +80,12 @@ const FieldInformationType = () => {
   )
 }
 
-const FieldLegalBasesUse = (props: { legalBasesUse: LegalBasesUse }) => {
+const FieldLegalBasesUse = (props: {legalBasesUse: LegalBasesUse}) => {
   const [value, setValue] = useState(props.legalBasesUse)
   return (
     <Field
       name="legalBasesUse"
-      render={({ form }: FieldProps<PolicyFormValues>) => {
+      render={({form}: FieldProps<PolicyFormValues>) => {
         return (
           <Block width="100%">
             <RadioGroup
@@ -120,9 +120,10 @@ type ModalPolicyProps = {
   errorOnCreate: any | undefined
   submit: (values: PolicyFormValues) => void
   onClose: () => void
+  addBatch?: () => void
 };
 
-const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, docs, title }: ModalPolicyProps) => {
+const ModalPolicy = ({submit, errorOnCreate, onClose, isOpen, initialValues, docs, title, addBatch}: ModalPolicyProps) => {
 
   const disableEnter = (e: KeyboardEvent) => {
     if (e.key === 'Enter') e.preventDefault()
@@ -148,20 +149,22 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
           render={(formikBag: FormikProps<PolicyFormValues>) => (
             <Form onKeyDown={disableEnter}>
               <ModalHeader>
-                <Block display="flex" justifyContent="center" marginBottom="2rem">
+                <Block display="flex" justifyContent="space-around" marginBottom="2rem">
                   {title}
+                  {addBatch && <Button type="button" kind="secondary" size="compact"
+                                       onClick={addBatch}>{intl.addManyFromSystem}</Button>}
                 </Block>
               </ModalHeader>
 
               <ModalBody>
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.informationType} />
-                  <FieldInformationType />
+                  <ModalLabel label={intl.informationType}/>
+                  <FieldInformationType/>
                 </Block>
-                <Error fieldName="informationType" />
+                <Error fieldName="informationType"/>
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.subjectCategories} />
+                  <ModalLabel label={intl.subjectCategories}/>
                   <FieldArray
                     name="subjectCategories"
                     render={arrayHelpers => (
@@ -169,7 +172,7 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
                         <Select
                           options={codelist.getParsedOptionsFilterOutSelected(ListName.SUBJECT_CATEGORY, formikBag.values.subjectCategories)}
                           maxDropdownHeight="300px"
-                          onChange={({ option }) => {
+                          onChange={({option}) => {
                             arrayHelpers.push(option ? option.id : null)
                           }}
                           error={!!arrayHelpers.form.errors.sources && !!arrayHelpers.form.submitCount}
@@ -179,29 +182,29 @@ const ModalPolicy = ({ submit, errorOnCreate, onClose, isOpen, initialValues, do
                     )}
                   />
                 </Block>
-                <Error fieldName="subjectCategories" />
+                <Error fieldName="subjectCategories"/>
 
                 {!!formikBag.values.documentIds?.length && docs &&
-                  <Block {...rowBlockProps}>
-                    <ModalLabel label={intl.documents} />
-                    <FieldArray name="documentIds"
-                      render={arrayHelpers => (
-                        <Block width='100%'>{renderTagList(formikBag.values.documentIds.map(id => docs[id].name), arrayHelpers)}</Block>
-                      )} />
-                  </Block>
+                <Block {...rowBlockProps}>
+                  <ModalLabel label={intl.documents}/>
+                  <FieldArray name="documentIds"
+                              render={arrayHelpers => (
+                                <Block width='100%'>{renderTagList(formikBag.values.documentIds.map(id => docs[id].name), arrayHelpers)}</Block>
+                              )}/>
+                </Block>
                 }
 
                 <Block {...rowBlockProps}>
-                  <ModalLabel label={intl.legalBasesShort} />
-                  <FieldLegalBasesUse legalBasesUse={formikBag.values.legalBasesUse} />
+                  <ModalLabel label={intl.legalBasesShort}/>
+                  <FieldLegalBasesUse legalBasesUse={formikBag.values.legalBasesUse}/>
                 </Block>
-                <Error fieldName="legalBasesUse" />
+                <Error fieldName="legalBasesUse"/>
 
                 {formikBag.values.legalBasesUse === LegalBasesUse.DEDICATED_LEGAL_BASES && (
                   <FieldLegalBasis formikBag={formikBag}/>
                 )}
               </ModalBody>
-              <Error fieldName="legalBasesOpen" fullWidth={true} />
+              <Error fieldName="legalBasesOpen" fullWidth={true}/>
 
               <ModalFooter>
                 <Block display="flex" justifyContent="flex-end">

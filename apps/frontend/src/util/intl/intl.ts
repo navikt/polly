@@ -355,6 +355,8 @@ export interface IStrings {
   appName: string;
   beta: string;
   all: string;
+  added: string;
+  addManyFromSystem: string;
   level: string;
   type: string;
   allProcesses: string;

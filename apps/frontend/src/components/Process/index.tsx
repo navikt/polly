@@ -213,7 +213,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
         legalBases: [],
         legalBasesOpen: false,
         legalBasesUse: LegalBasesUse.INHERITED_FROM_PROCESS,
-        documentIds: formValues.defaultDocument ? [] : [formValues.document!.id],
+        documentIds: !formValues.linkDocumentToPolicies ? [] : [formValues.document!.id],
         otherPolicies: []
       }))
       await createPolicies(policies)

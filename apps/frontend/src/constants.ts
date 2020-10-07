@@ -465,7 +465,7 @@ export interface DocumentInfoTypeUse {
 export interface AddDocumentToProcessFormValues {
   document?: Document;
   informationTypes: DocumentInfoTypeUse[];
-  defaultDocument: boolean;
+  linkDocumentToPolicies: boolean;
   process: { id: string; name: string; purpose: Code };
 }
 
