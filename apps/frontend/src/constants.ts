@@ -101,7 +101,7 @@ export interface PolicyFormValues {
   id?: string;
   purposeCode: string;
   informationType?: InformationTypeShort;
-  process: { id: string; name: string; legalBases: LegalBasis[] };
+  process: {id: string; name: string; legalBases: LegalBasis[]};
   subjectCategories: string[];
   legalBasesUse: LegalBasesUse;
   legalBases: Array<LegalBasisFormValues>;
@@ -352,7 +352,7 @@ export interface TeamResource {
 }
 
 export interface ProcessCount {
-  counts: { [code: string]: number };
+  counts: {[code: string]: number};
 }
 
 export interface UserInfo {
@@ -463,10 +463,17 @@ export interface DocumentInfoTypeUse {
 }
 
 export interface AddDocumentToProcessFormValues {
-  document?: Document;
-  informationTypes: DocumentInfoTypeUse[];
-  linkDocumentToPolicies: boolean;
-  process: { id: string; name: string; purpose: Code };
+  document?: Document
+  informationTypes: DocumentInfoTypeUse[]
+  linkDocumentToPolicies: boolean
+  process: {id: string; name: string; purpose: Code}
+}
+
+export interface AddBatchInfoTypesToProcessFormValues {
+  informationTypes: DocumentInfoTypeUse[]
+  linkDocumentToPolicies: boolean
+  process: {id: string; name: string; purpose: Code}
+  otherPolicies: Policy[]
 }
 
 export interface CreateDocumentFormValues {
@@ -491,7 +498,7 @@ export interface AuditItem {
   data: object;
 }
 
-export type Event = Omit<AuditItem, 'user' | 'data'> & { name: string };
+export type Event = Omit<AuditItem, 'user' | 'data'> & {name: string};
 
 export interface AuditLog {
   id: string;

@@ -1,5 +1,6 @@
 import * as yup from "yup";
 import {
+  AddBatchInfoTypesToProcessFormValues,
   AddDocumentToProcessFormValues,
   AffiliationFormValues,
   CreateDocumentFormValues,
@@ -15,6 +16,7 @@ import {
   InformationTypeShort,
   LegalBasesUse,
   LegalBasisFormValues,
+  Policy,
   PolicyFormValues,
   Process,
   ProcessFormValues,
@@ -195,13 +197,21 @@ const missingLegalBasisForDedicated = (policy: PolicyFormValues) => {
   return policy.legalBasesUse === LegalBasesUse.DEDICATED_LEGAL_BASES && !policy.legalBases.length;
 };
 
-const subjectCategoryExists = (policy: PolicyFormValues) => {
-  const existingPolicyIdents = policy.otherPolicies.flatMap(p => p.subjectCategories.map(c => p.informationType.id + '.' + c.code))
-  const matchingIdents = policy.subjectCategories.map(c => policy.informationType?.id + '.' + c).filter(policyIdent => existingPolicyIdents.indexOf(policyIdent) >= 0)
+const subjectCategoryExists = (path: string, policy: PolicyFormValues) => {
+  return subjectCategoryExistsGen(policy.otherPolicies, policy.informationType!, policy.subjectCategories, path)
+}
+
+const subjectCategoryExistsBatch = (path: string, otherPolicies: Policy[], it: DocumentInfoTypeUse) => {
+  return subjectCategoryExistsGen(otherPolicies, it.informationType, it.subjectCategories.map(sc => sc.code), path)
+}
+
+const subjectCategoryExistsGen = (otherPolicies: Policy[], informationType: InformationTypeShort, subjectCategories: string[], path: string) => {
+  const existingPolicyIdents = otherPolicies.flatMap(p => p.subjectCategories.map(c => p.informationType.id + '.' + c.code))
+  const matchingIdents = subjectCategories.map(c => informationType?.id + '.' + c).filter(policyIdent => existingPolicyIdents.indexOf(policyIdent) >= 0)
   const errors = matchingIdents
   .map(ident => codelist.getShortname(ListName.SUBJECT_CATEGORY, ident.substring(ident.indexOf('.') + 1)))
-  .map(category => intl.formatString(intl.processContainsSubjectCategory, category, policy.informationType!.name) as string)
-  return errors.length ? new yup.ValidationError(errors, undefined, 'subjectCategories') : true
+  .map(category => intl.formatString(intl.processContainsSubjectCategory, category, informationType.name) as string)
+  return errors.length ? new yup.ValidationError(errors, undefined, path) : true
 }
 
 export const policySchema = () =>
@@ -230,8 +240,8 @@ export const policySchema = () =>
       name: 'duplicateSubjectCategory',
       message: 'placeholder',
       test: function () {
-        const {parent} = this
-        return subjectCategoryExists(parent);
+        const {parent, path} = this
+        return subjectCategoryExists(path, parent);
       }
     }),
     legalBasesUse: yup
@@ -301,12 +311,22 @@ export const addDocumentToProcessSchema = () =>
   });
 
 export const addBatchInfoTypesToProcessSchema = () =>
-  yup.object<AddDocumentToProcessFormValues>({
+  yup.object<AddBatchInfoTypesToProcessFormValues>({
     informationTypes: yup.array().of(yup.object<DocumentInfoTypeUse>({
-      informationTypeId: yup.string(),
-      informationType: yup.object<InformationTypeShort>().required(intl.required),
-      subjectCategories: yup.array().of(yup.object<Code>().required(intl.required)).min(1, intl.required)
-    })).required(intl.required),
+        informationTypeId: yup.string(),
+        informationType: yup.object<InformationTypeShort>().required(intl.required),
+        subjectCategories: yup.array().of(yup.object<Code>().required(intl.required)).min(1, intl.required)
+      }).test({
+        name: 'duplicateSubjectCategory',
+        message: 'placeholder',
+        test: function (informationTypeUse) {
+          const {path} = this
+          const root = (this as any).from[1].value as AddBatchInfoTypesToProcessFormValues
+          return subjectCategoryExistsBatch(path, root.otherPolicies, informationTypeUse);
+        }
+      })
+    ).required(intl.required),
     process: yup.object<Process>().required(intl.required),
     linkDocumentToPolicies: yup.boolean().equals([false]),
+    otherPolicies: yup.array() // only used for validations
   });

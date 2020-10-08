@@ -1,5 +1,5 @@
 import React, {KeyboardEvent, useEffect, useState} from 'react'
-import {AddDocumentToProcessFormValues, DocumentInfoTypeUse, InformationType, Process} from '../../../constants'
+import {AddBatchInfoTypesToProcessFormValues, AddDocumentToProcessFormValues, DocumentInfoTypeUse, InformationType, Process} from '../../../constants'
 import {getInformationTypesBy} from '../../../api'
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal'
 import {FieldArray, Form, Formik, FormikProps} from 'formik'
@@ -79,10 +79,11 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
             initialValues={{
               informationTypes: [],
               process: props.process,
-              linkDocumentToPolicies: false
-            } as AddDocumentToProcessFormValues}
+              linkDocumentToPolicies: false,
+              otherPolicies: props.process.policies
+            } as AddBatchInfoTypesToProcessFormValues}
             validationSchema={addBatchInfoTypesToProcessSchema()}
-            render={(formik: FormikProps<AddDocumentToProcessFormValues>) => {
+            render={(formik: FormikProps<AddBatchInfoTypesToProcessFormValues>) => {
 
               return <Form onKeyDown={disableEnter}>
                 <ModalHeader>{intl.addCollectionOfInformationTypes}</ModalHeader>
@@ -167,6 +168,7 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
                                     </Button>
                                   </Block>
                                 </Block>
+                                <Block> <Error fieldName={`informationTypes[${idx}]`}/> </Block>
                                 <Block> <Error fieldName={`informationTypes[${idx}].informationType`}/> </Block>
                                 <Block> <Error fieldName={`informationTypes[${idx}].subjectCategories`}/> </Block>
 
