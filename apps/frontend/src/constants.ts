@@ -469,13 +469,6 @@ export interface AddDocumentToProcessFormValues {
   process: {id: string; name: string; purpose: Code}
 }
 
-export interface AddBatchInfoTypesToProcessFormValues {
-  informationTypes: DocumentInfoTypeUse[]
-  linkDocumentToPolicies: boolean
-  process: {id: string; name: string; purpose: Code}
-  otherPolicies: Policy[]
-}
-
 export interface CreateDocumentFormValues {
   name: string;
   description: string;

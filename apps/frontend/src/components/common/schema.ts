@@ -1,6 +1,5 @@
 import * as yup from "yup";
 import {
-  AddBatchInfoTypesToProcessFormValues,
   AddDocumentToProcessFormValues,
   AffiliationFormValues,
   CreateDocumentFormValues,
@@ -310,8 +309,8 @@ export const addDocumentToProcessSchema = () =>
     linkDocumentToPolicies: yup.boolean(),
   });
 
-export const addBatchInfoTypesToProcessSchema = () =>
-  yup.object<AddBatchInfoTypesToProcessFormValues>({
+export const addBatchInfoTypesToProcessSchema = (otherPolicies: Policy[]) =>
+  yup.object<AddDocumentToProcessFormValues>({
     informationTypes: yup.array().of(yup.object<DocumentInfoTypeUse>({
         informationTypeId: yup.string(),
         informationType: yup.object<InformationTypeShort>().required(intl.required),
@@ -321,12 +320,10 @@ export const addBatchInfoTypesToProcessSchema = () =>
         message: 'placeholder',
         test: function (informationTypeUse) {
           const {path} = this
-          const root = (this as any).from[1].value as AddBatchInfoTypesToProcessFormValues
-          return subjectCategoryExistsBatch(path, root.otherPolicies, informationTypeUse);
+          return subjectCategoryExistsBatch(path, otherPolicies, informationTypeUse);
         }
       })
     ).required(intl.required),
     process: yup.object<Process>().required(intl.required),
-    linkDocumentToPolicies: yup.boolean().equals([false]),
-    otherPolicies: yup.array() // only used for validations
+    linkDocumentToPolicies: yup.boolean().equals([false])
   });

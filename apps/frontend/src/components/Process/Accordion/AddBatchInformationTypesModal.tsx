@@ -1,5 +1,5 @@
 import React, {KeyboardEvent, useEffect, useState} from 'react'
-import {AddBatchInfoTypesToProcessFormValues, AddDocumentToProcessFormValues, DocumentInfoTypeUse, InformationType, Process} from '../../../constants'
+import {AddDocumentToProcessFormValues, DocumentInfoTypeUse, InformationType, Process} from '../../../constants'
 import {getInformationTypesBy} from '../../../api'
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from 'baseui/modal'
 import {FieldArray, Form, Formik, FormikProps} from 'formik'
@@ -79,11 +79,10 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
             initialValues={{
               informationTypes: [],
               process: props.process,
-              linkDocumentToPolicies: false,
-              otherPolicies: props.process.policies
-            } as AddBatchInfoTypesToProcessFormValues}
-            validationSchema={addBatchInfoTypesToProcessSchema()}
-            render={(formik: FormikProps<AddBatchInfoTypesToProcessFormValues>) => {
+              linkDocumentToPolicies: false
+            } as AddDocumentToProcessFormValues}
+            validationSchema={addBatchInfoTypesToProcessSchema(props.process.policies)}
+            render={(formik: FormikProps<AddDocumentToProcessFormValues>) => {
 
               return <Form onKeyDown={disableEnter}>
                 <ModalHeader>{intl.addCollectionOfInformationTypes}</ModalHeader>
