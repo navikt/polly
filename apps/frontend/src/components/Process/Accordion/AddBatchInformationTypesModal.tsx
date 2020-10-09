@@ -66,11 +66,14 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
     if (e.key === 'Enter') e.preventDefault()
   }
 
-  const mapToUse = (it: InformationType): DocumentInfoTypeUse => ({
-    informationType: it,
-    informationTypeId: it.id,
-    subjectCategories: []
-  })
+  const mapToUse = (it: InformationType): DocumentInfoTypeUse => {
+    const userCode = codelist.getCode(ListName.SUBJECT_CATEGORY, 'BRUKER')
+    return ({
+      informationType: it,
+      informationTypeId: it.id,
+      subjectCategories: userCode ? [userCode] : []
+    })
+  }
 
   return <Modal onClose={onCloseModal} isOpen={props.isOpen} animate size={SIZE.auto}
                 unstable_ModalBackdropScroll role={ROLE.dialog}
@@ -116,9 +119,9 @@ export const AddBatchInformationTypesModal = (props: AddBatchInformationTypesPro
                           {!!system.length &&
                           <>
                             {!!addable.length && <>
-                              <Block display='flex' justifyContent='space-between'>
+                              <Block display='flex' flexDirection='column'>
                                 <LabelMedium marginTop={theme.sizing.scale600}>{intl.informationTypes}</LabelMedium>
-                                <Block {...rowBlockProps} width='auto'>
+                                <Block {...rowBlockProps}>
                                   {addable.map(it =>
                                     <Block key={it.id} display='flex' alignItems='center'
                                            marginBottom={theme.sizing.scale100} marginTop={theme.sizing.scale100}>
