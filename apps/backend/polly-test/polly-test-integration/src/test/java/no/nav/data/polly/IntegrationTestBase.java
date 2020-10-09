@@ -34,7 +34,6 @@ import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
 import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.repo.DpProcessRepository;
-import no.nav.data.polly.process.domain.repo.ProcessDistributionRepository;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.domain.sub.Affiliation;
 import no.nav.data.polly.process.domain.sub.DataProcessing;
@@ -105,8 +104,6 @@ public abstract class IntegrationTestBase {
     protected DpProcessRepository dpProcessRepository;
     @Autowired
     protected PolicyRepository policyRepository;
-    @Autowired
-    protected ProcessDistributionRepository processDistributionRepository;
     @Autowired
     protected DisclosureRepository disclosureRepository;
     @Autowired
