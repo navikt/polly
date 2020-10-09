@@ -3,12 +3,10 @@ import {StyledLink} from "baseui/link";
 import * as React from "react";
 
 export const isLink = (text: string) => {
-  try {
-    new URL(text);
-  } catch (_) {
-    return false;
+  const regex = /http[s]?:\/\/.*/gm
+  if(!regex.test(text)){
+    return false
   }
-
   return true;
 }
 
