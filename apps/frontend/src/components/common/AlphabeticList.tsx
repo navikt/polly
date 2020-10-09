@@ -9,14 +9,14 @@ import {Code, codelist, ListName} from "../../service/Codelist";
 
 const AlphabeticList = (props: { listName: ListName, baseUrl: string }) => {
 
-  const codes = codelist.getCodes(props.listName)
+  const lists = props.listName == ListName.THIRD_PARTY?codelist.getCodes(props.listName).filter(l=>l.shortName!='NAV'):codelist.getCodes(props.listName)
+  const codes = lists
     .sort((a, b) => a.shortName.localeCompare(b.shortName))
     .reduce((acc, cur) => {
       const letter = cur.shortName.toUpperCase()[0]
       acc[letter] = [...(acc[letter] || []), cur]
       return acc
     }, {} as { [letter: string]: Code[] })
-
   return (
     <>
       {

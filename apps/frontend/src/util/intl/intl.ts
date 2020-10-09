@@ -31,6 +31,7 @@ export interface IStrings {
   dpProcess: string;
   dpProcesses: string;
   dpProcessPageTitle: string;
+  potentialPersonalCategoryUsage: string;
   thirdPartyDpProcessTableTitle: string;
   processes: string;
   legalBasis: string;

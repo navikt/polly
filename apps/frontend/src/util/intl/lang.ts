@@ -60,7 +60,7 @@ export const no: IStrings = {
   unclarified: "Uavklart",
   unknown: "Uavklart",
   notFilled: "Ikke utfylt",
-  automation: "Automatisering",
+  automation: "Automatisering og profilering",
   automaticProcessing: "Helautomatisk behandling",
   isAutomationNeeded: "Treffes det et vedtak eller en avgjørelse som er basert på helautomatisert behandling?",
   automaticProcessingExtra:
@@ -262,7 +262,7 @@ export const no: IStrings = {
   MISSING_ARTICLE_6: "Behandlingsgrunnlag for artikkel 6 mangler",
   MISSING_ARTICLE_9: "Behandlingsgrunnlag for artikkel 9 mangler",
   USES_ALL_INFO_TYPE: "Bruker alle opplysningstyper",
-
+  potentialPersonalCategoryUsage: "Bruker potensielt alle personkategorier",
   organizing: "Organisering",
   department: "Avdeling",
   subDepartment: "Linja",
@@ -486,7 +486,7 @@ export const en: IStrings = {
   unclarified: "Unclarified",
   unknown: "Unknown",
   notFilled: "Not filled",
-  automation: "Automation",
+  automation: "Automation and profiling",
   automaticProcessing: "Automatic Processing",
   isAutomationNeeded: "Is decision made based on fully automated process?",
   automaticProcessingExtra: "Is a decision made based on fully automated processing of personal data? In other words, decisions that are made without human involvement.",
@@ -697,6 +697,7 @@ export const en: IStrings = {
   MISSING_ARTICLE_6: "Legal basis for article 6 is missing",
   MISSING_ARTICLE_9: "Legal basis for article 9 is missing",
   USES_ALL_INFO_TYPE: "Uses all information type",
+  potentialPersonalCategoryUsage: "Potentially uses all personal categories",
 
   organizing: "Organizing",
   department: "Department",
