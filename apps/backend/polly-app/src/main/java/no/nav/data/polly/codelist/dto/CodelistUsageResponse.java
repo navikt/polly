@@ -1,10 +1,10 @@
 package no.nav.data.polly.codelist.dto;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.data.polly.codelist.domain.ListName;
-import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
 import java.util.List;
 

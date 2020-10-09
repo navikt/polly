@@ -22,9 +22,6 @@ import no.nav.data.polly.document.domain.DocumentRepository;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
-import no.nav.data.polly.kafka.KafkaContainer;
-import no.nav.data.polly.kafka.KafkaTopicProperties;
-import no.nav.data.polly.kafka.SchemaRegistryContainer;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
@@ -118,8 +115,6 @@ public abstract class IntegrationTestBase {
     protected GenericStorageRepository genericStorageRepository;
     @Autowired
     protected AuditVersionRepository auditRepository;
-    @Autowired
-    protected KafkaTopicProperties topicProperties;
 
     static {
         postgreSQLContainer.start();
@@ -447,9 +442,7 @@ public abstract class IntegrationTestBase {
                     "spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
                     "spring.datasource.username=" + postgreSQLContainer.getUsername(),
                     "spring.datasource.password=" + postgreSQLContainer.getPassword(),
-                    "wiremock.server.port=" + WiremockExtension.port(),
-                    "KAFKA_BOOTSTRAP_SERVERS=" + KafkaContainer.getAddress(),
-                    "KAFKA_SCHEMA_REGISTRY_URL=" + SchemaRegistryContainer.getAddress()
+                    "wiremock.server.port=" + WiremockExtension.port()
             ).applyTo(configurableApplicationContext.getEnvironment());
         }
     }

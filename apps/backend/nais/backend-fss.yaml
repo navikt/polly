@@ -49,4 +49,3 @@ spec:
   envFrom:
     - configmap: pollycfg
     - secret: polly-enckey
-    - secret: polly-kafka-pwd

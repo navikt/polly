@@ -41,11 +41,6 @@
         <guava.version>29.0-jre</guava.version>
         <json-smart.version>2.3</json-smart.version>
 
-        <!-- kafka -->
-        <confluent.version>5.3.3</confluent.version>
-        <!-- From io.confluent:common-parent kafka-avro-serializer -->
-        <avro.version>1.8.1</avro.version>
-
         <!-- Test -->
         <testcontainers.version>1.14.3</testcontainers.version>
         <wiremock.version>2.27.2</wiremock.version>
@@ -61,29 +56,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>io.confluent</groupId>
-                <artifactId>kafka-avro-serializer</artifactId>
-                <version>${confluent.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.zookeeper</groupId>
-                        <artifactId>zookeeper</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.avro</groupId>
-                <artifactId>avro</artifactId>
-                <version>${avro.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.xerial.snappy</groupId>
-                        <artifactId>snappy-java</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
             <dependency>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-annotations</artifactId>
