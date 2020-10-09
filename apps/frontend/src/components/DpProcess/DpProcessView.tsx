@@ -127,14 +127,11 @@ const DpProcessView = () => {
               <span>{intl.department}: </span>
               <span><DotTags list={ListName.DEPARTMENT} codes={[dpProcess?.affiliation.department]} commaSeparator linkCodelist/> </span>
             </Block> : <span>{intl.department}: {intl.notFilled}</span>}
-            {!!dpProcess?.affiliation.subDepartments.length ? <Block>
+            {!!dpProcess?.affiliation.subDepartments.length && <Block>
                 <Block display="flex">
                   <span>{intl.subDepartment}: </span>
                   <DotTags list={ListName.SUB_DEPARTMENT} codes={dpProcess?.affiliation.subDepartments} linkCodelist/>
                 </Block>
-              </Block> :
-              <Block display="flex">
-                <span>{intl.subDepartment}: {intl.notFilled}</span>
               </Block>
             }
 

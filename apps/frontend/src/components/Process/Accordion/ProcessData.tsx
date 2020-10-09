@@ -40,7 +40,7 @@ const showDpiaRequiredField = (dpia?: Dpia) => {
   }
 }
 
-const ProcessData = (props: {process: Process}) => {
+const ProcessData = (props: { process: Process }) => {
   const {process} = props
   const dataProcessorAgreements = !!process.dataProcessing?.dataProcessorAgreements.length
   const [riskOwnerFullName, setRiskOwnerFullName] = React.useState<string>()
@@ -69,11 +69,11 @@ const ProcessData = (props: {process: Process}) => {
       {process.legalBases.length ?
         <DataText label={intl.legalBasis} text={""}>
           {process
-          .legalBases
-          .sort((a, b) => (codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code)).localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
-          .map((legalBasis, index) =>
-            <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
-          )}
+            .legalBases
+            .sort((a, b) => (codelist.getShortname(ListName.GDPR_ARTICLE, a.gdpr.code)).localeCompare(codelist.getShortname(ListName.GDPR_ARTICLE, b.gdpr.code)))
+            .map((legalBasis, index) =>
+              <Block key={index}><LegalBasisView legalBasis={legalBasis}/></Block>
+            )}
         </DataText> :
         <>
           <DataText label={intl.legalBasis}/>
@@ -96,8 +96,8 @@ const ProcessData = (props: {process: Process}) => {
         <ActiveIndicator alwaysShow={true} showDates={true} {...process} />
       </DataText>
 
-      <DataText label={intl.summarySubjectCategories} text={!subjectCategoriesSummarised.length ? intl.notFilled : ""}>
-        {!!subjectCategoriesSummarised.length && <DotTags list={ListName.SUBJECT_CATEGORY} codes={subjectCategoriesSummarised}/>}
+      <DataText label={intl.summarySubjectCategories} text={!subjectCategoriesSummarised.length && !process.usesAllInformationTypes ? intl.notFilled : ""}>
+        {process.usesAllInformationTypes?intl.potentialPersonalCategoryUsage:!!subjectCategoriesSummarised.length && <DotTags list={ListName.SUBJECT_CATEGORY} codes={subjectCategoriesSummarised}/>}
       </DataText>
 
       <DataText label={intl.organizing} text={""}>
@@ -105,16 +105,18 @@ const ProcessData = (props: {process: Process}) => {
           <span>{intl.department}: </span>
           <span><DotTags list={ListName.DEPARTMENT} codes={[process.affiliation.department]} commaSeparator linkCodelist/> </span>
         </Block> : <span>{intl.department}: {intl.notFilled}</span>}
-        {!!process.affiliation.subDepartments.length ? <Block>
+        {!!process.affiliation.subDepartments.length && <Block>
             <Block display="flex">
               <span>{intl.subDepartment}: </span>
               <DotTags list={ListName.SUB_DEPARTMENT} codes={process.affiliation.subDepartments} linkCodelist/>
             </Block>
-          </Block> :
-          <Block display="flex">
-            <span>{intl.subDepartment}: {intl.notFilled}</span>
           </Block>
         }
+
+        <Block display="flex">
+          <span>{intl.productTeam}: </span>
+          {!!process.affiliation.productTeams?.length ? <TeamList teamIds={process.affiliation.productTeams}/> : intl.notFilled}
+        </Block>
 
         <Block>
           <span>{intl.commonExternalProcessResponsible}: </span>
@@ -125,10 +127,6 @@ const ProcessData = (props: {process: Process}) => {
             : intl.no}</span>
         </Block>
 
-        <Block display="flex">
-          <span>{intl.productTeam}: </span>
-          {!!process.affiliation.productTeams?.length ? <TeamList teamIds={process.affiliation.productTeams}/> : intl.notFilled}
-        </Block>
       </DataText>
 
       <DataText label={intl.system} text={""}>
@@ -226,7 +224,7 @@ const ProcessData = (props: {process: Process}) => {
   )
 }
 
-const Completeness = (props: {process: Process}) => {
+const Completeness = (props: { process: Process }) => {
   const {process} = props
   const completeness = {
     dpia: !isNil(process.dpia?.needForDpia),
