@@ -64,7 +64,7 @@ const ProcessData = (props: { process: Process }) => {
 
       <DataText label={intl.purposeOfTheProcess} text={process.description}/>
 
-      {process.additionalDescription && <DataText label={intl.additionalDescription} text={process.additionalDescription}/>}
+      {process.additionalDescription && <DataText label={intl.additionalDescription} text="">{shortenLinksInText(process.additionalDescription)}</DataText>}
 
       {process.legalBases.length ?
         <DataText label={intl.legalBasis} text={""}>
