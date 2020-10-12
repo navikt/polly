@@ -71,7 +71,7 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
-          RESOURCE: apps/frontend/nais/frontend-fss.yaml
+          RESOURCE: apps/frontend/nais/frontend-gcp.yaml
           VARS: apps/frontend/nais/frontend-dev-gcp-vars.yaml
           ENVIRONMENT: dev-gcp:teamdatajegerne:polly-frontend
 
