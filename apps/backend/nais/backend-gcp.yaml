@@ -54,11 +54,11 @@ spec:
         databases:
           - name: pollydb
             envVarPrefix: DB
-    accessPolicy:
-      inbound:
-        rules:
-          - application: polly-frontend
-      external:
-        - host: teamkatalog-api.dev-fss-pub.nais.no
-        - host: data-catalog-graph.nais.adeo.no
-        - host: kodeverk.nais.adeo.no
+  accessPolicy:
+    inbound:
+      rules:
+        - application: polly-frontend
+    external:
+      - host: teamkatalog-api.dev-fss-pub.nais.no
+      - host: data-catalog-graph.nais.adeo.no
+      - host: kodeverk.nais.adeo.no

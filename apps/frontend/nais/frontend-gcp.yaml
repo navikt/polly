@@ -36,8 +36,7 @@ spec:
     periodSeconds: 5
     failureThreshold: 30
 
-  gcp:
-    accessPolicy:
-      outbound:
-        rules:
-          - application: polly
+  accessPolicy:
+    outbound:
+      rules:
+        - application: polly
