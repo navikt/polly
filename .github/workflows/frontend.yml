@@ -60,6 +60,21 @@ jobs:
           VARS: apps/frontend/nais/frontend-dev-fss-vars.yaml
           ENVIRONMENT: dev-fss:teamdatajegerne:polly-frontend
 
+  deploy-dev-gcp:
+    name: Frontend - deploy Dev GCP
+    needs: build
+    if: github.ref == 'refs/heads/gcp'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: apps/frontend/nais/frontend-fss.yaml
+          VARS: apps/frontend/nais/frontend-dev-gcp-vars.yaml
+          ENVIRONMENT: dev-gcp:teamdatajegerne:polly-frontend
+
   deploy-prod:
     name: Frontend - deploy Prod FSS
     needs: build

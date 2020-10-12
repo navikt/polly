@@ -20,7 +20,6 @@ services:
     environment:
       - "SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres"
       - "SPRING_PROFILES_ACTIVE=local"
-      - "ENVIRONMENT_CLASS=preprod"
     ports:
       - 8080:8080
 

@@ -1,0 +1,7 @@
+ingresses:
+  - https://pollyg.dev.adeo.no
+replies:
+  - https://behandlingskatalogg.dev.adeo.no/oauth2/callback
+  - https://pollyg.dev.adeo.no/oauth2/callback
+  - http://localhost:8080/oauth2/callback
+  - http://localhost:3000/oauth2/callback

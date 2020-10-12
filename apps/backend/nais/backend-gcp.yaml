@@ -1,0 +1,56 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: polly
+  namespace: teamdatajegerne
+  labels:
+    team: teamdatajegerne 
+spec:
+  image: {{image}}
+  port: 8080
+  azure:
+    application:
+      enabled: true
+      replyURLs:
+      {{#each replies as |url|}}
+         - {{url}}
+      {{/each}}
+  ingresses:
+  {{#each ingresses as |url|}}
+    - {{url}}
+  {{/each}}
+  replicas:
+    min: 2
+    max: 2
+    cpuThresholdPercentage: 50
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+    requests:
+      memory: 512Mi
+  liveness:
+    path: internal/isAlive
+    initialDelay: 10
+    periodSeconds: 5
+    failureThreshold: 30
+  readiness:
+    path: internal/isReady
+    initialDelay: 10
+    periodSeconds: 5
+    failureThreshold: 30
+  prometheus:
+    enabled: true
+    path: internal/metrics
+  leaderElection: true
+  envFrom:
+    - configmap: pollycfg
+    - secret: polly-enckey
+
+  gcp:
+    sqlInstances:
+      - name: polly
+        type: POSTGRES_11
+        databases:
+          - name: pollydb
+            envVarPrefix: DB
