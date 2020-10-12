@@ -21,7 +21,7 @@
     </modules>
 
     <properties>
-        <java.version>14</java.version>
+        <java.version>15</java.version>
         <start-class>no.nav.data.AppStarter</start-class>
 
         <springfox.version>2.10.5</springfox.version>
@@ -50,6 +50,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>1.18.14</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -134,7 +135,7 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <release>14</release>
+                    <release>15</release>
                     <compilerArgs>
                         <arg>--enable-preview</arg>
                     </compilerArgs>
