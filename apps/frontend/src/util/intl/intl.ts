@@ -360,6 +360,8 @@ export interface IStrings {
   addManyFromSystem: string;
   level: string;
   type: string;
+  help:string;
+  helpTooltip:string;
   allProcesses: string;
   completedProcesses: string;
   showCompletedProcesses: string;
