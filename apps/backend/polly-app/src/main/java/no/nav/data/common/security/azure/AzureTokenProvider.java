@@ -40,7 +40,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.web.util.UrlUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
@@ -82,6 +81,7 @@ public class AzureTokenProvider implements TokenProvider {
     private final AADAuthenticationProperties aadAuthProps;
     private final SecurityProperties securityProperties;
     private final Encryptor encryptor;
+    private final String baseUrl;
 
     public AzureTokenProvider(AADAuthenticationProperties aadAuthProps,
             IConfidentialClientApplication msalClient, AuthService authService,
@@ -94,6 +94,7 @@ public class AzureTokenProvider implements TokenProvider {
         this.msalExecutor = new MdcMsalExecutor(msalThreadPool);
         this.confidentialClientApplication = confidentialClientApplication;
         this.encryptor = encryptor;
+        baseUrl = securityProperties.findBaseUrl();
 
         this.accessTokenCache = Caffeine.newBuilder().recordStats()
                 .expireAfter(new AuthResultExpiry())
@@ -141,7 +142,7 @@ public class AzureTokenProvider implements TokenProvider {
 
     @Override
     public String createAuthRequestRedirectUrl(String postLoginRedirectUri, String errorUri, HttpServletRequest request) {
-        String redirectUri = UriComponentsBuilder.fromHttpUrl(UrlUtils.buildFullRequestUrl(request))
+        String redirectUri = UriComponentsBuilder.fromHttpUrl(baseUrl)
                 .replacePath(OAUTH_2_CALLBACK_URL)
                 .replaceQuery(null).build().toUriString();
         return confidentialClientApplication.getAuthorizationRequestUrl(AuthorizationRequestUrlParameters
