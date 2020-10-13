@@ -107,4 +107,8 @@ public final class StreamUtils {
     public static <T> Optional<T> find(Iterable<T> objects, Predicate<T> filter) {
         return safeStream(objects).filter(filter).findFirst();
     }
+
+    public static <T> Optional<T> tryFind(Iterable<T> objects, Predicate<T> filter) {
+        return safeStream(objects).filter(filter).findFirst();
+    }
 }
