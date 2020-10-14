@@ -119,6 +119,11 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
     }
 
     private String stateQuery(ProcessField processField, ProcessState processState) {
+        if (processField == ProcessField.COMMON_EXTERNAL_PROCESSOR) {
+            String query = " data #> '{commonExternalProcessResponsible}' ";
+            return processState == ProcessState.YES ? query + "->> 0 is not null " : query + "->> 0 is null ";
+        }
+
         var loc = switch (processField) {
             case DPIA -> " data #> '{dpia,needForDpia}' %s ";
             case PROFILING -> " data #> '{profiling}' %s ";
@@ -133,8 +138,6 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
                 processState = ProcessState.UNKNOWN;
                 yield " data #> '{dataProcessing,dataProcessor}' = 'true'::jsonb and data #> '{dataProcessing,dataProcessorAgreements}' %s ";
             }
-            // YES only
-            case COMMON_EXTERNAL_PROCESSOR -> " data #> '{commonExternalProcessResponsible}' ->> 0 is not null ";
             default -> throw new IllegalArgumentException("invalid field for stateQuery " + processField);
         };
 
