@@ -6,8 +6,8 @@ import {DpProcessFormValues} from "../../../constants";
 import {FormikProps} from "formik";
 import {codelist} from "../../../service/Codelist";
 import FieldDpProcessDepartment from "./FieldDpProcessDepartment";
-import FieldDpProcessSubDepartment from "./FieldDpProcessSubDepartment";
 import FieldProductTeam from "../../common/form/FieldProductTeam";
+import FieldSubDepartments from "../../common/FieldSubDepartments";
 
 type FieldDpProcessAffiliationProps = {
   rowBlockProps: BlockProps
@@ -36,7 +36,7 @@ const FieldDpProcessAffiliation = (props: FieldDpProcessAffiliationProps) => {
         </Block>
         {codelist.showSubDepartment(formikBag.values.affiliation.department) && (
           <Block width='48%'>
-            <FieldDpProcessSubDepartment formikBag={formikBag}/>
+            <FieldSubDepartments formikBag={formikBag}/>
           </Block>
         )}
       </Block>
