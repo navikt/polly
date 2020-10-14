@@ -62,6 +62,7 @@ public class DashResponse {
         private String department;
         private String productAreaId;
         private long processes;
+        private long dpProcesses;
 
         private long processesCompleted;
         private long processesInProgress;
@@ -84,6 +85,10 @@ public class DashResponse {
 
         public void processes() {
             processes++;
+        }
+
+        public void dpProcesses() {
+            dpProcesses++;
         }
 
         public void processesCompleted() {
