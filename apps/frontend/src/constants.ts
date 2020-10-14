@@ -577,6 +577,7 @@ export interface DashboardData {
 
 export interface ProcessesDashCount {
   processes: number
+  dpProcesses: number
   processesCompleted: number
   processesInProgress: number
   processesMissingLegalBases: number
