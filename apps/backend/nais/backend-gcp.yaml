@@ -59,6 +59,6 @@ spec:
       rules:
         - application: polly-frontend
     external:
-      - host: teamkatalog-api.dev-fss-pub.nais.no
+      - host: teamkatalog-api.dev-fss-pub.nais.io
       - host: data-catalog-graph.nais.adeo.no
       - host: kodeverk.nais.adeo.no
