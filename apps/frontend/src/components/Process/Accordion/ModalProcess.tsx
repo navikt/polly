@@ -6,7 +6,6 @@ import {Block, BlockProps} from 'baseui/block'
 import {Button, KIND} from 'baseui/button'
 import {Error, ModalLabel} from '../../common/ModalSchema'
 import {ProcessFormValues, ProcessStatus, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from '../../../constants'
-import {codelist} from '../../../service/Codelist'
 import {intl, theme} from '../../../util'
 import {processSchema} from '../../common/schema'
 import {Panel, PanelOverrides, StatelessAccordion} from 'baseui/accordion'
@@ -229,20 +228,16 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                     >
                       <Block display='flex' width='100%' justifyContent='space-between'>
                         <Block width='48%'><ModalLabel label={intl.department} tooltip={intl.departmentHelpText}/></Block>
-                        {codelist.showSubDepartment(formikBag.values.affiliation.department) && (
                           <Block width='48%'><ModalLabel label={intl.subDepartment} tooltip={intl.subDepartmentHelpText}/></Block>
-                        )}
                       </Block>
 
                       <Block display='flex' width='100%' justifyContent='space-between'>
                         <Block width='48%'>
                           <FieldDepartment department={formikBag.values.affiliation.department}/>
                         </Block>
-                        {codelist.showSubDepartment(formikBag.values.affiliation.department) && (
                           <Block width='48%'>
                             <FieldSubDepartments formikBag={formikBag}/>
                           </Block>
-                        )}
                       </Block>
 
                       <Block display='flex' width='100%' justifyContent='space-between' marginTop={theme.sizing.scale400}>
