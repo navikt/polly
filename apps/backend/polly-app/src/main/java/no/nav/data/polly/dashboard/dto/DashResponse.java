@@ -80,7 +80,7 @@ public class DashResponse {
         private Counter dataProcessor = new Counter();
         private long dataProcessorAgreementMissing;
         private Counter dataProcessorOutsideEU = new Counter();
-
+        private long commonExternalProcessResponsible;
 
         public void processes() {
             processes++;
@@ -116,6 +116,10 @@ public class DashResponse {
 
         public void dataProcessorAgreementMissing() {
             dataProcessorAgreementMissing++;
+        }
+
+        public void commonExternalProcessResponsible() {
+            commonExternalProcessResponsible++;
         }
 
     }

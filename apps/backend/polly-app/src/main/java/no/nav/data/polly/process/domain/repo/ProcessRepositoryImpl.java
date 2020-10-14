@@ -133,6 +133,8 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
                 processState = ProcessState.UNKNOWN;
                 yield " data #> '{dataProcessing,dataProcessor}' = 'true'::jsonb and data #> '{dataProcessing,dataProcessorAgreements}' %s ";
             }
+            // YES only
+            case COMMON_EXTERNAL_PROCESSOR -> " data #> '{commonExternalProcessResponsible}' ->> 0 is not null ";
             default -> throw new IllegalArgumentException("invalid field for stateQuery " + processField);
         };
 

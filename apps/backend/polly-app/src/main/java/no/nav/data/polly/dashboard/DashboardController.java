@@ -152,6 +152,7 @@ public class DashboardController {
                 dashes.forEach(ProcessDashCount::dataProcessorAgreementMissing);
             }
         }
+        pd.map(ProcessData::getCommonExternalProcessResponsible).ifPresent(c -> dashes.forEach(ProcessDashCount::commonExternalProcessResponsible));
     }
 
     private void count(Counter counter, Boolean value) {

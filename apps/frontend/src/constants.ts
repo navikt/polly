@@ -591,6 +591,7 @@ export interface ProcessesDashCount {
   dataProcessor: Counter
   dataProcessorAgreementMissing: number
   dataProcessorOutsideEU: Counter
+  commonExternalProcessResponsible: number
 }
 
 export interface DepartmentProcessDashCount extends ProcessesDashCount {

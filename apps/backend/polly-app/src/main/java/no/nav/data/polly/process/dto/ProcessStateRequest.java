@@ -26,8 +26,9 @@ public class ProcessStateRequest implements Validated {
         DPIA, PROFILING, AUTOMATION, RETENTION, RETENTION_DATA,
         DATA_PROCESSOR, DATA_PROCESSOR_OUTSIDE_EU,
 
-        // Not a real true/false/null field, see repository
+        // Not real true/false/null field, see repository
         DATA_PROCESSOR_AGREEMENT_EMPTY,
+        COMMON_EXTERNAL_PROCESSOR,
 
         // Alert events
         EXCESS_INFO(true),
