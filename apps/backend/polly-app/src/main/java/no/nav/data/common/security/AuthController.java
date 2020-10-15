@@ -15,7 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
-import org.springframework.security.web.util.UrlUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import javax.servlet.http.Cookie;
@@ -33,7 +31,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import static no.nav.data.common.security.SecurityConstants.COOKIE_NAME;
 import static no.nav.data.common.utils.Constants.SESSION_LENGTH;
-import static org.apache.commons.lang3.StringUtils.substringBefore;
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.CODE;
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.ERROR;
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.ERROR_DESCRIPTION;
@@ -53,12 +50,14 @@ public class AuthController {
     private final TokenProvider tokenProvider;
     private final Encryptor encryptor;
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+    private final String baseUrl;
 
     public AuthController(SecurityProperties securityProperties,
             TokenProvider tokenProvider, Encryptor refreshTokenEncryptor) {
         this.securityProperties = securityProperties;
         this.tokenProvider = tokenProvider;
         this.encryptor = refreshTokenEncryptor;
+        baseUrl = securityProperties.findBaseUrl();
     }
 
     @ApiOperation(value = "Login using sso")
@@ -74,7 +73,7 @@ public class AuthController {
         log.debug("Request to login");
         Assert.isTrue(securityProperties.isValidRedirectUri(redirectUri), "Illegal redirect_uri " + redirectUri);
         Assert.isTrue(securityProperties.isValidRedirectUri(errorUri), "Illegal error_uri " + errorUri);
-        var usedRedirect = redirectUri != null ? redirectUri : substringBefore(fullRequestUrlWithoutQuery(request), "/login");
+        var usedRedirect = redirectUri != null ? redirectUri : baseUrl;
         String redirectUrl = tokenProvider.createAuthRequestRedirectUrl(usedRedirect, errorUri, request);
         redirectStrategy.sendRedirect(request, response, redirectUrl);
     }
@@ -100,7 +99,7 @@ public class AuthController {
             throw new TechnicalException("invalid state", e);
         }
         if (StringUtils.hasText(code)) {
-            var session = tokenProvider.createSession(code, fullRequestUrlWithoutQuery(request));
+            var session = tokenProvider.createSession(code, baseUrl + OAUTH_2_CALLBACK_URL);
             response.addCookie(createCookie(session, (int) SESSION_LENGTH.toSeconds(), request));
             redirectStrategy.sendRedirect(request, response, state.getRedirectUri());
         } else {
@@ -151,13 +150,6 @@ public class AuthController {
         cookie.setHttpOnly(true);
         cookie.setSecure(!"localhost".equals(request.getServerName()));
         return cookie;
-    }
-
-    private String fullRequestUrlWithoutQuery(HttpServletRequest request) {
-        return UriComponentsBuilder.fromHttpUrl(UrlUtils.buildFullRequestUrl(request))
-                .replaceQuery(null)
-                .build()
-                .toUriString();
     }
 
 }
