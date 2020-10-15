@@ -363,6 +363,7 @@ export interface IStrings {
   help:string;
   helpTooltip:string;
   allProcesses: string;
+  navResponsible:string;
   completedProcesses: string;
   showCompletedProcesses: string;
   inProgressProcesses: string;

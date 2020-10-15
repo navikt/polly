@@ -1,11 +1,11 @@
-import {intl, theme} from '../util'
+import {theme} from '../util'
 import * as React from 'react'
 import {useEffect, useState} from 'react'
 import {Block} from 'baseui/block'
 import {DashboardData, ProcessStatus, Settings} from '../constants'
 import {getSettings} from '../api/SettingsApi'
 import {Card} from 'baseui/card'
-import {cardShadow, chartCardProps} from '../components/common/Style'
+import {cardShadow} from '../components/common/Style'
 import Departments from '../components/Dashboard/Departments'
 import {getDashboard} from '../api'
 import {useParams} from 'react-router-dom'
@@ -20,7 +20,7 @@ export const MainPage = () => {
   const { processStatus } = useParams()
   const [settings, setSettings] = useState<Settings>()
   const [isLoading, setLoading] = useState(true)
-  const [dashData, setDashData] = useState<DashboardData>()
+  const [dashboardData, setDashboardData] = useState<DashboardData>()
   const [dashboardStatus, setDashboardStatus] = useState<ProcessStatus>(processStatus ? processStatus as ProcessStatus : ProcessStatus.All)
 
   useEffect(() => {
@@ -37,21 +37,21 @@ export const MainPage = () => {
 
   useEffect(() => {
     (async () => {
-      setDashData(await getDashboard(dashboardStatus))
+      setDashboardData(await getDashboard(dashboardStatus))
     })()
   }, [dashboardStatus])
 
   return (
     <Block marginTop={theme.sizing.scale400} display="flex" flexWrap>
       {
-        !isLoading && dashData && (
+        !isLoading && dashboardData && (
           <>
 
-            <Departments data={dashData} />
+            <Departments data={dashboardData} />
 
             <FilterDashboardStatus setFilter={setDashboardStatus} />
 
-            <Charts chartData={dashData.allProcesses} processStatus={dashboardStatus} />
+            <Charts chartData={dashboardData.allProcesses} processStatus={dashboardStatus} />
 
             <Block marginTop="2.5rem">
               <Card overrides={cardShadow}>

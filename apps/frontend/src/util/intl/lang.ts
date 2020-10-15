@@ -424,6 +424,7 @@ export const no: IStrings = {
   categoryNotInUse: "Kategori {0} er ikke i bruk",
   excessInfoHelpText: "Informasjon som er tilgjengelig i dokumenter eller systemet som brukes, uten at dette trengs eller brukes i behandlingen.",
   goToSite: "Gå til side",
+  navResponsible: 'Behandlinger hvor NAV er felles behandlingsansvarlig med ekstern part'
 };
 
 export const en: IStrings = {
@@ -542,6 +543,7 @@ export const en: IStrings = {
   lastEvents: "Last events",
   help: "Help",
   helpTooltip: "On the hub's privacy pages you will find information to help you fill it out.",
+  navResponsible: 'Processes which NAV is jointly responsible for processing with an external party',
   exceptionalUsage: "Exceptional usage",
   overallPurpose: "Overall purpose",
   overallPurposeActivity: "Overall process activity",

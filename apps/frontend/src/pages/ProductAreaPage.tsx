@@ -1,15 +1,15 @@
 import {useParams} from 'react-router-dom'
-import React, { useEffect } from 'react'
+import React, {useEffect} from 'react'
 import ProcessList from '../components/Process'
 import {Section} from './ProcessPage'
 import {PageHeader} from '../components/common/PageHeader'
 import {InfoTypeTable} from '../components/InformationType/InfoTypeTableSimple'
 import {intl} from '../util'
-import {getInformationTypesBy, getDashboard} from '../api'
-import { ProcessStatus, ProductAreaProcessDashCount } from '../constants'
+import {getDashboard, getInformationTypesBy} from '../api'
+import {ProcessStatus, ProductAreaProcessDashCount} from '../constants'
 import Charts from '../components/Charts/Charts'
-import { Block } from 'baseui/block'
-import { HeadingSmall } from 'baseui/typography'
+import {Block} from 'baseui/block'
+import {HeadingSmall} from 'baseui/typography'
 
 export const ProductAreaPage = () => {
   const [isLoading, setIsLoading] = React.useState(true)
@@ -38,7 +38,7 @@ export const ProductAreaPage = () => {
       {!isLoading && chartData && (
         <Block marginBottom="240px">
           <HeadingSmall>{intl.overview}</HeadingSmall>
-          <Charts chartData={chartData} processStatus={ProcessStatus.All} type={Section.productarea} productareaId={productAreaId} />
+          <Charts chartData={chartData} processStatus={ProcessStatus.All} type={Section.productarea} productAreaId={productAreaId} />
         </Block>
       )}
     </>
