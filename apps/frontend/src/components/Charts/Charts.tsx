@@ -8,7 +8,7 @@ import {intl} from '../../util'
 import {Chart} from './Chart'
 import {clickOnPieChartSlice} from '../../util/dashboard'
 import {chartColor} from '../../util/theme'
-import {Paragraph1} from 'baseui/typography'
+import {Paragraph1, Paragraph2} from 'baseui/typography'
 import RouteLink from '../common/RouteLink'
 import {lowerFirst} from 'lodash'
 import {Section} from '../../pages/ProcessPage'
@@ -134,14 +134,16 @@ const Charts = (props: ChartsProps) => {
       </Block>
       <Block marginTop="2.5rem" width={"100%"}>
         <Card overrides={cardShadow}>
-          <Paragraph1>
-            {intl.navResponsible}: <RouteLink
-            href={link(ProcessField.COMMON_EXTERNAL_PROCESSOR, ProcessState.YES)}>{chartData.commonExternalProcessResponsible}</RouteLink>
-          </Paragraph1>
-          <Paragraph1>
-            {intl.dpProcessPageTitle}: <RouteLink
-            href={"/dpprocess"}>{chartData.dpProcesses}</RouteLink>
-          </Paragraph1>
+          <Block>
+            <Paragraph2>
+              {intl.navResponsible}: <RouteLink
+              href={link(ProcessField.COMMON_EXTERNAL_PROCESSOR, ProcessState.YES)}>{chartData.commonExternalProcessResponsible}</RouteLink>
+            </Paragraph2>
+            <Paragraph2>
+              {intl.dpProcessPageTitle}: <RouteLink
+              href={"/dpprocess"}>{chartData.dpProcesses}</RouteLink>
+            </Paragraph2>
+          </Block>
         </Card>
       </Block>
     </Block>
