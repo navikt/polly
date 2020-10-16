@@ -147,8 +147,9 @@ public class Process extends Auditable {
         return ProcessShortResponse.builder()
                 .id(getId())
                 .name(getName())
-                .affiliation(data.getAffiliation().convertToResponse())
                 .purpose(getPurposeCodeResponse())
+                .affiliation(data.getAffiliation().convertToResponse())
+                .commonExternalProcessResponsible(getCommonExternalProcessResponsibleCodeResponse())
                 .status(getData().getStatus())
                 .build();
     }
