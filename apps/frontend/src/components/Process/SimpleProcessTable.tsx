@@ -31,10 +31,10 @@ export const SimpleProcessTable = (props: { processes: ProcessShort[], showCommo
       <>
         <HeadCell title={intl.process} column='name' tableState={[table, sortColumn]} $style={cellStyle}/>
         <HeadCell title={intl.department} column='affiliation' tableState={[table, sortColumn]} $style={cellStyle}/>
-        <HeadCell title={intl.status} column='status' tableState={[table, sortColumn]} $style={cellStyle}/>
         {props.showCommonExternalProcessResponsible && (
           <HeadCell title={intl.commonExternalProcessResponsible} column='commonExternalProcessResponsible' tableState={[table, sortColumn]} $style={cellStyle}/>
         )}
+        <HeadCell title={intl.status} column='status' tableState={[table, sortColumn]} $style={cellStyle}/>
       </>
     }>
       {table.data.map(process =>
