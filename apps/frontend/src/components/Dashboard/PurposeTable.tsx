@@ -28,16 +28,14 @@ const PurposeTable = () => {
       setLoading(true)
       changeTitle()
       if (department) {
-          let res = await getProcessByStateAndStatusForDepartment(filterName, filterValue, filterStatus, department)
-          setFiltered(res)
-      }
-      else if (productareaId){
+        let res = await getProcessByStateAndStatusForDepartment(filterName, filterValue, filterStatus, department)
+        setFiltered(res)
+      } else if (productareaId) {
         let res = await getProcessByStateAndStatusForProductArea(filterName, filterValue, filterStatus, productareaId)
         setFiltered(res)
-      }
-      else {
-         let res = await getProcessByStateAndStatus(filterName, filterValue, filterStatus)
-         setFiltered(res)
+      } else {
+        let res = await getProcessByStateAndStatus(filterName, filterValue, filterStatus)
+        setFiltered(res)
       }
       setLoading(false)
     })()
@@ -82,7 +80,7 @@ const PurposeTable = () => {
     <>
       <HeadingLarge>{title}</HeadingLarge>
       {loading && <Spinner size='80px'/>}
-      {!loading && <SimpleProcessTable processes={filtered}/>}
+      {!loading && <SimpleProcessTable processes={filtered} showCommonExternalProcessResponsible={filterName === ProcessField.COMMON_EXTERNAL_PROCESSOR ? true : false}/>}
     </>
   )
 }

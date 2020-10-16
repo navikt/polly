@@ -278,6 +278,7 @@ export interface ProcessShort {
   purpose: Code;
   affiliation: Affiliation;
   status?: ProcessStatus;
+  commonExternalProcessResponsible?: Code;
 }
 
 export interface DpProcessShort {
