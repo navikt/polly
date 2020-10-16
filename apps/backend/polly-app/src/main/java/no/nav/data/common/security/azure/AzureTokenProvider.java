@@ -40,7 +40,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.web.util.UrlUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
@@ -141,7 +140,7 @@ public class AzureTokenProvider implements TokenProvider {
 
     @Override
     public String createAuthRequestRedirectUrl(String postLoginRedirectUri, String errorUri, HttpServletRequest request) {
-        String redirectUri = UriComponentsBuilder.fromHttpUrl(UrlUtils.buildFullRequestUrl(request))
+        String redirectUri = UriComponentsBuilder.fromHttpUrl(securityProperties.findBaseUrl())
                 .replacePath(OAUTH_2_CALLBACK_URL)
                 .replaceQuery(null).build().toUriString();
         return confidentialClientApplication.getAuthorizationRequestUrl(AuthorizationRequestUrlParameters
