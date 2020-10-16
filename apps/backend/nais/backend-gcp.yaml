@@ -15,6 +15,8 @@ spec:
       {{#each replies as |url|}}
          - {{url}}
       {{/each}}
+  tokenx:
+    enabled: true
   ingresses:
   {{#each ingresses as |url|}}
     - {{url}}
