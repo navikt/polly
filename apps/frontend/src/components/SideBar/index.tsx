@@ -54,21 +54,20 @@ const SideBar = () => {
           </Block>
         </Block>
 
-        <a href={helpLink} style={{textDecoration: 'none'}}>
+        <a href={helpLink} style={{textDecoration: 'none'}} target="_blank">
           <Block display="flex" justifyContent="center" paddingBottom={theme.sizing.scale400} alignItems="center">
             <CustomizedStatefulTooltip content={intl.helpTooltip} ignoreBoundary={false}>
               <Paragraph4 color={theme.colors.white}>{intl.help}</Paragraph4>
             </CustomizedStatefulTooltip>
           </Block>
         </a>
-
         <a href={datajegerSlackLink} style={{textDecoration: 'none'}}>
           <Block display="flex" justifyContent="center" alignItems="center">
             <img src={SlackLogo} width="60px" alt="slack logo"/>
             <Paragraph4 color={theme.colors.white}>#behandlingskatalogen</Paragraph4>
           </Block>
         </a>
-        <a href={documentationLink} style={{textDecoration: 'none'}}>
+        <a href={documentationLink} style={{textDecoration: 'none'}} target="_blank">
           <Block display="flex" justifyContent="center" paddingBottom={theme.sizing.scale400} alignItems="center">
             <Paragraph4 color={theme.colors.white}>{intl.aboutUs}</Paragraph4>
           </Block>
