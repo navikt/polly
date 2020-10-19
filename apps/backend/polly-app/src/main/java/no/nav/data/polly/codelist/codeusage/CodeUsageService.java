@@ -104,8 +104,8 @@ public class CodeUsageService {
         if (usage.isInUse()) {
             switch (listName) {
                 case PURPOSE -> {
-                    getProcesses(usage).forEach(p -> p.setPurposeCode(newCode));
-                    getPolicies(usage).forEach(p -> p.setPurposeCode(newCode));
+                    getProcesses(usage).forEach(p -> replaceAll(p.getData().getPurposes(), oldCode, newCode));
+                    getPolicies(usage).forEach(p -> replaceAll(p.getData().getPurposes(), oldCode, newCode));
                 }
                 case CATEGORY -> getInformationTypes(usage).forEach(it -> replaceAll(it.getData().getCategories(), oldCode, newCode));
                 case THIRD_PARTY -> {
@@ -172,7 +172,7 @@ public class CodeUsageService {
 
     private List<ProcessShortResponse> findProcesses(ListName listName, String code) {
         return convert(switch (listName) {
-            case PURPOSE -> processRepository.findByPurposeCode(code);
+            case PURPOSE -> processRepository.findByPurpose(code);
             case DEPARTMENT -> processRepository.findByDepartment(code);
             case SUB_DEPARTMENT -> processRepository.findBySubDepartment(code);
             case GDPR_ARTICLE -> processRepository.findByGDPRArticle(code);
@@ -197,7 +197,7 @@ public class CodeUsageService {
 
     private List<UsedInInstancePurpose> findPolicies(ListName listName, String code) {
         return convert(switch (listName) {
-            case PURPOSE -> policyRepository.findByPurposeCode(code);
+            case PURPOSE -> policyRepository.findByPurpose(code);
             case SUBJECT_CATEGORY -> policyRepository.findBySubjectCategory(code);
             case GDPR_ARTICLE -> policyRepository.findByGDPRArticle(code);
             case NATIONAL_LAW -> policyRepository.findByNationalLaw(code);

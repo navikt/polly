@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Singular;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.validation.Valid;
@@ -19,30 +19,18 @@ import javax.validation.constraints.NotNull;
 public class PolicyData {
 
     @NotNull
+    @Singular
+    private List<String> purposes;
+    @NotNull
+    @Singular
     private List<String> subjectCategories;
     private boolean legalBasesInherited = false;
     @NotNull
     private LegalBasesUse legalBasesUse;
     @Valid
     @NotNull
-    private List<LegalBasis> legalBases = new ArrayList<>();
+    @Singular("legalBasis")
+    private List<LegalBasis> legalBases;
+    @Singular
     private List<UUID> documentIds;
-
-    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    public static class PolicyDataBuilder {
-
-        private List<LegalBasis> legalBases = new ArrayList<>();
-        private List<UUID> documentIds = new ArrayList<>();
-
-        public PolicyDataBuilder legalBasis(LegalBasis legalBasis) {
-            legalBases.add(legalBasis);
-            return this;
-        }
-
-        public PolicyDataBuilder dokumentId(UUID dokumentId) {
-            documentIds.add(dokumentId);
-            return this;
-        }
-
-    }
 }

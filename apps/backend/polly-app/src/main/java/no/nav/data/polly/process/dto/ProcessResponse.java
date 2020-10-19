@@ -26,7 +26,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "number", "name", "description", "additionalDescription", "purpose", "purposeCode", "affiliation",
+@JsonPropertyOrder({"id", "number", "name", "description", "additionalDescription", "purposes", "affiliation",
         "commonExternalProcessResponsible", "start", "end", "active",
         "usesAllInformationTypes", "automaticProcessing", "profiling", "dataProcessing", "retention", "dpia", "status", "changeStamp",
         "legalBases", "policies"})
@@ -37,8 +37,7 @@ public class ProcessResponse {
     private String name;
     private String description;
     private String additionalDescription;
-    private CodelistResponse purpose;
-    private String purposeCode;
+    private List<CodelistResponse> purposes;
     private AffiliationResponse affiliation;
 
     private CodelistResponse commonExternalProcessResponsible;

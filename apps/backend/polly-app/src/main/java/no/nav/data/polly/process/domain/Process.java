@@ -21,6 +21,7 @@ import no.nav.data.polly.process.dto.ProcessShortResponse;
 import org.hibernate.annotations.Type;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Column;
@@ -54,14 +55,6 @@ public class Process extends Auditable {
     @Column(name = "PROCESS_ID")
     private UUID id;
 
-    @NotNull
-    @Column(name = "NAME", nullable = false)
-    private String name;
-
-    @NotNull
-    @Column(name = "PURPOSE_CODE", nullable = false)
-    private String purposeCode;
-
     @Valid
     @Builder.Default
     @NotNull
@@ -89,11 +82,10 @@ public class Process extends Auditable {
         return ProcessResponse.builder()
                 .id(id)
                 .number(data.getNumber())
-                .name(name)
+                .name(data.getName())
                 .description(data.getDescription())
                 .additionalDescription(data.getAdditionalDescription())
-                .purpose(getPurposeCodeResponse())
-                .purposeCode(purposeCode)
+                .purposes(getPurposeCodeResponses())
                 .affiliation(data.getAffiliation().convertToResponse())
                 .commonExternalProcessResponsible(getCommonExternalProcessResponsibleCodeResponse())
                 .start(data.getStart())
@@ -124,8 +116,8 @@ public class Process extends Auditable {
             data.setNumber(request.getNewProcessNumber());
         }
 
-        setName(request.getName());
-        setPurposeCode(request.getPurposeCode());
+        data.setName(request.getName());
+        data.setPurposes(List.copyOf(request.getPurposes()));
         data.setDescription(request.getDescription());
         data.setAdditionalDescription(request.getAdditionalDescription());
         data.setAffiliation(convertAffiliation(request.getAffiliation()));
@@ -146,16 +138,16 @@ public class Process extends Auditable {
     public ProcessShortResponse convertToShortResponse() {
         return ProcessShortResponse.builder()
                 .id(getId())
-                .name(getName())
-                .purpose(getPurposeCodeResponse())
+                .name(data.getName())
+                .purposes(getPurposeCodeResponses())
                 .affiliation(data.getAffiliation().convertToResponse())
                 .commonExternalProcessResponsible(getCommonExternalProcessResponsibleCodeResponse())
                 .status(getData().getStatus())
                 .build();
     }
 
-    private CodelistResponse getPurposeCodeResponse() {
-        return CodelistService.getCodelistResponse(ListName.PURPOSE, purposeCode);
+    private List<CodelistResponse> getPurposeCodeResponses() {
+        return CodelistService.getCodelistResponseList(ListName.PURPOSE, data.getPurposes());
     }
 
     private CodelistResponse getCommonExternalProcessResponsibleCodeResponse() {

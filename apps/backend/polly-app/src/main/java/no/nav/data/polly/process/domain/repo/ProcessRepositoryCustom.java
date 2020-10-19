@@ -4,8 +4,13 @@ import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.dto.StateDbRequest;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProcessRepositoryCustom {
+
+    Optional<Process> findByNameAndPurposes(String name, List<String> purposes);
+
+    List<Process> findByPurpose(String purpose);
 
     List<Process> findByGDPRArticle(String gdpr);
 

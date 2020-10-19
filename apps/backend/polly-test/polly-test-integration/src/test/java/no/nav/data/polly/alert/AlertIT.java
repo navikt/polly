@@ -277,8 +277,8 @@ public class AlertIT extends IntegrationTestBase {
             private void saveProcesses(UUID... ids) {
                 for (UUID id : ids) {
                     processRepository
-                            .save(Process.builder().id(id).purposeCode("AAP").name("a name")
-                                    .data(ProcessData.builder().start(LocalDate.now()).end(LocalDate.now()).build())
+                            .save(Process.builder().id(id)
+                                    .data(ProcessData.builder().purpose("AAP").name("a name").start(LocalDate.now()).end(LocalDate.now()).build())
                                     .build());
                 }
             }

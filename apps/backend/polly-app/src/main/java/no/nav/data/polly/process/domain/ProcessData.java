@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Singular;
 import no.nav.data.polly.Period;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.process.domain.sub.Affiliation;
@@ -24,6 +25,11 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class ProcessData {
 
+    @NotNull
+    private String name;
+    @NotNull
+    @Singular
+    private List<String> purposes;
     private int number;
     private String description;
     private String additionalDescription;
@@ -38,6 +44,7 @@ public class ProcessData {
     private String commonExternalProcessResponsible;
 
     @Valid
+    @Singular("legalBasis")
     private List<LegalBasis> legalBases = new ArrayList<>();
 
     private boolean usesAllInformationTypes;
@@ -83,16 +90,5 @@ public class ProcessData {
             affiliation = new Affiliation();
         }
         return affiliation;
-    }
-
-    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    public static class ProcessDataBuilder {
-
-        private List<LegalBasis> legalBases = new ArrayList<>();
-
-        public ProcessDataBuilder legalBasis(LegalBasis legalBasis) {
-            legalBases.add(legalBasis);
-            return this;
-        }
     }
 }

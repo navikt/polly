@@ -10,6 +10,7 @@ import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.process.domain.Process;
+import no.nav.data.polly.process.domain.ProcessData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +21,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 
 class PolicyMapperTest {
 
@@ -38,16 +40,16 @@ class PolicyMapperTest {
     void shouldMapToPolicy() {
         InformationType informationType = createBasicTestdata();
         PolicyRequest request = PolicyRequest.builder()
-                .process(Process.builder().name("process").build())
+                .process(Process.builder().data(ProcessData.builder().name("process").build()).build())
                 .subjectCategories(List.of("Bruker"))
                 .legalBases(List.of(LegalBasisRequest.builder().gdpr("6e").nationalLaw("Ftrl").description(LEGAL_BASIS_DESCRIPTION1).build()))
-                .purposeCode(PURPOSE_CODE1)
+                .purpose(PURPOSE_CODE1)
                 .informationType(informationType)
                 .build();
         Policy policy = Policy.mapRequestToPolicy(request);
-        assertThat(policy.getProcess().getName(), is("process"));
+        assertThat(policy.getProcess().getData().getName(), is("process"));
         assertThat(policy.getData().getSubjectCategories(), hasItem("Bruker"));
-        assertThat(policy.getPurposeCode(), is(PURPOSE_CODE1));
+        assertThat(policy.getData().getPurposes(), is(List.of(PURPOSE_CODE1)));
         assertThat(policy.getInformationType(), is(informationType));
         assertThat(policy.getInformationTypeId(), is(informationType.getId()));
         assertThat(policy.getInformationTypeName(), is(informationType.getData().getName()));
@@ -62,20 +64,21 @@ class PolicyMapperTest {
         assertThat(policyResponse.getInformationType().getId(), is(policy.getInformationTypeId()));
         assertThat(policyResponse.getInformationType().getName(), is(policy.getInformationTypeName()));
         assertThat(policyResponse.getLegalBases().get(0).getDescription(), is(LEGAL_BASIS_DESCRIPTION1));
-        assertThat(policyResponse.getPurposeCode(), notNullValue());
-        assertThat(policyResponse.getPurposeCode().getCode(), is(PURPOSE_CODE1));
-        assertThat(policyResponse.getPurposeCode().getDescription(), is(DESC));
+        assertThat(policyResponse.getPurposes(), notNullValue());
+        assertThat(policyResponse.getPurposes(), hasSize(1));
+        assertThat(policyResponse.getPurposes().get(0).getCode(), is(PURPOSE_CODE1));
+        assertThat(policyResponse.getPurposes().get(0).getDescription(), is(DESC));
         assertThat(policyResponse.getSubjectCategories().get(0).getCode(), is("Bruker"));
     }
 
     private Policy createPolicy(InformationType informationType) {
         return Policy.builder().id(UUID.randomUUID())
-                .process(Process.builder().name("process").build())
+                .process(Process.builder().data(ProcessData.builder().name("process").build()).build())
                 .data(PolicyData.builder()
+                        .purpose(PURPOSE_CODE1)
                         .subjectCategories(List.of("Bruker"))
                         .legalBases(List.of(LegalBasis.builder().gdpr("6e").nationalLaw("nl").description(LEGAL_BASIS_DESCRIPTION1).build()))
                         .build())
-                .purposeCode(PURPOSE_CODE1)
                 .informationType(informationType)
                 .build();
     }
