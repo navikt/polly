@@ -9,8 +9,6 @@ import no.nav.data.polly.codelist.codeusage.CodeUsageService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodeUsageResponse;
 import no.nav.data.polly.process.domain.Process;
-import no.nav.data.polly.process.domain.ProcessDistribution;
-import no.nav.data.polly.process.domain.repo.ProcessDistributionRepository;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.dto.ProcessRequest;
 import no.nav.data.polly.process.dto.ProcessShortResponse;
@@ -35,19 +33,17 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Service
 public class ProcessService extends RequestValidator<ProcessRequest> {
 
-    private final ProcessDistributionRepository distributionRepository;
     private final ProcessRepository processRepository;
     private final TeamService teamService;
     private final ResourceService resourceService;
     private final AlertService alertService;
     private final CodeUsageService codeUsageService;
 
-    public ProcessService(ProcessDistributionRepository distributionRepository,
+    public ProcessService(
             ProcessRepository processRepository,
             TeamService teamService,
             ResourceService resourceService,
             AlertService alertService, CodeUsageService codeUsageService) {
-        this.distributionRepository = distributionRepository;
         this.processRepository = processRepository;
         this.teamService = teamService;
         this.resourceService = resourceService;
@@ -104,10 +100,6 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
                 convert(usage.getProcesses(), ProcessShortResponse::getId),
                 convert(usage.getPolicies(), p -> UUID.fromString(p.getProcessId()))
         ).stream().distinct().collect(Collectors.toList());
-    }
-
-    public void scheduleDistributeForProcess(Process process) {
-        distributionRepository.save(ProcessDistribution.newForProcess(process));
     }
 
     public void validateRequest(ProcessRequest request, boolean update) {

@@ -52,6 +52,7 @@ public class ProcessWriteController {
         log.info("Received requests to create Process");
         service.validateRequest(request, false);
 
+        request.setNewProcessNumber(repository.nextProcessNumber());
         Process process = service.save(new Process().convertFromRequest(request));
         return new ResponseEntity<>(process.convertToResponseWithPolicies(), HttpStatus.CREATED);
     }

@@ -19,11 +19,6 @@
         <module>polly-test-integration</module>
     </modules>
 
-    <properties>
-        <!-- spring kafka test cleanup -->
-        <scala.version>2.12.11</scala.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>no.nav.data</groupId>
@@ -100,21 +95,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.scala-lang</groupId>
-                <artifactId>scala-library</artifactId>
-                <version>${scala.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.scala-lang</groupId>
-                <artifactId>scala-reflect</artifactId>
-                <version>${scala.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <build>
         <plugins>

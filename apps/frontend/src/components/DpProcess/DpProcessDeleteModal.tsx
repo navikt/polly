@@ -19,7 +19,7 @@ export const DpProcessDeleteModal = (props: {errorOnDeletion:string, isOpen: boo
         <ModalHeader>{props.title}</ModalHeader>
         <ModalBody>
           <Paragraph2>
-            {intl.confirmDeleteDpProcess}
+            {intl.confirmDeleteProcessText}
           </Paragraph2>
         </ModalBody>
         <ModalFooter>

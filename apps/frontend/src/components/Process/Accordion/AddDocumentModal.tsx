@@ -138,7 +138,7 @@ export const AddDocumentModal = (props: AddDocumentProps) => {
           document: props.addDefaultDocument ? defaultDoc : undefined,
           informationTypes: props.addDefaultDocument ? extractInfoTypes(defaultDoc!, props.process.policies) : [],
           process: props.process,
-          defaultDocument: props.addDefaultDocument
+          linkDocumentToPolicies: !props.addDefaultDocument
         } as AddDocumentToProcessFormValues}
         validationSchema={addDocumentToProcessSchema()}
         render={(formik: FormikProps<AddDocumentToProcessFormValues>) => {

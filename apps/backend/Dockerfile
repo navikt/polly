@@ -1,9 +1,9 @@
-FROM adoptopenjdk:14-jre-hotspot as builder
+FROM openjdk:15-slim as builder
 WORKDIR application
 COPY polly-app/target/app-exec.jar application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
-FROM navikt/java:14
+FROM navikt/java:15
 
 ENV MAIN_CLASS=org.springframework.boot.loader.JarLauncher
 ENV JAVA_OPTS="-Xmx1024m \

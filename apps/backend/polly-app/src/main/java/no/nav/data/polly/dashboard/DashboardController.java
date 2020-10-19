@@ -19,10 +19,13 @@ import no.nav.data.polly.dashboard.dto.DashResponse.ProcessDashCount;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
 import no.nav.data.polly.process.domain.ProcessStatus;
+import no.nav.data.polly.process.domain.repo.DpProcessRepository;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
+import no.nav.data.polly.process.domain.sub.Affiliation;
 import no.nav.data.polly.process.domain.sub.DataProcessing;
 import no.nav.data.polly.process.domain.sub.Dpia;
 import no.nav.data.polly.process.domain.sub.Retention;
+import no.nav.data.polly.process.dpprocess.domain.DpProcess;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessStatusFilter;
 import no.nav.data.polly.teams.TeamService;
 import org.springframework.data.domain.Page;
@@ -56,12 +59,15 @@ import static no.nav.data.polly.alert.domain.AlertEventType.MISSING_LEGAL_BASIS;
 public class DashboardController {
 
     private final ProcessRepository processRepository;
+    private final DpProcessRepository dpProcessRepository;
     private final AlertRepository alertRepository;
     private final TeamService teamService;
     private final LoadingCache<ProcessStatusFilter, DashResponse> dashDataCache;
 
-    public DashboardController(ProcessRepository processRepository, AlertRepository alertRepository, TeamService teamService) {
+    public DashboardController(ProcessRepository processRepository, DpProcessRepository dpProcessRepository, AlertRepository alertRepository,
+            TeamService teamService) {
         this.processRepository = processRepository;
+        this.dpProcessRepository = dpProcessRepository;
         this.alertRepository = alertRepository;
         this.teamService = teamService;
         this.dashDataCache = Caffeine.newBuilder()
@@ -95,6 +101,15 @@ public class DashboardController {
             var alerts = convert(alertRepository.findByProcessIds(convert(page.getContent(), Process::getId)), GenericStorage::toAlertEvent);
             page.get().forEach(p -> calcDashForProcess(filter, dash, p, StreamUtils.filter(alerts, a -> p.getId().equals(a.getProcessId()))));
         } while (page.hasNext());
+        Page<DpProcess> dpProcessPage = null;
+        do {
+            dpProcessPage = dpProcessRepository.findAll(
+                    Optional.ofNullable(dpProcessPage)
+                            .map(Page::nextPageable)
+                            .orElse(pageable)
+            );
+            dpProcessPage.get().forEach(p -> calcDashForDpProcess(dash, p));
+        } while (page.hasNext());
         return dash;
     }
 
@@ -103,11 +118,7 @@ public class DashboardController {
         if (processStatusFilter != null && process.getData().getStatus() != processStatusFilter) {
             return;
         }
-        var dashes = new ArrayList<ProcessDashCount>();
-        dashes.add(dash.getAllProcesses());
-        Optional.ofNullable(process.getData().getAffiliation().getDepartment()).ifPresent(dep -> dashes.add(dash.department(dep)));
-        // A team might be stored that doesnt exist, producing nulls here
-        nullToEmptyList(process.getData().getAffiliation().getProductTeams()).stream().map(dash::team).filter(Objects::nonNull).forEach(dashes::add);
+        ArrayList<ProcessDashCount> dashes = getDashes(dash, process.getData().getAffiliation());
 
         dashes.forEach(ProcessDashCount::processes);
         if (process.getData().getStatus() == ProcessStatus.COMPLETED) {
@@ -152,6 +163,22 @@ public class DashboardController {
                 dashes.forEach(ProcessDashCount::dataProcessorAgreementMissing);
             }
         }
+        pd.map(ProcessData::getCommonExternalProcessResponsible).ifPresent(c -> dashes.forEach(ProcessDashCount::commonExternalProcessResponsible));
+    }
+
+    private void calcDashForDpProcess(DashResponse dash, DpProcess dpProcess) {
+        ArrayList<ProcessDashCount> dashes = getDashes(dash, dpProcess.getData().getAffiliation());
+
+        dashes.forEach(ProcessDashCount::dpProcesses);
+    }
+
+    private ArrayList<ProcessDashCount> getDashes(DashResponse dash, Affiliation affiliation) {
+        var dashes = new ArrayList<ProcessDashCount>();
+        dashes.add(dash.getAllProcesses());
+        Optional.ofNullable(affiliation.getDepartment()).ifPresent(dep -> dashes.add(dash.department(dep)));
+        // A team might be stored that doesnt exist, producing nulls here
+        nullToEmptyList(affiliation.getProductTeams()).stream().map(dash::team).filter(Objects::nonNull).forEach(dashes::add);
+        return dashes;
     }
 
     private void count(Counter counter, Boolean value) {

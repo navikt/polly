@@ -13,7 +13,7 @@ export const TeamPage = () => {
   return (
     <>
       <PageHeader section={Section.team} code={teamId}/>
-      <ProcessList section={Section.team} code={teamId}/>
+      <ProcessList section={Section.team} code={teamId} isEditable={false} />
 
       <InfoTypeTable title={intl.informationTypes}
                      getInfoTypes={async () => (await getInformationTypesBy({productTeam: teamId})).content}/>

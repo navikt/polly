@@ -28,6 +28,21 @@ export const chartColor = {
   darkGreen: '#408DA0'
 }
 
+export const searchResultColor = {
+  informationTypeBackground: '#E0DAE7',
+  purposeBackground: '#E0F5FB',
+  processBackground: '#CCEAD8',
+  teamBackground: '#FFE9CC',
+  productAreaBackground: '#F5DBEB',
+  departmentBackground: '#ECEFCC',
+  subDepartmentBackground: '#D1E9EB',
+  thirdPartyBackground: '#E5E5E5',
+  systemBackground: '#FED2B9',
+  documentBackground: '#C9EA95',
+  nationalLawBackground: '#FFAB66',
+  gdprBackground: '#99C2E8',
+}
+
 // Official type is wrong
 interface Borders {
   radius400: string

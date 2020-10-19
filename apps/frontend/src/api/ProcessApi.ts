@@ -57,6 +57,7 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     purpose,
     name,
     description,
+    additionalDescription,
     affiliation,
     commonExternalProcessResponsible,
     legalBases,
@@ -76,6 +77,7 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     id: id,
     name: name || '',
     description: description || '',
+    additionalDescription: additionalDescription || '',
     purposeCode: purpose?.code || '',
     affiliation: {
       department: affiliation?.department?.code || '',
@@ -121,6 +123,7 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
     id: values.id,
     name: values.name,
     description: values.description,
+    additionalDescription: values.additionalDescription,
     purposeCode: values.purposeCode,
     affiliation: values.affiliation,
     commonExternalProcessResponsible: values.commonExternalProcessResponsible ? values.commonExternalProcessResponsible : undefined,

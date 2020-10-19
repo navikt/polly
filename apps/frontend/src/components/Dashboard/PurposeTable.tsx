@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import {getProcessByStateAndStatus, getProcessByStateAndStatusForProductArea, getProcessByStateAndStatusForDepartment} from '../../api'
+import {getProcessByStateAndStatus, getProcessByStateAndStatusForDepartment, getProcessByStateAndStatusForProductArea} from '../../api'
 import {ProcessField, ProcessShort, ProcessState, ProcessStatus} from '../../constants'
 import {useParams} from 'react-router-dom'
 import {HeadingLarge} from 'baseui/typography'
@@ -7,7 +7,7 @@ import {Spinner} from 'baseui/spinner'
 import {intl} from '../../util'
 import {lowerFirst} from 'lodash'
 import {SimpleProcessTable} from '../Process/SimpleProcessTable'
-import { useQueryParam } from '../../util/hooks'
+import {useQueryParam} from '../../util/hooks'
 
 interface PathProps {
   filterName: ProcessField,
@@ -28,16 +28,14 @@ const PurposeTable = () => {
       setLoading(true)
       changeTitle()
       if (department) {
-          let res = await getProcessByStateAndStatusForDepartment(filterName, filterValue, filterStatus, department)
-          setFiltered(res)
-      }
-      else if (productareaId){
+        let res = await getProcessByStateAndStatusForDepartment(filterName, filterValue, filterStatus, department)
+        setFiltered(res)
+      } else if (productareaId) {
         let res = await getProcessByStateAndStatusForProductArea(filterName, filterValue, filterStatus, productareaId)
         setFiltered(res)
-      }
-      else {
-         let res = await getProcessByStateAndStatus(filterName, filterValue, filterStatus)
-         setFiltered(res)
+      } else {
+        let res = await getProcessByStateAndStatus(filterName, filterValue, filterStatus)
+        setFiltered(res)
       }
       setLoading(false)
     })()
@@ -73,6 +71,8 @@ const PurposeTable = () => {
       setTitle(`${intl.dataProcessorAgreement} ${lowerFirst(intl.emptyMessage)} `)
     } else if (filterName === ProcessField.DATA_PROCESSOR_OUTSIDE_EU) {
       setTitle(`${intl.dataProcessor} ${lowerFirst(intl.dataProcessorOutsideEU)}: ${intl.getString(filterValue.toLowerCase() || '')} `)
+    } else if (filterName === ProcessField.COMMON_EXTERNAL_PROCESSOR) {
+      setTitle(intl.navResponsible)
     }
   }
 
@@ -80,7 +80,7 @@ const PurposeTable = () => {
     <>
       <HeadingLarge>{title}</HeadingLarge>
       {loading && <Spinner size='80px'/>}
-      {!loading && <SimpleProcessTable processes={filtered}/>}
+      {!loading && <SimpleProcessTable processes={filtered} showCommonExternalProcessResponsible={filterName === ProcessField.COMMON_EXTERNAL_PROCESSOR ? true : false}/>}
     </>
   )
 }

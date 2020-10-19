@@ -15,28 +15,16 @@ import {env} from '../../../util/env'
 import {isNil, sum, uniqBy} from 'lodash'
 import {ProgressBar} from 'baseui/progress-bar'
 import CustomizedStatefulTooltip from '../../common/CustomizedStatefulTooltip'
-import {StyledLink} from "baseui/link";
-import {Markdown} from "../../common/Markdown";
 import RouteLink from "../../common/RouteLink";
 import DataText from "../../common/DataText";
-
-const isLink = (text: string) => {
-  try {
-    new URL(text);
-  } catch (_) {
-    return false;
-  }
-
-  return true;
-}
+import {shortenLinksInText} from "../../../util/helper-functions";
 
 const showDpiaRequiredField = (dpia?: Dpia) => {
   if (dpia?.needForDpia === true) {
     if (dpia.refToDpia) {
       return <>
         {`${intl.yes}. ${intl.reference}`}
-        {isLink(dpia.refToDpia) ? <StyledLink href={`${dpia.refToDpia}`}>{intl.seeExternalLink}</StyledLink> :
-          <Markdown source={`${dpia.refToDpia}`} singleWord/>}
+        {shortenLinksInText(dpia.refToDpia)}
       </>
     } else {
       return intl.yes
@@ -72,7 +60,11 @@ const ProcessData = (props: { process: Process }) => {
   return (
     <Block>
 
+      <DataText label={intl.processNumber} text={'' + process.number}/>
+
       <DataText label={intl.purposeOfTheProcess} text={process.description}/>
+
+      {process.additionalDescription && <DataText label={intl.additionalDescription} text="">{shortenLinksInText(process.additionalDescription)}</DataText>}
 
       {process.legalBases.length ?
         <DataText label={intl.legalBasis} text={""}>
@@ -104,8 +96,8 @@ const ProcessData = (props: { process: Process }) => {
         <ActiveIndicator alwaysShow={true} showDates={true} {...process} />
       </DataText>
 
-      <DataText label={intl.summarySubjectCategories} text={!subjectCategoriesSummarised.length && intl.subjectCategoriesNotFound}>
-        {!!subjectCategoriesSummarised.length && <DotTags list={ListName.SUBJECT_CATEGORY} codes={subjectCategoriesSummarised}/>}
+      <DataText label={intl.summarySubjectCategories} text={!subjectCategoriesSummarised.length && !process.usesAllInformationTypes ? intl.notFilled : ""}>
+        {process.usesAllInformationTypes?intl.potentialPersonalCategoryUsage:!!subjectCategoriesSummarised.length && <DotTags list={ListName.SUBJECT_CATEGORY} codes={subjectCategoriesSummarised}/>}
       </DataText>
 
       <DataText label={intl.organizing} text={""}>
@@ -113,16 +105,18 @@ const ProcessData = (props: { process: Process }) => {
           <span>{intl.department}: </span>
           <span><DotTags list={ListName.DEPARTMENT} codes={[process.affiliation.department]} commaSeparator linkCodelist/> </span>
         </Block> : <span>{intl.department}: {intl.notFilled}</span>}
-        {!!process.affiliation.subDepartments.length ? <Block>
+        {!!process.affiliation.subDepartments.length && <Block>
             <Block display="flex">
               <span>{intl.subDepartment}: </span>
               <DotTags list={ListName.SUB_DEPARTMENT} codes={process.affiliation.subDepartments} linkCodelist/>
             </Block>
-          </Block> :
-          <Block display="flex">
-            <span>{intl.subDepartment}: {intl.notFilled}</span>
           </Block>
         }
+
+        <Block display="flex">
+          <span>{intl.productTeam}: </span>
+          {!!process.affiliation.productTeams?.length ? <TeamList teamIds={process.affiliation.productTeams}/> : intl.notFilled}
+        </Block>
 
         <Block>
           <span>{intl.commonExternalProcessResponsible}: </span>
@@ -133,10 +127,6 @@ const ProcessData = (props: { process: Process }) => {
             : intl.no}</span>
         </Block>
 
-        <Block>
-          <span>{intl.productTeam}: </span>
-          {!!process.affiliation.productTeams?.length ? <TeamList teamIds={process.affiliation.productTeams}/> : intl.notFilled}
-        </Block>
       </DataText>
 
       <DataText label={intl.system} text={""}>
@@ -213,10 +203,7 @@ const ProcessData = (props: { process: Process }) => {
           </Block>
           <Block>
             <span>{process.retention?.retentionDescription && `${intl.retentionDescription}: `}</span>
-            {process.retention?.retentionDescription && isLink(process.retention?.retentionDescription) ?
-              <StyledLink href={`${process.retention?.retentionDescription}`}>{intl.seeExternalLink}</StyledLink> :
-              <span><Markdown source={process.retention?.retentionDescription} singleWord/></span>
-            }
+            {process.retention?.retentionDescription && shortenLinksInText(process.retention?.retentionDescription)}
           </Block>
         </>
       </DataText>

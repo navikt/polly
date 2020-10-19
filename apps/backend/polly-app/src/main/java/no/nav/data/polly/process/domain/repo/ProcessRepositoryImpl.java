@@ -119,6 +119,11 @@ public class ProcessRepositoryImpl implements ProcessRepositoryCustom {
     }
 
     private String stateQuery(ProcessField processField, ProcessState processState) {
+        if (processField == ProcessField.COMMON_EXTERNAL_PROCESSOR) {
+            String query = " data #> '{commonExternalProcessResponsible}' ";
+            return processState == ProcessState.YES ? query + "->> 0 is not null " : query + "->> 0 is null ";
+        }
+
         var loc = switch (processField) {
             case DPIA -> " data #> '{dpia,needForDpia}' %s ";
             case PROFILING -> " data #> '{profiling}' %s ";

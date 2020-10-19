@@ -22,9 +22,6 @@ import no.nav.data.polly.document.domain.DocumentRepository;
 import no.nav.data.polly.informationtype.InformationTypeRepository;
 import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.informationtype.domain.InformationTypeData;
-import no.nav.data.polly.kafka.KafkaContainer;
-import no.nav.data.polly.kafka.KafkaTopicProperties;
-import no.nav.data.polly.kafka.SchemaRegistryContainer;
 import no.nav.data.polly.legalbasis.domain.LegalBasis;
 import no.nav.data.polly.legalbasis.dto.LegalBasisRequest;
 import no.nav.data.polly.legalbasis.dto.LegalBasisResponse;
@@ -32,16 +29,16 @@ import no.nav.data.polly.policy.domain.LegalBasesUse;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyData;
 import no.nav.data.polly.policy.domain.PolicyRepository;
-import no.nav.data.polly.process.domain.DpProcess;
 import no.nav.data.polly.process.domain.DpProcessData;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
 import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.domain.repo.DpProcessRepository;
-import no.nav.data.polly.process.domain.repo.ProcessDistributionRepository;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.domain.sub.Affiliation;
 import no.nav.data.polly.process.domain.sub.DataProcessing;
+import no.nav.data.polly.process.dpprocess.domain.DpProcess;
+import no.nav.data.polly.process.dpprocess.dto.DpRetentionResponse;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessResponse.ProcessResponseBuilder;
 import no.nav.data.polly.process.dto.sub.AffiliationRequest;
@@ -108,8 +105,6 @@ public abstract class IntegrationTestBase {
     @Autowired
     protected PolicyRepository policyRepository;
     @Autowired
-    protected ProcessDistributionRepository processDistributionRepository;
-    @Autowired
     protected DisclosureRepository disclosureRepository;
     @Autowired
     protected DocumentRepository documentRepository;
@@ -117,8 +112,6 @@ public abstract class IntegrationTestBase {
     protected GenericStorageRepository genericStorageRepository;
     @Autowired
     protected AuditVersionRepository auditRepository;
-    @Autowired
-    protected KafkaTopicProperties topicProperties;
 
     static {
         postgreSQLContainer.start();
@@ -277,6 +270,7 @@ public abstract class IntegrationTestBase {
                         .save(Process.builder().generateId().name("Auto_" + purpose).purposeCode(purpose)
                                 .data(ProcessData.builder()
                                         .description("process description")
+                                        .additionalDescription("additional description")
                                         .affiliation(Affiliation.convertAffiliation(affiliationRequest()))
                                         .commonExternalProcessResponsible("SKATT")
                                         .start(LocalDate.now()).end(LocalDate.now()).legalBasis(createLegalBasis())
@@ -364,6 +358,7 @@ public abstract class IntegrationTestBase {
                 .id(processId)
                 .name("Auto_" + PURPOSE_CODE1)
                 .description("process description")
+                .additionalDescription("additional description")
                 .purpose(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1))
                 .purposeCode(PURPOSE_CODE1)
                 .affiliation(affiliationResponse())
@@ -410,6 +405,13 @@ public abstract class IntegrationTestBase {
                 .build();
     }
 
+    protected DpRetentionResponse dpRetentionResponse() {
+        return DpRetentionResponse.builder()
+                .retentionMonths(24)
+                .retentionStart("Birth")
+                .build();
+    }
+
     protected DpiaResponse dpiaResponse() {
         return DpiaResponse.builder()
                 .needForDpia(true)
@@ -437,9 +439,7 @@ public abstract class IntegrationTestBase {
                     "spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
                     "spring.datasource.username=" + postgreSQLContainer.getUsername(),
                     "spring.datasource.password=" + postgreSQLContainer.getPassword(),
-                    "wiremock.server.port=" + WiremockExtension.port(),
-                    "KAFKA_BOOTSTRAP_SERVERS=" + KafkaContainer.getAddress(),
-                    "KAFKA_SCHEMA_REGISTRY_URL=" + SchemaRegistryContainer.getAddress()
+                    "wiremock.server.port=" + WiremockExtension.port()
             ).applyTo(configurableApplicationContext.getEnvironment());
         }
     }

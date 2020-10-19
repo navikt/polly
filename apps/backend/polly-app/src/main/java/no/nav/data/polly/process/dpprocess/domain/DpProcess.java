@@ -1,4 +1,4 @@
-package no.nav.data.polly.process.domain;
+package no.nav.data.polly.process.dpprocess.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,9 +10,10 @@ import no.nav.data.common.utils.DateUtil;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
-import no.nav.data.polly.process.dto.DpProcessRequest;
-import no.nav.data.polly.process.dto.DpProcessResponse;
-import no.nav.data.polly.process.dto.sub.DpProcessShortResponse;
+import no.nav.data.polly.process.domain.DpProcessData;
+import no.nav.data.polly.process.dpprocess.dto.DpProcessRequest;
+import no.nav.data.polly.process.dpprocess.dto.DpProcessResponse;
+import no.nav.data.polly.process.dpprocess.dto.DpProcessShortResponse;
 import org.hibernate.annotations.Type;
 
 import java.util.UUID;
@@ -26,7 +27,7 @@ import javax.validation.constraints.NotNull;
 import static no.nav.data.common.utils.StreamUtils.copyOf;
 import static no.nav.data.polly.process.domain.sub.Affiliation.convertAffiliation;
 import static no.nav.data.polly.process.domain.sub.DataProcessing.convertDataProcessing;
-import static no.nav.data.polly.process.domain.sub.Retention.convertRetention;
+import static no.nav.data.polly.process.dpprocess.domain.DpRetention.convertRetention;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -62,7 +63,6 @@ public class DpProcess extends Auditable {
         data.setExternalProcessResponsible(request.getExternalProcessResponsible());
         data.setStart(DateUtil.parseStart(request.getStart()));
         data.setEnd(DateUtil.parseEnd(request.getEnd()));
-        data.setDataProcessingAgreement(request.getDataProcessingAgreement());
         data.setDataProcessingAgreements(copyOf(request.getDataProcessingAgreements()));
         data.setSubDataProcessing(convertDataProcessing(request.getSubDataProcessing()));
         data.setPurposeDescription(request.getPurposeDescription());
@@ -81,7 +81,6 @@ public class DpProcess extends Auditable {
                 .externalProcessResponsible(getExternalProcessResponsibleCodeResponse())
                 .start(data.getStart())
                 .end(data.getEnd())
-                .dataProcessingAgreement(data.getDataProcessingAgreement())
                 .dataProcessingAgreements(copyOf(data.getDataProcessingAgreements()))
                 .subDataProcessing(data.getSubDataProcessing().convertToResponse())
                 .purposeDescription(data.getPurposeDescription())

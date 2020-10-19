@@ -1,5 +1,6 @@
 package no.nav.data.polly.process.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,6 +36,7 @@ public class ProcessRequest implements RequestElement {
     private String id;
     private String name;
     private String description;
+    private String additionalDescription;
     @ApiModelProperty(value = "Codelist PURPOSE")
     private String purposeCode;
     @ApiModelProperty(value = "Codelist THIRD_PARTY")
@@ -59,6 +61,9 @@ public class ProcessRequest implements RequestElement {
     private boolean update;
     private int requestIndex;
 
+    @JsonIgnore
+    private int newProcessNumber;
+
     @Override
     public String getIdentifyingFields() {
         return name;
@@ -69,6 +74,7 @@ public class ProcessRequest implements RequestElement {
         setPurposeCode(toUpperCaseAndTrim(getPurposeCode()));
         setCommonExternalProcessResponsible(toUpperCaseAndTrim(getCommonExternalProcessResponsible()));
         setDescription(trimToNull(getDescription()));
+        setAdditionalDescription(trimToNull(getAdditionalDescription()));
 
         setAffiliation(getAffiliation() != null ? getAffiliation() : new AffiliationRequest());
         setDataProcessing(getDataProcessing() != null ? getDataProcessing() : new DataProcessingRequest());

@@ -13,37 +13,51 @@ import {Radio, RadioGroup} from 'baseui/radio'
 import {paddingZero} from './common/Style'
 import {faFilter} from '@fortawesome/free-solid-svg-icons'
 import Button from './common/Button'
+import {searchResultColor} from "../util/theme";
 
 type SearchItem = {id: string, sortKey: string, label: ReactElement, type: NavigableItem}
 type SearchType = 'all' | 'purpose' | 'process' | 'team' | 'productarea' | 'department' | 'subDepartment' | 'nationalLaw' | 'gdprArticle' | 'informationType' | 'thirdParty' | 'system' | 'document'
 
-const SearchLabel = (props: {name: string, type: string}) =>
-  <Block display="flex" justifyContent="space-between" width="100%">
-    <span>{props.name}</span>
-    <Block $style={{opacity: .5}}>{props.type}</Block>
+const SearchLabel = (props: {
+  name: string,
+  type: string,
+  backgroundColor?: string,
+  foregroundColor?: string
+}) =>
+  <Block
+    display="flex"
+    justifyContent="space-between"
+    width="100%"
+  >
+    <span style={{padding: '5px'}}>{props.name}</span>
+    <Block $style={{backgroundColor: props.backgroundColor, padding: '5px', margin: '5px', borderRadius: '5px'}}>{props.type}</Block>
   </Block>
 
-const searchCodelist = (search: string, list: ListName & NavigableItem, typeName: string) =>
+const searchCodelist = (search: string,
+                        list: ListName & NavigableItem,
+                        typeName: string,
+                        backgroundColor: string,
+) =>
   codelist
-  .getCodes(list)
-  .filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
-  .map(c => ({
-    id: c.code,
-    sortKey: c.shortName,
-    label: <SearchLabel name={c.shortName} type={typeName}/>,
-    type: list
-  }))
+    .getCodes(list)
+    .filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
+    .map(c => ({
+      id: c.code,
+      sortKey: c.shortName,
+      label: <SearchLabel name={c.shortName} type={typeName} backgroundColor={backgroundColor}/>,
+      type: list
+    }))
 
 const getCodelistByListnameAndType = (search: string, list: ListName, typeName: string) => {
   return codelist
-  .getCodes(list)
-  .filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
-  .map(c => ({
-    id: c.code,
-    sortKey: c.shortName,
-    label: <SearchLabel name={c.shortName} type={typeName}/>,
-    type: list
-  } as SearchItem))
+    .getCodes(list)
+    .filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
+    .map(c => ({
+      id: c.code,
+      sortKey: c.shortName,
+      label: <SearchLabel name={c.shortName} type={typeName}/>,
+      type: list
+    } as SearchItem))
 }
 
 
@@ -82,13 +96,13 @@ const useMainSearch = () => {
           setLoading(true)
 
           if (type === 'all') {
-            add(searchCodelist(search, ListName.PURPOSE, intl.processActivity))
-            add(searchCodelist(search, ListName.DEPARTMENT, intl.department))
-            add(searchCodelist(search, ListName.SUB_DEPARTMENT, intl.subDepartment))
-            add(searchCodelist(search, ListName.THIRD_PARTY, intl.thirdParty))
-            add(searchCodelist(search, ListName.SYSTEM, intl.system))
-            add(searchCodelist(search, ListName.NATIONAL_LAW, intl.nationalLaw))
-            add(searchCodelist(search, ListName.GDPR_ARTICLE, intl.gdprArticle))
+            add(searchCodelist(search, ListName.PURPOSE, intl.processActivity, searchResultColor.purposeBackground))
+            add(searchCodelist(search, ListName.DEPARTMENT, intl.department, searchResultColor.departmentBackground))
+            add(searchCodelist(search, ListName.SUB_DEPARTMENT, intl.subDepartment, searchResultColor.subDepartmentBackground))
+            add(searchCodelist(search, ListName.THIRD_PARTY, intl.thirdParty, searchResultColor.thirdPartyBackground))
+            add(searchCodelist(search, ListName.SYSTEM, intl.system, searchResultColor.systemBackground))
+            add(searchCodelist(search, ListName.NATIONAL_LAW, intl.nationalLaw, searchResultColor.nationalLawBackground))
+            add(searchCodelist(search, ListName.GDPR_ARTICLE, intl.gdprArticle, searchResultColor.gdprBackground))
           }
 
           if (type === 'all' || type === 'informationType') {
@@ -97,7 +111,10 @@ const useMainSearch = () => {
               add(infoTypesRes.content.map(it => ({
                 id: it.id,
                 sortKey: it.name,
-                label: <SearchLabel name={it.name} type={intl.informationType}/>,
+                label: <SearchLabel name={it.name}
+                                    type={intl.informationType}
+                                    backgroundColor={searchResultColor.informationTypeBackground}
+                />,
                 type: ObjectType.INFORMATION_TYPE
               })))
             })())
@@ -111,7 +128,11 @@ const useMainSearch = () => {
                 return ({
                   id: it.id,
                   sortKey: `${it.name} ${purpose}`,
-                  label: <SearchLabel name={`${purpose}: ${it.name}`} type={intl.process}/>,
+                  label: <SearchLabel
+                    name={`${purpose}: ${it.name}`}
+                    type={intl.process}
+                    backgroundColor={searchResultColor.processBackground}
+                  />,
                   type: ObjectType.PROCESS
                 })
               }))
@@ -124,7 +145,11 @@ const useMainSearch = () => {
               add(resTeams.content.map(it => ({
                 id: it.id,
                 sortKey: it.name,
-                label: <SearchLabel name={it.name} type={intl.productTeam}/>,
+                label: <SearchLabel
+                  name={it.name}
+                  type={intl.productTeam}
+                  backgroundColor={searchResultColor.teamBackground}
+                />,
                 type: 'team'
               })))
             })())
@@ -136,7 +161,11 @@ const useMainSearch = () => {
               add(res.content.map(it => ({
                 id: it.id,
                 sortKey: it.name,
-                label: <SearchLabel name={it.name} type={intl.productArea}/>,
+                label: <SearchLabel
+                  name={it.name}
+                  type={intl.productArea}
+                  backgroundColor={searchResultColor.productAreaBackground}
+                />,
                 type: 'productarea'
               })))
             })())
@@ -148,7 +177,11 @@ const useMainSearch = () => {
               add(resDocs.content.map(it => ({
                 id: it.id,
                 sortKey: it.name,
-                label: <SearchLabel name={it.name} type={intl.document}/>,
+                label: <SearchLabel
+                  name={it.name}
+                  type={intl.document}
+                  backgroundColor={searchResultColor.documentBackground}
+                />,
                 type: ObjectType.DOCUMENT
               })))
             })())
@@ -205,7 +238,7 @@ const smallRadio = (value: SearchType, text: string) => {
   )
 }
 
-const SelectType = (props: {type: SearchType, setType: (type: SearchType) => void}) =>
+const SelectType = (props: { type: SearchType, setType: (type: SearchType) => void }) =>
   <Block
     font='ParagraphSmall'
     position='absolute'
@@ -298,6 +331,11 @@ export const MainSearch = () => {
             Root: {
               style: {
                 width: '40vw',
+              }
+            },
+            DropdownListItem: {
+              style: {
+                padding: '0 5px 0 5px'
               }
             }
           }

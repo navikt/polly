@@ -13,7 +13,7 @@
     "flag-icon-css": "^3.5.0",
     "formik": "^2.1.5",
     "lodash": "^4.17.19",
-    "moment": "2.27.0",
+    "moment": "2.29.0",
     "query-string": "^6.13.1",
     "randomcolor": "^0.6.2",
     "react": "^16.13.1",

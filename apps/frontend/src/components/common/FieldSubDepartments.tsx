@@ -1,13 +1,12 @@
 import * as React from 'react'
 import {Select} from 'baseui/select'
-import {codelist, ListName} from '../../../service/Codelist'
+import {codelist, ListName} from '../../service/Codelist'
 import {FieldArray, FormikProps} from 'formik'
-import {DpProcessFormValues} from '../../../constants'
+import {DpProcessFormValues, ProcessFormValues} from '../../constants'
 import {Block} from 'baseui/block'
-import {renderTagList} from "../../common/TagList"
+import {renderTagList} from "./TagList"
 
-const FieldDpProcessSubDepartment = (props: { formikBag: FormikProps<DpProcessFormValues> }) => {
-
+const FieldSubDepartments = (props: { formikBag: FormikProps<ProcessFormValues> | FormikProps<DpProcessFormValues>}) => {
   return (
     <FieldArray
       name='affiliation.subDepartments'
@@ -32,4 +31,4 @@ const FieldDpProcessSubDepartment = (props: { formikBag: FormikProps<DpProcessFo
 
 }
 
-export default FieldDpProcessSubDepartment
+export default FieldSubDepartments

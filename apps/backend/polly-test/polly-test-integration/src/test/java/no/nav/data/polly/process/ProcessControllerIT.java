@@ -232,6 +232,7 @@ class ProcessControllerIT extends IntegrationTestBase {
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(resp.getBody()).isNotNull();
         assertThat(resp.getBody().getName()).isEqualTo("newprocess");
+        assertThat(resp.getBody().getNumber()).isGreaterThan(100);
     }
 
     @Test

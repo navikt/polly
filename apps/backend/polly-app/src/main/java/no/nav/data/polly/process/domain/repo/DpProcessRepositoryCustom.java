@@ -1,6 +1,6 @@
 package no.nav.data.polly.process.domain.repo;
 
-import no.nav.data.polly.process.domain.DpProcess;
+import no.nav.data.polly.process.dpprocess.domain.DpProcess;
 
 import java.util.List;
 

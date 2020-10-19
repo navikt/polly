@@ -88,8 +88,10 @@ public class Process extends Auditable {
     public ProcessResponse convertToResponse() {
         return ProcessResponse.builder()
                 .id(id)
+                .number(data.getNumber())
                 .name(name)
                 .description(data.getDescription())
+                .additionalDescription(data.getAdditionalDescription())
                 .purpose(getPurposeCodeResponse())
                 .purposeCode(purposeCode)
                 .affiliation(data.getAffiliation().convertToResponse())
@@ -119,11 +121,13 @@ public class Process extends Auditable {
     public Process convertFromRequest(ProcessRequest request) {
         if (!request.isUpdate()) {
             id = UUID.randomUUID();
+            data.setNumber(request.getNewProcessNumber());
         }
 
         setName(request.getName());
         setPurposeCode(request.getPurposeCode());
         data.setDescription(request.getDescription());
+        data.setAdditionalDescription(request.getAdditionalDescription());
         data.setAffiliation(convertAffiliation(request.getAffiliation()));
         data.setCommonExternalProcessResponsible(request.getCommonExternalProcessResponsible());
         data.setStart(DateUtil.parseStart(request.getStart()));
@@ -143,8 +147,9 @@ public class Process extends Auditable {
         return ProcessShortResponse.builder()
                 .id(getId())
                 .name(getName())
-                .affiliation(data.getAffiliation().convertToResponse())
                 .purpose(getPurposeCodeResponse())
+                .affiliation(data.getAffiliation().convertToResponse())
+                .commonExternalProcessResponsible(getCommonExternalProcessResponsibleCodeResponse())
                 .status(getData().getStatus())
                 .build();
     }
