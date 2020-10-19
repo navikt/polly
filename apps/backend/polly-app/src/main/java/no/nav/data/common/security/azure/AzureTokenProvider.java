@@ -41,7 +41,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -53,10 +52,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
 
 import static java.util.Objects.requireNonNull;
-import static no.nav.data.common.security.AuthController.OAUTH_2_CALLBACK_URL;
 import static no.nav.data.common.security.SecurityConstants.SESS_ID_LEN;
 import static no.nav.data.common.security.SecurityConstants.TOKEN_TYPE;
 import static no.nav.data.common.security.azure.AzureConstants.MICROSOFT_GRAPH_SCOPES;
@@ -136,13 +133,10 @@ public class AzureTokenProvider implements TokenProvider {
     }
 
     @Override
-    public String createAuthRequestRedirectUrl(String postLoginRedirectUri, String errorUri, HttpServletRequest request) {
-        String redirectUri = UriComponentsBuilder.fromHttpUrl(securityProperties.findBaseUrl())
-                .replacePath(OAUTH_2_CALLBACK_URL)
-                .replaceQuery(null).build().toUriString();
+    public String createAuthRequestRedirectUrl(String postLoginRedirectUri, String postLoginErrorUri, String redirectUri) {
         return confidentialClientApplication.getAuthorizationRequestUrl(AuthorizationRequestUrlParameters
                 .builder(redirectUri, MICROSOFT_GRAPH_SCOPES)
-                .state(new OAuthState(postLoginRedirectUri, errorUri).toJson(encryptor))
+                .state(new OAuthState(postLoginRedirectUri, postLoginErrorUri).toJson(encryptor))
                 .responseMode(ResponseMode.FORM_POST)
                 .build()).toString();
     }

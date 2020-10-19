@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import javax.servlet.http.Cookie;
@@ -37,6 +38,7 @@ import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterN
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.ERROR_URI;
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.REDIRECT_URI;
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.STATE;
+import static org.springframework.security.web.util.UrlUtils.buildFullRequestUrl;
 
 @Slf4j
 @RestController
@@ -74,7 +76,7 @@ public class AuthController {
         Assert.isTrue(securityProperties.isValidRedirectUri(redirectUri), "Illegal redirect_uri " + redirectUri);
         Assert.isTrue(securityProperties.isValidRedirectUri(errorUri), "Illegal error_uri " + errorUri);
         var usedRedirect = redirectUri != null ? redirectUri : baseUrl;
-        String redirectUrl = tokenProvider.createAuthRequestRedirectUrl(usedRedirect, errorUri, request);
+        String redirectUrl = tokenProvider.createAuthRequestRedirectUrl(usedRedirect, errorUri, callbackRedirectUri(request));
         redirectStrategy.sendRedirect(request, response, redirectUrl);
     }
 
@@ -99,7 +101,7 @@ public class AuthController {
             throw new TechnicalException("invalid state", e);
         }
         if (StringUtils.hasText(code)) {
-            var session = tokenProvider.createSession(code, baseUrl + OAUTH_2_CALLBACK_URL);
+            var session = tokenProvider.createSession(code, callbackRedirectUri(request));
             response.addCookie(createCookie(session, (int) SESSION_LENGTH.toSeconds(), request));
             redirectStrategy.sendRedirect(request, response, state.getRedirectUri());
         } else {
@@ -150,6 +152,12 @@ public class AuthController {
         cookie.setHttpOnly(true);
         cookie.setSecure(!"localhost".equals(request.getServerName()));
         return cookie;
+    }
+
+    private String callbackRedirectUri(HttpServletRequest request) {
+        return UriComponentsBuilder.fromHttpUrl(buildFullRequestUrl(request))
+                .replacePath(OAUTH_2_CALLBACK_URL)
+                .replaceQuery(null).build().toUriString();
     }
 
 }
