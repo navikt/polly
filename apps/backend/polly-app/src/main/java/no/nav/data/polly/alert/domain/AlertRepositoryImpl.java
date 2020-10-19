@@ -74,7 +74,7 @@ public class AlertRepositoryImpl implements AlertRepositoryCustom {
             case DESC -> " desc";
         } : " desc";
         return switch (sort) {
-            case PROCESS -> "(select name from process p where p.process_id = cast(gs.data ->>'processId' as uuid))";
+            case PROCESS -> "(select data ->> 'name' from process p where p.process_id = cast(gs.data ->>'processId' as uuid))";
             case INFORMATION_TYPE -> "(select it.data ->> 'name' from information_type it where it.information_type_id = cast(gs.data ->>'informationTypeId' as uuid))";
             case DISCLOSURE -> "(select d.data ->> 'name' from disclosure d where d.disclosure_id = cast(gs.data ->>'disclosureId' as uuid))";
             case TYPE -> "data ->> 'type'";

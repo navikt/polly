@@ -65,7 +65,7 @@ class PolicyControllerIT extends IntegrationTestBase {
         List<PolicyRequest> requestList = List.of(PolicyRequest.builder().build());
         ResponseEntity<String> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(createEntity.getBody(), containsString("purpose was null or missing"));
+        assertThat(createEntity.getBody(), containsString("purposes was null or missing"));
         assertThat(createEntity.getBody(), containsString("informationTypeId was null or missing"));
         assertThat(createEntity.getBody(), containsString("processId was null or missing"));
         assertThat(policyRepository.count(), is(0L));
@@ -103,7 +103,7 @@ class PolicyControllerIT extends IntegrationTestBase {
         ResponseEntity<String> createEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(createEntity.getBody(), containsString("purpose: NOTFOUND code not found in codelist PURPOSE"));
+        assertThat(createEntity.getBody(), containsString("purposes[0]: NOTFOUND code not found in codelist PURPOSE"));
         assertThat(createEntity.getBody(), containsString("An InformationType with id b7a86238-c6ca-4e5e-9233-9089d162400c does not exist"));
         assertThat(createEntity.getBody(), containsString("A Process with id 17942455-4e86-4315-a7b2-872accd9c856 does not exist"));
         assertThat(createEntity.getBody(), containsString("subjectCategories[0]: NOTFOUND code not found in codelist SUBJECT_CATEGORY"));
@@ -216,8 +216,8 @@ class PolicyControllerIT extends IntegrationTestBase {
         ResponseEntity<String> updateEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT, HttpMethod.PUT, new HttpEntity<>(requestList), String.class);
         assertThat(updateEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(updateEntity.getBody(), containsString("fe566351-da4d-43b0-a2e9-b09e41ff8aa7/KONTROLL -- fieldIsNullOrMissing -- processId was null or missing"));
-        assertThat(updateEntity.getBody(), containsString(postadressId + "/KONTROLL -- fieldIsNullOrMissing -- processId was null or missing"));
+        assertThat(updateEntity.getBody(), containsString("fe566351-da4d-43b0-a2e9-b09e41ff8aa7/[KONTROLL] -- fieldIsNullOrMissing -- processId was null or missing"));
+        assertThat(updateEntity.getBody(), containsString(postadressId + "/[KONTROLL] -- fieldIsNullOrMissing -- processId was null or missing"));
         // No error reported regarding Arbeidsforhold/TEST1
         assertFalse(updateEntity.getBody().contains("Arbeidsforhold/TEST1"));
         assertThat(policyRepository.count(), is(3L));
