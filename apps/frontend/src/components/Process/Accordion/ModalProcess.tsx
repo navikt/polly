@@ -6,7 +6,6 @@ import {Block, BlockProps} from 'baseui/block'
 import {Button, KIND} from 'baseui/button'
 import {Error, ModalLabel} from '../../common/ModalSchema'
 import {ProcessFormValues, ProcessStatus, TRANSFER_GROUNDS_OUTSIDE_EU_OTHER} from '../../../constants'
-import {codelist} from '../../../service/Codelist'
 import {intl, theme} from '../../../util'
 import {processSchema} from '../../common/schema'
 import {Panel, PanelOverrides, StatelessAccordion} from 'baseui/accordion'
@@ -16,9 +15,9 @@ import FieldName from '../common/FieldName'
 import FieldPurpose from '../common/FieldPurpose'
 import FieldDescription from '../common/FieldDescription'
 import FieldDepartment from '../common/FieldDepartment'
-import FieldSubDepartments from '../common/FieldSubDepartment'
+import FieldSubDepartments from '../../common/FieldSubDepartments'
 import FieldProductTeam from '../../common/form/FieldProductTeam'
-import FieldProduct from '../common/FieldProduct'
+import FieldProduct from '../../common/FieldProduct'
 import BoolField from '../common/BoolField'
 import FieldDataProcessorAgreements from '../common/FieldDataProcessorAgreements'
 import RetentionItems from '../common/RetentionItems'
@@ -35,6 +34,7 @@ import PanelTitle from "../common/PanelTitle";
 import FieldTransferGroundsOutsideEU from '../common/FieldTransferGroundsOutsideEU'
 import FieldTransferGroundsOutsideEUOther from '../common/FieldTransferGroundsOutsideEUOther'
 import FieldTransferCountries from '../common/FieldTransferCountries'
+import FieldAdditionalDescription from '../common/FieldAdditionalDescription'
 
 const modalHeaderProps: BlockProps = {
   display: 'flex',
@@ -151,9 +151,15 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
 
                   <CustomizedModalBlock>
                     <ModalLabel label={intl.purposeOfTheProcess} tooltip={intl.processPurposeHelpText}/>
-                    <FieldDescription/>
+                    <FieldDescription />
                   </CustomizedModalBlock>
                   <Error fieldName='description'/>
+
+                  <CustomizedModalBlock>
+                    <ModalLabel label={intl.additionalDescription} tooltip={intl.additionalDescriptionHelpText}/>
+                    <FieldAdditionalDescription />
+                  </CustomizedModalBlock>
+                  <Error fieldName='additionalDescription'/>
 
                   <CustomizedModalBlock>
                     <ModalLabel label={intl.isProcessImplemented} tooltip={intl.dpiaHelpText}/>
@@ -222,24 +228,20 @@ const ModalProcess = ({submit, errorOnCreate, onClose, isOpen, initialValues, ti
                     >
                       <Block display='flex' width='100%' justifyContent='space-between'>
                         <Block width='48%'><ModalLabel label={intl.department} tooltip={intl.departmentHelpText}/></Block>
-                        {codelist.showSubDepartment(formikBag.values.affiliation.department) && (
                           <Block width='48%'><ModalLabel label={intl.subDepartment} tooltip={intl.subDepartmentHelpText}/></Block>
-                        )}
                       </Block>
 
                       <Block display='flex' width='100%' justifyContent='space-between'>
                         <Block width='48%'>
                           <FieldDepartment department={formikBag.values.affiliation.department}/>
                         </Block>
-                        {codelist.showSubDepartment(formikBag.values.affiliation.department) && (
                           <Block width='48%'>
                             <FieldSubDepartments formikBag={formikBag}/>
                           </Block>
-                        )}
                       </Block>
 
                       <Block display='flex' width='100%' justifyContent='space-between' marginTop={theme.sizing.scale400}>
-                        <Block width='48%'><ModalLabel label={intl.productTeamFromTK} tooltip={intl.productTeamFromTKHelpText}/></Block>
+                        <Block width='48%'><ModalLabel label={intl.productTeamFromTK} tooltip={intl.productTeamFromTKHelpText} fullwidth={true}/></Block>
                         <Block width='48%'>
                           <ModalLabel fullwidth label={intl.commonExternalProcessResponsible} tooltip={intl.commonExternalProcessResponsibleHelpText}/>
                         </Block>

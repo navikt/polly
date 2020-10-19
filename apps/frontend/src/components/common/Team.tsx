@@ -5,7 +5,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faEnvelope, faTimesCircle, faUser} from '@fortawesome/free-solid-svg-icons'
 import {copyToClipboard, intl, theme} from '../../util'
 import {Card, StyledBody} from 'baseui/card'
-import {ListItem, ListItemLabel, OverridesT} from 'baseui/list'
+import {ListItem, ListItemLabel, ListOverrides} from 'baseui/list'
 import {IconProp} from '@fortawesome/fontawesome-svg-core'
 import {Label3, Paragraph3} from 'baseui/typography'
 import Button from './Button'
@@ -21,18 +21,18 @@ import CustomizedStatefulTooltip from "./CustomizedStatefulTooltip";
 
 const defaultTeam = (teamId: string) => ({id: teamId, name: teamId, description: ' ', productarea: undefined, tags: [], members: []})
 
-const listOverrides: OverridesT = {
+const listOverrides: ListOverrides = {
   Content: {
     style: ({$theme}) => ({
       height: $theme.sizing.scale1000
     })
   }
-} as OverridesT
+} as ListOverrides
 
 
-const SmallIcon = (props: {icon: IconProp}) => <FontAwesomeIcon icon={props.icon} size="sm" style={{marginRight: '.5rem'}}/>
+const SmallIcon = (props: { icon: IconProp }) => <FontAwesomeIcon icon={props.icon} size="sm" style={{marginRight: '.5rem'}}/>
 
-const TeamContent = (props: {team: Team}) => (
+const TeamContent = (props: { team: Team }) => (
   <Card title={
     <StyledLink target="_blank" rel="noopener noreferrer"
                 href={`${env.teamKatBaseUrl}team/${props.team.id}`}>{props.team.name}</StyledLink>}
@@ -51,7 +51,8 @@ const TeamContent = (props: {team: Team}) => (
 
       {props.team.members.map((member, index) =>
         <ListItem key={index} overrides={listOverrides} endEnhancer={() =>
-          <CustomizedStatefulTooltip content={`${intl.email} ${member.email} ${intl.copied}!`} triggerType="click" onOpen={() => copyToClipboard(member.email || intl.emptyMessage)}>
+          <CustomizedStatefulTooltip content={`${intl.email} ${member.email} ${intl.copied}!`} triggerType="click"
+                                     onOpen={() => copyToClipboard(member.email || intl.emptyMessage)}>
                         <span>
                           <Button size="compact" shape="pill" kind="secondary">
                             <SmallIcon icon={faEnvelope}/> {intl.email}
@@ -66,7 +67,7 @@ const TeamContent = (props: {team: Team}) => (
   </Card>
 )
 
-const TeamView = (props: {teamId: string}) => {
+const TeamView = (props: { teamId: string }) => {
   const teamId = props.teamId
   const [team, setTeam] = useState<Team>(defaultTeam(props.teamId))
   const [error, setError] = useState(false)
@@ -85,20 +86,20 @@ const TeamView = (props: {teamId: string}) => {
 
   return (
     <>
-      {!error &&
-      <ObjectLink id={teamId} type={'team'}>
-        {team.name}
-      </ObjectLink>
+      {!error ?
+        (<ObjectLink id={teamId} type={'team'} key={teamId}>
+          {team.name}
+        </ObjectLink>) :
+        (<CustomizedStatefulTooltip content={intl.couldntLoadTeam}>
+          <span><FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500}/> {team.name}</span>
+        </CustomizedStatefulTooltip>)
       }
-      {error && <CustomizedStatefulTooltip content={intl.couldntLoadTeam}>
-        <span><FontAwesomeIcon icon={faTimesCircle} color={theme.colors.negative500}/> {team.name}</span>
-      </CustomizedStatefulTooltip>}
     </>
   )
 }
 
-export const TeamList = (props: {teamIds: string[]}) =>
-  <Block display='inline-flex'>
+export const TeamList = (props: { teamIds: string[] }) =>
+  <Block display='flex'>
     {props.teamIds.map((t, i) =>
       <DotTag key={i}>
         <TeamView teamId={t}/>

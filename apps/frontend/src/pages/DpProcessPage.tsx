@@ -12,20 +12,23 @@ import {Block} from "baseui/block";
 import {H4} from "baseui/typography";
 import {user} from "../service/User";
 import {useHistory} from "react-router-dom";
-import {env} from "../util/env";
+import {StyledSpinnerNext} from "baseui/spinner";
 
 const DpProcessPage = () => {
   const [showModal, toggleModal] = useReducer(prevState => !prevState, false)
   const [errorDpProcessModal, setErrorDpProcessModal] = React.useState<string>('')
   const [dpProcesses, setDpProcesses] = useState<DpProcess[]>([])
+  const [isLoading,setLoading] = useState<boolean>(true)
   const history = useHistory()
 
   useEffect(() => {
     (async () => {
+      setLoading(true)
       let processes = await getAllDpProcesses();
       if (processes) {
         setDpProcesses(processes)
       }
+      setLoading(false)
     })()
   }, [])
 
@@ -49,9 +52,9 @@ const DpProcessPage = () => {
   return (
     <>
       <Block display="flex" justifyContent="space-between">
-        <H4 marginTop='0'>{intl.dpProcesses}</H4>
+        <H4 marginTop='0'>{intl.dpProcessPageTitle}</H4>
         <Block>
-          {user.canWrite() && !env.disableDpProcess &&
+          {user.canWrite() && /*!env.disableDpProcess &&*/
           <Button kind="outline" onClick={() => toggleModal()}>
             <FontAwesomeIcon icon={faPlusCircle}/>&nbsp;{intl.createDpProcess}
           </Button>
@@ -65,7 +68,7 @@ const DpProcessPage = () => {
         submit={handleCreateDpProcess}
         errorOnCreate={errorDpProcessModal}
       />
-      <DpProcessTable dpProcesses={dpProcesses}/>
+      {!isLoading ? <DpProcessTable dpProcesses={dpProcesses}/> : <StyledSpinnerNext size={30}/> }
     </>
   )
 }

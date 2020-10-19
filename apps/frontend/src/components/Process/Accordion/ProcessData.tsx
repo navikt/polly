@@ -60,7 +60,11 @@ const ProcessData = (props: { process: Process }) => {
   return (
     <Block>
 
+      <DataText label={intl.processNumber} text={'' + process.number}/>
+
       <DataText label={intl.purposeOfTheProcess} text={process.description}/>
+
+      {process.additionalDescription && <DataText label={intl.additionalDescription} text="">{shortenLinksInText(process.additionalDescription)}</DataText>}
 
       {process.legalBases.length ?
         <DataText label={intl.legalBasis} text={""}>
@@ -92,8 +96,8 @@ const ProcessData = (props: { process: Process }) => {
         <ActiveIndicator alwaysShow={true} showDates={true} {...process} />
       </DataText>
 
-      <DataText label={intl.summarySubjectCategories} text={!subjectCategoriesSummarised.length && intl.subjectCategoriesNotFound}>
-        {!!subjectCategoriesSummarised.length && <DotTags list={ListName.SUBJECT_CATEGORY} codes={subjectCategoriesSummarised}/>}
+      <DataText label={intl.summarySubjectCategories} text={!subjectCategoriesSummarised.length && !process.usesAllInformationTypes ? intl.notFilled : ""}>
+        {process.usesAllInformationTypes?intl.potentialPersonalCategoryUsage:!!subjectCategoriesSummarised.length && <DotTags list={ListName.SUBJECT_CATEGORY} codes={subjectCategoriesSummarised}/>}
       </DataText>
 
       <DataText label={intl.organizing} text={""}>
@@ -101,16 +105,18 @@ const ProcessData = (props: { process: Process }) => {
           <span>{intl.department}: </span>
           <span><DotTags list={ListName.DEPARTMENT} codes={[process.affiliation.department]} commaSeparator linkCodelist/> </span>
         </Block> : <span>{intl.department}: {intl.notFilled}</span>}
-        {!!process.affiliation.subDepartments.length ? <Block>
+        {!!process.affiliation.subDepartments.length && <Block>
             <Block display="flex">
               <span>{intl.subDepartment}: </span>
               <DotTags list={ListName.SUB_DEPARTMENT} codes={process.affiliation.subDepartments} linkCodelist/>
             </Block>
-          </Block> :
-          <Block display="flex">
-            <span>{intl.subDepartment}: {intl.notFilled}</span>
           </Block>
         }
+
+        <Block display="flex">
+          <span>{intl.productTeam}: </span>
+          {!!process.affiliation.productTeams?.length ? <TeamList teamIds={process.affiliation.productTeams}/> : intl.notFilled}
+        </Block>
 
         <Block>
           <span>{intl.commonExternalProcessResponsible}: </span>
@@ -121,10 +127,6 @@ const ProcessData = (props: { process: Process }) => {
             : intl.no}</span>
         </Block>
 
-        <Block>
-          <span>{intl.productTeam}: </span>
-          {!!process.affiliation.productTeams?.length ? <TeamList teamIds={process.affiliation.productTeams}/> : intl.notFilled}
-        </Block>
       </DataText>
 
       <DataText label={intl.system} text={""}>

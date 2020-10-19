@@ -2,6 +2,7 @@ package no.nav.data.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.prometheus.client.CollectorRegistry;
+import io.prometheus.client.hotspot.VersionInfoExports;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.utils.DateUtil;
 import no.nav.data.common.utils.JsonUtils;
@@ -55,6 +56,7 @@ public class CommonConfig {
      */
     @Bean
     public CollectorRegistry collectorRegistry() {
+        new VersionInfoExports().register();
         return CollectorRegistry.defaultRegistry;
     }
 

@@ -1,6 +1,8 @@
 package no.nav.data.polly.dashboard.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -57,11 +59,13 @@ public class DashResponse {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
+    @JsonInclude(Include.NON_NULL)
     public static class ProcessDashCount {
 
         private String department;
         private String productAreaId;
         private long processes;
+        private long dpProcesses;
 
         private long processesCompleted;
         private long processesInProgress;
@@ -80,10 +84,14 @@ public class DashResponse {
         private Counter dataProcessor = new Counter();
         private long dataProcessorAgreementMissing;
         private Counter dataProcessorOutsideEU = new Counter();
-
+        private long commonExternalProcessResponsible;
 
         public void processes() {
             processes++;
+        }
+
+        public void dpProcesses() {
+            dpProcesses++;
         }
 
         public void processesCompleted() {
@@ -116,6 +124,10 @@ public class DashResponse {
 
         public void dataProcessorAgreementMissing() {
             dataProcessorAgreementMissing++;
+        }
+
+        public void commonExternalProcessResponsible() {
+            commonExternalProcessResponsible++;
         }
 
     }

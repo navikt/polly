@@ -11,7 +11,6 @@ import DataText from "../common/DataText";
 import {codelist, ListName} from "../../service/Codelist";
 import {TeamList} from "../common/Team";
 import {RetentionView} from "../Process/Retention";
-import {shortenLinksInText} from "../../util/helper-functions";
 import {ActiveIndicator} from "../common/Durations";
 import {boolToText} from "../common/Radio";
 import RouteLink from "../common/RouteLink";
@@ -21,7 +20,6 @@ import {DpProcessDeleteModal} from "./DpProcessDeleteModal";
 import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {SIZE as ButtonSize} from "baseui/button";
 import {user} from "../../service/User";
-import {env} from "../../util/env";
 
 const DpProcessView = () => {
   const history = useHistory()
@@ -89,7 +87,7 @@ const DpProcessView = () => {
         <>
           <Block display="flex" justifyContent={"space-between"} alignItems={"center"}>
             <H4>{dpProcess?.name}</H4>
-            {user.canWrite() && !env.disableDpProcess &&
+            {user.canWrite() && /*!env.disableDpProcess &&*/
             <Block>
               <Button size="compact" kind="outline" tooltip={intl.edit} icon={faEdit} marginRight onClick={toggleModal}>
                 {intl.edit}
@@ -101,15 +99,6 @@ const DpProcessView = () => {
             }
           </Block>
 
-          <DataText label={intl.description} text={dpProcess?.description}/>
-          <DataText label={intl.purpose} text={dpProcess?.purposeDescription}/>
-          <DataText label={intl.validityOfProcess} text={""}>
-            <ActiveIndicator alwaysShow={true} showDates={true} {...dpProcess} />
-          </DataText>
-
-          <DataText label={intl.article9} text={boolToText(dpProcess?.art9)}/>
-          <DataText label={intl.article10} text={boolToText(dpProcess?.art10)}/>
-
           <DataText label={intl.externalProcessResponsible} text={""}>
             <span>{!!dpProcess?.externalProcessResponsible ?
               <RouteLink href={`/thirdparty/${dpProcess.externalProcessResponsible.code}`}>
@@ -118,71 +107,62 @@ const DpProcessView = () => {
               : intl.no}</span>
           </DataText>
 
+          <DataText label={intl.description} text={dpProcess?.description}/>
+
+          <DataText label={intl.purpose} text={dpProcess?.purposeDescription}/>
+
+          <DataText label={intl.validityOfProcess} text={""}>
+            <ActiveIndicator alwaysShow={true} showDates={true} {...dpProcess} />
+          </DataText>
+
+          <DataText label={intl.article9} text={boolToText(dpProcess?.art9)}/>
+          <DataText label={intl.article10} text={boolToText(dpProcess?.art10)}/>
+
+          <DataText label={intl.system} text={""}>
+            {dpProcess && (<DotTags list={ListName.SYSTEM} codes={dpProcess.affiliation.products} linkCodelist/>)}
+          </DataText>
+
           <DataText label={intl.organizing} text={""}>
             {dpProcess?.affiliation.department ? <Block>
               <span>{intl.department}: </span>
               <span><DotTags list={ListName.DEPARTMENT} codes={[dpProcess?.affiliation.department]} commaSeparator linkCodelist/> </span>
             </Block> : <span>{intl.department}: {intl.notFilled}</span>}
-            {!!dpProcess?.affiliation.subDepartments.length ? <Block>
+            {!!dpProcess?.affiliation.subDepartments.length && <Block>
                 <Block display="flex">
                   <span>{intl.subDepartment}: </span>
                   <DotTags list={ListName.SUB_DEPARTMENT} codes={dpProcess?.affiliation.subDepartments} linkCodelist/>
                 </Block>
-              </Block> :
-              <Block display="flex">
-                <span>{intl.subDepartment}: {intl.notFilled}</span>
               </Block>
             }
 
-            <Block>
+            <Block display="flex">
               <span>{intl.productTeam}: </span>
               {!!dpProcess?.affiliation.productTeams?.length ? <TeamList teamIds={dpProcess?.affiliation.productTeams}/> : intl.notFilled}
             </Block>
           </DataText>
           <DataText label={intl.retention} text={""}>
             <>
-              {dpProcess?.retention?.retentionPlan === null && intl.retentionPlanUnclarified}
-              {dpProcess?.retention?.retentionPlan === false && intl.retentionPlanNo}
-            </>
-            <>
-              {dpProcess?.retention?.retentionPlan &&
-              <Block>
-                <Block>{intl.retentionPlanYes}</Block>
-              </Block>
-              }
               <Block>
                 <RetentionView retention={dpProcess?.retention}/>
-              </Block>
-              <Block>
-                <span>{dpProcess?.retention?.retentionDescription && `${intl.retentionDescription}: `}</span>
-                {dpProcess?.retention?.retentionDescription && shortenLinksInText(dpProcess?.retention?.retentionDescription)}
               </Block>
             </>
           </DataText>
           <DataText label={intl.dpProcessDataProcessor} text={""}>
             <>
-              {dpProcess?.dataProcessingAgreement === null && intl.dpProcessDataProcessorUnclarified}
-              {dpProcess?.dataProcessingAgreement === false && intl.dpProcessDataProcessorNo}
-            </>
-            <>
-              {dpProcess?.dataProcessingAgreement &&
               <Block>
-                <Block>{intl.dpProcessDataProcessorYes}</Block>
                 <Block>
                   {isDataProcessingAgreementsAvailable &&
                   <Block display='flex' alignItems="center">
                     <Block $style={{whiteSpace: 'nowrap', margin: '1rem 0'}}>
                       {`${intl.dataProcessorAgreement}: `}
                     </Block>
-                    <DotTags items={dpProcess.dataProcessingAgreements} markdown/>
+                    <DotTags items={dpProcess?.dataProcessingAgreements} markdown/>
                   </Block>
                   }
                 </Block>
-              </Block>}
+              </Block>
             </>
-
           </DataText>
-
 
           <DataText label={intl.subDataProcessor} text={""}>
             <>

@@ -1,12 +1,12 @@
-package no.nav.data.polly.process;
+package no.nav.data.polly.process.dpprocess;
 
 import no.nav.data.common.utils.StreamUtils;
 import no.nav.data.common.validator.RequestElement;
 import no.nav.data.common.validator.RequestValidator;
 import no.nav.data.common.validator.ValidationError;
-import no.nav.data.polly.process.domain.DpProcess;
 import no.nav.data.polly.process.domain.repo.DpProcessRepository;
-import no.nav.data.polly.process.dto.DpProcessRequest;
+import no.nav.data.polly.process.dpprocess.domain.DpProcess;
+import no.nav.data.polly.process.dpprocess.dto.DpProcessRequest;
 import no.nav.data.polly.teams.TeamService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

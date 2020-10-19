@@ -1,4 +1,4 @@
-package no.nav.data.polly.process.dto;
+package no.nav.data.polly.process.dpprocess.dto;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,6 @@ import no.nav.data.common.utils.DateUtil;
 import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.process.dto.sub.AffiliationResponse;
 import no.nav.data.polly.process.dto.sub.DataProcessingResponse;
-import no.nav.data.polly.process.dto.sub.RetentionResponse;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,7 +21,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonPropertyOrder({"id", "name", "affiliation", "externalProcessResponsible", "start", "end", "active",
-        "dataProcessingAgreement", "dataProcessingAgreements", "subDataProcessing",
+        "dataProcessingAgreements", "subDataProcessing",
         "purposeDescription", "description", "art9", "art10", "retention", "changeStamp"})
 public class DpProcessResponse {
 
@@ -33,7 +32,6 @@ public class DpProcessResponse {
     private LocalDate start;
     private LocalDate end;
 
-    private Boolean dataProcessingAgreement;
     @Singular
     private List<String> dataProcessingAgreements;
     private DataProcessingResponse subDataProcessing;
@@ -43,7 +41,7 @@ public class DpProcessResponse {
     private Boolean art9;
     private Boolean art10;
 
-    private RetentionResponse retention;
+    private DpRetentionResponse retention;
 
     private ChangeStampResponse changeStamp;
 

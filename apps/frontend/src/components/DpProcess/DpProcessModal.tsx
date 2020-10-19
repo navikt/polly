@@ -19,6 +19,9 @@ import FieldDpProcessAffiliation from "./common/FieldDpProcessAffiliation";
 import {dpProcessSchema} from "../common/schema";
 import {FieldDpProcessDates} from "./common/FieldDpProcessDates";
 import {Button, KIND} from "baseui/button";
+import FieldProduct from "../common/FieldProduct";
+import FieldDpProcessExternalProcessResponsible from "./common/FieldDpProcessExternalProcessResponsible";
+import {RadioBoolButton} from "../common/Radio";
 
 type ModalDpProcessProps = {
   initialValues: DpProcessFormValues
@@ -81,7 +84,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
     >
       <Block {...modalBlockProps}>
         <Formik
-          onSubmit={values =>{
+          onSubmit={values => {
             props.submit(values)
           }}
           initialValues={props.initialValues}
@@ -92,7 +95,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
               <Form onKeyDown={disableEnter}>
                 <ModalHeader>
                   <Block {...modalHeaderProps}>
-                    {intl.dpProcessTitle}
+                    {intl.dpProcessPageTitle}
                   </Block>
                 </ModalHeader>
                 <ModalBody>
@@ -107,6 +110,22 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                     />
                   </CustomizedModalBlock>
                   <Error fieldName={'name'}/>
+
+
+                  <CustomizedModalBlock>
+                    <ModalLabel label={intl.externalProcessResponsible}/>
+                    <Block width={'100%'}>
+                      {showResponsibleSelect &&
+                      <FieldDpProcessExternalProcessResponsible thirdParty={formikBag.values.externalProcessResponsible}
+                                                                hideSelect={() => setShowResponsibleSelect(false)}/>}
+                      {!showResponsibleSelect && <RadioBoolButton
+                        value={showResponsibleSelect}
+                        setValue={(b) => setShowResponsibleSelect(b!)}
+                        omitUndefined
+                      />}
+                    </Block>
+                  </CustomizedModalBlock>
+
 
                   <CustomizedModalBlock>
                     <ModalLabel label={intl.description}/>
@@ -135,20 +154,16 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                     <BoolField fieldName='art10' value={formikBag.values.art10}/>
                   </Block>
 
-                  <Block {...rowBlockProps}>
-                    <ModalLabel label={intl.isDataProcessorUsed}/>
-                    <BoolField fieldName='dataProcessingAgreement'
-                               value={formikBag.values.dataProcessingAgreement}/>
-                  </Block>
+                  <CustomizedModalBlock>
+                    <ModalLabel label={intl.system} tooltip={intl.systemHelpText}/>
+                    <FieldProduct formikBag={formikBag}/>
+                  </CustomizedModalBlock>
 
-                  {formikBag.values.dataProcessingAgreement && <>
-                    <Block {...rowBlockProps}>
-                      <ModalLabel label={intl.dataProcessorAgreement}/>
-                      <FieldDpProcessDataProcessingAgreements formikBag={formikBag}/>
-                    </Block>
-                    <Error fieldName='dataProcessingAgreements'/>
-                  </>
-                  }
+                  <Block {...rowBlockProps}>
+                    <ModalLabel label={intl.dataProcessorAgreement}/>
+                    <FieldDpProcessDataProcessingAgreements formikBag={formikBag}/>
+                  </Block>
+                  <Error fieldName='dataProcessingAgreements'/>
 
                   <StatelessAccordion overrides={{
                     Root: {

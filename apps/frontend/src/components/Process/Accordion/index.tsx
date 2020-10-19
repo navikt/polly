@@ -24,6 +24,7 @@ import {canViewAlerts} from '../../../pages/AlertEventPage'
 import {DeleteProcessModal} from './DeleteProcessModal'
 import {ProcessCreatedModal} from './ProcessCreatedModal'
 import {useHistory, useParams} from 'react-router-dom'
+import {AddBatchInformationTypesModal} from './AddBatchInformationTypesModal'
 
 type AccordionProcessProps = {
   isLoading: boolean
@@ -58,6 +59,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
 
   const [showEditProcessModal, setShowEditProcessModal] = React.useState(false)
   const [showCreatePolicyModal, setShowCreatePolicyModal] = React.useState(false)
+  const [showAddBatchInfoTypesModal, setShowAddBatchInfoTypesModal] = React.useState(false)
   const [addDefaultDocument, setAddDefaultDocument] = React.useState(false)
   const [showAddDocumentModal, setShowAddDocumentModal] = React.useState(false)
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
@@ -212,6 +214,10 @@ const AccordionProcess = (props: AccordionProcessProps) => {
           submit={(values: PolicyFormValues) => {
             submitCreatePolicy(values).then(() => setShowCreatePolicyModal(false)).catch(() => setShowCreatePolicyModal(true))
           }}
+          addBatch={() => {
+            setShowCreatePolicyModal(false)
+            setShowAddBatchInfoTypesModal(true)
+          }}
           errorOnCreate={errorPolicyModal}
         />
 
@@ -224,6 +230,14 @@ const AccordionProcess = (props: AccordionProcessProps) => {
           submit={(formValues) => props.submitAddDocument(formValues).then(() => setShowAddDocumentModal(false))}
           process={currentProcess}
           addDefaultDocument={addDefaultDocument}
+          error={props.errorDocumentModal}
+        />
+
+        <AddBatchInformationTypesModal
+          onClose={() => setShowAddBatchInfoTypesModal(false)}
+          isOpen={showAddBatchInfoTypesModal}
+          submit={(formValues) => props.submitAddDocument(formValues).then(() => setShowAddBatchInfoTypesModal(false))}
+          process={currentProcess}
           error={props.errorDocumentModal}
         />
 

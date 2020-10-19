@@ -1,31 +1,31 @@
 import {intl} from "./intl/intl";
 import {StyledLink} from "baseui/link";
 import * as React from "react";
+import {StatefulTooltip} from 'baseui/tooltip'
+import {lowerFirst} from 'lodash'
 
 export const isLink = (text: string) => {
-  try {
-    new URL(text);
-  } catch (_) {
-    return false;
+  const regex = /http[s]?:\/\/.*/gm
+  if(!regex.test(text)){
+    return false
   }
-
   return true;
 }
 
 export const shortenLinksInText = (text: string) => {
-  let objects: any = []
-  text.split(" ").forEach((word, index) => {
+  return text.split(" ").map((word, index) => {
     if (isLink(word)) {
-      objects.push(
-        <React.Fragment key={index}>
-          <StyledLink href={`${word}`}>{intl.seeExternalLink}</StyledLink>
+      return (
+        <span key={index}>
+          <StatefulTooltip content={word}>
+            <StyledLink href={word} target="_blank" rel="noopener noreferrer">{index === 0 ? intl.seeExternalLink : lowerFirst(intl.seeExternalLink)}</StyledLink>
+          </StatefulTooltip>
           &nbsp;
-        </React.Fragment>
+        </span>
       )
     } else {
-      objects.push(word + " ")
+      return <span>{word} </span>
     }
   })
-  return objects
 }
 export const mapBool = (b?: boolean) => b === true ? true : b === false ? false : undefined

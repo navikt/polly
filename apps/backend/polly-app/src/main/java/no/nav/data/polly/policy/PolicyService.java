@@ -10,7 +10,6 @@ import no.nav.data.polly.informationtype.domain.InformationType;
 import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.domain.PolicyRepository;
 import no.nav.data.polly.policy.dto.PolicyRequest;
-import no.nav.data.polly.process.ProcessService;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import org.apache.commons.lang3.StringUtils;
@@ -36,15 +35,13 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
     private final PolicyRepository policyRepository;
     private final InformationTypeRepository informationTypeRepository;
     private final ProcessRepository processRepository;
-    private final ProcessService processService;
     private final AlertService alertService;
 
     public PolicyService(PolicyRepository policyRepository, InformationTypeRepository informationTypeRepository,
-            ProcessRepository processRepository, ProcessService processService, AlertService alertService) {
+            ProcessRepository processRepository, AlertService alertService) {
         this.policyRepository = policyRepository;
         this.informationTypeRepository = informationTypeRepository;
         this.processRepository = processRepository;
-        this.processService = processService;
         this.alertService = alertService;
     }
 
@@ -67,7 +64,6 @@ public class PolicyService extends RequestValidator<PolicyRequest> {
         } else {
             policies.forEach(alertService::calculateEventsForPolicy);
         }
-        policies.stream().map(Policy::getProcess).distinct().forEach(processService::scheduleDistributeForProcess);
     }
 
     public void validateRequests(List<PolicyRequest> requests, boolean isUpdate) {

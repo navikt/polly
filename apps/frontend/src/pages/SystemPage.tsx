@@ -14,7 +14,7 @@ export const SystemPage = () => {
   return (
     <>
       <PageHeader section={Section.system} code={systemCode}/>
-      <ProcessList section={Section.system} code={systemCode} listName={ListName.SYSTEM}/>
+      <ProcessList section={Section.system} code={systemCode} listName={ListName.SYSTEM} isEditable={false}/>
 
       <InfoTypeTable title={intl.orgMasterInfTypeHeader}
                      getInfoTypes={async () => (await getInformationTypesBy({orgMaster: systemCode})).content}/>

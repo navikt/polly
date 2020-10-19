@@ -15,7 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
-import org.springframework.security.web.util.UrlUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -33,13 +32,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import static no.nav.data.common.security.SecurityConstants.COOKIE_NAME;
 import static no.nav.data.common.utils.Constants.SESSION_LENGTH;
-import static org.apache.commons.lang3.StringUtils.substringBefore;
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.CODE;
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.ERROR;
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.ERROR_DESCRIPTION;
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.ERROR_URI;
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.REDIRECT_URI;
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.STATE;
+import static org.springframework.security.web.util.UrlUtils.buildFullRequestUrl;
 
 @Slf4j
 @RestController
@@ -53,12 +52,14 @@ public class AuthController {
     private final TokenProvider tokenProvider;
     private final Encryptor encryptor;
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+    private final String baseUrl;
 
     public AuthController(SecurityProperties securityProperties,
             TokenProvider tokenProvider, Encryptor refreshTokenEncryptor) {
         this.securityProperties = securityProperties;
         this.tokenProvider = tokenProvider;
         this.encryptor = refreshTokenEncryptor;
+        baseUrl = securityProperties.findBaseUrl();
     }
 
     @ApiOperation(value = "Login using sso")
@@ -74,8 +75,8 @@ public class AuthController {
         log.debug("Request to login");
         Assert.isTrue(securityProperties.isValidRedirectUri(redirectUri), "Illegal redirect_uri " + redirectUri);
         Assert.isTrue(securityProperties.isValidRedirectUri(errorUri), "Illegal error_uri " + errorUri);
-        var usedRedirect = redirectUri != null ? redirectUri : substringBefore(fullRequestUrlWithoutQuery(request), "/login");
-        String redirectUrl = tokenProvider.createAuthRequestRedirectUrl(usedRedirect, errorUri, request);
+        var usedRedirect = redirectUri != null ? redirectUri : baseUrl;
+        String redirectUrl = tokenProvider.createAuthRequestRedirectUrl(usedRedirect, errorUri, callbackRedirectUri(request));
         redirectStrategy.sendRedirect(request, response, redirectUrl);
     }
 
@@ -100,7 +101,7 @@ public class AuthController {
             throw new TechnicalException("invalid state", e);
         }
         if (StringUtils.hasText(code)) {
-            var session = tokenProvider.createSession(code, fullRequestUrlWithoutQuery(request));
+            var session = tokenProvider.createSession(code, callbackRedirectUri(request));
             response.addCookie(createCookie(session, (int) SESSION_LENGTH.toSeconds(), request));
             redirectStrategy.sendRedirect(request, response, state.getRedirectUri());
         } else {
@@ -153,11 +154,12 @@ public class AuthController {
         return cookie;
     }
 
-    private String fullRequestUrlWithoutQuery(HttpServletRequest request) {
-        return UriComponentsBuilder.fromHttpUrl(UrlUtils.buildFullRequestUrl(request))
-                .replaceQuery(null)
-                .build()
-                .toUriString();
+    private String callbackRedirectUri(HttpServletRequest request) {
+        String redirectUri = UriComponentsBuilder.fromHttpUrl(buildFullRequestUrl(request))
+                .replacePath(OAUTH_2_CALLBACK_URL)
+                .replaceQuery(null).build().toUriString();
+        Assert.isTrue(securityProperties.isValidRedirectUri(redirectUri), "Invalid redirect uri " + redirectUri);
+        return redirectUri;
     }
 
 }

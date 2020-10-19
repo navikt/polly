@@ -45,7 +45,6 @@ export const dpProcessToFormValues = (dpProcess: Partial<DpProcess>): DpProcessF
     art10,
     art9,
     changeStamp,
-    dataProcessingAgreement,
     dataProcessingAgreements,
     description,
     end,
@@ -67,7 +66,6 @@ export const dpProcessToFormValues = (dpProcess: Partial<DpProcess>): DpProcessF
     },
     art10: mapBool(art10),
     art9: mapBool(art9),
-    dataProcessingAgreement: mapBool(dataProcessingAgreement),
     dataProcessingAgreements: dataProcessingAgreements || [],
     description: description || '',
     end: end || undefined,
@@ -84,10 +82,8 @@ export const dpProcessToFormValues = (dpProcess: Partial<DpProcess>): DpProcessF
     name: name || '',
     purposeDescription: purposeDescription || '',
     retention: {
-      retentionPlan: mapBool(retention?.retentionPlan),
       retentionMonths: retention?.retentionMonths || 0,
       retentionStart: retention?.retentionStart || '',
-      retentionDescription: retention?.retentionDescription || ''
     },
     start: start || env.defaultStartDate
   }
@@ -99,7 +95,6 @@ export const fromValuesToDpProcess = (values: DpProcessFormValues) => {
     affiliation: values.affiliation,
     art10: values.art10,
     art9: values.art9,
-    dataProcessingAgreement: values.dataProcessingAgreement,
     dataProcessingAgreements: values.dataProcessingAgreements,
     description: values.description,
     end: values.end,

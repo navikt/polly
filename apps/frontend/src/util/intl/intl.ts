@@ -22,6 +22,7 @@ export interface IStrings {
   termEditHeader: string;
   purpose: string;
   processPurpose: string;
+  processNumber: string;
   purposeOfTheProcess: string;
   purposeDescription: string;
   sensitivity: string;
@@ -29,6 +30,9 @@ export interface IStrings {
   process: string;
   dpProcess: string;
   dpProcesses: string;
+  dpProcessPageTitle: string;
+  potentialPersonalCategoryUsage: string;
+  thirdPartyDpProcessTableTitle: string;
   processes: string;
   legalBasis: string;
   legalBasisShort: string;
@@ -336,6 +340,7 @@ export interface IStrings {
   groups: string;
   description: string;
   additionalDescription: string;
+  additionalDescriptionHelpText: string;
   document: string;
   edit: string;
   editInformationTypes: string;
@@ -352,9 +357,14 @@ export interface IStrings {
   appName: string;
   beta: string;
   all: string;
+  added: string;
+  addManyFromSystem: string;
   level: string;
   type: string;
+  help:string;
+  helpTooltip:string;
   allProcesses: string;
+  navResponsible:string;
   completedProcesses: string;
   showCompletedProcesses: string;
   inProgressProcesses: string;
@@ -423,12 +433,12 @@ export interface IStrings {
 
 // Remember import moment locales up top
 export const langs: Langs = {
-  nb: { flag: "no", name: "Norsk", langCode: "nb", texts: no, dateLocale: nbLocale },
-  en: { flag: "gb", name: "English", langCode: "en", texts: en, dateLocale: enLocale },
+  nb: {flag: "no", name: "Norsk", langCode: "nb", texts: no, dateLocale: nbLocale},
+  en: {flag: "gb", name: "English", langCode: "en", texts: en, dateLocale: enLocale},
 };
 
 if (window.location.hostname.indexOf("local") >= 0) {
-  langs["ta"] = { flag: ["lk", "in"][Math.floor(Math.random() * 2)], name: "தமிழ்", langCode: "ta", texts: ta, dateLocale: taLocale };
+  langs["ta"] = {flag: ["lk", "in"][Math.floor(Math.random() * 2)], name: "தமிழ்", langCode: "ta", texts: ta, dateLocale: taLocale};
 }
 
 export const langsArray: Lang[] = Object.keys(langs).map((lang) => langs[lang]);
@@ -439,14 +449,14 @@ const defaultLang = langs.nb;
 type IIntl = LocalizedStringsMethods & IStrings;
 
 interface LocalizedStringsFactory {
-  new <T>(props: GlobalStrings<T>, options?: { customLanguageInterface: () => string }): IIntl;
+  new<T>(props: GlobalStrings<T>, options?: { customLanguageInterface: () => string }): IIntl;
 }
 
 const strings: IntlLangs = {};
 
 Object.keys(langs).forEach((lang) => (strings[lang] = langs[lang].texts));
 
-export const intl: IIntl = new (LocalizedStrings as LocalizedStringsFactory)(strings as any, { customLanguageInterface: () => defaultLang.langCode });
+export const intl: IIntl = new (LocalizedStrings as LocalizedStringsFactory)(strings as any, {customLanguageInterface: () => defaultLang.langCode});
 export const currentLang = () => langs[intl.getLanguage()];
 
 interface IntlLangs {

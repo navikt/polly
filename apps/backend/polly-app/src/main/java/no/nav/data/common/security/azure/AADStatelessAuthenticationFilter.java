@@ -3,7 +3,6 @@ package no.nav.data.common.security.azure;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSObject;
-import com.nimbusds.jose.jwk.source.DefaultJWKSetCache;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.jwk.source.RemoteJWKSet;
 import com.nimbusds.jose.proc.BadJOSEException;
@@ -38,7 +37,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -101,10 +99,11 @@ public class AADStatelessAuthenticationFilter extends OncePerRequestFilter {
             try {
                 var principal = buildUserPrincipal(credential.getAccessToken());
                 var graphData = azureTokenProvider.getGraphData(credential.getAccessToken());
-                var authentication = new PreAuthenticatedAuthenticationToken(principal, credential, graphData.getGrantedAuthorities());
-                authentication.setDetails(new AzureUserInfo(principal, graphData.getGrantedAuthorities(), graphData.getNavIdent()));
+                var grantedAuthorities = azureTokenProvider.lookupGrantedAuthorities(principal.getStringListClaim("groups"));
+                var authentication = new PreAuthenticatedAuthenticationToken(principal, credential, grantedAuthorities);
+                authentication.setDetails(new AzureUserInfo(principal, grantedAuthorities, graphData.getNavIdent()));
                 authentication.setAuthenticated(true);
-                log.trace("Request token verification success for subject {} with roles {}.", AzureUserInfo.getUserId(principal), graphData.getGrantedAuthorities());
+                log.trace("Request token verification success for subject {} with roles {}.", AzureUserInfo.getUserId(principal), grantedAuthorities);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 return true;
             } catch (BadJWTException ex) {

@@ -11,7 +11,6 @@ import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.policy.rest.PolicyRestController.PolicyPage;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.ProcessData;
-import no.nav.data.polly.process.domain.ProcessDistribution;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +42,6 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     @BeforeEach
     void setUp() {
-        processDistributionRepository.deleteAll();
         processRepository.save(Process.builder().purposeCode(PURPOSE_CODE1).id(PROCESS_ID_1).name(PROCESS_NAME_1)
                 .data(ProcessData.builder().start(LocalDate.now()).end(LocalDate.now()).build())
                 .build());
@@ -60,7 +58,6 @@ class PolicyControllerIT extends IntegrationTestBase {
         assertThat(createEntity.getBody(), notNullValue());
         assertThat(policyRepository.count(), is(1L));
         assertPolicy(createEntity.getBody().getContent().get(0), PROCESS_NAME_1, INFORMATION_TYPE_NAME);
-        assertBehandlingsgrunnlagDistribusjon(1);
     }
 
     @Test
@@ -141,7 +138,6 @@ class PolicyControllerIT extends IntegrationTestBase {
         ResponseEntity<PolicyPage> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), PolicyPage.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
         assertThat(createEntity.getBody(), notNullValue());
-        assertBehandlingsgrunnlagDistribusjon(1);
 
         PolicyRequest request = requestList.get(0);
         request.setId(createEntity.getBody().getContent().get(0).getId().toString());
@@ -156,7 +152,6 @@ class PolicyControllerIT extends IntegrationTestBase {
         assertThat(updateEntity.getBody(), notNullValue());
         assertPolicy(updateEntity.getBody(), PROCESS_NAME_1 + " 2nd", newInfoType.getData().getName());
         assertThat(policyRepository.findByInformationTypeId(newInfoType.getId()), hasSize(1));
-        assertBehandlingsgrunnlagDistribusjon(2);
     }
 
     @Test
@@ -196,7 +191,6 @@ class PolicyControllerIT extends IntegrationTestBase {
         assertPolicy(updateEntity.getBody().getContent().get(0), PROCESS_NAME_1 + " 2nd", INFORMATION_TYPE_NAME);
         assertThat(updateEntity.getBody().getContent().get(1).getProcess().getName(), is(PROCESS_NAME_1 + " 2nd"));
         assertThat(policyRepository.count(), is(2L));
-        assertBehandlingsgrunnlagDistribusjon(2);
     }
 
     @Test
@@ -245,19 +239,12 @@ class PolicyControllerIT extends IntegrationTestBase {
                 POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), PolicyPage.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.CREATED));
         assertThat(createEntity.getBody(), notNullValue());
-        assertBehandlingsgrunnlagDistribusjon(1);
         PolicyResponse policy = createEntity.getBody().getContent().get(0);
 
         ResponseEntity<String> deleteEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT + policy.getId(), HttpMethod.DELETE, new HttpEntity<>(new HttpHeaders()), String.class);
         assertThat(deleteEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(policyRepository.count(), is(0L));
-        assertBehandlingsgrunnlagDistribusjon(2);
-    }
-
-    private void assertBehandlingsgrunnlagDistribusjon(int count) {
-        List<ProcessDistribution> all = processDistributionRepository.findAll();
-        assertThat(all, hasSize(count));
     }
 
     @Test

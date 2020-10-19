@@ -1,12 +1,16 @@
 import * as React from 'react'
 import {Select} from 'baseui/select'
-import {codelist, ListName} from '../../../service/Codelist'
+import {codelist, ListName} from '../../service/Codelist'
 import {FieldArray, FormikProps} from 'formik'
-import {ProcessFormValues} from '../../../constants'
-import {renderTagList} from '../../common/TagList'
+import {DpProcessFormValues, ProcessFormValues} from '../../constants'
+import {renderTagList} from './TagList'
 import {Block} from 'baseui/block'
 
-const FieldProduct = (props: {formikBag: FormikProps<ProcessFormValues>}) => {
+type fieldProductsProps = {
+  formikBag: FormikProps<ProcessFormValues> | FormikProps<DpProcessFormValues>
+}
+
+const FieldProduct = (props:fieldProductsProps ) => {
   return <FieldArray
     name='affiliation.products'
     render={arrayHelpers => (

@@ -54,6 +54,7 @@ export enum ProcessField {
   MISSING_LEGAL_BASIS = 'MISSING_LEGAL_BASIS',
   MISSING_ARTICLE_6 = 'MISSING_ARTICLE_6',
   MISSING_ARTICLE_9 = 'MISSING_ARTICLE_9',
+  COMMON_EXTERNAL_PROCESSOR = 'COMMON_EXTERNAL_PROCESSOR'
 }
 
 export enum ProcessState {
@@ -101,7 +102,7 @@ export interface PolicyFormValues {
   id?: string;
   purposeCode: string;
   informationType?: InformationTypeShort;
-  process: { id: string; name: string; legalBases: LegalBasis[] };
+  process: {id: string; name: string; legalBases: LegalBasis[]};
   subjectCategories: string[];
   legalBasesUse: LegalBasesUse;
   legalBases: Array<LegalBasisFormValues>;
@@ -115,6 +116,7 @@ export interface ProcessFormValues {
   purposeCode?: string;
   name?: string;
   description?: string;
+  additionalDescription?: string;
   affiliation: AffiliationFormValues
   commonExternalProcessResponsible?: string;
   legalBases: Array<LegalBasisFormValues>;
@@ -177,6 +179,11 @@ export interface Retention {
   retentionMonths?: number;
   retentionStart?: string;
   retentionDescription?: string;
+}
+
+export interface DpRetention {
+  retentionMonths?: number;
+  retentionStart?: string;
 }
 
 export interface LegalBasisFormValues {
@@ -252,6 +259,13 @@ export const documentSort: ColumnCompares<DocumentInfoTypeUse> = {
   subjectCategories: (a, b) => a.subjectCategories.length - b.subjectCategories.length,
 }
 
+export const dpProcessSort: ColumnCompares<DpProcess> = {
+  name: (a, b) => a.name.localeCompare(b.name),
+  externalProcessResponsible: (a, b) => (a.externalProcessResponsible?.shortName || '').localeCompare(b.externalProcessResponsible?.shortName || ''),
+  affiliation: (a, b) => (a.affiliation.department?.shortName || '').localeCompare(a.affiliation.department?.shortName || ''),
+  description: (a, b) => (a.description || '').localeCompare(b.description || '')
+}
+
 export interface InformationTypeShort {
   id: string;
   name: string;
@@ -264,6 +278,7 @@ export interface ProcessShort {
   purpose: Code;
   affiliation: Affiliation;
   status?: ProcessStatus;
+  commonExternalProcessResponsible?: Code;
 }
 
 export interface DpProcessShort {
@@ -275,7 +290,9 @@ export interface DpProcessShort {
 export interface Process extends IDurationed {
   id: string;
   name: string;
+  number: number;
   description?: string;
+  additionalDescription?: string;
   legalBases: LegalBasis[];
   affiliation: Affiliation;
   commonExternalProcessResponsible: Code;
@@ -298,13 +315,12 @@ export interface DpProcess extends IDurationed {
   purposeDescription?: string;
   affiliation: Affiliation;
   externalProcessResponsible?: Code;
-  dataProcessingAgreement?: boolean;
   dataProcessingAgreements: string[];
   subDataProcessing: DataProcessing;
   changeStamp: ChangeStamp;
   art9?: boolean;
   art10?: boolean;
-  retention: Retention
+  retention: DpRetention
 }
 
 export interface DpProcessFormValues {
@@ -314,12 +330,11 @@ export interface DpProcessFormValues {
   purposeDescription?: string;
   affiliation: AffiliationFormValues
   externalProcessResponsible?: string;
-  dataProcessingAgreement?: boolean;
   dataProcessingAgreements: string[];
   subDataProcessing: DataProcessingFormValues;
   art9?: boolean;
   art10?: boolean;
-  retention: Retention
+  retention: DpRetention
   start?: string;
   end?: string;
 }
@@ -339,7 +354,7 @@ export interface TeamResource {
 }
 
 export interface ProcessCount {
-  counts: { [code: string]: number };
+  counts: {[code: string]: number};
 }
 
 export interface UserInfo {
@@ -450,10 +465,10 @@ export interface DocumentInfoTypeUse {
 }
 
 export interface AddDocumentToProcessFormValues {
-  document?: Document;
-  informationTypes: DocumentInfoTypeUse[];
-  defaultDocument: boolean;
-  process: { id: string; name: string; purpose: Code };
+  document?: Document
+  informationTypes: DocumentInfoTypeUse[]
+  linkDocumentToPolicies: boolean
+  process: {id: string; name: string; purpose: Code}
 }
 
 export interface CreateDocumentFormValues {
@@ -478,7 +493,7 @@ export interface AuditItem {
   data: object;
 }
 
-export type Event = Omit<AuditItem, 'user' | 'data'> & { name: string };
+export type Event = Omit<AuditItem, 'user' | 'data'> & {name: string};
 
 export interface AuditLog {
   id: string;
@@ -564,6 +579,7 @@ export interface DashboardData {
 
 export interface ProcessesDashCount {
   processes: number
+  dpProcesses: number
   processesCompleted: number
   processesInProgress: number
   processesMissingLegalBases: number
@@ -578,6 +594,7 @@ export interface ProcessesDashCount {
   dataProcessor: Counter
   dataProcessorAgreementMissing: number
   dataProcessorOutsideEU: Counter
+  commonExternalProcessResponsible: number
 }
 
 export interface DepartmentProcessDashCount extends ProcessesDashCount {
