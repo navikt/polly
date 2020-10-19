@@ -15,12 +15,10 @@ import com.microsoft.aad.msal4j.ResponseMode;
 import com.microsoft.aad.msal4j.UserAssertion;
 import com.microsoft.graph.concurrency.DefaultExecutors;
 import com.microsoft.graph.logger.DefaultLogger;
-import com.microsoft.graph.models.extensions.DirectoryObject;
 import com.microsoft.graph.models.extensions.IGraphServiceClient;
 import com.microsoft.graph.models.extensions.User;
 import com.microsoft.graph.options.QueryOption;
 import com.microsoft.graph.requests.extensions.GraphServiceClient;
-import com.microsoft.graph.requests.extensions.IDirectoryObjectCollectionWithReferencesRequestBuilder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.exceptions.TechnicalException;
@@ -50,7 +48,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -156,9 +153,8 @@ public class AzureTokenProvider implements TokenProvider {
 
     private GraphData lookupGraphData(String accessToken) {
         var graphAccessToken = acquireGraphTokenForAccessToken(accessToken).accessToken();
-        var grantedAuthorities = lookupGrantedAuthorities(graphAccessToken);
         var navIdent = lookupNavIdent(graphAccessToken);
-        return new GraphData(navIdent, grantedAuthorities);
+        return new GraphData(navIdent);
     }
 
     @Override
@@ -196,37 +192,21 @@ public class AzureTokenProvider implements TokenProvider {
         return user.onPremisesSamAccountName;
     }
 
-    private Set<GrantedAuthority> lookupGrantedAuthorities(String graphAccessToken) {
-        try {
-            var groups = getGraphClient(graphAccessToken)
-                    .me().memberOf().buildRequest().get();
-
-            List<DirectoryObject> page = new ArrayList<>(groups.getCurrentPage());
-            IDirectoryObjectCollectionWithReferencesRequestBuilder nextPage;
-            while ((nextPage = groups.getNextPage()) != null) {
-                page.addAll(nextPage.buildRequest().get().getCurrentPage());
-            }
-            log.debug("groups {}", convert(page, g -> g.id));
-
-            Set<GrantedAuthority> roles = page.stream()
-                    .map(this::roleFor)
-                    .filter(Objects::nonNull)
-                    .map(this::convertAuthority)
-                    .collect(Collectors.toSet());
-            roles.add(convertAuthority(AppRole.READ.name()));
-            log.debug("roles {}", convert(roles, GrantedAuthority::getAuthority));
-            return roles;
-        } catch (Exception e) {
-            log.error("Failed to get groups for token", e);
-            throw new TechnicalException("Failed to get groups for token", e);
-        }
+    public Set<GrantedAuthority> lookupGrantedAuthorities(List<String> groupIds) {
+        Set<GrantedAuthority> roles = groupIds.stream()
+                .map(this::roleFor)
+                .filter(Objects::nonNull)
+                .map(this::convertAuthority)
+                .collect(Collectors.toSet());
+        roles.add(convertAuthority(AppRole.READ.name()));
+        log.debug("roles {}", convert(roles, GrantedAuthority::getAuthority));
+        return roles;
     }
 
     /**
      * token v2 does not allow us to fetch group details, so we have to map by id instead
      */
-    private String roleFor(DirectoryObject groupO) {
-        var group = groupO.id;
+    private String roleFor(String group) {
         if (securityProperties.getWriteGroups().contains(group)) {
             return AppRole.WRITE.name();
         }
