@@ -16,7 +16,7 @@ import {convertProcessToFormValues} from '../../../api'
 import {PathParams} from '../../../pages/ProcessPage'
 import {AddDocumentModal} from './AddDocumentModal'
 import Button from '../../common/Button'
-import AccordionTitle from './AccordionTitle'
+import AccordionTitle, {InformationTypeRef} from './AccordionTitle'
 import ProcessData from './ProcessData'
 import {lastModifiedDate} from '../../../util/date-formatter'
 import {faExclamationCircle} from '@fortawesome/free-solid-svg-icons'
@@ -155,6 +155,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
                       </Block>}
                       {hasAccess() &&
                       <Block>
+                        <div ref={InformationTypeRef}></div>
                         {renderAddDocumentButton()}
                         {renderCreatePolicyButton()}
                       </Block>

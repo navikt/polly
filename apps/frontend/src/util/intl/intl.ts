@@ -338,6 +338,7 @@ export interface IStrings {
   additionalDescription: string;
   document: string;
   edit: string;
+  editInformationTypes: string;
   update: string;
   export: string;
   sources: string;
