@@ -5,6 +5,7 @@ import {Code, codelist} from '../../../service/Codelist'
 import {Process} from '../../../constants'
 import {ColumnCompares, useTable} from '../../../util/hooks'
 import RouteLink from '../../common/RouteLink'
+import {Block} from 'baseui/block'
 
 type DocumentProcessesProps = {
   documentUsages: Process[]
@@ -70,8 +71,15 @@ const DocumentProcessesTable = (props: DocumentProcessesProps) => {
           table.data.map((process, index) => (
             <Row key={index}>
               <Cell>
-                {process.purposes.map((p,i) =>
-                  <RouteLink key={i} href={`/process/purpose/${p.code}`}>{codelist.getShortnameForCode(p)}</RouteLink>)}
+                <Block display='flex' flexDirection='column'>
+                  {process.purposes.map((p, i) =>
+                    <Block key={i}>
+                      <RouteLink href={`/process/purpose/${p.code}`}>
+                        {codelist.getShortnameForCode(p)}
+                      </RouteLink>
+                    </Block>
+                  )}
+                </Block>
               </Cell>
               <Cell>
                 {/* todo multipurpose url */}
@@ -81,7 +89,15 @@ const DocumentProcessesTable = (props: DocumentProcessesProps) => {
                 {process.department ? <RouteLink href={`/process/department/${process.department.code}`}>{process.department.shortName}</RouteLink> : ''}
               </Cell>
               <Cell>
-                {process.products.map(product => product.shortName).join(', ')}
+                <Block display='flex' flexDirection='column'>
+                  {process.products.map((p, i) =>
+                    <Block key={i}>
+                      <RouteLink href={`/system/${p.code}`}>
+                        {codelist.getShortnameForCode(p)}
+                      </RouteLink>
+                    </Block>
+                  )}
+                </Block>
               </Cell>
             </Row>
           ))
