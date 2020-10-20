@@ -297,6 +297,7 @@ export interface IStrings {
   // groups
   READ: string;
   WRITE: string;
+  SUPER: string;
   ADMIN: string;
 
   CREATE: string;
