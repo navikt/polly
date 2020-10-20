@@ -6,6 +6,7 @@ import {getUserInfo} from "../api"
 export enum Group {
   READ = "READ",
   WRITE = "WRITE",
+  SUPER = "SUPER",
   ADMIN = "ADMIN"
 }
 
@@ -79,6 +80,10 @@ class UserService {
 
   public canWrite(): boolean {
     return this.hasGroup(Group.WRITE)
+  }
+
+  public isSuper(): boolean {
+    return this.hasGroup(Group.SUPER)
   }
 
   public isAdmin(): boolean {

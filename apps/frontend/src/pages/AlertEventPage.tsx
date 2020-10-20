@@ -219,4 +219,4 @@ export const AlertEventPage = () => {
   )
 }
 
-export const canViewAlerts = () => user.isAdmin()
+export const canViewAlerts = () => user.isSuper()

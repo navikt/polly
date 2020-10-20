@@ -204,6 +204,9 @@ public class AzureTokenProvider implements TokenProvider {
         if (securityProperties.getWriteGroups().contains(group)) {
             return AppRole.WRITE.name();
         }
+        if (securityProperties.getSuperGroups().contains(group)) {
+            return AppRole.SUPER.name();
+        }
         if (securityProperties.getAdminGroups().contains(group)) {
             return AppRole.ADMIN.name();
         }

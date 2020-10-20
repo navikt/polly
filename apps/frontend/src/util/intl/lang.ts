@@ -242,6 +242,7 @@ export const no: IStrings = {
 
   READ: "Les",
   WRITE: "Skriv",
+  SUPER: "Super",
   ADMIN: "Admin",
 
   CREATE: "Opprett",
@@ -681,6 +682,7 @@ export const en: IStrings = {
   externalProcessResponsible: 'Process responsible',
   READ: "Read",
   WRITE: "Write",
+  SUPER: "Super",
   ADMIN: "Admin",
 
   CREATE: "Create",
