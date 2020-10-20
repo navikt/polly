@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {Cell, HeadCell, Row, Table} from '../../common/Table'
 import {intl} from '../../../util'
 import {Code, codelist} from '../../../service/Codelist'
@@ -21,21 +21,22 @@ interface DataFormat {
 
 const sorting: ColumnCompares<DataFormat> = {
   name: (a, b) => a.name.localeCompare(b.name),
-  purposes: (a, b) => (codelist.getShortnameForCode(a.purposes[0]) || '').localeCompare(codelist.getShortnameForCode(b.purposes[0]) || ''),
+  purposes: (a, b) => (a.purposes[0].shortName || '').localeCompare(b.purposes[0].shortName || ''),
   department: (a, b) => (a.department?.shortName || '').localeCompare(b.department?.shortName || ''),
-  products: (a, b) => a.products.length - b.products.length,
+  products: (a, b) => ((a.products.length && a.products[0].shortName) || '').localeCompare((b.products.length && b.products[0].shortName) || '')
 }
 
 
 const DocumentProcessesTable = (props: DocumentProcessesProps) => {
+  const [processes] = useState(props.documentUsages.map(p => ({
+    id: p.id,
+    name: p.name,
+    purposes: p.purposes,
+    department: p.affiliation.department,
+    products: p.affiliation.products
+  })))
   const [table, sortColumn] = useTable<DataFormat, keyof DataFormat>(
-    props.documentUsages.map(p => ({
-      id: p.id,
-      name: p.name,
-      purposes: p.purposes,
-      department: p.affiliation.department,
-      products: p.affiliation.products
-    })), {
+    processes, {
       sorting: sorting,
       initialSortColumn: 'name'
     })
