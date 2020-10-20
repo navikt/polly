@@ -1,7 +1,6 @@
 import {Cell, HeadCell, Row, Table} from '../common/Table'
 import {intl} from '../../util'
 import RouteLink from '../common/RouteLink'
-import {codelist, ListName} from '../../service/Codelist'
 import {ProcessShort, ProcessStatus} from '../../constants'
 import React from 'react'
 import {useTable} from '../../util/hooks'
@@ -11,14 +10,14 @@ const cellStyle: StyleObject = {
   wordBreak: 'break-word'
 }
 
-export const SimpleProcessTable = (props: { processes: ProcessShort[], showCommonExternalProcessResponsible?: boolean }) => {
+export const SimpleProcessTable = (props: {processes: ProcessShort[], showCommonExternalProcessResponsible?: boolean}) => {
   const {processes} = props
 
   const [table, sortColumn] = useTable<ProcessShort, keyof ProcessShort>(processes, {
       useDefaultStringCompare: true,
       initialSortColumn: 'name',
       sorting: {
-        name: (a, b) => ((a.purpose.shortName || '') + ':' + (a.name || '')).localeCompare((b.purpose.shortName || '') + ': ' + b.name || ''),
+        name: (a, b) => ((a.purposes[0].shortName || '') + ':' + (a.name || '')).localeCompare((b.purposes[0].shortName || '') + ': ' + b.name || ''),
         affiliation: (a, b) => (a.affiliation.department?.shortName || ' ').localeCompare(b.affiliation.department?.shortName || ' '),
         status: (a, b) => (a.status || '').localeCompare(b.status || ''),
         commonExternalProcessResponsible: (a, b) => (a.commonExternalProcessResponsible?.shortName || ' ').localeCompare(b.commonExternalProcessResponsible?.shortName || ' '),
@@ -40,8 +39,9 @@ export const SimpleProcessTable = (props: { processes: ProcessShort[], showCommo
       {table.data.map(process =>
         <Row key={process.id}>
           <Cell $style={cellStyle}>
-            <RouteLink href={`/process/purpose/${process.purpose.code}/${process.id}`}>
-              {codelist.getShortname(ListName.PURPOSE, process.purpose.shortName) + ': ' + process.name}
+            {/* todo multipurpose url */}
+            <RouteLink href={`/process/purpose/${process.purposes[0].code}/${process.id}`}>
+              {process.purposes.map(p => p.shortName).join(", ") + ': ' + process.name}
             </RouteLink>
           </Cell>
           <Cell $style={cellStyle}>{(process.affiliation.department) === null ? '' :

@@ -16,7 +16,20 @@ import Button from './common/Button'
 import {searchResultColor} from "../util/theme";
 
 type SearchItem = {id: string, sortKey: string, label: ReactElement, type: NavigableItem}
-type SearchType = 'all' | 'purpose' | 'process' | 'team' | 'productarea' | 'department' | 'subDepartment' | 'nationalLaw' | 'gdprArticle' | 'informationType' | 'thirdParty' | 'system' | 'document'
+type SearchType =
+  'all'
+  | 'purpose'
+  | 'process'
+  | 'team'
+  | 'productarea'
+  | 'department'
+  | 'subDepartment'
+  | 'nationalLaw'
+  | 'gdprArticle'
+  | 'informationType'
+  | 'thirdParty'
+  | 'system'
+  | 'document'
 
 const SearchLabel = (props: {
   name: string,
@@ -39,25 +52,25 @@ const searchCodelist = (search: string,
                         backgroundColor: string,
 ) =>
   codelist
-    .getCodes(list)
-    .filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
-    .map(c => ({
-      id: c.code,
-      sortKey: c.shortName,
-      label: <SearchLabel name={c.shortName} type={typeName} backgroundColor={backgroundColor}/>,
-      type: list
-    }))
+  .getCodes(list)
+  .filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
+  .map(c => ({
+    id: c.code,
+    sortKey: c.shortName,
+    label: <SearchLabel name={c.shortName} type={typeName} backgroundColor={backgroundColor}/>,
+    type: list
+  }))
 
 const getCodelistByListnameAndType = (search: string, list: ListName, typeName: string) => {
   return codelist
-    .getCodes(list)
-    .filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
-    .map(c => ({
-      id: c.code,
-      sortKey: c.shortName,
-      label: <SearchLabel name={c.shortName} type={typeName}/>,
-      type: list
-    } as SearchItem))
+  .getCodes(list)
+  .filter(c => c.shortName.toLowerCase().indexOf(search.toLowerCase()) >= 0)
+  .map(c => ({
+    id: c.code,
+    sortKey: c.shortName,
+    label: <SearchLabel name={c.shortName} type={typeName}/>,
+    type: list
+  } as SearchItem))
 }
 
 
@@ -124,12 +137,12 @@ const useMainSearch = () => {
             searches.push((async () => {
               const resProcess = await searchProcess(search)
               add(resProcess.content.map(it => {
-                const purpose = codelist.getShortnameForCode(it.purpose)
+                const purposes = it.purposes.map(p => codelist.getShortnameForCode(p)).join(", ")
                 return ({
                   id: it.id,
-                  sortKey: `${it.name} ${purpose}`,
+                  sortKey: `${it.name} ${purposes}`,
                   label: <SearchLabel
-                    name={`${purpose}: ${it.name}`}
+                    name={`${purposes}: ${it.name}`}
                     type={intl.process}
                     backgroundColor={searchResultColor.processBackground}
                   />,
@@ -238,7 +251,7 @@ const smallRadio = (value: SearchType, text: string) => {
   )
 }
 
-const SelectType = (props: { type: SearchType, setType: (type: SearchType) => void }) =>
+const SelectType = (props: {type: SearchType, setType: (type: SearchType) => void}) =>
   <Block
     font='ParagraphSmall'
     position='absolute'

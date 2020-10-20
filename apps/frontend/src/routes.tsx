@@ -85,12 +85,14 @@ const NotFound = () => (
 
 const processUrl = async (id: string) => {
   const process = await getProcess(id)
-  return `/process/purpose/${process.purpose.code}/${process.id}`
+  // todo multipurpose url
+  return `/process/purpose/${process.purposes[0].code}/${process.id}`
 }
 
 const policyUrl = async (id: string) => {
   const policy = await getPolicy(id)
-  return `/process/purpose/${policy.purposeCode.code}/${policy.process.id}`
+  // todo multipurpose url
+  return `/process/purpose/${policy.purposes[0].code}/${policy.process.id}`
 }
 
 const disclosureUrl = async (id: string) => {

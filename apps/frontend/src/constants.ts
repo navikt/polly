@@ -100,7 +100,7 @@ export interface InformationtypeFormValues {
 
 export interface PolicyFormValues {
   id?: string;
-  purposeCode: string;
+  purposes: string[];
   informationType?: InformationTypeShort;
   process: {id: string; name: string; legalBases: LegalBasis[]};
   subjectCategories: string[];
@@ -113,7 +113,7 @@ export interface PolicyFormValues {
 
 export interface ProcessFormValues {
   id?: string;
-  purposeCode?: string;
+  purposes: string[];
   name?: string;
   description?: string;
   additionalDescription?: string;
@@ -223,7 +223,7 @@ export interface Policy {
   id: string;
   informationType: InformationTypeShort;
   process: Process;
-  purposeCode: Code;
+  purposes: Code[];
   subjectCategories: Code[];
   legalBasesUse: LegalBasesUse;
   legalBases: LegalBasis[];
@@ -231,7 +231,7 @@ export interface Policy {
 }
 
 export const policySort: ColumnCompares<Policy> = {
-  purposeCode: (a, b) => codelist.getShortnameForCode(a.purposeCode).localeCompare(codelist.getShortnameForCode(b.purposeCode), intl.getLanguage()),
+  purposes: (a, b) => codelist.getShortnameForCode(a.purposes[0]).localeCompare(codelist.getShortnameForCode(b.purposes[0]), intl.getLanguage()),
   informationType: (a, b) => a.informationType.name.localeCompare(b.informationType.name),
   process: (a, b) => (a.process?.name || '').localeCompare(b.process?.name || ''),
   subjectCategories: (a, b) => codelist.getShortnameForCode(a.subjectCategories[0]).localeCompare(codelist.getShortnameForCode(b.subjectCategories[0]), intl.getLanguage()),
@@ -275,7 +275,7 @@ export interface InformationTypeShort {
 export interface ProcessShort {
   id: string;
   name: string;
-  purpose: Code;
+  purposes: Code[];
   affiliation: Affiliation;
   status?: ProcessStatus;
   commonExternalProcessResponsible?: Code;
@@ -297,7 +297,7 @@ export interface Process extends IDurationed {
   affiliation: Affiliation;
   commonExternalProcessResponsible: Code;
   policies: Policy[];
-  purpose: Code;
+  purposes: Code[];
   changeStamp: ChangeStamp;
   dpia: Dpia;
   status?: ProcessStatus;
@@ -468,7 +468,7 @@ export interface AddDocumentToProcessFormValues {
   document?: Document
   informationTypes: DocumentInfoTypeUse[]
   linkDocumentToPolicies: boolean
-  process: {id: string; name: string; purpose: Code}
+  process: {id: string; name: string; purposes: Code[]}
 }
 
 export interface CreateDocumentFormValues {
@@ -521,7 +521,7 @@ export interface UseWithPurpose {
   id: string;
   processId: string;
   name: string;
-  purposeCode: string;
+  purposes: string[];
 }
 
 export interface CategoryUsage {

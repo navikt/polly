@@ -162,7 +162,7 @@ export const AlertEventPage = () => {
             <Cell>
               {event.process ?
                 <ObjectLink id={event.process.id} type={ObjectType.PROCESS}>
-                  {codelist.getShortnameForCode(event.process.purpose)}: {event.process.name}
+                  {codelist.getShortnameForCodes(event.process.purposes)}: {event.process.name}
                 </ObjectLink>
                 : ''}
             </Cell>

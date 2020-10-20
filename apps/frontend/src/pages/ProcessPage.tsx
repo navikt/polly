@@ -76,7 +76,7 @@ const ProcessPage = () => {
   return (
     <>
       <PageHeader section={section} code={code}/>
-      <ProcessList 
+      <ProcessList
         code={code}
         listName={listNameForSection(section)}
         processId={processId}
@@ -105,6 +105,7 @@ export default ProcessPage
 export const genProcessPath = (section: Section, code: string, process?: Partial<Process>, filter?: ProcessStatus, create?: boolean) =>
   generatePath(processPath, {
     section,
-    code: section === Section.purpose && !!process?.purpose ? process.purpose.code : code,
+    // todo multipurpose url
+    code: section === Section.purpose && !!process?.purposes ? process.purposes[0].code : code,
     processId: process?.id
   }) + '?' + queryString.stringify({filter, create}, {skipNull: true})

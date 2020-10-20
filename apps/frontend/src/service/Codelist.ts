@@ -97,6 +97,10 @@ class CodelistService {
     return this.getShortname(code.list, code.code)
   }
 
+  getShortnameForCodes(codes: Code[]) {
+    return codes.map(c => this.getShortname(c.list, c.code)).join(", ")
+  }
+
   getShortname(list: ListName, codeName: string) {
     let code = this.getCode(list, codeName)
     return code ? code.shortName : codeName
