@@ -31,7 +31,7 @@ const AccordionTitle = (props: AccordionTitleProps) => {
         {expanded ?
           <FontAwesomeIcon icon={faChevronDown}/> : <FontAwesomeIcon icon={faChevronRight}/>}
         <span> </span>
-        <span>{codelist.getShortname(ListName.PURPOSE, process.purpose.code)}: </span>
+        <span>{process.purposes.map(p => codelist.getShortname(ListName.PURPOSE, p.code)).join(", ")}: </span>
         <span>{process.name}</span>
       </Label1>
     </Block>

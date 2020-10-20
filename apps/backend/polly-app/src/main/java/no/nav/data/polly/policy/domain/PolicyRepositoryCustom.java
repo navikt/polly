@@ -5,6 +5,8 @@ import java.util.UUID;
 
 public interface PolicyRepositoryCustom {
 
+    List<Policy> findByPurpose(String purpose);
+
     List<Policy> findBySubjectCategory(String subjectCategory);
 
     List<Policy> findByGDPRArticle(String category);

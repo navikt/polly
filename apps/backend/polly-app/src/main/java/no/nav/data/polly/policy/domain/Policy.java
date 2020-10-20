@@ -34,7 +34,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import static no.nav.data.common.utils.StreamUtils.convert;
-import static no.nav.data.polly.codelist.CodelistService.getCodelistResponse;
 import static no.nav.data.polly.codelist.CodelistService.getCodelistResponseList;
 
 @Data
@@ -51,10 +50,6 @@ public class Policy extends Auditable {
     @Type(type = "pg-uuid")
     @Column(name = "POLICY_ID")
     private UUID id;
-
-    @NotNull
-    @Column(name = "PURPOSE_CODE", nullable = false)
-    private String purposeCode;
 
     @Valid
     @NotNull
@@ -94,7 +89,7 @@ public class Policy extends Auditable {
         Policy policy = policyRequest.getExistingPolicy() != null ? policyRequest.getExistingPolicy() : Policy.builder().generateId().data(new PolicyData()).build();
         policyRequest.getInformationType().addPolicy(policy);
         policyRequest.getProcess().addPolicy(policy);
-        policy.setPurposeCode(policyRequest.getPurposeCode());
+        policy.getData().setPurposes(List.copyOf(policyRequest.getPurposes()));
         policy.getData().setSubjectCategories(List.copyOf(policyRequest.getSubjectCategories()));
         policy.getData().setLegalBasesUse(policyRequest.getLegalBasesUse());
         policy.getData().setLegalBases(convert(policyRequest.getLegalBases(), LegalBasisRequest::convertToDomain));
@@ -105,7 +100,7 @@ public class Policy extends Auditable {
     public PolicyResponse convertToResponse(boolean includeProcess) {
         return PolicyResponse.builder()
                 .id(getId())
-                .purposeCode(getCodelistResponse(ListName.PURPOSE, getPurposeCode()))
+                .purposes(getCodelistResponseList(ListName.PURPOSE, getData().getPurposes()))
                 .subjectCategories(getCodelistResponseList(ListName.SUBJECT_CATEGORY, getData().getSubjectCategories()))
                 .processId(getProcess() == null ? null : getProcess().getId())
                 .process(getProcess() == null || !includeProcess ? null : getProcess().convertToResponse())
@@ -118,7 +113,7 @@ public class Policy extends Auditable {
     }
 
     public UsedInInstancePurpose getInstanceIdentification() {
-        return UsedInInstancePurpose.builder().id(id.toString()).processId(process.getId().toString()).name(informationTypeName).purposeCode(purposeCode).build();
+        return UsedInInstancePurpose.builder().id(id.toString()).processId(process.getId().toString()).name(informationTypeName).purposes(getData().getPurposes()).build();
     }
 
     private InformationTypeShortResponse convertInformationTypeShortResponse() {

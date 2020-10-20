@@ -108,7 +108,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
         {props.processList &&
         props
         .processList
-        .sort((a, b) => a.purpose.shortName.localeCompare(b.purpose.shortName))
+        .sort((a, b) => a.purposes[0].shortName.localeCompare(b.purposes[0].shortName))
         .map((p: ProcessShort) => {
           const expanded = params.processId === p.id
           return (
@@ -202,7 +202,7 @@ const AccordionProcess = (props: AccordionProcessProps) => {
             informationType: undefined,
             legalBasesUse: LegalBasesUse.INHERITED_FROM_PROCESS,
             process: currentProcess,
-            purposeCode: currentProcess.purpose.code,
+            purposes: currentProcess.purposes.map(p => p.code),
             subjectCategories: [],
             legalBases: [],
             documentIds: [],

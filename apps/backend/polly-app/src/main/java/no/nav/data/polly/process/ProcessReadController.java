@@ -139,13 +139,13 @@ public class ProcessReadController {
         ListName listName = null;
         List<ProcessCount> purposeCounts = null;
         if (isSet(request, "purpose")) {
-            purposeCounts = repository.countPurposeCode();
+            purposeCounts = repository.countPurpose();
             listName = ListName.PURPOSE;
         } else if (isSet(request, "department")) {
-            purposeCounts = repository.countDepartmentCode();
+            purposeCounts = repository.countDepartment();
             listName = ListName.DEPARTMENT;
         } else if (isSet(request, "subDepartment")) {
-            purposeCounts = repository.countSubDepartmentCode();
+            purposeCounts = repository.countSubDepartment();
             listName = ListName.SUB_DEPARTMENT;
         }
         Map<String, Long> counts;

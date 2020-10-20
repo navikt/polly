@@ -66,7 +66,7 @@ public class ExportController {
             }
             Process p = process.get();
             doc = processToDocx.generateDocForProcess(p);
-            filename = "behandling_" + p.getPurposeCode() + "-" + p.getName().replaceAll("[^a-zA-Z\\d]", "-") + "_" + p.getId() + ".docx";
+            filename = "behandling_" + String.join(".",p.getData().getPurposes()) + "-" + p.getData().getName().replaceAll("[^a-zA-Z\\d]", "-") + "_" + p.getId() + ".docx";
         } else {
             ListName list;
             String code;

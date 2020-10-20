@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Singular;
 import lombok.experimental.FieldNameConstants;
 import no.nav.data.common.validator.FieldValidator;
 import no.nav.data.common.validator.RequestElement;
@@ -23,6 +24,7 @@ import java.util.List;
 import static no.nav.data.common.swagger.SwaggerConfig.LOCAL_DATE;
 import static no.nav.data.common.utils.DateUtil.DEFAULT_END;
 import static no.nav.data.common.utils.DateUtil.ORIG_START;
+import static no.nav.data.common.utils.StringUtils.formatListToUppercase;
 import static no.nav.data.common.utils.StringUtils.toUpperCaseAndTrim;
 import static org.apache.commons.lang3.StringUtils.trimToNull;
 
@@ -37,8 +39,9 @@ public class ProcessRequest implements RequestElement {
     private String name;
     private String description;
     private String additionalDescription;
+    @Singular
     @ApiModelProperty(value = "Codelist PURPOSE")
-    private String purposeCode;
+    private List<String> purposes;
     @ApiModelProperty(value = "Codelist THIRD_PARTY")
     private String commonExternalProcessResponsible;
     private AffiliationRequest affiliation;
@@ -71,7 +74,7 @@ public class ProcessRequest implements RequestElement {
 
     @Override
     public void format() {
-        setPurposeCode(toUpperCaseAndTrim(getPurposeCode()));
+        setPurposes(formatListToUppercase(getPurposes()));
         setCommonExternalProcessResponsible(toUpperCaseAndTrim(getCommonExternalProcessResponsible()));
         setDescription(trimToNull(getDescription()));
         setAdditionalDescription(trimToNull(getAdditionalDescription()));
@@ -91,7 +94,7 @@ public class ProcessRequest implements RequestElement {
         validator.checkUUID(Fields.id, id);
         validator.checkId(this);
         validator.checkBlank(Fields.name, name);
-        validator.checkRequiredCodelist(Fields.purposeCode, purposeCode, ListName.PURPOSE);
+        validator.checkRequiredCodelists(Fields.purposes, purposes, ListName.PURPOSE);
         validator.checkCodelist(Fields.commonExternalProcessResponsible, commonExternalProcessResponsible, ListName.THIRD_PARTY);
         validator.checkDate(Fields.start, start);
         validator.checkDate(Fields.end, end);

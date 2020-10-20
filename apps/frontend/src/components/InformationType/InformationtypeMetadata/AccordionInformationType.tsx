@@ -16,11 +16,13 @@ import * as queryString from 'query-string'
 
 const reducePolicyList = (list: Policy[]) => {
   return list.reduce((acc: PurposeMap, curr) => {
-    if (!acc[curr.purposeCode.code]) {
-      acc[curr.purposeCode.code] = [curr]
-    } else {
-      acc[curr.purposeCode.code].push(curr)
-    }
+    curr.purposes.forEach(purpose => {
+      if (!acc[purpose.code]) {
+        acc[purpose.code] = [curr]
+      } else {
+        acc[purpose.code].push(curr)
+      }
+    })
 
     return acc
   }, {})

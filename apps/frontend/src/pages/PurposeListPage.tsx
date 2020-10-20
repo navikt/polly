@@ -27,7 +27,8 @@ export const PurposeListPage = () => {
       const newProcess = await createProcess(process)
       setErrorProcessModal(null)
       setShowCreateProcessModal(false)
-      history.push(genProcessPath(Section.purpose, newProcess.purpose.code, newProcess, undefined, true))
+      // todo multipurpose url
+      history.push(genProcessPath(Section.purpose, newProcess.purposes[0].code, newProcess, undefined, true))
     } catch (err) {
       setErrorProcessModal(err.message)
     }

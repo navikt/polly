@@ -22,6 +22,13 @@ public class PolicyRepositoryImpl implements PolicyRepositoryCustom {
     }
 
     @Override
+    public List<Policy> findByPurpose(String purpose) {
+        var resp = jdbcTemplate.queryForList("select policy_id from policy where data #>'{purposes}' ?? :purpose",
+                new MapSqlParameterSource().addValue("purpose", purpose));
+        return getPolicies(resp);
+    }
+
+    @Override
     public List<Policy> findBySubjectCategory(String subjectCategory) {
         var resp = jdbcTemplate.queryForList("select policy_id from policy where data #> '{subjectCategories}' ?? :subjectCategory",
                 new MapSqlParameterSource().addValue("subjectCategory", subjectCategory));

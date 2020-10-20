@@ -12,13 +12,9 @@ import java.util.UUID;
 @Repository
 public interface PolicyRepository extends JpaRepository<Policy, UUID>, PolicyRepositoryCustom {
 
-    List<Policy> findByPurposeCodeAndProcessName(String purposeCode, String processName);
-
     List<Policy> findByInformationTypeId(UUID informationTypeId);
 
     List<Policy> findByProcessId(UUID processId);
-
-    List<Policy> findByPurposeCode(String purposeCode);
 
     long countByInformationTypeId(UUID informationTypeId);
 

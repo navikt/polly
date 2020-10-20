@@ -78,7 +78,7 @@ public class DocxTest {
     void createBatchDoc() {
         List<Process> processes = List.of(createProcess(), createProcess(), createProcess());
         processes.forEach(this::mockAlert);
-        when(processRepository.findByPurposeCode("AAP")).thenReturn(processes);
+        when(processRepository.findByPurpose("AAP")).thenReturn(processes);
         var docx = processToDocx.generateDocFor(ListName.PURPOSE, "AAP");
         assertThat(docx).isNotNull();
         write(docx);
@@ -88,7 +88,7 @@ public class DocxTest {
     void testEmptyProcess() {
         CodelistStub.initializeCodelist();
         ProcessRequest req = new ProcessRequest();
-        req.setPurposeCode("AAP");
+        req.setPurposes(List.of("AAP"));
         req.setUpdate(false);
         req.format();
 
@@ -115,10 +115,10 @@ public class DocxTest {
     private Process createProcess() {
         return Process.builder()
                 .generateId()
-                .name("Saksbehandling")
-                .purposeCode("AAP")
-
                 .data(ProcessData.builder()
+                        .name("Saksbehandling")
+                        .purpose("AAP")
+                        .purpose("KONTROLL")
                         .description(
                                 "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.")
                         .legalBases(List.of(

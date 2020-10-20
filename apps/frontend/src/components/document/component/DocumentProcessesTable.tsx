@@ -13,14 +13,14 @@ type DocumentProcessesProps = {
 interface DataFormat {
   id: string
   name: string
-  purpose: Code
+  purposes: Code[]
   department?: Code
   products: Code[]
 }
 
 const sorting: ColumnCompares<DataFormat> = {
   name: (a, b) => a.name.localeCompare(b.name),
-  purpose: (a, b) => (codelist.getShortnameForCode(a.purpose) || '').localeCompare(codelist.getShortnameForCode(b.purpose) || ''),
+  purposes: (a, b) => (codelist.getShortnameForCode(a.purposes[0]) || '').localeCompare(codelist.getShortnameForCode(b.purposes[0]) || ''),
   department: (a, b) => (a.department?.shortName || '').localeCompare(b.department?.shortName || ''),
   products: (a, b) => a.products.length - b.products.length,
 }
@@ -31,7 +31,7 @@ const DocumentProcessesTable = (props: DocumentProcessesProps) => {
     props.documentUsages.map(p => ({
       id: p.id,
       name: p.name,
-      purpose: p.purpose,
+      purposes: p.purposes,
       department: p.affiliation.department,
       products: p.affiliation.products
     })), {
@@ -46,7 +46,7 @@ const DocumentProcessesTable = (props: DocumentProcessesProps) => {
           <>
             <HeadCell
               title={intl.purpose}
-              column="purpose"
+              column="purposes"
               tableState={[table, sortColumn]}
             />
             <HeadCell
@@ -70,10 +70,12 @@ const DocumentProcessesTable = (props: DocumentProcessesProps) => {
           table.data.map((process, index) => (
             <Row key={index}>
               <Cell>
-                <RouteLink href={`/process/purpose/${process.purpose.code}`}>{codelist.getShortnameForCode(process.purpose)}</RouteLink>
+                {process.purposes.map((p,i) =>
+                  <RouteLink key={i} href={`/process/purpose/${p.code}`}>{codelist.getShortnameForCode(p)}</RouteLink>)}
               </Cell>
               <Cell>
-                <RouteLink href={`/process/purpose/${process.purpose.code}/${process.id}`}>{process.name}</RouteLink>
+                {/* todo multipurpose url */}
+                <RouteLink href={`/process/purpose/${process.purposes[0].code}/${process.id}`}>{process.name}</RouteLink>
               </Cell>
               <Cell>
                 {process.department ? <RouteLink href={`/process/department/${process.department.code}`}>{process.department.shortName}</RouteLink> : ''}

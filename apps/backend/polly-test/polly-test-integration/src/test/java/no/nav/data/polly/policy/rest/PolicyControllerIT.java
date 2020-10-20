@@ -42,11 +42,11 @@ class PolicyControllerIT extends IntegrationTestBase {
 
     @BeforeEach
     void setUp() {
-        processRepository.save(Process.builder().purposeCode(PURPOSE_CODE1).id(PROCESS_ID_1).name(PROCESS_NAME_1)
-                .data(ProcessData.builder().start(LocalDate.now()).end(LocalDate.now()).build())
+        processRepository.save(Process.builder().id(PROCESS_ID_1)
+                .data(ProcessData.builder().purpose(PURPOSE_CODE1).name(PROCESS_NAME_1).start(LocalDate.now()).end(LocalDate.now()).build())
                 .build());
-        processRepository.save(Process.builder().purposeCode(PURPOSE_CODE1).id(PROCESS_ID_2).name(PROCESS_NAME_1 + " 2nd")
-                .data(ProcessData.builder().start(LocalDate.now()).end(LocalDate.now()).build())
+        processRepository.save(Process.builder().id(PROCESS_ID_2)
+                .data(ProcessData.builder().purpose(PURPOSE_CODE1).name(PROCESS_NAME_1 + " 2nd").start(LocalDate.now()).end(LocalDate.now()).build())
                 .build());
     }
 
@@ -65,7 +65,7 @@ class PolicyControllerIT extends IntegrationTestBase {
         List<PolicyRequest> requestList = List.of(PolicyRequest.builder().build());
         ResponseEntity<String> createEntity = restTemplate.exchange(POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(createEntity.getBody(), containsString("purposeCode was null or missing"));
+        assertThat(createEntity.getBody(), containsString("purposes was null or missing"));
         assertThat(createEntity.getBody(), containsString("informationTypeId was null or missing"));
         assertThat(createEntity.getBody(), containsString("processId was null or missing"));
         assertThat(policyRepository.count(), is(0L));
@@ -97,13 +97,13 @@ class PolicyControllerIT extends IntegrationTestBase {
     @Test
     void createPolicyThrowNotFoundValidationException() {
         createPolicyRequest(createAndSaveInformationType());
-        List<PolicyRequest> requestList = Collections.singletonList(PolicyRequest.builder().subjectCategory("NOTFOUND").purposeCode("NOTFOUND")
+        List<PolicyRequest> requestList = Collections.singletonList(PolicyRequest.builder().subjectCategory("NOTFOUND").purpose("NOTFOUND")
                 .processId("17942455-4e86-4315-a7b2-872accd9c856")
                 .informationTypeId("b7a86238-c6ca-4e5e-9233-9089d162400c").build());
         ResponseEntity<String> createEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT, HttpMethod.POST, new HttpEntity<>(requestList), String.class);
         assertThat(createEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(createEntity.getBody(), containsString("purposeCode: NOTFOUND code not found in codelist PURPOSE"));
+        assertThat(createEntity.getBody(), containsString("purposes[0]: NOTFOUND code not found in codelist PURPOSE"));
         assertThat(createEntity.getBody(), containsString("An InformationType with id b7a86238-c6ca-4e5e-9233-9089d162400c does not exist"));
         assertThat(createEntity.getBody(), containsString("A Process with id 17942455-4e86-4315-a7b2-872accd9c856 does not exist"));
         assertThat(createEntity.getBody(), containsString("subjectCategories[0]: NOTFOUND code not found in codelist SUBJECT_CATEGORY"));
@@ -216,8 +216,8 @@ class PolicyControllerIT extends IntegrationTestBase {
         ResponseEntity<String> updateEntity = restTemplate.exchange(
                 POLICY_REST_ENDPOINT, HttpMethod.PUT, new HttpEntity<>(requestList), String.class);
         assertThat(updateEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
-        assertThat(updateEntity.getBody(), containsString("fe566351-da4d-43b0-a2e9-b09e41ff8aa7/KONTROLL -- fieldIsNullOrMissing -- processId was null or missing"));
-        assertThat(updateEntity.getBody(), containsString(postadressId + "/KONTROLL -- fieldIsNullOrMissing -- processId was null or missing"));
+        assertThat(updateEntity.getBody(), containsString("fe566351-da4d-43b0-a2e9-b09e41ff8aa7/[KONTROLL] -- fieldIsNullOrMissing -- processId was null or missing"));
+        assertThat(updateEntity.getBody(), containsString(postadressId + "/[KONTROLL] -- fieldIsNullOrMissing -- processId was null or missing"));
         // No error reported regarding Arbeidsforhold/TEST1
         assertFalse(updateEntity.getBody().contains("Arbeidsforhold/TEST1"));
         assertThat(policyRepository.count(), is(3L));
@@ -362,13 +362,13 @@ class PolicyControllerIT extends IntegrationTestBase {
                 .processId(PROCESS_ID_1.toString())
                 .informationTypeId(informationType.getId().toString())
                 .legalBases(List.of(LegalBasisRequest.builder().gdpr("9a").nationalLaw("Ftrl").description("§ 1-4").build()))
-                .purposeCode(PURPOSE_CODE1).build();
+                .purpose(PURPOSE_CODE1).build();
     }
 
     private void assertPolicy(PolicyResponse policy, String process, String informationTypeName) {
         assertThat(policy.getInformationType().getName(), is(informationTypeName));
         assertThat(policy.getProcess().getName(), is(process));
-        assertThat(policy.getPurposeCode().getCode(), is(PURPOSE_CODE1));
+        assertThat(policy.getPurposes().get(0).getCode(), is(PURPOSE_CODE1));
         assertThat(policy.getLegalBasesUse(), is(LegalBasesUse.DEDICATED_LEGAL_BASES));
     }
 }

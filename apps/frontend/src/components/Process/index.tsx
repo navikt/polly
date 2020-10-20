@@ -23,7 +23,7 @@ import {
   updateProcess
 } from '../../api'
 import {StyledSpinnerNext} from 'baseui/spinner'
-import {codelist, ListName} from '../../service/Codelist'
+import {Code, codelist, ListName} from '../../service/Codelist'
 import {useLocation} from 'react-router'
 import {StyledLink} from 'baseui/link'
 import {env} from '../../util/env'
@@ -124,7 +124,8 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
       setErrorProcessModal('')
       setShowCreateProcessModal(false)
       setCurrentProcess(newProcess)
-      history.push(genProcessPath(Section.purpose, newProcess.purpose.code, newProcess, undefined, true))
+      // todo uh multipurpose url....
+      history.push(genProcessPath(Section.purpose, newProcess.purposes[0].code, newProcess, undefined, true))
     } catch (err) {
       if (err.response.data.message.includes('already exists')) {
         setErrorProcessModal('Behandlingen eksisterer allerede.')
@@ -209,7 +210,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
         subjectCategories: infoType.subjectCategories.map(c => c.code),
         informationType: infoType.informationType,
         process: {...formValues.process, legalBases: []},
-        purposeCode: formValues.process.purpose.code,
+        purposes: formValues.process.purposes.map(p => p.code),
         legalBases: [],
         legalBasesOpen: false,
         legalBasesUse: LegalBasesUse.INHERITED_FROM_PROCESS,
@@ -277,7 +278,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
         </Block>
         <Block marginRight='auto'>
           <HeadingSmall>
-            {titleOverride ||intl.processes} ({processList.length})
+            {titleOverride || intl.processes} ({processList.length})
           </HeadingSmall>
         </Block>
       </Block>
@@ -311,7 +312,7 @@ const ProcessList = ({code, listName, filter, processId, section, moveScroll, ti
         errorOnCreate={errorProcessModal}
         isEdit={false}
         initialValues={convertProcessToFormValues({
-          purpose: section === Section.purpose ? codelist.getCode(ListName.PURPOSE, code) : undefined,
+          purposes: section === Section.purpose ? [codelist.getCode(ListName.PURPOSE, code) as Code] : undefined,
           affiliation: {
             department: section === Section.department ? codelist.getCode(ListName.DEPARTMENT, code) : undefined,
             subDepartments: section === Section.subdepartment ? [codelist.getCode(ListName.SUB_DEPARTMENT, code)!] : [],

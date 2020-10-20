@@ -61,10 +61,10 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
     @Transactional
     public Process update(ProcessRequest request) {
         var process = processRepository.findById(request.getIdAsUUID()).orElseThrow();
-        var oldPurpose = process.getPurposeCode();
+        var oldPurposes = process.getData().getPurposes();
         process.convertFromRequest(request);
-        if (!oldPurpose.equals(request.getPurposeCode())) {
-            process.getPolicies().forEach(p -> p.setPurposeCode(request.getPurposeCode()));
+        if (!oldPurposes.equals(request.getPurposes())) {
+            process.getPolicies().forEach(p -> p.getData().setPurposes(List.copyOf(request.getPurposes())));
         }
         return save(process);
     }
@@ -129,11 +129,11 @@ public class ProcessService extends RequestValidator<ProcessRequest> {
             validateRiskOwner(request, null, validations);
             validations.addAll(validateRepositoryValues(request, false));
         }
-        Optional<Process> byNameAndPurpose = processRepository.findByNameAndPurposeCode(request.getName(), request.getPurposeCode())
+        Optional<Process> byNameAndPurpose = processRepository.findByNameAndPurposes(request.getName(), request.getPurposes())
                 .filter(p -> !p.getId().equals(request.getIdAsUUID()));
         if (byNameAndPurpose.isPresent()) {
             validations.add(new ValidationError(request.getReference(), "nameAndPurposeExists",
-                    format("Process with name %s and Purpose %s already exists", request.getName(), request.getPurposeCode())));
+                    format("Process with name %s and Purpose %s already exists", request.getName(), request.getPurposes())));
         }
         return validations;
     }

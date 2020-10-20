@@ -9,7 +9,6 @@ import no.nav.data.common.nais.LeaderElectionService;
 import no.nav.data.common.storage.domain.GenericStorageRepository;
 import no.nav.data.common.utils.JsonUtils;
 import no.nav.data.polly.IntegrationTestBase.Initializer;
-import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.CodelistStub;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.disclosure.domain.Disclosure;
@@ -74,6 +73,7 @@ import java.util.stream.IntStream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
+import static no.nav.data.polly.codelist.CodelistService.getCodelistResponse;
 import static no.nav.data.polly.process.domain.sub.DataProcessing.convertDataProcessing;
 import static no.nav.data.polly.process.domain.sub.Dpia.convertDpia;
 import static no.nav.data.polly.process.domain.sub.Retention.convertRetention;
@@ -173,8 +173,8 @@ public abstract class IntegrationTestBase {
     protected Policy createPolicy(String purpose, String subjectCategory, List<LegalBasis> legalBases) {
         return Policy.builder()
                 .generateId()
-                .purposeCode(purpose)
                 .data(PolicyData.builder()
+                        .purpose(purpose)
                         .legalBasesUse(LegalBasesUse.DEDICATED_LEGAL_BASES)
                         .subjectCategories(List.of(subjectCategory))
                         .legalBases(legalBases)
@@ -228,9 +228,9 @@ public abstract class IntegrationTestBase {
             String commonExternalProcessResponsible, String transferGroundsOutsideEU) {
         return processRepository.save(Process.builder()
                 .generateId()
-                .name(name)
-                .purposeCode(purpose)
                 .data(ProcessData.builder()
+                        .name(name)
+                        .purpose(purpose)
                         .start(LocalDate.now()).end(LocalDate.now())
                         .affiliation(Affiliation.builder()
                                 .department(department)
@@ -267,8 +267,9 @@ public abstract class IntegrationTestBase {
     protected Process createAndSaveProcess(String purpose) {
         return process.computeIfAbsent(purpose,
                 (p) -> processRepository
-                        .save(Process.builder().generateId().name("Auto_" + purpose).purposeCode(purpose)
+                        .save(Process.builder().generateId()
                                 .data(ProcessData.builder()
+                                        .name("Auto_" + purpose).purpose(purpose)
                                         .description("process description")
                                         .additionalDescription("additional description")
                                         .affiliation(Affiliation.convertAffiliation(affiliationRequest()))
@@ -359,10 +360,9 @@ public abstract class IntegrationTestBase {
                 .name("Auto_" + PURPOSE_CODE1)
                 .description("process description")
                 .additionalDescription("additional description")
-                .purpose(CodelistService.getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1))
-                .purposeCode(PURPOSE_CODE1)
+                .purposes(List.of(getCodelistResponse(ListName.PURPOSE, PURPOSE_CODE1)))
                 .affiliation(affiliationResponse())
-                .commonExternalProcessResponsible(CodelistService.getCodelistResponse(ListName.THIRD_PARTY, "SKATT"))
+                .commonExternalProcessResponsible(getCodelistResponse(ListName.THIRD_PARTY, "SKATT"))
                 .start(LocalDate.now())
                 .end(LocalDate.now())
                 .legalBasis(legalBasisResponse())
@@ -378,10 +378,10 @@ public abstract class IntegrationTestBase {
 
     protected AffiliationResponse affiliationResponse() {
         return AffiliationResponse.builder()
-                .department(CodelistService.getCodelistResponse(ListName.DEPARTMENT, "DEP"))
-                .subDepartment(CodelistService.getCodelistResponse(ListName.SUB_DEPARTMENT, "SUBDEP"))
+                .department(getCodelistResponse(ListName.DEPARTMENT, "DEP"))
+                .subDepartment(getCodelistResponse(ListName.SUB_DEPARTMENT, "SUBDEP"))
                 .productTeam("teamid1")
-                .product(CodelistService.getCodelistResponse(ListName.SYSTEM, "PESYS"))
+                .product(getCodelistResponse(ListName.SYSTEM, "PESYS"))
                 .build();
     }
 
@@ -390,7 +390,7 @@ public abstract class IntegrationTestBase {
                 .dataProcessor(true)
                 .dataProcessorAgreements(List.of("X"))
                 .dataProcessorOutsideEU(true)
-                .transferGroundsOutsideEU(CodelistService.getCodelistResponse(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, "OTHER"))
+                .transferGroundsOutsideEU(getCodelistResponse(ListName.TRANSFER_GROUNDS_OUTSIDE_EU, "OTHER"))
                 .transferGroundsOutsideEUOther("pretend its ok")
                 .transferCountries(List.of("FJI"))
                 .build();

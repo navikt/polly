@@ -56,7 +56,7 @@ export const convertPolicyToFormValues = (policy: Policy, otherPolicies: Policy[
   legalBasesOpen: false,
   id: policy.id,
   process: policy.process,
-  purposeCode: policy.purposeCode.code,
+  purposes: policy.purposes.map(p => p.code),
   informationType: policy.informationType,
   subjectCategories: policy.subjectCategories.map((code: Code) => code.code),
   legalBasesUse: policy.legalBasesUse,

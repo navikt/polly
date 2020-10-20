@@ -19,14 +19,15 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "processId", "process", "purposeCode", "subjectCategories", "legalBasesUse",
+@JsonPropertyOrder({"id", "processId", "process", "purposes", "subjectCategories", "legalBasesUse",
         "informationTypeId", "informationType", "legalBases", "documentIds"})
 public class PolicyResponse {
 
     private UUID id;
     private UUID processId;
     private ProcessResponse process;
-    private CodelistResponse purposeCode;
+    @Singular
+    private List<CodelistResponse> purposes;
     @Singular
     private List<CodelistResponse> subjectCategories;
     private LegalBasesUse legalBasesUse;

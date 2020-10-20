@@ -9,6 +9,7 @@ import no.nav.data.polly.codelist.dto.CodelistResponse;
 import no.nav.data.polly.process.domain.ProcessStatus;
 import no.nav.data.polly.process.dto.sub.AffiliationResponse;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -16,12 +17,12 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({"id", "name", "purpose", "affiliation", "commonExternalProcessResponsible", "status"})
+@JsonPropertyOrder({"id", "name", "purposes", "affiliation", "commonExternalProcessResponsible", "status"})
 public class ProcessShortResponse {
 
     private UUID id;
     private String name;
-    private CodelistResponse purpose;
+    private List<CodelistResponse> purposes;
     private AffiliationResponse affiliation;
     private CodelistResponse commonExternalProcessResponsible;
     private ProcessStatus status;

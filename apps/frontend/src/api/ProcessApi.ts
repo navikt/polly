@@ -54,7 +54,7 @@ export const updateProcess = async (process: ProcessFormValues) => {
 export const convertProcessToFormValues: (process?: Partial<Process>) => ProcessFormValues = process => {
   const {
     id,
-    purpose,
+    purposes,
     name,
     description,
     additionalDescription,
@@ -78,7 +78,7 @@ export const convertProcessToFormValues: (process?: Partial<Process>) => Process
     name: name || '',
     description: description || '',
     additionalDescription: additionalDescription || '',
-    purposeCode: purpose?.code || '',
+    purposes: purposes?.map(p => p.code) || [],
     affiliation: {
       department: affiliation?.department?.code || '',
       subDepartments: affiliation?.subDepartments.map(sd => sd.code) || [],
@@ -124,7 +124,7 @@ export const mapProcessFromForm = (values: ProcessFormValues) => {
     name: values.name,
     description: values.description,
     additionalDescription: values.additionalDescription,
-    purposeCode: values.purposeCode,
+    purposes: values.purposes,
     affiliation: values.affiliation,
     commonExternalProcessResponsible: values.commonExternalProcessResponsible ? values.commonExternalProcessResponsible : undefined,
     legalBases: values.legalBases ? values.legalBases : [],

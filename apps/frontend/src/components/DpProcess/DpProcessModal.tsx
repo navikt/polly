@@ -99,7 +99,7 @@ const DpProcessModal = (props: ModalDpProcessProps) => {
                   </Block>
                 </ModalHeader>
                 <ModalBody>
-                  <CustomizedModalBlock>
+                  <CustomizedModalBlock first>
                     <ModalLabel label={intl.name}/>
                     <Field
                       name='name'
