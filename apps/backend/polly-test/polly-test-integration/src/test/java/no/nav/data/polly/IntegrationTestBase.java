@@ -36,6 +36,7 @@ import no.nav.data.polly.process.domain.repo.DpProcessRepository;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
 import no.nav.data.polly.process.domain.sub.Affiliation;
 import no.nav.data.polly.process.domain.sub.DataProcessing;
+import no.nav.data.polly.process.domain.sub.NoDpiaReason;
 import no.nav.data.polly.process.dpprocess.domain.DpProcess;
 import no.nav.data.polly.process.dpprocess.dto.DpRetentionResponse;
 import no.nav.data.polly.process.dto.ProcessResponse;
@@ -296,7 +297,10 @@ public abstract class IntegrationTestBase {
     }
 
     protected DpiaRequest dpiaRequest() {
-        return DpiaRequest.builder().needForDpia(true).refToDpia("ref123").grounds("default").processImplemented(true).riskOwner("A123457")
+        return DpiaRequest.builder().needForDpia(true)
+                .refToDpia("ref123").grounds("default")
+                .noDpiaReason(NoDpiaReason.NO_NEW_TECH)
+                .processImplemented(true).riskOwner("A123457")
                 .riskOwnerFunction("teamlead").build();
     }
 
@@ -417,6 +421,7 @@ public abstract class IntegrationTestBase {
                 .needForDpia(true)
                 .refToDpia("ref123")
                 .grounds("default")
+                .noDpiaReason(NoDpiaReason.NO_NEW_TECH)
                 .processImplemented(true)
                 .riskOwner("A123457")
                 .riskOwnerFunction("teamlead")

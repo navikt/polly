@@ -17,7 +17,6 @@ import no.nav.data.polly.process.dto.sub.AffiliationRequest;
 import no.nav.data.polly.process.dto.sub.DataProcessingRequest;
 import no.nav.data.polly.process.dto.sub.DpiaRequest;
 import no.nav.data.polly.process.dto.sub.RetentionRequest;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -58,8 +57,7 @@ public class ProcessRequest implements RequestElement {
     private DataProcessingRequest dataProcessing;
     private RetentionRequest retention;
     private DpiaRequest dpia;
-    @ApiModelProperty(allowableValues = "IN_PROGRESS, COMPLETED")
-    private String status;
+    private ProcessStatus status;
 
     private boolean update;
     private int requestIndex;
@@ -84,8 +82,8 @@ public class ProcessRequest implements RequestElement {
         setRetention(getRetention() != null ? getRetention() : new RetentionRequest());
         setDpia(getDpia() != null ? getDpia() : new DpiaRequest());
 
-        if (StringUtils.isBlank(status)) {
-            setStatus(ProcessStatus.IN_PROGRESS.name());
+        if (status == null) {
+            setStatus(ProcessStatus.IN_PROGRESS);
         }
     }
 
@@ -99,7 +97,6 @@ public class ProcessRequest implements RequestElement {
         validator.checkDate(Fields.start, start);
         validator.checkDate(Fields.end, end);
         validator.validateType(Fields.legalBases, legalBases);
-        validator.checkRequiredEnum(Fields.status, status, ProcessStatus.class);
 
         validator.validateType(Fields.affiliation, affiliation);
         validator.validateType(Fields.dataProcessing, dataProcessing);

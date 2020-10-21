@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
 import no.nav.data.common.validator.FieldValidator;
 import no.nav.data.common.validator.Validated;
+import no.nav.data.polly.process.domain.sub.NoDpiaReason;
 
 import java.util.regex.Pattern;
 
@@ -25,6 +26,7 @@ public class DpiaRequest implements Validated {
     private Boolean needForDpia;
     private String refToDpia;
     private String grounds;
+    private NoDpiaReason noDpiaReason;
     private boolean processImplemented;
     private String riskOwner;
     private String riskOwnerFunction;
@@ -35,6 +37,9 @@ public class DpiaRequest implements Validated {
         setRefToDpia(trimToNull(getRefToDpia()));
         setRiskOwner(upperCase(trimToNull(getRiskOwner())));
         setRiskOwnerFunction(trimToNull(getRiskOwnerFunction()));
+        if (!Boolean.FALSE.equals(needForDpia)) {
+            setNoDpiaReason(null);
+        }
     }
 
     @Override

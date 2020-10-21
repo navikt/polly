@@ -131,7 +131,7 @@ public class Process extends Auditable {
         data.setDataProcessing(convertDataProcessing(request.getDataProcessing()));
         data.setRetention(convertRetention(request.getRetention()));
         data.setDpia(convertDpia(request.getDpia()));
-        data.setStatus(request.getStatus() == null ? null : ProcessStatus.valueOf(request.getStatus()));
+        data.setStatus(request.getStatus());
         return this;
     }
 

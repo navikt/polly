@@ -19,6 +19,7 @@ public class Dpia {
     private Boolean needForDpia;
     private String refToDpia;
     private String grounds;
+    private NoDpiaReason noDpiaReason;
     private boolean processImplemented;
     private String riskOwner;
     private String riskOwnerFunction;
@@ -28,6 +29,7 @@ public class Dpia {
                 .needForDpia(getNeedForDpia())
                 .refToDpia(getRefToDpia())
                 .grounds(getGrounds())
+                .noDpiaReason(getNoDpiaReason())
                 .processImplemented(isProcessImplemented())
                 .riskOwner(getRiskOwner())
                 .riskOwnerFunction(getRiskOwnerFunction())
@@ -42,6 +44,7 @@ public class Dpia {
                 .needForDpia(dpia.getNeedForDpia())
                 .refToDpia(dpia.getRefToDpia())
                 .grounds(dpia.getGrounds())
+                .noDpiaReason(dpia.getNoDpiaReason())
                 .processImplemented(dpia.isProcessImplemented())
                 .riskOwner(dpia.getRiskOwner())
                 .riskOwnerFunction(dpia.getRiskOwnerFunction())
