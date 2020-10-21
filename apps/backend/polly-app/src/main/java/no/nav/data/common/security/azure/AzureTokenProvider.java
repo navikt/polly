@@ -193,7 +193,7 @@ public class AzureTokenProvider implements TokenProvider {
                 .map(this::convertAuthority)
                 .collect(Collectors.toSet());
         roles.add(convertAuthority(AppRole.READ.name()));
-        log.debug("roles {}", convert(roles, GrantedAuthority::getAuthority));
+        log.trace("roles {}", convert(roles, GrantedAuthority::getAuthority));
         return roles;
     }
 
