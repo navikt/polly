@@ -89,8 +89,10 @@ class ProcessControllerIT extends IntegrationTestBase {
         MdcUtils.setUser(userInfo.getIdentName());
         createAndSaveProcess(PURPOSE_CODE2);
         var deleted = createAndSaveProcess("deleted");
+        var deleted2 = createAndSaveProcess("deleted2");
         processService.deleteById(deleted.getId());
         MdcUtils.clearUser();
+        processService.deleteById(deleted2.getId());
 
         MockFilter.setUser(userInfo);
         ResponseEntity<LastEditedPage> resp = restTemplate.getForEntity("/process/myedits", LastEditedPage.class);

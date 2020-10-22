@@ -18,6 +18,6 @@ public class AuditService {
     }
 
     public List<AuditMetadata> lastEditedProcessesByUser(String user) {
-        return auditVersionRepository.getLastChangesByUser(Process.class.getAnnotation(Table.class).name(), user);
+        return auditVersionRepository.getLastChangesByUser(Process.class.getAnnotation(Table.class).name(), user, 20);
     }
 }

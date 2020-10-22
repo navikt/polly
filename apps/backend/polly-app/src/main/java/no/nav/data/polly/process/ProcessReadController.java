@@ -8,7 +8,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.data.common.auditing.AuditService;
-import no.nav.data.common.auditing.domain.Action;
 import no.nav.data.common.auditing.dto.AuditMetadata;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.PageParameters;
@@ -45,7 +44,6 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
 import static no.nav.data.common.utils.StreamUtils.convert;
-import static no.nav.data.common.utils.StreamUtils.filter;
 
 @Slf4j
 @RestController
@@ -130,7 +128,7 @@ public class ProcessReadController {
         if (user.isEmpty()) {
             return ResponseEntity.ok(new RestResponsePage<>());
         }
-        var audits = filter(auditService.lastEditedProcessesByUser(user.get().getIdentName()), a -> a.getAction() != Action.DELETE);
+        var audits = auditService.lastEditedProcessesByUser(user.get().getIdentName());
         var processes = repository.findAllById(convert(audits, AuditMetadata::getTableId)).stream().collect(Collectors.toMap(Process::getId, Function.identity()));
 
         return ResponseEntity.ok(new RestResponsePage<>(convert(audits, a -> new LastEditedResponse(a.getTime(), processes.get(a.getTableId()).convertToShortResponse()))));
