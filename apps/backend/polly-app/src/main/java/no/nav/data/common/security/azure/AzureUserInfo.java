@@ -3,6 +3,7 @@ package no.nav.data.common.security.azure;
 import com.nimbusds.jwt.JWTClaimsSet;
 import lombok.Value;
 import no.nav.data.common.security.AppIdMapping;
+import no.nav.data.common.security.dto.AppRole;
 import no.nav.data.common.security.dto.UserInfo;
 import no.nav.data.common.security.dto.UserInfoResponse;
 import org.springframework.security.core.GrantedAuthority;
@@ -73,6 +74,11 @@ public class AzureUserInfo implements UserInfo {
     @SuppressWarnings("unchecked")
     private static <T> T getClaim(JWTClaimsSet jwtClaimsSet, String claim) {
         return (T) jwtClaimsSet.getClaim(claim);
+    }
+
+    @Override
+    public boolean isAdmin() {
+        return groups.contains(AppRole.ADMIN.name());
     }
 
     public UserInfoResponse convertToResponse() {

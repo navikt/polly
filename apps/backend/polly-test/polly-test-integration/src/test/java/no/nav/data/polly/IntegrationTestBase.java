@@ -50,6 +50,7 @@ import no.nav.data.polly.process.dto.sub.DpiaResponse;
 import no.nav.data.polly.process.dto.sub.RetentionRequest;
 import no.nav.data.polly.process.dto.sub.RetentionResponse;
 import no.nav.data.polly.term.catalog.CatalogTerm;
+import no.nav.data.polly.test.TestConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -82,7 +83,7 @@ import static no.nav.data.polly.process.domain.sub.Retention.convertRetention;
 @Slf4j
 @ActiveProfiles("test")
 @ExtendWith(WiremockExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {AppStarter.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {AppStarter.class, TestConfig.class})
 @ContextConfiguration(initializers = {Initializer.class})
 public abstract class IntegrationTestBase {
 

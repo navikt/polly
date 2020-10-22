@@ -7,14 +7,20 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.data.common.auditing.AuditService;
+import no.nav.data.common.auditing.domain.Action;
+import no.nav.data.common.auditing.dto.AuditMetadata;
 import no.nav.data.common.exceptions.ValidationException;
 import no.nav.data.common.rest.PageParameters;
 import no.nav.data.common.rest.RestResponsePage;
+import no.nav.data.common.security.SecurityUtils;
+import no.nav.data.common.security.dto.UserInfo;
 import no.nav.data.common.utils.JsonUtils;
 import no.nav.data.polly.codelist.domain.ListName;
 import no.nav.data.polly.process.domain.Process;
 import no.nav.data.polly.process.domain.repo.ProcessCount;
 import no.nav.data.polly.process.domain.repo.ProcessRepository;
+import no.nav.data.polly.process.dto.LastEditedResponse;
 import no.nav.data.polly.process.dto.ProcessCountResponse;
 import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.teams.TeamService;
@@ -34,9 +40,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
 import static no.nav.data.common.utils.StreamUtils.convert;
+import static no.nav.data.common.utils.StreamUtils.filter;
 
 @Slf4j
 @RestController
@@ -47,11 +56,13 @@ public class ProcessReadController {
     private final TeamService teamService;
     private final ProcessRepository repository;
     private final ProcessService processService;
+    private final AuditService auditService;
 
-    public ProcessReadController(TeamService teamService, ProcessRepository repository, ProcessService processService) {
+    public ProcessReadController(TeamService teamService, ProcessRepository repository, ProcessService processService, AuditService auditService) {
         this.teamService = teamService;
         this.repository = repository;
         this.processService = processService;
+        this.auditService = auditService;
     }
 
     @ApiOperation(value = "Get Process with InformationTypes")
@@ -107,6 +118,22 @@ public class ProcessReadController {
         log.info("Received request for all Processes");
         Page<ProcessResponse> page = repository.findAll(pageParameters.createIdSortedPage()).map(Process::convertToResponse);
         return ResponseEntity.ok(new RestResponsePage<>(page));
+    }
+
+    @ApiOperation(value = "Get last edited processes by logged in user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "All Processes fetched", response = LastEditedPage.class),
+            @ApiResponse(code = 500, message = "Internal server error")})
+    @GetMapping("/myedits")
+    public ResponseEntity<RestResponsePage<LastEditedResponse>> getAllProcesses() {
+        Optional<UserInfo> user = SecurityUtils.getCurrentUser();
+        if (user.isEmpty()) {
+            return ResponseEntity.ok(new RestResponsePage<>());
+        }
+        var audits = filter(auditService.lastEditedProcessesByUser(user.get().getIdentName()), a -> a.getAction() != Action.DELETE);
+        var processes = repository.findAllById(convert(audits, AuditMetadata::getTableId)).stream().collect(Collectors.toMap(Process::getId, Function.identity()));
+
+        return ResponseEntity.ok(new RestResponsePage<>(convert(audits, a -> new LastEditedResponse(a.getTime(), processes.get(a.getTableId()).convertToShortResponse()))));
     }
 
     @ApiOperation(value = "Search processes")
@@ -169,6 +196,10 @@ public class ProcessReadController {
     }
 
     static class ProcessPage extends RestResponsePage<ProcessResponse> {
+
+    }
+
+    static class LastEditedPage extends RestResponsePage<LastEditedResponse> {
 
     }
 

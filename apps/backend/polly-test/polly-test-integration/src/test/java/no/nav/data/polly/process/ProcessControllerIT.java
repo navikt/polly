@@ -1,5 +1,8 @@
 package no.nav.data.polly.process;
 
+import com.nimbusds.jwt.JWTClaimsSet.Builder;
+import no.nav.data.common.security.azure.AzureUserInfo;
+import no.nav.data.common.utils.MdcUtils;
 import no.nav.data.polly.IntegrationTestBase;
 import no.nav.data.polly.codelist.CodelistService;
 import no.nav.data.polly.codelist.domain.ListName;
@@ -10,6 +13,7 @@ import no.nav.data.polly.policy.domain.Policy;
 import no.nav.data.polly.policy.dto.PolicyRequest;
 import no.nav.data.polly.policy.dto.PolicyResponse;
 import no.nav.data.polly.policy.rest.PolicyRestController.PolicyPage;
+import no.nav.data.polly.process.ProcessReadController.LastEditedPage;
 import no.nav.data.polly.process.ProcessReadController.ProcessPage;
 import no.nav.data.polly.process.ProcessStateController.ProcessShortPage;
 import no.nav.data.polly.process.dto.ProcessCountResponse;
@@ -18,6 +22,7 @@ import no.nav.data.polly.process.dto.ProcessResponse;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessField;
 import no.nav.data.polly.process.dto.ProcessStateRequest.ProcessState;
 import no.nav.data.polly.process.dto.sub.AffiliationRequest;
+import no.nav.data.polly.test.TestConfig.MockFilter;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -28,9 +33,11 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -71,6 +78,29 @@ class ProcessControllerIT extends IntegrationTestBase {
                         .documentIds(policy.getData().getDocumentIds())
                         .build())
                 .build());
+    }
+
+    @Test
+    void getLastEdits() {
+        createAndSaveProcess(PURPOSE_CODE1);
+
+        AzureUserInfo userInfo = new AzureUserInfo(new Builder().claim(StandardClaimNames.NAME, "Name Nameson").build(), Set.of(), "S123456");
+
+        MdcUtils.setUser(userInfo.getIdentName());
+        createAndSaveProcess(PURPOSE_CODE2);
+        var deleted = createAndSaveProcess("deleted");
+        processService.deleteById(deleted.getId());
+        MdcUtils.clearUser();
+
+        MockFilter.setUser(userInfo);
+        ResponseEntity<LastEditedPage> resp = restTemplate.getForEntity("/process/myedits", LastEditedPage.class);
+        MockFilter.clearUser();
+
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(resp.getBody()).isNotNull();
+        assertThat(resp.getBody().getNumberOfElements()).isEqualTo(1L);
+        assertThat(resp.getBody().getContent().get(0).getTime()).isNotNull();
+        assertThat(resp.getBody().getContent().get(0).getProcess().getPurposes().get(0).getCode()).isEqualTo(PURPOSE_CODE2);
     }
 
     @Test
