@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 import no.nav.data.polly.process.dto.sub.DpiaRequest;
 import no.nav.data.polly.process.dto.sub.DpiaResponse;
 
+import java.util.List;
+
+import static no.nav.data.common.utils.StreamUtils.copyOf;
+
 /**
  * Data protection impact assessment - PVK
  */
@@ -19,7 +23,7 @@ public class Dpia {
     private Boolean needForDpia;
     private String refToDpia;
     private String grounds;
-    private NoDpiaReason noDpiaReason;
+    private List<NoDpiaReason> noDpiaReasons;
     private boolean processImplemented;
     private String riskOwner;
     private String riskOwnerFunction;
@@ -29,7 +33,7 @@ public class Dpia {
                 .needForDpia(getNeedForDpia())
                 .refToDpia(getRefToDpia())
                 .grounds(getGrounds())
-                .noDpiaReason(getNoDpiaReason())
+                .noDpiaReasons(copyOf(getNoDpiaReasons()))
                 .processImplemented(isProcessImplemented())
                 .riskOwner(getRiskOwner())
                 .riskOwnerFunction(getRiskOwnerFunction())
@@ -44,7 +48,7 @@ public class Dpia {
                 .needForDpia(dpia.getNeedForDpia())
                 .refToDpia(dpia.getRefToDpia())
                 .grounds(dpia.getGrounds())
-                .noDpiaReason(dpia.getNoDpiaReason())
+                .noDpiaReasons(copyOf(dpia.getNoDpiaReasons()))
                 .processImplemented(dpia.isProcessImplemented())
                 .riskOwner(dpia.getRiskOwner())
                 .riskOwnerFunction(dpia.getRiskOwnerFunction())
