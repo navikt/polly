@@ -20,5 +20,7 @@ public interface UserInfo {
 
     List<String> getGroups();
 
+    boolean isAdmin();
+
     UserInfoResponse convertToResponse();
 }

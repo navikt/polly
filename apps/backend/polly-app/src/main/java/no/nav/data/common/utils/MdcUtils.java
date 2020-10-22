@@ -1,10 +1,8 @@
 package no.nav.data.common.utils;
 
-import no.nav.data.common.security.dto.UserInfo;
+import no.nav.data.common.security.SecurityUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -103,9 +101,7 @@ public final class MdcUtils {
     }
 
     private static String getCurrentSecurityContextUser() {
-        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
-                .filter(Authentication::isAuthenticated)
-                .map(authentication -> authentication.getDetails() instanceof UserInfo ? (UserInfo) authentication.getDetails() : null)
+        return SecurityUtils.getCurrentUser()
                 .map(userInfo -> StringUtils.isBlank(userInfo.getName()) ? userInfo.getAppName() : userInfo.getIdentName())
                 .orElse("no-auth");
     }
