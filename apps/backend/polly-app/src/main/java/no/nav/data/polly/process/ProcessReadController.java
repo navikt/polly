@@ -123,7 +123,7 @@ public class ProcessReadController {
             @ApiResponse(code = 200, message = "All Processes fetched", response = LastEditedPage.class),
             @ApiResponse(code = 500, message = "Internal server error")})
     @GetMapping("/myedits")
-    public ResponseEntity<RestResponsePage<LastEditedResponse>> getAllProcesses() {
+    public ResponseEntity<RestResponsePage<LastEditedResponse>> getMyRecentlyEditedProcesses() {
         Optional<UserInfo> user = SecurityUtils.getCurrentUser();
         if (user.isEmpty()) {
             return ResponseEntity.ok(new RestResponsePage<>());
