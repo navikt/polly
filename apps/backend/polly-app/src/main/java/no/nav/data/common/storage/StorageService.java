@@ -40,6 +40,12 @@ public class StorageService {
         return repository.save(storage);
     }
 
+    public void save(GenericStorageData data) {
+        var storage = GenericStorage.builder().generateId().build();
+        storage.setDataObject(data);
+        repository.save(storage);
+    }
+
     @Transactional
     public void usingAppState(Consumer<AppState> consumer) {
         var appStateStorage = getSingletonAsStorage(AppState.class);
