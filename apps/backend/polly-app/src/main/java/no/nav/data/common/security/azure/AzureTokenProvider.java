@@ -280,7 +280,7 @@ public class AzureTokenProvider implements TokenProvider {
             log.debug("Looking up access token for user {}", username);
             return msalPublicClient.acquireToken(UserNamePasswordParameters.builder(scopes, username, password.toCharArray()).build()).get();
         } catch (Exception e) {
-            throw new TechnicalException("Failed to get access token for refreshToken", e);
+            throw new TechnicalException("Failed to get access token for username " + username, e);
         }
     }
 
